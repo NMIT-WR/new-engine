@@ -1,0 +1,216 @@
+@import 'bootstrap.scss';
+
+body,
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+.search-result-card {
+  min-height: 100px;
+  font-size: 12px;
+  border: 1px solid $gray-100;
+
+  @media (min-width: 768px) {
+    min-height: 175px;
+  }
+
+  .image-container {
+    min-height: 200px;
+  }
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 10px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 20px;
+    row-gap: 20px;
+  }
+}
+
+.ais-HierarchicalMenu-item--selected {
+  a, a:hover {
+    color: inherit !important;
+  }
+}
+
+.ais-Pagination-item--selected {
+  a, a:hover {
+    color: inherit !important;
+  }
+}
+
+.ais-RatingMenu-item--selected {
+  a, a:hover {
+    color: inherit !important;
+  }
+}
+
+// Range input
+.ais-RangeInput-input {
+  @extend .form-control, .form-control-sm, .form-control-secondary, .mb-2;
+}
+
+.ais-RangeInput-separator {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.ais-RangeInput-submit {
+  @extend .btn, .btn-secondary, .btn-sm, .ms-2;
+}
+
+// Rating icon
+.ais-RatingMenu-starIcon {
+  position: relative;
+  top: -1px;
+  width: 15px;
+  fill: #ffc168
+}
+
+.marker-highlight {
+  margin: 0 -0.4em;
+  padding: 0.1em 0.4em;
+  border-radius: 0.8em 0.3em;
+  background: transparent linear-gradient(
+                  to right,
+                  rgba(255, 225, 0, 0.1),
+                  rgba(255, 225, 0, 0.7) 4%,
+                  rgba(255, 225, 0, 0.3)
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+// Hierarchical Menu
+
+.ais-HierarchicalMenu-showMore {
+  @extend .btn, .btn-secondary, .btn-sm;
+}
+
+.ais-HierarchicalMenu-list {
+  @extend .list-unstyled;
+}
+
+.ais-HierarchicalMenu-list--child {
+  @extend .ms-4;
+}
+
+.ais-HierarchicalMenu-count {
+  @extend .badge, .text-dark-2, .ms-1;
+}
+
+.ais-HierarchicalMenu-link {
+  @extend .text-dark, .text-decoration-none;
+}
+
+.ais-HierarchicalMenu-item--selected {
+  @extend .text-primary, .fw-bold;
+}
+
+.ais-HierarchicalMenu-item--parent {
+  @extend .text-dark, .fw-bold;
+}
+
+// Brand Filter
+
+.ais-RefinementList-searchBox input {
+  @extend .form-control, .form-control-sm, .form-control-secondary, .mb-2;
+}
+
+.ais-RefinementList-searchBox button[type="submit"] {
+  @extend .d-none;
+}
+
+.ais-RefinementList-searchBox button[type="reset"] {
+  @extend .d-none;
+}
+
+.ais-RefinementList-showMore {
+  @extend .btn, .btn-secondary, .btn-sm;
+}
+
+.ais-RefinementList-list {
+  @extend .list-unstyled;
+}
+
+.ais-RefinementList-count {
+  @extend .badge, .text-dark-2, .ms-2;
+}
+
+.ais-RefinementList-label {
+  @extend .d-flex, .align-items-center, .mb-2;
+}
+
+.ais-RefinementList-checkbox {
+  @extend .me-2;
+}
+
+.ais-ToggleRefinement-label {
+  @extend .d-flex, .align-items-center;
+}
+
+.ais-ToggleRefinement-checkbox {
+  @extend .me-2;
+}
+
+// Rating Menu
+
+.ais-RatingMenu-list { @extend .list-unstyled; }
+.ais-RatingMenu-link { @extend .text-decoration-none; }
+//.ais-RatingMenu-starIcon { @extend null; }
+.ais-RatingMenu-count { @extend .badge, .text-dark-2, .ms-2; }
+.ais-RatingMenu-disabledItem { @extend .text-muted; }
+.ais-RatingMenu-selectedItem { @extend .fw-bold, .text-primary; }
+
+// Clear Refinements
+
+.ais-ClearRefinements-button {
+  @extend .btn, .btn-primary;
+}
+
+.ais-Stats-text {
+  @extend .small;
+}
+
+.ais-HitsPerPage-select, .ais-SortBy-select {
+  @extend .form-select, .form-select-sm;
+  border: none;
+  color: $black;
+}
+
+.ais-HitsPerPage-select:focus, .ais-SortBy-select:focus {
+  box-shadow: none;
+}
+
+// Search Box
+
+.ais-SearchBox-input {
+  @extend .form-control, .form-control-sm, .border, .border-light, .text-dark;
+}
+
+.ais-SearchBox-submit, .ais-SearchBox-reset {
+  @extend .d-none;
+}
+
+// Pagination
+.ais-Pagination-list { @extend .d-flex, .flex-row, .justify-content-end; }
+.ais-Pagination-item { @extend .px-2, .d-block; }
+.ais-Pagination-link { @extend .text-decoration-none; }
+.ais-Pagination-item--disabled { @extend .text-muted; }
+.ais-Pagination-item--selected { @extend .fw-bold, .text-primary; }
+
+// Hits
+.ais-Hits-list { @extend .list-unstyled, .grid-container; }
+.ais-Hits-item { @extend .d-flex, .flex-column, .search-result-card, .mb-1, .ms-1, .p-3; }
+.ais-Hits-loadMore { @extend .btn, .btn-primary, .mx-auto, .d-block, .mt-4; }
+.ais-Hits-disabledLoadMore { @extend .btn, .btn-dark, .mx-auto, .d-block, .mt-4; }
