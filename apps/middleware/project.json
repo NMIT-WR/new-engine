@@ -1,0 +1,55 @@
+{
+	"name": "middleware",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/middleware",
+	"projectType": "application",
+	"tags": [],
+	"// targets": "to see all targets run: nx show project middleware --web",
+	"targets": {
+		"build:executable": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "bun build --compile --minify --sourcemap apps/middleware/src/index.ts --outfile ./apps/middleware/dist/main apps/middleware/src/index.ts"
+			},
+			"cache": true
+		},
+		"start:executable": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "main",
+				"cwd": "apps/middleware/dist"
+			}
+		},
+		"dev": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "bun --watch apps/middleware/src/index.ts"
+			}
+		},
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "bun build --target bun --minify --sourcemap --outdir ./apps/middleware/dist apps/middleware/src/index.ts"
+			},
+			"cache": true
+		},
+		"start": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "cross-env NODE_ENV=production bun apps/middleware/dist/index.js"
+			}
+		},
+		"typecheck": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/middleware",
+				"commands": [
+					"bunx tsc --pretty --noEmit -p tsconfig.json"
+				],
+				"forwardAllArgs": false,
+				"description": "Type check with tsc"
+			},
+			"cache": true
+		}
+	}
+}

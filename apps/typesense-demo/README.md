@@ -15,12 +15,12 @@ Typesense Adapter for react-instantsearch</a> and [Next.js](https://nextjs.org) 
 To run this project locally, install the dependencies and run the local server:
 
 ```shell
-yarn
-yarn run typesenseServer
+pnpm i
+bunx nx typesenseServer typesense-demo
 
-yarn run indexer
+bunx nx indexer typesense-demo
 
-yarn dev
+bunx nx dev typesense-demo
 ```
 
 Open http://localhost:3000 to see the app.
