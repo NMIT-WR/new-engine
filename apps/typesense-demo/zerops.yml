@@ -1,0 +1,15 @@
+zerops:
+  - setup: typesense
+    build:
+      buildCommands:
+        - wget -O typesense-server.tar.gz https://dl.typesense.org/releases/27.1/typesense-server-27.1-linux-amd64.tar.gz
+        - tar xvzf ./typesense-server.tar.gz
+      deployFiles: ./typesense-server
+    run:
+      base: ubuntu@latest
+      initCommands:
+        - mkdir -p /var/www/data
+      start: ./typesense-server --data-dir /var/www/data --api-key=${API_KEY} --enable-cors
+      ports:
+        - port: 8108
+          httpSupport: true
