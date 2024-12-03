@@ -1,7 +1,6 @@
 import { gameSchema, typesenseSchema } from "@/lib/schema";
 import { typesenseConfig } from "@/lib/typesense";
 import { getUnixTime, parse } from "date-fns";
-import { upAll } from "docker-compose";
 import fs from "fs";
 import ora from "ora";
 import path from "path";
@@ -103,7 +102,6 @@ async function indexGames(games: z.infer<typeof typesenseSchema>[]) {
 async function main() {
   const spinner = ora();
   try {
-    await upAll({ cwd: path.join(process.cwd()) });
     const games = parseGames();
     await indexGames(games);
     spinner.succeed("Script completed successfully.");
