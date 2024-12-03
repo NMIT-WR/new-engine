@@ -1,53 +1,45 @@
 "use client";
 import { CurrentRefinements } from "@/components/instantsearch/current-refinements";
 import { Facet } from "@/components/instantsearch/facet";
-import { HitsPerPageSelect } from "@/components/instantsearch/hits-per-page-select";
 import { InfiniteHits } from "@/components/instantsearch/infinite-hits";
 import { SearchBox } from "@/components/instantsearch/searchbox";
 import { SortBy } from "@/components/instantsearch/sort-by";
-import { typesenseConfig } from "@/lib/typesense";
+import { typesenseInstantsearchAdapter } from "@/lib/typesense-instantsearch-adapter";
 import { DynamicWidgets } from "react-instantsearch";
 import { InstantSearchNext } from "react-instantsearch-nextjs";
-import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
-
-const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
-  server: typesenseConfig,
-  additionalSearchParameters: {
-    query_by: "name",
-  },
-});
 
 const hitsPerPageItems = [
   {
-    label: "12 per page",
-    value: 12,
+    label: "16 hits per page",
+    value: 16,
     default: true,
   },
   {
-    label: "15 per page",
-    value: 15,
+    label: "32 hits per page",
+    value: 32,
+  },
+  {
+    label: "64 hits per page",
+    value: 64,
   },
 ];
+
 const sortByItems = [
   {
     label: "Relevance",
-    value: "games",
+    value: "items",
   },
   {
-    label: "Price Ascending",
-    value: "games/sort/price:asc",
+    label: "Cena (Od nejnižší k nejvyšší)",
+    value: "items/sort/price:asc",
   },
   {
-    label: "Price Descending",
-    value: "games/sort/price:desc",
+    label: "Cena (Od nejvyšší k nejnižší)",
+    value: "items/sort/price:desc",
   },
   {
-    label: "Positive Reviews",
-    value: "games/sort/positive:desc",
-  },
-  {
-    label: "Negative Reviews",
-    value: "games/sort/negative:desc",
+    label: "Oblíbenost",
+    value: "items/sort/popularity:desc",
   },
 ];
 
@@ -55,7 +47,7 @@ export default function Search() {
   return (
     <InstantSearchNext
       searchClient={typesenseInstantsearchAdapter.searchClient}
-      indexName="games"
+      indexName="items"
       routing
       future={{ preserveSharedStateOnUnmount: true }}
     >
@@ -63,11 +55,20 @@ export default function Search() {
         <div className="flex justify-end gap-3 items-end">
           <CurrentRefinements />
           <SortBy items={sortByItems} />
-          <HitsPerPageSelect items={hitsPerPageItems} />
         </div>
         <div className="flex">
           <aside className="xl:flex flex-col gap-3 mr-10 mt-16 hidden">
-            <DynamicWidgets fallbackComponent={Facet} />
+            <div className="flex flex-col gap-8">
+              <div>
+                <Facet attribute="categories" />
+              </div>
+              <div>
+                <Facet attribute="price" />
+              </div>
+              <div>
+                <Facet attribute="popularity" />
+              </div>
+            </div>
           </aside>
           <div className="flex-1 flex-col">
             <SearchBox />

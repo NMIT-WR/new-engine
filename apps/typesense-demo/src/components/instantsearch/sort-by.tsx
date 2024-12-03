@@ -19,7 +19,7 @@ export function SortBy(props: UseSortByProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex gap-2 font-medium px-4 py-2">
-            <span className="hidden lg:block">Sort By</span>
+            <span className="hidden lg:block">Řazení</span>
             <ArrowDownWideNarrow className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

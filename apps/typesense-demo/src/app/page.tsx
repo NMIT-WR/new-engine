@@ -11,10 +11,10 @@ export default function Home() {
       <main className="flex-1 container mx-auto items-start gap-10 py-8 md:px-0">
         <div className="items-center text-center py-10 gap-3 flex flex-col">
           <h1 className="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
-            Steam Games Catalog Search
+            ASP Ukázka hledání
           </h1>
           <p className="text-lg lg:text-xl text-muted-foreground">
-            Blazingly fast search, powered by Typesense and Next.js App Router.
+            Ukázka nového hledání pomocí naší nové technologie.
           </p>
         </div>
         <Search />

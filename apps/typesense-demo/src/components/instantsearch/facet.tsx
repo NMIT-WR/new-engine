@@ -1,45 +1,38 @@
+"use client";
+
 import NumericMenu from "@/components/instantsearch/numeric-menu";
 import { RangeFilter } from "@/components/instantsearch/range-menu";
 import { attributeLabelMap } from "@/lib/schema";
+import { useRefinementList } from "react-instantsearch";
 
 function Facet({ attribute }: { attribute: string }) {
   switch (attribute) {
+    case "categories":
+      return (
+        <>
+          <h3 className="mb-1 text-xl font-semibold">{attributeLabelMap[attribute]}</h3>
+          <div className="flex flex-col gap-2">
+            <RefinementListComponent attribute={attribute} />
+          </div>
+        </>
+      );
     case "price":
-    case "min_owners":
-    case "max_owners":
       return (
         <>
           <h3 className="mb-1 text-xl font-semibold">{attributeLabelMap[attribute]}</h3>
           <RangeFilter attribute={attribute} />
         </>
       );
-    case "hltb_single":
+    case "popularity":
       return (
         <>
           <h3 className="mb-1 text-xl font-semibold">{attributeLabelMap[attribute]}</h3>
           <NumericMenu
-            attribute="hltb_single"
+            attribute="popularity"
             items={[
-              { label: "Under 2 hours", end: 2 },
-              { label: "2 to 7 hours", start: 2, end: 7 },
-              { label: "7 to 15 hours", start: 7, end: 15 },
-              { label: "15 to 30 hours", start: 15, end: 30 },
-              { label: "Over 30", start: 30 },
-            ]}
-          />
-        </>
-      );
-    case "negative":
-      return (
-        <>
-          <h3 className="mb-1 text-xl font-semibold">{attributeLabelMap[attribute]}</h3>
-          <NumericMenu
-            attribute="negative"
-            items={[
-              { label: "Under 25", end: 25 },
-              { label: "25-50", start: 25, end: 50 },
-              { label: "50-100", start: 50, end: 100 },
-              { label: "Over 100", start: 100 },
+              { label: "Nízká", end: 100 },
+              { label: "Střední", start: 100, end: 200 },
+              { label: "Vysoká", start: 200 },
             ]}
           />
         </>
@@ -47,6 +40,27 @@ function Facet({ attribute }: { attribute: string }) {
     default:
       return null;
   }
+}
+
+function RefinementListComponent({ attribute }: { attribute: string }) {
+  const { items, refine } = useRefinementList({ attribute });
+
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item.value}>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={item.isRefined}
+              onChange={() => refine(item.value)}
+            />
+            {item.label} ({item.count})
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export { Facet };

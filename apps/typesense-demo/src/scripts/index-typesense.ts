@@ -1,6 +1,5 @@
-import { gameSchema, typesenseSchema } from "@/lib/schema";
+import { eshopItemSchema, typesenseSchema } from "@/lib/schema";
 import { typesenseConfig } from "@/lib/typesense";
-import { getUnixTime, parse } from "date-fns";
 import fs from "fs";
 import ora from "ora";
 import path from "path";
@@ -10,40 +9,25 @@ import { z } from "zod";
 // Instantiate the Typesense client
 const client = new Client(typesenseConfig);
 
-function parseCustomDate(dateString: string) {
-  const date = parse(dateString, "MMM d, yyyy", new Date());
-  const unixTime = getUnixTime(date);
-
-  if (isNaN(unixTime)) {
-    return 0;
-  }
-
-  return unixTime;
-}
-
-function parseGames(): z.infer<typeof typesenseSchema>[] {
-  // Read through the games.jsonl file and parse their dates to UNIX timestamps
+function parseItems(): z.infer<typeof typesenseSchema>[] {
+  // Read through the asp.jsonl file
   const cwd = process.cwd();
-  const jsonFilePath = path.join(cwd, "data", "games.jsonl");
+  const jsonFilePath = path.join(cwd, "data", "asp.jsonl");
   try {
     const result = fs
       .readFileSync(jsonFilePath, "utf-8")
       .split("\n")
       .filter(Boolean)
       .map((line) => {
-        const parsed = gameSchema.safeParse(JSON.parse(line));
+        const parsed = eshopItemSchema.safeParse(JSON.parse(line));
 
-        // If the game doesn't match the schema, skip it
+        // If the item doesn't match the schema, skip it
         if (!parsed.success) {
           return;
         }
-        return {
-          ...parsed.data,
-          release_date: parseCustomDate(parsed.data.release_date),
-          hltb_single: parsed.data.hltb_single === undefined ? 0 : parsed.data.hltb_single,
-        };
+        return parsed.data;
       })
-      .filter((game) => game !== undefined);
+      .filter((item) => item !== undefined);
 
     return result;
   } catch (error) {
@@ -54,35 +38,33 @@ function parseGames(): z.infer<typeof typesenseSchema>[] {
 async function createCollection() {
   const spinner = ora("Creating collection");
   await client.collections().create({
-    name: "games",
+    name: "items",
     fields: [
       { name: "name", type: "string" },
-      { name: "release_date", type: "int64" },
+      { name: "description", type: "string" },
+      { name: "brand", type: "string", facet: true, optional: true },
+      { name: "categories", type: "string[]", facet: true, optional: true },
       { name: "price", type: "float", facet: true },
-      { name: "positive", type: "int32", facet: true },
-      { name: "negative", type: "int32", facet: true },
-      { name: "app_id", type: "int32" },
-      { name: "min_owners", type: "int32", facet: true },
-      { name: "max_owners", type: "int32", facet: true },
-      { name: "hltb_single", type: "int32" },
+      { name: "image", type: "string", optional: true },
+      { name: "popularity", type: "int32", facet: true },
     ],
-    default_sorting_field: "release_date",
+    default_sorting_field: "popularity",
   });
   spinner.succeed("Collection created");
 }
 
-async function handleCollection(games: z.infer<typeof typesenseSchema>[]) {
+async function handleCollection(items: z.infer<typeof typesenseSchema>[]) {
   const spinner = ora("Checking collection");
   try {
-    const collection = await client.collections("games").retrieve();
+    const collection = await client.collections("items").retrieve();
     spinner.text = "Collection already exists";
-    if (collection.num_documents === games.length) {
+    if (collection.num_documents === items.length) {
       spinner.succeed("Collection already has the same number of documents");
       return;
     }
 
     spinner.warn("Collection has a different number of documents");
-    await client.collections("games").delete();
+    await client.collections("items").delete();
     await createCollection();
   } catch (e: unknown) {
     if (!(e instanceof Errors.ObjectNotFound)) {
@@ -93,17 +75,17 @@ async function handleCollection(games: z.infer<typeof typesenseSchema>[]) {
   }
 }
 
-// Index the games into Typesense
-async function indexGames(games: z.infer<typeof typesenseSchema>[]) {
-  await handleCollection(games);
-  await client.collections("games").documents().import(games);
+// Index the items into Typesense
+async function indexItems(items: z.infer<typeof typesenseSchema>[]) {
+  await handleCollection(items);
+  await client.collections("items").documents().import(items);
 }
 
 async function main() {
   const spinner = ora();
   try {
-    const games = parseGames();
-    await indexGames(games);
+    const items = parseItems();
+    await indexItems(items);
     spinner.succeed("Script completed successfully.");
   } catch (error) {
     spinner.fail(`An error occurred: ${JSON.stringify(error)}`);

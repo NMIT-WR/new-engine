@@ -1,16 +1,15 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import type { SearchBoxProps } from "react-instantsearch";
-import { useSearchBox } from "react-instantsearch";
+import { useSearchBox, type SearchBoxProps } from "react-instantsearch";
 
 export const SearchBox = (props: SearchBoxProps) => {
-  const { refine, clear, isSearchStalled, ...rest } = useSearchBox(props);
+  const { refine, clear, ...rest } = useSearchBox(props);
 
   return (
     <Input
       className="my-4 bg-background"
       onChange={(event) => refine(event.currentTarget.value)}
-      placeholder="Search..."
+      placeholder="Hledat..."
       {...rest}
     />
   );

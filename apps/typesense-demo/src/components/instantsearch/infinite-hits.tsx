@@ -10,7 +10,7 @@ export function InfiniteHits() {
 
   return items.length === 0 ? (
     <div className="flex justify-center items-center h-96">
-      <p className="text-lg text-muted-foreground">No results found</p>
+      <p className="text-lg text-muted-foreground">Žádné výsledky nenalezeny</p>
     </div>
   ) : (
     <div className="align-center flex w-full animate-fadein flex-col items-center">
@@ -20,7 +20,7 @@ export function InfiniteHits() {
         ))}
       </div>
       <Button variant="ghost" onClick={showMore} disabled={isLastPage} className="font-semibold">
-        Show More
+        Zobrazit více
       </Button>
     </div>
   );
