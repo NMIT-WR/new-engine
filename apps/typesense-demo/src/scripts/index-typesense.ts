@@ -1,3 +1,4 @@
+import { collectionName } from "@/lib/constants"
 import { eshopItemSchema, typesenseSchema } from "@/lib/schema";
 import { typesenseConfig } from "@/lib/typesense";
 import fs from "fs";
@@ -10,9 +11,9 @@ import { z } from "zod";
 const client = new Client(typesenseConfig);
 
 function parseItems(): z.infer<typeof typesenseSchema>[] {
-  // Read through the asp.jsonl file
+  // Read through the asp_full.jsonl file
   const cwd = process.cwd();
-  const jsonFilePath = path.join(cwd, "data", "asp.jsonl");
+  const jsonFilePath = path.join(cwd, "data", "asp_full.jsonl");
   try {
     const result = fs
       .readFileSync(jsonFilePath, "utf-8")
@@ -38,7 +39,7 @@ function parseItems(): z.infer<typeof typesenseSchema>[] {
 async function createCollection() {
   const spinner = ora("Creating collection");
   await client.collections().create({
-    name: "items",
+    name: collectionName,
     fields: [
       { name: "name", type: "string" },
       { name: "description", type: "string" },
@@ -56,7 +57,7 @@ async function createCollection() {
 async function handleCollection(items: z.infer<typeof typesenseSchema>[]) {
   const spinner = ora("Checking collection");
   try {
-    const collection = await client.collections("items").retrieve();
+    const collection = await client.collections(collectionName).retrieve();
     spinner.text = "Collection already exists";
     if (collection.num_documents === items.length) {
       spinner.succeed("Collection already has the same number of documents");
@@ -64,7 +65,7 @@ async function handleCollection(items: z.infer<typeof typesenseSchema>[]) {
     }
 
     spinner.warn("Collection has a different number of documents");
-    await client.collections("items").delete();
+    await client.collections(collectionName).delete();
     await createCollection();
   } catch (e: unknown) {
     if (!(e instanceof Errors.ObjectNotFound)) {
@@ -78,7 +79,7 @@ async function handleCollection(items: z.infer<typeof typesenseSchema>[]) {
 // Index the items into Typesense
 async function indexItems(items: z.infer<typeof typesenseSchema>[]) {
   await handleCollection(items);
-  await client.collections("items").documents().import(items);
+  await client.collections(collectionName).documents().import(items);
 }
 
 async function main() {

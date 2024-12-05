@@ -4,42 +4,26 @@ import { Facet } from "@/components/instantsearch/facet";
 import { InfiniteHits } from "@/components/instantsearch/infinite-hits";
 import { SearchBox } from "@/components/instantsearch/searchbox";
 import { SortBy } from "@/components/instantsearch/sort-by";
+import { collectionName } from "@/lib/constants"
 import { typesenseInstantsearchAdapter } from "@/lib/typesense-instantsearch-adapter";
-import { DynamicWidgets } from "react-instantsearch";
 import { InstantSearchNext } from "react-instantsearch-nextjs";
-
-const hitsPerPageItems = [
-  {
-    label: "16 hits per page",
-    value: 16,
-    default: true,
-  },
-  {
-    label: "32 hits per page",
-    value: 32,
-  },
-  {
-    label: "64 hits per page",
-    value: 64,
-  },
-];
 
 const sortByItems = [
   {
     label: "Relevance",
-    value: "items",
+    value: collectionName,
   },
   {
     label: "Cena (Od nejnižší k nejvyšší)",
-    value: "items/sort/price:asc",
+    value: `${collectionName}/sort/price:asc`,
   },
   {
     label: "Cena (Od nejvyšší k nejnižší)",
-    value: "items/sort/price:desc",
+    value: `${collectionName}/sort/price:desc`,
   },
   {
     label: "Oblíbenost",
-    value: "items/sort/popularity:desc",
+    value: `${collectionName}/sort/popularity:desc`,
   },
 ];
 
@@ -47,7 +31,7 @@ export default function Search() {
   return (
     <InstantSearchNext
       searchClient={typesenseInstantsearchAdapter.searchClient}
-      indexName="items"
+      indexName="items_full"
       routing
       future={{ preserveSharedStateOnUnmount: true }}
     >
