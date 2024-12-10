@@ -1,0 +1,11 @@
+{
+  "name": "@new-wr/e2e",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.28.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20"
+  }
+}

@@ -1,17 +1,20 @@
 {
-  "name": "@wr-search/source",
+  "name": "@new-wr/source",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {},
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@nx/devkit": "20.1.4",
     "@nx/js": "20.1.4",
+    "@nx/playwright": "20.1.4",
+    "@playwright/test": "^1.36.0",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "nx": "20.1.4",
     "tslib": "^2.3.0",
     "typescript": "~5.5.2"
-  }
+  },
+  "dependencies": {}
 }
