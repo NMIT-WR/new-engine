@@ -2,7 +2,10 @@
   "name": "@new-wr/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "test-all": "cross-env TEST_ALL_ESHOPS=true nx e2e e2e",
+    "test": "nx e2e e2e"
+  },
   "private": true,
   "devDependencies": {
     "@nx/devkit": "20.1.4",
@@ -12,9 +15,11 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@types/bun": "1.1.14",
+    "cross-env": "^7.0.3",
     "nx": "20.1.4",
     "tslib": "^2.3.0",
-    "typescript": "~5.5.2"
+    "typescript": "^5.7.2"
   },
   "dependencies": {}
 }
