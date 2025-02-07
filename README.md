@@ -1,3 +1,52 @@
+# Local runtime instructions
+
+### Requirements:
+* Docker compose + Docker
+* make
+
+### Steps
+1. <b>Install dependencies</b>
+
+    ```shell
+    make install
+    ```
+
+* alternatively without dependency lock:
+  ```shell
+  make install-no-lock
+  ```
+
+2. <b>Run docker compose</b>
+    ```shell
+    make dev
+    ```
+
+3. <b>Migrate database</b> (if needed)
+    ```shell
+    make medusa-migrate
+    ```
+
+4. <b>Create user for medusa admin</b> (if needed)
+    ```shell
+    make medusa-create-user EMAIL=[some@email.com] PASSWORD=[PASSWORD]
+    ```
+
+5. <b>Prepare file storage</b> (only first time setup)
+    ```shell
+    make medusa-minio-init
+    ```
+
+6. <b>Explore local envs</b>
+   * Medusa should be available at <a href="http://localhost:9000/app">localhost:9000/app</a>
+   * Minio console should be available at <a href="http://localhost:9003">localhost:9003</a>
+     * credentials: `minioadmin`/`minioadmin`
+   * Meilisearch console should be available at <a href="http://localhost:7700">localhost:7700</a>
+     * credentials: `MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY`
+     * (optional) if plugin was disabled before adding products:
+       * `make medusa-meilisearch-reseed`
+   * Redis compatible ValKey storage can be connected at `localhost:6379`
+
+
 # WrSearch
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
