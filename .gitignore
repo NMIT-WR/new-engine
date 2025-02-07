@@ -42,3 +42,9 @@ Thumbs.db
 
 test-output
 .env
+
+# Docker data
+.docker_data
+
+# PNPM store
+.pnpm-store
