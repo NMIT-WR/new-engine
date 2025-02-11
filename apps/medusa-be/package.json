@@ -37,6 +37,7 @@
     "@mikro-orm/postgresql": "6.4.3",
     "@rokmohar/medusa-plugin-meilisearch": "^1.0.3",
     "awilix": "^8.0.1",
+    "mime": "^4.0.6",
     "pg": "^8.13.0"
   },
   "devDependencies": {

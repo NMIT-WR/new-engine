@@ -36,7 +36,7 @@ export default async function seedImages({ container }: ExecArgs) {
                 logger.info(`Reading file: ${filePath}`);
                 const buffer = await readFile(filePath);
                 const filename = path.basename(filePath);
-                const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+                const mimeType = mime.getType(filePath) || 'application/octet-stream';
 
                 logger.info(`Successfully read file: ${filename} (${mimeType})`);
                 return {
