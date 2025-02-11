@@ -69,6 +69,7 @@ zerops:
         - pnpm i
         - bunx nx run medusa-fe:build
       deployFiles:
+        - nx.json
         - .next
         - package.json
         - next.config.js
