@@ -1,15 +1,96 @@
 zerops:
-  - setup: typesense
+  - setup: medusa
     build:
+      envVariables:
+        BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+      base: nodejs@22
       buildCommands:
-        - wget -O typesense-server.tar.gz https://dl.typesense.org/releases/27.1/typesense-server-27.1-linux-amd64.tar.gz
-        - tar xvzf ./typesense-server.tar.gz
-      deployFiles: ./typesense-server
+        - pnpm i
+        - pnpm run build
+      deployFiles:
+        - .medusa/server/~
+        - tsconfig.json
+        - node_modules
+        - ./src/scripts/seed-files
+      cache: node_modules
+    deploy:
+      readinessCheck:
+        httpGet:
+          port: 9000
+          path: /health
     run:
-      base: ubuntu@latest
+      base: nodejs@22
+      envVariables:
+        DATABASE_TYPE: postgres
+        NODE_ENV: production
+        BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+        STORE_CORS: ${NEXT_STORE_URL},${ANALOG_STORE_URL},http://localhost:5173,http://localhost:3000
+        DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?ssl_mode=disable
+        MINIO_BUCKET: ${storage_bucketName}
+        MINIO_ENDPOINT: ${storage_apiUrl}
+        MINIO_SECRET_KEY: ${storage_secretAccessKey}
+        MINIO_ACCESS_KEY: ${storage_accessKeyId}
+        REDIS_URL: redis://${redis_hostname}:6379
+        CACHE_REDIS_URL: redis://${redis_hostname}:6379
+        EVENTS_REDIS_URL: redis://${redis_hostname}:6379
+        MEILISEARCH_HOST: http://${search_hostname}:${search_port}
+        MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
-        - mkdir -p /var/www/data
-      start: ./typesense-server --data-dir /var/www/data --api-key=${API_KEY} --enable-cors
+        # with each deploy
+        - zsc execOnce ${appVersionId}_migration -- pnpm run migrate
+        - zsc execOnce ${appVersionId}_links -- pnpm run syncLinks
+        # initial setup, happens once in service lifetime
+        - zsc execOnce createInitialSuperadmin -- pnpm run createInitialSuperadmin
+        - zsc execOnce seedInitialData -- pnpm run seedInitialData
+        - zsc execOnce setInitialPublishableKey -- pnpm run setInitialPublishableKey
+        - zsc execOnce addInitialSearchDocuments -- pnpm run addInitialSearchDocuments
       ports:
-        - port: 8108
+        - port: 9000
           httpSupport: true
+      start: pnpm run start
+      healthCheck:
+        httpGet:
+          port: 9000
+          path: /health
+  - setup: nextstore
+    build:
+      base: nodejs@22
+      envVariables:
+        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
+        NEXT_PUBLIC_SEARCH_API_KEY: ${RUNTIME_NEXT_PUBLIC_SEARCH_API_KEY}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${RUNTIME_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
+        NEXT_PUBLIC_DEFAULT_REGION: ${RUNTIME_NEXT_PUBLIC_DEFAULT_REGION}
+        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
+        NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
+        OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
+      buildCommands:
+        - pnpm i
+        - pnpm run build
+      deployFiles:
+        - .next
+        - package.json
+        - next.config.js
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - node_modules
+        - public
+        - check-env-variables.js
+      cache: node_modules
+    run:
+      base: nodejs@22
+      start: pnpm run start
+      ports:
+        - port: 8000
+          httpSupport: true
+      envVariables:
+        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
+        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
+        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
+        NEXT_PUBLIC_DEFAULT_REGION: de
+        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
+        NEXT_PUBLIC_INDEX_NAME: products
+        NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}

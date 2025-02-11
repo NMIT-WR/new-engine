@@ -1,0 +1,57 @@
+#yamlPreprocessor=on
+project:
+  name: recipe-medusa-monorepo
+  corePackage: LIGHT
+  envVariables:
+    NEXT_STORE_URL: https://nextstore-${zeropsSubdomainHost}-8000.prg1.zerops.app
+    SEARCH_URL: https://search-${zeropsSubdomainHost}-7700.prg1.zerops.app
+    MEDUSA_INSTANCE_URL: https://medusa-${zeropsSubdomainHost}-9000.prg1.zerops.app
+    IMGPROXY_INSTANCE_URL: https://imgproxy-${zeropsSubdomainHost}.prg1.zerops.app
+  tags:
+    - development
+
+services:
+  - hostname: db
+    type: postgresql@16
+    mode: NON_HA
+    priority: 100
+
+  - hostname: search
+    type: meilisearch@1.10
+    mode: NON_HA
+    enableSubdomainAccess: true
+    priority: 100
+
+  - hostname: redis
+    type: valkey@7.2
+    mode: NON_HA
+    priority: 100
+
+  - hostname: storage
+    type: object-storage
+    objectStorageSize: 2
+    objectStoragePolicy: public-read
+    priority: 100
+
+  - hostname: medusa
+    type: nodejs@22
+    buildFromGit: https://github.com/NMIT-WR/new-engine
+    enableSubdomainAccess: true
+    envSecrets:
+      ADMIN_CORS: ${zeropsSubdomain}
+      COOKIE_SECRET: <@generateRandomString(<32>)>
+      JWT_SECRET: <@generateRandomString(<32>)>
+      SUPERADMIN_EMAIL: admin@example.com
+      SUPERADMIN_PASSWORD: s4lt_<@generateRandomString(<16>)>
+    verticalAutoscaling:
+      minRam: 0.5
+      cpu: 1
+    priority: 90
+
+  - hostname: nextstore
+    type: nodejs@22
+    enableSubdomainAccess: true
+    envSecrets:
+      REVALIDATE_SECRET: <@generateRandomString(<16>)>
+    verticalAutoscaling:
+      minRam: 0.5
