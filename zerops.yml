@@ -27,11 +27,11 @@ zerops:
         - tsconfig.json
         - node_modules
       cache: node_modules
-    # deploy:
-    #  readinessCheck:
-    #    httpGet:
-    #      port: 9000
-    #      path: /health
+    deploy:
+      readinessCheck:
+        httpGet:
+          port: 9000
+          path: /health
     run:
       base: bun@nightly
       envVariables:
@@ -51,8 +51,6 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_ls -- ls -alR
-        - zsc execOnce ${appVersionId}_nx -- bunx nx show projects
         - zsc execOnce ${appVersionId}_migration -- bunx nx run medusa-be:migrate
         - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks
         # initial setup, happens once in service lifetime
@@ -64,10 +62,10 @@ zerops:
         - port: 9000
           httpSupport: true
       start: bunx nx run medusa-be:start
-      # healthCheck:
-      #  httpGet:
-      #    port: 9000
-      #    path: /health
+      healthCheck:
+        httpGet:
+          port: 9000
+          path: /health
   - setup: nextstore
     build:
       base: bun@nightly
