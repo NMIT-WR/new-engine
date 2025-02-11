@@ -6,7 +6,9 @@ zerops:
       base: bun@nightly
       buildCommands:
         # Remove everything in apps except medusa-be via regex
-        - mv apps/medusa-be ./medusa-be-temp && rm -rf apps/* && mkdir -p apps && mv medusa-be-temp apps/medusa-be
+        - |
+          shopt -s extglob
+          rm -rf apps/!(medusa-be)
         - pnpm i
         - node -v
         - bunx nx reset --verbose
