@@ -47,15 +47,15 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        # - zsc execOnce ${appVersionId}_ls -- ls -alR
-        # - zsc execOnce ${appVersionId}_nx -- bunx nx show projects
-        # - zsc execOnce ${appVersionId}_migration -- bunx nx run medusa-be:migrate
-        # - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks
+        - zsc execOnce ${appVersionId}_ls -- ls -alR
+        - zsc execOnce ${appVersionId}_nx -- bunx nx show projects
+        - zsc execOnce ${appVersionId}_migration -- bunx nx run medusa-be:migrate
+        - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks
         # initial setup, happens once in service lifetime
-        # - zsc execOnce createInitialSuperadmin -- bunx nx run medusa-be:createInitialSuperadmin
-        # - zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData
-        # - zsc execOnce setInitialPublishableKey -- bunx nx run medusa-be:setInitialPublishableKey
-        # - zsc execOnce addInitialSearchDocuments -- bunx nx run medusa-be:addInitialSearchDocuments
+        - zsc execOnce createInitialSuperadmin -- bunx nx run medusa-be:createInitialSuperadmin
+        - zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData
+        - zsc execOnce setInitialPublishableKey -- bunx nx run medusa-be:setInitialPublishableKey
+        - zsc execOnce addInitialSearchDocuments -- bunx nx run medusa-be:addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
