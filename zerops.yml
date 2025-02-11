@@ -29,11 +29,11 @@ zerops:
         - tsconfig.json
         - node_modules
       cache: node_modules
-    deploy:
-      readinessCheck:
-        httpGet:
-          port: 9000
-          path: /health
+    #deploy:
+    #  readinessCheck:
+    #    httpGet:
+    #      port: 9000
+    #      path: /health
     run:
       base: bun@nightly
       envVariables:
@@ -64,10 +64,10 @@ zerops:
         - port: 9000
           httpSupport: true
       start: bunx nx run medusa-be:start
-      healthCheck:
-        httpGet:
-          port: 9000
-          path: /health
+      #healthCheck:
+      #  httpGet:
+      #    port: 9000
+      #    path: /health
   - setup: nextstore
     build:
       base: bun@nightly
