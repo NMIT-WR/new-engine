@@ -59,7 +59,7 @@ zerops:
       ports:
         - port: 9000
           httpSupport: true
-      start: zsc noop --silent
+      start: bunx nx run medusa-be:start
       # healthCheck:
       #  httpGet:
       #    port: 9000
@@ -83,14 +83,15 @@ zerops:
       deployFiles:
         - .nx
         - nx.json
-        - .next
         - package.json
-        - next.config.js
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - node_modules
-        - public
-        - check-env-variables.js
+        - apps/medusa-fe/.next
+        - apps/medusa-fe/next.config.js
+        - apps/medusa-fe/node_modules
+        - apps/medusa-fe/public
+        - apps/medusa-fe/check-env-variables.js
       cache: node_modules
     run:
       base: bun@nightly
