@@ -8,6 +8,10 @@ zerops:
         - pnpm i
         - bunx nx run medusa-be:build
       deployFiles:
+        - nx.json
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
         - apps/medusa-be/.medusa/server/~
         - tsconfig.json
         - node_modules
@@ -37,6 +41,8 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
+        - zsc execOnce ${appVersionId}_ls -- ls -alR
+        - zsc execOnce ${appVersionId}_nx -- bunx nx show projects
         - zsc execOnce ${appVersionId}_migration -- bunx nx run medusa-be:migrate
         - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks
         # initial setup, happens once in service lifetime
