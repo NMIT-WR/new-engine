@@ -34,7 +34,7 @@ services:
     priority: 100
 
   - hostname: medusa
-    type: nodejs@22
+    type: bun@nightly
     buildFromGit: https://github.com/NMIT-WR/new-engine
     enableSubdomainAccess: true
     envSecrets:
@@ -49,7 +49,7 @@ services:
     priority: 90
 
   - hostname: nextstore
-    type: nodejs@22
+    type: bun@nightly
     buildFromGit: https://github.com/NMIT-WR/new-engine
     enableSubdomainAccess: true
     envSecrets:
