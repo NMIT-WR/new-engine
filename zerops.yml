@@ -3,10 +3,10 @@ zerops:
     build:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-      base: nodejs@22
+      base: bun@nightly
       buildCommands:
         - pnpm i
-        - pnpm run build
+        - bunx nx build medusa-be
       deployFiles:
         - .medusa/server/~
         - tsconfig.json
@@ -19,7 +19,7 @@ zerops:
           port: 9000
           path: /health
     run:
-      base: nodejs@22
+      base: bun@nightly
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
@@ -37,24 +37,24 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- pnpm run migrate
-        - zsc execOnce ${appVersionId}_links -- pnpm run syncLinks
+        - zsc execOnce ${appVersionId}_migration -- bunx nx migrate medusa-be
+        - zsc execOnce ${appVersionId}_links -- bunx nx syncLinks medusa-be
         # initial setup, happens once in service lifetime
-        - zsc execOnce createInitialSuperadmin -- pnpm run createInitialSuperadmin
-        - zsc execOnce seedInitialData -- pnpm run seedInitialData
-        - zsc execOnce setInitialPublishableKey -- pnpm run setInitialPublishableKey
-        - zsc execOnce addInitialSearchDocuments -- pnpm run addInitialSearchDocuments
+        - zsc execOnce createInitialSuperadmin -- bunx nx createInitialSuperadmin medusa-be
+        - zsc execOnce seedInitialData -- bunx nx seedInitialData medusa-be
+        - zsc execOnce setInitialPublishableKey -- bunx nx setInitialPublishableKey medusa-be
+        - zsc execOnce addInitialSearchDocuments -- bunx nx addInitialSearchDocuments medusa-be
       ports:
         - port: 9000
           httpSupport: true
-      start: pnpm run start
+      start: bunx nx start medusa-be
       healthCheck:
         httpGet:
           port: 9000
           path: /health
   - setup: nextstore
     build:
-      base: nodejs@22
+      base: bun@nightly
       envVariables:
         MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
@@ -67,7 +67,7 @@ zerops:
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
       buildCommands:
         - pnpm i
-        - pnpm run build
+        - bunx nx build medusa-fe
       deployFiles:
         - .next
         - package.json
@@ -79,8 +79,8 @@ zerops:
         - check-env-variables.js
       cache: node_modules
     run:
-      base: nodejs@22
-      start: pnpm run start
+      base: bun@nightly
+      start: bunx nx start medusa-fe
       ports:
         - port: 8000
           httpSupport: true
