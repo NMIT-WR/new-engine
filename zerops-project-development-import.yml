@@ -50,6 +50,7 @@ services:
 
   - hostname: nextstore
     type: nodejs@22
+    buildFromGit: https://github.com/NMIT-WR/new-engine
     enableSubdomainAccess: true
     envSecrets:
       REVALIDATE_SECRET: <@generateRandomString(<16>)>
