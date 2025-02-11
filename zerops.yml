@@ -6,6 +6,7 @@ zerops:
       base: bun@nightly
       buildCommands:
         - pnpm i
+        - bunx nx reset
         - bunx nx run medusa-be:build
       deployFiles:
         - .nx
