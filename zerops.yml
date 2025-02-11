@@ -6,7 +6,7 @@ zerops:
       base: bun@nightly
       buildCommands:
         - pnpm i
-        - bunx nx build medusa-be
+        - bunx nx run medusa-be:build
       deployFiles:
         - apps/medusa-be/.medusa/server/~
         - tsconfig.json
@@ -37,17 +37,17 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- bunx nx migrate medusa-be
-        - zsc execOnce ${appVersionId}_links -- bunx nx syncLinks medusa-be
+        - zsc execOnce ${appVersionId}_migration -- bunx nx run medusa-be:migrate
+        - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks
         # initial setup, happens once in service lifetime
-        - zsc execOnce createInitialSuperadmin -- bunx nx createInitialSuperadmin medusa-be
-        - zsc execOnce seedInitialData -- bunx nx seedInitialData medusa-be
-        - zsc execOnce setInitialPublishableKey -- bunx nx setInitialPublishableKey medusa-be
-        - zsc execOnce addInitialSearchDocuments -- bunx nx addInitialSearchDocuments medusa-be
+        - zsc execOnce createInitialSuperadmin -- bunx nx run medusa-be:createInitialSuperadmin
+        - zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData
+        - zsc execOnce setInitialPublishableKey -- bunx nx run medusa-be:setInitialPublishableKey
+        - zsc execOnce addInitialSearchDocuments -- bunx nx run medusa-be:addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
-      start: bunx nx start medusa-be
+      start: bunx nx run medusa-be:start
       healthCheck:
         httpGet:
           port: 9000
@@ -67,7 +67,7 @@ zerops:
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
       buildCommands:
         - pnpm i
-        - bunx nx build medusa-fe
+        - bunx nx run medusa-fe:build
       deployFiles:
         - .next
         - package.json
@@ -80,7 +80,7 @@ zerops:
       cache: node_modules
     run:
       base: bun@nightly
-      start: bunx nx start medusa-fe
+      start: bunx nx run medusa-fe:start
       ports:
         - port: 8000
           httpSupport: true
