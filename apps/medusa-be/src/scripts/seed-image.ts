@@ -1,9 +1,9 @@
 import { ExecArgs, FileDTO, MedusaContainer } from '@medusajs/framework/types';
 import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/utils';
 import { uploadFilesWorkflow } from '@medusajs/medusa/core-flows';
-import mime from 'mime';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+const mime = require('mime')
 
 export default async function seedImages({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);

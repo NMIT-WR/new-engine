@@ -30,7 +30,7 @@ import {
 } from "@medusajs/framework/utils";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import mime from "mime";
+const mime = require('mime')
 
 export default async function seedDemoData({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
