@@ -1,0 +1,62 @@
+{
+    log default {
+        format console
+        output stdout
+        exclude http.log.access
+    }
+}
+
+admin.medusa.localhost:443 {
+    reverse_proxy medusa-be:9000
+    tls internal
+}
+
+admin.medusa.localhost:9009 {
+    reverse_proxy medusa-be:9009
+    tls internal
+}
+
+admin.medusa.localhost {
+    redir https://{host}{uri}
+}
+
+front.medusa.localhost:443 {
+    reverse_proxy medusa-fe:8000
+    tls internal
+}
+
+front.medusa.localhost {
+    redir https://{host}{uri}
+}
+
+admin.meilisearch.localhost:443 {
+    reverse_proxy medusa-meilisearch:7700
+    tls internal
+}
+
+admin.meilisearch.localhost {
+    redir https://{host}{uri}
+}
+
+admin.minio.localhost:443 {
+    reverse_proxy medusa-minio:9003
+    tls internal
+}
+
+api.minio.localhost:80 {
+    reverse_proxy medusa-minio:9004
+    tls internal
+}
+
+admin.minio.localhost {
+    redir https://{host}{uri}
+}
+
+admin.db.localhost:443 {
+    reverse_proxy adminer:8080
+    tls internal
+}
+
+admin.db.localhost {
+    redir https://{host}{uri}
+}
