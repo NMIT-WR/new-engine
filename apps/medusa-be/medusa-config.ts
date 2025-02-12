@@ -2,11 +2,22 @@ import {loadEnv, defineConfig} from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
+// const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:9000";
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST || "";
 const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || "";
+const VITE_HMR_PORT = process.env.VITE_HMR_PORT || "";
 
 module.exports = defineConfig({
+    admin: {
+        // backendUrl: BACKEND_URL,
+        vite: (inlineConfig) => {
+            if (VITE_HMR_PORT !== "") {
+                inlineConfig.server.hmr.port = VITE_HMR_PORT;
+            }
+            return inlineConfig
+        }
+    },
     projectConfig: {
         databaseUrl: process.env.DATABASE_URL,
         http: {
@@ -60,12 +71,11 @@ module.exports = defineConfig({
                         resolve: "@medusajs/medusa/file-s3",
                         id: "s3",
                         options: {
+                            file_url: process.env.MINIO_FILE_URL,
                             endpoint: process.env.MINIO_ENDPOINT,
                             bucket: process.env.MINIO_BUCKET,
                             access_key_id: process.env.MINIO_ACCESS_KEY,
                             secret_access_key: process.env.MINIO_SECRET_KEY,
-
-                            file_url: process.env.MINIO_FILE_URL,
                             region: process.env.MINIO_REGION,
                             additional_client_config: {
                                 forcePathStyle: true,

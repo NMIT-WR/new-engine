@@ -1,4 +1,32 @@
 services:
+  medusa-fe:
+    restart: unless-stopped
+    container_name: wr_medusa_fe
+    build:
+      context: .
+      dockerfile: docker/development/medusa-fe/Dockerfile
+    volumes:
+      - .:/app
+    command: pnpm --filter medusa-fe dev
+#    command: ["tail" ,"-f"]
+    ports:
+      - "8000:8000"
+    networks:
+      - internal
+    depends_on:
+      - medusa-be
+      - medusa-meilisearch
+      - medusa-minio
+    environment:
+      MEDUSA_BACKEND_URL: http://medusa-be:9000
+      OBJECT_STORAGE_API_URL: http://medusa-minio:9004
+      NEXT_PUBLIC_BASE_URL: http://localhost:8000
+      NEXT_PUBLIC_SEARCH_ENDPOINT: http://localhost:7700
+      NEXT_PUBLIC_DEFAULT_REGION: gb
+      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
+      NEXT_PUBLIC_INDEX_NAME: products
+      NEXT_PUBLIC_SEARCH_API_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
+#      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
   medusa-be:
     restart: unless-stopped
     container_name: wr_medusa_be
@@ -7,11 +35,24 @@ services:
       dockerfile: docker/development/medusa-be/Dockerfile
     volumes:
       - .:/app
+    command: >
+      pnpm --filter medusa-be dev
+#      pnpm run -r build && pnpm deploy --filter=medusa-be --dev /deploy/dev/medusa-be && pnpm start /deploy/dev/medusa-be
+    ports:
+      - "9000:9000"
+      - "9009:9009"
+    depends_on:
+      - medusa-db
+      - medusa-valkey
+      - medusa-minio
+      - medusa-meilisearch
+    networks:
+      - internal
     environment:
+      VITE_HMR_PORT: 9009
       DATABASE_TYPE: postgres
-#      NODE_ENV: production
-#      BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-#      STORE_CORS: ${NEXT_STORE_URL},${ANALOG_STORE_URL},http://localhost:5173
+      #      NODE_ENV: production
+#      BACKEND_URL: http://medusa-be:9000
       DATABASE_URL: postgresql://root:root@medusa-db:5432/medusa?ssl_mode=disable
       MINIO_FILE_URL: "http://localhost:9004/medusa-bucket"
       MINIO_REGION: "us-east-1"
@@ -24,19 +65,9 @@ services:
       EVENTS_REDIS_URL: valkey://medusa-valkey:6379
       MEILISEARCH_HOST: http://medusa-meilisearch:7700
       MEILISEARCH_API_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
-    command: >
-      pnpm --filter medusa-be dev
-    #      tail -f
-#      pnpm run -r build && pnpm deploy --filter=medusa-be --dev /deploy/dev/medusa-be && pnpm start /deploy/dev/medusa-be
-    ports:
-      - "9000:9000"
-    depends_on:
-      - medusa-db
-      - medusa-valkey
-      - medusa-minio
-      - medusa-meilisearch
-    networks:
-      - internal
+      STORE_CORS: "http://localhost:8000,https://front.medusa.localhost,http://localhost:9004,https://docs.medusajs.com"
+      ADMIN_CORS: "http://localhost:5173,https://admin.medusa.localhost,http://localhost:9000,https://docs.medusajs.com"
+      AUTH_CORS: "http://localhost:5173,https://admin.medusa.localhost,http://localhost:9000,https://docs.medusajs.com"
   medusa-valkey:
     image: valkey/valkey:8-alpine
     ports:
@@ -51,14 +82,14 @@ services:
     ports:
       - "9003:9003"
       - "9004:9004"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - medusa-minio-data:/data
     networks:
       - internal
     command: server /data --console-address ":9003" --address :9004
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
   medusa-meilisearch:
     image: getmeili/meilisearch:v1.12
     container_name: wr_medusa_meilisearch
@@ -66,9 +97,6 @@ services:
       - "7700:7700"
     volumes:
       - medusa-meilisearch-data:/meili_data
-    environment:
-      MEILI_MASTER_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
-      MEILI_NO_ANALYTICS: true
     networks:
       - internal
     healthcheck:
@@ -76,14 +104,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    environment:
+      MEILI_MASTER_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
+      MEILI_NO_ANALYTICS: true
   medusa-db:
     image: postgres:17.2-alpine
     restart: unless-stopped
-    environment:
-      POSTGRES_PASSWORD: ${DC_POSTGRES_PASSWORD:-root}
-      POSTGRES_USER: ${DC_POSTGRES_USER:-root}
-      POSTGRES_DB: ${DC_POSTGRES_DB:-medusa}
-      PGDATA: '/var/lib/postgresql/data'
     command: [ 'postgres', '-cshared_preload_libraries=pg_stat_statements' ]
     ports:
       - "5432:5432"
@@ -91,19 +117,42 @@ services:
       - ${DC_POSTGRES_VOLUME_DATA:-./.docker_data/db}:/var/lib/postgresql/data
     networks:
       - internal
+    environment:
+      POSTGRES_PASSWORD: ${DC_POSTGRES_PASSWORD:-root}
+      POSTGRES_USER: ${DC_POSTGRES_USER:-root}
+      POSTGRES_DB: ${DC_POSTGRES_DB:-medusa}
+      PGDATA: '/var/lib/postgresql/data'
   adminer:
     image: adminer
     restart: unless-stopped
-    environment:
-      ADMINER_DESIGN: nette
-      ADMINER_DEFAULT_SERVER: ${DC_ADMINER_DB:-db}
-      ADMINER_PLUGINS: 'dump-json'
     ports:
       - "8081:8080"
     depends_on:
       - medusa-db
     networks:
       - internal
+    environment:
+      ADMINER_DESIGN: nette
+      ADMINER_DEFAULT_SERVER: ${DC_ADMINER_DB:-medusa-db}
+      ADMINER_PLUGINS: 'dump-json'
+  caddy:
+    build:
+      context: ./docker/development/caddy
+      dockerfile: Dockerfile
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - internal
+    volumes:
+      - ./docker/development/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    extra_hosts:
+      - host.docker.internal:host-gateway
 networks:
   internal:
     driver: bridge
@@ -112,3 +161,5 @@ volumes:
   medusa-valkey-data:
   medusa-minio-data:
   medusa-meilisearch-data:
+  caddy_data:
+  caddy_config:
