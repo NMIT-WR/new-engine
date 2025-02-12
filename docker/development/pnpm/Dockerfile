@@ -6,5 +6,5 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN npm i -g corepack@latest
 
 RUN corepack enable
-RUN pnpm -v
+RUN corepack install -g pnpm@10.3.0
 WORKDIR /app

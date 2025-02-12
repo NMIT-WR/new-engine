@@ -2,20 +2,25 @@ CFLAGS=-g
 export CFLAGS
 
 # Global commands
+corepack-update:
+	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
+    docker run -v .:/app pnpm-env corepack up
 install:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
     docker run -v .:/app pnpm-env pnpm install --frozen-lockfile
-install-no-lock:
+install-fix-lock:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/app pnpm-env pnpm install
+    docker run -v .:/app pnpm-env pnpm install --fix-lockfile
 dev:
 	docker compose -f docker-compose.yaml -p new-engine up --force-recreate -d --build
+down:
+	docker compose -f docker-compose.yaml -p new-engine down
 
 # Medusa specific commands
 medusa-create-user:
 	docker exec wr_medusa_be pnpm --filter medusa-be exec medusa user -e $(EMAIL) -p $(PASSWORD)
 medusa-migrate:
-	docker exec wr_medusa_be pnpm --filter medusa-be exec medusa migrate
+	docker exec wr_medusa_be pnpm --filter medusa-be run migrate
 medusa-minio-init:
 	docker exec wr_medusa_minio mc config host add local http://localhost:9004 minioadmin minioadmin --api S3v4 --lookup auto && \
 	docker exec wr_medusa_minio mc admin accesskey create --access-key minioadminkey --secret-key minioadminkey local && \
