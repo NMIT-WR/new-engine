@@ -12,13 +12,14 @@ zerops:
         - pnpm i
         - bunx nx run medusa-be:build --verbose
         - ls -laR apps/medusa-be/src
+        - ls -laR apps/medusa-be/.medusa
       deployFiles:
         - .nx
         - nx.json
         - package.json
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
-        - apps/medusa-be/.medusa/server/~
+        - apps/medusa-be/.medusa/server
         - apps/medusa-be/package.json
         - apps/medusa-be/tsconfig.json
         - apps/medusa-be/node_modules
@@ -56,7 +57,7 @@ zerops:
         - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks --verbose
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- bunx nx run medusa-be:createInitialSuperadmin --verbose
-        - zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData --verbose
+        # TODO: BROKEN FOR SOME REASON - zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData --verbose
         - zsc execOnce setInitialPublishableKey -- bunx nx run medusa-be:setInitialPublishableKey --verbose
         - zsc execOnce addInitialSearchDocuments -- bunx nx run medusa-be:addInitialSearchDocuments --verbose
       ports:
