@@ -11,8 +11,6 @@ zerops:
           rm -rf apps/!(medusa-be)
         - pnpm i
         - bunx nx run medusa-be:build --verbose
-        - ls -laR apps/medusa-be/src
-        - ls -laR apps/medusa-be/.medusa
       deployFiles:
         - .nx
         - nx.json
