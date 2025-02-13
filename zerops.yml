@@ -25,7 +25,7 @@ zerops:
         - apps/medusa-be/node_modules
         - apps/medusa-be/medusa-config.ts
         - apps/medusa-be/instrumentation.ts
-        - apps/medusa-be/src
+        - apps/medusa-be/src/scripts
         - tsconfig.json
         - node_modules
       cache: node_modules
