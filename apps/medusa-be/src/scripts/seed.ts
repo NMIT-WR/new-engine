@@ -542,7 +542,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
           weight: 400,
           status: ProductStatus.PUBLISHED,
           images: images[PRODUCTS.MedusaTShirt],
-          shipping_profile_id: "",
           options: [
             {
               title: "Size",
@@ -716,7 +715,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
           weight: 400,
           status: ProductStatus.PUBLISHED,
           images: images[PRODUCTS.MedusaSweatshirt],
-          shipping_profile_id: "",
           options: [
             {
               title: "Size",
@@ -808,7 +806,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
           weight: 400,
           status: ProductStatus.PUBLISHED,
           images: images[PRODUCTS.MedusaSweatpants],
-          shipping_profile_id: "",
           options: [
             {
               title: "Size",
@@ -900,7 +897,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
           weight: 400,
           status: ProductStatus.PUBLISHED,
           images: images[PRODUCTS.MedusaShorts],
-          shipping_profile_id: "",
           options: [
             {
               title: "Size",
