@@ -10,9 +10,8 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - node -v
-        - bunx nx reset --verbose
         - bunx nx run medusa-be:build --verbose
+        - ls -laR apps/medusa-be/src
       deployFiles:
         - .nx
         - nx.json
@@ -25,7 +24,7 @@ zerops:
         - apps/medusa-be/node_modules
         - apps/medusa-be/medusa-config.ts
         - apps/medusa-be/instrumentation.ts
-        - apps/medusa-be/src/scripts
+        - apps/medusa-be/src
         - tsconfig.json
         - node_modules
       cache: node_modules
