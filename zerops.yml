@@ -11,6 +11,7 @@ zerops:
           rm -rf apps/!(medusa-be)
         - pnpm i
         - bunx nx run medusa-be:build --verbose
+        - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
       deployFiles:
         - .nx
         - nx.json
