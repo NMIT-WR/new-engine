@@ -30,11 +30,11 @@ zerops:
         - tsconfig.json
         - node_modules
       cache: node_modules
-    #deploy:
-    #  readinessCheck:
-    #    httpGet:
-    #      port: 9000
-    #      path: /health
+    deploy:
+      readinessCheck:
+        httpGet:
+          port: 9000
+          path: /health
     run:
       base: bun@nightly
       envVariables:
@@ -58,17 +58,17 @@ zerops:
         - zsc execOnce ${appVersionId}_links -- bunx nx run medusa-be:syncLinks --verbose
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- bunx nx run medusa-be:createInitialSuperadmin --verbose
-        #- zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData --verbose
-        #- zsc execOnce setInitialPublishableKey -- bunx nx run medusa-be:setInitialPublishableKey --verbose
-        #- zsc execOnce addInitialSearchDocuments -- bunx nx run medusa-be:addInitialSearchDocuments --verbose
+        - zsc execOnce seedInitialData -- bunx nx run medusa-be:seedInitialData --verbose
+        - zsc execOnce setInitialPublishableKey -- bunx nx run medusa-be:setInitialPublishableKey --verbose
+        - zsc execOnce addInitialSearchDocuments -- bunx nx run medusa-be:addInitialSearchDocuments --verbose
       ports:
         - port: 9000
           httpSupport: true
       start: bunx nx run medusa-be:start
-      #healthCheck:
-      #  httpGet:
-      #    port: 9000
-      #    path: /health
+      healthCheck:
+        httpGet:
+          port: 9000
+          path: /health
   - setup: nextstore
     build:
       base: bun@nightly
