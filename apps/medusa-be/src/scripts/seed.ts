@@ -470,22 +470,22 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
     const productImageMap = {
       [PRODUCTS.MedusaTShirt]: [
-        "/var/www/src/scripts/seed-files/tee-black-front.png",
-        "/var/www/src/scripts/seed-files/tee-black-back.png",
-        "/var/www/src/scripts/seed-files/tee-white-front.png",
-        "/var/www/src/scripts/seed-files/tee-white-back.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/tee-black-front.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/tee-black-back.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/tee-white-front.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/tee-white-back.png",
       ],
       [PRODUCTS.MedusaSweatshirt]: [
-        "/var/www/src/scripts/seed-files/sweatshirt-vintage-front.png",
-        "/var/www/src/scripts/seed-files/sweatshirt-vintage-back.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/sweatshirt-vintage-front.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/sweatshirt-vintage-back.png",
       ],
       [PRODUCTS.MedusaSweatpants]: [
-        "/var/www/src/scripts/seed-files/sweatpants-gray-front.png",
-        "/var/www/src/scripts/seed-files/sweatpants-gray-back.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/sweatpants-gray-front.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/sweatpants-gray-back.png",
       ],
       [PRODUCTS.MedusaShorts]: [
-        "/var/www/src/scripts/seed-files/shorts-vintage-front.png",
-        "/var/www/src/scripts/seed-files/shorts-vintage-back.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/shorts-vintage-front.png",
+        "/var/www/apps/medusa-be/src/scripts/seed-files/shorts-vintage-back.png",
       ],
     };
 
