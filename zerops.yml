@@ -64,7 +64,7 @@ zerops:
       ports:
         - port: 9000
           httpSupport: true
-      start: zsc noop
+      start: bunx nx run medusa-be:start
       #healthCheck:
       #  httpGet:
       #    port: 9000
