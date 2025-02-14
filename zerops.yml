@@ -12,6 +12,7 @@ zerops:
         - pnpm i
         - bunx nx run medusa-be:build --verbose
         - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
+        - ls -la apps/medusa-be
       deployFiles:
         - .nx
         - nx.json
@@ -19,6 +20,7 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - apps/medusa-be/.medusa/server
+        - apps/medusa-be/public
         - apps/medusa-be/package.json
         - apps/medusa-be/tsconfig.json
         - apps/medusa-be/node_modules
