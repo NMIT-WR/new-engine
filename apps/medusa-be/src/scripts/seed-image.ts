@@ -3,7 +3,7 @@ import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/util
 import { uploadFilesWorkflow } from '@medusajs/medusa/core-flows';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-const mime = require('mime')
+import mime from "mime";
 
 export default async function seedImages({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
@@ -36,7 +36,7 @@ export default async function seedImages({ container }: ExecArgs) {
                 logger.info(`Reading file: ${filePath}`);
                 const buffer = await readFile(filePath);
                 const filename = path.basename(filePath);
-                const mimeType = mime.getType(filePath) || 'application/octet-stream';
+                const mimeType = mime.lookup(filePath) || 'application/octet-stream';
 
                 logger.info(`Successfully read file: ${filename} (${mimeType})`);
                 return {

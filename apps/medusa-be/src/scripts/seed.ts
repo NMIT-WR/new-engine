@@ -30,7 +30,7 @@ import {
 } from "@medusajs/framework/utils";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-const mime = require('mime')
+import mime from "mime";
 
 export default async function seedDemoData({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
@@ -374,7 +374,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 const buffer = await readFile(filePath);
                 const filename = path.basename(filePath);
                 const mimeType =
-                  mime.getType(filePath) || "application/octet-stream";
+                  mime.lookup(filePath) || "application/octet-stream";
 
                 logger.info(
                   `Successfully read file: ${filename} (${mimeType})`
