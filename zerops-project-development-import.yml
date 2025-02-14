@@ -1,6 +1,6 @@
 #yamlPreprocessor=on
 project:
-  name: wr-medusa-monorepo
+  name: wr-medusa
   corePackage: LIGHT
   envVariables:
     NEXT_STORE_URL: https://nextstore-${zeropsSubdomainHost}-8000.prg1.zerops.app

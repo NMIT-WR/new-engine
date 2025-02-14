@@ -65,10 +65,10 @@ zerops:
         - port: 9000
           httpSupport: true
       start: bunx nx run medusa-be:start
-      healthCheck:
-        httpGet:
-          port: 9000
-          path: /health
+      #healthCheck:
+      #  httpGet:
+      #    port: 9000
+      #    path: /health
   - setup: nextstore
     build:
       base: bun@nightly
