@@ -3,7 +3,7 @@ zerops:
     build:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-      base: node@22
+      base: nodejs@22
       buildCommands:
         # Remove everything in apps except medusa-be via regex
         - |
@@ -37,7 +37,7 @@ zerops:
       #    port: 9000
       #    path: /health
     run:
-      base: node@22
+      base: nodejs@22
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
@@ -72,7 +72,7 @@ zerops:
           path: /health
   - setup: nextstore
     build:
-      base: node@22
+      base: nodejs@22
       envVariables:
         MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
@@ -101,7 +101,7 @@ zerops:
         - apps/medusa-fe/check-env-variables.js
       cache: node_modules
     run:
-      base: node@22
+      base: nodejs@22
       start: nx run medusa-fe:start
       ports:
         - port: 8000
