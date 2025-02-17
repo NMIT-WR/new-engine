@@ -20,7 +20,6 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - apps/medusa-be/.medusa/server
-        - apps/medusa-be/public
         - apps/medusa-be/package.json
         - apps/medusa-be/tsconfig.json
         - apps/medusa-be/node_modules
@@ -99,7 +98,6 @@ zerops:
         - apps/medusa-fe/.next
         - apps/medusa-fe/next.config.js
         - apps/medusa-fe/node_modules
-        - apps/medusa-fe/public
         - apps/medusa-fe/check-env-variables.js
       cache: node_modules
     run:
