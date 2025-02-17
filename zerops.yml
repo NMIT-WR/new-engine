@@ -3,6 +3,7 @@ zerops:
     build:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+        CI: true
       base: nodejs@22
       prepareCommands:
         - npm i -g nx
@@ -41,6 +42,7 @@ zerops:
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
+        CI: true
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         STORE_CORS: ${NEXT_STORE_URL},${ANALOG_STORE_URL},http://localhost:5173,http://localhost:3000
         DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?ssl_mode=disable
@@ -83,6 +85,7 @@ zerops:
         NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
         NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
+        CI: true
       prepareCommands:
         - npm i -g nx
       buildCommands:
@@ -120,3 +123,4 @@ zerops:
         NEXT_PUBLIC_INDEX_NAME: products
         NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
         NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
+        CI: true
