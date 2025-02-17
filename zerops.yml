@@ -4,6 +4,7 @@ zerops:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         CI: true
+        NX_DAEMON: false
       base: nodejs@22
       prepareCommands:
         - npm i -g nx
@@ -15,13 +16,11 @@ zerops:
         - pnpm i
         - nx run medusa-be:build --skip-nx-cache --verbose
       deployFiles:
-        - nx.json
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - apps/medusa-be/.medusa/server
+        - apps/medusa-be/.medusa/server/~
+        - apps/medusa-be/~node_modules
+      cache:
+        - node_modules
         - apps/medusa-be/node_modules
-      cache: apps/medusa-be/node_modules
     deploy:
       readinessCheck:
         httpGet:
@@ -29,12 +28,9 @@ zerops:
           path: /health
     run:
       base: nodejs@22
-      prepareCommands:
-        - npm i -g nx
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
-        CI: true
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         STORE_CORS: ${NEXT_STORE_URL},${ANALOG_STORE_URL},http://localhost:5173,http://localhost:3000
         DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?ssl_mode=disable
@@ -49,17 +45,17 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- nx run medusa-be:migrate --skip-nx-cache --verbose
-        - zsc execOnce ${appVersionId}_links -- nx run medusa-be:syncLinks --skip-nx-cache --verbose
+        - zsc execOnce ${appVersionId}_migration -- pnpm migrate
+        - zsc execOnce ${appVersionId}_links -- pnpm syncLinks
         # initial setup, happens once in service lifetime
-        - zsc execOnce createInitialSuperadmin -- nx run medusa-be:createInitialSuperadmin --skip-nx-cache --verbose
-        - zsc execOnce seedInitialData -- nx run medusa-be:seedInitialData --skip-nx-cache --verbose
-        - zsc execOnce setInitialPublishableKey -- nx run medusa-be:setInitialPublishableKey --skip-nx-cache --verbose
-        - zsc execOnce addInitialSearchDocuments -- nx run medusa-be:addInitialSearchDocuments --skip-nx-cache --verbose
+        - zsc execOnce createInitialSuperadmin -- pnpm createInitialSuperadmin
+        - zsc execOnce seedInitialData -- pnpm seedInitialData
+        - zsc execOnce setInitialPublishableKey -- pnpm setInitialPublishableKey
+        - zsc execOnce addInitialSearchDocuments -- pnpm addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
-      start: nx run medusa-be:start --skip-nx-cache --verbose
+      start: pnpm start
       healthCheck:
         httpGet:
           port: 9000
