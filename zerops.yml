@@ -12,7 +12,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - nx run medusa-be:build
+        - nx run medusa-be:build --skip-nx-cache
         - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
         - ls -la apps/medusa-be
       deployFiles:
@@ -58,17 +58,17 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- nx run medusa-be:migrate
-        - zsc execOnce ${appVersionId}_links -- nx run medusa-be:syncLinks
+        - zsc execOnce ${appVersionId}_migration -- nx run medusa-be:migrate --skip-nx-cache
+        - zsc execOnce ${appVersionId}_links -- nx run medusa-be:syncLinks --skip-nx-cache
         # initial setup, happens once in service lifetime
-        - zsc execOnce createInitialSuperadmin -- nx run medusa-be:createInitialSuperadmin
-        - zsc execOnce seedInitialData -- nx run medusa-be:seedInitialData
-        - zsc execOnce setInitialPublishableKey -- nx run medusa-be:setInitialPublishableKey
-        - zsc execOnce addInitialSearchDocuments -- nx run medusa-be:addInitialSearchDocuments
+        - zsc execOnce createInitialSuperadmin -- nx run medusa-be:createInitialSuperadmin --skip-nx-cache
+        - zsc execOnce seedInitialData -- nx run medusa-be:seedInitialData --skip-nx-cache
+        - zsc execOnce setInitialPublishableKey -- nx run medusa-be:setInitialPublishableKey --skip-nx-cache
+        - zsc execOnce addInitialSearchDocuments -- nx run medusa-be:addInitialSearchDocuments --skip-nx-cache
       ports:
         - port: 9000
           httpSupport: true
-      start: nx run medusa-be:start
+      start: nx run medusa-be:start --skip-nx-cache
       healthCheck:
         httpGet:
           port: 9000
@@ -90,7 +90,7 @@ zerops:
         - npm i -g nx
       buildCommands:
         - pnpm i
-        - nx run medusa-fe:build
+        - nx run medusa-fe:build --skip-nx-cache
       deployFiles:
         - .nx
         - nx.json
@@ -109,7 +109,7 @@ zerops:
       base: nodejs@22
       prepareCommands:
         - npm i -g nx      
-      start: nx run medusa-fe:start
+      start: nx run medusa-fe:start --skip-nx-cache
       ports:
         - port: 8000
           httpSupport: true
