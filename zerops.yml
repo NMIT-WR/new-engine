@@ -15,12 +15,14 @@ zerops:
           rm -rf apps/!(medusa-be)
         - pnpm i
         - nx run medusa-be:build --skip-nx-cache
+        - rm -rf apps/medusa-be/node_modules
+        - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
+        - mv medusa-be-temp-deploy/node_modules apps/medusa-be/
       deployFiles:
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
       cache:
         - node_modules
-        - apps/medusa-be/node_modules
     deploy:
       readinessCheck:
         httpGet:
@@ -28,8 +30,6 @@ zerops:
           path: /health
     run:
       base: nodejs@22
-      prepareCommands:
-        - npm i -g @medusa/cli
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
@@ -57,11 +57,11 @@ zerops:
       ports:
         - port: 9000
           httpSupport: true
-      start: pnpm start
+      start: npm start
       healthCheck:
-        httpGet:
-          port: 9000
-          path: /health
+       httpGet:
+         port: 9000
+         path: /health
   - setup: nextstore
     build:
       base: nodejs@22
