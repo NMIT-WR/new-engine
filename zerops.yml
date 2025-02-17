@@ -10,7 +10,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - pnpm i -g nx
+        - npm i -g nx
         - nx run medusa-be:build --verbose
         - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
         - ls -la apps/medusa-be
@@ -85,7 +85,7 @@ zerops:
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
       buildCommands:
         - pnpm i
-        - pnpm i -g nx
+        - npm i -g nx
         - nx run medusa-fe:build
       deployFiles:
         - .nx
