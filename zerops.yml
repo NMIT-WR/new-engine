@@ -14,7 +14,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - nx run medusa-be:build --skip-nx-cache --verbose
+        - nx run medusa-be:build --skip-nx-cache
       deployFiles:
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
@@ -28,6 +28,8 @@ zerops:
           path: /health
     run:
       base: nodejs@22
+      prepareCommands:
+        - npm i -g @medusa/cli
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
