@@ -7,6 +7,7 @@ project:
     SEARCH_URL: https://search-${zeropsSubdomainHost}-7700.prg1.zerops.app
     MEDUSA_INSTANCE_URL: https://medusa-${zeropsSubdomainHost}-9000.prg1.zerops.app
     IMGPROXY_INSTANCE_URL: https://imgproxy-${zeropsSubdomainHost}.prg1.zerops.app
+    CI: true
   tags:
     - development
 

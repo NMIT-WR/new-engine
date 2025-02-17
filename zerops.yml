@@ -4,13 +4,14 @@ zerops:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
       base: nodejs@22
+      prepareCommands:
+        - npm i -g nx
       buildCommands:
         # Remove everything in apps except medusa-be via regex
         - |
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - npm i -g nx
         - nx run medusa-be:build --verbose
         - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
         - ls -la apps/medusa-be
@@ -36,6 +37,8 @@ zerops:
       #    path: /health
     run:
       base: nodejs@22
+      prepareCommands:
+        - npm i -g nx
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
@@ -81,9 +84,10 @@ zerops:
         NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
         NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
+      prepareCommands:
+        - npm i -g nx
       buildCommands:
         - pnpm i
-        - npm i -g nx
         - nx run medusa-fe:build
       deployFiles:
         - .nx
@@ -100,6 +104,8 @@ zerops:
       cache: node_modules
     run:
       base: nodejs@22
+      prepareCommands:
+        - npm i -g nx
       start: nx run medusa-fe:start
       ports:
         - port: 8000
