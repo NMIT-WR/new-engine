@@ -98,6 +98,7 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - node_modules
+        - apps/medusa-fe/package.json
         - apps/medusa-fe/.next
         - apps/medusa-fe/next.config.js
         - apps/medusa-fe/node_modules
