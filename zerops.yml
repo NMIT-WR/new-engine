@@ -12,7 +12,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - nx run medusa-be:build --verbose
+        - nx run medusa-be:build
         - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
         - ls -la apps/medusa-be
       deployFiles:
@@ -58,13 +58,13 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- nx run medusa-be:migrate --verbose
-        - zsc execOnce ${appVersionId}_links -- nx run medusa-be:syncLinks --verbose
+        - zsc execOnce ${appVersionId}_migration -- nx run medusa-be:migrate
+        - zsc execOnce ${appVersionId}_links -- nx run medusa-be:syncLinks
         # initial setup, happens once in service lifetime
-        - zsc execOnce createInitialSuperadmin -- nx run medusa-be:createInitialSuperadmin --verbose
-        - zsc execOnce seedInitialData -- nx run medusa-be:seedInitialData --verbose
-        - zsc execOnce setInitialPublishableKey -- nx run medusa-be:setInitialPublishableKey --verbose
-        - zsc execOnce addInitialSearchDocuments -- nx run medusa-be:addInitialSearchDocuments --verbose
+        - zsc execOnce createInitialSuperadmin -- nx run medusa-be:createInitialSuperadmin
+        - zsc execOnce seedInitialData -- nx run medusa-be:seedInitialData
+        - zsc execOnce setInitialPublishableKey -- nx run medusa-be:setInitialPublishableKey
+        - zsc execOnce addInitialSearchDocuments -- nx run medusa-be:addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
