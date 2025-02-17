@@ -17,7 +17,7 @@ zerops:
       deployFiles:
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
-        - apps/medusa-be/~src/scripts/seed-files
+        - apps/medusa-be/src/scripts/seed-files
       cache:
         - node_modules
     deploy:
