@@ -7,7 +7,7 @@ zerops:
         NX_DAEMON: false
       base: nodejs@22
       prepareCommands:
-        - npm i -g nx
+        - npm i -g nx@20.1.4
       buildCommands:
         # Remove everything in apps except medusa-be via regex
         - |
