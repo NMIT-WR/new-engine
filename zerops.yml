@@ -37,7 +37,7 @@ zerops:
     run:
       base: nodejs@22
       prepareCommands:
-        - npm i -g nx      
+        - npm i -g nx
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
@@ -105,7 +105,7 @@ zerops:
     run:
       base: nodejs@22
       prepareCommands:
-        - npm i -g nx      
+        - npm i -g nx
       start: nx run medusa-fe:start --skip-nx-cache --verbose
       ports:
         - port: 8000
