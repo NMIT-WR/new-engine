@@ -14,22 +14,14 @@ zerops:
           rm -rf apps/!(medusa-be)
         - pnpm i
         - nx run medusa-be:build --skip-nx-cache --verbose
-        - cp -r apps/medusa-be/.medusa/server/public/ apps/medusa-be/
       deployFiles:
-        - .nx
         - nx.json
         - package.json
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - apps/medusa-be/.medusa/server
-        - apps/medusa-be/public
-        - apps/medusa-be/package.json
-        - apps/medusa-be/tsconfig.json
         - apps/medusa-be/node_modules
-        - apps/medusa-be/src/scripts
-        - tsconfig.json
-        - node_modules
-      cache: node_modules
+      cache: apps/medusa-be/node_modules
     deploy:
       readinessCheck:
         httpGet:
