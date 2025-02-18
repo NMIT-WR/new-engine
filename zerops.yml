@@ -61,6 +61,7 @@ zerops:
        httpGet:
          port: 9000
          path: /health
+
   - setup: nextstore
     build:
       base: nodejs@22
