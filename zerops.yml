@@ -3,34 +3,19 @@ zerops:
     build:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+        NX_DAEMON: false
       base: nodejs@22
-      prepareCommands:
-        - npm i -g nx
       buildCommands:
         # Remove everything in apps except medusa-be via regex
         - |
           shopt -s extglob
           rm -rf apps/!(medusa-be)
-        - pnpm install --no-frozen-lockfile
+        - pnpm i
         - node_modules/.bin/nx run medusa-be:build --skip-nx-cache
         - rm -rf apps/medusa-be/node_modules
         - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
         - mv medusa-be-temp-deploy/node_modules apps/medusa-be/
       deployFiles:
-        - .nx
-        - nx.json
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - apps/medusa-be/.medusa/server
-        - apps/medusa-be/package.json
-        - apps/medusa-be/tsconfig.json
-        - apps/medusa-be/node_modules
-        - apps/medusa-be/src/scripts
-        - apps/medusa-be/medusa-config.ts
-        - apps/medusa-be/instrumentation.ts
-        - tsconfig.json
-        - node_modules
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
         - apps/medusa-be/src/scripts/seed-files
@@ -43,8 +28,6 @@ zerops:
           path: /health
     run:
       base: nodejs@22
-      prepareCommands:
-        - npm i -g nx
       envVariables:
         DATABASE_TYPE: postgres
         NODE_ENV: production
@@ -74,9 +57,10 @@ zerops:
           httpSupport: true
       start: npm start
       healthCheck:
-        httpGet:
-          port: 9000
-          path: /health
+       httpGet:
+         port: 9000
+         path: /health
+
   - setup: nextstore
     build:
       base: nodejs@22
@@ -90,10 +74,13 @@ zerops:
         NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
         NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
-      prepareCommands:
-        - npm i -g nx
+        NX_DAEMON: false
       buildCommands:
-        - pnpm install --no-frozen-lockfile
+        # Remove everything in apps except medusa-be via regex
+        - |
+          shopt -s extglob
+          rm -rf apps/!(medusa-fe)
+        - pnpm i
         - node_modules/.bin/nx run medusa-fe:build --skip-nx-cache
         - rm -rf apps/medusa-fe/node_modules
         - pnpm --filter=medusa-fe --prod deploy medusa-fe-temp-deploy
@@ -105,18 +92,15 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - node_modules
+        - apps/medusa-fe/package.json
         - apps/medusa-fe/.next
         - apps/medusa-fe/next.config.js
         - apps/medusa-fe/node_modules
+        - apps/medusa-fe/public
         - apps/medusa-fe/check-env-variables.js
-        - apps/medusa-fe/.next/~
-        - apps/medusa-fe/~node_modules
-      cache:
-        - node_modules
+      cache: node_modules
     run:
       base: nodejs@22
-      prepareCommands:
-        - npm i -g nx
       start: npm start
       ports:
         - port: 8000
@@ -131,3 +115,4 @@ zerops:
         NEXT_PUBLIC_INDEX_NAME: products
         NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
         NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
+        CI: true
