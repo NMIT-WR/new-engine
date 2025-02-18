@@ -3,7 +3,6 @@ zerops:
     build:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        CI: true
         NX_DAEMON: false
       base: nodejs@22
       buildCommands:
@@ -75,7 +74,6 @@ zerops:
         NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
         NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
         OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
-        CI: true
         NX_DAEMON: false
       buildCommands:
         # Remove everything in apps except medusa-be via regex
