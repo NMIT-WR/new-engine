@@ -4,7 +4,13 @@
   "license": "MIT",
   "scripts": {
     "test-all": "cross-env TEST_ALL_ESHOPS=true nx e2e e2e",
-    "test": "nx e2e e2e"
+    "test": "nx e2e e2e",
+    "start:fe": "cd apps/medusa-fe && npm run start",
+    "start:be": "cd apps/medusa-be && npm run start",
+    "start:all:nx": "nx run-many --target=start --projects=medusa-*",
+    "build:fe": "cd apps/medusa-fe && npm run build",
+    "build:be": "cd apps/medusa-be && npm run build",
+    "build:all:nx": "nx run-many --target=build --projects=medusa-*"
   },
   "private": true,
   "devDependencies": {

@@ -101,7 +101,7 @@ zerops:
       cache: node_modules
     run:
       base: nodejs@22
-      start: cd apps/medusa-fe && npm start
+      start: npm run start:fe
       ports:
         - port: 8000
           httpSupport: true
