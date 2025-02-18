@@ -45,13 +45,13 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- pnpm migrate
-        - zsc execOnce ${appVersionId}_links -- pnpm syncLinks
+        - zsc execOnce ${appVersionId}_migration -- npm run migrate
+        - zsc execOnce ${appVersionId}_links -- npm run syncLinks
         # initial setup, happens once in service lifetime
-        - zsc execOnce createInitialSuperadmin -- pnpm createInitialSuperadmin
-        - zsc execOnce seedInitialData -- pnpm seedInitialData
-        - zsc execOnce setInitialPublishableKey -- pnpm setInitialPublishableKey
-        - zsc execOnce addInitialSearchDocuments -- pnpm addInitialSearchDocuments
+        - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
+        - zsc execOnce seedInitialData -- npm run seedInitialData
+        - zsc execOnce setInitialPublishableKey -- npm run setInitialPublishableKey
+        - zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
