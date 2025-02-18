@@ -11,7 +11,7 @@ zerops:
         - |
           shopt -s extglob
           rm -rf apps/!(medusa-be)
-        - pnpm i
+        - pnpm install --no-frozen-lockfile
         - node_modules/.bin/nx run medusa-be:build --skip-nx-cache
         - rm -rf apps/medusa-be/node_modules
         - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
@@ -93,7 +93,7 @@ zerops:
       prepareCommands:
         - npm i -g nx
       buildCommands:
-        - pnpm i
+        - pnpm install --no-frozen-lockfile
         - node_modules/.bin/nx run medusa-fe:build --skip-nx-cache
         - rm -rf apps/medusa-fe/node_modules
         - pnpm --filter=medusa-fe --prod deploy medusa-fe-temp-deploy
