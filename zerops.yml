@@ -9,7 +9,11 @@ zerops:
       prepareCommands:
         - npm i -g nx@20.1.4
       buildCommands:
-        - pnpm --filter=medusa-be... install
+        # Remove everything in apps except medusa-be via regex
+        - |
+          shopt -s extglob
+          rm -rf apps/!(medusa-be)
+        - pnpm i
         - nx run medusa-be:build --skip-nx-cache
         - rm -rf apps/medusa-be/node_modules
         - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
