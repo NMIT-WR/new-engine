@@ -18,6 +18,7 @@
     "@headlessui/react": "^2.2.0",
     "@medusajs/js-sdk": "latest",
     "@medusajs/ui": "latest",
+    "@medusajs/icons": "latest",
     "@meilisearch/instant-meilisearch": "^0.24.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@stripe/react-stripe-js": "^1.7.2",
