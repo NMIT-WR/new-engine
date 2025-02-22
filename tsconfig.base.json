@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": false,
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "composite": true,
     "declaration": true,
@@ -15,20 +15,22 @@
     "isolatedModules": true,
     "lib": ["es2022"],
     "module": "NodeNext",
+    "moduleDetection": "force",
     "moduleResolution": "NodeNext",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "pretty": true,
     "removeComments": false,
-    "resolveJsonModule": false,
+    "resolveJsonModule": true,
     "skipDefaultLibCheck": false,
     "skipLibCheck": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "strict": true,
     "target": "es2022",
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": true
   }
 }

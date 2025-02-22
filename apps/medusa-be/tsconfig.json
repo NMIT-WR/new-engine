@@ -1,23 +1,12 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2021",
-    "esModuleInterop": true,
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "declaration": false,
-    "sourceMap": false,
-    "inlineSourceMap": true,
     "outDir": "./.medusa/server",
     "rootDir": "./",
     "baseUrl": ".",
     "jsx": "react-jsx",
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "checkJs": false
+    "verbatimModuleSyntax": false,
+    "emitDeclarationOnly": false
   },
   "ts-node": {
     "swc": true
@@ -31,5 +20,5 @@
     ".medusa/server",
     ".medusa/admin",
     ".cache"
-  ]
+  ],
 }

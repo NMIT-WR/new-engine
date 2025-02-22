@@ -1,4 +1,4 @@
-import {
+import type {
   ExecArgs,
   IProductModuleService,
 } from "@medusajs/framework/types"

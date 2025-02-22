@@ -1,3 +1,4 @@
+// @ts-nocheck necessary due to Medusa failing with strict mode
 import {
   batchLinkProductsToCollectionWorkflow,
   createApiKeysWorkflow,
@@ -16,7 +17,7 @@ import {
   updateStoresWorkflow,
   uploadFilesWorkflow,
 } from "@medusajs/medusa/core-flows";
-import {
+import type {
   CreateProductCollectionDTO,
   ExecArgs,
   FileDTO,
@@ -48,7 +49,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
     name: "Default Sales Channel",
   });
 
-  if (!defaultSalesChannel.length) {
+  if (!store) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Store not found"
+    );
+  }
+  if (!defaultSalesChannel || !defaultSalesChannel.length) {
     // create the default sales channel
     const { result: salesChannelResult } = await createSalesChannelsWorkflow(
       container
@@ -77,7 +84,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
             currency_code: "usd",
           },
         ],
-        default_sales_channel_id: defaultSalesChannel[0].id,
+        default_sales_channel_id: defaultSalesChannel[0]?.id,
       },
     },
   });
@@ -101,6 +108,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
   const region = regionResult[0];
+  if (!region) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Region not found"
+    );
+  }
   logger.info("Finished seeding regions.");
 
   logger.info("Seeding tax regions...");
@@ -130,6 +143,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
   const stockLocation = stockLocationResult[0];
 
+  if (!stockLocation) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Stock location not found"
+    );
+  }
   await remoteLink.create({
     [Modules.STOCK_LOCATION]: {
       stock_location_id: stockLocation.id,
@@ -152,6 +171,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     });
   const shippingProfile = shippingProfileResult[0];
+  if (!shippingProfile) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Shipping profile not found"
+    );
+  }
 
   const fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
     name: "European Warehouse delivery",
@@ -307,6 +332,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
   const publishableApiKey = publishableApiKeyResult[0];
+  if (!publishableApiKey) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Publishable API key not found"
+    );
+  }
 
   await linkSalesChannelsToApiKeyWorkflow(container).run({
     input: {

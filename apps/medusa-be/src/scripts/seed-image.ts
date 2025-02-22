@@ -1,4 +1,4 @@
-import { ExecArgs, FileDTO, MedusaContainer } from '@medusajs/framework/types';
+import type { ExecArgs, FileDTO, MedusaContainer } from '@medusajs/framework/types';
 import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/utils';
 import { uploadFilesWorkflow } from '@medusajs/medusa/core-flows';
 import { readFile } from 'node:fs/promises';
