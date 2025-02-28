@@ -28,3 +28,5 @@ medusa-minio-init:
 	docker exec wr_medusa_minio mc admin cluster bucket import local /local-bucket-metadata.zip
 medusa-meilisearch-reseed:
 	docker exec wr_medusa_be pnpm --filter medusa-be run addInitialSearchDocuments
+medusa-seed:
+	docker exec wr_medusa_be pnpm --filter medusa-be run seedInitialData

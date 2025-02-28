@@ -18,15 +18,14 @@ services:
       - medusa-meilisearch
       - medusa-minio
     environment:
-      MEDUSA_BACKEND_URL: http://medusa-be:9000
-      OBJECT_STORAGE_API_URL: http://medusa-minio:9004
-      NEXT_PUBLIC_BASE_URL: http://localhost:8000
-      NEXT_PUBLIC_SEARCH_ENDPOINT: http://localhost:7700
-      NEXT_PUBLIC_DEFAULT_REGION: gb
-      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
-      NEXT_PUBLIC_INDEX_NAME: products
-      NEXT_PUBLIC_SEARCH_API_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
-#      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
+      MEDUSA_BACKEND_URL: ${DC_MEDUSA_BACKEND_URL}
+      NEXT_PUBLIC_BASE_URL: ${DC_NEXT_PUBLIC_BASE_URL}
+      NEXT_PUBLIC_SEARCH_ENDPOINT: ${DC_NEXT_PUBLIC_SEARCH_ENDPOINT}
+      NEXT_PUBLIC_DEFAULT_REGION: ${DC_NEXT_PUBLIC_DEFAULT_REGION}
+      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${DC_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
+      NEXT_PUBLIC_INDEX_NAME: ${DC_NEXT_PUBLIC_INDEX_NAME}
+      NEXT_PUBLIC_SEARCH_API_KEY: ${DC_NEXT_PUBLIC_SEARCH_API_KEY}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
   medusa-be:
     restart: unless-stopped
     container_name: wr_medusa_be
@@ -49,25 +48,23 @@ services:
     networks:
       - internal
     environment:
-      VITE_HMR_PORT: 9009
+      VITE_HMR_PORT: ${DC_VITE_HMR_PORT}
       DATABASE_TYPE: postgres
-      #      NODE_ENV: production
-#      BACKEND_URL: http://medusa-be:9000
-      DATABASE_URL: postgresql://root:root@medusa-db:5432/medusa?ssl_mode=disable
-      MINIO_FILE_URL: "http://localhost:9004/medusa-bucket"
-      MINIO_REGION: "us-east-1"
-      MINIO_ENDPOINT: "http://medusa-minio:9004/"
-      MINIO_BUCKET: medusa-bucket
-      MINIO_ACCESS_KEY: minioadminkey
-      MINIO_SECRET_KEY: minioadminkey
-      REDIS_URL: valkey://medusa-valkey:6379
-      CACHE_REDIS_URL: valkey://medusa-valkey:6379
-      EVENTS_REDIS_URL: valkey://medusa-valkey:6379
-      MEILISEARCH_HOST: http://medusa-meilisearch:7700
-      MEILISEARCH_API_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
-      STORE_CORS: "http://localhost:8000,https://front.medusa.localhost,http://localhost:9004,https://docs.medusajs.com"
-      ADMIN_CORS: "http://localhost:5173,https://admin.medusa.localhost,http://localhost:9000,https://docs.medusajs.com"
-      AUTH_CORS: "http://localhost:5173,https://admin.medusa.localhost,http://localhost:9000,https://docs.medusajs.com"
+      DATABASE_URL: ${DC_DATABASE_URL}
+      MINIO_FILE_URL: ${DC_MINIO_FILE_URL}
+      MINIO_REGION: ${DC_MINIO_REGION}
+      MINIO_ENDPOINT: ${DC_MINIO_ENDPOINT}
+      MINIO_BUCKET: ${DC_MINIO_BUCKET}
+      MINIO_ACCESS_KEY: ${DC_MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${DC_MINIO_SECRET_KEY}
+      REDIS_URL: ${DC_REDIS_URL}
+      CACHE_REDIS_URL: ${DC_REDIS_URL}
+      EVENTS_REDIS_URL: ${DC_REDIS_URL}
+      MEILISEARCH_HOST: ${DC_MEILISEARCH_HOST}
+      MEILISEARCH_API_KEY: ${DC_MEILISEARCH_API_KEY}
+      STORE_CORS: ${DC_STORE_CORS}
+      ADMIN_CORS: ${DC_ADMIN_CORS}
+      AUTH_CORS: ${DC_AUTH_CORS}
   medusa-valkey:
     image: valkey/valkey:8-alpine
     ports:
@@ -105,7 +102,7 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      MEILI_MASTER_KEY: MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY
+      MEILI_MASTER_KEY: ${DC_MEILI_MASTER_KEY}
       MEILI_NO_ANALYTICS: true
   medusa-db:
     image: postgres:17.2-alpine
@@ -118,9 +115,9 @@ services:
     networks:
       - internal
     environment:
-      POSTGRES_PASSWORD: ${DC_POSTGRES_PASSWORD:-root}
-      POSTGRES_USER: ${DC_POSTGRES_USER:-root}
-      POSTGRES_DB: ${DC_POSTGRES_DB:-medusa}
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: medusa
       PGDATA: '/var/lib/postgresql/data'
   adminer:
     image: adminer
@@ -133,7 +130,7 @@ services:
       - internal
     environment:
       ADMINER_DESIGN: nette
-      ADMINER_DEFAULT_SERVER: ${DC_ADMINER_DB:-medusa-db}
+      ADMINER_DEFAULT_SERVER: medusa-db
       ADMINER_PLUGINS: 'dump-json'
   caddy:
     build:
