@@ -22,12 +22,12 @@
     "migrate": "medusa db:migrate",
     "syncLinks": "medusa db:sync-links",
     "createInitialSuperadmin": "medusa user -e \"$SUPERADMIN_EMAIL\" -p \"$SUPERADMIN_PASSWORD\"",
-    "seedInitialData": "medusa exec ./src/scripts/seed.js",
+    "seedInitialData": "medusa exec ./src/scripts/seed.ts",
     "seedInitialDataTs": "medusa exec ./src/scripts/seed.ts",
     "seedDefaultData": "medusa exec ./src/scripts/seed-products-from-db.js",
     "seedDefaultDataTs": "medusa exec ./src/scripts/seed-products-from-db.ts",
-    "addInitialSearchDocuments": "medusa exec ./src/scripts/search-index.js",
-    "setInitialPublishableKey": "bash -c \"medusa exec ./src/scripts/output-publishable-key.js | grep -o '<PK_TOKEN>.*</PK_TOKEN>' | sed 's/<PK_TOKEN>//g;s/<\\/PK_TOKEN>//g' | tr -d '\\n\\r' | zsc setSecretEnv CHANNEL_PUBLISHABLE_KEY\""
+    "addInitialSearchDocuments": "medusa exec ./src/scripts/search-index.ts",
+    "setInitialPublishableKey": "bash -c \"medusa exec ./src/scripts/output-publishable-key.ts | grep -o '<PK_TOKEN>.*</PK_TOKEN>' | sed 's/<PK_TOKEN>//g;s/<\\/PK_TOKEN>//g' | tr -d '\\n\\r' | zsc setSecretEnv CHANNEL_PUBLISHABLE_KEY\""
   },
   "dependencies": {
     "@medusajs/admin-sdk": "2.4.0",
@@ -68,5 +68,5 @@
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@10.2.1+sha512.398035c7bd696d0ba0b10a688ed558285329d27ea994804a52bad9167d8e3a72bcb993f9699585d3ca25779ac64949ef422757a6c31102c12ab932e5cbe5cc92"
+  "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af"
 }

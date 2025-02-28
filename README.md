@@ -6,8 +6,10 @@
 * make
 
 ### Steps
-
-1. <b>Install dependencies</b>
+1. <b>Create .env file</b>
+   * copy .env.docker => .env
+   * optionally update config as needed
+2. <b>Install dependencies</b>
 
     ```shell
     make install
@@ -18,40 +20,45 @@
   make install-fix-lock
   ```
 
-2. <b>Run docker compose</b>
+3. <b>Run docker compose</b>
     ```shell
     make dev
     ```
 
-3. <b>Migrate database</b> (if needed)
+4. <b>Migrate database</b> (if needed)
     ```shell
     make medusa-migrate
     ```
 
-4. <b>Create user for medusa admin</b> (if needed)
+5. <b>Create user for medusa admin</b> (if needed)
     ```shell
     make medusa-create-user EMAIL=[some@email.com] PASSWORD=[PASSWORD]
     ```
 
-5. <b>Prepare file storage</b> (only first time setup)
+6. <b>Prepare file storage</b> (only first time setup)
     ```shell
     make medusa-minio-init
     ```
 
-6. <b>Create & set PUBLISHABLE_API_KEY</b> for Store front (only first time)
+7. <b>Create & set PUBLISHABLE_API_KEY</b> for Store front (only first time)
     * Go to <a href="http://localhost:9000/app">localhost:9000/app</a>
     * Login via user created in previous step
     * Go to settings -> Publishable API Keys
     * Create or copy existing key
-    * Create apps/medusa-fe/.env or copy .env.template
-    * Update NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY the key
+    * Update NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY in .env
     * Restart services
     ```shell
    make down
    make dev
     ```
+8. <b>Seed initial data</b> (only first time)
+    * seeded data also add regions that are required to be set
+    * optionally this step can be skipped, but you need to manually add at least 1 region in medusa BE settings page
+   ```shell
+   make medusa-seed
+   ```
 
-7. <b>Explore local envs</b>
+9. <b>Explore local envs</b>
     * Medusa FE should be available at:
         * <a href="http://localhost:8000">localhost:8000</a>
         * <a href="https://front.medusa.localhost">https://front.medusa.localhost</a>
@@ -76,6 +83,11 @@
 * <sup>(1)</sup> Caddyfile currently works inside of docker, and SSL cert is not exposed to host system,
   Admin for Medusa BE fails to connect websockets for Vite server due to SSL errors when visiting
   `https://admin.medusa.localhost/app`.
+
+10. <b>Optional steps</b>
+   * Due to Server side rendering on FE and Client side rendering on BE for images, BE images are broken unless you
+   edit hosts file on your host machine and add `127.0.0.1 medusa-minio` record
+     * the issue is described here: <a href="https://github.com/curl/curl/issues/11104">curl/issues/11104</a>
 
 # WrSearch
 
