@@ -4,17 +4,22 @@ export CFLAGS
 # Global commands
 corepack-update:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/app pnpm-env corepack up
+    docker run -v .:/var/www pnpm-env corepack up
 install:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/app pnpm-env pnpm install --frozen-lockfile
+    docker run -v .:/var/www pnpm-env pnpm install --frozen-lockfile
 install-fix-lock:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/app pnpm-env pnpm install --fix-lockfile
+    docker run -v .:/var/www pnpm-env pnpm install --fix-lockfile
+npkill:
+	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
+    docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
 dev:
 	docker compose -f docker-compose.yaml -p new-engine up --force-recreate -d --build
 down:
 	docker compose -f docker-compose.yaml -p new-engine down
+down-with-volumes:
+	docker compose -f docker-compose.yaml -p new-engine down -v
 
 # Medusa specific commands
 medusa-create-user:
