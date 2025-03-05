@@ -3,12 +3,15 @@
 ### Requirements:
 
 * Docker compose + Docker
+  * For Mac, <a href="https://orbstack.dev/">OrbStack</a> is recommended instead of Docker Desktop
 * make
 
 ### Steps
+
 1. <b>Create .env file</b>
-   * copy .env.docker => .env
-   * optionally update config as needed
+    * copy .env.docker => .env
+    * optionally update config as needed
+
 2. <b>Install dependencies</b>
 
     ```shell
@@ -26,6 +29,7 @@
     ```
 
 4. <b>Migrate database</b> (if needed)
+    * <i>(optional)</i> `medusa` schema needs to exist, which it should, unless it was manually dropped
     ```shell
     make medusa-migrate
     ```
@@ -40,7 +44,16 @@
     make medusa-minio-init
     ```
 
-7. <b>Create & set PUBLISHABLE_API_KEY</b> for Store front (only first time)
+7. <b>Seed initial data</b> (only first time)
+    * seeded data also add regions that are required to be set
+    * optionally this step can be skipped, but you need to manually add at least 1 region in medusa BE settings page
+   ```shell
+   make medusa-seed
+   ```
+
+
+8. <b>Create & set PUBLISHABLE_API_KEY</b> for Store front (only first time)
+    * Restart services (commands below)
     * Go to <a href="http://localhost:9000/app">localhost:9000/app</a>
     * Login via user created in previous step
     * Go to settings -> Publishable API Keys
@@ -51,12 +64,6 @@
    make down
    make dev
     ```
-8. <b>Seed initial data</b> (only first time)
-    * seeded data also add regions that are required to be set
-    * optionally this step can be skipped, but you need to manually add at least 1 region in medusa BE settings page
-   ```shell
-   make medusa-seed
-   ```
 
 9. <b>Explore local envs</b>
     * Medusa FE should be available at:
@@ -85,9 +92,10 @@
   `https://admin.medusa.localhost/app`.
 
 10. <b>Optional steps</b>
-   * Due to Server side rendering on FE and Client side rendering on BE for images, BE images are broken unless you
-   edit hosts file on your host machine and add `127.0.0.1 medusa-minio` record
-     * the issue is described here: <a href="https://github.com/curl/curl/issues/11104">curl/issues/11104</a>
+
+* Due to Server side rendering on FE and Client side rendering on BE for images, BE images are broken unless you
+  edit hosts file on your host machine and add `127.0.0.1 medusa-minio` record
+    * the issue is described here: <a href="https://github.com/curl/curl/issues/11104">curl/issues/11104</a>
 
 # WrSearch
 

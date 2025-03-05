@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: docker/development/medusa-fe/Dockerfile
     volumes:
-      - .:/app
+      - .:/var/www
     command: pnpm --filter medusa-fe dev
 #    command: ["tail" ,"-f"]
     ports:
@@ -17,6 +17,9 @@ services:
       - medusa-be
       - medusa-meilisearch
       - medusa-minio
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:8000' ]
+      start_period: 10s
     environment:
       MEDUSA_BACKEND_URL: ${DC_MEDUSA_BACKEND_URL}
       NEXT_PUBLIC_BASE_URL: ${DC_NEXT_PUBLIC_BASE_URL}
@@ -33,10 +36,8 @@ services:
       context: .
       dockerfile: docker/development/medusa-be/Dockerfile
     volumes:
-      - .:/app
-    command: >
-      pnpm --filter medusa-be dev
-#      pnpm run -r build && pnpm deploy --filter=medusa-be --dev /deploy/dev/medusa-be && pnpm start /deploy/dev/medusa-be
+      - .:/var/www
+    command: pnpm --filter medusa-be dev
     ports:
       - "9000:9000"
       - "9009:9009"
@@ -47,6 +48,9 @@ services:
       - medusa-meilisearch
     networks:
       - internal
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/app' ]
+      start_period: 10s
     environment:
       VITE_HMR_PORT: ${DC_VITE_HMR_PORT}
       DATABASE_TYPE: postgres
@@ -67,6 +71,12 @@ services:
       AUTH_CORS: ${DC_AUTH_CORS}
   medusa-valkey:
     image: valkey/valkey:8-alpine
+    healthcheck:
+      test: '[ $$(valkey-cli ping) = ''PONG'' ]'
+      start_period: 5s
+      timeout: 3s
+      interval: 1s
+      retries: 5
     ports:
       - "6379:6379"
     volumes:
@@ -84,6 +94,8 @@ services:
     networks:
       - internal
     command: server /data --console-address ":9003" --address :9004
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9003' ]
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -114,6 +126,12 @@ services:
       - ${DC_POSTGRES_VOLUME_DATA:-./.docker_data/db}:/var/lib/postgresql/data
     networks:
       - internal
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-d', 'medusa' ]
+      start_period: 10s
+      interval: 30s
+      timeout: 60s
+      retries: 3
     environment:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
