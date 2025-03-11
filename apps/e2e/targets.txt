@@ -1,0 +1,13 @@
+GET https://www.aspshop.cz/inc/ajax/asearch?search_keyword=%C4%8Dty%C5%99&page=1&_=1741081581723
+accept: */*
+accept-language: en-GB,en;q=0.9,en-US;q=0.8,cs;q=0.7,sk;q=0.6,fr;q=0.5
+cache-control: no-cache
+content-type: application/x-www-form-urlencoded; charset=UTF-8
+pragma: no-cache
+sec-ch-ua: "Chromium";v="134", "Not:A-Brand";v="24", "Microsoft Edge";v="134"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+sec-fetch-dest: empty
+sec-fetch-mode: cors
+sec-fetch-site: same-origin
+x-requested-with: XMLHttpRequest
