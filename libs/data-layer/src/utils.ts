@@ -1,4 +1,4 @@
-export function formatSQL(query: string): string {
+export function formatSQL(query: string, colorize = true): string {
     return [
         'SELECT',
         'FROM',
@@ -25,14 +25,15 @@ export function formatSQL(query: string): string {
             (formattedQuery, keyword) =>
                 formattedQuery.replace(
                     new RegExp(`\\b${keyword}\\b`, 'gi'),
-                    `\n\x1b[92m${keyword}\x1b[33m${keyword === 'SELECT' ? '\n' : ''}`
+                    `\n${colorize ? `\x1b[92m${keyword}\x1b[33m` : keyword}${keyword === 'SELECT' ? '\n' : ''}`
                 ),
             query
         )
         .trim()
         .split('\n')
         .map((line) => `   ${line}`)
-        .join('\n');
+        .join('\n')
+        .trim();
 }
 
 export function isDateString(value: string | Date | null | undefined | unknown): boolean {
