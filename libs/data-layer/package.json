@@ -1,0 +1,68 @@
+{
+  "name": "@new-wr/data-layer",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "libs/data-layer/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "libs/data-layer/src/main.ts",
+          "tsConfig": "libs/data-layer/tsconfig.app.json",
+          "assets": [
+            "libs/data-layer/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@new-wr/data-layer:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@new-wr/data-layer:build:development"
+          },
+          "production": {
+            "buildTarget": "@new-wr/data-layer:build:production"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.40.0"
+  }
+}
