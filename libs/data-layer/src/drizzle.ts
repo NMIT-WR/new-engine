@@ -55,7 +55,10 @@ function formatQuery(query: string, params: unknown[]): string {
 const logger = new DefaultLogger({ writer: new MyLogWriter() });
 
 // @ts-ignore
-export const db = drizzle(process.env.DATABASE_URL, { logger, schema });
+export const db = drizzle(
+  'postgresql://neondb_owner:npg_Ozy4jRvtHDG5@ep-nameless-river-a2qn6c6z-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require',
+  { logger, schema },
+);
 
 export async function sqlRaw<T = object>(sql: SQL<T>): Promise<T[]> {
   const rows = (await db.execute(sql)).rows as T[];

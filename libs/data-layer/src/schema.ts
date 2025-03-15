@@ -80,11 +80,5 @@ export const products = pgTable(
       .references(() => subcategories.slug),
     imageUrl: text('image_url'),
   },
-  (table) => [
-    index('products_subcategory_slug_idx').on(table.subcategorySlug),
-    index('name_search_index').using('gin', (table) => table.name),
-    index('name_trgm_index').using('gin', (table) =>
-      table.name.op('gin_trgm_ops'),
-    ),
-  ],
+  () => [],
 );

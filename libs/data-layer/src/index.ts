@@ -1,1 +1,3 @@
-export const squared = (n: number): number => n * n;
+import { dummyDataImporter } from './dummyDataImporter';
+
+await dummyDataImporter();

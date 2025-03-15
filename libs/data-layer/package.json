@@ -25,6 +25,7 @@
   },
   "private": true,
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
     "drizzle-orm": "^0.40.0"
   }
 }
