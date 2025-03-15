@@ -1,24 +1,27 @@
-import {sqlRaw} from "./drizzle";
+import { sqlRaw } from './drizzle';
 import { sql } from 'drizzle-orm';
 
 type ProductRecord = {
-    product_slug: string;
+  product_slug: string;
 };
 
 type ProcessedItemsCount = number;
 
-export async function dummyDataImporter=()=>{
-    console.log(`Start importing products...`);
-    for (let page = 0; true; page++) {
-        const processedItems = await importProductPage(page);
-        if (!processedItems) break;
-    }
-    console.log(`Import has been completed.`);
+export async function dummyDataImporter() {
+  console.log(`Start importing products...`);
+  for (let page = 0; true; page++) {
+    const processedItems = await importProductPage(page);
+    if (!processedItems) break;
+  }
+  console.log(`Import has been completed.`);
 }
 
-async function importProductPage(page:number,step = 20):Promise<ProcessedItemsCount> {
-    console.log(`Importing page ${page}`);
-    const productList = await sqlRaw<ProductRecord>(sql`
+async function importProductPage(
+  page: number,
+  step = 20,
+): Promise<ProcessedItemsCount> {
+  console.log(`Importing page ${page}`);
+  const productList = await sqlRaw<ProductRecord>(sql`
       SELECT p.slug AS product_slug, p.*, sca.*, sco.*, ca.*, cl.*
       FROM products p
       JOIN subcategories sca ON sca.slug = p.subcategory_slug
@@ -28,7 +31,7 @@ async function importProductPage(page:number,step = 20):Promise<ProcessedItemsCo
       LIMIT ${step}
       OFFSET ${page * step}`);
 
-    console.log(`Loaded product list`, productList);
+  console.log(`Loaded product list`, productList);
 
-    return productList.length;
+  return productList.length;
 }
