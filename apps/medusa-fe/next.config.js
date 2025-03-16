@@ -28,6 +28,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "storage-prg1.zerops.io"
       },
+      {
+        protocol: "https",
+        hostname: "vercel-storage.com"
+      }
     ],
   },
 }
