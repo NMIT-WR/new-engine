@@ -19,6 +19,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: "http",
@@ -30,8 +31,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "vercel-storage.com"
-      }
+        hostname: "bevgyjm5apuichhj.public.blob.vercel-storage.com",
+        port: "",
+        pathname: "/**",
+        search: "",
+      },
     ],
   },
 }
