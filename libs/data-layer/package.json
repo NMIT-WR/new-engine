@@ -23,5 +23,9 @@
     "@types/node": "^22.13.10",
     "typescript": "^5.8.2"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "drizzle-orm": "^0.40.0"
+  }
 }
