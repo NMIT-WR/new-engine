@@ -91,12 +91,18 @@ importers:
       '@mikro-orm/postgresql':
         specifier: 6.4.3
         version: 6.4.3(@mikro-orm/core@6.4.3)
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
       '@rokmohar/medusa-plugin-meilisearch':
         specifier: ^1.0.4
         version: 1.0.4(9a05725b946bb4b86a666d422eaaefcb)
       awilix:
         specifier: ^8.0.1
         version: 8.0.1
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.11)(bun-types@1.2.5)(knex@3.1.0(pg@8.13.1))(pg@8.13.1)
       mime:
         specifier: 1.6.0
         version: 1.6.0
