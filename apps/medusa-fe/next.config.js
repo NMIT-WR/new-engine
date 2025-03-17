@@ -30,6 +30,11 @@ const nextConfig = {
         hostname: "storage-prg1.zerops.io"
       },
       {
+        protocol: "http",
+        hostname: "medusa-minio",
+        port: "9004"
+      },
+      {
         protocol: "https",
         hostname: "bevgyjm5apuichhj.public.blob.vercel-storage.com",
         port: "",

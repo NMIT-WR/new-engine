@@ -73,7 +73,6 @@ zerops:
         NEXT_PUBLIC_DEFAULT_REGION: ${RUNTIME_NEXT_PUBLIC_DEFAULT_REGION}
         NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
         NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
-        OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
         NX_DAEMON: false
       buildCommands:
         # Remove everything in apps except medusa-be via regex
@@ -107,7 +106,6 @@ zerops:
           httpSupport: true
       envVariables:
         MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
         NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
         NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
         NEXT_PUBLIC_DEFAULT_REGION: de
