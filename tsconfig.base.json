@@ -34,8 +34,8 @@
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true,
     "paths": {
-      "@libs/data-layer/*": ["libs/data-layer/src/*"],
-      "@libs/data-layer": ["libs/data-layer/src"]
+      "@libs/data-layer/*": ["./libs/data-layer/src/*"],
+      "@libs/data-layer": ["./libs/data-layer/src"]
     }
   }
 }
