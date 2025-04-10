@@ -1,1 +1,26 @@
+:root {
+  /* Primitive Typography Tokens - Utopia fluid typography */
+  --wr-text-xs: clamp(1rem, 0.94rem + 0.29svw, 1.25rem); /* 16px - 20px */
+  --wr-text-s: clamp(1.2rem, 1.09rem + 0.57svw, 1.56rem); /* 19.2px - 25px */
+  --wr-text-m: clamp(1.44rem, 1.24rem + 0.99svw, 1.95rem); /* 23px - 31.3px */
+  --wr-text-l: clamp(1.73rem, 1.39rem + 1.61svw, 2.44rem); /* 27.7px - 39.1px */
+  --wr-text-xl: clamp(
+    2.07rem,
+    1.54rem + 2.52svw,
+    3.05rem
+  ); /* 33.2px - 48.8px */
+  --wr-text-2xl: clamp(
+    2.49rem,
+    1.68rem + 3.84svw,
+    3.82rem
+  ); /* 39.8px - 61.1px */
+}
 
+@theme {
+  --text-xs: var(--wr-text-xs);
+  --text-s: var(--wr-text-s);
+  --text-m: var(--wr-text-m);
+  --text-l: var(--wr-text-l);
+  --text-xl: var(--wr-text-xl);
+  --text-2xl: var(--wr-text-2xl);
+}

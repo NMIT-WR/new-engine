@@ -1,0 +1,150 @@
+:root {
+  /* Button Colors */
+  --wr-button-bg-primary: var(--wr-color-brand-primary);
+  --wr-button-bg-primary-hover: var(--wr-color-brand-primary-hover);
+  --wr-button-bg-primary-active: var(--wr-color-brand-primary-active);
+  --wr-button-bg-primary-disabled: var(--wr-color-brand-primary-disabled);
+  --wr-button-bg-primary-light: var(--wr-color-brand-primary-light);
+  --wr-button-bg-primary-light-hover: var(--wr-color-brand-primary-light-hover);
+  --wr-button-bg-primary-light-active: var(
+    --wr-color-brand-primary-light-active
+  );
+
+  --wr-button-bg-secondary: var(--wr-color-brand-secondary);
+  --wr-button-bg-secondary-hover: var(--wr-color-brand-secondary-hover);
+  --wr-button-bg-secondary-active: var(--wr-color-brand-secondary-active);
+  --wr-button-bg-secondary-disabled: var(--wr-color-brand-secondary-disabled);
+  --wr-button-bg-secondary-light: var(--wr-color-brand-secondary-light);
+  --wr-button-bg-secondary-light-hover: var(
+    --wr-color-brand-secondary-light-hover
+  );
+  --wr-button-bg-secondary-light-active: var(
+    --wr-color-brand-secondary-light-active
+  );
+
+  --wr-button-bg-tertiary: var(--wr-color-brand-tertiary);
+  --wr-button-bg-tertiary-hover: var(--wr-color-brand-tertiary-hover);
+  --wr-button-bg-tertiary-active: var(--wr-color-brand-tertiary-active);
+  --wr-button-bg-tertiary-disabled: var(--wr-color-brand-tertiary-disabled);
+  --wr-button-bg-tertiary-light: var(--wr-color-brand-tertiary-light);
+  --wr-button-bg-tertiary-light-hover: var(
+    --wr-color-brand-tertiary-light-hover
+  );
+  --wr-button-bg-tertiary-light-active: var(
+    --wr-color-brand-tertiary-light-active
+  );
+
+  --wr-button-bg-warning: var(--wr-color-brand-warning);
+  --wr-button-bg-warning-hover: var(--wr-color-brand-warning-hover);
+  --wr-button-bg-warning-active: var(--wr-color-brand-warning-active);
+  --wr-button-bg-warning-disabled: var(--wr-color-brand-warning-disabled);
+  --wr-button-bg-warning-light: var(--wr-color-brand-warning-light);
+  --wr-button-bg-warning-light-hover: var(--wr-color-brand-warning-light-hover);
+  --wr-button-bg-warning-light-active: var(
+    --wr-color-brand-warning-light-active
+  );
+
+  --wr-button-bg-danger: var(--wr-color-brand-danger);
+  --wr-button-bg-danger-hover: var(--wr-color-brand-danger-hover);
+  --wr-button-bg-danger-active: var(--wr-color-brand-danger-active);
+  --wr-button-bg-danger-disabled: var(--wr-color-brand-danger-disabled);
+  --wr-button-bg-danger-light: var(--wr-color-brand-danger-light);
+  --wr-button-bg-danger-light-hover: var(--wr-color-brand-danger-light-hover);
+  --wr-button-bg-danger-light-active: var(--wr-color-brand-danger-light-active);
+
+  /* Sizes */
+  --wr-button-height-s: var(--wr-height-control-s);
+  --wr-button-height-m: var(--wr-height-control-m);
+  --wr-button-height-l: var(--wr-height-control-l);
+
+  /* Width for special cases? */
+  --wr-button-width-s: var(--wr-space-l);
+  --wr-button-width-m: var(--wr-space-l);
+  --wr-button-width-l: var(--wr-space-l);
+
+  /* Padding */
+  --wr-button-padding-s: var(--wr-space-xs) var(--wr-space-s);
+  --wr-button-padding-m: var(--wr-space-s) var(--wr-space-m);
+  --wr-button-padding-l: var(--wr-space-s) var(--wr-space-m);
+
+  /* Typography */
+  --wr-button-color-text-primary: var(--color-white);
+  --wr-button-color-text-secondary: var(--wr-color-text-primary);
+  --wr-button-text-s: 12px;
+  --wr-button-text-m: 16px;
+  --wr-button-text-l: 20px;
+
+  /* Borders */
+  --wr-button-border-primary: var(--wr-color-border-primary);
+  --wr-button-border-secondary: var(--wr-color-border-secondary);
+
+  /* Radius */
+  --wr-button-radius-s: var(--wr-radius-m);
+  --wr-button-radius-m: var(--wr-radius-m);
+  --wr-button-radius-l: var(--wr-radius-m);
+}
+
+@theme {
+  --color-btn-primary: var(--wr-button-bg-primary);
+  --color-btn-primary-hover: var(--wr-button-bg-primary-hover);
+  --color-btn-primary-active: var(--wr-button-bg-primary-active);
+  --color-btn-primary-disabled: var(--wr-button-bg-primary-disabled);
+  --color-btn-primary-light: var(--wr-button-bg-primary-light);
+  --color-btn-primary-light-hover: var(--wr-button-bg-primary-light-hover);
+  --color-btn-primary-light-active: var(--wr-button-bg-primary-light-active);
+
+  --color-btn-secondary: var(--wr-button-bg-secondary);
+  --color-btn-secondary-hover: var(--wr-button-bg-secondary-hover);
+  --color-btn-secondary-active: var(--wr-button-bg-secondary-active);
+  --color-btn-secondary-disabled: var(--wr-button-bg-secondary-disabled);
+  --color-btn-secondary-light: var(--wr-button-bg-secondary-light);
+  --color-btn-secondary-light-hover: var(--wr-button-bg-secondary-light-hover);
+  --color-btn-secondary-light-active: var(
+    --wr-button-bg-secondary-light-active
+  );
+
+  --color-btn-tertiary: var(--wr-button-bg-tertiary);
+  --color-btn-tertiary-hover: var(--wr-button-bg-tertiary-hover);
+  --color-btn-tertiary-active: var(--wr-button-bg-tertiary-active);
+  --color-btn-tertiary-disabled: var(--wr-button-bg-tertiary-disabled);
+  --color-btn-tertiary-light: var(--wr-button-bg-tertiary-light);
+  --color-btn-tertiary-light-hover: var(--wr-button-bg-tertiary-light-hover);
+  --color-btn-tertiary-light-active: var(--wr-button-bg-tertiary-light-active);
+
+  --color-btn-warning: var(--wr-button-bg-warning);
+  --color-btn-warning-hover: var(--wr-button-bg-warning-hover);
+  --color-btn-warning-active: var(--wr-button-bg-warning-active);
+  --color-btn-warning-disabled: var(--wr-button-bg-warning-disabled);
+  --color-btn-warning-light: var(--wr-button-bg-warning-light);
+  --color-btn-warning-light-hover: var(--wr-button-bg-warning-light-hover);
+  --color-btn-warning-light-active: var(--wr-button-bg-warning-light-active);
+
+  --color-btn-danger: var(--wr-button-bg-danger);
+  --color-btn-danger-hover: var(--wr-button-bg-danger-hover);
+  --color-btn-danger-active: var(--wr-button-bg-danger-active);
+  --color-btn-danger-disabled: var(--wr-button-bg-danger-disabled);
+  --color-btn-danger-light: var(--wr-button-bg-danger-light);
+  --color-btn-danger-light-hover: var(--wr-button-bg-danger-light-hover);
+  --color-btn-danger-light-active: var(--wr-button-bg-danger-light-active);
+
+  /* Sizes */
+  --padding-btn-s: var(--wr-button-padding-s);
+  --padding-btn-m: var(--wr-button-padding-m);
+  --padding-btn-l: var(--wr-button-padding-l);
+
+  --height-btn-s: var(--wr-button-height-s);
+  --height-btn-m: var(--wr-button-height-m);
+  --height-btn-l: var(--wr-button-height-l);
+
+  /* Typography */
+  --color-btn-text: var(--wr-button-color-text-primary);
+  --color-btn-text-secondary: var(--wr-button-color-text-secondary);
+  --text-btn-s: var(--wr-button-text-s);
+  --text-btn-m: var(--wr-button-text-m);
+  --text-btn-l: var(--wr-button-text-l);
+
+  /* Radius */
+  --radius-btn-s: var(--wr-button-radius-s);
+  --radius-btn-m: var(--wr-button-radius-m);
+  --radius-btn-l: var(--wr-button-radius-l);
+}

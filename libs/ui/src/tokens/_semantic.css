@@ -1,0 +1,404 @@
+/* 
+ * Color manipulation functions:
+ * - oklch(from var(--color) calc(l + 0.1) c h): Modifies the lightness of a color while preserving 
+ *   its chroma and hue. Used for consistent hover/active states.
+ * - --alpha(var(--color) / 50%): Adjusts transparency of a color. Tailwind's v4 utility 
+ *   that compiles to color-mix() for better browser support.
+ */
+
+:root {
+  --hover-modifier: 0.08;
+  --active-modifier: 0.1;
+  --disabled-modifier: 0.02;
+
+  /* Colors */
+  /* User interface main tone and interactive colors, usually used for main operation button, etc */
+  --wr-color-brand-primary: light-dark(
+    var(--color-blue-500),
+    var(--color-sky-300)
+  );
+  --wr-color-brand-primary-hover: oklch(
+    from var(--wr-color-brand-primary) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-primary-active: oklch(
+    from var(--wr-color-brand-primary) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-primary-disabled: oklch(
+    from var(--wr-color-brand-primary) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-primary-light: light-dark(
+    var(--color-blue-300),
+    var(--color-sky-200)
+  );
+  --wr-color-brand-primary-light-hover: oklch(
+    from var(--wr-color-brand-primary-light) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-primary-light-active: oklch(
+    from var(--wr-color-brand-primary-light) calc(l + var(--active-modifier)) c
+      h
+  );
+
+  /*Secondary colors. Less important than primary colors, but still serve as accents.*/
+  --wr-color-brand-secondary: light-dark(
+    var(--color-orange-500),
+    var(--color-amber-400)
+  );
+  --wr-color-brand-secondary-hover: oklch(
+    from var(--wr-color-brand-secondary) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-secondary-active: oklch(
+    from var(--wr-color-brand-secondary) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-secondary-disabled: oklch(
+    from var(--wr-color-brand-secondary) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-secondary-light: light-dark(
+    var(--color-orange-300),
+    var(--color-amber-200)
+  );
+  --wr-color-brand-secondary-light-hover: oklch(
+    from var(--wr-color-brand-secondary-light) calc(l + var(--hover-modifier)) c
+      h
+  );
+  --wr-color-brand-secondary-light-active: oklch(
+    from var(--wr-color-brand-secondary-light) calc(l + var(--active-modifier))
+      c h
+  );
+
+  /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
+  --wr-color-brand-tertiary: light-dark(
+    var(--color-pink-500),
+    var(--color-rose-400)
+  );
+  --wr-color-brand-tertiary-hover: oklch(
+    from var(--wr-color-brand-tertiary) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-tertiary-active: oklch(
+    from var(--wr-color-brand-tertiary) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-tertiary-disabled: oklch(
+    from var(--wr-color-brand-tertiary) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-tertiary-light: light-dark(
+    var(--color-pink-300),
+    var(--color-rose-200)
+  );
+  --wr-color-brand-tertiary-light-hover: oklch(
+    from var(--wr-color-brand-tertiary-light) calc(l + var(--hover-modifier)) c
+      h
+  );
+  --wr-color-brand-tertiary-light-active: oklch(
+    from var(--wr-color-brand-tertiary-light) calc(l + var(--active-modifier)) c
+      h
+  );
+
+  /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
+  --wr-color-brand-success: light-dark(
+    var(--color-emerald-500),
+    var(--color-emerald-100)
+  );
+  --wr-color-brand-success-hover: oklch(
+    from var(--wr-color-brand-success) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-success-active: oklch(
+    from var(--wr-color-brand-success) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-success-disabled: oklch(
+    from var(--wr-color-brand-success) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-success-light: light-dark(
+    var(--color-emerald-100),
+    var(--color-emerald-100)
+  );
+  --wr-color-brand-success-light-hover: oklch(
+    from var(--wr-color-brand-success-light) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-success-light-active: oklch(
+    from var(--wr-color-brand-success-light) calc(l + var(--active-modifier)) c
+      h
+  );
+
+  /* It is usually used to express objective and neutral information in the context with the above semantics */
+  --wr-color-brand-info: light-dark(
+    var(--color-teal-500),
+    var(--color-cyan-300)
+  );
+  --wr-color-brand-info-hover: oklch(
+    from var(--wr-color-brand-info) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-info-active: oklch(
+    from var(--wr-color-brand-info) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-info-disabled: oklch(
+    from var(--wr-color-brand-info) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-info-light: light-dark(
+    var(--color-teal-300),
+    var(--color-cyan-200)
+  );
+  --wr-color-brand-info-light-hover: oklch(
+    from var(--wr-color-brand-info-light) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-info-light-active: oklch(
+    from var(--wr-color-brand-info-light) calc(l + var(--active-modifier)) c h
+  );
+
+  /* It is usually used to express warning and unsafe state, and is used in scenarios with the above semantics */
+  --wr-color-brand-warning: light-dark(
+    var(--color-yellow-500),
+    var(--color-yellow-400)
+  );
+  --wr-color-brand-warning-hover: oklch(
+    from var(--wr-color-brand-warning) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-warning-active: oklch(
+    from var(--wr-color-brand-warning) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-warning-disabled: oklch(
+    from var(--wr-color-brand-warning) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-warning-light: light-dark(
+    var(--color-yellow-300),
+    var(--color-yellow-200)
+  );
+  --wr-color-brand-warning-light-hover: oklch(
+    from var(--wr-color-brand-warning-light) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-warning-light-active: oklch(
+    from var(--wr-color-brand-warning-light) calc(l + var(--active-modifier)) c
+      h
+  );
+
+  /* It is usually used to express the dangerous state, and is used in the scene with the above semantics */
+  --wr-color-brand-danger: light-dark(
+    var(--color-red-500),
+    var(--color-red-400)
+  );
+  --wr-color-brand-danger-hover: oklch(
+    from var(--wr-color-brand-danger) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-danger-active: oklch(
+    from var(--wr-color-brand-danger) calc(l + var(--active-modifier)) c h
+  );
+  --wr-color-brand-danger-disabled: oklch(
+    from var(--wr-color-brand-danger) l var(--disabled-modifier) h
+  );
+  --wr-color-brand-danger-light: light-dark(
+    var(--color-red-300),
+    var(--color-red-200)
+  );
+  --wr-color-brand-danger-light-hover: oklch(
+    from var(--wr-color-brand-danger-light) calc(l + var(--hover-modifier)) c h
+  );
+  --wr-color-brand-danger-light-active: oklch(
+    from var(--wr-color-brand-danger-light) calc(l + var(--active-modifier)) c h
+  );
+
+  /* Text colors and Icon colors*/
+  /* Four different levels of text / icon colors represent the most important, secondary, minor and minor contents in the product interface */
+  --wr-color-text-primary: light-dark(
+    var(--color-slate-800),
+    var(--color-slate-100)
+  );
+  --wr-color-text-primary-light: --alpha(var(--wr-color-text-primary) / 70%);
+  --wr-color-text-secondary: light-dark(
+    var(--color-gray-900),
+    var(--color-gray-200)
+  );
+  --wr-color-text-secondary-light: --alpha(
+    var(--wr-color-text-secondary) / 70%
+  );
+
+  /* Link colors */
+  /* Text used for hyperlinks in products */
+  --wr-color-link: var(--color-blue-500);
+  --wr-color-link-hover: oklch(from var(--wr-color-link) calc(l + 0.1) c h);
+  --wr-color-link-active: oklch(from var(--wr-color-link) calc(l + 0.15) c h);
+  --wr-color-link-visited: oklch(from var(--wr-color-link) calc(l + 0.2) c h);
+
+  /* Background colors */
+  /* All levels of background color in the application, including container, menu, navigation bar, etc. In dark mode, we usually use the background color to distinguish the front and back levels */
+  --wr-color-base: light-dark(
+    var(--color-white),
+    var(--color-gray-950)
+  ); /*bottom page*/
+  --wr-color-surface: oklch(
+    from var(--wr-color-base) calc(l - 0.05) c h
+  ); /* content that needs to be promoted on the page*/
+  --wr-color-overlay: oklch(
+    from var(--wr-color-base) calc(l - 0.1) c h
+  ); /* containers, modals*/
+  --wr-color-float: oklch(
+    from var(--wr-color-base) calc(l - 0.15) c h
+  ); /* toast */
+  --wr-color-highlight: oklch(
+    from var(--wr-color-base) calc(l - 0.2) c h
+  ); /* top layer */
+
+  /* Fill Color*/
+  /* For an element, if the background color of its container is not fixed, and the contrast between the filling color of the element and the top background color is small, use the filling color as the background color to ensure that the element will not "melt" into a certain level of background color, such as a form control.  */
+  --wr-fill-base: --alpha(var(--wr-color-text-primary) / 5%);
+  --wr-fill-hover: --alpha(var(--wr-color-text-primary) / 9%);
+  --wr-fill-active: --alpha(var(--wr-color-text-primary) / 13%);
+
+  /* Border, Outlines, Rings */
+  --wr-color-border-primary: var(--wr-color-brand-secondary);
+  --wr-color-border-secondary: var(--wr-color-brand-primary);
+
+  /*Disabled state - Disabled
+  It is used to fill all kinds of forbidden elements in the interface, such as background, text, stroke, fill, etc*/
+  --wr-disabled-bg: oklch(from var(--wr-color-base) l 0.02 h);
+  --wr-disabled-text: oklch(from var(--wr-color-text-primary) l 0.02 h);
+  --wr-disabled-border: oklch(from var(--wr-color-border-primary) l 0.02 h);
+  --wr-disabled-fill: --alpha(var(--wr-fill-base) / 80%);
+
+  /* Icon size */
+  --wr-icon-size-xs: 12px;
+  --wr-icon-size-s: 16px;
+  --wr-icon-size-m: 20px;
+  --wr-icon-size-l: 24px;
+  --wr-icon-size-xl: 32px;
+
+  /* Form components height */
+  --wr-control-height-s: 24px;
+  --wr-control-height-m: 32px;
+  --wr-control-height-l: 40px;
+
+  /* Focus ring */
+  --wr-color-focus-ring: light-dark(
+    var(--wr-color-brand-primary) / 0.25,
+    var(--wr-color-brand-primary) / 0.5
+  );
+  --wr-focus-ring-width: 3px;
+}
+
+/* === TAILWIND UTILITY VARIABLES === */
+@theme {
+  /* Colors */
+  --color-primary: var(--wr-color-brand-primary);
+  --color-primary-hover: var(--wr-color-brand-primary-hover);
+  --color-primary-active: var(--wr-color-brand-primary-active);
+  --color-primary-disabled: var(--wr-color-brand-primary-disabled);
+  --color-primary-light: var(--wr-color-brand-primary-light);
+  --color-primary-hover-light: var(--wr-color-brand-primary-hover-light);
+  --color-primary-active-light: var(--wr-color-brand-primary-active-light);
+
+  --color-secondary: var(--wr-color-brand-secondary);
+  --color-secondary-hover: var(--wr-color-brand-secondary-hover);
+  --color-secondary-active: var(--wr-color-brand-secondary-active);
+  --color-secondary-disabled: var(--wr-color-brand-secondary-disabled);
+  --color-secondary-light: var(--wr-color-brand-secondary-light);
+  --color-secondary-hover-light: var(--wr-color-brand-secondary-hover-light);
+  --color-secondary-active-light: var(--wr-color-brand-secondary-active-light);
+
+  --color-tertiary: var(--wr-color-brand-tertiary);
+  --color-tertiary-hover: var(--wr-color-brand-tertiary-hover);
+  --color-tertiary-active: var(--wr-color-brand-tertiary-active);
+  --color-tertiary-disabled: var(--wr-color-brand-tertiary-disabled);
+  --color-tertiary-light: var(--wr-color-brand-tertiary-light);
+  --color-tertiary-hover-light: var(--wr-color-brand-tertiary-hover-light);
+  --color-tertiary-active-light: var(--wr-color-brand-tertiary-active-light);
+
+  --color-success: var(--wr-color-brand-success);
+  --color-success-hover: var(--wr-color-brand-success-hover);
+  --color-success-active: var(--wr-color-brand-success-active);
+  --color-success-disabled: var(--wr-color-brand-success-disabled);
+  --color-success-light: var(--wr-color-brand-success-light);
+  --color-success-hover-light: var(--wr-color-brand-success-hover-light);
+  --color-success-active-light: var(--wr-color-brand-success-active-light);
+
+  --color-info: var(--wr-color-brand-info);
+  --color-info-hover: var(--wr-color-brand-info-hover);
+  --color-info-active: var(--wr-color-brand-info-active);
+  --color-info-disabled: var(--wr-color-brand-info-disabled);
+  --color-info-light: var(--wr-color-brand-info-light);
+  --color-info-hover-light: var(--wr-color-brand-info-hover-light);
+  --color-info-active-light: var(--wr-color-brand-info-active-light);
+
+  --color-warning: var(--wr-color-brand-warning);
+  --color-warning-hover: var(--wr-color-brand-warning-hover);
+  --color-warning-active: var(--wr-color-brand-warning-active);
+  --color-warning-disabled: var(--wr-color-brand-warning-disabled);
+  --color-warning-light: var(--wr-color-brand-warning-light);
+  --color-warning-hover-light: var(--wr-color-brand-warning-hover-light);
+  --color-warning-active-light: var(--wr-color-brand-warning-active-light);
+
+  --color-danger: var(--wr-color-brand-danger);
+  --color-danger-hover: var(--wr-color-brand-danger-hover);
+  --color-danger-active: var(--wr-color-brand-danger-active);
+  --color-danger-disabled: var(--wr-color-brand-danger-disabled);
+  --color-danger-light: var(--wr-color-brand-danger-light);
+  --color-danger-hover-light: var(--wr-color-brand-danger-hover-light);
+  --color-danger-active-light: var(--wr-color-brand-danger-active-light);
+
+  --color-disabled-bg: var(--wr-disabled-bg);
+  --color-disabled-text: var(--wr-disabled-text);
+  --color-disabled-border: var(--wr-disabled-border);
+  --color-disabled-fill: var(--wr-disabled-fill);
+
+  /* Borders */
+  --color-stroke-primary: var(--wr-color-border-primary);
+  --color-stroke-secondary: var(--wr-color-border-secondary);
+
+  /* Text colors and Icon colors*/
+
+  --color-fg-primary: var(--wr-color-text-primary);
+  --color-fg-primary-light: var(--wr-color-text-primary-light);
+  --color-fg-secondary: var(--wr-color-text-secondary);
+  --color-fg-secondary-light: var(--wr-color-text-secondary-light);
+
+  /* Links */
+  --color-link: var(--wr-color-link);
+  --color-link-hover: var(--wr-color-link-hover);
+  --color-link-active: var(--wr-color-link-active);
+  --color-link-visited: var(--wr-color-link-visited);
+
+  /* Background colors */
+  --color-base: var(--wr-color-base);
+  --color-surface: var(--wr-color-surface);
+  --color-overlay: var(--wr-color-overlay);
+  --color-float: var(--wr-color-float);
+  --color-highlight: var(--wr-color-highlight);
+
+  /* Fill colors */
+  --color-fill-base: var(--wr-fill-base);
+  --color-fill-hover: var(--wr-fill-hover);
+  --color-fill-active: var(--wr-fill-active);
+
+  /* Spacing */
+  --spacing: 0.25rem;
+
+  --height-control-s: var(--wr-control-height-s);
+  --height-control-m: var(--wr-control-height-m);
+  --height-control-l: var(--wr-control-height-l);
+
+  --height-icon-s: var(--wr-icon-size-s);
+  --height-icon-m: var(--wr-icon-size-m);
+  --height-icon-l: var(--wr-icon-size-l);
+  --height-icon-xl: var(--wr-icon-size-xl);
+
+  --color-focus-ring: var(--wr-color-focus-ring);
+}
+
+@layer utilities {
+  .icon-wrapper {
+    & > * {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+body {
+  background-color: var(--wr-color-base);
+  color: var(--wr-color-text-primary);
+  font-family: system-ui, sans-serif;
+}
+
+.reverse {
+  color-scheme: var(--reverse);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
