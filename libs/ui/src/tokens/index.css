@@ -53,3 +53,9 @@
 .dark .reverse {
   color-scheme: light;
 }
+
+body {
+  background-color: var(--wr-color-base);
+  color: var(--wr-color-text-primary);
+  font-family: system-ui, sans-serif;
+}

@@ -1,10 +1,9 @@
-/* 
- * Color manipulation functions:
- * - oklch(from var(--color) calc(l + 0.1) c h): Modifies the lightness of a color while preserving 
- *   its chroma and hue. Used for consistent hover/active states.
- * - --alpha(var(--color) / 50%): Adjusts transparency of a color. Tailwind's v4 utility 
- *   that compiles to color-mix() for better browser support.
- */
+/* Color manipulation functions:
+- oklch(from var(--color) calc(l + 0.1) c h): Modifies the lightness of a color while preserving
+  its chroma and hue. Used for consistent hover/active states.  
+- --alpha(var(--color) / 50%): Adjusts transparency of a color. Tailwind's v4 utility
+  that compiles to color-mix() for better browser support.
+*/
 
 :root {
   --hover-modifier: 0.08;
@@ -170,6 +169,7 @@
   );
 
   /* It is usually used to express the dangerous state, and is used in the scene with the above semantics */
+
   --wr-color-brand-danger: light-dark(
     var(--color-red-500),
     var(--color-red-400)
@@ -217,7 +217,9 @@
   --wr-color-link-visited: oklch(from var(--wr-color-link) calc(l + 0.2) c h);
 
   /* Background colors */
+
   /* All levels of background color in the application, including container, menu, navigation bar, etc. In dark mode, we usually use the background color to distinguish the front and back levels */
+
   --wr-color-base: light-dark(
     var(--color-white),
     var(--color-gray-950)
@@ -236,7 +238,7 @@
   ); /* top layer */
 
   /* Fill Color*/
-  /* For an element, if the background color of its container is not fixed, and the contrast between the filling color of the element and the top background color is small, use the filling color as the background color to ensure that the element will not "melt" into a certain level of background color, such as a form control.  */
+  /* For an element, if the background color of its container is not fixed, and the contrast between the filling color of the element and the top background color is small, use the filling color as the background color to ensure that the element will not "melt" into a certain level of background color, such as a form control. */
   --wr-fill-base: --alpha(var(--wr-color-text-primary) / 5%);
   --wr-fill-hover: --alpha(var(--wr-color-text-primary) / 9%);
   --wr-fill-active: --alpha(var(--wr-color-text-primary) / 13%);
@@ -250,6 +252,7 @@
   --wr-disabled-bg: oklch(from var(--wr-color-base) l 0.02 h);
   --wr-disabled-text: oklch(from var(--wr-color-text-primary) l 0.02 h);
   --wr-disabled-border: oklch(from var(--wr-color-border-primary) l 0.02 h);
+
   --wr-disabled-fill: --alpha(var(--wr-fill-base) / 80%);
 
   /* Icon size */
@@ -273,6 +276,7 @@
 }
 
 /* === TAILWIND UTILITY VARIABLES === */
+
 @theme {
   /* Colors */
   --color-primary: var(--wr-color-brand-primary);
@@ -341,7 +345,6 @@
   --color-stroke-secondary: var(--wr-color-border-secondary);
 
   /* Text colors and Icon colors*/
-
   --color-fg-primary: var(--wr-color-text-primary);
   --color-fg-primary-light: var(--wr-color-text-primary-light);
   --color-fg-secondary: var(--wr-color-text-secondary);
@@ -367,7 +370,6 @@
 
   /* Spacing */
   --spacing: 0.25rem;
-
   --height-control-s: var(--wr-control-height-s);
   --height-control-m: var(--wr-control-height-m);
   --height-control-l: var(--wr-control-height-l);
@@ -378,27 +380,4 @@
   --height-icon-xl: var(--wr-icon-size-xl);
 
   --color-focus-ring: var(--wr-color-focus-ring);
-}
-
-@layer utilities {
-  .icon-wrapper {
-    & > * {
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
-
-body {
-  background-color: var(--wr-color-base);
-  color: var(--wr-color-text-primary);
-  font-family: system-ui, sans-serif;
-}
-
-.reverse {
-  color-scheme: var(--reverse);
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
 }
