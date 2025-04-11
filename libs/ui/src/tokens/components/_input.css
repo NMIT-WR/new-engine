@@ -1,34 +1,28 @@
-:root {
-  /* Input Colors */
-  --wr-input-bg: var(--wr-fill-base);
-  --wr-input-bg-hover: var(--wr-fill-hover);
-  --wr-input-bg-focus: var(--wr-fill-active);
-  --wr-input-bg-disabled: var(--wr-disabled-fill);
+@theme {
+  --color-input-bg: var(--color-fill-base);
+  --color-input-bg-hover: var(--color-fill-hover);
+  --color-input-bg-focus: var(--color-fill-hover);
+  --color-input-bg-disabled: var(--color-disabled-fill);
 
-  --wr-input-border: var(--wr-color-border-primary);
-  --wr-input-border-hover: var(--wr-color-brand-primary);
-  --wr-input-border-focus: var(--wr-color-brand-primary);
-  --wr-input-border-disabled: var(--wr-disabled-border);
-  --wr-input-border-error: var(--wr-color-brand-danger);
-  --wr-input-border-success: var(--wr-color-brand-success);
+  --color-input-border: var(--color-primary);
+  --color-input-border-hover: var(--color-primary-hover);
+  --color-input-border-focus: var(--color-primary);
+  --color-input-border-disabled: var(--color-disabled-border);
+  --color-input-border-error: var(--color-danger);
+  --color-input-border-success: var(--color-success);
 
-  --wr-input-text: var(--wr-color-text-primary);
-  --wr-input-text-disabled: var(--wr-disabled-text);
+  --color-input-text: var(--color-fg-primary);
+  --color-input-text-disabled: var(--color-disabled-text);
 
   /* Sizes */
-  --wr-input-height-s: var(--wr-height-control-s);
-  --wr-input-height-m: var(--wr-height-control-m);
-  --wr-input-height-l: var(--wr-height-control-l);
+  --input-height-s: var(--height-control-s);
+  --input-height-m: var(--height-control-m);
+  --input-height-l: var(--height-control-l);
 
-  --wr-input-padding-s: var(--wr-space-xs) var(--wr-space-s);
-  --wr-input-padding-m: var(--wr-space-s) var(--wr-space-m);
-  --wr-input-padding-l: var(--wr-space-s) var(--wr-space-l);
+  --padding-input-s: var(--space-xs) var(--space-s);
+  --padding-input-m: var(--space-s) var(--space-m);
+  --padding-input-l: var(--space-s) var(--space-l);
 
   /* Borders */
-  --wr-input-radius: var(--wr-radius-m);
-}
-
-@theme {
-  --color-input-bg: var(--wr-input-bg);
-  --color-input-bg-hover: var(--wr-input-bg-hover);
+  --radius-input: var(--radius-m);
 }

@@ -4,15 +4,13 @@
 
 /* Primitive Tokens */
 @import "./_base.css";
-@import "./_colors.css";
 @import "./_spacing.css";
 @import "./_typography.css";
-
-/* Component Tokens - button, input...: colors, sizes etc. */
+/* Semantic Tokens - colors-primary etc.*/
 @import "./_semantic.css";
 
-/* Semantic Tokens - colors-primary etc. */
-@import "./components/index.css";
+/* Component Tokens - button, input...: colors, sizes etc. */
+@import "./components/_button.css";
 
 :root {
   color-scheme: light dark;

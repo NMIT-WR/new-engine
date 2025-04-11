@@ -1,3 +1,17 @@
+:root {
+  --text-btn-s: 14px;
+  --text-btn-m: 18px;
+  --text-btn-l: 20px;
+
+  --padding-btn-s: var(--spacing-2xs) var(--spacing-s);
+  --padding-btn-m: var(--spacing-2xs) var(--spacing-l);
+  --padding-btn-l: var(--spacing-s) var(--spacing-xl);
+
+  --height-btn-s: var(--height-control-s);
+  --height-btn-m: var(--height-control-m);
+  --height-btn-l: var(--height-control-l);
+}
+
 @theme {
   --color-btn-primary: var(--color-primary);
   --color-btn-primary-hover: var(--color-primary-hover);
@@ -39,22 +53,22 @@
   --color-btn-danger-light-hover: var(--color-danger-light-hover);
   --color-btn-danger-light-active: var(--color-danger-light-active);
 
-  /*Paddings*/
-  --padding-btn-s: var(--spacing-xs) var(--spacing-s);
-  --padding-btn-m: var(--spacing-xs) var(--spacing-m);
-  --padding-btn-l: var(--spacing-xl) var(--spacing-xl);
+  /*Spacing*/
+  --padding-btn-s: var(--padding-btn-s);
+  --padding-btn-m: var(--padding-btn-m);
+  --padding-btn-l: var(--padding-btn-l);
 
-  /* Sizes*/
-  --height-btn-s: var(--height-control-s);
-  --height-btn-m: var(--height-control-m);
-  --height-btn-l: var(--height-control-l);
+  /* Sizes */
+  --height-btn-s: var(--height-btn-s);
+  --height-btn-m: var(--height-btn-m);
+  --height-btn-l: var(--height-btn-l);
 
   /* Typography */
   --color-btn-text: var(--color-white);
   --color-btn-text-secondary: var(--color-fg-primary);
-  --text-btn-s: 14px;
-  --text-btn-m: 18px;
-  --text-btn-l: 30px;
+  --text-btn-s: var(--text-btn-s);
+  --text-btn-m: var(--text-btn-m);
+  --text-btn-l: var(--text-btn-l);
 
   /* Radius */
   --radius-btn-s: var(--radius-s);
