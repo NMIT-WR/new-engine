@@ -1,24 +1,12 @@
-:root {
-  /* Primitive Spacing Tokens - Utopia fluid spacing */
-  --wr-space-3xs: clamp(0.25rem, 0.23rem + 0.09svw, 0.31rem); /* 4px - 5px */
-  --wr-space-2xs: clamp(0.5rem, 0.46rem + 0.18svw, 0.63rem); /* 8px - 10px */
-  --wr-space-xs: clamp(0.75rem, 0.7rem + 0.27svw, 0.94rem); /* 12px - 15px */
-  --wr-space-s: clamp(1rem, 0.94rem + 0.36svw, 1.25rem); /* 16px - 20px */
-  --wr-space-m: clamp(1.5rem, 1.4rem + 0.54svw, 1.88rem); /* 24px - 30px */
-  --wr-space-l: clamp(2rem, 1.89rem + 0.71svw, 2.5rem); /* 32px - 40px */
-  --wr-space-xl: clamp(3rem, 2.83rem + 1.07svw, 3.75rem); /* 48px - 60px */
-  --wr-space-2xl: clamp(4rem, 3.77rem + 1.43svw, 5rem); /* 64px - 80px */
-  --wr-space-3xl: clamp(6rem, 5.66rem + 2.14svw, 7.5rem); /* 96px - 120px */
-}
-
 @theme {
-  --spacing-3xs: var(--wr-space-3xs);
-  --spacing-2xs: var(--wr-space-2xs);
-  --spacing-xs: var(--wr-space-xs);
-  --spacing-s: var(--wr-space-s);
-  --spacing-m: var(--wr-space-m);
-  --spacing-l: var(--wr-space-l);
-  --spacing-xl: var(--wr-space-xl);
-  --spacing-2xl: var(--wr-space-2xl);
-  --spacing-3xl: var(--wr-space-3xl);
+  /* Primitive Spacing Tokens - Utopia fluid spacing */
+  --spacing-3xs: clamp(0.25rem, 0.23rem + 0.09svw, 0.31rem); /* 4px - 5px */
+  --spacing-2xs: clamp(0.5rem, 0.46rem + 0.18svw, 0.63rem); /* 8px - 10px */
+  --spacing-xs: clamp(0.75rem, 0.7rem + 0.27svw, 0.94rem); /* 12px - 15px */
+  --spacing-s: clamp(1rem, 0.94rem + 0.36svw, 1.25rem); /* 16px - 20px */
+  --spacing-m: clamp(1.5rem, 1.4rem + 0.54svw, 1.88rem); /* 24px - 30px */
+  --spacing-l: clamp(2rem, 1.89rem + 0.71svw, 2.5rem); /* 32px - 40px */
+  --spacing-xl: clamp(3rem, 2.83rem + 1.07svw, 3.75rem); /* 48px - 60px */
+  --spacing-2xl: clamp(4rem, 3.77rem + 1.43svw, 5rem); /* 64px - 80px */
+  --spacing-3xl: clamp(6rem, 5.66rem + 2.14svw, 7.5rem); /* 96px - 120px */
 }

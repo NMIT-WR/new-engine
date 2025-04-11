@@ -8,10 +8,10 @@
 @import "./_spacing.css";
 @import "./_typography.css";
 
-/* Semantic Tokens - --wr-color-brand-primary etc. */
+/* Component Tokens - button, input...: colors, sizes etc. */
 @import "./_semantic.css";
 
-/* Component Tokens - --wr-button-bg-primary etc. */
+/* Semantic Tokens - colors-primary etc. */
 @import "./components/index.css";
 
 :root {
@@ -55,7 +55,8 @@
 }
 
 body {
-  background-color: var(--wr-color-base);
-  color: var(--wr-color-text-primary);
+  background-color: var(--color-base);
+  color: var(--color-fg-primary);
+
   font-family: system-ui, sans-serif;
 }
