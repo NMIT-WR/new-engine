@@ -14,7 +14,7 @@ const preview: Preview = {
   decorators: [
     withThemeByClassName({
       themes: {
-        auto: "", // Prázdný string pro výchozí stav bez třídy (systémové nastavení)
+        auto: "",
         light: "light",
         dark: "dark",
         reverse: "reverse",

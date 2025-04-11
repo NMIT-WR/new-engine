@@ -41,7 +41,7 @@
     "storybook": "^8.6.12",
     "storybook-addon-rslib": "^1.0.1",
     "storybook-react-rsbuild": "^1.0.1",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^3.1.0",
     "tailwindcss": "^4.1.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.8.3"
