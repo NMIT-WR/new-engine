@@ -1,4 +1,4 @@
-@theme {
+@theme static {
   --color-input-bg: var(--color-fill-base);
   --color-input-bg-hover: var(--color-fill-hover);
   --color-input-bg-focus: var(--color-fill-hover);

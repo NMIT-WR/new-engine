@@ -1,4 +1,4 @@
-@theme {
+@theme static {
   /* Primitive Typography Tokens - Utopia fluid typography */
   --text-xs: clamp(1rem, 0.94rem + 0.29svw, 1.25rem); /* 16px - 20px */
   --text-s: clamp(1.2rem, 1.09rem + 0.57svw, 1.56rem); /* 19.2px - 25px */

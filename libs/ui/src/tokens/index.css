@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" prefix(wr);
 @plugin 'tailwindcss-animate';
 @plugin "@iconify/tailwind4";
 
@@ -6,10 +6,9 @@
 @import "./_base.css";
 @import "./_spacing.css";
 @import "./_typography.css";
-/* Semantic Tokens - colors-primary etc.*/
+/* Semantic Tokens */
 @import "./_semantic.css";
-
-/* Component Tokens - button, input...: colors, sizes etc. */
+/* Component Tokens */
 @import "./components/_button.css";
 
 :root {
