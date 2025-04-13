@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@plugin 'tailwindcss-animate';
+@plugin "@iconify/tailwind4";
+
+/* Primitive Tokens */
+@import "./_base.css";
+@import "./_spacing.css";
+@import "./_typography.css";
+/* Semantic Tokens */
+@import "./_semantic.css";
+/* Component Tokens */
+@import "./components/_button.css";
+
+:root {
+  color-scheme: light dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.always-light {
+  color-scheme: light;
+}
+
+.always-dark {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  .reverse {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .reverse {
+    color-scheme: light;
+  }
+}
+
+.light .reverse {
+  color-scheme: dark;
+}
+
+.dark .reverse {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-fg-primary);
+
+  font-family: system-ui, sans-serif;
+}
+
+.sbdocs-preview {
+  background-color: var(--color-base) !important;
+  color: var(--color-fg-primary) !important;
+}

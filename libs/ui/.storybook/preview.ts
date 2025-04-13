@@ -1,7 +1,10 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from "@storybook/react";
+import { withThemeByClassName } from "@storybook/addon-themes";
+import "../src/tokens/index.css";
 
 const preview: Preview = {
   parameters: {
+    backgrounds: { disable: true },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -9,6 +12,17 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [
+    withThemeByClassName({
+      themes: {
+        auto: "",
+        light: "light",
+        dark: "dark",
+        reverse: "reverse",
+      },
+      defaultTheme: "auto",
+    }),
+  ],
 };
 
 export default preview;

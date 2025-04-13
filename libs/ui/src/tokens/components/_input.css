@@ -1,0 +1,28 @@
+@theme static {
+  --color-input-bg: var(--color-fill-base);
+  --color-input-bg-hover: var(--color-fill-hover);
+  --color-input-bg-focus: var(--color-fill-hover);
+  --color-input-bg-disabled: var(--color-disabled-fill);
+
+  --color-input-border: var(--color-primary);
+  --color-input-border-hover: var(--color-primary-hover);
+  --color-input-border-focus: var(--color-primary);
+  --color-input-border-disabled: var(--color-disabled-border);
+  --color-input-border-error: var(--color-danger);
+  --color-input-border-success: var(--color-success);
+
+  --color-input-text: var(--color-fg-primary);
+  --color-input-text-disabled: var(--color-disabled-text);
+
+  /* Sizes */
+  --input-height-s: var(--height-control-s);
+  --input-height-m: var(--height-control-m);
+  --input-height-l: var(--height-control-l);
+
+  --padding-input-s: var(--space-xs) var(--space-s);
+  --padding-input-m: var(--space-s) var(--space-m);
+  --padding-input-l: var(--space-s) var(--space-l);
+
+  /* Borders */
+  --radius-input: var(--radius-m);
+}
