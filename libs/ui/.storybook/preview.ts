@@ -15,10 +15,10 @@ const preview: Preview = {
   decorators: [
     withThemeByClassName({
       themes: {
-        auto: "bg-base",
-        light: "light bg-base",
-        dark: "dark bg-base",
-        reverse: "reverse bg-base",
+        auto: "",
+        light: "light",
+        dark: "dark",
+        reverse: "reverse",
       },
       defaultTheme: "auto",
     }),
