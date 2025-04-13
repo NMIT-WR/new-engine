@@ -4,6 +4,7 @@ import "../src/tokens/index.css";
 
 const preview: Preview = {
   parameters: {
+    backgrounds: { disable: true },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -14,10 +15,10 @@ const preview: Preview = {
   decorators: [
     withThemeByClassName({
       themes: {
-        auto: "",
-        light: "light",
-        dark: "dark",
-        reverse: "reverse",
+        auto: "bg-base",
+        light: "light bg-base",
+        dark: "dark bg-base",
+        reverse: "reverse bg-base",
       },
       defaultTheme: "auto",
     }),

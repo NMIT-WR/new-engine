@@ -27,20 +27,12 @@ Our design system is built with **Tailwind CSS v4** and React. It uses a **multi
     - They are defined in our central tokens files (e.g. `_colors.css`, `_spacing.css`).
 2. **Semantic Tokens:**
     - These give meaning to global tokens by mapping them to their design role.
-    - For example, `-wr-color-brand-primary` maps to a global blue value.
+    - For example, `-color-brand-primary` maps to a global blue value.
     - All components will use semantic tokens rather than raw values.
 3. **Component Tokens:**
     - These are defined for each component and act as a layer between the component and semantic tokens.
-    - For example, a Button component uses `-wr-button-bg` which is set to `var(--wr-color-brand-primary)`.
+    - For example, a Button component uses `-button-bg` which is set to `var(--color-brand-primary)`.
     - **Important:** All component tokens are defined centrally, not near the component code.
-
-### Naming Convention
-
-- **Prefix:** All tokens use the `-wr-` prefix.
-- **Examples:**
-    - Colors: `-wr-color-blue-500`, `-wr-color-brand-primary`
-    - Spacing: `-wr-space-s`, `-wr-space-m`, `-wr-space-l`
-    - Component (Button): `-wr-button-bg`, `-wr-button-text`
 
 ---
 
@@ -117,7 +109,7 @@ Our CSS token files use Tailwind’s `@theme` block to generate CSS variables, e
 ### Component Development
 
 - **Use Tokens Exclusively:**
-Always use component tokens (e.g. `-wr-button-bg`) in your styles. Do not use semantic tokens directly in component code.
+Always use component tokens (e.g. `-button-bg`) in your styles. Do not use semantic tokens directly in component code.
 - **Keep It Simple:**
 Build your atoms and molecules first. Organisms are domain-specific composites and should use the shared atoms/molecules.
 - **Export Only Where Appropriate:**
@@ -141,8 +133,8 @@ When overriding, create a file in the brand folder and map the semantic tokens t
 
 - **Design Tokens:**
     - Global Tokens: Defined in `tokens/_*.css` files.
-    - Semantic Tokens: Map global tokens to design roles (e.g. `-wr-color-brand-primary`).
-    - Component Tokens: Defined centrally; used in component styling (e.g. `-wr-button-bg`).
+    - Semantic Tokens: Map global tokens to design roles (e.g. `-color-brand-primary`).
+    - Component Tokens: Defined centrally; used in component styling (e.g. `-button-bg`).
 - **Folder Organization:**
     - **Atoms/Molecules:** `ui/atoms/` and `ui/molecules/`
     - **Organisms:** Domain-based (e.g. `ui/organisms/cart/`)

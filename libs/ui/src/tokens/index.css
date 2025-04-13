@@ -1,4 +1,4 @@
-@import "tailwindcss" prefix(wr);
+@import "tailwindcss";
 @plugin 'tailwindcss-animate';
 @plugin "@iconify/tailwind4";
 
@@ -56,4 +56,9 @@ body {
   color: var(--color-fg-primary);
 
   font-family: system-ui, sans-serif;
+}
+
+.sbdocs-preview {
+  background-color: var(--color-base) !important;
+  color: var(--color-fg-primary) !important;
 }
