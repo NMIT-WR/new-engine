@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { FC, ReactNode } from "react";
 
 type VariantGroupProps = {
   title: string;
@@ -6,7 +6,7 @@ type VariantGroupProps = {
   fullWidth?: boolean;
 };
 
-export const VariantGroup: React.FC<VariantGroupProps> = ({
+export const VariantGroup: FC<VariantGroupProps> = ({
   title,
   children,
   fullWidth,
@@ -23,7 +23,7 @@ export const VariantGroup: React.FC<VariantGroupProps> = ({
   </div>
 );
 
-export const VariantContainer: React.FC<{ children: ReactNode }> = ({
+export const VariantContainer: FC<{ children: ReactNode }> = ({
   children,
 }) => (
   <div className="wr:flex wr:flex-col wr:items-center wr:space-y-8">
