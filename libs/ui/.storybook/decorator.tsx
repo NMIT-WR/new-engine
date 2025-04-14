@@ -1,3 +1,4 @@
+import React from "react";
 import { FC, ReactNode } from "react";
 
 type VariantGroupProps = {
@@ -23,10 +24,6 @@ export const VariantGroup: FC<VariantGroupProps> = ({
   </div>
 );
 
-export const VariantContainer: FC<{ children: ReactNode }> = ({
-  children,
-}) => (
-  <div className="flex flex-col items-center space-y-8">
-    {children}
-  </div>
+export const VariantContainer: FC<{ children: ReactNode }> = ({ children }) => (
+  <div className="flex flex-col items-center space-y-8">{children}</div>
 );

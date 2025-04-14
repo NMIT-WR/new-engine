@@ -1,3 +1,5 @@
+@import "../_semantic.css";
+
 @theme static {
   --color-btn-primary: var(--color-primary);
   --color-btn-primary-hover: var(--color-primary-hover);
@@ -47,10 +49,7 @@
   --height-btn-m: var(--height-control-m);
   --height-btn-l: var(--height-control-l);
   /* Typography */
-  --color-fg-btn-primary: light-dark(
-    var(--color-white),
-    var(--color-gray-800)
-  );
+  --color-fg-btn-primary: light-dark(var(--color-white), var(--color-gray-800));
   --color-fg-btn-secondary: var(--color-fg-primary);
   --text-btn-s: 14px;
   --text-btn-m: 18px;

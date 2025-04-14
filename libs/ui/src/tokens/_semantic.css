@@ -15,10 +15,7 @@
 @theme static {
   /* Colors */
   /* User interface main tone and interactive colors, usually used for main operation button, etc */
-  --color-primary: light-dark(
-    var(--color-pink-500),
-    var(--color-cyan-500)
-  );
+  --color-primary: light-dark(var(--color-blue-500), var(--color-sky-300));
   --color-primary-hover: oklch(
     from var(--color-primary) calc(l + var(--hover-modifier)) c h
   );
@@ -65,10 +62,7 @@
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
-  --color-tertiary: light-dark(
-    var(--color-pink-500),
-    var(--color-rose-400)
-  );
+  --color-tertiary: light-dark(var(--color-pink-500), var(--color-rose-400));
   --color-tertiary-hover: oklch(
     from var(--color-tertiary) calc(l + var(--hover-modifier)) c h
   );
@@ -92,7 +86,7 @@
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
   --color-success: light-dark(
     var(--color-emerald-500),
-    var(--color-emerald-100)
+    var(--color-emerald-300)
   );
   --color-success-hover: oklch(
     from var(--color-success) calc(l + var(--hover-modifier)) c h
@@ -125,10 +119,7 @@
   --color-info-disabled: oklch(
     from var(--color-info) l var(--disabled-modifier) h
   );
-  --color-info-light: light-dark(
-    var(--color-teal-300),
-    var(--color-cyan-200)
-  );
+  --color-info-light: light-dark(var(--color-teal-300), var(--color-cyan-200));
   --color-info-light-hover: oklch(
     from var(--color-info-light) calc(l + var(--hover-modifier)) c h
   );
@@ -137,10 +128,7 @@
   );
 
   /* It is usually used to express warning and unsafe state, and is used in scenarios with the above semantics */
-  --color-warning: light-dark(
-    var(--color-yellow-500),
-    var(--color-yellow-400)
-  );
+  --color-warning: light-dark(var(--color-yellow-500), var(--color-yellow-400));
   --color-warning-hover: oklch(
     from var(--color-warning) calc(l + var(--hover-modifier)) c h
   );
@@ -172,10 +160,7 @@
   --color-danger-disabled: oklch(
     from var(--color-danger) l var(--disabled-modifier) h
   );
-  --color-danger-light: light-dark(
-    var(--color-red-300),
-    var(--color-red-200)
-  );
+  --color-danger-light: light-dark(var(--color-red-300), var(--color-red-200));
   --color-danger-light-hover: oklch(
     from var(--color-danger-light) calc(l + var(--hover-modifier)) c h
   );
@@ -196,13 +181,6 @@
   );
   --color-fg-secondary-light: --alpha(var(--color-fg-secondary) / 70%);
 
-  /* Link colors */
-  /* Text used for hyperlinks in products */
-  --color-link: var(--color-blue-500);
-  --color-link-hover: oklch(from var(--color-link) calc(l + 0.1) c h);
-  --color-link-active: oklch(from var(--color-link) calc(l + 0.15) c h);
-  --color-link-visited: oklch(from var(--color-link) calc(l + 0.2) c h);
-
   /* Background colors */
   /* All levels of background color in the application, including container, menu, navigation bar, etc. In dark mode, we usually use the background color to distinguish the front and back levels */
   --color-base: light-dark(
@@ -215,9 +193,7 @@
   --color-overlay: oklch(
     from var(--color-base) calc(l - 0.1) c h
   ); /* containers, modals*/
-  --color-float: oklch(
-    from var(--color-base) calc(l - 0.15) c h
-  ); /* toast */
+  --color-float: oklch(from var(--color-base) calc(l - 0.15) c h); /* toast */
   --color-highlight: oklch(
     from var(--color-base) calc(l - 0.2) c h
   ); /* top layer */
@@ -236,15 +212,15 @@
 
   /* Fill Color*/
   /* For an element, if the background color of its container is not fixed, and the contrast between the filling color of the element and the top background color is small, use the filling color as the background color to ensure that the element will not "melt" into a certain level of background color, such as a form control.  */
-  --color-fill-base: --alpha(var(--color-text-primary) / 5%);
-  --color-fill-hover: --alpha(var(--color-text-primary) / 9%);
-  --color-fill-active: --alpha(var(--color-text-primary) / 13%);
+  --color-fill-base: --alpha(var(--color-fg-primary) / 5%);
+  --color-fill-hover: --alpha(var(--color-fg-primary) / 9%);
+  --color-fill-active: --alpha(var(--color-fg-primary) / 13%);
 
   /*Disabled state - Disabled
   It is used to fill all kinds of forbidden elements in the interface, such as background, text, stroke, fill, etc*/
   --color-disabled-bg: oklch(from var(--color-base) l 0.02 h);
-  --color-disabled-text: oklch(from var(--color-text-primary) l 0.02 h);
-  --color-disabled-border: oklch(from var(--color-border-primary) l 0.02 h);
+  --color-disabled-text: oklch(from var(--color-fg-primary) l 0.02 h);
+  --color-disabled-border: oklch(from var(--color-stroke-primary) l 0.02 h);
   --color-disabled-fill: --alpha(var(--color-fill-base) / 80%);
 
   /* Spacing */

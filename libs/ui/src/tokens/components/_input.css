@@ -1,28 +1,96 @@
 @theme static {
+  /* Base colors */
   --color-input-bg: var(--color-fill-base);
   --color-input-bg-hover: var(--color-fill-hover);
-  --color-input-bg-focus: var(--color-fill-hover);
-  --color-input-bg-disabled: var(--color-disabled-fill);
+  --color-input-bg-focus: var(--color-fill-active);
+  --color-input-bg-disabled: var(--color-disabled-bg);
 
-  --color-input-border: var(--color-primary);
-  --color-input-border-hover: var(--color-primary-hover);
+  /* Border colors - základní stav */
+  --color-input-border: var(--color-stroke-primary);
+  --color-input-border-hover: var(--color-fg-primary);
   --color-input-border-focus: var(--color-primary);
   --color-input-border-disabled: var(--color-disabled-border);
-  --color-input-border-error: var(--color-danger);
-  --color-input-border-success: var(--color-success);
 
+  /* Border colors - error stav */
+  --color-input-border-danger: var(--color-danger);
+  --color-input-border-danger-hover: oklch(
+    from var(--color-danger) calc(l + var(--hover-modifier)) c h
+  );
+  --color-input-border-danger-focus: var(--color-danger);
+
+  /* Border colors - success stav */
+  --color-input-border-success: var(--color-success);
+  --color-input-border-success-hover: oklch(
+    from var(--color-success) calc(l + var(--hover-modifier)) c h
+  );
+  --color-input-border-success-focus: var(--color-success);
+
+  /* Text colors */
   --color-input-text: var(--color-fg-primary);
   --color-input-text-disabled: var(--color-disabled-text);
+  --color-input-placeholder: --alpha(var(--color-fg-primary) / 70%);
+  --color-input-placeholder-disabled: var(--color-disabled-text);
 
-  /* Sizes */
-  --input-height-s: var(--height-control-s);
-  --input-height-m: var(--height-control-m);
-  --input-height-l: var(--height-control-l);
+  /* Label colors */
+  --color-label-text: var(--color-fg-primary);
+  --color-label-disabled: var(--color-disabled-text);
+  --color-label-required: var(--color-danger);
+  --color-label-optional: var(--color-fg-secondary);
 
-  --padding-input-s: var(--space-xs) var(--space-s);
-  --padding-input-m: var(--space-s) var(--space-m);
-  --padding-input-l: var(--space-s) var(--space-l);
+  /* Error/Helper/Extra colors */
+  --color-error-text: var(--color-danger);
+  --color-helper-text: var(--color-fg-secondary);
 
-  /* Borders */
+  /* Ring colors */
+  --color-input-ring: --alpha(var(--color-primary) / 80%);
+  --color-input-ring-danger: --alpha(var(--color-danger) / 80%);
+  --color-input-ring-success: --alpha(var(--color-success) / 80%);
+
+  /* Dimensions */
+  --height-input-s: var(--height-control-s);
+  --height-input-m: var(--height-control-m);
+  --height-input-l: var(--height-control-l);
+
+  /* Padding */
+  --padding-input-s: var(--spacing-s) var(--spacing-s);
+  --padding-input-m: var(--spacing-m) var(--spacing-s);
+  --padding-input-l: var(--spacing-l) var(--spacing-m);
+
+  /* Typography */
+  --text-input-s: 14px;
+  --text-input-m: 16px;
+  --text-input-l: 18px;
+
+  /* Border */
+  --border-width-input: 1px;
   --radius-input: var(--radius-m);
+
+  /* Label */
+  --font-label: var(--font-medium);
+
+  --text-label-s: var(--text-input-s);
+  --text-label-m: var(--text-input-m);
+  --text-label-l: var(--text-input-l);
+
+  --spacing-label: var(--spacing-3xs);
+
+  /* Error */
+  --font-error: var(--font-medium);
+  --text-error: var(--color-danger);
+
+  --text-error-s: var(--text-input-s);
+  --text-error-m: var(--text-input-m);
+  --text-error-l: var(--text-input-l);
+
+  --spacing-error: var(--spacing-label);
+
+  /* Helper text / Extra text */
+  --font-helper: var(--font-normal);
+
+  --text-helper-s: var(--text-input-s);
+  --text-helper-m: var(--text-input-m);
+  --text-helper-l: var(--text-input-l);
+
+  --color-helper-text: var(--color-fg-secondary);
+  --spacing-helper: var(--spacing-2xs);
 }
