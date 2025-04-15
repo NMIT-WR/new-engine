@@ -11,6 +11,9 @@ install:
 install-fix-lock:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
     docker run -v .:/var/www pnpm-env pnpm install --fix-lockfile
+update:
+	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
+    docker run -v .:/var/www pnpm-env pnpm update --latest
 npkill:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
     docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
