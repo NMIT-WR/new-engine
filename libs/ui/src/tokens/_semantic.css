@@ -236,13 +236,13 @@
   --height-icon-xs: 12px;
   --height-icon-s: 16px;
   --height-icon-m: 20px;
-  --height-icon-l: 24px;
+  --height-icon-lg: 24px;
   --height-icon-xl: 32px;
 
   /* Form components height */
   --height-control-s: 24px;
   --height-control-m: 32px;
-  --height-control-l: 40px;
+  --height-control-lg: 40px;
 
   /* Focus ring */
   --color-ring-primary: light-dark(

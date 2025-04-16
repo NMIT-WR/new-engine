@@ -2,9 +2,9 @@
 
 @theme static {
     --text-icon-xs: 12px;
-    --text-icon-s: 16px;
-    --text-icon-m: 20px;
-    --text-icon-l: 24px;
+    --text-icon-sm: 16px;
+    --text-icon-md: 20px;
+    --text-icon-lg: 24px;
     --text-icon-xl: 32px;
 }
 

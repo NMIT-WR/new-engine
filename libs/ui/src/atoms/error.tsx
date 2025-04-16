@@ -1,19 +1,19 @@
 import React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
-const errorVariants = cva(
-  ["text-error-text", "mt-error", "flex items-start gap-1"],
+const errorVariants = tv(
   {
+    base: ["text-error-text",  "flex items-start gap-1"],
     variants: {
       showIcon: {
         true: "",
         false: "",
       },
       size: {
-        sm: "text-error-s",
-        md: "text-error-m",
-        lg: "text-error-l",
+        sm: "text-error-sm",
+        md: "text-error-md",
+        lg: "text-error-lg",
       },
     },
     defaultVariants: {

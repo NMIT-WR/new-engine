@@ -1,24 +1,27 @@
 import { type HTMLAttributes } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { type VariantProps } from "class-variance-authority";
+import {tv} from "tailwind-variants";
 import { cn } from "../utils";
 
-const extraTextVariants = cva(
-  ["text-helper-text", "text-helper-m", "mt-helper"],
+const extraTextVariants = tv(
   {
+    base: ["text-helper-text", "text-helper-md"],
     variants: {
-      position: {
-        bottom: "",
-        middle: "mb-helper",
+      variant: {
+        default: "",
+        error: "text-error-text",
+        success: "text-success-text",
+        warning: "text-warning-text",
       },
       size: {
-        sm: "text-helper-s",
-        md: "text-helper-m",
-        lg: "text-helper-l",
+        sm: "text-helper-sm",
+        md: "text-helper-md",
+        lg: "text-helper-lg",
       },
     },
     defaultVariants: {
-      position: "bottom",
       size: "md",
+      variant: "default",
     },
   }
 );
@@ -31,9 +34,9 @@ export interface ExtraTextProps
 
 export function ExtraText({
   children,
-  position,
   inputSize,
   size = inputSize,
+  variant = "default",
   ...props
 }: ExtraTextProps) {
   if (!children) return null;
@@ -42,9 +45,9 @@ export function ExtraText({
     <p
       className={cn(
         extraTextVariants({
-          position,
           size,
-          })
+          variant,
+        })
       )}
       {...props}
     >

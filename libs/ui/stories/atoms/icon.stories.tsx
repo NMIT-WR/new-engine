@@ -15,7 +15,7 @@ const meta: Meta<typeof Icon> = {
 export default meta;
 type Story = StoryObj<typeof Icon>;
 
-// Základní použití
+// Basic usage
 export const Basic: Story = {
   args: {
     icon: "icon-[mdi-light--alert]",
@@ -23,7 +23,7 @@ export const Basic: Story = {
   },
 };
 
-// Všechny velikosti
+// All sizes
 export const AllSizes: Story = {
   render: () => (
     <VariantContainer>
@@ -38,7 +38,7 @@ export const AllSizes: Story = {
   ),
 };
 
-// Všechny barvy
+// All colors
 export const AllColors: Story = {
   render: () => (
     <VariantContainer>
@@ -56,7 +56,7 @@ export const AllColors: Story = {
   ),
 };
 
-// Sémantické tokeny
+// Semantic tokens
 export const SemanticTokens: Story = {
   render: () => (
     <VariantContainer>
@@ -90,7 +90,7 @@ export const SemanticTokens: Story = {
   ),
 };
 
-// Komponentové tokeny
+// Component tokens
 export const ComponentTokens: Story = {
   render: () => (
     <VariantContainer>

@@ -1,15 +1,15 @@
 import {type LabelHTMLAttributes} from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
-const labelVariants = cva(
-  ["block", "text-label-text", "font-label", "mb-label"],
+const labelVariants = tv(
   {
+    base: ["block", "text-label-text", "font-label", "mb-label"],
     variants: {
       size: {
-        sm: "text-label-s",
-        md: "text-label-m",
-        lg: "text-label-l",
+        sm: "text-label-sm",
+        md: "text-label-md",
+        lg: "text-label-lg",
       },
       disabled: {
         true: "text-label-disabled",
@@ -30,7 +30,7 @@ export interface LabelProps
   inputSize?: "sm" | "md" | "lg";
 }
 
-export function InputLabel({
+export function Label({
   inputSize,
   size = inputSize,
   disabled,
@@ -56,4 +56,5 @@ export function InputLabel({
     </label>
   );
 }
+
 

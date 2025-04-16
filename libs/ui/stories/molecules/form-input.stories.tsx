@@ -22,19 +22,9 @@ const meta: Meta<typeof FormInput> = {
       control: "text",
       description: "Input label",
     },
-    extraText: {
+    helpText: {
       control: "text",
-      description: "Additional text with configurable position",
-    },
-    extraTextPosition: {
-      control: "radio",
-      options: ["middle", "bottom"],
-      description: "Position of the extra text relative to the input",
-    },
-    helperText: {
-      control: "text",
-      description: "Helper text or validation message (shown below the input)",
-    },
+      description: "Helper text, validation message, or other supporting text shown below the input",    },
     validateStatus: {
       control: "select",
       options: ["default", "error", "success", "warning"],
@@ -52,7 +42,7 @@ export const Basic: Story = {
   args: {
     label: "Username",
     placeholder: "Enter username",
-    helperText: "Will be visible on your profile",
+    helpText: "Will be visible on your profile",
   },
 };
 
@@ -79,7 +69,7 @@ export const AllVariants: Story = {
             label="Success state" 
             placeholder="johndoe" 
             validateStatus="success"
-            helperText="Username is available" 
+            helpText="Username is available"
           />
         </div>
         <div className="w-64">
@@ -88,7 +78,7 @@ export const AllVariants: Story = {
             label="Error state"
             placeholder="Enter email"
             validateStatus="error"
-            helperText="Invalid email format"
+            helpText="Invalid email format"
           />
         </div>
         <div className="w-64">
@@ -97,7 +87,7 @@ export const AllVariants: Story = {
             label="Warning state"
             placeholder="Enter password"
             validateStatus="warning"
-            helperText="Password is weak"
+            helpText="Password is weak"
           />
         </div>
       </VariantGroup>
@@ -108,7 +98,7 @@ export const AllVariants: Story = {
            id="success-input"
             label="With helper text"
             placeholder="Enter value"
-            helperText="This is helper text below input"
+            helpText="This is helper text below input"
           />
         </div>
         <div className="w-64">
@@ -117,7 +107,6 @@ export const AllVariants: Story = {
             label="Extra text (middle)"
             placeholder="Enter value"
             extraText="Text between label and input"
-            extraTextPosition="middle"
           />
         </div>
         <div className="w-64">
@@ -126,7 +115,7 @@ export const AllVariants: Story = {
             label="Extra text (bottom)"
             placeholder="Enter value"
             extraText="Text below input"
-            extraTextPosition="bottom"
+
           />
         </div>
       </VariantGroup>
@@ -199,7 +188,7 @@ function EmailValidationExample() {
   const [email, setEmail] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValid = /^[^\sm@]+@[^\sm@]+\.[^\sm@]+$/.test(email);
   const showError = touched && email && !isValid;
   const showSuccess = touched && email && isValid;
 
@@ -217,7 +206,7 @@ function EmailValidationExample() {
         onChange={(e) => setEmail(e.target.value)}
         onBlur={() => setTouched(true)}
         validateStatus={validateStatus}
-        helperText={showError ? "Please enter a valid email" : "Used for login and notifications"}
+        helpText={showError ? "Please enter a valid email" : "Used for login and notifications"}
       />
       <div className="mt-6 text-sm">
         <p>
@@ -244,7 +233,7 @@ export const RegistrationForm: Story = {
             type="email"
             placeholder="john@example.com"
             required
-            helperText="We'll send confirmation to this email"
+            helpText="We'll send confirmation to this email"
           />
 
           <FormInput
@@ -253,7 +242,6 @@ export const RegistrationForm: Story = {
             placeholder="johndoe"
             required
             extraText="Visible to other users"
-            extraTextPosition="middle"
           />
 
           <FormInput
@@ -262,7 +250,7 @@ export const RegistrationForm: Story = {
             type="password"
             placeholder="••••••••"
             required
-            helperText="Min 8 characters, 1 number, 1 special character"
+            helpText="Min 8 characters, 1 number, 1 special character"
           />
 
           <FormInput

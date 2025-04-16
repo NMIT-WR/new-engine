@@ -19,6 +19,9 @@
     "dev": "rslib build --watch",
     "storybook": "storybook dev"
   },
+  "dependencies": {
+    "tailwind-variants": "^1.0.0"
+  },
   "devDependencies": {
     "@iconify/json": "^2.2.326",
     "@iconify/tailwind4": "^1.0.6",

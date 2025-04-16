@@ -1,11 +1,12 @@
 import { type InputHTMLAttributes, type Ref } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
-const inputVariants = cva(
-  [
+const inputVariants = tv(
+   { 
+    base:[
     "block w-full",
-    "bg-input-bg",
+    "bg-input-bg",  
     "text-input-text",
     "placeholder:text-input-placeholder",
     "border border-input-border",
@@ -16,12 +17,11 @@ const inputVariants = cva(
     "focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-input-ring",
     "disabled:pointer-events-none",
   ],
-  {
     variants: {
       size: {
-        sm: "h-input-s p-input-s text-input-s",
-        md: "h-input-m p-input-m text-input-m",
-        lg: "h-input-l p-input-l text-input-l",
+        sm: "h-input-sm p-input-sm text-input-sm",
+        md: "h-input-md p-input-md text-input-md",
+        lg: "h-input-lg p-input-lg text-input-lg",
       },
       variant: {
         default: "",

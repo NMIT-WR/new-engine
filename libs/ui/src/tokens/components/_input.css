@@ -69,43 +69,43 @@
   --color-input-ring-warning: --alpha(var(--color-input-warning) / var(--state-ring-opacity));
   
   /* Dimensions & spacing - keeping your existing values */
-  --height-input-s: var(--height-control-s);
-  --height-input-m: var(--height-control-m);
-  --height-input-l: var(--height-control-l);
+  --height-input-sm: var(--height-control-sm);
+  --height-input-md: var(--height-control-md);
+  --height-input-lg: var(--height-control-lg);
   
-  --padding-input-s: var(--spacing-s) var(--spacing-s);
-  --padding-input-m: var(--spacing-m) var(--spacing-s);
-  --padding-input-l: var(--spacing-l) var(--spacing-m);
+  --padding-input-sm: var(--spacing-sm) var(--spacing-sm);
+  --padding-input-md: var(--spacing-md) var(--spacing-sm);
+  --padding-input-lg: var(--spacing-lg) var(--spacing-md);
 
   /* Typography */
-  --text-input-s: 14px;
-  --text-input-m: 16px;
-  --text-input-l: 18px;
+  --text-input-sm: 14px;
+  --text-input-md: 16px;
+  --text-input-lg: 18px;
 
   /* Border */
   --border-width-input: 1px;
-  --radius-input: var(--radius-m);
+  --radius-input: var(--radius-md);
 
   /* Label */
 
   --font-label: var(--font-bold);
-  --text-label-s: var(--text-input-s);
-  --text-label-m: var(--text-input-m);
-  --text-label-l: var(--text-input-l);
+  --text-label-sm: var(--text-input-sm);
+  --text-label-md: var(--text-input-md);
+  --text-label-lg: var(--text-input-lg);
   --spacing-label: var(--spacing-3xs);
 
   /* Error message */
   --font-error: var(--font-medium);
-  --text-error-s: var(--text-input-s);
-  --text-error-m: var(--text-input-m);
-  --text-error-l: var(--text-input-l);
+  --text-error-sm: var(--text-input-sm);
+  --text-error-md: var(--text-input-md);
+  --text-error-lg: var(--text-input-lg);
   --spacing-error: var(--spacing-label);
 
   /* Helper text / Extra text */
   --font-helper: var(--font-normal);
-  --text-helper-s: var(--text-input-s);
-  --text-helper-m: var(--text-input-m);
-  --text-helper-l: var(--text-input-l);
+  --text-helper-sm: var(--text-input-sm);
+  --text-helper-md: var(--text-input-md);
+  --text-helper-lg: var(--text-input-lg);
   --color-helper-text: var(--color-fg-secondary);
   --spacing-helper: var(--spacing-2xs);
 }

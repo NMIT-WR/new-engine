@@ -1,46 +1,43 @@
 import { type ReactNode } from "react";
-import { InputLabel } from "../atoms/input-label";
+import { Label } from "../atoms/label";
 import { Input, type InputProps } from "../atoms/input";
 import { Error } from "../atoms/error";
 import { ExtraText } from "../atoms/extra-text";
 
 type ValidateStatus = "default" | "error" | "success" | "warning";
 
-interface FormInputProps extends InputProps {
+interface FormInputRawProps extends InputProps {
   id: string;
   label: ReactNode;
   validateStatus?: ValidateStatus;
-  helperText?: ReactNode;
+  helpText?: ReactNode;
   extraText?: ReactNode;
-  extraTextPosition?: "middle" | "bottom";
 }
-
-export function FormInput({
+export function FormInputRaw({
   id,
   label,
   validateStatus = "default",
-  helperText,
+  helpText,
   extraText,
-  extraTextPosition = "bottom",
   size = "md", 
   required, 
   disabled,
   ...props
-}: FormInputProps) {
+}: FormInputRawProps) {
 
-  const helperTextId = helperText ? `${id}-helper` : undefined;
+  const helpTextId = helpText ? `${id}-helper` : undefined;
   const extraTextId = extraText ? `${id}-extra` : undefined;
   
   return (
     <div className="flex flex-col">
-      <InputLabel
+      <Label
         htmlFor={id}
         size={size}
         required={required}
         disabled={disabled}
       >
         {label}
-      </InputLabel>
+      </Label>
       <Input
         id={id} 
         size={size}
@@ -48,36 +45,30 @@ export function FormInput({
         variant={validateStatus}
         {...props} 
       />
-
       
-{extraText && extraTextPosition === "middle" && (
-        <ExtraText size={size} className="mt-1">
-          {extraText}
-        </ExtraText>
-      )}
-
-    {/* Status message */}
-    {helperText && (
+      {/* Status message */}
+      {helpText && (
         validateStatus === "error" ? (
           <Error
-            id={helperTextId}
-            size={size}
+            id={helpTextId}
+            inputSize={size}
             className="mt-1"
           >
-            {helperText}
+            {helpText}
           </Error>
         ) : (
           <ExtraText
-            id={helperTextId}
+            id={helpTextId}
             size={size}
             className="mt-1"
+            variant={validateStatus}
           >
-            {helperText}
+            {helpText}
           </ExtraText>
         )
       )}
 
-{extraText && extraTextPosition === "bottom" && !helperText && (
+      {extraText && (
         <ExtraText
           id={extraTextId}
           size={size}
@@ -88,4 +79,11 @@ export function FormInput({
       )}
     </div>
   );
-};
+}
+
+
+export function FormInput(props: FormInputRawProps) {
+ 
+    return <FormInputRaw {...props} />;
+  
+}

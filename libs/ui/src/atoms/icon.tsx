@@ -1,17 +1,16 @@
 import { type HTMLAttributes } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
-const iconVariants = cva(
-  // Base classes - inline-block ensures it behaves like an image, flex-shrink-0 is good in flex layouts
-  ["inline-block flex-shrink-0 align-middle leading-none"],
+const iconVariants = tv(
   {
+    base: ["inline-block flex-shrink-0 align-middle leading-none"],
     variants: {
       size: {
         xs: "text-icon-xs",
-        sm: "text-icon-s",
-        md: "text-icon-m",
-        lg: "text-icon-l",
+        sm: "text-icon-sm",
+        md: "text-icon-md",
+        lg: "text-icon-lg",
         xl: "text-icon-xl",
       },
       color: {
@@ -35,7 +34,7 @@ export interface IconProps
     VariantProps<typeof iconVariants> {
   icon: string;
 }
- function Icon({ icon, size, color, ...props }: IconProps) {
+ export function Icon({ icon, size, color, ...props }: IconProps) {
 
   return (
     <span
@@ -48,6 +47,3 @@ export interface IconProps
     />
   );
 }
-
-
-export { Icon, iconVariants }
