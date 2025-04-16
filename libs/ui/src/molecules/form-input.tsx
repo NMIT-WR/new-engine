@@ -61,7 +61,6 @@ export function FormInputRaw({
             id={helpTextId}
             size={size}
             className="mt-1"
-            variant={validateStatus}
           >
             {helpText}
           </ExtraText>

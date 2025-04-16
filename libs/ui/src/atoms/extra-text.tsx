@@ -7,12 +7,6 @@ const extraTextVariants = tv(
   {
     base: ["text-helper-text", "text-helper-md"],
     variants: {
-      variant: {
-        default: "",
-        error: "text-error-text",
-        success: "text-success-text",
-        warning: "text-warning-text",
-      },
       size: {
         sm: "text-helper-sm",
         md: "text-helper-md",
@@ -21,7 +15,6 @@ const extraTextVariants = tv(
     },
     defaultVariants: {
       size: "md",
-      variant: "default",
     },
   }
 );
@@ -36,7 +29,6 @@ export function ExtraText({
   children,
   inputSize,
   size = inputSize,
-  variant = "default",
   ...props
 }: ExtraTextProps) {
   if (!children) return null;
@@ -46,7 +38,6 @@ export function ExtraText({
       className={cn(
         extraTextVariants({
           size,
-          variant,
         })
       )}
       {...props}
