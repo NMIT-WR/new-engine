@@ -1,4 +1,4 @@
-import React from "react";
+import {type LabelHTMLAttributes} from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils";
 
@@ -7,63 +7,53 @@ const labelVariants = cva(
   {
     variants: {
       size: {
-        small: "text-label-s",
-        default: "text-label-m",
-        large: "text-label-l",
+        sm: "text-label-s",
+        md: "text-label-m",
+        lg: "text-label-l",
       },
       disabled: {
         true: "text-label-disabled",
       },
     },
     defaultVariants: {
-      size: "default",
+      size: "md",
       disabled: false,
     },
   }
 );
 
 export interface LabelProps
-  extends React.LabelHTMLAttributes<HTMLLabelElement>,
+  extends LabelHTMLAttributes<HTMLLabelElement>,
     VariantProps<typeof labelVariants> {
   required?: boolean;
-  optional?: boolean;
-  ref?: React.Ref<HTMLLabelElement>;
   htmlFor?: string;
-  inputSize?: "small" | "default" | "large";
+  inputSize?: "sm" | "md" | "lg";
 }
 
-function Label({
-  className,
+export function InputLabel({
   inputSize,
   size = inputSize,
   disabled,
   required,
-  optional,
   children,
-  ref,
   ...props
 }: LabelProps) {
   return (
     <label
-      ref={ref}
       className={cn(
         labelVariants({
           size,
           disabled,
-          className,
         })
       )}
       {...props}
     >
       {children}
-      {required && !optional && (
+      {required && (
         <span className="text-label-required ml-label">*</span>
       )}
-      {optional && (
-        <span className="text-label-optional ml-label">(optional)</span>
-      )}
+    
     </label>
   );
 }
 
-export { Label, labelVariants };

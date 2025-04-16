@@ -11,14 +11,14 @@ const errorVariants = cva(
         false: "",
       },
       size: {
-        small: "text-error-s",
-        default: "text-error-m",
-        large: "text-error-l",
+        sm: "text-error-s",
+        md: "text-error-m",
+        lg: "text-error-l",
       },
     },
     defaultVariants: {
       showIcon: true,
-      size: "default",
+      size: "md",
     },
   }
 );
@@ -28,7 +28,7 @@ export interface ErrorProps
     VariantProps<typeof errorVariants> {
   showIcon?: boolean;
   ref?: React.Ref<HTMLDivElement>;
-  inputSize?: "small" | "default" | "large";
+  inputSize?: "sm" | "md" | "lg";
 }
 
 function Error({

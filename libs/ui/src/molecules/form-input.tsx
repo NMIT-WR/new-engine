@@ -1,97 +1,91 @@
-// form-input.tsx (molekula)
-import React, { useId } from "react";
+import { type ReactNode } from "react";
+import { InputLabel } from "../atoms/input-label";
 import { Input, type InputProps } from "../atoms/input";
-import { Label } from "../atoms/input-label";
 import { Error } from "../atoms/error";
 import { ExtraText } from "../atoms/extra-text";
-import { cn } from "../utils";
 
-export interface FormInputProps extends Omit<InputProps, "error" | "success"> {
-  label?: React.ReactNode;
-  helpText?: React.ReactNode;
-  extraText?: React.ReactNode;
+type ValidateStatus = "default" | "error" | "success" | "warning";
+
+interface FormInputProps extends InputProps {
+  id: string;
+  label: ReactNode;
+  validateStatus?: ValidateStatus;
+  helperText?: ReactNode;
+  extraText?: ReactNode;
   extraTextPosition?: "middle" | "bottom";
-  error?: React.ReactNode;
-  success?: boolean;
-  size?: "small" | "default" | "large";
-  optional?: boolean;
-  required?: boolean;
-  id?: string;
-  className?: string;
 }
 
 export function FormInput({
-  id: externalId,
+  id,
   label,
-  helpText,
+  validateStatus = "default",
+  helperText,
   extraText,
   extraTextPosition = "bottom",
-  error,
-  success,
-  size,
-  optional,
-  required,
-  className,
-  ...inputProps
+  size = "md", 
+  required, 
+  disabled,
+  ...props
 }: FormInputProps) {
-  const fallbackId = useId();
-  const id = externalId || fallbackId;
-  const errorId = `${id}-error`;
-  const helpTextId = `${id}-help`;
 
-  const describedBy =
-    [error ? errorId : null, helpText ? helpTextId : null]
-      .filter(Boolean)
-      .join(" ") || undefined;
-
+  const helperTextId = helperText ? `${id}-helper` : undefined;
+  const extraTextId = extraText ? `${id}-extra` : undefined;
+  
   return (
-    <div
-      className={cn("form-field", className)}
-      data-error={!!error || undefined}
-      data-success={success || undefined}
-    >
-      {label && (
-        <Label
-          htmlFor={id}
-          inputSize={size}
-          required={required}
-          optional={optional}
-        >
-          {label}
-        </Label>
-      )}
+    <div className="flex flex-col">
+      <InputLabel
+        htmlFor={id}
+        size={size}
+        required={required}
+        disabled={disabled}
+      >
+        {label}
+      </InputLabel>
+      <Input
+        id={id} 
+        size={size}
+        required={required}
+        variant={validateStatus}
+        {...props} 
+      />
 
-      {extraText && extraTextPosition === "middle" && (
-        <ExtraText position="middle" inputSize={size}>
+      
+{extraText && extraTextPosition === "middle" && (
+        <ExtraText size={size} className="mt-1">
           {extraText}
         </ExtraText>
       )}
 
-      <Input
-        id={id}
-        error={!!error}
-        success={success}
-        size={size}
-        aria-describedby={describedBy}
-        aria-invalid={!!error}
-        {...inputProps}
-      />
+    {/* Status message */}
+    {helperText && (
+        validateStatus === "error" ? (
+          <Error
+            id={helperTextId}
+            size={size}
+            className="mt-1"
+          >
+            {helperText}
+          </Error>
+        ) : (
+          <ExtraText
+            id={helperTextId}
+            size={size}
+            className="mt-1"
+          >
+            {helperText}
+          </ExtraText>
+        )
+      )}
 
-      {helpText && (
-        <ExtraText id={helpTextId} inputSize={size}>
-          {helpText}
+{extraText && extraTextPosition === "bottom" && !helperText && (
+        <ExtraText
+          id={extraTextId}
+          size={size}
+          className="mt-1"
+        >
+          {extraText}
         </ExtraText>
-      )}
-
-      {error && (
-        <Error id={errorId} inputSize={size}>
-          {error}
-        </Error>
-      )}
-
-      {extraText && extraTextPosition === "bottom" && (
-        <ExtraText inputSize={size}>{extraText}</ExtraText>
       )}
     </div>
   );
-}
+};

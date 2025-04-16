@@ -1,0 +1,42 @@
+
+
+@theme static {
+    --text-icon-xs: 12px;
+    --text-icon-s: 16px;
+    --text-icon-m: 20px;
+    --text-icon-l: 24px;
+    --text-icon-xl: 32px;
+}
+
+@utility token-icon-error {
+    @apply icon-[mdi-light--alert-circle];
+}
+
+@utility token-icon-success {
+    @apply icon-[mdi-light--check-circle];
+}
+
+@utility token-icon-warning {
+    @apply icon-[mdi-light--alert];
+}
+
+@utility token-icon-info {
+    @apply icon-[mdi-light--information];
+}
+
+/* Component token icons - pro konkrétní komponenty */
+@utility token-icon-input-error {
+    @apply token-icon-error;
+}
+
+@utility token-icon-input-success {
+    @apply token-icon-success;
+}
+
+@utility token-icon-input-warning {
+    @apply token-icon-warning;
+}
+
+@utility token-icon-input-info {
+    @apply token-icon-info;
+}

@@ -1,11 +1,11 @@
-import React from "react";
+import { type InputHTMLAttributes, type Ref } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils";
 
 const inputVariants = cva(
   [
     "block w-full",
-    "bg-input",
+    "bg-input-bg",
     "text-input-text",
     "placeholder:text-input-placeholder",
     "border border-input-border",
@@ -19,24 +19,30 @@ const inputVariants = cva(
   {
     variants: {
       size: {
-        small: "h-input-s p-input-s text-input-s",
-        default: "h-input-m p-input-m text-input-m",
-        large: "h-input-l p-input-l text-input-l",
+        sm: "h-input-s p-input-s text-input-s",
+        md: "h-input-m p-input-m text-input-m",
+        lg: "h-input-l p-input-l text-input-l",
       },
       variant: {
         default: "",
-        danger: [
+        error: [
           "border-input-border-danger",
           "hover:border-input-border-danger-hover",
           "focus:border-input-border-danger-focus",
           "focus-visible:ring-input-ring-danger",
-          "placeholder:text-input-border-danger/60",
+          "placeholder:text-input-danger/60",
         ],
         success: [
           "border-input-border-success",
           "hover:border-input-border-success-hover",
           "focus:border-input-border-success-focus",
           "focus-visible:ring-input-ring-success",
+        ],
+        warning: [
+          "border-input-border-warning",
+          "hover:border-input-border-warning-hover",
+          "focus:border-input-border-warning-focus",
+          "focus-visible:ring-input-ring-warning",
         ],
       },
       disabled: {
@@ -49,7 +55,7 @@ const inputVariants = cva(
       },
     },
     defaultVariants: {
-      size: "default",
+      size: "md",
       variant: "default",
     },
   }
@@ -57,36 +63,29 @@ const inputVariants = cva(
 
 export interface InputProps
   extends Omit<
-      React.InputHTMLAttributes<HTMLInputElement>,
+      InputHTMLAttributes<HTMLInputElement>,
       "size" | "disabled"
     >,
     VariantProps<typeof inputVariants> {
-  error?: boolean;
-  success?: boolean;
-  ref?: React.Ref<HTMLInputElement>;
+  ref?: Ref<HTMLInputElement>;
   disabled?: boolean;
 }
 
-function Input({
-  className,
+export function Input({
   size,
   variant,
   disabled,
-  error,
-  success,
   ref,
   ...props
 }: InputProps) {
-  const computedVariant = error ? "danger" : success ? "success" : variant;
 
   return (
     <input
       className={cn(
         inputVariants({
           size,
-          variant: computedVariant,
+          variant,
           disabled,
-          className,
         })
       )}
       disabled={disabled}
@@ -96,4 +95,3 @@ function Input({
   );
 }
 
-export { Input, inputVariants };

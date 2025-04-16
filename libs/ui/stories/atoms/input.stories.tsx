@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "../../src/atoms/input";
-import { Label } from "../../src/atoms/input-label";
+import { InputLabel } from "../../src/atoms/input-label";
 import { Error } from "../../src/atoms/error";
 import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
 
@@ -54,13 +54,13 @@ export const AllVariants: Story = {
     <VariantContainer>
       <VariantGroup title="Sizes">
         <div className="w-64">
-          <Input size="small" placeholder="Small input" />
+          <Input size="sm" placeholder="Small input" />
         </div>
         <div className="w-64">
-          <Input size="default" placeholder="Default input" />
+          <Input size="md" placeholder="Default input" />
         </div>
         <div className="w-64">
-          <Input size="large" placeholder="Large input" />
+          <Input size="lg" placeholder="Large input" />
         </div>
       </VariantGroup>
 
@@ -69,10 +69,10 @@ export const AllVariants: Story = {
           <Input placeholder="Default state" />
         </div>
         <div className="w-64">
-          <Input error placeholder="Error state" />
+          <Input variant="error" placeholder="Error state" />
         </div>
         <div className="w-64">
-          <Input success placeholder="Success state" />
+          <Input variant="success" placeholder="Success state" />
         </div>
         <div className="w-64">
           <Input disabled placeholder="Disabled state" />
@@ -81,41 +81,35 @@ export const AllVariants: Story = {
 
       <VariantGroup title="With label" fullWidth>
         <div className="w-64">
-          <Label htmlFor="input-basic">Basic input</Label>
+          <InputLabel htmlFor="input-basic">Basic input</InputLabel>
           <Input id="input-basic" placeholder="Enter text..." />
         </div>
 
         <div className="w-64">
-          <Label htmlFor="input-required" required>
+          <InputLabel htmlFor="input-required" required>
             Required field
-          </Label>
+          </InputLabel>
           <Input id="input-required" placeholder="Enter value" />
         </div>
 
-        <div className="w-64">
-          <Label htmlFor="input-optional" optional>
-            Optional field
-          </Label>
-          <Input id="input-optional" placeholder="Optional value" />
-        </div>
       </VariantGroup>
 
       <VariantGroup title="With validation" fullWidth>
         <div className="w-64">
-          <Label htmlFor="input-error">Email</Label>
-          <Input id="input-error" error placeholder="john@example.com" />
+          <InputLabel htmlFor="input-error">Email</InputLabel>
+          <Input id="input-error" variant="error" placeholder="john@example.com" />
           <Error>Email is in invalid format</Error>
         </div>
 
         <div className="w-64">
-          <Label htmlFor="input-success">Username</Label>
-          <Input id="input-success" success placeholder="johndoe" />
+          <InputLabel htmlFor="input-success">Username</InputLabel>
+          <Input id="input-success" variant="success" placeholder="johndoe" />
         </div>
 
         <div className="w-64">
-          <Label htmlFor="input-disabled" disabled>
+          <InputLabel htmlFor="input-disabled" disabled>
             Disabled field
-          </Label>
+          </InputLabel>
           <Input id="input-disabled" disabled placeholder="Cannot edit" />
         </div>
       </VariantGroup>

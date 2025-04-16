@@ -1,4 +1,3 @@
-// form-input.stories.tsx
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FormInput } from "../../src/molecules/form-input";
@@ -9,12 +8,14 @@ const meta: Meta<typeof FormInput> = {
   component: FormInput,
   parameters: {
     layout: "centered",
-  },
+  },  
+  args:{
+  id: "storybook-form-input"},
   tags: ["autodocs"],
   argTypes: {
     size: {
       control: "select",
-      options: ["small", "default", "large"],
+      options: ["sm", "md", "lg"],
       description: "Size of the form input and all its child elements",
     },
     label: {
@@ -30,19 +31,17 @@ const meta: Meta<typeof FormInput> = {
       options: ["middle", "bottom"],
       description: "Position of the extra text relative to the input",
     },
-    helpText: {
+    helperText: {
       control: "text",
-      description: "Helper text (always displayed below the input)",
+      description: "Helper text or validation message (shown below the input)",
     },
-    error: {
-      control: "text",
-      description: "Error message (empty = no error)",
-    },
-    success: {
-      control: "boolean",
-      description: "Success validation state",
+    validateStatus: {
+      control: "select",
+      options: ["default", "error", "success", "warning"],
+      description: "Validation state that affects input style and helper text",
     },
   },
+
 };
 
 export default meta;
@@ -53,7 +52,7 @@ export const Basic: Story = {
   args: {
     label: "Username",
     placeholder: "Enter username",
-    helpText: "Will be visible on your profile",
+    helperText: "Will be visible on your profile",
   },
 };
 
@@ -63,33 +62,42 @@ export const AllVariants: Story = {
     <VariantContainer>
       <VariantGroup title="Requirement States">
         <div className="w-64">
-          <FormInput label="Default" placeholder="Enter value" />
+          <FormInput id="" label="Default" placeholder="Enter value" />
         </div>
         <div className="w-64">
-          <FormInput label="Required" placeholder="Enter value" required />
+          <FormInput id="" label="Required" placeholder="Enter value" required />
         </div>
         <div className="w-64">
-          <FormInput label="Optional" placeholder="Enter value" optional />
+          <FormInput id="" label="Optional" placeholder="Enter value" />
         </div>
       </VariantGroup>
 
       <VariantGroup title="Validation States">
         <div className="w-64">
-          <FormInput label="Success state" placeholder="johndoe" success />
-        </div>
-        <div className="w-64">
-          <FormInput
-            label="Error state"
-            placeholder="Enter email"
-            error="Invalid email format"
+          <FormInput 
+           id="success-input"
+            label="Success state" 
+            placeholder="johndoe" 
+            validateStatus="success"
+            helperText="Username is available" 
           />
         </div>
         <div className="w-64">
           <FormInput
-            label="Error with help"
+           id="success-input"
+            label="Error state"
+            placeholder="Enter email"
+            validateStatus="error"
+            helperText="Invalid email format"
+          />
+        </div>
+        <div className="w-64">
+          <FormInput
+           id="success-input"
+            label="Warning state"
             placeholder="Enter password"
-            error="Password too short"
-            helpText="At least 8 characters"
+            validateStatus="warning"
+            helperText="Password is weak"
           />
         </div>
       </VariantGroup>
@@ -97,13 +105,15 @@ export const AllVariants: Story = {
       <VariantGroup title="Supporting Text">
         <div className="w-64">
           <FormInput
-            label="With help text"
+           id="success-input"
+            label="With helper text"
             placeholder="Enter value"
-            helpText="This is helper text below input"
+            helperText="This is helper text below input"
           />
         </div>
         <div className="w-64">
           <FormInput
+           id="extra-text-input"
             label="Extra text (middle)"
             placeholder="Enter value"
             extraText="Text between label and input"
@@ -112,6 +122,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
+           id="extra-text-input"
             label="Extra text (bottom)"
             placeholder="Enter value"
             extraText="Text below input"
@@ -123,23 +134,26 @@ export const AllVariants: Story = {
       <VariantGroup title="Sizes">
         <div className="w-64">
           <FormInput
+             id="success-input"
             label="Small input"
             placeholder="Enter value"
-            size="small"
+            size="sm"
           />
         </div>
         <div className="w-64">
           <FormInput
+             id="success-input"
             label="Default input"
             placeholder="Enter value"
-            size="default"
+            size="md"
           />
         </div>
         <div className="w-64">
           <FormInput
+             id="success-input"
             label="Large input"
             placeholder="Enter value"
-            size="large"
+            size="lg"
           />
         </div>
       </VariantGroup>
@@ -147,6 +161,7 @@ export const AllVariants: Story = {
       <VariantGroup title="Special States">
         <div className="w-64">
           <FormInput
+             id="success-input"
             label="Disabled input"
             placeholder="Cannot edit"
             disabled
@@ -154,6 +169,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
+           id="success-input"
             label="Read-only input"
             placeholder="Read only"
             readOnly
@@ -162,6 +178,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
+           id="success-input"
             label="With default value"
             defaultValue="Prefilled value"
           />
@@ -186,19 +203,21 @@ function EmailValidationExample() {
   const showError = touched && email && !isValid;
   const showSuccess = touched && email && isValid;
 
+  // Determine validation status
+  const validateStatus = showError ? "error" : showSuccess ? "success" : "default";
+
   return (
     <div className="w-80">
       <h3 className="text-lg font-medium mb-4">Email Validation</h3>
-      <FormInput
+      <FormInput  id="success-input"
         label="Email"
         placeholder="your@email.com"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onBlur={() => setTouched(true)}
-        error={showError ? "Please enter a valid email" : undefined}
-        //success={showSuccess}
-        helpText="Used for login and notifications"
+        validateStatus={validateStatus}
+        helperText={showError ? "Please enter a valid email" : "Used for login and notifications"}
       />
       <div className="mt-6 text-sm">
         <p>
@@ -218,17 +237,18 @@ export const RegistrationForm: Story = {
         <h2 className="text-xl font-semibold mb-6">Account Registration</h2>
 
         <div className="space-y-4">
-          <FormInput label="Full name" placeholder="John Doe" required />
+          <FormInput  id="success-input" label="Full name" placeholder="John Doe" required />
 
-          <FormInput
+          <FormInput  id="success-input"
             label="Email"
             type="email"
             placeholder="john@example.com"
             required
-            helpText="We'll send confirmation to this email"
+            helperText="We'll send confirmation to this email"
           />
 
           <FormInput
+           id="success-input"
             label="Username"
             placeholder="johndoe"
             required
@@ -237,18 +257,19 @@ export const RegistrationForm: Story = {
           />
 
           <FormInput
+           id="success-input"
             label="Password"
             type="password"
             placeholder="••••••••"
             required
-            helpText="Min 8 characters, 1 number, 1 special character"
+            helperText="Min 8 characters, 1 number, 1 special character"
           />
 
           <FormInput
+           id="success-input"
             label="Phone number"
             type="tel"
             placeholder="+1 (XXX) XXX-XXXX"
-            optional
           />
         </div>
 

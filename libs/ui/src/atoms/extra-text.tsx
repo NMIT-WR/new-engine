@@ -1,4 +1,4 @@
-import React from "react";
+import { type HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils";
 
@@ -11,46 +11,40 @@ const extraTextVariants = cva(
         middle: "mb-helper",
       },
       size: {
-        small: "text-helper-s",
-        default: "text-helper-m",
-        large: "text-helper-l",
+        sm: "text-helper-s",
+        md: "text-helper-m",
+        lg: "text-helper-l",
       },
     },
     defaultVariants: {
       position: "bottom",
-      size: "default",
+      size: "md",
     },
   }
 );
 
 export interface ExtraTextProps
-  extends React.HTMLAttributes<HTMLParagraphElement>,
+  extends HTMLAttributes<HTMLParagraphElement>,
     VariantProps<typeof extraTextVariants> {
-  ref?: React.Ref<HTMLParagraphElement>;
-  // Synchronizace s inputem - stejně jako Label/Error - zlepšuje UX
-  inputSize?: "small" | "default" | "large";
+  inputSize?: "sm" | "md" | "lg";
 }
 
-function ExtraText({
-  className,
+export function ExtraText({
   children,
   position,
   inputSize,
-  size = inputSize, // Automaticky odvodit z inputSize, pokud není explicitně size
-  ref,
+  size = inputSize,
   ...props
 }: ExtraTextProps) {
   if (!children) return null;
 
   return (
     <p
-      ref={ref}
       className={cn(
         extraTextVariants({
           position,
           size,
-          className,
-        })
+          })
       )}
       {...props}
     >
@@ -58,5 +52,3 @@ function ExtraText({
     </p>
   );
 }
-
-export { ExtraText, extraTextVariants };

@@ -6,10 +6,16 @@
  *   that compiles to color-mix() for better browser support.
  */
 :root {
-  --hover-modifier: 0.08;
-  --active-modifier: 0.1;
-  --disabled-modifier: 0.02;
+  --state-hover: 0.08;      
+  --state-active: 0.1;      
+  --state-disabled: 0.02; 
+  --light-modifier: -0.1;
 }
+
+.dark {
+  --light-modifier: 0.1;
+}
+
 
 /* === TAILWIND UTILITY VARIABLES === */
 @theme static {
@@ -17,23 +23,23 @@
   /* User interface main tone and interactive colors, usually used for main operation button, etc */
   --color-primary: light-dark(var(--color-blue-500), var(--color-sky-300));
   --color-primary-hover: oklch(
-    from var(--color-primary) calc(l + var(--hover-modifier)) c h
+    from var(--color-primary) calc(l + var(--state-hover)) c h
   );
   --color-primary-active: oklch(
-    from var(--color-primary) calc(l + var(--active-modifier)) c h
+    from var(--color-primary) calc(l + var(--state-active)) c h
   );
   --color-primary-disabled: oklch(
-    from var(--color-primary) l var(--disabled-modifier) h
+    from var(--color-primary) l var(--state-disabled) h
   );
   --color-primary-light: light-dark(
     var(--color-blue-300),
     var(--color-sky-200)
   );
   --color-primary-light-hover: oklch(
-    from var(--color-primary-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-primary-light) calc(l + var(--state-hover)) c h
   );
   --color-primary-light-active: oklch(
-    from var(--color-primary-light) calc(l + var(--active-modifier)) c h
+    from var(--color-primary-light) calc(l + var(--state-active)) c h
   );
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
@@ -42,45 +48,45 @@
     var(--color-amber-400)
   );
   --color-secondary-hover: oklch(
-    from var(--color-secondary) calc(l + var(--hover-modifier)) c h
+    from var(--color-secondary) calc(l + var(--state-hover)) c h
   );
   --color-secondary-active: oklch(
-    from var(--color-secondary) calc(l + var(--active-modifier)) c h
+    from var(--color-secondary) calc(l + var(--state-active)) c h
   );
   --color-secondary-disabled: oklch(
-    from var(--color-secondary) l var(--disabled-modifier) h
+    from var(--color-secondary) l var(--state-disabled) h
   );
   --color-secondary-light: light-dark(
     var(--color-orange-300),
     var(--color-amber-200)
   );
   --color-secondary-light-hover: oklch(
-    from var(--color-secondary-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-secondary-light) calc(l + var(--state-hover)) c h
   );
   --color-secondary-light-active: oklch(
-    from var(--color-secondary-light) calc(l + var(--active-modifier)) c h
+    from var(--color-secondary-light) calc(l + var(--state-active)) c h
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
   --color-tertiary: light-dark(var(--color-pink-500), var(--color-rose-400));
   --color-tertiary-hover: oklch(
-    from var(--color-tertiary) calc(l + var(--hover-modifier)) c h
+    from var(--color-tertiary) calc(l + var(--state-hover)) c h
   );
   --color-tertiary-active: oklch(
-    from var(--color-tertiary) calc(l + var(--active-modifier)) c h
+    from var(--color-tertiary) calc(l + var(--state-active)) c h
   );
   --color-tertiary-disabled: oklch(
-    from var(--color-tertiary) l var(--disabled-modifier) h
+    from var(--color-tertiary) l var(--state-disabled) h
   );
   --color-tertiary-light: light-dark(
     var(--color-pink-300),
     var(--color-rose-200)
   );
   --color-tertiary-light-hover: oklch(
-    from var(--color-tertiary-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-tertiary-light) calc(l + var(--state-hover)) c h
   );
   --color-tertiary-light-active: oklch(
-    from var(--color-tertiary-light) calc(l + var(--active-modifier)) c h
+    from var(--color-tertiary-light) calc(l + var(--state-active)) c h
   );
 
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
@@ -89,83 +95,83 @@
     var(--color-emerald-300)
   );
   --color-success-hover: oklch(
-    from var(--color-success) calc(l + var(--hover-modifier)) c h
+    from var(--color-success) calc(l + var(--state-hover)) c h
   );
   --color-success-active: oklch(
-    from var(--color-success) calc(l + var(--active-modifier)) c h
+    from var(--color-success) calc(l + var(--state-active)) c h
   );
   --color-success-disabled: oklch(
-    from var(--color-success) l var(--disabled-modifier) h
+    from var(--color-success) l var(--state-disabled) h
   );
   --color-success-light: light-dark(
     var(--color-emerald-100),
     var(--color-emerald-100)
   );
   --color-success-light-hover: oklch(
-    from var(--color-success-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-success-light) calc(l + var(--state-hover)) c h
   );
   --color-success-light-active: oklch(
-    from var(--color-success-light) calc(l + var(--active-modifier)) c h
+    from var(--color-success-light) calc(l + var(--state-active)) c h
   );
 
   /* It is usually used to express objective and neutral information in the context with the above semantics */
   --color-info: light-dark(var(--color-teal-500), var(--color-cyan-300));
   --color-info-hover: oklch(
-    from var(--color-info) calc(l + var(--hover-modifier)) c h
+    from var(--color-info) calc(l + var(--state-hover)) c h
   );
   --color-info-active: oklch(
-    from var(--color-info) calc(l + var(--active-modifier)) c h
+    from var(--color-info) calc(l + var(--state-active)) c h
   );
   --color-info-disabled: oklch(
-    from var(--color-info) l var(--disabled-modifier) h
+    from var(--color-info) l var(--state-disabled) h
   );
   --color-info-light: light-dark(var(--color-teal-300), var(--color-cyan-200));
   --color-info-light-hover: oklch(
-    from var(--color-info-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-info-light) calc(l + var(--state-hover)) c h
   );
   --color-info-light-active: oklch(
-    from var(--color-info-light) calc(l + var(--active-modifier)) c h
+    from var(--color-info-light) calc(l + var(--state-active)) c h
   );
 
   /* It is usually used to express warning and unsafe state, and is used in scenarios with the above semantics */
   --color-warning: light-dark(var(--color-yellow-500), var(--color-yellow-400));
   --color-warning-hover: oklch(
-    from var(--color-warning) calc(l + var(--hover-modifier)) c h
+    from var(--color-warning) calc(l + var(--state-hover)) c h
   );
   --color-warning-active: oklch(
-    from var(--color-warning) calc(l + var(--active-modifier)) c h
+    from var(--color-warning) calc(l + var(--state-active)) c h
   );
   --color-warning-disabled: oklch(
-    from var(--color-warning) l var(--disabled-modifier) h
+    from var(--color-warning) l var(--state-disabled) h
   );
   --color-warning-light: light-dark(
     var(--color-yellow-300),
     var(--color-yellow-200)
   );
   --color-warning-light-hover: oklch(
-    from var(--color-warning-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-warning-light) calc(l + var(--state-hover)) c h
   );
   --color-warning-light-active: oklch(
-    from var(--color-warning-light) calc(l + var(--active-modifier)) c h
+    from var(--color-warning-light) calc(l + var(--state-active)) c h
   );
 
   /* It is usually used to express the dangerous state, and is used in the scene with the above semantics */
   --color-danger: light-dark(var(--color-red-500), var(--color-red-400));
   --color-danger-hover: oklch(
-    from var(--color-danger) calc(l + var(--hover-modifier)) c h
+    from var(--color-danger) calc(l + var(--state-hover)) c h
   );
   --color-danger-active: oklch(
-    from var(--color-danger) calc(l + var(--active-modifier)) c h
+    from var(--color-danger) calc(l + var(--state-active)) c h
   );
   --color-danger-disabled: oklch(
-    from var(--color-danger) l var(--disabled-modifier) h
+    from var(--color-danger) l var(--state-disabled) h
   );
   --color-danger-light: light-dark(var(--color-red-300), var(--color-red-200));
   --color-danger-light-hover: oklch(
-    from var(--color-danger-light) calc(l + var(--hover-modifier)) c h
+    from var(--color-danger-light) calc(l + var(--state-hover)) c h
   );
   --color-danger-light-active: oklch(
-    from var(--color-danger-light) calc(l + var(--active-modifier)) c h
+    from var(--color-danger-light) calc(l + var(--state-active)) c h
   );
 
   /* Text colors and Icon colors*/
@@ -218,7 +224,7 @@
 
   /*Disabled state - Disabled
   It is used to fill all kinds of forbidden elements in the interface, such as background, text, stroke, fill, etc*/
-  --color-disabled-bg: oklch(from var(--color-base) l 0.02 h);
+  --color-disabled-bg: oklch(from var(--color-base) calc(l + var(--light-modifier)) 0 h);
   --color-disabled-text: oklch(from var(--color-fg-primary) l 0.02 h);
   --color-disabled-border: oklch(from var(--color-stroke-primary) l 0.02 h);
   --color-disabled-fill: --alpha(var(--color-fill-base) / 80%);
