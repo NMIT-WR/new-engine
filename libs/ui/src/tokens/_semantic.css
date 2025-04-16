@@ -44,8 +44,8 @@
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
   --color-secondary: light-dark(
-    var(--color-orange-500),
-    var(--color-amber-400)
+    var(--color-emerald-500),
+    var(--color-teal-400)
   );
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
@@ -57,8 +57,8 @@
     from var(--color-secondary) l var(--state-disabled) h
   );
   --color-secondary-light: light-dark(
-    var(--color-orange-300),
-    var(--color-amber-200)
+    var(--color-emerald-300),
+    var(--color-teal-200)
   );
   --color-secondary-light-hover: oklch(
     from var(--color-secondary-light) calc(l + var(--state-hover)) c h
@@ -68,7 +68,7 @@
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
-  --color-tertiary: light-dark(var(--color-pink-500), var(--color-rose-400));
+  --color-tertiary: light-dark(var(--color-pink-500), var(--color-violet-400));
   --color-tertiary-hover: oklch(
     from var(--color-tertiary) calc(l + var(--state-hover)) c h
   );
@@ -80,7 +80,7 @@
   );
   --color-tertiary-light: light-dark(
     var(--color-pink-300),
-    var(--color-rose-200)
+    var(--color-violet-200)
   );
   --color-tertiary-light-hover: oklch(
     from var(--color-tertiary-light) calc(l + var(--state-hover)) c h

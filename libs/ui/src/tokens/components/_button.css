@@ -1,66 +1,130 @@
 @import "../_semantic.css";
 
 @theme static {
+  --alpha-ring: 80%;
+  --borderless-hover: 40%;
+  --borderless-active: 60%;
+  --outlined-hover: 20%;
+  --outlined-active: 40%;
+  /* === BASE COLOR MAPPING === */
+  /* Single source of truth */
   --color-btn-primary: var(--color-primary);
-  --color-btn-primary-hover: var(--color-primary-hover);
-  --color-btn-primary-active: var(--color-primary-active);
-  --color-btn-primary-disabled: var(--color-primary-disabled);
-  --color-btn-primary-light: var(--color-primary-light);
-  --color-btn-primary-light-hover: var(--color-primary-light-hover);
-  --color-btn-primary-light-active: var(--color-primary-light-active);
-
   --color-btn-secondary: var(--color-secondary);
-  --color-btn-secondary-hover: var(--color-secondary-hover);
-  --color-btn-secondary-active: var(--color-secondary-active);
-  --color-btn-secondary-disabled: var(--color-secondary-disabled);
-  --color-btn-secondary-light: var(--color-secondary-light);
-  --color-btn-secondary-light-hover: var(--color-secondary-light-hover);
-  --color-btn-secondary-light-active: var(--color-secondary-light-active);
-
   --color-btn-tertiary: var(--color-tertiary);
-  --color-btn-tertiary-hover: var(--color-tertiary-hover);
-  --color-btn-tertiary-active: var(--color-tertiary-active);
-  --color-btn-tertiary-disabled: var(--color-tertiary-disabled);
-  --color-btn-tertiary-light: var(--color-tertiary-light);
-  --color-btn-tertiary-light-hover: var(--color-tertiary-light-hover);
-  --color-btn-tertiary-light-active: var(--color-tertiary-light-active);
-
   --color-btn-warning: var(--color-warning);
-  --color-btn-warning-hover: var(--color-warning-hover);
-  --color-btn-warning-active: var(--color-warning-active);
-  --color-btn-warning-disabled: var(--color-warning-disabled);
-  --color-btn-warning-light: var(--color-warning-light);
-  --color-btn-warning-light-hover: var(--color-warning-light-hover);
-  --color-btn-warning-light-active: var(--color-warning-light-active);
-
   --color-btn-danger: var(--color-danger);
-  --color-btn-danger-hover: var(--color-danger-hover);
-  --color-btn-danger-active: var(--color-danger-active);
-  --color-btn-danger-disabled: var(--color-danger-disabled);
+
+   /* === STATE VARIATIONS === */
+  /* Primary */
+  --color-btn-primary-hover: oklch(from var(--color-btn-primary) calc(l + var(--state-hover)) c h);
+  --color-btn-primary-active: oklch(from var(--color-btn-primary) calc(l + var(--state-active)) c h);
+  --color-btn-primary-disabled: oklch(from var(--color-btn-primary) l var(--state-disabled) h);
+
+  /* Secondary */
+  --color-btn-secondary-hover: oklch(from var(--color-btn-secondary) calc(l + var(--state-hover)) c h);
+  --color-btn-secondary-active: oklch(from var(--color-btn-secondary) calc(l + var(--state-active)) c h);
+  --color-btn-secondary-disabled: oklch(from var(--color-btn-secondary) l var(--state-disabled) h);
+    
+  /* Tertiary */
+  --color-btn-tertiary-hover: oklch(from var(--color-btn-tertiary) calc(l + var(--state-hover)) c h);
+  --color-btn-tertiary-active: oklch(from var(--color-btn-tertiary) calc(l + var(--state-active)) c h);
+  --color-btn-tertiary-disabled: oklch(from var(--color-btn-tertiary) l var(--state-disabled) h);
+  
+  /* Warning */
+  --color-btn-warning-hover: oklch(from var(--color-btn-warning) calc(l + var(--state-hover)) c h);
+  --color-btn-warning-active: oklch(from var(--color-btn-warning) calc(l + var(--state-active)) c h);
+  --color-btn-warning-disabled: oklch(from var(--color-btn-warning) l var(--state-disabled) h);
+  
+  /* Danger */
+  --color-btn-danger-hover: oklch(from var(--color-btn-danger) calc(l + var(--state-hover)) c h);
+  --color-btn-danger-active: oklch(from var(--color-btn-danger) calc(l + var(--state-active)) c h);
+  --color-btn-danger-disabled: oklch(from var(--color-btn-danger) l var(--state-disabled) h);
+
+    
+  /* === LIGHT VARIANTS === */
+  --color-btn-primary-light: var(--color-primary-light);
+  --color-btn-secondary-light: var(--color-secondary-light);
+  --color-btn-tertiary-light: var(--color-tertiary-light);
+  --color-btn-warning-light: var(--color-warning-light);
   --color-btn-danger-light: var(--color-danger-light);
-  --color-btn-danger-light-hover: var(--color-danger-light-hover);
-  --color-btn-danger-light-active: var(--color-danger-light-active);
+
+  --color-btn-primary-light-hover: oklch(from var(--color-btn-primary-light) calc(l + var(--state-hover)) c h);
+  --color-btn-primary-light-active: oklch(from var(--color-btn-primary-light) calc(l + var(--state-active)) c h);
+  
+  --color-btn-secondary-light-hover: oklch(from var(--color-btn-secondary-light) calc(l + var(--state-hover)) c h);
+  --color-btn-secondary-light-active: oklch(from var(--color-btn-secondary-light) calc(l + var(--state-active)) c h);
+  
+  --color-btn-tertiary-light-hover: oklch(from var(--color-btn-tertiary-light) calc(l + var(--state-hover)) c h);
+  --color-btn-tertiary-light-active: oklch(from var(--color-btn-tertiary-light) calc(l + var(--state-active)) c h);
+  
+  --color-btn-warning-light-hover: oklch(from var(--color-btn-warning-light) calc(l + var(--state-hover)) c h);
+  --color-btn-warning-light-active: oklch(from var(--color-btn-warning-light) calc(l + var(--state-active)) c h);
+  
+  --color-btn-danger-light-hover: oklch(from var(--color-btn-danger-light) calc(l + var(--state-hover)) c h);
+  --color-btn-danger-light-active: oklch(from var(--color-btn-danger-light) calc(l + var(--state-active)) c h);
+
+  /* === BORDERLESS THEME === */
+  --color-btn-borderless-hover: var(--color-fill-hover);
+  --color-btn-borderless-active: var(--color-fill-active);
+
+
+  /* === OUTLINE THEME === */
+  --color-btn-outlined-primary-hover: --alpha(var(--color-btn-primary) / var(--outlined-hover));
+  --color-btn-outlined-secondary-hover: --alpha(var(--color-btn-secondary) / var(--outlined-hover));
+  --color-btn-outlined-tertiary-hover: --alpha(var(--color-btn-tertiary) / var(--outlined-hover));
+  --color-btn-outlined-warning-hover: --alpha(var(--color-btn-warning) / var(--outlined-hover));
+  --color-btn-outlined-danger-hover: --alpha(var(--color-btn-danger) / var(--outlined-hover));
+
+  /* === TEXT COLORS === */
+  --color-btn-text-light: var(--color-fg-btn-secondary);
+  --color-btn-text-solid: var(--color-fg-btn-primary);
+  --color-btn-text-outline: currentColor;
+  --color-btn-text-borderless: currentColor;
+
+  /* Typography */
+  --color-fg-btn-primary: light-dark(var(--color-white), var(--color-gray-800));
+  --color-fg-btn-secondary: var(--color-fg-primary);
+
+    /* === FOCUS RINGS === */
+  --color-btn-ring-primary: --alpha(var(--color-btn-primary) / var(--alpha-ring));
+  --color-btn-ring-secondary: --alpha(var(--color-btn-secondary) / var(--alpha-ring));
+  --color-btn-ring-tertiary: --alpha(var(--color-btn-tertiary) / var(--alpha-ring));
+  --color-btn-ring-warning: --alpha(var(--color-btn-warning) / var(--alpha-ring));
+  --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--alpha-ring));
+
+
+  /* === SIZING & SPACING === */
+  --height-btn-sm: var(--height-control-sm);
+  --height-btn-md: var(--height-control-md);
+  --height-btn-lg: var(--height-control-lg);
 
   --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
   --padding-btn-md: var(--spacing-2xs) var(--spacing-lg);
   --padding-btn-lg: var(--spacing-sm) var(--spacing-xl);
 
-  --height-btn-sm: var(--height-control-sm);
-  --height-btn-md: var(--height-control-md);
-  --height-btn-lg: var(--height-control-lg);
-  /* Typography */
-  --color-fg-btn-primary: light-dark(var(--color-white), var(--color-gray-800));
-  --color-fg-btn-secondary: var(--color-fg-primary);
+
+  /* === TYPOGRAPHY === */
   --text-btn-sm: 14px;
   --text-btn-md: 18px;
   --text-btn-lg: 20px;
 
-  /* Radius */
+  /* === RADIUS === */
   --radius-btn-sm: var(--radius-sm);
   --radius-btn-md: var(--radius-md);
   --radius-btn-lg: var(--radius-lg);
 
+  /* ===== Border colors ===== */
+  --color-btn-border-primary: var(--color-btn-primary);
+  --color-btn-border-secondary: var(--color-btn-secondary);
+  --color-btn-border-tertiary: var(--color-btn-tertiary);
+  --color-btn-border-warning: var(--color-btn-warning);
+  --color-btn-border-danger: var(--color-btn-danger);
+
   /* Border width */
   --color-btn-stroke: var(--color-stroke-primary);
   --color-btn-stroke-secondary: var(--color-stroke-secondary);
+  --border-btn-width-sm: 1px;
+  --border-btn-width-md: 2px;
+  --border-btn-width-lg: 3px;
+  --border-btn-red: var(--color-red-600)
 }
