@@ -1,4 +1,3 @@
-import React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
@@ -6,10 +5,6 @@ const errorVariants = tv(
   {
     base: ["text-error-text",  "flex items-start gap-1"],
     variants: {
-      showIcon: {
-        true: "",
-        false: "",
-      },
       size: {
         sm: "text-error-sm",
         md: "text-error-md",
@@ -17,7 +12,6 @@ const errorVariants = tv(
       },
     },
     defaultVariants: {
-      showIcon: true,
       size: "md",
     },
   }
@@ -26,9 +20,9 @@ const errorVariants = tv(
 export interface ErrorProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof errorVariants> {
-  showIcon?: boolean;
   ref?: React.Ref<HTMLDivElement>;
-  inputSize?: "sm" | "md" | "lg";
+  showIcon?: boolean;
+  children?: React.ReactNode;
 }
 
 function Error({
@@ -36,7 +30,7 @@ function Error({
   showIcon,
   children,
   ref,
-  inputSize,
+  size,
   ...props
 }: ErrorProps) {
   if (!children) return null;
@@ -46,8 +40,7 @@ function Error({
       ref={ref}
       className={cn(
         errorVariants({
-          showIcon,
-          size: inputSize,
+          size,
           className,
         })
       )}

@@ -3,10 +3,10 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
 const inputVariants = tv(
-   { 
+   {
     base:[
     "block w-full",
-    "bg-input-bg",  
+    "bg-input-bg",
     "text-input-text",
     "placeholder:text-input-placeholder",
     "border border-input-border",
@@ -68,7 +68,6 @@ export interface InputProps
     >,
     VariantProps<typeof inputVariants> {
   ref?: Ref<HTMLInputElement>;
-  disabled?: boolean;
 }
 
 export function Input({

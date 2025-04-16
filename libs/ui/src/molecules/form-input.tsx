@@ -13,23 +13,24 @@ interface FormInputRawProps extends InputProps {
   helpText?: ReactNode;
   extraText?: ReactNode;
 }
+
 export function FormInputRaw({
   id,
   label,
   validateStatus = "default",
   helpText,
   extraText,
-  size = "md", 
-  required, 
+  size = "md",
+  required,
   disabled,
   ...props
 }: FormInputRawProps) {
 
   const helpTextId = helpText ? `${id}-helper` : undefined;
   const extraTextId = extraText ? `${id}-extra` : undefined;
-  
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       <Label
         htmlFor={id}
         size={size}
@@ -39,20 +40,19 @@ export function FormInputRaw({
         {label}
       </Label>
       <Input
-        id={id} 
+        id={id}
         size={size}
         required={required}
         variant={validateStatus}
-        {...props} 
+        {...props}
       />
-      
+
       {/* Status message */}
       {helpText && (
         validateStatus === "error" ? (
           <Error
             id={helpTextId}
-            inputSize={size}
-            className="mt-1"
+            size={size}
           >
             {helpText}
           </Error>
@@ -60,7 +60,6 @@ export function FormInputRaw({
           <ExtraText
             id={helpTextId}
             size={size}
-            className="mt-1"
           >
             {helpText}
           </ExtraText>
@@ -71,7 +70,6 @@ export function FormInputRaw({
         <ExtraText
           id={extraTextId}
           size={size}
-          className="mt-1"
         >
           {extraText}
         </ExtraText>
@@ -82,7 +80,7 @@ export function FormInputRaw({
 
 
 export function FormInput(props: FormInputRawProps) {
- 
+
     return <FormInputRaw {...props} />;
-  
+
 }

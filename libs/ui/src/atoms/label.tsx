@@ -4,7 +4,7 @@ import { cn } from "../utils";
 
 const labelVariants = tv(
   {
-    base: ["block", "text-label-text", "font-label", "mb-label"],
+    base: ["block", "text-label-text", "font-label"],
     variants: {
       size: {
         sm: "text-label-sm",
@@ -26,13 +26,11 @@ export interface LabelProps
   extends LabelHTMLAttributes<HTMLLabelElement>,
     VariantProps<typeof labelVariants> {
   required?: boolean;
-  htmlFor?: string;
-  inputSize?: "sm" | "md" | "lg";
+  children?: React.ReactNode;
 }
 
 export function Label({
-  inputSize,
-  size = inputSize,
+  size,
   disabled,
   required,
   children,
@@ -52,7 +50,7 @@ export function Label({
       {required && (
         <span className="text-label-required ml-label">*</span>
       )}
-    
+
     </label>
   );
 }

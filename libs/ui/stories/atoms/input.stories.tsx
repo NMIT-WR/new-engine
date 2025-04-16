@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "../../src/atoms/input";
 import { Label } from "../../src/atoms/label";
@@ -15,25 +14,17 @@ const meta: Meta<typeof Input> = {
   argTypes: {
     size: {
       control: "select",
-      options: ["small", "default", "large"],
+      options: ["sm", "md", "lg"],
       description: "Input size",
     },
     variant: {
       control: "select",
-      options: ["default", "error", "success"],
+      options: ["default", "error", "success", "warning"],
       description: "Visual variant of input",
     },
     disabled: {
       control: "boolean",
       description: "Disabled state",
-    },
-    error: {
-      control: "boolean",
-      description: "Error state",
-    },
-    success: {
-      control: "boolean",
-      description: "Success state",
     },
   },
 };
@@ -73,6 +64,9 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <Input variant="success" placeholder="Success state" />
+        </div>
+        <div className="w-64">
+          <Input variant="warning" placeholder="Success state" />
         </div>
         <div className="w-64">
           <Input disabled placeholder="Disabled state" />

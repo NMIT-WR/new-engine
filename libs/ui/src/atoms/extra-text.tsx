@@ -22,13 +22,12 @@ const extraTextVariants = tv(
 export interface ExtraTextProps
   extends HTMLAttributes<HTMLParagraphElement>,
     VariantProps<typeof extraTextVariants> {
-  inputSize?: "sm" | "md" | "lg";
+  children?: React.ReactNode;
 }
 
 export function ExtraText({
   children,
-  inputSize,
-  size = inputSize,
+  size,
   ...props
 }: ExtraTextProps) {
   if (!children) return null;
