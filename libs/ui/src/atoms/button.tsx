@@ -1,7 +1,7 @@
 import { type ButtonHTMLAttributes, type ReactNode, type Ref } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
+import { type VariantProps} from "tailwind-variants";
 import { Icon } from "./icon";
+import { tv } from "../utils";
 
 const buttonVariants = tv(
   {
@@ -12,9 +12,6 @@ const buttonVariants = tv(
       "transition-all duration-200",
       "focus:outline-none",
       "focus-visible:ring-3 focus-visible:ring-offset-2",
-      "uppercase whitespace-nowrap",
-      "rounded-sm",
-      "text-fg-btn-primary", 
       "disabled:pointer-events-none",
     ],
     variants: {
@@ -26,22 +23,20 @@ const buttonVariants = tv(
         warning: "focus:ring-btn-ring-warning",
       },
       theme: {
-        light: "",
-        solid: "",
+        light: "text-btn-text-light",
+        solid: "text-btn-text",
         borderless: "hover:bg-btn-borderless-hover active:bg-btn-borderless-active",
         outlined: "border",
       },
+      uppercase: {
+        true: "uppercase",
+      },
       size: {
-        sm: "h-btn-sm p-btn-sm text-btn-sm rounded-btn-sm",
-        md: "h-btn-md p-btn-md text-btn-md rounded-btn-md",
-        lg: "h-btn-lg p-btn-lg text-btn-lg rounded-btn-lg",
+        sm: "p-btn-sm text-btn-sm rounded-btn-sm gap-btn-sm",
+        md: "p-btn-md text-btn-md rounded-btn-md gap-btn-md",
+        lg: "p-btn-lg text-btn-lg rounded-btn-lg gap-btn-lg",
       },
-      border: {
-        sm: "border-(length:--border-btn-width-sm)",
-        md: "border-(length:--border-btn-width-md)",
-        lg: "border-(length:--border-btn-width-lg)",
-        none: "border-none",
-      },
+
       block: {
         true: "w-full",
       },
@@ -74,7 +69,6 @@ const buttonVariants = tv(
                 "hover:bg-btn-tertiary-hover",
                 "active:bg-btn-tertiary-active",
                 "disabled:bg-btn-tertiary-disabled",
-                
             ],
         },{
             variant: "warning",
@@ -105,7 +99,6 @@ const buttonVariants = tv(
             "hover:bg-btn-primary-light-hover",
             "active:bg-btn-primary-light-active",
             "disabled:bg-btn-primary-disabled",
-            "text-fg-btn-secondary",
         ],
       },
       {
@@ -116,7 +109,6 @@ const buttonVariants = tv(
             "hover:bg-btn-secondary-light-hover",
             "active:bg-btn-secondary-light-active",
             "disabled:bg-btn-secondary-disabled",
-            "text-fg-btn-secondary",
         ],
       },
       {
@@ -127,8 +119,6 @@ const buttonVariants = tv(
             "hover:bg-btn-tertiary-light-hover",
             "active:bg-btn-tertiary-light-active",
             "disabled:bg-btn-tertiary-disabled",
-
-            "text-fg-btn-secondary",
         ],
       },
       {
@@ -139,7 +129,6 @@ const buttonVariants = tv(
             "hover:bg-btn-warning-light-hover",
             "active:bg-btn-warning-light-active",
             "disabled:bg-btn-warning-disabled",
-            "text-fg-btn-secondary",
         ],
       },
       {
@@ -149,9 +138,7 @@ const buttonVariants = tv(
             "bg-btn-danger-light",
             "hover:bg-btn-danger-light-hover",
             "active:bg-btn-danger-light-active",
-            "disabled:bg-btn-danger-disabled",
-            "focus-visible:ring-btn-danger/50",
-            "text-fg-btn-secondary",
+            "disabled:bg-btn-danger-disabled",        
         ],
       },
       {
@@ -242,7 +229,22 @@ const buttonVariants = tv(
           "text-btn-danger",
           "disabled:bg-btn-primary-disabled",
         ],
-      }
+      },
+      {
+        theme: "outlined",
+        size: "sm",
+        className: "border-(length:--border-btn-width-sm)",
+      },
+      {
+        theme: "outlined",
+        size: "md",
+        className: "border-(length:--border-btn-width-md)",
+      },
+      {
+        theme: "outlined",
+        size: "lg",
+        className: "border-(length:--border-btn-width-lg)",
+      },
     ],
     defaultVariants: {
       variant: "primary",
@@ -254,73 +256,49 @@ const buttonVariants = tv(
 );
 
 export interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "children">,
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">,
     VariantProps<typeof buttonVariants> {
   icon?: string;
   iconPosition?: "left" | "right";
+  uppercase?: boolean;
   isLoading?: boolean;
   loadingText?: string;
-  disabled?: boolean;
   children?: ReactNode;
-  border?: "sm" | "md" | "lg" | "none";
+  isDisabled?: boolean;
 }
-
-
 
 export function Button({
   variant,
   theme,
   size,
   block,
-  disabled,
   isLoading,
   loadingText,
   icon,
   iconPosition = "left",
-  border,
+  uppercase = false,
   children,
   className,
+  isDisabled,
   ...props
 }: ButtonProps & { ref?: Ref<HTMLButtonElement> }) {
-
-  const buttonContent = isLoading ? (
-    <span className="flex items-center justify-center gap-2">
-      <span className="icon-[mdi--loading] text-sm animate-spin" />
-      {loadingText}
-    </span>
-  ) : (
-    <span className="flex items-center gap-1">
-      {icon && iconPosition === "left" && <Icon icon={icon} size={size} />}
-      {children}
-      {icon && iconPosition === "right" && <Icon icon={icon} size={size} />}
-    </span>
-  );
   return (
     <button
-      className={cn(
+      className={(
         buttonVariants({
           variant,
           theme,
           size,
           block,
-          border,
           className,
         })
       )}
-      disabled={disabled || isLoading}
+      disabled={isDisabled || isLoading}
       {...props}
     >
-    {isLoading && (
-      <span className="invisible" aria-hidden="true">
         {icon && iconPosition === "left" && <Icon icon={icon} size={size} />}
         {children}
         {icon && iconPosition === "right" && <Icon icon={icon} size={size} />}
-      </span>
-    )}
-    
-    <span className={isLoading ? "absolute inset-0 flex items-center justify-center" : ""}>
-      {buttonContent}
-    </span>
     </button>
   );
 }

@@ -1,11 +1,23 @@
 @import "../_semantic.css";
 
+/* Test modificators in button.css and after that we can move to semantic.css */
+:root {
+  --alpha-ring: 60%;
+  --borderless-hover: 15%;
+  --borderless-active: 25%;
+  --outlined-hover: 12%;
+  --outlined-active: 20%;
+  --state-hover-dark: -0.06;
+  --state-active-dark: -0.1;
+  --border-modifier: 0.05;
+}
+
+.dark {
+  --state-hover: var(--state-hover-dark);
+  --state-active: var(--state-active-dark);
+}
+
 @theme static {
-  --alpha-ring: 80%;
-  --borderless-hover: 40%;
-  --borderless-active: 60%;
-  --outlined-hover: 20%;
-  --outlined-active: 40%;
   /* === BASE COLOR MAPPING === */
   /* Single source of truth */
   --color-btn-primary: var(--color-primary);
@@ -76,14 +88,12 @@
   --color-btn-outlined-danger-hover: --alpha(var(--color-btn-danger) / var(--outlined-hover));
 
   /* === TEXT COLORS === */
-  --color-btn-text-light: var(--color-fg-btn-secondary);
-  --color-btn-text-solid: var(--color-fg-btn-primary);
+  --color-btn-text: white;
+  --color-btn-text-secondary: light-dark(var(--color-gray-950), var(--color-gray-850));
+  --color-btn-text-light: oklch(from var(--color-btn-text) 0.3 c h);
+  --color-btn-text-solid: var(--color-btn-text);
   --color-btn-text-outline: currentColor;
   --color-btn-text-borderless: currentColor;
-
-  /* Typography */
-  --color-fg-btn-primary: light-dark(var(--color-white), var(--color-gray-800));
-  --color-fg-btn-secondary: var(--color-fg-primary);
 
     /* === FOCUS RINGS === */
   --color-btn-ring-primary: --alpha(var(--color-btn-primary) / var(--alpha-ring));
@@ -102,6 +112,10 @@
   --padding-btn-md: var(--spacing-2xs) var(--spacing-lg);
   --padding-btn-lg: var(--spacing-sm) var(--spacing-xl);
 
+  --spacing-btn-sm: var(--spacing-2xs);
+  --spacing-btn-md: var(--spacing-xs);
+  --spacing-btn-lg: var(--spacing-sm);
+
 
   /* === TYPOGRAPHY === */
   --text-btn-sm: 14px;
@@ -114,11 +128,11 @@
   --radius-btn-lg: var(--radius-lg);
 
   /* ===== Border colors ===== */
-  --color-btn-border-primary: var(--color-btn-primary);
-  --color-btn-border-secondary: var(--color-btn-secondary);
-  --color-btn-border-tertiary: var(--color-btn-tertiary);
-  --color-btn-border-warning: var(--color-btn-warning);
-  --color-btn-border-danger: var(--color-btn-danger);
+  --color-btn-border-primary: oklch(from var(--color-btn-primary) calc(l - var(--border-modifier)) c h);
+  --color-btn-border-secondary: oklch(from var(--color-btn-secondary) calc(l - var(--border-modifier)) c h);
+  --color-btn-border-tertiary: oklch(from var(--color-btn-tertiary) calc(l - var(--border-modifier)) c h);
+  --color-btn-border-warning: oklch(from var(--color-btn-warning) calc(l - var(--border-modifier)) c h);
+  --color-btn-border-danger: oklch(from var(--color-btn-danger) calc(l - var(--border-modifier)) c h);
 
   /* Border width */
   --color-btn-stroke: var(--color-stroke-primary);

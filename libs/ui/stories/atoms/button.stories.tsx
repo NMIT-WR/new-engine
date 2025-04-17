@@ -69,13 +69,13 @@ export const Variants: Story = {
 export const Sizes: Story = {
   render: () => (
     <VariantContainer>
-      <VariantGroup title="Velikosti">
+      <VariantGroup title="sizes">
         <Button size="sm">Small</Button>
         <Button size="md">Medium</Button>
         <Button size="lg">Large</Button>
       </VariantGroup>
       
-      <VariantGroup title="Block tlačítka" fullWidth>
+      <VariantGroup title="Block buttons" fullWidth>
         <Button block>Block Button</Button>
         <Button block variant="secondary">Block Secondary</Button>
       </VariantGroup>
@@ -186,7 +186,6 @@ export const AllVariants: Story = {
     ),
   };
   
-  // Icon příklady
   export const IconButtons: Story = {
     render: () => (
       <VariantContainer>
@@ -201,38 +200,5 @@ export const AllVariants: Story = {
     ),
   };
   
-  // Loading příklady s interaktivitou
-  export const LoadingButtons: Story = {
-    render: () => {
-      const [isLoading, setIsLoading] = useState(false);
-      
-      const toggleLoading = () => {
-        setIsLoading(true);
-        setTimeout(() => setIsLoading(false), 2000);
-      };
-      
-      return (
-        <VariantContainer>
-          <VariantGroup title="Loading buttons">
-            <Button variant="primary" isLoading>PRIMARY</Button>
-            <Button variant="secondary" isLoading>SECONDARY</Button>
-            <Button variant="tertiary" isLoading>TERTIARY</Button>
-            <Button variant="warning" isLoading>WARNING</Button>
-            <Button variant="danger" isLoading>DANGER</Button>
-          </VariantGroup>
-          
-          <VariantGroup title="Interactive loading demo">
-            <Button 
-              isLoading={isLoading} 
-              onClick={toggleLoading}
-              icon="icon-[mdi--refresh]"
-            >
-              CLICK TO LOAD
-            </Button>
-          </VariantGroup>
-        </VariantContainer>
-      );
-    },
-  };
   
 
