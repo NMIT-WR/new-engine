@@ -1,6 +1,6 @@
 import { type HTMLAttributes } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
 
 const iconVariants = tv(
   {
@@ -38,9 +38,9 @@ export interface IconProps
 
   return (
     <span
-      className={cn(
+      className={(
         iconVariants({ size, color }),
-        icon, 
+        icon
       )}
       aria-hidden="true"
       {...props} 

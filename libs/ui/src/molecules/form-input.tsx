@@ -24,7 +24,6 @@ export function FormInputRaw({
   disabled,
   ...props
 }: FormInputRawProps) {
-
   const helpTextId = helpText ? `${id}-helper` : undefined;
   const extraTextId = extraText ? `${id}-extra` : undefined;
   

@@ -1,6 +1,5 @@
 import React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
 
 const errorVariants = tv(
   {
@@ -44,7 +43,7 @@ function Error({
   return (
     <div
       ref={ref}
-      className={cn(
+      className={(
         errorVariants({
           showIcon,
           size: inputSize,

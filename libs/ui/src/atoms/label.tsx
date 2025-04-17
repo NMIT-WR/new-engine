@@ -1,6 +1,6 @@
 import {type LabelHTMLAttributes} from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
 
 const labelVariants = tv(
   {
@@ -40,12 +40,12 @@ export function Label({
 }: LabelProps) {
   return (
     <label
-      className={cn(
+      className={
         labelVariants({
           size,
           disabled,
         })
-      )}
+    }
       {...props}
     >
       {children}

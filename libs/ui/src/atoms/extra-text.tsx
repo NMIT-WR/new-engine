@@ -1,7 +1,6 @@
 import { type HTMLAttributes } from "react";
 import { type VariantProps } from "class-variance-authority";
 import {tv} from "tailwind-variants";
-import { cn } from "../utils";
 
 const extraTextVariants = tv(
   {
@@ -35,7 +34,7 @@ export function ExtraText({
 
   return (
     <p
-      className={cn(
+      className={(
         extraTextVariants({
           size,
         })
