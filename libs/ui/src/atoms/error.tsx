@@ -1,21 +1,19 @@
 import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
 
-const errorVariants = tv(
-  {
-    base: ["text-error-text",  "flex items-start gap-1"],
-    variants: {
-      size: {
-        sm: "text-error-sm",
-        md: "text-error-md",
-        lg: "text-error-lg",
-      },
+const errorVariants = tv({
+  base: ["text-error-text", "flex items-start gap-1"],
+  variants: {
+    size: {
+      sm: "text-error-sm",
+      md: "text-error-md",
+      lg: "text-error-lg",
     },
-    defaultVariants: {
-      size: "md",
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: "md",
+  },
+});
 
 export interface ErrorProps
   extends React.HTMLAttributes<HTMLDivElement>,

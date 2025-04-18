@@ -85,13 +85,16 @@ export const AllVariants: Story = {
           </Label>
           <Input id="input-required" placeholder="Enter value" />
         </div>
-
       </VariantGroup>
 
       <VariantGroup title="With validation" fullWidth>
         <div className="w-64">
           <Label htmlFor="input-error">Email</Label>
-          <Input id="input-error" variant="error" placeholder="john@example.com" />
+          <Input
+            id="input-error"
+            variant="error"
+            placeholder="john@example.com"
+          />
           <Error>Email is in invalid format</Error>
         </div>
 

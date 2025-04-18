@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Icon } from "../../src/atoms/icon";
 import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
@@ -50,7 +49,7 @@ export const AllColors: Story = {
         <Icon icon="token-icon-error" color="danger" />
         <Icon icon="token-icon-error" color="warning" />
         <Icon icon="token-icon-error" />
-        <Icon icon="token-icon-error"  />
+        <Icon icon="token-icon-error" />
       </VariantGroup>
     </VariantContainer>
   ),
@@ -78,12 +77,8 @@ export const SemanticTokens: Story = {
           <span>token-icon-info</span>
         </div>
         <div className="flex items-center gap-4">
-          <Icon icon="icon-[mdi-light--alert]" size="md" />
-          <span>token-icon-info</span>
-        </div>
-        <div className="flex items-center gap-4">
           <Icon icon="icon-[mdi-light--check-circle]" size="md" />
-          <span>token-icon-success</span>
+          <span>token-icon-check-circle</span>
         </div>
       </VariantGroup>
     </VariantContainer>

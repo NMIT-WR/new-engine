@@ -42,14 +42,15 @@
   --color-btn-danger-light-active: var(--color-danger-light-active);
 
   --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
-  --padding-btn-md: var(--spacing-2xs) var(--spacing-lg);
-  --padding-btn-lg: var(--spacing-sm) var(--spacing-xl);
+  --padding-btn-md: var(--spacing-xs) var(--spacing-md);
+  --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
 
   --height-btn-sm: var(--height-control-sm);
   --height-btn-md: var(--height-control-md);
   --height-btn-lg: var(--height-control-lg);
+
   /* Typography */
-  --color-fg-btn-primary: light-dark(var(--color-white), var(--color-gray-800));
+  --color-fg-btn-primary: var(--color-fg-reverse);
   --color-fg-btn-secondary: var(--color-fg-primary);
   --text-btn-sm: 14px;
   --text-btn-md: 18px;
