@@ -15,7 +15,7 @@ const iconVariants = tv(
       },
       color: {
         current: "text-current",
-        primary: "text-primary", 
+        primary: "text-primary",
         secondary: "text-secondary",
         danger: "text-danger",
         success: "text-success",
@@ -32,18 +32,18 @@ const iconVariants = tv(
 export interface IconProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, "color">,
     VariantProps<typeof iconVariants> {
-  icon: string;
+  icon: `token-icon-${string}` | `icon-[${string}]`;
 }
- export function Icon({ icon, size, color, ...props }: IconProps) {
 
+export function Icon({ icon, size, color, ...props }: IconProps) {
   return (
     <span
       className={cn(
         iconVariants({ size, color }),
-        icon, 
+        icon,
       )}
       aria-hidden="true"
-      {...props} 
+      {...props}
     />
   );
 }

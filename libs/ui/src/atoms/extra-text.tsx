@@ -20,12 +20,10 @@ const extraTextVariants = tv({
 export interface ExtraTextProps
   extends HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof extraTextVariants> {
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export function ExtraText({ children, size, ...props }: ExtraTextProps) {
-  if (!children) return null;
-
   return (
     <span
       className={cn(

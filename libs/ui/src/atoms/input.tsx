@@ -18,9 +18,9 @@ const inputVariants = tv({
   ],
   variants: {
     size: {
-      sm: "h-input-sm p-input-sm text-input-sm",
-      md: "h-input-md p-input-md text-input-md",
-      lg: "h-input-lg p-input-lg text-input-lg",
+      sm: "p-input-sm text-input-sm",
+      md: "p-input-md text-input-md",
+      lg: "p-input-lg text-input-lg",
     },
     variant: {
       default: "",
@@ -62,7 +62,7 @@ const inputVariants = tv({
 });
 
 export interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "disabled">,
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
   ref?: Ref<HTMLInputElement>;
 }

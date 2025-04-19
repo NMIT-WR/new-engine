@@ -32,6 +32,7 @@ node_modules
 npm-debug.log
 testem.log
 /typings
+tsconfig.tsbuildinfo
 
 # System Files
 .DS_Store

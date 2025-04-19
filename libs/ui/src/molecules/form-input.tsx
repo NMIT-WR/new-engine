@@ -25,8 +25,6 @@ export function FormInputRaw({
   disabled,
   ...props
 }: FormInputRawProps) {
-
-  const helpTextId = helpText ? `${id}-helper` : undefined;
   const extraTextId = extraText ? `${id}-extra` : undefined;
 
   return (
@@ -44,27 +42,12 @@ export function FormInputRaw({
         size={size}
         required={required}
         variant={validateStatus}
+        disabled={disabled}
         {...props}
       />
 
       {/* Status message */}
-      {helpText && (
-        validateStatus === "error" ? (
-          <Error
-            id={helpTextId}
-            size={size}
-          >
-            {helpText}
-          </Error>
-        ) : (
-          <ExtraText
-            id={helpTextId}
-            size={size}
-          >
-            {helpText}
-          </ExtraText>
-        )
-      )}
+      {helpText}
 
       {extraText && (
         <ExtraText
@@ -79,8 +62,31 @@ export function FormInputRaw({
 }
 
 
-export function FormInput(props: FormInputRawProps) {
+export function FormInput({ helpText, id, validateStatus, size, ...props }: FormInputRawProps) {
+  const helpTextId = helpText ? `${id}-helper` : undefined;
 
-    return <FormInputRaw {...props} />;
-
+  return <FormInputRaw
+    id={id}
+    size={size}
+    validateStatus={validateStatus}
+    helpText={
+      validateStatus === "error" ? (
+        <Error
+          id={helpTextId}
+          size={size}
+          showIcon
+        >
+          {helpText}
+        </Error>
+      ) : (
+        <ExtraText
+          id={helpTextId}
+          size={size}
+        >
+          {helpText}
+        </ExtraText>
+      )
+    }
+    {...props}
+  />;
 }

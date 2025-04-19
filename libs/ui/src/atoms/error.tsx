@@ -1,8 +1,9 @@
 import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "../utils";
+import { Icon } from "./icon"
 
 const errorVariants = tv({
-  base: ["text-error-text", "flex items-start gap-1"],
+  base: ["text-error-text", "flex items-center gap-1"],
   variants: {
     size: {
       sm: "text-error-sm",
@@ -20,7 +21,7 @@ export interface ErrorProps
     VariantProps<typeof errorVariants> {
   ref?: React.Ref<HTMLDivElement>;
   showIcon?: boolean;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 function Error({
@@ -31,8 +32,6 @@ function Error({
   size,
   ...props
 }: ErrorProps) {
-  if (!children) return null;
-
   return (
     <div
       ref={ref}
@@ -45,7 +44,7 @@ function Error({
       {...props}
     >
       {showIcon && (
-        <span className="icon-[mdi-light--alert-circle] w-4 h-4 flex-shrink-0 mt-0.5" />
+        <Icon icon="token-icon-error" />
       )}
       <span>{children}</span>
     </div>

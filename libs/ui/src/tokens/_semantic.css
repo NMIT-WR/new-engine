@@ -268,18 +268,6 @@
   /* Spacing */
   --spacing: 0.25rem;
 
-  /* Icons */
-  --height-icon-xs: 12px;
-  --height-icon-sm: 16px;
-  --height-icon-md: 20px;
-  --height-icon-lg: 24px;
-  --height-icon-xl: 32px;
-
-  /* Form components height */
-  --height-control-sm: 24px;
-  --height-control-md: 32px;
-  --height-control-lg: 40px;
-
   /* Focus ring */
   --color-ring-primary: light-dark(
     var(--color-red-500) / 0.25,

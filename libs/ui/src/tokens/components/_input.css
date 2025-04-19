@@ -83,7 +83,6 @@
   --color-error-text: var(--color-danger);
   --color-helper-text: var(--color-input-text);
 
-  /* Ring colors */
   /* Focus ring colors - using consistent opacity */
   --color-input-ring: --alpha(var(--color-primary) / var(--opacity-ring));
   --color-input-ring-error: --alpha(
@@ -96,11 +95,7 @@
     var(--color-input-warning) / var(--opacity-ring)
   );
 
-  /* Dimensions & spacing - keeping your existing values */
-  --height-input-sm: var(--height-control-sm);
-  --height-input-md: var(--height-control-md);
-  --height-input-lg: var(--height-control-lg);
-
+  /* Spacing - keeping your existing values */
   --padding-input-sm: var(--spacing-sm) var(--spacing-sm);
   --padding-input-md: var(--spacing-md) var(--spacing-sm);
   --padding-input-lg: var(--spacing-lg) var(--spacing-md);

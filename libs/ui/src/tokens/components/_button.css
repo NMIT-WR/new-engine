@@ -45,10 +45,6 @@
   --padding-btn-md: var(--spacing-xs) var(--spacing-md);
   --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
 
-  --height-btn-sm: var(--height-control-sm);
-  --height-btn-md: var(--height-control-md);
-  --height-btn-lg: var(--height-control-lg);
-
   /* Typography */
   --color-fg-btn-primary: var(--color-fg-reverse);
   --color-fg-btn-secondary: var(--color-fg-primary);

@@ -24,7 +24,7 @@ export interface LabelProps
   extends LabelHTMLAttributes<HTMLLabelElement>,
     VariantProps<typeof labelVariants> {
   required?: boolean;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export function Label({
