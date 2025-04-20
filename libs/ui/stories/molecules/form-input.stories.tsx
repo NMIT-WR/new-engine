@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FormInput } from "../../src/molecules/form-input";
 import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
@@ -8,7 +8,7 @@ const meta: Meta<typeof FormInput> = {
   component: FormInput,
   parameters: {
     layout: "centered",
-  },  
+  },
   args:{
   id: "storybook-form-input"},
   tags: ["autodocs"],
@@ -64,17 +64,17 @@ export const AllVariants: Story = {
 
       <VariantGroup title="Validation States">
         <div className="w-64">
-          <FormInput 
-           id="success-input"
-            label="Success state" 
-            placeholder="johndoe" 
+          <FormInput
+            id="success-input"
+            label="Success state"
+            placeholder="johndoe"
             validateStatus="success"
             helpText="Username is available"
           />
         </div>
         <div className="w-64">
           <FormInput
-           id="success-input"
+            id="success-input"
             label="Error state"
             placeholder="Enter email"
             validateStatus="error"
@@ -83,7 +83,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
-           id="success-input"
+            id="success-input"
             label="Warning state"
             placeholder="Enter password"
             validateStatus="warning"
@@ -95,27 +95,20 @@ export const AllVariants: Story = {
       <VariantGroup title="Supporting Text">
         <div className="w-64">
           <FormInput
-           id="success-input"
+            id="success-input"
             label="With helper text"
             placeholder="Enter value"
-            helpText="This is helper text below input"
+            helpText="This is help text below input"
           />
         </div>
         <div className="w-64">
           <FormInput
-           id="extra-text-input"
-            label="Extra text (middle)"
+            id="error-input"
+            label="With helper and extra text"
             placeholder="Enter value"
-            extraText="Text between label and input"
-          />
-        </div>
-        <div className="w-64">
-          <FormInput
-           id="extra-text-input"
-            label="Extra text (bottom)"
-            placeholder="Enter value"
-            extraText="Text below input"
-
+            helpText="This is error text!"
+            extraText="This is extra text below input"
+            validateStatus="error"
           />
         </div>
       </VariantGroup>
@@ -123,25 +116,31 @@ export const AllVariants: Story = {
       <VariantGroup title="Sizes">
         <div className="w-64">
           <FormInput
-             id="success-input"
+            id="success-input"
             label="Small input"
             placeholder="Enter value"
+            helpText="This is error text below input"
+            validateStatus="error"
             size="sm"
           />
         </div>
         <div className="w-64">
           <FormInput
-             id="success-input"
+            id="success-input"
             label="Default input"
             placeholder="Enter value"
+            helpText="This is error text below input"
+            validateStatus="error"
             size="md"
           />
         </div>
         <div className="w-64">
           <FormInput
-             id="success-input"
+            id="success-input"
             label="Large input"
             placeholder="Enter value"
+            helpText="This is error text below input"
+            validateStatus="error"
             size="lg"
           />
         </div>
@@ -150,7 +149,7 @@ export const AllVariants: Story = {
       <VariantGroup title="Special States">
         <div className="w-64">
           <FormInput
-             id="success-input"
+            id="success-input"
             label="Disabled input"
             placeholder="Cannot edit"
             disabled
@@ -158,7 +157,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
-           id="success-input"
+            id="success-input"
             label="Read-only input"
             placeholder="Read only"
             readOnly
@@ -167,7 +166,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
-           id="success-input"
+            id="success-input"
             label="With default value"
             defaultValue="Prefilled value"
           />
@@ -237,7 +236,7 @@ export const RegistrationForm: Story = {
           />
 
           <FormInput
-           id="success-input"
+            id="success-input"
             label="Username"
             placeholder="johndoe"
             required
@@ -245,7 +244,7 @@ export const RegistrationForm: Story = {
           />
 
           <FormInput
-           id="success-input"
+            id="success-input"
             label="Password"
             type="password"
             placeholder="••••••••"
@@ -254,7 +253,7 @@ export const RegistrationForm: Story = {
           />
 
           <FormInput
-           id="success-input"
+            id="success-input"
             label="Phone number"
             type="tel"
             placeholder="+1 (XXX) XXX-XXXX"

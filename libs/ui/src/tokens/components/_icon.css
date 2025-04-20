@@ -1,4 +1,4 @@
-
+@plugin "@iconify/tailwind4";
 
 @theme static {
     --text-icon-xs: 12px;
@@ -8,6 +8,7 @@
     --text-icon-xl: 32px;
 }
 
+/* Semantic tokens for icons */
 @utility token-icon-error {
     @apply icon-[mdi-light--alert-circle];
 }
@@ -24,7 +25,7 @@
     @apply icon-[mdi-light--information];
 }
 
-/* Component token icons - pro konkrétní komponenty */
+/* Component tokens for icons */
 @utility token-icon-input-error {
     @apply token-icon-error;
 }

@@ -109,15 +109,20 @@
   --height-btn-lg: var(--height-control-lg);
 
   --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
-  --padding-btn-md: var(--spacing-2xs) var(--spacing-lg);
-  --padding-btn-lg: var(--spacing-sm) var(--spacing-xl);
+  --padding-btn-md: var(--spacing-xs) var(--spacing-md);
+  --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
 
+  /* Spacing between icon and text */
   --spacing-btn-sm: var(--spacing-2xs);
   --spacing-btn-md: var(--spacing-xs);
   --spacing-btn-lg: var(--spacing-sm);
 
-
   /* === TYPOGRAPHY === */
+  /* Foreground colors */
+  --color-fg-btn-primary: var(--color-fg-reverse);
+  --color-fg-btn-secondary: var(--color-fg-primary);
+
+  /* Text sizes */
   --text-btn-sm: 14px;
   --text-btn-md: 18px;
   --text-btn-lg: 20px;
