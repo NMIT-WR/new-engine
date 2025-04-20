@@ -1,15 +1,17 @@
 @import "tailwindcss";
 @plugin 'tailwindcss-animate';
-@plugin "@iconify/tailwind4";
 
-/* Primitive Tokens */
+/* Primitive tokens */
 @import "./_base.css";
+@import "./_colors.css";
 @import "./_spacing.css";
 @import "./_typography.css";
-/* Semantic Tokens */
+
+/* Semantic tokens (dependent on primitives) */
 @import "./_semantic.css";
-/* Component Tokens */
-@import "./components/_button.css";
+
+/* Component tokens (dependent on semantic) */
+@import "./components/index.css";
 
 :root {
   color-scheme: light dark;

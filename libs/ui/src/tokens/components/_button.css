@@ -1,3 +1,5 @@
+@import "../_semantic.css";
+
 @theme static {
   --color-btn-primary: var(--color-primary);
   --color-btn-primary-hover: var(--color-primary-hover);
@@ -39,27 +41,21 @@
   --color-btn-danger-light-hover: var(--color-danger-light-hover);
   --color-btn-danger-light-active: var(--color-danger-light-active);
 
-  --padding-btn-s: var(--spacing-2xs) var(--spacing-s);
-  --padding-btn-m: var(--spacing-2xs) var(--spacing-l);
-  --padding-btn-l: var(--spacing-s) var(--spacing-xl);
+  --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
+  --padding-btn-md: var(--spacing-xs) var(--spacing-md);
+  --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
 
-  --height-btn-s: var(--height-control-s);
-  --height-btn-m: var(--height-control-m);
-  --height-btn-l: var(--height-control-l);
   /* Typography */
-  --color-fg-btn-primary: light-dark(
-    var(--color-white),
-    var(--color-gray-800)
-  );
+  --color-fg-btn-primary: var(--color-fg-reverse);
   --color-fg-btn-secondary: var(--color-fg-primary);
-  --text-btn-s: 14px;
-  --text-btn-m: 18px;
-  --text-btn-l: 20px;
+  --text-btn-sm: 14px;
+  --text-btn-md: 18px;
+  --text-btn-lg: 20px;
 
   /* Radius */
-  --radius-btn-s: var(--radius-s);
-  --radius-btn-m: var(--radius-m);
-  --radius-btn-l: var(--radius-l);
+  --radius-btn-sm: var(--radius-sm);
+  --radius-btn-md: var(--radius-md);
+  --radius-btn-lg: var(--radius-lg);
 
   /* Border width */
   --color-btn-stroke: var(--color-stroke-primary);
