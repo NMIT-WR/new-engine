@@ -1,3 +1,5 @@
+@plugin "@iconify/tailwind4";
+
 @theme static {
     --text-icon-xs: 12px;
     --text-icon-sm: 16px;
