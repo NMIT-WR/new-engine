@@ -1,5 +1,6 @@
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
+import { Icon } from "./icon";
 
 const errorVariants = tv({
   base: ["text-error-text", "flex items-center gap-1"],

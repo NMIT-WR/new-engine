@@ -1,6 +1,6 @@
 import { type HTMLAttributes } from "react";
-import { type VariantProps } from "class-variance-authority";
-import { tv } from "tailwind-variants";
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
 
 const extraTextVariants = tv({
   base: ["text-helper-text"],

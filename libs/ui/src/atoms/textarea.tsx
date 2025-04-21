@@ -5,7 +5,7 @@ import { tv } from "../utils";
 const textareaVariants = tv({
   base: [
     "block w-full",
-    "bg-textarea",  
+    "bg-textarea",
     "text-textarea-text",
     "placeholder:text-textarea-placeholder",
     "border-(length:--textarea-border-width) border-textarea-border",
@@ -46,9 +46,9 @@ const textareaVariants = tv({
       ],
     },
     size: {
-      sm: "min-h-textarea-sm p-textarea-sm text-textarea-sm",
-      md: "min-h-textarea-md p-textarea-md text-textarea-md",
-      lg: "min-h-textarea-lg p-textarea-lg text-textarea-lg",
+      sm: "p-textarea-sm text-textarea-sm",
+      md: "p-textarea-md text-textarea-md",
+      lg: "p-textarea-lg text-textarea-lg",
     },
     resize: {
       none: "resize-none",
@@ -56,32 +56,14 @@ const textareaVariants = tv({
       x: "resize-x",
       both: "resize",
     },
-    lineHeight: {
-      compact: "leading-tight",
-      normal: "leading-normal",
-      relaxed: "leading-relaxed",
-    },
-    scrollbar: {
-        default: "",
-        thin: "scrollbar-thin scrollbar-thumb-rounded scrollbar-track-transparent scrollbar-thumb-textarea-scrollbar hover:scrollbar-thumb-textarea-scrollbar-hover",
-        hidden: "scrollbar-none",
-      },
-    shadow: {
-      none: "",
-      sm: "shadow-textarea-sm",
-      md: "shadow-textarea-md",
-    },
     readonly: {
-        true: "bg-textarea-disabled cursor-default pointer-events-none opacity-90 text-textarea-text-disabled border-textarea-border-disabled",
+      true: "bg-textarea-disabled cursor-default pointer-events-none opacity-90 text-textarea-text-disabled border-textarea-border-disabled",
     },
   },
   defaultVariants: {
     size: "md",
     resize: "y",
     variant: "default",
-    lineHeight: "normal",
-    scrollbar: "default",
-    shadow: "none",
   },
 });
 
@@ -92,12 +74,9 @@ export interface TextareaProps
 }
 
 export function Textarea({
-  size, 
-  resize, 
-  variant, 
-  lineHeight,
-  scrollbar,
-  shadow,
+  size,
+  resize,
+  variant,
   readonly,
   className,
   ref,
@@ -111,9 +90,6 @@ export function Textarea({
         size,
         resize,
         variant,
-        lineHeight,
-        scrollbar,
-        shadow,
         readonly,
         className,
       })}
