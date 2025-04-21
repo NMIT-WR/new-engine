@@ -1,7 +1,6 @@
 import { type HTMLAttributes } from "react";
-import { type VariantProps } from "class-variance-authority";
-import { tv } from "tailwind-variants";
-import { cn } from "../utils";
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
 
 const extraTextVariants = tv({
   base: ["text-helper-text"],
@@ -26,11 +25,9 @@ export interface ExtraTextProps
 export function ExtraText({ children, size, ...props }: ExtraTextProps) {
   return (
     <span
-      className={cn(
-        extraTextVariants({
-          size,
-        })
-      )}
+      className={extraTextVariants({
+        size,
+      })}
       {...props}
     >
       {children}

@@ -1,6 +1,6 @@
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
-import { Icon } from "./icon"
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
+import { Icon } from "./icon";
 
 const errorVariants = tv({
   base: ["text-error-text", "flex items-center gap-1"],
@@ -35,17 +35,13 @@ function Error({
   return (
     <div
       ref={ref}
-      className={cn(
-        errorVariants({
-          size,
-          className,
-        })
-      )}
+      className={errorVariants({
+        size,
+        className,
+      })}
       {...props}
     >
-      {showIcon && (
-        <Icon icon="token-icon-error" />
-      )}
+      {showIcon && <Icon icon="token-icon-error" />}
       <span>{children}</span>
     </div>
   );
