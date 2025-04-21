@@ -13,65 +13,39 @@ interface FormInputRawProps extends InputProps {
   helpText?: ReactNode;
   extraText?: ReactNode;
 }
+
 export function FormInputRaw({
   id,
   label,
   validateStatus = "default",
   helpText,
   extraText,
-  size = "md", 
-  required, 
+  size = "md",
+  required,
   disabled,
   ...props
 }: FormInputRawProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined;
   const extraTextId = extraText ? `${id}-extra` : undefined;
-  
+
   return (
-    <div className="flex flex-col">
-      <Label
-        htmlFor={id}
-        size={size}
-        required={required}
-        disabled={disabled}
-      >
+    <div className="flex flex-col gap-1">
+      <Label htmlFor={id} size={size} required={required} disabled={disabled}>
         {label}
       </Label>
       <Input
-        id={id} 
+        id={id}
         size={size}
         required={required}
         variant={validateStatus}
-        {...props} 
+        disabled={disabled}
+        {...props}
       />
-      
+
       {/* Status message */}
-      {helpText && (
-        validateStatus === "error" ? (
-          <Error
-            id={helpTextId}
-            inputSize={size}
-            className="mt-1"
-          >
-            {helpText}
-          </Error>
-        ) : (
-          <ExtraText
-            id={helpTextId}
-            size={size}
-            className="mt-1"
-          >
-            {helpText}
-          </ExtraText>
-        )
-      )}
+      {helpText}
 
       {extraText && (
-        <ExtraText
-          id={extraTextId}
-          size={size}
-          className="mt-1"
-        >
+        <ExtraText id={extraTextId} size={size}>
           {extraText}
         </ExtraText>
       )}
@@ -79,9 +53,32 @@ export function FormInputRaw({
   );
 }
 
+export function FormInput({
+  helpText,
+  id,
+  validateStatus,
+  size,
+  ...props
+}: FormInputRawProps) {
+  const helpTextId = helpText ? `${id}-helper` : undefined;
 
-export function FormInput(props: FormInputRawProps) {
- 
-    return <FormInputRaw {...props} />;
-  
+  return (
+    <FormInputRaw
+      id={id}
+      size={size}
+      validateStatus={validateStatus}
+      helpText={
+        validateStatus === "error" ? (
+          <Error id={helpTextId} size={size} showIcon>
+            {helpText}
+          </Error>
+        ) : (
+          <ExtraText id={helpTextId} size={size}>
+            {helpText}
+          </ExtraText>
+        )
+      }
+      {...props}
+    />
+  );
 }

@@ -1,33 +1,26 @@
-import React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
+import { cn } from "../utils";
 
-const errorVariants = tv(
-  {
-    base: ["text-error-text",  "flex items-start gap-1"],
-    variants: {
-      showIcon: {
-        true: "",
-        false: "",
-      },
-      size: {
-        sm: "text-error-sm",
-        md: "text-error-md",
-        lg: "text-error-lg",
-      },
+const errorVariants = tv({
+  base: ["text-error-text", "flex items-center gap-1"],
+  variants: {
+    size: {
+      sm: "text-error-sm",
+      md: "text-error-md",
+      lg: "text-error-lg",
     },
-    defaultVariants: {
-      showIcon: true,
-      size: "md",
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: "md",
+  },
+});
 
 export interface ErrorProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof errorVariants> {
-  showIcon?: boolean;
   ref?: React.Ref<HTMLDivElement>;
-  inputSize?: "sm" | "md" | "lg";
+  showIcon?: boolean;
+  children: React.ReactNode;
 }
 
 function Error({
@@ -35,26 +28,19 @@ function Error({
   showIcon,
   children,
   ref,
-  inputSize,
+  size,
   ...props
 }: ErrorProps) {
-  if (!children) return null;
-
   return (
     <div
       ref={ref}
-      className={(
-        errorVariants({
-          showIcon,
-          size: inputSize,
-          className,
-        })
-      )}
+      className={errorVariants({
+        size,
+        className,
+      })}
       {...props}
     >
-      {showIcon && (
-        <span className="icon-[mdi-light--alert-circle] w-4 h-4 flex-shrink-0 mt-0.5" />
-      )}
+      {showIcon && <Icon icon="token-icon-error" />}
       <span>{children}</span>
     </div>
   );

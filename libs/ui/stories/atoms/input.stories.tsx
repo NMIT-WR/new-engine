@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "../../src/atoms/input";
 import { Label } from "../../src/atoms/label";
@@ -15,25 +14,17 @@ const meta: Meta<typeof Input> = {
   argTypes: {
     size: {
       control: "select",
-      options: ["small", "default", "large"],
+      options: ["sm", "md", "lg"],
       description: "Input size",
     },
     variant: {
       control: "select",
-      options: ["default", "error", "success"],
+      options: ["default", "error", "success", "warning"],
       description: "Visual variant of input",
     },
     disabled: {
       control: "boolean",
       description: "Disabled state",
-    },
-    error: {
-      control: "boolean",
-      description: "Error state",
-    },
-    success: {
-      control: "boolean",
-      description: "Success state",
     },
   },
 };
@@ -75,6 +66,9 @@ export const AllVariants: Story = {
           <Input variant="success" placeholder="Success state" />
         </div>
         <div className="w-64">
+          <Input variant="warning" placeholder="Success state" />
+        </div>
+        <div className="w-64">
           <Input disabled placeholder="Disabled state" />
         </div>
       </VariantGroup>
@@ -91,13 +85,16 @@ export const AllVariants: Story = {
           </Label>
           <Input id="input-required" placeholder="Enter value" />
         </div>
-
       </VariantGroup>
 
       <VariantGroup title="With validation" fullWidth>
         <div className="w-64">
           <Label htmlFor="input-error">Email</Label>
-          <Input id="input-error" variant="error" placeholder="john@example.com" />
+          <Input
+            id="input-error"
+            variant="error"
+            placeholder="john@example.com"
+          />
           <Error>Email is in invalid format</Error>
         </div>
 
