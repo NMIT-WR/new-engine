@@ -73,9 +73,9 @@
   --spacing-textarea-lg: var(--spacing-xs);
 
   /* Typography */
-  --text-textarea-sm: var(--text-2xs);
-  --text-textarea-md: var(--text-xs);
-  --text-textarea-lg: var(--text-sm);
+  --text-textarea-sm: var(--text-sm);
+  --text-textarea-md: var(--text-md);
+  --text-textarea-lg: var(--text-lg);
 
   /* Border radius, width */
   --textarea-border-width: 1px;
