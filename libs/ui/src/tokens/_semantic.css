@@ -8,7 +8,7 @@
 :root {
   --state-hover: -0.08;
   --state-active: -0.12;
-  --opacity-disabled-chroma: 0.02;
+  --state-disabled-chroma: 0.05;
 
   --opacity-ring: 80%;
   --opacity-disabled: 60%;
@@ -39,7 +39,7 @@
     from var(--color-primary) calc(l + var(--state-active)) c h
   );
   --color-primary-disabled: oklch(
-    from var(--color-primary) l var(--opacity-disabled-chroma) h
+    from var(--color-primary) l var(--state-disabled-chroma) h
   );
   --color-primary-light: light-dark(
     var(--color-blue-300),
@@ -64,7 +64,7 @@
     from var(--color-secondary) calc(l + var(--state-active)) c h
   );
   --color-secondary-disabled: oklch(
-    from var(--color-secondary) l var(--opacity-disabled-chroma) h
+    from var(--color-secondary) l var(--state-disabled-chroma) h
   );
   --color-secondary-light: light-dark(
     var(--color-orange-300),
@@ -86,7 +86,7 @@
     from var(--color-tertiary) calc(l + var(--state-active)) c h
   );
   --color-tertiary-disabled: oklch(
-    from var(--color-tertiary) l var(--opacity-disabled-chroma) h
+    from var(--color-tertiary) l var(--state-disabled-chroma) h
   );
   --color-tertiary-light: light-dark(
     var(--color-pink-300),
@@ -111,7 +111,7 @@
     from var(--color-success) calc(l + var(--state-active)) c h
   );
   --color-success-disabled: oklch(
-    from var(--color-success) l var(--opacity-disabled-chroma) h
+    from var(--color-success) l var(--state-disabled-chroma) h
   );
   --color-success-light: light-dark(
     var(--color-emerald-100),
@@ -133,7 +133,7 @@
     from var(--color-info) calc(l + var(--state-active)) c h
   );
   --color-info-disabled: oklch(
-    from var(--color-info) l var(--opacity-disabled-chroma) h
+    from var(--color-info) l var(--state-disabled-chroma) h
   );
   --color-info-light: light-dark(var(--color-teal-300), var(--color-cyan-200));
   --color-info-light-hover: oklch(
@@ -152,7 +152,7 @@
     from var(--color-warning) calc(l + var(--state-active)) c h
   );
   --color-warning-disabled: oklch(
-    from var(--color-warning) l var(--opacity-disabled-chroma) h
+    from var(--color-warning) l var(--state-disabled-chroma) h
   );
   --color-warning-light: light-dark(
     var(--color-yellow-300),
@@ -174,7 +174,7 @@
     from var(--color-danger) calc(l + var(--state-active)) c h
   );
   --color-danger-disabled: oklch(
-    from var(--color-danger) l var(--opacity-disabled-chroma) h
+    from var(--color-danger) l var(--state-disabled-chroma) h
   );
   --color-danger-light: light-dark(var(--color-red-300), var(--color-red-200));
   --color-danger-light-hover: oklch(
@@ -244,12 +244,12 @@
 
   /* Fill Color*/
   /* For an element, if the background color of its container is not fixed, and the contrast between the filling color of the element and the top background color is small, use the filling color as the background color to ensure that the element will not "melt" into a certain level of background color, such as a form control.  */
-  --color-fill-base: --alpha(var(--color-fg-primary) / var(--fill-increment));
+  --color-fill-base: --alpha(var(--color-base-reverse) / var(--fill-increment));
   --color-fill-hover: --alpha(
-    var(--color-fg-primary) / var(--fill-increment) * 2
+    var(--color-base-reverse) / calc(var(--fill-increment) * 2)
   );
   --color-fill-active: --alpha(
-    var(--color-fg-primary) / var(--fill-increment) * 3
+    var(--color-base-reverse) / calc(var(--fill-increment) * 3)
   );
 
   /*Disabled state - Disabled
@@ -269,8 +269,5 @@
   --spacing: 0.25rem;
 
   /* Focus ring */
-  --color-ring-primary: light-dark(
-    var(--color-red-500) / 0.25,
-    var(--color-yellow-400) / 0.5
-  );
+  --color-ring-primary: --alpha(var(--color-primary) / var(--opacity-ring));
 }

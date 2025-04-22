@@ -1,63 +1,224 @@
 @import "../_semantic.css";
 
+:root {
+  --opacity-borderless-hover: 8%;
+  --opacity-borderless-active: 12%;
+  --opacity-outlined-hover: 16%;
+  --opacity-outlined-active: 12%;
+}
+
 @theme static {
+  /* === BASE COLOR MAPPING === */
+  /* Single source of truth */
   --color-btn-primary: var(--color-primary);
-  --color-btn-primary-hover: var(--color-primary-hover);
-  --color-btn-primary-active: var(--color-primary-active);
-  --color-btn-primary-disabled: var(--color-primary-disabled);
-  --color-btn-primary-light: var(--color-primary-light);
-  --color-btn-primary-light-hover: var(--color-primary-light-hover);
-  --color-btn-primary-light-active: var(--color-primary-light-active);
-
   --color-btn-secondary: var(--color-secondary);
-  --color-btn-secondary-hover: var(--color-secondary-hover);
-  --color-btn-secondary-active: var(--color-secondary-active);
-  --color-btn-secondary-disabled: var(--color-secondary-disabled);
-  --color-btn-secondary-light: var(--color-secondary-light);
-  --color-btn-secondary-light-hover: var(--color-secondary-light-hover);
-  --color-btn-secondary-light-active: var(--color-secondary-light-active);
-
   --color-btn-tertiary: var(--color-tertiary);
-  --color-btn-tertiary-hover: var(--color-tertiary-hover);
-  --color-btn-tertiary-active: var(--color-tertiary-active);
-  --color-btn-tertiary-disabled: var(--color-tertiary-disabled);
-  --color-btn-tertiary-light: var(--color-tertiary-light);
-  --color-btn-tertiary-light-hover: var(--color-tertiary-light-hover);
-  --color-btn-tertiary-light-active: var(--color-tertiary-light-active);
-
   --color-btn-warning: var(--color-warning);
-  --color-btn-warning-hover: var(--color-warning-hover);
-  --color-btn-warning-active: var(--color-warning-active);
-  --color-btn-warning-disabled: var(--color-warning-disabled);
-  --color-btn-warning-light: var(--color-warning-light);
-  --color-btn-warning-light-hover: var(--color-warning-light-hover);
-  --color-btn-warning-light-active: var(--color-warning-light-active);
-
   --color-btn-danger: var(--color-danger);
-  --color-btn-danger-hover: var(--color-danger-hover);
-  --color-btn-danger-active: var(--color-danger-active);
-  --color-btn-danger-disabled: var(--color-danger-disabled);
+
+  /* === STATE VARIATIONS === */
+  /* Primary */
+  --color-btn-primary-hover: oklch(
+    from var(--color-btn-primary) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-primary-active: oklch(
+    from var(--color-btn-primary) calc(l + var(--state-active)) c h
+  );
+
+  /* Secondary */
+  --color-btn-secondary-hover: oklch(
+    from var(--color-btn-secondary) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-secondary-active: oklch(
+    from var(--color-btn-secondary) calc(l + var(--state-active)) c h
+  );
+
+  /* Tertiary */
+  --color-btn-tertiary-hover: oklch(
+    from var(--color-btn-tertiary) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-tertiary-active: oklch(
+    from var(--color-btn-tertiary) calc(l + var(--state-active)) c h
+  );
+
+  /* Warning */
+  --color-btn-warning-hover: oklch(
+    from var(--color-btn-warning) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-warning-active: oklch(
+    from var(--color-btn-warning) calc(l + var(--state-active)) c h
+  );
+
+  /* Danger */
+  --color-btn-danger-hover: oklch(
+    from var(--color-btn-danger) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-danger-active: oklch(
+    from var(--color-btn-danger) calc(l + var(--state-active)) c h
+  );
+
+  /* === LIGHT VARIANTS === */
+  --color-btn-primary-light: var(--color-primary-light);
+  --color-btn-secondary-light: var(--color-secondary-light);
+  --color-btn-tertiary-light: var(--color-tertiary-light);
+  --color-btn-warning-light: var(--color-warning-light);
   --color-btn-danger-light: var(--color-danger-light);
-  --color-btn-danger-light-hover: var(--color-danger-light-hover);
-  --color-btn-danger-light-active: var(--color-danger-light-active);
+
+  --color-btn-primary-light-hover: oklch(
+    from var(--color-btn-primary-light) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-primary-light-active: oklch(
+    from var(--color-btn-primary-light) calc(l + var(--state-active)) c h
+  );
+
+  --color-btn-secondary-light-hover: oklch(
+    from var(--color-btn-secondary-light) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-secondary-light-active: oklch(
+    from var(--color-btn-secondary-light) calc(l + var(--state-active)) c h
+  );
+
+  --color-btn-tertiary-light-hover: oklch(
+    from var(--color-btn-tertiary-light) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-tertiary-light-active: oklch(
+    from var(--color-btn-tertiary-light) calc(l + var(--state-active)) c h
+  );
+
+  --color-btn-warning-light-hover: oklch(
+    from var(--color-btn-warning-light) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-warning-light-active: oklch(
+    from var(--color-btn-warning-light) calc(l + var(--state-active)) c h
+  );
+
+  --color-btn-danger-light-hover: oklch(
+    from var(--color-btn-danger-light) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-danger-light-active: oklch(
+    from var(--color-btn-danger-light) calc(l + var(--state-active)) c h
+  );
+
+  /* === BORDERLESS THEME === */
+  --color-btn-borderless-hover: var(--color-fill-hover);
+  --color-btn-borderless-active: var(--color-fill-active);
+
+  /* === OUTLINED THEME === */
+  --color-btn-outlined-primary-hover: --alpha(
+    var(--color-btn-primary) / var(--opacity-outlined-hover)
+  );
+  --color-btn-outlined-primary-active: --alpha(
+    var(--color-btn-primary) / var(--opacity-outlined-active)
+  );
+  --color-btn-outlined-secondary-hover: --alpha(
+    var(--color-btn-secondary) / var(--opacity-outlined-hover)
+  );
+  --color-btn-outlined-secondary-active: --alpha(
+    var(--color-btn-secondary) / var(--opacity-outlined-active)
+  );
+  --color-btn-outlined-tertiary-hover: --alpha(
+    var(--color-btn-tertiary) / var(--opacity-outlined-hover)
+  );
+  --color-btn-outlined-tertiary-active: --alpha(
+    var(--color-btn-tertiary) / var(--opacity-outlined-active)
+  );
+  --color-btn-outlined-warning-hover: --alpha(
+    var(--color-btn-warning) / var(--opacity-outlined-hover)
+  );
+  --color-btn-outlined-warning-active: --alpha(
+    var(--color-btn-warning) / var(--opacity-outlined-active)
+  );
+  --color-btn-outlined-danger-hover: --alpha(
+    var(--color-btn-danger) / var(--opacity-outlined-hover)
+  );
+  --color-btn-outlined-danger-active: --alpha(
+    var(--color-btn-danger) / var(--opacity-outlined-active)
+  );
+
+  /* === UNIFIED DISABLED STATES === */
+  --color-btn-disabled: var(--color-disabled-bg);
+  --color-btn-text-disabled: var(--color-disabled-text);
+  --color-btn-border-disabled: var(--color-disabled-border);
+  --color-btn-outlined-disabled: var(--color-fill-base);
+
+  /* === TEXT COLORS === */
+  --color-btn-text: var(--color-fg-reverse);
+  --color-btn-text-solid: var(--color-btn-text);
+  --color-btn-text-light: oklch(from var(--color-btn-text) 0.3 c h);
+  --color-btn-text-outlined: var(--color-fg-primary);
+
+  --color-btn-text-primary: var(--color-btn-text);
+  --color-btn-text-secondary: var(--color-btn-text);
+  --color-btn-text-tertiary: var(--color-btn-text);
+  --color-btn-text-warning: var(--color-btn-text);
+  --color-btn-text-danger: var(--color-btn-text);
+
+  --color-btn-text-primary-light: var(--color-btn-text-light);
+  --color-btn-text-secondary-light: var(--color-btn-text-light);
+  --color-btn-text-tertiary-light: var(--color-btn-text-light);
+  --color-btn-text-warning-light: var(--color-btn-text-light);
+  --color-btn-text-danger-light: var(--color-btn-text-light);
+
+  --color-btn-text-outlined-primary: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-secondary: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-tertiary: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-warning: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-danger: var(--color-btn-text-outlined);
+
+  --color-btn-text-primary-borderless: var(--color-btn-primary);
+  --color-btn-text-secondary-borderless: var(--color-btn-secondary);
+  --color-btn-text-tertiary-borderless: var(--color-btn-tertiary);
+  --color-btn-text-warning-borderless: var(--color-btn-warning);
+  --color-btn-text-danger-borderless: var(--color-btn-danger);
+
+  /* === FOCUS RINGS === */
+  --color-btn-ring-primary: --alpha(
+    var(--color-btn-primary) / var(--alpha-ring)
+  );
+  --color-btn-ring-secondary: --alpha(
+    var(--color-btn-secondary) / var(--alpha-ring)
+  );
+  --color-btn-ring-tertiary: --alpha(
+    var(--color-btn-tertiary) / var(--alpha-ring)
+  );
+  --color-btn-ring-warning: --alpha(
+    var(--color-btn-warning) / var(--alpha-ring)
+  );
+  --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--alpha-ring));
+
+  /* === PADDING === */
 
   --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
   --padding-btn-md: var(--spacing-xs) var(--spacing-md);
   --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
 
-  /* Typography */
-  --color-fg-btn-primary: var(--color-fg-reverse);
-  --color-fg-btn-secondary: var(--color-fg-primary);
-  --text-btn-sm: 14px;
-  --text-btn-md: 18px;
-  --text-btn-lg: 20px;
+  /* Spacing between icon and text */
+  --spacing-btn-sm: var(--spacing-2xs);
+  --spacing-btn-md: var(--spacing-xs);
+  --spacing-btn-lg: var(--spacing-sm);
 
-  /* Radius */
+  /* === TYPOGRAPHY === */
+  /* Text sizes */
+  --text-btn-sm: var(--text-sm);
+  --text-btn-md: var(--text-md);
+  --text-btn-lg: var(--text-lg);
+
+  /* === RADIUS === */
   --radius-btn-sm: var(--radius-sm);
   --radius-btn-md: var(--radius-md);
   --radius-btn-lg: var(--radius-lg);
 
+  /* ===== Border colors ===== */
+  --color-btn-border-primary: var(--color-btn-primary);
+  --color-btn-border-secondary: var(--color-btn-secondary);
+  --color-btn-border-tertiary: var(--color-btn-tertiary);
+  --color-btn-border-warning: var(--color-btn-warning);
+  --color-btn-border-danger: var(--color-btn-danger);
+
   /* Border width */
   --color-btn-stroke: var(--color-stroke-primary);
   --color-btn-stroke-secondary: var(--color-stroke-secondary);
+  --border-btn-width-sm: 1px;
+  --border-btn-width-md: 2px;
+  --border-btn-width-lg: 3px;
 }

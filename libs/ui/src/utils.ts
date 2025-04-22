@@ -1,14 +1,10 @@
-import { clsx, type ClassValue } from "clsx";
-import { extendTailwindMerge } from "tailwind-merge";
+import { createTV } from "tailwind-variants";
+import type { TV } from "tailwind-variants";
 
-const customTwMerge = extendTailwindMerge({
-  extend: {
+export const tv: TV = createTV({
+  twMergeConfig: {
     theme: {
-      text: [(value: string) => /-(\d?x?[sml])$/.test(value)],
-    },
-  },
+      text: [(value: string) => /-(sm|md|lg|\d?x?[sml])$/.test(value)]
+    }
+  }
 });
-
-export function cn(...inputs: ClassValue[]) {
-  return customTwMerge(clsx(inputs));
-}

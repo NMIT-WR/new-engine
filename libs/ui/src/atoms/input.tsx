@@ -1,6 +1,6 @@
 import { type InputHTMLAttributes, type Ref } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "../utils";
+import { type VariantProps } from "tailwind-variants";
+import { tv } from "../utils";
 
 const inputVariants = tv({
   base: [
@@ -70,13 +70,11 @@ export interface InputProps
 export function Input({ size, variant, disabled, ref, ...props }: InputProps) {
   return (
     <input
-      className={cn(
-        inputVariants({
-          size,
-          variant,
-          disabled,
-        })
-      )}
+      className={inputVariants({
+        size,
+        variant,
+        disabled,
+      })}
       disabled={disabled}
       ref={ref}
       {...props}
