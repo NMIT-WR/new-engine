@@ -22,7 +22,7 @@ export const Sizes: Story = {
     <VariantContainer>
       <VariantGroup title="Sizes">
         <Textarea size="sm" placeholder="Small textarea" />
-        <Textarea size="md" placeholder="Medium textarea (default)" />
+        <Textarea placeholder="Medium textarea (default)" />
         <Textarea size="lg" placeholder="Large textarea" />
       </VariantGroup>
     </VariantContainer>
