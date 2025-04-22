@@ -258,7 +258,6 @@ export function Button({
   size,
   block,
   isLoading,
-  loadingText,
   icon,
   iconPosition = "left",
   uppercase = false,
@@ -273,6 +272,7 @@ export function Button({
         theme,
         size,
         block,
+        uppercase,
         className,
       })}
       disabled={isLoading}
@@ -284,5 +284,3 @@ export function Button({
     </button>
   );
 }
-
-Button.displayName = "Button";
