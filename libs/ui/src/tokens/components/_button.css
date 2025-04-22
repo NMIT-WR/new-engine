@@ -1,6 +1,5 @@
 @import "../_semantic.css";
 
-/* Test modificators in button.css and after that we can move to semantic.css */
 :root {
   --opacity-borderless-hover: 8%;
   --opacity-borderless-active: 12%;
@@ -143,9 +142,28 @@
   --color-btn-outlined-disabled: var(--color-fill-base);
 
   /* === TEXT COLORS === */
-  --color-btn-text-solid: var(--color-fg-reverse);
+  --color-btn-text: var(--color-fg-reverse);
+  --color-btn-text-solid: var(--color-btn-text);
   --color-btn-text-light: oklch(from var(--color-btn-text) 0.3 c h);
   --color-btn-text-outlined: var(--color-fg-primary);
+
+  --color-btn-text-primary: var(--color-btn-text);
+  --color-btn-text-secondary: var(--color-btn-text);
+  --color-btn-text-tertiary: var(--color-btn-text);
+  --color-btn-text-warning: var(--color-btn-text);
+  --color-btn-text-danger: var(--color-btn-text);
+
+  --color-btn-text-primary-light: var(--color-btn-text-light);
+  --color-btn-text-secondary-light: var(--color-btn-text-light);
+  --color-btn-text-tertiary-light: var(--color-btn-text-light);
+  --color-btn-text-warning-light: var(--color-btn-text-light);
+  --color-btn-text-danger-light: var(--color-btn-text-light);
+
+  --color-btn-text-primary-borderless: var(--color-btn-primary);
+  --color-btn-text-secondary-borderless: var(--color-btn-secondary);
+  --color-btn-text-tertiary-borderless: var(--color-btn-tertiary);
+  --color-btn-text-warning-borderless: var(--color-btn-warning);
+  --color-btn-text-danger-borderless: var(--color-btn-danger);
 
   /* === FOCUS RINGS === */
   --color-btn-ring-primary: --alpha(
