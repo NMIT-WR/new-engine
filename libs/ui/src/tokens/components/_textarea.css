@@ -4,8 +4,10 @@
   --color-textarea: var(--color-fill-base);
   --color-textarea-border: var(--color-stroke-primary);
   --color-textarea-text: var(--color-fg-primary);
-  --color-textarea-placeholder: --alpha(var(--color-fg-primary) / 60%);
-  --color-textarea-addons: var(--color-primary);
+  --color-textarea-placeholder: --alpha(
+    var(--color-fg-primary) / var(--opacity-placeholder)
+  );
+  --color-textarea-accent: var(--color-primary);
   --color-textarea-danger: var(--color-danger);
   --color-textarea-success: var(--color-success);
   --color-textarea-warning: var(--color-warning);
@@ -21,8 +23,8 @@
   --color-textarea-disabled: var(--color-disabled-bg);
 
   /* Border state variations */
-  --color-textarea-border-hover: var(--color-textarea-addons);
-  --color-textarea-border-focus: var(--color-textarea-addons);
+  --color-textarea-border-hover: var(--color-textarea-accent);
+  --color-textarea-border-focus: var(--color-textarea-accent);
   --color-textarea-border-disabled: var(--color-disabled-border);
 
   /* === VALIDATION STATES === */
@@ -32,6 +34,9 @@
     from var(--color-textarea-danger) calc(l + var(--state-hover)) c h
   );
   --color-textarea-border-danger-focus: var(--color-textarea-danger);
+  --color-textarea-placeholder-danger: --alpha(
+    var(--color-textarea-danger) / var(--opacity-placeholder)
+  );
 
   /* Success variant */
   --color-textarea-border-success: var(--color-textarea-success);
@@ -54,17 +59,15 @@
   --color-textarea-text-disabled: var(--color-disabled-text);
 
   /* Focus rings */
-  --color-textarea-ring: --alpha(
-    var(--color-primary) / var(--state-ring-opacity)
-  );
+  --color-textarea-ring: --alpha(var(--color-primary) / var(--opacity-ring));
   --color-textarea-ring-danger: --alpha(
-    var(--color-textarea-danger) / var(--state-ring-opacity)
+    var(--color-textarea-danger) / var(--opacity-ring)
   );
   --color-textarea-ring-success: --alpha(
-    var(--color-textarea-success) / var(--state-ring-opacity)
+    var(--color-textarea-success) / var(--opacity-ring)
   );
   --color-textarea-ring-warning: --alpha(
-    var(--color-textarea-warning) / var(--state-ring-opacity)
+    var(--color-textarea-warning) / var(--opacity-ring)
   );
 
   /* Spacing */
@@ -73,9 +76,9 @@
   --spacing-textarea-lg: var(--spacing-xs);
 
   /* Typography */
-  --text-textarea-sm: var(--text-2xs);
-  --text-textarea-md: var(--text-xs);
-  --text-textarea-lg: var(--text-sm);
+  --text-textarea-sm: var(--text-sm);
+  --text-textarea-md: var(--text-md);
+  --text-textarea-lg: var(--text-lg);
 
   /* Border radius, width */
   --textarea-border-width: 1px;

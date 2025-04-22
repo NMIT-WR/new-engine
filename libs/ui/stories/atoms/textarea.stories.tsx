@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Textarea } from "../../src/atoms/textarea";
 import { VariantContainer, VariantGroup } from "../../.storybook/decorator";
@@ -29,7 +28,6 @@ export const Sizes: Story = {
     </VariantContainer>
   ),
 };
-
 
 /**
  * Shows the various validation states for visual feedback.
@@ -63,7 +61,6 @@ export const VisualModifiers: Story = {
   ),
 };
 
-
 /**
  * Comprehensive overview of all key variants.
  */
@@ -75,14 +72,14 @@ export const AllVariants: Story = {
         <Textarea size="md" placeholder="Medium textarea" />
         <Textarea size="lg" placeholder="Large textarea" />
       </VariantGroup>
-      
+
       <VariantGroup title="Resize Modes">
         <Textarea resize="y" placeholder="Vertical resize" />
         <Textarea resize="x" placeholder="Horizontal resize" />
         <Textarea resize="none" placeholder="No resize" />
         <Textarea resize="both" placeholder="Resize both" />
       </VariantGroup>
-      
+
       <VariantGroup title="Validation States">
         <Textarea variant="default" placeholder="Default state" />
         <Textarea variant="error" placeholder="Error state" />
@@ -90,7 +87,7 @@ export const AllVariants: Story = {
         <Textarea variant="warning" placeholder="Warning state" />
         <Textarea variant="borderless" placeholder="Borderless variant" />
       </VariantGroup>
-      
+
       <VariantGroup title="Interactivity">
         <Textarea placeholder="Normal state" />
         <Textarea disabled placeholder="Disabled textarea" />
@@ -108,39 +105,39 @@ export const UseCaseCombinations: Story = {
     <VariantContainer>
       <VariantGroup title="Real-world Use Cases">
         {/* Use Case 1: Product description for admins */}
-        <Textarea 
-          size="lg" 
-          lineHeight="relaxed" 
-          resize="y" 
+        <Textarea
+          size="lg"
+          lineHeight="relaxed"
+          resize="y"
           scrollbar="thin"
           placeholder="Product description - admin interface"
         />
-        
+
         {/* Use Case 2: Order notes with validation */}
-        <Textarea 
-          variant="error" 
+        <Textarea
+          variant="error"
           size="md"
           placeholder="Order notes with validation error"
         />
-        
+
         {/* Use Case 3: Read-only display of database content */}
-        <Textarea 
-          readonly 
-          variant="borderless" 
+        <Textarea
+          readonly
+          variant="borderless"
           defaultValue="This is a read-only display of database content that maintains the same visual structure as editable fields."
         />
-        
+
         {/* Use Case 4: Product reviews with submission status */}
-        <Textarea 
-          shadow="sm" 
-          variant="success" 
+        <Textarea
+          shadow="sm"
+          variant="success"
           placeholder="Successfully submitted product review"
         />
-        
+
         {/* Use Case 5: Compact notepad */}
-        <Textarea 
-          size="sm" 
-          lineHeight="compact" 
+        <Textarea
+          size="sm"
+          lineHeight="compact"
           resize="both"
           shadow="md"
           placeholder="Compact notepad with resizing"
