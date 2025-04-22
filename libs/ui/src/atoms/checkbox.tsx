@@ -17,7 +17,7 @@ const checkboxVariants = tv({
 });
 
 export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends InputHTMLAttributes<HTMLInputElement> {
   ref?: Ref<HTMLInputElement>;
 }
 
