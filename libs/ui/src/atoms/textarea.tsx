@@ -24,7 +24,7 @@ const textareaVariants = tv({
         "hover:border-textarea-border-danger-hover",
         "focus:border-textarea-border-danger-focus",
         "focus-visible:ring-textarea-ring-danger",
-        "placeholder:text-danger/60",
+        "placeholder:text-textarea-placeholder-danger",
       ],
       success: [
         "border-textarea-border-success",
