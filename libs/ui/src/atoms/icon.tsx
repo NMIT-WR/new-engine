@@ -8,6 +8,7 @@ const iconVariants = tv({
   base: ["inline-block flex-shrink-0 align-middle leading-none"],
   variants: {
     size: {
+      current: "text-icon-current",
       xs: "text-icon-xs",
       sm: "text-icon-sm",
       md: "text-icon-md",
