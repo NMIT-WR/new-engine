@@ -1,0 +1,17 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-checkbox: var(--color-fill-active);
+  --color-checkbox-checked: var(--color-success);
+  --color-checkbox-disabled: var(--color-disabled-bg);
+  --color-checkbox-border: var(--color-stroke-primary);
+  --color-checkbox-border-disabled: var(--color-disabled-border);
+
+  --spacing-checkbox: var(--spacing-xs);
+  --color-icon-text: var(--color-fg-dark);
+  --text-icon-md: var(--text-xs);
+  --radius-checkbox: var(--radius-sm);
+}
+
+@utility token-icon-checkbox {
+  @apply icon-[mdi--check-bold];
+}
