@@ -29,12 +29,7 @@ export function FormInputRaw({
 
   return (
     <div className="flex flex-col gap-1">
-      <Label
-        htmlFor={id}
-        size={size}
-        required={required}
-        disabled={disabled}
-      >
+      <Label htmlFor={id} size={size} required={required} disabled={disabled}>
         {label}
       </Label>
       <Input
@@ -50,10 +45,7 @@ export function FormInputRaw({
       {helpText}
 
       {extraText && (
-        <ExtraText
-          id={extraTextId}
-          size={size}
-        >
+        <ExtraText id={extraTextId} size={size}>
           {extraText}
         </ExtraText>
       )}
@@ -61,32 +53,32 @@ export function FormInputRaw({
   );
 }
 
-
-export function FormInput({ helpText, id, validateStatus, size, ...props }: FormInputRawProps) {
+export function FormInput({
+  helpText,
+  id,
+  validateStatus,
+  size,
+  ...props
+}: FormInputRawProps) {
   const helpTextId = helpText ? `${id}-helper` : undefined;
 
-  return <FormInputRaw
-    id={id}
-    size={size}
-    validateStatus={validateStatus}
-    helpText={
-      validateStatus === "error" ? (
-        <Error
-          id={helpTextId}
-          size={size}
-          showIcon
-        >
-          {helpText}
-        </Error>
-      ) : (
-        <ExtraText
-          id={helpTextId}
-          size={size}
-        >
-          {helpText}
-        </ExtraText>
-      )
-    }
-    {...props}
-  />;
+  return (
+    <FormInputRaw
+      id={id}
+      size={size}
+      validateStatus={validateStatus}
+      helpText={
+        validateStatus === "error" ? (
+          <Error id={helpTextId} size={size} showIcon>
+            {helpText}
+          </Error>
+        ) : (
+          <ExtraText id={helpTextId} size={size}>
+            {helpText}
+          </ExtraText>
+        )
+      }
+      {...props}
+    />
+  );
 }

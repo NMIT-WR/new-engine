@@ -1,0 +1,86 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  /* Primary variables mapped from semantic tokens */
+  --color-textarea: var(--color-fill-base);
+  --color-textarea-border: var(--color-stroke-primary);
+  --color-textarea-text: var(--color-fg-primary);
+  --color-textarea-placeholder: --alpha(
+    var(--color-fg-primary) / var(--opacity-placeholder)
+  );
+  --color-textarea-accent: var(--color-primary);
+  --color-textarea-danger: var(--color-danger);
+  --color-textarea-success: var(--color-success);
+  --color-textarea-warning: var(--color-warning);
+
+  /* === STATE VARIATIONS === */
+  /* Default hover/focus states */
+  --color-textarea-hover: oklch(
+    from var(--color-textarea) calc(l + var(--state-hover)) c h
+  );
+  --color-textarea-focus: oklch(
+    from var(--color-textarea) calc(l + var(--state-active)) c h
+  );
+  --color-textarea-disabled: var(--color-disabled-bg);
+
+  /* Border state variations */
+  --color-textarea-border-hover: var(--color-textarea-accent);
+  --color-textarea-border-focus: var(--color-textarea-accent);
+  --color-textarea-border-disabled: var(--color-disabled-border);
+
+  /* === VALIDATION STATES === */
+  /* Danger variant */
+  --color-textarea-border-danger: var(--color-textarea-danger);
+  --color-textarea-border-danger-hover: oklch(
+    from var(--color-textarea-danger) calc(l + var(--state-hover)) c h
+  );
+  --color-textarea-border-danger-focus: var(--color-textarea-danger);
+  --color-textarea-placeholder-danger: --alpha(
+    var(--color-textarea-danger) / var(--opacity-placeholder)
+  );
+
+  /* Success variant */
+  --color-textarea-border-success: var(--color-textarea-success);
+  --color-textarea-border-success-hover: oklch(
+    from var(--color-textarea-success) calc(l + var(--state-hover)) c h
+  );
+  --color-textarea-border-success-focus: var(--color-textarea-success);
+
+  /* Warning variant */
+  --color-textarea-border-warning: var(--color-textarea-warning);
+  --color-textarea-border-warning-hover: oklch(
+    from var(--color-textarea-warning) calc(l + var(--state-hover)) c h
+  );
+  --color-textarea-border-warning-focus: var(--color-textarea-warning);
+
+  /* Borderless */
+  --color-textarea-borderless: --alpha(var(--color-textarea) / 50%);
+
+  /* Text states */
+  --color-textarea-text-disabled: var(--color-disabled-text);
+
+  /* Focus rings */
+  --color-textarea-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-textarea-ring-danger: --alpha(
+    var(--color-textarea-danger) / var(--opacity-ring)
+  );
+  --color-textarea-ring-success: --alpha(
+    var(--color-textarea-success) / var(--opacity-ring)
+  );
+  --color-textarea-ring-warning: --alpha(
+    var(--color-textarea-warning) / var(--opacity-ring)
+  );
+
+  /* Spacing */
+  --spacing-textarea-sm: var(--spacing-3xs);
+  --spacing-textarea-md: var(--spacing-2xs);
+  --spacing-textarea-lg: var(--spacing-xs);
+
+  /* Typography */
+  --text-textarea-sm: var(--text-sm);
+  --text-textarea-md: var(--text-md);
+  --text-textarea-lg: var(--text-lg);
+
+  /* Border radius, width */
+  --textarea-border-width: 1px;
+  --radius-textarea: var(--radius-md);
+}
