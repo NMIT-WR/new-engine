@@ -125,17 +125,19 @@ export const States: Story = {
     return (
       <VariantContainer>
         <VariantGroup title="Disabled states">
-          <Button disabled>Primary</Button>
-          <Button variant="secondary" disabled>
+          <Button theme="outlined" disabled>
+            Primary
+          </Button>
+          <Button variant="secondary" theme="light" disabled>
             Secondary
           </Button>
-          <Button variant="tertiary" disabled>
+          <Button variant="tertiary" theme="borderless" disabled>
             Tertiary
           </Button>
-          <Button variant="warning" disabled>
+          <Button variant="warning" theme="borderless" disabled>
             Warning
           </Button>
-          <Button variant="danger" disabled>
+          <Button variant="danger" theme="solid" disabled>
             Danger
           </Button>
         </VariantGroup>
@@ -148,16 +150,6 @@ export const States: Story = {
 
           <Button variant="danger" isLoading>
             Danger
-          </Button>
-        </VariantGroup>
-
-        <VariantGroup title=" demo">
-          <Button
-            isLoading={isLoading}
-            onClick={toggleLoading}
-            icon="icon-[mdi--refresh]"
-          >
-            click
           </Button>
         </VariantGroup>
       </VariantContainer>

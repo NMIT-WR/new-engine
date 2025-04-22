@@ -8,6 +8,7 @@ const iconVariants = tv({
   base: ["inline-block flex-shrink-0 align-middle leading-none"],
   variants: {
     size: {
+      current: "",
       xs: "text-icon-xs",
       sm: "text-icon-sm",
       md: "text-icon-md",
@@ -24,7 +25,7 @@ const iconVariants = tv({
     },
   },
   defaultVariants: {
-    size: "md",
+    size: "current",
     color: "current",
   },
 });
@@ -38,7 +39,7 @@ export interface IconProps
 export function Icon({ icon, size, color, ...props }: IconProps) {
   return (
     <span
-      className={(iconVariants({ size, color }), icon)}
+      className={iconVariants({ size, color, className: icon })}
       aria-hidden="true"
       {...props}
     />
