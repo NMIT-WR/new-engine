@@ -26,8 +26,7 @@ const buttonVariants = tv({
       light: "disabled:bg-btn-disabled",
       borderless:
         "hover:bg-btn-borderless-hover active:bg-btn-borderless-active",
-      outlined:
-        "border text-btn-text-outlined disabled:border-btn-border-disabled",
+      outlined: "border disabled:border-btn-border-disabled",
     },
     uppercase: {
       true: "uppercase",
@@ -150,6 +149,7 @@ const buttonVariants = tv({
         "border-btn-border-primary",
         "hover:bg-btn-outlined-primary-hover",
         "active:bg-btn-outlined-primary-active",
+        "text-btn-text-outlined-primary",
       ],
     },
     {
@@ -159,6 +159,7 @@ const buttonVariants = tv({
         "border-btn-border-secondary",
         "hover:bg-btn-outlined-secondary-hover",
         "active:bg-btn-outlined-secondary-active",
+        "text-btn-text-outlined-secondary",
       ],
     },
     {
@@ -168,6 +169,7 @@ const buttonVariants = tv({
         "border-btn-border-tertiary",
         "hover:bg-btn-outlined-tertiary-hover",
         "active:bg-btn-outlined-tertiary-active",
+        "text-btn-text-outlined-tertiary",
       ],
     },
     {
@@ -177,6 +179,7 @@ const buttonVariants = tv({
         "border-btn-border-warning",
         "hover:bg-btn-outlined-warning-hover",
         "active:bg-btn-outlined-warning-active",
+        "text-btn-text-outlined-warning",
       ],
     },
     {
@@ -186,6 +189,7 @@ const buttonVariants = tv({
         "border-btn-border-danger",
         "hover:bg-btn-outlined-danger-hover",
         "active:bg-btn-outlined-danger-active",
+        "text-btn-text-outlined-danger",
       ],
     },
     {

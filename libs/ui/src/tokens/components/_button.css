@@ -159,6 +159,12 @@
   --color-btn-text-warning-light: var(--color-btn-text-light);
   --color-btn-text-danger-light: var(--color-btn-text-light);
 
+  --color-btn-text-outlined-primary: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-secondary: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-tertiary: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-warning: var(--color-btn-text-outlined);
+  --color-btn-text-outlined-danger: var(--color-btn-text-outlined);
+
   --color-btn-text-primary-borderless: var(--color-btn-primary);
   --color-btn-text-secondary-borderless: var(--color-btn-secondary);
   --color-btn-text-tertiary-borderless: var(--color-btn-tertiary);
