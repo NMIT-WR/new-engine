@@ -1,7 +1,6 @@
 @plugin "@iconify/tailwind4";
 
 @theme static {
-  --text-icon-current: 1em;
   --text-icon-xs: 12px;
   --text-icon-sm: 16px;
   --text-icon-md: 20px;
