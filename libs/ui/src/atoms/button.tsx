@@ -22,12 +22,11 @@ const buttonVariants = tv({
       warning: "focus:ring-btn-ring-warning",
     },
     theme: {
-      solid: "text-btn-text-solid disabled:bg-btn-disabled",
-      light: "text-btn-text-light disabled:bg-btn-disabled",
+      solid: "disabled:bg-btn-disabled",
+      light: "disabled:bg-btn-disabled",
       borderless:
         "hover:bg-btn-borderless-hover active:bg-btn-borderless-active",
-      outlined:
-        "border text-btn-text-outlined disabled:border-btn-border-disabled",
+      outlined: "border disabled:border-btn-border-disabled",
     },
     uppercase: {
       true: "uppercase",
@@ -50,6 +49,7 @@ const buttonVariants = tv({
         "bg-btn-primary",
         "hover:bg-btn-primary-hover",
         "active:bg-btn-primary-active",
+        "text-btn-text-primary",
       ],
     },
     {
@@ -59,6 +59,7 @@ const buttonVariants = tv({
         "bg-btn-secondary",
         "hover:bg-btn-secondary-hover",
         "active:bg-btn-secondary-active",
+        "text-btn-text-secondary",
       ],
     },
     {
@@ -68,6 +69,7 @@ const buttonVariants = tv({
         "bg-btn-tertiary",
         "hover:bg-btn-tertiary-hover",
         "active:bg-btn-tertiary-active",
+        "text-btn-text-tertiary",
       ],
     },
     {
@@ -77,6 +79,7 @@ const buttonVariants = tv({
         "bg-btn-warning",
         "hover:bg-btn-warning-hover",
         "active:bg-btn-warning-active",
+        "text-btn-text-warning",
       ],
     },
     {
@@ -86,6 +89,7 @@ const buttonVariants = tv({
         "bg-btn-danger",
         "hover:bg-btn-danger-hover",
         "active:bg-btn-danger-active",
+        "text-btn-text-danger",
       ],
     },
     {
@@ -95,6 +99,7 @@ const buttonVariants = tv({
         "bg-btn-primary-light",
         "hover:bg-btn-primary-light-hover",
         "active:bg-btn-primary-light-active",
+        "text-btn-text-primary-light",
       ],
     },
     {
@@ -104,6 +109,7 @@ const buttonVariants = tv({
         "bg-btn-secondary-light",
         "hover:bg-btn-secondary-light-hover",
         "active:bg-btn-secondary-light-active",
+        "text-btn-text-secondary-light",
       ],
     },
     {
@@ -113,6 +119,7 @@ const buttonVariants = tv({
         "bg-btn-tertiary-light",
         "hover:bg-btn-tertiary-light-hover",
         "active:bg-btn-tertiary-light-active",
+        "text-btn-text-tertiary-light",
       ],
     },
     {
@@ -122,6 +129,7 @@ const buttonVariants = tv({
         "bg-btn-warning-light",
         "hover:bg-btn-warning-light-hover",
         "active:bg-btn-warning-light-active",
+        "text-btn-text-warning-light",
       ],
     },
     {
@@ -131,6 +139,7 @@ const buttonVariants = tv({
         "bg-btn-danger-light",
         "hover:bg-btn-danger-light-hover",
         "active:bg-btn-danger-light-active",
+        "text-btn-text-danger-light",
       ],
     },
     {
@@ -140,6 +149,7 @@ const buttonVariants = tv({
         "border-btn-border-primary",
         "hover:bg-btn-outlined-primary-hover",
         "active:bg-btn-outlined-primary-active",
+        "text-btn-text-outlined-primary",
       ],
     },
     {
@@ -149,6 +159,7 @@ const buttonVariants = tv({
         "border-btn-border-secondary",
         "hover:bg-btn-outlined-secondary-hover",
         "active:bg-btn-outlined-secondary-active",
+        "text-btn-text-outlined-secondary",
       ],
     },
     {
@@ -158,6 +169,7 @@ const buttonVariants = tv({
         "border-btn-border-tertiary",
         "hover:bg-btn-outlined-tertiary-hover",
         "active:bg-btn-outlined-tertiary-active",
+        "text-btn-text-outlined-tertiary",
       ],
     },
     {
@@ -167,6 +179,7 @@ const buttonVariants = tv({
         "border-btn-border-warning",
         "hover:bg-btn-outlined-warning-hover",
         "active:bg-btn-outlined-warning-active",
+        "text-btn-text-outlined-warning",
       ],
     },
     {
@@ -176,32 +189,33 @@ const buttonVariants = tv({
         "border-btn-border-danger",
         "hover:bg-btn-outlined-danger-hover",
         "active:bg-btn-outlined-danger-active",
+        "text-btn-text-outlined-danger",
       ],
     },
     {
       variant: "primary",
       theme: "borderless",
-      className: ["text-btn-primary"],
+      className: ["text-btn-text-primary-borderless"],
     },
     {
       variant: "secondary",
       theme: "borderless",
-      className: ["text-btn-secondary"],
+      className: ["text-btn-text-secondary-borderless"],
     },
     {
       variant: "tertiary",
       theme: "borderless",
-      className: ["text-btn-tertiary"],
+      className: ["text-btn-text-tertiary-borderless"],
     },
     {
       variant: "warning",
       theme: "borderless",
-      className: ["text-btn-warning"],
+      className: ["text-btn-text-warning-borderless"],
     },
     {
       variant: "danger",
       theme: "borderless",
-      className: ["text-btn-danger"],
+      className: ["text-btn-text-danger-borderless"],
     },
     {
       theme: "outlined",
