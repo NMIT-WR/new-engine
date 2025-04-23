@@ -41,21 +41,29 @@ export const getProductByHandle = async function (
 }
 
 export const getProductFashionDataByHandle = async function (handle: string) {
-  return sdk.client.fetch<{
-    materials: {
-      id: string
-      name: string
-      colors: {
+  try {
+    return await sdk.client.fetch<{
+      materials: {
         id: string
         name: string
-        hex_code: string
+        colors: {
+          id: string
+          name: string
+          hex_code: string
+        }[]
       }[]
-    }[]
-  }>(`/store/custom/fashion/${handle}`, {
-    method: "GET",
-    next: { tags: ["products"] },
-    cache: "force-cache",
-  })
+    }>(`/store/custom/fashion/${handle}`, {
+      method: "GET",
+      next: { tags: ["products"] },
+      cache: "force-cache",
+    })
+  } catch (error) {
+    console.warn(`Failed to fetch fashion data for product ${handle}:`, error)
+    // Return default/empty data to prevent build failures
+    return {
+      materials: [],
+    }
+  }
 }
 
 export const getProductsList = async function ({
