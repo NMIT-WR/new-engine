@@ -29,17 +29,14 @@ export function FormCheckboxRaw({
   const extraTextId = extraText ? `${id}-extra` : undefined;
 
   return (
-    <div className="flex gap-2">
-      {/* Add mt-0.5 to align the checkbox with the text baseline */}
-      <div className="mt-1 flex-shrink-0">
+    <div className="flex gap-2xs">
+      <div className="flex items-start mt-2">
         <Checkbox id={id} required={required} disabled={disabled} {...props} />
       </div>
-
-      <div className="flex flex-col items-start gap-1">
+      <div className="flex flex-col">
         <Label htmlFor={id} size={size} required={required} disabled={disabled}>
           {label}
         </Label>
-        {/* Status message */}
         {helpText}
         {extraText && (
           <ExtraText id={extraTextId} size={size}>
@@ -67,7 +64,7 @@ export function FormCheckbox({
       validateStatus={validateStatus}
       helpText={
         validateStatus === "error" ? (
-          <Error id={helpTextId} size={size} showIcon>
+          <Error id={helpTextId} size={size}>
             {helpText}
           </Error>
         ) : helpText ? (
