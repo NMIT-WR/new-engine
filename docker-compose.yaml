@@ -8,9 +8,9 @@ services:
     volumes:
       - .:/var/www
     command: pnpm --filter medusa-fe dev
-#    command: ["tail" ,"-f"]
+    #    command: ["tail" ,"-f"]
     ports:
-      - "8000:8000"
+      - "8001:8001"
     networks:
       - internal
     depends_on:
@@ -18,7 +18,7 @@ services:
       - medusa-meilisearch
       - medusa-minio
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:8000' ]
+      test: ["CMD", "curl", "-f", "http://localhost:8001"]
       start_period: 10s
     environment:
       MEDUSA_BACKEND_URL: ${DC_MEDUSA_BACKEND_URL}
@@ -49,7 +49,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/app' ]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/app"]
       start_period: 10s
     environment:
       VITE_HMR_PORT: ${DC_VITE_HMR_PORT}
@@ -72,7 +72,7 @@ services:
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:
-      test: '[ $$(valkey-cli ping) = ''PONG'' ]'
+      test: "[ $$(valkey-cli ping) = 'PONG' ]"
       start_period: 5s
       timeout: 3s
       interval: 1s
@@ -95,7 +95,7 @@ services:
       - internal
     command: server /data --console-address ":9003" --address :9004
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:9003' ]
+      test: ["CMD", "curl", "-f", "http://localhost:9003"]
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -109,7 +109,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:7700' ]
+      test: ["CMD", "curl", "-f", "http://localhost:7700"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -119,7 +119,7 @@ services:
   medusa-db:
     image: postgres:17.2-alpine
     restart: unless-stopped
-    command: [ 'postgres', '-cshared_preload_libraries=pg_stat_statements' ]
+    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     ports:
       - "5432:5432"
     volumes:
@@ -127,7 +127,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-d', 'medusa' ]
+      test: ["CMD", "pg_isready", "-d", "medusa"]
       start_period: 10s
       interval: 30s
       timeout: 60s
@@ -136,7 +136,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
       POSTGRES_DB: medusa
-      PGDATA: '/var/lib/postgresql/data'
+      PGDATA: "/var/lib/postgresql/data"
   adminer:
     image: adminer
     restart: unless-stopped
@@ -149,7 +149,7 @@ services:
     environment:
       ADMINER_DESIGN: nette
       ADMINER_DEFAULT_SERVER: medusa-db
-      ADMINER_PLUGINS: 'dump-json'
+      ADMINER_PLUGINS: "dump-json"
   caddy:
     build:
       context: ./docker/development/caddy
