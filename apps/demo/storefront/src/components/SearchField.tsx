@@ -161,7 +161,9 @@ export const SearchField: React.FC<{
                 <div>
                   <p className="text-base font-normal">{item.title}</p>
                   <p className="text-grayscale-500 text-xs">
-                    {item.variants[0]}
+                    {item.variants &&
+                      item.variants.length > 0 &&
+                      item.variants[0]}
                   </p>
                 </div>
                 <p className="text-base font-semibold ml-auto">

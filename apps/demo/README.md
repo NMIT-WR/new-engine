@@ -49,7 +49,7 @@ pnpm dev
 
 Access the storefront:
 
-- Frontend: http://localhost:8001
+- Frontend: http://localhost:8000
 - MeiliSearch: http://localhost:7700
 
 ## Notes
