@@ -50,10 +50,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
 
   if (!store) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      "Store not found"
-    );
+    throw new MedusaError(MedusaError.Types.NOT_FOUND, "Store not found");
   }
   if (!defaultSalesChannel || !defaultSalesChannel.length) {
     // create the default sales channel
@@ -109,10 +106,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
   const region = regionResult[0];
   if (!region) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      "Region not found"
-    );
+    throw new MedusaError(MedusaError.Types.NOT_FOUND, "Region not found");
   }
   logger.info("Finished seeding regions.");
 
@@ -452,13 +446,21 @@ export default async function seedDemoData({ container }: ExecArgs) {
             },
           });
 
+          // Transform the result to replace the URL
+          const transformedResult = result.map((file) => ({
+            ...file,
+            url: file.url
+              ? file.url.replace("medusa-minio:9004", "localhost:9004")
+              : file.url,
+          }));
+
           logger.info(
-            `Upload successful for ${productName}. Files uploaded: ${result
+            `Upload successful for ${productName}. Files uploaded: ${transformedResult
               .map((f) => f.url)
               .join(", ")}`
           );
 
-          results[productName] = result;
+          results[productName] = transformedResult;
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : String(error);
@@ -1054,9 +1056,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
 
-  await batchLinkProductsToCollectionWorkflow(
-    container
-  ).run({
+  await batchLinkProductsToCollectionWorkflow(container).run({
     input: {
       id: collections[0].id,
       add: products.map((p) => p.id),
