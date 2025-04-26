@@ -9,7 +9,7 @@ type CartTotalsProps = {
   cart: HttpTypes.StoreCart
 }
 
-const CartTotals: React.FC<CartTotalsProps> = ({ cart }) => {
+const CartTotals = ({ cart }: CartTotalsProps) => {
   const {
     currency_code,
     total,

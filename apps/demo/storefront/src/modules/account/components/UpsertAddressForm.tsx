@@ -9,6 +9,7 @@ import { z } from "zod"
 import { SubmitButton } from "@modules/common/components/submit-button"
 import { customerAddressSchema, useAddressMutation } from "hooks/customer"
 import { withReactQueryProvider } from "@lib/util/react-query"
+import { OverlayTriggerState } from "react-stately"
 
 export const UpsertAddressForm = withReactQueryProvider<{
   addressId?: string
@@ -26,7 +27,9 @@ export const UpsertAddressForm = withReactQueryProvider<{
     phone?: string
   }
 }>(({ addressId, region, defaultValues }) => {
-  const { close } = React.useContext(ReactAria.OverlayTriggerStateContext)!
+  const { close } = React.useContext(
+    ReactAria.OverlayTriggerStateContext as unknown as React.Context<OverlayTriggerState | null>
+  )!
   const { mutate, isPending, data } = useAddressMutation(addressId)
 
   const onSubmit = (values: z.infer<typeof customerAddressSchema>) => {

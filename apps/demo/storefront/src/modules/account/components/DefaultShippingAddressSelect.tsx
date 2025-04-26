@@ -12,10 +12,15 @@ import {
   UiSelectListBoxItem,
 } from "@/components/ui/Select"
 
-export const DefaultShippingAddressSelect: React.FC<{
+type DefaultShippingAddressSelectProps = {
   addresses: StoreCustomerAddress[]
   countries: BaseRegionCountry[]
-}> = ({ addresses, countries }) => {
+}
+
+export const DefaultShippingAddressSelect = ({
+  addresses,
+  countries,
+}: DefaultShippingAddressSelectProps) => {
   const handleAddressSelect = async (value: string) => {
     await updateDefaultShippingAddress(value)
   }

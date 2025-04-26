@@ -38,7 +38,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, cart }) => {
           stripeKey={stripeKey}
           stripePromise={stripePromise}
         >
-          {children}
+          <>{children}</>
         </StripeWrapper>
       </StripeContext.Provider>
     )
@@ -58,7 +58,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children, cart }) => {
           components: "buttons",
         }}
       >
-        {children}
+        <>{children}</>
       </PayPalScriptProvider>
     )
   }

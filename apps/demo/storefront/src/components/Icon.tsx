@@ -65,13 +65,13 @@ export type IconProps = React.ComponentPropsWithoutRef<"svg"> & {
   wrapperClassName?: string
 }
 
-export const Icon: React.FC<IconProps> = ({
+export const Icon = ({
   name,
   status = 0,
   wrapperClassName,
   className,
   ...rest
-}) => (
+}: IconProps) => (
   <div className={twMerge("relative shrink-0", wrapperClassName)}>
     {Boolean(status) && (
       <div

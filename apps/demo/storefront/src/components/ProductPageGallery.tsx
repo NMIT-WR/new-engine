@@ -9,9 +9,15 @@ import useEmblaCarousel from "embla-carousel-react"
 import { Icon } from "@/components/Icon"
 import { IconCircle } from "@/components/IconCircle"
 
-export const ProductPageGallery: React.FC<
-  React.ComponentPropsWithRef<"div">
-> = ({ children, className }) => {
+type ProductPageGalleryProps = {
+  children: React.ReactNode
+  className?: string
+}
+
+export const ProductPageGallery = ({
+  children,
+  className,
+}: ProductPageGalleryProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     containScroll: "trimSnaps",
     skipSnaps: true,

@@ -3,8 +3,10 @@ import { getCollectionsList } from "@lib/data/collections"
 import { Carousel } from "@/components/Carousel"
 import { LocalizedButtonLink, LocalizedLink } from "@/components/LocalizedLink"
 
-export const CollectionsSection: React.FC<{ className?: string }> = async ({
+export const CollectionsSection = async ({
   className,
+}: {
+  className: string
 }) => {
   const collections = await getCollectionsList(0, 20, [
     "id",

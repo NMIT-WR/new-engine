@@ -47,11 +47,17 @@ const resetPasswordFormSchema = baseSchema.superRefine((data, ctx) => {
   }
 })
 
-export const ChangePasswordForm: React.FC<{
+type ChangePasswordFormType = {
   email: string
   token: string
   customer?: boolean
-}> = ({ email, token, customer }) => {
+}
+
+export const ChangePasswordForm = ({
+  email,
+  token,
+  customer,
+}: ChangePasswordFormType) => {
   const [formState, formAction, isPending] = React.useActionState(
     resetPassword,
     { email, token, state: "initial" }

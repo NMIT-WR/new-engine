@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import { Layout, LayoutColumn } from "@/components/Layout"
-import { Suspense } from "react"
+import React from "react"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import { CollectionsSlider } from "@modules/store/components/collections-slider"
@@ -37,7 +37,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
           </h2>
         </LayoutColumn>
       </Layout>
-      <Suspense fallback={<SkeletonProductGrid />}>
+      <React.Suspense fallback={<SkeletonProductGrid />}>
         {region && (
           <PaginatedProducts
             sortBy="created_at"
@@ -49,7 +49,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
             typeId={undefined}
           />
         )}
-      </Suspense>
+      </React.Suspense>
       <CollectionsSlider
         heading="Checkout our collections for more products"
         className="mt-26 md:mt-36 !mb-0"

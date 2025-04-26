@@ -116,6 +116,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
+    console.log("selectedVariant", selectedVariant)
 
     await mutateAsync({
       variantId: selectedVariant.id,
@@ -297,7 +298,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
           aria-label="Quantity"
         />
         <Button
-          onPress={handleAddToCart}
+          onClick={handleAddToCart}
           isDisabled={!itemsInStock || !selectedVariant || !!disabled}
           isLoading={isPending}
           className="sm:flex-1"

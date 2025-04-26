@@ -12,11 +12,11 @@ type CartTotalsProps = {
   className?: string
 }
 
-const CartTotals: React.FC<CartTotalsProps> = ({
+const CartTotals = ({
   cart,
   isPartOfCartDrawer,
   className,
-}) => {
+}: CartTotalsProps) => {
   const {
     currency_code,
     total,

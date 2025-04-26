@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import React from "react"
 import { HttpTypes } from "@medusajs/types"
 import Image from "next/image"
 
@@ -92,7 +92,7 @@ export default async function CollectionTemplate({
         )}
         type={type}
       />
-      <Suspense fallback={<SkeletonProductGrid />}>
+      <React.Suspense fallback={<SkeletonProductGrid />}>
         {region && (
           <PaginatedProducts
             sortBy={sortBy}
@@ -115,7 +115,7 @@ export default async function CollectionTemplate({
             }
           />
         )}
-      </Suspense>
+      </React.Suspense>
       <div className="pb-10 md:pb-20" />
     </>
   )

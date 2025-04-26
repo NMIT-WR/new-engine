@@ -10,9 +10,7 @@ const newsletterFormSchema = z.object({
   email: z.string().min(3).email(),
 })
 
-export const NewsletterForm: React.FC<{ className?: string }> = ({
-  className,
-}) => {
+export const NewsletterForm = ({ className }: { className?: string }) => {
   const [isSubmitted, setIsSubmitted] = React.useState(false)
 
   return (

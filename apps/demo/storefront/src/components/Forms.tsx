@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-import * as ReactAria from "react-aria-components"
 import { Icon } from "@/components/Icon"
 import {
   FormProvider,
@@ -118,16 +117,19 @@ type InputLabelOwnProps = {
   isRequired?: boolean
 }
 
-export const InputLabel: React.FC<
-  React.ComponentPropsWithRef<"label"> & InputLabelOwnProps
-> = ({ isRequired, children, className, ...rest }) => (
-  <ReactAria.Label
-    {...rest}
-    className={twMerge("mb-1 block font-semibold", className)}
-  >
+export type InputLabelProps = React.ComponentPropsWithRef<"label"> &
+  InputLabelOwnProps
+
+export const InputLabel = ({
+  isRequired,
+  children,
+  className,
+  ...rest
+}: InputLabelProps) => (
+  <label {...rest} className={twMerge("mb-1 block font-semibold", className)}>
     {children}
     {isRequired && <span className="ml-0.5 text-orange-700">*</span>}
-  </ReactAria.Label>
+  </label>
 )
 
 /**
@@ -140,7 +142,7 @@ type InputSubLabelOwnProps = {
 export const InputSubLabel: React.FC<
   React.ComponentPropsWithRef<"p"> & InputSubLabelOwnProps
 > = ({ type, children, className, ...rest }) => (
-  <ReactAria.Text
+  <p
     {...rest}
     className={twMerge(
       "mt-2 text-xs",
@@ -150,7 +152,7 @@ export const InputSubLabel: React.FC<
     )}
   >
     {children}
-  </ReactAria.Text>
+  </p>
 )
 
 /**
@@ -164,61 +166,53 @@ export type InputOwnProps = {
   wrapperClassName?: string
 }
 
-export const Input = React.forwardRef<
-  HTMLInputElement,
-  React.ComponentProps<"input"> & InputOwnProps
->(
-  (
-    {
-      uiSize = "lg",
-      isVisuallyDisabled,
-      isSuccess,
-      errorMessage,
-      wrapperClassName,
-      placeholder,
-      className,
-      ...rest
-    },
-    ref
-  ) => (
-    <div className={twMerge("relative", wrapperClassName)}>
-      <ReactAria.Input
-        {...rest}
-        ref={ref}
-        className={twMerge(
-          getInputClassNames({
-            uiSize,
-            isVisuallyDisabled,
-            isSuccess,
-          }),
-          className
-        )}
-        placeholder={placeholder}
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+  InputOwnProps & {
+    ref?: React.Ref<HTMLInputElement>
+  }
+export const Input = ({
+  uiSize = "lg",
+  isVisuallyDisabled,
+  isSuccess,
+  errorMessage,
+  wrapperClassName,
+  placeholder,
+  className,
+  ref,
+  ...rest
+}: InputProps) => (
+  <div className={twMerge("relative", wrapperClassName)}>
+    <input
+      {...rest}
+      ref={ref}
+      className={twMerge(
+        getInputClassNames({
+          uiSize,
+          isVisuallyDisabled,
+          isSuccess,
+        }),
+        className
+      )}
+      placeholder={placeholder}
+    />
+    {placeholder && (
+      <span className={getPlaceholderClassNames({ uiSize })}>
+        {placeholder}
+      </span>
+    )}
+    {isSuccess && (
+      <Icon
+        name="check"
+        className="absolute right-0 top-1/2 mr-4 -translate-y-1/2 text-green-500 w-6 h-auto"
       />
-      {placeholder && (
-        <span className={getPlaceholderClassNames({ uiSize })}>
-          {placeholder}
-        </span>
-      )}
-      {isSuccess && (
-        <Icon
-          name="check"
-          className="absolute right-0 top-1/2 mr-4 -translate-y-1/2 text-green-500 w-6 h-auto"
-        />
-      )}
-      {errorMessage && (
-        <InputSubLabel
-          type="error"
-          className="hidden aria-[invalid=true]:block"
-        >
-          {errorMessage}
-        </InputSubLabel>
-      )}
-    </div>
-  )
+    )}
+    {errorMessage && (
+      <InputSubLabel type="error" className="hidden aria-[invalid=true]:block">
+        {errorMessage}
+      </InputSubLabel>
+    )}
+  </div>
 )
-
-Input.displayName = "Input"
 
 export interface InputFieldProps {
   className?: string
@@ -292,7 +286,7 @@ export const CountrySelectField: React.FC<CountrySelectFieldProps> = ({
         selectedKey={field.value ?? ""}
         name={name}
       >
-        {children}
+        <>{children}</>
       </CountrySelect>
       {fieldState.error && (
         <div className="pt-2 text-red-900 text-small-regular">

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { ReactNode } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import * as ReactAria from "react-aria-components"
 import Link, { LinkProps } from "next/link"
@@ -72,7 +73,7 @@ export type ButtonProps = React.ComponentPropsWithoutRef<"button"> &
   ButtonOwnProps &
   ReactAria.ButtonProps
 
-export const Button: React.FC<ButtonProps> = ({
+export function Button({
   isFullWidth,
   isVisuallyDisabled,
   iconName,
@@ -86,35 +87,37 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   children,
   ...rest
-}) => (
-  <ReactAria.Button
-    {...rest}
-    type={type}
-    isPending={isLoading}
-    className={twMerge(
-      getButtonClassNames({
-        isFullWidth,
-        isVisuallyDisabled,
-        iconName,
-        iconPosition,
-        isLoading,
-        loadingText,
-        size,
-        spinnerPosition,
-        variant,
-      }),
-      className
-    )}
-  >
-    {Boolean(isLoading) && <Icon name="loader" className="animate-spin" />}
-    {iconName && !Boolean(isLoading) && <Icon name={iconName} />}
-    {Boolean(isLoading)
-      ? Boolean(loadingText)
-        ? loadingText
-        : null
-      : children}
-  </ReactAria.Button>
-)
+}: ButtonProps) {
+  return (
+    <button
+      disabled={isVisuallyDisabled}
+      {...rest}
+      type={type}
+      className={twMerge(
+        getButtonClassNames({
+          isFullWidth,
+          isVisuallyDisabled,
+          iconName,
+          iconPosition,
+          isLoading,
+          loadingText,
+          size,
+          spinnerPosition,
+          variant,
+        }),
+        className
+      )}
+    >
+      {Boolean(isLoading) && <Icon name="loader" className="animate-spin" />}
+      {iconName && !Boolean(isLoading) && <Icon name={iconName} />}
+      {Boolean(isLoading)
+        ? Boolean(loadingText)
+          ? loadingText
+          : ""
+        : children}
+    </button>
+  )
+}
 
 export const ButtonAnchor: React.FC<
   React.ComponentPropsWithoutRef<"a"> & ButtonOwnProps
@@ -159,13 +162,13 @@ export const ButtonAnchor: React.FC<
   </a>
 )
 
-export const ButtonLink: React.FC<
-  Omit<LinkProps, "passHref"> &
-    ButtonOwnProps & {
-      className?: string
-      children?: React.ReactNode
-    }
-> = ({
+type ButtonLinkProps = Omit<LinkProps, "passHref"> &
+  ButtonOwnProps & {
+    className?: string
+    children?: ReactNode
+  }
+
+export const ButtonLink = ({
   isFullWidth,
   isVisuallyDisabled,
   iconName,
@@ -178,7 +181,7 @@ export const ButtonLink: React.FC<
   className,
   children,
   ...rest
-}) => (
+}: ButtonLinkProps) => (
   <Link
     {...rest}
     className={twMerge(
@@ -198,10 +201,6 @@ export const ButtonLink: React.FC<
   >
     {Boolean(isLoading) && <Icon name="loader" className="animate-spin" />}
     {iconName && !Boolean(isLoading) && <Icon name={iconName} />}
-    {Boolean(isLoading)
-      ? Boolean(loadingText)
-        ? loadingText
-        : null
-      : children}
+    {isLoading ? <>{loadingText || null}</> : <>{children}</>}
   </Link>
 )

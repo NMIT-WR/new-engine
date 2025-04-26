@@ -19,7 +19,7 @@ const CartDrawer = dynamic(
   { loading: () => <></> }
 )
 
-export const Header: React.FC = async () => {
+export const Header = async () => {
   const regions = await listRegions()
 
   const countryOptions = regions

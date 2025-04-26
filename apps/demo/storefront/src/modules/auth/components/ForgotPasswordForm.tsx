@@ -11,7 +11,7 @@ const forgotPasswordFormSchema = z.object({
   email: z.string().min(3).email(),
 })
 
-export const ForgotPasswordForm: React.FC = () => {
+export const ForgotPasswordForm = () => {
   const [formState, formAction] = React.useActionState(forgotPassword, {
     state: "initial",
   })

@@ -8,7 +8,7 @@ import { Icon } from "@/components/Icon"
 import { UiModal, UiModalOverlay } from "@/components/ui/Modal"
 import { requestPasswordReset } from "@lib/data/customer"
 
-export const RequestPasswordResetButton: React.FC = () => {
+export const RequestPasswordResetButton = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)

@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import React from "react"
 
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
@@ -53,7 +53,7 @@ const StoreTemplate = async ({
         type={type}
         sortBy={sortBy}
       />
-      <Suspense fallback={<SkeletonProductGrid />}>
+      <React.Suspense fallback={<SkeletonProductGrid />}>
         {region && (
           <PaginatedProducts
             sortBy={sortBy}
@@ -82,7 +82,7 @@ const StoreTemplate = async ({
             }
           />
         )}
-      </Suspense>
+      </React.Suspense>
     </div>
   )
 }

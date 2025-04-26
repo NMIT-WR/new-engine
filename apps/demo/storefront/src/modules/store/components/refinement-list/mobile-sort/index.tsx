@@ -11,10 +11,12 @@ import { UiModal, UiModalOverlay } from "@/components/ui/Modal"
 import { Button } from "@/components/Button"
 import { UiDialog, UiDialogTrigger } from "@/components/Dialog"
 
-export const MobileSort: React.FC<{
+type MobileSortType = {
   sortBy: SortOptions | undefined
   setQueryParams: (name: string, value: SortOptions) => void
-}> = ({ sortBy, setQueryParams }) => {
+}
+
+export const MobileSort = ({ sortBy, setQueryParams }: MobileSortType) => {
   return (
     <UiDialogTrigger>
       <Button

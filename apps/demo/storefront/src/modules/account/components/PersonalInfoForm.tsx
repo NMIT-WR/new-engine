@@ -9,6 +9,7 @@ import { Form, InputField } from "@/components/Forms"
 import { SubmitButton } from "@modules/common/components/submit-button"
 import { updateCustomerFormSchema, useUpdateCustomer } from "hooks/customer"
 import { withReactQueryProvider } from "@lib/util/react-query"
+import { OverlayTriggerState } from "react-stately"
 
 export const PersonalInfoForm = withReactQueryProvider<{
   defaultValues?: {
@@ -19,7 +20,9 @@ export const PersonalInfoForm = withReactQueryProvider<{
 }>(({ defaultValues }) => {
   const { mutate, isPending, data } = useUpdateCustomer()
 
-  const { close } = React.useContext(ReactAria.OverlayTriggerStateContext)!
+  const { close } = React.useContext(
+    ReactAria.OverlayTriggerStateContext as unknown as React.Context<OverlayTriggerState | null>
+  )!
   const onSubmit = (values: z.infer<typeof updateCustomerFormSchema>) => {
     mutate(values, {
       onSuccess: (res) => {

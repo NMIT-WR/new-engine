@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import React from "react"
 import { getCartQuantity } from "@lib/data/cart"
 import { Icon, IconProps } from "@/components/Icon"
 
@@ -16,8 +16,8 @@ export const CartIcon: React.FC<Omit<IconProps, "status" | "name">> = (
   props
 ) => {
   return (
-    <Suspense fallback={<Icon name="case" {...props} />}>
+    <React.Suspense fallback={<Icon name="case" {...props} />}>
       <CartIconWithQuantity {...props} />
-    </Suspense>
+    </React.Suspense>
   )
 }

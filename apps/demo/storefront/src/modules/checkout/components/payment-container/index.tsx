@@ -10,11 +10,11 @@ type PaymentContainerProps = {
   paymentInfoMap: Record<string, { title: string; icon: React.ReactNode }>
 }
 
-const PaymentContainer: React.FC<PaymentContainerProps> = ({
+const PaymentContainer = ({
   paymentProviderId,
   paymentInfoMap,
   disabled = false,
-}) => {
+}: PaymentContainerProps) => {
   const isDevelopment = process.env.NODE_ENV === "development"
 
   return (

@@ -6,10 +6,15 @@ import { Carousel } from "@/components/Carousel"
 import { LocalizedLink } from "@/components/LocalizedLink"
 import { twMerge } from "tailwind-merge"
 
-export const CollectionsSlider: React.FC<{
+type CollectionsSliderType = {
   heading?: React.ReactNode
   className?: string
-}> = async ({ heading = "Collections", className }) => {
+}
+
+export const CollectionsSlider = async ({
+  heading = "Collections",
+  className,
+}: CollectionsSliderType) => {
   const collections = await getCollectionsList(0, 20, [
     "id",
     "title",

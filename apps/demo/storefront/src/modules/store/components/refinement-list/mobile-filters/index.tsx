@@ -11,7 +11,7 @@ import { Button } from "@/components/Button"
 import { UiModal, UiModalOverlay } from "@/components/ui/Modal"
 import { UiDialog, UiDialogTrigger } from "@/components/Dialog"
 
-export const MobileFilters: React.FC<{
+type MobileFIltersType = {
   collections?: Record<string, string>
   collection?: string[]
   categories?: Record<string, string>
@@ -19,7 +19,9 @@ export const MobileFilters: React.FC<{
   types?: Record<string, string>
   type?: string[]
   setMultipleQueryParams: (params: Record<string, string | string[]>) => void
-}> = ({
+}
+
+export const MobileFilters = ({
   collections,
   collection,
   categories,
@@ -27,7 +29,7 @@ export const MobileFilters: React.FC<{
   types,
   type,
   setMultipleQueryParams,
-}) => {
+}: MobileFIltersType) => {
   return (
     <UiDialogTrigger>
       <Button

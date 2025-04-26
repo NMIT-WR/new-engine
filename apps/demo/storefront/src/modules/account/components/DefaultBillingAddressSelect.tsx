@@ -12,10 +12,15 @@ import {
   UiSelectValue,
 } from "@/components/ui/Select"
 
-export const DefaultBillingAddressSelect: React.FC<{
+type DefaultBillingAddressSelectProps = {
   addresses: StoreCustomerAddress[]
   countries: BaseRegionCountry[]
-}> = ({ addresses, countries }) => {
+}
+
+export const DefaultBillingAddressSelect = ({
+  addresses,
+  countries,
+}: DefaultBillingAddressSelectProps) => {
   const handleAddressSelect = async (value: string) => {
     await updateDefaultBillingAddress(value)
   }

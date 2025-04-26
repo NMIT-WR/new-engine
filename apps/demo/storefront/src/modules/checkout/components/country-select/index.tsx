@@ -18,11 +18,11 @@ export type CountrySelectProps = ReactAria.SelectProps<
   region?: HttpTypes.StoreRegion
 }
 
-const CountrySelect: React.FC<CountrySelectProps> = ({
+const CountrySelect = ({
   placeholder = "Country",
   region,
   ...props
-}) => {
+}: CountrySelectProps) => {
   const countryOptions = useMemo(() => {
     if (!region) {
       return []

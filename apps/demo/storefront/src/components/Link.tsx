@@ -28,7 +28,7 @@ export const Link = <RouteInferType,>({
     {...rest}
     className={twMerge(getLinkClassNames({ variant }), className)}
   >
-    {children}
+    <>{children}</>
   </NextLink>
 )
 

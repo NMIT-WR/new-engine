@@ -14,13 +14,13 @@ export type CarouselProps = {
   arrows?: boolean
 } & React.ComponentPropsWithRef<"div">
 
-export const Carousel: React.FC<CarouselProps> = ({
+export const Carousel = ({
   heading,
   button,
   arrows = true,
   children,
   className,
-}) => {
+}: CarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     containScroll: "trimSnaps",
     skipSnaps: true,

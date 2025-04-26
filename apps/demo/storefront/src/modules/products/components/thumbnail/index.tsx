@@ -14,14 +14,14 @@ type ThumbnailProps = {
   "data-testid"?: string
 }
 
-const Thumbnail: React.FC<ThumbnailProps> = ({
+const Thumbnail = ({
   thumbnail,
   images,
   size = "small",
   isFeatured,
   className,
   "data-testid": dataTestid,
-}) => {
+}: ThumbnailProps) => {
   const initialImage = thumbnail || images?.[0]?.url
 
   return (
