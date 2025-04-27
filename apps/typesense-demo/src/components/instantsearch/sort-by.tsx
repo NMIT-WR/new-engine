@@ -1,15 +1,15 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ArrowDownWideNarrow } from "lucide-react";
-import type { UseSortByProps } from "react-instantsearch";
-import { useSortBy } from "react-instantsearch";
+} from '@/components/ui/dropdown-menu';
+import { ArrowDownWideNarrow } from 'lucide-react';
+import type { UseSortByProps } from 'react-instantsearch';
+import { useSortBy } from 'react-instantsearch';
 
 export function SortBy(props: UseSortByProps) {
   const { currentRefinement, options, refine } = useSortBy(props);
@@ -18,7 +18,10 @@ export function SortBy(props: UseSortByProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex gap-2 font-medium px-4 py-2">
+          <Button
+            variant="outline"
+            className="flex gap-2 px-4 py-2 font-medium"
+          >
             <span className="hidden lg:block">Řazení</span>
             <ArrowDownWideNarrow className="h-4 w-4" />
           </Button>

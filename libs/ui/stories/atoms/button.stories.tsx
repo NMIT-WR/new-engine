@@ -1,26 +1,26 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from "../../src/atoms/button";
-import { VariantContainer, VariantGroup } from "../../.storybook/decorator";
-import { useState } from "react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
+import { Button } from '../../src/atoms/button';
 
 const meta: Meta<typeof Button> = {
-  title: "Atoms/Button",
+  title: 'Atoms/Button',
   component: Button,
   argTypes: {
     variant: {
-      control: "select",
-      options: ["primary", "secondary", "tertiary", "warning", "danger"],
+      control: 'select',
+      options: ['primary', 'secondary', 'tertiary', 'warning', 'danger'],
     },
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
     },
   },
   parameters: {
-    layout: "centered",
+    layout: 'centered',
     docs: {
       description: {
-        component: "",
+        component: '',
       },
     },
   },

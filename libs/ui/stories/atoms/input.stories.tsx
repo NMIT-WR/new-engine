@@ -1,30 +1,30 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Input } from "../../src/atoms/input";
-import { Label } from "../../src/atoms/label";
-import { Error } from "../../src/atoms/error";
-import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
+import type { Meta, StoryObj } from '@storybook/react';
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
+import { Error } from '../../src/atoms/error';
+import { Input } from '../../src/atoms/input';
+import { Label } from '../../src/atoms/label';
 
 const meta: Meta<typeof Input> = {
-  title: "Atoms/Input",
+  title: 'Atoms/Input',
   component: Input,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Input size",
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Input size',
     },
     variant: {
-      control: "select",
-      options: ["default", "error", "success", "warning"],
-      description: "Visual variant of input",
+      control: 'select',
+      options: ['default', 'error', 'success', 'warning'],
+      description: 'Visual variant of input',
     },
     disabled: {
-      control: "boolean",
-      description: "Disabled state",
+      control: 'boolean',
+      description: 'Disabled state',
     },
   },
 };
@@ -35,7 +35,7 @@ type Story = StoryObj<typeof Input>;
 // Basic input
 export const Basic: Story = {
   args: {
-    placeholder: "Enter text...",
+    placeholder: 'Enter text...',
   },
 };
 

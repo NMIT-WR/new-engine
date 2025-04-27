@@ -1,8 +1,8 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { SQL } from "drizzle-orm/sql/sql";
+import { drizzle } from 'drizzle-orm/neon-http';
+import type { SQL } from 'drizzle-orm/sql/sql';
 
 // Import the schema from our local file
-import * as schema from "./schema";
+import * as schema from './schema';
 
 // Create a simplified drizzle client
 export const db = drizzle(
@@ -30,7 +30,7 @@ export async function sqlRaw<T = object>(sql: SQL<T>): Promise<T[]> {
           value && typeof value === 'string' && isDateString(value)
             ? new Date(value)
             : value,
-        ]),
-      ) as T,
+        ])
+      ) as T
   );
 }

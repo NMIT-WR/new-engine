@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const eshopItemSchema = z.object({
   name: z.string(),
@@ -12,14 +12,16 @@ const eshopItemSchema = z.object({
 
 const typesenseSchema = eshopItemSchema;
 
-const attributeLabelMap: { [K in keyof z.infer<typeof typesenseSchema>]: string } = {
-  name: "Jméno",
-  description: "Popisek",
-  brand: "Značka",
-  categories: "Kategorie",
-  price: "Cena",
-  image: "Obrázek",
-  popularity: "Oblíbenost",
+const attributeLabelMap: {
+  [K in keyof z.infer<typeof typesenseSchema>]: string;
+} = {
+  name: 'Jméno',
+  description: 'Popisek',
+  brand: 'Značka',
+  categories: 'Kategorie',
+  price: 'Cena',
+  image: 'Obrázek',
+  popularity: 'Oblíbenost',
 } as const;
 
 export { attributeLabelMap, eshopItemSchema, typesenseSchema };

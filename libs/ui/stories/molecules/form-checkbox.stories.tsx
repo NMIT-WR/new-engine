@@ -1,13 +1,13 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { FormCheckbox } from "../../src/molecules/form-checkbox";
+import type { Meta, StoryObj } from '@storybook/react';
+import { FormCheckbox } from '../../src/molecules/form-checkbox';
 
 const meta: Meta<typeof FormCheckbox> = {
-  title: "Molecules/FormCheckbox",
+  title: 'Molecules/FormCheckbox',
   component: FormCheckbox,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -16,8 +16,8 @@ type Story = StoryObj<typeof FormCheckbox>;
 // Basic checkbox
 export const Default: Story = {
   args: {
-    id: "default-checkbox",
-    label: "Accept terms and conditions",
+    id: 'default-checkbox',
+    label: 'Accept terms and conditions',
   },
 };
 
@@ -25,7 +25,7 @@ export const Default: Story = {
 export const Checked: Story = {
   args: {
     ...Default.args,
-    id: "checked-checkbox",
+    id: 'checked-checkbox',
     defaultChecked: true,
   },
 };
@@ -34,9 +34,9 @@ export const Checked: Story = {
 export const WithError: Story = {
   args: {
     ...Default.args,
-    id: "error-checkbox",
-    validateStatus: "error",
-    helpText: "You must accept the terms to continue",
+    id: 'error-checkbox',
+    validateStatus: 'error',
+    helpText: 'You must accept the terms to continue',
   },
 };
 
@@ -44,8 +44,8 @@ export const WithError: Story = {
 export const WithHelperText: Story = {
   args: {
     ...Default.args,
-    id: "helper-checkbox",
-    helpText: "By checking this box, you agree to our terms of service",
+    id: 'helper-checkbox',
+    helpText: 'By checking this box, you agree to our terms of service',
   },
 };
 
@@ -53,8 +53,8 @@ export const WithHelperText: Story = {
 export const WithExtraText: Story = {
   args: {
     ...Default.args,
-    id: "extra-checkbox",
-    extraText: "This option is recommended for new users",
+    id: 'extra-checkbox',
+    extraText: 'This option is recommended for new users',
   },
 };
 
@@ -62,7 +62,7 @@ export const WithExtraText: Story = {
 export const Disabled: Story = {
   args: {
     ...Default.args,
-    id: "disabled-checkbox",
+    id: 'disabled-checkbox',
     disabled: true,
   },
 };
@@ -71,7 +71,7 @@ export const Disabled: Story = {
 export const Required: Story = {
   args: {
     ...Default.args,
-    id: "required-checkbox",
+    id: 'required-checkbox',
     required: true,
   },
 };

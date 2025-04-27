@@ -1,23 +1,23 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Checkbox } from "../../src/atoms/checkbox";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Checkbox } from '../../src/atoms/checkbox';
 
 const meta = {
-  title: "Atoms/Checkbox",
+  title: 'Atoms/Checkbox',
   component: Checkbox,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
     controls: { expanded: true },
   },
   argTypes: {
     checked: {
-      control: "boolean",
-      description: "Checked state of the checkbox",
+      control: 'boolean',
+      description: 'Checked state of the checkbox',
     },
     disabled: {
-      control: "boolean",
-      description: "Disabled state of the checkbox",
+      control: 'boolean',
+      description: 'Disabled state of the checkbox',
     },
-    onChange: { action: "changed" },
+    onChange: { action: 'changed' },
   },
   args: {
     checked: false,
@@ -45,7 +45,7 @@ export const WithLabel: Story = {
     return (
       <div className="flex items-center gap-2">
         <Checkbox id="terms" />
-        <label htmlFor="terms" className="text-sm cursor-pointer">
+        <label htmlFor="terms" className="cursor-pointer text-sm">
           I agree to the terms and conditions
         </label>
       </div>

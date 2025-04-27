@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -7,8 +7,8 @@ function cn(...inputs: ClassValue[]) {
 
 function formatNumber(num: number) {
   const thresholds: Record<string, string> = {
-    1000000: "M",
-    1000: "K",
+    1000000: 'M',
+    1000: 'K',
   };
 
   const threshold = Object.keys(thresholds)

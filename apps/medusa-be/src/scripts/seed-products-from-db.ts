@@ -1,22 +1,20 @@
-// @ts-nocheck necessary due to Medusa failing with strict mode
-import {
-  createProductsWorkflow,
-  createStockLocationsWorkflow,
-  createInventoryLevelsWorkflow,
-  createProductCategoriesWorkflow,
-  createCollectionsWorkflow,
-} from "@medusajs/medusa/core-flows";
-import type {
-  ExecArgs,
-} from "@medusajs/framework/types";
+import type { ExecArgs } from '@medusajs/framework/types';
 import {
   ContainerRegistrationKeys,
   MedusaError,
-  ProductStatus,
   Modules,
-} from "@medusajs/framework/utils";
-import { sql } from "drizzle-orm";
-import { sqlRaw } from "../utils/db";
+  ProductStatus,
+} from '@medusajs/framework/utils';
+// @ts-nocheck necessary due to Medusa failing with strict mode
+import {
+  createCollectionsWorkflow,
+  createInventoryLevelsWorkflow,
+  createProductCategoriesWorkflow,
+  createProductsWorkflow,
+  createStockLocationsWorkflow,
+} from '@medusajs/medusa/core-flows';
+import { sql } from 'drizzle-orm';
+import { sqlRaw } from '../utils/db';
 
 // Product record shape from the database
 type ProductRecord = {
@@ -41,7 +39,7 @@ type ProductRecord = {
  */
 async function importProductPage(
   page: number,
-  step = 10,
+  step = 10
 ): Promise<ProductRecord[]> {
   // Query products with pagination
   const productList = await sqlRaw<ProductRecord>(sql`
@@ -101,7 +99,7 @@ function convertToMedusaProducts(
   defaultSalesChannelId: string,
   categoryMap: Record<string, string>
 ) {
-  return products.map(product => {
+  return products.map((product) => {
     const safeHandle = sanitizeHandle(`${product.product_name}`);
 
     return {
@@ -110,30 +108,31 @@ function convertToMedusaProducts(
       handle: safeHandle,
       status: ProductStatus.PUBLISHED,
       // If we have category information and it exists in our map, use it
-      category_ids: product.category_slug && categoryMap[product.category_slug]
-        ? [categoryMap[product.category_slug]]
-        : [],
+      category_ids:
+        product.category_slug && categoryMap[product.category_slug]
+          ? [categoryMap[product.category_slug]]
+          : [],
       // If we have image URLs, convert them to the expected format
       // Note: This assumes images are already uploaded somewhere accessible
       thumbnail: product.product_image_url || undefined,
       options: [
         {
-          title: "Default",
-          values: ["Default"]
-        }
+          title: 'Default',
+          values: ['Default'],
+        },
       ],
       variants: [
         {
-          title: "Default",
+          title: 'Default',
           sku: `SKU-${safeHandle}`, // Use sanitized handle for SKU as well
           prices: [
             {
-              amount: parseInt(product.product_price * 100), // Medusa expects prices in cents
-              currency_code: "eur",
+              amount: Number.parseInt(product.product_price * 100), // Medusa expects prices in cents
+              currency_code: 'eur',
             },
             {
-              amount: parseInt(product.product_price * 100 * 1.1), // Simple USD conversion
-              currency_code: "usd",
+              amount: Number.parseInt(product.product_price * 100 * 1.1), // Simple USD conversion
+              currency_code: 'usd',
             },
           ],
         },
@@ -159,16 +158,16 @@ async function checkExistingCategories(
 
   // Query for existing categories with the given handles
   const { data: existingCategories } = await query.graph({
-    entity: "product_category",
+    entity: 'product_category',
     filters: {
       handle: categoryHandles,
     },
-    fields: ["id", "handle"],
+    fields: ['id', 'handle'],
   });
 
   // Create a map of handle -> id for existing categories
   const existingCategoryMap: Record<string, string> = {};
-  existingCategories.forEach(category => {
+  existingCategories.forEach((category) => {
     existingCategoryMap[category.handle] = category.id;
   });
 
@@ -186,16 +185,16 @@ async function checkExistingCollections(
 
   // Query for existing collections with the given handles
   const { data: existingCollections } = await query.graph({
-    entity: "product_collection",
+    entity: 'product_collection',
     filters: {
       handle: collectionHandles,
     },
-    fields: ["id", "handle"],
+    fields: ['id', 'handle'],
   });
 
   // Create a map of handle -> id for existing collections
   const existingCollectionMap: Record<string, string> = {};
-  existingCollections.forEach(collection => {
+  existingCollections.forEach((collection) => {
     existingCollectionMap[collection.handle] = collection.id;
   });
 
@@ -213,16 +212,16 @@ async function checkExistingProducts(
 
   // Query for existing products with the given handles
   const { data: existingProducts } = await query.graph({
-    entity: "product",
+    entity: 'product',
     filters: {
       handle: productHandles,
     },
-    fields: ["id", "handle"],
+    fields: ['id', 'handle'],
   });
 
   // Create a map of handle -> id for existing products
   const existingProductMap: Record<string, string> = {};
-  existingProducts.forEach(product => {
+  existingProducts.forEach((product) => {
     existingProductMap[product.handle] = product.id;
   });
 
@@ -237,9 +236,12 @@ function extractCategories(products: ProductRecord[]): {
   name: string;
   image_url?: string;
 }[] {
-  const categoriesMap: Record<string, { slug: string; name: string; image_url?: string }> = {};
+  const categoriesMap: Record<
+    string,
+    { slug: string; name: string; image_url?: string }
+  > = {};
 
-  products.forEach(product => {
+  products.forEach((product) => {
     if (product.category_slug && !categoriesMap[product.category_slug]) {
       categoriesMap[product.category_slug] = {
         slug: product.category_slug,
@@ -261,7 +263,7 @@ function extractCollections(products: ProductRecord[]): {
 }[] {
   const collectionsMap: Record<string, { handle: string; title: string }> = {};
 
-  products.forEach(product => {
+  products.forEach((product) => {
     if (product.collection_slug && !collectionsMap[product.collection_slug]) {
       collectionsMap[product.collection_slug] = {
         handle: product.collection_slug,
@@ -278,17 +280,19 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const query = container.resolve(ContainerRegistrationKeys.QUERY);
 
-  logger.info("Starting bulk product import from database...");
+  logger.info('Starting bulk product import from database...');
 
   // 1. Get default sales channel
-  let defaultSalesChannel = await salesChannelModuleService.listSalesChannels({
-    name: "Default Sales Channel",
-  });
+  const defaultSalesChannel = await salesChannelModuleService.listSalesChannels(
+    {
+      name: 'Default Sales Channel',
+    }
+  );
 
   if (!defaultSalesChannel || defaultSalesChannel.length === 0) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      "Default Sales Channel not found. Please run the seed script first."
+      'Default Sales Channel not found. Please run the seed script first.'
     );
   }
 
@@ -296,43 +300,52 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   logger.info(`Found default sales channel with ID: ${defaultSalesChannelId}`);
 
   // 2. Import a small batch of products first to extract categories and collections
-  logger.info("Fetching initial product data for category extraction...");
+  logger.info('Fetching initial product data for category extraction...');
   const sampleProducts = await importProductPage(0, 10);
 
   if (!sampleProducts || sampleProducts.length === 0) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      "No products found in the database"
+      'No products found in the database'
     );
   }
 
   // 3. Extract and create categories
-  logger.info("Extracting categories from product data...");
+  logger.info('Extracting categories from product data...');
   const categories = extractCategories(sampleProducts);
   logger.info(`Found ${categories.length} unique categories`);
 
   // Check which categories already exist
-  const categoryHandles = categories.map(category => category.slug);
-  logger.info("Checking for existing categories...");
-  const existingCategoryMap = await checkExistingCategories(container, categoryHandles);
+  const categoryHandles = categories.map((category) => category.slug);
+  logger.info('Checking for existing categories...');
+  const existingCategoryMap = await checkExistingCategories(
+    container,
+    categoryHandles
+  );
 
   // Filter out categories that already exist
-  const newCategories = categories.filter(category => !existingCategoryMap[category.slug]);
-  logger.info(`Found ${Object.keys(existingCategoryMap).length} existing categories, creating ${newCategories.length} new categories`);
+  const newCategories = categories.filter(
+    (category) => !existingCategoryMap[category.slug]
+  );
+  logger.info(
+    `Found ${Object.keys(existingCategoryMap).length} existing categories, creating ${newCategories.length} new categories`
+  );
 
   // Map categories to the format required by Medusa
-  const productCategories = newCategories.map(category => ({
+  const productCategories = newCategories.map((category) => ({
     name: category.name,
     handle: category.slug,
     is_active: true,
     is_internal: false,
-    metadata: category.image_url ? { image_url: category.image_url } : undefined,
+    metadata: category.image_url
+      ? { image_url: category.image_url }
+      : undefined,
   }));
 
   // Only run creation workflow if there are new categories to create
   let categoryResult = [];
   if (productCategories.length > 0) {
-    logger.info("Creating product categories...");
+    logger.info('Creating product categories...');
     const { result } = await createProductCategoriesWorkflow(container).run({
       input: {
         product_categories: productCategories,
@@ -341,44 +354,53 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
     categoryResult = result;
     logger.info(`Successfully created ${categoryResult.length} new categories`);
   } else {
-    logger.info("No new categories to create, using existing ones");
+    logger.info('No new categories to create, using existing ones');
   }
 
   // 5. Create a map of category slugs to category IDs for easy lookup
   const categoryMap: Record<string, string> = { ...existingCategoryMap };
-  categoryResult.forEach(category => {
+  categoryResult.forEach((category) => {
     if (category.handle) {
       categoryMap[category.handle] = category.id;
     }
   });
 
   // 4. Extract and create collections
-  logger.info("Extracting collections from product data...");
+  logger.info('Extracting collections from product data...');
   const collections = extractCollections(sampleProducts);
   logger.info(`Found ${collections.length} unique collections`);
 
   // Check which collections already exist
-  const collectionHandles = collections.map(collection => collection.handle);
-  logger.info("Checking for existing collections...");
-  const existingCollectionMap = await checkExistingCollections(container, collectionHandles);
+  const collectionHandles = collections.map((collection) => collection.handle);
+  logger.info('Checking for existing collections...');
+  const existingCollectionMap = await checkExistingCollections(
+    container,
+    collectionHandles
+  );
 
   // Filter out collections that already exist
-  const newCollections = collections.filter(collection => !existingCollectionMap[collection.handle]);
-  logger.info(`Found ${Object.keys(existingCollectionMap).length} existing collections, creating ${newCollections.length} new collections`);
+  const newCollections = collections.filter(
+    (collection) => !existingCollectionMap[collection.handle]
+  );
+  logger.info(
+    `Found ${Object.keys(existingCollectionMap).length} existing collections, creating ${newCollections.length} new collections`
+  );
 
   // Only run creation workflow if there are new collections to create
   let collectionResult = [];
   if (newCollections.length > 0) {
-    logger.info("Creating new collections...");
+    logger.info('Creating new collections...');
     const { result } = await createCollectionsWorkflow(container).run({
       input: {
         collections: newCollections,
       },
     });
     collectionResult = result;
-    logger.info(`Successfully created ${collectionResult.length} new collections`);
+    logger.info(
+      `Successfully created ${collectionResult.length} new collections`
+    );
   } else {
-    logger.info("No new collections to create, using existing ones");
+    logger.info('No new collections to create, using existing ones');
   }
 
   // 6. Import products in chunks
@@ -398,7 +420,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       const productRecords = await importProductPage(page, CHUNK_SIZE);
 
       if (!productRecords || productRecords.length === 0) {
-        logger.info("No more products to import");
+        logger.info('No more products to import');
         hasMore = false;
         break;
       }
@@ -411,16 +433,25 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       );
 
       // Check which products already exist
-      const productHandles = medusaProducts.map(product => product.handle);
-      logger.info(`Checking for existing products with ${productHandles.length} handles...`);
-      const existingProductMap = await checkExistingProducts(container, productHandles);
+      const productHandles = medusaProducts.map((product) => product.handle);
+      logger.info(
+        `Checking for existing products with ${productHandles.length} handles...`
+      );
+      const existingProductMap = await checkExistingProducts(
+        container,
+        productHandles
+      );
 
       // Filter out products that already exist
-      const newProducts = medusaProducts.filter(product => !existingProductMap[product.handle]);
-      logger.info(`Found ${Object.keys(existingProductMap).length} existing products, creating ${newProducts.length} new products`);
+      const newProducts = medusaProducts.filter(
+        (product) => !existingProductMap[product.handle]
+      );
+      logger.info(
+        `Found ${Object.keys(existingProductMap).length} existing products, creating ${newProducts.length} new products`
+      );
 
       if (newProducts.length === 0) {
-        logger.info("No new products to create in this batch, skipping...");
+        logger.info('No new products to create in this batch, skipping...');
         page++;
         // If we got fewer products than the chunk size, we've reached the end
         if (productRecords.length < CHUNK_SIZE) {
@@ -431,10 +462,14 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
         continue;
       }
 
-      logger.info(`Importing ${newProducts.length} products (batch ${page + 1})...`);
+      logger.info(
+        `Importing ${newProducts.length} products (batch ${page + 1})...`
+      );
 
       // Create products in Medusa
-      const { result: createdProducts } = await createProductsWorkflow(container).run({
+      const { result: createdProducts } = await createProductsWorkflow(
+        container
+      ).run({
         input: {
           products: newProducts,
         },
@@ -443,32 +478,35 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       logger.info(`Successfully created ${createdProducts.length} products`);
 
       // 7. Set inventory levels for all variants of the created products
-      const { result: stockLocationResult } = await createStockLocationsWorkflow(container).run({
-        input: {
-          locations: [{
-            name: "Default Warehouse",
-            address: {
-              address_1: "123 Demo Street",
-              city: "Demo City",
-              country_code: "us"
-            }
-          }]
-        }
-      });
+      const { result: stockLocationResult } =
+        await createStockLocationsWorkflow(container).run({
+          input: {
+            locations: [
+              {
+                name: 'Default Warehouse',
+                address: {
+                  address_1: '123 Demo Street',
+                  city: 'Demo City',
+                  country_code: 'us',
+                },
+              },
+            ],
+          },
+        });
 
       // Check if stock location was created successfully
       const stockLocation = stockLocationResult[0];
       if (!stockLocation) {
         throw new MedusaError(
           MedusaError.Types.NOT_FOUND,
-          "Stock location not found"
+          'Stock location not found'
         );
       }
 
       // Get inventory items for the products we just created
       const { data: inventoryItems } = await query.graph({
-        entity: "inventory_item",
-        fields: ["id"],
+        entity: 'inventory_item',
+        fields: ['id'],
       });
 
       // Create inventory levels for each inventory item with the location ID
@@ -477,7 +515,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
         inventoryLevels.push({
           stocked_quantity: 100, // Default stock quantity
           inventory_item_id: inventoryItem.id,
-          location_id: stockLocation.id // Add the location ID here
+          location_id: stockLocation.id, // Add the location ID here
         });
       }
 
@@ -487,7 +525,9 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
             inventory_levels: inventoryLevels,
           },
         });
-        logger.info(`Set inventory levels for ${inventoryLevels.length} variants`);
+        logger.info(
+          `Set inventory levels for ${inventoryLevels.length} variants`
+        );
       }
 
       totalImported += createdProducts.length;
@@ -501,13 +541,15 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       } else {
         hasMore = true;
       }
-
     } catch (error) {
-      console.log(error)
-      const errorMessage = error instanceof Error ? error.message : JSON.stringify(error.message);
+      console.log(error);
+      const errorMessage =
+        error instanceof Error ? error.message : JSON.stringify(error.message);
       const errorStack = error instanceof Error ? error.stack : undefined;
 
-      logger.error(`Error importing products at page ${page}: ${errorMessage}\n${errorStack || ""}`);
+      logger.error(
+        `Error importing products at page ${page}: ${errorMessage}\n${errorStack || ''}`
+      );
 
       // Continue with the next chunk even if this one failed
       page++;
@@ -522,5 +564,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
     }
   }
 
-  logger.info(`Product import completed. Total products imported: ${totalImported}`);
+  logger.info(
+    `Product import completed. Total products imported: ${totalImported}`
+  );
 }

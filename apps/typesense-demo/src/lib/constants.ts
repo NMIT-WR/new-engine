@@ -1,1 +1,1 @@
-export const collectionName = "items_full"
+export const collectionName = 'items_full';

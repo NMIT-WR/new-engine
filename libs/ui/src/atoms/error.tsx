@@ -1,18 +1,18 @@
-import { type VariantProps } from "tailwind-variants";
-import { tv } from "../utils";
-import { Icon } from "./icon";
+import type { VariantProps } from 'tailwind-variants';
+import { tv } from '../utils';
+import { Icon } from './icon';
 
 const errorVariants = tv({
-  base: ["text-error-text", "flex items-center gap-1"],
+  base: ['text-error-text', 'flex items-center gap-1'],
   variants: {
     size: {
-      sm: "text-error-sm",
-      md: "text-error-md",
-      lg: "text-error-lg",
+      sm: 'text-error-sm',
+      md: 'text-error-md',
+      lg: 'text-error-lg',
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
   },
 });
 

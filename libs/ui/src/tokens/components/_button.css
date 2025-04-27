@@ -105,34 +105,44 @@
 
   /* === OUTLINED THEME === */
   --color-btn-outlined-primary-hover: --alpha(
-    var(--color-btn-primary) / var(--opacity-outlined-hover)
+    var(--color-btn-primary) /
+    var(--opacity-outlined-hover)
   );
   --color-btn-outlined-primary-active: --alpha(
-    var(--color-btn-primary) / var(--opacity-outlined-active)
+    var(--color-btn-primary) /
+    var(--opacity-outlined-active)
   );
   --color-btn-outlined-secondary-hover: --alpha(
-    var(--color-btn-secondary) / var(--opacity-outlined-hover)
+    var(--color-btn-secondary) /
+    var(--opacity-outlined-hover)
   );
   --color-btn-outlined-secondary-active: --alpha(
-    var(--color-btn-secondary) / var(--opacity-outlined-active)
+    var(--color-btn-secondary) /
+    var(--opacity-outlined-active)
   );
   --color-btn-outlined-tertiary-hover: --alpha(
-    var(--color-btn-tertiary) / var(--opacity-outlined-hover)
+    var(--color-btn-tertiary) /
+    var(--opacity-outlined-hover)
   );
   --color-btn-outlined-tertiary-active: --alpha(
-    var(--color-btn-tertiary) / var(--opacity-outlined-active)
+    var(--color-btn-tertiary) /
+    var(--opacity-outlined-active)
   );
   --color-btn-outlined-warning-hover: --alpha(
-    var(--color-btn-warning) / var(--opacity-outlined-hover)
+    var(--color-btn-warning) /
+    var(--opacity-outlined-hover)
   );
   --color-btn-outlined-warning-active: --alpha(
-    var(--color-btn-warning) / var(--opacity-outlined-active)
+    var(--color-btn-warning) /
+    var(--opacity-outlined-active)
   );
   --color-btn-outlined-danger-hover: --alpha(
-    var(--color-btn-danger) / var(--opacity-outlined-hover)
+    var(--color-btn-danger) /
+    var(--opacity-outlined-hover)
   );
   --color-btn-outlined-danger-active: --alpha(
-    var(--color-btn-danger) / var(--opacity-outlined-active)
+    var(--color-btn-danger) /
+    var(--opacity-outlined-active)
   );
 
   /* === UNIFIED DISABLED STATES === */
@@ -173,16 +183,20 @@
 
   /* === FOCUS RINGS === */
   --color-btn-ring-primary: --alpha(
-    var(--color-btn-primary) / var(--alpha-ring)
+    var(--color-btn-primary) /
+    var(--alpha-ring)
   );
   --color-btn-ring-secondary: --alpha(
-    var(--color-btn-secondary) / var(--alpha-ring)
+    var(--color-btn-secondary) /
+    var(--alpha-ring)
   );
   --color-btn-ring-tertiary: --alpha(
-    var(--color-btn-tertiary) / var(--alpha-ring)
+    var(--color-btn-tertiary) /
+    var(--alpha-ring)
   );
   --color-btn-ring-warning: --alpha(
-    var(--color-btn-warning) / var(--alpha-ring)
+    var(--color-btn-warning) /
+    var(--alpha-ring)
   );
   --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--alpha-ring));
 

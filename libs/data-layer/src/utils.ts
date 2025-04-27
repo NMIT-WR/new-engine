@@ -25,9 +25,9 @@ export function formatSQL(query: string, colorize = true): string {
       (formattedQuery, keyword) =>
         formattedQuery.replace(
           new RegExp(`\\b${keyword}\\b`, 'gi'),
-          `\n${colorize ? `\x1b[92m${keyword}\x1b[33m` : keyword}${keyword === 'SELECT' ? '\n' : ''}`,
+          `\n${colorize ? `\x1b[92m${keyword}\x1b[33m` : keyword}${keyword === 'SELECT' ? '\n' : ''}`
         ),
-      query,
+      query
     )
     .trim()
     .split('\n')
@@ -37,7 +37,7 @@ export function formatSQL(query: string, colorize = true): string {
 }
 
 export function isDateString(
-  value: string | Date | null | undefined | unknown,
+  value: string | Date | null | undefined | unknown
 ): boolean {
   if (!value) return false;
   if (
@@ -65,7 +65,7 @@ type DrizzleResult = {
 };
 
 export function parseDrizzleMessage(
-  message: string | undefined,
+  message: string | undefined
 ): DrizzleResult {
   const m = String(message || '')
     .replace(/\n/g, ' ')

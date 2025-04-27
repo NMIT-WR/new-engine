@@ -1,9 +1,10 @@
-"use client";
-import { RangeSlider } from "@/components/range-slider";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import React, { useEffect, useState } from "react";
-import { useRange, UseRangeProps } from "react-instantsearch";
+'use client';
+import { RangeSlider } from '@/components/range-slider';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { type UseRangeProps, useRange } from 'react-instantsearch';
 
 export function RangeFilter(props: UseRangeProps) {
   const { start, range, canRefine, refine } = useRange(props);
@@ -11,16 +12,20 @@ export function RangeFilter(props: UseRangeProps) {
 
   const [sliderValues, setSliderValues] = useState<[number, number]>([0, 100]);
   const [inputValues, setInputValues] = useState({
-    from: "0",
-    to: "100",
+    from: '0',
+    to: '100',
   });
 
   useEffect(() => {
     const minValue = range.min ?? 0;
     const maxValue = range.max ?? 100;
     const newStart: [number, number] = [
-      start[0] !== undefined && start[0] !== -Infinity ? start[0] : minValue,
-      start[1] !== undefined && start[1] !== Infinity ? start[1] : maxValue,
+      start[0] !== undefined && start[0] !== Number.NEGATIVE_INFINITY
+        ? start[0]
+        : minValue,
+      start[1] !== undefined && start[1] !== Number.POSITIVE_INFINITY
+        ? start[1]
+        : maxValue,
     ];
     setSliderValues(newStart);
     setInputValues({
@@ -39,7 +44,10 @@ export function RangeFilter(props: UseRangeProps) {
     refine(typedValues);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, type: "from" | "to") => {
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: 'from' | 'to'
+  ) => {
     const value = event.target.value;
     setInputValues((prev) => ({ ...prev, [type]: value }));
   };
@@ -69,7 +77,7 @@ export function RangeFilter(props: UseRangeProps) {
         value={sliderValues}
         onValueChange={handleSliderChange}
         disabled={!canRefine}
-        className="w-full mb-4"
+        className="mb-4 w-full"
       />
       <form onSubmit={handleFormSubmit} className="flex items-center space-x-2">
         <Input
@@ -80,8 +88,8 @@ export function RangeFilter(props: UseRangeProps) {
           step={step}
           placeholder={(range.min ?? 0).toString()}
           disabled={!canRefine}
-          onChange={(e) => handleInputChange(e, "from")}
-          className="w-20 px-2 py-1 border rounded"
+          onChange={(e) => handleInputChange(e, 'from')}
+          className="w-20 rounded border px-2 py-1"
         />
         <span>to</span>
         <Input
@@ -92,10 +100,10 @@ export function RangeFilter(props: UseRangeProps) {
           step={step}
           placeholder={(range.max ?? 100).toString()}
           disabled={!canRefine}
-          onChange={(e) => handleInputChange(e, "to")}
-          className="w-20 px-2 py-1 border rounded"
+          onChange={(e) => handleInputChange(e, 'to')}
+          className="w-20 rounded border px-2 py-1"
         />
-        <Button type="submit" className="px-3 py-1 rounded">
+        <Button type="submit" className="rounded px-3 py-1">
           Go
         </Button>
       </form>

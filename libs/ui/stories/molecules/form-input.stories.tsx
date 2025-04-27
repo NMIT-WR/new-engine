@@ -1,37 +1,39 @@
-import { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
-import { FormInput } from "../../src/molecules/form-input";
-import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
+import { FormInput } from '../../src/molecules/form-input';
 
 const meta: Meta<typeof FormInput> = {
-  title: "Molecules/FormInput",
+  title: 'Molecules/FormInput',
   component: FormInput,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  args:{
-  id: "storybook-form-input"},
-  tags: ["autodocs"],
+  args: {
+    id: 'storybook-form-input',
+  },
+  tags: ['autodocs'],
   argTypes: {
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Size of the form input and all its child elements",
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Size of the form input and all its child elements',
     },
     label: {
-      control: "text",
-      description: "Input label",
+      control: 'text',
+      description: 'Input label',
     },
     helpText: {
-      control: "text",
-      description: "Helper text, validation message, or other supporting text shown below the input",    },
+      control: 'text',
+      description:
+        'Helper text, validation message, or other supporting text shown below the input',
+    },
     validateStatus: {
-      control: "select",
-      options: ["default", "error", "success", "warning"],
-      description: "Validation state that affects input style and helper text",
+      control: 'select',
+      options: ['default', 'error', 'success', 'warning'],
+      description: 'Validation state that affects input style and helper text',
     },
   },
-
 };
 
 export default meta;
@@ -40,9 +42,9 @@ type Story = StoryObj<typeof FormInput>;
 // Basic usage
 export const Basic: Story = {
   args: {
-    label: "Username",
-    placeholder: "Enter username",
-    helpText: "Will be visible on your profile",
+    label: 'Username',
+    placeholder: 'Enter username',
+    helpText: 'Will be visible on your profile',
   },
 };
 
@@ -55,7 +57,12 @@ export const AllVariants: Story = {
           <FormInput id="" label="Default" placeholder="Enter value" />
         </div>
         <div className="w-64">
-          <FormInput id="" label="Required" placeholder="Enter value" required />
+          <FormInput
+            id=""
+            label="Required"
+            placeholder="Enter value"
+            required
+          />
         </div>
         <div className="w-64">
           <FormInput id="" label="Optional" placeholder="Enter value" />
@@ -184,7 +191,7 @@ export const InteractiveValidation: Story = {
 };
 
 function EmailValidationExample() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [touched, setTouched] = useState(false);
 
   const isValid = /^[^\sm@]+@[^\sm@]+\.[^\sm@]+$/.test(email);
@@ -192,12 +199,17 @@ function EmailValidationExample() {
   const showSuccess = touched && email && isValid;
 
   // Determine validation status
-  const validateStatus = showError ? "error" : showSuccess ? "success" : "default";
+  const validateStatus = showError
+    ? 'error'
+    : showSuccess
+      ? 'success'
+      : 'default';
 
   return (
     <div className="w-80">
-      <h3 className="text-lg font-medium mb-4">Email Validation</h3>
-      <FormInput  id="success-input"
+      <h3 className="mb-4 font-medium text-lg">Email Validation</h3>
+      <FormInput
+        id="success-input"
         label="Email"
         placeholder="your@email.com"
         required
@@ -205,12 +217,16 @@ function EmailValidationExample() {
         onChange={(e) => setEmail(e.target.value)}
         onBlur={() => setTouched(true)}
         validateStatus={validateStatus}
-        helpText={showError ? "Please enter a valid email" : "Used for login and notifications"}
+        helpText={
+          showError
+            ? 'Please enter a valid email'
+            : 'Used for login and notifications'
+        }
       />
       <div className="mt-6 text-sm">
         <p>
-          Status:{" "}
-          {!touched ? "Untouched" : isValid ? "Valid email" : "Invalid email"}
+          Status:{' '}
+          {touched ? (isValid ? 'Valid email' : 'Invalid email') : 'Untouched'}
         </p>
       </div>
     </div>
@@ -221,13 +237,19 @@ function EmailValidationExample() {
 export const RegistrationForm: Story = {
   render: () => {
     return (
-      <div className="w-96 p-6 border border-gray-200 rounded-lg shadow-sm">
-        <h2 className="text-xl font-semibold mb-6">Account Registration</h2>
+      <div className="w-96 rounded-lg border border-gray-200 p-6 shadow-sm">
+        <h2 className="mb-6 font-semibold text-xl">Account Registration</h2>
 
         <div className="space-y-4">
-          <FormInput  id="success-input" label="Full name" placeholder="John Doe" required />
+          <FormInput
+            id="success-input"
+            label="Full name"
+            placeholder="John Doe"
+            required
+          />
 
-          <FormInput  id="success-input"
+          <FormInput
+            id="success-input"
             label="Email"
             type="email"
             placeholder="john@example.com"
@@ -261,7 +283,7 @@ export const RegistrationForm: Story = {
         </div>
 
         <div className="mt-6">
-          <button className="px-4 py-2 bg-blue-500 text-white rounded font-medium">
+          <button className="rounded bg-blue-500 px-4 py-2 font-medium text-white">
             Create Account
           </button>
         </div>

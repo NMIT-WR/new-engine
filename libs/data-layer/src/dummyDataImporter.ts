@@ -1,5 +1,5 @@
-import { sqlRaw } from './drizzle';
 import { sql } from 'drizzle-orm';
+import { sqlRaw } from './drizzle';
 
 type ProductRecord = {
   product_slug: string;
@@ -31,7 +31,7 @@ export async function dummyDataImporter() {
 
 async function importProductPage(
   page: number,
-  step = 20,
+  step = 20
 ): Promise<ProcessedItemsCount> {
   console.log(`Importing page ${page}`);
   const productList = await sqlRaw<ProductRecord>(sql`

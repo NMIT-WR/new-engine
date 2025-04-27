@@ -1,28 +1,28 @@
-"use client";
-import { CurrentRefinements } from "@/components/instantsearch/current-refinements";
-import { Facet } from "@/components/instantsearch/facet";
-import { InfiniteHits } from "@/components/instantsearch/infinite-hits";
-import { SearchBox } from "@/components/instantsearch/searchbox";
-import { SortBy } from "@/components/instantsearch/sort-by";
-import { collectionName } from "@/lib/constants"
-import { typesenseInstantsearchAdapter } from "@/lib/typesense-instantsearch-adapter";
-import { InstantSearchNext } from "react-instantsearch-nextjs";
+'use client';
+import { CurrentRefinements } from '@/components/instantsearch/current-refinements';
+import { Facet } from '@/components/instantsearch/facet';
+import { InfiniteHits } from '@/components/instantsearch/infinite-hits';
+import { SearchBox } from '@/components/instantsearch/searchbox';
+import { SortBy } from '@/components/instantsearch/sort-by';
+import { collectionName } from '@/lib/constants';
+import { typesenseInstantsearchAdapter } from '@/lib/typesense-instantsearch-adapter';
+import { InstantSearchNext } from 'react-instantsearch-nextjs';
 
 const sortByItems = [
   {
-    label: "Relevance",
+    label: 'Relevance',
     value: collectionName,
   },
   {
-    label: "Cena (Od nejnižší k nejvyšší)",
+    label: 'Cena (Od nejnižší k nejvyšší)',
     value: `${collectionName}/sort/price:asc`,
   },
   {
-    label: "Cena (Od nejvyšší k nejnižší)",
+    label: 'Cena (Od nejvyšší k nejnižší)',
     value: `${collectionName}/sort/price:desc`,
   },
   {
-    label: "Oblíbenost",
+    label: 'Oblíbenost',
     value: `${collectionName}/sort/popularity:desc`,
   },
 ];
@@ -36,12 +36,12 @@ export default function Search() {
       future={{ preserveSharedStateOnUnmount: true }}
     >
       <div className="flex flex-col px-2 lg:px-0">
-        <div className="flex justify-end gap-3 items-end">
+        <div className="flex items-end justify-end gap-3">
           <CurrentRefinements />
           <SortBy items={sortByItems} />
         </div>
         <div className="flex">
-          <aside className="xl:flex flex-col gap-3 mr-10 mt-16 hidden">
+          <aside className="mt-16 mr-10 hidden flex-col gap-3 xl:flex">
             <div className="flex flex-col gap-8">
               <div>
                 <Facet attribute="categories" />

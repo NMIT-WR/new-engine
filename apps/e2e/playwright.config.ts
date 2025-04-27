@@ -1,25 +1,23 @@
-import { defineConfig, devices } from "@playwright/test";
-import { nxE2EPreset } from "@nx/playwright/preset";
-// @ts-expect-error
-import { workspaceRoot } from "@nx/devkit";
+import { nxE2EPreset } from '@nx/playwright/preset';
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-require('@dotenvx/dotenvx').config()
+require('@dotenvx/dotenvx').config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  ...nxE2EPreset(__filename, { testDir: "./e2e" }),
-  reporter: [ ['html', { open: 'never' }] ],
+  ...nxE2EPreset(__filename, { testDir: './e2e' }),
+  reporter: [['html', { open: 'never' }]],
   fullyParallel: true,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: 'on-first-retry',
   },
   retries: 3,
   /* Run your local dev server before starting the tests */
@@ -31,18 +29,18 @@ export default defineConfig({
   // },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
 
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
     },
 
     {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
     },
 
     // Uncomment for mobile browsers support
