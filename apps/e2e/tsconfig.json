@@ -4,7 +4,8 @@
     "allowJs": true,
     "outDir": "dist",
     "sourceMap": false,
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "verbatimModuleSyntax": false
   },
   "include": [
     "**/*.ts",
