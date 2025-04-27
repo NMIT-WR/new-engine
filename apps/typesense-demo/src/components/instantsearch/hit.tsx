@@ -1,13 +1,13 @@
-'use client';
-import { Card } from '@/components/ui/card';
-import type { typesenseSchema } from '@/lib/schema';
-import { Package, Tag } from 'lucide-react';
-import type { z } from 'zod';
+'use client'
+import { Card } from '@/components/ui/card'
+import type { typesenseSchema } from '@/lib/schema'
+import { Package, Tag } from 'lucide-react'
+import type { z } from 'zod'
 
-type Item = z.infer<typeof typesenseSchema>;
+type Item = z.infer<typeof typesenseSchema>
 
 function formatPrice(price: number) {
-  return `${price.toFixed(2)} Kč`;
+  return `${price.toFixed(2)} Kč`
 }
 
 export default function Hit({ hit }: { hit: Item }) {
@@ -48,5 +48,5 @@ export default function Hit({ hit }: { hit: Item }) {
         </div>
       </Card>
     </div>
-  );
+  )
 }

@@ -8,7 +8,7 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core'
 
 export const users = pgTable(
   'users',
@@ -20,13 +20,13 @@ export const users = pgTable(
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
   (table) => [uniqueIndex('users_username_unique').on(table.username)]
-);
+)
 
 export const collections = pgTable('collections', {
   id: serial().primaryKey().notNull(),
   name: text().notNull(),
   slug: text().notNull(),
-});
+})
 
 export const categories = pgTable(
   'categories',
@@ -39,7 +39,7 @@ export const categories = pgTable(
     imageUrl: text('image_url'),
   },
   (table) => [index('categories_collection_id_idx').on(table.collectionId)]
-);
+)
 
 export const subcollections = pgTable(
   'subcollections',
@@ -51,7 +51,7 @@ export const subcollections = pgTable(
       .references(() => categories.slug),
   },
   (table) => [index('subcollections_category_slug_idx').on(table.categorySlug)]
-);
+)
 
 export const subcategories = pgTable(
   'subcategories',
@@ -66,7 +66,7 @@ export const subcategories = pgTable(
   (table) => [
     index('subcategories_subcollection_id_idx').on(table.subcollectionId),
   ]
-);
+)
 
 export const products = pgTable(
   'products',
@@ -81,4 +81,4 @@ export const products = pgTable(
     imageUrl: text('image_url'),
   },
   () => []
-);
+)

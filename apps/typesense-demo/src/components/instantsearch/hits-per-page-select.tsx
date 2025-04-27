@@ -1,5 +1,5 @@
-'use client';
-import { type UseHitsPerPageProps, useHitsPerPage } from 'react-instantsearch';
+'use client'
+import { type UseHitsPerPageProps, useHitsPerPage } from 'react-instantsearch'
 
 import {
   Select,
@@ -7,15 +7,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 
 export function HitsPerPageSelect(props: UseHitsPerPageProps) {
-  const { items, refine } = useHitsPerPage(props);
+  const { items, refine } = useHitsPerPage(props)
 
   return (
     <Select
       onValueChange={(value) => {
-        refine(Number(value));
+        refine(Number(value))
       }}
     >
       <SelectTrigger className="mt-2 w-2/3 bg-background lg:w-1/5">
@@ -29,5 +29,5 @@ export function HitsPerPageSelect(props: UseHitsPerPageProps) {
         ))}
       </SelectContent>
     </Select>
-  );
+  )
 }

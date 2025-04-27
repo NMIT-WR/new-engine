@@ -1,40 +1,40 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { attributeLabelMap } from '@/lib/schema';
-import { formatNumber } from '@/lib/utils';
-import { X } from 'lucide-react';
+'use client'
+import { Button } from '@/components/ui/button'
+import { attributeLabelMap } from '@/lib/schema'
+import { formatNumber } from '@/lib/utils'
+import { X } from 'lucide-react'
 import {
   type UseCurrentRefinementsProps,
   useCurrentRefinements,
-} from 'react-instantsearch';
+} from 'react-instantsearch'
 
 const formatRefinementLabel = (label: string): string => {
-  const labelParts = label.split(' ');
+  const labelParts = label.split(' ')
 
   if (
     labelParts.length > 1 &&
     isFinite(Number(labelParts[1])) &&
     !isNaN(Number(labelParts[1]))
   ) {
-    const formattedNumber = formatNumber(Number(labelParts[1]));
-    return `${labelParts[0]} ${formattedNumber}${labelParts.slice(2).join(' ')}`;
+    const formattedNumber = formatNumber(Number(labelParts[1]))
+    return `${labelParts[0]} ${formattedNumber}${labelParts.slice(2).join(' ')}`
   }
 
-  return label;
-};
+  return label
+}
 
 function isAttributeLabel(
   label: string
 ): label is keyof typeof attributeLabelMap {
-  return label in attributeLabelMap;
+  return label in attributeLabelMap
 }
 
 function formatLabel(label: string): string {
-  return isAttributeLabel(label) ? attributeLabelMap[label] : label;
+  return isAttributeLabel(label) ? attributeLabelMap[label] : label
 }
 
 export function CurrentRefinements(props: UseCurrentRefinementsProps) {
-  const { items, refine } = useCurrentRefinements(props);
+  const { items, refine } = useCurrentRefinements(props)
 
   return (
     <div className="flex h-15 flex-wrap gap-3">
@@ -44,13 +44,13 @@ export function CurrentRefinements(props: UseCurrentRefinementsProps) {
           item.refinements.map((refinement) => {
             const formattedRefinementLabel = formatRefinementLabel(
               refinement.label
-            );
-            const formattedLabel = formatLabel(item.label);
+            )
+            const formattedLabel = formatLabel(item.label)
 
             return (
               <Button
                 onClick={() => {
-                  refine(refinement);
+                  refine(refinement)
                 }}
                 variant="outline"
                 className="rounded-full"
@@ -60,9 +60,9 @@ export function CurrentRefinements(props: UseCurrentRefinementsProps) {
                 <span>{`${formattedLabel}: ${formattedRefinementLabel}`}</span>
                 <X className="h-5" />
               </Button>
-            );
+            )
           })
         )}
     </div>
-  );
+  )
 }

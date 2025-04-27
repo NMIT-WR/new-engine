@@ -1,18 +1,18 @@
-import type { ReactNode } from 'react';
-import { Checkbox, type CheckboxProps } from '../atoms/checkbox';
-import { Error } from '../atoms/error';
-import { ExtraText } from '../atoms/extra-text';
-import { Label } from '../atoms/label';
+import type { ReactNode } from 'react'
+import { Checkbox, type CheckboxProps } from '../atoms/checkbox'
+import { Error } from '../atoms/error'
+import { ExtraText } from '../atoms/extra-text'
+import { Label } from '../atoms/label'
 
-type ValidateStatus = 'default' | 'error' | 'success' | 'warning';
+type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
 
 interface FormCheckboxProps extends Omit<CheckboxProps, 'size'> {
-  id: string;
-  label: ReactNode;
-  validateStatus?: ValidateStatus;
-  helpText?: ReactNode;
-  extraText?: ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  id: string
+  label: ReactNode
+  validateStatus?: ValidateStatus
+  helpText?: ReactNode
+  extraText?: ReactNode
+  size?: 'sm' | 'md' | 'lg'
 }
 
 export function FormCheckboxRaw({
@@ -26,7 +26,7 @@ export function FormCheckboxRaw({
   disabled,
   ...props
 }: FormCheckboxProps) {
-  const extraTextId = extraText ? `${id}-extra` : undefined;
+  const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
     <div className="flex gap-2xs">
@@ -45,7 +45,7 @@ export function FormCheckboxRaw({
         )}
       </div>
     </div>
-  );
+  )
 }
 
 export function FormCheckbox({
@@ -55,7 +55,7 @@ export function FormCheckbox({
   size,
   ...props
 }: FormCheckboxProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined;
+  const helpTextId = helpText ? `${id}-helper` : undefined
 
   return (
     <FormCheckboxRaw
@@ -75,5 +75,5 @@ export function FormCheckbox({
       }
       {...props}
     />
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import { withThemeByClassName } from '@storybook/addon-themes';
-import type { Preview } from '@storybook/react';
-import '../src/tokens/index.css';
+import { withThemeByClassName } from '@storybook/addon-themes'
+import type { Preview } from '@storybook/react'
+import '../src/tokens/index.css'
 
 const preview: Preview = {
   parameters: {
@@ -23,6 +23,6 @@ const preview: Preview = {
       defaultTheme: 'auto',
     }),
   ],
-};
+}
 
-export default preview;
+export default preview

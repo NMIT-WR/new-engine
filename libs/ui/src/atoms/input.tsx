@@ -1,6 +1,6 @@
-import type { InputHTMLAttributes, Ref } from 'react';
-import type { VariantProps } from 'tailwind-variants';
-import { tv } from '../utils';
+import type { InputHTMLAttributes, Ref } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
 
 const inputVariants = tv({
   base: [
@@ -59,12 +59,12 @@ const inputVariants = tv({
     size: 'md',
     variant: 'default',
   },
-});
+})
 
 export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
-  ref?: Ref<HTMLInputElement>;
+  ref?: Ref<HTMLInputElement>
 }
 
 export function Input({ size, variant, disabled, ref, ...props }: InputProps) {
@@ -79,5 +79,5 @@ export function Input({ size, variant, disabled, ref, ...props }: InputProps) {
       ref={ref}
       {...props}
     />
-  );
+  )
 }

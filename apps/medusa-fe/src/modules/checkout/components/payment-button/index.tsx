@@ -1,21 +1,22 @@
-"use client"
+'use client'
 
-import { isManual, isStripe } from "@lib/constants"
-import { placeOrder } from "@lib/data/cart"
-import { HttpTypes } from "@medusajs/types"
-import { Button } from "@medusajs/ui"
-import { useElements, useStripe } from "@stripe/react-stripe-js"
-import React, { useState } from "react"
-import ErrorMessage from "../error-message"
+import { isManual, isStripe } from '@lib/constants'
+import { placeOrder } from '@lib/data/cart'
+import type { HttpTypes } from '@medusajs/types'
+import { Button } from '@medusajs/ui'
+import { useElements, useStripe } from '@stripe/react-stripe-js'
+import type React from 'react'
+import { useState } from 'react'
+import ErrorMessage from '../error-message'
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
-  "data-testid": string
+  'data-testid': string
 }
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId,
 }) => {
   const notReady =
     !cart ||
@@ -47,11 +48,11 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
 const StripePaymentButton = ({
   cart,
   notReady,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId,
 }: {
   cart: HttpTypes.StoreCart
   notReady: boolean
-  "data-testid"?: string
+  'data-testid'?: string
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -68,10 +69,10 @@ const StripePaymentButton = ({
 
   const stripe = useStripe()
   const elements = useElements()
-  const card = elements?.getElement("card")
+  const card = elements?.getElement('card')
 
   const session = cart.payment_collection?.payment_sessions?.find(
-    (s) => s.status === "pending"
+    (s) => s.status === 'pending'
   )
 
   const disabled = !stripe || !elements ? true : false
@@ -91,7 +92,7 @@ const StripePaymentButton = ({
           billing_details: {
             name:
               cart.billing_address?.first_name +
-              " " +
+              ' ' +
               cart.billing_address?.last_name,
             address: {
               city: cart.billing_address?.city ?? undefined,
@@ -111,8 +112,8 @@ const StripePaymentButton = ({
           const pi = error.payment_intent
 
           if (
-            (pi && pi.status === "requires_capture") ||
-            (pi && pi.status === "succeeded")
+            (pi && pi.status === 'requires_capture') ||
+            (pi && pi.status === 'succeeded')
           ) {
             onPaymentCompleted()
           }
@@ -122,8 +123,8 @@ const StripePaymentButton = ({
         }
 
         if (
-          (paymentIntent && paymentIntent.status === "requires_capture") ||
-          paymentIntent.status === "succeeded"
+          (paymentIntent && paymentIntent.status === 'requires_capture') ||
+          paymentIntent.status === 'succeeded'
         ) {
           return onPaymentCompleted()
         }

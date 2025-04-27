@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
-import { Error } from '../../src/atoms/error';
-import { Input } from '../../src/atoms/input';
-import { Label } from '../../src/atoms/label';
+import type { Meta, StoryObj } from '@storybook/react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Error } from '../../src/atoms/error'
+import { Input } from '../../src/atoms/input'
+import { Label } from '../../src/atoms/label'
 
 const meta: Meta<typeof Input> = {
   title: 'Atoms/Input',
@@ -27,17 +27,17 @@ const meta: Meta<typeof Input> = {
       description: 'Disabled state',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof Input>;
+export default meta
+type Story = StoryObj<typeof Input>
 
 // Basic input
 export const Basic: Story = {
   args: {
     placeholder: 'Enter text...',
   },
-};
+}
 
 // Visual demonstration of all variants
 export const AllVariants: Story = {
@@ -112,4 +112,4 @@ export const AllVariants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

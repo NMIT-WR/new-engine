@@ -67,4 +67,4 @@ export const eshops = {
   akros: 'https://akros.cz',
   grilmarket: 'https://grilmarket.cz',
   reklamnizbozi: 'https://reklamnizbozi.cz',
-} as const;
+} as const

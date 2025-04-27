@@ -1,7 +1,7 @@
-import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
-import type { VariantProps } from 'tailwind-variants';
-import { tv } from '../utils';
-import { Icon, type IconType } from './icon';
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
+import { Icon, type IconType } from './icon'
 
 const buttonVariants = tv({
   base: [
@@ -239,17 +239,17 @@ const buttonVariants = tv({
     size: 'md',
     light: false,
   },
-});
+})
 
 export interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>,
     VariantProps<typeof buttonVariants> {
-  icon?: IconType;
-  iconPosition?: 'left' | 'right';
-  uppercase?: boolean;
-  isLoading?: boolean;
-  loadingText?: string;
-  children?: ReactNode;
+  icon?: IconType
+  iconPosition?: 'left' | 'right'
+  uppercase?: boolean
+  isLoading?: boolean
+  loadingText?: string
+  children?: ReactNode
 }
 
 export function Button({
@@ -282,5 +282,5 @@ export function Button({
       {children}
       {icon && iconPosition === 'right' && <Icon icon={icon} size={size} />}
     </button>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import NumericMenu from '@/components/instantsearch/numeric-menu';
-import { RangeFilter } from '@/components/instantsearch/range-menu';
-import { attributeLabelMap } from '@/lib/schema';
-import { useRefinementList } from 'react-instantsearch';
+import NumericMenu from '@/components/instantsearch/numeric-menu'
+import { RangeFilter } from '@/components/instantsearch/range-menu'
+import { attributeLabelMap } from '@/lib/schema'
+import { useRefinementList } from 'react-instantsearch'
 
 function Facet({ attribute }: { attribute: string }) {
   switch (attribute) {
@@ -17,7 +17,7 @@ function Facet({ attribute }: { attribute: string }) {
             <RefinementListComponent attribute={attribute} />
           </div>
         </>
-      );
+      )
     case 'price':
       return (
         <>
@@ -26,7 +26,7 @@ function Facet({ attribute }: { attribute: string }) {
           </h3>
           <RangeFilter attribute={attribute} />
         </>
-      );
+      )
     case 'popularity':
       return (
         <>
@@ -42,14 +42,14 @@ function Facet({ attribute }: { attribute: string }) {
             ]}
           />
         </>
-      );
+      )
     default:
-      return null;
+      return null
   }
 }
 
 function RefinementListComponent({ attribute }: { attribute: string }) {
-  const { items, refine } = useRefinementList({ attribute });
+  const { items, refine } = useRefinementList({ attribute })
 
   return (
     <ul>
@@ -66,7 +66,7 @@ function RefinementListComponent({ attribute }: { attribute: string }) {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
-export { Facet };
+export { Facet }

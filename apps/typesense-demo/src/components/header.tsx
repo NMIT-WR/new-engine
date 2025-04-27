@@ -1,4 +1,4 @@
-import { ModeToggle } from '@/components/mode-toggle';
+import { ModeToggle } from '@/components/mode-toggle'
 
 export default function Header() {
   return (
@@ -7,5 +7,5 @@ export default function Header() {
         <ModeToggle />
       </div>
     </header>
-  );
+  )
 }

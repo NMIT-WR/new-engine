@@ -1,11 +1,11 @@
-import { nxE2EPreset } from '@nx/playwright/preset';
-import { defineConfig, devices } from '@playwright/test';
+import { nxE2EPreset } from '@nx/playwright/preset'
+import { defineConfig, devices } from '@playwright/test'
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-require('@dotenvx/dotenvx').config();
+require('@dotenvx/dotenvx').config()
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -63,4 +63,4 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     } */
   ],
-});
+})

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
-import { Button } from '../../src/atoms/button';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Button } from '../../src/atoms/button'
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
@@ -24,10 +24,10 @@ const meta: Meta<typeof Button> = {
       },
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof Button>;
+export default meta
+type Story = StoryObj<typeof Button>
 
 export const Variants: Story = {
   render: () => (
@@ -92,7 +92,7 @@ export const Variants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -111,16 +111,16 @@ export const Sizes: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const States: Story = {
   render: () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
 
     const toggleLoading = () => {
-      setIsLoading(true);
-      setTimeout(() => setIsLoading(false), 2000);
-    };
+      setIsLoading(true)
+      setTimeout(() => setIsLoading(false), 2000)
+    }
 
     return (
       <VariantContainer>
@@ -153,9 +153,9 @@ export const States: Story = {
           </Button>
         </VariantGroup>
       </VariantContainer>
-    );
+    )
   },
-};
+}
 
 export const AllVariants: Story = {
   render: () => (
@@ -267,7 +267,7 @@ export const AllVariants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const IconButtons: Story = {
   render: () => (
@@ -287,4 +287,4 @@ export const IconButtons: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

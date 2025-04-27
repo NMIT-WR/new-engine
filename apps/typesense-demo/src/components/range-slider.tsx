@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import * as SliderPrimitive from '@radix-ui/react-slider';
-import * as React from 'react';
+import * as SliderPrimitive from '@radix-ui/react-slider'
+import * as React from 'react'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 const RangeSlider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
@@ -11,7 +11,7 @@ const RangeSlider = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const initialValue = Array.isArray(props.value)
     ? props.value
-    : [props.min, props.max];
+    : [props.min, props.max]
 
   return (
     <SliderPrimitive.Root
@@ -31,8 +31,8 @@ const RangeSlider = React.forwardRef<
         </React.Fragment>
       ))}
     </SliderPrimitive.Root>
-  );
-});
-RangeSlider.displayName = SliderPrimitive.Root.displayName;
+  )
+})
+RangeSlider.displayName = SliderPrimitive.Root.displayName
 
-export { RangeSlider };
+export { RangeSlider }

@@ -1,10 +1,10 @@
-'use client';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { type UseNumericMenuProps, useNumericMenu } from 'react-instantsearch';
+'use client'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { type UseNumericMenuProps, useNumericMenu } from 'react-instantsearch'
 
 export default function NumericMenu(props: UseNumericMenuProps) {
-  const { items, refine } = useNumericMenu(props);
+  const { items, refine } = useNumericMenu(props)
 
   return (
     <RadioGroup onValueChange={(value) => refine(value)}>
@@ -19,5 +19,5 @@ export default function NumericMenu(props: UseNumericMenuProps) {
         </div>
       ))}
     </RadioGroup>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import type { InputHTMLAttributes, Ref } from 'react';
-import { tv } from '../utils';
+import type { InputHTMLAttributes, Ref } from 'react'
+import { tv } from '../utils'
 
 const checkboxVariants = tv({
   base: [
@@ -14,10 +14,10 @@ const checkboxVariants = tv({
     'transition-all duration-200',
     'focus:outline-none focus-visible:ring-2 focus-visible:ring-checkbox-ring focus-visible:ring-offset-2',
   ],
-});
+})
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
-  ref?: Ref<HTMLInputElement>;
+  ref?: Ref<HTMLInputElement>
 }
 
 export function Checkbox({ className, ref, ...props }: CheckboxProps) {
@@ -28,7 +28,7 @@ export function Checkbox({ className, ref, ...props }: CheckboxProps) {
       ref={ref}
       {...props}
     />
-  );
+  )
 }
 
-Checkbox.displayName = 'Checkbox';
+Checkbox.displayName = 'Checkbox'

@@ -1,24 +1,24 @@
-'use client';
-import { RangeSlider } from '@/components/range-slider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import type React from 'react';
-import { useEffect, useState } from 'react';
-import { type UseRangeProps, useRange } from 'react-instantsearch';
+'use client'
+import { RangeSlider } from '@/components/range-slider'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import type React from 'react'
+import { useEffect, useState } from 'react'
+import { type UseRangeProps, useRange } from 'react-instantsearch'
 
 export function RangeFilter(props: UseRangeProps) {
-  const { start, range, canRefine, refine } = useRange(props);
-  const step = 1 / 10;
+  const { start, range, canRefine, refine } = useRange(props)
+  const step = 1 / 10
 
-  const [sliderValues, setSliderValues] = useState<[number, number]>([0, 100]);
+  const [sliderValues, setSliderValues] = useState<[number, number]>([0, 100])
   const [inputValues, setInputValues] = useState({
     from: '0',
     to: '100',
-  });
+  })
 
   useEffect(() => {
-    const minValue = range.min ?? 0;
-    const maxValue = range.max ?? 100;
+    const minValue = range.min ?? 0
+    const maxValue = range.max ?? 100
     const newStart: [number, number] = [
       start[0] !== undefined && start[0] !== Number.NEGATIVE_INFINITY
         ? start[0]
@@ -26,47 +26,47 @@ export function RangeFilter(props: UseRangeProps) {
       start[1] !== undefined && start[1] !== Number.POSITIVE_INFINITY
         ? start[1]
         : maxValue,
-    ];
-    setSliderValues(newStart);
+    ]
+    setSliderValues(newStart)
     setInputValues({
       from: newStart[0].toString(),
       to: newStart[1].toString(),
-    });
-  }, [start, range.min, range.max, refine]);
+    })
+  }, [start, range.min, range.max, refine])
 
   const handleSliderChange = (newValues: number[]) => {
-    const typedValues: [number, number] = [newValues[0], newValues[1]];
-    setSliderValues(typedValues);
+    const typedValues: [number, number] = [newValues[0], newValues[1]]
+    setSliderValues(typedValues)
     setInputValues({
       from: typedValues[0].toString(),
       to: typedValues[1].toString(),
-    });
-    refine(typedValues);
-  };
+    })
+    refine(typedValues)
+  }
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     type: 'from' | 'to'
   ) => {
-    const value = event.target.value;
-    setInputValues((prev) => ({ ...prev, [type]: value }));
-  };
+    const value = event.target.value
+    setInputValues((prev) => ({ ...prev, [type]: value }))
+  }
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const minValue = range.min ?? 0;
-    const maxValue = range.max ?? 100;
+    event.preventDefault()
+    const minValue = range.min ?? 0
+    const maxValue = range.max ?? 100
     const newValues: [number, number] = [
       inputValues.from ? Number(inputValues.from) : minValue,
       inputValues.to ? Number(inputValues.to) : maxValue,
-    ];
-    setSliderValues(newValues);
-    refine(newValues);
-  };
+    ]
+    setSliderValues(newValues)
+    refine(newValues)
+  }
 
   const stripLeadingZeroFromInput = (value: string): string => {
-    return value.replace(/^(0+)\d/, (part) => Number(part).toString());
-  };
+    return value.replace(/^(0+)\d/, (part) => Number(part).toString())
+  }
 
   return (
     <div className="w-full py-2">
@@ -108,5 +108,5 @@ export function RangeFilter(props: UseRangeProps) {
         </Button>
       </form>
     </div>
-  );
+  )
 }

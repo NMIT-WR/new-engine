@@ -1,30 +1,30 @@
-"use client"
+'use client'
 
-import { convertToLocale } from "@lib/util/money"
-import { CheckCircleSolid, XMark } from "@medusajs/icons"
-import {
+import { convertToLocale } from '@lib/util/money'
+import { CheckCircleSolid, XMark } from '@medusajs/icons'
+import type {
   HttpTypes,
   StoreCart,
   StoreCartShippingOption,
   StorePrice,
-} from "@medusajs/types"
-import { Button, clx } from "@medusajs/ui"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { useState } from "react"
-import { StoreFreeShippingPrice } from "types/global"
+} from '@medusajs/types'
+import { Button, clx } from '@medusajs/ui'
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
+import { useState } from 'react'
+import type { StoreFreeShippingPrice } from 'types/global'
 
 const computeTarget = (
   cart: HttpTypes.StoreCart,
   price: HttpTypes.StorePrice
 ) => {
   const priceRule = (price.price_rules || []).find(
-    (pr) => pr.attribute === "item_total"
+    (pr) => pr.attribute === 'item_total'
   )!
 
   const currentAmount = cart.item_total
-  const targetAmount = parseFloat(priceRule.value)
+  const targetAmount = Number.parseFloat(priceRule.value)
 
-  if (priceRule.operator === "gt") {
+  if (priceRule.operator === 'gt') {
     return {
       current_amount: currentAmount,
       target_amount: targetAmount,
@@ -33,7 +33,7 @@ const computeTarget = (
         currentAmount > targetAmount ? 0 : targetAmount + 1 - currentAmount,
       remaining_percentage: (currentAmount / targetAmount) * 100,
     }
-  } else if (priceRule.operator === "gte") {
+  } else if (priceRule.operator === 'gte') {
     return {
       current_amount: currentAmount,
       target_amount: targetAmount,
@@ -42,7 +42,7 @@ const computeTarget = (
         currentAmount > targetAmount ? 0 : targetAmount - currentAmount,
       remaining_percentage: (currentAmount / targetAmount) * 100,
     }
-  } else if (priceRule.operator === "lt") {
+  } else if (priceRule.operator === 'lt') {
     return {
       current_amount: currentAmount,
       target_amount: targetAmount,
@@ -51,7 +51,7 @@ const computeTarget = (
         targetAmount > currentAmount ? 0 : currentAmount + 1 - targetAmount,
       remaining_percentage: (currentAmount / targetAmount) * 100,
     }
-  } else if (priceRule.operator === "lte") {
+  } else if (priceRule.operator === 'lte') {
     return {
       current_amount: currentAmount,
       target_amount: targetAmount,
@@ -73,11 +73,11 @@ const computeTarget = (
 }
 
 export default function ShippingPriceNudge({
-  variant = "inline",
+  variant = 'inline',
   cart,
   shippingOptions,
 }: {
-  variant?: "popup" | "inline"
+  variant?: 'popup' | 'inline'
   cart: StoreCart
   shippingOptions: StoreCartShippingOption[]
 }) {
@@ -87,7 +87,7 @@ export default function ShippingPriceNudge({
 
   // Check if any shipping options have a conditional price based on item_total
   const freeShippingPrice = shippingOptions
-    .map((shippingOption) => {
+    .flatMap((shippingOption) => {
       const calculatedPrice = shippingOption.calculated_price
 
       if (!calculatedPrice) {
@@ -101,7 +101,7 @@ export default function ShippingPriceNudge({
         (price) =>
           price.currency_code === cart.currency_code &&
           (price.price_rules || []).some(
-            (priceRule) => priceRule.attribute === "item_total"
+            (priceRule) => priceRule.attribute === 'item_total'
           )
       )
 
@@ -113,7 +113,6 @@ export default function ShippingPriceNudge({
         }
       })
     })
-    .flat(1)
     .filter(Boolean)
     // We focus here entirely on free shipping, but this can be edited to handle multiple layers
     // of reduced shipping prices.
@@ -123,7 +122,7 @@ export default function ShippingPriceNudge({
     return
   }
 
-  if (variant === "popup") {
+  if (variant === 'popup') {
     return <FreeShippingPopup cart={cart} price={freeShippingPrice} />
   } else {
     return <FreeShippingInline cart={cart} price={freeShippingPrice} />
@@ -142,13 +141,13 @@ function FreeShippingInline({
   }
 }) {
   return (
-    <div className="bg-neutral-100 p-2 rounded-lg border">
+    <div className="rounded-lg border bg-neutral-100 p-2">
       <div className="space-y-1.5">
-        <div className="flex justify-between text-xs text-neutral-600">
+        <div className="flex justify-between text-neutral-600 text-xs">
           <div>
             {price.target_reached ? (
               <div className="flex items-center gap-1.5">
-                <CheckCircleSolid className="text-green-500 inline-block" />{" "}
+                <CheckCircleSolid className="inline-block text-green-500" />{' '}
                 Free Shipping unlocked!
               </div>
             ) : (
@@ -157,31 +156,31 @@ function FreeShippingInline({
           </div>
 
           <div
-            className={clx("visible", {
-              "opacity-0 invisible": price.target_reached,
+            className={clx('visible', {
+              'invisible opacity-0': price.target_reached,
             })}
           >
-            Only{" "}
+            Only{' '}
             <span className="text-neutral-950">
               {convertToLocale({
                 amount: price.target_remaining,
                 currency_code: cart.currency_code,
               })}
-            </span>{" "}
+            </span>{' '}
             away
           </div>
         </div>
         <div className="flex justify-between gap-1">
           <div
             className={clx(
-              "bg-gradient-to-r from-zinc-400 to-zinc-500 h-1 rounded-full max-w-full duration-500 ease-in-out",
+              'h-1 max-w-full rounded-full bg-gradient-to-r from-zinc-400 to-zinc-500 duration-500 ease-in-out',
               {
-                "from-green-400 to-green-500": price.target_reached,
+                'from-green-400 to-green-500': price.target_reached,
               }
             )}
             style={{ width: `${price.remaining_percentage}%` }}
           ></div>
-          <div className="bg-neutral-300 h-1 rounded-full w-fit flex-grow"></div>
+          <div className="h-1 w-fit flex-grow rounded-full bg-neutral-300"></div>
         </div>
       </div>
     </div>
@@ -200,31 +199,31 @@ function FreeShippingPopup({
   return (
     <div
       className={clx(
-        "fixed bottom-5 right-5 flex flex-col items-end gap-2 transition-all duration-500 ease-in-out z-10",
+        'fixed right-5 bottom-5 z-10 flex flex-col items-end gap-2 transition-all duration-500 ease-in-out',
         {
-          "opacity-0 invisible delay-1000": price.target_reached,
-          "opacity-0 invisible": isClosed,
-          "opacity-100 visible": !price.target_reached && !isClosed,
+          'invisible opacity-0 delay-1000': price.target_reached,
+          'invisible opacity-0': isClosed,
+          'visible opacity-100': !price.target_reached && !isClosed,
         }
       )}
     >
       <div>
         <Button
-          className="rounded-full bg-neutral-900 shadow-none outline-none border-none text-[15px] p-2"
+          className="rounded-full border-none bg-neutral-900 p-2 text-[15px] shadow-none outline-none"
           onClick={() => setIsClosed(true)}
         >
           <XMark />
         </Button>
       </div>
 
-      <div className="w-[400px] bg-black text-white p-6 rounded-lg ">
+      <div className="w-[400px] rounded-lg bg-black p-6 text-white ">
         <div className="pb-4">
           <div className="space-y-3">
             <div className="flex justify-between text-[15px] text-neutral-400">
               <div>
                 {price.target_reached ? (
                   <div className="flex items-center gap-1.5">
-                    <CheckCircleSolid className="text-green-500 inline-block" />{" "}
+                    <CheckCircleSolid className="inline-block text-green-500" />{' '}
                     Free Shipping unlocked!
                   </div>
                 ) : (
@@ -233,45 +232,45 @@ function FreeShippingPopup({
               </div>
 
               <div
-                className={clx("visible", {
-                  "opacity-0 invisible": price.target_reached,
+                className={clx('visible', {
+                  'invisible opacity-0': price.target_reached,
                 })}
               >
-                Only{" "}
+                Only{' '}
                 <span className="text-white">
                   {convertToLocale({
                     amount: price.target_remaining,
                     currency_code: cart.currency_code,
                   })}
-                </span>{" "}
+                </span>{' '}
                 away
               </div>
             </div>
             <div className="flex justify-between gap-1">
               <div
                 className={clx(
-                  "bg-gradient-to-r from-zinc-400 to-zinc-500 h-1.5 rounded-full max-w-full duration-500 ease-in-out",
+                  'h-1.5 max-w-full rounded-full bg-gradient-to-r from-zinc-400 to-zinc-500 duration-500 ease-in-out',
                   {
-                    "from-green-400 to-green-500": price.target_reached,
+                    'from-green-400 to-green-500': price.target_reached,
                   }
                 )}
                 style={{ width: `${price.remaining_percentage}%` }}
               ></div>
-              <div className="bg-zinc-600 h-1.5 rounded-full w-fit flex-grow"></div>
+              <div className="h-1.5 w-fit flex-grow rounded-full bg-zinc-600"></div>
             </div>
           </div>
         </div>
 
         <div className="flex gap-3">
           <LocalizedClientLink
-            className="rounded-2xl bg-transparent shadow-none outline-none border-[1px] border-white text-[15px] py-2.5 px-4"
+            className="rounded-2xl border-[1px] border-white bg-transparent px-4 py-2.5 text-[15px] shadow-none outline-none"
             href="/cart"
           >
             View cart
           </LocalizedClientLink>
 
           <LocalizedClientLink
-            className="flex-grow rounded-2xl bg-white text-neutral-950 shadow-none outline-none border-[1px] border-white text-[15px] py-2.5 px-4 text-center"
+            className="flex-grow rounded-2xl border-[1px] border-white bg-white px-4 py-2.5 text-center text-[15px] text-neutral-950 shadow-none outline-none"
             href="/store"
           >
             View products

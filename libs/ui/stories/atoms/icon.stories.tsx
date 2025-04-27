@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
-import { Icon } from '../../src/atoms/icon';
+import type { Meta, StoryObj } from '@storybook/react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Icon } from '../../src/atoms/icon'
 
 const meta: Meta<typeof Icon> = {
   title: 'Atoms/Icon',
@@ -9,10 +9,10 @@ const meta: Meta<typeof Icon> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof Icon>;
+export default meta
+type Story = StoryObj<typeof Icon>
 
 // Basic usage
 export const Basic: Story = {
@@ -20,7 +20,7 @@ export const Basic: Story = {
     icon: 'icon-[mdi-light--alert]',
     size: 'md',
   },
-};
+}
 
 // All sizes
 export const AllSizes: Story = {
@@ -35,7 +35,7 @@ export const AllSizes: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // All colors
 export const AllColors: Story = {
@@ -53,7 +53,7 @@ export const AllColors: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // Semantic tokens
 export const SemanticTokens: Story = {
@@ -83,7 +83,7 @@ export const SemanticTokens: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // Component tokens
 export const ComponentTokens: Story = {
@@ -109,4 +109,4 @@ export const ComponentTokens: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

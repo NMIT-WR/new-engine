@@ -1,12 +1,12 @@
-'use client';
-import { CurrentRefinements } from '@/components/instantsearch/current-refinements';
-import { Facet } from '@/components/instantsearch/facet';
-import { InfiniteHits } from '@/components/instantsearch/infinite-hits';
-import { SearchBox } from '@/components/instantsearch/searchbox';
-import { SortBy } from '@/components/instantsearch/sort-by';
-import { collectionName } from '@/lib/constants';
-import { typesenseInstantsearchAdapter } from '@/lib/typesense-instantsearch-adapter';
-import { InstantSearchNext } from 'react-instantsearch-nextjs';
+'use client'
+import { CurrentRefinements } from '@/components/instantsearch/current-refinements'
+import { Facet } from '@/components/instantsearch/facet'
+import { InfiniteHits } from '@/components/instantsearch/infinite-hits'
+import { SearchBox } from '@/components/instantsearch/searchbox'
+import { SortBy } from '@/components/instantsearch/sort-by'
+import { collectionName } from '@/lib/constants'
+import { typesenseInstantsearchAdapter } from '@/lib/typesense-instantsearch-adapter'
+import { InstantSearchNext } from 'react-instantsearch-nextjs'
 
 const sortByItems = [
   {
@@ -25,7 +25,7 @@ const sortByItems = [
     label: 'Oblíbenost',
     value: `${collectionName}/sort/popularity:desc`,
   },
-];
+]
 
 export default function Search() {
   return (
@@ -61,5 +61,5 @@ export default function Search() {
         </div>
       </div>
     </InstantSearchNext>
-  );
+  )
 }

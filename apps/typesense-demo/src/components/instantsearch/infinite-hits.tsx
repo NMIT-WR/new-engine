@@ -1,13 +1,13 @@
-'use client';
-import Hit from '@/components/instantsearch/hit';
-import { Button } from '@/components/ui/button';
-import type { typesenseSchema } from '@/lib/schema';
-import { useInfiniteHits } from 'react-instantsearch';
-import type { z } from 'zod';
+'use client'
+import Hit from '@/components/instantsearch/hit'
+import { Button } from '@/components/ui/button'
+import type { typesenseSchema } from '@/lib/schema'
+import { useInfiniteHits } from 'react-instantsearch'
+import type { z } from 'zod'
 
 export function InfiniteHits() {
   const { items, showMore, isLastPage } =
-    useInfiniteHits<z.infer<typeof typesenseSchema>>();
+    useInfiniteHits<z.infer<typeof typesenseSchema>>()
 
   return items.length === 0 ? (
     <div className="flex h-96 items-center justify-center">
@@ -29,5 +29,5 @@ export function InfiniteHits() {
         Zobrazit více
       </Button>
     </div>
-  );
+  )
 }

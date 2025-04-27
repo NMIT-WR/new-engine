@@ -1,21 +1,21 @@
-import { defineConfig, loadEnv } from '@medusajs/framework/utils';
+import { defineConfig, loadEnv } from '@medusajs/framework/utils'
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd());
+loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 // const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:9000";
-const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
-const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST || '';
-const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || '';
-const VITE_HMR_PORT = process.env.VITE_HMR_PORT || '';
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379'
+const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST || ''
+const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || ''
+const VITE_HMR_PORT = process.env.VITE_HMR_PORT || ''
 
 module.exports = defineConfig({
   admin: {
     // backendUrl: BACKEND_URL,
     vite: (inlineConfig) => {
       if (VITE_HMR_PORT !== '') {
-        inlineConfig.server.hmr.port = VITE_HMR_PORT;
+        inlineConfig.server.hmr.port = VITE_HMR_PORT
       }
-      return inlineConfig;
+      return inlineConfig
     },
   },
   projectConfig: {
@@ -96,4 +96,4 @@ module.exports = defineConfig({
       resolve: './src/modules/data-layer',
     },
   ],
-});
+})

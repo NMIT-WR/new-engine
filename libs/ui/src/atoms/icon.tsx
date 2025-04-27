@@ -1,8 +1,8 @@
-import type { HTMLAttributes } from 'react';
-import type { VariantProps } from 'tailwind-variants';
-import { tv } from '../utils';
+import type { HTMLAttributes } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
 
-export type IconType = `token-icon-${string}` | `icon-[${string}]`;
+export type IconType = `token-icon-${string}` | `icon-[${string}]`
 
 const iconVariants = tv({
   base: ['inline-block flex-shrink-0 align-middle leading-none'],
@@ -28,12 +28,12 @@ const iconVariants = tv({
     size: 'current',
     color: 'current',
   },
-});
+})
 
 export interface IconProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof iconVariants> {
-  icon: IconType;
+  icon: IconType
 }
 
 export function Icon({ icon, size, color, ...props }: IconProps) {
@@ -43,5 +43,5 @@ export function Icon({ icon, size, color, ...props }: IconProps) {
       aria-hidden="true"
       {...props}
     />
-  );
+  )
 }

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
-import { VariantContainer, VariantGroup } from '../../.storybook/decorator';
-import { FormInput } from '../../src/molecules/form-input';
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { FormInput } from '../../src/molecules/form-input'
 
 const meta: Meta<typeof FormInput> = {
   title: 'Molecules/FormInput',
@@ -34,10 +34,10 @@ const meta: Meta<typeof FormInput> = {
       description: 'Validation state that affects input style and helper text',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof FormInput>;
+export default meta
+type Story = StoryObj<typeof FormInput>
 
 // Basic usage
 export const Basic: Story = {
@@ -46,7 +46,7 @@ export const Basic: Story = {
     placeholder: 'Enter username',
     helpText: 'Will be visible on your profile',
   },
-};
+}
 
 // All variants and combinations
 export const AllVariants: Story = {
@@ -181,29 +181,29 @@ export const AllVariants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // Interactive validation example
 export const InteractiveValidation: Story = {
   render: () => {
-    return <EmailValidationExample />;
+    return <EmailValidationExample />
   },
-};
+}
 
 function EmailValidationExample() {
-  const [email, setEmail] = useState('');
-  const [touched, setTouched] = useState(false);
+  const [email, setEmail] = useState('')
+  const [touched, setTouched] = useState(false)
 
-  const isValid = /^[^\sm@]+@[^\sm@]+\.[^\sm@]+$/.test(email);
-  const showError = touched && email && !isValid;
-  const showSuccess = touched && email && isValid;
+  const isValid = /^[^\sm@]+@[^\sm@]+\.[^\sm@]+$/.test(email)
+  const showError = touched && email && !isValid
+  const showSuccess = touched && email && isValid
 
   // Determine validation status
   const validateStatus = showError
     ? 'error'
     : showSuccess
       ? 'success'
-      : 'default';
+      : 'default'
 
   return (
     <div className="w-80">
@@ -230,7 +230,7 @@ function EmailValidationExample() {
         </p>
       </div>
     </div>
-  );
+  )
 }
 
 // Form usage example
@@ -288,6 +288,6 @@ export const RegistrationForm: Story = {
           </button>
         </div>
       </div>
-    );
+    )
   },
-};
+}

@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { transferCart } from "@lib/data/customer"
-import { ExclamationCircleSolid } from "@medusajs/icons"
-import { StoreCart, StoreCustomer } from "@medusajs/types"
-import { Button } from "@medusajs/ui"
-import { useState } from "react"
+import { transferCart } from '@lib/data/customer'
+import { ExclamationCircleSolid } from '@medusajs/icons'
+import type { StoreCart, StoreCustomer } from '@medusajs/types'
+import { Button } from '@medusajs/ui'
+import { useState } from 'react'
 
 function CartMismatchBanner(props: {
   customer: StoreCustomer
@@ -12,7 +12,7 @@ function CartMismatchBanner(props: {
 }) {
   const { customer, cart } = props
   const [isPending, setIsPending] = useState(false)
-  const [actionText, setActionText] = useState("Run transfer again")
+  const [actionText, setActionText] = useState('Run transfer again')
 
   if (!customer || !!cart.customer_id) {
     return
@@ -21,18 +21,18 @@ function CartMismatchBanner(props: {
   const handleSubmit = async () => {
     try {
       setIsPending(true)
-      setActionText("Transferring..")
+      setActionText('Transferring..')
 
       await transferCart()
     } catch {
-      setActionText("Run transfer again")
+      setActionText('Run transfer again')
       setIsPending(false)
     }
   }
 
   return (
-    <div className="flex items-center justify-center small:p-4 p-2 text-center bg-orange-300 small:gap-2 gap-1 text-sm mt-2 text-orange-800">
-      <div className="flex flex-col small:flex-row small:gap-2 gap-1 items-center">
+    <div className="mt-2 flex items-center justify-center gap-1 bg-orange-300 p-2 text-center text-orange-800 text-sm small:gap-2 small:p-4">
+      <div className="flex flex-col items-center gap-1 small:flex-row small:gap-2">
         <span className="flex items-center gap-1">
           <ExclamationCircleSolid className="inline" />
           Something went wrong when we tried to transfer your cart
@@ -42,7 +42,7 @@ function CartMismatchBanner(props: {
 
         <Button
           variant="transparent"
-          className="hover:bg-transparent active:bg-transparent focus:bg-transparent disabled:text-orange-500 text-orange-950 p-0 bg-transparent"
+          className="bg-transparent p-0 text-orange-950 hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:text-orange-500"
           size="base"
           disabled={isPending}
           onClick={handleSubmit}

@@ -1,17 +1,17 @@
-import type { ReactNode } from 'react';
-import { Error } from '../atoms/error';
-import { ExtraText } from '../atoms/extra-text';
-import { Input, type InputProps } from '../atoms/input';
-import { Label } from '../atoms/label';
+import type { ReactNode } from 'react'
+import { Error } from '../atoms/error'
+import { ExtraText } from '../atoms/extra-text'
+import { Input, type InputProps } from '../atoms/input'
+import { Label } from '../atoms/label'
 
-type ValidateStatus = 'default' | 'error' | 'success' | 'warning';
+type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
 
 interface FormInputRawProps extends InputProps {
-  id: string;
-  label: ReactNode;
-  validateStatus?: ValidateStatus;
-  helpText?: ReactNode;
-  extraText?: ReactNode;
+  id: string
+  label: ReactNode
+  validateStatus?: ValidateStatus
+  helpText?: ReactNode
+  extraText?: ReactNode
 }
 
 export function FormInputRaw({
@@ -25,7 +25,7 @@ export function FormInputRaw({
   disabled,
   ...props
 }: FormInputRawProps) {
-  const extraTextId = extraText ? `${id}-extra` : undefined;
+  const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
     <div className="flex flex-col gap-1">
@@ -50,7 +50,7 @@ export function FormInputRaw({
         </ExtraText>
       )}
     </div>
-  );
+  )
 }
 
 export function FormInput({
@@ -60,7 +60,7 @@ export function FormInput({
   size,
   ...props
 }: FormInputRawProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined;
+  const helpTextId = helpText ? `${id}-helper` : undefined
 
   return (
     <FormInputRaw
@@ -80,5 +80,5 @@ export function FormInput({
       }
       {...props}
     />
-  );
+  )
 }

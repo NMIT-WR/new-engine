@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Checkbox } from '../../src/atoms/checkbox';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Checkbox } from '../../src/atoms/checkbox'
 
 const meta = {
   title: 'Atoms/Checkbox',
@@ -23,22 +23,22 @@ const meta = {
     checked: false,
     disabled: false,
   },
-} satisfies Meta<typeof Checkbox>;
+} satisfies Meta<typeof Checkbox>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: function Render() {
-    return <Checkbox id="checkbox" />;
+    return <Checkbox id="checkbox" />
   },
-};
+}
 
 export const Disabled: Story = {
   args: {
     disabled: true,
   },
-};
+}
 
 export const WithLabel: Story = {
   render: function Render() {
@@ -49,6 +49,6 @@ export const WithLabel: Story = {
           I agree to the terms and conditions
         </label>
       </div>
-    );
+    )
   },
-};
+}

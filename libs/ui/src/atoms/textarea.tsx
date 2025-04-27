@@ -1,6 +1,6 @@
-import type { Ref, TextareaHTMLAttributes } from 'react';
-import type { VariantProps } from 'tailwind-variants';
-import { tv } from '../utils';
+import type { Ref, TextareaHTMLAttributes } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
 
 const textareaVariants = tv({
   base: [
@@ -65,12 +65,12 @@ const textareaVariants = tv({
     resize: 'y',
     variant: 'default',
   },
-});
+})
 
 export interface TextareaProps
   extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'>,
     VariantProps<typeof textareaVariants> {
-  ref?: Ref<HTMLTextAreaElement>;
+  ref?: Ref<HTMLTextAreaElement>
 }
 
 export function Textarea({
@@ -95,7 +95,7 @@ export function Textarea({
       })}
       {...props}
     />
-  );
+  )
 }
 
-Textarea.displayName = 'Textarea';
+Textarea.displayName = 'Textarea'
