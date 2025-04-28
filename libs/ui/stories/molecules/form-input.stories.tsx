@@ -283,7 +283,10 @@ export const RegistrationForm: Story = {
         </div>
 
         <div className="mt-6">
-          <button className="rounded bg-blue-500 px-4 py-2 font-medium text-white">
+          <button
+            className="rounded bg-blue-500 px-4 py-2 font-medium text-white"
+            type="submit"
+          >
             Create Account
           </button>
         </div>

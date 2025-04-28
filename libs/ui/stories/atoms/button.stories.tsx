@@ -115,12 +115,6 @@ export const Sizes: Story = {
 
 export const States: Story = {
   render: () => {
-    const [isLoading, setIsLoading] = useState(false)
-
-    const toggleLoading = () => {
-      setIsLoading(true)
-      setTimeout(() => setIsLoading(false), 2000)
-    }
 
     return (
       <VariantContainer>

@@ -7,7 +7,8 @@
       "**/playwright-report/**/*",
       "**/.medusa/**/*",
       "**/migrations/**/*",
-      "**/.next/**/*"
+      "**/.next/**/*",
+      "check-env-variables.js"
     ]
   },
   "vcs": {
@@ -20,5 +21,13 @@
     "formatter": {
       "semicolons": "asNeeded"
     }
-  }
+  },
+  "overrides": [
+    {
+      "include": ["*.spec.ts"],
+      "javascript": {
+        "globals": ["jest", "describe", "it", "expect"]
+      }
+    }
+  ]
 }
