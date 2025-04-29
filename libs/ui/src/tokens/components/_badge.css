@@ -4,7 +4,7 @@
 	--padding-badge-x: var(--spacing-3xs);
 	--padding-badge-y: var(--spacing-3xs);
 
-	--text-size-badge: var(--font-size-xs);
+	--text-badge-size: var(--font-size-xs);
 	--font-weight-badge: var(--font-weight-medium);
 
 	--radius-badge: var(--radius-sm);
