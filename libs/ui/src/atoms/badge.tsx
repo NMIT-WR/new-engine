@@ -10,13 +10,15 @@ const badgeVariants = tv({
 		"text-badge font-badge",
 	],
 	variants: {
-		// TODO: add backend defined variant
 		variant: {
 			info: [
 				"bg-badge-info-bg text-badge-info-fg border-(length:--border-width-badge-outline) border-badge-border-info",
 			],
 			outline: [
 				"bg-badge-outline-bg text-badge-outline-fg border-(length:--border-width-badge-outline) border-badge-border-outline",
+			],
+			dynamic: [
+				"border-(length:--border-width-badge-dynamic)",
 			],
 		},
 	},
@@ -25,13 +27,52 @@ const badgeVariants = tv({
 	},
 });
 
-export interface BadgeProps
-	extends HTMLAttributes<HTMLSpanElement>,
-		VariantProps<typeof badgeVariants> {}
+type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
 
-export function Badge({ variant, className, children, ...props }: BadgeProps) {
+type BaseBadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, "color"> & {
+	className?: string;
+	children: string;
+};
+
+type DefaultBadgeProps = BaseBadgeProps & {
+	variant?: Exclude<BadgeVariant, "dynamic">;
+};
+
+type DynamicBadgeProps = BaseBadgeProps & {
+	variant: "dynamic";
+	bgColor: string;
+	fgColor: string;
+	borderColor: string;
+};
+
+export type BadgeProps = DefaultBadgeProps | DynamicBadgeProps;
+
+export function Badge({
+	variant,
+	className,
+	children,
+	style,
+	...props
+}: BadgeProps) {
+	const isDynamic = variant === "dynamic";
+
+	const { bgColor, fgColor, borderColor } = props as Partial<DynamicBadgeProps>;
+
+	const dynamicStyles = isDynamic
+		? {
+				...style,
+				'background-color': bgColor,
+				'color': fgColor,
+				'border-color': borderColor,
+			}
+		: style;
+
 	return (
-		<span className={badgeVariants({ variant, className })} {...props}>
+		<span
+			className={badgeVariants({ variant, className })}
+			style={dynamicStyles}
+			{...props}
+		>
 			{children}
 		</span>
 	);

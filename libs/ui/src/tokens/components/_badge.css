@@ -19,4 +19,6 @@
 	--color-badge-outline-fg: var(--color-fg-secondary);
 	--color-badge-border-outline: var(--color-border-neutral);
 	--border-width-badge-outline: var(--border-width-badge);
+
+	--border-width-badge-dynamic: var(--border-width-badge);
 }

@@ -9,7 +9,7 @@ export interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
 	name: string;
 	price: string;
 	stockStatus: string;
-	badges?: Array<{ text: string; variant: BadgeProps["variant"] }>;
+	badges?: Array<BadgeProps>;
 	onAddToCart?: () => void;
 	addToCartText?: string;
 }
@@ -61,10 +61,13 @@ export function ProductCard({
 				>
 					{badges.map((badge) => (
 						<Badge
-							key={`${productCardId}-${slugify(badge.text)}-${badge.variant}`}
+							key={`${productCardId}-${slugify(badge.children)}-${badge.variant}`}
 							variant={badge.variant}
+							bgColor={badge.variant === "dynamic" ? badge.bgColor : ""}
+							fgColor={badge.variant === "dynamic" ? badge.fgColor : ""}
+							borderColor={badge.variant === "dynamic" ? badge.borderColor : ""}
 						>
-							{badge.text}
+							{badge.children}
 						</Badge>
 					))}
 				</div>

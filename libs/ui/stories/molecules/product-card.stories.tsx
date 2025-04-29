@@ -15,8 +15,9 @@ const meta: Meta<typeof ProductCard> = {
 		price: "999 Kč",
 		stockStatus: "Skladem více než 10 ks",
 		badges: [
-			{ text: "Novinka", variant: "info" },
-			{ text: "OS", variant: "outline" },
+			{ children: "Novinka", variant: "info" },
+			{ children: "OS", variant: "outline" },
+			{ children: "Dynamic", variant: "dynamic", bgColor: "#0000ff", fgColor: "#eef", borderColor: "pink" },
 		],
 		addToCartText: "DO KOŠÍKU",
 		onAddToCart: fn(),
