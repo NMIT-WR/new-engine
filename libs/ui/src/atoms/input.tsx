@@ -46,6 +46,14 @@ const inputVariants = tv({
         "placeholder:text-input-placeholder-warning",
       ],
     },
+    withIconInside: {
+      false: "",
+      right: "pr-with-icon",
+      left: "pl-with-icon",
+    },
+    hideSearchClear: {
+      true: "[&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden",
+    },
     disabled: {
       true: [
         "bg-input-disabled",
@@ -58,6 +66,8 @@ const inputVariants = tv({
   defaultVariants: {
     size: "md",
     variant: "default",
+    hideSearchClear: true,
+    withIconInside: false,
   },
 });
 
@@ -67,13 +77,21 @@ export interface InputProps
   ref?: Ref<HTMLInputElement>;
 }
 
-export function Input({ size, variant, disabled, ref, ...props }: InputProps) {
+export function Input({
+  size,
+  variant,
+  disabled,
+  withIconInside,
+  ref,
+  ...props
+}: InputProps) {
   return (
     <input
       className={inputVariants({
         size,
         variant,
         disabled,
+        withIconInside,
       })}
       disabled={disabled}
       ref={ref}
