@@ -1,43 +1,51 @@
 @plugin "@iconify/tailwind4";
 
 @theme static {
-  --text-icon-xs: 12px;
-  --text-icon-sm: 16px;
-  --text-icon-md: 20px;
-  --text-icon-lg: 24px;
-  --text-icon-xl: 32px;
+	--text-icon-xs: 12px;
+	--text-icon-sm: 16px;
+	--text-icon-md: 20px;
+	--text-icon-lg: 24px;
+	--text-icon-xl: 32px;
 }
 
 /* Semantic tokens for icons */
 @utility token-icon-error {
-  @apply icon-[mdi-light--alert-circle];
+	@apply icon-[mdi-light--alert-circle];
 }
 
 @utility token-icon-success {
-  @apply icon-[mdi-light--check-circle];
+	@apply icon-[mdi-light--check-circle];
 }
 
 @utility token-icon-warning {
-  @apply icon-[mdi-light--alert];
+	@apply icon-[mdi-light--alert];
 }
 
 @utility token-icon-info {
-  @apply icon-[mdi-light--information];
+	@apply icon-[mdi-light--information];
+}
+
+@utility token-icon-cart {
+	@apply icon-[mdi-light--cart];
 }
 
 /* Component tokens for icons */
 @utility token-icon-input-error {
-  @apply token-icon-error;
+	@apply token-icon-error;
 }
 
 @utility token-icon-input-success {
-  @apply token-icon-success;
+	@apply token-icon-success;
 }
 
 @utility token-icon-input-warning {
-  @apply token-icon-warning;
+	@apply token-icon-warning;
 }
 
 @utility token-icon-input-info {
-  @apply token-icon-info;
+	@apply token-icon-info;
+}
+
+@utility token-icon-cart-primary {
+	@apply token-icon-cart;
 }
