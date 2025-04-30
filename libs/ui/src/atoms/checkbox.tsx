@@ -9,15 +9,14 @@ const checkboxVariants = tv({
     "bg-checkbox checked:bg-checkbox-checked checked:border-checkbox",
     /* center icon, grid and place items do not work e.g. flex */
     "after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2",
-    "checked:after:token-icon-checkbox text-icon-text text-icon-md",
+    "checked:after:token-icon-checkbox text-icon-text text-checkbox-icon-md",
     "disabled:bg-checkbox-disabled disabled:border-checkbox-border-disabled disabled:cursor-not-allowed",
     "transition-all duration-200",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-checkbox-ring focus-visible:ring-offset-2",
   ],
 });
 
-export interface CheckboxProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   ref?: Ref<HTMLInputElement>;
 }
 
