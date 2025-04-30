@@ -1,0 +1,39 @@
+@theme static {
+  /* Base tokens */
+  --color-rating: var(--color-highlight);
+  --color-rating-active: var(--color-warning);
+  --color-rating-hover: var(--color-warning);
+
+  /* Spacing */
+  --spacing-rating-sm: var(--spacing-3xs);
+  --spacing-rating-md: var(--spacing-2xs);
+  --spacing-rating-lg: var(--spacing-xs);
+
+  /*Size*/
+  --text-rating-sm: var(--text-icon-sm);
+  --text-rating-md: var(--text-icon-md);
+  --text-rating-lg: var(--text-icon-lg);
+
+  /* Focus ring */
+  --color-rating-ring: --alpha(
+    var(--color-rating-active) / var(--opacity-ring)
+  );
+}
+
+/* Semantic tokens for rating icons */
+@utility token-icon-star {
+  @apply icon-[mdi--star];
+}
+
+@utility token-icon-star-filled {
+  @apply icon-[mdi-light--star-filled];
+}
+
+/* Component tokens for rating */
+@utility token-icon-rating-default {
+  @apply token-icon-star;
+}
+
+@utility token-icon-rating-active {
+  @apply token-icon-star-filled;
+}
