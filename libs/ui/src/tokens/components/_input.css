@@ -99,7 +99,7 @@
   --padding-input-sm: var(--spacing-sm) var(--spacing-sm);
   --padding-input-md: var(--spacing-md) var(--spacing-sm);
   --padding-input-lg: var(--spacing-lg) var(--spacing-md);
-  --padding-with-icon: var(--spacing-xl);
+  --padding-with-button: var(--spacing-3xl);
 
   /* Typography */
   --text-input-sm: var(--text-sm);
