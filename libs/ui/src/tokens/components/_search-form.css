@@ -1,13 +1,8 @@
 @theme static {
-  /* Spacing between input and button */
-  --spacing-search-sm: var(--spacing-xs);
-  --spacing-search-md: var(--spacing-sm);
-  --spacing-search-lg: var(--spacing-md);
-
   /* Spacing for stacked layout */
-  --spacing-search-form-sm: var(--spacing-sm);
-  --spacing-search-form-md: var(--spacing-md);
-  --spacing-search-form-lg: var(--spacing-lg);
+  --spacing-search-form-sm: var(--spacing-2xs);
+  --spacing-search-form-md: var(--spacing-xs);
+  --spacing-search-form-lg: var(--spacing-sm);
 
   /* Button and input specific styling when in search context */
   --border-radius-search-input-right: 0;

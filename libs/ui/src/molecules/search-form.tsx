@@ -1,11 +1,19 @@
-import { type FormEvent, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { tv } from "../utils";
 import { Input, type InputProps } from "../atoms/input";
 import { Button, type ButtonProps } from "../atoms/button";
 import { Label } from "../atoms/label";
 import { Icon } from "../atoms/icon";
+import type { VariantProps } from "tailwind-variants";
 
-const searchFormVariants = tv({
+// icon size looks too small if it is the same as the text
+const iconSizeMap = {
+  sm: "lg",
+  md: "xl",
+  lg: "2xl",
+} as const;
+
+const formVariants = tv({
   base: ["grid relative"],
   variants: {
     size: {
@@ -13,38 +21,41 @@ const searchFormVariants = tv({
       md: "gap-search-form-md",
       lg: "gap-search-form-lg",
     },
-    layout: {
-      inline: "flex flex-row items-center",
-      stacked: "flex flex-col",
-    },
-
-    buttonPosition: {
-      inside: "absolute right-sm",
-      outside: "justify-self-end",
-    },
   },
   defaultVariants: {
-    layout: "inline",
-    fullWidth: true,
+    size: "md",
   },
 });
 
+const inputWrapperVariants = tv({
+  base: ["grid relative overflow-hidden rounded-md"],
+  variants: {
+    size: {
+      sm: "gap-search-form-sm",
+      md: "gap-search-form-md",
+      lg: "gap-search-form-lg",
+    },
+  },
+});
+
+// make option to style button
+const buttonVariants = tv({
+  base: [
+    "absolute",
+    "justify-self-end place-self-center",
+    "h-full rounded-none px-xs py-xs",
+  ],
+});
+
 export interface SearchFormProps
-  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "size"> {
+  extends VariantProps<typeof formVariants>,
+    Omit<React.FormHTMLAttributes<HTMLFormElement>, "size"> {
   inputProps?: Omit<InputProps, "size">;
   buttonProps?: Omit<ButtonProps, "size">;
-  size?: "sm" | "md" | "lg";
-  layout?: "inline" | "stacked";
   label?: ReactNode;
-  labelProps?: {
-    required?: boolean;
-    disabled?: boolean;
-  };
   buttonText?: ReactNode;
-  buttonIcon?: ButtonProps["icon"];
+  buttonIcon?: boolean;
   placeholder?: string;
-  fullWidth?: boolean;
-  buttonPosition?: "inside" | "outside";
   ref?: React.Ref<HTMLFormElement>;
   searchId?: string;
 }
@@ -53,71 +64,60 @@ export function SearchForm({
   inputProps,
   buttonProps,
   size = "md",
-  layout = "inline",
-  label,
-  labelProps,
-  buttonPosition = "inside",
-  buttonText = "Search",
-  buttonIcon = "token-icon-search",
+  buttonText,
+  buttonIcon = false,
   placeholder = "Search...",
+  label,
   className,
   ref,
   searchId,
   ...props
 }: SearchFormProps) {
   // Generate unique ID for input if not provided
-  const id = searchId || `search-${Math.random().toString(36).substring(2, 9)}`;
+  const id = searchId || `search-${Math.random().toString(36).substring(2, 5)}`;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    // Default form handling - could be extended based on needs
-    if (props.onSubmit) {
-      props.onSubmit(event);
-    }
-  };
+  const withButton = !!buttonText || buttonIcon;
+  const iconSize = iconSizeMap[size] || "lg";
 
   return (
     <form
       ref={ref}
-      className={searchFormVariants({ size, layout, className })}
-      onSubmit={handleSubmit}
+      className={formVariants({ size, className })}
+      onSubmit={props.onSubmit}
       role="search"
       {...props}
     >
       {label && (
-        <Label
-          htmlFor={id}
-          size={size}
-          required={labelProps?.required}
-          disabled={labelProps?.disabled}
-        >
+        <Label htmlFor={id} size={size}>
           {label}
         </Label>
       )}
-
-      <div className="grid relative">
+      <div className={inputWrapperVariants({ size })}>
         <Input
           id={id}
           type="search"
-          withIconInside={buttonPosition === "inside" && "right"}
+          withButtonInside={withButton && "right"}
           placeholder={placeholder}
           size={size}
           aria-label={!label ? "Search" : undefined}
           {...inputProps}
         />
-
-        <Button
-          type="submit"
-          theme="borderless"
-          block={false}
-          size={size}
-          aria-label={buttonText ? undefined : "Search"}
-          className={` ${searchFormVariants({
-            buttonPosition,
-          })} px-0 py-0 place-self-center`}
-          {...buttonProps}
-        >
-          <Icon icon={buttonIcon} size={size} />
-        </Button>
+        {withButton && (
+          <Button
+            type="submit"
+            theme={buttonProps?.theme || "borderless"}
+            block={false}
+            size={size}
+            aria-label={buttonText ? undefined : "Search"}
+            className={buttonVariants({
+              className: !buttonText ? "aspect-square" : "",
+            })}
+            {...buttonProps}
+          >
+            {buttonText}
+            {buttonIcon && <Icon icon={"token-icon-search"} size={iconSize} />}
+          </Button>
+        )}
       </div>
     </form>
   );
