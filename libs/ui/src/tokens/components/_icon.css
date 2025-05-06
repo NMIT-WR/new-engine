@@ -25,8 +25,24 @@
   @apply icon-[mdi-light--information];
 }
 
+@utility token-icon-plus {
+  @apply icon-[mdi--plus];
+}
+
+@utility token-icon-minus {
+  @apply icon-[mdi--minus];
+}
+
 @utility token-icon-cart {
-  @apply icon-[mdi-light--cart];
+  @apply icon-[mdi--cart];
+}
+
+@utility token-icon-eye {
+  @apply icon-[mdi--eye];
+}
+
+@utility token-icon-heart {
+  @apply icon-[mdi--heart];
 }
 
 /* Component tokens for icons */

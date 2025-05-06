@@ -96,9 +96,9 @@
   );
 
   /* Spacing - keeping your existing values */
-  --padding-input-sm: var(--spacing-sm) var(--spacing-sm);
-  --padding-input-md: var(--spacing-md) var(--spacing-sm);
-  --padding-input-lg: var(--spacing-lg) var(--spacing-md);
+  --spacing-input-sm: var(--spacing-2xs);
+  --spacing-input-md: var(--spacing-xs);
+  --spacing-input-lg: var(--spacing-sm);
 
   /* Typography */
   --text-input-sm: var(--text-sm);

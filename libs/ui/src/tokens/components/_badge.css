@@ -52,5 +52,5 @@
   /* Outline variant */
   --color-badge-outline-bg: transparent;
   --color-badge-outline-fg: var(--color-fg-secondary);
-  --color-badge-border-outline: var(--color-border-neutral);
+  --color-badge-border-outline: var(--color-stroke-primary);
 }
