@@ -1,0 +1,20 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-numeric-input-bg: var(--color-input);
+  --color-numeric-input-border: var(--color-input-border);
+  --color-numeric-input-text: var(--color-input-text);
+
+  --color-numeric-input-border: var(--color-stroke-primary);
+  --border-width-numeric-input: var(--border-width-input);
+  --width-numeric-input: 6ch;
+
+  --height-numeric-input-sm: var(--height-input-sm);
+  --height-numeric-input-md: var(--height-input-md);
+  --height-numeric-input-lg: var(--height-input-lg);
+
+  /* === INCREMENT BUTTON === */
+  --color-increment-btn: var(--color-success);
+  --ring-increment-btn-ring: --alpha(
+    var(--color-success) / var(--opacity-ring)
+  );
+}
