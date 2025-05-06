@@ -1,59 +1,75 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ProductCard } from "../../src/molecules/product-card";
-import { fn } from "@storybook/test";
 
 const meta: Meta<typeof ProductCard> = {
-  title: "Molecules/ProductCard/Deafault",
+  title: "Molecules/ProductCard",
   component: ProductCard,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
-  args: {
-    imageUrl: "https://picsum.photos/200",
-    name: "Pánská kšiltovka Fox Level Up Strapback Hat",
-    price: "999 Kč",
-    stockStatus: "Skladem více než 10 ks",
-    badges: [
-      { children: "Novinka", variant: "info" },
-      { children: "OS", variant: "outline" },
-      {
-        children: "Dynamic",
-        variant: "dynamic",
-        bgColor: "#0000ff",
-        fgColor: "#eef",
-        borderColor: "pink",
-      },
-    ],
-    addToCartText: "DO KOŠÍKU",
-    onAddToCart: fn(),
-  },
   argTypes: {
-    imageUrl: { control: "text" },
-    name: { control: "text" },
-    price: { control: "text" },
-    stockStatus: { control: "text" },
-    badges: { control: "object" },
-    addToCartText: { control: "text" },
-    onAddToCart: { action: "clicked" },
+    layout: {
+      control: "select",
+      options: ["column", "row", "compact", "featured", "grid"],
+      description: "Product card layout",
+    },
+    buttonLayout: {
+      control: "select",
+      options: ["horizontal", "vertical", "stretched"],
+      description: "Button layout",
+    },
+    hasCartButton: {
+      control: "boolean",
+      description: "Show add to cart button",
+    },
+    hasDetailButton: {
+      control: "boolean",
+      description: "Show detail button",
+    },
+    hasWishlistButton: {
+      control: "boolean",
+      description: "Show wishlist button",
+    },
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ProductCard>;
 
-export const Default: Story = {
-  args: {},
-};
-
-export const WithoutBadges: Story = {
-  args: {
-    badges: [],
+// Base props shared across stories
+const baseArgs = {
+  imageUrl: "https://picsum.photos/200",
+  name: "Men's Fox Level Up Strapback Hat",
+  price: "$29.99",
+  stockStatus: "In stock (10+)",
+  badges: [
+    { children: "New", variant: "primary" },
+    { children: "20% Off", variant: "discount" },
+    { children: "Many variants", variant: "info" },
+  ],
+  rating: {
+    value: 4,
+    maxValue: 5,
+    readOnly: true,
   },
 };
 
-export const CustomButtonText: Story = {
+export const ColumnLayout: Story = {
   args: {
-    addToCartText: "Add Now",
+    ...baseArgs,
+    layout: "column",
+    hasCartButton: true,
+    hasDetailButton: true,
+    hasWishlistButton: true,
+  },
+};
+
+export const RowLayout: Story = {
+  args: {
+    ...baseArgs,
+    layout: "row",
+    hasCartButton: true,
+    numericInput: true,
   },
 };
