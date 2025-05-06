@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@toolwind/anchors";
+@config "../../tailwind.config.ts";
 @plugin 'tailwindcss-animate';
 
 /* Primitive tokens */
