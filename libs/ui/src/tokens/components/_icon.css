@@ -45,6 +45,26 @@
   @apply icon-[mdi--heart];
 }
 
+@utility token-icon-prev {
+  @apply icon-[mdi--chevron-left];
+}
+
+@utility token-icon-next {
+  @apply icon-[mdi--chevron-right];
+}
+
+@utility token-icon-first {
+  @apply icon-[mdi--chevron-double-left];
+}
+
+@utility token-icon-last {
+  @apply icon-[mdi--chevron-double-right];
+}
+
+@utility token-icon-ellipsis {
+  @apply icon-[mdi--dots-horizontal];
+}
+
 /* Component tokens for icons */
 @utility token-icon-input-error {
   @apply token-icon-error;
