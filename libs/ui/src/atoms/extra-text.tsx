@@ -20,13 +20,20 @@ export interface ExtraTextProps
   extends HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof extraTextVariants> {
   children: React.ReactNode;
+  className?: string;
 }
 
-export function ExtraText({ children, size, ...props }: ExtraTextProps) {
+export function ExtraText({
+  children,
+  size,
+  className,
+  ...props
+}: ExtraTextProps) {
   return (
     <span
       className={extraTextVariants({
         size,
+        className,
       })}
       {...props}
     >

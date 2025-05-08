@@ -16,12 +16,14 @@ const comboboxVariants = tv({
     label: ["block text-label-md font-label mb-1"],
     control: [
       "flex items-center w-full relative",
-      "bg-combobox border-(length:--border-width-input) border-combobox-border rounded-combobox",
+      "bg-combobox border-(length:--border-width-combobox) border-combobox-border rounded-combobox",
       "transition-colors duration-200 ease-in-out",
       "data-[highlighted]:bg-combobox-hover data-[highlighted]:border-combobox-border-hover",
       "data-[focus]:bg-combobox-focus data-[focus]:border-combobox-border-focus",
       "data-[disabled]:bg-combobox-disabled data-[disabled]:border-combobox-border-disabled",
-      "data-[invalid]:border-combobox-danger",
+      "data-[validation=error]:border-combobox-danger data-[validation=error]:focus-within:ring-combobox-ring-danger",
+      "data-[validation=success]:border-combobox-success data-[validation=success]:focus-within:ring-combobox-ring-success",
+      "data-[validation=warning]:border-combobox-warning data-[validation=warning]:focus-within:ring-combobox-ring-warning",
     ],
     input: [
       "w-full relative border-none bg-transparent",
@@ -58,6 +60,11 @@ const comboboxVariants = tv({
       "data-[state=checked]:bg-combobox-item-selected",
       "data-[disabled]:text-combobox-fg-disabled data-[disabled]:cursor-not-allowed",
     ],
+    helper: [
+      "data-[validation=success]:text-combobox-success",
+      "data-[validation=warning]:text-combobox-warning",
+    ],
+    multiple: [],
   },
   compoundSlots: [
     {
@@ -73,27 +80,6 @@ const comboboxVariants = tv({
       ],
     },
   ],
-  variants: {
-    state: {
-      normal: {},
-      error: {
-        control:
-          "border-combobox-danger focus-within:ring-combobox-ring-danger",
-      },
-      success: {
-        control:
-          "border-combobox-success focus-within:ring-combobox-ring-success",
-      },
-      warning: {
-        control:
-          "border-combobox-warning focus-within:ring-combobox-ring-warning",
-      },
-    },
-  },
-  defaultVariants: {
-    size: "md",
-    state: "normal",
-  },
 });
 
 export type ComboboxItem<T = any> = {
@@ -122,6 +108,7 @@ export interface ComboboxProps<T = any>
   multiple?: boolean;
 
   //validation and helper text
+  validationState?: "normal" | "error" | "success" | "warning";
   error?: string;
   helper?: string;
 
@@ -156,12 +143,13 @@ export function Combobox<T = any>({
   value,
   defaultValue,
   multiple = false,
+
+  validationState = "normal",
   error,
   helper,
-  state = "normal",
+
   // machine settings
   clearable = true,
-  searchable = true,
   selectionBehavior = "replace",
   closeOnSelect = false,
   allowCustomValue = false,
@@ -222,7 +210,8 @@ export function Combobox<T = any>({
     content,
     clearTrigger,
     item: itemSlot,
-  } = comboboxVariants({ state });
+    helper: helperSlot,
+  } = comboboxVariants();
 
   return (
     <div className={root()}>
@@ -231,7 +220,12 @@ export function Combobox<T = any>({
           {label}
         </Label>
       )}
-      <div className={control()} {...api.getControlProps()}>
+      <div
+        className={control()}
+        {...api.getControlProps()}
+        // data-invalid={validationState === "error" || undefined}
+        data-validation={validationState}
+      >
         <Input
           className={input()}
           {...restInputProps}
@@ -276,8 +270,37 @@ export function Combobox<T = any>({
           </ul>
         )}
       </div>
-      {helper && !error && <ExtraText>{helper}</ExtraText>}
+      {helper && !error && (
+        <ExtraText data-validation={validationState} className={helperSlot()}>
+          {helper}
+        </ExtraText>
+      )}
       {error && <Error>{error}</Error>}
+      {multiple &&
+        selectionBehavior === "clear" &&
+        api.selectedItems.length > 0 && (
+          <ul className="grid grid-cols-3 gap-1 mb-2 ">
+            {api.selectedItems.map((item) => (
+              <li
+                key={item.value}
+                className="inline-flex items-center justify-between gap-1 px-2 py-1 text-sm rounded-combobox bg-combobox-item-selected text-combobox-item-fg"
+              >
+                <span>{item.label}</span>
+                <button
+                  type="button"
+                  className="text-combobox-trigger hover:text-combobox-trigger-hover"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    api.clearValue(item.value);
+                  }}
+                  aria-label={`Odstranit ${item.label}`}
+                >
+                  <Icon icon="token-icon-combobox-clear" size="xs" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
     </div>
   );
 }

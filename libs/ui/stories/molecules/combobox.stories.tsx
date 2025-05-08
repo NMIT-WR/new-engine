@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Combobox } from "../../src/molecules/combobox";
 import { VariantContainer } from "../../.storybook/decorator";
+import { useState } from "react";
 
 const countries = [
   { id: 1, label: "Česká republika", value: "cz" },
@@ -71,28 +72,28 @@ export const ValidationStates: Story = {
         placeholder="Vyberte zemi"
         items={countries}
         helper="Výchozí stav bez validace"
-        state="normal"
+        validationState="normal"
       />
       <Combobox
         label="Chybový stav"
         placeholder="Vyberte zemi"
         items={countries}
         error="Prosím vyberte platnou zemi"
-        state="error"
+        validationState="error"
       />
       <Combobox
         label="Úspěšný stav"
         placeholder="Vyberte zemi"
         items={countries}
         helper="Vaše volba je platná"
-        state="success"
+        validationState="success"
       />
       <Combobox
         label="Varovný stav"
         placeholder="Vyberte zemi"
         items={countries}
         helper="Tato země může vyžadovat další ověření"
-        state="warning"
+        validationState="warning"
       />
     </VariantContainer>
   ),
@@ -106,18 +107,54 @@ export const MultipleSelection: Story = {
     helper: "Vyberte země, které jste navštívili",
     multiple: true,
     closeOnSelect: false,
+    selectionBehavior: "clear",
   },
 };
 
-export const AdvancedFeatures: Story = {
-  args: {
-    label: "Pokročilý Combobox",
-    placeholder: "Hledejte země...",
-    items: countries,
-    helper: "Ukazuje vyhledávání, mazání a další funkce",
-    clearable: true,
-    searchable: true,
-    selectionBehavior: "replace",
-    closeOnSelect: true,
+export const ComplexStory: Story = {
+  render: () => {
+    const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
+    const validationState =
+      selectedCountry === "us"
+        ? "error"
+        : selectedCountry === "sk"
+        ? "warning"
+        : selectedCountry === "cz"
+        ? "success"
+        : "normal";
+
+    const helperMessage =
+      validationState === "error"
+        ? "USA není momentálně dostupná"
+        : validationState === "warning"
+        ? "Slovensko vyžaduje dodatečné ověření totožnosti"
+        : validationState === "success"
+        ? "Země úspěšně vybrána"
+        : undefined;
+    return (
+      <div className="space-y-8">
+        <Combobox
+          label="Vyberte zemi"
+          placeholder="Zvolte zemi..."
+          items={countries}
+          onChange={(value) =>
+            setSelectedCountry(Array.isArray(value) ? value[0] : value)
+          }
+          validationState={validationState}
+          error={validationState === "error" ? helperMessage : undefined}
+          helper={helperMessage}
+        />
+
+        <div className="text-sm text-gray-600">
+          Zkuste vybrat různé země a sledujte, jak se mění validační stavy:
+          <ul className="list-disc ml-5 mt-2">
+            <li>USA - error</li>
+            <li>SK - warning</li>
+            <li>CZ - success</li>
+          </ul>
+        </div>
+      </div>
+    );
   },
 };
