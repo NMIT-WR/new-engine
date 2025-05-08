@@ -7,6 +7,8 @@ import { Icon } from "../atoms/icon";
 import { Button } from "../atoms/button";
 import { Input } from "../atoms/input";
 import { Label } from "../atoms/label";
+import { Error } from "../atoms/error";
+import { ExtraText } from "../atoms/extra-text";
 
 const comboboxVariants = tv({
   slots: {
@@ -28,11 +30,11 @@ const comboboxVariants = tv({
       "py-input-md px-input-md",
       "placeholder:text-combobox-placeholder",
       "data-[disabled]:text-combobox-fg-disabled",
-      "data-[disabled]:bg-red-600",
+      "data-[disabled]:bg-combobox-disabled",
     ],
     clearTrigger: [
       // set styles for button in combobox
-      "absolute right-8",
+      "absolute right-combobox-trigger-right",
     ],
     trigger: [
       "flex items-center justify-center",
@@ -42,21 +44,20 @@ const comboboxVariants = tv({
     ],
     positioner: ["z-10 w-full"],
     content: [
-      "flex flex-col max-h-[300px] overflow-clip",
-      "rounded-combobox-content shadow-md",
+      "flex flex-col overflow-clip",
+      "rounded-combobox shadow-md",
       "bg-combobox-content-bg",
       "border border-combobox-border",
     ],
     item: [
-      "flex items-center px-combobox-item py-combobox-item",
+      "flex items-center px-combobox-item-lg py-combobox-item",
+      "first:pt-combobox-item-lg last:pb-combobox-item-lg",
       "text-combobox-item-fg",
       "cursor-pointer",
       "data-[highlighted]:bg-combobox-item-hover",
       "data-[state=checked]:bg-combobox-item-selected",
       "data-[disabled]:text-combobox-fg-disabled data-[disabled]:cursor-not-allowed",
     ],
-    helper: ["mt-1 text-helper-md font-helper text-helper-text"],
-    error: ["mt-1 text-error-md font-error text-error-text"],
   },
   compoundSlots: [
     {
@@ -66,9 +67,9 @@ const comboboxVariants = tv({
         "text-combobox-trigger text-combobox-trigger-size",
         "hover:text-combobox-trigger-hover",
         "px-combobox-trigger",
-        "hover:bg-combobox-btn-bg-hover",
+        "hover:bg-combobox-trigger-bg-hover",
         "focus-visible:outline-none",
-        "active:bg-combobox-btn-bg-active",
+        "active:bg-combobox-trigger-bg-active",
       ],
     },
   ],
@@ -76,7 +77,8 @@ const comboboxVariants = tv({
     state: {
       normal: {},
       error: {
-        control: "border-combobox-danger focus-within:ring-combobox-ring-error",
+        control:
+          "border-combobox-danger focus-within:ring-combobox-ring-danger",
       },
       success: {
         control:
@@ -130,6 +132,7 @@ export interface ComboboxProps<T = any>
   searchable?: boolean;
   selectionBehavior?: "replace" | "clear" | "preserve";
   closeOnSelect?: boolean;
+  allowCustomValue?: boolean;
 
   // icons
   triggerIcon?: string;
@@ -161,6 +164,7 @@ export function Combobox<T = any>({
   searchable = true,
   selectionBehavior = "replace",
   closeOnSelect = false,
+  allowCustomValue = false,
   onChange,
   onInputValueChange,
   onOpenChange,
@@ -177,11 +181,13 @@ export function Combobox<T = any>({
 
   const service = useMachine(combobox.machine, {
     id: uniqueId,
+    name,
     collection,
     disabled,
     readOnly,
     closeOnSelect,
     selectionBehavior,
+    allowCustomValue,
     ids: {
       label: `${uniqueId}-label`,
       input: `${uniqueId}-input`,
@@ -190,9 +196,6 @@ export function Combobox<T = any>({
     value: value as string[],
     defaultValue: defaultValue as string[],
     multiple,
-    onHighlightChange(details) {
-      console.log(details);
-    },
     onValueChange: ({ value }) => {
       onChange?.(value);
     },
@@ -219,8 +222,6 @@ export function Combobox<T = any>({
     content,
     clearTrigger,
     item: itemSlot,
-    helper: helperStyles,
-    error: errorStyles,
   } = comboboxVariants({ state });
 
   return (
@@ -275,8 +276,8 @@ export function Combobox<T = any>({
           </ul>
         )}
       </div>
-      {helper && !error && <div className={helperStyles()}>{helper}</div>}
-      {error && <div className={errorStyles()}>{error}</div>}
+      {helper && !error && <ExtraText>{helper}</ExtraText>}
+      {error && <Error>{error}</Error>}
     </div>
   );
 }
