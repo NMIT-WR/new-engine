@@ -14,7 +14,7 @@
 
   /* Text colors */
   --color-pagination-fg: var(--color-fg-primary);
-  --color-pagination-fg-active: var(--color-fg-reverse);
+  --color-pagination-fg-active: var(--color-pagination-fg);
   --color-pagination-outlined-fg-active: var(--color-pagination-active);
   --color-pagination-fg-disabled: --alpha(
     var(--color-pagination-fg) / var(--opacity-disabled)
