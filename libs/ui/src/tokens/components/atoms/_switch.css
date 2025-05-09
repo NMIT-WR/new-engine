@@ -1,9 +1,14 @@
+:root {
+  /* The red colour will be less noticeable. */
+  --opacity-invalid: 80%;
+}
+
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-switch-bg: var(--color-overlay);
   --color-switch-checked: var(--color-success);
   --color-switch-border: var(--color-stroke-primary);
-  --color-switch-thumb: var(--color-fg-reverse);
+  --color-switch-thumb: var(--color-base-light);
 
   /* === STATE VARIATIONS === */
   --color-switch-hover: oklch(
@@ -17,18 +22,25 @@
 
   /* === DISABLED STATES === */
   --color-switch-disabled: var(--color-disabled-bg);
-  --color-switch-thumb-disabled: var(--color-disabled-text);
-  --color-switch-border-disabled: var(--color-disabled-border);
-  --color-switch-checked-disabled: oklch(
-    from var(--color-switch-checked) l var(--state-disabled-chroma) h
+  --color-switch-thumb-disabled: --alpha(
+    var(--color-disabled-text) / var(--opacity-disabled)
   );
+  --color-switch-border-disabled: var(--color-disabled-border);
+
+  /* === INVALID STATES === */
+  --color-switch-invalid: --alpha(var(--color-danger) / var(--opacity-invalid));
+  --color-switch-border-invalid: var(--color-switch-invalid);
+  --color-switch-thumb-invalid: var(--color-switch-invalid);
+  --color-switch-ring-invalid: var(--color-switch-invalid);
 
   /* === TEXT COLORS === */
   --color-switch-label: var(--color-fg-primary);
   --color-switch-label-disabled: var(--color-disabled-text);
 
   /* === FOCUS RING === */
-  --color-switch-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-switch-ring: --alpha(
+    var(--color-switch-checked) / var(--opacity-ring)
+  );
 
   /* === SPACING === */
   --spacing-root: var(--spacing-sm);

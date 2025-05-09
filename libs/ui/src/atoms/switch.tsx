@@ -17,13 +17,15 @@ const switchVariants = tv({
       "w-track-width h-track-height",
       "rounded-switch",
       "transition-colors duration-200",
+      "ring-offset-transparent outline-none",
       "border-(length:--border-width-switch) border-switch-border",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-switch-ring focus-visible:ring-offset-2",
       "data-[state=checked]:bg-switch-checked",
       "data-[state=checked]:hover:bg-switch-checked-hover",
       "data-[disabled]:bg-switch-disabled",
       "data-[disabled]:border-switch-border-disabled",
-      "data-[disabled]:bg-switch-checked-disabled",
+      "data-[focus]:ring-2 data-[focus]:ring-offset-2 data-[focus]:ring-offset-base",
+      "data-[focus]:ring-switch-ring data-[focus]:outline-none",
+      " data-[invalid]:bg-switch-invalid data-[invalid]:ring-switch-ring-invalid",
     ],
     thumb: [
       "block rounded-full h-thumb-height aspect-square bg-switch-thumb",
@@ -47,11 +49,13 @@ export interface SwitchProps extends VariantProps<typeof switchVariants> {
   checked?: boolean;
   defaultChecked?: boolean;
   disabled?: boolean;
+  invalid?: boolean;
   readOnly?: boolean;
   required?: boolean;
   children?: React.ReactNode;
   onCheckedChange?: (checked: boolean) => void;
   className?: string;
+  dir?: "ltr" | "rtl";
 }
 
 export function Switch({
@@ -61,8 +65,10 @@ export function Switch({
   checked,
   defaultChecked,
   disabled = false,
+  invalid = false,
   readOnly = false,
   required = false,
+  dir = "ltr",
   children,
   className,
   onCheckedChange,
@@ -76,7 +82,9 @@ export function Switch({
     value,
     checked,
     defaultChecked,
+    dir,
     disabled,
+    invalid,
     readOnly,
     required,
     onCheckedChange: ({ checked }) => onCheckedChange?.(checked),
