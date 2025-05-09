@@ -1,0 +1,54 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-accordion: var(--color-surface);
+  --color-accordion-border: var(--color-stroke-primary);
+
+  /* === STATE VARIATIONS === */
+  --color-accordion-hover: oklch(
+    from var(--color-accordion) calc(l + var(--state-hover)) c h
+  );
+
+  /* === TEXT COLORS === */
+  --color-accordion-fg: var(--color-fg-primary);
+  --color-accordion-fg-disabled: --alpha(
+    var(--color-disabled-text) / var(--opacity-disabled)
+  );
+
+  /* === ITEM COMPONENT === */
+  --color-accordion-item-bg: var(--color-accordion);
+  --color-accordion-item-border: var(--color-accordion-border);
+
+  /* === TITLE COMPONENT === */
+  --color-accordion-title-bg: var(--color-accordion);
+  --color-accordion-title-fg: var(--color-accordion-fg);
+  --color-accordion-subtitle-fg: --alpha(
+    var(--color-accordion-fg) / var(--opacity-text-secondary)
+  );
+  --color-accordion-title-hover: var(--color-accordion-hover);
+
+  /* === CONTENT COMPONENT === */
+  --color-accordion-content-bg: var(--color-accordion);
+  --color-accordion-content-fg: var(--color-accordion-fg);
+
+  /* === FOCUS RING === */
+  --color-accordion-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+
+  /* === SPACING === */
+  --spacing-accordion-title: var(--spacing-2xs);
+  --spacing-accordion-content: var(--spacing-2xs);
+
+  /* === TYPOGRAPHY === */
+  --font-weight-accordion-title: var(--font-weight-medium);
+  --text-accordion-title-size: var(--text-md);
+  --text-accordion-content: var(--text-md);
+  --text-accordion-subtitle-size: var(--text-sm);
+
+  /* === BORDER & RADIUS === */
+  --border-width-accordion: var(--border-width-sm);
+  --radius-accordion: var(--radius-sm);
+}
+
+/* Semantic tokens for accordion icons */
+@utility token-icon-accordion-chevron {
+  @apply icon-[mdi--chevron-down];
+}
