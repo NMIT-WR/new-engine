@@ -1,0 +1,62 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-slider-track: var(--color-fill-base);
+  --color-slider-range: var(--color-primary);
+  --color-slider-thumb: var(--color-base-light);
+  --color-slider-border: var(--color-stroke-primary);
+
+  /* === STATE VARIATIONS === */
+  --color-slider-track-hover: oklch(
+    from var(--color-slider-track) calc(l + var(--state-hover)) c h
+  );
+  --color-slider-range-hover: oklch(
+    from var(--color-slider-range) calc(l + var(--state-hover)) c h
+  );
+  --color-slider-thumb-hover: oklch(
+    from var(--color-slider-thumb) calc(l + var(--state-hover)) c h
+  );
+  --color-slider-thumb-active: oklch(
+    from var(--color-slider-thumb) calc(l + var(--state-active)) c h
+  );
+
+  /* === DISABLED STATES === */
+  --color-slider-disabled: var(--color-disabled-bg);
+  --color-slider-track-disabled: var(--color-disabled-bg);
+  --color-slider-range-disabled: var(--color-disabled-text);
+  /* we must avoid transparent paint, otherwise the range would be visible */
+  --color-slider-thumb-disabled: var(--color-highlight);
+  --color-slider-border-disabled: var(--color-disabled-border);
+
+  /* === FOCUS & ERROR STATES === */
+  --color-slider-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+
+  /* === SIZING === */
+  --spacing-slider-thumb-sm: var(--spacing-xs);
+  --spacing-slider-thumb-md: var(--spacing-sm);
+  --spacing-slider-thumb-lg: var(--spacing-md);
+
+  --width-slider-track-sm: var(--spacing-3xs);
+  --width-slider-track-md: var(--spacing-2xs);
+  --width-slider-track-lg: var(--spacing-xs);
+
+  --height-slider-track-sm: var(--spacing-3xs);
+  --height-slider-track-md: var(--spacing-2xs);
+  --height-slider-track-lg: var(--spacing-xs);
+
+  --height-slider-vertical: 150px;
+
+  /* === SPACING === */
+  --spacing-slider-root: var(--spacing-xs);
+
+  /* === TYPOGRAPHY === */
+  --text-slider-value: var(--text-sm);
+  --text-slider-label: var(--text-md);
+  --text-slider-helper: var(--text-sm);
+
+  /* === BORDER & RADIUS === */
+  --border-width-slider: var(--border-width-sm);
+  --radius-slider-track: var(--radius-full);
+  --radius-slider-thumb: var(--radius-full);
+
+  --shadow-slider-thumb: var(--shadow-sm);
+}

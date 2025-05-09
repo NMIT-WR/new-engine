@@ -1,0 +1,195 @@
+import * as slider from "@zag-js/slider";
+import { useMachine, normalizeProps } from "@zag-js/react";
+import { useId } from "react";
+import { tv } from "../utils";
+import type { VariantProps } from "tailwind-variants";
+import { Label } from "./label";
+
+const rangeSliderVariants = tv({
+  slots: {
+    root: [
+      "flex flex-col w-full gap-slider-root",
+      "data-[orientation=vertical]:h-full",
+      "data-[disabled]:opacity-60 data-[disabled]:cursor-not-allowed",
+    ],
+    header: ["flex items-center justify-between"],
+    value: ["text-slider-value"],
+    label: [
+      "block text-slider-label font-medium",
+      "data-[disabled]:text-disabled-text",
+    ],
+    control: [
+      "relative grid place-items-center",
+      "data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1",
+    ],
+    track: [
+      "rounded-slider-track bg-slider-track flex-1",
+      "data-[orientation=horizontal]:w-full",
+      "data-[orientation=vertical]:h-full ",
+      "data-[disabled]:bg-slider-track-disabled",
+      "border-(length:--border-width-slider) border-slider-border",
+      "data-[disabled]:border-slider-border-disabled",
+      "transition-colors duration-200",
+      "hover:bg-slider-track-hover",
+    ],
+    range: [
+      "bg-slider-range rounded-slider-track h-full",
+      "data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full",
+      "data-[disabled]:bg-slider-range-disabled",
+      "hover:bg-slider-range-hover",
+    ],
+    thumb: [
+      "flex items-center justify-center",
+      "rounded-slider-thumb bg-slider-thumb",
+      "focus:outline-none",
+      "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slider-ring",
+      "data-[disabled]:bg-slider-thumb-disabled",
+      "border-(length:--border-width-slider) border-slider-border",
+      "data-[disabled]:border-slider-border-disabled",
+      "hover:bg-slider-thumb-hover",
+      "cursor-grab data-[dragging]:cursor-grabbing data-[disabled]:cursor-not-allowed",
+      "transition-colors duration-200",
+      "shadow-slider-thumb",
+    ],
+  },
+  variants: {
+    size: {
+      sm: {
+        track: [
+          "h-slider-track-sm data-[orientation=vertical]:w-slider-track-sm",
+        ],
+        thumb: ["w-slider-thumb-sm", "h-slider-thumb-sm"],
+      },
+      md: {
+        track: [
+          "h-slider-track-md data-[orientation=vertical]:w-slider-track-md",
+        ],
+        thumb: ["w-slider-thumb-md", "h-slider-thumb-md"],
+      },
+      lg: {
+        track: [
+          "h-slider-track-lg data-[orientation=vertical]:w-slider-track-lg",
+        ],
+        thumb: ["w-slider-thumb-lg", "h-slider-thumb-lg"],
+      },
+    },
+  },
+});
+
+export interface RangeSliderProps
+  extends VariantProps<typeof rangeSliderVariants> {
+  id?: string;
+  name?: string;
+  size?: "sm" | "md" | "lg";
+  label?: string;
+  helper?: string;
+  error?: string;
+  value?: number[];
+  defaultValue?: number[];
+  min?: number;
+  max?: number;
+  step?: number;
+  minStepsBetweenThumbs?: number;
+  disabled?: boolean;
+  readOnly?: boolean;
+  dir?: "ltr" | "rtl";
+  orientation?: "horizontal" | "vertical";
+  showMarkers?: boolean;
+  markerCount?: number;
+  showValueText?: boolean;
+  formatValue?: (value: number) => string;
+  className?: string;
+  onChange?: (values: number[]) => void;
+  onChangeEnd?: (values: number[]) => void;
+  getAriaValueText?: (value: number) => string;
+}
+
+export function RangeSlider({
+  id,
+  name,
+  label,
+  helper,
+  error,
+  value,
+  defaultValue = [25, 75],
+  min = 0,
+  max = 100,
+  step = 1,
+  minStepsBetweenThumbs = 0,
+  disabled = false,
+  readOnly = false,
+  dir = "ltr",
+  orientation = "horizontal",
+  size = "md",
+  showMarkers = false,
+  markerCount = 5,
+  showValueText = false,
+  formatValue = (val: number) => val.toString(),
+  className,
+  onChange,
+  onChangeEnd,
+  getAriaValueText,
+}: RangeSliderProps) {
+  const generatedId = useId();
+  const uniqueId = id || generatedId;
+
+  const service = useMachine(slider.machine, {
+    id: uniqueId,
+    name,
+    value,
+    defaultValue,
+    min,
+    max,
+    step,
+    minStepsBetweenThumbs,
+    disabled,
+    readOnly,
+    dir,
+    orientation,
+    onValueChange: (details) => onChange?.(details.value),
+    onValueChangeEnd: (details) => onChangeEnd?.(details.value),
+  });
+
+  const api = slider.connect(service, normalizeProps);
+
+  const {
+    root,
+    label: labelSlot,
+    control,
+    track,
+    range,
+    thumb,
+    header,
+    value: valueSlot,
+  } = rangeSliderVariants({
+    className,
+  });
+
+  return (
+    <div className={root()} {...api.getRootProps()}>
+      <div className={header()}>
+        <Label className={labelSlot()} {...api.getLabelProps()}>
+          {label}
+        </Label>
+        <output className={valueSlot()} {...api.getValueTextProps()}>
+          <b>{api.value.join(" - ")}</b>
+        </output>
+      </div>
+
+      <div className={control()} {...api.getControlProps()}>
+        <div className={track({ size })} {...api.getTrackProps()}>
+          <div className={range()} {...api.getRangeProps()} />
+        </div>
+        {api.value.map((_, index) => (
+          <div
+            key={index}
+            className={thumb({ size })}
+            {...api.getThumbProps({ index })}
+          >
+            <input {...api.getHiddenInputProps({ index })} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
