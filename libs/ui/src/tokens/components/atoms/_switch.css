@@ -1,0 +1,59 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-switch-bg: var(--color-overlay);
+  --color-switch-checked: var(--color-success);
+  --color-switch-border: var(--color-stroke-primary);
+  --color-switch-thumb: var(--color-fg-reverse);
+
+  /* === STATE VARIATIONS === */
+  --color-switch-hover: oklch(
+    from var(--color-switch-bg) calc(l + var(--state-hover)) c h
+  );
+
+  /* === CHECKED STATE VARIATIONS === */
+  --color-switch-checked-hover: oklch(
+    from var(--color-switch-checked) calc(l + var(--state-hover)) c h
+  );
+
+  /* === DISABLED STATES === */
+  --color-switch-disabled: var(--color-disabled-bg);
+  --color-switch-thumb-disabled: var(--color-disabled-text);
+  --color-switch-border-disabled: var(--color-disabled-border);
+  --color-switch-checked-disabled: oklch(
+    from var(--color-switch-checked) l var(--state-disabled-chroma) h
+  );
+
+  /* === TEXT COLORS === */
+  --color-switch-label: var(--color-fg-primary);
+  --color-switch-label-disabled: var(--color-disabled-text);
+
+  /* === FOCUS RING === */
+  --color-switch-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+
+  /* === SPACING === */
+  --spacing-root: var(--spacing-sm);
+  --spacing-control-padding: var(--spacing-3xs);
+  --spacing-track-width: var(--spacing-xl);
+  --spacing-track-height: var(--spacing-md);
+  /* Padding inside the control container */
+  --spacing-control-padding: 0.125rem;
+
+  /* 
+   * Calculate the height of the thumb by subtracting the padding from both sides
+   */
+  --spacing-thumb-height: calc(
+    var(--spacing-track-height) - (var(--spacing-control-padding) * 2)
+  );
+
+  /* 
+   * Calculate the exact distance: track - thumb - padding
+   */
+  --spacing-translate-track: calc(
+    var(--spacing-track-width) - var(--spacing-track-height) -
+      var(--spacing-control-padding)
+  );
+
+  /* === BORDER === */
+  --border-width-switch: var(--border-width-sm);
+  --radius-switch: var(--radius-full);
+}

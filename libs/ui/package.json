@@ -20,10 +20,11 @@
     "storybook": "storybook dev"
   },
   "dependencies": {
-    "@zag-js/pagination": "^1.12.0",
-    "@zag-js/react": "^1.12.0",
     "@zag-js/accordion": "^1.12.0",
     "@zag-js/combobox": "^1.12.0",
+    "@zag-js/pagination": "^1.12.0",
+    "@zag-js/react": "^1.12.0",
+    "@zag-js/switch": "^1.12.0",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
