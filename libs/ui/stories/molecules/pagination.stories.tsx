@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Pagination } from "../../src/molecules/pagination";
 import { VariantContainer, VariantGroup } from "../../.storybook/decorator";
-import { useState } from "react";
 
 const meta: Meta<typeof Pagination> = {
   title: "Molecules/Pagination",
