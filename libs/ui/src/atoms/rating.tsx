@@ -1,49 +1,49 @@
-import type { VariantProps } from "tailwind-variants";
+import * as ratingGroup from "@zag-js/rating-group";
+import { useMachine, normalizeProps } from "@zag-js/react";
+import { useId } from "react";
 import { tv } from "../utils";
+import type { VariantProps } from "tailwind-variants";
+import { Label } from "./label";
 
 const rating = tv({
   slots: {
-    base: ["inline-flex items-center"],
-    star: [
+    root: ["grid items-center"],
+    control: ["flex"],
+    item: [
       "cursor-pointer transition-colors duration-200",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-rating-ring",
-      "text-rating data-[active=true]:text-rating-active",
+      "text-rating",
+      // States
+      "data-[checked]:text-rating-active",
+      "data-[highlighted]:text-rating-active",
+      "data-[disabled]:cursor-not-allowed",
+      "data-[disabled]:data-[highlighted]:text-rating-disabled",
+      "token-icon-rating",
+      "data-[half]:token-icon-rating-half",
     ],
-    icon: ["token-icon-star"],
   },
   variants: {
     size: {
       sm: {
-        base: "gap-rating-sm",
-        star: "text-rating-sm",
-        icon: "text-rating-sm",
+        root: "gap-rating-sm",
+        control: "gap-rating-sm",
+        item: "text-rating-sm",
       },
       md: {
-        base: "gap-rating-md",
-        star: "text-rating-md",
-        icon: "text-rating-md",
+        root: "gap-rating-md",
+        control: "gap-rating-md",
+        item: "text-rating-md",
       },
       lg: {
-        base: "gap-rating-lg",
-        star: "text-rating-lg",
-        icon: "text-rating-lg",
+        root: "gap-rating-lg",
+        control: "gap-rating-lg",
+        item: "text-rating-lg",
       },
     },
-    // User can rate
     isInteractive: {
-      true: {
-        star: [
-          /* setting with tailwind selector patterns
-         "hover:text-rating-active",
-          "hover:pattern-[++]:text-rating",
-          "hover:pattern-[--]:text-rating-active",*/
-          "hover:text-rating-active",
-          "hover:[&~span]:text-rating",
-          "[&:has(~span:hover)]:text-rating-active",
-        ],
-      },
+      true: {},
       false: {
-        star: "cursor-default",
+        item: "cursor-default",
       },
     },
   },
@@ -56,52 +56,79 @@ export interface RatingProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange">,
     VariantProps<typeof rating> {
   value?: number;
-  maxValue?: number;
+  defaultValue?: number;
+  count?: number;
+  labelText?: string;
   readOnly?: boolean;
+  disabled?: boolean;
+  allowHalf?: boolean;
+  name?: string;
+  dir?: "ltr" | "rtl";
+  translations?: ratingGroup.IntlTranslations;
   onChange?: (value: number) => void;
+  onHoverChange?: (value: number) => void;
 }
 
 export function Rating({
-  value = 0,
-  maxValue = 5,
+  value,
+  defaultValue,
+  count = 5,
+  labelText,
   readOnly = false,
+  disabled = false,
+  allowHalf = true,
+  name,
+  dir = "ltr",
+  translations,
   onChange,
+  onHoverChange,
   size = "md",
   className,
   ...props
 }: RatingProps) {
-  const { base, star, icon } = rating({
-    size,
-    isInteractive: !readOnly,
+  const generatedId = useId();
+  const uniqueId = props.id || generatedId;
+
+  const service = useMachine(ratingGroup.machine, {
+    id: uniqueId,
+    count,
+    value,
+    defaultValue,
+    disabled,
+    readOnly,
+    allowHalf,
+    name,
+    dir,
+    translations,
+    onValueChange: ({ value }) => {
+      onChange?.(value);
+    },
+    onHoverChange: ({ hoveredValue }) => {
+      onHoverChange?.(hoveredValue);
+    },
   });
+
+  const api = ratingGroup.connect(service, normalizeProps);
+
+  const { root, control, item } = rating({
+    size,
+    isInteractive: !readOnly && !disabled,
+  });
+
   return (
-    <div
-      className={base({ size, className })}
-      role="radiogroup"
-      aria-label="Rating"
-      {...props}
-    >
-      {Array.from({ length: maxValue }).map((_, index) => {
-        const starValue = index + 1;
-        return (
+    <div className={root({ className })} {...api.getRootProps()} {...props}>
+      {/* Hidden input for form support */}{" "}
+      {labelText && <Label {...api.getLabelProps()}>{labelText}</Label>}
+      <input {...api.getHiddenInputProps()} />
+      <div className={control()} {...api.getControlProps()}>
+        {api.items.map((index) => (
           <span
             key={index}
-            className={star({
-              isInteractive: !readOnly,
-            })}
-            // for example user is not logged in so he can not make rating
-            onClick={() => !readOnly && onChange?.(starValue)}
-            data-active={starValue <= value}
-            role="radio"
-            aria-checked={starValue === value}
-            aria-posinset={starValue}
-            aria-setsize={maxValue}
-            tabIndex={readOnly ? -1 : 0}
-          >
-            <span className={icon({ size })}></span>
-          </span>
-        );
-      })}
+            className={item()}
+            {...api.getItemProps({ index })}
+          />
+        ))}
+      </div>
     </div>
   );
 }
