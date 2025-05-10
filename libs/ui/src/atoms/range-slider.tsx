@@ -13,13 +13,13 @@ const rangeSliderVariants = tv({
       "data-[disabled]:opacity-60 data-[disabled]:cursor-not-allowed",
     ],
     header: ["flex items-center justify-between"],
-    value: ["text-slider-value"],
+    value: ["text-slider-value-size"],
     label: [
-      "block text-slider-label font-medium",
-      "data-[disabled]:text-disabled-text",
+      "block text-slider-label-size font-medium",
+      "data-[disabled]:text-disabled-text-size",
     ],
     control: [
-      "relative grid place-items-center",
+      "relative grid place-items-center ",
       "data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1",
     ],
     track: [
@@ -50,6 +50,23 @@ const rangeSliderVariants = tv({
       "cursor-grab data-[dragging]:cursor-grabbing data-[disabled]:cursor-not-allowed",
       "transition-colors duration-200",
       "shadow-slider-thumb",
+    ],
+    markerGroup: ["relative h-full flex items-center"],
+    marker: [
+      "relative h-full flex flex-col justify-center items-center",
+      "data-[orientation=vertical]:w-full",
+      "data-[orientation=vertical]:h-marker-vertical",
+      "data-[orientation=vertical]:flex-row",
+    ],
+    markerLine: [
+      "w-slider-marker h-full bg-slider-marker",
+      "data-[orientation=vertical]:h-0.5 data-[orientation=vertical]:w-full",
+    ],
+    markerText: [
+      "absolute top-full text-slider-marker-size",
+      "data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full",
+      "data-[orientation=vertical]:ml-2xs",
+      "data-[orientation=vertical]:h-full",
     ],
   },
   variants: {
@@ -94,6 +111,8 @@ export interface RangeSliderProps
   readOnly?: boolean;
   dir?: "ltr" | "rtl";
   orientation?: "horizontal" | "vertical";
+  origin?: "start" | "center" | "end";
+  thumbAlignment?: "center" | "contain";
   showMarkers?: boolean;
   markerCount?: number;
   showValueText?: boolean;
@@ -111,6 +130,8 @@ export function RangeSlider({
   helper,
   error,
   value,
+  origin,
+  thumbAlignment = "center",
   defaultValue = [25, 75],
   min = 0,
   max = 100,
@@ -140,6 +161,8 @@ export function RangeSlider({
     defaultValue,
     min,
     max,
+    origin,
+    thumbAlignment,
     step,
     minStepsBetweenThumbs,
     disabled,
@@ -161,6 +184,10 @@ export function RangeSlider({
     thumb,
     header,
     value: valueSlot,
+    markerGroup,
+    marker,
+    markerLine,
+    markerText,
   } = rangeSliderVariants({
     className,
   });
@@ -179,6 +206,38 @@ export function RangeSlider({
       <div className={control()} {...api.getControlProps()}>
         <div className={track({ size })} {...api.getTrackProps()}>
           <div className={range()} {...api.getRangeProps()} />
+          {showMarkers && (
+            <div {...api.getMarkerGroupProps()} className={markerGroup()}>
+              {Array.from({ length: markerCount }).map((_, index) => {
+                const markerValue =
+                  min + ((max - min) / (markerCount - 1)) * index;
+                return (
+                  <div
+                    key={index}
+                    className={marker()}
+                    {...api.getMarkerProps({ value: markerValue })}
+                  >
+                    {/* hide first and last marker line, if thumb alignmetn is center */}
+                    {!(
+                      thumbAlignment === "center" &&
+                      (index === 0 || index === markerCount - 1)
+                    ) && (
+                      <div
+                        className={markerLine()}
+                        data-orientation={orientation}
+                      />
+                    )}
+                    <span
+                      className={markerText()}
+                      data-orientation={orientation}
+                    >
+                      {formatValue(markerValue)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
         {api.value.map((_, index) => (
           <div

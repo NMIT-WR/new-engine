@@ -102,10 +102,13 @@ export const Default: Story = () => {
       <RangeSlider
         {...baseProps}
         showValueText
+        defaultValue={[10]}
         showMarkers
+        size="lg"
+        origin="start"
+        thumbAlignment="center"
         markerCount={11}
         label="Range Slider with Markers"
-        helper="Markers show the steps of 10"
       />
     </div>
   );
@@ -128,6 +131,7 @@ export const VerticalOrientation: Story = () => {
         {...baseProps}
         orientation="vertical"
         showValueText
+        showMarkers
         size="md"
         label="Vertical Slider"
         helper="Dragging works vertically"
@@ -142,17 +146,4 @@ export const VerticalOrientation: Story = () => {
       />
     </div>
   );
-};
-
-export const CustomRange: Story = {
-  args: {
-    ...baseProps,
-    min: -50,
-    max: 50,
-    defaultValue: [-20, 30],
-    showValueText: true,
-    label: "Temperature Range",
-    helper: "Select a temperature range from -50°C to 50°C",
-    formatValue: (value: number) => `${value}°C`,
-  },
 };

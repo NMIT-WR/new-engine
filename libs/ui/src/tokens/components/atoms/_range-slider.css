@@ -27,6 +27,11 @@
   --color-slider-thumb-disabled: var(--color-highlight);
   --color-slider-border-disabled: var(--color-disabled-border);
 
+  /* markers color */
+  --color-slider-marker: var(--color-highlight);
+  --width-slider-marker: 2px;
+  --height-slider-marker: var(--text);
+
   /* === FOCUS & ERROR STATES === */
   --color-slider-ring: --alpha(var(--color-primary) / var(--opacity-ring));
 
@@ -43,15 +48,15 @@
   --height-slider-track-md: var(--spacing-2xs);
   --height-slider-track-lg: var(--spacing-xs);
 
-  --height-slider-vertical: 150px;
-
   /* === SPACING === */
   --spacing-slider-root: var(--spacing-xs);
 
   /* === TYPOGRAPHY === */
-  --text-slider-value: var(--text-sm);
-  --text-slider-label: var(--text-md);
-  --text-slider-helper: var(--text-sm);
+  --text-slider-value-size: var(--text-sm);
+  --text-slider-label-size: var(--text-md);
+  --text-slider-helper-size: var(--text-sm);
+
+  --height-marker-vertical: var(--text-md);
 
   /* === BORDER & RADIUS === */
   --border-width-slider: var(--border-width-sm);
