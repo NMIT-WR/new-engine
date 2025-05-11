@@ -117,7 +117,6 @@ export function Rating({
 
   return (
     <div className={root({ className })} {...api.getRootProps()} {...props}>
-      {/* Hidden input for form support */}{" "}
       {labelText && <Label {...api.getLabelProps()}>{labelText}</Label>}
       <input {...api.getHiddenInputProps()} />
       <div className={control()} {...api.getControlProps()}>

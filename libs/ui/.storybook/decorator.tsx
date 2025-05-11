@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type VariantGroupProps = {
   title: string;
@@ -19,7 +19,7 @@ export function VariantGroup({
           fullWidth ? "flex-col" : "flex-wrap"
         } gap-4 items-start`}
       >
-        {children}
+        <>{children}</>
       </div>
     </div>
   )
@@ -27,6 +27,6 @@ export function VariantGroup({
 
 export function VariantContainer({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col items-center space-y-8">{children}</div>
+    <div className="flex flex-col items-center space-y-8"><>{children}</></div>
   );
 }

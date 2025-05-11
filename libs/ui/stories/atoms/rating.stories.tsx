@@ -113,7 +113,7 @@ export const Controlled: Story = {
 
 export const States: Story = {
   render: () => (
-    <VariantContainer orientation="vertical">
+    <VariantContainer>
       <div>
         <h3 className="text-sm font-medium mb-2">Normal</h3>
         <Rating defaultValue={3} />
