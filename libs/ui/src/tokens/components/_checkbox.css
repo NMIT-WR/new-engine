@@ -8,7 +8,7 @@
 
   --spacing-checkbox: var(--spacing-xs);
   --color-icon-text: var(--color-fg-dark);
-  --text-icon-md: var(--text-xs);
+  --text-checkbox-icon-md: var(--text-xs);
   --radius-checkbox: var(--radius-sm);
 }
 

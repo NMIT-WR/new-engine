@@ -20,6 +20,8 @@
     "storybook": "storybook dev"
   },
   "dependencies": {
+    "@zag-js/rating-group": "^1.12.0",
+    "@zag-js/react": "^1.12.0",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
