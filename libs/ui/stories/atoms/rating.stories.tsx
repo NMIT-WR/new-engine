@@ -3,6 +3,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Rating } from "../../src/atoms/rating";
 import { useState } from "react";
+import { VariantContainer } from "../../.storybook/decorator";
 
 const meta: Meta<typeof Rating> = {
   title: "Atoms/Rating",
@@ -13,17 +14,41 @@ const meta: Meta<typeof Rating> = {
   tags: ["autodocs"],
   argTypes: {
     value: {
-      control: { type: "number", min: 0, max: 5, step: 5 },
+      control: { type: "number", min: 0, max: 10, step: 0.5 },
+      description: "Current rating value",
     },
-    maxValue: {
+    defaultValue: {
+      control: { type: "number", min: 0, max: 10, step: 0.5 },
+      description: "Default rating value",
+    },
+    count: {
       control: { type: "number", min: 1, max: 10 },
+      description: "Number of rating items",
     },
     size: {
       control: { type: "select" },
       options: ["sm", "md", "lg"],
+      description: "Size variant",
+    },
+    labelText: {
+      control: "text",
+      description: "Label text for the rating group",
     },
     readOnly: {
       control: "boolean",
+      description: "Make rating read-only",
+    },
+    disabled: {
+      control: "boolean",
+      description: "Disable rating interaction",
+    },
+    allowHalf: {
+      control: "boolean",
+      description: "Allow half star ratings",
+    },
+    name: {
+      control: "text",
+      description: "Form field name",
     },
   },
 };
@@ -32,19 +57,75 @@ export default meta;
 type Story = StoryObj<typeof Rating>;
 
 export const Default: Story = {
-  render: (args) => {
-    const [value, setValue] = useState(args.value || 0);
+  args: {
+    defaultValue: 3,
+    count: 5,
+    size: "md",
+    allowHalf: true,
+  },
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <VariantContainer>
+      <Rating size="sm" defaultValue={3} />
+      <Rating size="md" defaultValue={3} />
+      <Rating size="lg" defaultValue={3} />
+    </VariantContainer>
+  ),
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState(3);
+    const [hoverValue, setHoverValue] = useState<number>(0);
 
     return (
-      <div className="flex flex-col gap-2">
-        <Rating {...args} value={value} onChange={setValue} />
-        <p className="text-sm">Current value: {value}</p>
+      <div className="flex flex-col gap-4">
+        <Rating
+          value={value}
+          onChange={setValue}
+          onHoverChange={setHoverValue}
+          allowHalf
+        />
+        <div className="space-y-1 text-sm">
+          <p>Current value: {value}</p>
+          <p>Hover value: {hoverValue}</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setValue(0)}
+            className="px-3 py-1 text-sm border rounded hover:bg-gray-100/20"
+          >
+            Clear
+          </button>
+          <button
+            onClick={() => setValue(5)}
+            className="px-3 py-1 text-sm border rounded hover:bg-gray-100/20"
+          >
+            Max
+          </button>
+        </div>
       </div>
     );
   },
-  args: {
-    value: 0,
-    maxValue: 5,
-    size: "sm",
-  },
+};
+
+export const States: Story = {
+  render: () => (
+    <VariantContainer>
+      <div>
+        <h3 className="text-sm font-medium mb-2">Normal</h3>
+        <Rating defaultValue={3} />
+      </div>
+      <div>
+        <h3 className="text-sm font-medium mb-2">Read Only</h3>
+        <Rating defaultValue={3} readOnly />
+      </div>
+      <div>
+        <h3 className="text-sm font-medium mb-2">Disabled</h3>
+        <Rating defaultValue={3} disabled />
+      </div>
+    </VariantContainer>
+  ),
 };
