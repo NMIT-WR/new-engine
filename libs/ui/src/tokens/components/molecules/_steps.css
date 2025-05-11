@@ -1,0 +1,116 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-steps: var(--color-base);
+  --color-steps-active: var(--color-primary);
+  --color-steps-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-steps-accent: var(--color-surface);
+  --color-steps-fg: var(--color-fg-primary);
+  --color-steps-fg-active: var(--color-fg-reverse);
+
+  /* === ROOT === */
+  --color-steps-root-bg: var(--color-steps);
+  --gap-root: var(--spacing-sm);
+
+  /* === LIST === */
+  --color-steps-list-bg: var(--color-steps);
+  --gap-list: var(--spacing-xs);
+
+  /* === ITEM === */
+  --color-steps-item-bg: transparent;
+  --gap-item: var(--spacing-2xs);
+
+  /* === TRIGGERS === */
+  --color-steps-trigger-bg: transparent;
+  --gap-trigger: var(--spacing-2xs);
+
+  /* === CONTENT === */
+  --color-steps-content-bg: var(--color-steps-accent);
+  --padding-content: var(--spacing-sm);
+
+  /* === INDICATOR === */
+  --color-steps-indicator-bg: var(--color-steps-accent);
+  --color-steps-indicator-complete: var(--color-steps-active);
+  --height-steps-indicator: var(--spacing-md);
+
+  /* === SEPARATOR === */
+  --color-steps-separator-bg: var(--color-steps-accent);
+  --color-steps-separator-complete: var(--color-steps-active);
+  --height-steps-separator: 2px;
+  --width-steps-separator: 2px;
+
+  /* === BUTTON STEPS === */
+  --padding-steps-btn: var(--spacing-3xs) var(--spacing-xs);
+}
+
+/* Semantic tokens for steps icons */
+@utility token-icon-steps-check {
+  @apply icon-[mdi--check];
+}
+
+/*
+ === TRIGGER COMPONENT === 
+--color-steps-trigger-bg: var(--color-surface);
+--color-steps-trigger-fg: var(--color-fg-secondary);
+--color-steps-trigger-border: var(--color-stroke-primary);
+
+Current state 
+--color-steps-trigger-current: var(--color-primary);
+--color-steps-trigger-current-fg: var(--color-fg-reverse);
+
+/* Complete state 
+--color-steps-trigger-complete: var(--color-success);
+--color-steps-trigger-complete-fg: var(--color-fg-reverse);
+
+/* Hover state *
+--color-steps-trigger-hover: var(--color-fill-hover);
+
+/* === SEPARATOR === *
+--color-steps-separator: var(--color-stroke-primary);
+--color-steps-separator-complete: var(--color-success);
+--color-steps-progress-fill: var(--color-primary);
+
+/* === CONTENT === *
+--color-steps-title-fg: var(--color-fg-primary);
+--color-steps-title-current: var(--color-primary);
+--color-steps-description-fg: var(--color-fg-secondary);
+
+/* === FOCUS RING === *
+--color-steps-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+
+/* === SIZING === *
+/* Indicator sizes *
+--steps-indicator-size: var(--spacing-xl);
+--steps-indicator-sm: var(--spacing-lg);
+--steps-indicator-md: var(--spacing-xl);
+--steps-indicator-lg: var(--spacing-2xl);
+
+/* Dot variant sizes *
+--steps-dot-size: var(--spacing-xs);
+
+/* === SPACING === *
+--spacing-steps-separator-gap: var(--spacing-xs);
+--spacing-steps-content-gap: var(--spacing-xs);
+--spacing-steps-description-gap: var(--spacing-3xs);
+
+/* === TYPOGRAPHY === *
+--font-weight-steps-trigger: var(--font-weight-medium);
+--font-weight-steps-title: var(--font-weight-medium);
+
+/* Trigger text sizes *
+--text-steps-trigger-sm: var(--text-sm);
+--text-steps-trigger-md: var(--text-md);
+--text-steps-trigger-lg: var(--text-lg);
+
+/* Title sizes *
+--text-steps-title-size: var(--text-md);
+--text-steps-title-sm: var(--text-sm);
+--text-steps-title-md: var(--text-md);
+--text-steps-title-lg: var(--text-lg);
+
+/* Description sizes *
+--text-steps-description-size: var(--text-sm);
+--text-steps-description-sm: var(--text-xs);
+--text-steps-description-md: var(--text-sm);
+--text-steps-description-lg: var(--text-md);
+
+*/
