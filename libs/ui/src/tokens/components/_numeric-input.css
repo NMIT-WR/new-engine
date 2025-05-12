@@ -1,0 +1,49 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-ni-bg: var(--color-input);
+  --color-ni-border: var(--color-input-border);
+  --color-ni-text: var(--color-input-text);
+  --color-ni-invalid-border: var(--color-danger);
+  --color-ni-invalid-bg: --alpha(var(--color-danger) / 10%);
+  --color-ni-invalid-fg: var(--color-danger);
+
+  --color-ni-border: var(--color-stroke-primary);
+  --border-width-ni: var(--border-width-input);
+
+  --gap-ni-root-sm: var(--spacing-2xs);
+  --gap-ni-root-md: var(--spacing-xs);
+  --gap-ni-root-lg: var(--spacing-sm);
+
+  /* ==== TYPOGRAPHY ==== */
+  --text-ni-sm: var(--text-sm);
+  --text-ni-md: var(--text-md);
+  --text-ni-lg: var(--text-lg);
+
+  /* === INPUT === */
+  --color-ni-input-bg: transparent;
+  --color-ni-input-bg-hover: transparent;
+  --color-ni-input-bg-active: transparent;
+  --padding-ni-input: 0 0 0 var(--spacing-2xs);
+
+  /* === TRIGGER === */
+  --color-ni-trigger-container: var(--color-surface);
+  --padding-ni-trigger-x: var(--spacing-2xs);
+  --padding-ni-trigger-y: var(--spacing-3xs);
+
+  /* === INCREMENT BUTTON === */
+  --color-ni-increment-btn: var(--color-success);
+  --ring-ni-increment-btn-ring: --alpha(
+    var(--color-success) / var(--opacity-ring)
+  );
+
+  --radius-ni: var(--radius-sm);
+  --border-width-ni: var(--border-width-input);
+}
+
+@utility token-icon-ni-increment {
+  @apply icon-[mdi--chevron-up];
+}
+
+@utility token-icon-ni-decrement {
+  @apply icon-[mdi--chevron-down];
+}
