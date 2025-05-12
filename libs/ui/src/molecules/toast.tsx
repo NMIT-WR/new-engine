@@ -1,32 +1,30 @@
 import * as toast from "@zag-js/toast";
-import { Portal, normalizeProps, useMachine } from "@zag-js/react";
+import { normalizeProps, Portal, useMachine } from "@zag-js/react";
 import { useId } from "react";
 import { tv } from "../utils";
 import type { VariantProps } from "tailwind-variants";
-//import { Icon } from "../atoms/icon";
+import { Button } from "../atoms/button";
 
 // Toast Item Variants
 const toastVariants = tv({
   slots: {
     root: [
-      "relative rounded-toast-root border-(length:--border-width-toast) bg-pink-900 shadow-lg",
+      "flex flex-col relative rounded-toast-root",
+      "border-(length:--border-width-toast) bg-toast-bg shadow-lg",
       "w-toast-width overflow-hidden p-toast-root",
       "data-[type=error]:bg-toast-error-bg data-[type=error]:border-toast-error-border",
       "data-[type=success]:bg-toast-success-bg data-[type=success]:border-toast-success-border",
       "data-[type=info]:bg-toast-info-bg data-[type=info]:border-toast-info-border",
       "data-[type=warning]:bg-toast-warning-bg data-[type=warning]:border-toast-warning-border",
-      "data-[state=open]:animate-toast-slide-in",
-      "data-[state=closed]:animate-toast-slide-out",
+
+      // required styles by zag-js
+      "translate-x-[var(--x)] translate-y-[var(--y)]",
+      "scale-[var(--scale)] opacity-[var(--opacity)]",
+      "z-[var(--z-index)] h-[var(--height)]",
+      "will-change-[translate,opacity,scale]",
+      "transition-[translate,scale,opacity] duration-400",
     ],
-    progressbar: [
-      "absolute left-0 bottom-0 h-toast-progress w-full",
-      "origin-left transition-transform duration-100",
-      "data-[type=error]:bg-toast-error-progress",
-      "data-[type=success]:bg-toast-success-progress",
-      "data-[type=info]:bg-toast-info-progress",
-      "data-[type=warning]:bg-toast-warning-progress",
-    ],
-    header: "flex relative items-center gap-toast-content ",
+    header: "flex relative items-center gap-toast-content",
     icon: [
       "flex-shrink-0 text-toast-icon-size",
       "data-[type=error]:text-toast-error-icon data-[type=error]:token-icon-toast-error",
@@ -46,9 +44,9 @@ const toastVariants = tv({
       "text-toast-description-size text-toast-description-fg mt-toast-description-gap",
     ],
     closeButton: [
-      "grid place-items-center flex-shrink-0 ml-auto ",
+      "grid place-items-center flex-shrink-0 ml-auto py-0 px-0",
       "cursor-pointer",
-      "text-toast-close hover:text-toast-close-hover text-toast-close-size",
+      "text-toast-close hover:text-toast-close-hover",
     ],
   },
 });
@@ -58,49 +56,44 @@ interface ToastProps {
   actor: toast.Options<React.ReactNode>;
   index: number;
   parent: toast.GroupService;
+  placement?: toast.Placement;
 }
 
-export function Toast({ actor, index, parent }: ToastProps) {
+export function Toast({ actor, index, parent, placement }: ToastProps) {
   const composedProps = {
     ...actor,
     index,
     parent,
+    placement,
   };
   const service = useMachine(toast.machine, composedProps);
   const api = toast.connect(service, normalizeProps);
 
-  const { root, progressbar, header, icon, title, description, closeButton } =
+  const { root, header, icon, title, description, closeButton } =
     toastVariants();
 
   return (
     <div className={root()} {...api.getRootProps()}>
       <span {...api.getGhostBeforeProps()} />
-
-      <div
-        className={progressbar()}
-        data-type={api.type}
-        data-part="progressbar"
-      />
-
-      <div className={header()}>
+      <div className={header()} {...api.getTitleProps()}>
         <span className={icon()} data-type={api.type} />
-        <div className={title()} {...api.getTitleProps()} data-type={api.type}>
-          {api.title}
+        <div className={title()} data-type={api.type}>
+          {api.type === "loading" ? "loading..." : api.title}
         </div>
-        <button className={closeButton()} {...api.getCloseTriggerProps()}>
-          <span className="token-icon-toast-close" />
-        </button>
+        <Button
+          theme="borderless"
+          className={closeButton()}
+          {...api.getCloseTriggerProps()}
+          icon="token-icon-toast-close"
+        />
       </div>
-      {api.description && (
-        <div
-          className={description()}
-          {...api.getDescriptionProps()}
-          data-type={api.type}
-        >
-          {api.description}
-        </div>
-      )}
-
+      <div
+        className={description()}
+        {...api.getDescriptionProps()}
+        data-type={api.type}
+      >
+        {api.description}
+      </div>
       <span {...api.getGhostAfterProps()} />
     </div>
   );
@@ -120,28 +113,18 @@ export interface ToastContainerProps
 export const toaster = toast.createStore({
   placement: "bottom-end",
   gap: 16,
-  offsets: "44px",
+  offsets: "24px",
 });
 
-export function ToastContainer({
-  placement,
-  gap,
-  offsets,
-  overlap,
-  max,
-  ...props
-}: ToastContainerProps = {}) {
+export function Toaster() {
   const service = useMachine(toast.group.machine, {
     id: useId(),
     store: toaster,
-    ...props,
   });
-
   const api = toast.group.connect(service, normalizeProps);
-
   return (
     <Portal>
-      <div {...api.getGroupProps()}>
+      <div className="flex flex-col relative" {...api.getGroupProps()}>
         {api.getToasts().map((toast, index) => (
           <Toast key={toast.id} actor={toast} index={index} parent={service} />
         ))}

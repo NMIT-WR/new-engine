@@ -4,46 +4,39 @@
 
 @theme static {
   /* === BASE TOKEN MAPPING === */
-  --color-toast-bg: var(--color-surface);
+  --color-toast-bg: var(--color-highlight);
   --color-toast-border: var(--color-stroke-primary);
-  --color-toast-title-fg: var(--color-fg-primary);
-  --color-toast-description-fg: var(--color-fg-reverse);
-  --color-toast-close: var(--color-fg-secondary);
+  --color-toast-title-fg: var(--color-fg-dark);
+  --color-toast-description-fg: var(--color-fg-dark);
 
   /* === TYPE SPECIFIC COLORS === */
   /* Error */
   --color-toast-error: var(--color-danger);
-  --color-toast-error-bg: --alpha(
-    var(--color-danger-light) / var(--opacity-bg)
-  );
+  --color-toast-error-bg: var(--color-toast-error);
   --color-toast-error-border: var(--color-toast-error);
-  --color-toast-error-title: var(--color-toast-error);
-  --color-toast-error-icon: var(--color-toast-error);
-  --color-toast-error-progress: var(--color-toast-error);
+  --color-toast-error-title: var(--color-toast-title-fg);
+  --color-toast-error-icon: var(--color-toast-title-fg);
 
   /* Success */
   --color-toast-success: var(--color-success);
-  --color-toast-success-bg: var(--color-success-light);
+  --color-toast-success-bg: var(--color-toast-success);
   --color-toast-success-border: var(--color-toast-success);
-  --color-toast-success-title: var(--color-toast-success);
-  --color-toast-success-icon: var(--color-toast-success);
-  --color-toast-success-progress: var(--color-toast-success);
+  --color-toast-success-title: var(--color-toast-title-fg);
+  --color-toast-success-icon: var(--color-toast-title-fg);
 
   /* Info */
   --color-toast-info: var(--color-info);
   --color-toast-info-bg: var(--color-info-light);
   --color-toast-info-border: var(--color-toast-info);
-  --color-toast-info-title: var(--color-toast-info);
-  --color-toast-info-icon: var(--color-toast-info);
-  --color-toast-info-progress: var(--color-toast-info);
+  --color-toast-info-title: var(--color-toast-title-fg);
+  --color-toast-info-icon: var(--color-toast-title-fg);
 
   /* Warning */
   --color-toast-warning: var(--color-warning);
   --color-toast-warning-bg: var(--color-warning-light);
   --color-toast-warning-border: var(--color-toast-warning);
-  --color-toast-warning-title: var(--color-toast-warning);
-  --color-toast-warning-icon: var(--color-toast-warning);
-  --color-toast-warning-progress: var(--color-toast-warning);
+  --color-toast-warning-title: var(--color-toast-title-fg);
+  --color-toast-warning-icon: var(--color-toast-title-fg);
 
   /* === ROOT === */
   --spacing-toast-width: 360px;
@@ -52,7 +45,7 @@
 
   /* === CLOSE BUTTON === */
   --text-toast-close-size: var(--text-lg);
-  --color-toast-close: var(--color-toast-description-fg);
+  --color-toast-close: var(--color-fg-dark);
   --color-toast-close-hover: var(--color-fg-primary);
 
   /* === PROGRESS BAR === */
@@ -98,45 +91,4 @@
 
 @utility token-icon-toast-close {
   @apply icon-[mdi--close];
-}
-
-/* Animations */
-@keyframes toast-slide-in {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes toast-slide-out {
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-}
-
-@utility animate-toast-slide-in {
-  animation: toast-slide-in 0.2s ease-out;
-}
-
-@utility animate-toast-slide-out {
-  animation: toast-slide-out 0.2s ease-in;
-}
-
-/* CSS variables required by Zag */
-[data-scope="toast"][data-part="group"] {
-  --toast-placement: var(--placement);
-  --toast-offset-x: var(--offset-x);
-  --toast-offset-y: var(--offset-y);
-  --toast-gap: var(--gap);
-  --toast-z-index: var(--z-index);
-  --toast-stack-offset: var(--stack-offset);
 }
