@@ -65,15 +65,24 @@ export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
   ref?: Ref<HTMLInputElement>;
+  className?: string;
 }
 
-export function Input({ size, variant, disabled, ref, ...props }: InputProps) {
+export function Input({
+  size,
+  variant,
+  disabled,
+  ref,
+  className,
+  ...props
+}: InputProps) {
   return (
     <input
       className={inputVariants({
         size,
         variant,
         disabled,
+        className,
       })}
       disabled={disabled}
       ref={ref}
