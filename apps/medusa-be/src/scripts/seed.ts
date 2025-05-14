@@ -50,10 +50,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
 
   if (!store) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      "Store not found"
-    );
+    throw new MedusaError(MedusaError.Types.NOT_FOUND, "Store not found");
   }
   if (!defaultSalesChannel || !defaultSalesChannel.length) {
     // create the default sales channel
@@ -88,34 +85,52 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     },
   });
+
   logger.info("Seeding region data...");
-  const { result: regionResult } = await createRegionsWorkflow(container).run({
-    input: {
-      regions: [
-        {
-          name: "Europe",
-          currency_code: "eur",
-          countries,
-          payment_providers: ["pp_system_default"],
-        },
-        {
-          name: "United States",
-          currency_code: "usd",
-          countries: ["us"],
-          payment_providers: ["pp_system_default"],
-        },
-      ],
-    },
-  });
-  const region = regionResult[0];
-  if (!region) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      "Region not found"
+  const regionService = container.resolve(Modules.REGION);
+  let regions = await regionService.listRegions();
+  let region;
+
+  if (!regions || regions.length === 0) {
+    logger.info("No regions found, creating new ones...");
+    const { result: newRegions } = await createRegionsWorkflow(container).run({
+      input: {
+        regions: [
+          {
+            name: "Europe",
+            currency_code: "eur",
+            countries,
+            payment_providers: ["pp_system_default"],
+          },
+          {
+            name: "United States",
+            currency_code: "usd",
+            countries: ["us"],
+            payment_providers: ["pp_system_default"],
+          },
+        ],
+      },
+    });
+    if (!newRegions || newRegions.length === 0) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Failed to create new regions."
+      );
+    }
+    regions = newRegions;
+    logger.info(`Created ${regions.length} new region(s).`);
+  } else {
+    logger.info(
+      `Found ${regions.length} existing region(s). Using the first one.`
     );
   }
-  logger.info("Finished seeding regions.");
-
+  if (!regions || regions.length === 0) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "No regions available after seeding/checking."
+    );
+  }
+  region = regions[0];
   logger.info("Seeding tax regions...");
   await createTaxRegionsWorkflow(container).run({
     input: countries.map((country_code) => ({
@@ -452,13 +467,21 @@ export default async function seedDemoData({ container }: ExecArgs) {
             },
           });
 
+          // Transform the result to replace the URL
+          const transformedResult = result.map((file) => ({
+            ...file,
+            url: file.url
+              ? file.url.replace("medusa-minio:9004", "localhost:9004")
+              : file.url,
+          }));
+
           logger.info(
-            `Upload successful for ${productName}. Files uploaded: ${result
+            `Upload successful for ${productName}. Files uploaded: ${transformedResult
               .map((f) => f.url)
               .join(", ")}`
           );
 
-          results[productName] = result;
+          results[productName] = transformedResult;
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : String(error);
@@ -1054,9 +1077,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
 
-  await batchLinkProductsToCollectionWorkflow(
-    container
-  ).run({
+  await batchLinkProductsToCollectionWorkflow(container).run({
     input: {
       id: collections[0].id,
       add: products.map((p) => p.id),

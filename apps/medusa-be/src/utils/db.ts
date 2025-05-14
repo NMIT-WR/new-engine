@@ -5,11 +5,15 @@ import { SQL } from "drizzle-orm/sql/sql";
 import * as schema from "./schema";
 
 // Create a simplified drizzle client
-export const db = drizzle(
+/*export const db = drizzle(
   'postgresql://neondb_owner:npg_Ozy4jRvtHDG5@ep-nameless-river-a2qn6c6z-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require',
   { schema }
+);*/
+export const db = drizzle(
+  process.env.DATABASE_URL ||
+    "postgresql://root:root@medusa-db:5432/medusa?ssl_mode=disable",
+  { schema }
 );
-
 // Helper function to check if a string is a date
 function isDateString(value: string): boolean {
   const date = new Date(value);
@@ -27,10 +31,10 @@ export async function sqlRaw<T = object>(sql: SQL<T>): Promise<T[]> {
       Object.fromEntries(
         Object.entries(row).map(([key, value]) => [
           key,
-          value && typeof value === 'string' && isDateString(value)
+          value && typeof value === "string" && isDateString(value)
             ? new Date(value)
             : value,
-        ]),
-      ) as T,
+        ])
+      ) as T
   );
 }
