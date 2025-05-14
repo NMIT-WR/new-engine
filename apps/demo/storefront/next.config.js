@@ -16,6 +16,8 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
+        port: "9004",
+        pathname: "/medusa-bucket/**",
       },
       {
         protocol: "https",

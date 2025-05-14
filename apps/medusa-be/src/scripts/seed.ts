@@ -85,31 +85,52 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     },
   });
-  logger.info("Seeding region data...");
-  const { result: regionResult } = await createRegionsWorkflow(container).run({
-    input: {
-      regions: [
-        {
-          name: "Europe",
-          currency_code: "eur",
-          countries,
-          payment_providers: ["pp_system_default"],
-        },
-        {
-          name: "United States",
-          currency_code: "usd",
-          countries: ["us"],
-          payment_providers: ["pp_system_default"],
-        },
-      ],
-    },
-  });
-  const region = regionResult[0];
-  if (!region) {
-    throw new MedusaError(MedusaError.Types.NOT_FOUND, "Region not found");
-  }
-  logger.info("Finished seeding regions.");
 
+  logger.info("Seeding region data...");
+  const regionService = container.resolve(Modules.REGION);
+  let regions = await regionService.listRegions();
+  let region;
+
+  if (!regions || regions.length === 0) {
+    logger.info("No regions found, creating new ones...");
+    const { result: newRegions } = await createRegionsWorkflow(container).run({
+      input: {
+        regions: [
+          {
+            name: "Europe",
+            currency_code: "eur",
+            countries,
+            payment_providers: ["pp_system_default"],
+          },
+          {
+            name: "United States",
+            currency_code: "usd",
+            countries: ["us"],
+            payment_providers: ["pp_system_default"],
+          },
+        ],
+      },
+    });
+    if (!newRegions || newRegions.length === 0) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Failed to create new regions."
+      );
+    }
+    regions = newRegions;
+    logger.info(`Created ${regions.length} new region(s).`);
+  } else {
+    logger.info(
+      `Found ${regions.length} existing region(s). Using the first one.`
+    );
+  }
+  if (!regions || regions.length === 0) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "No regions available after seeding/checking."
+    );
+  }
+  region = regions[0];
   logger.info("Seeding tax regions...");
   await createTaxRegionsWorkflow(container).run({
     input: countries.map((country_code) => ({
