@@ -2,7 +2,7 @@ import type {
   ExecArgs,
   IProductModuleService,
 } from "@medusajs/framework/types"
-import { Modules, SearchUtils } from "@medusajs/framework/utils"
+import { Modules } from "@medusajs/framework/utils"
 import { MeiliSearchService } from '@rokmohar/medusa-plugin-meilisearch'
 
 export default async function searchIndexScript({ container }: ExecArgs) {
@@ -16,6 +16,6 @@ export default async function searchIndexScript({ container }: ExecArgs) {
 
   const products = await productModuleService.listProducts()
 
-  await meilisearchIndexService.addDocuments('products', products, SearchUtils.indexTypes.PRODUCTS)
+  await meilisearchIndexService.addDocuments('products', products)
 
 }

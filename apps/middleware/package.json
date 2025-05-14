@@ -2,8 +2,8 @@
   "name": "middleware",
   "version": "1.0.50",
   "dependencies": {
-    "elysia": "latest",
-    "@sinclair/typebox": "^0.34.9"
+    "@sinclair/typebox": "^0.34.33",
+    "elysia": "latest"
   },
   "devDependencies": {
     "bun-types": "latest"

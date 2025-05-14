@@ -10,7 +10,9 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rslib build",
     "check": "biome check --write",
@@ -19,13 +21,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@rslib/core": "^0.5.4",
-    "@types/node": "^22.13.10",
-    "typescript": "^5.8.2"
+    "@rslib/core": "^0.5.5",
+    "@types/node": "^22.15.18",
+    "typescript": "^5.8.3"
   },
   "private": true,
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
-    "drizzle-orm": "^0.40.0"
+    "drizzle-orm": "^0.40.1"
   }
 }

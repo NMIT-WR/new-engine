@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@dotenvx/dotenvx": "^1.28.0"
+    "@dotenvx/dotenvx": "^1.44.0"
   },
   "devDependencies": {
     "@types/bun": "1.1.14"
