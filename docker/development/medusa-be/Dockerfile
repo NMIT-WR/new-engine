@@ -8,5 +8,5 @@ RUN apt update && apt install curl -y
 RUN npm i -g corepack@latest
 
 RUN corepack enable
-RUN corepack install -g pnpm@10.8.1
+RUN corepack install -g pnpm@10.11.0
 WORKDIR /var/www
