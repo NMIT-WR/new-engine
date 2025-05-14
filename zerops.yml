@@ -11,7 +11,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-be)
         - pnpm i
-        - node_modules/.bin/nx run medusa-be:build --skip-nx-cache
+        - node_modules/.bin/nx run medusa-be:build --skip-nx-cache --verbose
         - rm -rf apps/medusa-be/node_modules
         - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
         - mv medusa-be-temp-deploy/node_modules apps/medusa-be/
@@ -81,7 +81,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(medusa-fe)
         - pnpm i
-        - node_modules/.bin/nx run medusa-fe:build --skip-nx-cache --verbose
+        - node_modules/.bin/nx run medusa-fe:build --skip-nx-cache
         - rm -rf apps/medusa-fe/node_modules
         - pnpm --filter=medusa-fe --prod deploy medusa-fe-temp-deploy
         - mv medusa-fe-temp-deploy/node_modules apps/medusa-fe/
