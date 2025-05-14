@@ -589,6 +589,15 @@ importers:
 
   libs/ui:
     dependencies:
+      '@zag-js/number-input':
+        specifier: ^1.12.2
+        version: 1.12.2
+      '@zag-js/rating-group':
+        specifier: ^1.12.2
+        version: 1.12.2
+      '@zag-js/react':
+        specifier: ^1.12.2
+        version: 1.12.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tailwind-variants:
         specifier: ^1.0.0
         version: 1.0.0(tailwindcss@4.1.3)
@@ -7503,6 +7512,36 @@ packages:
     resolution: {integrity: sha512-/HcYgtUSiJiot/XWGLOlGxPYUG65+/31V8oqk17vZLW1xlCoR4PampyePljOxY2n8/3jz9+tIFzICsyGujJZoA==}
     engines: {node: '>=18.12.0'}
 
+  '@zag-js/anatomy@1.12.2':
+    resolution: {integrity: sha512-avPmEivu4QFAICJ4rogt9ZFMp4trwva11jQfIAHXYDDL6YoF58z69129eLuyVSuSjEQ9EOzxg+fxMjXH2xm7yQ==}
+
+  '@zag-js/core@1.12.2':
+    resolution: {integrity: sha512-deECf4FGOSjmD+f3Y116D9dHYs4NP87GBtQgQQ9oCXP8SOCR3A9gSkUGcFU+cQq2tNA5I1F9KqUElc0fDYfh4w==}
+
+  '@zag-js/dom-query@1.12.2':
+    resolution: {integrity: sha512-UvFHQbkX6zscdYnMYc5TnrV/FkKlb4dMombXO2rD20NStU9gxb7uYtq91aPSO2x7aVCwNWuPWRb1nFAYGFBOvw==}
+
+  '@zag-js/number-input@1.12.2':
+    resolution: {integrity: sha512-YesH2jaFwjRxfqdXUfjGgaAcLjoPPCYkltdC7wEBCNgAqU8UKZ+tktVHnfzZoLZiKqkQ9TXXOC4Ic6cmjXC2UQ==}
+
+  '@zag-js/rating-group@1.12.2':
+    resolution: {integrity: sha512-n6DJCdtu2hLhZDzFQd0iS7dXL0LJlCVVAFX1pPFrLAl1QQLDZLHftGZAsTnHpF2xAgrOyvzm1p+DPB5arQVcEw==}
+
+  '@zag-js/react@1.12.2':
+    resolution: {integrity: sha512-kjMP2ikLNbHSEhkrUkg20mtWyYzhOIIBMR4DXlS3nBnB2vNUGq71iUf45xgO7qq7jF/ANOazT5cKJkvBFzs7qw==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+
+  '@zag-js/store@1.12.2':
+    resolution: {integrity: sha512-Vy1QK0cmaaruzpkIwJ1lvCO3q0E0K/M1ZY71cDbEYKRYfpRqgV+7xluWbfTueqiAIYyGPa7+nCpakdr9zPPsnQ==}
+
+  '@zag-js/types@1.12.2':
+    resolution: {integrity: sha512-coJfIU/1Cg1RkWEkf4ArXK6rD3EU+lwxQdtVRlhvGk4c2ts2YTqNi/Sis5CT4/dzaKAk3pk8O2H3ry4IcL2tsg==}
+
+  '@zag-js/utils@1.12.2':
+    resolution: {integrity: sha512-JLmzHzJVggOy+4z3jbJ8v86O6Gqm4h1/+ExtwfiTiba0O7j2+4Had7XQxSjVw+H7fNDAfwbZY8af7XzrnumcLQ==}
+
   '@zkochan/js-yaml@0.0.7':
     resolution: {integrity: sha512-nrUSn7hzt7J6JWgWGz78ZYI8wj+gdIJdk0Ynjpp8l+trkn58Uqsf6RYrYkEK+3X18EX+TNdtJI0WxAtc+L84SQ==}
     hasBin: true
@@ -11190,6 +11229,9 @@ packages:
   proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
+
+  proxy-compare@3.0.1:
+    resolution: {integrity: sha512-V9plBAt3qjMlS1+nC8771KNf6oJ12gExvaxnNzN/9yVRLdTv/lc+oJlnSzrdYDAvBfTStPCoiaCOTmTs0adv7Q==}
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
@@ -23282,6 +23324,53 @@ snapshots:
       js-yaml: 3.14.1
       tslib: 2.8.1
 
+  '@zag-js/anatomy@1.12.2': {}
+
+  '@zag-js/core@1.12.2':
+    dependencies:
+      '@zag-js/dom-query': 1.12.2
+      '@zag-js/utils': 1.12.2
+
+  '@zag-js/dom-query@1.12.2':
+    dependencies:
+      '@zag-js/types': 1.12.2
+
+  '@zag-js/number-input@1.12.2':
+    dependencies:
+      '@internationalized/number': 3.6.1
+      '@zag-js/anatomy': 1.12.2
+      '@zag-js/core': 1.12.2
+      '@zag-js/dom-query': 1.12.2
+      '@zag-js/types': 1.12.2
+      '@zag-js/utils': 1.12.2
+
+  '@zag-js/rating-group@1.12.2':
+    dependencies:
+      '@zag-js/anatomy': 1.12.2
+      '@zag-js/core': 1.12.2
+      '@zag-js/dom-query': 1.12.2
+      '@zag-js/types': 1.12.2
+      '@zag-js/utils': 1.12.2
+
+  '@zag-js/react@1.12.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@zag-js/core': 1.12.2
+      '@zag-js/store': 1.12.2
+      '@zag-js/types': 1.12.2
+      '@zag-js/utils': 1.12.2
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@zag-js/store@1.12.2':
+    dependencies:
+      proxy-compare: 3.0.1
+
+  '@zag-js/types@1.12.2':
+    dependencies:
+      csstype: 3.1.3
+
+  '@zag-js/utils@1.12.2': {}
+
   '@zkochan/js-yaml@0.0.7':
     dependencies:
       argparse: 2.0.1
@@ -27797,6 +27886,8 @@ snapshots:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+
+  proxy-compare@3.0.1: {}
 
   proxy-from-env@1.1.0: {}
 
