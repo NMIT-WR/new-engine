@@ -12,7 +12,6 @@ import { getProductPrice } from "@lib/util/get-product-price"
 import { getProductsById } from "@lib/data/products"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { Button } from "@/components/Button"
-import { Input } from "@/components/Forms"
 import { Icon } from "@/components/Icon"
 
 interface ListItem extends Hit<MeiliSearchProductHit> {
