@@ -8,7 +8,7 @@ checkEnvVariables()
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    staticGenerationRetryCount: 3,
+    staticGenerationRetryCount: 1,
     staticGenerationMaxConcurrency: 1,
   },
   logging: {
