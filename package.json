@@ -7,6 +7,7 @@
     "test": "nx e2e e2e",
     "dev:all:nx": "nx run-many --target=dev --projects=medusa-*",
     "start:fe": "cd apps/medusa-fe && npm run start",
+    "start:demo": "cd apps/demo/storefront && npm run start",
     "start:be": "cd apps/medusa-be && npm run start",
     "start:all:nx": "nx run-many --target=start --projects=medusa-*",
     "build:fe": "cd apps/medusa-fe && npm run build",
