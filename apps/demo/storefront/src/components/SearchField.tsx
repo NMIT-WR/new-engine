@@ -111,69 +111,76 @@ export const SearchField: React.FC<{
   }, [])
 
   return (
-    <div className="flex">
-      <Button
-        onPress={buttonPressHandle}
-        variant="ghost"
-        className="p-1 max-md:text-white group-data-[light=true]:md:text-white group-data-[sticky=true]:md:text-black"
-        aria-label="Open search"
-      >
-        <Icon name="search" className="w-5 h-5" />
-      </Button>
-      <ReactAria.ComboBox
-        allowsCustomValue
-        className="overflow-hidden"
-        aria-label="Search"
-        items={list.items}
-        inputValue={list.filterText}
-        onInputChange={list.setFilterText}
-        onKeyDown={handleKeyDown}
-        isDisabled={!isInputAlwaysShown && !isInputShown}
-      >
-        <div
-          className={twJoin(
-            "overflow-hidden transition-width duration-500 h-full max-w-40 md:max-w-30",
-            isInputShown ? "w-full md:w-30" : "md:w-0"
-          )}
+      <div className="flex">
+        <Button
+            onClick={buttonPressHandle}
+            variant="ghost"
+            className="p-1 max-md:text-white group-data-[light=true]:md:text-white group-data-[sticky=true]:md:text-black"
+            aria-label="Open search"
         >
-          <Input className="px-0 disabled:bg-transparent !py-0 h-7 md:h-6 max-md:border-0 border-black rounded-none border-t-0 border-x-0 group-data-[light=true]:md:border-white group-data-[sticky=true]:md:border-black ml-2 md:ml-1" />
-        </div>
-        <ReactAria.Popover
-          placement="bottom end"
-          containerPadding={10}
-          maxHeight={243}
-          offset={25}
-          className="max-w-90 md:max-w-95 lg:max-w-98 w-full bg-white rounded-xs border border-grayscale-200 overflow-y-scroll"
+          <Icon name="search" className="w-5 h-5" />
+        </Button>{" "}
+        <ReactAria.ComboBox
+            /*allowsCustomValue
+            className="overflow-hidden"
+            aria-label="Search"
+            items={list.items}
+            inputValue={list.filterText}
+            onInputChange={list.setFilterText}
+            onKeyDown={handleKeyDown}
+            isDisabled={!isInputAlwaysShown && !isInputShown}*/
         >
-          <ReactAria.ListBox className="outline-none">
-            {(item: ListItem) => (
-              <ReactAria.ListBoxItem
-                className="relative after:absolute after:content-[''] after:h-px after:bg-grayscale-100 after:-bottom-px after:left-6 after:right-6 last:after:hidden mb-px flex gap-6 p-6 transition-colors hover:bg-grayscale-50"
-                key={item.handle}
-                id={item.handle}
-                href={`/${countryCode}/products/${item.handle}`}
-              >
-                <Thumbnail
-                  thumbnail={item.thumbnail}
-                  size="3/4"
-                  className="w-20"
-                />
-                <div>
-                  <p className="text-base font-normal">{item.title}</p>
-                  <p className="text-grayscale-500 text-xs">
-                    {item.variants &&
-                      item.variants.length > 0 &&
-                      item.variants[0]}
-                  </p>
-                </div>
-                <p className="text-base font-semibold ml-auto">
-                  {item.price?.calculated_price}
-                </p>
-              </ReactAria.ListBoxItem>
-            )}
-          </ReactAria.ListBox>
-        </ReactAria.Popover>
-      </ReactAria.ComboBox>
-    </div>
+          <div
+              className={twJoin(
+                  "overflow-hidden transition-width duration-500 h-full max-w-40 md:max-w-30",
+                  isInputShown ? "w-full md:w-30" : "md:w-0"
+              )}
+          >
+            <input
+                type="text"
+                className="px-0 w-full disabled:bg-transparent !py-0 h-7 md:h-6 max-md:border-0 border-black rounded-none border-t-0 border-x-0 group-data-[light=true]:md:border-white group-data-[sticky=true]:md:border-black"
+                value={list.filterText}
+                onChange={(e) => list.setFilterText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={!isInputAlwaysShown && !isInputShown}
+            />
+          </div>
+          <ReactAria.Popover
+              placement="bottom end"
+              containerPadding={10}
+              maxHeight={243}
+              offset={25}
+              className="max-w-90 md:max-w-95 lg:max-w-98 w-full bg-white rounded-xs border border-grayscale-200 overflow-y-scroll"
+          >
+            <ReactAria.ListBox className="outline-none">
+              {(item: ListItem) => (
+                  <ReactAria.ListBoxItem
+                      className="relative after:absolute after:content-[''] after:h-px after:bg-grayscale-100 after:-bottom-px after:left-6 after:right-6 last:after:hidden mb-px flex gap-6 p-6 transition-colors hover:bg-grayscale-50"
+                      key={item.handle}
+                      id={item.handle}
+                      href={`/${countryCode}/products/${item.handle}`}
+                  >
+                    <Thumbnail
+                        thumbnail={item.thumbnail}
+                        size="3/4"
+                        className="w-20"
+                    />
+                    <div>
+                      <p className="text-base font-normal">{item.title}</p>
+                      <p className="text-grayscale-500 text-xs">
+                        {item.variants &&
+                            item.variants.length > 0 &&
+                            item.variants[0]}
+                      </p>
+                    </div>
+                    <p className="text-base font-semibold ml-auto">
+                      {item.price?.calculated_price}
+                    </p>
+                  </ReactAria.ListBoxItem>
+              )}
+            </ReactAria.ListBox>
+          </ReactAria.Popover>
+        </ReactAria.ComboBox>
+      </div>
   )
 }

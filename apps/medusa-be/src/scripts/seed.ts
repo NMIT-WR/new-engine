@@ -467,21 +467,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
             },
           });
 
-          // Transform the result to replace the URL
-          const transformedResult = result.map((file) => ({
-            ...file,
-            url: file.url
-              ? file.url.replace("medusa-minio:9004", "localhost:9004")
-              : file.url,
-          }));
-
           logger.info(
-            `Upload successful for ${productName}. Files uploaded: ${transformedResult
+            `Upload successful for ${productName}. Files uploaded: ${result
               .map((f) => f.url)
               .join(", ")}`
           );
 
-          results[productName] = transformedResult;
+          results[productName] = result;
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : String(error);
