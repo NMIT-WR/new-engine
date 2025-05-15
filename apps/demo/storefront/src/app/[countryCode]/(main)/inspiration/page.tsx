@@ -1,10 +1,10 @@
-import { Metadata } from "next"
+import {Metadata} from "next"
 import Image from "next/image"
-import { StoreRegion } from "@medusajs/types"
-import { listRegions } from "@lib/data/regions"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { CollectionsSection } from "@/components/CollectionsSection"
+import {StoreRegion} from "@medusajs/types"
+import {listRegions} from "@lib/data/regions"
+import {Layout, LayoutColumn} from "@/components/Layout"
+import {LocalizedLink} from "@/components/LocalizedLink"
+import {CollectionsSection} from "@/components/CollectionsSection"
 
 export const metadata: Metadata = {
   title: "Inspiration",
@@ -25,11 +25,13 @@ export async function generateStaticParams() {
     )
   )
 
-  const staticParams = countryCodes.map((countryCode) => ({
+  if (!countryCodes) {
+    return []
+  }
+
+  return countryCodes.map((countryCode) => ({
     countryCode,
   }))
-
-  return staticParams
 }
 
 export default function InspirationPage() {

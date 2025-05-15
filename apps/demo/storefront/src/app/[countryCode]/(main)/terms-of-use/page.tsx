@@ -1,7 +1,7 @@
-import { Metadata } from "next"
-import { StoreRegion } from "@medusajs/types"
-import { listRegions } from "@lib/data/regions"
-import { Layout, LayoutColumn } from "@/components/Layout"
+import {Metadata} from "next"
+import {StoreRegion} from "@medusajs/types"
+import {listRegions} from "@lib/data/regions"
+import {Layout, LayoutColumn} from "@/components/Layout"
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -21,11 +21,13 @@ export async function generateStaticParams() {
     )
   )
 
-  const staticParams = countryCodes.map((countryCode) => ({
+  if (!countryCodes) {
+    return []
+  }
+
+  return countryCodes.map((countryCode) => ({
     countryCode,
   }))
-
-  return staticParams
 }
 
 export default function TermsOfUsePage() {

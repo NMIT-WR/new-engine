@@ -1,7 +1,7 @@
-import { Metadata } from "next"
-import { StoreRegion } from "@medusajs/types"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { listRegions } from "@lib/data/regions"
+import {Metadata} from "next"
+import {StoreRegion} from "@medusajs/types"
+import {Layout, LayoutColumn} from "@/components/Layout"
+import {listRegions} from "@lib/data/regions"
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -21,11 +21,13 @@ export async function generateStaticParams() {
     )
   )
 
-  const staticParams = countryCodes.map((countryCode) => ({
+  if (!countryCodes) {
+    return []
+  }
+
+  return countryCodes.map((countryCode) => ({
     countryCode,
   }))
-
-  return staticParams
 }
 
 export default function CookiePolicyPage() {
