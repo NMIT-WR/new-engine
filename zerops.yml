@@ -121,7 +121,7 @@ zerops:
       base: nodejs@22
       envVariables:
         MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_STORE_DEMO_URL}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
         NEXT_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
         NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
         NEXT_PUBLIC_SEARCH_API_KEY: ${RUNTIME_NEXT_PUBLIC_SEARCH_API_KEY}
@@ -164,7 +164,7 @@ zerops:
           httpSupport: true
       envVariables:
         MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_STORE_DEMO_URL}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
         NEXT_PUBLIC_STRIPE_KEY: pk_test_placeholder
         OBJECT_STORAGE_API_URL: ${storage_apiUrl}
         NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_DEMO_URL}
