@@ -5,6 +5,10 @@ const endpoint =
 
 const apiKey = process.env.NEXT_PUBLIC_SEARCH_API_KEY || "test_key"
 
+console.log(
+  `[SearchClient] Initializing MeiliSearch. Endpoint: ${endpoint}, API Key Set: ${!!apiKey}`
+)
+
 export interface MeiliSearchProductHit {
   id: string
   handle: string
