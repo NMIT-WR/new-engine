@@ -14,6 +14,26 @@ const regionMapCache = {
 async function getRegionMap() {
   const { regionMap, regionMapUpdated } = regionMapCache
 
+  if (process.env.NODE_ENV === "development") {
+    // Mock regiony pro development
+    if (!regionMap.size) {
+      const defaultRegion: HttpTypes.StoreRegion = {
+        id: "mock-region-id",
+        name: "Development Region",
+        countries: [
+          { id: "gb-id", iso_2: "gb" },
+          { id: "us-id", iso_2: "us" },
+        ],
+        currency_code: "gbp",
+      }
+
+      defaultRegion.countries?.forEach((c) => {
+        regionMapCache.regionMap.set(c.iso_2 ?? "", defaultRegion)
+      })
+    }
+    return regionMapCache.regionMap
+  }
+
   if (
     !regionMap.keys().next().value ||
     regionMapUpdated < Date.now() - 3600 * 1000
