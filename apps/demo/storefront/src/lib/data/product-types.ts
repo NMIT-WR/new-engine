@@ -47,20 +47,20 @@ export const getProductTypesList = async function (
       }))
   } catch (error: unknown) {
     if (
-      process.env.NODE_ENV === "development" &&
-      ((typeof error === "object" &&
+      (typeof error === "object" &&
         error &&
         "status" in error &&
         error.status === 404) ||
-        (typeof error === "object" &&
-          error &&
-          "message" in error &&
-          typeof error.message === "string" &&
-          error.message.includes("fetch failed")))
+      (typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string" &&
+        error.message.includes("fetch failed"))
     ) {
       console.warn(
         "Using mock product types - endpoint /store/custom/product-types not found"
       )
+
       const mockProductTypes: HttpTypes.StoreProductType[] = [
         {
           id: "sofa",
@@ -113,16 +113,15 @@ export const getProductTypeByHandle = async function (
       .then(({ product_types }) => product_types[0])
   } catch (error: unknown) {
     if (
-      process.env.NODE_ENV === "development" &&
-      ((typeof error === "object" &&
+      (typeof error === "object" &&
         error &&
         "status" in error &&
         error.status === 404) ||
-        (typeof error === "object" &&
-          error &&
-          "message" in error &&
-          typeof error.message === "string" &&
-          error.message.includes("fetch failed")))
+      (typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string" &&
+        error.message.includes("fetch failed"))
     ) {
       return {
         id: handle,
