@@ -9,10 +9,11 @@ const extraTextVariants = tv({
       sm: "text-helper-sm",
       md: "text-helper-md",
       lg: "text-helper-lg",
+      current: "",
     },
   },
   defaultVariants: {
-    size: "md",
+    size: "current",
   },
 });
 

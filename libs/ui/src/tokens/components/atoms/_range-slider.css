@@ -4,6 +4,7 @@
   --color-slider-range: var(--color-primary);
   --color-slider-thumb: var(--color-base-light);
   --color-slider-border: var(--color-stroke-primary);
+  --color-slider-error: var(--color-danger);
 
   /* === STATE VARIATIONS === */
   --color-slider-track-hover: oklch(
@@ -18,6 +19,10 @@
   --color-slider-thumb-active: oklch(
     from var(--color-slider-thumb) calc(l + var(--state-active)) c h
   );
+
+  /* === ERROR STATES === */
+  --color-slider-range-error: var(--color-slider-error);
+  --color-slider-border-error: var(--color-slider-error);
 
   /* === DISABLED STATES === */
   --color-slider-disabled: var(--color-disabled-bg);

@@ -4,6 +4,8 @@ import { useId } from "react";
 import { tv } from "../utils";
 import type { VariantProps } from "tailwind-variants";
 import { Label } from "./label";
+import { Error } from "./error";
+import { ExtraText } from "./extra-text";
 
 const rangeSliderVariants = tv({
   slots: {
@@ -31,12 +33,14 @@ const rangeSliderVariants = tv({
       "data-[disabled]:border-slider-border-disabled",
       "transition-colors duration-200",
       "hover:bg-slider-track-hover",
+      "data-[invalid]:border-slider-border-error",
     ],
     range: [
       "bg-slider-range rounded-slider-track h-full",
       "data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full",
       "data-[disabled]:bg-slider-range-disabled",
       "hover:bg-slider-range-hover",
+      "data-[invalid]:bg-slider-range-error",
     ],
     thumb: [
       "flex items-center justify-center",
@@ -68,6 +72,7 @@ const rangeSliderVariants = tv({
       "data-[orientation=vertical]:ml-2xs",
       "data-[orientation=vertical]:h-full",
     ],
+    footer: ["mt-1 flex flex-col gap-1"],
   },
   variants: {
     size: {
@@ -120,7 +125,6 @@ export interface RangeSliderProps
   className?: string;
   onChange?: (values: number[]) => void;
   onChangeEnd?: (values: number[]) => void;
-  getAriaValueText?: (value: number) => string;
 }
 
 export function RangeSlider({
@@ -149,7 +153,6 @@ export function RangeSlider({
   className,
   onChange,
   onChangeEnd,
-  getAriaValueText,
 }: RangeSliderProps) {
   const generatedId = useId();
   const uniqueId = id || generatedId;
@@ -188,24 +191,37 @@ export function RangeSlider({
     marker,
     markerLine,
     markerText,
+    footer,
   } = rangeSliderVariants({
     className,
   });
 
   return (
     <div className={root()} {...api.getRootProps()}>
-      <div className={header()}>
-        <Label className={labelSlot()} {...api.getLabelProps()}>
-          {label}
-        </Label>
-        <output className={valueSlot()} {...api.getValueTextProps()}>
-          <b>{api.value.join(" - ")}</b>
-        </output>
-      </div>
+      {(label || showValueText) && (
+        <div className={header()}>
+          <Label className={labelSlot()} {...api.getLabelProps()}>
+            {label}
+          </Label>
+          {showValueText && (
+            <output className={valueSlot()} {...api.getValueTextProps()}>
+              <b>{api.value.join(" - ")}</b>
+            </output>
+          )}
+        </div>
+      )}
 
       <div className={control()} {...api.getControlProps()}>
-        <div className={track({ size })} {...api.getTrackProps()}>
-          <div className={range()} {...api.getRangeProps()} />
+        <div
+          className={track({ size })}
+          {...api.getTrackProps()}
+          data-invalid={error}
+        >
+          <div
+            className={range()}
+            {...api.getRangeProps()}
+            data-invalid={error}
+          />
           {showMarkers && (
             <div {...api.getMarkerGroupProps()} className={markerGroup()}>
               {Array.from({ length: markerCount }).map((_, index) => {
@@ -239,7 +255,7 @@ export function RangeSlider({
             </div>
           )}
         </div>
-        {api.value.map((_, index) => (
+        {api.value.map((value, index) => (
           <div
             key={index}
             className={thumb({ size })}
@@ -249,6 +265,15 @@ export function RangeSlider({
           </div>
         ))}
       </div>
+      {(helper || error) && (
+        <div className={footer()}>
+          {error && <Error>{error}</Error>}
+          {!error &&
+            helper && ( // Show helper only if there is no error
+              <ExtraText>{helper}</ExtraText>
+            )}
+        </div>
+      )}
     </div>
   );
 }
