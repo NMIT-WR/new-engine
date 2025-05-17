@@ -2,21 +2,19 @@ import type { Meta, StoryObj } from "@storybook/react";
 import {
   RangeSlider,
   type RangeSliderProps,
-} from "../../src/atoms/range-slider"; // Assuming RangeSliderProps is exported
+} from "../../src/atoms/range-slider";
 import { useState } from "react";
 import { Button } from "../../src/atoms/button";
-import { VariantContainer } from "../../.storybook/decorator"; // Assuming this is a wrapper for visual grouping
+import { VariantContainer } from "../../.storybook/decorator";
 
 const meta: Meta<typeof RangeSlider> = {
   title: "Atoms/RangeSlider",
   component: RangeSlider,
   parameters: {
-    layout: "centered", // Consider 'padded' or 'fullscreen' for wider components or vertical sliders
+    layout: "centered",
   },
   tags: ["autodocs"],
   argTypes: {
-    // ArgTypes from your original file are good, keeping them.
-    // Adding descriptions or controls where they might be missing or can be improved.
     value: {
       control: "object",
       description:
@@ -66,7 +64,7 @@ const meta: Meta<typeof RangeSlider> = {
       description: "Show the current values alongside the slider.",
     },
     formatValue: {
-      control: false, // Function, not easily controllable via UI
+      control: false,
       description: "Function to format the displayed value text.",
     },
     showMarkers: {
@@ -81,11 +79,11 @@ const meta: Meta<typeof RangeSlider> = {
       control: "text",
       description: "Label text displayed above the slider.",
     },
-    helper: {
+    helperText: {
       control: "text",
       description: "Helper text displayed below the slider.",
     },
-    error: {
+    errorText: {
       control: "text",
       description:
         "Error message displayed below the slider (takes precedence over helper text).",
@@ -104,7 +102,6 @@ const meta: Meta<typeof RangeSlider> = {
 export default meta;
 type Story = StoryObj<typeof RangeSlider>;
 
-// Base props shared across stories for consistency
 const baseSliderProps: Partial<RangeSliderProps> = {
   min: 0,
   max: 100,
@@ -118,7 +115,7 @@ export const Default: Story = {
     id: "default-slider",
     label: "Price Range",
     defaultValue: [20, 80],
-    helper: "Select your desired price range.",
+    helperText: "Select your desired price range.",
   },
   render: (args) => (
     <div className="min-w-96">
@@ -129,11 +126,10 @@ export const Default: Story = {
 
 export const WithHelperText: Story = {
   args: {
-    ...Default.args, // Inherit from Default and override
+    ...Default.args,
     id: "helper-slider",
     label: "Age Range",
-    helper: "Please select an age range between 18 and 65.",
-    error: undefined, // Ensure no error
+    helperText: "Please select an age range between 18 and 65.",
   },
   render: (args) => (
     <div className="min-w-96">
@@ -147,15 +143,23 @@ export const WithError: Story = {
     ...Default.args,
     id: "error-slider",
     label: "Quantity",
-    defaultValue: [10, 30],
-    helper: "This helper text will be hidden by the error message.",
-    error: "The selected range is not valid. Please adjust.",
+    helperText: "This helper text will be hidden by the error message.",
+    errorText: "The selected value must be bigger than 50.",
   },
-  render: (args) => (
-    <div className="min-w-96">
-      <RangeSlider {...args} />
-    </div>
-  ),
+  render: (args) => {
+    const [value, setValue] = useState([30]);
+
+    return (
+      <div className="min-w-96">
+        <RangeSlider
+          {...args}
+          value={value}
+          error={value[0] < 50}
+          onChange={setValue}
+        />
+      </div>
+    );
+  },
 };
 
 export const Sizes: Story = {
@@ -168,7 +172,7 @@ export const Sizes: Story = {
           size="sm"
           label="Small Slider"
           defaultValue={[25, 75]}
-          helper="This is a small slider."
+          helperText="This is a small slider."
         />
         <RangeSlider
           {...baseSliderProps}
@@ -176,7 +180,7 @@ export const Sizes: Story = {
           size="md"
           label="Medium Slider (Default)"
           defaultValue={[30, 70]}
-          helper="This is a medium slider."
+          helperText="This is a medium slider."
         />
         <RangeSlider
           {...baseSliderProps}
@@ -184,7 +188,7 @@ export const Sizes: Story = {
           size="lg"
           label="Large Slider"
           defaultValue={[35, 65]}
-          helper="This is a large slider."
+          helperText="This is a large slider."
         />
       </div>
     </VariantContainer>
@@ -198,7 +202,7 @@ export const Disabled: Story = {
     label: "Disabled Slider",
     defaultValue: [40, 60],
     disabled: true,
-    helper: "This slider is currently disabled.",
+    helperText: "This slider is currently disabled.",
   },
   render: (args) => (
     <div className="min-w-96">
@@ -214,7 +218,7 @@ export const ReadOnly: Story = {
     label: "Read-Only Slider",
     defaultValue: [33, 66],
     readOnly: true,
-    helper: "This slider is for display purposes only.",
+    helperText: "This slider is for display purposes only.",
   },
   render: (args) => (
     <div className="min-w-96">
@@ -233,8 +237,8 @@ export const WithMarkers: Story = {
     max: 50,
     step: 0.5,
     showMarkers: true,
-    markerCount: 5, // (-20, -15, ..., 50)
-    helper: "Adjust the temperature using the slider with markers.",
+    markerCount: 5,
+    helperText: "Adjust the temperature using the slider with markers.",
     formatValue: (value) => `${value}°C`,
   },
   render: (args) => (
@@ -246,55 +250,64 @@ export const WithMarkers: Story = {
 
 export const VerticalOrientation: Story = {
   parameters: {
-    layout: "padded", // Give more space for vertical sliders
+    layout: "padded",
   },
-  render: () => (
-    <VariantContainer>
-      <div className="flex h-[20rem] w-max gap-8">
-        <RangeSlider
-          {...baseSliderProps}
-          id="vertical-sm"
-          orientation="vertical"
-          size="sm"
-          label="Volume (Small)"
-          defaultValue={[20, 80]}
-          helper="Adjust volume"
-        />
-        <RangeSlider
-          {...baseSliderProps}
-          id="vertical-md"
-          orientation="vertical"
-          size="md"
-          label="Brightness (Medium)"
-          defaultValue={[30, 70]}
-          showMarkers
-          markerCount={5}
-          error="Brightness too high!"
-        />
-        <RangeSlider
-          {...baseSliderProps}
-          id="vertical-lg"
-          orientation="vertical"
-          size="lg"
-          label="Contrast (Large)"
-          defaultValue={[40, 60]}
-          helper="Set contrast level"
-        />
-      </div>
-    </VariantContainer>
-  ),
+
+  render: () => {
+    const [values, setValues] = useState<number[]>([70]);
+    const handleChange = (newValues: number[]) => {
+      setValues(newValues);
+    };
+    return (
+      <VariantContainer>
+        <div className="grid grid-cols-3 h-[20rem] w-10/12 gap-8">
+          <RangeSlider
+            {...baseSliderProps}
+            id="vertical-sm"
+            orientation="vertical"
+            size="sm"
+            label="Volume (Small)"
+            defaultValue={[20, 80]}
+            helperText="Adjust volume"
+          />
+          <RangeSlider
+            {...baseSliderProps}
+            id="vertical-md"
+            orientation="vertical"
+            size="md"
+            label="Brightness (Medium)"
+            defaultValue={[30, 70]}
+            showMarkers
+            markerCount={5}
+            value={values}
+            onChange={handleChange}
+            error={values[0] > 50}
+            errorText="Brightness too high!"
+            helperText={values[0] <= 50 ? "It is ok" : undefined}
+          />
+          <RangeSlider
+            {...baseSliderProps}
+            id="vertical-lg"
+            orientation="vertical"
+            size="lg"
+            label="Contrast (Large)"
+            defaultValue={[40, 60]}
+            helperText="Set contrast level"
+          />
+        </div>
+      </VariantContainer>
+    );
+  },
 };
 
 export const Controlled: Story = {
   args: {
-    // Args for the story, not directly for the component if they are managed by state
     ...baseSliderProps,
     id: "controlled-slider",
     label: "Controlled Slider",
-    helper: "Values are managed by component state.",
+    helperText: "Values are managed by component state.",
   },
   render: (args) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [values, setValues] = useState<number[]>([30, 70]);
 
     const handleChange = (newValues: number[]) => {
@@ -313,11 +326,7 @@ export const Controlled: Story = {
 
     return (
       <div className="min-w-96">
-        <RangeSlider
-          {...args} // Spread other args like label, helper, etc.
-          value={values}
-          onChange={handleChange}
-        />
+        <RangeSlider {...args} value={values} onChange={handleChange} />
         <div className="mt-4 p-2 border rounded bg-gray-100 dark:bg-gray-800">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Component State:

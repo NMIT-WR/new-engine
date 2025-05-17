@@ -12,14 +12,11 @@ const rangeSliderVariants = tv({
     root: [
       "flex flex-col w-full gap-slider-root",
       "data-[orientation=vertical]:h-full",
-      "data-[disabled]:opacity-60 data-[disabled]:cursor-not-allowed",
+      "data-[disabled]:opacity-slider-disabled data-[disabled]:cursor-not-allowed",
     ],
     header: ["flex items-center justify-between"],
     value: ["text-slider-value-size"],
-    label: [
-      "block text-slider-label-size font-medium",
-      "data-[disabled]:text-disabled-text-size",
-    ],
+    label: ["block font-medium"],
     control: [
       "relative grid place-items-center ",
       "data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1",
@@ -33,14 +30,14 @@ const rangeSliderVariants = tv({
       "data-[disabled]:border-slider-border-disabled",
       "transition-colors duration-200",
       "hover:bg-slider-track-hover",
-      "data-[invalid]:border-slider-border-error",
+      "data-[invalid=true]:border-slider-border-error",
     ],
     range: [
       "bg-slider-range rounded-slider-track h-full",
       "data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full",
       "data-[disabled]:bg-slider-range-disabled",
       "hover:bg-slider-range-hover",
-      "data-[invalid]:bg-slider-range-error",
+      "data-[invalid=true]:bg-slider-range-error",
     ],
     thumb: [
       "flex items-center justify-center",
@@ -64,15 +61,15 @@ const rangeSliderVariants = tv({
     ],
     markerLine: [
       "w-slider-marker h-full bg-slider-marker",
-      "data-[orientation=vertical]:h-0.5 data-[orientation=vertical]:w-full",
+      "data-[orientation=vertical]:h-slider-marker-vertical data-[orientation=vertical]:w-full",
     ],
     markerText: [
-      "absolute top-full text-slider-marker-size",
+      "absolute top-full",
       "data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full",
-      "data-[orientation=vertical]:ml-2xs",
+      "data-[orientation=vertical]:ml-slider-marker-vertical",
       "data-[orientation=vertical]:h-full",
     ],
-    footer: ["mt-1 flex flex-col gap-1"],
+    footer: ["flex flex-col"],
   },
   variants: {
     size: {
@@ -104,8 +101,9 @@ export interface RangeSliderProps
   name?: string;
   size?: "sm" | "md" | "lg";
   label?: string;
-  helper?: string;
-  error?: string;
+  helperText?: string;
+  error?: boolean;
+  errorText?: string;
   value?: number[];
   defaultValue?: number[];
   min?: number;
@@ -131,8 +129,9 @@ export function RangeSlider({
   id,
   name,
   label,
-  helper,
+  helperText,
   error,
+  errorText,
   value,
   origin,
   thumbAlignment = "center",
@@ -265,12 +264,12 @@ export function RangeSlider({
           </div>
         ))}
       </div>
-      {(helper || error) && (
+      {(helperText || error) && (
         <div className={footer()}>
-          {error && <Error>{error}</Error>}
+          {error && <Error>{errorText}</Error>}
           {!error &&
-            helper && ( // Show helper only if there is no error
-              <ExtraText>{helper}</ExtraText>
+            helperText && ( // Show helper only if there is no error
+              <ExtraText>{helperText}</ExtraText>
             )}
         </div>
       )}
