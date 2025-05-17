@@ -22,7 +22,10 @@ export const getProductTypesList = async function (
                 productTypes: product_types,
                 count,
             }))
-    } catch (error: any) {
+    } catch (error) {
+        if (!(error instanceof Error) || !("status" in error)) {
+            throw new Error("An unexpected error occurred")
+        }
         if (
             process.env.NODE_ENV === "development" &&
             (error.status === 404 || error.message?.includes("fetch failed"))
@@ -80,7 +83,10 @@ export const getProductTypeByHandle = async function (
                 cache: "force-cache",
             })
             .then(({ product_types }) => product_types[0])
-    } catch (error: any) {
+    } catch (error) {
+        if (!(error instanceof Error) || !("status" in error)) {
+            throw new Error("An unexpected error occurred")
+        }
         if (
             process.env.NODE_ENV === "development" &&
             (error.status === 404 || error.message?.includes("fetch failed"))
