@@ -46,7 +46,7 @@ const comboboxVariants = tv({
     ],
     positioner: ["z-10 w-full"],
     content: [
-      "flex flex-col overflow-clip",
+      "flex flex-col overflow-clip z-10",
       "rounded-combobox shadow-md",
       "bg-combobox-content-bg",
       "border border-combobox-border",
@@ -143,11 +143,9 @@ export function Combobox<T = any>({
   value,
   defaultValue,
   multiple = false,
-
   validationState = "normal",
   error,
   helper,
-
   // machine settings
   clearable = true,
   selectionBehavior = "replace",
@@ -223,7 +221,6 @@ export function Combobox<T = any>({
       <div
         className={control()}
         {...api.getControlProps()}
-        // data-invalid={validationState === "error" || undefined}
         data-validation={validationState}
       >
         <Input
@@ -276,31 +273,6 @@ export function Combobox<T = any>({
         </ExtraText>
       )}
       {error && <Error>{error}</Error>}
-      {multiple &&
-        selectionBehavior === "clear" &&
-        api.selectedItems.length > 0 && (
-          <ul className="grid grid-cols-3 gap-1 mb-2 ">
-            {api.selectedItems.map((item) => (
-              <li
-                key={item.value}
-                className="inline-flex items-center justify-between gap-1 px-2 py-1 text-sm rounded-combobox bg-combobox-item-selected text-combobox-item-fg"
-              >
-                <span>{item.label}</span>
-                <button
-                  type="button"
-                  className="text-combobox-trigger hover:text-combobox-trigger-hover"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    api.clearValue(item.value);
-                  }}
-                  aria-label={`Odstranit ${item.label}`}
-                >
-                  <Icon icon="token-icon-combobox-clear" size="xs" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
     </div>
   );
 }

@@ -1,18 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Combobox } from "../../src/molecules/combobox";
+import { Combobox, type ComboboxItem } from "../../src/molecules/combobox";
 import { VariantContainer } from "../../.storybook/decorator";
 import { useState } from "react";
 
-const countries = [
-  { id: 1, label: "Česká republika", value: "cz" },
-  { id: 2, label: "Slovensko", value: "sk" },
-  { id: 3, label: "Německo", value: "de" },
-  { id: 4, label: "Rakousko", value: "at", disabled: true },
-  { id: 5, label: "Polsko", value: "pl" },
-  { id: 6, label: "Francie", value: "fr", disabled: true },
-  { id: 7, label: "Itálie", value: "it" },
-  { id: 8, label: "Španělsko", value: "es" },
-  { id: 9, label: "Velká Británie", value: "gb" },
+const countries: ComboboxItem[] = [
+  { id: 1, label: "Czech Republic", value: "cz" },
+  { id: 2, label: "Slovakia", value: "sk" },
+  { id: 3, label: "Germany", value: "de" },
+  { id: 4, label: "Austria", value: "at", disabled: true },
+  { id: 5, label: "Poland", value: "pl" },
+  { id: 6, label: "France", value: "fr", disabled: true },
+  { id: 7, label: "Italy", value: "it" },
+  { id: 8, label: "Spain", value: "es" },
+  { id: 9, label: "Great Britain", value: "gb" },
   { id: 10, label: "USA", value: "us" },
 ];
 
@@ -24,30 +24,26 @@ const meta: Meta<typeof Combobox> = {
   },
   tags: ["autodocs"],
   argTypes: {
-    state: {
+    validationState: {
       control: "select",
       options: ["normal", "error", "success", "warning"],
-      description: "Validační stav comboboxu",
+      description: "Validation state of the combobox",
     },
     multiple: {
       control: "boolean",
-      description: "Umožňuje výběr více hodnot",
+      description: "Allows selection of multiple values",
     },
     disabled: {
       control: "boolean",
-      description: "Zakáže interakci s comboboxem",
+      description: "Disables interaction with the combobox",
     },
     clearable: {
       control: "boolean",
-      description: "Umožňuje vymazání výběru",
-    },
-    searchable: {
-      control: "boolean",
-      description: "Umožňuje vyhledávání v položkách",
+      description: "Allows clearing the selection",
     },
     closeOnSelect: {
       control: "boolean",
-      description: "Zavře dropdown po výběru položky",
+      description: "Closes the dropdown when an option is selected",
     },
   },
 };
@@ -57,10 +53,10 @@ type Story = StoryObj<typeof Combobox>;
 
 export const Default: Story = {
   args: {
-    label: "Vyberte zemi",
-    placeholder: "Zvolte zemi...",
+    label: "Select Country",
+    placeholder: "Choose a country...",
     items: countries,
-    helper: "Vyberte zemi vašeho pobytu",
+    helper: "Select your country of residence",
   },
 };
 
@@ -68,31 +64,31 @@ export const ValidationStates: Story = {
   render: () => (
     <VariantContainer>
       <Combobox
-        label="Běžný stav"
-        placeholder="Vyberte zemi"
+        label="Normal State"
+        placeholder="Select country"
         items={countries}
-        helper="Výchozí stav bez validace"
+        helper="Default state without validation"
         validationState="normal"
       />
       <Combobox
-        label="Chybový stav"
-        placeholder="Vyberte zemi"
+        label="Error State"
+        placeholder="Select country"
         items={countries}
-        error="Prosím vyberte platnou zemi"
+        error="Please select a valid country"
         validationState="error"
       />
       <Combobox
-        label="Úspěšný stav"
-        placeholder="Vyberte zemi"
+        label="Success State"
+        placeholder="Select country"
         items={countries}
-        helper="Vaše volba je platná"
+        helper="Your choice is valid"
         validationState="success"
       />
       <Combobox
-        label="Varovný stav"
-        placeholder="Vyberte zemi"
+        label="Warning State"
+        placeholder="Select country"
         items={countries}
-        helper="Tato země může vyžadovat další ověření"
+        helper="This country may require additional verification"
         validationState="warning"
       />
     </VariantContainer>
@@ -101,57 +97,65 @@ export const ValidationStates: Story = {
 
 export const MultipleSelection: Story = {
   args: {
-    label: "Vyberte země",
-    placeholder: "Zvolte země...",
+    label: "Select Countries",
+    placeholder: "Choose countries...",
     items: countries,
-    helper: "Vyberte země, které jste navštívili",
+    helper: "Select the countries you have visited",
     multiple: true,
     closeOnSelect: false,
-    selectionBehavior: "clear",
   },
 };
 
 export const ComplexStory: Story = {
   render: () => {
-    const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+    const [selectedCountryValue, setSelectedCountryValue] = useState<
+      string | null
+    >(null);
 
     const validationState =
-      selectedCountry === "us"
+      selectedCountryValue === "us"
         ? "error"
-        : selectedCountry === "sk"
+        : selectedCountryValue === "sk"
         ? "warning"
-        : selectedCountry === "cz"
+        : selectedCountryValue === "cz"
         ? "success"
         : "normal";
 
-    const helperMessage =
+    const dynamicHelperMessage =
       validationState === "error"
-        ? "USA není momentálně dostupná"
+        ? "USA is currently unavailable"
         : validationState === "warning"
-        ? "Slovensko vyžaduje dodatečné ověření totožnosti"
+        ? "Slovakia requires additional identity verification"
         : validationState === "success"
-        ? "Země úspěšně vybrána"
-        : undefined;
-    return (
-      <div className="space-y-8">
-        <Combobox
-          label="Vyberte zemi"
-          placeholder="Zvolte zemi..."
-          items={countries}
-          onChange={(value) =>
-            setSelectedCountry(Array.isArray(value) ? value[0] : value)
-          }
-          validationState={validationState}
-          error={validationState === "error" ? helperMessage : undefined}
-          helper={helperMessage}
-        />
+        ? "Country successfully selected"
+        : "Select your country of residence";
 
-        <div className="text-sm text-gray-600">
-          Zkuste vybrat různé země a sledujte, jak se mění validační stavy:
+    const dynamicErrorMessage =
+      validationState === "error" ? dynamicHelperMessage : undefined;
+
+    return (
+      <div className="w-72 space-y-8">
+        {" "}
+        <Combobox
+          label="Select Country (Dynamic Validation)"
+          placeholder="Choose a country..."
+          items={countries}
+          onChange={(value) => {
+            const singleValue = Array.isArray(value) ? value[0] : value;
+            setSelectedCountryValue(singleValue ?? null);
+          }}
+          validationState={validationState}
+          error={dynamicErrorMessage}
+          helper={
+            validationState !== "error" ? dynamicHelperMessage : undefined
+          }
+        />
+        <div className="text-sm ">
+          Try selecting different countries to see validation states change:
           <ul className="list-disc ml-5 mt-2">
             <li>USA - error</li>
-            <li>SK - warning</li>
-            <li>CZ - success</li>
+            <li>Slovakia - warning</li>
+            <li>Czech Republic - success</li>
           </ul>
         </div>
       </div>
