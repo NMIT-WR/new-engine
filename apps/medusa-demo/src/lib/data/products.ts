@@ -19,7 +19,7 @@ export const getProductsById = async function ({
         fields: "*variants.calculated_price,+variants.inventory_quantity",
       },
       next: { tags: ["products"] },
-      cache: "force-cache",
+      cache: "no-store",
     })
     .then(({ products }) => products)
 }
@@ -55,7 +55,7 @@ export const getProductFashionDataByHandle = async function (handle: string) {
     }>(`/store/custom/fashion/${handle}`, {
       method: "GET",
       next: { tags: ["products"] },
-      cache: "force-cache",
+      cache: "no-store",
     })
   } catch (error) {
     console.warn(`Failed to fetch fashion data for product ${handle}:`, error)
@@ -102,7 +102,7 @@ export const getProductsList = async function ({
           ...queryParams,
         },
         next: { tags: ["products"] },
-        cache: "force-cache",
+        cache: "no-store",
       }
     )
     .then(({ products, count }) => {

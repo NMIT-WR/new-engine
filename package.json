@@ -8,6 +8,7 @@
     "dev:all:nx": "nx run-many --target=dev --projects=medusa-*",
     "start:fe": "cd apps/medusa-fe && npm run start",
     "start:demo": "cd apps/demo/storefront && npm run start",
+    "start:prod": "docker compose exec medusa-demo rm -rf apps/demo/storefront/.next && docker compose exec medusa-demo pnpm nx run medusa-demo:build && docker compose exec medusa-demo pnpm nx run medusa-demo:start -- -p 8080",
     "start:be": "cd apps/medusa-be && npm run start",
     "start:all:nx": "nx run-many --target=start --projects=medusa-*",
     "build:fe": "cd apps/medusa-fe && npm run build",

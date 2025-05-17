@@ -27,6 +27,12 @@ function PaginatedProducts({
   productsIds?: string[]
   countryCode: string
 }) {
+  console.log(
+    `[PaginatedProducts] Rendering. countryCode: '${countryCode}', page: ${page}, sortBy: '${sortBy}'`
+  )
+
+  console.log(`[PaginatedProducts] NODE_ENV: ${process.env.NODE_ENV}`)
+
   const queryParams: HttpTypes.StoreProductListParams = {
     limit: PRODUCT_LIMIT,
   }
@@ -55,12 +61,17 @@ function PaginatedProducts({
     queryParams["order"] = "created_at"
   }
 
+  console.log(
+    `[PaginatedProducts] Calling useStoreProducts with: page=${page}, queryParams=${JSON.stringify(queryParams)}, sortBy=${sortBy}, countryCode=${countryCode}`
+  )
+
   const productsQuery = useStoreProducts({
     page,
     queryParams,
     sortBy,
     countryCode,
   })
+
   const loadMoreRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
@@ -81,6 +92,13 @@ function PaginatedProducts({
   if (productsQuery.isPending) {
     return <SkeletonProductGrid />
   }
+
+  console.log(
+    `
+    productsQuery.data?: ${productsQuery.data},
+    productsIds?: ${productsIds},
+    `
+  )
 
   return (
     <>
