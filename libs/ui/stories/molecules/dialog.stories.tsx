@@ -1,171 +1,301 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Dialog, type DialogProps } from "../../src/molecules/dialog";
+import { useState } from "react";
+import { Dialog } from "../../src/molecules/dialog";
 import { Button } from "../../src/atoms/button";
-import { useState, useRef } from "react";
-import { VariantContainer } from "../../.storybook/decorator";
-import { Icon } from "../../src/atoms/icon";
+import React from "react";
 
 const meta: Meta<typeof Dialog> = {
-  title: "Molecules/Dialog", // Or Organisms/Dialog
+  title: "Molecules/Dialog",
   component: Dialog,
   parameters: {
-    layout: "centered", // Dialogs often overlay the whole screen
+    layout: "centered",
+    docs: {
+      description: {
+        component:
+          "A modal dialog component built with Zag.js that provides accessible dialog functionality with customizable content.",
+      },
+    },
   },
   tags: ["autodocs"],
   argTypes: {
+    role: {
+      control: { type: "select" },
+      options: ["dialog", "alertdialog"],
+      description: "The semantic role of the dialog",
+    },
     open: {
-      control: "boolean",
-      description: "Controls the visibility of the dialog.",
-    },
-    title: {
-      control: "text",
-      description: "Optional title for the dialog header.",
-    },
-    description: {
-      control: "text",
-      description:
-        "Optional descriptive text, typically rendered below the title.",
-    },
-    size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Determines the width of the dialog content panel.",
-    },
-    hideCloseButton: {
-      control: "boolean",
-      description: "Hides the default close (X) button.",
+      control: { type: "boolean" },
+      description: "Controlled open state of the dialog",
     },
     closeOnEscape: {
-      control: "boolean",
-      description:
-        "Whether the dialog should close when Escape key is pressed.",
+      control: { type: "boolean" },
+      description: "Whether to close dialog on Escape key",
     },
     closeOnInteractOutside: {
-      control: "boolean",
-      description:
-        "Whether the dialog should close on click or tap outside its content.",
+      control: { type: "boolean" },
+      description: "Whether to close dialog when clicking outside",
+    },
+    preventScroll: {
+      control: { type: "boolean" },
+      description: "Whether to prevent body scroll when open",
+    },
+    trapFocus: {
+      control: { type: "boolean" },
+      description: "Whether to trap focus inside dialog",
     },
     modal: {
-      control: "boolean",
+      control: { type: "boolean" },
       description:
-        "If true, interaction with outside elements is blocked and focus is trapped.",
+        "Whether dialog is modal (blocks interaction with background)",
     },
-    // Props for custom header/footer are better demonstrated via render functions
-    // children prop is the main content, also best shown via render
+    hideCloseButton: {
+      control: { type: "boolean" },
+      description: "Whether to hide the close button",
+    },
+    triggerText: {
+      control: { type: "text" },
+      description: "Text for default trigger button",
+    },
+    title: {
+      control: { type: "text" },
+      description: "Dialog title",
+    },
+    description: {
+      control: { type: "text" },
+      description: "Dialog description/subtitle",
+    },
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof Dialog>;
+type Story = StoryObj<typeof meta>;
 
-// Helper component for stories that need to manage open state
-const DialogWithState = (args: DialogProps) => {
-  const [isOpen, setIsOpen] = useState(args.open || false);
-  const triggerButtonRef = useRef<HTMLButtonElement>(null); // To return focus
-
-  return (
-    <Dialog
-      {...args}
-      open={isOpen}
-      onOpenChange={(details) => setIsOpen(details.open)}
-      // Example of returning focus to the trigger button
-      finalFocusEl={() => triggerButtonRef.current}
-    />
-  );
-};
-
+// Basic dialog example
 export const Default: Story = {
   args: {
-    title: "Default Dialog Title",
-    children: (
-      <p>
-        This is the main content of the dialog. You can put any React nodes
-        here.
-      </p>
-    ),
-  },
-  render: (args) => <DialogWithState {...args} />,
-};
-
-export const WithDescription: Story = {
-  args: {
-    title: "Dialog With Description",
+    triggerText: "Open Dialog",
+    title: "Edit Profile",
     description:
-      "This is a short description that appears below the title, providing more context.",
-    children: (
-      <p>
-        The main content follows the description. This helps in structuring
-        information clearly.
-      </p>
-    ),
-  },
-  render: (args) => <DialogWithState {...args} />,
-};
-
-export const NoCloseButton: Story = {
-  args: {
-    title: "No Close Button",
-    hideCloseButton: true,
-    children: (
-      <p>
-        This dialog has the default 'X' close button hidden. Closing must be
-        handled by other means, e.g., a button in the footer or by pressing
-        Escape (if enabled).
-      </p>
-    ),
-    footer: (
-      // In a real scenario, this button would trigger onOpenChange({ open: false })
-      // For simplicity in story, it just alerts.
-      <Button onClick={() => alert("Close via footer button")}>Close Me</Button>
-    ),
-  },
-  render: (args) => <DialogWithState {...args} />,
-};
-
-export const LongContent: Story = {
-  args: {
-    title: "Dialog with Scrollable Content",
+      "Make changes to your profile here. Click save when you are done.",
     children: (
       <div className="space-y-4">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <p key={i}>
-            This is paragraph number {i + 1}. Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.
-          </p>
-        ))}
+        <div className="grid grid-cols-4 items-center gap-4">
+          <label htmlFor="name" className="text-right text-sm font-medium">
+            Name
+          </label>
+          <input
+            id="name"
+            defaultValue="John Doe"
+            className="col-span-3 px-3 py-2 border border-gray-300 rounded-md"
+          />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <label htmlFor="username" className="text-right text-sm font-medium">
+            Username
+          </label>
+          <input
+            id="username"
+            defaultValue="@johndoe"
+            className="col-span-3 px-3 py-2 border border-gray-300 rounded-md"
+          />
+        </div>
       </div>
     ),
-    footer: <Button>Close</Button>,
-  },
-  render: (args) => <DialogWithState {...args} />,
-};
-
-export const NonModal: Story = {
-  args: {
-    title: "Non-Modal Dialog",
-    modal: false,
-    closeOnInteractOutside: true, // Usually true for non-modal
-    children: (
-      <p>
-        This is a non-modal dialog. You can interact with elements outside of
-        it, and focus is not trapped. Clicking outside will close it if
-        `closeOnInteractOutside` is true.
-      </p>
+    actions: (
+      <>
+        <Button variant="secondary" theme="outlined">
+          Cancel
+        </Button>
+        <Button variant="primary">Save Changes</Button>
+      </>
     ),
   },
-  render: (args) => (
-    <div className="p-8 bg-gray-200 dark:bg-gray-700 rounded">
-      <p className="mb-4">
-        Content behind the dialog. Try clicking here when the non-modal dialog
-        is open.
-      </p>
-      <DialogWithState {...args} />
-    </div>
-  ),
+};
+
+// Alert dialog for destructive actions
+export const AlertDialog: Story = {
+  args: {
+    role: "alertdialog",
+    triggerText: "Delete Account",
+    title: "Are you absolutely sure?",
+    description:
+      "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+    closeOnEscape: false,
+    closeOnInteractOutside: false,
+    actions: (
+      <>
+        <Button variant="secondary" theme="outlined">
+          Cancel
+        </Button>
+        <Button variant="danger">Yes, delete account</Button>
+      </>
+    ),
+  },
+};
+
+// Dialog with custom trigger
+export const CustomTrigger: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <div>
+        <Button
+          size="sm"
+          variant="tertiary"
+          theme="light"
+          onClick={() => setIsOpen(true)}
+        >
+          Custom Trigger
+        </Button>
+        <Dialog
+          open={isOpen}
+          onOpenChange={({ open }) => setIsOpen(open)}
+          customTrigger={true}
+          title="Custom Trigger"
+          description="This dialog was opened with a custom trigger component."
+          children={<p>Content opened by custom trigger.</p>}
+        />
+      </div>
+    );
+  },
+};
+
+// Controlled dialog example
+export const Controlled: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+      <div className="space-y-4">
+        <Button onClick={() => setIsOpen(true)}>Open Controlled Dialog</Button>
+        <p className="text-sm text-gray-600">
+          Dialog is currently: {isOpen ? "Open" : "Closed"}
+        </p>
+
+        <Dialog
+          open={isOpen}
+          onOpenChange={({ open }) => setIsOpen(open)}
+          title="Controlled Dialog"
+          description="This dialog's state is controlled by a parent component."
+          children={
+            <div className="space-y-2">
+              <p>The open state is managed externally.</p>
+              <p>
+                Current state: <strong>{isOpen ? "Open" : "Closed"}</strong>
+              </p>
+            </div>
+          }
+          actions={
+            <Button variant="primary" onClick={() => setIsOpen(false)}>
+              Close from Action
+            </Button>
+          }
+        />
+      </div>
+    );
+  },
+};
+
+// Dialog with rich content
+export const RichContent: Story = {
+  args: {
+    triggerText: "View Details",
+    title: "Product Information",
+    description: "Complete details about the selected product.",
+    children: (
+      <div className="space-y-6">
+        <div className="flex gap-4">
+          <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
+            <span className="text-gray-500 text-sm">Image</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg">Premium Headphones</h3>
+            <p className="text-gray-600">
+              High-quality wireless headphones with noise cancellation
+            </p>
+            <p className="text-2xl font-bold text-green-600 mt-2">$299.99</p>
+          </div>
+        </div>
+
+        <div className="border-t pt-4">
+          <h4 className="font-semibold mb-2">Features</h4>
+          <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+            <li>Active noise cancellation</li>
+            <li>30-hour battery life</li>
+            <li>Premium leather ear cups</li>
+            <li>Wireless and wired connectivity</li>
+          </ul>
+        </div>
+
+        <div className="border-t pt-4">
+          <h4 className="font-semibold mb-2">Reviews</h4>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-500">★★★★★</span>
+              <span className="text-sm">4.8 out of 5 stars</span>
+            </div>
+            <p className="text-sm text-gray-600">Based on 2,847 reviews</p>
+          </div>
+        </div>
+      </div>
+    ),
+    actions: (
+      <>
+        <Button variant="secondary" theme="outlined">
+          Add to Wishlist
+        </Button>
+        <Button variant="primary">Add to Cart</Button>
+      </>
+    ),
+  },
+};
+
+// Minimal dialog
+export const Minimal: Story = {
+  args: {
+    triggerText: "Simple Dialog",
+    title: "Simple Message",
+    children: <p>This is a minimal dialog with just basic content.</p>,
+  },
+};
+
+// Test different behaviors
+export const BehaviorTests: Story = {
+  render: () => {
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <Dialog
+          triggerText="No Escape Close"
+          title="Escape Disabled"
+          description="This dialog won't close when you press Escape."
+          closeOnEscape={false}
+          children={<p>Press Escape - nothing happens!</p>}
+        />
+
+        <Dialog
+          triggerText="No Outside Click"
+          title="Outside Click Disabled"
+          description="This dialog won't close when you click outside."
+          closeOnInteractOutside={false}
+          children={<p>Click outside - nothing happens!</p>}
+        />
+
+        <Dialog
+          triggerText="Allow Body Scroll"
+          title="Scroll Allowed"
+          description="Body scroll is not prevented when this dialog is open."
+          preventScroll={false}
+          children={<p>Body scroll is still enabled!</p>}
+        />
+
+        <Dialog
+          triggerText="Non-Modal"
+          title="Non-Modal Dialog"
+          description="This dialog doesn't block interaction with background."
+          modal={false}
+          children={<p>You can interact with the background!</p>}
+        />
+      </div>
+    );
+  },
 };

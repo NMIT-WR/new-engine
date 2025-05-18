@@ -2,39 +2,31 @@ import * as dialog from "@zag-js/dialog";
 import { useMachine, normalizeProps, Portal } from "@zag-js/react";
 import { useId, type ReactNode } from "react";
 import { tv, type VariantProps } from "tailwind-variants";
-import { Button } from "../atoms/button"; // If using a Button component for the close trigger
+import { Button } from "../atoms/button";
 
 const dialogVariants = tv({
   slots: {
-    backdrop: ["fixed inset-0 z-40 bg-dialog-backdrop-bg"],
-    positioner: ["fixed inset-0 z-50 flex items-center justify-center p-4"],
+    backdrop: ["fixed inset-0 z-50 bg-dialog-backdrop-bg"],
+    positioner: ["fixed inset-0 z-50 flex items-center justify-center"],
     content: [
-      "relative flex flex-col p-dialog-content-padding", // Padding directly on content
+      "relative flex flex-col p-dialog-content gap-dialog-content",
       "bg-dialog-content-bg text-dialog-content-fg",
-      "border-(length:--border-width-dialog-content) border-dialog-content-border",
+      "border-(length:--border-width-dialog) border-dialog-content-border",
       "rounded-dialog-content shadow-dialog-content",
-      "max-h-dialog-content overflow-y-auto",
+      "max-h-dialog-content max-w-dialog-content overflow-y-auto",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dialog-ring focus-visible:ring-offset-2",
     ],
-    title: [
-      // Slot for the title text
-      "text-dialog-title-size font-weight-dialog-title text-dialog-title-fg line-height-dialog-title",
-      "mb-dialog-description-margin-top", // Margin below title, before description or content
-    ],
+    title: ["text-dialog-title-size font-dialog-title text-dialog-title-fg"],
     description: [
-      // Slot for the description text
       "text-dialog-description-size text-dialog-description-fg line-height-dialog-description",
-      "mb-dialog-body-padding-y", // Margin below description, before main children or footer actions
     ],
-    // Body slot is removed, children will be direct descendants of content or wrapped in a div if needed
-    // Footer slot is removed, action buttons will be direct descendants of content or wrapped
+    trigger: [],
     closeTrigger: [
-      // For the 'X' close button
-      "absolute top-dialog-close-trigger-top right-dialog-close-trigger-right",
+      "absolute top-sm right-sm",
       "flex items-center justify-center",
       "p-dialog-close-trigger-padding rounded-dialog-close-trigger",
-      "text-dialog-close-trigger-fg hover:text-dialog-close-trigger-fg-hover",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dialog-ring",
+      "text-dialog-close-trigger-fg",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dialog-ring focus-visible:ring-offset-dialog-ring-offset",
     ],
   },
 });
@@ -49,16 +41,16 @@ export interface DialogProps extends VariantProps<typeof dialogVariants> {
   preventScroll?: boolean;
   trapFocus?: boolean;
   modal?: boolean;
+  role?: "dialog" | "alertdialog";
 
   id?: string;
-  trigger?: ReactNode;
+  customTrigger?: boolean;
   triggerText?: string;
   title?: ReactNode;
-  description?: ReactNode; // Optional description separate from body
-  children?: ReactNode; // Main content of the dialog
+  description?: ReactNode;
+  children?: ReactNode;
   actions?: ReactNode;
   hideCloseButton?: boolean;
-  className?: string; // For the content element
 }
 
 export function Dialog({
@@ -67,18 +59,18 @@ export function Dialog({
   onOpenChange,
   initialFocusEl,
   finalFocusEl,
+  role = "dialog",
   closeOnEscape = true,
   closeOnInteractOutside = true,
   preventScroll = true,
   trapFocus = true,
   modal = true,
-  trigger,
+  customTrigger = false,
   triggerText = "Open",
   title,
   description,
   children,
   hideCloseButton = false,
-  className,
   actions,
 }: DialogProps) {
   const generatedId = useId();
@@ -87,8 +79,9 @@ export function Dialog({
   // Use type assertions to work around the type issues
   const service = useMachine(dialog.machine as any, {
     id: uniqueId,
-    open: open ?? false,
+
     onOpenChange,
+    role,
     modal,
     closeOnEscape,
     closeOnInteractOutside,
@@ -96,14 +89,16 @@ export function Dialog({
     trapFocus,
     initialFocusEl,
     finalFocusEl,
-  }) as dialog.Service;
+    ...(open !== undefined && { open }),
+  });
 
-  const api = dialog.connect(service, normalizeProps);
+  const api = dialog.connect(service as dialog.Service, normalizeProps);
 
   const {
     backdrop,
     positioner,
     content,
+    trigger: triggerSlot,
     title: titleSlot,
     description: descriptionSlot,
     closeTrigger,
@@ -111,13 +106,17 @@ export function Dialog({
 
   return (
     <>
-      {trigger ? (
-        trigger
-      ) : (
-        <Button variant="primary" {...api.getTriggerProps()}>
+      {!customTrigger && (
+        <Button
+          size="sm"
+          variant="primary"
+          className={triggerSlot()}
+          {...api.getTriggerProps()}
+        >
           {triggerText}
         </Button>
       )}
+
       {api.open && (
         <Portal>
           <div className={backdrop()} {...api.getBackdropProps()} />
