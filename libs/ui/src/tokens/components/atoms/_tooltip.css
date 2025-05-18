@@ -1,0 +1,25 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-tooltip-bg: var(--color-overlay);
+  --color-tooltip-text: var(--color-fg-dark);
+  --color-tooltip-border: transparent;
+
+  /* === SIZING & SPACING === */
+  --padding-tooltip-x-sm: var(--spacing-xs);
+  --padding-tooltip-y-sm: var(--spacing-2xs);
+  --padding-tooltip-x-md: var(--spacing-sm);
+  --padding-tooltip-y-md: var(--spacing-xs);
+  --padding-tooltip-x-lg: var(--spacing-md);
+  --padding-tooltip-y-lg: var(--spacing-sm);
+
+  --text-tooltip-sm: var(--text-xs);
+  --text-tooltip-md: var(--text-sm);
+  --text-tooltip-lg: var(--text-md);
+
+  --radius-tooltip: var(--radius-md);
+  --shadow-tooltip: var(--shadow-md);
+
+  /* Required for Zag.js */
+  --arrow-size: var(--spacing-2xs);
+  --arrow-background: var(--color-tooltip-bg);
+}
