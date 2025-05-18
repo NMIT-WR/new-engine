@@ -45,11 +45,18 @@ export const getProductTypesList = async function (
         productTypes: product_types,
         count,
       }))
-  } catch (error) {
-    if (!(error instanceof Error) || !("status" in error)) {
-        throw new Error("An unexpected error occurred")
-    }
-    if (error.message.includes("fetch failed")) {
+  } catch (error: unknown) {
+    if (
+      (typeof error === "object" &&
+        error &&
+        "status" in error &&
+        error.status === 404) ||
+      (typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string" &&
+        error.message.includes("fetch failed"))
+    ) {
       console.warn(
         "Using mock product types - endpoint /store/custom/product-types not found"
       )
@@ -106,11 +113,9 @@ export const getProductTypeByHandle = async function (
       .then(({ product_types }) => product_types[0])
   } catch (error) {
     if (!(error instanceof Error) || !("status" in error)) {
-        throw new Error("An unexpected error occurred")
+      throw new Error("An unexpected error occurred")
     }
-    if (
-        error.message.includes("fetch failed")
-    ) {
+    if (error.message.includes("fetch failed")) {
       return {
         id: handle,
         value: handle.charAt(0).toUpperCase() + handle.slice(1),
