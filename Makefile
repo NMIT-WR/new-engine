@@ -38,3 +38,7 @@ medusa-meilisearch-reseed:
 	docker exec wr_medusa_be pnpm --filter medusa-be run addInitialSearchDocuments
 medusa-seed:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedInitialData
+medusa-demo-rebuild:
+	docker compose exec medusa-demo rm -rf .next
+	docker compose exec medusa-demo pnpm nx run medusa-demo:build
+	docker compose exec medusa-demo pnpm nx run medusa-demo:start -- -p 8080
