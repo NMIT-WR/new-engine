@@ -1,14 +1,17 @@
-import {Metadata} from "next"
-import {notFound} from "next/navigation"
+import { Metadata } from "next"
+import { notFound } from "next/navigation"
 
-import {getRegion} from "@lib/data/regions"
-import {getProductByHandle, getProductFashionDataByHandle,} from "@lib/data/products"
+import { getRegion } from "@lib/data/regions"
+import {
+  getProductByHandle,
+  getProductFashionDataByHandle,
+} from "@lib/data/products"
 import ProductTemplate from "@modules/products/templates"
-
+export const dynamic = "force-dynamic"
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
 }
-
+/*
 export const revalidate = 60
 export const dynamicParams = true
 
@@ -16,7 +19,7 @@ export async function generateStaticParams() {
   {
     return []
   }
-}
+}*/
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle, countryCode } = await params

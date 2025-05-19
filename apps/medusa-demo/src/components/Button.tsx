@@ -86,6 +86,8 @@ export function Button({
   type = "button",
   className,
   children,
+  // eslint-disable-next-line
+  onPress,
   ...rest
 }: ButtonProps) {
   return (
