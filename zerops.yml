@@ -139,9 +139,9 @@ zerops:
           rm -rf apps/!(demo)
         - pnpm i
         - node_modules/.bin/nx run medusa-demo:build --skip-nx-cache --verbose
-        - rm -rf apps/demo/storefront/node_modules
+        - rm -rf apps/medusa-demo/node_modules
         - pnpm --filter=medusa-demo --prod deploy medusa-demo-temp-deploy
-        - mv medusa-demo-temp-deploy/node_modules apps/demo/storefront/
+        - mv medusa-demo-temp-deploy/node_modules apps/medusa-demo/
       deployFiles:
         - .nx
         - nx.json
@@ -149,12 +149,12 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - node_modules
-        - apps/demo/storefront/package.json
-        - apps/demo/storefront/.next
-        - apps/demo/storefront/next.config.js
-        - apps/demo/storefront/node_modules
-        - apps/demo/storefront/public
-        - apps/demo/storefront/check-env-variables.js
+        - apps/medusa-demo/package.json
+        - apps/medusa-demo/.next
+        - apps/medusa-demo/next.config.js
+        - apps/medusa-demo/node_modules
+        - apps/medusa-demo/public
+        - apps/medusa-demo/check-env-variables.js
       cache: node_modules
     run:
       base: nodejs@22
