@@ -136,7 +136,7 @@ zerops:
         # Remove everything in apps except medusa-be via regex
         - |
           shopt -s extglob
-          rm -rf apps/!(demo)
+          rm -rf apps/!(medusa-demo)
         - pnpm i
         - node_modules/.bin/nx run medusa-demo:build --skip-nx-cache --verbose
         - rm -rf apps/medusa-demo/node_modules
