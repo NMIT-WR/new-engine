@@ -5,6 +5,8 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { Icon } from "../atoms/icon";
 import { Button } from "../atoms/button";
 import { Label } from "../atoms/label";
+import { Error } from "../atoms/error";
+import { ExtraText } from "../atoms/extra-text";
 
 // === TYPES ===
 export interface SelectOption {
@@ -91,6 +93,8 @@ export interface SelectProps
   // Labels
   label?: string;
   placeholder?: string;
+  helperText?: string;
+  errorText?: string;
   // Classes
   className?: string;
 }
@@ -109,8 +113,8 @@ export function Select({
   invalid = false,
   required = false,
   readOnly = false,
-  // Behavior
-  //clearable = true,
+  errorText,
+  helperText,
   closeOnSelect = true,
   loopFocus = true,
   // Form
@@ -241,6 +245,9 @@ export function Select({
             </ul>
           </div>
         </Portal>
+
+        {invalid && <Error>{errorText}</Error>}
+        {!invalid && helperText && <ExtraText>{helperText}</ExtraText>}
       </div>
     </form>
   );

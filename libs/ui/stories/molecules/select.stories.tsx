@@ -178,8 +178,18 @@ export const States: Story = {
   render: () => (
     <>
       <Select options={countries} label="Disabled" disabled />
-      <Select options={countries} label="Invalid" invalid />
-      <Select options={countries} label="Required" required />
+      <Select
+        options={countries}
+        label="Invalid"
+        invalid
+        errorText="Please select a valid country"
+      />
+      <Select
+        options={countries}
+        label="Required"
+        required
+        helperText="This field is required"
+      />
       <Select
         options={countries}
         label="Read-only"
@@ -188,6 +198,31 @@ export const States: Story = {
       />
     </>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Demonstrates different states of the Select component including disabled, invalid with error message, required with helper text, and read-only with default value.",
+      },
+    },
+  },
+};
+
+export const WithHelperText: Story = {
+  args: {
+    options: countries,
+    label: "Country",
+    placeholder: "Select your country",
+    helperText: "Choose the country where you currently reside",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Shows how to add helper text below the select to provide additional context to users.",
+      },
+    },
+  },
 };
 
 // Multiple selection
@@ -232,5 +267,80 @@ export const Controlled: Story = {
         </div>
       </>
     );
+  },
+};
+
+export const WithinForm: Story = {
+  render: () => {
+    const [formState, setFormState] = useState({
+      country: [] as string[],
+      language: [] as string[],
+    });
+    const [submittedData, setSubmittedData] = useState<null | {
+      country: string[];
+      language: string[];
+    }>(null);
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      setSubmittedData(formState);
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Select
+          options={countries}
+          label="Country"
+          required
+          invalid={formState.country.length === 0}
+          errorText="Please select a country"
+          value={formState.country}
+          onValueChange={(details) =>
+            setFormState((prev) => ({ ...prev, country: details.value }))
+          }
+        />
+
+        <Select
+          options={languages}
+          label="Languages"
+          multiple
+          placeholder="Select languages you speak"
+          helperText="You can select multiple languages"
+          value={formState.language}
+          onValueChange={(details) =>
+            setFormState((prev) => ({ ...prev, language: details.value }))
+          }
+        />
+
+        <Button type="submit" variant="primary">
+          Submit Form
+        </Button>
+
+        {submittedData && (
+          <div className="mt-4 p-4 border border-green-200 bg-green-50/10 rounded-md">
+            <h4 className="font-medium mb-2">Form Submitted:</h4>
+            <p>
+              <strong>Country:</strong>{" "}
+              {countries.find((c) => c.value === submittedData.country[0])
+                ?.label || "None"}
+            </p>
+            <p>
+              <strong>Languages:</strong>{" "}
+              {submittedData.language
+                .map((l) => languages.find((lang) => lang.value === l)?.label)
+                .join(", ") || "None"}
+            </p>
+          </div>
+        )}
+      </form>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Demonstrates how Select components integrate with forms, including validation, submission, and displaying the submitted values.",
+      },
+    },
   },
 };
