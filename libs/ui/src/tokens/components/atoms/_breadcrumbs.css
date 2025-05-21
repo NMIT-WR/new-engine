@@ -1,0 +1,31 @@
+@theme static {
+  /* Base colors */
+  --color-breadcrumb-fg: var(--color-fg-primary);
+  --color-breadcrumb-item-fg: var(--color-fg-primary);
+  --color-breadcrumb-link-hover: var(--color-primary);
+  --color-breadcrumb-current-fg: var(--color-primary);
+  --color-breadcrumb-separator-fg: var(--color-fg-secondary);
+  --color-breadcrumb-ellipsis-fg: var(--color-fg-secondary);
+
+  /* Spacing */
+  --spacing-breadcrumb-root-y: var(--spacing-2xs);
+  --spacing-breadcrumb-separator-x: var(--spacing-xs);
+  --spacing-breadcrumb-ellipsis-x: var(--spacing-2xs);
+
+  /* Sizes */
+  --text-breadcrumb-sm: var(--text-sm);
+  --text-breadcrumb-md: var(--text-md);
+  --text-breadcrumb-lg: var(--text-lg);
+
+  /* Gap between items */
+  --gap-breadcrumb-sm: var(--spacing-3xs);
+  --gap-breadcrumb-md: var(--spacing-2xs);
+  --gap-breadcrumb-lg: var(--spacing-xs);
+
+  /* Focus ring */
+  --color-breadcrumb-link-ring: var(--color-primary);
+}
+
+@utility token-icon-breadcrumb-separator {
+  @apply icon-[mdi--chevron-right];
+}
