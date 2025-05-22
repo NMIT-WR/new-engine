@@ -1,0 +1,84 @@
+@theme static {
+  /* === BASE COLORS === */
+  --color-carousel-bg: var(--color-surface);
+  --color-carousel-item-bg: var(--color-base);
+  --color-carousel-item-border: var(--color-stroke-primary);
+
+  /* === CONTROL COLORS === */
+  --color-carousel-control-bg: var(--color-overlay);
+  --color-carousel-btn-bg: var(--color-fill-base);
+  --color-carousel-btn-hover: var(--color-fill-hover);
+  --color-carousel-btn-active: var(--color-fill-active);
+  --color-carousel-btn-disabled: var(--color-disabled-bg);
+  --color-carousel-btn-text: var(--color-fg-primary);
+  --color-carousel-btn-text-disabled: var(--color-disabled-text);
+
+  /* === INDICATOR COLORS === */
+  --color-carousel-indicator: var(--color-fill-base);
+  --color-carousel-indicator-active: var(--color-primary);
+  --color-carousel-indicator-hover: var(--color-fill-hover);
+
+  /* === FOCUS STATES === */
+  --color-carousel-focus-ring: --alpha(
+    var(--color-primary) / var(--opacity-ring)
+  );
+
+  /* === SPACING === */
+  --spacing-carousel-gap: var(--spacing-md);
+  --spacing-carousel-padding: var(--spacing-sm);
+  --spacing-carousel-item-gap: var(--spacing-xs);
+
+  /* === SIZES === */
+  --size-carousel-control-sm: var(--spacing-lg);
+  --size-carousel-control-md: var(--spacing-xl);
+  --size-carousel-control-lg: var(--spacing-2xl);
+
+  --size-carousel-indicator-sm: var(--spacing-xs);
+  --size-carousel-indicator-md: var(--spacing-sm);
+  --size-carousel-indicator-lg: var(--spacing-md);
+
+  /* === HEIGHTS === */
+  --height-carousel-item-sm: 200px;
+  --height-carousel-item-md: 300px;
+  --height-carousel-item-lg: 400px;
+
+  /* === WIDTHS === */
+  --width-carousel-horizontal-sm: 300px;
+  --width-carousel-horizontal-md: 400px;
+  --width-carousel-horizontal-lg: 600px;
+
+  --width-carousel-vertical-sm: 300px;
+  --width-carousel-vertical-md: 400px;
+  --width-carousel-vertical-lg: 500px;
+
+  /* === BORDER RADIUS === */
+  --radius-carousel: var(--radius-md);
+  --radius-carousel-item: var(--radius-sm);
+  --radius-carousel-indicator: var(--radius-full);
+  --radius-carousel-control: var(--radius-sm);
+
+  /* === TRANSITIONS === */
+  --transition-carousel: all 0.2s ease-in-out;
+  --transition-carousel-indicator: background-color 0.2s ease-in-out;
+
+  /* === TYPOGRAPHY === */
+  --text-carousel-sm: var(--text-sm);
+  --text-carousel-md: var(--text-base);
+  --text-carousel-lg: var(--text-lg);
+
+  /* === Z-INDEX === */
+  --z-carousel-controls: 10;
+  --z-carousel-indicators: 5;
+
+  /* === IMAGE STYLES === */
+  --object-fit-carousel-image: cover;
+  --transition-carousel-image: transform 0.3s ease-in-out;
+}
+
+@utility token-icon-carousel-prev {
+  @apply icon-[mdi--chevron-left];
+}
+
+@utility token-icon-carousel-next {
+  @apply icon-[mdi--chevron-right];
+}
