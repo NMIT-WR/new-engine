@@ -103,7 +103,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     items: simplePath,
-    currentLink: "/products",
+    currentPath: "/products",
   },
 };
 
@@ -155,6 +155,7 @@ export const CustomIconsAndSeparator: Story = {
         href: "/products/electronics",
         icon: "icon-[mdi--computer-classic]",
         separator: "icon-[mdi--chevron-triple-right]",
+        isCurrent: true,
       },
       {
         label: "Smartphones",
@@ -173,103 +174,92 @@ export const CustomIconsAndSeparator: Story = {
   },
 };
 
-export const Truncated: Story = {
-  render: () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium mb-2">Full Path (8 items)</h3>
-        <Breadcrumb items={longPath} />
-      </div>
+const veryLongPath: BreadcrumbItemType[] = [
+  { label: "Home", href: "/" },
+  { label: "Products", href: "/products" },
+  { label: "Electronics", href: "/products/electronics" },
+  { label: "Computers", href: "/products/electronics/computers" },
+  { label: "Laptops", href: "/products/electronics/computers/laptops" },
+  { label: "Gaming", href: "/products/electronics/computers/laptops/gaming" },
+  {
+    label: "High-End",
+    href: "/products/electronics/computers/laptops/gaming/high-end",
+  },
+  {
+    label: "ASUS ROG",
+    href: "/products/electronics/computers/laptops/gaming/high-end/asus-rog",
+  },
+  {
+    label: "RTX 4090",
+    href: "/products/electronics/computers/laptops/gaming/high-end/asus-rog/rtx-4090",
+  },
+];
 
-      <div>
-        <h3 className="text-lg font-medium mb-2">Truncated to 3 items</h3>
-        <Breadcrumb items={longPath} maxItems={3} />
-      </div>
-
-      <div>
-        <h3 className="text-lg font-medium mb-2">Truncated to 4 items</h3>
-        <Breadcrumb items={longPath} maxItems={4} />
-      </div>
-
-      <div>
-        <h3 className="text-lg font-medium mb-2">Truncated to 5 items</h3>
-        <Breadcrumb items={longPath} maxItems={5} />
-      </div>
-    </div>
-  ),
+// Very long path pro stress test
+export const VeryLongPath: Story = {
+  args: {
+    items: veryLongPath,
+    maxItems: 5,
+  },
   parameters: {
     docs: {
       description: {
         story:
-          "Shows how breadcrumbs can be truncated for long paths using an ellipsis (...).",
+          "Stress test with very long breadcrumb path to demonstrate ellipsis with many hidden items.",
       },
     },
   },
 };
 
-export const DynamicFromURL: Story = {
-  render: () => {
-    const currentPath = "/products/electronics/smartphones/apple";
-
-    const segments = currentPath.split("/").filter(Boolean);
-
-    const dynamicItems: BreadcrumbItemType[] = [
-      { label: "Home", href: "/" },
-      ...segments.map((segment, index) => {
-        const href = `/${segments.slice(0, index + 1).join("/")}`;
-        return {
-          label: segment.charAt(0).toUpperCase() + segment.slice(1),
-          href,
-        };
-      }),
-    ];
-
-    return (
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-medium mb-2">
-            Current URL: {currentPath}
-          </h3>
-          <Breadcrumb items={dynamicItems} />
-        </div>
-      </div>
-    );
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: "Story with dynamic breadcrumbs generated from URL path.",
+// Ellipsis s custom icons
+export const EllipsisWithCustomIcons: Story = {
+  args: {
+    items: [
+      {
+        label: "Home",
+        href: "/",
+        icon: "icon-[mdi--home]",
+        separator: "icon-[mdi--chevron-right]",
       },
-    },
+      {
+        label: "Category",
+        href: "/category",
+        icon: "icon-[mdi--folder]",
+        separator: "icon-[mdi--chevron-double-right]",
+      },
+      {
+        label: "Subcategory",
+        href: "/category/sub",
+        icon: "icon-[mdi--folder-open]",
+      },
+      {
+        label: "Product Type",
+        href: "/category/sub/type",
+        icon: "icon-[mdi--tag]",
+      },
+      {
+        label: "Brand",
+        href: "/category/sub/type/brand",
+        icon: "icon-[mdi--store]",
+      },
+      {
+        label: "Model",
+        href: "/category/sub/type/brand/model",
+        icon: "icon-[mdi--package-variant]",
+      },
+      {
+        label: "Variant",
+        href: "/category/sub/type/brand/model/variant",
+        icon: "icon-[mdi--palette]",
+      },
+    ],
+    maxItems: 4,
   },
-};
-
-export const ResponsiveBehavior: Story = {
-  render: () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium mb-2">
-          Responsive Container (change size to see effect)
-        </h3>
-        <div className="border border-gray-300 p-4 resize-x overflow-auto min-w-80 max-w-full">
-          <Breadcrumb items={longPath} />
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-medium mb-2">
-          Auto-truncating (change size to see effect)
-        </h3>
-        <div className="border border-gray-300 p-4 resize-x overflow-auto min-w-80 max-w-full">
-          <Breadcrumb items={longPath} maxItems={4} />
-        </div>
-      </div>
-    </div>
-  ),
   parameters: {
     docs: {
       description: {
-        story: "Story with responsive breadcrumbs. Change size to see effect.",
+        story:
+          "Ellipsis functionality combined with custom icons and separators for each breadcrumb item.",
       },
     },
   },

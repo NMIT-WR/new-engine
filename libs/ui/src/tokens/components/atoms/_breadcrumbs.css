@@ -1,21 +1,20 @@
 @theme static {
   /* Base colors */
+  --color-breadcrumb-bg: var(--color-surface);
   --color-breadcrumb-fg: var(--color-fg-primary);
-  --color-breadcrumb-item-fg: var(--color-fg-primary);
+  --color-breadcrumb-fg-secondary: var(--color-fg-secondary);
   --color-breadcrumb-link-hover: var(--color-primary);
   --color-breadcrumb-current-fg: var(--color-primary);
-  --color-breadcrumb-separator-fg: var(--color-fg-secondary);
-  --color-breadcrumb-ellipsis-fg: var(--color-fg-secondary);
 
-  /* Spacing */
-  --spacing-breadcrumb-root-y: var(--spacing-2xs);
-  --spacing-breadcrumb-separator-x: var(--spacing-xs);
-  --spacing-breadcrumb-ellipsis-x: var(--spacing-2xs);
+  /* Slot Colors */
+  --color-breadcrumb-item-fg: var(--color-breadcrumb-fg);
+  --color-breadcrumb-separator-fg: var(--color-breadcrumb-fg-secondary);
+  --color-breadcrumb-ellipsis-fg: var(--color-breadcrumb-fg-secondary);
 
   /* Sizes */
-  --text-breadcrumb-sm: var(--text-sm);
-  --text-breadcrumb-md: var(--text-md);
-  --text-breadcrumb-lg: var(--text-lg);
+  --text-breadcrumb-sm: var(--text-xs);
+  --text-breadcrumb-md: var(--text-sm);
+  --text-breadcrumb-lg: var(--text-md);
 
   /* Gap between items */
   --gap-breadcrumb-sm: var(--spacing-3xs);
@@ -28,4 +27,8 @@
 
 @utility token-icon-breadcrumb-separator {
   @apply icon-[mdi--chevron-right];
+}
+
+@utility token-icon-breadcrumb-ellipsis {
+  @apply icon-[mdi--ellipsis-horizontal];
 }

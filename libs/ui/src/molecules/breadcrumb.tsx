@@ -5,56 +5,63 @@ import { Link } from "../atoms/link";
 // === VARIANTS ===
 const breadcrumbsVariants = tv({
   slots: {
-    root: [
-      "flex flex-wrap items-center",
-      "text-breadcrumb-fg",
-      "py-breadcrumb-root-y",
+    root: ["inline-flex flex-wrap items-center", "bg-breadcrumb-bg"],
+    list: ["flex items-center", "break-words", "list-none"],
+    item: [
+      "inline-flex items-center",
+      "text-breadcrumb-item-fg",
+      "hover:text-breadcrumb-link-hover",
+      "data-[current=true]:text-breadcrumb-current-fg",
+      "h-full",
     ],
-    list: ["flex flex-wrap items-center gap-2", "list-none p-0 m-0"],
-    item: ["flex items-center", "text-breadcrumb-item-fg"],
     link: [
+      "no-underline",
+      "cursor-pointer",
       "hover:text-breadcrumb-link-hover",
       "focus:outline-none focus:ring-2 focus:ring-breadcrumb-link-ring focus:ring-offset-2",
-      "transition-colors duration-200",
     ],
-    currentLink: [
-      "text-breadcrumb-current-fg",
-      "cursor-default",
-      "aria-current-page",
-    ],
+    currentLink: ["cursor-default"],
     separator: [
-      "mx-breadcrumb-separator-x",
       "text-breadcrumb-separator-fg",
-      "flex items-center justify-center",
+      "inline-flex items-center justify-center",
+      "rtl:rotate-180",
     ],
     ellipsis: [
-      "mx-breadcrumb-ellipsis-x",
       "text-breadcrumb-ellipsis-fg",
-      "flex items-center justify-center",
+      "inline-flex items-center justify-center",
     ],
   },
   compoundSlots: [
     {
       slots: ["link", "currentLink"],
-      class: "font-medium",
+      class: [
+        "font-medium inline-flex items-center",
+        "outline-none focus:outline-none",
+      ],
     },
   ],
   variants: {
     size: {
       sm: {
         root: "text-breadcrumb-sm",
+        list: "gap-breadcrumb-sm",
         item: "gap-breadcrumb-sm",
         separator: "gap-breadcrumb-sm",
+        ellipsis: "text-breadcrumb-sm",
       },
       md: {
         root: "text-breadcrumb-md",
+        list: "gap-breadcrumb-md",
         item: "gap-breadcrumb-md",
         separator: "gap-breadcrumb-md",
+        ellipsis: "text-breadcrumb-md",
       },
       lg: {
         root: "text-breadcrumb-lg",
+        list: "gap-breadcrumb-lg",
         item: "gap-breadcrumb-lg",
         separator: "gap-breadcrumb-lg",
+        ellipsis: "text-breadcrumb-lg",
       },
     },
   },
@@ -69,6 +76,7 @@ export type BreadcrumbItemType = {
   href?: string;
   icon?: IconType;
   separator?: IconType;
+  isCurrent?: boolean;
 };
 
 function BreadcrumbItem({
@@ -86,65 +94,95 @@ function BreadcrumbItem({
   lastItem: boolean;
   isCurrentPage?: boolean;
 }) {
-  const { item, currentLink, link } = breadcrumbsVariants({ size: "md" });
+  const {
+    item,
+    currentLink,
+    link,
+    separator: separatorSlot,
+  } = breadcrumbsVariants({ size: "md" });
   return (
-    <li className={item()}>
+    <li className={item()} data-current={isCurrentPage}>
       {icon && <Icon icon={icon} />}
-      <Link
-        className={isCurrentPage ? currentLink() : link()}
-        href={href || "#"}
-      >
-        {label}
-      </Link>
+      {isCurrentPage ? (
+        <span className={currentLink()} aria-current="page">
+          {label}
+        </span>
+      ) : (
+        <Link href={href || "#"} className={link()}>
+          {label}
+        </Link>
+      )}
       {!lastItem && (
-        <Icon icon={separator ?? "token-icon-breadcrumb-separator"} />
+        <span className={separatorSlot()}>
+          <Icon icon={separator ?? "token-icon-breadcrumb-separator"} />
+        </span>
       )}
     </li>
   );
 }
-/*
-function BreadcrumbSeparator() {
+
+function BreadcrumbEllipsis() {
+  const { ellipsis, separator: separatorSlot } = breadcrumbsVariants({
+    size: "md",
+  });
   return (
-    <li className={breadcrumbsVariants({ size: "md" }).separator()}>
-      <Icon icon="token-icon-chevron-right" />
+    <li className={ellipsis()}>
+      <span aria-hidden="true">
+        <Icon icon="token-icon-breadcrumb-ellipsis" />
+      </span>
+      <span className={separatorSlot()}>
+        <Icon icon={"token-icon-breadcrumb-separator"} />
+      </span>
     </li>
   );
-}*/
+}
 
 interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   items: BreadcrumbItemType[];
   maxItems?: number;
   className?: string;
-  currentLink?: string;
+  currentPath?: string;
   "aria-label"?: string;
 }
 
 // === COMPONENT ===
 export function Breadcrumb({
   items,
-  maxItems = 0, // 0 means show all
+  maxItems = 0,
   size = "md",
   className,
-  currentLink,
+  currentPath,
   "aria-label": ariaLabel = "breadcrumb",
   ...props
 }: BreadcrumbProps) {
   const { root, list } = breadcrumbsVariants({ size });
 
+  const displayItems =
+    maxItems <= 0 || items.length <= maxItems
+      ? items
+      : [items[0], "ellipsis", ...items.slice(-(maxItems - 1))];
+
   return (
     <nav className={root({ className })} aria-label={ariaLabel} {...props}>
       <ol className={list()}>
-        {items.map((breadcrumb, index) => (
-          <BreadcrumbItem
-            key={index}
-            label={breadcrumb.label}
-            href={breadcrumb.href}
-            icon={breadcrumb.icon}
-            separator={breadcrumb.separator}
-            lastItem={index === items.length - 1}
-            isCurrentPage={breadcrumb.href === currentLink}
-          />
-        ))}
+        {displayItems.map((item, index) =>
+          item === "ellipsis" ? (
+            <BreadcrumbEllipsis key="ellipsis" />
+          ) : (
+            item &&
+            typeof item !== "string" && (
+              <BreadcrumbItem
+                key={`${item.label}-${index}`}
+                label={item.label}
+                href={item.href}
+                icon={item.icon}
+                separator={item.separator}
+                lastItem={index === displayItems.length - 1}
+                isCurrentPage={item.isCurrent || item.href === currentPath}
+              />
+            )
+          )
+        )}
       </ol>
     </nav>
   );
