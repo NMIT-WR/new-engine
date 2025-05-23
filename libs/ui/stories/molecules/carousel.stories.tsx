@@ -1,38 +1,67 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Carousel, type CarouselItem } from "../../src/molecules/carousel";
+import { Carousel, type CarouselSlide } from "../../src/molecules/carousel";
 import React from "react";
 
 // Sample images using src approach (simpler)
-const sampleImages: CarouselItem[] = [
+const sampleImages: CarouselSlide[] = [
   {
     id: "slide-1",
-    src: "https://picsum.photos/200",
+    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
     alt: "Beautiful landscape",
+    // imageProps: { width: 250, height: 250 },
   },
   {
     id: "slide-2",
-    src: "https://picsum.photos/201",
+    src: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400",
     alt: "City skyline",
+    // imageProps: { width: 250, height: 250 },
   },
   {
     id: "slide-3",
-    src: "https://picsum.photos/202",
+    src: "https://images.unsplash.com/photo-1747258294931-79af146bd74c?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     alt: "Ocean view",
+    // imageProps: { width: 250, height: 250 },
+  },
+
+  // Čtverce (square)
+  {
+    id: "coffee",
+    src: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600",
+    alt: "Coffee",
+    //  imageProps: { width: 250, height: 250 },
   },
   {
-    id: "slide-4",
-    src: "https://picsum.photos/203",
-    alt: "Mountain range",
+    id: "architecture",
+    src: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600",
+    alt: "Architecture",
+    // imageProps: { width: 250, height: 250 },
+  },
+
+  // Ultra široké (ultra-wide)
+  {
+    id: "city-panorama",
+    src: "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1200",
+    alt: "City panorama",
+    //  imageProps: { width: 400, height: 150 },
   },
   {
-    id: "slide-5",
-    src: "https://picsum.photos/204",
-    alt: "Forest path",
+    id: "beach-wide",
+    src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200",
+    alt: "Beach panorama",
+    // imageProps: { width: 400, height: 150 },
+  },
+
+  // Vysoké (tall)
+  {
+    id: "skyscraper",
+    src: "https://images.unsplash.com/photo-1494145904049-0dca59b4bbad?w=400",
+    alt: "Skyscraper",
+    //  imageProps: { width: 150, height: 400 },
   },
 ];
 
 // Mixed approach - some images, some custom content
-const mixedSlides: CarouselItem[] = [
+const mixedSlides: CarouselSlide[] = [
   {
     id: "image-1",
     src: "https://picsum.photos/205",
@@ -59,7 +88,7 @@ const mixedSlides: CarouselItem[] = [
 ];
 
 // Content slides with text
-const contentSlides: CarouselItem[] = [
+const contentSlides: CarouselSlide[] = [
   {
     id: "content-1",
     content: (
@@ -92,7 +121,7 @@ const contentSlides: CarouselItem[] = [
 ];
 
 // Polymorphic example with Next.js Image (commented for demo)
-const nextImageSlides: CarouselItem[] = [
+const nextImageSlides: CarouselSlide[] = [
   {
     id: "next-1",
     src: "https://picsum.photos/207",
@@ -119,7 +148,7 @@ const nextImageSlides: CarouselItem[] = [
 ];
 
 // Product showcase with mixed content
-const productShowcase: CarouselItem[] = [
+const productShowcase: CarouselSlide[] = [
   {
     id: "hero",
     content: (
@@ -180,7 +209,7 @@ A flexible carousel component built with Zag.js that supports multiple orientati
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="w-96">
+      <div className="flex bg-red-600/50">
         <Story />
       </div>
     ),
@@ -216,18 +245,6 @@ A flexible carousel component built with Zag.js that supports multiple orientati
       control: { type: "number", min: 1, max: 5 },
       description: "Number of slides to move at once",
     },
-    hasControls: {
-      control: { type: "boolean" },
-      description: "Show navigation controls",
-    },
-    hasIndicators: {
-      control: { type: "boolean" },
-      description: "Show slide indicators",
-    },
-    showAutoplayButton: {
-      control: { type: "boolean" },
-      description: "Show autoplay toggle button",
-    },
   },
 };
 
@@ -237,10 +254,12 @@ type Story = StoryObj<typeof meta>;
 // Basic carousel with simple image sources
 export const Default: Story = {
   args: {
-    items: sampleImages,
+    slides: sampleImages,
     orientation: "horizontal",
     size: "md",
-    loop: false,
+    loop: true,
+    allowMouseDrag: true,
+
     autoplay: false,
   },
 };
@@ -248,7 +267,7 @@ export const Default: Story = {
 // Mixed content approach - images and custom JSX
 export const MixedContent: Story = {
   args: {
-    items: mixedSlides,
+    slides: mixedSlides,
     size: "md",
     loop: true,
   },
@@ -278,12 +297,9 @@ export const PolymorphicImages: Story = {
       </div>
 
       <Carousel
-        items={nextImageSlides}
-        defaultImageComponent="img" // In real app: NextImage
-        defaultImageProps={{
-          loading: "lazy",
-          style: { objectFit: "cover" },
-        }}
+        slides={nextImageSlides}
+        as="img" // In real app: NextImage
+        slideCount={nextImageSlides.length}
       />
     </div>
   ),
@@ -300,7 +316,7 @@ export const PolymorphicImages: Story = {
 // Product showcase with mixed content
 export const ProductShowcase: Story = {
   args: {
-    items: productShowcase,
+    slides: productShowcase,
     autoplay: true,
     loop: true,
     showAutoplayButton: true,
@@ -322,17 +338,17 @@ export const Sizes: Story = {
     <div className="space-y-8">
       <div>
         <h3 className="text-lg font-medium mb-4">Small</h3>
-        <Carousel items={sampleImages.slice(0, 3)} size="sm" />
+        <Carousel slides={sampleImages.slice(0, 3)} size="sm" />
       </div>
 
       <div>
         <h3 className="text-lg font-medium mb-4">Medium (Default)</h3>
-        <Carousel items={sampleImages.slice(0, 3)} size="md" />
+        <Carousel slides={sampleImages.slice(0, 3)} size="md" />
       </div>
 
       <div>
         <h3 className="text-lg font-medium mb-4">Large</h3>
-        <Carousel items={sampleImages.slice(0, 3)} size="lg" />
+        <Carousel slides={sampleImages.slice(0, 3)} size="lg" />
       </div>
     </div>
   ),
@@ -347,25 +363,22 @@ export const Sizes: Story = {
 
 // Vertical orientation
 export const Vertical: Story = {
-  args: {
-    items: sampleImages.slice(0, 4),
-    orientation: "vertical",
-    size: "md",
-    loop: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: "Carousel with vertical orientation and looping enabled.",
-      },
-    },
-  },
+  render: () => (
+    <div className="">
+      <Carousel
+        orientation="vertical"
+        slides={sampleImages.slice(0, 4)}
+        size="md"
+        loop
+      />
+    </div>
+  ),
 };
 
 // With autoplay
 export const Autoplay: Story = {
   args: {
-    items: contentSlides,
+    slides: contentSlides,
     autoplay: true,
     loop: true,
     showAutoplayButton: true,
@@ -383,7 +396,7 @@ export const Autoplay: Story = {
 // Multiple slides per page
 export const MultipleSlides: Story = {
   args: {
-    items: sampleImages,
+    slides: sampleImages,
     slidesPerPage: 2,
     slidesPerMove: 2,
     loop: true,
@@ -402,7 +415,7 @@ export const MultipleSlides: Story = {
 // Custom controls and indicators
 export const CustomControls: Story = {
   args: {
-    items: sampleImages,
+    slides: sampleImages,
     prevIcon: "icon-[mdi--arrow-left]",
     nextIcon: "icon-[mdi--arrow-right]",
     playIcon: "icon-[mdi--play-circle]",
@@ -424,7 +437,7 @@ export const CustomControls: Story = {
 // Minimal carousel
 export const Minimal: Story = {
   args: {
-    items: contentSlides,
+    slides: contentSlides,
     hasControls: false,
     hasIndicators: false,
     autoplay: true,
@@ -443,7 +456,7 @@ export const Minimal: Story = {
 // With spacing
 export const WithSpacing: Story = {
   args: {
-    items: sampleImages,
+    slides: sampleImages,
     slidesPerPage: 3,
     spacing: "16px",
     size: "lg",
@@ -473,7 +486,7 @@ export const Interactive: Story = {
         </div>
 
         <Carousel
-          items={sampleImages}
+          slides={sampleImages}
           onPageChange={({ page }) => setCurrentSlide(page)}
           loop={true}
           allowMouseDrag={true}
@@ -501,18 +514,18 @@ export const EdgeCases: Story = {
     <div className="space-y-8">
       <div>
         <h3 className="text-lg font-medium mb-4">Single Slide</h3>
-        <Carousel items={[sampleImages[0]]} />
+        <Carousel slides={[sampleImages[0]]} />
       </div>
 
       <div>
         <h3 className="text-lg font-medium mb-4">Two Slides</h3>
-        <Carousel items={sampleImages.slice(0, 2)} loop={true} />
+        <Carousel slides={sampleImages.slice(0, 2)} loop={true} />
       </div>
 
       <div>
         <h3 className="text-lg font-medium mb-4">Many Slides</h3>
         <Carousel
-          items={[...sampleImages, ...sampleImages, ...sampleImages]}
+          slides={[...sampleImages, ...sampleImages, ...sampleImages]}
           slidesPerPage={4}
           slidesPerMove={2}
           size="sm"
