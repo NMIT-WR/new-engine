@@ -14,17 +14,18 @@
 
   /* Node states - common styles for branch and leaf */
   --color-tree-node-bg: transparent;
-  --color-tree-node-hover: var(--color-fill-hover);
-  --color-tree-node-selected: var(--color-surface);
+  --color-tree-node-hover: var(--color-primary-hover);
+  --color-tree-node-selected: var(--color-primary-active);
   --color-tree-node-focus: var(--color-ring-primary);
   --padding-tree-node: var(--spacing-3xs);
 
   /* Text colors */
-  --color-tree-fg-selected: var(--color-tree-fg);
+  --color-tree-fg-hover: var(--color-fg-reverse);
+  --color-tree-fg-selected: var(--color-fg-reverse);
   --color-tree-fg-muted: var(--color-fg-secondary);
 
   /* Icons */
-  --color-tree-icon: var(--color-fg-secondary);
+  --color-tree-icon: current;
   --color-tree-icon-hover: var(--color-fg-primary);
 
   /* === SPACING & SIZING === */

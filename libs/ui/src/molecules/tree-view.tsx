@@ -5,7 +5,6 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { Icon, type IconType } from "../atoms/icon";
 
 // === COLLECTION TYPES ===
-
 interface TreeNode {
   id: string;
   name: string;
@@ -63,7 +62,7 @@ const treeVariants = tv({
       class: [
         "flex items-center gap-tree-icon p-tree-node",
         "cursor-pointer rounded-tree-node",
-        "hover:bg-tree-node-hover",
+        "hover:bg-tree-node-hover hover:text-tree-fg-hover",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-focus",
         "data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected",
         "data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent",

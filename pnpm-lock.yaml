@@ -472,6 +472,9 @@ importers:
       '@zag-js/select':
         specifier: ^1.12.3
         version: 1.12.4
+      '@zag-js/tree-view':
+        specifier: ^1.12.3
+        version: 1.12.4
       tailwind-variants:
         specifier: ^1.0.0
         version: 1.0.0(tailwindcss@4.1.6)
@@ -6852,6 +6855,9 @@ packages:
 
   '@zag-js/store@1.12.2':
     resolution: {integrity: sha512-Vy1QK0cmaaruzpkIwJ1lvCO3q0E0K/M1ZY71cDbEYKRYfpRqgV+7xluWbfTueqiAIYyGPa7+nCpakdr9zPPsnQ==}
+
+  '@zag-js/tree-view@1.12.4':
+    resolution: {integrity: sha512-8uavvcmTLPJuU650tIh76CtWN8TMbb3i8sp8/tEglGLRX0kzUvh0/A7zsSTVFq4lAft6+yokvtMVS3qXhxjwPA==}
 
   '@zag-js/types@1.12.2':
     resolution: {integrity: sha512-coJfIU/1Cg1RkWEkf4ArXK6rD3EU+lwxQdtVRlhvGk4c2ts2YTqNi/Sis5CT4/dzaKAk3pk8O2H3ry4IcL2tsg==}
@@ -21555,6 +21561,15 @@ snapshots:
   '@zag-js/store@1.12.2':
     dependencies:
       proxy-compare: 3.0.1
+
+  '@zag-js/tree-view@1.12.4':
+    dependencies:
+      '@zag-js/anatomy': 1.12.4
+      '@zag-js/collection': 1.12.4
+      '@zag-js/core': 1.12.4
+      '@zag-js/dom-query': 1.12.4
+      '@zag-js/types': 1.12.4
+      '@zag-js/utils': 1.12.4
 
   '@zag-js/types@1.12.2':
     dependencies:
