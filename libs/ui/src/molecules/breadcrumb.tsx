@@ -1,6 +1,6 @@
 import { tv, type VariantProps } from "tailwind-variants";
-import { Icon, type IconType } from "./icon";
-import { Link } from "./link";
+import { Icon, type IconType } from "../atoms/icon";
+import { Link } from "../atoms/link";
 
 // === VARIANTS ===
 const breadcrumbsVariants = tv({

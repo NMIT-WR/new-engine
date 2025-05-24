@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import {
   Breadcrumb,
   type BreadcrumbItemType,
-} from "../../src/atoms/breadcrumb";
+} from "../../src/molecules/breadcrumb";
 
 const simplePath: BreadcrumbItemType[] = [
   { label: "Home", href: "/" },
