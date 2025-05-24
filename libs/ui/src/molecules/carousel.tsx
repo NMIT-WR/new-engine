@@ -8,38 +8,35 @@ import { Image } from "../atoms/image";
 
 const carouselVariants = tv({
   slots: {
-    root: ["relative overflow-hiddn", "bg-red-600"],
+    wrapper: ["relative"],
+    root: ["relative overflow-hidden", "rounded-carousel"],
     control: [
       "flex absolute bottom-0 left-1/2 -translate-x-1/2",
-      "gap-2 p-2",
+      "gap-carousel-control p-carousel-control",
       "bg-carousel-control-bg",
       "rounded-carousel",
     ],
     slideGroup: [
-      "overflow-hdden",
-      // Hide scrollbars
-      "bg-yellow-600 p-4",
+      "overflow-hidden",
       "scrollbar-hide",
       "data-[dragging]:cursor-grabbing",
     ],
     slide: [
       "relative flex-shrink-0",
       "flex items-center justify-center",
-      "bg-blue-600 p-4",
-      "overflow-hdden",
+      "overflow-hidden",
     ],
     prevTrigger: [],
     nextTrigger: [],
-    indicatorGroup: ["flex justify-center items-center gap-2"],
+    indicatorGroup: [
+      "flex justify-center w-full items-center gap-carousel-indicator",
+    ],
     indicator: [
       "aspect-carousel-indicator w-carousel-indicator",
       "data-[current]:bg-carousel-indicator-active",
     ],
-    autoplayTrigger: [
-      "flex justify-center items-center rounded-carousel",
-      "text-carousel-trigger border-none cursor-pointer",
-      "focus:outline-none focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2",
-    ],
+    autoplayIcon: ["icon-[mdi--play]", "data-[pressed=true]:icon-[mdi--pause]"],
+    autoplayTrigger: ["absolute top-1 right-1 z-10"],
     spacer: ["flex-1"],
   },
   compoundSlots: [
@@ -47,7 +44,7 @@ const carouselVariants = tv({
       slots: ["autoplayTrigger", "indicator", "prevTrigger", "nextTrigger"],
       class: [
         "p-carousel-trigger bg-carousel-trigger-bg",
-        "focus:outline-none focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2",
+        "focus:outline-none text-carousel-trigger-text focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2",
       ],
     },
   ],
@@ -91,10 +88,18 @@ const carouselVariants = tv({
           "data-[orientation=horizontal]:max-w-carousel-root-sm",
           "data-[orientation=vertical]:max-h-carousel-root-sm",
         ],
+        slide: [
+          "data-[orientation=horizontal]:max-w-carousel-root-sm",
+          "data-[orientation=vertical]:max-h-carousel-root-sm",
+        ],
       },
       md: {
         root: [
-          "data-[orientation=horizontal]:max-w-carousel-root-md p-4",
+          "data-[orientation=horizontal]:max-w-carousel-root-md",
+          "data-[orientation=vertical]:max-h-carousel-root-md",
+        ],
+        slide: [
+          "data-[orientation=horizontal]:max-w-carousel-root-md",
           "data-[orientation=vertical]:max-h-carousel-root-md",
         ],
       },
@@ -103,10 +108,14 @@ const carouselVariants = tv({
           "data-[orientation=horizontal]:max-w-carousel-root-lg",
           "data-[orientation=vertical]:max-h-carousel-root-lg",
         ],
+        slide: [
+          "data-[orientation=horizontal]:max-w-carousel-root-lg",
+          "data-[orientation=vertical]:max-h-carousel-root-lg",
+        ],
       },
       full: {
         root: [
-          "data-[orientation=horizontal]:w-full p-4",
+          "data-[orientation=horizontal]:w-full",
           "data-[orientation=vertical]:h-full",
         ],
       },
@@ -144,9 +153,9 @@ export function Carousel({
   id,
 
   /* Tailwind variants */
-  size = "md",
-  objectFit = "cover",
-  aspectRatio = "square",
+  size,
+  objectFit,
+  aspectRatio,
 
   /* Zag.js carousel config */
   orientation = "horizontal",
@@ -161,7 +170,7 @@ export function Carousel({
   dir = "ltr",
 
   /* Others */
-  autoplayTrigger = true,
+  autoplayTrigger = false,
   showControl = true,
   className,
   as,
@@ -185,6 +194,7 @@ export function Carousel({
   const api = carousel.connect(service as carousel.Service, normalizeProps);
 
   const {
+    wrapper,
     root,
     control,
     slideGroup,
@@ -193,35 +203,39 @@ export function Carousel({
     indicator,
     prevTrigger,
     nextTrigger,
+    // autoplayIcon,
+    autoplayTrigger: autoplayTriggerSlot,
   } = carouselVariants({ size, objectFit, aspectRatio });
 
   return (
-    <div className={root()} {...api.getRootProps()}>
-      {/* images */}
-      {autoplayTrigger && slideCount > 1 && (
-        <Button
-          icon="icon-[mdi--play]"
-          className="text-md bg-black right-8 top-12 z-10 rounded-full px-0 py-0 absolute h-4 w-4"
-          {...api.getAutoplayTriggerProps()}
-        />
-      )}
-      <div className={slideGroup()} {...api.getItemGroupProps()}>
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={slideSlot()}
-            {...api.getItemProps({ index })}
-          >
-            {slide.content || (
-              <Image
-                as={as}
-                src={slide.src || ""}
-                alt={slide.alt || ""}
-                {...slide.imageProps}
-              />
-            )}
-          </div>
-        ))}
+    <div className={wrapper()}>
+      <div className={root()} {...api.getRootProps()}>
+        {/* images */}
+        {autoplayTrigger && slideCount > 1 && (
+          <Button
+            icon={api.isPlaying ? "icon-[mdi--pause]" : "icon-[mdi--play]"}
+            className={autoplayTriggerSlot()}
+            {...api.getAutoplayTriggerProps()}
+          />
+        )}
+        <div className={slideGroup()} {...api.getItemGroupProps()}>
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className={slideSlot()}
+              {...api.getItemProps({ index })}
+            >
+              {slide.content || (
+                <Image
+                  as={as}
+                  src={slide.src || ""}
+                  alt={slide.alt || ""}
+                  {...slide.imageProps}
+                />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
       {/* controls */}
       {showControl && slideCount > 1 && (

@@ -520,7 +520,7 @@ export const Vertical: Story = {
       <Carousel
         orientation="vertical"
         slides={sampleImages.slice(0, 4)}
-        size="sm"
+        size="md"
         loop
         slideCount={4}
       />

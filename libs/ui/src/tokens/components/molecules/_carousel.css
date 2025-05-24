@@ -1,30 +1,21 @@
 @theme static {
-  /* === BASE COLORS === */
-  --color-carousel-bg: var(--color-surface);
-  --color-carousel-item-bg: var(--color-base);
-  --color-carousel-item-border: var(--color-stroke-primary);
-
   /* === ROOT === */
   --spacing-carousel-root-sm: 10rem;
   --spacing-carousel-root-md: 20rem;
   --spacing-carousel-root-lg: 40rem;
 
-  /* === SLIDE GROUP === */
-
-  /* === SLIDE === */
-
   /* === TRIGGER COMMON === */
   --padding-carousel-trigger: 0 0;
   --color-carousel-trigger-bg: var(--color-highlight);
+  --color-carousel-trigger-text: var(--color-fg-dark);
 
   /* === CONTROL COLORS === */
   --color-carousel-control-bg: var(--color-overlay);
-
-  --color-carousel-disabled: var(--color-disabled-bg);
-  --color-carousel-trigger-text: var(--color-fg-primary);
-  --color-carousel-trigger-text-disabled: var(--color-disabled-text);
+  --padding-carousel-control: var(--spacing-3xs);
+  --gap-carousel-control: var(--spacing-xs);
 
   /* === INDICATOR === */
+  --gap-carousel-indicator: var(--spacing-3xs);
   --color-carousel-indicator-active: var(--color-primary);
   --aspect-carousel-indicator: var(--aspect-ratio-square);
   --width-carousel-indicator: var(--spacing-xs);
@@ -39,43 +30,16 @@
   --spacing-carousel-padding: var(--spacing-sm);
   --spacing-carousel-item-gap: var(--spacing-xs);
 
-  /* === SIZES === */
-  --spacing-carousel-control-sm: var(--spacing-lg);
-  --spacing-carousel-control-md: var(--spacing-xl);
-  --spacing-carousel-control-lg: var(--spacing-2xl);
-
-  --spacing-carousel-indicator-sm: var(--spacing-xs);
-  --spacing-carousel-indicator-md: var(--spacing-sm);
-  --spacing-carousel-indicator-lg: var(--spacing-md);
-
   /* === ASPECT RATIO === */
   --aspect-carousel-square: 1 / 1;
   --aspect-carousel-landscape: 16 / 9;
   --aspect-carousel-portrait: 3 / 4;
   --aspect-carousel-wide: 21 / 9;
 
-  /* === WIDTHS === 
-  --spacing-carousel-full: 100%;*/
-
   /* === BORDER RADIUS === */
   --radius-carousel: var(--radius-sm);
 
-  /* === TRANSITIONS === */
-  --transition-carousel: all 0.2s ease-in-out;
-  --transition-carousel-indicator: background-color 0.2s ease-in-out;
-
-  /* === TYPOGRAPHY === */
-  --text-carousel-sm: var(--text-sm);
-  --text-carousel-md: var(--text-base);
-  --text-carousel-lg: var(--text-lg);
-
-  /* === Z-INDEX === */
-  --z-carousel-controls: 10;
-  --z-carousel-indicators: 5;
-
-  /* === IMAGE STYLES === */
-  --object-fit-carousel-image: cover;
-  --transition-carousel-image: transform 0.3s ease-in-out;
+  --shadow-carousel: var(--shadow-lg);
 }
 
 @utility token-icon-carousel-prev {
