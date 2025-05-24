@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { Select, type SelectOption } from "../../src/molecules/select";
 import { Button } from "../../src/atoms/button";
+import { Icon } from "../../src/atoms/icon"
 
 // Mock data
 const countries: SelectOption[] = [
@@ -99,16 +100,6 @@ A select component built with Zag.js that provides accessible dropdown selection
       control: { type: "select" },
       options: ["sm", "md", "lg"],
       description: "Size of the select",
-    },
-    variant: {
-      control: { type: "select" },
-      options: ["outlined", "filled", "unstyled"],
-      description: "Visual variant of the select",
-    },
-    fullWidth: {
-      control: "boolean",
-      description:
-        "Whether the select takes up the full width of its container",
     },
 
     // State
@@ -236,6 +227,20 @@ export const Multiple: Story = {
   },
 };
 
+// Non-string values, here with icons
+export const WithIcons: Story = {
+  args: {
+    options: [
+      { label: <><Icon icon={`icon-[cif--gb]`} size="sm" /> English</>, value: "en" },
+      { label: <><Icon icon={`icon-[cif--es]`} size="sm" /> Spanish</>, value: "es" },
+      { label: <><Icon icon={`icon-[cif--fr]`} size="sm" /> French</>, value: "fr" },
+      { label: <><Icon icon={`icon-[cif--cz]`} size="sm" /> Czech</>, value: "cz" },
+    ],
+    label: "Select a language",
+    placeholder: "Choose a language",
+  },
+};
+
 // Controlled state
 export const Controlled: Story = {
   render: () => {
@@ -322,7 +327,7 @@ export const WithinForm: Story = {
             <p>
               <strong>Country:</strong>{" "}
               {countries.find((c) => c.value === submittedData.country[0])
-                ?.label || "None"}
+                ?.label as any || "None"}
             </p>
             <p>
               <strong>Languages:</strong>{" "}

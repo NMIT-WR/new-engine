@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select";
 import { useMachine, normalizeProps, Portal } from "@zag-js/react";
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 import { tv, type VariantProps } from "tailwind-variants";
 import { Icon } from "../atoms/icon";
 import { Button } from "../atoms/button";
@@ -10,7 +10,7 @@ import { ExtraText } from "../atoms/extra-text";
 
 // === TYPES ===
 export interface SelectOption {
-  label: string;
+  label: ReactNode;
   value: string;
   disabled?: boolean;
   [key: string]: any;
@@ -87,24 +87,20 @@ const selectVariants = tv({
 // === COMPONENT PROPS ===
 export interface SelectProps
   extends VariantProps<typeof selectVariants>,
-    Omit<select.Props, "collection"> {
-  // Data
+    Omit<select.Props, "collection" | "id"> {
   options: SelectOption[];
-  // Labels
-  label?: string;
+  label?: ReactNode;
   placeholder?: string;
   helperText?: string;
   errorText?: string;
-  // Classes
   className?: string;
+  id?: string;
 }
 
 export function Select({
-  // Core props
   options,
   label,
   placeholder = "Select an option",
-  // Variants
   size = "md",
   value,
   defaultValue,
@@ -117,27 +113,21 @@ export function Select({
   helperText,
   closeOnSelect = true,
   loopFocus = true,
-  // Form
   name,
   form,
-  // Event handlers
   onValueChange,
   onOpenChange,
   onHighlightChange,
-  // HTML props
   className,
   id: providedId,
-  ...props
 }: SelectProps) {
   const generatedId = useId();
   const id = providedId || generatedId;
 
-  // Create collection
   const collection = select.collection({
     items: options,
-    itemToString: (item) => item.label,
+    itemToString: (item) => item.label?.toString() || "",
     itemToValue: (item) => item.value,
-    // some conditional for examble item.quantity === 0 etc.
     isItemDisabled: (item) => !!item.disabled,
   });
 

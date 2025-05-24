@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { type VariantProps } from "tailwind-variants";
+import type { VariantProps } from "tailwind-variants";
 import { tv } from "../utils";
 
 export type IconType = `token-icon-${string}` | `icon-[${string}]`;
