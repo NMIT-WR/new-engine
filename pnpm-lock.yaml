@@ -55,8 +55,8 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
       ultracite:
-        specifier: 4.2.1
-        version: 4.2.1
+        specifier: 4.2.5
+        version: 4.2.5
 
   apps/medusa-be:
     dependencies:
@@ -11762,8 +11762,8 @@ packages:
     resolution: {integrity: sha512-fIRiVTJNcSRmXKPZtGzFQv9WRrZ3M9eoptl/teFJvjOzmpU+/K/JH6HZ8deBfb5vMEpicJcLn7JmvdknlMq7Zg==}
     hasBin: true
 
-  ultracite@4.2.1:
-    resolution: {integrity: sha512-xQjwWscDOpiBF6z6hKPOJSQrNgLXJOTZ738NUym58aqUbam0xB9trVZlG5td3LjmE98Z7qjpnspDxr3lwlLkAA==}
+  ultracite@4.2.5:
+    resolution: {integrity: sha512-WSJXX6dpSC+fhPQHAQn7jxtgxU9ueujQ3DZTVfzOUdmmvIm/i6v0/WlUyCDYZbzJup+pC8vUzi+XUJLRbN52HQ==}
     hasBin: true
 
   umzug@3.8.2:
@@ -27753,7 +27753,7 @@ snapshots:
 
   ulid@2.4.0: {}
 
-  ultracite@4.2.1:
+  ultracite@4.2.5:
     dependencies:
       commander: 12.1.0
 

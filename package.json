@@ -32,7 +32,7 @@
     "nx": "21.0.3",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3",
-    "ultracite": "4.2.1"
+    "ultracite": "4.2.5"
   },
   "packageManager": "pnpm@10.11.0"
 }
