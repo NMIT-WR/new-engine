@@ -5,9 +5,9 @@
   --color-carousel-item-border: var(--color-stroke-primary);
 
   /* === ROOT === */
-  --spacing-carousel-root-sm: 100px;
-  --spacing-carousel-root-md: 300px;
-  --spacing-carousel-root-lg: 600px;
+  --spacing-carousel-root-sm: 10rem;
+  --spacing-carousel-root-md: 20rem;
+  --spacing-carousel-root-lg: 40rem;
 
   /* === SLIDE GROUP === */
 

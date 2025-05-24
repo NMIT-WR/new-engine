@@ -8,23 +8,24 @@ import { Image } from "../atoms/image";
 
 const carouselVariants = tv({
   slots: {
-    root: ["grid relative items-start", "bg-red-600"],
+    root: ["relative overflow-hiddn", "bg-red-600"],
     control: [
-      "flex absolute bottom-0 place-self-center w-fit gap-2 bg-carousel-control-bg",
-      "p-2 rounded-carousel",
+      "flex absolute bottom-0 left-1/2 -translate-x-1/2",
+      "gap-2 p-2",
+      "bg-carousel-control-bg",
+      "rounded-carousel",
     ],
     slideGroup: [
-      "flex overflow-hdden rounded-carousel",
+      "overflow-hdden",
       // Hide scrollbars
       "bg-yellow-600 p-4",
       "scrollbar-hide",
       "data-[dragging]:cursor-grabbing",
-      "data-[orientation=horizontal]:h-full",
-      "data-[orientation=vertical]:w-full",
     ],
     slide: [
-      "flex  bg-blue-600 p-4 h-full",
-      "border border-carousel-item-border rounded-carousel",
+      "relative flex-shrink-0",
+      "flex items-center justify-center",
+      "bg-blue-600 p-4",
       "overflow-hdden",
     ],
     prevTrigger: [],
@@ -32,12 +33,11 @@ const carouselVariants = tv({
     indicatorGroup: ["flex justify-center items-center gap-2"],
     indicator: [
       "aspect-carousel-indicator w-carousel-indicator",
-      "rounded-carousel",
       "data-[current]:bg-carousel-indicator-active",
     ],
     autoplayTrigger: [
       "flex justify-center items-center rounded-carousel",
-      "text-carousel-btn-text border-none cursor-pointer",
+      "text-carousel-trigger border-none cursor-pointer",
       "focus:outline-none focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2",
     ],
     spacer: ["flex-1"],
@@ -51,37 +51,37 @@ const carouselVariants = tv({
       ],
     },
   ],
+
   variants: {
     objectFit: {
       cover: {
-        slide: "**:object-cover",
+        slide: "*:w-full *:h-full *:object-cover",
       },
       contain: {
-        slide: "**:object-contain",
+        slide: "*:w-full *:h-full *:object-contain",
       },
       fill: {
-        slide: "**:object-fill",
+        slide: "*:w-full *:h-full *:object-fill",
+      },
+      none: {
+        slide: "",
       },
     },
+
     aspectRatio: {
       square: {
-        root: "aspect-carousel-square",
         slide: "aspect-carousel-square",
       },
       landscape: {
-        root: "aspect-carousel-landscape",
         slide: "aspect-carousel-landscape",
       },
       portrait: {
-        root: "aspect-carousel-portrait",
         slide: "aspect-carousel-portrait",
       },
       wide: {
-        root: "aspect-carousel-wide",
         slide: "aspect-carousel-wide",
       },
       none: {
-        root: "aspect-none",
         slide: "", //  custom content
       },
     },
@@ -114,7 +114,7 @@ const carouselVariants = tv({
   },
   defaultVariants: {
     aspectRatio: "square",
-    objectFit: "fill",
+    objectFit: "cover",
     size: "md",
   },
 });
@@ -134,18 +134,24 @@ interface CarouselProps
   slides: CarouselSlide[];
   className?: string;
   as?: ElementType;
-  size?: "sm" | "md" | "lg";
+  autoplayTrigger?: boolean;
+  showControl?: boolean;
 }
 
 export function Carousel({
+  /* Data */
   slides,
   id,
+
+  /* Tailwind variants */
+  size = "md",
+  objectFit = "cover",
+  aspectRatio = "square",
+
+  /* Zag.js carousel config */
   orientation = "horizontal",
   slideCount = slides.length,
-  size = "md",
-  className,
-  loop = false,
-  //page = 0,
+  loop = true,
   autoplay = false,
   allowMouseDrag = true,
   slidesPerPage = 1,
@@ -153,6 +159,11 @@ export function Carousel({
   spacing = "0px",
   padding = "0px",
   dir = "ltr",
+
+  /* Others */
+  autoplayTrigger = true,
+  showControl = true,
+  className,
   as,
   onPageChange,
   ...props
@@ -162,7 +173,6 @@ export function Carousel({
     slideCount,
     autoplay,
     orientation,
-    // page,
     allowMouseDrag,
     loop,
     slidesPerPage,
@@ -183,11 +193,18 @@ export function Carousel({
     indicator,
     prevTrigger,
     nextTrigger,
-  } = carouselVariants();
+  } = carouselVariants({ size, objectFit, aspectRatio });
 
   return (
     <div className={root()} {...api.getRootProps()}>
       {/* images */}
+      {autoplayTrigger && slideCount > 1 && (
+        <Button
+          icon="icon-[mdi--play]"
+          className="text-md bg-black right-8 top-12 z-10 rounded-full px-0 py-0 absolute h-4 w-4"
+          {...api.getAutoplayTriggerProps()}
+        />
+      )}
       <div className={slideGroup()} {...api.getItemGroupProps()}>
         {slides.map((slide, index) => (
           <div
@@ -207,27 +224,29 @@ export function Carousel({
         ))}
       </div>
       {/* controls */}
-      <div className={control()} {...api.getControlProps()}>
-        <Button
-          className={prevTrigger()}
-          {...api.getPrevTriggerProps()}
-          icon="token-icon-carousel-prev"
-        />
-        <div className={indicatorGroup()} {...api.getIndicatorGroupProps()}>
-          {api.pageSnapPoints.map((_, index) => (
-            <Button
-              className={indicator()}
-              key={index}
-              {...api.getIndicatorProps({ index })}
-            />
-          ))}
+      {showControl && slideCount > 1 && (
+        <div className={control()} {...api.getControlProps()}>
+          <Button
+            className={prevTrigger()}
+            {...api.getPrevTriggerProps()}
+            icon="token-icon-carousel-prev"
+          />
+          <div className={indicatorGroup()} {...api.getIndicatorGroupProps()}>
+            {api.pageSnapPoints.map((_, index) => (
+              <Button
+                className={indicator()}
+                key={index}
+                {...api.getIndicatorProps({ index })}
+              />
+            ))}
+          </div>
+          <Button
+            className={nextTrigger()}
+            {...api.getNextTriggerProps()}
+            icon="token-icon-carousel-next"
+          />
         </div>
-        <Button
-          className={nextTrigger()}
-          {...api.getNextTriggerProps()}
-          icon="token-icon-carousel-next"
-        />
-      </div>
+      )}
     </div>
   );
 }
