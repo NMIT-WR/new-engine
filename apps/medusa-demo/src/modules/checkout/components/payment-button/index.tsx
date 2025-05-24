@@ -1,18 +1,19 @@
-"use client"
+'use client'
 
-import { OnApproveActions, OnApproveData } from "@paypal/paypal-js"
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
-import { useStripe } from "@stripe/react-stripe-js"
-import React, { useState } from "react"
-import { HttpTypes } from "@medusajs/types"
-import { useRouter } from "next/navigation"
+import type { HttpTypes } from '@medusajs/types'
+import type { OnApproveActions, OnApproveData } from '@paypal/paypal-js'
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js'
+import { useStripe } from '@stripe/react-stripe-js'
+import { useRouter } from 'next/navigation'
+import type React from 'react'
+import { useState } from 'react'
 
-import Spinner from "@modules/common/icons/spinner"
-import { isManual, isPaypal, isStripe } from "@lib/constants"
-import { Button } from "@/components/Button"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import { usePlaceOrder } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
+import { Button } from '@/components/Button'
+import { isManual, isPaypal, isStripe } from '@lib/constants'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import ErrorMessage from '@modules/checkout/components/error-message'
+import Spinner from '@modules/common/icons/spinner'
+import { usePlaceOrder } from 'hooks/cart'
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -91,7 +92,7 @@ const StripePaymentButton = ({
   const onPaymentCompleted = () => {
     placeOrder.mutate(null, {
       onSuccess: (data) => {
-        if (data?.type === "order") {
+        if (data?.type === 'order') {
           const countryCode =
             data.order.shipping_address?.country_code?.toLowerCase()
           router.push(`/${countryCode}/order/confirmed/${data.order.id}`)
@@ -110,7 +111,7 @@ const StripePaymentButton = ({
   const stripe = useStripe()
 
   const session = cart.payment_collection?.payment_sessions?.find(
-    (s) => s.status === "pending"
+    (s) => s.status === 'pending'
   )
 
   const disabled = !stripe || !session?.data?.payment_method_id ? true : false
@@ -133,8 +134,8 @@ const StripePaymentButton = ({
           const pi = error.payment_intent
 
           if (
-            (pi && pi.status === "requires_capture") ||
-            (pi && pi.status === "succeeded")
+            (pi && pi.status === 'requires_capture') ||
+            (pi && pi.status === 'succeeded')
           ) {
             onPaymentCompleted()
           }
@@ -144,8 +145,8 @@ const StripePaymentButton = ({
         }
 
         if (
-          (paymentIntent && paymentIntent.status === "requires_capture") ||
-          paymentIntent.status === "succeeded"
+          (paymentIntent && paymentIntent.status === 'requires_capture') ||
+          paymentIntent.status === 'succeeded'
         ) {
           return onPaymentCompleted()
         }
@@ -186,7 +187,7 @@ const PayPalPaymentButton = ({
   const onPaymentCompleted = () => {
     placeOrder.mutate(null, {
       onSuccess: (data) => {
-        if (data?.type === "order") {
+        if (data?.type === 'order') {
           const countryCode =
             data.order.shipping_address?.country_code?.toLowerCase()
           router.push(`/${countryCode}/order/confirmed/${data.order.id}`)
@@ -203,7 +204,7 @@ const PayPalPaymentButton = ({
   }
 
   const session = cart.payment_collection?.payment_sessions?.find(
-    (s) => s.status === "pending"
+    (s) => s.status === 'pending'
   )
 
   const handlePayment = async (
@@ -213,7 +214,7 @@ const PayPalPaymentButton = ({
     actions?.order
       ?.authorize()
       .then((authorization) => {
-        if (authorization.status !== "COMPLETED") {
+        if (authorization.status !== 'COMPLETED') {
           setErrorMessage(`An error occurred, status: ${authorization.status}`)
           return
         }
@@ -235,7 +236,7 @@ const PayPalPaymentButton = ({
     return (
       <>
         <PayPalButtons
-          style={{ layout: "horizontal" }}
+          style={{ layout: 'horizontal' }}
           createOrder={async () => session?.data.id as string}
           onApprove={handlePayment}
           disabled={notReady || submitting || isPending}
@@ -255,7 +256,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const onPaymentCompleted = () => {
     placeOrder.mutate(null, {
       onSuccess: (data) => {
-        if (data?.type === "order") {
+        if (data?.type === 'order') {
           const countryCode =
             data.order.shipping_address?.country_code?.toLowerCase()
           router.push(`/${countryCode}/order/confirmed/${data.order.id}`)

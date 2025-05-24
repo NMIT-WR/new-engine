@@ -1,28 +1,28 @@
-"use client"
+'use client'
 
-import { useCallback, useContext, useEffect, useMemo, useState } from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { CreditCard } from "@medusajs/icons"
-import { CardElement } from "@stripe/react-stripe-js"
-import { StripeCardElementOptions } from "@stripe/stripe-js"
-import { twJoin } from "tailwind-merge"
-import { capitalize } from "lodash"
+import { CreditCard } from '@medusajs/icons'
+import { CardElement } from '@stripe/react-stripe-js'
+import type { StripeCardElementOptions } from '@stripe/stripe-js'
+import { capitalize } from 'lodash'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { twJoin } from 'tailwind-merge'
 
-import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
-import PaymentContainer from "@modules/checkout/components/payment-container"
-import { StripeContext } from "@modules/checkout/components/payment-wrapper"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import PaymentCardButton from "@modules/checkout/components/payment-card-button"
+import { isStripe as isStripeFunc, paymentInfoMap } from '@lib/constants'
+import ErrorMessage from '@modules/checkout/components/error-message'
+import PaymentCardButton from '@modules/checkout/components/payment-card-button'
+import PaymentContainer from '@modules/checkout/components/payment-container'
+import { StripeContext } from '@modules/checkout/components/payment-wrapper'
 
-import { Button } from "@/components/Button"
-import { UiRadioGroup } from "@/components/ui/Radio"
-import { Input } from "@/components/Forms"
+import { Button } from '@/components/Button'
+import { Input } from '@/components/Forms'
+import { UiRadioGroup } from '@/components/ui/Radio'
+import type { StoreCart, StorePaymentSession } from '@medusajs/types'
 import {
   useCartPaymentMethods,
   useGetPaymentMethod,
   useSetPaymentMethod,
-} from "hooks/cart"
-import { StoreCart, StorePaymentSession } from "@medusajs/types"
+} from 'hooks/cart'
 
 const Payment = ({ cart }: { cart: StoreCart }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -34,22 +34,22 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
   const router = useRouter()
   const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "payment"
+  const isOpen = searchParams.get('step') === 'payment'
 
   const useOptions: StripeCardElementOptions = useMemo(() => {
     return {
       style: {
         base: {
-          fontFamily: "Inter, sans-serif",
-          color: "#050505",
-          "::placeholder": {
-            color: "#808080",
+          fontFamily: 'Inter, sans-serif',
+          color: '#050505',
+          '::placeholder': {
+            color: '#808080',
           },
-          fontSize: "16px",
+          fontSize: '16px',
         },
       },
       classes: {
-        base: "pt-[18px] pb-1 block w-full h-14.5 px-4 mt-0 border rounded-xs appearance-none focus:outline-none focus:ring-0 border-grayscale-200 hover:border-grayscale-500 focus:border-grayscale-500 transition-all ease-in-out",
+        base: 'pt-[18px] pb-1 block w-full h-14.5 px-4 mt-0 border rounded-xs appearance-none focus:outline-none focus:ring-0 border-grayscale-200 hover:border-grayscale-500 focus:border-grayscale-500 transition-all ease-in-out',
       },
     }
   }, [])
@@ -65,7 +65,7 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
   )
 
   const handleEdit = () => {
-    router.push(pathname + "?" + createQueryString("step", "payment"), {
+    router.push(pathname + '?' + createQueryString('step', 'payment'), {
       scroll: false,
     })
   }
@@ -77,13 +77,13 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
   const setPaymentMethod = useSetPaymentMethod()
 
   const activeSession = cart?.payment_collection?.payment_sessions?.find(
-    (paymentSession: StorePaymentSession) => paymentSession.status === "pending"
+    (paymentSession: StorePaymentSession) => paymentSession.status === 'pending'
   )
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
-    activeSession?.provider_id ?? ""
+    activeSession?.provider_id ?? ''
   )
   const { data: availablePaymentMethods } = useCartPaymentMethods(
-    cart?.region?.id ?? ""
+    cart?.region?.id ?? ''
   )
   const isStripe = isStripeFunc(activeSession?.provider_id)
   const stripeReady = useContext(StripeContext)
@@ -110,12 +110,12 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
             setCardBrand(null)
             setCardComplete(false)
           },
-          onError: () => setError("Failed to remove card"),
+          onError: () => setError('Failed to remove card'),
         }
       )
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      setError("Failed to remove card")
+      setError('Failed to remove card')
     }
   }, [activeSession?.id, setPaymentMethod])
 
@@ -131,12 +131,12 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
   }
   return (
     <>
-      <div className="flex justify-between mb-6 md:mb-8 border-t border-grayscale-200 pt-8 mt-8">
+      <div className="mt-8 mb-6 flex justify-between border-grayscale-200 border-t pt-8 md:mb-8">
         <div>
           <p
             className={twJoin(
-              "transition-fontWeight duration-75",
-              isOpen && "font-semibold"
+              'transition-fontWeight duration-75',
+              isOpen && 'font-semibold'
             )}
           >
             4. Payment
@@ -148,7 +148,7 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
           </Button>
         )}
       </div>
-      <div className={isOpen ? "block" : "hidden"}>
+      <div className={isOpen ? 'block' : 'hidden'}>
         {availablePaymentMethods?.length && (
           <>
             <UiRadioGroup
@@ -176,7 +176,7 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
                 {isStripeFunc(selectedPaymentMethod) &&
                   (paymentMethod?.card?.brand ? (
                     <Input
-                      value={"**** **** **** " + paymentMethod?.card.last4}
+                      value={'**** **** **** ' + paymentMethod?.card.last4}
                       placeholder="Card number"
                       disabled={true}
                     />
@@ -230,20 +230,20 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
         />
       </div>
 
-      <div className={isOpen ? "hidden" : "block"}>
+      <div className={isOpen ? 'hidden' : 'block'}>
         {cart && paymentReady && activeSession ? (
           <div className="flex flex-col gap-4">
-            <div className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-12">
+            <div className="flex flex-wrap gap-x-12 gap-y-2 max-sm:flex-col">
               <div className="text-grayscale-500">Payment method</div>
               <div className="text-grayscale-600">
                 {paymentInfoMap[selectedPaymentMethod]?.title ||
                   selectedPaymentMethod}
               </div>
             </div>
-            <div className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-14.5">
+            <div className="flex flex-wrap gap-x-14.5 gap-y-2 max-sm:flex-col">
               <div className="text-grayscale-500">Payment details</div>
               {isStripeFunc(selectedPaymentMethod) && cardBrand ? (
-                <div className="text-grayscale-600 flex items-center gap-2">
+                <div className="flex items-center gap-2 text-grayscale-600">
                   {paymentInfoMap[selectedPaymentMethod]?.icon || (
                     <CreditCard />
                   )}

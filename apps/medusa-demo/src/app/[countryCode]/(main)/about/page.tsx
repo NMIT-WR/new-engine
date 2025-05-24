@@ -1,12 +1,12 @@
-import {Metadata} from "next"
-import Image from "next/image"
-import {StoreRegion} from "@medusajs/types"
-import {listRegions} from "@lib/data/regions"
-import {Layout, LayoutColumn} from "@/components/Layout"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { listRegions } from '@lib/data/regions'
+import type { StoreRegion } from '@medusajs/types'
+import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "Learn more about Sofa Society",
+  title: 'About',
+  description: 'Learn more about Sofa Society',
 }
 
 export async function generateStaticParams() {
@@ -17,7 +17,7 @@ export async function generateStaticParams() {
             .map((c) => c.iso_2)
             .filter(
               (value): value is string =>
-                typeof value === "string" && Boolean(value)
+                typeof value === 'string' && Boolean(value)
             )
         : []
     )
@@ -44,7 +44,7 @@ export default function AboutPage() {
           className="md:h-screen md:object-cover"
         />
       </div>
-      <div className="pt-8 md:pt-26 pb-26 md:pb-36">
+      <div className="pt-8 pb-26 md:pt-26 md:pb-36">
         <Layout>
           <LayoutColumn start={1} end={{ base: 13, lg: 7 }}>
             <h3 className="text-md max-lg:mb-6 md:text-2xl">
@@ -73,11 +73,11 @@ export default function AboutPage() {
               width={2496}
               height={1404}
               alt="Living room with black armchair and dark gray sofa"
-              className="mt-26 lg:mt-36 mb-8 lg:mb-26"
+              className="mt-26 mb-8 lg:mt-36 lg:mb-26"
             />
           </LayoutColumn>
           <LayoutColumn start={1} end={{ base: 13, lg: 8 }}>
-            <h3 className="text-md lg:mb-10 mb-6 md:text-2xl">
+            <h3 className="mb-6 text-md md:text-2xl lg:mb-10">
               We are here to make your living space a true reflection of your
               personal style.
             </h3>
@@ -124,7 +124,7 @@ export default function AboutPage() {
                 space and personality.
               </p>
             </div>
-            <div className="md:text-md max-lg:mb-26">
+            <div className="max-lg:mb-26 md:text-md">
               <p>
                 We believe that great design should be environmentally
                 conscious, which is why we strive to minimise our environmental

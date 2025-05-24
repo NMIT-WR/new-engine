@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { useState } from "react";
-import { Tooltip } from "../../src/atoms/tooltip";
-import { Button } from "../../src/atoms/button";
-import { Icon, IconType } from "../../src/atoms/icon";
-import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Button } from '../../src/atoms/button'
+import { Icon, type IconType } from '../../src/atoms/icon'
+import { Tooltip } from '../../src/atoms/tooltip'
 
 const meta: Meta<typeof Tooltip> = {
-  title: "Atoms/Tooltip",
+  title: 'Atoms/Tooltip',
   component: Tooltip,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
     docs: {
       description: {
         component: `
@@ -25,109 +25,109 @@ A tooltip component built with Zag.js that provides accessible, customizable too
       },
     },
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
     // Core
     content: {
-      control: "text",
-      description: "Content to display in the tooltip",
+      control: 'text',
+      description: 'Content to display in the tooltip',
     },
     size: {
-      control: { type: "select" },
-      options: ["sm", "md", "lg"],
-      description: "Visual size of the tooltip",
+      control: { type: 'select' },
+      options: ['sm', 'md', 'lg'],
+      description: 'Visual size of the tooltip',
     },
 
     // Timing & Interaction
     openDelay: {
-      control: { type: "range", min: 0, max: 2000, step: 100 },
-      description: "Delay before tooltip opens (ms)",
+      control: { type: 'range', min: 0, max: 2000, step: 100 },
+      description: 'Delay before tooltip opens (ms)',
     },
     closeDelay: {
-      control: { type: "range", min: 0, max: 2000, step: 100 },
-      description: "Delay before tooltip closes (ms)",
+      control: { type: 'range', min: 0, max: 2000, step: 100 },
+      description: 'Delay before tooltip closes (ms)',
     },
     interactive: {
-      control: "boolean",
-      description: "Allow hovering over tooltip content",
+      control: 'boolean',
+      description: 'Allow hovering over tooltip content',
     },
 
     // Position
     placement: {
-      control: { type: "select" },
+      control: { type: 'select' },
       options: [
-        "top",
-        "top-start",
-        "top-end",
-        "right",
-        "right-start",
-        "right-end",
-        "bottom",
-        "bottom-start",
-        "bottom-end",
-        "left",
-        "left-start",
-        "left-end",
+        'top',
+        'top-start',
+        'top-end',
+        'right',
+        'right-start',
+        'right-end',
+        'bottom',
+        'bottom-start',
+        'bottom-end',
+        'left',
+        'left-start',
+        'left-end',
       ],
-      description: "Where tooltip appears relative to trigger",
+      description: 'Where tooltip appears relative to trigger',
     },
     gutter: {
-      control: { type: "range", min: 0, max: 50, step: 5 },
-      description: "Minimum distance from screen edges",
+      control: { type: 'range', min: 0, max: 50, step: 5 },
+      description: 'Minimum distance from screen edges',
     },
     flip: {
-      control: "boolean",
+      control: 'boolean',
       description: "Auto-flip to opposite side if doesn't fit",
     },
     sameWidth: {
-      control: "boolean",
-      description: "Match trigger element width",
+      control: 'boolean',
+      description: 'Match trigger element width',
     },
     strategy: {
-      control: { type: "select" },
-      options: ["absolute", "fixed"],
-      description: "CSS positioning strategy",
+      control: { type: 'select' },
+      options: ['absolute', 'fixed'],
+      description: 'CSS positioning strategy',
     },
 
     // State & Behavior
     defaultOpen: {
-      control: "boolean",
-      description: "Initial open state",
+      control: 'boolean',
+      description: 'Initial open state',
     },
     disabled: {
-      control: "boolean",
-      description: "Disable tooltip functionality",
+      control: 'boolean',
+      description: 'Disable tooltip functionality',
     },
     closeOnEscape: {
-      control: "boolean",
-      description: "Close on ESC key press",
+      control: 'boolean',
+      description: 'Close on ESC key press',
     },
     closeOnPointerDown: {
-      control: "boolean",
-      description: "Close on any pointer down",
+      control: 'boolean',
+      description: 'Close on any pointer down',
     },
     closeOnScroll: {
-      control: "boolean",
-      description: "Close when page scrolls",
+      control: 'boolean',
+      description: 'Close when page scrolls',
     },
     closeOnClick: {
-      control: "boolean",
-      description: "Close on any click",
+      control: 'boolean',
+      description: 'Close on any click',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // === BASIC EXAMPLES ===
 
 export const Default: Story = {
   args: {
-    content: "This is a helpful tooltip!",
+    content: 'This is a helpful tooltip!',
     children: <Button variant="primary">Hover me</Button>,
   },
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -145,17 +145,17 @@ export const Sizes: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const WithIcon: Story = {
   args: {
-    content: "Get help and support",
+    content: 'Get help and support',
     children: (
       <Icon size="lg" icon="icon-[mdi--help-circle-outline]" color="primary" />
     ),
-    placement: "top",
+    placement: 'top',
   },
-};
+}
 
 // === CONTENT VARIATIONS ===
 
@@ -167,11 +167,11 @@ export const RichContent: Story = {
         <div className="text-sm opacity-80">
           View and edit your profile settings
         </div>
-        <div className="flex gap-2 mt-3">
-          <button className="px-2 py-1 bg-primary text-primary-foreground rounded text-xs">
+        <div className="mt-3 flex gap-2">
+          <button className="rounded bg-primary px-2 py-1 text-primary-foreground text-xs">
             Edit
           </button>
-          <button className="px-2 py-1 bg-secondary text-secondary-foreground rounded text-xs">
+          <button className="rounded bg-secondary px-2 py-1 text-secondary-foreground text-xs">
             View
           </button>
         </div>
@@ -180,13 +180,13 @@ export const RichContent: Story = {
     interactive: true,
     children: <Button variant="secondary">Rich Content</Button>,
   },
-};
+}
 
 export const WithLinks: Story = {
   args: {
     content: (
       <div>
-        Learn more in our{" "}
+        Learn more in our{' '}
         <a
           href="#"
           className="text-primary underline hover:no-underline"
@@ -197,10 +197,10 @@ export const WithLinks: Story = {
       </div>
     ),
     interactive: true,
-    placement: "top",
+    placement: 'top',
     children: <Icon icon="icon-[mdi--information]" />,
   },
-};
+}
 
 // === PLACEMENT EXAMPLES ===
 
@@ -260,7 +260,7 @@ export const AllPlacements: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // === POSITIONING OPTIONS ===
 
@@ -304,7 +304,7 @@ export const PositioningOptions: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // === CLOSE BEHAVIORS ===
 
@@ -312,7 +312,7 @@ export const CloseBehaviors: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Different Close Triggers" fullWidth>
-        <div className="grid grid-cols-2 gap-4 w-full">
+        <div className="grid w-full grid-cols-2 gap-4">
           <Tooltip
             content="Press ESC to close"
             closeOnEscape={true}
@@ -355,21 +355,21 @@ export const CloseBehaviors: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 // === STATE MANAGEMENT ===
 
 export const ControlledTooltip: Story = {
   render: () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
       <VariantContainer>
         <VariantGroup title="External State Control" fullWidth>
-          <div className="space-y-4 w-full">
-            <div className="flex gap-4 justify-center">
+          <div className="w-full space-y-4">
+            <div className="flex justify-center gap-4">
               <Button onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? "Close" : "Open"} Tooltip
+                {isOpen ? 'Close' : 'Open'} Tooltip
               </Button>
               <Button
                 onClick={() => setIsOpen(false)}
@@ -391,15 +391,15 @@ export const ControlledTooltip: Story = {
               </Tooltip>
             </div>
 
-            <div className="text-sm text-muted-foreground text-center">
-              Tooltip state: {isOpen ? "Open" : "Closed"}
+            <div className="text-center text-muted-foreground text-sm">
+              Tooltip state: {isOpen ? 'Open' : 'Closed'}
             </div>
           </div>
         </VariantGroup>
       </VariantContainer>
-    );
+    )
   },
-};
+}
 
 export const LongContent: Story = {
   args: {
@@ -410,19 +410,19 @@ export const LongContent: Story = {
         veniam, quis nostrud exercitation ullamco laboris.
       </div>
     ),
-    placement: "top",
+    placement: 'top',
     children: <Button>Long Content</Button>,
   },
-};
+}
 
 // === REAL-WORLD EXAMPLES ===
 export const FormHelper: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Form Field Helpers" fullWidth>
-        <div className="space-y-4 max-w-3xl">
+        <div className="max-w-3xl space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
+            <label className="flex items-center gap-2 font-medium text-sm">
               Password
               <Tooltip
                 content="Must be at least 8 characters with uppercase, lowercase, and numbers"
@@ -433,13 +433,13 @@ export const FormHelper: Story = {
             </label>
             <input
               type="password"
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full rounded-md border px-3 py-2"
               placeholder="Enter password"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
+            <label className="flex items-center gap-2 font-medium text-sm">
               API Key
               <Tooltip
                 content="Found in your account settings under 'Developer Options'"
@@ -450,7 +450,7 @@ export const FormHelper: Story = {
             </label>
             <input
               type="text"
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full rounded-md border px-3 py-2"
               placeholder="sk-..."
             />
           </div>
@@ -458,22 +458,22 @@ export const FormHelper: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const NavigationTooltips: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Navigation Bar">
-        <div className="flex gap-1 p-2 bg-muted rounded-lg">
+        <div className="flex gap-1 rounded-lg bg-muted p-2">
           {[
-            { icon: "icon-[mdi--home]", label: "Dashboard" },
-            { icon: "icon-[mdi--chart-line]", label: "Analytics" },
-            { icon: "icon-[mdi--users]", label: "Team Members" },
-            { icon: "icon-[mdi--settings]", label: "Settings" },
-            { icon: "icon-[mdi--help-circle]", label: "Help & Support" },
+            { icon: 'icon-[mdi--home]', label: 'Dashboard' },
+            { icon: 'icon-[mdi--chart-line]', label: 'Analytics' },
+            { icon: 'icon-[mdi--users]', label: 'Team Members' },
+            { icon: 'icon-[mdi--settings]', label: 'Settings' },
+            { icon: 'icon-[mdi--help-circle]', label: 'Help & Support' },
           ].map(({ icon, label }) => (
             <Tooltip key={label} content={label} placement="bottom">
-              <button className="p-2 rounded hover:bg-background transition-colors">
+              <button className="rounded p-2 transition-colors hover:bg-background">
                 <Icon icon={icon as IconType} />
               </button>
             </Tooltip>
@@ -482,17 +482,17 @@ export const NavigationTooltips: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const DataPreview: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Dashboard Cards" fullWidth>
-        <div className="grid grid-cols-3 gap-4 w-full">
+        <div className="grid w-full grid-cols-3 gap-4">
           {[
-            { value: "1,234", label: "Users", change: "+12%" },
-            { value: "$45.2K", label: "Revenue", change: "+8%" },
-            { value: "98.5%", label: "Uptime", change: "+0.2%" },
+            { value: '1,234', label: 'Users', change: '+12%' },
+            { value: '$45.2K', label: 'Revenue', change: '+8%' },
+            { value: '98.5%', label: 'Uptime', change: '+0.2%' },
           ].map(({ value, label, change }) => (
             <Tooltip
               key={label}
@@ -500,7 +500,7 @@ export const DataPreview: Story = {
                 <div className="text-center">
                   <div className="font-semibold">{label}</div>
                   <div className="text-2xl">{value}</div>
-                  <div className="text-sm text-green-500">
+                  <div className="text-green-500 text-sm">
                     {change} this month
                   </div>
                 </div>
@@ -508,9 +508,9 @@ export const DataPreview: Story = {
               interactive={true}
               placement="top"
             >
-              <div className="p-4 bg-card border rounded-lg cursor-pointer hover:bg-muted transition-colors">
-                <div className="text-sm text-muted-foreground">{label}</div>
-                <div className="text-2xl font-bold">{value}</div>
+              <div className="cursor-pointer rounded-lg border bg-card p-4 transition-colors hover:bg-muted">
+                <div className="text-muted-foreground text-sm">{label}</div>
+                <div className="font-bold text-2xl">{value}</div>
               </div>
             </Tooltip>
           ))}
@@ -518,4 +518,4 @@ export const DataPreview: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

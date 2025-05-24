@@ -1,46 +1,41 @@
-import { sdk } from "@lib/config"
-import { HttpTypes } from "@medusajs/types"
-import { getRegion } from "@lib/data/regions"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import { sortProducts } from "@lib/util/sort-products"
+import { sdk } from '@lib/config'
+import { getRegion } from '@lib/data/regions'
+import { sortProducts } from '@lib/util/sort-products'
+import type { HttpTypes } from '@medusajs/types'
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
 
-export const getProductsById = async function ({
+export const getProductsById = async ({
   ids,
   regionId,
 }: {
   ids: string[]
   regionId: string
-}) {
-  return sdk.client
+}) =>
+  sdk.client
     .fetch<{ products: HttpTypes.StoreProduct[] }>(`/store/products`, {
       query: {
         id: ids,
         region_id: regionId,
-        fields: "*variants.calculated_price,+variants.inventory_quantity",
+        fields: '*variants.calculated_price,+variants.inventory_quantity',
       },
-      next: { tags: ["products"] },
-      cache: "no-store",
+      next: { tags: ['products'] },
+      cache: 'no-store',
     })
     .then(({ products }) => products)
-}
 
-export const getProductByHandle = async function (
-  handle: string,
-  regionId: string
-) {
-  return sdk.client
+export const getProductByHandle = async (handle: string, regionId: string) =>
+  sdk.client
     .fetch<{ products: HttpTypes.StoreProduct[] }>(`/store/products`, {
       query: {
         handle,
         region_id: regionId,
-        fields: "*variants.calculated_price,+variants.inventory_quantity",
+        fields: '*variants.calculated_price,+variants.inventory_quantity',
       },
-      next: { tags: ["products"] },
+      next: { tags: ['products'] },
     })
     .then(({ products }) => products[0])
-}
 
-export const getProductFashionDataByHandle = async function (handle: string) {
+export const getProductFashionDataByHandle = async (handle: string) => {
   try {
     return await sdk.client.fetch<{
       materials: {
@@ -53,9 +48,9 @@ export const getProductFashionDataByHandle = async function (handle: string) {
         }[]
       }[]
     }>(`/store/custom/fashion/${handle}`, {
-      method: "GET",
-      next: { tags: ["products"] },
-      cache: "no-store",
+      method: 'GET',
+      next: { tags: ['products'] },
+      cache: 'no-store',
     })
   } catch (error) {
     console.warn(`Failed to fetch fashion data for product ${handle}:`, error)
@@ -66,7 +61,7 @@ export const getProductFashionDataByHandle = async function (handle: string) {
   }
 }
 
-export const getProductsList = async function ({
+export const getProductsList = async ({
   pageParam = 1,
   queryParams,
   countryCode,
@@ -78,7 +73,7 @@ export const getProductsList = async function ({
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductListParams
-}> {
+}> => {
   const page = Math.max(1, pageParam || 1)
   const limit = queryParams?.limit || 12
   const offset = (page - 1) * limit
@@ -98,11 +93,11 @@ export const getProductsList = async function ({
           limit,
           offset,
           region_id: region.id,
-          fields: "*variants.calculated_price",
+          fields: '*variants.calculated_price',
           ...queryParams,
         },
-        next: { tags: ["products"] },
-        cache: "no-store",
+        next: { tags: ['products'] },
+        cache: 'no-store',
       }
     )
     .then(({ products, count }) => {
@@ -123,10 +118,10 @@ export const getProductsList = async function ({
  * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
  * It will then return the paginated products based on the page and limit parameters.
  */
-export const getProductsListWithSort = async function ({
+export const getProductsListWithSort = async ({
   page = 0,
   queryParams,
-  sortBy = "created_at",
+  sortBy = 'created_at',
   countryCode,
 }: {
   page?: number
@@ -137,7 +132,7 @@ export const getProductsListWithSort = async function ({
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-}> {
+}> => {
   const limit = queryParams?.limit || 12
 
   const {

@@ -1,6 +1,6 @@
-import { ProductPageGallery } from "@/components/ProductPageGallery"
-import { HttpTypes } from "@medusajs/types"
-import Image from "next/image"
+import { ProductPageGallery } from '@/components/ProductPageGallery'
+import type { HttpTypes } from '@medusajs/types'
+import Image from 'next/image'
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]

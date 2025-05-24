@@ -1,6 +1,6 @@
-import { getPricesForVariant } from "@lib/util/get-product-price"
-import { HttpTypes } from "@medusajs/types"
-import { twMerge } from "tailwind-merge"
+import { getPricesForVariant } from '@lib/util/get-product-price'
+import type { HttpTypes } from '@medusajs/types'
+import { twMerge } from 'tailwind-merge'
 
 type LineItemUnitPriceProps = {
   item: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem
@@ -26,7 +26,7 @@ const LineItemUnitPrice = ({
     <div className={className}>
       {hasReducedPrice ? (
         <>
-          <p className="text-base sm:text-sm font-semibold text-red-primary">
+          <p className="font-semibold text-base text-red-primary sm:text-sm">
             {calculated_price}
           </p>
           <p className="text-grayscale-500 line-through">{original_price}</p>
@@ -34,7 +34,7 @@ const LineItemUnitPrice = ({
       ) : (
         <p
           className={twMerge(
-            "text-xs sm:text-sm font-semibold",
+            'font-semibold text-xs sm:text-sm',
             regularPriceClassName
           )}
         >

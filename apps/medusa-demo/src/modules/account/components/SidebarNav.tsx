@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { usePathname } from "next/navigation"
-import { twJoin } from "tailwind-merge"
+import { usePathname } from 'next/navigation'
+import type * as React from 'react'
+import { twJoin } from 'tailwind-merge'
 
-import { useCountryCode } from "hooks/country-code"
-import { LocalizedLink } from "@/components/LocalizedLink"
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { useCountryCode } from 'hooks/country-code'
 
 export const SidebarNav: React.FC = () => {
   const pathName = usePathname()
@@ -17,8 +17,8 @@ export const SidebarNav: React.FC = () => {
       <LocalizedLink
         href="/account"
         className={twJoin(
-          "inline-flex items-start py-4 max-md:whitespace-nowrap",
-          currentPath === "/account" && "font-semibold"
+          'inline-flex items-start py-4 max-md:whitespace-nowrap',
+          currentPath === '/account' && 'font-semibold'
         )}
       >
         Personal &amp; security
@@ -26,8 +26,8 @@ export const SidebarNav: React.FC = () => {
       <LocalizedLink
         href="/account/my-orders"
         className={twJoin(
-          "inline-flex items-start py-4 max-md:whitespace-nowrap",
-          currentPath.startsWith("/account/my-orders") && "font-semibold"
+          'inline-flex items-start py-4 max-md:whitespace-nowrap',
+          currentPath.startsWith('/account/my-orders') && 'font-semibold'
         )}
       >
         My orders

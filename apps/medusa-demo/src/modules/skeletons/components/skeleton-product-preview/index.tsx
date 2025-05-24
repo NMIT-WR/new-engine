@@ -1,15 +1,15 @@
-import { Skeleton } from "@/components/ui/Skeleton"
+import { Skeleton } from '@/components/ui/Skeleton'
 
 const SkeletonProductPreview = () => {
   return (
     <div>
-      <Skeleton className="mb-4 md:mb-6 w-full aspect-square" />
+      <Skeleton className="mb-4 aspect-square w-full md:mb-6" />
       <div className="flex justify-between max-md:flex-col">
         <div>
-          <Skeleton className="mb-2.5 h-3 md:h-5 w-22" />
-          <Skeleton className="max-md:hidden h-3 md:h-3 w-18" />
+          <Skeleton className="mb-2.5 h-3 w-22 md:h-5" />
+          <Skeleton className="h-3 w-18 max-md:hidden md:h-3" />
         </div>
-        <Skeleton className="h-3 md:h-6 w-18 md:w-22" />
+        <Skeleton className="h-3 w-18 md:h-6 md:w-22" />
       </div>
     </div>
   )

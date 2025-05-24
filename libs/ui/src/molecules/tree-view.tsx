@@ -1,81 +1,81 @@
-import * as tree from "@zag-js/tree-view";
-import { useMachine, normalizeProps } from "@zag-js/react";
-import { useId } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { Icon, type IconType } from "../atoms/icon";
+import { normalizeProps, useMachine } from '@zag-js/react'
+import * as tree from '@zag-js/tree-view'
+import { useId } from 'react'
+import { type VariantProps, tv } from 'tailwind-variants'
+import { Icon, type IconType } from '../atoms/icon'
 
 // === COLLECTION TYPES ===
 interface TreeNode {
-  id: string;
-  name: string;
-  children?: TreeNode[];
+  id: string
+  name: string
+  children?: TreeNode[]
   icons?: {
-    branch?: IconType;
-    leaf?: IconType;
-  };
-  disabled?: boolean;
-  selected?: boolean;
-  [key: string]: any;
+    branch?: IconType
+    leaf?: IconType
+  }
+  disabled?: boolean
+  selected?: boolean
+  [key: string]: any
 }
 
 // === COMPONENT VARIANTS ===
 const treeVariants = tv({
   slots: {
-    root: "relative bg-tree-root-bg",
-    label: ["text-tree-label-fg font-tree-label"],
+    root: 'relative bg-tree-root-bg',
+    label: ['text-tree-label-fg font-tree-label'],
     tree: [
-      "outline-none bg-tree-bg",
+      'outline-none bg-tree-bg',
 
-      "focus-visible:ring-2 focus-visible:ring-tree-node-focus focus-visible:ring-offset-2",
+      'focus-visible:ring-2 focus-visible:ring-tree-node-focus focus-visible:ring-offset-2',
     ],
     branch: [
-      "data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none",
+      'data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none',
     ],
     branchControl: [],
-    branchText: ["flex-1 text-tree-size"],
-    branchIndicator: ["data-[state=open]:token-icon-tree-indicator-open"],
-    branchContent: ["relative", "data-[state=closed]:hidden"],
+    branchText: ['flex-1 text-tree-size'],
+    branchIndicator: ['data-[state=open]:token-icon-tree-indicator-open'],
+    branchContent: ['relative', 'data-[state=closed]:hidden'],
     branchIndentGuide: [
-      "absolute top-0 bottom-0 left-1",
-      "w-tree-indent bg-tree-indent",
-      "opacity-tree-indent",
+      'absolute top-0 bottom-0 left-1',
+      'w-tree-indent bg-tree-indent',
+      'opacity-tree-indent',
     ],
     leaf: [],
     nodeIcon: [
       //"flex-shrink-0",
-      "text-tree-icon hover:text-tree-icon-hover",
+      'text-tree-icon hover:text-tree-icon-hover',
     ],
   },
   compoundSlots: [
     {
       // leaf has a common style with branch and branchControl
-      slots: ["branch", "leaf"],
+      slots: ['branch', 'leaf'],
       class: [
-        "relative",
+        'relative',
         // get --depth from zag-js api
-        "ml-[calc(var(--depth)*theme(tree-indent-per-level))]",
-        "data-[depth=1]:ml-0",
+        'ml-[calc(var(--depth)*theme(tree-indent-per-level))]',
+        'data-[depth=1]:ml-0',
       ],
     },
     {
-      slots: ["branchControl", "leaf"],
+      slots: ['branchControl', 'leaf'],
       class: [
-        "flex items-center gap-tree-icon p-tree-node",
-        "cursor-pointer rounded-tree-node",
-        "hover:bg-tree-node-hover hover:text-tree-fg-hover",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-focus",
-        "data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected",
-        "data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent",
+        'flex items-center gap-tree-icon p-tree-node',
+        'cursor-pointer rounded-tree-node',
+        'hover:bg-tree-node-hover hover:text-tree-fg-hover',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-focus',
+        'data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected',
+        'data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent',
       ],
     },
   ],
-});
+})
 
 // === TREE NODE COMPONENT ===
 interface TreeNodeProps extends tree.NodeProps {
-  api: tree.Api;
-  showIndentGuides?: boolean;
-  showNodeIcons?: boolean;
+  api: tree.Api
+  showIndentGuides?: boolean
+  showNodeIcons?: boolean
 }
 
 function TreeNode({
@@ -85,8 +85,8 @@ function TreeNode({
   showIndentGuides = true,
   showNodeIcons = true,
 }: TreeNodeProps) {
-  const nodeProps = { indexPath, node };
-  const nodeState = api.getNodeState(nodeProps);
+  const nodeProps = { indexPath, node }
+  const nodeState = api.getNodeState(nodeProps)
 
   const {
     branch,
@@ -97,7 +97,7 @@ function TreeNode({
     branchIndentGuide,
     leaf,
     nodeIcon,
-  } = treeVariants();
+  } = treeVariants()
 
   if (nodeState.isBranch) {
     return (
@@ -111,11 +111,11 @@ function TreeNode({
               icon={
                 node.icons?.branch ||
                 (nodeState.expanded
-                  ? "token-icon-tree-node-open"
-                  : "token-icon-tree-node")
+                  ? 'token-icon-tree-node-open'
+                  : 'token-icon-tree-node')
               }
               className={nodeIcon()}
-              data-state={nodeState.expanded ? "open" : "closed"}
+              data-state={nodeState.expanded ? 'open' : 'closed'}
             />
           )}
           <span className={branchText()} {...api.getBranchTextProps(nodeProps)}>
@@ -149,29 +149,29 @@ function TreeNode({
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className={leaf()} {...api.getItemProps(nodeProps)}>
       {showNodeIcons && (
         <Icon
-          icon={node.icons?.leaf || "token-icon-tree-item"}
+          icon={node.icons?.leaf || 'token-icon-tree-item'}
           className={nodeIcon()}
         />
       )}
       <span className={branchText()}>{node.name}</span>
     </div>
-  );
+  )
 }
 
 // === MAIN COMPONENT ===
 interface TreeProps extends VariantProps<typeof treeVariants>, tree.Props {
-  data: TreeNode[];
-  className?: string;
-  label?: string;
-  showIndentGuides?: boolean;
-  showNodeIcons?: boolean;
+  data: TreeNode[]
+  className?: string
+  label?: string
+  showIndentGuides?: boolean
+  showNodeIcons?: boolean
 }
 
 export function TreeView({
@@ -180,8 +180,8 @@ export function TreeView({
   showIndentGuides = true,
   showNodeIcons = true,
 
-  dir = "ltr",
-  selectionMode = "single",
+  dir = 'ltr',
+  selectionMode = 'single',
 
   expandedValue,
   selectedValue,
@@ -200,14 +200,14 @@ export function TreeView({
   id: providedId,
   ...props
 }: TreeProps) {
-  const generatedId = useId();
-  const id = providedId || generatedId;
+  const generatedId = useId()
+  const id = providedId || generatedId
 
   const collection = tree.collection<TreeNode>({
     nodeToValue: (node) => node.id,
     nodeToString: (node) => node.name,
-    rootNode: { id: "ROOT", name: "", children: data },
-  });
+    rootNode: { id: 'ROOT', name: '', children: data },
+  })
 
   const service = useMachine(tree.machine as any, {
     id,
@@ -225,11 +225,11 @@ export function TreeView({
     onExpandedChange,
     onSelectionChange,
     onFocusChange,
-  });
+  })
 
-  const api = tree.connect(service as unknown as tree.Service, normalizeProps);
+  const api = tree.connect(service as unknown as tree.Service, normalizeProps)
 
-  const { root, label: labelSlot, tree: treeSlot } = treeVariants();
+  const { root, label: labelSlot, tree: treeSlot } = treeVariants()
 
   return (
     <div className={root({ className })} {...api.getRootProps()} {...props}>
@@ -251,7 +251,7 @@ export function TreeView({
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-TreeView.displayName = "TreeView";
+TreeView.displayName = 'TreeView'

@@ -1,5 +1,5 @@
-import { getProductPrice } from "@lib/util/get-product-price"
-import { HttpTypes } from "@medusajs/types"
+import { getProductPrice } from '@lib/util/get-product-price'
+import type { HttpTypes } from '@medusajs/types'
 
 export default function ProductPrice({
   product,
@@ -16,7 +16,7 @@ export default function ProductPrice({
   const selectedPrice = variant ? variantPrice : cheapestPrice
 
   if (!selectedPrice) {
-    return <div className="block w-32 h-9 bg-grayscale-50 animate-pulse" />
+    return <div className="block h-9 w-32 animate-pulse bg-grayscale-50" />
   }
 
   const hasReducedPrice =
@@ -26,10 +26,10 @@ export default function ProductPrice({
   if (hasReducedPrice && variant) {
     return (
       <div>
-        <p className="text-sm mb-1 text-grayscale-500 line-through">
+        <p className="mb-1 text-grayscale-500 text-sm line-through">
           {selectedPrice.original_price}
         </p>
-        <p className="text-md mb-8 text-red-primary">
+        <p className="mb-8 text-md text-red-primary">
           {selectedPrice.calculated_price}
         </p>
       </div>
@@ -38,8 +38,8 @@ export default function ProductPrice({
 
   return (
     <>
-      <p className="text-md mb-8">
-        {!variant && "From "}
+      <p className="mb-8 text-md">
+        {!variant && 'From '}
         {selectedPrice.calculated_price}
       </p>
     </>

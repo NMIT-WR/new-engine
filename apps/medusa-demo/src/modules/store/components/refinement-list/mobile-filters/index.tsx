@@ -1,15 +1,14 @@
-import * as React from "react"
-import * as ReactAria from "react-aria-components"
+import * as ReactAria from 'react-aria-components'
 
+import { Button } from '@/components/Button'
+import { UiDialog, UiDialogTrigger } from '@/components/Dialog'
 import {
   UiCheckbox,
   UiCheckboxBox,
   UiCheckboxIcon,
   UiCheckboxLabel,
-} from "@/components/ui/Checkbox"
-import { Button } from "@/components/Button"
-import { UiModal, UiModalOverlay } from "@/components/ui/Modal"
-import { UiDialog, UiDialogTrigger } from "@/components/Dialog"
+} from '@/components/ui/Checkbox'
+import { UiModal, UiModalOverlay } from '@/components/ui/Modal'
 
 type MobileFIltersType = {
   collections?: Record<string, string>
@@ -37,14 +36,14 @@ export const MobileFilters = ({
         variant="outline"
         iconName="plus"
         iconPosition="end"
-        className="md:hidden border-grayscale-200"
+        className="border-grayscale-200 md:hidden"
       >
         Filter
       </Button>
       <UiModalOverlay className="p-0">
         <UiModal
           animateFrom="bottom"
-          className="top-36 w-full pb-26 max-w-full"
+          className="top-36 w-full max-w-full pb-26"
         >
           <UiDialog>
             {({ close }) => (
@@ -53,13 +52,13 @@ export const MobileFilters = ({
                   const formData = new FormData(event.currentTarget)
 
                   const collection = formData
-                    .getAll("collection")
+                    .getAll('collection')
                     .map((value) => value.toString())
                   const category = formData
-                    .getAll("category")
+                    .getAll('category')
                     .map((value) => value.toString())
                   const type = formData
-                    .getAll("type")
+                    .getAll('type')
                     .map((value) => value.toString())
 
                   setMultipleQueryParams({
@@ -77,7 +76,7 @@ export const MobileFilters = ({
                     name="collection"
                     defaultValue={collection ?? []}
                   >
-                    <ReactAria.Label className="block text-md font-semibold mb-3">
+                    <ReactAria.Label className="mb-3 block font-semibold text-md">
                       Collections
                     </ReactAria.Label>
                     {Object.entries(collections).map(([key, value]) => (
@@ -106,7 +105,7 @@ export const MobileFilters = ({
                     name="category"
                     defaultValue={category ?? []}
                   >
-                    <ReactAria.Label className="block text-md font-semibold mb-3">
+                    <ReactAria.Label className="mb-3 block font-semibold text-md">
                       Categories
                     </ReactAria.Label>
                     {Object.entries(categories).map(([key, value]) => (
@@ -135,7 +134,7 @@ export const MobileFilters = ({
                     name="type"
                     defaultValue={type ?? []}
                   >
-                    <ReactAria.Label className="block text-md font-semibold mb-3">
+                    <ReactAria.Label className="mb-3 block font-semibold text-md">
                       Types
                     </ReactAria.Label>
                     {Object.entries(types).map(([key, value]) => (
@@ -152,7 +151,7 @@ export const MobileFilters = ({
                     ))}
                   </ReactAria.CheckboxGroup>
                 )}
-                <footer className="flex items-center h-21 fixed bottom-0 left-0 w-full bg-white px-6 border-t border-grayscale-100">
+                <footer className="fixed bottom-0 left-0 flex h-21 w-full items-center border-grayscale-100 border-t bg-white px-6">
                   <Button type="submit" isFullWidth>
                     Show results
                   </Button>

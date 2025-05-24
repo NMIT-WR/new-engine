@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useElements, useStripe } from "@stripe/react-stripe-js"
-import * as React from "react"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import { useElements, useStripe } from '@stripe/react-stripe-js'
+import type * as React from 'react'
 
-import { isStripe } from "@lib/constants"
-import { Button } from "@/components/Button"
-import { usePathname, useRouter } from "next/navigation"
-import { useInitiatePaymentSession, useSetPaymentMethod } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
+import { Button } from '@/components/Button'
+import { isStripe } from '@lib/constants'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import { useInitiatePaymentSession, useSetPaymentMethod } from 'hooks/cart'
+import { usePathname, useRouter } from 'next/navigation'
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -30,7 +30,7 @@ const PaymentCardButton: React.FC<PaymentButtonProps> = ({
   setError,
 }) => {
   const session = cart.payment_collection?.payment_sessions?.find(
-    (s) => s.status === "pending"
+    (s) => s.status === 'pending'
   )
   if (isStripe(session?.provider_id) && isStripe(selectedPaymentMethod)) {
     return (
@@ -74,14 +74,14 @@ const StripeCardPaymentButton = ({
 }) => {
   const stripe = useStripe()
   const elements = useElements()
-  const card = elements?.getElement("card")
+  const card = elements?.getElement('card')
 
   const router = useRouter()
 
   const setPaymentMethod = useSetPaymentMethod()
 
   const session = cart.payment_collection?.payment_sessions?.find(
-    (s) => s.status === "pending"
+    (s) => s.status === 'pending'
   )
   const pathname = usePathname()
 
@@ -93,14 +93,14 @@ const StripeCardPaymentButton = ({
       const shouldInputCard = !session
 
       if (!isStripe(session?.provider_id)) {
-        await initiatePaymentSession.mutateAsync({ providerId: "stripe" })
+        await initiatePaymentSession.mutateAsync({ providerId: 'stripe' })
       }
       if (!shouldInputCard) {
         if (card) {
           const token = await stripe?.createToken(card, {
             name:
               cart.billing_address?.first_name +
-              " " +
+              ' ' +
               cart.billing_address?.last_name,
             address_line1: cart.billing_address?.address_1 ?? undefined,
             address_line2: cart.billing_address?.address_2 ?? undefined,
@@ -117,7 +117,7 @@ const StripeCardPaymentButton = ({
           }
         }
         return router.push(
-          pathname + "?" + createQueryString("step", "review"),
+          pathname + '?' + createQueryString('step', 'review'),
           {
             scroll: false,
           }
@@ -138,7 +138,7 @@ const StripeCardPaymentButton = ({
       isDisabled={!cardComplete}
       data-testid="submit-payment-button"
     >
-      {!session ? "Enter card details" : "Continue to review"}
+      {session ? 'Continue to review' : 'Enter card details'}
     </Button>
   )
 }
@@ -172,7 +172,7 @@ const PaymentMethodButton = ({
         onSuccess: () => {
           if (!isStripe(selectedPaymentMethod)) {
             return router.push(
-              pathname + "?" + createQueryString("step", "review"),
+              pathname + '?' + createQueryString('step', 'review'),
               {
                 scroll: false,
               }
@@ -197,8 +197,8 @@ const PaymentMethodButton = ({
       isDisabled={!selectedPaymentMethod}
     >
       {isStripe(selectedPaymentMethod)
-        ? "Enter card details"
-        : "Continue to review"}
+        ? 'Enter card details'
+        : 'Continue to review'}
     </Button>
   )
 }

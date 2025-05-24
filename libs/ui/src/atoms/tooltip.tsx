@@ -1,45 +1,45 @@
-import * as tooltip from "@zag-js/tooltip";
-import { useMachine, normalizeProps, Portal } from "@zag-js/react";
-import { useId, type ReactNode } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
+import { Portal, normalizeProps, useMachine } from '@zag-js/react'
+import * as tooltip from '@zag-js/tooltip'
+import { type ReactNode, useId } from 'react'
+import { type VariantProps, tv } from 'tailwind-variants'
 
 const tooltipVariants = tv({
   slots: {
-    trigger: ["inline-flex py-0 px-0"],
+    trigger: ['inline-flex py-0 px-0'],
     content: [
-      "[--arrow-size:var(--tooltip-arrow-size)]",
-      "[--arrow-background:var(--tooltip-arrow-background)]",
-      "bg-tooltip-bg",
-      "rounded-tooltip shadow-tooltip",
+      '[--arrow-size:var(--tooltip-arrow-size)]',
+      '[--arrow-background:var(--tooltip-arrow-background)]',
+      'bg-tooltip-bg',
+      'rounded-tooltip shadow-tooltip',
     ],
-    positioner: ["relative"],
+    positioner: ['relative'],
   },
   variants: {
     size: {
       sm: {
-        content: "text-tooltip-sm p-tooltip-sm",
+        content: 'text-tooltip-sm p-tooltip-sm',
       },
       md: {
-        content: "text-tooltip-md p-tooltip-md",
+        content: 'text-tooltip-md p-tooltip-md',
       },
       lg: {
-        content: "text-tooltip-lg p-tooltip-lg",
+        content: 'text-tooltip-lg p-tooltip-lg',
       },
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
   },
-});
+})
 
 export interface TooltipProps
   extends VariantProps<typeof tooltipVariants>,
     Partial<tooltip.Props>,
     Partial<tooltip.PositioningOptions> {
-  ref?: React.RefObject<HTMLSpanElement>;
-  content: ReactNode;
-  children: ReactNode;
-  className?: string;
+  ref?: React.RefObject<HTMLSpanElement>
+  content: ReactNode
+  children: ReactNode
+  className?: string
 }
 
 export function Tooltip({
@@ -50,7 +50,7 @@ export function Tooltip({
   size,
 
   id: MRAId,
-  dir = "ltr",
+  dir = 'ltr',
   openDelay = 200,
   closeDelay = 200,
   interactive = true,
@@ -73,8 +73,8 @@ export function Tooltip({
   strategy,
   ...rest
 }: TooltipProps) {
-  const generatedId = useId();
-  const id = MRAId || generatedId;
+  const generatedId = useId()
+  const id = MRAId || generatedId
 
   const service = useMachine(tooltip.machine as any, {
     id,
@@ -103,13 +103,13 @@ export function Tooltip({
       listeners,
       strategy,
     },
-  });
+  })
 
-  const api = tooltip.connect(service as tooltip.Service, normalizeProps);
+  const api = tooltip.connect(service as tooltip.Service, normalizeProps)
   const { positioner, content: contentSlot } = tooltipVariants({
     size,
     className,
-  });
+  })
 
   return (
     <>
@@ -129,7 +129,7 @@ export function Tooltip({
         )}
       </Portal>
     </>
-  );
+  )
 }
 
-Tooltip.displayName = "Tooltip";
+Tooltip.displayName = 'Tooltip'

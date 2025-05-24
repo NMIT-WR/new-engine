@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import React, { useEffect, useMemo, useActionState } from "react"
+import React, { useEffect, useMemo, useActionState } from 'react'
 
-import Input from "@modules/common/components/input"
-import NativeSelect from "@modules/common/components/native-select"
+import Input from '@modules/common/components/input'
+import NativeSelect from '@modules/common/components/native-select'
 
-import AccountInfo from "../account-info"
-import { HttpTypes } from "@medusajs/types"
-import { addCustomerAddress, updateCustomerAddress } from "@lib/data/customer"
+import { addCustomerAddress, updateCustomerAddress } from '@lib/data/customer'
+import type { HttpTypes } from '@medusajs/types'
+import AccountInfo from '../account-info'
 
 type MyInformationProps = {
   customer: HttpTypes.StoreCustomer
@@ -20,14 +20,12 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
 }) => {
   const regionOptions = useMemo(() => {
     return (
-      regions
-        ?.map((region) => {
-          return region.countries?.map((country) => ({
-            value: country.iso_2,
-            label: country.display_name,
-          }))
-        })
-        .flat() || []
+      regions?.flatMap((region) => {
+        return region.countries?.map((country) => ({
+          value: country.iso_2,
+          label: country.display_name,
+        }))
+      }) || []
     )
   }, [regions])
 
@@ -63,7 +61,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
 
   const currentInfo = useMemo(() => {
     if (!billingAddress) {
-      return "No billing address"
+      return 'No billing address'
     }
 
     const country =
@@ -79,7 +77,7 @@ const ProfileBillingAddress: React.FC<MyInformationProps> = ({
         <span>{billingAddress.company}</span>
         <span>
           {billingAddress.address_1}
-          {billingAddress.address_2 ? `, ${billingAddress.address_2}` : ""}
+          {billingAddress.address_2 ? `, ${billingAddress.address_2}` : ''}
         </span>
         <span>
           {billingAddress.postal_code}, {billingAddress.city}

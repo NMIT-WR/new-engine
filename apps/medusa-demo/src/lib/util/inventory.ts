@@ -1,4 +1,4 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
 
 export function getVariantItemsInStock(variant: HttpTypes.StoreProductVariant) {
   // If we don't manage inventory, we can always add to cart

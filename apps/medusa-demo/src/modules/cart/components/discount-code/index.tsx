@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import React from "react"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import type React from 'react'
 
-import { Form, InputField } from "@/components/Forms"
-import { twMerge } from "tailwind-merge"
-import { SubmitButton } from "@modules/common/components/submit-button"
-import { z } from "zod"
-import { useApplyPromotions } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
+import { Form, InputField } from '@/components/Forms'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import { SubmitButton } from '@modules/common/components/submit-button'
+import { useApplyPromotions } from 'hooks/cart'
+import { twMerge } from 'tailwind-merge'
+import { z } from 'zod'
 
 type DiscountCodeProps = {
   cart: HttpTypes.StoreCart
@@ -37,10 +37,10 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart, className }) => {
 
   return (
     <Form onSubmit={addPromotionCode} schema={codeFormSchema}>
-      <div className={twMerge("flex gap-2 mt-10", className)}>
+      <div className={twMerge('mt-10 flex gap-2', className)}>
         <InputField
           name="code"
-          inputProps={{ autoFocus: false, uiSize: "md" }}
+          inputProps={{ autoFocus: false, uiSize: 'md' }}
           placeholder="Discount code"
           className="flex flex-1 flex-col"
         />

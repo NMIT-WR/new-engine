@@ -1,11 +1,10 @@
-import { Metadata } from "next"
-import CartTemplate from "@modules/cart/templates"
+import CartTemplate from '@modules/cart/templates'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Cart",
-  description: "View your cart",
+  title: 'Cart',
+  description: 'View your cart',
 }
-export default  function Cart() {
-
-  return <CartTemplate  />
+export default function Cart() {
+  return <CartTemplate />
 }

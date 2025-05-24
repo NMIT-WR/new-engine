@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import { LayoutColumn } from "@/components/Layout"
-import { Link } from "@/components/Link"
-import { usePathname } from "next/navigation"
+import { LayoutColumn } from '@/components/Layout'
+import { Link } from '@/components/Link'
+import { usePathname } from 'next/navigation'
 
 export const NoResults = () => {
   const pathname = usePathname()
 
   return (
     <LayoutColumn className="pt-28">
-      <div className="flex justify-center flex-col items-center">
+      <div className="flex flex-col items-center justify-center">
         <div>
-          <p className="text-md text-center mb-2">No results match!</p>
+          <p className="mb-2 text-center text-md">No results match!</p>
         </div>
         <Link
           scroll={false}

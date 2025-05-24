@@ -1,5 +1,5 @@
-import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
+import { convertToLocale } from '@lib/util/money'
+import type { HttpTypes } from '@medusajs/types'
 
 export const OrderTotals: React.FC<{
   order: HttpTypes.StoreOrder
@@ -15,8 +15,8 @@ export const OrderTotals: React.FC<{
   } = order
 
   return (
-    <div className="sm:max-w-65 w-full flex-1">
-      <div className="flex justify-between gap-4 mb-2">
+    <div className="w-full flex-1 sm:max-w-65">
+      <div className="mb-2 flex justify-between gap-4">
         <div className="text-grayscale-500">
           <p>Subtotal</p>
         </div>
@@ -30,19 +30,19 @@ export const OrderTotals: React.FC<{
         </div>
       </div>
       {!!discount_total && (
-        <div className="flex justify-between gap-4 mb-2">
+        <div className="mb-2 flex justify-between gap-4">
           <div className="text-grayscale-500">
             <p>Discount</p>
           </div>
           <div className="self-end">
             <p>
-              -{" "}
+              -{' '}
               {convertToLocale({ amount: discount_total ?? 0, currency_code })}
             </p>
           </div>
         </div>
       )}
-      <div className="flex justify-between gap-4 mb-2">
+      <div className="mb-2 flex justify-between gap-4">
         <div className="text-grayscale-500">
           <p>Shipping</p>
         </div>
@@ -56,19 +56,19 @@ export const OrderTotals: React.FC<{
         </div>
       </div>
       {!!gift_card_total && (
-        <div className="flex justify-between gap-4 mb-2">
+        <div className="mb-2 flex justify-between gap-4">
           <div className="text-grayscale-500">
             <p>Gift card</p>
           </div>
           <div className="self-end">
             <p>
-              -{" "}
+              -{' '}
               {convertToLocale({ amount: gift_card_total ?? 0, currency_code })}
             </p>
           </div>
         </div>
       )}
-      <div className="flex justify-between gap-4 text-md mb-1 mt-6">
+      <div className="mt-6 mb-1 flex justify-between gap-4 text-md">
         <div>
           <p>Total</p>
         </div>
@@ -81,8 +81,8 @@ export const OrderTotals: React.FC<{
           </p>
         </div>
       </div>
-      <p className="text-xs text-grayscale-500">
-        Including {convertToLocale({ amount: tax_total ?? 0, currency_code })}{" "}
+      <p className="text-grayscale-500 text-xs">
+        Including {convertToLocale({ amount: tax_total ?? 0, currency_code })}{' '}
         tax
       </p>
     </div>

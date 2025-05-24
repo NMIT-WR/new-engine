@@ -1,20 +1,20 @@
-import { Github } from "@medusajs/icons"
-import { Button, Heading } from "@medusajs/ui"
+import { Github } from '@medusajs/icons'
+import { Button, Heading } from '@medusajs/ui'
 
 const Hero = () => {
   return (
-    <div className="h-[75vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
-      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center small:p-32 gap-6">
+    <div className="relative h-[75vh] w-full border-ui-border-base border-b bg-ui-bg-subtle">
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 text-center small:p-32">
         <span>
           <Heading
             level="h1"
-            className="text-3xl leading-10 text-ui-fg-base font-normal"
+            className="font-normal text-3xl text-ui-fg-base leading-10"
           >
             Ecommerce Starter Template
           </Heading>
           <Heading
             level="h2"
-            className="text-3xl leading-10 text-ui-fg-subtle font-normal"
+            className="font-normal text-3xl text-ui-fg-subtle leading-10"
           >
             Powered by Medusa and Next.js
           </Heading>
@@ -22,6 +22,7 @@ const Hero = () => {
         <a
           href="https://github.com/medusajs/nextjs-starter-medusa"
           target="_blank"
+          rel="noreferrer"
         >
           <Button variant="secondary">
             View on GitHub

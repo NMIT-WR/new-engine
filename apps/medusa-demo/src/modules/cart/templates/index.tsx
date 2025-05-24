@@ -1,11 +1,11 @@
-"use client"
-import EmptyCartMessage from "@modules/cart/components/empty-cart-message"
-import ItemsTemplate from "@modules/cart/templates/items"
-import Summary from "@modules/cart/templates/summary"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { useCart } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
-import SkeletonCartPage from "@modules/skeletons/templates/skeleton-cart-page"
+'use client'
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import EmptyCartMessage from '@modules/cart/components/empty-cart-message'
+import ItemsTemplate from '@modules/cart/templates/items'
+import Summary from '@modules/cart/templates/summary'
+import SkeletonCartPage from '@modules/skeletons/templates/skeleton-cart-page'
+import { useCart } from 'hooks/cart'
 
 // TODO: Ask customer if they want to sign in or continue as guest
 const CartTemplate = () => {
@@ -14,7 +14,7 @@ const CartTemplate = () => {
     return <SkeletonCartPage />
   }
   return (
-    <Layout className="py-26 md:pb-36 md:pt-39">
+    <Layout className="py-26 md:pt-39 md:pb-36">
       {cart?.items?.length ? (
         <>
           <LayoutColumn

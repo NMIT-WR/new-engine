@@ -1,41 +1,40 @@
-"use server"
+'use server'
 
-import { z } from "zod"
-import { redirect } from "next/navigation"
-import { revalidateTag } from "next/cache"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import { revalidateTag } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { z } from 'zod'
 
-import { sdk } from "@lib/config"
+import { sdk } from '@lib/config'
 import {
   getAuthHeaders,
-  setAuthToken,
-  removeAuthToken,
   getCartId,
-} from "@lib/data/cookies"
-import {
+  removeAuthToken,
+  setAuthToken,
+} from '@lib/data/cookies'
+import type {
   customerAddressSchema,
   loginFormSchema,
   signupFormSchema,
   updateCustomerFormSchema,
-} from "hooks/customer"
+} from 'hooks/customer'
 
-export const getCustomer = async function () {
-  return await sdk.client
+export const getCustomer = async () =>
+  await sdk.client
     .fetch<{ customer: HttpTypes.StoreCustomer }>(`/store/customers/me`, {
-      next: { tags: ["customer"] },
+      next: { tags: ['customer'] },
       headers: { ...(await getAuthHeaders()) },
-      cache: "no-store",
+      cache: 'no-store',
     })
     .then(({ customer }) => customer)
     .catch(() => null)
-}
 
-export const updateCustomer = async function (
+export const updateCustomer = async (
   formData: z.infer<typeof updateCustomerFormSchema>
 ): Promise<
-  { state: "initial" | "success" } | { state: "error"; error: string }
-> {
-  return sdk.store.customer
+  { state: 'initial' | 'success' } | { state: 'error'; error: string }
+> =>
+  sdk.store.customer
     .update(
       {
         first_name: formData.first_name,
@@ -46,23 +45,22 @@ export const updateCustomer = async function (
       await getAuthHeaders()
     )
     .then(() => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return {
-        state: "success" as const,
+        state: 'success' as const,
       }
     })
     .catch(() => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return {
-        state: "error" as const,
-        error: "Failed to update customer personal information",
+        state: 'error' as const,
+        error: 'Failed to update customer personal information',
       }
     })
-}
 
 export async function signup(formData: z.infer<typeof signupFormSchema>) {
   try {
-    const token = await sdk.auth.register("customer", "emailpass", {
+    const token = await sdk.auth.register('customer', 'emailpass', {
       email: formData.email,
       password: formData.password,
     })
@@ -80,12 +78,12 @@ export async function signup(formData: z.infer<typeof signupFormSchema>) {
       customHeaders
     )
 
-    const loginToken = await sdk.auth.login("customer", "emailpass", {
+    const loginToken = await sdk.auth.login('customer', 'emailpass', {
       email: formData.email,
       password: formData.password,
     })
 
-    if (typeof loginToken === "object") {
+    if (typeof loginToken === 'object') {
       redirect(loginToken.location)
 
       return { success: true, customer: createdCustomer }
@@ -93,17 +91,17 @@ export async function signup(formData: z.infer<typeof signupFormSchema>) {
 
     await setAuthToken(loginToken)
 
-    await sdk.client.fetch("/store/custom/customer/send-welcome-email", {
-      method: "POST",
+    await sdk.client.fetch('/store/custom/customer/send-welcome-email', {
+      method: 'POST',
       headers: await getAuthHeaders(),
     })
 
-    revalidateTag("customer")
+    revalidateTag('customer')
 
     const cartId = await getCartId()
     if (cartId) {
       await sdk.store.cart.transferCart(cartId, {}, await getAuthHeaders())
-      revalidateTag("cart")
+      revalidateTag('cart')
     }
 
     return { success: true, customer: createdCustomer }
@@ -119,24 +117,24 @@ export async function login(formData: z.infer<typeof loginFormSchema>) {
   const redirectUrl = formData.redirect_url
 
   try {
-    const token = await sdk.auth.login("customer", "emailpass", {
+    const token = await sdk.auth.login('customer', 'emailpass', {
       email: formData.email,
       password: formData.password,
     })
 
-    if (typeof token === "object") {
+    if (typeof token === 'object') {
       return { success: true, redirectUrl: token.location }
     }
 
     await setAuthToken(token)
-    revalidateTag("customer")
+    revalidateTag('customer')
 
     const cartId = await getCartId()
     if (cartId) {
       await sdk.store.cart.transferCart(cartId, {}, await getAuthHeaders())
-      revalidateTag("cart")
+      revalidateTag('cart')
     }
-    return { success: true, redirectUrl: redirectUrl || "/" }
+    return { success: true, redirectUrl: redirectUrl || '/' }
   } catch (error) {
     return {
       success: false,
@@ -148,7 +146,7 @@ export async function login(formData: z.infer<typeof loginFormSchema>) {
 export async function signout(countryCode: string) {
   await sdk.auth.logout()
   await removeAuthToken()
-  revalidateTag("customer")
+  revalidateTag('customer')
   return countryCode
 }
 
@@ -173,7 +171,7 @@ export const addCustomerAddress = async (
       await getAuthHeaders()
     )
     .then(({ customer }) => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return {
         addressId: customer.addresses[customer.addresses.length - 1].id,
         success: true,
@@ -181,16 +179,16 @@ export const addCustomerAddress = async (
       }
     })
     .catch((err) => {
-      revalidateTag("customer")
-      return { addressId: "", success: false, error: err.toString() }
+      revalidateTag('customer')
+      return { addressId: '', success: false, error: err.toString() }
     })
 }
 
 export const deleteCustomerAddress = async (
   addressId: unknown
 ): Promise<void> => {
-  if (typeof addressId !== "string") {
-    throw new Error("Invalid input data")
+  if (typeof addressId !== 'string') {
+    throw new Error('Invalid input data')
   }
 
   await sdk.store.customer
@@ -201,7 +199,7 @@ export const deleteCustomerAddress = async (
     .catch((err) => {
       return { success: false, error: err.toString() }
     })
-  revalidateTag("customer")
+  revalidateTag('customer')
 }
 
 export const updateCustomerAddress = async (
@@ -209,7 +207,7 @@ export const updateCustomerAddress = async (
   formData: z.infer<typeof customerAddressSchema>
 ) => {
   if (!addressId) {
-    throw new Error("Invalid input data")
+    throw new Error('Invalid input data')
   }
 
   return sdk.store.customer
@@ -231,11 +229,11 @@ export const updateCustomerAddress = async (
       await getAuthHeaders()
     )
     .then(() => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return { addressId, success: true, error: null }
     })
     .catch((err) => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return { addressId, success: false, error: err.toString() }
     })
 }
@@ -246,10 +244,10 @@ export async function requestPasswordReset() {
   if (!customer) {
     return {
       success: false as const,
-      error: "No customer found",
+      error: 'No customer found',
     }
   }
-  await sdk.auth.resetPassword("logged-in-customer", "emailpass", {
+  await sdk.auth.resetPassword('logged-in-customer', 'emailpass', {
     identifier: customer.email,
   })
 
@@ -264,19 +262,19 @@ const resetPasswordStateSchema = z.object({
 })
 
 const resetPasswordFormSchema = z.object({
-  type: z.literal("reset"),
+  type: z.literal('reset'),
   current_password: z.string().min(6),
   new_password: z.string().min(6),
   confirm_new_password: z.string().min(6),
 })
 
 const forgotPasswordSchema = z.object({
-  type: z.literal("forgot"),
+  type: z.literal('forgot'),
   new_password: z.string().min(6),
   confirm_new_password: z.string().min(6),
 })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const baseSchema = z.discriminatedUnion("type", [
+const baseSchema = z.discriminatedUnion('type', [
   resetPasswordFormSchema,
   forgotPasswordSchema,
 ])
@@ -286,12 +284,12 @@ export async function resetPassword(
   formData: z.infer<typeof baseSchema>
 ): Promise<
   z.infer<typeof resetPasswordStateSchema> &
-    ({ state: "initial" | "success" } | { state: "error"; error: string })
+    ({ state: 'initial' | 'success' } | { state: 'error'; error: string })
 > {
   const validatedState = resetPasswordStateSchema.parse(currentState)
-  if (formData.type === "reset") {
+  if (formData.type === 'reset') {
     try {
-      await sdk.auth.login("customer", "emailpass", {
+      await sdk.auth.login('customer', 'emailpass', {
         email: validatedState.email,
         password: formData.current_password,
       })
@@ -299,15 +297,15 @@ export async function resetPassword(
     } catch (error) {
       return {
         ...validatedState,
-        state: "error" as const,
-        error: "Wrong password",
+        state: 'error' as const,
+        error: 'Wrong password',
       }
     }
   }
   return sdk.auth
     .updateProvider(
-      formData.type === "reset" ? "logged-in-customer" : "customer",
-      "emailpass",
+      formData.type === 'reset' ? 'logged-in-customer' : 'customer',
+      'emailpass',
       {
         email: validatedState.email,
         password: formData.new_password,
@@ -317,14 +315,14 @@ export async function resetPassword(
     .then(() => {
       return {
         ...validatedState,
-        state: "success" as const,
+        state: 'success' as const,
       }
     })
     .catch(() => {
       return {
         ...validatedState,
-        state: "error" as const,
-        error: "Failed to update password",
+        state: 'error' as const,
+        error: 'Failed to update password',
       }
     })
 }
@@ -338,28 +336,28 @@ export async function forgotPassword(
   _currentState: unknown,
   formData: z.infer<typeof forgotPasswordFormSchema>
 ): Promise<
-  { state: "initial" | "success" } | { state: "error"; error: string }
+  { state: 'initial' | 'success' } | { state: 'error'; error: string }
 > {
   return sdk.auth
-    .resetPassword("customer", "emailpass", {
+    .resetPassword('customer', 'emailpass', {
       identifier: formData.email,
     })
     .then(() => {
       return {
-        state: "success" as const,
+        state: 'success' as const,
       }
     })
     .catch(() => {
       return {
-        state: "error" as const,
-        error: "Failed to reset password",
+        state: 'error' as const,
+        error: 'Failed to reset password',
       }
     })
 }
 
 export async function updateDefaultShippingAddress(addressId: string) {
   if (!addressId) {
-    return { success: false, error: "No address id provided" }
+    return { success: false, error: 'No address id provided' }
   }
 
   return sdk.store.customer
@@ -372,18 +370,18 @@ export async function updateDefaultShippingAddress(addressId: string) {
       await getAuthHeaders()
     )
     .then(() => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return { success: true, error: null }
     })
     .catch((err) => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return { success: false, error: err.toString() }
     })
 }
 
 export async function updateDefaultBillingAddress(addressId: string) {
   if (!addressId) {
-    return { success: false, error: "No address id provided" }
+    return { success: false, error: 'No address id provided' }
   }
 
   return sdk.store.customer
@@ -396,11 +394,11 @@ export async function updateDefaultBillingAddress(addressId: string) {
       await getAuthHeaders()
     )
     .then(() => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return { success: true, error: null }
     })
     .catch((err) => {
-      revalidateTag("customer")
+      revalidateTag('customer')
       return { success: false, error: err.toString() }
     })
 }

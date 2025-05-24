@@ -9,7 +9,8 @@
   --color-checkbox-indeterminate: var(--color-primary);
 
   --color-checkbox-ring: --alpha(
-    var(--color-checkbox-checked) / var(--opacity-ring)
+    var(--color-checkbox-checked) /
+    var(--opacity-ring)
   );
   --color-checkbox-offset: var(--color-base);
   --color-checkbox-ring-error: var(--color-checkbox-error);

@@ -1,9 +1,9 @@
-import { MeiliSearch } from "meilisearch"
+import { MeiliSearch } from 'meilisearch'
 
 const endpoint =
-  process.env.NEXT_PUBLIC_SEARCH_ENDPOINT || "http://localhost:7700"
+  process.env.NEXT_PUBLIC_SEARCH_ENDPOINT || 'http://localhost:7700'
 
-const apiKey = process.env.NEXT_PUBLIC_SEARCH_API_KEY || "test_key"
+const apiKey = process.env.NEXT_PUBLIC_SEARCH_API_KEY || 'test_key'
 
 console.log(
   `[SearchClient] Initializing MeiliSearch. Endpoint: ${endpoint}, API Key Set: ${!!apiKey}`

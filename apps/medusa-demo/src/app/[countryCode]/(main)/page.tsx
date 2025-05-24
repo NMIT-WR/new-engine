@@ -1,22 +1,22 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import { getRegion } from "@lib/data/regions"
-import { getProductTypesList } from "@lib/data/product-types"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { CollectionsSection } from "@/components/CollectionsSection"
+import { CollectionsSection } from '@/components/CollectionsSection'
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { getProductTypesList } from '@lib/data/product-types'
+import { getRegion } from '@lib/data/regions'
+import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
+  title: 'Medusa Next.js Starter Template',
   description:
-    "A performant frontend ecommerce starter template with Next.js 14 and Medusa.",
+    'A performant frontend ecommerce starter template with Next.js 14 and Medusa.',
 }
 
 const ProductTypesSection: React.FC = async () => {
   const productTypes = await getProductTypesList(0, 20, [
-    "id",
-    "value",
-    "metadata",
+    'id',
+    'value',
+    'metadata',
   ])
 
   if (!productTypes) {
@@ -24,9 +24,9 @@ const ProductTypesSection: React.FC = async () => {
   }
 
   return (
-    <Layout className="mb-26 md:mb-36 max-md:gap-x-2">
+    <Layout className="mb-26 max-md:gap-x-2 md:mb-36">
       <LayoutColumn>
-        <h3 className="text-md md:text-2xl mb-8 md:mb-15">Our products</h3>
+        <h3 className="mb-8 text-md md:mb-15 md:text-2xl">Our products</h3>
       </LayoutColumn>
       {productTypes.productTypes.map((productType, index) => (
         <LayoutColumn
@@ -35,10 +35,10 @@ const ProductTypesSection: React.FC = async () => {
           end={index % 2 === 0 ? 7 : 13}
         >
           <LocalizedLink href={`/store?type=${productType.value}`}>
-            {typeof productType.metadata?.image === "object" &&
+            {typeof productType.metadata?.image === 'object' &&
               productType.metadata.image &&
-              "url" in productType.metadata.image &&
-              typeof productType.metadata.image.url === "string" && (
+              'url' in productType.metadata.image &&
+              typeof productType.metadata.image.url === 'string' && (
                 <Image
                   src={productType.metadata.image.url}
                   width={1200}
@@ -86,7 +86,7 @@ export default async function Home({
             </h3>
           </LayoutColumn>
           <LayoutColumn start={{ base: 1, md: 9 }} end={13}>
-            <div className="flex items-center h-full">
+            <div className="flex h-full items-center">
               <div className="md:text-md">
                 <p>Discover Your Perfect Sofa Today</p>
                 <LocalizedLink href="/store" variant="underline">
@@ -100,7 +100,7 @@ export default async function Home({
         <CollectionsSection className="mb-22 md:mb-36" />
         <Layout>
           <LayoutColumn className="col-span-full">
-            <h3 className="text-md md:text-2xl mb-8 md:mb-16">
+            <h3 className="mb-8 text-md md:mb-16 md:text-2xl">
               About Sofa Society
             </h3>
             <Image
@@ -108,7 +108,7 @@ export default async function Home({
               width={2496}
               height={1400}
               alt="Gray sofa against concrete wall"
-              className="mb-8 md:mb-16 max-md:aspect-[3/2] max-md:object-cover"
+              className="mb-8 max-md:aspect-[3/2] max-md:object-cover md:mb-16"
             />
           </LayoutColumn>
           <LayoutColumn start={1} end={{ base: 13, md: 7 }}>

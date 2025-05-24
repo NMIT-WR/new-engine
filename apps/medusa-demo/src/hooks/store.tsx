@@ -1,7 +1,7 @@
-import { getProductsListWithSort } from "@lib/data/products"
-import { HttpTypes } from "@medusajs/types"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { getProductsListWithSort } from '@lib/data/products'
+import type { HttpTypes } from '@medusajs/types'
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
+import { useInfiniteQuery } from '@tanstack/react-query'
 
 export const useStoreProducts = ({
   page,
@@ -16,7 +16,7 @@ export const useStoreProducts = ({
 }) => {
   return useInfiniteQuery({
     initialPageParam: page,
-    queryKey: ["products", queryParams, sortBy, countryCode],
+    queryKey: ['products', queryParams, sortBy, countryCode],
     queryFn: async ({ pageParam }) => {
       return getProductsListWithSort({
         page: pageParam,

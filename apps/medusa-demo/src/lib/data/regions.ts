@@ -1,32 +1,30 @@
-import { sdk } from "@lib/config"
-import medusaError from "@lib/util/medusa-error"
-import { HttpTypes } from "@medusajs/types"
+import { sdk } from '@lib/config'
+import medusaError from '@lib/util/medusa-error'
+import type { HttpTypes } from '@medusajs/types'
 
-export const listRegions = async function () {
-  return sdk.client
+export const listRegions = async () =>
+  sdk.client
     .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
-      method: "GET",
-      next: { tags: ["regions"] },
-      cache: "force-cache",
+      method: 'GET',
+      next: { tags: ['regions'] },
+      cache: 'force-cache',
     })
     .then(({ regions }) => regions)
     .catch(medusaError)
-}
 
-export const retrieveRegion = async function (id: string) {
-  return sdk.client
+export const retrieveRegion = async (id: string) =>
+  sdk.client
     .fetch<{ region: HttpTypes.StoreRegion }>(`/store/regions/${id}`, {
-      method: "GET",
+      method: 'GET',
       next: { tags: [`regions`] },
-      cache: "force-cache",
+      cache: 'force-cache',
     })
     .then(({ region }) => region)
     .catch(medusaError)
-}
 
 const regionMap = new Map<string, HttpTypes.StoreRegion>()
 
-export const getRegion = async function (countryCode: string) {
+export const getRegion = async (countryCode: string) => {
   try {
     if (regionMap.has(countryCode)) {
       return regionMap.get(countryCode)
@@ -40,13 +38,13 @@ export const getRegion = async function (countryCode: string) {
 
     regions.forEach((region) => {
       region.countries?.forEach((c) => {
-        regionMap.set(c?.iso_2 ?? "", region)
+        regionMap.set(c?.iso_2 ?? '', region)
       })
     })
 
     const region = countryCode
       ? regionMap.get(countryCode)
-      : regionMap.get("us")
+      : regionMap.get('us')
 
     return region
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

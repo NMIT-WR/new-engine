@@ -1,13 +1,13 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { getRegion } from "@lib/data/regions"
 import {
   getProductByHandle,
   getProductFashionDataByHandle,
-} from "@lib/data/products"
-import ProductTemplate from "@modules/products/templates"
-export const dynamic = "force-dynamic"
+} from '@lib/data/products'
+import { getRegion } from '@lib/data/regions'
+import ProductTemplate from '@modules/products/templates'
+export const dynamic = 'force-dynamic'
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
 }

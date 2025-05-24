@@ -1,12 +1,12 @@
-"use client"
+'use client'
 
-import * as React from "react"
+import * as React from 'react'
 
-import { Button } from "@/components/Button"
-import { UiCloseButton, UiDialog, UiDialogTrigger } from "@/components/Dialog"
-import { Icon } from "@/components/Icon"
-import { UiModal, UiModalOverlay } from "@/components/ui/Modal"
-import { requestPasswordReset } from "@lib/data/customer"
+import { Button } from '@/components/Button'
+import { UiCloseButton, UiDialog, UiDialogTrigger } from '@/components/Dialog'
+import { Icon } from '@/components/Icon'
+import { UiModal, UiModalOverlay } from '@/components/ui/Modal'
+import { requestPasswordReset } from '@lib/data/customer'
 
 export const RequestPasswordResetButton = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false)
@@ -16,7 +16,7 @@ export const RequestPasswordResetButton = () => {
   return (
     <>
       {errorMessage && (
-        <div className="text-sm text-red-primary">{errorMessage}</div>
+        <div className="text-red-primary text-sm">{errorMessage}</div>
       )}
       <UiDialogTrigger
         isOpen={isModalOpen}
@@ -33,7 +33,7 @@ export const RequestPasswordResetButton = () => {
             const result = await requestPasswordReset().catch((error) => {
               console.error(error)
 
-              return { success: false, error: "Something went wrong" }
+              return { success: false, error: 'Something went wrong' }
             })
 
             if (result.success) {
@@ -51,7 +51,7 @@ export const RequestPasswordResetButton = () => {
         <UiModalOverlay isDismissable={false} className="bg-transparent">
           <UiModal className="relative">
             <UiDialog>
-              <p className="text-md mb-12">Reset password</p>
+              <p className="mb-12 text-md">Reset password</p>
               <p className="text-grayscale-500">
                 We have sent an email with instructions on how to change the
                 password.
@@ -60,7 +60,7 @@ export const RequestPasswordResetButton = () => {
                 variant="ghost"
                 className="absolute top-4 right-6 p-0"
               >
-                <Icon name="close" className="w-6 h-6" />
+                <Icon name="close" className="h-6 w-6" />
               </UiCloseButton>
             </UiDialog>
           </UiModal>

@@ -1,9 +1,7 @@
-"use client"
+'use client'
+import type { HttpTypes } from '@medusajs/types'
 
-import React from "react"
-import { HttpTypes } from "@medusajs/types"
-
-import { convertToLocale } from "@lib/util/money"
+import { convertToLocale } from '@lib/util/money'
 
 type CartTotalsProps = {
   cart: HttpTypes.StoreCart
@@ -22,7 +20,7 @@ const CartTotals = ({ cart }: CartTotalsProps) => {
 
   return (
     <div>
-      <div className="flex flex-col gap-2 lg:gap-1 mb-8">
+      <div className="mb-8 flex flex-col gap-2 lg:gap-1">
         <div className="flex justify-between max-lg:text-xs">
           <div>
             <p>Subtotal</p>
@@ -38,7 +36,7 @@ const CartTotals = ({ cart }: CartTotalsProps) => {
             </div>
             <div className="self-end">
               <p>
-                -{" "}
+                -{' '}
                 {convertToLocale({
                   amount: discount_total ?? 0,
                   currency_code,
@@ -72,7 +70,7 @@ const CartTotals = ({ cart }: CartTotalsProps) => {
             </div>
             <div className="self-end">
               <p>
-                -{" "}
+                -{' '}
                 {convertToLocale({
                   amount: gift_card_total ?? 0,
                   currency_code,
@@ -90,7 +88,7 @@ const CartTotals = ({ cart }: CartTotalsProps) => {
           <p>{convertToLocale({ amount: total ?? 0, currency_code })}</p>
         </div>
       </div>
-      <div className="absolute h-full w-auto top-0 right-0 bg-black" />
+      <div className="absolute top-0 right-0 h-full w-auto bg-black" />
     </div>
   )
 }

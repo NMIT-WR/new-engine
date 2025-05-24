@@ -1,9 +1,9 @@
-import React from "react"
-import { getCartQuantity } from "@lib/data/cart"
-import { Icon, IconProps } from "@/components/Icon"
+import { Icon, type IconProps } from '@/components/Icon'
+import { getCartQuantity } from '@lib/data/cart'
+import React from 'react'
 
 const CartIconWithQuantity: React.FC<
-  Omit<IconProps, "status" | "name">
+  Omit<IconProps, 'status' | 'name'>
 > = async (props) => {
   const quantity = await getCartQuantity()
 
@@ -12,7 +12,7 @@ const CartIconWithQuantity: React.FC<
   )
 }
 
-export const CartIcon: React.FC<Omit<IconProps, "status" | "name">> = (
+export const CartIcon: React.FC<Omit<IconProps, 'status' | 'name'>> = (
   props
 ) => {
   return (

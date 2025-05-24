@@ -1,14 +1,14 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import { redirect } from "next/navigation"
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
-import { getCustomer } from "@lib/data/customer"
-import { LoginForm } from "@modules/auth/components/LoginForm"
-import { LocalizedLink } from "@/components/LocalizedLink"
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { getCustomer } from '@lib/data/customer'
+import { LoginForm } from '@modules/auth/components/LoginForm'
 
 export const metadata: Metadata = {
-  title: "Login",
-  description: "Login to your account",
+  title: 'Login',
+  description: 'Login to your account',
 }
 
 export default async function LoginPage({
@@ -30,10 +30,10 @@ export default async function LoginPage({
         width={1440}
         height={1632}
         alt="Gray backrest sofa and wooden coffee table"
-        className="max-lg:hidden lg:w-1/2 shrink-0 object-cover"
+        className="shrink-0 object-cover max-lg:hidden lg:w-1/2"
       />
-      <div className="shrink-0 max-w-100 lg:max-w-96 w-full mx-auto pt-30 lg:pt-37 pb-16 max-sm:px-4">
-        <h1 className="text-xl md:text-2xl mb-10 md:mb-16">
+      <div className="mx-auto w-full max-w-100 shrink-0 pt-30 pb-16 max-sm:px-4 lg:max-w-96 lg:pt-37">
+        <h1 className="mb-10 text-xl md:mb-16 md:text-2xl">
           Welcome back to Sofa Society!
         </h1>
         <LoginForm
@@ -41,7 +41,7 @@ export default async function LoginPage({
           redirectUrl={`/${countryCode}/account`}
         />
         <p className="text-grayscale-500">
-          Don&apos;t have an account yet? You can{" "}
+          Don&apos;t have an account yet? You can{' '}
           <LocalizedLink
             href="/auth/register"
             variant="underline"

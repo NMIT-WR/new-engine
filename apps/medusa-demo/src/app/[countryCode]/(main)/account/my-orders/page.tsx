@@ -1,44 +1,44 @@
-import * as React from "react"
-import { Metadata } from "next"
-import Image from "next/image"
-import { HttpTypes } from "@medusajs/types"
-import { twMerge } from "tailwind-merge"
+import type { HttpTypes } from '@medusajs/types'
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import type * as React from 'react'
+import { twMerge } from 'tailwind-merge'
 
-import { listOrders } from "@lib/data/orders"
-import { Pagination } from "@modules/store/components/pagination"
-import { ButtonLink } from "@/components/Button"
-import { UiTag } from "@/components/ui/Tag"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { getCustomer } from "@lib/data/customer"
-import { redirect } from "next/navigation"
+import { ButtonLink } from '@/components/Button'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { UiTag } from '@/components/ui/Tag'
+import { getCustomer } from '@lib/data/customer'
+import { listOrders } from '@lib/data/orders'
+import { Pagination } from '@modules/store/components/pagination'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: "Account - Orders",
-  description: "Check your order history",
+  title: 'Account - Orders',
+  description: 'Check your order history',
 }
 
 const OrderStatus: React.FC<{
   order: HttpTypes.StoreOrder
   className?: string
 }> = ({ order, className }) => {
-  if (order.fulfillment_status === "canceled") {
+  if (order.fulfillment_status === 'canceled') {
     return (
       <UiTag
         iconName="close"
         isActive
-        className={twMerge("self-start mt-auto", className)}
+        className={twMerge('mt-auto self-start', className)}
       >
         Canceled
       </UiTag>
     )
   }
 
-  if (order.fulfillment_status === "delivered") {
+  if (order.fulfillment_status === 'delivered') {
     return (
       <UiTag
         iconName="check"
         isActive
-        className={twMerge("self-start mt-auto", className)}
+        className={twMerge('mt-auto self-start', className)}
       >
         Delivered
       </UiTag>
@@ -46,14 +46,14 @@ const OrderStatus: React.FC<{
   }
 
   if (
-    order.fulfillment_status === "shipped" ||
-    order.fulfillment_status === "partially_delivered"
+    order.fulfillment_status === 'shipped' ||
+    order.fulfillment_status === 'partially_delivered'
   ) {
     return (
       <UiTag
         iconName="truck"
         isActive
-        className={twMerge("self-start mt-auto", className)}
+        className={twMerge('mt-auto self-start', className)}
       >
         Delivering
       </UiTag>
@@ -64,7 +64,7 @@ const OrderStatus: React.FC<{
     <UiTag
       iconName="package"
       isActive
-      className={twMerge("self-start mt-auto", className)}
+      className={twMerge('mt-auto self-start', className)}
     >
       Packing
     </UiTag>
@@ -88,7 +88,7 @@ export default async function AccountMyOrdersPage({ searchParams }: PageProps) {
     redirect(`/`)
   }
 
-  const pageNumber = page ? parseInt(page, 10) : 1
+  const pageNumber = page ? Number.parseInt(page, 10) : 1
   const { orders, count } = await listOrders(
     ORDERS_PER_PAGE,
     (pageNumber - 1) * ORDERS_PER_PAGE
@@ -97,29 +97,29 @@ export default async function AccountMyOrdersPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <h1 className="text-md md:text-lg mb-8 md:mb-13">My orders</h1>
+      <h1 className="mb-8 text-md md:mb-13 md:text-lg">My orders</h1>
       {orders.length > 0 ? (
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8 sm:gap-4">
             {orders.map((order) => (
               <div
                 key={order.id}
-                className="rounded-xs border border-grayscale-200 flex flex-col gap-6 sm:gap-8 md:gap-6 lg:gap-8 p-4"
+                className="flex flex-col gap-6 rounded-xs border border-grayscale-200 p-4 sm:gap-8 md:gap-6 lg:gap-8"
               >
-                <div className="flex max-sm:flex-col-reverse md:flex-col-reverse lg:flex-row gap-y-6 gap-x-10 justify-between">
+                <div className="flex justify-between gap-x-10 gap-y-6 max-sm:flex-col-reverse md:flex-col-reverse lg:flex-row">
                   <div className="flex-shrink-0">
-                    <OrderStatus order={order} className="sm:hidden mb-6" />
+                    <OrderStatus order={order} className="mb-6 sm:hidden" />
                     <div className="mb-2">
                       <LocalizedLink
                         href={`/account/my-orders/${order.id}`}
                         className="text-md"
                       >
-                        <span className="font-semibold">Order:</span>{" "}
+                        <span className="font-semibold">Order:</span>{' '}
                         {order.display_id}
                       </LocalizedLink>
                     </div>
                     <p className="text-grayscale-500">
-                      Order date:{" "}
+                      Order date:{' '}
                       {new Date(order.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -130,7 +130,7 @@ export default async function AccountMyOrdersPage({ searchParams }: PageProps) {
                         <LocalizedLink
                           key={item.id}
                           href={`/products/${item.product_handle}`}
-                          className="shrink-0 w-19 aspect-[3/4] rounded-2xs relative overflow-hidden"
+                          className="relative aspect-[3/4] w-19 shrink-0 overflow-hidden rounded-2xs"
                         >
                           <Image
                             src={item.thumbnail!}
@@ -142,13 +142,13 @@ export default async function AccountMyOrdersPage({ searchParams }: PageProps) {
                       ))}
                   </div>
                 </div>
-                <div className="flex max-sm:flex-col justify-between gap-6">
+                <div className="flex justify-between gap-6 max-sm:flex-col">
                   <OrderStatus order={order} className="max-sm:hidden" />
                   <ButtonLink
                     href={`/account/my-orders/${order.id}`}
                     variant="outline"
                     size="md"
-                    className="sm:self-end md:self-start lg:self-end sm:hidden"
+                    className="sm:hidden sm:self-end md:self-start lg:self-end"
                   >
                     Check details
                   </ButtonLink>
@@ -156,7 +156,7 @@ export default async function AccountMyOrdersPage({ searchParams }: PageProps) {
                     href={`/account/my-orders/${order.id}`}
                     variant="outline"
                     size="sm"
-                    className="sm:self-end md:self-start lg:self-end max-sm:hidden"
+                    className="max-sm:hidden sm:self-end md:self-start lg:self-end"
                   >
                     Check details
                   </ButtonLink>
@@ -169,7 +169,7 @@ export default async function AccountMyOrdersPage({ searchParams }: PageProps) {
           )}
         </div>
       ) : (
-        <p className="text-md mt-16">You haven&apos;t ordered anything yet</p>
+        <p className="mt-16 text-md">You haven&apos;t ordered anything yet</p>
       )}
     </>
   )

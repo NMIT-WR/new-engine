@@ -1,12 +1,12 @@
-import { Metadata } from "next"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import StoreTemplate from "@modules/store/templates"
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
+import StoreTemplate from '@modules/store/templates'
+import type { Metadata } from 'next'
 
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+  title: 'Store',
+  description: 'Explore all of our products.',
 }
 
 type Params = {
@@ -38,7 +38,7 @@ export default async function StorePage({ searchParams, params }: Params) {
     `[StorePage] Available NEXT_PUBLIC_MEDUSA_BACKEND_URL (public env): ${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}`
   )
   const intendedServerBaseUrl =
-    process.env.MEDUSA_BACKEND_URL || "http://medusa-be:9000"
+    process.env.MEDUSA_BACKEND_URL || 'http://medusa-be:9000'
   console.log(
     `[StorePage] Intended SDK Base URL for server operations: ${intendedServerBaseUrl}`
   )
@@ -52,16 +52,16 @@ export default async function StorePage({ searchParams, params }: Params) {
       page={page}
       countryCode={countryCode}
       collection={
-        !collection
-          ? undefined
-          : Array.isArray(collection)
+        collection
+          ? Array.isArray(collection)
             ? collection
             : [collection]
+          : undefined
       }
       category={
-        !category ? undefined : Array.isArray(category) ? category : [category]
+        category ? (Array.isArray(category) ? category : [category]) : undefined
       }
-      type={!type ? undefined : Array.isArray(type) ? type : [type]}
+      type={type ? (Array.isArray(type) ? type : [type]) : undefined}
     />
   )
 }

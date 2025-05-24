@@ -1,21 +1,21 @@
-"use server"
+'use server'
 
-import { cache } from "react"
-import { sdk } from "@lib/config"
-import medusaError from "@lib/util/medusa-error"
-import { enrichLineItems } from "@lib/util/enrich-line-items"
-import { getAuthHeaders } from "@lib/data/cookies"
-import { HttpTypes } from "@medusajs/types"
+import { sdk } from '@lib/config'
+import { getAuthHeaders } from '@lib/data/cookies'
+import { enrichLineItems } from '@lib/util/enrich-line-items'
+import medusaError from '@lib/util/medusa-error'
+import type { HttpTypes } from '@medusajs/types'
+import { cache } from 'react'
 
-export const retrieveOrder = cache(async function (id: unknown) {
-  if (typeof id !== "string") {
-    throw new Error("Invalid order id")
+export const retrieveOrder = cache(async (id: unknown) => {
+  if (typeof id !== 'string') {
+    throw new Error('Invalid order id')
   }
 
   const order = await sdk.client
     .fetch<HttpTypes.StoreOrderResponse>(`/store/orders/${id}`, {
-      query: { fields: "*payment_collections.payments" },
-      next: { tags: ["orders"] },
+      query: { fields: '*payment_collections.payments' },
+      next: { tags: ['orders'] },
       headers: { ...(await getAuthHeaders()) },
     })
     .then(({ order }) => order)
@@ -28,25 +28,22 @@ export const retrieveOrder = cache(async function (id: unknown) {
   return order
 })
 
-export const listOrders = async function (
-  limit: number = 10,
-  offset: number = 0
-) {
+export const listOrders = async (limit = 10, offset = 0) => {
   if (
-    typeof limit !== "number" ||
-    typeof offset !== "number" ||
+    typeof limit !== 'number' ||
+    typeof offset !== 'number' ||
     limit < 1 ||
     offset < 0 ||
     limit > 100 ||
     !Number.isSafeInteger(offset)
   ) {
-    throw new Error("Invalid input data")
+    throw new Error('Invalid input data')
   }
 
   return sdk.client
     .fetch<HttpTypes.StoreOrderListResponse>(`/store/orders`, {
-      query: { limit, offset, order: "-created_at" },
-      next: { tags: ["orders"] },
+      query: { limit, offset, order: '-created_at' },
+      next: { tags: ['orders'] },
       headers: { ...(await getAuthHeaders()) },
     })
     .catch((err) => medusaError(err))

@@ -1,8 +1,8 @@
-"use server"
+'use server'
 
-import { sdk } from "@lib/config"
-import { HttpTypes } from "@medusajs/types"
-import { getAuthHeaders, getCacheOptions } from "./cookies"
+import { sdk } from '@lib/config'
+import type { HttpTypes } from '@medusajs/types'
+import { getAuthHeaders, getCacheOptions } from './cookies'
 
 export const listCartShippingMethods = async (cartId: string) => {
   const headers = {
@@ -10,18 +10,18 @@ export const listCartShippingMethods = async (cartId: string) => {
   }
 
   const next = {
-    ...(await getCacheOptions("fulfillment")),
+    ...(await getCacheOptions('fulfillment')),
   }
 
   return sdk.client
     .fetch<HttpTypes.StoreShippingOptionListResponse>(
       `/store/shipping-options`,
       {
-        method: "GET",
+        method: 'GET',
         query: { cart_id: cartId },
         headers,
         next,
-        cache: "force-cache",
+        cache: 'force-cache',
       }
     )
     .then(({ shipping_options }) => shipping_options)
@@ -40,7 +40,7 @@ export const calculatePriceForShippingOption = async (
   }
 
   const next = {
-    ...(await getCacheOptions("fulfillment")),
+    ...(await getCacheOptions('fulfillment')),
   }
 
   const body = { cart_id: cartId, data }
@@ -53,7 +53,7 @@ export const calculatePriceForShippingOption = async (
     .fetch<{ shipping_option: HttpTypes.StoreCartShippingOption }>(
       `/store/shipping-options/${optionId}/calculate`,
       {
-        method: "POST",
+        method: 'POST',
         body,
         headers,
         next,
