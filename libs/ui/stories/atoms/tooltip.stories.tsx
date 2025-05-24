@@ -387,7 +387,7 @@ export const ControlledTooltip: Story = {
                 onOpenChange={(details) => setIsOpen(details.open)}
                 interactive={true}
               >
-                <Button variant="outlined">Controlled Tooltip</Button>
+                <Button variant="primary">Controlled Tooltip</Button>
               </Tooltip>
             </div>
 

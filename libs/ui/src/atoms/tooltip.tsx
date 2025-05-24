@@ -36,7 +36,6 @@ export interface TooltipProps
   extends VariantProps<typeof tooltipVariants>,
     Partial<tooltip.Props>,
     Partial<tooltip.PositioningOptions> {
-  /* Basic */
   ref?: React.RefObject<HTMLSpanElement>;
   content: ReactNode;
   children: ReactNode;
@@ -44,19 +43,17 @@ export interface TooltipProps
 }
 
 export function Tooltip({
-  // Core and TV props
   content,
   children,
   className,
   ref,
   size,
 
-  // Machine props
   id: MRAId,
   dir = "ltr",
   openDelay = 200,
   closeDelay = 200,
-  interactive = true, // Hover over tooltip content
+  interactive = true,
   defaultOpen,
   open,
   onOpenChange,
@@ -65,37 +62,35 @@ export function Tooltip({
   closeOnPointerDown,
   closeOnScroll,
   closeOnClick,
-  /* Position */
-  placement, // (default: "bottom")
+
+  placement,
   offset = { mainAxis: 16, crossAxis: 0 },
-  gutter, // Min space from screen edge
-  flip, // Move to opposite side if not fit
-  sameWidth, // Match trigger width
+  gutter,
+  flip,
+  sameWidth,
   boundary,
   listeners,
-  strategy, // absolute | fixed
+  strategy,
   ...rest
 }: TooltipProps) {
   const generatedId = useId();
   const id = MRAId || generatedId;
 
   const service = useMachine(tooltip.machine as any, {
-    // Identity & state
     id,
     dir,
     open,
     defaultOpen,
     disabled,
-    // Timing & interaction
+
     openDelay,
     closeDelay,
     interactive,
-    // Close triggers
     closeOnPointerDown,
     closeOnEscape,
     closeOnScroll,
     closeOnClick,
-    // Events
+
     onOpenChange,
 
     positioning: {
