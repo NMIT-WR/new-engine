@@ -1,45 +1,48 @@
+import NextLink from 'next/link'
 import type { ElementType, ComponentPropsWithoutRef, ReactNode } from "react";
 import { tv } from "../utils";
 import type { VariantProps } from "tailwind-variants";
 
-// WIP
 const linkVariants = tv({
   base: [],
   variants: {},
   defaultVariants: {},
 });
 
-export interface LinkProps<T extends ElementType = "a">
-  extends VariantProps<typeof linkVariants> {
-  as?: T;
+export interface BaseLinkProps extends VariantProps<typeof linkVariants> {
   children: ReactNode;
-  href?: string;
   external?: boolean;
   className?: string;
 }
 
-// Compose LinkProps with props for element T
-type LinkComponentProps<T extends ElementType> = LinkProps<T> &
-  Omit<ComponentPropsWithoutRef<T>, keyof LinkProps<T>>;
+type NativeLinkProps = BaseLinkProps &
+  Omit<ComponentPropsWithoutRef<"a">, keyof BaseLinkProps>;
+
+type CustomLinkProps<T extends ElementType> = BaseLinkProps &
+  Omit<ComponentPropsWithoutRef<T>, keyof BaseLinkProps> & {
+  as: T;
+};
+
+export type LinkProps<T extends ElementType = "a"> = T extends "a"
+  ? NativeLinkProps & { as?: "a" }
+  : CustomLinkProps<T>;
 
 export function Link<T extends ElementType = "a">({
   as,
   children,
-  href,
   external = false,
   className,
   ...props
-}: LinkComponentProps<T>) {
-  const Component = as || "a";
+}: LinkProps<T>) {
+  const Component = (as || "a") as ElementType;
 
-  const externalProps = external
+  const externalProps = external && !as
     ? { target: "_blank", rel: "noopener noreferrer" }
     : {};
 
   return (
     <Component
       className={linkVariants({ className })}
-      href={href}
       {...externalProps}
       {...props}
     >
