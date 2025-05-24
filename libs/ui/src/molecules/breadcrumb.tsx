@@ -141,7 +141,6 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   items: BreadcrumbItemType[];
   maxItems?: number;
   className?: string;
-  currentPath?: string;
   "aria-label"?: string;
 }
 
@@ -151,7 +150,6 @@ export function Breadcrumb({
   maxItems = 0,
   size = "md",
   className,
-  currentPath,
   "aria-label": ariaLabel = "breadcrumb",
   ...props
 }: BreadcrumbProps) {
@@ -160,6 +158,8 @@ export function Breadcrumb({
   const displayItems =
     maxItems <= 0 || items.length <= maxItems
       ? items
+      : maxItems === 1
+      ? [items[items.length - 1]]
       : [items[0], "ellipsis", ...items.slice(-(maxItems - 1))];
 
   return (
@@ -172,13 +172,13 @@ export function Breadcrumb({
             item &&
             typeof item !== "string" && (
               <BreadcrumbItem
-                key={`${item.label}-${index}`}
+                key={`${item.label}`}
                 label={item.label}
                 href={item.href}
                 icon={item.icon}
                 separator={item.separator}
                 lastItem={index === displayItems.length - 1}
-                isCurrentPage={item.isCurrent || item.href === currentPath}
+                isCurrentPage={item.isCurrent || index === displayItems.length - 1}
               />
             )
           )
