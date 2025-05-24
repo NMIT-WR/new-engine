@@ -1,17 +1,33 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-checkbox: var(--color-fill-active);
+  --color-checkbox-error: var(--color-danger);
   --color-checkbox-checked: var(--color-success);
-  --color-checkbox-disabled: var(--color-disabled-bg);
   --color-checkbox-border: var(--color-stroke-primary);
-  --color-checkbox-border-disabled: var(--color-disabled-border);
+  --opacity-checkbox-disabled: var(--opacity-disabled);
+
+  --color-checkbox-indeterminate: var(--color-primary);
+
+  --color-checkbox-ring: --alpha(
+    var(--color-checkbox-checked) / var(--opacity-ring)
+  );
+  --color-checkbox-offset: var(--color-base);
+  --color-checkbox-ring-error: var(--color-checkbox-error);
+  --color-checkbox-border-error: var(--color-checkbox-error);
 
   --spacing-checkbox: var(--spacing-xs);
   --color-icon-text: var(--color-fg-dark);
   --text-checkbox-icon-md: var(--text-xs);
   --radius-checkbox: var(--radius-sm);
+
+  --width-indeterminate: 60%;
+  --height-indeterminate: 2px;
 }
 
 @utility token-icon-checkbox {
   @apply icon-[mdi--check-bold];
+}
+
+@utility token-icon-checkbox-indeterminate {
+  @apply icon-[mdi--minus];
 }

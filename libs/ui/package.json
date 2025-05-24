@@ -20,10 +20,14 @@
     "storybook": "storybook dev"
   },
   "dependencies": {
+    "@zag-js/checkbox": "^1.12.4",
     "@zag-js/dialog": "^1.12.3",
     "@zag-js/number-input": "^1.12.2",
     "@zag-js/rating-group": "^1.12.2",
     "@zag-js/react": "^1.12.2",
+    "@zag-js/select": "^1.12.3",
+    "@zag-js/tooltip": "^1.12.3",
+    "@zag-js/tree-view": "^1.12.3",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
