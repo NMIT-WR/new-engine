@@ -99,7 +99,6 @@ function TreeNode({
     nodeIcon,
   } = treeVariants();
 
-  // Branch node (has children)
   if (nodeState.isBranch) {
     return (
       <div className={branch()} {...api.getBranchProps(nodeProps)}>
@@ -153,7 +152,6 @@ function TreeNode({
     );
   }
 
-  // Leaf node (no children)
   return (
     <div className={leaf()} {...api.getItemProps(nodeProps)}>
       {showNodeIcons && (
@@ -169,19 +167,14 @@ function TreeNode({
 
 // === MAIN COMPONENT ===
 interface TreeProps extends VariantProps<typeof treeVariants>, tree.Props {
-  // Data
   data: TreeNode[];
   className?: string;
-  // Labels
   label?: string;
-  // Indent guides
   showIndentGuides?: boolean;
-  // Node icons
   showNodeIcons?: boolean;
 }
 
 export function TreeView({
-  // Custom props
   data,
   label,
   showIndentGuides = true,
@@ -190,19 +183,16 @@ export function TreeView({
   dir = "ltr",
   selectionMode = "single",
 
-  // State (controlled)
   expandedValue,
   selectedValue,
   focusedValue,
 
-  // State (uncontrolled)
   defaultExpandedValue,
   defaultSelectedValue,
 
-  // Behaviors
   expandOnClick = true,
   typeahead = true,
-  // Event handlers
+
   onExpandedChange,
   onSelectionChange,
   onFocusChange,
@@ -213,14 +203,12 @@ export function TreeView({
   const generatedId = useId();
   const id = providedId || generatedId;
 
-  // Create collection from data
   const collection = tree.collection<TreeNode>({
     nodeToValue: (node) => node.id,
     nodeToString: (node) => node.name,
     rootNode: { id: "ROOT", name: "", children: data },
   });
 
-  // Initialize machine
   const service = useMachine(tree.machine as any, {
     id,
     collection,
