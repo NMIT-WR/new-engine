@@ -48,5 +48,5 @@
 
 /* Semantic tokens for dialog icons */
 @utility token-icon-dialog-close {
-  @apply icon-[mdi--close]; /* Example using Material Design Icons */
+  @apply token-icon-close;
 }
