@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@zag-js/checkbox": "^1.12.4",
+    "@zag-js/dialog": "^1.12.3",
     "@zag-js/number-input": "^1.12.2",
     "@zag-js/rating-group": "^1.12.2",
     "@zag-js/react": "^1.12.2",
