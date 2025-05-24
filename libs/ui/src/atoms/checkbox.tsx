@@ -25,10 +25,6 @@ const checkboxVariants = tv({
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   ref?: Ref<HTMLInputElement>;
-  id?: string;
-  name?: string;
-  value?: string;
-  className?: string;
   readonly?: boolean;
 
   defaultChecked?: boolean;
