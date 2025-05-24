@@ -463,6 +463,9 @@ importers:
       '@zag-js/checkbox':
         specifier: ^1.12.4
         version: 1.12.4
+      '@zag-js/dialog':
+        specifier: ^1.12.3
+        version: 1.12.4
       '@zag-js/number-input':
         specifier: ^1.12.2
         version: 1.12.2
@@ -6857,6 +6860,9 @@ packages:
   '@zag-js/anatomy@1.12.4':
     resolution: {integrity: sha512-bcNjZlVrHQqhiwEDiv0QNFWcMRxJqfqo891mzmnARj+Ey9mxzhrWoMGLj//fg9Q/u/i4Bul5Z2AOws2QboiMQg==}
 
+  '@zag-js/aria-hidden@1.12.4':
+    resolution: {integrity: sha512-IA7I8p80H7UecltHPlkHI/3lfyDdxs1BxXzhG1FLWtC6mbNjIL9Ie2mKz/9nYUJYMiIkTephRggX3genFkAwSQ==}
+
   '@zag-js/checkbox@1.12.4':
     resolution: {integrity: sha512-+JuDJuNuV5zwendNfOTWcylrzT2EQhfDhBWIcgTILfXfaO7BMyPTlbzlCWALTvxM9X5J7XwmPR7P5wHcWd517A==}
 
@@ -6869,6 +6875,9 @@ packages:
   '@zag-js/core@1.12.4':
     resolution: {integrity: sha512-W9ASCtNeOT08PO4T7/ZVzUYIv/N4b9F7QbPsNsozCpSkoeY4xXQn5PMe/JUWcOgS/ocBGwvCQLKpVSAhCAEHtQ==}
 
+  '@zag-js/dialog@1.12.4':
+    resolution: {integrity: sha512-99v1Tqm3r3qJBzurjnMmFmVjF9ZCZ7aATwzst2trI9yPJMrISiL6jq6s8iP6mKv71ED013YfQkHvaBqqy4zMTg==}
+
   '@zag-js/dismissable@1.12.4':
     resolution: {integrity: sha512-iZ7O3Yi4vnrfoXJWBFz8bHJoR3QpfZcokiaqWRJkwDJzVzN9E3kA00232MfR1x01y7lFDyZMabvCRDuQcMaBmg==}
 
@@ -6877,6 +6886,9 @@ packages:
 
   '@zag-js/dom-query@1.12.4':
     resolution: {integrity: sha512-EICuVDdjmCnTX/vkO/t51XpaOFKQbMnD74AprQjOosrY7bXs0VFmLbQ5hHmOZd7rr7GbNfd3VyO7VmyeZoF32w==}
+
+  '@zag-js/focus-trap@1.12.4':
+    resolution: {integrity: sha512-BCtcB8mrXW6guEmUmT6YOHwjYF6keDhJA5+7pwm5ctMlMp7cMljGaA6ZLofn/5Qi/H2CUjVv4FSy7YqrvsFdxQ==}
 
   '@zag-js/focus-visible@1.12.4':
     resolution: {integrity: sha512-NCzeBwz2XvtTqPYaGa2G2Bjs2//o3RG6mlneOVWdj92UUrj7Ybh9LBmx6DBCFcxXSrmANDls/7EOrYuXvN/s/A==}
@@ -6898,6 +6910,9 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
+
+  '@zag-js/remove-scroll@1.12.4':
+    resolution: {integrity: sha512-vyuaHEEHs5IaXAPxuO5KTA9/ds7fMr8TnXdyxbnQJ06+CCEKtuz3GWT027VqOF7zlGHhEpFHxHtepVBaI/iUkA==}
 
   '@zag-js/select@1.12.4':
     resolution: {integrity: sha512-l4ub2ECzBbnPXfwgu9mWAV3Z8OeF9/Pc3W6kj6/mfBe0RIaf3Aiz45x3XS13sJaJ9SQ4MCK8mTGBp8jMBIVqQQ==}
@@ -21568,6 +21583,8 @@ snapshots:
 
   '@zag-js/anatomy@1.12.4': {}
 
+  '@zag-js/aria-hidden@1.12.4': {}
+
   '@zag-js/checkbox@1.12.4':
     dependencies:
       '@zag-js/anatomy': 1.12.4
@@ -21591,6 +21608,18 @@ snapshots:
       '@zag-js/dom-query': 1.12.4
       '@zag-js/utils': 1.12.4
 
+  '@zag-js/dialog@1.12.4':
+    dependencies:
+      '@zag-js/anatomy': 1.12.4
+      '@zag-js/aria-hidden': 1.12.4
+      '@zag-js/core': 1.12.4
+      '@zag-js/dismissable': 1.12.4
+      '@zag-js/dom-query': 1.12.4
+      '@zag-js/focus-trap': 1.12.4
+      '@zag-js/remove-scroll': 1.12.4
+      '@zag-js/types': 1.12.4
+      '@zag-js/utils': 1.12.4
+
   '@zag-js/dismissable@1.12.4':
     dependencies:
       '@zag-js/dom-query': 1.12.4
@@ -21604,6 +21633,10 @@ snapshots:
   '@zag-js/dom-query@1.12.4':
     dependencies:
       '@zag-js/types': 1.12.4
+
+  '@zag-js/focus-trap@1.12.4':
+    dependencies:
+      '@zag-js/dom-query': 1.12.4
 
   '@zag-js/focus-visible@1.12.4':
     dependencies:
@@ -21645,6 +21678,10 @@ snapshots:
       '@zag-js/utils': 1.12.2
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+
+  '@zag-js/remove-scroll@1.12.4':
+    dependencies:
+      '@zag-js/dom-query': 1.12.4
 
   '@zag-js/select@1.12.4':
     dependencies:
