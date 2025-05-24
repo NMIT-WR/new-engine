@@ -23,6 +23,7 @@
     "@zag-js/number-input": "^1.12.2",
     "@zag-js/rating-group": "^1.12.2",
     "@zag-js/react": "^1.12.2",
+    "@zag-js/select": "^1.12.3",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
