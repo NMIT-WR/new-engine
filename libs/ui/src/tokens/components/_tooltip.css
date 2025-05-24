@@ -1,6 +1,7 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-tooltip-bg: var(--color-overlay);
+  --color-tooltip-fg: var(--color-base-reverse);
   --color-tooltip-border: transparent;
 
   /* === SIZING & SPACING === */

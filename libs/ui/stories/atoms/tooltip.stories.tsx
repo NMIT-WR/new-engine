@@ -416,12 +416,11 @@ export const LongContent: Story = {
 };
 
 // === REAL-WORLD EXAMPLES ===
-
 export const FormHelper: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Form Field Helpers" fullWidth>
-        <div className="space-y-4 max-w-md">
+        <div className="space-y-4 max-w-3xl">
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               Password
