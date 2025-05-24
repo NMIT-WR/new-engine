@@ -32,7 +32,7 @@ zerops:
         DATABASE_TYPE: postgres
         NODE_ENV: production
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        STORE_CORS: ${NEXT_STORE_URL},${ANALOG_STORE_URL},http://localhost:5173,http://localhost:3000
+        STORE_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},http://localhost:5173,http://localhost:3000
         DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?ssl_mode=disable
         MINIO_BUCKET: ${storage_bucketName}
         MINIO_ENDPOINT: ${storage_apiUrl}
@@ -136,12 +136,12 @@ zerops:
         # Remove everything in apps except medusa-be via regex
         - |
           shopt -s extglob
-          rm -rf apps/!(demo)
+          rm -rf apps/!(medusa-demo)
         - pnpm i
         - node_modules/.bin/nx run medusa-demo:build --skip-nx-cache --verbose
-        - rm -rf apps/demo/storefront/node_modules
+        - rm -rf apps/medusa-demo/node_modules
         - pnpm --filter=medusa-demo --prod deploy medusa-demo-temp-deploy
-        - mv medusa-demo-temp-deploy/node_modules apps/demo/storefront/
+        - mv medusa-demo-temp-deploy/node_modules apps/medusa-demo/
       deployFiles:
         - .nx
         - nx.json
@@ -149,12 +149,12 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - node_modules
-        - apps/demo/storefront/package.json
-        - apps/demo/storefront/.next
-        - apps/demo/storefront/next.config.js
-        - apps/demo/storefront/node_modules
-        - apps/demo/storefront/public
-        - apps/demo/storefront/check-env-variables.js
+        - apps/medusa-demo/package.json
+        - apps/medusa-demo/.next
+        - apps/medusa-demo/next.config.js
+        - apps/medusa-demo/node_modules
+        - apps/medusa-demo/public
+        - apps/medusa-demo/check-env-variables.js
       cache: node_modules
     run:
       base: nodejs@22
