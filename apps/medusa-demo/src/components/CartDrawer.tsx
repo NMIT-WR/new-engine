@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { HttpTypes } from "@medusajs/types"
-import Item from "@modules/cart/components/item"
-import CartTotals from "@modules/cart/components/cart-totals"
-import { LocalizedButtonLink, LocalizedLink } from "@/components/LocalizedLink"
-import { Drawer } from "@/components/Drawer"
-import { Button } from "@/components/Button"
-import DiscountCode from "@modules/cart/components/discount-code"
-import { Icon } from "@/components/Icon"
-import { getCheckoutStep } from "@modules/cart/utils/getCheckoutStep"
-import { useCart, useCartQuantity } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
+import { Button } from '@/components/Button'
+import { Drawer } from '@/components/Drawer'
+import { Icon } from '@/components/Icon'
+import { LocalizedButtonLink, LocalizedLink } from '@/components/LocalizedLink'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import type { HttpTypes } from '@medusajs/types'
+import CartTotals from '@modules/cart/components/cart-totals'
+import DiscountCode from '@modules/cart/components/discount-code'
+import Item from '@modules/cart/components/item'
+import { getCheckoutStep } from '@modules/cart/utils/getCheckoutStep'
+import { useCart, useCartQuantity } from 'hooks/cart'
+import * as React from 'react'
 
 export const CartDrawer = withReactQueryProvider(() => {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = React.useState(false)
@@ -31,11 +31,11 @@ export const CartDrawer = withReactQueryProvider(() => {
         aria-label="Open cart"
       >
         {pendingQuantity ? (
-          <Icon name="case" className=" w-6 h-6" />
+          <Icon name="case" className=" h-6 w-6" />
         ) : (
           <Icon
             name="case"
-            className=" w-6 h-6"
+            className=" h-6 w-6"
             status={quantity && quantity > 0 ? quantity : undefined}
           />
         )}
@@ -45,11 +45,11 @@ export const CartDrawer = withReactQueryProvider(() => {
         animateFrom="right"
         isOpen={isCartDrawerOpen}
         onOpenChange={setIsCartDrawerOpen}
-        className="max-sm:max-w-100 max-w-139 max-sm:px-6 px-12 pt-10"
+        className="max-w-139 px-12 pt-10 max-sm:max-w-100 max-sm:px-6"
       >
         {({ close }) => (
           <>
-            <div className="flex justify-between mb-2">
+            <div className="mb-2 flex justify-between">
               <div>
                 <p className="text-md">Cart</p>
               </div>
@@ -59,10 +59,10 @@ export const CartDrawer = withReactQueryProvider(() => {
             </div>
             {cart?.items?.length ? (
               <>
-                <div className="pb-8 pr-3 sm:pr-4 overflow-y-scroll">
+                <div className="overflow-y-scroll pr-3 pb-8 sm:pr-4">
                   {cart?.items
                     .sort((a, b) => {
-                      return (a.created_at ?? "") > (b.created_at ?? "")
+                      return (a.created_at ?? '') > (b.created_at ?? '')
                         ? -1
                         : 1
                     })
@@ -71,12 +71,12 @@ export const CartDrawer = withReactQueryProvider(() => {
                         <Item
                           key={item.id}
                           item={item}
-                          className="py-8 last:pb-0 last:border-b-0"
+                          className="py-8 last:border-b-0 last:pb-0"
                         />
                       )
                     })}
                 </div>
-                <div className="sticky left-0 bg-white bottom-0 pt-4 border-t border-grayscale-200 mt-auto">
+                <div className="sticky bottom-0 left-0 mt-auto border-grayscale-200 border-t bg-white pt-4">
                   <CartTotals isPartOfCartDrawer cart={cart} />
                   <DiscountCode cart={cart} className="mt-6" />
                   <LocalizedButtonLink
@@ -89,12 +89,12 @@ export const CartDrawer = withReactQueryProvider(() => {
                 </div>
               </>
             ) : isPending ? (
-              <div className="flex align-middle justify-around items-center h-screen ">
-                <Icon name="loader" className="w-10 md:w-15 animate-spin" />
+              <div className="flex h-screen items-center justify-around align-middle ">
+                <Icon name="loader" className="w-10 animate-spin md:w-15" />
               </div>
             ) : (
               <>
-                <p className="md:text-sm max-sm:mr-10 mb-6 mt-2">
+                <p className="mt-2 mb-6 max-sm:mr-10 md:text-sm">
                   You don&apos;t have anything in your cart. Let&apos;s change
                   that, use the link below to start browsing our products.
                 </p>

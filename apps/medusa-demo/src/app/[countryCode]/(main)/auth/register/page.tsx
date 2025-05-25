@@ -1,14 +1,14 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import { redirect } from "next/navigation"
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
-import { getCustomer } from "@lib/data/customer"
-import { SignUpForm } from "@modules/auth/components/SignUpForm"
-import { LocalizedLink } from "@/components/LocalizedLink"
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { getCustomer } from '@lib/data/customer'
+import { SignUpForm } from '@modules/auth/components/SignUpForm'
 
 export const metadata: Metadata = {
-  title: "Register",
-  description: "Create an account",
+  title: 'Register',
+  description: 'Create an account',
 }
 
 export default async function RegisterPage({
@@ -29,15 +29,15 @@ export default async function RegisterPage({
         width={1440}
         height={1632}
         alt="Living room with dark gray corner sofa and coffee table"
-        className="max-lg:hidden lg:w-1/2 shrink-0 object-cover"
+        className="shrink-0 object-cover max-lg:hidden lg:w-1/2"
       />
-      <div className="shrink-0 max-w-100 lg:max-w-96 w-full mx-auto pt-30 lg:pt-37 pb-16 max-sm:px-4">
-        <h1 className="text-xl md:text-2xl mb-10 md:mb-16">
+      <div className="mx-auto w-full max-w-100 shrink-0 pt-30 pb-16 max-sm:px-4 lg:max-w-96 lg:pt-37">
+        <h1 className="mb-10 text-xl md:mb-16 md:text-2xl">
           Hey, welcome to Sofa Society!
         </h1>
         <SignUpForm />
         <p className="text-grayscale-500">
-          Already have an account? No worries, just{" "}
+          Already have an account? No worries, just{' '}
           <LocalizedLink
             href="/auth/login"
             variant="underline"

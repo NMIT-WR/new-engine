@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import * as ReactAria from "react-aria-components"
 import {
   UiSelectButton,
   UiSelectIcon,
   UiSelectListBox,
   UiSelectListBoxItem,
   UiSelectValue,
-} from "@/components/ui/Select"
+} from '@/components/ui/Select'
+import * as ReactAria from 'react-aria-components'
 
-export type SortOptions = "price_asc" | "price_desc" | "created_at"
+export type SortOptions = 'price_asc' | 'price_desc' | 'created_at'
 
 type SortProductsProps = {
   sortBy: SortOptions | undefined
@@ -18,13 +18,13 @@ type SortProductsProps = {
 
 const SortProducts = ({ sortBy, setQueryParams }: SortProductsProps) => {
   const handleChange = (value: SortOptions) => {
-    setQueryParams("sortBy", value)
+    setQueryParams('sortBy', value)
   }
 
   return (
     <ReactAria.Select
       placeholder="Sort by"
-      selectedKey={sortBy || "sortBy"}
+      selectedKey={sortBy || 'sortBy'}
       onSelectionChange={(key) => {
         handleChange(key as SortOptions)
       }}

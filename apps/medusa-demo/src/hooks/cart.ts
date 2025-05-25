@@ -13,21 +13,21 @@ import {
   setShippingMethod,
   updateLineItem,
   updateRegion,
-} from "@lib/data/cart"
-import { listCartShippingMethods } from "@lib/data/fulfillment"
-import { listCartPaymentMethods } from "@lib/data/payment"
-import { HttpTypes } from "@medusajs/types"
+} from '@lib/data/cart'
+import { listCartShippingMethods } from '@lib/data/fulfillment'
+import { listCartPaymentMethods } from '@lib/data/payment'
+import type { HttpTypes } from '@medusajs/types'
 import {
+  type UseMutationOptions,
   useMutation,
-  UseMutationOptions,
   useQuery,
   useQueryClient,
-} from "@tanstack/react-query"
-import { z } from "zod"
+} from '@tanstack/react-query'
+import { z } from 'zod'
 
 export const useCart = ({ enabled }: { enabled: boolean }) => {
   return useQuery({
-    queryKey: ["cart"],
+    queryKey: ['cart'],
     queryFn: async () => {
       const res = await retrieveCart()
       return res
@@ -38,12 +38,11 @@ export const useCart = ({ enabled }: { enabled: boolean }) => {
 
 export const useCartQuantity = () => {
   return useQuery({
-    queryKey: ["cart", "cart-quantity"],
+    queryKey: ['cart', 'cart-quantity'],
     queryFn: async () => {
       const res = await getCartQuantity()
       return res
     },
-
   })
 }
 
@@ -77,7 +76,7 @@ export const useUpdateLineItem = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["cart-update-line-item"],
+    mutationKey: ['cart-update-line-item'],
     mutationFn: async (payload: { lineId: string; quantity: number }) => {
       const response = await updateLineItem({
         lineId: payload.lineId,
@@ -85,10 +84,10 @@ export const useUpdateLineItem = (
       })
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -103,16 +102,16 @@ export const useDeleteLineItem = (
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: ["cart-delete-line-item"],
+    mutationKey: ['cart-delete-line-item'],
     mutationFn: async (payload: { lineId: string }) => {
       const response = await deleteLineItem(payload.lineId)
 
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -132,7 +131,7 @@ export const useAddLineItem = (
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: ["cart-add-line-item"],
+    mutationKey: ['cart-add-line-item'],
     mutationFn: async (payload: {
       variantId: string
       quantity: number
@@ -142,10 +141,10 @@ export const useAddLineItem = (
 
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -165,7 +164,7 @@ export const useSetShippingMethod = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["shipping-update", cartId],
+    mutationKey: ['shipping-update', cartId],
     mutationFn: async ({ shippingMethodId }) => {
       const response = await setShippingMethod({
         cartId,
@@ -174,10 +173,10 @@ export const useSetShippingMethod = (
 
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -202,12 +201,12 @@ export const addressesFormSchema = z
     }),
   })
   .and(
-    z.discriminatedUnion("same_as_billing", [
+    z.discriminatedUnion('same_as_billing', [
       z.object({
-        same_as_billing: z.literal("on"),
+        same_as_billing: z.literal('on'),
       }),
       z.object({
-        same_as_billing: z.literal("off").optional(),
+        same_as_billing: z.literal('off').optional(),
         billing_address: z.object({
           first_name: z.string().min(1),
           last_name: z.string().min(1),
@@ -235,15 +234,15 @@ export const useSetShippingAddress = (
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: ["shipping-address-update"],
+    mutationKey: ['shipping-address-update'],
     mutationFn: async (payload) => {
       const response = await setAddresses(payload)
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -263,15 +262,15 @@ export const useSetEmail = (
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: ["set-email"],
+    mutationKey: ['set-email'],
     mutationFn: async (payload) => {
       const response = await setEmail(payload)
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -292,16 +291,16 @@ export const useInitiatePaymentSession = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["initiate-payment"],
+    mutationKey: ['initiate-payment'],
     mutationFn: async (payload: { providerId: string }) => {
       const response = await initiatePaymentSession(payload.providerId)
 
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -320,16 +319,16 @@ export const useSetPaymentMethod = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["set-payment"],
+    mutationKey: ['set-payment'],
     mutationFn: async (payload) => {
       const response = await setPaymentMethod(payload.sessionId, payload.token)
 
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -340,7 +339,7 @@ export const useSetPaymentMethod = (
 
 export const useGetPaymentMethod = (id: string | undefined) => {
   return useQuery({
-    queryKey: ["payment", id],
+    queryKey: ['payment', id],
     queryFn: async () => {
       if (!id) {
         return null
@@ -354,7 +353,7 @@ export const useGetPaymentMethod = (id: string | undefined) => {
 export const usePlaceOrder = (
   options?: UseMutationOptions<
     | {
-        type: "cart"
+        type: 'cart'
         cart: HttpTypes.StoreCart
         error: {
           message: string
@@ -363,7 +362,7 @@ export const usePlaceOrder = (
         }
       }
     | {
-        type: "order"
+        type: 'order'
         order: HttpTypes.StoreOrder
       }
     | null,
@@ -374,16 +373,16 @@ export const usePlaceOrder = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["place-order"],
+    mutationKey: ['place-order'],
     mutationFn: async () => {
       const response = await placeOrder()
       return response
     },
     ...options,
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -396,16 +395,16 @@ export const useApplyPromotions = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["apply-promotion"],
+    mutationKey: ['apply-promotion'],
     mutationFn: async (payload) => {
       const response = await applyPromotions(payload)
 
       return response
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
 
       await options?.onSuccess?.(...args)
@@ -424,22 +423,22 @@ export const useUpdateRegion = (
 ) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ["update-region"],
+    mutationKey: ['update-region'],
     mutationFn: async ({ countryCode, currentPath }) => {
       await updateRegion(countryCode, currentPath)
     },
-    onSuccess: async function (...args) {
+    onSuccess: async (...args) => {
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["cart"],
+        queryKey: ['cart'],
       })
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["regions"],
+        queryKey: ['regions'],
       })
       await queryClient.invalidateQueries({
         exact: false,
-        queryKey: ["products"],
+        queryKey: ['products'],
       })
 
       await options?.onSuccess?.(...args)

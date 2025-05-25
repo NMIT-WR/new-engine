@@ -1,14 +1,14 @@
-import {Metadata} from "next"
-import Image from "next/image"
-import {StoreRegion} from "@medusajs/types"
-import {listRegions} from "@lib/data/regions"
-import {Layout, LayoutColumn} from "@/components/Layout"
-import {LocalizedLink} from "@/components/LocalizedLink"
-import {CollectionsSection} from "@/components/CollectionsSection"
+import { CollectionsSection } from '@/components/CollectionsSection'
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { listRegions } from '@lib/data/regions'
+import type { StoreRegion } from '@medusajs/types'
+import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "Inspiration",
-  description: "Get inspired by our latest collections",
+  title: 'Inspiration',
+  description: 'Get inspired by our latest collections',
 }
 
 export async function generateStaticParams() {
@@ -19,7 +19,7 @@ export async function generateStaticParams() {
             .map((c) => c.iso_2)
             .filter(
               (value): value is string =>
-                typeof value === "string" && Boolean(value)
+                typeof value === 'string' && Boolean(value)
             )
         : []
     )
@@ -43,16 +43,16 @@ export default function InspirationPage() {
           width={2880}
           height={1500}
           alt="Living room with dark green three-seater sofa"
-          className="md:h-screen md:object-cover mb-8 md:mb-26"
+          className="mb-8 md:mb-26 md:h-screen md:object-cover"
         />
       </div>
       <div className="pb-26 md:pb-36">
         <Layout>
           <LayoutColumn start={1} end={{ base: 13, md: 8 }}>
-            <h3 className="text-md mb-6 md:mb-16 md:text-2xl">
+            <h3 className="mb-6 text-md md:mb-16 md:text-2xl">
               The Astrid Curve sofa is a masterpiece of minimalism and luxury.
             </h3>
-            <div className="md:text-md max-md:mb-16 max-w-135">
+            <div className="max-w-135 max-md:mb-16 md:text-md">
               <p>
                 Our design philosophy revolves around creating pieces that are
                 both beautiful and practical. Inspired by Scandinavian
@@ -88,15 +88,15 @@ export default function InspirationPage() {
               width={2496}
               height={1404}
               alt="Living room with brown armchair and gray corner sofa"
-              className="mt-26 md:mt-36 mb-8 md:mb-26"
+              className="mt-26 mb-8 md:mt-36 md:mb-26"
             />
           </LayoutColumn>
           <LayoutColumn start={1} end={{ base: 13, md: 8 }}>
-            <h3 className="text-md mb-6 md:mb-16 md:text-2xl">
+            <h3 className="mb-6 text-md md:mb-16 md:text-2xl">
               Haven Sofas have minimalistic designs, neutral colors, and
               high-quality textures.
             </h3>
-            <div className="md:text-md max-md:mb-16 max-w-135">
+            <div className="max-w-135 max-md:mb-16 md:text-md">
               <p>
                 Perfect for those who seek comfort with a clean and understated
                 aesthetic. This collection brings the essence of Scandinavian
@@ -107,7 +107,7 @@ export default function InspirationPage() {
           <LayoutColumn start={{ base: 1, md: 9 }} end={13}>
             <LocalizedLink
               href="/products/nordic-haven"
-              className="mb-8 md:mb-16 inline-block"
+              className="mb-8 inline-block md:mb-16"
             >
               <Image
                 src="/images/content/gray-three-seater-sofa.png"
@@ -155,15 +155,15 @@ export default function InspirationPage() {
           width={2880}
           height={1618}
           alt="Living room with gray two-seater puffy sofa"
-          className="md:h-screen md:object-cover mt-26 md:mt-36 mb-8 md:mb-26"
+          className="mt-26 mb-8 md:mt-36 md:mb-26 md:h-screen md:object-cover"
         />
         <Layout>
           <LayoutColumn start={1} end={{ base: 13, md: 8 }}>
-            <h3 className="text-md mb-6 md:mb-16 md:text-2xl">
+            <h3 className="mb-6 text-md md:mb-16 md:text-2xl">
               Oslo Drift is infused with playful textures and vibrant patterns
               with eclectic vibes.
             </h3>
-            <div className="md:text-md max-md:mb-16 max-w-135">
+            <div className="max-w-135 max-md:mb-16 md:text-md">
               <p>
                 Whether you&apos;re looking for bold statement pieces or subtle
                 elegance, this collection elevates your home with a touch of

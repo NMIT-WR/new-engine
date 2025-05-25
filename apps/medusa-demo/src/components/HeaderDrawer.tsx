@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Button } from "@/components/Button"
-import { Icon } from "@/components/Icon"
-import { Drawer } from "@/components/Drawer"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { RegionSwitcher } from "@/components/RegionSwitcher"
-import { SearchField } from "@/components/SearchField"
-import { useSearchParams } from "next/navigation"
+import { Button } from '@/components/Button'
+import { Drawer } from '@/components/Drawer'
+import { Icon } from '@/components/Icon'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { RegionSwitcher } from '@/components/RegionSwitcher'
+import { SearchField } from '@/components/SearchField'
+import { useSearchParams } from 'next/navigation'
+import * as React from 'react'
 
 export const HeaderDrawer: React.FC<{
   countryOptions: {
@@ -19,7 +19,7 @@ export const HeaderDrawer: React.FC<{
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
 
   const searchParams = useSearchParams()
-  const searchQuery = searchParams.get("query")
+  const searchQuery = searchParams.get('query')
 
   React.useEffect(() => {
     if (searchQuery) setIsMenuOpen(false)
@@ -33,18 +33,18 @@ export const HeaderDrawer: React.FC<{
         onPress={() => setIsMenuOpen(true)}
         aria-label="Open menu"
       >
-        <Icon name="menu" className="w-6 h-6" wrapperClassName="w-6 h-6" />
+        <Icon name="menu" className="h-6 w-6" wrapperClassName="w-6 h-6" />
       </Button>
       <Drawer
         animateFrom="left"
         isOpen={isMenuOpen}
         onOpenChange={setIsMenuOpen}
-        className="rounded-none !p-0"
+        className="!p-0 rounded-none"
       >
         {({ close }) => (
           <>
-            <div className="flex flex-col text-white h-full">
-              <div className="flex items-center justify-between pb-6 mb-8 pt-5 w-full border-b border-white px-8">
+            <div className="flex h-full flex-col text-white">
+              <div className="mb-8 flex w-full items-center justify-between border-white border-b px-8 pt-5 pb-6">
                 <SearchField
                   countryOptions={countryOptions}
                   isInputAlwaysShown
@@ -53,7 +53,7 @@ export const HeaderDrawer: React.FC<{
                   <Icon name="close" className="w-6" />
                 </button>
               </div>
-              <div className="text-lg flex flex-col gap-8 font-medium px-8">
+              <div className="flex flex-col gap-8 px-8 font-medium text-lg">
                 <LocalizedLink
                   href="/about"
                   onClick={() => setIsMenuOpen(false)}
@@ -75,7 +75,7 @@ export const HeaderDrawer: React.FC<{
               </div>
               <RegionSwitcher
                 countryOptions={countryOptions}
-                className="mt-auto ml-8 mb-8"
+                className="mt-auto mb-8 ml-8"
                 selectButtonClassName="max-md:text-base gap-2 p-1 w-auto"
                 selectIconClassName="text-current w-6 h-6"
               />

@@ -1,10 +1,9 @@
-import { Heading, Text } from "@medusajs/ui"
-import Link from "next/link"
+import { Heading, Text } from '@medusajs/ui'
 
-import RefinementList from "@modules/store/components/refinement-list"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import PaginatedProducts from "@modules/store/templates/paginated-products"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
+import RefinementList from '@modules/store/components/refinement-list'
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
+import PaginatedProducts from '@modules/store/templates/paginated-products'
 
 type SearchResultsTemplateProps = {
   query: string
@@ -21,11 +20,11 @@ const SearchResultsTemplate = ({
   page,
   countryCode,
 }: SearchResultsTemplateProps) => {
-  const pageNumber = page ? parseInt(page) : 1
+  const pageNumber = page ? Number.parseInt(page) : 1
 
   return (
     <>
-      <div className="flex justify-between border-b w-full py-6 px-8 small:px-14 items-center">
+      <div className="flex w-full items-center justify-between border-b px-8 py-6 small:px-14">
         <div className="flex flex-col items-start">
           <Text className="text-ui-fg-muted">Search Results for:</Text>
           <Heading>
@@ -39,10 +38,10 @@ const SearchResultsTemplate = ({
           Clear
         </LocalizedClientLink>
       </div>
-      <div className="flex flex-col small:flex-row small:items-start p-6">
+      <div className="flex flex-col p-6 small:flex-row small:items-start">
         {ids.length > 0 ? (
           <>
-            <RefinementList sortBy={sortBy || "created_at"} search />
+            <RefinementList sortBy={sortBy || 'created_at'} search />
             <div className="content-container">
               <PaginatedProducts
                 productsIds={ids}
@@ -53,7 +52,7 @@ const SearchResultsTemplate = ({
             </div>
           </>
         ) : (
-          <Text className="ml-8 small:ml-14 mt-3">No results.</Text>
+          <Text className="mt-3 ml-8 small:ml-14">No results.</Text>
         )}
       </div>
     </>

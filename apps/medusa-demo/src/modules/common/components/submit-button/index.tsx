@@ -1,11 +1,9 @@
-"use client"
+'use client'
+import { useFormStatus } from 'react-dom'
 
-import React from "react"
-import { useFormStatus } from "react-dom"
+import { Button, type ButtonProps } from '@/components/Button'
 
-import { Button, ButtonProps } from "@/components/Button"
-
-export function SubmitButton(props: Omit<ButtonProps, "type">) {
+export function SubmitButton(props: Omit<ButtonProps, 'type'>) {
   const { pending } = useFormStatus()
 
   return (

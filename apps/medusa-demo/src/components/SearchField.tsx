@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as ReactAria from "react-aria-components"
-import { twJoin } from "tailwind-merge"
-import { useAsyncList } from "react-stately"
-import { Hit } from "meilisearch"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useCountryCode } from "hooks/country-code"
-import { MeiliSearchProductHit, searchClient } from "@lib/search-client"
-import { getProductPrice } from "@lib/util/get-product-price"
-import { getProductsById } from "@lib/data/products"
-import Thumbnail from "@modules/products/components/thumbnail"
-import { Button } from "@/components/Button"
-import { Icon } from "@/components/Icon"
+import { Button } from '@/components/Button'
+import { Icon } from '@/components/Icon'
+import { getProductsById } from '@lib/data/products'
+import { type MeiliSearchProductHit, searchClient } from '@lib/search-client'
+import { getProductPrice } from '@lib/util/get-product-price'
+import Thumbnail from '@modules/products/components/thumbnail'
+import { useCountryCode } from 'hooks/country-code'
+import type { Hit } from 'meilisearch'
+import { useRouter, useSearchParams } from 'next/navigation'
+import * as React from 'react'
+import * as ReactAria from 'react-aria-components'
+import { useAsyncList } from 'react-stately'
+import { twJoin } from 'tailwind-merge'
 
 interface ListItem extends Hit<MeiliSearchProductHit> {
   price: {
@@ -39,7 +39,7 @@ export const SearchField: React.FC<{
   const countryCode = useCountryCode()
   const region = countryOptions.find((co) => co.country === countryCode)?.region
   const searchParams = useSearchParams()
-  const searchQuery = searchParams.get("query")
+  const searchQuery = searchParams.get('query')
 
   const list = useAsyncList<ListItem>({
     getKey(item) {
@@ -47,7 +47,7 @@ export const SearchField: React.FC<{
     },
     load: async ({ filterText, signal }) => {
       const results = await searchClient
-        .index("products")
+        .index('products')
         .search<MeiliSearchProductHit>(filterText, undefined, {
           signal,
         })
@@ -69,7 +69,7 @@ export const SearchField: React.FC<{
         filterText,
       }
     },
-    initialFilterText: searchQuery ?? "",
+    initialFilterText: searchQuery ?? '',
   })
 
   const buttonPressHandle = React.useCallback(() => {
@@ -78,17 +78,15 @@ export const SearchField: React.FC<{
     } else if (list.filterText) {
       router.push(`/${countryCode}/search?query=${list.filterText}`)
       if (!isInputAlwaysShown) setIsInputShown(false)
-    } else {
-      if (!isInputAlwaysShown) setIsInputShown(false)
-    }
+    } else if (!isInputAlwaysShown) setIsInputShown(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInputShown, list.filterText, router, countryCode])
 
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         if (!isInputAlwaysShown) setIsInputShown(false)
-      } else if (e.key === "Enter" && list.filterText) {
+      } else if (e.key === 'Enter' && list.filterText) {
         router.push(`/${countryCode}/search?query=${list.filterText}`)
         if (!isInputAlwaysShown) setIsInputShown(false)
       }
@@ -110,17 +108,17 @@ export const SearchField: React.FC<{
   }, [])
 
   return (
-      <div className="flex">
-        <Button
-            onClick={buttonPressHandle}
-            variant="ghost"
-            className="p-1 max-md:text-white group-data-[light=true]:md:text-white group-data-[sticky=true]:md:text-black"
-            aria-label="Open search"
-        >
-          <Icon name="search" className="w-5 h-5" />
-        </Button>{" "}
-        <ReactAria.ComboBox
-            /*allowsCustomValue
+    <div className="flex">
+      <Button
+        onClick={buttonPressHandle}
+        variant="ghost"
+        className="p-1 max-md:text-white group-data-[light=true]:md:text-white group-data-[sticky=true]:md:text-black"
+        aria-label="Open search"
+      >
+        <Icon name="search" className="h-5 w-5" />
+      </Button>{' '}
+      <ReactAria.ComboBox
+      /*allowsCustomValue
             className="overflow-hidden"
             aria-label="Search"
             items={list.items}
@@ -128,33 +126,34 @@ export const SearchField: React.FC<{
             onInputChange={list.setFilterText}
             onKeyDown={handleKeyDown}
             isDisabled={!isInputAlwaysShown && !isInputShown}*/
+      >
+        <div
+          className={twJoin(
+            'h-full max-w-40 overflow-hidden transition-width duration-500 md:max-w-30',
+            isInputShown ? 'w-full md:w-30' : 'md:w-0'
+          )}
         >
-          <div
-              className={twJoin(
-                  "overflow-hidden transition-width duration-500 h-full max-w-40 md:max-w-30",
-                  isInputShown ? "w-full md:w-30" : "md:w-0"
-              )}
-          >
-            <input
-                type="text"
-                className="px-0 w-full disabled:bg-transparent !py-0 h-7 md:h-6 max-md:border-0 border-black rounded-none border-t-0 border-x-0 group-data-[light=true]:md:border-white group-data-[sticky=true]:md:border-black"
-                value={list.filterText}
-                onChange={(e) => list.setFilterText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                disabled={!isInputAlwaysShown && !isInputShown}
-            />
-          </div>
-          <ReactAria.Popover
-              placement="bottom end"
-              containerPadding={10}
-              maxHeight={243}
-              offset={25}
-              className="max-w-90 md:max-w-95 lg:max-w-98 w-full bg-white rounded-xs border border-grayscale-200 overflow-y-scroll"
-          >
-            <ReactAria.ListBox className="outline-none">
-              {(item: ListItem) => (
-                  <ReactAria.ListBoxItem
-                      className="relative after:absolute after:content-[''] after:h-px after:bg-grayscale-100 after:-bottom-px after:left-6 after:right-6 last:after:hidden mb-px flex gap-6 p-6 transition-colors hover:bg-grayscale-50"
+          <input
+            type="text"
+            className="!py-0 h-7 w-full rounded-none border-black border-x-0 border-t-0 px-0 disabled:bg-transparent max-md:border-0 md:h-6 group-data-[light=true]:md:border-white group-data-[sticky=true]:md:border-black"
+            value={list.filterText}
+            onChange={(e) => list.setFilterText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={!isInputAlwaysShown && !isInputShown}
+          />
+        </div>
+        <ReactAria.Popover
+          placement="bottom end"
+          containerPadding={10}
+          maxHeight={243}
+          offset={25}
+          className="w-full max-w-90 overflow-y-scroll rounded-xs border border-grayscale-200 bg-white md:max-w-95 lg:max-w-98"
+        >
+          <ReactAria.ListBox className="outline-none">
+            {(item: ListItem) =>
+              (
+                <ReactAria.ListBoxItem
+                      className='after:-bottom-px relative mb-px flex gap-6 p-6 transition-colors after:absolute after:right-6 after:left-6 after:h-px after:bg-grayscale-100 after:content-[''] last:after:hidden hover:bg-grayscale-50'
                       key={item.handle}
                       id={item.handle}
                       href={`/${countryCode}/products/${item.handle}`}
@@ -165,21 +164,22 @@ export const SearchField: React.FC<{
                         className="w-20"
                     />
                     <div>
-                      <p className="text-base font-normal">{item.title}</p>
+                      <p className='font-normal text-base'>{item.title}</p>
                       <p className="text-grayscale-500 text-xs">
                         {item.variants &&
                             item.variants.length > 0 &&
                             item.variants[0]}
                       </p>
                     </div>
-                    <p className="text-base font-semibold ml-auto">
+                    <p className='ml-auto font-semibold text-base'>
                       {item.price?.calculated_price}
                     </p>
                   </ReactAria.ListBoxItem>
-              )}
-            </ReactAria.ListBox>
-          </ReactAria.Popover>
-        </ReactAria.ComboBox>
-      </div>
+              )
+            }
+          </ReactAria.ListBox>
+        </ReactAria.Popover>
+      </ReactAria.ComboBox>
+    </div>
   )
 }

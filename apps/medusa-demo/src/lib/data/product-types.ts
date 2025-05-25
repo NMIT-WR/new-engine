@@ -1,5 +1,5 @@
-import { sdk } from "@lib/config"
-import { HttpTypes, PaginatedResponse } from "@medusajs/types"
+import { sdk } from '@lib/config'
+import type { HttpTypes, PaginatedResponse } from '@medusajs/types'
 /*
 export const getProductTypesList = async function (
   offset: number = 0,
@@ -24,11 +24,11 @@ export const getProductTypesList = async function (
 }
 */
 
-export const getProductTypesList = async function (
-  offset: number = 0,
-  limit: number = 100,
+export const getProductTypesList = async (
+  offset = 0,
+  limit = 100,
   fields?: (keyof HttpTypes.StoreProductType)[]
-): Promise<{ productTypes: HttpTypes.StoreProductType[]; count: number }> {
+): Promise<{ productTypes: HttpTypes.StoreProductType[]; count: number }> => {
   try {
     return await sdk.client
       .fetch<
@@ -36,10 +36,10 @@ export const getProductTypesList = async function (
           product_types: HttpTypes.StoreProductType[]
           count: number
         }>
-      >("/store/custom/product-types", {
-        query: { limit, offset, fields: fields ? fields.join(",") : undefined },
-        next: { tags: ["product-types"] },
-        cache: "force-cache",
+      >('/store/custom/product-types', {
+        query: { limit, offset, fields: fields ? fields.join(',') : undefined },
+        next: { tags: ['product-types'] },
+        cache: 'force-cache',
       })
       .then(({ product_types, count }) => ({
         productTypes: product_types,
@@ -47,38 +47,38 @@ export const getProductTypesList = async function (
       }))
   } catch (error: unknown) {
     if (
-      (typeof error === "object" &&
+      (typeof error === 'object' &&
         error &&
-        "status" in error &&
+        'status' in error &&
         error.status === 404) ||
-      (typeof error === "object" &&
+      (typeof error === 'object' &&
         error &&
-        "message" in error &&
-        typeof error.message === "string" &&
-        error.message.includes("fetch failed"))
+        'message' in error &&
+        typeof error.message === 'string' &&
+        error.message.includes('fetch failed'))
     ) {
       console.warn(
-        "Using mock product types - endpoint /store/custom/product-types not found"
+        'Using mock product types - endpoint /store/custom/product-types not found'
       )
 
       const mockProductTypes: HttpTypes.StoreProductType[] = [
         {
-          id: "sofa",
-          value: "Sofas",
+          id: 'sofa',
+          value: 'Sofas',
           metadata: {
             image: {
-              url: "/images/content/gray-sofa-against-concrete-wall.png",
+              url: '/images/content/gray-sofa-against-concrete-wall.png',
             },
           },
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         },
         {
-          id: "chair",
-          value: "Chairs",
+          id: 'chair',
+          value: 'Chairs',
           metadata: {
             image: {
-              url: "/images/content/living-room-gray-armchair-two-seater-sofa.png",
+              url: '/images/content/living-room-gray-armchair-two-seater-sofa.png',
             },
           },
           created_at: new Date().toISOString(),
@@ -95,9 +95,9 @@ export const getProductTypesList = async function (
   }
 }
 
-export const getProductTypeByHandle = async function (
+export const getProductTypeByHandle = async (
   handle: string
-): Promise<HttpTypes.StoreProductType> {
+): Promise<HttpTypes.StoreProductType> => {
   try {
     return await sdk.client
       .fetch<
@@ -105,22 +105,22 @@ export const getProductTypeByHandle = async function (
           product_types: HttpTypes.StoreProductType[]
           count: number
         }>
-      >("/store/custom/product-types", {
+      >('/store/custom/product-types', {
         query: { handle, limit: 1 },
-        next: { tags: ["product-types"] },
-        cache: "force-cache",
+        next: { tags: ['product-types'] },
+        cache: 'force-cache',
       })
       .then(({ product_types }) => product_types[0])
   } catch (error) {
-    if (!(error instanceof Error) || !("status" in error)) {
-      throw new Error("An unexpected error occurred")
+    if (!(error instanceof Error) || !('status' in error)) {
+      throw new Error('An unexpected error occurred')
     }
-    if (error.message.includes("fetch failed")) {
+    if (error.message.includes('fetch failed')) {
       return {
         id: handle,
         value: handle.charAt(0).toUpperCase() + handle.slice(1),
         metadata: {
-          image: { url: "/images/content/gray-sofa-against-concrete-wall.png" },
+          image: { url: '/images/content/gray-sofa-against-concrete-wall.png' },
         },
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),

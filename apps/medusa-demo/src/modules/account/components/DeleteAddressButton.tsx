@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { UiConfirmButton } from "@/components/Dialog"
-import { useDeleteCustomerAddress } from "hooks/customer"
-import { withReactQueryProvider } from "@lib/util/react-query"
+import { UiConfirmButton } from '@/components/Dialog'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import { useDeleteCustomerAddress } from 'hooks/customer'
 
 export const DeleteAddressButton = withReactQueryProvider<{
   addressId: string

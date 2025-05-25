@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { usePathname } from "next/navigation"
-import { useCountryCode } from "hooks/country-code"
+import { useCountryCode } from 'hooks/country-code'
+import { usePathname } from 'next/navigation'
+import * as React from 'react'
 
 export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -14,19 +14,19 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
     : pathName
   const isPageWithHeroImage =
     !currentPath ||
-    currentPath === "/" ||
-    currentPath === "/about" ||
-    currentPath === "/inspiration" ||
-    currentPath.startsWith("/collections")
+    currentPath === '/' ||
+    currentPath === '/about' ||
+    currentPath === '/inspiration' ||
+    currentPath.startsWith('/collections')
   const isAlwaysSticky =
-    currentPath.startsWith("/auth") || currentPath.startsWith("/account")
+    currentPath.startsWith('/auth') || currentPath.startsWith('/account')
 
   React.useEffect(() => {
     if (isAlwaysSticky) {
       return
     }
 
-    const headerElement = document.querySelector("#site-header")
+    const headerElement = document.querySelector('#site-header')
 
     if (!headerElement) {
       return
@@ -57,35 +57,35 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
       const position = window.scrollY
 
       headerElement.setAttribute(
-        "data-sticky",
-        position > triggerPosition ? "true" : "false"
+        'data-sticky',
+        position > triggerPosition ? 'true' : 'false'
       )
     }
 
     updateTriggerPosition()
     handleScroll()
 
-    window.addEventListener("resize", updateTriggerPosition, {
+    window.addEventListener('resize', updateTriggerPosition, {
       passive: true,
     })
-    window.addEventListener("orientationchange", updateTriggerPosition, {
+    window.addEventListener('orientationchange', updateTriggerPosition, {
       passive: true,
     })
-    window.addEventListener("scroll", handleScroll, {
+    window.addEventListener('scroll', handleScroll, {
       passive: true,
     })
 
     return () => {
-      window.removeEventListener("resize", updateTriggerPosition)
-      window.removeEventListener("orientationchange", updateTriggerPosition)
-      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener('resize', updateTriggerPosition)
+      window.removeEventListener('orientationchange', updateTriggerPosition)
+      window.removeEventListener('scroll', handleScroll)
     }
   }, [pathName, isPageWithHeroImage, isAlwaysSticky])
 
   return (
     <div
       id="site-header"
-      className="top-0 left-0 w-full max-md:bg-grayscale-50 data-[light=true]:md:text-white data-[sticky=true]:md:bg-white data-[sticky=true]:md:text-black transition-colors fixed z-40 group"
+      className="group fixed top-0 left-0 z-40 w-full transition-colors max-md:bg-grayscale-50 data-[sticky=true]:md:bg-white data-[light=true]:md:text-white data-[sticky=true]:md:text-black"
       data-light={isPageWithHeroImage}
       data-sticky={isAlwaysSticky}
     >

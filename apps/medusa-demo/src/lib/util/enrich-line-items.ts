@@ -1,8 +1,8 @@
-import "server-only"
-import { HttpTypes } from "@medusajs/types"
-import { omit } from "lodash"
+import 'server-only'
+import type { HttpTypes } from '@medusajs/types'
+import { omit } from 'lodash'
 
-import { getProductsById } from "@lib/data/products"
+import { getProductsById } from '@lib/data/products'
 
 export async function enrichLineItems<
   T extends HttpTypes.StoreCartLineItem[] | HttpTypes.StoreOrderLineItem[],
@@ -37,7 +37,7 @@ export async function enrichLineItems<
       ...item,
       variant: {
         ...variant,
-        product: omit(product, "variants"),
+        product: omit(product, 'variants'),
       },
     }
   }) as T

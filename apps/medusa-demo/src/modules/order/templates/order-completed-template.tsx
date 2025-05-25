@@ -1,11 +1,11 @@
-import { HttpTypes } from "@medusajs/types"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { LocalizedButtonLink } from "@/components/LocalizedLink"
-import { Icon } from "@/components/Icon"
-import Item from "@modules/order/components/item"
-import { OrderTotals } from "@modules/order/components/OrderTotals"
-import { listOrders } from "@lib/data/orders"
-import { getCustomer } from "@lib/data/customer"
+import { Icon } from '@/components/Icon'
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { LocalizedButtonLink } from '@/components/LocalizedLink'
+import { getCustomer } from '@lib/data/customer'
+import { listOrders } from '@lib/data/orders'
+import type { HttpTypes } from '@medusajs/types'
+import { OrderTotals } from '@modules/order/components/OrderTotals'
+import Item from '@modules/order/components/item'
 
 type OrderCompletedTemplateProps = {
   order: HttpTypes.StoreOrder
@@ -28,7 +28,7 @@ export default async function OrderCompletedTemplate({
         start={{ base: 1, lg: 3, xl: 4 }}
         end={{ base: 13, lg: 11, xl: 10 }}
       >
-        <h1 className="text-md md:text-2xl mb-8 md:mb-16">
+        <h1 className="mb-8 text-md md:mb-16 md:text-2xl">
           Thank you for your order!
         </h1>
         <p className="mb-4">
@@ -36,11 +36,11 @@ export default async function OrderCompletedTemplate({
           and will be processed shortly.
         </p>
         <p className="mb-8">
-          We have sent you the receipt and order details via{" "}
+          We have sent you the receipt and order details via{' '}
           <strong>e-mail</strong>.<br />
           Your order number is <strong>#{order.display_id}</strong>.
         </p>
-        <div className="flex gap-x-6 gap-y-4 max-sm:flex-col mb-16">
+        <div className="mb-16 flex gap-x-6 gap-y-4 max-sm:flex-col">
           {Boolean(matchingOrders.length) && (
             <LocalizedButtonLink href={`/account/my-orders/${order.id}`}>
               Check order details
@@ -50,9 +50,9 @@ export default async function OrderCompletedTemplate({
             Back to home
           </LocalizedButtonLink>
         </div>
-        <div className="flex max-sm:flex-col gap-x-4 gap-y-4 md:flex-col lg:flex-row mb-5">
+        <div className="mb-5 flex gap-x-4 gap-y-4 max-sm:flex-col md:flex-col lg:flex-row">
           <div className="flex-1 overflow-hidden rounded-xs border border-grayscale-200 p-4">
-            <div className="flex gap-4 items-center mb-8">
+            <div className="mb-8 flex items-center gap-4">
               <Icon name="map-pin" />
               <p className="text-grayscale-500">Shipping address</p>
             </div>
@@ -62,7 +62,7 @@ export default async function OrderCompletedTemplate({
                 order.shipping_address?.last_name,
               ]
                 .filter(Boolean)
-                .join(" ")}
+                .join(' ')}
               <br />
               {[
                 order.shipping_address?.address_1,
@@ -71,17 +71,17 @@ export default async function OrderCompletedTemplate({
                   order.shipping_address?.city,
                 ]
                   .filter(Boolean)
-                  .join(" "),
+                  .join(' '),
                 order.shipping_address?.country?.display_name,
               ]
                 .filter(Boolean)
-                .join(", ")}
+                .join(', ')}
               <br />
               {order.shipping_address?.phone}
             </p>
           </div>
           <div className="flex-1 overflow-hidden rounded-xs border border-grayscale-200 p-4">
-            <div className="flex gap-4 items-center mb-8">
+            <div className="mb-8 flex items-center gap-4">
               <Icon name="receipt" />
               <p className="text-grayscale-500">Billing address</p>
             </div>
@@ -91,7 +91,7 @@ export default async function OrderCompletedTemplate({
                 order.billing_address?.last_name,
               ]
                 .filter(Boolean)
-                .join(" ")}
+                .join(' ')}
               <br />
               {[
                 order.billing_address?.address_1,
@@ -100,21 +100,23 @@ export default async function OrderCompletedTemplate({
                   order.billing_address?.city,
                 ]
                   .filter(Boolean)
-                  .join(" "),
+                  .join(' '),
                 order.billing_address?.country?.display_name,
               ]
                 .filter(Boolean)
-                .join(", ")}
+                .join(', ')}
               <br />
               {order.billing_address?.phone}
             </p>
           </div>
         </div>
-        <div className="rounded-xs border border-grayscale-200 p-4 mb-5">
-          {order.items?.map((item) => <Item key={item.id} item={item} />)}
+        <div className="mb-5 rounded-xs border border-grayscale-200 p-4">
+          {order.items?.map((item) => (
+            <Item key={item.id} item={item} />
+          ))}
         </div>
-        <div className="rounded-xs border border-grayscale-200 p-4 flex max-sm:flex-col gap-y-8 gap-x-10 md:flex-wrap justify-between">
-          <div className="flex items-center self-baseline gap-4">
+        <div className="flex justify-between gap-x-10 gap-y-8 rounded-xs border border-grayscale-200 p-4 max-sm:flex-col md:flex-wrap">
+          <div className="flex items-center gap-4 self-baseline">
             <Icon name="credit-card" />
             <div>
               <p className="text-grayscale-500">Payment</p>

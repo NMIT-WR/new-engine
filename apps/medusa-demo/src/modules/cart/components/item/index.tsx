@@ -1,16 +1,16 @@
-"use client"
-import { HttpTypes } from "@medusajs/types"
-import { getVariantItemsInStock } from "@lib/util/inventory"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import DeleteButton from "@modules/common/components/delete-button"
-import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
-import Thumbnail from "@modules/products/components/thumbnail"
-import { NumberField } from "@/components/NumberField"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { twMerge } from "tailwind-merge"
-import { useUpdateLineItem } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
-import * as React from "react"
+'use client'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { NumberField } from '@/components/NumberField'
+import { getVariantItemsInStock } from '@lib/util/inventory'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import type { HttpTypes } from '@medusajs/types'
+import ErrorMessage from '@modules/checkout/components/error-message'
+import DeleteButton from '@modules/common/components/delete-button'
+import LineItemUnitPrice from '@modules/common/components/line-item-unit-price'
+import Thumbnail from '@modules/products/components/thumbnail'
+import { useUpdateLineItem } from 'hooks/cart'
+import * as React from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -32,13 +32,13 @@ const Item = ({ item, className }: ItemProps) => {
     }, 500)
 
     return () => clearTimeout(handler)
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity, item])
 
   return (
     <div
       className={twMerge(
-        "border-b border-grayscale-100 py-8 lg:last:pb-0 lg:last:border-b-0",
+        'border-grayscale-100 border-b py-8 lg:last:border-b-0 lg:last:pb-0',
         className
       )}
     >
@@ -51,14 +51,14 @@ const Item = ({ item, className }: ItemProps) => {
             className="w-25 sm:w-30"
           />
         </LocalizedLink>
-        <div className="flex-grow flex flex-col justify-between">
+        <div className="flex flex-grow flex-col justify-between">
           <div>
-            <h2 className="sm:text-md text-base font-normal">
+            <h2 className="font-normal text-base sm:text-md">
               <LocalizedLink href={`/products/${handle}`}>
                 {item.product_title}
               </LocalizedLink>
             </h2>
-            <p className="text-grayscale-500 text-xs sm:text-base max-sm:mb-4">
+            <p className="text-grayscale-500 text-xs max-sm:mb-4 sm:text-base">
               {item.variant?.title}
             </p>
             <LineItemUnitPrice item={item} className="sm:hidden" />
@@ -74,7 +74,7 @@ const Item = ({ item, className }: ItemProps) => {
             aria-label="Quantity"
           />
         </div>
-        <div className="flex flex-col justify-between items-end text-right">
+        <div className="flex flex-col items-end justify-between text-right">
           <LineItemUnitPrice item={item} className="max-sm:hidden" />
           <DeleteButton id={item.id} data-testid="product-delete-button" />
         </div>

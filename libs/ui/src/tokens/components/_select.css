@@ -4,7 +4,8 @@
   --color-select-border: var(--color-stroke-primary);
   --color-select-fg: var(--color-fg-primary);
   --color-select-placeholder: --alpha(
-    var(--color-fg-secondary) / var(--opacity-placeholder)
+    var(--color-fg-secondary) /
+    var(--opacity-placeholder)
   );
   --color-select-danger: var(--color-danger);
   --opacity-select-disabled: var(--opacity-disabled);

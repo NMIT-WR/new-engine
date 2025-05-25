@@ -1,107 +1,107 @@
-import * as select from "@zag-js/select";
-import { useMachine, normalizeProps, Portal } from "@zag-js/react";
-import { useId, type ReactNode } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { Icon } from "../atoms/icon";
-import { Button } from "../atoms/button";
-import { Label } from "../atoms/label";
-import { Error } from "../atoms/error";
-import { ExtraText } from "../atoms/extra-text";
+import { Portal, normalizeProps, useMachine } from '@zag-js/react'
+import * as select from '@zag-js/select'
+import { type ReactNode, useId } from 'react'
+import { type VariantProps, tv } from 'tailwind-variants'
+import { Button } from '../atoms/button'
+import { Error } from '../atoms/error'
+import { ExtraText } from '../atoms/extra-text'
+import { Icon } from '../atoms/icon'
+import { Label } from '../atoms/label'
 
 // === TYPES ===
 export interface SelectOption {
-  label: ReactNode;
-  value: string;
-  disabled?: boolean;
-  [key: string]: any;
+  label: ReactNode
+  value: string
+  disabled?: boolean
+  [key: string]: any
 }
 
 // === COMPONENT VARIANTS ===
 const selectVariants = tv({
   slots: {
     root: [
-      "relative bg-select-root-bg",
-      "flex flex-col gap-select-root",
-      "w-full",
+      'relative bg-select-root-bg',
+      'flex flex-col gap-select-root',
+      'w-full',
     ],
-    control: ["flex relative items-center justify-between", "w-full"],
-    positioner: ["w-(--reference-width)", "isolate z-(--z-index)"],
+    control: ['flex relative items-center justify-between', 'w-full'],
+    positioner: ['w-(--reference-width)', 'isolate z-(--z-index)'],
     trigger: [
-      "w-full",
-      "p-select-trigger",
-      "bg-select-trigger-bg",
-      "border border-select-trigger-border rounded-select",
-      "text-select-trigger text-left",
-      "hover:bg-select-trigger-hover",
-      "focus:outline-none focus:ring-2 focus:ring-select-trigger-focus focus:ring-offset-2",
-      "data-[disabled]:cursor-not-allowed",
-      "data-[invalid]:border-select-danger data-[invalid]:ring-select-danger",
+      'w-full',
+      'p-select-trigger',
+      'bg-select-trigger-bg',
+      'border border-select-trigger-border rounded-select',
+      'text-select-trigger text-left',
+      'hover:bg-select-trigger-hover',
+      'focus:outline-none focus:ring-2 focus:ring-select-trigger-focus focus:ring-offset-2',
+      'data-[disabled]:cursor-not-allowed',
+      'data-[invalid]:border-select-danger data-[invalid]:ring-select-danger',
     ],
     clearTrigger: [
-      "absolute right-10 h-full",
-      "p-select-clear-trigger",
-      "hover:bg-select-clear-trigger-bg",
-      "text-select-clear-trigger-fg hover:text-select-danger",
-      "focus:text-select-danger",
-      "focus:outline-none focus:ring-offset-transparent focus:ring-transparent",
+      'absolute right-10 h-full',
+      'p-select-clear-trigger',
+      'hover:bg-select-clear-trigger-bg',
+      'text-select-clear-trigger-fg hover:text-select-danger',
+      'focus:text-select-danger',
+      'focus:outline-none focus:ring-offset-transparent focus:ring-transparent',
     ],
     content: [
-      "bg-select-content-bg border border-select-content-border",
-      "rounded-select shadow-select-content-shadow",
-      "h-[calc(var(--available-height)-var(--spacing-lg))]",
-      "overflow-auto",
+      'bg-select-content-bg border border-select-content-border',
+      'rounded-select shadow-select-content-shadow',
+      'h-[calc(var(--available-height)-var(--spacing-lg))]',
+      'overflow-auto',
     ],
     item: [
-      "flex items-center justify-between",
-      "bg-select-item-bg cursor-pointer",
-      "p-select-item",
-      "text-select-item-fg",
-      "hover:bg-select-item-hover",
-      "data-[state=checked]:bg-select-item-selected-bg",
-      "data-[state=checked]:text-select-item-selected-fg",
-      "data-[disabled]:opacity-select-disabled data-[disabled]:cursor-not-allowed",
+      'flex items-center justify-between',
+      'bg-select-item-bg cursor-pointer',
+      'p-select-item',
+      'text-select-item-fg',
+      'hover:bg-select-item-hover',
+      'data-[state=checked]:bg-select-item-selected-bg',
+      'data-[state=checked]:text-select-item-selected-fg',
+      'data-[disabled]:opacity-select-disabled data-[disabled]:cursor-not-allowed',
     ],
-    itemIndicator: ["text-select-indicator"],
+    itemIndicator: ['text-select-indicator'],
   },
   variants: {
     size: {
       sm: {
-        trigger: "text-sm",
-        item: "text-sm",
+        trigger: 'text-sm',
+        item: 'text-sm',
       },
       md: {
-        trigger: "text-md",
-        item: "text-md",
+        trigger: 'text-md',
+        item: 'text-md',
       },
       lg: {
-        trigger: "text-lg",
-        item: "text-lg",
+        trigger: 'text-lg',
+        item: 'text-lg',
       },
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
   },
-});
+})
 
 // === COMPONENT PROPS ===
 export interface SelectProps
   extends VariantProps<typeof selectVariants>,
-    Omit<select.Props, "collection" | "id"> {
-  options: SelectOption[];
-  label?: ReactNode;
-  placeholder?: string;
-  helperText?: string;
-  errorText?: string;
-  className?: string;
-  id?: string;
+    Omit<select.Props, 'collection' | 'id'> {
+  options: SelectOption[]
+  label?: ReactNode
+  placeholder?: string
+  helperText?: string
+  errorText?: string
+  className?: string
+  id?: string
 }
 
 export function Select({
   options,
   label,
-  placeholder = "Select an option",
-  size = "md",
+  placeholder = 'Select an option',
+  size = 'md',
   value,
   defaultValue,
   multiple = false,
@@ -121,15 +121,15 @@ export function Select({
   className,
   id: providedId,
 }: SelectProps) {
-  const generatedId = useId();
-  const id = providedId || generatedId;
+  const generatedId = useId()
+  const id = providedId || generatedId
 
   const collection = select.collection({
     items: options,
-    itemToString: (item) => item.label?.toString() || "",
+    itemToString: (item) => item.label?.toString() || '',
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
-  });
+  })
 
   const service = useMachine(select.machine as any, {
     id,
@@ -148,9 +148,9 @@ export function Select({
     onValueChange,
     onOpenChange,
     onHighlightChange,
-  });
+  })
 
-  const api = select.connect(service as select.Service, normalizeProps);
+  const api = select.connect(service as select.Service, normalizeProps)
 
   const {
     root,
@@ -161,7 +161,7 @@ export function Select({
     positioner,
     item,
     itemIndicator,
-  } = selectVariants({ size });
+  } = selectVariants({ size })
 
   return (
     <form>
@@ -191,14 +191,14 @@ export function Select({
             {...api.getTriggerProps()}
             icon={
               api.open
-                ? "token-icon-select-indicator-open"
-                : "token-icon-select-indicator"
+                ? 'token-icon-select-indicator-open'
+                : 'token-icon-select-indicator'
             }
             iconPosition="right"
           >
             <span
-              className="data-[placeholder]:text-select-placeholdr flex-grow truncate"
-              data-placeholder={api.valueAsString === ""}
+              className="flex-grow truncate data-[placeholder]:text-select-placeholdr"
+              data-placeholder={api.valueAsString === ''}
             >
               {api.valueAsString || placeholder}
             </span>
@@ -240,7 +240,7 @@ export function Select({
         {!invalid && helperText && <ExtraText>{helperText}</ExtraText>}
       </div>
     </form>
-  );
+  )
 }
 
-Select.displayName = "Select";
+Select.displayName = 'Select'

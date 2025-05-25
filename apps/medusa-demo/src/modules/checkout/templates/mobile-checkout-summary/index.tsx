@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import * as React from 'react'
 
-import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
-import { Icon } from "@/components/Icon"
-import { convertToLocale } from "@lib/util/money"
+import { Icon } from '@/components/Icon'
+import { convertToLocale } from '@lib/util/money'
+import CheckoutSummary from '@modules/checkout/templates/checkout-summary'
 
 const MobileCheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
   const { currency_code, total } = cart
@@ -23,13 +23,13 @@ const MobileCheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
 
     const currentHeight = wrapper.clientHeight
     const isOpen = currentHeight > 0
-    const newHeight = !isOpen ? wrapper.scrollHeight : 0
+    const newHeight = isOpen ? 0 : wrapper.scrollHeight
 
     wrapper.style.height = `${currentHeight}px`
-    wrapper.style.overflow = "hidden"
+    wrapper.style.overflow = 'hidden'
 
     requestAnimationFrame(() => {
-      button.dataset.open = isOpen ? "no" : "yes"
+      button.dataset.open = isOpen ? 'no' : 'yes'
       wrapper.style.height = `${newHeight}px`
     })
   }, [])
@@ -38,7 +38,7 @@ const MobileCheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
     <>
       <button
         type="button"
-        className="h-18 flex justify-between items-center w-full group"
+        className="group flex h-18 w-full items-center justify-between"
         onClick={onClickHandler}
         data-open="no"
       >
@@ -47,7 +47,7 @@ const MobileCheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
           <span>{convertToLocale({ amount: total ?? 0, currency_code })}</span>
           <Icon
             name="chevron-down"
-            className="w-6 group-data-[open=yes]:rotate-180 transition-transform"
+            className="w-6 transition-transform group-data-[open=yes]:rotate-180"
           />
         </div>
       </button>
@@ -55,7 +55,7 @@ const MobileCheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
         className="overflow-hidden transition-[height]"
         ref={wrapperRef}
         style={{
-          height: "0px",
+          height: '0px',
         }}
       >
         <div className="py-8">

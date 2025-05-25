@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Textarea } from "../../src/atoms/textarea";
-import { VariantContainer, VariantGroup } from "../../.storybook/decorator";
+import type { Meta, StoryObj } from '@storybook/react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Textarea } from '../../src/atoms/textarea'
 
 const meta: Meta<typeof Textarea> = {
-  title: "Atoms/Textarea",
+  title: 'Atoms/Textarea',
   component: Textarea,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
-};
+  tags: ['autodocs'],
+}
 
-export default meta;
-type Story = StoryObj<typeof Textarea>;
+export default meta
+type Story = StoryObj<typeof Textarea>
 
 /**
  * Displays the available sizes for the textarea component.
@@ -27,7 +27,7 @@ export const Sizes: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 /**
  * Shows the various validation states for visual feedback.
@@ -44,7 +44,7 @@ export const ValidationStates: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 /**
  * Demonstrates additional visual and functional modifiers.
@@ -59,7 +59,7 @@ export const VisualModifiers: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 /**
  * Comprehensive overview of all key variants.
@@ -95,7 +95,7 @@ export const AllVariants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 /**
  * Practical combinations for real-world use cases.
@@ -145,4 +145,4 @@ export const UseCaseCombinations: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

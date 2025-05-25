@@ -1,8 +1,8 @@
-import Product from "@modules/products/components/product-preview"
-import { getRegion } from "@lib/data/regions"
-import { getProductsList } from "@lib/data/products"
-import { HttpTypes } from "@medusajs/types"
-import { Layout, LayoutColumn } from "@/components/Layout"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { getProductsList } from '@lib/data/products'
+import { getRegion } from '@lib/data/regions'
+import type { HttpTypes } from '@medusajs/types'
+import Product from '@modules/products/components/product-preview'
 
 type RelatedProductsProps = {
   product: HttpTypes.StoreProduct
@@ -51,7 +51,7 @@ export default async function RelatedProducts({
     <>
       <Layout>
         <LayoutColumn className="mt-26 md:mt-36">
-          <h4 className="text-md md:text-2xl mb-8 md:mb-16">
+          <h4 className="mb-8 text-md md:mb-16 md:text-2xl">
             Related products
           </h4>
         </LayoutColumn>

@@ -9,7 +9,8 @@
 
   /* ===== DIALOG BACKDROP (Overlay) ===== */
   --color-dialog-backdrop-bg: --alpha(
-    var(--color-fg-primary) / var(--opacity-backdrop)
+    var(--color-fg-primary) /
+    var(--opacity-backdrop)
   ); /* Semi-transparent black */
 
   /* ===== DIALOG CONTENT PANEL ===== */

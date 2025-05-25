@@ -1,17 +1,17 @@
-"use client"
-import { withReactQueryProvider } from "@lib/util/react-query"
-import React from "react"
-import { useRouter } from "next/navigation"
+'use client'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import { useRouter } from 'next/navigation'
+import React from 'react'
 
-import Wrapper from "@modules/checkout/components/payment-wrapper"
-import Email from "@modules/checkout/components/email"
-import Addresses from "@modules/checkout/components/addresses"
-import Shipping from "@modules/checkout/components/shipping"
-import Payment from "@modules/checkout/components/payment"
-import Review from "@modules/checkout/components/review"
-import { useCart } from "hooks/cart"
-import { getCheckoutStep } from "@modules/cart/utils/getCheckoutStep"
-import { Icon } from "@/components/Icon"
+import { Icon } from '@/components/Icon'
+import { getCheckoutStep } from '@modules/cart/utils/getCheckoutStep'
+import Addresses from '@modules/checkout/components/addresses'
+import Email from '@modules/checkout/components/email'
+import Payment from '@modules/checkout/components/payment'
+import Wrapper from '@modules/checkout/components/payment-wrapper'
+import Review from '@modules/checkout/components/review'
+import Shipping from '@modules/checkout/components/shipping'
+import { useCart } from 'hooks/cart'
 
 export const CheckoutForm = withReactQueryProvider<{
   countryCode: string
@@ -28,8 +28,8 @@ export const CheckoutForm = withReactQueryProvider<{
   }, [step, countryCode, cart])
   if (isPending) {
     return (
-      <div className="absolute left-0 top-20 md:top-40 lg:top-0 w-[100vw] lg:max-w-[calc(100vw-((50vw-50%)+448px))] xl:max-w-[calc(100vw-((50vw-50%)+540px))] -ml-[calc(50vw-50%)] h-screen lg:w-full flex items-center justify-center">
-        <Icon name="loader" className="w-10 md:w-20 animate-spin" />
+      <div className="-ml-[calc(50vw-50%)] absolute top-20 left-0 flex h-screen w-[100vw] items-center justify-center md:top-40 lg:top-0 lg:w-full lg:max-w-[calc(100vw-((50vw-50%)+448px))] xl:max-w-[calc(100vw-((50vw-50%)+540px))]">
+        <Icon name="loader" className="w-10 animate-spin md:w-20" />
       </div>
     )
   }

@@ -4,9 +4,7 @@
   "private": true,
   "author": "Ante Primorac <ante@agilo.com>",
   "description": "Next.js Fashion E-Commerce Starter to be used with Medusa 2.0",
-  "keywords": [
-    "medusa-storefront"
-  ],
+  "keywords": ["medusa-storefront"],
   "scripts": {
     "dev": "next dev -p 8000",
     "build": "next build",

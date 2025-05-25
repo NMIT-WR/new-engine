@@ -1,4 +1,4 @@
-import { useParams, usePathname } from "next/navigation"
+import { useParams, usePathname } from 'next/navigation'
 
 export const useCountryCode = (
   countryOptions?: {
@@ -10,13 +10,13 @@ export const useCountryCode = (
   const pathName = usePathname()
   const params = useParams()
 
-  if (typeof params.countryCode === "string") {
+  if (typeof params.countryCode === 'string') {
     return params.countryCode
   }
 
   if (countryOptions) {
     // Check if the path contains a country code and update the current path
-    const pathParts = pathName.replace(/^\//, "").split("/")
+    const pathParts = pathName.replace(/^\//, '').split('/')
 
     if (pathParts.length > 1) {
       const firstPathPart = pathParts[0]
@@ -29,7 +29,7 @@ export const useCountryCode = (
       }
     }
   } else {
-    const pathParts = pathName.replace(/^\//, "").split("/")
+    const pathParts = pathName.replace(/^\//, '').split('/')
 
     if (pathParts.length > 1 && pathParts[0].length === 2) {
       return pathParts[0]

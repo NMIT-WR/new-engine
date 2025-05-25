@@ -1,11 +1,10 @@
-import React from "react"
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
-import { getCartId } from "@lib/data/cookies"
-import { CheckoutForm } from "@modules/checkout/components/checkout-form"
+import { getCartId } from '@lib/data/cookies'
+import { CheckoutForm } from '@modules/checkout/components/checkout-form'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: "Checkout",
+  title: 'Checkout',
 }
 
 export default async function Checkout({

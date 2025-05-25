@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as ReactAria from "react-aria-components"
-import { CountrySelectProps } from "@modules/checkout/components/country-select"
-import { CountrySelectField, Form, InputField } from "@/components/Forms"
-import { UiCloseButton } from "@/components/Dialog"
-import { z } from "zod"
-import { SubmitButton } from "@modules/common/components/submit-button"
-import { customerAddressSchema, useAddressMutation } from "hooks/customer"
-import { withReactQueryProvider } from "@lib/util/react-query"
-import { OverlayTriggerState } from "react-stately"
+import { UiCloseButton } from '@/components/Dialog'
+import { CountrySelectField, Form, InputField } from '@/components/Forms'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import type { CountrySelectProps } from '@modules/checkout/components/country-select'
+import { SubmitButton } from '@modules/common/components/submit-button'
+import { customerAddressSchema, useAddressMutation } from 'hooks/customer'
+import * as React from 'react'
+import * as ReactAria from 'react-aria-components'
+import type { OverlayTriggerState } from 'react-stately'
+import type { z } from 'zod'
 
 export const UpsertAddressForm = withReactQueryProvider<{
   addressId?: string
-  region?: CountrySelectProps["region"]
+  region?: CountrySelectProps['region']
   defaultValues?: {
     first_name?: string
     last_name?: string
@@ -71,17 +71,17 @@ export const UpsertAddressForm = withReactQueryProvider<{
             : false)
         return (
           <>
-            <p className="text-md mb-8 md:mb-10">
-              {addressId ? "Change address" : "Add another address"}
+            <p className="mb-8 text-md md:mb-10">
+              {addressId ? 'Change address' : 'Add another address'}
             </p>
-            <div className="flex flex-col gap-4 md:gap-8 mb-8 md:mb-10">
-              <div className="flex max-xs:flex-col gap-4 md:gap-6">
+            <div className="mb-8 flex flex-col gap-4 md:mb-10 md:gap-8">
+              <div className="flex gap-4 max-xs:flex-col md:gap-6">
                 <InputField
                   placeholder="First name"
                   name="first_name"
                   className=" flex-1"
                   inputProps={{
-                    autoComplete: "given-name",
+                    autoComplete: 'given-name',
                   }}
                 />
                 <InputField
@@ -89,7 +89,7 @@ export const UpsertAddressForm = withReactQueryProvider<{
                   name="last_name"
                   className=" flex-1"
                   inputProps={{
-                    autoComplete: "family-name",
+                    autoComplete: 'family-name',
                   }}
                 />
               </div>
@@ -98,21 +98,21 @@ export const UpsertAddressForm = withReactQueryProvider<{
                 name="company"
                 className=" flex-1"
                 inputProps={{
-                  autoComplete: "organization",
+                  autoComplete: 'organization',
                 }}
               />
               <InputField
                 placeholder="Address"
                 name="address_1"
                 inputProps={{
-                  autoComplete: "address-line1",
+                  autoComplete: 'address-line1',
                 }}
               />
               <InputField
                 placeholder="Apartment, suite, etc. (Optional)"
                 name="address_2"
                 inputProps={{
-                  autoComplete: "address-line2",
+                  autoComplete: 'address-line2',
                 }}
               />
               <InputField
@@ -120,39 +120,39 @@ export const UpsertAddressForm = withReactQueryProvider<{
                 name="phone"
                 type="tel"
                 inputProps={{
-                  autoComplete: "tel",
+                  autoComplete: 'tel',
                 }}
               />
-              <div className="flex max-xs:flex-col gap-4 md:gap-6">
+              <div className="flex gap-4 max-xs:flex-col md:gap-6">
                 <InputField
                   placeholder="Postal code"
                   name="postal_code"
                   className=" flex-1"
                   inputProps={{
-                    autoComplete: "postal-code",
+                    autoComplete: 'postal-code',
                   }}
                 />
                 <InputField
                   placeholder="City"
                   name="city"
                   className=" flex-1"
-                  inputProps={{ autoComplete: "address-level2" }}
+                  inputProps={{ autoComplete: 'address-level2' }}
                 />
               </div>
-              <div className="flex max-xs:flex-col gap-4 md:gap-6">
+              <div className="flex gap-4 max-xs:flex-col md:gap-6">
                 <InputField
                   placeholder="Province (Optional)"
                   name="province"
                   className=" flex-1"
-                  inputProps={{ autoComplete: "address-level1" }}
+                  inputProps={{ autoComplete: 'address-level1' }}
                 />
                 <CountrySelectField
                   selectProps={{
                     region: region ?? undefined,
                     defaultSelectedKey: defaultValues?.country_code,
-                    autoComplete: "country",
+                    autoComplete: 'country',
                     onSelectionChange: (value) =>
-                      setValue("country_code", `${value}`),
+                      setValue('country_code', `${value}`),
                   }}
                   name="country_code"
                   className="flex-1"
@@ -162,9 +162,9 @@ export const UpsertAddressForm = withReactQueryProvider<{
                 <p className="text-red-primary">{data?.error}</p>
               )}
             </div>
-            <div className="flex gap-6 justify-between">
+            <div className="flex justify-between gap-6">
               <SubmitButton isLoading={isPending} isDisabled={isDisabled}>
-                {addressId ? "Save changes" : "Add address"}
+                {addressId ? 'Save changes' : 'Add address'}
               </SubmitButton>
               <UiCloseButton variant="outline">Cancel</UiCloseButton>
             </div>

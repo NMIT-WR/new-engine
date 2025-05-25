@@ -1,10 +1,10 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
 
-import { getPricesForVariant } from "@lib/util/get-product-price"
-import DiscountCode from "@modules/checkout/components/discount-code"
-import CartTotals from "@modules/common/components/cart-totals"
-import Thumbnail from "@modules/products/components/thumbnail"
-import { LocalizedButtonLink, LocalizedLink } from "@/components/LocalizedLink"
+import { LocalizedButtonLink, LocalizedLink } from '@/components/LocalizedLink'
+import { getPricesForVariant } from '@lib/util/get-product-price'
+import DiscountCode from '@modules/checkout/components/discount-code'
+import CartTotals from '@modules/common/components/cart-totals'
+import Thumbnail from '@modules/products/components/thumbnail'
 
 const ItemPrice: React.FC<{
   item: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem
@@ -38,10 +38,10 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-8 lg:mb-16">
+      <div className="mb-8 flex items-center justify-between lg:mb-16">
         <div>
           <p>
-            Order — {numOfItems} item{numOfItems > 1 ? "s" : ""}
+            Order — {numOfItems} item{numOfItems > 1 ? 's' : ''}
           </p>
         </div>
         <LocalizedButtonLink href="/cart" variant="link">
@@ -51,10 +51,10 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
       {numOfItems > 0 &&
         items
           .sort((a, b) => {
-            return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+            return (a.created_at ?? '') > (b.created_at ?? '') ? -1 : 1
           })
           .map((item) => (
-            <div key={item.id} className="flex gap-4 lg:gap-6 mb-8">
+            <div key={item.id} className="mb-8 flex gap-4 lg:gap-6">
               <LocalizedLink
                 href={`/products/${item.variant?.product?.handle}`}
               >
@@ -65,8 +65,8 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
                   className="w-25 lg:w-33"
                 />
               </LocalizedLink>
-              <div className="flex flex-col flex-1 justify-between">
-                <div className="flex flex-wrap gap-x-4 gap-y-1 justify-between">
+              <div className="flex flex-1 flex-col justify-between">
+                <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                   <div>
                     <LocalizedLink
                       href={`/products/${item.variant?.product?.handle}`}
@@ -80,7 +80,7 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
                 <div className="flex flex-col gap-1.5 max-lg:text-xs">
                   {item.variant?.title && (
                     <p>
-                      Variant:{" "}
+                      Variant:{' '}
                       <span className="ml-1">{item.variant.title}</span>
                     </p>
                   )}

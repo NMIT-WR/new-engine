@@ -1,6 +1,6 @@
-import { HttpTypes } from "@medusajs/types"
-import { getPercentageDiff } from "@lib/util/get-precentage-diff"
-import { convertToLocale } from "@lib/util/money"
+import { getPercentageDiff } from '@lib/util/get-precentage-diff'
+import { convertToLocale } from '@lib/util/money'
+import type { HttpTypes } from '@medusajs/types'
 
 export const getPricesForVariant = (variant: HttpTypes.StoreProductVariant) => {
   if (!variant?.calculated_price?.calculated_amount) {
@@ -11,12 +11,12 @@ export const getPricesForVariant = (variant: HttpTypes.StoreProductVariant) => {
     calculated_price_number: variant.calculated_price.calculated_amount,
     calculated_price: convertToLocale({
       amount: variant.calculated_price.calculated_amount,
-      currency_code: variant.calculated_price.currency_code ?? "",
+      currency_code: variant.calculated_price.currency_code ?? '',
     }),
     original_price_number: variant.calculated_price.original_amount,
     original_price: convertToLocale({
       amount: variant.calculated_price.original_amount ?? 0,
-      currency_code: variant.calculated_price.currency_code ?? "",
+      currency_code: variant.calculated_price.currency_code ?? '',
     }),
     currency_code: variant.calculated_price.currency_code,
     price_type: variant.calculated_price.calculated_price?.price_list_type,
@@ -35,7 +35,7 @@ export function getProductPrice({
   variantId?: string
 }) {
   if (!product || !product.id) {
-    throw new Error("No product provided")
+    throw new Error('No product provided')
   }
 
   const cheapestPrice = () => {

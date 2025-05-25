@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback } from "react"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCallback } from 'react'
 
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { CategoryFilter } from "@modules/store/components/refinement-list/category-filter"
-import { CollectionFilter } from "@modules/store/components/refinement-list/collection-filter"
-import { MobileFilters } from "@modules/store/components/refinement-list/mobile-filters"
-import { MobileSort } from "@modules/store/components/refinement-list/mobile-sort"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { CategoryFilter } from '@modules/store/components/refinement-list/category-filter'
+import { CollectionFilter } from '@modules/store/components/refinement-list/collection-filter'
+import { MobileFilters } from '@modules/store/components/refinement-list/mobile-filters'
+import { MobileSort } from '@modules/store/components/refinement-list/mobile-sort'
 import SortProducts, {
-  SortOptions,
-} from "@modules/store/components/refinement-list/sort-products"
-import { TypeFilter } from "@modules/store/components/refinement-list/type-filter"
+  type SortOptions,
+} from '@modules/store/components/refinement-list/sort-products'
+import { TypeFilter } from '@modules/store/components/refinement-list/type-filter'
 
 type RefinementListProps = {
   title?: string
@@ -22,11 +22,11 @@ type RefinementListProps = {
   types?: Record<string, string>
   type?: string[]
   sortBy: SortOptions | undefined
-  "data-testid"?: string
+  'data-testid'?: string
 }
 
 const RefinementList = ({
-  title = "Shop",
+  title = 'Shop',
   collections,
   collection,
   categories,
@@ -34,7 +34,7 @@ const RefinementList = ({
   types,
   type,
   sortBy,
-  "data-testid": dataTestId,
+  'data-testid': dataTestId,
 }: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
@@ -77,7 +77,7 @@ const RefinementList = ({
   return (
     <Layout className="mb-6 md:mb-8">
       <LayoutColumn>
-        <h2 className="text-md md:text-2xl mb-6 md:mb-7" id="products">
+        <h2 className="mb-6 text-md md:mb-7 md:text-2xl" id="products">
           {title}
         </h2>
         <div className="flex justify-between gap-10">
@@ -92,21 +92,21 @@ const RefinementList = ({
           />
           <MobileSort sortBy={sortBy} setQueryParams={setQueryParams} />
           <div className="flex justify-between gap-4 max-md:hidden">
-            {typeof collections !== "undefined" && (
+            {typeof collections !== 'undefined' && (
               <CollectionFilter
                 collections={collections}
                 collection={collection}
                 setQueryParams={setQueryParams}
               />
             )}
-            {typeof categories !== "undefined" && (
+            {typeof categories !== 'undefined' && (
               <CategoryFilter
                 categories={categories}
                 category={category}
                 setQueryParams={setQueryParams}
               />
             )}
-            {typeof types !== "undefined" && (
+            {typeof types !== 'undefined' && (
               <TypeFilter
                 types={types}
                 type={type}

@@ -1,7 +1,7 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
 
-import { isStripe, paymentInfoMap } from "@lib/constants"
-import { convertToLocale } from "@lib/util/money"
+import { isStripe, paymentInfoMap } from '@lib/constants'
+import { convertToLocale } from '@lib/util/money'
 
 type PaymentDetailsProps = {
   order: HttpTypes.StoreOrder
@@ -25,7 +25,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
         : `${convertToLocale({
             amount: payment.amount,
             currency_code: order.currency_code,
-          })} paid at ${new Date(payment.created_at ?? "").toLocaleString()}`}
+          })} paid at ${new Date(payment.created_at ?? '').toLocaleString()}`}
     </p>
   )
 }

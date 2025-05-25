@@ -1,4 +1,4 @@
-const checkEnvVariables = require("./check-env-variables")
+const checkEnvVariables = require('./check-env-variables')
 
 checkEnvVariables()
 
@@ -22,24 +22,24 @@ const nextConfig = {
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
+        protocol: 'http',
+        hostname: 'localhost',
       },
       {
-        protocol: "https",
-        hostname: "storage-prg1.zerops.io"
+        protocol: 'https',
+        hostname: 'storage-prg1.zerops.io',
       },
       {
-        protocol: "http",
-        hostname: "medusa-minio",
-        port: "9004"
+        protocol: 'http',
+        hostname: 'medusa-minio',
+        port: '9004',
       },
       {
-        protocol: "https",
-        hostname: "bevgyjm5apuichhj.public.blob.vercel-storage.com",
-        port: "",
-        pathname: "/**",
-        search: "",
+        protocol: 'https',
+        hostname: 'bevgyjm5apuichhj.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+        search: '',
       },
     ],
   },

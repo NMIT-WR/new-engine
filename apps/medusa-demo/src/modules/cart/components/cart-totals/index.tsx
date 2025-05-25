@@ -1,10 +1,9 @@
-"use client"
+'use client'
 
-import { HttpTypes } from "@medusajs/types"
-import React from "react"
+import type { HttpTypes } from '@medusajs/types'
 
-import { convertToLocale } from "@lib/util/money"
-import { twJoin, twMerge } from "tailwind-merge"
+import { convertToLocale } from '@lib/util/money'
+import { twJoin, twMerge } from 'tailwind-merge'
 
 type CartTotalsProps = {
   cart: HttpTypes.StoreCart
@@ -31,8 +30,8 @@ const CartTotals = ({
     <div className={className}>
       <div
         className={twMerge(
-          "flex flex-col gap-4",
-          isPartOfCartDrawer && "gap-2"
+          'flex flex-col gap-4',
+          isPartOfCartDrawer && 'gap-2'
         )}
       >
         <div className="flex justify-between">
@@ -53,7 +52,7 @@ const CartTotals = ({
               data-testid="cart-discount"
               data-value={discount_total || 0}
             >
-              -{" "}
+              -{' '}
               {convertToLocale({ amount: discount_total ?? 0, currency_code })}
             </p>
           </div>
@@ -86,7 +85,7 @@ const CartTotals = ({
               data-testid="cart-gift-card-amount"
               data-value={gift_card_total || 0}
             >
-              -{" "}
+              -{' '}
               {convertToLocale({ amount: gift_card_total ?? 0, currency_code })}
             </p>
           </div>
@@ -94,11 +93,11 @@ const CartTotals = ({
       </div>
       <hr
         className={twJoin(
-          "my-8 md:my-6 text-grayscale-200",
-          isPartOfCartDrawer && "my-4 md:my-4"
+          'my-8 text-grayscale-200 md:my-6',
+          isPartOfCartDrawer && 'my-4 md:my-4'
         )}
       />
-      <div className="flex justify-between text-md font-semibold">
+      <div className="flex justify-between font-semibold text-md">
         <p>Total:</p>
         <p data-testid="cart-total" data-value={total || 0}>
           {convertToLocale({ amount: total ?? 0, currency_code })}

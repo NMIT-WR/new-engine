@@ -1,9 +1,9 @@
-import { Metadata } from "next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Mona_Sans } from "next/font/google"
-import { getBaseURL } from "@lib/util/env"
+import { getBaseURL } from '@lib/util/env'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import type { Metadata } from 'next'
+import { Mona_Sans } from 'next/font/google'
 
-import "../styles/globals.css"
+import '../styles/globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 
 const monaSans = Mona_Sans({
   preload: true,
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  display: "swap",
-  weight: "variable",
-  variable: "--font-mona-sans",
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  weight: 'variable',
+  variable: '--font-mona-sans',
 })
 
 export default function RootLayout(props: { children: React.ReactNode }) {

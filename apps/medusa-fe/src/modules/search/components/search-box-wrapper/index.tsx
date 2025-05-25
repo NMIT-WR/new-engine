@@ -1,15 +1,15 @@
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import {
-  ChangeEvent,
-  FormEvent,
-  RefObject,
+  type ChangeEvent,
+  type FormEvent,
+  type RefObject,
   useEffect,
   useRef,
   useState,
-} from "react"
-import { UseSearchBoxProps, useSearchBox } from "react-instantsearch"
+} from 'react'
+import { type UseSearchBoxProps, useSearchBox } from 'react-instantsearch'
 
-export type ControlledSearchBoxProps = React.ComponentProps<"div"> & {
+export type ControlledSearchBoxProps = React.ComponentProps<'div'> & {
   inputRef: RefObject<HTMLInputElement | null>
   onChange(event: ChangeEvent): void
   onReset(event: FormEvent): void
@@ -31,7 +31,7 @@ type SearchBoxProps = {
 
 const SearchBoxWrapper = ({
   children,
-  placeholder = "Search products...",
+  placeholder = 'Search products...',
   ...rest
 }: SearchBoxProps) => {
   const { query, refine } = useSearchBox(rest)
@@ -41,7 +41,7 @@ const SearchBoxWrapper = ({
   const router = useRouter()
 
   const onReset = () => {
-    setValue("")
+    setValue('')
   }
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {

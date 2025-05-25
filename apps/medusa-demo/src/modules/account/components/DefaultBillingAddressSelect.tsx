@@ -1,16 +1,15 @@
-"use client"
-import * as React from "react"
-import * as ReactAria from "react-aria-components"
-import { StoreCustomerAddress } from "@medusajs/types"
-import { BaseRegionCountry } from "@medusajs/types/dist/http/region/common"
-import { updateDefaultBillingAddress } from "@lib/data/customer"
+'use client'
 import {
+  UiSelectButton,
   UiSelectIcon,
   UiSelectListBox,
   UiSelectListBoxItem,
-  UiSelectButton,
   UiSelectValue,
-} from "@/components/ui/Select"
+} from '@/components/ui/Select'
+import { updateDefaultBillingAddress } from '@lib/data/customer'
+import type { StoreCustomerAddress } from '@medusajs/types'
+import type { BaseRegionCountry } from '@medusajs/types/dist/http/region/common'
+import * as ReactAria from 'react-aria-components'
 
 type DefaultBillingAddressSelectProps = {
   addresses: StoreCustomerAddress[]
@@ -27,7 +26,7 @@ export const DefaultBillingAddressSelect = ({
 
   return (
     <>
-      <p className="text-xs text-grayscale-500 mb-1.5">
+      <p className="mb-1.5 text-grayscale-500 text-xs">
         Default billing address
       </p>
       <ReactAria.Select
@@ -36,7 +35,7 @@ export const DefaultBillingAddressSelect = ({
         placeholder="Select default shipping address"
         className="mb-8"
         onSelectionChange={(key) => {
-          if (typeof key === "string") {
+          if (typeof key === 'string') {
             handleAddressSelect(key)
           }
         }}
@@ -52,12 +51,12 @@ export const DefaultBillingAddressSelect = ({
                 {[
                   address.address_1,
                   address.address_2,
-                  [address.postal_code, address.city].filter(Boolean).join(" "),
+                  [address.postal_code, address.city].filter(Boolean).join(' '),
                   countries.find(({ iso_2 }) => iso_2 === address.country_code)
                     ?.display_name,
                 ]
                   .filter(Boolean)
-                  .join(", ")}
+                  .join(', ')}
               </UiSelectListBoxItem>
             ))}
           </UiSelectListBox>

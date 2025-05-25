@@ -1,38 +1,38 @@
-"use client"
+'use client'
 
-import { useParams, usePathname } from "next/navigation"
-import { twMerge } from "tailwind-merge"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { NewsletterForm } from "@/components/NewsletterForm"
-import { LocalizedLink } from "@/components/LocalizedLink"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { NewsletterForm } from '@/components/NewsletterForm'
+import { useParams, usePathname } from 'next/navigation'
+import { twMerge } from 'tailwind-merge'
 
 export const Footer: React.FC = () => {
   const pathName = usePathname()
   const { countryCode } = useParams()
   const currentPath = pathName.split(`/${countryCode}`)[1]
 
-  const isAuthPage = currentPath === "/register" || currentPath === "/login"
+  const isAuthPage = currentPath === '/register' || currentPath === '/login'
 
   return (
     <div
       className={twMerge(
-        "bg-grayscale-50 py-8 md:py-20",
-        isAuthPage && "hidden"
+        'bg-grayscale-50 py-8 md:py-20',
+        isAuthPage && 'hidden'
       )}
     >
       <Layout>
         <LayoutColumn className="col-span-13">
-          <div className="flex max-lg:flex-col justify-between md:gap-20 max-md:px-4">
-            <div className="flex flex-1 max-lg:w-full max-lg:order-2 max-sm:flex-col justify-between sm:gap-30 lg:gap-20 md:items-center">
-              <div className="max-w-35 md:flex-1 max-md:mb-9">
-                <h1 className="text-lg md:text-xl mb-2 md:mb-6 leading-none md:leading-[0.9]">
+          <div className="flex justify-between max-md:px-4 max-lg:flex-col md:gap-20">
+            <div className="flex flex-1 justify-between max-sm:flex-col max-lg:order-2 max-lg:w-full sm:gap-30 md:items-center lg:gap-20">
+              <div className="max-w-35 max-md:mb-9 md:flex-1">
+                <h1 className="mb-2 text-lg leading-none md:mb-6 md:text-xl md:leading-[0.9]">
                   Sofa Society Co.
                 </h1>
                 <p className="text-xs">
                   &copy; {new Date().getFullYear()}, Sofa Society
                 </p>
               </div>
-              <div className="flex gap-10 xl:gap-18 max-md:text-xs flex-1 justify-between lg:justify-center">
+              <div className="flex flex-1 justify-between gap-10 max-md:text-xs lg:justify-center xl:gap-18">
                 <ul className="flex flex-col gap-6 md:gap-3.5">
                   <li>
                     <LocalizedLink href="/">FAQ</LocalizedLink>
@@ -52,22 +52,35 @@ export const Footer: React.FC = () => {
                     <a
                       href="https://www.instagram.com/agiloltd/"
                       target="_blank"
+                      rel="noreferrer"
                     >
                       Instagram
                     </a>
                   </li>
                   <li>
-                    <a href="https://tiktok.com" target="_blank">
+                    <a
+                      href="https://tiktok.com"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       TikTok
                     </a>
                   </li>
                   <li>
-                    <a href="https://pinterest.com" target="_blank">
+                    <a
+                      href="https://pinterest.com"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       Pinterest
                     </a>
                   </li>
                   <li>
-                    <a href="https://facebook.com" target="_blank">
+                    <a
+                      href="https://facebook.com"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       Facebook
                     </a>
                   </li>
@@ -92,7 +105,7 @@ export const Footer: React.FC = () => {
               </div>
             </div>
 
-            <NewsletterForm className="flex-1 max-lg:w-full lg:max-w-90 xl:max-w-96 max-lg:order-1 max-md:mb-16" />
+            <NewsletterForm className="flex-1 max-md:mb-16 max-lg:order-1 max-lg:w-full lg:max-w-90 xl:max-w-96" />
           </div>
         </LayoutColumn>
       </Layout>

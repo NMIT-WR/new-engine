@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { twJoin } from "tailwind-merge"
-import { convertToLocale } from "@lib/util/money"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import { Button } from "@/components/Button"
+import { Button } from '@/components/Button'
 import {
   UiRadio,
   UiRadioBox,
   UiRadioGroup,
   UiRadioLabel,
-} from "@/components/ui/Radio"
-import { useCartShippingMethods, useSetShippingMethod } from "hooks/cart"
-import { StoreCart } from "@medusajs/types"
+} from '@/components/ui/Radio'
+import { convertToLocale } from '@lib/util/money'
+import type { StoreCart } from '@medusajs/types'
+import ErrorMessage from '@modules/checkout/components/error-message'
+import { useCartShippingMethods, useSetShippingMethod } from 'hooks/cart'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { twJoin } from 'tailwind-merge'
 
 const Shipping = ({ cart }: { cart: StoreCart }) => {
   const [error, setError] = useState<string | null>(null)
@@ -22,7 +22,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
   const router = useRouter()
   const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "shipping"
+  const isOpen = searchParams.get('step') === 'shipping'
 
   const { data: availableShippingMethods } = useCartShippingMethods(cart.id)
 
@@ -32,7 +32,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
   )
 
   const handleSubmit = () => {
-    router.push(pathname + "?step=payment", { scroll: false })
+    router.push(pathname + '?step=payment', { scroll: false })
   }
 
   const set = (id: string) => {
@@ -48,12 +48,12 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
 
   return (
     <>
-      <div className="flex justify-between mb-6 md:mb-8 border-t border-grayscale-200 pt-8 mt-8">
+      <div className="mt-8 mb-6 flex justify-between border-grayscale-200 border-t pt-8 md:mb-8">
         <div>
           <p
             className={twJoin(
-              "transition-fontWeight duration-75",
-              isOpen && "font-semibold"
+              'transition-fontWeight duration-75',
+              isOpen && 'font-semibold'
             )}
           >
             3. Shipping
@@ -66,7 +66,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
             <Button
               variant="link"
               onPress={() => {
-                router.push(pathname + "?step=shipping", { scroll: false })
+                router.push(pathname + '?step=shipping', { scroll: false })
               }}
             >
               Change
@@ -84,7 +84,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
         ) : (
           <div>
             <UiRadioGroup
-              className="flex flex-col gap-4 mb-8"
+              className="mb-8 flex flex-col gap-4"
               value={selectedShippingMethod?.id}
               onChange={set}
               aria-label="Shipping methods"
@@ -122,7 +122,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
       ) : cart &&
         (cart.shipping_methods?.length ?? 0) > 0 &&
         selectedShippingMethod ? (
-        <ul className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-28">
+        <ul className="flex flex-wrap gap-x-28 gap-y-2 max-sm:flex-col">
           <li className="text-grayscale-500">Shipping</li>
           <li className="text-grayscale-600">{selectedShippingMethod.name}</li>
         </ul>
