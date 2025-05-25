@@ -1,0 +1,74 @@
+@theme static {
+  --opacity-tree-disabled: 60%;
+  /* === BASE TOKEN MAPPING === */
+  --color-tree-bg: transparent;
+  --color-tree-fg: var(--color-fg-primary);
+  --color-tree-border: var(--color-stroke-primary);
+
+  /* Tree root */
+  --color-tree-root-bg: transparent;
+
+  /* Tree label */
+  --color-tree-label-fg: var(--color-tree-fg);
+  --font-weight-tree-label: var(--font-weight-medium);
+
+  /* Node states - common styles for branch and leaf */
+  --color-tree-node-bg: transparent;
+  --color-tree-node-hover: var(--color-primary-hover);
+  --color-tree-node-selected: var(--color-primary-active);
+  --color-tree-node-focus: var(--color-ring-primary);
+  --padding-tree-node: var(--spacing-3xs);
+
+  /* Text colors */
+  --color-tree-fg-hover: var(--color-fg-reverse);
+  --color-tree-fg-selected: var(--color-fg-reverse);
+  --color-tree-fg-muted: var(--color-fg-secondary);
+
+  /* Icons */
+  --color-tree-icon: current;
+  --color-tree-icon-hover: var(--color-fg-primary);
+
+  /* === SPACING & SIZING === */
+  --tree-indent-per-level: var(--spacing-3xs);
+  --spacing-tree-icon: var(--spacing-2xs);
+
+  /* Size variants */
+  --text-tree-size: var(--text-sm);
+
+  --text-tree-icon: var(--text-icon-sm);
+
+  /* === BORDERS & RADIUS === */
+  --radius-tree-node: var(--radius-sm);
+  --border-tree-focus-width: var(--border-width-md);
+
+  /* === INDENT GUIDE === */
+  --color-tree-indent: var(--color-tree-border);
+  --opacity-tree-indent: 100%;
+  --width-tree-indent: 1px;
+
+  /* === TRANSITIONS === */
+  --duration-tree-animation: 200ms;
+  --timing-tree-animation: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tree Icons - using semantic tokens */
+
+@utility token-icon-tree-node {
+  @apply icon-[mdi--folder];
+}
+
+@utility token-icon-tree-node-open {
+  @apply icon-[mdi--folder-open];
+}
+
+@utility token-icon-tree-item {
+  @apply icon-[mdi--file-document];
+}
+
+@utility token-icon-tree-indicator {
+  @apply icon-[mdi--chevron-right];
+}
+
+@utility token-icon-tree-indicator-open {
+  @apply icon-[mdi--chevron-down];
+}

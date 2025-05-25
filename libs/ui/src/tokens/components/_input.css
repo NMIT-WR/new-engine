@@ -25,7 +25,8 @@
   );
   --color-input-border-focus: var(--color-primary);
   --color-input-border-disabled: --alpha(
-    var(--color-input-border) / var(--opacity-disabled)
+    var(--color-input-border) /
+    var(--opacity-disabled)
   );
 
   /* Error state - hover/focus */
@@ -35,7 +36,8 @@
   );
   --color-input-border-danger-focus: var(--color-input-danger);
   --color-input-placeholder-danger: --alpha(
-    var(--color-input-danger) / var(--opacity-disabled)
+    var(--color-input-danger) /
+    var(--opacity-disabled)
   );
 
   /* Success state - hover/focus */
@@ -45,7 +47,8 @@
   );
   --color-input-border-success-focus: var(--color-input-success);
   --color-input-placeholder-success: --alpha(
-    var(--color-input-success) / var(--opacity-disabled)
+    var(--color-input-success) /
+    var(--opacity-disabled)
   );
 
   /* Warning state - hover/focus */
@@ -55,19 +58,23 @@
   );
   --color-input-border-warning-focus: var(--color-input-warning);
   --color-input-placeholder-warning: --alpha(
-    var(--color-input-warning) / var(--opacity-disabled)
+    var(--color-input-warning) /
+    var(--opacity-disabled)
   );
 
   /* Text colors */
   --color-input-text-disabled: --alpha(
-    var(--color-input-text) / var(--opacity-disabled)
+    var(--color-input-text) /
+    var(--opacity-disabled)
   );
   --color-input-placeholder: --alpha(
-    var(--color-input-text) / var(--opacity-placeholder)
+    var(--color-input-text) /
+    var(--opacity-placeholder)
   );
 
   --color-input-placeholder-disabled: --alpha(
-    var(--color-input-text) / var(--opacity-disabled-placeholder)
+    var(--color-input-text) /
+    var(--opacity-disabled-placeholder)
   );
 
   /* Label colors */
@@ -86,13 +93,16 @@
   /* Focus ring colors - using consistent opacity */
   --color-input-ring: --alpha(var(--color-primary) / var(--opacity-ring));
   --color-input-ring-error: --alpha(
-    var(--color-input-danger) / var(--opacity-ring)
+    var(--color-input-danger) /
+    var(--opacity-ring)
   );
   --color-input-ring-success: --alpha(
-    var(--color-input-success) / var(--opacity-ring)
+    var(--color-input-success) /
+    var(--opacity-ring)
   );
   --color-input-ring-warning: --alpha(
-    var(--color-input-warning) / var(--opacity-ring)
+    var(--color-input-warning) /
+    var(--opacity-ring)
   );
 
   /* Spacing - keeping your existing values */

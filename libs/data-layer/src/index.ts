@@ -1,3 +1,3 @@
-import { dummyDataImporter } from './dummyDataImporter';
+import { dummyDataImporter } from './dummyDataImporter'
 
-await dummyDataImporter();
+await dummyDataImporter()

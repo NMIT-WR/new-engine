@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import React, { useEffect, useActionState } from "react";
+import React, { useEffect, useActionState } from 'react'
 
-import Input from "@modules/common/components/input"
+import Input from '@modules/common/components/input'
 
-import AccountInfo from "../account-info"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import AccountInfo from '../account-info'
 // import { updateCustomer } from "@lib/data/customer"
 
 type MyInformationProps = {
@@ -21,7 +21,7 @@ const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
     formData: FormData
   ) => {
     const customer = {
-      email: formData.get("email") as string,
+      email: formData.get('email') as string,
     }
 
     try {

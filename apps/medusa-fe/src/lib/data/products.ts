@@ -1,11 +1,11 @@
-"use server"
+'use server'
 
-import { sdk } from "@lib/config"
-import { sortProducts } from "@lib/util/sort-products"
-import { HttpTypes } from "@medusajs/types"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import { getAuthHeaders, getCacheOptions } from "./cookies"
-import { getRegion, retrieveRegion } from "./regions"
+import { sdk } from '@lib/config'
+import { sortProducts } from '@lib/util/sort-products'
+import type { HttpTypes } from '@medusajs/types'
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
+import { getAuthHeaders, getCacheOptions } from './cookies'
+import { getRegion, retrieveRegion } from './regions'
 
 export const listProducts = async ({
   pageParam = 1,
@@ -23,7 +23,7 @@ export const listProducts = async ({
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> => {
   if (!countryCode && !regionId) {
-    throw new Error("Country code or region ID is required")
+    throw new Error('Country code or region ID is required')
   }
 
   const limit = queryParams?.limit || 12
@@ -50,25 +50,25 @@ export const listProducts = async ({
   }
 
   const next = {
-    ...(await getCacheOptions("products")),
+    ...(await getCacheOptions('products')),
   }
 
   return sdk.client
     .fetch<{ products: HttpTypes.StoreProduct[]; count: number }>(
       `/store/products`,
       {
-        method: "GET",
+        method: 'GET',
         query: {
           limit,
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
+            '*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags',
           ...queryParams,
         },
         headers,
         next,
-        cache: "force-cache",
+        cache: 'force-cache',
       }
     )
     .then(({ products, count }) => {
@@ -92,7 +92,7 @@ export const listProducts = async ({
 export const listProductsWithSort = async ({
   page = 0,
   queryParams,
-  sortBy = "created_at",
+  sortBy = 'created_at',
   countryCode,
 }: {
   page?: number
