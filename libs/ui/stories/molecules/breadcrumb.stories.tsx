@@ -11,7 +11,7 @@ const simplePath: BreadcrumbItemType[] = [
   { label: 'Smartphones', href: '/products/electronics/smartphones' },
 ]
 
-const withIcons: BreadcrumbItemType[] = [
+const _withIcons: BreadcrumbItemType[] = [
   { label: 'Home', href: '/', icon: 'token-icon-home' },
   {
     label: 'Products',
@@ -30,7 +30,7 @@ const withIcons: BreadcrumbItemType[] = [
   },
 ]
 
-const longPath: BreadcrumbItemType[] = [
+const _longPath: BreadcrumbItemType[] = [
   { label: 'Home', href: '/' },
   { label: 'Products', href: '/products' },
   { label: 'Electronics', href: '/products/electronics' },

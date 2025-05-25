@@ -159,7 +159,7 @@ export function Breadcrumb({
     maxItems <= 0 || items.length <= maxItems
       ? items
       : maxItems === 1
-        ? [items[items.length - 1]]
+        ? [items.at(-1)]
         : [items[0], 'ellipsis', ...items.slice(-(maxItems - 1))]
 
   return (

@@ -9,7 +9,7 @@ export interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   name: string
   price: string
   stockStatus: string
-  badges?: Array<BadgeProps>
+  badges?: BadgeProps[]
   onAddToCart?: () => void
   addToCartText?: string
 }

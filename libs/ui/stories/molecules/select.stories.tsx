@@ -234,7 +234,7 @@ export const WithIcons: Story = {
       {
         label: (
           <>
-            <Icon icon={`icon-[cif--gb]`} size="sm" /> English
+            <Icon icon={'icon-[cif--gb]'} size="sm" /> English
           </>
         ),
         value: 'en',
@@ -242,7 +242,7 @@ export const WithIcons: Story = {
       {
         label: (
           <>
-            <Icon icon={`icon-[cif--es]`} size="sm" /> Spanish
+            <Icon icon={'icon-[cif--es]'} size="sm" /> Spanish
           </>
         ),
         value: 'es',
@@ -250,7 +250,7 @@ export const WithIcons: Story = {
       {
         label: (
           <>
-            <Icon icon={`icon-[cif--fr]`} size="sm" /> French
+            <Icon icon={'icon-[cif--fr]'} size="sm" /> French
           </>
         ),
         value: 'fr',
@@ -258,7 +258,7 @@ export const WithIcons: Story = {
       {
         label: (
           <>
-            <Icon icon={`icon-[cif--cz]`} size="sm" /> Czech
+            <Icon icon={'icon-[cif--cz]'} size="sm" /> Czech
           </>
         ),
         value: 'cz',

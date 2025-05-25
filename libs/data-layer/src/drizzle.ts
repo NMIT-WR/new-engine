@@ -87,7 +87,7 @@ export async function sqlRawSingleForce<T = object>(
   errorMessage?: string
 ): Promise<T> {
   const result = (await sqlRaw(sql))[0]
-  if (!result) throw Error(errorMessage || 'No record found.')
+  if (!result) { throw new Error(errorMessage || 'No record found.') }
   return result
 }
 

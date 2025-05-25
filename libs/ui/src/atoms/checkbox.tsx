@@ -59,14 +59,6 @@ export function Checkbox({
 
   const api = checkbox.connect(service as any, normalizeProps)
 
-  useEffect(() => {
-    if (indeterminate) {
-      console.log(
-        'Control element data attributes:',
-        document.querySelector('[data-part="control"]')?.attributes
-      )
-    }
-  }, [indeterminate])
 
   return (
     <label {...api.getRootProps()}>

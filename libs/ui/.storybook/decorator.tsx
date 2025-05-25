@@ -19,7 +19,7 @@ export function VariantGroup({
           fullWidth ? 'flex-col' : 'flex-wrap'
         } items-start gap-4`}
       >
-        <>{children}</>
+        {children}
       </div>
     </div>
   )
@@ -28,7 +28,7 @@ export function VariantGroup({
 export function VariantContainer({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col items-center space-y-8">
-      <>{children}</>
+      {children}
     </div>
   )
 }
