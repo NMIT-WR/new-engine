@@ -7,6 +7,8 @@
     "test": "nx e2e e2e",
     "dev:all:nx": "nx run-many --target=dev --projects=medusa-*",
     "start:fe": "cd apps/medusa-fe && npm run start",
+    "start:demo": "cd apps/medusa-demo && npm run start",
+    "start:prod": "docker compose exec medusa-demo rm -rf apps/medusa-demo/.next && docker compose exec medusa-demo pnpm nx run medusa-demo:build && docker compose exec medusa-demo pnpm nx run medusa-demo:start -- -p 8080",
     "start:be": "cd apps/medusa-be && npm run start",
     "start:all:nx": "nx run-many --target=start --projects=medusa-*",
     "build:fe": "cd apps/medusa-fe && npm run build",
@@ -15,20 +17,22 @@
   },
   "private": true,
   "devDependencies": {
-    "@nx/devkit": "20.8.0",
-    "@nx/esbuild": "20.8.0",
-    "@nx/js": "20.8.0",
-    "@nx/node": "20.8.0",
-    "@nx/playwright": "20.8.0",
-    "@playwright/test": "^1.51.1",
+    "@nx/devkit": "21.0.3",
+    "@nx/esbuild": "21.0.3",
+    "@nx/js": "21.0.3",
+    "@nx/node": "21.0.3",
+    "@nx/playwright": "21.0.3",
+    "@playwright/test": "^1.52.0",
+    "@biomejs/biome": "^1.9.4",
     "@swc-node/register": "~1.10.10",
-    "@swc/core": "~1.11.21",
+    "@swc/core": "~1.11.24",
     "@swc/helpers": "~0.5.17",
-    "@types/bun": "1.2.9",
+    "@types/bun": "1.2.13",
     "cross-env": "^7.0.3",
-    "nx": "20.8.0",
+    "nx": "21.0.3",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "ultracite": "4.2.5"
   },
-  "packageManager": "pnpm@10.8.1"
+  "packageManager": "pnpm@10.11.0"
 }

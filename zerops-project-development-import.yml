@@ -56,3 +56,12 @@ services:
       REVALIDATE_SECRET: <@generateRandomString(<16>)>
     verticalAutoscaling:
       minRam: 0.5
+
+  - hostname: storedemo
+    type: nodejs@22
+    buildFromGit: https://github.com/NMIT-WR/new-engine
+    enableSubdomainAccess: true
+    envSecrets:
+      REVALIDATE_SECRET: <@generateRandomString(<16>)>
+    verticalAutoscaling:
+      minRam: 0.5

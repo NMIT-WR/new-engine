@@ -42,7 +42,8 @@
     from var(--color-btn-detail) calc(l + var(--state-hover)) c h
   );
   --color-btn-detail-ring: --alpha(
-    var(--color-btn-detail) / var(--opacity-ring)
+    var(--color-btn-detail) /
+    var(--opacity-ring)
   );
   --color-btn-detail-fg: var(--color-btn-text);
 
@@ -52,7 +53,8 @@
     from var(--color-btn-wishlist) calc(l + var(--state-hover)) c h
   );
   --color-btn-wishlist-ring: --alpha(
-    var(--color-btn-wishlist) / var(--opacity-ring)
+    var(--color-btn-wishlist) /
+    var(--opacity-ring)
   );
   --color-btn-wishlist-fg: var(--color-btn-text);
 

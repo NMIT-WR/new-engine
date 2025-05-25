@@ -3,6 +3,10 @@
   --color-rating: var(--color-highlight);
   --color-rating-active: var(--color-warning);
   --color-rating-hover: var(--color-warning);
+  --color-rating-disabled: --alpha(
+    var(--color-rating-active) /
+    var(--opacity-disabled)
+  );
 
   /* Spacing */
   --spacing-rating-sm: var(--spacing-3xs);
@@ -15,25 +19,14 @@
   --text-rating-lg: var(--text-icon-lg);
 
   /* Focus ring */
-  --color-rating-ring: --alpha(
-    var(--color-rating-active) / var(--opacity-ring)
-  );
+  --color-rating-ring: --alpha(var(--color-rating-active) / var(--opacity-ring));
 }
 
 /* Semantic tokens for rating icons */
-@utility token-icon-star {
+@utility token-icon-rating {
   @apply icon-[mdi--star];
 }
 
-@utility token-icon-star-filled {
-  @apply icon-[mdi-light--star-filled];
-}
-
-/* Component tokens for rating */
-@utility token-icon-rating-default {
-  @apply token-icon-star;
-}
-
-@utility token-icon-rating-active {
-  @apply token-icon-star-filled;
+@utility token-icon-rating-half {
+  @apply icon-[mdi--star-half];
 }

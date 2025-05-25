@@ -1,31 +1,31 @@
-import { type ReactNode } from "react";
-import { Label } from "../atoms/label";
-import { Input, type InputProps } from "../atoms/input";
-import { Error } from "../atoms/error";
-import { ExtraText } from "../atoms/extra-text";
+import type { ReactNode } from 'react'
+import { Error } from '../atoms/error'
+import { ExtraText } from '../atoms/extra-text'
+import { Input, type InputProps } from '../atoms/input'
+import { Label } from '../atoms/label'
 
-type ValidateStatus = "default" | "error" | "success" | "warning";
+type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
 
 interface FormInputRawProps extends InputProps {
-  id: string;
-  label: ReactNode;
-  validateStatus?: ValidateStatus;
-  helpText?: ReactNode;
-  extraText?: ReactNode;
+  id: string
+  label: ReactNode
+  validateStatus?: ValidateStatus
+  helpText?: ReactNode
+  extraText?: ReactNode
 }
 
 export function FormInputRaw({
   id,
   label,
-  validateStatus = "default",
+  validateStatus = 'default',
   helpText,
   extraText,
-  size = "md",
+  size = 'md',
   required,
   disabled,
   ...props
 }: FormInputRawProps) {
-  const extraTextId = extraText ? `${id}-extra` : undefined;
+  const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
     <div className="flex flex-col gap-1">
@@ -50,7 +50,7 @@ export function FormInputRaw({
         </ExtraText>
       )}
     </div>
-  );
+  )
 }
 
 export function FormInput({
@@ -60,7 +60,7 @@ export function FormInput({
   size,
   ...props
 }: FormInputRawProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined;
+  const helpTextId = helpText ? `${id}-helper` : undefined
 
   return (
     <FormInputRaw
@@ -68,7 +68,7 @@ export function FormInput({
       size={size}
       validateStatus={validateStatus}
       helpText={
-        validateStatus === "error" ? (
+        validateStatus === 'error' ? (
           <Error id={helpTextId} size={size} showIcon>
             {helpText}
           </Error>
@@ -80,5 +80,5 @@ export function FormInput({
       }
       {...props}
     />
-  );
+  )
 }
