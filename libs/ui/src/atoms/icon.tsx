@@ -14,6 +14,7 @@ const iconVariants = tv({
       md: 'text-icon-md',
       lg: 'text-icon-lg',
       xl: 'text-icon-xl',
+      '2xl': 'text-icon-2xl',
     },
     color: {
       current: 'text-current',
@@ -34,13 +35,12 @@ export interface IconProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof iconVariants> {
   icon: IconType
-  className?: string
 }
 
-export function Icon({ icon, size, color, className, ...props }: IconProps) {
+export function Icon({ icon, size, color, ...props }: IconProps) {
   return (
     <span
-      className={`${iconVariants({ size, color, className })} ${icon}`}
+      className={iconVariants({ size, color, className: icon })}
       aria-hidden="true"
       {...props}
     />
