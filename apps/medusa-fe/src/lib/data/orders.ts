@@ -1,9 +1,9 @@
-"use server"
+'use server'
 
-import { sdk } from "@lib/config"
-import medusaError from "@lib/util/medusa-error"
-import { getAuthHeaders, getCacheOptions } from "./cookies"
-import { HttpTypes } from "@medusajs/types"
+import { sdk } from '@lib/config'
+import medusaError from '@lib/util/medusa-error'
+import type { HttpTypes } from '@medusajs/types'
+import { getAuthHeaders, getCacheOptions } from './cookies'
 
 export const retrieveOrder = async (id: string) => {
   const headers = {
@@ -11,27 +11,27 @@ export const retrieveOrder = async (id: string) => {
   }
 
   const next = {
-    ...(await getCacheOptions("orders")),
+    ...(await getCacheOptions('orders')),
   }
 
   return sdk.client
     .fetch<HttpTypes.StoreOrderResponse>(`/store/orders/${id}`, {
-      method: "GET",
+      method: 'GET',
       query: {
         fields:
-          "*payment_collections.payments,*items,*items.metadata,*items.variant,*items.product",
+          '*payment_collections.payments,*items,*items.metadata,*items.variant,*items.product',
       },
       headers,
       next,
-      cache: "force-cache",
+      cache: 'force-cache',
     })
     .then(({ order }) => order)
     .catch((err) => medusaError(err))
 }
 
 export const listOrders = async (
-  limit: number = 10,
-  offset: number = 0,
+  limit = 10,
+  offset = 0,
   filters?: Record<string, any>
 ) => {
   const headers = {
@@ -39,22 +39,22 @@ export const listOrders = async (
   }
 
   const next = {
-    ...(await getCacheOptions("orders")),
+    ...(await getCacheOptions('orders')),
   }
 
   return sdk.client
     .fetch<HttpTypes.StoreOrderListResponse>(`/store/orders`, {
-      method: "GET",
+      method: 'GET',
       query: {
         limit,
         offset,
-        order: "-created_at",
-        fields: "*items,+items.metadata,*items.variant,*items.product",
+        order: '-created_at',
+        fields: '*items,+items.metadata,*items.variant,*items.product',
         ...filters,
       },
       headers,
       next,
-      cache: "force-cache",
+      cache: 'force-cache',
     })
     .then(({ orders }) => orders)
     .catch((err) => medusaError(err))
@@ -72,10 +72,10 @@ export const createTransferRequest = async (
   error: string | null
   order: HttpTypes.StoreOrder | null
 }> => {
-  const id = formData.get("order_id") as string
+  const id = formData.get('order_id') as string
 
   if (!id) {
-    return { success: false, error: "Order ID is required", order: null }
+    return { success: false, error: 'Order ID is required', order: null }
   }
 
   const headers = await getAuthHeaders()
@@ -85,7 +85,7 @@ export const createTransferRequest = async (
       id,
       {},
       {
-        fields: "id, email",
+        fields: 'id, email',
       },
       headers
     )

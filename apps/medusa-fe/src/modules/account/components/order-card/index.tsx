@@ -1,10 +1,10 @@
-import { Button } from "@medusajs/ui"
-import { useMemo } from "react"
+import { Button } from '@medusajs/ui'
+import { useMemo } from 'react'
 
-import Thumbnail from "@modules/products/components/thumbnail"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
+import { convertToLocale } from '@lib/util/money'
+import type { HttpTypes } from '@medusajs/types'
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
+import Thumbnail from '@modules/products/components/thumbnail'
 
 type OrderCardProps = {
   order: HttpTypes.StoreOrder
@@ -24,8 +24,8 @@ const OrderCard = ({ order }: OrderCardProps) => {
   }, [order])
 
   return (
-    <div className="bg-white flex flex-col" data-testid="order-card">
-      <div className="uppercase text-large-semi mb-1">
+    <div className="flex flex-col bg-white" data-testid="order-card">
+      <div className="mb-1 text-large-semi uppercase">
         #<span data-testid="order-display-id">{order.display_id}</span>
       </div>
       <div className="flex items-center divide-x divide-gray-200 text-small-regular text-ui-fg-base">
@@ -39,10 +39,10 @@ const OrderCard = ({ order }: OrderCardProps) => {
           })}
         </span>
         <span className="pl-2">{`${numberOfLines} ${
-          numberOfLines > 1 ? "items" : "item"
+          numberOfLines > 1 ? 'items' : 'item'
         }`}</span>
       </div>
-      <div className="grid grid-cols-2 small:grid-cols-4 gap-4 my-4">
+      <div className="my-4 grid grid-cols-2 gap-4 small:grid-cols-4">
         {order.items?.slice(0, 3).map((i) => {
           return (
             <div
@@ -53,7 +53,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
               <Thumbnail thumbnail={i.thumbnail} images={[]} size="full" />
               <div className="flex items-center text-small-regular text-ui-fg-base">
                 <span
-                  className="text-ui-fg-base font-semibold"
+                  className="font-semibold text-ui-fg-base"
                   data-testid="item-title"
                 >
                   {i.title}
@@ -65,7 +65,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           )
         })}
         {numberOfProducts > 4 && (
-          <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="flex h-full w-full flex-col items-center justify-center">
             <span className="text-small-regular text-ui-fg-base">
               + {numberOfLines - 4}
             </span>

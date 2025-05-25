@@ -1,16 +1,16 @@
-import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
-import { clx } from "@medusajs/ui"
+import { convertToLocale } from '@lib/util/money'
+import type { HttpTypes } from '@medusajs/types'
+import { clx } from '@medusajs/ui'
 
 type LineItemUnitPriceProps = {
   item: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem
-  style?: "default" | "tight"
+  style?: 'default' | 'tight'
   currencyCode: string
 }
 
 const LineItemUnitPrice = ({
   item,
-  style = "default",
+  style = 'default',
   currencyCode,
 }: LineItemUnitPriceProps) => {
   const { total, original_total } = item
@@ -21,11 +21,11 @@ const LineItemUnitPrice = ({
   )
 
   return (
-    <div className="flex flex-col text-ui-fg-muted justify-center h-full">
+    <div className="flex h-full flex-col justify-center text-ui-fg-muted">
       {hasReducedPrice && (
         <>
           <p>
-            {style === "default" && (
+            {style === 'default' && (
               <span className="text-ui-fg-muted">Original: </span>
             )}
             <span
@@ -38,14 +38,14 @@ const LineItemUnitPrice = ({
               })}
             </span>
           </p>
-          {style === "default" && (
+          {style === 'default' && (
             <span className="text-ui-fg-interactive">-{percentage_diff}%</span>
           )}
         </>
       )}
       <span
-        className={clx("text-base-regular", {
-          "text-ui-fg-interactive": hasReducedPrice,
+        className={clx('text-base-regular', {
+          'text-ui-fg-interactive': hasReducedPrice,
         })}
         data-testid="product-unit-price"
       >

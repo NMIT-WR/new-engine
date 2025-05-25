@@ -1,10 +1,9 @@
-import { Text } from "@medusajs/ui"
-import { listProducts } from "@lib/data/products"
-import { getProductPrice } from "@lib/util/get-product-price"
-import { HttpTypes } from "@medusajs/types"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Thumbnail from "../thumbnail"
-import PreviewPrice from "./price"
+import { getProductPrice } from '@lib/util/get-product-price'
+import type { HttpTypes } from '@medusajs/types'
+import { Text } from '@medusajs/ui'
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
+import Thumbnail from '../thumbnail'
+import PreviewPrice from './price'
 
 export default async function ProductPreview({
   product,
@@ -37,7 +36,7 @@ export default async function ProductPreview({
           size="full"
           isFeatured={isFeatured}
         />
-        <div className="flex txt-compact-medium mt-4 justify-between">
+        <div className="txt-compact-medium mt-4 flex justify-between">
           <Text className="text-ui-fg-subtle" data-testid="product-title">
             {product.title}
           </Text>

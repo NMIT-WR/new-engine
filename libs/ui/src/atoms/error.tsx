@@ -1,30 +1,32 @@
-import { type VariantProps } from "tailwind-variants";
-import { tv } from "../utils";
-import { Icon } from "./icon";
+import type { HTMLAttributes, ReactNode, Ref } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
+import { Icon } from './icon'
 
 const errorVariants = tv({
-  base: ["text-error-text", "flex items-center gap-1"],
+  base: ['text-error-text', 'flex items-center gap-1'],
   variants: {
     size: {
-      sm: "text-error-sm",
-      md: "text-error-md",
-      lg: "text-error-lg",
-      current: "",
+      sm: 'text-error-sm',
+      md: 'text-error-md',
+      lg: 'text-error-lg',
+      current: '',
     },
   },
   defaultVariants: {
-    size: "current",
+    size: 'current',
   },
-});
+})
 
 export interface ErrorProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof errorVariants> {
-  ref?: React.Ref<HTMLDivElement>;
-  showIcon?: boolean;
-  children: React.ReactNode;
+  ref?: Ref<HTMLDivElement>
+  showIcon?: boolean
+  children: ReactNode
 }
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 function Error({
   className,
   showIcon,
@@ -45,7 +47,7 @@ function Error({
       {showIcon && <Icon icon="token-icon-error" />}
       <span>{children}</span>
     </div>
-  );
+  )
 }
 
-export { Error, errorVariants };
+export { Error, errorVariants }
