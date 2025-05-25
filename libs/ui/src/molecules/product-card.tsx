@@ -1,103 +1,100 @@
-import { useId, useId, useId, useId } from 'react'
-import type tyVariantPropsariantProtailwind
-;-variants - variants - variants - variants
-";
+import { type HTMLAttributes, useId } from 'react'
+import type { VariantProps } from 'tailwind-variants'
 import { Badge, type BadgeProps } from '../atoms/badge.tsx'
-import { Buttonmsatomsatomsatoms/button.tsxtsxtsxtsx";
-import
-{ Rating, { RatRatingPropsngPropsng../atoms/rating.tsxating.tsxating.tsxating.tsx";
-import { slugifyyytvutils.ts
-import { NumericInput } from "./numeric-input.tsx";
+import { Button } from '../atoms/button.tsx'
+import { Rating, type RatingProps } from '../atoms/rating.tsx'
+import { slugify, tv } from '../utils.ts'
+import { NumericInput } from './numeric-input.tsx'
 
 //object-cover aspect-product-card-image
 const productCard = tv({
   slots: {
     base: [
-      "rounded-pc p-pc-padding",
-      "border-(length:--border-pc-width) border-pc-border bg-pc",
+      'rounded-pc p-pc-padding',
+      'border-(length:--border-pc-width) border-pc-border bg-pc',
     ],
-    imageSlot: "object-cover aspect-pc-image h-full rounded-pc-image",
-    nameSlot: "text-pc-name-fg text-pc-name-size font-pc-name leading-pc-name",
-    priceSlot: "text-pc-price-fg text-pc-price-size",
-    stockStatusSlot: "text-pc-stock-fg text-pc-stock-size font-pc-stock",
-    badgesSlot: "flex flex-wrap gap-pc-box",
-    ratingSlot: "flex items-center",
-    buttonsSlot: "flex flex-wrap w-fit",
-    cartButton: "bg-btn-cart hover:bg-btn-cart-hover text-btn-cart-fg w-max",
+    imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
+    nameSlot: 'text-pc-name-fg text-pc-name-size font-pc-name leading-pc-name',
+    priceSlot: 'text-pc-price-fg text-pc-price-size',
+    stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size font-pc-stock',
+    badgesSlot: 'flex flex-wrap gap-pc-box',
+    ratingSlot: 'flex items-center',
+    buttonsSlot: 'flex flex-wrap w-fit',
+    cartButton: 'bg-btn-cart hover:bg-btn-cart-hover text-btn-cart-fg w-max',
     detailButton:
-      "bg-btn-detail hover:bg-btn-detail-hover text-btn-detail-fg w-max",
+      'bg-btn-detail hover:bg-btn-detail-hover text-btn-detail-fg w-max',
     wishlistButton:
-      "bg-btn-wishlist hover:bg-btn-wishlist-hover text-btn-wishlist-fg w-max",
+      'bg-btn-wishlist hover:bg-btn-wishlist-hover text-btn-wishlist-fg w-max',
   },
   variants: {
     // variant for layout of the card
     layout: {
       column: {
-        base: ["grid grid-cols-1 gap-pc-col-layout"],
-        imageSlot: "w-full order-image",
-        nameSlot: "order-name",
-        priceSlot: "order-price",
-        stockStatusSlot: "order-stock",
-        badgesSlot: "order-badges",
-        ratingSlot: "order-ratings",
-        buttonsSlot: "order-buttons",
+        base: ['grid grid-cols-1 gap-pc-col-layout'],
+        imageSlot: 'w-full order-image',
+        nameSlot: 'order-name',
+        priceSlot: 'order-price',
+        stockStatusSlot: 'order-stock',
+        badgesSlot: 'order-badges',
+        ratingSlot: 'order-ratings',
+        buttonsSlot: 'order-buttons',
       },
       row: {
-        base: "grid grid-cols-[auto_1fr] gap-x-pc-row-layout",
-        imageSlot: "row-span-6",
+        base: 'grid grid-cols-[auto_1fr] gap-x-pc-row-layout',
+        imageSlot: 'row-span-6',
       },
     },
     // variant for layout of the buttons
     buttonLayout: {
       horizontal: {
-        buttonsSlot: "justify-center gap-2",
+        buttonsSlot: 'justify-center gap-2',
       },
       vertical: {
-        buttonsSlot: "flex-col gap-2",
+        buttonsSlot: 'flex-col gap-2',
       },
     },
   },
   /* Define compound styles for slots */
   compoundSlots: [
     {
-      layout: "row",
+      layout: 'row',
       slots: [
-        "nameSlot",
-        "priceSlot",
-        "stockStatusSlot",
-        "badgesSlot",
-        "ratingSlot",
-        "buttonsSlot",
+        'nameSlot',
+        'priceSlot',
+        'stockStatusSlot',
+        'badgesSlot',
+        'ratingSlot',
+        'buttonsSlot',
       ],
-      class: ["col-start-2"],
+      class: ['col-start-2'],
     },
   ],
   defaultVariants: {
-    layout: "column",
-    buttonLayout: "horizontal",
+    layout: 'column',
+    buttonLayout: 'horizontal',
   },
-});
+})
 
-type ProductCardVariants = VariantProps<typeof productCard>;
+type ProductCardVariants = VariantProps<typeof productCard>
 
 export interface ProductCardProps
   extends ProductCardVariants,
     HTMLAttributes<HTMLDivElement> {
-  imageUrl: string;
-  name: string;
-  price: string;
-  stockStatus: string;
-  badges?: BadgeProps[];
-  rating?: RatingProps;
+  imageUrl: string
+  name: string
+  price: string
+  stockStatus: string
+  badges?: BadgeProps[]
+  rating?: RatingProps
   // Set prepared button options
-  hasCartButton?: boolean;
-  hasDetailButton?: boolean;
-  hasWishlistButton?: boolean;
-  cartButtonText?: string;
-  detailButtonText?: string;
-  wishlistButtonText?: string;
-  numericInput?: boolean;
-  customButtons?: React.ReactNode;
+  hasCartButton?: boolean
+  hasDetailButton?: boolean
+  hasWishlistButton?: boolean
+  cartButtonText?: string
+  detailButtonText?: string
+  wishlistButtonText?: string
+  numericInput?: boolean
+  customButtons?: React.ReactNode
 }
 
 export function ProductCard({
@@ -109,9 +106,9 @@ export function ProductCard({
   hasCartButton,
   hasDetailButton,
   hasWishlistButton,
-  cartButtonText = "Add to cart",
-  detailButtonText = "Detail",
-  wishlistButtonText = "Wishlist",
+  cartButtonText = 'Add to cart',
+  detailButtonText = 'Detail',
+  wishlistButtonText = 'Wishlist',
   numericInput,
   rating,
   className,
@@ -120,7 +117,7 @@ export function ProductCard({
   customButtons,
   ...props
 }: ProductCardProps) {
-  const productCardId = useId();
+  const productCardId = useId()
 
   const {
     base,
@@ -134,7 +131,7 @@ export function ProductCard({
     cartButton,
     detailButton,
     wishlistButton,
-  } = productCard({ layout, buttonLayout });
+  } = productCard({ layout, buttonLayout })
 
   return (
     <div className={base({ className, layout })} {...props}>
@@ -200,5 +197,5 @@ export function ProductCard({
         </div>
       )}
     </div>
-  );
+  )
 }

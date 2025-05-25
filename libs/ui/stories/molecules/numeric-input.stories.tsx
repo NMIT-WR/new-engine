@@ -14,39 +14,39 @@ const meta: Meta<typeof NumericInput> = {
     size: {
       control: 'select',
       options: ['sm', 'md', 'lg'],
-      description: 'Velikost input fieldu',
+      description: 'Size of the input field',
     },
     min: {
       control: 'number',
-      description: 'Minimální hodnota',
+      description: 'Minimum value',
     },
     max: {
       control: 'number',
-      description: 'Maximální hodnota',
+      description: 'Maximum value',
     },
     step: {
       control: 'number',
-      description: 'Krok změny hodnoty',
+      description: 'Step value for incrementing/decrementing',
     },
     precision: {
       control: 'number',
-      description: 'Počet desetinných míst',
+      description: 'Number of decimal places',
     },
     hideControls: {
       control: 'boolean',
-      description: 'Skrýt increment/decrement tlačítka',
+      description: 'Hide increment/decrement buttons',
     },
     allowScrubbing: {
       control: 'boolean',
-      description: 'Povolit scrubbing interakci (táhnutí myší)',
+      description: 'Enable scrubbing interaction (dragging with mouse)',
     },
     allowMouseWheel: {
       control: 'boolean',
-      description: 'Povolit změnu hodnoty pomocí kolečka myši',
+      description: 'Enable mouse wheel interaction',
     },
     labelText: {
       control: 'text',
-      description: 'Text labelu',
+      description: 'Text label for the input field',
     },
   },
 }

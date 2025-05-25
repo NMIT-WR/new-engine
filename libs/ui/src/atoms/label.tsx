@@ -9,13 +9,14 @@ const labelVariants = tv({
       sm: 'text-label-sm',
       md: 'text-label-md',
       lg: 'text-label-lg',
+      current: '',
     },
     disabled: {
       true: 'text-label-disabled',
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: 'current',
     disabled: false,
   },
 })

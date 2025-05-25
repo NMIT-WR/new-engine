@@ -1,6 +1,6 @@
 import * as numberInput from '@zag-js/number-input'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { tes, useId, useId, useId, useId } from 'react'
+import { type InputHTMLAttributes, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { Input } from '../atoms/input'

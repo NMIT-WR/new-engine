@@ -10,10 +10,11 @@ const errorVariants = tv({
       sm: 'text-error-sm',
       md: 'text-error-md',
       lg: 'text-error-lg',
+      current: '',
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: 'current',
   },
 })
 

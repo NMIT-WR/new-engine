@@ -4,20 +4,19 @@ import { useId } from "react";
 import { tv } from "../utils";
 import type { VariantProps } from "tailwind-variants";
 import { Label } from "./label";
+import { Error } from "./error";
+import { ExtraText } from "./extra-text";
 
 const rangeSliderVariants = tv({
   slots: {
     root: [
       "flex flex-col w-full gap-slider-root",
       "data-[orientation=vertical]:h-full",
-      "data-[disabled]:opacity-60 data-[disabled]:cursor-not-allowed",
+      "data-[disabled]:opacity-slider-disabled data-[disabled]:cursor-not-allowed",
     ],
     header: ["flex items-center justify-between"],
     value: ["text-slider-value-size"],
-    label: [
-      "block text-slider-label-size font-medium",
-      "data-[disabled]:text-disabled-text-size",
-    ],
+    label: ["block font-medium"],
     control: [
       "relative grid place-items-center ",
       "data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1",
@@ -31,12 +30,14 @@ const rangeSliderVariants = tv({
       "data-[disabled]:border-slider-border-disabled",
       "transition-colors duration-200",
       "hover:bg-slider-track-hover",
+      "data-[invalid=true]:border-slider-border-error",
     ],
     range: [
       "bg-slider-range rounded-slider-track h-full",
       "data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full",
       "data-[disabled]:bg-slider-range-disabled",
       "hover:bg-slider-range-hover",
+      "data-[invalid=true]:bg-slider-range-error",
     ],
     thumb: [
       "flex items-center justify-center",
@@ -60,14 +61,15 @@ const rangeSliderVariants = tv({
     ],
     markerLine: [
       "w-slider-marker h-full bg-slider-marker",
-      "data-[orientation=vertical]:h-0.5 data-[orientation=vertical]:w-full",
+      "data-[orientation=vertical]:h-slider-marker-vertical data-[orientation=vertical]:w-full",
     ],
     markerText: [
-      "absolute top-full text-slider-marker-size",
+      "absolute top-full",
       "data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full",
-      "data-[orientation=vertical]:ml-2xs",
+      "data-[orientation=vertical]:ml-slider-marker-vertical",
       "data-[orientation=vertical]:h-full",
     ],
+    footer: ["flex flex-col"],
   },
   variants: {
     size: {
@@ -99,8 +101,9 @@ export interface RangeSliderProps
   name?: string;
   size?: "sm" | "md" | "lg";
   label?: string;
-  helper?: string;
-  error?: string;
+  helperText?: string;
+  error?: boolean;
+  errorText?: string;
   value?: number[];
   defaultValue?: number[];
   min?: number;
@@ -120,15 +123,15 @@ export interface RangeSliderProps
   className?: string;
   onChange?: (values: number[]) => void;
   onChangeEnd?: (values: number[]) => void;
-  getAriaValueText?: (value: number) => string;
 }
 
 export function RangeSlider({
   id,
   name,
   label,
-  helper,
+  helperText,
   error,
+  errorText,
   value,
   origin,
   thumbAlignment = "center",
@@ -149,7 +152,6 @@ export function RangeSlider({
   className,
   onChange,
   onChangeEnd,
-  getAriaValueText,
 }: RangeSliderProps) {
   const generatedId = useId();
   const uniqueId = id || generatedId;
@@ -188,24 +190,37 @@ export function RangeSlider({
     marker,
     markerLine,
     markerText,
+    footer,
   } = rangeSliderVariants({
     className,
   });
 
   return (
     <div className={root()} {...api.getRootProps()}>
-      <div className={header()}>
-        <Label className={labelSlot()} {...api.getLabelProps()}>
-          {label}
-        </Label>
-        <output className={valueSlot()} {...api.getValueTextProps()}>
-          <b>{api.value.join(" - ")}</b>
-        </output>
-      </div>
+      {(label || showValueText) && (
+        <div className={header()}>
+          <Label className={labelSlot()} {...api.getLabelProps()}>
+            {label}
+          </Label>
+          {showValueText && (
+            <output className={valueSlot()} {...api.getValueTextProps()}>
+              <b>{api.value.join(" - ")}</b>
+            </output>
+          )}
+        </div>
+      )}
 
       <div className={control()} {...api.getControlProps()}>
-        <div className={track({ size })} {...api.getTrackProps()}>
-          <div className={range()} {...api.getRangeProps()} />
+        <div
+          className={track({ size })}
+          {...api.getTrackProps()}
+          data-invalid={error}
+        >
+          <div
+            className={range()}
+            {...api.getRangeProps()}
+            data-invalid={error}
+          />
           {showMarkers && (
             <div {...api.getMarkerGroupProps()} className={markerGroup()}>
               {Array.from({ length: markerCount }).map((_, index) => {
@@ -239,7 +254,7 @@ export function RangeSlider({
             </div>
           )}
         </div>
-        {api.value.map((_, index) => (
+        {api.value.map((value, index) => (
           <div
             key={index}
             className={thumb({ size })}
@@ -249,6 +264,15 @@ export function RangeSlider({
           </div>
         ))}
       </div>
+      {(helperText || error) && (
+        <div className={footer()}>
+          {error && <Error>{errorText}</Error>}
+          {!error &&
+            helperText && ( // Show helper only if there is no error
+              <ExtraText>{helperText}</ExtraText>
+            )}
+        </div>
+      )}
     </div>
   );
 }
