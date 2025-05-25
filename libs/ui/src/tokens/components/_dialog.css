@@ -1,0 +1,53 @@
+:root {
+  --opacity-backdrop: 10%;
+}
+
+@theme static {
+  --color-dialog-bg: var(--color-surface);
+  --color-dialog-fg: var(--color-fg-primary);
+  --border-width-dialog: var(--border-width-sm);
+
+  /* ===== DIALOG BACKDROP (Overlay) ===== */
+  --color-dialog-backdrop-bg: --alpha(
+    var(--color-fg-primary) /
+    var(--opacity-backdrop)
+  ); /* Semi-transparent black */
+
+  /* ===== DIALOG CONTENT PANEL ===== */
+  --color-dialog-content-bg: var(--color-dialog-bg);
+  --color-dialog-content-fg: var(--color-dialog-fg);
+  --color-dialog-content-border: var(--color-stroke-primary);
+  --radius-dialog-content: var(--radius-sm);
+  --shadow-dialog-content: var(--shadow-xl);
+
+  --gap-dialog-content: var(--spacing-sm);
+
+  --max-width-dialog-content: 90svw;
+  --height-dialog-content: 80svh;
+  --padding-dialog-content: var(--spacing-lg);
+
+  /* ===== DIALOG TITLE ===== */
+  --text-dialog-title-size: var(--text-xl);
+  --font-dialog-title: var(--font-weight-semibold);
+  --color-dialog-title-fg: var(--color-dialog-fg);
+
+  /* ===== DIALOG DESCRIPTION ===== */
+  --text-dialog-description-size: var(--text-md);
+  --color-dialog-description-fg: var(--color-dialog-fg);
+  --line-height-dialog-description: var(--line-height-normal);
+  --spacing-dialog-description-margin-top: var(--spacing-xs);
+
+  /* ===== DIALOG CLOSE TRIGGER (Button) ===== */
+  --color-dialog-close-trigger-fg: var(--color-dialog-fg);
+  --radius-dialog-close-trigger: var(--radius-full);
+  --spacing-dialog-close-trigger-padding: var(--spacing-2xs);
+
+  /* ===== FOCUS RING (General for focusable elements within dialog) ===== */
+  --color-dialog-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-dialog-ring-offset: var(--color-dialog-bg);
+}
+
+/* Semantic tokens for dialog icons */
+@utility token-icon-dialog-close {
+  @apply token-icon-close;
+}

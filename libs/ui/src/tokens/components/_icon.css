@@ -65,6 +65,10 @@
   @apply icon-[mdi--dots-horizontal];
 }
 
+@utility token-icon-close {
+  @apply icon-[mdi--close];
+}
+
 /* Component tokens for icons */
 @utility token-icon-input-error {
   @apply token-icon-error;

@@ -8,9 +8,9 @@ services:
     volumes:
       - .:/var/www
     command: pnpm --filter medusa-fe dev
-#    command: ["tail" ,"-f"]
+    #    command: ["tail" ,"-f"]
     ports:
-      - "8000:8000"
+      - "8001:8001"
     networks:
       - internal
     depends_on:
@@ -18,17 +18,50 @@ services:
       - medusa-meilisearch
       - medusa-minio
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:8000' ]
+      test: ["CMD", "curl", "-f", "http://localhost:8001"]
       start_period: 10s
     environment:
-      MEDUSA_BACKEND_URL: ${DC_MEDUSA_BACKEND_URL}
-      NEXT_PUBLIC_BASE_URL: ${DC_NEXT_PUBLIC_BASE_URL}
-      NEXT_PUBLIC_SEARCH_ENDPOINT: ${DC_NEXT_PUBLIC_SEARCH_ENDPOINT}
-      NEXT_PUBLIC_DEFAULT_REGION: ${DC_NEXT_PUBLIC_DEFAULT_REGION}
-      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${DC_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
-      NEXT_PUBLIC_INDEX_NAME: ${DC_NEXT_PUBLIC_INDEX_NAME}
-      NEXT_PUBLIC_SEARCH_API_KEY: ${DC_NEXT_PUBLIC_SEARCH_API_KEY}
-      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+      MEDUSA_BACKEND_URL: ${DC_FE_MEDUSA_BACKEND_URL}
+      NEXT_PUBLIC_BASE_URL: ${DC_FE_NEXT_PUBLIC_BASE_URL}
+      NEXT_PUBLIC_SEARCH_ENDPOINT: ${DC_FE_NEXT_PUBLIC_SEARCH_ENDPOINT}
+      NEXT_PUBLIC_DEFAULT_REGION: ${DC_FE_NEXT_PUBLIC_DEFAULT_REGION}
+      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${DC_FE_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
+      NEXT_PUBLIC_INDEX_NAME: ${DC_FE_NEXT_PUBLIC_INDEX_NAME}
+      NEXT_PUBLIC_SEARCH_API_KEY: ${DC_FE_NEXT_PUBLIC_SEARCH_API_KEY}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_FE_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+  medusa-demo:
+    restart: unless-stopped
+    container_name: wr_medusa_demo
+    build:
+      context: .
+      dockerfile: docker/development/medusa-fe/Dockerfile
+    volumes:
+      - .:/var/www
+    command: pnpm --filter medusa-demo dev
+    #    command: ["tail" ,"-f"]
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+    networks:
+      - internal
+    depends_on:
+      - medusa-be
+      - medusa-meilisearch
+      - medusa-minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      start_period: 10s
+    environment:
+      MEDUSA_BACKEND_URL: ${DC_DEMO_MEDUSA_BACKEND_URL}
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${DC_DEMO_NEXT_PUBLIC_MEDUSA_BACKEND_URL}
+      NEXT_PUBLIC_STRIPE_KEY: ${DC_DEMO_NEXT_PUBLIC_STRIPE_KEY}
+      NEXT_PUBLIC_BASE_URL: ${DC_DEMO_NEXT_PUBLIC_BASE_URL}
+      NEXT_PUBLIC_SEARCH_ENDPOINT: ${DC_DEMO_NEXT_PUBLIC_SEARCH_ENDPOINT}
+      NEXT_PUBLIC_DEFAULT_REGION: ${DC_DEMO_NEXT_PUBLIC_DEFAULT_REGION}
+      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${DC_DEMO_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
+      NEXT_PUBLIC_INDEX_NAME: ${DC_DEMO_NEXT_PUBLIC_INDEX_NAME}
+      NEXT_PUBLIC_SEARCH_API_KEY: ${DC_DEMO_NEXT_PUBLIC_SEARCH_API_KEY}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_DEMO_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
   medusa-be:
     restart: unless-stopped
     container_name: wr_medusa_be
@@ -49,7 +82,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/app' ]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/app"]
       start_period: 10s
     environment:
       VITE_HMR_PORT: ${DC_VITE_HMR_PORT}
@@ -72,7 +105,7 @@ services:
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:
-      test: '[ $$(valkey-cli ping) = ''PONG'' ]'
+      test: "[ $$(valkey-cli ping) = 'PONG' ]"
       start_period: 5s
       timeout: 3s
       interval: 1s
@@ -95,7 +128,7 @@ services:
       - internal
     command: server /data --console-address ":9003" --address :9004
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:9003' ]
+      test: ["CMD", "curl", "-f", "http://localhost:9003"]
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -109,7 +142,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:7700' ]
+      test: ["CMD", "curl", "-f", "http://localhost:7700"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -119,7 +152,7 @@ services:
   medusa-db:
     image: postgres:17.2-alpine
     restart: unless-stopped
-    command: [ 'postgres', '-cshared_preload_libraries=pg_stat_statements' ]
+    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     ports:
       - "5432:5432"
     volumes:
@@ -127,7 +160,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-d', 'medusa' ]
+      test: ["CMD", "pg_isready", "-d", "medusa"]
       start_period: 10s
       interval: 30s
       timeout: 60s
@@ -136,7 +169,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
       POSTGRES_DB: medusa
-      PGDATA: '/var/lib/postgresql/data'
+      PGDATA: "/var/lib/postgresql/data"
   adminer:
     image: adminer
     restart: unless-stopped
@@ -149,7 +182,7 @@ services:
     environment:
       ADMINER_DESIGN: nette
       ADMINER_DEFAULT_SERVER: medusa-db
-      ADMINER_PLUGINS: 'dump-json'
+      ADMINER_PLUGINS: "dump-json"
   caddy:
     build:
       context: ./docker/development/caddy

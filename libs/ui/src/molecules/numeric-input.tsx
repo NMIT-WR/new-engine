@@ -1,174 +1,201 @@
-import { useState, type InputHTMLAttributes, type Ref } from "react";
-import { type VariantProps } from "tailwind-variants";
-import { tv } from "../utils";
-import { Button } from "../atoms/button";
-import { Input } from "../atoms/input";
-import { type IconType } from "../atoms/icon";
+import * as numberInput from '@zag-js/number-input'
+import { normalizeProps, useMachine } from '@zag-js/react'
+import { type InputHTMLAttributes, useId } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { Button } from '../atoms/button'
+import { Input } from '../atoms/input'
+import { Label } from '../atoms/label'
+import { tv } from '../utils'
 
 const numericInput = tv({
   slots: {
-    base: [
-      "inline-flex items-center relative",
-      "bg-numeric-input-bg border-(length:--border-width-numeric-input) border-numeric-input-border",
-      "rounded-input overflow-hidden",
-      "has-[input:invalid]:border-danger",
+    root: ['flex flex-col relative'],
+    inputContainer: [
+      'flex relative border-(length:--border-width-ni)',
+      'border-ni-border rounded-ni overflow-hidden items-center',
+      'data-[invalid]:bg-ni-invalid-bg',
+      'data-[invalid]:border-ni-invalid-border',
     ],
-    input: "text-center border-none w-numeric-input",
-    button: "text-increment-btn focus:ring-increment-btn-ring",
+    input: [
+      'p-ni-input',
+      'bg-ni-input-bg border-none focus:bg-ni-input-bg-active hover:bg-ni-input-bg-hover',
+      'focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0',
+      'data-[invalid]:focus:border-input-border-danger-focus',
+    ],
+    triggerContainer:
+      'flex flex-col h-fit justify-center bg-ni-trigger-container',
+    trigger: [
+      'px-ni-trigger-x py-ni-trigger-y',
+      'cursor-pointer text-increment-btn focus:ring-increment-btn-ring',
+    ],
+    scrubber: 'absolute inset-0 cursor-ew-resize',
+    label: '',
   },
   variants: {
     size: {
       sm: {
-        input: "",
-        button: "text-button-sm",
+        root: 'gap-ni-root-sm text-ni-sm',
+        trigger: 'text-ni-sm',
+        label: 'text-ni-sm',
+        input: 'text-ni-sm',
       },
       md: {
-        input: "",
-        button: "text-button-md",
+        root: 'gap-ni-root-md text-ni-md',
+        trigger: 'text-ni-md',
+        label: 'text-ni-md',
+        input: 'text-ni-md',
       },
       lg: {
-        input: "",
-        button: "text-button-md",
+        root: 'gap-ni-root-lg text-ni-lg',
+        trigger: 'text-ni-lg',
+        label: 'text-ni-lg',
+        input: 'text-ni-lg',
+      },
+    },
+    hideControls: {
+      true: {
+        triggerContainer: 'invisible',
       },
     },
   },
-});
+  defaultVariants: {
+    size: 'sm',
+  },
+})
 
 export interface NumericInputProps
   extends Omit<
-      InputHTMLAttributes<HTMLInputElement>,
-      "size" | "type" | "onChange"
-    >,
-    VariantProps<typeof numericInput> {
-  ref?: Ref<HTMLInputElement>;
-  min?: number;
-  max?: number;
-  step?: number;
-  hideControls?: boolean;
-  incrementIcon?: IconType;
-  decrementIcon?: IconType;
-  formatValue?: (value: number) => string;
-  parseValue?: (value: string) => number;
-  onChange?: (value: number) => void;
-  onIncrement?: (value: number) => void;
-  onDecrement?: (value: number) => void;
+    InputHTMLAttributes<HTMLInputElement>,
+    'size' | 'value' | 'defaultValue' | 'onChange' | 'type'
+  > {
+  size?: VariantProps<typeof numericInput>['size']
+  hideControls?: boolean
+  allowScrubbing?: boolean
+  name?: string
+  disabled?: boolean
+
+  value?: number
+  defaultValue?: number
+  onChange?: (value: number) => void
+  dir?: 'ltr' | 'rtl'
+  min?: number
+  max?: number
+  step?: number
+  precision?: number
+  allowMouseWheel?: boolean
+  allowOverflow?: boolean
+  clampValueOnBlur?: boolean
+  spinOnPress?: boolean
+  formatOptions?: Intl.NumberFormatOptions
+  labelText?: string
+  invalid?: boolean
 }
 
 export function NumericInput({
-  size = "md",
-  disabled,
-  min = 0,
-  max = 100,
+  size = 'md',
+  hideControls = true,
+  allowScrubbing = false,
+  disabled = false,
+  min,
+  max,
   step = 1,
-  hideControls = false,
-  incrementIcon = "token-icon-plus",
-  decrementIcon = "token-icon-minus",
-  className,
+  precision,
   value,
   defaultValue,
-  formatValue = String,
-  parseValue = (val) => parseInt(val, 10),
   onChange,
-  onIncrement,
-  onDecrement,
-  ref,
+  allowMouseWheel = true,
+  allowOverflow,
+  clampValueOnBlur = true,
+  spinOnPress = true,
+  dir = 'ltr',
+  formatOptions,
+  labelText,
+  name,
+  className,
+  invalid,
   ...props
 }: NumericInputProps) {
-  const [internalValue, setInternalValue] = useState(() => {
-    if (value !== undefined) return Number(value);
-    if (defaultValue !== undefined) return Number(defaultValue);
-    return min;
-  });
+  const generatedId = useId()
+  const id = props.id || generatedId
 
-  const { base, input, button } = numericInput({
-    size,
-    className,
-  });
+  const stringValue = value !== undefined ? String(value) : undefined
+  const stringDefaultValue =
+    defaultValue !== undefined ? String(defaultValue) : undefined
 
-  const currentValue = value !== undefined ? Number(value) : internalValue;
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseValue(e.target.value);
-    if (isNaN(newValue)) return;
+  const service = useMachine(numberInput.machine, {
+    id,
+    min,
+    max,
+    step,
+    name,
+    disabled,
+    dir,
+    invalid,
+    value: stringValue,
+    defaultValue: stringDefaultValue,
+    allowMouseWheel,
+    allowOverflow,
+    clampValueOnBlur,
+    spinOnPress,
+    formatOptions: precision
+      ? { maximumFractionDigits: precision }
+      : formatOptions,
+    onValueChange: (details) => {
+      onChange?.(details.valueAsNumber)
+    },
+    focusInputOnChange: true,
+  })
 
-    const clampedValue = Math.max(min, Math.min(max, newValue));
+  const api = numberInput.connect(service, normalizeProps)
 
-    if (value === undefined) {
-      setInternalValue(clampedValue);
-    }
-    onChange?.(clampedValue);
-  };
+  const {
+    root,
+    inputContainer,
+    input,
+    triggerContainer,
+    trigger,
+    label,
+    scrubber,
+  } = numericInput()
 
-  const handleIncrement = () => {
-    const newValue = Math.min(max, currentValue + step);
-
-    if (value === undefined) {
-      setInternalValue(newValue);
-    }
-
-    onChange?.(newValue);
-    onIncrement?.(newValue);
-  };
-
-  const handleDecrement = () => {
-    const newValue = Math.max(min, currentValue - step);
-
-    if (value === undefined) {
-      setInternalValue(newValue);
-    }
-
-    onChange?.(newValue);
-    onDecrement?.(newValue);
-  };
+  const reducedProps = {
+    ...props,
+    size: undefined,
+  }
 
   return (
-    <div
-      className={base({
-        size,
-        className,
-      })}
-    >
-      {!hideControls && (
-        <Button
-          size="sm"
-          variant="danger"
-          theme="borderless"
-          icon={decrementIcon}
-          disabled={disabled || currentValue <= min}
-          onClick={handleDecrement}
-          aria-label="Decrease value"
-        />
+    <div className={root({ className })} {...api.getRootProps()}>
+      {labelText && (
+        <Label className={label({ size })} {...api.getLabelProps()}>
+          {labelText}
+        </Label>
       )}
-
-      <Input
-        type="text"
-        inputMode="numeric"
-        pattern="[0-9]+"
-        size="sm"
-        disabled={disabled}
-        defaultValue={defaultValue}
-        value={formatValue(currentValue)}
-        onChange={handleChange}
-        // add className props to input to avoid absolute overwriting the Input styles
-        className={input()}
-        ref={ref}
-        min={min}
-        max={max}
-        role="spinbutton"
-        {...props}
-      />
-
-      {!hideControls && (
-        <Button
-          size="sm"
-          variant="primary"
-          theme="borderless"
-          icon={incrementIcon}
-          disabled={disabled || currentValue >= max}
-          onClick={handleIncrement}
-          aria-label="Increase value"
-          className={button()}
+      <div className={inputContainer()} {...api.getControlProps()}>
+        {allowScrubbing && (
+          <div className={scrubber()} {...api.getScrubberProps()} />
+        )}
+        <Input
+          className={input({ size })}
+          {...api.getInputProps()}
+          {...reducedProps}
         />
-      )}
+        <div className={triggerContainer({ hideControls })}>
+          <Button
+            size="sm"
+            theme="borderless"
+            className={trigger({ size })}
+            {...api.getIncrementTriggerProps()}
+            icon="token-icon-ni-increment"
+          />
+          <Button
+            size="sm"
+            theme="borderless"
+            className={trigger({ size })}
+            {...api.getDecrementTriggerProps()}
+            icon="token-icon-ni-decrement"
+          />
+        </div>
+      </div>
     </div>
-  );
+  )
 }

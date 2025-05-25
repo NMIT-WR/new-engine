@@ -1,33 +1,32 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from "../../src/atoms/button";
-import { VariantContainer, VariantGroup } from "../../.storybook/decorator";
-import { useState } from "react";
+import type { Meta, StoryObj } from '@storybook/react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Button } from '../../src/atoms/button'
 
 const meta: Meta<typeof Button> = {
-  title: "Atoms/Button",
+  title: 'Atoms/Button',
   component: Button,
   argTypes: {
     variant: {
-      control: "select",
-      options: ["primary", "secondary", "tertiary", "warning", "danger"],
+      control: 'select',
+      options: ['primary', 'secondary', 'tertiary', 'warning', 'danger'],
     },
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
     },
   },
   parameters: {
-    layout: "centered",
+    layout: 'centered',
     docs: {
       description: {
-        component: "",
+        component: '',
       },
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof Button>;
+export default meta
+type Story = StoryObj<typeof Button>
 
 export const Variants: Story = {
   render: () => (
@@ -92,7 +91,7 @@ export const Variants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const Sizes: Story = {
   render: () => (
@@ -111,17 +110,10 @@ export const Sizes: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const States: Story = {
   render: () => {
-    const [isLoading, setIsLoading] = useState(false);
-
-    const toggleLoading = () => {
-      setIsLoading(true);
-      setTimeout(() => setIsLoading(false), 2000);
-    };
-
     return (
       <VariantContainer>
         <VariantGroup title="Disabled states">
@@ -153,9 +145,9 @@ export const States: Story = {
           </Button>
         </VariantGroup>
       </VariantContainer>
-    );
+    )
   },
-};
+}
 
 export const AllVariants: Story = {
   render: () => (
@@ -267,7 +259,7 @@ export const AllVariants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}
 
 export const IconButtons: Story = {
   render: () => (
@@ -287,4 +279,4 @@ export const IconButtons: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

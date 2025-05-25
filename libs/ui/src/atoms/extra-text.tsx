@@ -1,26 +1,26 @@
-import { type HTMLAttributes } from "react";
-import { type VariantProps } from "tailwind-variants";
-import { tv } from "../utils";
+import type { HTMLAttributes } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
 
 const extraTextVariants = tv({
-  base: ["text-helper-text"],
+  base: ['text-helper-text'],
   variants: {
     size: {
-      sm: "text-helper-sm",
-      md: "text-helper-md",
-      lg: "text-helper-lg",
+      sm: 'text-helper-sm',
+      md: 'text-helper-md',
+      lg: 'text-helper-lg',
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
   },
-});
+})
 
 export interface ExtraTextProps
   extends HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof extraTextVariants> {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }
 
 export function ExtraText({
@@ -39,5 +39,5 @@ export function ExtraText({
     >
       {children}
     </span>
-  );
+  )
 }
