@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import React, { useEffect, useActionState } from "react"
-import Input from "@modules/common/components/input"
-import AccountInfo from "../account-info"
-import { HttpTypes } from "@medusajs/types"
-import { toast } from "@medusajs/ui"
+import type { HttpTypes } from '@medusajs/types'
+import { toast } from '@medusajs/ui'
+import Input from '@modules/common/components/input'
+import React from 'react'
+import AccountInfo from '../account-info'
 
 type MyInformationProps = {
   customer: HttpTypes.StoreCustomer
@@ -15,7 +15,7 @@ const ProfilePassword: React.FC<MyInformationProps> = ({ customer }) => {
 
   // TODO: Add support for password updates
   const updatePassword = async () => {
-    toast.info("Password update is not implemented")
+    toast.info('Password update is not implemented')
   }
 
   const clearState = () => {

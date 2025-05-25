@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { loadStripe } from "@stripe/stripe-js"
-import React from "react"
-import StripeWrapper from "./stripe-wrapper"
-import { HttpTypes } from "@medusajs/types"
-import { isStripe } from "@lib/constants"
+import { isStripe } from '@lib/constants'
+import type { HttpTypes } from '@medusajs/types'
+import { loadStripe } from '@stripe/stripe-js'
+import type React from 'react'
+import StripeWrapper from './stripe-wrapper'
 
 type PaymentWrapperProps = {
   cart: HttpTypes.StoreCart
@@ -16,7 +16,7 @@ const stripePromise = stripeKey ? loadStripe(stripeKey) : null
 
 const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ cart, children }) => {
   const paymentSession = cart.payment_collection?.payment_sessions?.find(
-    (s) => s.status === "pending"
+    (s) => s.status === 'pending'
   )
 
   if (

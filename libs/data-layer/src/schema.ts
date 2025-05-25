@@ -1,14 +1,14 @@
 import {
+  index,
+  integer,
+  numeric,
   pgTable,
   serial,
   text,
-  integer,
-  varchar,
-  numeric,
   timestamp,
   uniqueIndex,
-  index,
-} from 'drizzle-orm/pg-core';
+  varchar,
+} from 'drizzle-orm/pg-core'
 
 export const users = pgTable(
   'users',
@@ -19,14 +19,14 @@ export const users = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
-  (table) => [uniqueIndex('users_username_unique').on(table.username)],
-);
+  (table) => [uniqueIndex('users_username_unique').on(table.username)]
+)
 
 export const collections = pgTable('collections', {
   id: serial().primaryKey().notNull(),
   name: text().notNull(),
   slug: text().notNull(),
-});
+})
 
 export const categories = pgTable(
   'categories',
@@ -38,8 +38,8 @@ export const categories = pgTable(
       .references(() => collections.id),
     imageUrl: text('image_url'),
   },
-  (table) => [index('categories_collection_id_idx').on(table.collectionId)],
-);
+  (table) => [index('categories_collection_id_idx').on(table.collectionId)]
+)
 
 export const subcollections = pgTable(
   'subcollections',
@@ -50,8 +50,8 @@ export const subcollections = pgTable(
       .notNull()
       .references(() => categories.slug),
   },
-  (table) => [index('subcollections_category_slug_idx').on(table.categorySlug)],
-);
+  (table) => [index('subcollections_category_slug_idx').on(table.categorySlug)]
+)
 
 export const subcategories = pgTable(
   'subcategories',
@@ -65,8 +65,8 @@ export const subcategories = pgTable(
   },
   (table) => [
     index('subcategories_subcollection_id_idx').on(table.subcollectionId),
-  ],
-);
+  ]
+)
 
 export const products = pgTable(
   'products',
@@ -80,5 +80,5 @@ export const products = pgTable(
       .references(() => subcategories.slug),
     imageUrl: text('image_url'),
   },
-  () => [],
-);
+  () => []
+)

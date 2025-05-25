@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import repeat from "@lib/util/repeat"
-import { HttpTypes } from "@medusajs/types"
-import { Table, clx } from "@medusajs/ui"
+import repeat from '@lib/util/repeat'
+import type { HttpTypes } from '@medusajs/types'
+import { Table, clx } from '@medusajs/ui'
 
-import Item from "@modules/cart/components/item"
-import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
+import Item from '@modules/cart/components/item'
+import SkeletonLineItem from '@modules/skeletons/components/skeleton-line-item'
 
 type ItemsTemplateProps = {
   cart: HttpTypes.StoreCart
@@ -18,7 +18,7 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
   return (
     <div
       className={clx({
-        "pl-[1px] overflow-y-scroll overflow-x-hidden no-scrollbar max-h-[420px]":
+        'no-scrollbar max-h-[420px] overflow-x-hidden overflow-y-scroll pl-[1px]':
           hasOverflow,
       })}
     >
@@ -27,7 +27,7 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
           {items
             ? items
                 .sort((a, b) => {
-                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                  return (a.created_at ?? '') > (b.created_at ?? '') ? -1 : 1
                 })
                 .map((item) => {
                   return (

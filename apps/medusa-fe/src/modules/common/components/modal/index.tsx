@@ -1,14 +1,15 @@
-import { Dialog, Transition } from "@headlessui/react"
-import { clx } from "@medusajs/ui"
-import React, { Fragment } from "react"
+import { Dialog, Transition } from '@headlessui/react'
+import { clx } from '@medusajs/ui'
+import type React from 'react'
+import { Fragment } from 'react'
 
-import { ModalProvider, useModal } from "@lib/context/modal-context"
-import X from "@modules/common/icons/x"
+import { ModalProvider, useModal } from '@lib/context/modal-context'
+import X from '@modules/common/icons/x'
 
 type ModalProps = {
   isOpen: boolean
   close: () => void
-  size?: "small" | "medium" | "large"
+  size?: 'small' | 'medium' | 'large'
   search?: boolean
   children: React.ReactNode
   'data-testid'?: string
@@ -17,10 +18,10 @@ type ModalProps = {
 const Modal = ({
   isOpen,
   close,
-  size = "medium",
+  size = 'medium',
   search = false,
   children,
-  'data-testid': dataTestId
+  'data-testid': dataTestId,
 }: ModalProps) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -34,16 +35,16 @@ const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-opacity-75 backdrop-blur-md  h-screen" />
+          <div className="fixed inset-0 h-screen bg-opacity-75 backdrop-blur-md" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-hidden">
           <div
             className={clx(
-              "flex min-h-full h-full justify-center p-4 text-center",
+              'flex h-full min-h-full justify-center p-4 text-center',
               {
-                "items-center": !search,
-                "items-start": search,
+                'items-center': !search,
+                'items-start': search,
               }
             )}
           >
@@ -59,13 +60,13 @@ const Modal = ({
               <Dialog.Panel
                 data-testid={dataTestId}
                 className={clx(
-                  "flex flex-col justify-start w-full transform p-5 text-left align-middle transition-all max-h-[75vh] h-fit",
+                  'flex h-fit max-h-[75vh] w-full transform flex-col justify-start p-5 text-left align-middle transition-all',
                   {
-                    "max-w-md": size === "small",
-                    "max-w-xl": size === "medium",
-                    "max-w-3xl": size === "large",
-                    "bg-transparent shadow-none": search,
-                    "bg-white shadow-xl border rounded-rounded": !search,
+                    'max-w-md': size === 'small',
+                    'max-w-xl': size === 'medium',
+                    'max-w-3xl': size === 'large',
+                    'bg-transparent shadow-none': search,
+                    'rounded-rounded border bg-white shadow-xl': !search,
                   }
                 )}
               >
@@ -96,7 +97,7 @@ const Title: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const Description: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <Dialog.Description className="flex text-small-regular text-ui-fg-base items-center justify-center pt-2 pb-4 h-full">
+    <Dialog.Description className="flex h-full items-center justify-center pt-2 pb-4 text-small-regular text-ui-fg-base">
       {children}
     </Dialog.Description>
   )

@@ -1,13 +1,13 @@
-import { notFound } from "next/navigation"
-import { Suspense } from "react"
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
-import InteractiveLink from "@modules/common/components/interactive-link"
-import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import RefinementList from "@modules/store/components/refinement-list"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import PaginatedProducts from "@modules/store/templates/paginated-products"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import InteractiveLink from '@modules/common/components/interactive-link'
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
+import SkeletonProductGrid from '@modules/skeletons/templates/skeleton-product-grid'
+import RefinementList from '@modules/store/components/refinement-list'
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
+import PaginatedProducts from '@modules/store/templates/paginated-products'
 
 export default function CategoryTemplate({
   category,
@@ -20,8 +20,8 @@ export default function CategoryTemplate({
   page?: string
   countryCode: string
 }) {
-  const pageNumber = page ? parseInt(page) : 1
-  const sort = sortBy || "created_at"
+  const pageNumber = page ? Number.parseInt(page) : 1
+  const sort = sortBy || 'created_at'
 
   if (!category || !countryCode) notFound()
 
@@ -38,12 +38,12 @@ export default function CategoryTemplate({
 
   return (
     <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
+      className="flex flex-col py-6 content-container small:flex-row small:items-start"
       data-testid="category-container"
     >
       <RefinementList sortBy={sort} data-testid="sort-by-container" />
       <div className="w-full">
-        <div className="flex flex-row mb-8 text-2xl-semi gap-4">
+        <div className="mb-8 flex flex-row gap-4 text-2xl-semi">
           {parents &&
             parents.map((parent) => (
               <span key={parent.id} className="text-ui-fg-subtle">
