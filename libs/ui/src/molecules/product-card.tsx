@@ -1,9 +1,12 @@
-import { useId, type HTMLAttributes } from "react";
-import { Button } from "../atoms/button.tsx";
-import { Badge, type BadgeProps } from "../atoms/badge.tsx";
-import { slugify, tv } from "../utils.ts";
-import type { VariantProps } from "tailwind-variants";
-import { Rating, type RatingProps } from "../atoms/rating.tsx";
+import { useId, useId, useId, useId } from 'react'
+import type tyVariantPropsariantProtailwind
+;-variants - variants - variants - variants
+";
+import { Badge, type BadgeProps } from '../atoms/badge.tsx'
+import { Buttonmsatomsatomsatoms/button.tsxtsxtsxtsx";
+import
+{ Rating, { RatRatingPropsngPropsng../atoms/rating.tsxating.tsxating.tsxating.tsx";
+import { slugifyyytvutils.ts
 import { NumericInput } from "./numeric-input.tsx";
 
 //object-cover aspect-product-card-image

@@ -1,30 +1,30 @@
-import { type LabelHTMLAttributes } from "react";
-import { type VariantProps } from "tailwind-variants";
-import { tv } from "../utils";
+import type { LabelHTMLAttributes } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
 
 const labelVariants = tv({
-  base: ["block", "text-label-text", "font-label"],
+  base: ['block', 'text-label-text', 'font-label'],
   variants: {
     size: {
-      sm: "text-label-sm",
-      md: "text-label-md",
-      lg: "text-label-lg",
+      sm: 'text-label-sm',
+      md: 'text-label-md',
+      lg: 'text-label-lg',
     },
     disabled: {
-      true: "text-label-disabled",
+      true: 'text-label-disabled',
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
     disabled: false,
   },
-});
+})
 
 export interface LabelProps
   extends LabelHTMLAttributes<HTMLLabelElement>,
     VariantProps<typeof labelVariants> {
-  required?: boolean;
-  children: React.ReactNode;
+  required?: boolean
+  children: React.ReactNode
 }
 
 export function Label({
@@ -43,7 +43,7 @@ export function Label({
       {...props}
     >
       {children}
-      {required && <span className="text-label-required ml-label">*</span>}
+      {required && <span className="ml-label text-label-required">*</span>}
     </label>
-  );
+  )
 }
