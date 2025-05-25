@@ -1,37 +1,37 @@
-import type { HTMLAttributes, Ref } from "react";
-import type { VariantProps } from "tailwind-variants";
-import { tv } from "../utils";
-import { button } from "./button";
-import { Icon, type IconType } from "./icon";
+import type { HTMLAttributes, ReactNode, Ref } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
+import { buttonVariants } from './button'
+import { Icon, type IconType } from './icon'
 
 const linkButton = tv({
-  extend: button,
-  base: "cursor-pointer",
+  extend: buttonVariants(),
+  base: 'cursor-pointer',
   variants: {
     size: {
-      current: "text-current",
+      current: 'text-current',
     },
   },
-});
+})
 
 export interface LinkButtonProps
   extends HTMLAttributes<HTMLAnchorElement>,
     VariantProps<typeof linkButton> {
-  href?: string;
-  icon?: IconType;
-  iconPosition?: "left" | "right";
-  children?: React.ReactNode;
-  size?: "sm" | "md" | "lg" | "current";
-  disabled?: boolean;
-  ref?: Ref<HTMLAnchorElement>;
+  href?: string
+  icon?: IconType
+  iconPosition?: 'left' | 'right'
+  children?: ReactNode
+  size?: 'current'
+  disabled?: boolean
+  ref?: Ref<HTMLAnchorElement>
 }
 
 export function LinkButton({
   href,
   icon,
-  iconPosition = "left",
+  iconPosition = 'left',
   children,
-  size = "current",
+  size = 'current',
   disabled,
   ref,
   ...props
@@ -46,14 +46,14 @@ export function LinkButton({
       data-disabled={disabled || undefined}
       onClick={(e) => {
         if (disabled) {
-          e.preventDefault();
+          e.preventDefault()
         }
       }}
       {...props}
     >
-      {icon && iconPosition === "left" && <Icon icon={icon} size={size} />}
+      {icon && iconPosition === 'left' && <Icon icon={icon} size={size} />}
       {children}
-      {icon && iconPosition === "right" && <Icon icon={icon} size={size} />}
+      {icon && iconPosition === 'right' && <Icon icon={icon} size={size} />}
     </a>
-  );
+  )
 }

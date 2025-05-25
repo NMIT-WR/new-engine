@@ -1,6 +1,6 @@
 import * as ratingGroup from '@zag-js/rating-group'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { useId } from 'react'
+import { type HTMLAttributes, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 import { Label } from './label'
@@ -53,7 +53,7 @@ const rating = tv({
 })
 
 export interface RatingProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>,
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>,
     VariantProps<typeof rating> {
   value?: number
   defaultValue?: number

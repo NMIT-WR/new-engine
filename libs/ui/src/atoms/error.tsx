@@ -1,3 +1,4 @@
+import type { HTMLAttributes, ReactNode, Ref } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 import { Icon } from './icon'
@@ -17,13 +18,14 @@ const errorVariants = tv({
 })
 
 export interface ErrorProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof errorVariants> {
-  ref?: React.Ref<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
   showIcon?: boolean
-  children: React.ReactNode
+  children: ReactNode
 }
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 function Error({
   className,
   showIcon,
