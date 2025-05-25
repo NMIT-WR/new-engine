@@ -1,41 +1,41 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { SearchForm } from "../../src/molecules/search-form";
-import { VariantGroup, VariantContainer } from "../../.storybook/decorator";
+import type { Meta, StoryObj } from '@storybook/react'
+import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { SearchForm } from '../../src/molecules/search-form'
 
 const meta: Meta<typeof SearchForm> = {
-  title: "Molecules/SearchForm",
+  title: 'Molecules/SearchForm',
   component: SearchForm,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Controls the size of the search form elements",
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Controls the size of the search form elements',
     },
     buttonText: {
-      control: "text",
-      description: "Text displayed on the search button",
+      control: 'text',
+      description: 'Text displayed on the search button',
     },
     label: {
-      control: "text",
-      description: "Label text for the search form",
+      control: 'text',
+      description: 'Label text for the search form',
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof SearchForm>;
+export default meta
+type Story = StoryObj<typeof SearchForm>
 
 // Basic search form variations
 export const Default: Story = {
   args: {
-    placeholder: "Search products, articles ...",
-    buttonText: "Search",
+    placeholder: 'Search products, articles ...',
+    buttonText: 'Search',
   },
-};
+}
 
 // Size and layout variants showcase
 export const Variants: Story = {
@@ -59,12 +59,12 @@ export const Variants: Story = {
         <SearchForm
           placeholder="Search products..."
           buttonIcon={true}
-          buttonProps={{ theme: "borderless" }}
+          buttonProps={{ theme: 'borderless' }}
         />
         <SearchForm
           placeholder="Search products... "
           buttonText="Search"
-          buttonProps={{ theme: "solid" }}
+          buttonProps={{ theme: 'solid' }}
         />
       </VariantGroup>
       <VariantGroup title="Without button" fullWidth>
@@ -72,4 +72,4 @@ export const Variants: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
-};
+}

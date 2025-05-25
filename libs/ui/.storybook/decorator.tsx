@@ -26,9 +26,5 @@ export function VariantGroup({
 }
 
 export function VariantContainer({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex flex-col items-center space-y-8">
-      {children}
-    </div>
-  )
+  return <div className="flex flex-col items-center space-y-8">{children}</div>
 }
