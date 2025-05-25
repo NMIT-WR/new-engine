@@ -1,6 +1,6 @@
-import { declineTransferRequest } from "@lib/data/orders"
-import { Heading, Text } from "@medusajs/ui"
-import TransferImage from "@modules/order/components/transfer-image"
+import { declineTransferRequest } from '@lib/data/orders'
+import { Heading, Text } from '@medusajs/ui'
+import TransferImage from '@modules/order/components/transfer-image'
 
 export default async function TransferPage({
   params,
@@ -12,7 +12,7 @@ export default async function TransferPage({
   const { success, error } = await declineTransferRequest(id, token)
 
   return (
-    <div className="flex flex-col gap-y-4 items-start w-2/5 mx-auto mt-10 mb-20">
+    <div className="mx-auto mt-10 mb-20 flex w-2/5 flex-col items-start gap-y-4">
       <TransferImage />
       <div className="flex flex-col gap-y-6">
         {success && (

@@ -6,7 +6,7 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "lib": ["DOM"],
-    "jsx": "react-jsx",
+    "jsx": "react-jsx"
   },
   "include": ["src"]
 }
