@@ -1,4 +1,4 @@
-@import "../_semantic.css";
+@import "../../_semantic.css";
 
 :root {
   --opacity-borderless-hover: 8%;

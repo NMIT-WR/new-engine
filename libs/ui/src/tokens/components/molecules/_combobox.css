@@ -1,0 +1,86 @@
+@theme static {
+  /* ===== CONTROL (Input Container) ===== */
+  --color-combobox: var(--color-fill-base);
+  --color-combobox-border: var(--color-stroke-primary);
+  --color-combobox-hover: oklch(
+    from var(--color-combobox) calc(l + var(--state-hover)) c h
+  );
+  --color-combobox-focus: oklch(
+    from var(--color-combobox) calc(l + var(--state-active)) c h
+  );
+  --color-combobox-border-hover: oklch(
+    from var(--color-combobox-border) calc(l + var(--state-hover)) c h
+  );
+  --color-combobox-border-focus: var(--color-primary);
+  --radius-combobox: var(--radius-sm);
+  --border-width-combobox: var(--border-width-input);
+
+  /* Disabled states */
+  --color-combobox-disabled: var(--color-disabled-bg);
+  --color-combobox-fg-disabled: var(--color-disabled-text);
+  --color-combobox-border-disabled: var(--color-disabled-border);
+
+  /* Validation states */
+  --color-combobox-danger: var(--color-danger);
+  --color-combobox-success: var(--color-success);
+  --color-combobox-warning: var(--color-warning);
+
+  /* Focus rings */
+  --color-combobox-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-combobox-ring-danger: --alpha(
+    var(--color-combobox-danger) /
+    var(--opacity-ring)
+  );
+  --color-combobox-ring-success: --alpha(
+    var(--color-combobox-success) /
+    var(--opacity-ring)
+  );
+  --color-combobox-ring-warning: --alpha(
+    var(--color-combobox-warning) /
+    var(--opacity-ring)
+  );
+
+  /* ===== INPUT SLOT ===== */
+  --color-combobox-fg: var(--color-fg-primary);
+  --color-combobox-placeholder: --alpha(
+    var(--color-fg-primary) /
+    var(--opacity-placeholder)
+  );
+  --color-combobox-input-bg: transparent;
+  --color-combobox-input-bg-hover: var(--color-combobox-input-bg);
+  --color-combobox-input-bg-focused: var(--color-combobox-input-bg);
+
+  /* ===== TRIGGER BUTTONS (chevron & clear) ===== */
+  --color-combobox-trigger: var(--color-combobox-item-fg);
+  --color-combobox-trigger-hover: oklch(
+    from var(--color-combobox-trigger) min(l - 0.4, 1) c h
+  );
+  --text-combobox-trigger-size: var(--text-lg);
+  --spacing-combobox-trigger: var(--spacing-xs);
+  --spacing-combobox-trigger-right: var(--spacing-lg);
+  --color-combobox-trigger-bg: transparent;
+  --color-combobox-trigger-bg-hover: var(--color-combobox-trigger-bg);
+  --color-combobox-trigger-bg-active: var(--color-combobox-trigger-bg);
+
+  /* ===== DROPDOWN CONTENT SLOT ===== */
+  --color-combobox-content-bg: var(--color-surface);
+
+  /* ===== DROPDOWN ITEM SLOT ===== */
+  --color-combobox-item-fg: var(--color-fg-primary);
+  --color-combobox-item-selected: var(--color-highlight);
+  --color-combobox-item-hover: var(--color-combobox-item-selected);
+  --spacing-combobox-item: var(--spacing-3xs);
+  --spacing-combobox-item-lg: var(--spacing-2xs);
+
+  /* Spacing */
+  --spacing-combobox-root: var(--spacing-3xs);
+}
+
+/* Semantic tokens for combobox icons */
+@utility token-icon-combobox-chevron {
+  @apply icon-[mdi--chevron-down];
+}
+
+@utility token-icon-combobox-clear {
+  @apply icon-[mdi--close];
+}
