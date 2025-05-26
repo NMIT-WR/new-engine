@@ -7,6 +7,7 @@
 @import "./atoms/_textarea.css";
 @import "./atoms/_tooltip.css";
 
+@import "./molecules/_accordion.css";
 @import "./molecules/_breadcrumb.css";
 @import "./molecules/_carousel.css";
 @import "./molecules/_dialog.css";

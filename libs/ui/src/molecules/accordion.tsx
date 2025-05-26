@@ -94,10 +94,10 @@ export function Accordion({
     <div className={root()} {...api.getRootProps()}>
       {items.map((accordionItem) => (
         <div
+          key={accordionItem.id}
           {...api.getItemProps({
             value: accordionItem.value,
           })}
-          key={accordionItem.id}
           className={item()}
         >
           <header>
