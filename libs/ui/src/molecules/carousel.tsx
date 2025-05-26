@@ -2,9 +2,18 @@ import * as carousel from "@zag-js/carousel";
 import { useMachine, normalizeProps } from "@zag-js/react";
 import { useId, type ReactNode, type ElementType } from "react";
 import { tv, type VariantProps } from "tailwind-variants";
-//import { Icon, type IconType } from "../atoms/icon";
 import { Button } from "../atoms/button";
 import { Image } from "../atoms/image";
+
+type CarouselImageComponent<T extends ElementType = typeof Image> = T extends typeof Image
+  ? typeof Image
+  : T extends ElementType
+    ? 'src' extends keyof React.ComponentPropsWithoutRef<T>
+      ? 'alt' extends keyof React.ComponentPropsWithoutRef<T>
+        ? T
+        : never
+      : never
+    : never;
 
 const carouselVariants = tv({
   slots: {
@@ -136,18 +145,18 @@ export type CarouselSlide = {
   imageProps?: Record<string, any>;
 };
 
-interface CarouselProps
+interface CarouselProps<T extends ElementType = typeof Image>
   extends VariantProps<typeof carouselVariants>,
     Omit<carousel.Props, "id" | "size"> {
   id?: string;
   slides: CarouselSlide[];
   className?: string;
-  as?: ElementType;
+  imageAs?: CarouselImageComponent<T>;
   autoplayTrigger?: boolean;
   showControl?: boolean;
 }
 
-export function Carousel({
+export function Carousel<T extends ElementType = typeof Image>({
   /* Data */
   slides,
   id,
@@ -173,10 +182,10 @@ export function Carousel({
   autoplayTrigger = false,
   showControl = true,
   className,
-  as,
+  imageAs,
   onPageChange,
   ...props
-}: CarouselProps) {
+}: CarouselProps<T>) {
   const service = useMachine(carousel.machine as any, {
     id: useId(),
     slideCount,
@@ -203,9 +212,10 @@ export function Carousel({
     indicator,
     prevTrigger,
     nextTrigger,
-    // autoplayIcon,
     autoplayTrigger: autoplayTriggerSlot,
   } = carouselVariants({ size, objectFit, aspectRatio });
+
+  const ImageComponent = (imageAs || Image) as any;
 
   return (
     <div className={wrapper()}>
@@ -226,8 +236,8 @@ export function Carousel({
               {...api.getItemProps({ index })}
             >
               {slide.content || (
-                <Image
-                  as={as}
+                <ImageComponent
+                  as={imageAs === Image ? undefined : imageAs}
                   src={slide.src || ""}
                   alt={slide.alt || ""}
                   {...slide.imageProps}

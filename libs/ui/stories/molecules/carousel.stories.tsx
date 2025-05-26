@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Carousel, type CarouselSlide } from "../../src/molecules/carousel";
-import React, { useState } from "react";
+import { useState } from "react";
 
 // Sample images using src approach (simpler)
 const sampleImages: CarouselSlide[] = [
