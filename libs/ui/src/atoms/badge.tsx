@@ -74,7 +74,8 @@ export function Badge({
 }: BadgeProps) {
   const isDynamic = variant === 'dynamic'
 
-  const { bgColor, fgColor, borderColor } = props as Partial<DynamicBadgeProps>
+  const { bgColor, fgColor, borderColor, ...restProps } =
+    props as Partial<DynamicBadgeProps>
 
   const dynamicStyles = isDynamic
     ? {
@@ -89,7 +90,7 @@ export function Badge({
     <span
       className={badgeVariants({ variant, className })}
       style={dynamicStyles}
-      {...props}
+      {...restProps}
     >
       {children}
     </span>
