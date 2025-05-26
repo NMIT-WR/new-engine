@@ -35,12 +35,13 @@ export interface IconProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof iconVariants> {
   icon: IconType
+  className?: string
 }
 
-export function Icon({ icon, size, color, ...props }: IconProps) {
+export function Icon({ icon, size, color, className, ...props }: IconProps) {
   return (
     <span
-      className={iconVariants({ size, color, className: icon })}
+      className={`${iconVariants({ size, color, className })} ${icon}`}
       aria-hidden="true"
       {...props}
     />
