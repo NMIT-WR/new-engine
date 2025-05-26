@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { FormInput } from '../../src/molecules/form-input'
-import { FormCheckbox } from '../../src/molecules/form-checkbox'
-import { Select } from '../../src/molecules/select'
-import { Combobox } from '../../src/molecules/combobox'
-import { NumericInput } from '../../src/molecules/numeric-input'
-import { Textarea } from '../../src/atoms/textarea'
-import { Switch } from '../../src/atoms/switch'
-import { RangeSlider } from '../../src/atoms/range-slider'
-import { Label } from '../../src/atoms/label'
 import { Error } from '../../src/atoms/error'
 import { ExtraText } from '../../src/atoms/extra-text'
+import { Label } from '../../src/atoms/label'
+import { RangeSlider } from '../../src/atoms/range-slider'
+import { Textarea } from '../../src/atoms/textarea'
+import { Combobox } from '../../src/molecules/combobox'
+import { FormCheckbox } from '../../src/molecules/form-checkbox'
+import { FormInput } from '../../src/molecules/form-input'
+import { NumericInput } from '../../src/molecules/numeric-input'
+import { Select } from '../../src/molecules/select'
+import { Switch } from '../../src/molecules/switch'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',
@@ -71,21 +71,24 @@ export const AllFormInputs: Story = {
       range: [25],
     })
 
-    const helpText = validateStatus === 'error'
-      ? 'This field has an error'
-      : validateStatus === 'success'
-      ? 'This field is valid'
-      : validateStatus === 'warning'
-      ? 'This field has a warning'
-      : 'Helper text for this field'
+    const helpText =
+      validateStatus === 'error'
+        ? 'This field has an error'
+        : validateStatus === 'success'
+          ? 'This field is valid'
+          : validateStatus === 'warning'
+            ? 'This field has a warning'
+            : 'Helper text for this field'
 
     return (
       <div className="w-full space-y-6 p-6">
-        <h2 className="text-2xl font-bold mb-8">Comprehensive Form - Size: {size}</h2>
+        <h2 className="mb-8 font-bold text-2xl">
+          Comprehensive Form - Size: {size}
+        </h2>
 
         <VariantContainer>
           <VariantGroup title="Text Inputs" fullWidth>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <FormInput
                 id="text-input"
                 label="Text Input"
@@ -94,7 +97,12 @@ export const AllFormInputs: Story = {
                 validateStatus={validateStatus}
                 helpText={helpText}
                 value={formData.textInput}
-                onChange={(e) => setFormData(prev => ({ ...prev, textInput: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    textInput: e.target.value,
+                  }))
+                }
               />
 
               <FormInput
@@ -106,7 +114,9 @@ export const AllFormInputs: Story = {
                 validateStatus={validateStatus}
                 helpText={helpText}
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
               />
 
               <FormInput
@@ -118,18 +128,29 @@ export const AllFormInputs: Story = {
                 validateStatus={validateStatus}
                 helpText={helpText}
                 value={formData.password}
-                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, password: e.target.value }))
+                }
               />
 
               <div className="flex flex-col gap-1">
-                <Label htmlFor="textarea" size={size}>Textarea</Label>
+                <Label htmlFor="textarea" size={size}>
+                  Textarea
+                </Label>
                 <Textarea
                   id="textarea"
                   placeholder="Enter long text"
                   size={size}
-                  variant={validateStatus === 'default' ? 'default' : validateStatus}
+                  variant={
+                    validateStatus === 'default' ? 'default' : validateStatus
+                  }
                   value={formData.textarea}
-                  onChange={(e) => setFormData(prev => ({ ...prev, textarea: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      textarea: e.target.value,
+                    }))
+                  }
                 />
                 {validateStatus === 'error' ? (
                   <Error size={size}>{helpText}</Error>
@@ -141,7 +162,7 @@ export const AllFormInputs: Story = {
           </VariantGroup>
 
           <VariantGroup title="Selection Inputs" fullWidth>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1">
                 <Label size={size}>Select</Label>
                 <Select
@@ -161,7 +182,7 @@ export const AllFormInputs: Story = {
                 <Combobox
                   placeholder="Search and select"
                   size={size}
-									items={comboboxOptions}
+                  items={comboboxOptions}
                 />
                 {validateStatus === 'error' ? (
                   <Error size={size}>{helpText}</Error>
@@ -173,13 +194,10 @@ export const AllFormInputs: Story = {
           </VariantGroup>
 
           <VariantGroup title="Numeric & Boolean Inputs" fullWidth>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1">
                 <Label size={size}>Numeric Input</Label>
-                <NumericInput
-                  placeholder="Enter number"
-                  size={size}
-                />
+                <NumericInput placeholder="Enter number" size={size} />
                 {validateStatus === 'error' ? (
                   <Error size={size}>{helpText}</Error>
                 ) : (
@@ -200,7 +218,9 @@ export const AllFormInputs: Story = {
                 <div className="flex flex-col gap-1">
                   <Switch
                     checked={formData.switch}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, switch: checked }))}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, switch: checked }))
+                    }
                   >
                     Switch Option
                   </Switch>

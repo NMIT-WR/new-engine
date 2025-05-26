@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Switch } from '../../src/atoms/switch'
+import { Switch } from '../../src/molecules/switch'
 
 const meta: Meta<typeof Switch> = {
-  title: 'Atoms/Switch',
+  title: 'Molecules/Switch',
   component: Switch,
   parameters: {
     layout: 'centered',

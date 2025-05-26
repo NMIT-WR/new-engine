@@ -1,4 +1,4 @@
-import type { LabelHTMLAttributes } from 'react'
+import type { LabelHTMLAttributes, ReactNode } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 
@@ -24,7 +24,8 @@ export interface LabelProps
   extends LabelHTMLAttributes<HTMLLabelElement>,
     VariantProps<typeof labelVariants> {
   required?: boolean
-  children: React.ReactNode
+  children: ReactNode
+  className?: string
 }
 
 export function Label({
@@ -32,6 +33,7 @@ export function Label({
   disabled,
   required,
   children,
+  className,
   ...props
 }: LabelProps) {
   return (
@@ -39,7 +41,9 @@ export function Label({
       className={labelVariants({
         size,
         disabled,
+        className,
       })}
+      htmlFor={props.htmlFor}
       {...props}
     >
       {children}

@@ -1,6 +1,7 @@
 import * as checkbox from '@zag-js/checkbox'
 import { normalizeProps, useMachine } from '@zag-js/react'
 import { type InputHTMLAttributes, type Ref, useId } from 'react'
+import { Label } from '../atoms/label'
 import { tv } from '../utils'
 
 const checkboxVariants = tv({
@@ -15,11 +16,11 @@ const checkboxVariants = tv({
     'data-[disabled]:opacity-checkbox-disabled data-[disabled]:cursor-not-allowed data-[disabled]:grayscale',
     'transition-all duration-200',
     'data-[focus]:outline-none data-[focus]:ring-2 data-[focus]:ring-checkbox-ring data-[focus]:ring-offset-checkbox-offset data-[focus]:ring-offset-2',
-    'data-[invalid=true]:ring-checkbox-error ',
-    'data-[invalid=true]:border-checkbox-border-error',
+    'data-[invalid]:ring-checkbox-error ',
+    'data-[invalid]:border-checkbox-border-error',
     'data-[state=indeterminate]:bg-checkbox-indeterminate',
     'data-[state=indeterminate]:after:w-indeterminate data-[state=indeterminate]:after:h-indeterminate',
-    'data-[state=indeterminate]:after:bg-icon-text ',
+    'data-[state=indeterminate]:after:bg-icon-text',
   ],
 })
 
@@ -64,15 +65,16 @@ export function Checkbox({
   const api = checkbox.connect(service, normalizeProps)
 
   return (
-    <label {...api.getRootProps()}>
+    <Label {...api.getRootProps()}>
       <div
         {...api.getControlProps()}
         className={checkboxVariants({
           className,
         })}
+        data-invalid={invalid}
       />
       <input {...api.getHiddenInputProps()} />
-    </label>
+    </Label>
   )
 }
 

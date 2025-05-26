@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { Checkbox, type CheckboxProps } from '../atoms/checkbox'
 import { Error } from '../atoms/error'
 import { ExtraText } from '../atoms/extra-text'
 import { Label } from '../atoms/label'
+import { Checkbox, type CheckboxProps } from './checkbox'
 
 type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
 
