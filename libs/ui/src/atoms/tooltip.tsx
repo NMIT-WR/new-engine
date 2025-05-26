@@ -1,6 +1,6 @@
 import { Portal, normalizeProps, useMachine } from '@zag-js/react'
 import * as tooltip from '@zag-js/tooltip'
-import { type ReactNode, useId } from 'react'
+import { type ReactNode, type Ref, useId } from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
 
 const tooltipVariants = tv({
@@ -36,7 +36,7 @@ export interface TooltipProps
   extends VariantProps<typeof tooltipVariants>,
     Partial<tooltip.Props>,
     Partial<tooltip.PositioningOptions> {
-  ref?: React.RefObject<HTMLSpanElement>
+  ref?: Ref<HTMLSpanElement>
   content: ReactNode
   children: ReactNode
   className?: string

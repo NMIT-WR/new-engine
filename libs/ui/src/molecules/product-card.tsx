@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { type HTMLAttributes, useId } from 'react'
 import { Badge, type BadgeProps } from '../atoms/badge.tsx'
 import { Button } from '../atoms/button.tsx'
+import { Image } from '../atoms/image.tsx'
 import { slugify } from '../utils.ts'
 
 export interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -47,7 +48,7 @@ export function ProductCard({
         {name}
       </h3>
 
-      <img
+      <Image
         src={imageUrl}
         alt={name}
         className={clsx('w-full object-cover', 'aspect-product-card-image')}

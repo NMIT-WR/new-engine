@@ -1,4 +1,4 @@
-import { type ReactNode, useId } from 'react'
+import { type FormHTMLAttributes, type ReactNode, type Ref, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button, type ButtonProps } from '../atoms/button'
 import { Icon } from '../atoms/icon'
@@ -49,14 +49,14 @@ const buttonVariants = tv({
 
 export interface SearchFormProps
   extends VariantProps<typeof formVariants>,
-    Omit<React.FormHTMLAttributes<HTMLFormElement>, 'size'> {
+    Omit<FormHTMLAttributes<HTMLFormElement>, 'size'> {
   inputProps?: Omit<InputProps, 'size'>
   buttonProps?: Omit<ButtonProps, 'size'>
   label?: ReactNode
   buttonText?: ReactNode
   buttonIcon?: boolean
   placeholder?: string
-  ref?: React.Ref<HTMLFormElement>
+  ref?: Ref<HTMLFormElement>
   searchId?: string
 }
 

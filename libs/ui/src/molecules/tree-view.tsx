@@ -15,7 +15,7 @@ export interface TreeNode {
   }
   disabled?: boolean
   selected?: boolean
-  [key: string]: any
+  [key: string]: unknown
 }
 
 // === COMPONENT VARIANTS ===

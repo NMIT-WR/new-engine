@@ -1,6 +1,6 @@
 import * as numberInput from '@zag-js/number-input'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { useId } from 'react'
+import { type InputHTMLAttributes, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { Input } from '../atoms/input'
@@ -65,7 +65,7 @@ const numericInput = tv({
 
 export interface NumericInputProps
   extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
+    InputHTMLAttributes<HTMLInputElement>,
     'size' | 'value' | 'defaultValue' | 'onChange' | 'type'
   > {
   size?: VariantProps<typeof numericInput>['size']
