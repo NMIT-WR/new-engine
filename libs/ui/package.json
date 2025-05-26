@@ -13,9 +13,6 @@
   "files": [
     "dist"
   ],
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
