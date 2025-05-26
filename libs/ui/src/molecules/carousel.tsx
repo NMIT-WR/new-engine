@@ -186,7 +186,7 @@ export function Carousel<T extends ElementType = typeof Image>({
   onPageChange,
   ...props
 }: CarouselProps<T>) {
-  const service = useMachine(carousel.machine as any, {
+  const service = useMachine(carousel.machine, {
     id: useId(),
     slideCount,
     autoplay,
@@ -200,7 +200,7 @@ export function Carousel<T extends ElementType = typeof Image>({
     onPageChange,
   });
 
-  const api = carousel.connect(service as carousel.Service, normalizeProps);
+  const api = carousel.connect(service, normalizeProps);
 
   const {
     wrapper,

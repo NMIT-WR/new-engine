@@ -10,9 +10,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
@@ -20,16 +18,23 @@
     "storybook": "storybook dev"
   },
   "dependencies": {
+    "@zag-js/accordion": "^1.12.4",
     "@zag-js/carousel": "^1.12.4",
     "@zag-js/checkbox": "^1.12.4",
-    "@zag-js/dialog": "^1.12.3",
-    "@zag-js/number-input": "^1.12.2",
+    "@zag-js/tabs": "^1.12.4",
+    "@zag-js/switch": "^1.12.4",
+    "@zag-js/slider": "^1.12.4",
+    "@zag-js/combobox": "^1.12.4",
+    "@zag-js/dialog": "^1.12.4",
+    "@zag-js/number-input": "^1.12.4",
+    "@zag-js/rating-group": "^1.12.4",
+    "@zag-js/react": "^1.12.4",
+    "@zag-js/select": "^1.12.4",
+    "@zag-js/steps": "^1.12.4",
+    "@zag-js/toast": "^1.12.4",
+    "@zag-js/tooltip": "^1.12.4",
+    "@zag-js/tree-view": "^1.12.4",
     "@zag-js/pagination": "^1.12.4",
-    "@zag-js/rating-group": "^1.12.2",
-    "@zag-js/react": "^1.12.2",
-    "@zag-js/select": "^1.12.3",
-    "@zag-js/tooltip": "^1.12.3",
-    "@zag-js/tree-view": "^1.12.3",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
