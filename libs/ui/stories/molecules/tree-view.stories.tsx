@@ -40,7 +40,11 @@ const fileSystemData: TreeNode[] = [
     children: [
       { id: 'image1', name: 'photo.jpg', icon: 'icon-[mdi--file-image]' },
       { id: 'video1', name: 'movie.mp4', icon: 'icon-[mdi--file-video]' },
-      { id: 'archive1', name: 'backup.zip', icon: 'icon-[file-icons--progress]' },
+      {
+        id: 'archive1',
+        name: 'backup.zip',
+        icon: 'icon-[file-icons--progress]',
+      },
     ],
   },
   {
@@ -482,7 +486,12 @@ export const TypeaheadDebugDemo: Story = {
           className="rounded-lg bg-blue-50/10 p-4"
           onKeyDown={handleKeyDown}
         >
-          <TreeView id="" data={flatData} label="Typeahead Debug" typeahead={true} />
+          <TreeView
+            id=""
+            data={flatData}
+            label="Typeahead Debug"
+            typeahead={true}
+          />
         </div>
       </div>
     )

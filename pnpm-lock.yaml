@@ -481,6 +481,9 @@ importers:
       '@zag-js/dialog':
         specifier: ^1.12.4
         version: 1.12.4
+      '@zag-js/i18n-utils':
+        specifier: ^1.12.4
+        version: 1.12.4
       '@zag-js/number-input':
         specifier: ^1.12.4
         version: 1.12.4
@@ -6922,6 +6925,9 @@ packages:
 
   '@zag-js/focus-visible@1.12.4':
     resolution: {integrity: sha512-NCzeBwz2XvtTqPYaGa2G2Bjs2//o3RG6mlneOVWdj92UUrj7Ybh9LBmx6DBCFcxXSrmANDls/7EOrYuXvN/s/A==}
+
+  '@zag-js/i18n-utils@1.12.4':
+    resolution: {integrity: sha512-imTLTstPAmBvgUj+0pqjUZ0Sz9NGoVIhUpdvozvcgCMnAlTEMJlgl3BM0CzjDAT5tJM0McXPuGjgqFVX6u3WjA==}
 
   '@zag-js/interact-outside@1.12.4':
     resolution: {integrity: sha512-aHZ2p+WFKSX9w4hVMpuApcqSMo+h41iGjCoimbH2Mw2uKtLAnM5avFpPsLJaiO9AvF22BXH8F9xCnmnAGISyLQ==}
@@ -21704,6 +21710,10 @@ snapshots:
       '@zag-js/dom-query': 1.12.4
 
   '@zag-js/focus-visible@1.12.4':
+    dependencies:
+      '@zag-js/dom-query': 1.12.4
+
+  '@zag-js/i18n-utils@1.12.4':
     dependencies:
       '@zag-js/dom-query': 1.12.4
 

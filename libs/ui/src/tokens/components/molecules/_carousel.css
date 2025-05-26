@@ -22,7 +22,8 @@
 
   /* === FOCUS STATES === */
   --color-carousel-focus-ring: --alpha(
-    var(--color-primary) / var(--opacity-ring)
+    var(--color-primary) /
+    var(--opacity-ring)
   );
 
   /* === SPACING === */
