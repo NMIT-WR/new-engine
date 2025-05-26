@@ -152,19 +152,18 @@ export function Pagination({
                 </LinkButton>
               </li>
             )
-          } else {
-            return (
-              <li key={`ellipsis-${i}`} className={item()}>
-                <span
-                  className={ellipsis()}
-                  aria-hidden="true"
-                  {...api.getEllipsisProps({ index: i })}
-                >
-                  <Icon icon="token-icon-pagination-ellipsis" size="current" />
-                </span>
-              </li>
-            )
           }
+          return (
+            <li key={`ellipsis-${i}`} className={item()}>
+              <span
+                className={ellipsis()}
+                aria-hidden="true"
+                {...api.getEllipsisProps({ index: i })}
+              >
+                <Icon icon="token-icon-pagination-ellipsis" size="current" />
+              </span>
+            </li>
+          )
         })}
 
         {showPrevNext && (
