@@ -10,6 +10,7 @@
 @import "./molecules/_accordion.css";
 @import "./molecules/_breadcrumb.css";
 @import "./molecules/_carousel.css";
+@import "./molecules/_combobox.css";
 @import "./molecules/_dialog.css";
 @import "./molecules/_numeric-input.css";
 @import "./molecules/_product-card.css";

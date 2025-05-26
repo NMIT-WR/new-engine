@@ -475,6 +475,9 @@ importers:
       '@zag-js/checkbox':
         specifier: ^1.12.4
         version: 1.12.4
+      '@zag-js/combobox':
+        specifier: ^1.12.4
+        version: 1.12.4
       '@zag-js/dialog':
         specifier: ^1.12.4
         version: 1.12.4
@@ -6889,6 +6892,9 @@ packages:
 
   '@zag-js/collection@1.12.4':
     resolution: {integrity: sha512-EQNwCezUYyBH2tYeUHwMEIpFSDf4wAwhhpEPz/UhgZneaRnEL/T8F0eArZBf9OqRnVJEsl72nDzxMc7R078qsw==}
+
+  '@zag-js/combobox@1.12.4':
+    resolution: {integrity: sha512-bjtmB7PHMWTdq5Y96hgK/X8HMSxHry6LzcYz98F6WTDzoz+5nOZg3TLurBt87RGyM9JqNQHR99/YH75vVyBGaA==}
 
   '@zag-js/core@1.12.4':
     resolution: {integrity: sha512-W9ASCtNeOT08PO4T7/ZVzUYIv/N4b9F7QbPsNsozCpSkoeY4xXQn5PMe/JUWcOgS/ocBGwvCQLKpVSAhCAEHtQ==}
@@ -21634,6 +21640,18 @@ snapshots:
 
   '@zag-js/collection@1.12.4':
     dependencies:
+      '@zag-js/utils': 1.12.4
+
+  '@zag-js/combobox@1.12.4':
+    dependencies:
+      '@zag-js/anatomy': 1.12.4
+      '@zag-js/aria-hidden': 1.12.4
+      '@zag-js/collection': 1.12.4
+      '@zag-js/core': 1.12.4
+      '@zag-js/dismissable': 1.12.4
+      '@zag-js/dom-query': 1.12.4
+      '@zag-js/popper': 1.12.4
+      '@zag-js/types': 1.12.4
       '@zag-js/utils': 1.12.4
 
   '@zag-js/core@1.12.4':

@@ -23,6 +23,7 @@
     "@zag-js/accordion": "^1.12.4",
     "@zag-js/carousel": "^1.12.4",
     "@zag-js/checkbox": "^1.12.4",
+    "@zag-js/combobox": "^1.12.4",
     "@zag-js/dialog": "^1.12.4",
     "@zag-js/number-input": "^1.12.4",
     "@zag-js/rating-group": "^1.12.4",
