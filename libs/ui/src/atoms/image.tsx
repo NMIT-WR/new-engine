@@ -6,12 +6,18 @@ export interface BaseImageProps {
   className?: string;
 }
 
+type HasImageProps<T extends ElementType> = 'src' extends keyof ComponentPropsWithoutRef<T>
+  ? 'alt' extends keyof ComponentPropsWithoutRef<T>
+    ? T
+    : never
+  : never;
+
 type NativeImageProps = BaseImageProps &
   Omit<ComponentPropsWithoutRef<"img">, keyof BaseImageProps>;
 
 type CustomImageProps<T extends ElementType> = BaseImageProps &
-  Omit<ComponentPropsWithoutRef<T>, keyof BaseImageProps> & {
-  as: T;
+  Omit<ComponentPropsWithoutRef<HasImageProps<T>>, keyof BaseImageProps> & {
+  as: HasImageProps<T>;
 };
 
 export type ImageProps<T extends ElementType = "img"> = T extends "img"
