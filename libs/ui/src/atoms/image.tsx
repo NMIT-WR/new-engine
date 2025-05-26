@@ -1,14 +1,22 @@
 import type { ElementType, ComponentPropsWithoutRef } from "react";
 
-export interface ImageProps<T extends ElementType = "img"> {
-  as?: T;
+export interface BaseImageProps {
   src: string;
   alt: string;
   className?: string;
 }
 
-type ImageComponentProps<T extends ElementType> = ImageProps<T> &
-  Omit<ComponentPropsWithoutRef<T>, keyof ImageProps<T>>;
+type NativeImageProps = BaseImageProps &
+  Omit<ComponentPropsWithoutRef<"img">, keyof BaseImageProps>;
+
+type CustomImageProps<T extends ElementType> = BaseImageProps &
+  Omit<ComponentPropsWithoutRef<T>, keyof BaseImageProps> & {
+  as: T;
+};
+
+export type ImageProps<T extends ElementType = "img"> = T extends "img"
+  ? NativeImageProps & { as?: "img" }
+  : CustomImageProps<T>;
 
 export function Image<T extends ElementType = "img">({
   as,
@@ -16,8 +24,8 @@ export function Image<T extends ElementType = "img">({
   alt,
   className,
   ...props
-}: ImageComponentProps<T>) {
-  const Component = as || "img";
+}: ImageProps<T>) {
+  const Component = (as || "img") as ElementType;
 
   return <Component src={src} alt={alt} className={className} {...props} />;
 }
