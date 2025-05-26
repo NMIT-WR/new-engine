@@ -150,7 +150,7 @@ export const WithError: Story = {
     const [value, setValue] = useState([30])
 
     return (
-      <div className="min-w-96">
+      <div className="max-w-96">
         <RangeSlider
           {...args}
           value={value}

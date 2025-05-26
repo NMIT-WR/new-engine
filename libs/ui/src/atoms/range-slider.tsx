@@ -264,13 +264,15 @@ export function RangeSlider({
           </div>
         ))}
       </div>
-      {(helperText || error) && (
+      {(helperText || errorText) && (
         <div className={footer()}>
-          {error && <Error>{errorText}</Error>}
-          {!error &&
-            helperText && ( // Show helper only if there is no error
-              <ExtraText>{helperText}</ExtraText>
-            )}
+          {/* Always render both containers to maintain consistent width */}
+          <div className={error ? 'block' : 'invisible h-0 overflow-hidden'}>
+            <Error>{errorText}</Error>
+          </div>
+          <div className={!error && helperText ? 'block' : 'invisible h-0 overflow-hidden'}>
+            <ExtraText>{helperText}</ExtraText>
+          </div>
         </div>
       )}
     </div>
