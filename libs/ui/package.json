@@ -35,6 +35,7 @@
     "@zag-js/toast": "^1.12.4",
     "@zag-js/tooltip": "^1.12.4",
     "@zag-js/tree-view": "^1.12.4",
+    "@zag-js/pagination": "^1.12.4",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
