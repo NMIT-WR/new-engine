@@ -1,6 +1,6 @@
-import * as React from "react"
+import type * as React from 'react'
 
-export const Case: React.FC<React.ComponentPropsWithoutRef<"svg">> = (
+export const Case: React.FC<React.ComponentPropsWithoutRef<'svg'>> = (
   props
 ) => (
   <svg

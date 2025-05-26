@@ -1,4 +1,4 @@
-const checkEnvVariables = require("./check-env-variables")
+const checkEnvVariables = require('./check-env-variables')
 
 checkEnvVariables()
 
@@ -20,33 +20,34 @@ const nextConfig = {
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "9004",
-        pathname: "/medusa-bucket/**",
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '9004',
+        pathname: '/medusa-bucket/**',
       },
       {
-        protocol: "https",
-        hostname: "fashion-starter-demo.s3.eu-central-1.amazonaws.com",
-      }, {
-        protocol: "http",
-        hostname: "localhost",
+        protocol: 'https',
+        hostname: 'fashion-starter-demo.s3.eu-central-1.amazonaws.com',
       },
       {
-        protocol: "https",
-        hostname: "storage-prg1.zerops.io"
+        protocol: 'http',
+        hostname: 'localhost',
       },
       {
-        protocol: "http",
-        hostname: "medusa-minio",
-        port: "9004"
+        protocol: 'https',
+        hostname: 'storage-prg1.zerops.io',
       },
       {
-        protocol: "https",
-        hostname: "bevgyjm5apuichhj.public.blob.vercel-storage.com",
-        port: "",
-        pathname: "/**",
-        search: "",
+        protocol: 'http',
+        hostname: 'medusa-minio',
+        port: '9004',
+      },
+      {
+        protocol: 'https',
+        hostname: 'bevgyjm5apuichhj.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+        search: '',
       },
     ],
   },

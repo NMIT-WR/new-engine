@@ -1,10 +1,10 @@
-import { XMarkMini } from "@medusajs/icons"
-import { FormEvent } from "react"
-import { useRouter } from "next/navigation"
+import { XMarkMini } from '@medusajs/icons'
+import { useRouter } from 'next/navigation'
+import type { FormEvent } from 'react'
 
 import SearchBoxWrapper, {
-  ControlledSearchBoxProps,
-} from "../search-box-wrapper"
+  type ControlledSearchBoxProps,
+} from '../search-box-wrapper'
 
 const ControlledSearchBox = ({
   inputRef,
@@ -54,13 +54,13 @@ const ControlledSearchBox = ({
             type="search"
             value={value}
             onChange={onChange}
-            className="txt-compact-large h-6 placeholder:text-ui-fg-on-color placeholder:transition-colors focus:outline-none flex-1 bg-transparent "
+            className="txt-compact-large h-6 flex-1 bg-transparent placeholder:text-ui-fg-on-color placeholder:transition-colors focus:outline-none "
           />
           {value && (
             <button
               onClick={handleReset}
               type="button"
-              className="items-center justify-center text-ui-fg-on-color focus:outline-none gap-x-2 px-2 txt-compact-large flex"
+              className="txt-compact-large flex items-center justify-center gap-x-2 px-2 text-ui-fg-on-color focus:outline-none"
             >
               <XMarkMini />
               Cancel

@@ -1,7 +1,7 @@
-import Image from "next/image"
-import { getCollectionsList } from "@lib/data/collections"
-import { Carousel } from "@/components/Carousel"
-import { LocalizedButtonLink, LocalizedLink } from "@/components/LocalizedLink"
+import { Carousel } from '@/components/Carousel'
+import { LocalizedButtonLink, LocalizedLink } from '@/components/LocalizedLink'
+import { getCollectionsList } from '@lib/data/collections'
+import Image from 'next/image'
 
 export const CollectionsSection = async ({
   className,
@@ -9,10 +9,10 @@ export const CollectionsSection = async ({
   className: string
 }) => {
   const collections = await getCollectionsList(0, 20, [
-    "id",
-    "title",
-    "handle",
-    "metadata",
+    'id',
+    'title',
+    'handle',
+    'metadata',
   ])
 
   if (!collections) {
@@ -40,15 +40,15 @@ export const CollectionsSection = async ({
     >
       {collections.collections.map((collection) => (
         <div
-          className="w-[70%] sm:w-[60%] lg:w-full max-w-124 flex-shrink-0"
+          className="w-[70%] max-w-124 flex-shrink-0 sm:w-[60%] lg:w-full"
           key={collection.id}
         >
           <LocalizedLink href={`/collections/${collection.handle}`}>
-            {typeof collection.metadata?.image === "object" &&
+            {typeof collection.metadata?.image === 'object' &&
               collection.metadata.image &&
-              "url" in collection.metadata.image &&
-              typeof collection.metadata.image.url === "string" && (
-                <div className="relative mb-4 md:mb-10 w-full aspect-[3/4]">
+              'url' in collection.metadata.image &&
+              typeof collection.metadata.image.url === 'string' && (
+                <div className="relative mb-4 aspect-[3/4] w-full md:mb-10">
                   <Image
                     src={collection.metadata.image.url}
                     alt={collection.title}
@@ -56,10 +56,10 @@ export const CollectionsSection = async ({
                   />
                 </div>
               )}
-            <h3 className="md:text-lg mb-2 md:mb-4">{collection.title}</h3>
-            {typeof collection.metadata?.description === "string" &&
+            <h3 className="mb-2 md:mb-4 md:text-lg">{collection.title}</h3>
+            {typeof collection.metadata?.description === 'string' &&
               collection.metadata?.description.length > 0 && (
-                <p className="text-xs text-grayscale-500 md:text-md">
+                <p className="text-grayscale-500 text-xs md:text-md">
                   {collection.metadata.description}
                 </p>
               )}

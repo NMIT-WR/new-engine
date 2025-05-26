@@ -1,5 +1,5 @@
 export function getFloatValue(s: string) {
-  return parseFloat(parseFloat(s).toFixed(2))
+  return Number.parseFloat(Number.parseFloat(s).toFixed(2))
 }
 
 export function compareFloats(f1: number, f2: number) {

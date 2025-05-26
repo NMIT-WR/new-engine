@@ -1,21 +1,21 @@
-import * as React from "react"
-import { listRegions } from "@lib/data/regions"
-import { SearchField } from "@/components/SearchField"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { HeaderDrawer } from "@/components/HeaderDrawer"
-import { RegionSwitcher } from "@/components/RegionSwitcher"
-import { HeaderWrapper } from "@/components/HeaderWrapper"
+import { HeaderDrawer } from '@/components/HeaderDrawer'
+import { HeaderWrapper } from '@/components/HeaderWrapper'
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { RegionSwitcher } from '@/components/RegionSwitcher'
+import { SearchField } from '@/components/SearchField'
+import { listRegions } from '@lib/data/regions'
+import * as React from 'react'
 
-import dynamic from "next/dynamic"
+import dynamic from 'next/dynamic'
 
 const LoginLink = dynamic(
-  () => import("@modules/header/components/LoginLink"),
+  () => import('@modules/header/components/LoginLink'),
   { loading: () => <></> }
 )
 
 const CartDrawer = dynamic(
-  () => import("@/components/CartDrawer").then((mod) => mod.CartDrawer),
+  () => import('@/components/CartDrawer').then((mod) => mod.CartDrawer),
   { loading: () => <></> }
 )
 
@@ -23,22 +23,21 @@ export const Header = async () => {
   const regions = await listRegions()
 
   const countryOptions = regions
-    .map((r) => {
+    .flatMap((r) => {
       return (r.countries ?? []).map((c) => ({
         country: c.iso_2,
         region: r.id,
         label: c.display_name,
       }))
     })
-    .flat()
-    .sort((a, b) => (a?.label ?? "").localeCompare(b?.label ?? ""))
+    .sort((a, b) => (a?.label ?? '').localeCompare(b?.label ?? ''))
 
   return (
     <>
       <HeaderWrapper>
         <Layout>
           <LayoutColumn>
-            <div className="flex justify-between items-center h-18 md:h-21">
+            <div className="flex h-18 items-center justify-between md:h-21">
               <h1 className="font-medium text-md">
                 <LocalizedLink href="/">SofaSocietyCo.</LocalizedLink>
               </h1>
@@ -47,7 +46,7 @@ export const Header = async () => {
                 <LocalizedLink href="/inspiration">Inspiration</LocalizedLink>
                 <LocalizedLink href="/store">Shop</LocalizedLink>
               </div>
-              <div className="flex items-center gap-3 lg:gap-6 max-md:hidden">
+              <div className="flex items-center gap-3 max-md:hidden lg:gap-6">
                 <RegionSwitcher
                   countryOptions={countryOptions}
                   className="w-16"

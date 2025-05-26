@@ -1,25 +1,25 @@
-"use client"
+'use client'
 
-import { useMemo } from "react"
+import { useMemo } from 'react'
 
-import { HttpTypes } from "@medusajs/types"
-import * as ReactAria from "react-aria-components"
 import {
   UiSelectButton,
   UiSelectIcon,
   UiSelectListBox,
   UiSelectListBoxItem,
   UiSelectValue,
-} from "@/components/ui/Select"
+} from '@/components/ui/Select'
+import type { HttpTypes } from '@medusajs/types'
+import * as ReactAria from 'react-aria-components'
 
 export type CountrySelectProps = ReactAria.SelectProps<
-  Exclude<HttpTypes.StoreRegion["countries"], undefined>[number]
+  Exclude<HttpTypes.StoreRegion['countries'], undefined>[number]
 > & {
   region?: HttpTypes.StoreRegion
 }
 
 const CountrySelect = ({
-  placeholder = "Country",
+  placeholder = 'Country',
   region,
   ...props
 }: CountrySelectProps) => {
@@ -57,6 +57,6 @@ const CountrySelect = ({
   )
 }
 
-CountrySelect.displayName = "CountrySelect"
+CountrySelect.displayName = 'CountrySelect'
 
 export default CountrySelect

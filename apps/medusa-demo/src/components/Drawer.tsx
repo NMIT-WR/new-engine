@@ -1,19 +1,23 @@
-import * as React from "react"
-import { twMerge } from "tailwind-merge"
-import * as ReactAria from "react-aria-components"
-import { UiModal, UiModalOverlay, UiModalOwnProps } from "@/components/ui/Modal"
-import { UiDialog } from "@/components/Dialog"
+import { UiDialog } from '@/components/Dialog'
+import {
+  UiModal,
+  UiModalOverlay,
+  type UiModalOwnProps,
+} from '@/components/ui/Modal'
+import type * as React from 'react'
+import type * as ReactAria from 'react-aria-components'
+import { twMerge } from 'tailwind-merge'
 
 export interface DrawerProps
-  extends Omit<ReactAria.ModalOverlayProps, "children">,
+  extends Omit<ReactAria.ModalOverlayProps, 'children'>,
     UiModalOwnProps,
-    Pick<ReactAria.DialogProps, "children"> {
-  colorScheme?: "light" | "dark"
+    Pick<ReactAria.DialogProps, 'children'> {
+  colorScheme?: 'light' | 'dark'
   className?: string
 }
 
 export const Drawer: React.FC<DrawerProps> = ({
-  colorScheme = "dark",
+  colorScheme = 'dark',
   animateFrom,
   className,
   children,
@@ -24,14 +28,14 @@ export const Drawer: React.FC<DrawerProps> = ({
       <UiModal
         animateFrom={animateFrom}
         className={twMerge(
-          "flex justify-self-center overflow-y-scroll max-h-screen h-screen max-w-75 rounded-none",
-          colorScheme === "light"
-            ? "bg-white text-black"
-            : "bg-black text-white",
+          'flex h-screen max-h-screen max-w-75 justify-self-center overflow-y-scroll rounded-none',
+          colorScheme === 'light'
+            ? 'bg-white text-black'
+            : 'bg-black text-white',
           className
         )}
       >
-        <UiDialog className="flex flex-col flex-1">{children}</UiDialog>
+        <UiDialog className="flex flex-1 flex-col">{children}</UiDialog>
       </UiModal>
     </UiModalOverlay>
   )

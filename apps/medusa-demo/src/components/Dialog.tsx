@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as ReactAria from "react-aria-components"
-import { twMerge } from "tailwind-merge"
-import { Button, ButtonProps } from "@/components/Button"
-import { OverlayTriggerState } from "react-stately"
+import { Button, type ButtonProps } from '@/components/Button'
+import * as React from 'react'
+import * as ReactAria from 'react-aria-components'
+import type { OverlayTriggerState } from 'react-stately'
+import { twMerge } from 'tailwind-merge'
 
 export function UiDialogTrigger({
   children,
@@ -21,7 +21,7 @@ export function UiDialog({
   return (
     <ReactAria.Dialog
       {...rest}
-      className={twMerge("focus-visible:outline-none", className)}
+      className={twMerge('focus-visible:outline-none', className)}
     >
       {children}
     </ReactAria.Dialog>

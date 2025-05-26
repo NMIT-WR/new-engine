@@ -6,6 +6,7 @@
   --text-icon-md: var(--text-md);
   --text-icon-lg: var(--text-lg);
   --text-icon-xl: var(--text-xl);
+  --text-icon-2xl: var(--text-2xl);
 }
 
 /* Semantic tokens for icons */
@@ -27,6 +28,10 @@
 
 @utility token-icon-cart {
   @apply icon-[mdi-light--cart];
+}
+
+@utility token-icon-close {
+  @apply icon-[mdi--close];
 }
 
 /* Component tokens for icons */

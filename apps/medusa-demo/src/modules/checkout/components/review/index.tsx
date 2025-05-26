@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import { twJoin } from "tailwind-merge"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { twJoin } from 'tailwind-merge'
 
-import { Button } from "@/components/Button"
-import PaymentButton from "@modules/checkout/components/payment-button"
-import { StoreCart } from "@medusajs/types"
+import { Button } from '@/components/Button'
+import type { StoreCart } from '@medusajs/types'
+import PaymentButton from '@modules/checkout/components/payment-button'
 
 const Review = ({ cart }: { cart: StoreCart }) => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "review"
+  const isOpen = searchParams.get('step') === 'review'
 
   // const paidByGiftcard =
   //   cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
@@ -24,12 +24,12 @@ const Review = ({ cart }: { cart: StoreCart }) => {
 
   return (
     <>
-      <div className="flex justify-between mb-6 md:mb-8 border-t border-grayscale-200 pt-8 mt-8">
+      <div className="mt-8 mb-6 flex justify-between border-grayscale-200 border-t pt-8 md:mb-8">
         <div>
           <p
             className={twJoin(
-              "transition-fontWeight duration-75",
-              isOpen && "font-semibold"
+              'transition-fontWeight duration-75',
+              isOpen && 'font-semibold'
             )}
           >
             5. Review
@@ -43,7 +43,7 @@ const Review = ({ cart }: { cart: StoreCart }) => {
             <Button
               variant="link"
               onPress={() => {
-                router.push(pathname + "?step=review", { scroll: false })
+                router.push(pathname + '?step=review', { scroll: false })
               }}
             >
               View
@@ -61,7 +61,7 @@ const Review = ({ cart }: { cart: StoreCart }) => {
           <PaymentButton
             cart={cart}
             selectPaymentMethod={() => {
-              router.push(pathname + "?step=payment", { scroll: false })
+              router.push(pathname + '?step=payment', { scroll: false })
             }}
           />
         </>

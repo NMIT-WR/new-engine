@@ -1,12 +1,12 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
-import { ChangePasswordForm } from "@modules/auth/components/ResetPasswordForm"
-import { Layout, LayoutColumn } from "@/components/Layout"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { ChangePasswordForm } from '@modules/auth/components/ResetPasswordForm'
 
 export const metadata: Metadata = {
-  title: "Reset password",
-  description: "Reset your password",
+  title: 'Reset password',
+  description: 'Reset your password',
 }
 
 export default async function ResetPasswordPage({
@@ -17,8 +17,8 @@ export default async function ResetPasswordPage({
   const { email, token } = await searchParams
 
   if (
-    typeof email !== "string" ||
-    typeof token !== "string" ||
+    typeof email !== 'string' ||
+    typeof token !== 'string' ||
     !email ||
     !token
   ) {

@@ -1,5 +1,5 @@
-import * as ReactAria from "react-aria-components"
-import { twMerge } from "tailwind-merge"
+import * as ReactAria from 'react-aria-components'
+import { twMerge } from 'tailwind-merge'
 
 export const UiSliderTrack: React.FC<ReactAria.SliderTrackProps> = ({
   className,
@@ -7,7 +7,7 @@ export const UiSliderTrack: React.FC<ReactAria.SliderTrackProps> = ({
 }) => (
   <ReactAria.SliderTrack
     {...props}
-    className={twMerge("h-px bg-black", className as string)}
+    className={twMerge('h-px bg-black', className as string)}
   />
 )
 
@@ -18,7 +18,7 @@ export const UiSliderThumb: React.FC<ReactAria.SliderThumbProps> = ({
   <ReactAria.SliderThumb
     {...props}
     className={twMerge(
-      "w-4 h-4 border border-black bg-white rounded-full cursor-pointer",
+      'h-4 w-4 cursor-pointer rounded-full border border-black bg-white',
       className as string
     )}
   />
@@ -30,12 +30,12 @@ export const UiSliderOutput: React.FC<ReactAria.SliderOutputProps> = ({
 }) => (
   <ReactAria.SliderOutput
     {...props}
-    className={twMerge("flex justify-between mt-5", className as string)}
+    className={twMerge('mt-5 flex justify-between', className as string)}
   />
 )
 
 export const UiSliderOutputValue: React.FC<
-  React.ComponentPropsWithoutRef<"span">
+  React.ComponentPropsWithoutRef<'span'>
 > = ({ className, ...props }) => (
-  <span {...props} className={twMerge("text-xs", className as string)} />
+  <span {...props} className={twMerge('text-xs', className as string)} />
 )

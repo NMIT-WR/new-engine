@@ -1,16 +1,16 @@
-import React from "react"
+import React from 'react'
 
-import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import RefinementList from "@modules/store/components/refinement-list"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import { CollectionsSlider } from "@modules/store/components/collections-slider"
+import SkeletonProductGrid from '@modules/skeletons/templates/skeleton-product-grid'
+import { CollectionsSlider } from '@modules/store/components/collections-slider'
+import RefinementList from '@modules/store/components/refinement-list'
+import type { SortOptions } from '@modules/store/components/refinement-list/sort-products'
 
-import { getCollectionsList } from "@lib/data/collections"
-import { getCategoriesList } from "@lib/data/categories"
-import { getProductTypesList } from "@lib/data/product-types"
-import PaginatedProducts from "@modules/store/templates/paginated-products"
-import { getRegion } from "@lib/data/regions"
-import { HttpTypes } from "@medusajs/types"
+import { getCategoriesList } from '@lib/data/categories'
+import { getCollectionsList } from '@lib/data/collections'
+import { getProductTypesList } from '@lib/data/product-types'
+import { getRegion } from '@lib/data/regions'
+import type { HttpTypes } from '@medusajs/types'
+import PaginatedProducts from '@modules/store/templates/paginated-products'
 
 const StoreTemplate = async ({
   sortBy,
@@ -27,13 +27,13 @@ const StoreTemplate = async ({
   page?: string
   countryCode: string
 }) => {
-  const pageNumber = page ? parseInt(page, 10) : 1
+  const pageNumber = page ? Number.parseInt(page, 10) : 1
 
   console.log(
     `[StoreTemplate] Rendering for countryCode: '${countryCode}', NODE_ENV: ${process.env.NODE_ENV}`
   )
   const intendedServerBaseUrl =
-    process.env.MEDUSA_BACKEND_URL || "http://medusa-be:9000"
+    process.env.MEDUSA_BACKEND_URL || 'http://medusa-be:9000'
   console.log(
     `[StoreTemplate] Intended SDK Base URL for operations: ${intendedServerBaseUrl}`
   )
@@ -42,13 +42,13 @@ const StoreTemplate = async ({
 
   try {
     ;[collections, categories, types, region] = await Promise.all([
-      getCollectionsList(0, 100, ["id", "title", "handle"]),
-      getCategoriesList(0, 100, ["id", "name", "handle"]),
-      getProductTypesList(0, 100, ["id", "value"]),
+      getCollectionsList(0, 100, ['id', 'title', 'handle']),
+      getCategoriesList(0, 100, ['id', 'name', 'handle']),
+      getProductTypesList(0, 100, ['id', 'value']),
       getRegion(countryCode),
     ])
   } catch (error) {
-    console.error("[StoreTemplate] CRITICAL ERROR in Promise.all:", error)
+    console.error('[StoreTemplate] CRITICAL ERROR in Promise.all:', error)
     // in error case variables will be undefined
   }
 
@@ -58,9 +58,9 @@ const StoreTemplate = async ({
   )
 
   const regionIdFromData =
-    region && typeof region === "object" && "id" in region
+    region && typeof region === 'object' && 'id' in region
       ? (region as HttpTypes.StoreRegion).id
-      : "N/A or region is not an object"
+      : 'N/A or region is not an object'
   console.log(
     `[StoreTemplate] Fetched region object: ${JSON.stringify(region)}`
   )
@@ -96,11 +96,11 @@ const StoreTemplate = async ({
   )
 
   console.log(
-    `[StoreTemplate] Is region valid for PaginatedProducts? ${region ? "Yes" : "No"}`
+    `[StoreTemplate] Is region valid for PaginatedProducts? ${region ? 'Yes' : 'No'}`
   )
 
   return (
-    <div className="md:pt-47 py-26 md:pb-36">
+    <div className="py-26 md:pt-47 md:pb-36">
       <CollectionsSlider />
       <RefinementList
         collections={Object.fromEntries(
@@ -142,7 +142,7 @@ const StoreTemplate = async ({
           </div>
         )}
         {!region && (
-          <div className="text-center py-16">
+          <div className="py-16 text-center">
             <p>
               Region data could not be loaded region is falsy. Products cannot
               be displayed.

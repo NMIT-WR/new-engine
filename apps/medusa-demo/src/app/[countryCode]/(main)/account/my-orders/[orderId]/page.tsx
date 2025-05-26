@@ -1,46 +1,46 @@
-import * as React from "react"
-import { Metadata } from "next"
-import Image from "next/image"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import type * as React from 'react'
 
-import { convertToLocale } from "@lib/util/money"
-import { retrieveOrder } from "@lib/data/orders"
-import { OrderTotals } from "@modules/order/components/OrderTotals"
-import { UiTag } from "@/components/ui/Tag"
-import { UiTagList, UiTagListDivider } from "@/components/ui/TagList"
-import { Icon } from "@/components/Icon"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { getCustomer } from "@lib/data/customer"
-import { redirect } from "next/navigation"
+import { Icon } from '@/components/Icon'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { UiTag } from '@/components/ui/Tag'
+import { UiTagList, UiTagListDivider } from '@/components/ui/TagList'
+import { getCustomer } from '@lib/data/customer'
+import { retrieveOrder } from '@lib/data/orders'
+import { convertToLocale } from '@lib/util/money'
+import { OrderTotals } from '@modules/order/components/OrderTotals'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: "Account - Order",
-  description: "Check your order history",
+  title: 'Account - Order',
+  description: 'Check your order history',
 }
 
 const OrderStatus: React.FC<{ order: HttpTypes.StoreOrder }> = ({ order }) => {
-  if (order.fulfillment_status === "canceled") {
+  if (order.fulfillment_status === 'canceled') {
     return (
       <UiTagList>
-        <UiTag iconName="close" isActive className="self-start mt-auto">
+        <UiTag iconName="close" isActive className="mt-auto self-start">
           Canceled
         </UiTag>
       </UiTagList>
     )
   }
 
-  if (order.fulfillment_status === "delivered") {
+  if (order.fulfillment_status === 'delivered') {
     return (
       <UiTagList>
-        <UiTag isActive iconName="package" className="self-start mt-auto">
+        <UiTag isActive iconName="package" className="mt-auto self-start">
           Packing
         </UiTag>
         <UiTagListDivider />
-        <UiTag isActive iconName="truck" className="self-start mt-auto">
+        <UiTag isActive iconName="truck" className="mt-auto self-start">
           Delivering
         </UiTag>
         <UiTagListDivider />
-        <UiTag isActive iconName="check" className="self-start mt-auto">
+        <UiTag isActive iconName="check" className="mt-auto self-start">
           Delivered
         </UiTag>
       </UiTagList>
@@ -48,20 +48,20 @@ const OrderStatus: React.FC<{ order: HttpTypes.StoreOrder }> = ({ order }) => {
   }
 
   if (
-    order.fulfillment_status === "shipped" ||
-    order.fulfillment_status === "partially_delivered"
+    order.fulfillment_status === 'shipped' ||
+    order.fulfillment_status === 'partially_delivered'
   ) {
     return (
       <UiTagList>
-        <UiTag isActive iconName="package" className="self-start mt-auto">
+        <UiTag isActive iconName="package" className="mt-auto self-start">
           Packing
         </UiTag>
         <UiTagListDivider />
-        <UiTag isActive iconName="truck" className="self-start mt-auto">
+        <UiTag isActive iconName="truck" className="mt-auto self-start">
           Delivering
         </UiTag>
         <UiTagListDivider />
-        <UiTag iconName="check" className="self-start mt-auto">
+        <UiTag iconName="check" className="mt-auto self-start">
           Delivered
         </UiTag>
       </UiTagList>
@@ -70,15 +70,15 @@ const OrderStatus: React.FC<{ order: HttpTypes.StoreOrder }> = ({ order }) => {
 
   return (
     <UiTagList>
-      <UiTag isActive iconName="package" className="self-start mt-auto">
+      <UiTag isActive iconName="package" className="mt-auto self-start">
         Packing
       </UiTag>
       <UiTagListDivider />
-      <UiTag iconName="truck" className="self-start mt-auto">
+      <UiTag iconName="truck" className="mt-auto self-start">
         Delivering
       </UiTag>
       <UiTagListDivider />
-      <UiTag iconName="check" className="self-start mt-auto">
+      <UiTag iconName="check" className="mt-auto self-start">
         Delivered
       </UiTag>
     </UiTagList>
@@ -101,12 +101,12 @@ export default async function AccountOrderPage({
 
   return (
     <>
-      <h1 className="text-md md:text-lg mb-8 md:mb-16">
+      <h1 className="mb-8 text-md md:mb-16 md:text-lg">
         Order: {order.display_id}
       </h1>
       <div className="flex flex-col gap-6">
-        <div className="rounded-xs border border-grayscale-200 flex flex-wrap justify-between p-4">
-          <div className="flex gap-4 items-center">
+        <div className="flex flex-wrap justify-between rounded-xs border border-grayscale-200 p-4">
+          <div className="flex items-center gap-4">
             <Icon name="calendar" />
             <p className="text-grayscale-500">Order date</p>
           </div>
@@ -115,13 +115,13 @@ export default async function AccountOrderPage({
           </div>
         </div>
         <div className="rounded-xs border border-grayscale-200 p-4">
-          <div className="flex flex-wrap gap-x-10 gap-y-8 justify-between items-end w-full">
+          <div className="flex w-full flex-wrap items-end justify-between gap-x-10 gap-y-8">
             <OrderStatus order={order} />
           </div>
         </div>
-        <div className="flex max-sm:flex-col gap-x-4 gap-y-6 md:flex-col lg:flex-row">
+        <div className="flex gap-x-4 gap-y-6 max-sm:flex-col md:flex-col lg:flex-row">
           <div className="flex-1 overflow-hidden rounded-xs border border-grayscale-200 p-4">
-            <div className="flex gap-4 items-center mb-8">
+            <div className="mb-8 flex items-center gap-4">
               <Icon name="map-pin" />
               <p className="text-grayscale-500">Delivery address</p>
             </div>
@@ -132,7 +132,7 @@ export default async function AccountOrderPage({
                   order.shipping_address?.last_name,
                 ]
                   .filter(Boolean)
-                  .join(" ")}
+                  .join(' ')}
               </p>
               {Boolean(order.shipping_address?.company) && (
                 <p>{order.shipping_address?.company}</p>
@@ -146,11 +146,11 @@ export default async function AccountOrderPage({
                     order.shipping_address?.city,
                   ]
                     .filter(Boolean)
-                    .join(" "),
+                    .join(' '),
                   order.shipping_address?.country?.display_name,
                 ]
                   .filter(Boolean)
-                  .join(", ")}
+                  .join(', ')}
               </p>
               {Boolean(order.shipping_address?.phone) && (
                 <p>{order.shipping_address?.phone}</p>
@@ -158,7 +158,7 @@ export default async function AccountOrderPage({
             </div>
           </div>
           <div className="flex-1 overflow-hidden rounded-xs border border-grayscale-200 p-4">
-            <div className="flex gap-4 items-center mb-8">
+            <div className="mb-8 flex items-center gap-4">
               <Icon name="receipt" />
               <p className="text-grayscale-500">Billing address</p>
             </div>
@@ -169,7 +169,7 @@ export default async function AccountOrderPage({
                   order.billing_address?.last_name,
                 ]
                   .filter(Boolean)
-                  .join(" ")}
+                  .join(' ')}
               </p>
               {Boolean(order.billing_address?.company) && (
                 <p>{order.billing_address?.company}</p>
@@ -183,11 +183,11 @@ export default async function AccountOrderPage({
                     order.billing_address?.city,
                   ]
                     .filter(Boolean)
-                    .join(" "),
+                    .join(' '),
                   order.billing_address?.country?.display_name,
                 ]
                   .filter(Boolean)
-                  .join(", ")}
+                  .join(', ')}
               </p>
               {Boolean(order.billing_address?.phone) && (
                 <p>{order.billing_address?.phone}</p>
@@ -195,16 +195,16 @@ export default async function AccountOrderPage({
             </div>
           </div>
         </div>
-        <div className="rounded-xs border border-grayscale-200 p-4 flex flex-col gap-6">
+        <div className="flex flex-col gap-6 rounded-xs border border-grayscale-200 p-4">
           {order.items?.map((item) => (
             <div
               key={item.id}
-              className="flex gap-x-4 sm:gap-x-8 gap-y-6 pb-6 border-b border-grayscale-100 last:border-0 last:pb-0"
+              className="flex gap-x-4 gap-y-6 border-grayscale-100 border-b pb-6 last:border-0 last:pb-0 sm:gap-x-8"
             >
               {item.thumbnail && (
                 <LocalizedLink
                   href={`/products/${item.product_handle}`}
-                  className="max-w-25 sm:max-w-37 aspect-[3/4] w-full relative overflow-hidden"
+                  className="relative aspect-[3/4] w-full max-w-25 overflow-hidden sm:max-w-37"
                 >
                   <Image
                     src={item.thumbnail}
@@ -214,27 +214,27 @@ export default async function AccountOrderPage({
                   />
                 </LocalizedLink>
               )}
-              <div className="flex flex-col flex-1">
+              <div className="flex flex-1 flex-col">
                 <p className="mb-2 sm:text-md">
                   <LocalizedLink href={`/products/${item.product_handle}`}>
                     {item.product_title}
                   </LocalizedLink>
                 </p>
-                <div className="text-xs flex flex-col flex-1">
+                <div className="flex flex-1 flex-col text-xs">
                   <div>
                     {item.variant?.options?.map((option) => (
                       <p className="mb-1" key={option.id}>
-                        <span className="text-grayscale-500 mr-2">
+                        <span className="mr-2 text-grayscale-500">
                           {option.option?.title}:
                         </span>
                         {option.value}
                       </p>
                     ))}
                   </div>
-                  <div className="mt-auto flex max-xs:flex-col gap-x-10 gap-y-6.5 xs:items-center justify-between relative">
+                  <div className="relative mt-auto flex xs:items-center justify-between gap-x-10 gap-y-6.5 max-xs:flex-col">
                     <div className="xs:self-end sm:mb-1">
                       <p>
-                        <span className="text-grayscale-500 mr-2">
+                        <span className="mr-2 text-grayscale-500">
                           Quantity:
                         </span>
                         {item.quantity}
@@ -254,8 +254,8 @@ export default async function AccountOrderPage({
             </div>
           ))}
         </div>
-        <div className="rounded-xs border border-grayscale-200 p-4 flex max-sm:flex-col gap-y-4 gap-x-10 md:flex-wrap justify-between">
-          <div className="flex items-center self-baseline gap-4">
+        <div className="flex justify-between gap-x-10 gap-y-4 rounded-xs border border-grayscale-200 p-4 max-sm:flex-col md:flex-wrap">
+          <div className="flex items-center gap-4 self-baseline">
             <Icon name="credit-card" />
             <div>
               <p className="text-grayscale-500">Payment</p>

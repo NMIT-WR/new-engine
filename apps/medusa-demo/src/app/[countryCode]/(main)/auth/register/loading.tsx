@@ -1,7 +1,7 @@
-import Image from "next/image"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { Input } from "@/components/Forms"
-import { SubmitButton } from "@modules/common/components/submit-button"
+import { Input } from '@/components/Forms'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { SubmitButton } from '@modules/common/components/submit-button'
+import Image from 'next/image'
 
 export default function RegisterLoadingPage() {
   return (
@@ -11,13 +11,13 @@ export default function RegisterLoadingPage() {
         width={1440}
         height={1632}
         alt="Living room with dark gray corner sofa and coffee table"
-        className="max-lg:hidden lg:w-1/2 shrink-0 object-cover"
+        className="shrink-0 object-cover max-lg:hidden lg:w-1/2"
       />
-      <div className="shrink-0 max-w-100 lg:max-w-96 w-full mx-auto pt-30 lg:pt-37 pb-16 max-sm:px-4">
-        <h1 className="text-xl md:text-2xl mb-10 md:mb-16">
+      <div className="mx-auto w-full max-w-100 shrink-0 pt-30 pb-16 max-sm:px-4 lg:max-w-96 lg:pt-37">
+        <h1 className="mb-10 text-xl md:mb-16 md:text-2xl">
           Hey, welcome to Sofa Society!
         </h1>
-        <form className="flex flex-col gap-6 md:gap-8 mb-8 md:mb-16">
+        <form className="mb-8 flex flex-col gap-6 md:mb-16 md:gap-8">
           <div className="flex gap-4 md:gap-6">
             <Input
               placeholder="First name"
@@ -74,7 +74,7 @@ export default function RegisterLoadingPage() {
           <SubmitButton isLoading>Register</SubmitButton>
         </form>
         <p className="text-grayscale-500">
-          Already have an account? No worries, just{" "}
+          Already have an account? No worries, just{' '}
           <LocalizedLink
             href="/auth/login"
             variant="underline"

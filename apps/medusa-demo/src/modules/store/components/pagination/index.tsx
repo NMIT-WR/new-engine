@@ -1,16 +1,16 @@
-"use client"
+'use client'
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { twMerge } from "tailwind-merge"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { twMerge } from 'tailwind-merge'
 
 export function Pagination({
   page,
   totalPages,
-  "data-testid": dataTestid,
+  'data-testid': dataTestid,
 }: {
   page: number
   totalPages: number
-  "data-testid"?: string
+  'data-testid'?: string
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -23,7 +23,7 @@ export function Pagination({
   // Function to handle page changes
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams)
-    params.set("page", newPage.toString())
+    params.set('page', newPage.toString())
     router.push(`${pathname}?${params.toString()}`)
   }
 
@@ -36,9 +36,9 @@ export function Pagination({
     <button
       key={p}
       className={twMerge(
-        "txt-xlarge-plus text-fg-muted dark:text-fg-muted-dark px-1",
+        'txt-xlarge-plus px-1 text-fg-muted dark:text-fg-muted-dark',
         isCurrent &&
-          "text-fg-base dark:text-fg-base-dark hover:text-fg-subtle dark:hover:text-fg-subtle-dark"
+          'text-fg-base hover:text-fg-subtle dark:text-fg-base-dark dark:hover:text-fg-subtle-dark'
       )}
       disabled={isCurrent}
       onClick={() => handlePageChange(p)}
@@ -51,7 +51,7 @@ export function Pagination({
   const renderEllipsis = (key: string) => (
     <span
       key={key}
-      className="txt-xlarge-plus text-fg-muted dark:text-fg-muted-dark items-center cursor-default"
+      className="txt-xlarge-plus cursor-default items-center text-fg-muted dark:text-fg-muted-dark"
     >
       ...
     </span>
@@ -75,14 +75,14 @@ export function Pagination({
         buttons.push(
           ...arrayRange(1, 5).map((p) => renderPageButton(p, p, p === page))
         )
-        buttons.push(renderEllipsis("ellipsis1"))
+        buttons.push(renderEllipsis('ellipsis1'))
         buttons.push(
           renderPageButton(totalPages, totalPages, totalPages === page)
         )
       } else if (page >= totalPages - 3) {
         // Show 1, ..., lastpage - 4, lastpage - 3, lastpage - 2, lastpage - 1, lastpage
-        buttons.push(renderPageButton(1, 1, 1 === page))
-        buttons.push(renderEllipsis("ellipsis2"))
+        buttons.push(renderPageButton(1, 1, page === 1))
+        buttons.push(renderEllipsis('ellipsis2'))
         buttons.push(
           ...arrayRange(totalPages - 4, totalPages).map((p) =>
             renderPageButton(p, p, p === page)
@@ -90,14 +90,14 @@ export function Pagination({
         )
       } else {
         // Show 1, ..., page - 1, page, page + 1, ..., lastpage
-        buttons.push(renderPageButton(1, 1, 1 === page))
-        buttons.push(renderEllipsis("ellipsis3"))
+        buttons.push(renderPageButton(1, 1, page === 1))
+        buttons.push(renderEllipsis('ellipsis3'))
         buttons.push(
           ...arrayRange(page - 1, page + 1).map((p) =>
             renderPageButton(p, p, p === page)
           )
         )
-        buttons.push(renderEllipsis("ellipsis4"))
+        buttons.push(renderEllipsis('ellipsis4'))
         buttons.push(
           renderPageButton(totalPages, totalPages, totalPages === page)
         )
@@ -109,8 +109,8 @@ export function Pagination({
 
   // Render the component
   return (
-    <div className="flex justify-center w-full mt-12">
-      <div className="flex gap-2 items-end" data-testid={dataTestid}>
+    <div className="mt-12 flex w-full justify-center">
+      <div className="flex items-end gap-2" data-testid={dataTestid}>
         {renderPageButtons()}
       </div>
     </div>

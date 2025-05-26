@@ -1,13 +1,13 @@
 // TODO: Review this component.
 
-"use client"
+'use client'
 
-import * as React from "react"
-import { twJoin, twMerge } from "tailwind-merge"
-import { EmblaCarouselType } from "embla-carousel"
-import useEmblaCarousel from "embla-carousel-react"
-import { Icon } from "@/components/Icon"
-import { IconCircle } from "@/components/IconCircle"
+import { Icon } from '@/components/Icon'
+import { IconCircle } from '@/components/IconCircle'
+import type { EmblaCarouselType } from 'embla-carousel'
+import useEmblaCarousel from 'embla-carousel-react'
+import * as React from 'react'
+import { twJoin, twMerge } from 'tailwind-merge'
 
 type ProductPageGalleryProps = {
   children: React.ReactNode
@@ -19,7 +19,7 @@ export const ProductPageGallery = ({
   className,
 }: ProductPageGalleryProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    containScroll: "trimSnaps",
+    containScroll: 'trimSnaps',
     skipSnaps: true,
   })
   const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true)
@@ -58,33 +58,33 @@ export const ProductPageGallery = ({
 
     onInit(emblaApi)
     onSelect(emblaApi)
-    emblaApi.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect)
+    emblaApi.on('reInit', onInit).on('reInit', onSelect).on('select', onSelect)
   }, [emblaApi, onInit, onSelect])
 
   return (
-    <div className={twMerge("overflow-hidden relative", className)}>
+    <div className={twMerge('relative overflow-hidden', className)}>
       <div className="relative flex items-center p-0 lg:mb-6">
         <button
           type="button"
           onClick={scrollPrev}
           disabled={prevBtnDisabled}
-          className="transition-opacity absolute left-4 z-10 max-lg:hidden"
+          className="absolute left-4 z-10 transition-opacity max-lg:hidden"
           aria-label="Previous"
         >
           <IconCircle
             className={twJoin(
-              "bg-black text-white transition-colors",
-              prevBtnDisabled && "bg-transparent text-black"
+              'bg-black text-white transition-colors',
+              prevBtnDisabled && 'bg-transparent text-black'
             )}
           >
-            <Icon name="arrow-left" className="w-6 h-6" />
+            <Icon name="arrow-left" className="h-6 w-6" />
           </IconCircle>
         </button>
         <div ref={emblaRef} className="w-full">
           <div className="flex touch-pan-y gap-4">
             {React.Children.map(children, (child) => {
               return (
-                <div className="w-full md:max-w-[80%] flex-shrink-0">
+                <div className="w-full flex-shrink-0 md:max-w-[80%]">
                   {child}
                 </div>
               )
@@ -95,20 +95,20 @@ export const ProductPageGallery = ({
           type="button"
           onClick={scrollNext}
           disabled={nextBtnDisabled}
-          className="transition-opacity absolute right-4 z-10 max-lg:hidden"
+          className="absolute right-4 z-10 transition-opacity max-lg:hidden"
           aria-label="Next"
         >
           <IconCircle
             className={twJoin(
-              "bg-black text-white transition-colors",
-              nextBtnDisabled && "bg-transparent text-black"
+              'bg-black text-white transition-colors',
+              nextBtnDisabled && 'bg-transparent text-black'
             )}
           >
-            <Icon name="arrow-right" className="w-6 h-6" />
+            <Icon name="arrow-right" className="h-6 w-6" />
           </IconCircle>
         </button>
       </div>
-      <div className="flex justify-center max-lg:w-full max-lg:absolute max-lg:bottom-4">
+      <div className="flex justify-center max-lg:absolute max-lg:bottom-4 max-lg:w-full">
         {scrollSnaps.map((_, index) => (
           <button
             key={index}
@@ -117,8 +117,8 @@ export const ProductPageGallery = ({
           >
             <span
               className={twMerge(
-                "border-b border-transparent transition-colors px-0.5",
-                index === selectedIndex && "border-black"
+                'border-transparent border-b px-0.5 transition-colors',
+                index === selectedIndex && 'border-black'
               )}
             >
               {index + 1}

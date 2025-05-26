@@ -1,11 +1,11 @@
-import { Metadata } from "next"
-import { Layout, LayoutColumn } from "@/components/Layout"
-import React from "react"
-import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import PaginatedProducts from "@modules/store/templates/paginated-products"
-import { CollectionsSlider } from "@modules/store/components/collections-slider"
-import { MeiliSearchProductHit, searchClient } from "@lib/search-client"
-import { getRegion } from "@lib/data/regions"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { getRegion } from '@lib/data/regions'
+import { type MeiliSearchProductHit, searchClient } from '@lib/search-client'
+import SkeletonProductGrid from '@modules/skeletons/templates/skeleton-product-grid'
+import { CollectionsSlider } from '@modules/store/components/collections-slider'
+import PaginatedProducts from '@modules/store/templates/paginated-products'
+import type { Metadata } from 'next'
+import React from 'react'
 
 type Props = {
   params: Promise<{ countryCode: string }>
@@ -13,26 +13,26 @@ type Props = {
 }
 
 export const metadata: Metadata = {
-  title: "Search",
-  description: "Search for products",
+  title: 'Search',
+  description: 'Search for products',
 }
 
 export default async function SearchPage({ params, searchParams }: Props) {
   const { countryCode } = await params
   const { query, page } = await searchParams
 
-  const pageNumber = page ? parseInt(page, 10) : 1
+  const pageNumber = page ? Number.parseInt(page, 10) : 1
 
   const results = await searchClient
-    .index("products")
+    .index('products')
     .search<MeiliSearchProductHit>(query)
   const region = await getRegion(countryCode)
 
   return (
-    <div className="md:pt-47 py-26 md:pb-36">
+    <div className="py-26 md:pt-47 md:pb-36">
       <Layout>
         <LayoutColumn>
-          <h2 className="mb-8 md:mb-16 text-lg md:text-2xl">
+          <h2 className="mb-8 text-lg md:mb-16 md:text-2xl">
             Search results for &apos;{query}&apos;
           </h2>
         </LayoutColumn>
@@ -52,7 +52,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
       </React.Suspense>
       <CollectionsSlider
         heading="Checkout our collections for more products"
-        className="mt-26 md:mt-36 !mb-0"
+        className="!mb-0 mt-26 md:mt-36"
       />
     </div>
   )

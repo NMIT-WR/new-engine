@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import * as ReactAria from "react-aria-components"
-import {
-  UiSelectButton,
-  UiSelectDialog,
-  UiSelectIcon,
-} from "@/components/ui/Select"
+import { UiDialogTrigger } from '@/components/Dialog'
 import {
   UiCheckbox,
   UiCheckboxBox,
   UiCheckboxIcon,
   UiCheckboxLabel,
-} from "@/components/ui/Checkbox"
-import { UiDialogTrigger } from "@/components/Dialog"
+} from '@/components/ui/Checkbox'
+import {
+  UiSelectButton,
+  UiSelectDialog,
+  UiSelectIcon,
+} from '@/components/ui/Select'
+import * as ReactAria from 'react-aria-components'
 
 export const TypeFilter: React.FC<{
   types: Record<string, string>
@@ -29,7 +29,7 @@ export const TypeFilter: React.FC<{
         <ReactAria.CheckboxGroup
           value={type ?? []}
           onChange={(value) => {
-            setQueryParams("type", value)
+            setQueryParams('type', value)
           }}
           className="max-h-50 overflow-scroll"
         >

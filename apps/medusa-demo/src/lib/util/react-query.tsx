@@ -1,5 +1,5 @@
-import * as React from "react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type * as React from 'react'
 
 const queryClient = new QueryClient()
 
@@ -23,7 +23,7 @@ export const withReactQueryProvider = <T extends {}>(
     </ReactQueryProvider>
   )
 
-  WrappedComponent.displayName = `withReactQueryProvider(${Component.displayName || Component.name || "Component"})`
+  WrappedComponent.displayName = `withReactQueryProvider(${Component.displayName || Component.name || 'Component'})`
 
   return WrappedComponent
 }

@@ -1,10 +1,10 @@
-import { HttpTypes } from "@medusajs/types"
-import { NextRequest, NextResponse } from "next/server"
+import type { HttpTypes } from '@medusajs/types'
+import { type NextRequest, NextResponse } from 'next/server'
 
 const BACKEND_URL =
   process.env.MEDUSA_BACKEND_URL || // Intended for server-side contexts
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || // Fallback or for contexts where only NEXT_PUBLIC_ is available
-  "http://medusa-be:9000" // Default fallback
+  'http://medusa-be:9000' // Default fallback
 
 // Log initial backend URL determination
 console.log(
@@ -14,7 +14,7 @@ console.log(
 )
 
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us"
+const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || 'us'
 
 const regionMapCache = {
   regionMap: new Map<string, HttpTypes.StoreRegion>(),
@@ -29,26 +29,26 @@ async function getRegionMap() {
   )
 
   // Logic for development environment (mock regions)
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     console.log(
-      "[Middleware getRegionMap] In development mode, attempting to use mock regions."
+      '[Middleware getRegionMap] In development mode, attempting to use mock regions.'
     )
     if (!regionMap.size) {
       // Only populate if empty
       const defaultRegion: HttpTypes.StoreRegion = {
-        id: "mock-region-id",
-        name: "Development Region",
+        id: 'mock-region-id',
+        name: 'Development Region',
         countries: [
-          { id: "gb-id", iso_2: "gb" },
-          { id: "us-id", iso_2: "us" },
+          { id: 'gb-id', iso_2: 'gb' },
+          { id: 'us-id', iso_2: 'us' },
         ],
-        currency_code: "gbp",
+        currency_code: 'gbp',
       }
       defaultRegion.countries?.forEach((c) => {
-        regionMapCache.regionMap.set(c.iso_2 ?? "", defaultRegion)
+        regionMapCache.regionMap.set(c.iso_2 ?? '', defaultRegion)
       })
       console.log(
-        "[Middleware getRegionMap] Mock regions populated for development."
+        '[Middleware getRegionMap] Mock regions populated for development.'
       )
     }
     return regionMapCache.regionMap
@@ -66,11 +66,11 @@ async function getRegionMap() {
     try {
       const res = await fetch(`${BACKEND_URL}/store/regions`, {
         headers: {
-          "x-publishable-api-key": PUBLISHABLE_API_KEY!,
+          'x-publishable-api-key': PUBLISHABLE_API_KEY!,
         },
         next: {
           revalidate: 3600, // Revalidate time in seconds
-          tags: ["regions"],
+          tags: ['regions'],
         },
       })
       console.log(
@@ -90,7 +90,7 @@ async function getRegionMap() {
 
       if (!regions || !regions.length) {
         console.warn(
-          "[Middleware getRegionMap] No regions data returned from API or regions array is empty."
+          '[Middleware getRegionMap] No regions data returned from API or regions array is empty.'
         )
         // Return current cache; calling notFound() here might be too disruptive
         return regionMapCache.regionMap
@@ -102,11 +102,11 @@ async function getRegionMap() {
       regionMapCache.regionMap.clear() // Clear old entries before populating
       regions.forEach((region: HttpTypes.StoreRegion) => {
         region.countries?.forEach((c) => {
-          regionMapCache.regionMap.set(c.iso_2 ?? "", region)
+          regionMapCache.regionMap.set(c.iso_2 ?? '', region)
         })
       })
       regionMapCache.regionMapUpdated = Date.now() // Update timestamp
-      console.log("[Middleware getRegionMap] Region map updated from API.")
+      console.log('[Middleware getRegionMap] Region map updated from API.')
     } catch (error) {
       console.error(
         `[Middleware getRegionMap] CRITICAL ERROR during region fetch: ${error instanceof Error ? error.message : String(error)}`
@@ -115,7 +115,7 @@ async function getRegionMap() {
       return regionMapCache.regionMap
     }
   } else {
-    console.log("[Middleware getRegionMap] Using cached region map.")
+    console.log('[Middleware getRegionMap] Using cached region map.')
   }
   return regionMapCache.regionMap
 }
@@ -127,9 +127,9 @@ async function getCountryCode(
   try {
     let countryCode
     const vercelCountryCode = request.headers
-      .get("x-vercel-ip-country")
+      .get('x-vercel-ip-country')
       ?.toLowerCase()
-    const urlCountryCode = request.nextUrl.pathname.split("/")[1]?.toLowerCase()
+    const urlCountryCode = request.nextUrl.pathname.split('/')[1]?.toLowerCase()
 
     console.log(
       `[Middleware getCountryCode] Vercel IP: ${vercelCountryCode}, URL path segment: ${urlCountryCode}, Default region: ${DEFAULT_REGION}`
@@ -165,7 +165,7 @@ export async function middleware(request: NextRequest) {
 
   if (!regionMap || regionMap.size === 0) {
     console.warn(
-      "[Middleware] Region map is empty or undefined after getRegionMap. Proceeding without region-based redirection."
+      '[Middleware] Region map is empty or undefined after getRegionMap. Proceeding without region-based redirection.'
     )
     // If region map is not available, skip region-specific logic
     return NextResponse.next()
@@ -174,7 +174,7 @@ export async function middleware(request: NextRequest) {
   const countryCode = await getCountryCode(request, regionMap)
 
   const urlHasCountryCode =
-    countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
+    countryCode && request.nextUrl.pathname.split('/')[1].includes(countryCode)
 
   if (urlHasCountryCode) {
     console.log(
@@ -184,8 +184,8 @@ export async function middleware(request: NextRequest) {
   }
 
   const redirectPath =
-    request.nextUrl.pathname === "/" ? "" : request.nextUrl.pathname
-  const queryString = request.nextUrl.search ? request.nextUrl.search : ""
+    request.nextUrl.pathname === '/' ? '' : request.nextUrl.pathname
+  const queryString = request.nextUrl.search ? request.nextUrl.search : ''
 
   if (!urlHasCountryCode && countryCode) {
     const redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
@@ -193,7 +193,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 307) // Use 307 for temporary redirect, preserving method
   } else {
     console.log(
-      "[Middleware] No country code determined for redirection or no redirect needed. Passing through."
+      '[Middleware] No country code determined for redirection or no redirect needed. Passing through.'
     )
   }
 
@@ -203,6 +203,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Match all paths except for API routes, static files, images, etc.
-    "/((?!api/|_next/|favicon.ico|images/|robots.txt).*)",
+    '/((?!api/|_next/|favicon.ico|images/|robots.txt).*)',
   ],
 }

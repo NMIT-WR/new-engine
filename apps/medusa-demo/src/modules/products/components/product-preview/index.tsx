@@ -1,7 +1,7 @@
-import { HttpTypes } from "@medusajs/types"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import Thumbnail from "@modules/products/components/thumbnail"
-import { getProductPrice } from "@lib/util/get-product-price"
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { getProductPrice } from '@lib/util/get-product-price'
+import type { HttpTypes } from '@medusajs/types'
+import Thumbnail from '@modules/products/components/thumbnail'
 
 export default function ProductPreview({
   product,
@@ -37,10 +37,10 @@ export default function ProductPreview({
         {cheapestPrice ? (
           hasReducedPrice ? (
             <div>
-              <p className="font-semibold max-md:text-xs text-red-primary">
+              <p className="font-semibold text-red-primary max-md:text-xs">
                 {cheapestPrice.calculated_price}
               </p>
-              <p className="max-md:text-xs text-grayscale-500 line-through">
+              <p className="text-grayscale-500 line-through max-md:text-xs">
                 {cheapestPrice.original_price}
               </p>
             </div>

@@ -1,24 +1,24 @@
-import { Metadata } from "next"
-import { redirect } from "next/navigation"
-import { getCustomer } from "@lib/data/customer"
-import { getRegion, listRegions } from "@lib/data/regions"
-import { UpsertAddressForm } from "@modules/account/components/UpsertAddressForm"
-import { PersonalInfoForm } from "@modules/account/components/PersonalInfoForm"
-import { SignOutButton } from "@modules/account/components/SignOutButton"
-import { Icon } from "@/components/Icon"
-import { Button } from "@/components/Button"
-import { UiModal, UiModalOverlay } from "@/components/ui/Modal"
-import { UiDialog, UiDialogTrigger } from "@/components/Dialog"
-import { RequestPasswordResetButton } from "@modules/account/components/RequestPasswordResetButton"
-import { AddressSingle } from "@modules/account/components/AddressSingle"
-import { AddressMultiple } from "@modules/account/components/AddressMultiple"
-import { DefaultShippingAddressSelect } from "@modules/account/components/DefaultShippingAddressSelect"
-import { DefaultBillingAddressSelect } from "@modules/account/components/DefaultBillingAddressSelect"
-import { UiRadioGroup } from "@/components/ui/Radio"
+import { Button } from '@/components/Button'
+import { UiDialog, UiDialogTrigger } from '@/components/Dialog'
+import { Icon } from '@/components/Icon'
+import { UiModal, UiModalOverlay } from '@/components/ui/Modal'
+import { UiRadioGroup } from '@/components/ui/Radio'
+import { getCustomer } from '@lib/data/customer'
+import { getRegion, listRegions } from '@lib/data/regions'
+import { AddressMultiple } from '@modules/account/components/AddressMultiple'
+import { AddressSingle } from '@modules/account/components/AddressSingle'
+import { DefaultBillingAddressSelect } from '@modules/account/components/DefaultBillingAddressSelect'
+import { DefaultShippingAddressSelect } from '@modules/account/components/DefaultShippingAddressSelect'
+import { PersonalInfoForm } from '@modules/account/components/PersonalInfoForm'
+import { RequestPasswordResetButton } from '@modules/account/components/RequestPasswordResetButton'
+import { SignOutButton } from '@modules/account/components/SignOutButton'
+import { UpsertAddressForm } from '@modules/account/components/UpsertAddressForm'
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: "Account - Personal & security",
-  description: "Manage your personal information and security settings",
+  title: 'Account - Personal & security',
+  description: 'Manage your personal information and security settings',
 }
 
 export default async function AccountPersonalAndSecurityPage({
@@ -41,25 +41,25 @@ export default async function AccountPersonalAndSecurityPage({
 
   return (
     <>
-      <h1 className="text-md md:text-lg mb-8 md:mb-16 max-md:font-semibold">
+      <h1 className="mb-8 text-md max-md:font-semibold md:mb-16 md:text-lg">
         Personal &amp; security
       </h1>
-      <h2 className="text-md font-normal mb-6">Personal information</h2>
-      <div className="w-full border border-grayscale-200 rounded-xs p-4 flex flex-wrap gap-8 max-sm:flex-col sm:items-center md:flex-col md:items-stretch lg:items-center lg:flex-row mb-16">
-        <div className="flex gap-8 flex-1">
-          <Icon name="user" className="w-6 h-6 sm:mt-2.5" />
-          <div className="flex max-sm:flex-col sm:flex-wrap gap-6 sm:gap-x-16">
+      <h2 className="mb-6 font-normal text-md">Personal information</h2>
+      <div className="mb-16 flex w-full flex-wrap gap-8 rounded-xs border border-grayscale-200 p-4 max-sm:flex-col sm:items-center md:flex-col md:items-stretch lg:flex-row lg:items-center">
+        <div className="flex flex-1 gap-8">
+          <Icon name="user" className="h-6 w-6 sm:mt-2.5" />
+          <div className="flex gap-6 max-sm:flex-col sm:flex-wrap sm:gap-x-16">
             <div>
-              <p className="text-xs text-grayscale-500 mb-1.5">Name</p>
+              <p className="mb-1.5 text-grayscale-500 text-xs">Name</p>
               <p>
                 {[customer.first_name, customer.last_name]
                   .filter(Boolean)
-                  .join(" ")}
+                  .join(' ')}
               </p>
             </div>
             <div>
-              <p className="text-xs text-grayscale-500 mb-1.5">Number</p>
-              <p>{customer.phone || "-"}</p>
+              <p className="mb-1.5 text-grayscale-500 text-xs">Number</p>
+              <p>{customer.phone || '-'}</p>
             </div>
           </div>
         </div>
@@ -70,8 +70,8 @@ export default async function AccountPersonalAndSecurityPage({
               <UiDialog>
                 <PersonalInfoForm
                   defaultValues={{
-                    first_name: customer.first_name ?? "",
-                    last_name: customer.last_name ?? "",
+                    first_name: customer.first_name ?? '',
+                    last_name: customer.last_name ?? '',
                     phone: customer.phone ?? undefined,
                   }}
                 />
@@ -80,22 +80,22 @@ export default async function AccountPersonalAndSecurityPage({
           </UiModalOverlay>
         </UiDialogTrigger>
       </div>
-      <h2 className="text-md font-normal mb-6">Contact</h2>
-      <div className="w-full border border-grayscale-200 rounded-xs p-4 flex flex-wrap gap-y-6 gap-x-8 items-center mb-4">
-        <Icon name="user" className="w-6 h-6" />
+      <h2 className="mb-6 font-normal text-md">Contact</h2>
+      <div className="mb-4 flex w-full flex-wrap items-center gap-x-8 gap-y-6 rounded-xs border border-grayscale-200 p-4">
+        <Icon name="user" className="h-6 w-6" />
         <div>
-          <p className="text-xs text-grayscale-500 mb-1.5">Email</p>
+          <p className="mb-1.5 text-grayscale-500 text-xs">Email</p>
           <p>{customer.email}</p>
         </div>
       </div>
-      <p className="text-xs text-grayscale-500 mb-16">
+      <p className="mb-16 text-grayscale-500 text-xs">
         If you want to change your email please contact us via customer support.
       </p>
-      <h2 className="text-md font-normal mb-6">
-        {customer.addresses.length > 1 ? "Addresses" : "Address"}
+      <h2 className="mb-6 font-normal text-md">
+        {customer.addresses.length > 1 ? 'Addresses' : 'Address'}
       </h2>
       {customer.addresses.length === 0 && (
-        <p className="text-grayscale-500 mb-6">
+        <p className="mb-6 text-grayscale-500">
           You don&apos;t have any addresses saved yet.
         </p>
       )}
@@ -120,7 +120,7 @@ export default async function AccountPersonalAndSecurityPage({
             countries={countries}
           />
           <UiRadioGroup
-            className="flex flex-col sm:flex-row md:flex-col lg:flex-row sm:flex-wrap gap-x-6 gap-y-8 mb-6"
+            className="mb-6 flex flex-col gap-x-6 gap-y-8 sm:flex-row sm:flex-wrap md:flex-col lg:flex-row"
             aria-label="address"
           >
             {customer.addresses
@@ -135,7 +135,7 @@ export default async function AccountPersonalAndSecurityPage({
                   address={address}
                   countries={countries}
                   region={region}
-                  className="h-auto sm:max-w-[calc(50%-0.75rem)] md:max-w-full lg:max-w-[calc(50%-0.75rem)] w-full"
+                  className="h-auto w-full sm:max-w-[calc(50%-0.75rem)] md:max-w-full lg:max-w-[calc(50%-0.75rem)]"
                 />
               ))}
           </UiRadioGroup>
@@ -160,14 +160,14 @@ export default async function AccountPersonalAndSecurityPage({
           </UiModal>
         </UiModalOverlay>
       </UiDialogTrigger>
-      <h2 className="text-md font-normal mb-6 md:mb-4">Change password</h2>
-      <p className="max-md:text-xs text-grayscale-500 mb-6">
+      <h2 className="mb-6 font-normal text-md md:mb-4">Change password</h2>
+      <p className="mb-6 text-grayscale-500 max-md:text-xs">
         To change your password, we&apos;ll send you an email. Just click on the
         reset button below.
       </p>
       <RequestPasswordResetButton />
       <div className="mt-16 md:hidden">
-        <p className="text-md mb-6">Log out</p>
+        <p className="mb-6 text-md">Log out</p>
         <SignOutButton variant="outline" isFullWidth />
       </div>
     </>

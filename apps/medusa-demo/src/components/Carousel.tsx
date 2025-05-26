@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { twJoin, twMerge } from "tailwind-merge"
-import useEmblaCarousel from "embla-carousel-react"
-import type { EmblaCarouselType } from "embla-carousel"
-import { Icon } from "@/components/Icon"
-import { IconCircle } from "@/components/IconCircle"
-import { Layout, LayoutColumn } from "@/components/Layout"
+import { Icon } from '@/components/Icon'
+import { IconCircle } from '@/components/IconCircle'
+import { Layout, LayoutColumn } from '@/components/Layout'
+import type { EmblaCarouselType } from 'embla-carousel'
+import useEmblaCarousel from 'embla-carousel-react'
+import * as React from 'react'
+import { twJoin, twMerge } from 'tailwind-merge'
 
 export type CarouselProps = {
   heading?: React.ReactNode
   button?: React.ReactNode
   arrows?: boolean
-} & React.ComponentPropsWithRef<"div">
+} & React.ComponentPropsWithRef<'div'>
 
 export const Carousel = ({
   heading,
@@ -22,7 +22,7 @@ export const Carousel = ({
   className,
 }: CarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    containScroll: "trimSnaps",
+    containScroll: 'trimSnaps',
     skipSnaps: true,
     active: true,
   })
@@ -46,18 +46,18 @@ export const Carousel = ({
     if (!emblaApi) return
 
     onSelect(emblaApi)
-    emblaApi.on("reInit", onSelect)
-    emblaApi.on("select", onSelect)
+    emblaApi.on('reInit', onSelect)
+    emblaApi.on('select', onSelect)
   }, [emblaApi, onSelect])
 
   return (
-    <div className={twMerge("overflow-hidden", className)}>
+    <div className={twMerge('overflow-hidden', className)}>
       <Layout>
         <LayoutColumn className="relative">
-          <div className="mb-8 md:mb-15 flex max-sm:flex-col justify-between sm:items-center gap-x-10 gap-y-6">
+          <div className="mb-8 flex justify-between gap-x-10 gap-y-6 max-sm:flex-col sm:items-center md:mb-15">
             {heading}
             {(arrows || button) && (
-              <div className="flex md:gap-6 shrink-0">
+              <div className="flex shrink-0 md:gap-6">
                 {button}
                 {arrows && (
                   <div className="flex gap-2">
@@ -66,15 +66,15 @@ export const Carousel = ({
                       onClick={scrollPrev}
                       disabled={prevBtnDisabled}
                       className={twJoin(
-                        "max-md:hidden transition-opacity",
-                        prevBtnDisabled && "opacity-50"
+                        'transition-opacity max-md:hidden',
+                        prevBtnDisabled && 'opacity-50'
                       )}
                       aria-label="Previous"
                     >
                       <IconCircle>
                         <Icon
                           name="arrow-left"
-                          className="w-6 h-6 text-black"
+                          className="h-6 w-6 text-black"
                         />
                       </IconCircle>
                     </button>
@@ -83,15 +83,15 @@ export const Carousel = ({
                       onClick={scrollNext}
                       disabled={nextBtnDisabled}
                       className={twJoin(
-                        "max-md:hidden transition-opacity",
-                        nextBtnDisabled && "opacity-50"
+                        'transition-opacity max-md:hidden',
+                        nextBtnDisabled && 'opacity-50'
                       )}
                       aria-label="Next"
                     >
                       <IconCircle>
                         <Icon
                           name="arrow-right"
-                          className="w-6 h-6 text-black"
+                          className="h-6 w-6 text-black"
                         />
                       </IconCircle>
                     </button>

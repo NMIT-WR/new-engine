@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import React from "react"
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from '@medusajs/types'
+import type React from 'react'
 
-import { Form, InputField } from "@/components/Forms"
-import { codeFormSchema } from "@modules/cart/components/discount-code"
-import { SubmitButton } from "@modules/common/components/submit-button"
-import { useApplyPromotions } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
+import { Form, InputField } from '@/components/Forms'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import { codeFormSchema } from '@modules/cart/components/discount-code'
+import { SubmitButton } from '@modules/common/components/submit-button'
+import { useApplyPromotions } from 'hooks/cart'
 
 type DiscountCodeProps = {
   cart: HttpTypes.StoreCart
@@ -31,14 +31,14 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
 
   return (
     <Form onSubmit={addPromotionCode} schema={codeFormSchema}>
-      <div className="flex max-sm:flex-col gap-x-6 gap-y-4 mb-8">
+      <div className="mb-8 flex gap-x-6 gap-y-4 max-sm:flex-col">
         <InputField
           name="code"
-          inputProps={{ autoFocus: false, className: "max-lg:h-12" }}
+          inputProps={{ autoFocus: false, className: 'max-lg:h-12' }}
           placeholder="Discount code"
           className="flex-1"
         />
-        <SubmitButton className="lg:h-auto max-h-14 grow-0 h-12">
+        <SubmitButton className="h-12 max-h-14 grow-0 lg:h-auto">
           Apply
         </SubmitButton>
       </div>

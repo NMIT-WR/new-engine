@@ -1,6 +1,6 @@
-import * as React from "react"
+import type * as React from 'react'
 
-export const User: React.FC<React.ComponentPropsWithoutRef<"svg">> = (
+export const User: React.FC<React.ComponentPropsWithoutRef<'svg'>> = (
   props
 ) => (
   <svg

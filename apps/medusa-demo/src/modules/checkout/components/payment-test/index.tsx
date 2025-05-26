@@ -1,10 +1,10 @@
-import { twMerge } from "tailwind-merge"
+import { twMerge } from 'tailwind-merge'
 
 const PaymentTest = ({ className }: { className?: string }) => {
   return (
     <span
       className={twMerge(
-        "bg-ui-tag-orange-bg text-ui-tag-orange-text border-ui-tag-orange-border inline-flex items-center gap-x-0.5 border box-border txt-compact-small-plus py-[5px] h-8 rounded-md px-2.5",
+        'txt-compact-small-plus box-border inline-flex h-8 items-center gap-x-0.5 rounded-md border border-ui-tag-orange-border bg-ui-tag-orange-bg px-2.5 py-[5px] text-ui-tag-orange-text',
         className
       )}
     >

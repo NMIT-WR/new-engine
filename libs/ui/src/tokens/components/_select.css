@@ -1,0 +1,76 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-select-bg: var(--color-base);
+  --color-select-border: var(--color-stroke-primary);
+  --color-select-fg: var(--color-fg-primary);
+  --color-select-placeholder: --alpha(
+    var(--color-fg-secondary) /
+    var(--opacity-placeholder)
+  );
+  --color-select-danger: var(--color-danger);
+  --opacity-select-disabled: var(--opacity-disabled);
+
+  /* === ROOT === */
+  --color-select-root-bg: var(--color-select-bg);
+  --gap-select-root: var(--spacing-2xs);
+
+  /* === LABEL === 
+  --color-label: var(--color-fg-primary);*/
+
+  /* === TRIGGER === */
+  --color-select-trigger-bg: var(--color-select-bg);
+  --color-select-trigger-border: var(--color-select-border);
+  --color-select-trigger-fg: var(--color-select-fg);
+  --color-select-trigger-placeholder: var(--color-select-placeholder);
+  --color-select-trigger-hover: var(--color-fill-hover);
+  --color-select-trigger-focus: var(--color-primary);
+  --padding-select-trigger: var(--spacing-3xs);
+
+  /* === CLEAR TRIGGER === */
+  --color-select-clear-trigger-fg: var(--color-select-fg);
+  --color-select-clear-trigger-bg: transparent;
+  --padding-select-clear-trigger: var(--spacing-3xs);
+
+  /* === DROPDOWN CONTENT === */
+  --color-select-content-bg: var(--color-surface);
+  --color-select-content-border: var(--color-stroke-primary);
+  --color-select-content-shadow: var(--shadow-md);
+
+  /* === OPTION ITEM === */
+  --color-select-item-bg: transparent;
+  --color-select-item-fg: var(--color-fg-primary);
+  --color-select-item-hover: var(--color-fill-hover);
+  --color-select-item-selected-bg: var(--color-overlay);
+  --color-select-item-selected-fg: var(--color-primary);
+  --padding-select-item: var(--spacing-2xs) var(--spacing-sm);
+
+  /* === INDICATOR === */
+  --color-select-indicator: var(--color-primary);
+
+  /* === PADDING === */
+  --padding-select-trigger: var(--spacing-xs);
+
+  /* === TYPOGRAPHY === */
+  --text-select-trigger: var(--text-md);
+  --text-select-item: var(--text-md);
+
+  /* === BORDERS & RADIUS === */
+  --radius-select: var(--radius-sm);
+  --border-select-width: var(--border-width-sm);
+}
+
+/* === ICONS === */
+@utility token-icon-select-indicator {
+  @apply icon-[mdi--chevron-down];
+}
+@utility token-icon-select-indicator-open {
+  @apply icon-[mdi--chevron-right];
+}
+
+@utility token-icon-select-check {
+  @apply icon-[mdi--check];
+}
+
+@utility token-icon-select-clear {
+  @apply icon-[mdi--close];
+}

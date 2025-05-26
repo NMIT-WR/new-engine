@@ -1,11 +1,11 @@
-import {Metadata} from "next"
-import {StoreRegion} from "@medusajs/types"
-import {listRegions} from "@lib/data/regions"
-import {Layout, LayoutColumn} from "@/components/Layout"
+import { Layout, LayoutColumn } from '@/components/Layout'
+import { listRegions } from '@lib/data/regions'
+import type { StoreRegion } from '@medusajs/types'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Learn how we protect your privacy",
+  title: 'Privacy Policy',
+  description: 'Learn how we protect your privacy',
 }
 export async function generateStaticParams() {
   const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
             .map((c) => c.iso_2)
             .filter(
               (value): value is string =>
-                typeof value === "string" && Boolean(value)
+                typeof value === 'string' && Boolean(value)
             )
         : []
     )
@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
         start={{ base: 1, lg: 2, xl: 3 }}
         end={{ base: 13, lg: 11, xl: 10 }}
       >
-        <h1 className="text-lg md:text-2xl mb-16 md:mb-25">
+        <h1 className="mb-16 text-lg md:mb-25 md:text-2xl">
           Privacy Policy for Sofa Society
         </h1>
       </LayoutColumn>

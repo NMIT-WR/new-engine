@@ -33,7 +33,8 @@
   /* === INCREMENT BUTTON === */
   --color-ni-increment-btn: var(--color-success);
   --ring-ni-increment-btn-ring: --alpha(
-    var(--color-success) / var(--opacity-ring)
+    var(--color-success) /
+    var(--opacity-ring)
   );
 
   --radius-ni: var(--radius-sm);

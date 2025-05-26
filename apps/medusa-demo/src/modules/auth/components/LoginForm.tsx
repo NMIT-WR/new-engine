@@ -1,15 +1,13 @@
-"use client"
-
-import * as React from "react"
-import { SubmitButton } from "@modules/common/components/submit-button"
-import { Form, InputField } from "@/components/Forms"
-import { LocalizedLink } from "@/components/LocalizedLink"
-import { twMerge } from "tailwind-merge"
-import { z } from "zod"
-import { useLogin } from "hooks/customer"
-import { withReactQueryProvider } from "@lib/util/react-query"
-import { useRouter } from "next/navigation"
-import { emailFormSchema } from "@modules/checkout/components/email"
+'use client'
+import { Form, InputField } from '@/components/Forms'
+import { LocalizedLink } from '@/components/LocalizedLink'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import type { emailFormSchema } from '@modules/checkout/components/email'
+import { SubmitButton } from '@modules/common/components/submit-button'
+import { useLogin } from 'hooks/customer'
+import { useRouter } from 'next/navigation'
+import { twMerge } from 'tailwind-merge'
+import { z } from 'zod'
 
 const loginFormSchema = z.object({
   email: z.string().email(),
@@ -33,7 +31,7 @@ export const LoginForm = withReactQueryProvider<{
           if (handleCheckout && res.success) {
             handleCheckout({ email: values.email })
           } else if (res.success) {
-            router.push(res.redirectUrl || "/")
+            router.push(res.redirectUrl || '/')
           }
         },
       }
@@ -41,11 +39,11 @@ export const LoginForm = withReactQueryProvider<{
   }
   return (
     <Form onSubmit={onSubmit} schema={loginFormSchema}>
-      <div className={twMerge("flex flex-col gap-6 md:gap-8", className)}>
+      <div className={twMerge('flex flex-col gap-6 md:gap-8', className)}>
         <InputField
           placeholder="Email"
           name="email"
-          inputProps={{ autoComplete: "email" }}
+          inputProps={{ autoComplete: 'email' }}
           className="flex-1"
         />
         <InputField
@@ -53,12 +51,12 @@ export const LoginForm = withReactQueryProvider<{
           name="password"
           type="password"
           className="flex-1"
-          inputProps={{ autoComplete: "current-password" }}
+          inputProps={{ autoComplete: 'current-password' }}
         />
         <LocalizedLink
           href="/auth/forgot-password"
           variant="underline"
-          className="self-start !pb-0 text-grayscale-500 leading-none"
+          className="!pb-0 self-start text-grayscale-500 leading-none"
         >
           Forgot password?
         </LocalizedLink>

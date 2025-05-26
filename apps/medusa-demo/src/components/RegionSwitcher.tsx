@@ -1,18 +1,16 @@
-"use client"
-
-import * as React from "react"
-import { usePathname } from "next/navigation"
-import * as ReactAria from "react-aria-components"
+'use client'
 import {
   UiSelectButton,
   UiSelectIcon,
   UiSelectListBox,
   UiSelectListBoxItem,
   UiSelectValue,
-} from "@/components/ui/Select"
-import { useCountryCode } from "hooks/country-code"
-import { useUpdateRegion } from "hooks/cart"
-import { withReactQueryProvider } from "@lib/util/react-query"
+} from '@/components/ui/Select'
+import { withReactQueryProvider } from '@lib/util/react-query'
+import { useUpdateRegion } from 'hooks/cart'
+import { useCountryCode } from 'hooks/country-code'
+import { usePathname } from 'next/navigation'
+import * as ReactAria from 'react-aria-components'
 
 export const RegionSwitcher = withReactQueryProvider<{
   countryOptions: {
@@ -52,17 +50,17 @@ export const RegionSwitcher = withReactQueryProvider<{
         <UiSelectButton variant="ghost" className={selectButtonClassName}>
           <UiSelectValue>
             {(item) =>
-              typeof item.selectedItem === "object" &&
+              typeof item.selectedItem === 'object' &&
               item.selectedItem !== null &&
-              "country" in item.selectedItem &&
-              typeof item.selectedItem.country === "string"
+              'country' in item.selectedItem &&
+              typeof item.selectedItem.country === 'string'
                 ? item.selectedItem.country.toUpperCase()
                 : item.defaultChildren
             }
           </UiSelectValue>
           <UiSelectIcon className={selectIconClassName} />
         </UiSelectButton>
-        <ReactAria.Popover placement="bottom right" className="max-w-61 w-full">
+        <ReactAria.Popover placement="bottom right" className="w-full max-w-61">
           <UiSelectListBox>
             {countryOptions.map((country) => (
               <UiSelectListBoxItem

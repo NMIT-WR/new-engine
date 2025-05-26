@@ -4,9 +4,7 @@
   "private": true,
   "author": "Kasper Fabricius Kristensen <kasper@medusajs.com> & Victor Gerbrands <victor@medusajs.com> (https://www.medusajs.com)",
   "description": "Next.js Starter to be used with Medusa V2",
-  "keywords": [
-    "medusa-storefront"
-  ],
+  "keywords": ["medusa-storefront"],
   "scripts": {
     "dev": "next dev --turbopack -p 8001",
     "build": "next build --turbopack",
