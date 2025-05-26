@@ -167,18 +167,8 @@ export function Combobox<T = unknown>({
       input: `${uniqueId}-input`,
       control: `${uniqueId}-control`,
     },
-    value:
-      value !== undefined
-        ? multiple
-          ? (value as string[])
-          : [value as string]
-        : undefined,
-    defaultValue:
-      defaultValue !== undefined
-        ? multiple
-          ? (defaultValue as string[])
-          : [defaultValue as string]
-        : undefined,
+    value: value as string[] | undefined,
+    defaultValue: defaultValue as string[] | undefined,
     multiple,
     onValueChange: ({ value: selectedValue }) => {
       onChange?.(selectedValue)
