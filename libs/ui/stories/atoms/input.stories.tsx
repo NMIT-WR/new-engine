@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { Error } from '../../src/atoms/error'
+import { ErrorText } from '../../src/atoms/error-text'
 import { Input } from '../../src/atoms/input'
 import { Label } from '../../src/atoms/label'
 
@@ -95,7 +95,7 @@ export const AllVariants: Story = {
             variant="error"
             placeholder="john@example.com"
           />
-          <Error>Email is in invalid format</Error>
+          <ErrorText>Email is in invalid format</ErrorText>
         </div>
 
         <div className="w-64">

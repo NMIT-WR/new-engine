@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Checkbox } from '../../src/atoms/checkbox'
+import { Checkbox } from '../../src/molecules/checkbox'
 
 const meta = {
-  title: 'Atoms/Checkbox',
+  title: 'Molecules/Checkbox',
   component: Checkbox,
   parameters: {
     layout: 'centered',
@@ -92,7 +92,7 @@ export const DisabledChecked: Story = {
 
 export const InvalidState: Story = {
   args: {
-    'aria-invalid': true,
+    invalid: true,
   },
 }
 
@@ -156,7 +156,7 @@ export const AllStates: Story = {
         </div>
 
         <div className="flex items-center gap-2">
-          <Checkbox id="invalid" aria-invalid />
+          <Checkbox id="invalid" invalid />
           <label htmlFor="invalid" className="text-sm">
             Invalid
           </label>

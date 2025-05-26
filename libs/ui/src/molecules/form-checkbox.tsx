@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { Checkbox, type CheckboxProps } from '../atoms/checkbox'
-import { Error } from '../atoms/error'
+import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Label } from '../atoms/label'
+import { Checkbox, type CheckboxProps } from './checkbox'
 
 type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
 
@@ -64,9 +64,9 @@ export function FormCheckbox({
       validateStatus={validateStatus}
       helpText={
         validateStatus === 'error' ? (
-          <Error id={helpTextId} size={size}>
+          <ErrorText id={helpTextId} size={size}>
             {helpText}
-          </Error>
+          </ErrorText>
         ) : helpText ? (
           <ExtraText id={helpTextId} size={size}>
             {helpText}

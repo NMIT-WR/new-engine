@@ -1,6 +1,11 @@
 import * as carousel from '@zag-js/carousel'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type ElementType, type ReactNode, useId } from 'react'
+import {
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type ReactNode,
+  useId,
+} from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { Image } from '../atoms/image'
@@ -9,8 +14,8 @@ type CarouselImageComponent<T extends ElementType = typeof Image> =
   T extends typeof Image
     ? typeof Image
     : T extends ElementType
-      ? 'src' extends keyof React.ComponentPropsWithoutRef<T>
-        ? 'alt' extends keyof React.ComponentPropsWithoutRef<T>
+      ? 'src' extends keyof ComponentPropsWithoutRef<T>
+        ? 'alt' extends keyof ComponentPropsWithoutRef<T>
           ? T
           : never
         : never
@@ -143,7 +148,7 @@ export type CarouselSlide = {
   content?: ReactNode
   src?: string
   alt?: string
-  imageProps?: Record<string, any>
+  imageProps?: Record<string, unknown>
 }
 
 interface CarouselProps<T extends ElementType = typeof Image>
@@ -198,7 +203,9 @@ export function Carousel<T extends ElementType = typeof Image>({
     slidesPerMove,
     spacing,
     padding,
+    dir,
     onPageChange,
+    ...props,
   })
 
   const api = carousel.connect(service, normalizeProps)
@@ -216,7 +223,7 @@ export function Carousel<T extends ElementType = typeof Image>({
     autoplayTrigger: autoplayTriggerSlot,
   } = carouselVariants({ size, objectFit, aspectRatio })
 
-  const ImageComponent = (imageAs || Image) as any
+  const ImageComponent = (imageAs || Image) as ElementType
 
   return (
     <div className={wrapper()}>

@@ -3,7 +3,7 @@ import * as select from '@zag-js/select'
 import { type ReactNode, useId } from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
 import { Button } from '../atoms/button'
-import { Error } from '../atoms/error'
+import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Icon } from '../atoms/icon'
 import { Label } from '../atoms/label'
@@ -13,7 +13,7 @@ export interface SelectOption {
   label: ReactNode
   value: string
   disabled?: boolean
-  [key: string]: any
+  [key: string]: unknown
 }
 
 // === COMPONENT VARIANTS ===
@@ -236,7 +236,7 @@ export function Select({
           </div>
         </Portal>
 
-        {invalid && <Error>{errorText}</Error>}
+        {invalid && <ErrorText>{errorText}</ErrorText>}
         {!invalid && helperText && <ExtraText>{helperText}</ExtraText>}
       </div>
     </form>

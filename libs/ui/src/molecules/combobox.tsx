@@ -4,7 +4,8 @@ import { Portal, mergeProps, normalizeProps, useMachine } from '@zag-js/react'
 import { useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
-import { Error } from '../atoms/error'
+
+import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Icon } from '../atoms/icon'
 import { Input } from '../atoms/input'
@@ -175,7 +176,7 @@ export function Combobox<T = unknown>({
       onChange?.(selectedValue)
     },
     onInputValueChange: ({ inputValue }) => {
-      let newFilteredItems
+      let newFilteredItems: typeof items
       if (inputValue) {
         const filtered = items.filter((item) =>
           i18nFilter.contains(item.label, inputValue)
@@ -282,11 +283,15 @@ export function Combobox<T = unknown>({
       </Portal>
 
       {helper && !error && (
-        <ExtraText data-validation={validationState} size={size} className={helperSlot()}>
+        <ExtraText
+          data-validation={validationState}
+          size={size}
+          className={helperSlot()}
+        >
           {helper}
         </ExtraText>
       )}
-      {error && <Error>{error}</Error>}
+      {error && <ErrorText>{error}</ErrorText>}
     </div>
   )
 }

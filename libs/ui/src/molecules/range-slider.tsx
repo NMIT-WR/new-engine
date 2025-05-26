@@ -2,10 +2,10 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import * as slider from '@zag-js/slider'
 import { useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
+import { ErrorText } from '../atoms/error-text'
+import { ExtraText } from '../atoms/extra-text'
+import { Label } from '../atoms/label'
 import { tv } from '../utils'
-import { Error } from './error'
-import { ExtraText } from './extra-text'
-import { Label } from './label'
 
 const rangeSliderVariants = tv({
   slots: {
@@ -268,7 +268,7 @@ export function RangeSlider({
         <div className={footer()}>
           {/* Always render both containers to maintain consistent width */}
           <div className={error ? 'block' : 'invisible h-0 overflow-hidden'}>
-            <Error>{errorText}</Error>
+            <ErrorText>{errorText}</ErrorText>
           </div>
           <div
             className={

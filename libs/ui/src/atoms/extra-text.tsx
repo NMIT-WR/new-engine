@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 
@@ -19,7 +19,7 @@ const extraTextVariants = tv({
 export interface ExtraTextProps
   extends HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof extraTextVariants> {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export function ExtraText({ children, size, ...props }: ExtraTextProps) {
