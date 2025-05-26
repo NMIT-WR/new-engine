@@ -209,7 +209,7 @@ export function TreeView({
     rootNode: { id: 'ROOT', name: '', children: data },
   })
 
-  const service = useMachine(tree.machine as any, {
+  const service = useMachine(tree.machine, {
     id,
     collection,
     dir,

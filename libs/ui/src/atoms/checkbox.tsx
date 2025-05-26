@@ -1,6 +1,6 @@
 import * as checkbox from '@zag-js/checkbox'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type InputHTMLAttributes, type Ref, useId } from 'react'
+import { type ChangeEvent, type InputHTMLAttributes, type Ref, useId } from 'react'
 import { tv } from '../utils'
 
 const checkboxVariants = tv({
@@ -23,13 +23,15 @@ const checkboxVariants = tv({
   ],
 })
 
-export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   ref?: Ref<HTMLInputElement>
-  readonly?: boolean
+  readOnly?: boolean
 
   defaultChecked?: boolean
   indeterminate?: boolean
-  'aria-invalid'?: boolean
+  invalid?: boolean
+
+  onChange?: (checked: boolean | "indeterminate") => void
 }
 
 export function Checkbox({
@@ -41,24 +43,24 @@ export function Checkbox({
   disabled,
   onChange,
   className,
-  'aria-invalid': ariaInvalid,
-  readonly,
+  invalid,
+  readOnly,
 }: CheckboxProps) {
   const fallbackId = useId()
-  const service = useMachine(checkbox.machine as any, {
+  const service = useMachine(checkbox.machine, {
     id: id || fallbackId,
     name,
     disabled,
     defaultChecked,
-    readonly,
+    readOnly,
     checked: indeterminate ? 'indeterminate' : checked,
-    'aria-invalid': ariaInvalid,
-    onCheckedChange: (details: any) => {
+    invalid: invalid,
+    onCheckedChange: (details) => {
       onChange?.(details.checked)
     },
   })
 
-  const api = checkbox.connect(service as any, normalizeProps)
+  const api = checkbox.connect(service, normalizeProps)
 
   return (
     <label {...api.getRootProps()}>
@@ -67,7 +69,6 @@ export function Checkbox({
         className={checkboxVariants({
           className,
         })}
-        data-invalid={ariaInvalid}
       />
       <input {...api.getHiddenInputProps()} />
     </label>
