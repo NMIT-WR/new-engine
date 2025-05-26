@@ -8,7 +8,14 @@
       "**/.medusa/**/*",
       "**/migrations/**/*",
       "**/.next/**/*",
-      "check-env-variables.js"
+      "check-env-variables.js",
+      "apps/medusa-fe/**/*",
+      "apps/medusa-demo/**/*",
+      "apps/medusa-be/**/*",
+      "libs/data-layer/**/*",
+      "*.stories.tsx",
+      ".storybook/main.ts",
+      "libs/ui/src/tokens/index.css"
     ]
   },
   "vcs": {
@@ -16,6 +23,13 @@
     "clientKind": "git",
     "useIgnoreFile": true,
     "defaultBranch": "master"
+  },
+  "linter": {
+    "rules": {
+      "nursery": {
+        "noNestedTernary": "off"
+      }
+    }
   },
   "javascript": {
     "formatter": {

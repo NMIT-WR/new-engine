@@ -151,7 +151,6 @@ export const ControlledSwitch: Story = {
     const [isChecked, setIsChecked] = useState(false)
 
     const handleChange = (checked: boolean) => {
-      console.log('Switch state changed:', checked)
       setIsChecked(checked)
     }
 

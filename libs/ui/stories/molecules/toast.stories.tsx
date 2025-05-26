@@ -287,8 +287,7 @@ export const PauseResumeExample: Story = {
             </Button>
 
             {toastId && (
-              <>
-                <Button
+              <Button
                   size="sm"
                   variant="secondary"
                   onClick={() => {
@@ -302,7 +301,6 @@ export const PauseResumeExample: Story = {
                 >
                   {isPaused ? 'Resume Timer' : 'Pause Timer'}
                 </Button>
-              </>
             )}
           </div>
 

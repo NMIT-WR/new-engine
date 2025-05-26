@@ -65,7 +65,7 @@ export const Default: Story = {
           items={basicSteps}
           currentStep={currentStep}
           onStepChange={setCurrentStep}
-          onStepComplete={() => console.log('All steps completed!')}
+          onStepComplete={() => undefined}
           completeText={completeText}
         />
       </div>

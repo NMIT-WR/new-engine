@@ -457,26 +457,7 @@ export const TypeaheadDebugDemo: Story = {
       { id: 'beta', name: 'Beta' },
       { id: 'gamma', name: 'Gamma' },
     ]
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log(
-        `[Wrapper Div] KeyDown: ${e.key}, ` +
-          `Event Target ID: ${
-            e.target instanceof HTMLElement ? e.target.id : 'N/A'
-          }, ` +
-          `Event Target data-part: ${
-            e.target instanceof HTMLElement ? e.target.dataset.part : 'N/A'
-          }, ` +
-          `Active Element ID: ${
-            document.activeElement instanceof HTMLElement
-              ? document.activeElement.id
-              : 'N/A'
-          }, ` +
-          `Active Element data-part: ${
-            document.activeElement instanceof HTMLElement
-              ? document.activeElement.dataset.part
-              : 'N/A'
-          }`
-      )
+    const handleKeyDown = (_e: React.KeyboardEvent<HTMLDivElement>) => {
     }
 
     return (

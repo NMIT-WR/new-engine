@@ -67,11 +67,13 @@ export function FormCheckbox({
           <ErrorText id={helpTextId} size={size}>
             {helpText}
           </ErrorText>
-        ) : helpText ? (
-          <ExtraText id={helpTextId} size={size}>
-            {helpText}
-          </ExtraText>
-        ) : null
+        ) : (
+          (helpText ?? (
+            <ExtraText id={helpTextId} size={size}>
+              {helpText}
+            </ExtraText>
+          ))
+        )
       }
       {...props}
     />

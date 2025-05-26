@@ -75,7 +75,6 @@ export const ControlledAccordion: Story = {
     const [activeItems, setActiveItems] = useState<string[]>(['item-1'])
 
     const handleValueChange = (value: string[]) => {
-      console.log('Active accordion items:', value)
       setActiveItems(value)
     }
 
