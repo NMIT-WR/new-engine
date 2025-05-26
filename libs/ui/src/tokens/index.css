@@ -11,7 +11,7 @@
 @import "./_semantic.css";
 
 /* Component tokens (dependent on semantic) */
-@import "./components/index.css";
+@import "./components/components.css";
 
 :root {
   color-scheme: light dark;
