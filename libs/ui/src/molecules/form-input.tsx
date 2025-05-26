@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Error } from '../atoms/error'
+import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Input, type InputProps } from '../atoms/input'
 import { Label } from '../atoms/label'
@@ -69,9 +69,9 @@ export function FormInput({
       validateStatus={validateStatus}
       helpText={
         validateStatus === 'error' ? (
-          <Error id={helpTextId} size={size} showIcon>
+          <ErrorText id={helpTextId} size={size} showIcon>
             {helpText}
-          </Error>
+          </ErrorText>
         ) : (
           <ExtraText id={helpTextId} size={size}>
             {helpText}

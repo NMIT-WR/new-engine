@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { Error } from '../../src/atoms/error'
+import { ErrorText } from '../../src/atoms/error-text'
 import { ExtraText } from '../../src/atoms/extra-text'
 import { Label } from '../../src/atoms/label'
-import { RangeSlider } from '../../src/atoms/range-slider'
 import { Textarea } from '../../src/atoms/textarea'
 import { Combobox } from '../../src/molecules/combobox'
 import { FormCheckbox } from '../../src/molecules/form-checkbox'
@@ -153,7 +152,7 @@ export const AllFormInputs: Story = {
                   }
                 />
                 {validateStatus === 'error' ? (
-                  <Error size={size}>{helpText}</Error>
+                  <ErrorText size={size}>{helpText}</ErrorText>
                 ) : (
                   <ExtraText size={size}>{helpText}</ExtraText>
                 )}
@@ -171,7 +170,7 @@ export const AllFormInputs: Story = {
                   size={size}
                 />
                 {validateStatus === 'error' ? (
-                  <Error size={size}>{helpText}</Error>
+                  <ErrorText size={size}>{helpText}</ErrorText>
                 ) : (
                   <ExtraText size={size}>{helpText}</ExtraText>
                 )}
@@ -185,7 +184,7 @@ export const AllFormInputs: Story = {
                   items={comboboxOptions}
                 />
                 {validateStatus === 'error' ? (
-                  <Error size={size}>{helpText}</Error>
+                  <ErrorText size={size}>{helpText}</ErrorText>
                 ) : (
                   <ExtraText size={size}>{helpText}</ExtraText>
                 )}
@@ -199,7 +198,7 @@ export const AllFormInputs: Story = {
                 <Label size={size}>Numeric Input</Label>
                 <NumericInput placeholder="Enter number" size={size} />
                 {validateStatus === 'error' ? (
-                  <Error size={size}>{helpText}</Error>
+                  <ErrorText size={size}>{helpText}</ErrorText>
                 ) : (
                   <ExtraText size={size}>{helpText}</ExtraText>
                 )}
@@ -225,7 +224,7 @@ export const AllFormInputs: Story = {
                     Switch Option
                   </Switch>
                   {validateStatus === 'error' ? (
-                    <Error size={size}>{helpText}</Error>
+                    <ErrorText size={size}>{helpText}</ErrorText>
                   ) : (
                     <ExtraText size={size}>{helpText}</ExtraText>
                   )}
