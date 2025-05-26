@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import type React from 'react'
 import { useState } from 'react'
 import { Button } from '../../src/atoms/button'
 import { type TreeNode, TreeView } from '../../src/molecules/tree-view'
@@ -41,7 +40,7 @@ const fileSystemData: TreeNode[] = [
     children: [
       { id: 'image1', name: 'photo.jpg', icon: 'icon-[mdi--file-image]' },
       { id: 'video1', name: 'movie.mp4', icon: 'icon-[mdi--file-video]' },
-      { id: 'archive1', name: 'backup.zip', icon: 'icon-[mdi--file-zip]' },
+      { id: 'archive1', name: 'backup.zip', icon: 'icon-[file-icons--progress]' },
     ],
   },
   {
@@ -67,12 +66,12 @@ const fileSystemData: TreeNode[] = [
           {
             id: 'package',
             name: 'package.json',
-            icon: 'icon-[mdi--file-json]',
+            icon: 'icon-[file-icons--json5]',
           },
           {
             id: 'readme',
             name: 'README.md',
-            icon: 'icon-[mdi--file-markdown]',
+            icon: 'icon-[file-icons--mdx]',
           },
         ],
       },
@@ -236,6 +235,7 @@ export const SelectionModes: Story = {
       <div>
         <h3 className="mb-4 font-medium text-sm">Single Selection</h3>
         <TreeView
+          id=""
           data={organizationData}
           selectionMode="single"
           defaultExpandedValue={['company', 'engineering']}
@@ -245,6 +245,7 @@ export const SelectionModes: Story = {
       <div>
         <h3 className="mb-4 font-medium text-sm">Multiple Selection</h3>
         <TreeView
+          id=""
           data={organizationData}
           selectionMode="multiple"
           defaultExpandedValue={['company', 'engineering']}
@@ -325,6 +326,7 @@ export const CustomIcons: Story = {
 
     return (
       <TreeView
+        id=""
         data={techStackData}
         label="Tech Stack with Custom Icons"
         defaultExpandedValue={['frontend', 'backend', 'react', 'api']}
@@ -366,6 +368,7 @@ export const ControlledState: Story = {
         </div>
 
         <TreeView
+          id=""
           data={fileSystemData}
           label="Controlled Tree"
           selectionMode="multiple"
@@ -418,6 +421,7 @@ export const DeepNesting: Story = {
 
     return (
       <TreeView
+        id=""
         data={deepData}
         label="Deep Nesting Example"
         defaultExpandedValue={['level1', 'level2', 'level3', 'level4']}
@@ -478,7 +482,7 @@ export const TypeaheadDebugDemo: Story = {
           className="rounded-lg bg-blue-50/10 p-4"
           onKeyDown={handleKeyDown}
         >
-          <TreeView data={flatData} label="Typeahead Debug" typeahead={true} />
+          <TreeView id="" data={flatData} label="Typeahead Debug" typeahead={true} />
         </div>
       </div>
     )

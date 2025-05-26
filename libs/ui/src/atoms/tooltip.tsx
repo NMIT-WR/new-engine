@@ -76,7 +76,7 @@ export function Tooltip({
   const generatedId = useId()
   const id = MRAId || generatedId
 
-  const service = useMachine(tooltip.machine as any, {
+  const service = useMachine(tooltip.machine, {
     id,
     dir,
     open,

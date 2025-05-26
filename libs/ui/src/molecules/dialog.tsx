@@ -76,8 +76,7 @@ export function Dialog({
   const generatedId = useId()
   const uniqueId = id || generatedId
 
-  // Use type assertions to work around the type issues
-  const service = useMachine(dialog.machine as any, {
+  const service = useMachine(dialog.machine, {
     id: uniqueId,
 
     onOpenChange,
