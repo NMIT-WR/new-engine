@@ -1,27 +1,32 @@
 import * as checkbox from '@zag-js/checkbox'
 import { normalizeProps, useMachine } from '@zag-js/react'
 import { type InputHTMLAttributes, type Ref, useId } from 'react'
+import { ErrorText } from '../atoms/error-text'
+import { ExtraText } from '../atoms/extra-text'
 import { Label } from '../atoms/label'
 import { tv } from '../utils'
 
 const checkboxVariants = tv({
-  base: [
-    'appearance-none relative cursor-pointer',
-    'h-checkbox w-checkbox',
-    'border border-checkbox-border rounded-checkbox',
-    'bg-checkbox data-[state=checked]:bg-checkbox-checked border-checkbox',
-    /* center icon, grid and place items do not work e.g. flex */
-    'after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2',
-    'data-[state=checked]:after:token-icon-checkbox text-icon-text data-[state=checked]:text-checkbox-icon-md',
-    'data-[disabled]:opacity-checkbox-disabled data-[disabled]:cursor-not-allowed data-[disabled]:grayscale',
-    'transition-all duration-200',
-    'data-[focus]:outline-none data-[focus]:ring-2 data-[focus]:ring-checkbox-ring data-[focus]:ring-offset-checkbox-offset data-[focus]:ring-offset-2',
-    'data-[invalid]:ring-checkbox-error ',
-    'data-[invalid]:border-checkbox-border-error',
-    'data-[state=indeterminate]:bg-checkbox-indeterminate',
-    'data-[state=indeterminate]:after:w-indeterminate data-[state=indeterminate]:after:h-indeterminate',
-    'data-[state=indeterminate]:after:bg-icon-text',
-  ],
+  slots: {
+    root: [],
+    checkbox: [
+      'appearance-none relative cursor-pointer',
+      'h-checkbox w-checkbox',
+      'border border-checkbox-border rounded-checkbox',
+      'bg-checkbox data-[state=checked]:bg-checkbox-checked border-checkbox',
+      /* center icon, grid and place items do not work e.g. flex */
+      'after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2',
+      'data-[state=checked]:after:token-icon-checkbox text-icon-text data-[state=checked]:text-checkbox-icon-md',
+      'data-[disabled]:opacity-checkbox-disabled data-[disabled]:cursor-not-allowed data-[disabled]:grayscale',
+      'transition-all duration-200',
+      'data-[focus]:outline-none data-[focus]:ring-2 data-[focus]:ring-checkbox-ring data-[focus]:ring-offset-checkbox-offset data-[focus]:ring-offset-2',
+      'data-[invalid]:ring-checkbox-error ',
+      'data-[invalid]:border-checkbox-border-error',
+      'data-[state=indeterminate]:bg-checkbox-indeterminate',
+      'data-[state=indeterminate]:after:w-indeterminate data-[state=indeterminate]:after:h-indeterminate',
+      'data-[state=indeterminate]:after:bg-icon-text',
+    ],
+  },
 })
 
 export interface CheckboxProps
@@ -32,6 +37,10 @@ export interface CheckboxProps
   defaultChecked?: boolean
   indeterminate?: boolean
   invalid?: boolean
+
+  labelText?: string
+  helperText?: string
+  errorText?: string
 
   onChange?: (checked: boolean | 'indeterminate') => void
 }
@@ -47,6 +56,9 @@ export function Checkbox({
   className,
   invalid,
   readOnly,
+  labelText,
+  errorText,
+  helperText,
 }: CheckboxProps) {
   const fallbackId = useId()
   const service = useMachine(checkbox.machine, {
@@ -64,17 +76,31 @@ export function Checkbox({
 
   const api = checkbox.connect(service, normalizeProps)
 
+  const { checkbox: checkboxSlot, root } = checkboxVariants({
+    className,
+  })
+
   return (
-    <Label {...api.getRootProps()}>
-      <div
-        {...api.getControlProps()}
-        className={checkboxVariants({
-          className,
-        })}
-        data-invalid={invalid}
-      />
-      <input {...api.getHiddenInputProps()} />
-    </Label>
+    <div className={root({ className })}>
+      <Label {...api.getRootProps()}>
+        <div
+          {...api.getControlProps()}
+          className={checkboxSlot({
+            className,
+          })}
+          data-invalid={invalid}
+        />
+        <input {...api.getHiddenInputProps()} />
+        {labelText && <Label {...api.getLabelProps()}>{labelText}</Label>}
+      </Label>
+
+      {(errorText || helperText) && (
+        <div>
+          {invalid && errorText && <ErrorText>{errorText}</ErrorText>}
+          {!invalid && helperText && <ExtraText>{helperText}</ExtraText>}
+        </div>
+      )}
+    </div>
   )
 }
 

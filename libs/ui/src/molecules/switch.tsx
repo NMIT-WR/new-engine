@@ -2,6 +2,8 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import * as zagSwitch from '@zag-js/switch'
 import { type ReactNode, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
+import { ErrorText } from '../atoms/error-text'
+import { ExtraText } from '../atoms/extra-text'
 import { Label } from '../atoms/label'
 import { tv } from '../utils'
 
@@ -57,6 +59,8 @@ export interface SwitchProps extends VariantProps<typeof switchVariants> {
   onCheckedChange?: (checked: boolean) => void
   className?: string
   dir?: 'ltr' | 'rtl'
+  helperText?: string
+  errorText?: string
 }
 
 export function Switch({
@@ -73,6 +77,8 @@ export function Switch({
   children,
   className,
   onCheckedChange,
+  helperText,
+  errorText,
 }: SwitchProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -98,16 +104,26 @@ export function Switch({
   })
 
   return (
-    <Label className={root()} {...api.getRootProps()}>
-      <input className={hiddenInput()} {...api.getHiddenInputProps()} />
-      <span className={control()} {...api.getControlProps()}>
-        <span className={thumb()} {...api.getThumbProps()} />
-      </span>
-      {children && (
-        <span className={label()} {...api.getLabelProps()}>
-          {children}
+    <div>
+      <Label className={root()} {...api.getRootProps()}>
+        <input className={hiddenInput()} {...api.getHiddenInputProps()} />
+        <span className={control()} {...api.getControlProps()}>
+          <span className={thumb()} {...api.getThumbProps()} />
         </span>
+        {children && (
+          <span className={label()} {...api.getLabelProps()}>
+            {children}
+          </span>
+        )}
+      </Label>
+      {(errorText || helperText) && (
+        <div className="pl-switch-text-offset">
+          {invalid && errorText && <ErrorText size="sm">{errorText}</ErrorText>}
+          {!invalid && helperText && (
+            <ExtraText size="sm">{helperText}</ExtraText>
+          )}
+        </div>
       )}
-    </Label>
+    </div>
   )
 }
