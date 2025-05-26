@@ -1,6 +1,6 @@
 import * as checkbox from '@zag-js/checkbox'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type ChangeEvent, type InputHTMLAttributes, type Ref, useId } from 'react'
+import { type InputHTMLAttributes, type Ref, useId } from 'react'
 import { tv } from '../utils'
 
 const checkboxVariants = tv({
