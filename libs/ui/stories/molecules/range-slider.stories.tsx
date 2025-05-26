@@ -5,10 +5,10 @@ import { Button } from '../../src/atoms/button'
 import {
   RangeSlider,
   type RangeSliderProps,
-} from '../../src/atoms/range-slider'
+} from '../../src/molecules/range-slider'
 
 const meta: Meta<typeof RangeSlider> = {
-  title: 'Atoms/RangeSlider',
+  title: 'Molecules/RangeSlider',
   component: RangeSlider,
   parameters: {
     layout: 'centered',
