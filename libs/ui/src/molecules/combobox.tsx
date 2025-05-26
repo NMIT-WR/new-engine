@@ -120,6 +120,7 @@ export function Combobox<T = unknown>({
   id,
   name,
   label,
+  size,
   placeholder = 'Select option',
   disabled = false,
   readOnly = false,
@@ -194,7 +195,7 @@ export function Combobox<T = unknown>({
   const api = combobox.connect(service, normalizeProps)
 
   const inputProps = api.getInputProps()
-  const { size: _inputSize, ...restInputProps } = inputProps
+  const { ...restInputProps } = inputProps
 
   const {
     root,
@@ -218,7 +219,7 @@ export function Combobox<T = unknown>({
   return (
     <div className={root()}>
       {label && (
-        <Label className={labelStyles()} {...api.getLabelProps()}>
+        <Label className={labelStyles()} size={size} {...api.getLabelProps()}>
           {label}
         </Label>
       )}
@@ -233,13 +234,14 @@ export function Combobox<T = unknown>({
           placeholder={placeholder}
           name={name}
           required={required}
+          size={size}
         />
 
         {clearable && api.value.length > 0 && (
           <Button
             className={clearTrigger()}
             theme="borderless"
-            size="sm"
+            size={size}
             {...api.getClearTriggerProps()}
           >
             <Icon icon={'token-icon-combobox-clear'} size="current" />
@@ -249,6 +251,7 @@ export function Combobox<T = unknown>({
         <Button
           {...customTriggerProps}
           theme="borderless"
+          size={size}
           className={trigger()}
         >
           <Icon icon="token-icon-combobox-chevron" />
@@ -279,7 +282,7 @@ export function Combobox<T = unknown>({
       </Portal>
 
       {helper && !error && (
-        <ExtraText data-validation={validationState} className={helperSlot()}>
+        <ExtraText data-validation={validationState} size={size} className={helperSlot()}>
           {helper}
         </ExtraText>
       )}
