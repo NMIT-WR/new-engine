@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import * as zagSwitch from '@zag-js/switch'
 import { type ReactNode, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
+import { Label } from '../atoms/label'
 import { tv } from '../utils'
 
 const switchVariants = tv({
@@ -25,7 +26,7 @@ const switchVariants = tv({
       'data-[disabled]:border-switch-border-disabled',
       'data-[focus]:ring-2 data-[focus]:ring-offset-2 data-[focus]:ring-offset-base',
       'data-[focus]:ring-switch-ring data-[focus]:outline-none',
-      ' data-[invalid]:bg-switch-invalid data-[invalid]:ring-switch-ring-invalid',
+      'data-[invalid]:bg-switch-invalid data-[invalid]:ring-switch-ring-invalid',
     ],
     thumb: [
       'block rounded-full h-thumb-height aspect-square bg-switch-thumb',
@@ -97,7 +98,7 @@ export function Switch({
   })
 
   return (
-    <label className={root()} {...api.getRootProps()}>
+    <Label className={root()} {...api.getRootProps()}>
       <input className={hiddenInput()} {...api.getHiddenInputProps()} />
       <span className={control()} {...api.getControlProps()}>
         <span className={thumb()} {...api.getThumbProps()} />
@@ -107,6 +108,6 @@ export function Switch({
           {children}
         </span>
       )}
-    </label>
+    </Label>
   )
 }

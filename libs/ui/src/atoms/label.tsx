@@ -9,13 +9,14 @@ const labelVariants = tv({
       sm: 'text-label-sm',
       md: 'text-label-md',
       lg: 'text-label-lg',
+      current: '',
     },
     disabled: {
       true: 'text-label-disabled',
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: 'current',
     disabled: false,
   },
 })
@@ -43,8 +44,8 @@ export function Label({
         disabled,
         className,
       })}
-      htmlFor={props.htmlFor}
       {...props}
+      htmlFor={props.htmlFor}
     >
       {children}
       {required && <span className="ml-label text-label-required">*</span>}
