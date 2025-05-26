@@ -16,6 +16,7 @@
 @import "./molecules/_combobox.css";
 @import "./molecules/_dialog.css";
 @import "./molecules/_numeric-input.css";
+@import "./molecules/_pagination.css";
 @import "./molecules/_product-card.css";
 @import "./molecules/_search-form.css";
 @import "./molecules/_select.css";

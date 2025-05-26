@@ -3,7 +3,7 @@ import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 import { Icon, type IconType } from './icon'
 
-const buttonVariants = tv({
+export const buttonVariants = tv({
   base: [
     'relative',
     'inline-flex items-center justify-center cursor-pointer',
