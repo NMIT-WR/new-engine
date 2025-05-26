@@ -81,7 +81,7 @@ const comboboxVariants = tv({
 })
 
 export type ComboboxItem<T = unknown> = {
-  id: string
+  id?: string
   label: string
   value: string
   disabled?: boolean
