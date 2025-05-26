@@ -1,59 +1,60 @@
-import * as carousel from "@zag-js/carousel";
-import { useMachine, normalizeProps } from "@zag-js/react";
-import { useId, type ReactNode, type ElementType } from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { Button } from "../atoms/button";
-import { Image } from "../atoms/image";
+import * as carousel from '@zag-js/carousel'
+import { normalizeProps, useMachine } from '@zag-js/react'
+import { type ElementType, type ReactNode, useId } from 'react'
+import { type VariantProps, tv } from 'tailwind-variants'
+import { Button } from '../atoms/button'
+import { Image } from '../atoms/image'
 
-type CarouselImageComponent<T extends ElementType = typeof Image> = T extends typeof Image
-  ? typeof Image
-  : T extends ElementType
-    ? 'src' extends keyof React.ComponentPropsWithoutRef<T>
-      ? 'alt' extends keyof React.ComponentPropsWithoutRef<T>
-        ? T
+type CarouselImageComponent<T extends ElementType = typeof Image> =
+  T extends typeof Image
+    ? typeof Image
+    : T extends ElementType
+      ? 'src' extends keyof React.ComponentPropsWithoutRef<T>
+        ? 'alt' extends keyof React.ComponentPropsWithoutRef<T>
+          ? T
+          : never
         : never
       : never
-    : never;
 
 const carouselVariants = tv({
   slots: {
-    wrapper: ["relative"],
-    root: ["relative overflow-hidden", "rounded-carousel"],
+    wrapper: ['relative'],
+    root: ['relative overflow-hidden', 'rounded-carousel'],
     control: [
-      "flex absolute bottom-0 left-1/2 -translate-x-1/2",
-      "gap-carousel-control p-carousel-control",
-      "bg-carousel-control-bg",
-      "rounded-carousel",
+      'flex absolute bottom-0 left-1/2 -translate-x-1/2',
+      'gap-carousel-control p-carousel-control',
+      'bg-carousel-control-bg',
+      'rounded-carousel',
     ],
     slideGroup: [
-      "overflow-hidden",
-      "scrollbar-hide",
-      "data-[dragging]:cursor-grabbing",
+      'overflow-hidden',
+      'scrollbar-hide',
+      'data-[dragging]:cursor-grabbing',
     ],
     slide: [
-      "relative flex-shrink-0",
-      "flex items-center justify-center",
-      "overflow-hidden",
+      'relative flex-shrink-0',
+      'flex items-center justify-center',
+      'overflow-hidden',
     ],
     prevTrigger: [],
     nextTrigger: [],
     indicatorGroup: [
-      "flex justify-center w-full items-center gap-carousel-indicator",
+      'flex justify-center w-full items-center gap-carousel-indicator',
     ],
     indicator: [
-      "aspect-carousel-indicator w-carousel-indicator",
-      "data-[current]:bg-carousel-indicator-active",
+      'aspect-carousel-indicator w-carousel-indicator',
+      'data-[current]:bg-carousel-indicator-active',
     ],
-    autoplayIcon: ["icon-[mdi--play]", "data-[pressed=true]:icon-[mdi--pause]"],
-    autoplayTrigger: ["absolute top-1 right-1 z-10"],
-    spacer: ["flex-1"],
+    autoplayIcon: ['icon-[mdi--play]', 'data-[pressed=true]:icon-[mdi--pause]'],
+    autoplayTrigger: ['absolute top-1 right-1 z-10'],
+    spacer: ['flex-1'],
   },
   compoundSlots: [
     {
-      slots: ["autoplayTrigger", "indicator", "prevTrigger", "nextTrigger"],
+      slots: ['autoplayTrigger', 'indicator', 'prevTrigger', 'nextTrigger'],
       class: [
-        "p-carousel-trigger bg-carousel-trigger-bg",
-        "focus:outline-none text-carousel-trigger-text focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2",
+        'p-carousel-trigger bg-carousel-trigger-bg',
+        'focus:outline-none text-carousel-trigger-text focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2',
       ],
     },
   ],
@@ -61,99 +62,99 @@ const carouselVariants = tv({
   variants: {
     objectFit: {
       cover: {
-        slide: "*:w-full *:h-full *:object-cover",
+        slide: '*:w-full *:h-full *:object-cover',
       },
       contain: {
-        slide: "*:w-full *:h-full *:object-contain",
+        slide: '*:w-full *:h-full *:object-contain',
       },
       fill: {
-        slide: "*:w-full *:h-full *:object-fill",
+        slide: '*:w-full *:h-full *:object-fill',
       },
       none: {
-        slide: "",
+        slide: '',
       },
     },
 
     aspectRatio: {
       square: {
-        slide: "aspect-carousel-square",
+        slide: 'aspect-carousel-square',
       },
       landscape: {
-        slide: "aspect-carousel-landscape",
+        slide: 'aspect-carousel-landscape',
       },
       portrait: {
-        slide: "aspect-carousel-portrait",
+        slide: 'aspect-carousel-portrait',
       },
       wide: {
-        slide: "aspect-carousel-wide",
+        slide: 'aspect-carousel-wide',
       },
       none: {
-        slide: "", //  custom content
+        slide: '', //  custom content
       },
     },
     size: {
       sm: {
         root: [
-          "data-[orientation=horizontal]:max-w-carousel-root-sm",
-          "data-[orientation=vertical]:max-h-carousel-root-sm",
+          'data-[orientation=horizontal]:max-w-carousel-root-sm',
+          'data-[orientation=vertical]:max-h-carousel-root-sm',
         ],
         slide: [
-          "data-[orientation=horizontal]:max-w-carousel-root-sm",
-          "data-[orientation=vertical]:max-h-carousel-root-sm",
+          'data-[orientation=horizontal]:max-w-carousel-root-sm',
+          'data-[orientation=vertical]:max-h-carousel-root-sm',
         ],
       },
       md: {
         root: [
-          "data-[orientation=horizontal]:max-w-carousel-root-md",
-          "data-[orientation=vertical]:max-h-carousel-root-md",
+          'data-[orientation=horizontal]:max-w-carousel-root-md',
+          'data-[orientation=vertical]:max-h-carousel-root-md',
         ],
         slide: [
-          "data-[orientation=horizontal]:max-w-carousel-root-md",
-          "data-[orientation=vertical]:max-h-carousel-root-md",
+          'data-[orientation=horizontal]:max-w-carousel-root-md',
+          'data-[orientation=vertical]:max-h-carousel-root-md',
         ],
       },
       lg: {
         root: [
-          "data-[orientation=horizontal]:max-w-carousel-root-lg",
-          "data-[orientation=vertical]:max-h-carousel-root-lg",
+          'data-[orientation=horizontal]:max-w-carousel-root-lg',
+          'data-[orientation=vertical]:max-h-carousel-root-lg',
         ],
         slide: [
-          "data-[orientation=horizontal]:max-w-carousel-root-lg",
-          "data-[orientation=vertical]:max-h-carousel-root-lg",
+          'data-[orientation=horizontal]:max-w-carousel-root-lg',
+          'data-[orientation=vertical]:max-h-carousel-root-lg',
         ],
       },
       full: {
         root: [
-          "data-[orientation=horizontal]:w-full",
-          "data-[orientation=vertical]:h-full",
+          'data-[orientation=horizontal]:w-full',
+          'data-[orientation=vertical]:h-full',
         ],
       },
     },
   },
   defaultVariants: {
-    aspectRatio: "square",
-    objectFit: "cover",
-    size: "md",
+    aspectRatio: 'square',
+    objectFit: 'cover',
+    size: 'md',
   },
-});
+})
 
 export type CarouselSlide = {
-  id: string;
-  content?: ReactNode;
-  src?: string;
-  alt?: string;
-  imageProps?: Record<string, any>;
-};
+  id: string
+  content?: ReactNode
+  src?: string
+  alt?: string
+  imageProps?: Record<string, any>
+}
 
 interface CarouselProps<T extends ElementType = typeof Image>
   extends VariantProps<typeof carouselVariants>,
-    Omit<carousel.Props, "id" | "size"> {
-  id?: string;
-  slides: CarouselSlide[];
-  className?: string;
-  imageAs?: CarouselImageComponent<T>;
-  autoplayTrigger?: boolean;
-  showControl?: boolean;
+    Omit<carousel.Props, 'id' | 'size'> {
+  id?: string
+  slides: CarouselSlide[]
+  className?: string
+  imageAs?: CarouselImageComponent<T>
+  autoplayTrigger?: boolean
+  showControl?: boolean
 }
 
 export function Carousel<T extends ElementType = typeof Image>({
@@ -167,16 +168,16 @@ export function Carousel<T extends ElementType = typeof Image>({
   aspectRatio,
 
   /* Zag.js carousel config */
-  orientation = "horizontal",
+  orientation = 'horizontal',
   slideCount = slides.length,
   loop = true,
   autoplay = false,
   allowMouseDrag = true,
   slidesPerPage = 1,
   slidesPerMove = 1,
-  spacing = "0px",
-  padding = "0px",
-  dir = "ltr",
+  spacing = '0px',
+  padding = '0px',
+  dir = 'ltr',
 
   /* Others */
   autoplayTrigger = false,
@@ -198,9 +199,9 @@ export function Carousel<T extends ElementType = typeof Image>({
     spacing,
     padding,
     onPageChange,
-  });
+  })
 
-  const api = carousel.connect(service, normalizeProps);
+  const api = carousel.connect(service, normalizeProps)
 
   const {
     wrapper,
@@ -213,9 +214,9 @@ export function Carousel<T extends ElementType = typeof Image>({
     prevTrigger,
     nextTrigger,
     autoplayTrigger: autoplayTriggerSlot,
-  } = carouselVariants({ size, objectFit, aspectRatio });
+  } = carouselVariants({ size, objectFit, aspectRatio })
 
-  const ImageComponent = (imageAs || Image) as any;
+  const ImageComponent = (imageAs || Image) as any
 
   return (
     <div className={wrapper()}>
@@ -223,7 +224,7 @@ export function Carousel<T extends ElementType = typeof Image>({
         {/* images */}
         {autoplayTrigger && slideCount > 1 && (
           <Button
-            icon={api.isPlaying ? "icon-[mdi--pause]" : "icon-[mdi--play]"}
+            icon={api.isPlaying ? 'icon-[mdi--pause]' : 'icon-[mdi--play]'}
             className={autoplayTriggerSlot()}
             {...api.getAutoplayTriggerProps()}
           />
@@ -238,8 +239,8 @@ export function Carousel<T extends ElementType = typeof Image>({
               {slide.content || (
                 <ImageComponent
                   as={imageAs === Image ? undefined : imageAs}
-                  src={slide.src || ""}
-                  alt={slide.alt || ""}
+                  src={slide.src || ''}
+                  alt={slide.alt || ''}
                   {...slide.imageProps}
                 />
               )}
@@ -272,5 +273,5 @@ export function Carousel<T extends ElementType = typeof Image>({
         </div>
       )}
     </div>
-  );
+  )
 }

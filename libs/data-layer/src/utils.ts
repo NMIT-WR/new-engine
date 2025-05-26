@@ -39,14 +39,18 @@ export function formatSQL(query: string, colorize = true): string {
 export function isDateString(
   value: string | Date | null | undefined | unknown
 ): boolean {
-  if (!value) { return false }
+  if (!value) {
+    return false
+  }
   if (
     value instanceof Date ||
     (typeof value === 'object' && isPureDateObject(value))
   ) {
     return true
   }
-  if (typeof value !== 'string') { return false }
+  if (typeof value !== 'string') {
+    return false
+  }
 
   // Ex. '2023-12-29 14:19:05.264'
   // Ex. '2023-10-28T12:54:07.311Z'
@@ -55,8 +59,12 @@ export function isDateString(
 }
 
 export function safeEscapeSqlValue(value: unknown): string {
-  if (typeof value === 'string') { return `"${value}"` }
-  if (typeof value === 'object') { return JSON.stringify(value) }
+  if (typeof value === 'string') {
+    return `"${value}"`
+  }
+  if (typeof value === 'object') {
+    return JSON.stringify(value)
+  }
   return String(value)
 }
 
@@ -73,7 +81,9 @@ export function parseDrizzleMessage(
     .trim()
     .replace(/^Query:\s+/, '')
 
-  if (!m) { return { sql: '', params: [] } }
+  if (!m) {
+    return { sql: '', params: [] }
+  }
   if (m.length > 1_000_000) {
     return { sql: m.slice(0, 10_000).trim(), params: [] }
   }

@@ -23,7 +23,8 @@ const checkboxVariants = tv({
   ],
 })
 
-export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+export interface CheckboxProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   ref?: Ref<HTMLInputElement>
   readOnly?: boolean
 
@@ -31,7 +32,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   indeterminate?: boolean
   invalid?: boolean
 
-  onChange?: (checked: boolean | "indeterminate") => void
+  onChange?: (checked: boolean | 'indeterminate') => void
 }
 
 export function Checkbox({

@@ -270,7 +270,11 @@ export function RangeSlider({
           <div className={error ? 'block' : 'invisible h-0 overflow-hidden'}>
             <Error>{errorText}</Error>
           </div>
-          <div className={!error && helperText ? 'block' : 'invisible h-0 overflow-hidden'}>
+          <div
+            className={
+              !error && helperText ? 'block' : 'invisible h-0 overflow-hidden'
+            }
+          >
             <ExtraText>{helperText}</ExtraText>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import * as combobox from '@zag-js/combobox'
-import { normalizeProps, useMachine } from '@zag-js/react'
-import { useId } from 'react'
+import { createFilter } from '@zag-js/i18n-utils'
+import { Portal, mergeProps, normalizeProps, useMachine } from '@zag-js/react'
+import { useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { Error } from '../atoms/error'
@@ -34,10 +35,7 @@ const comboboxVariants = tv({
       'data-[disabled]:text-combobox-fg-disabled',
       'data-[disabled]:bg-combobox-disabled',
     ],
-    clearTrigger: [
-      // set styles for button in combobox
-      'absolute right-combobox-trigger-right',
-    ],
+    clearTrigger: ['absolute right-combobox-trigger-right'],
     trigger: [
       'flex items-center justify-center',
       'px-0',
@@ -83,7 +81,7 @@ const comboboxVariants = tv({
 })
 
 export type ComboboxItem<T = unknown> = {
-  id: number
+  id: string
   label: string
   value: string
   disabled?: boolean
@@ -92,7 +90,6 @@ export type ComboboxItem<T = unknown> = {
 
 export interface ComboboxProps<T = unknown>
   extends VariantProps<typeof comboboxVariants> {
-  //basic props
   id?: string
   name?: string
   label?: string
@@ -100,32 +97,20 @@ export interface ComboboxProps<T = unknown>
   disabled?: boolean
   readOnly?: boolean
   required?: boolean
-
-  //data and selection
   items: ComboboxItem<T>[]
   value?: string | string[]
   defaultValue?: string | string[]
   multiple?: boolean
-
-  //validation and helper text
   validationState?: 'normal' | 'error' | 'success' | 'warning'
   error?: string
   helper?: string
-
   size?: 'sm' | 'md' | 'lg'
-
-  //customization
   clearable?: boolean
-  searchable?: boolean
   selectionBehavior?: 'replace' | 'clear' | 'preserve'
   closeOnSelect?: boolean
   allowCustomValue?: boolean
-
-  // icons
   triggerIcon?: string
   clearIcon?: string
-
-  // callbacks
   onChange?: (value: string | string[]) => void
   onInputValueChange?: (value: string) => void
   onOpenChange?: (open: boolean) => void
@@ -135,6 +120,7 @@ export function Combobox<T = unknown>({
   id,
   name,
   label,
+  size,
   placeholder = 'Select option',
   disabled = false,
   readOnly = false,
@@ -146,7 +132,6 @@ export function Combobox<T = unknown>({
   validationState = 'normal',
   error,
   helper,
-  // machine settings
   clearable = true,
   selectionBehavior = 'replace',
   closeOnSelect = false,
@@ -158,8 +143,12 @@ export function Combobox<T = unknown>({
   const generatedId = useId()
   const uniqueId = id || generatedId
 
+  const [filteredItems, setFilteredItems] = useState(items)
+
+  const i18nFilter = createFilter({ sensitivity: 'base' })
+
   const collection = combobox.collection({
-    items,
+    items: filteredItems,
     itemToString: (item) => item.label,
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
@@ -179,13 +168,23 @@ export function Combobox<T = unknown>({
       input: `${uniqueId}-input`,
       control: `${uniqueId}-control`,
     },
-    value: value as string[],
-    defaultValue: defaultValue as string[],
+    value: value as string[] | undefined,
+    defaultValue: defaultValue as string[] | undefined,
     multiple,
-    onValueChange: ({ value }) => {
-      onChange?.(value)
+    onValueChange: ({ value: selectedValue }) => {
+      onChange?.(selectedValue)
     },
     onInputValueChange: ({ inputValue }) => {
+      let newFilteredItems
+      if (inputValue) {
+        const filtered = items.filter((item) =>
+          i18nFilter.contains(item.label, inputValue)
+        )
+        newFilteredItems = filtered.length > 0 ? filtered : items
+      } else {
+        newFilteredItems = items
+      }
+      setFilteredItems(newFilteredItems)
       onInputValueChange?.(inputValue)
     },
     onOpenChange: ({ open }) => {
@@ -196,7 +195,7 @@ export function Combobox<T = unknown>({
   const api = combobox.connect(service, normalizeProps)
 
   const inputProps = api.getInputProps()
-  const { size: _inputSize, ...restInputProps } = inputProps
+  const { ...restInputProps } = inputProps
 
   const {
     root,
@@ -211,10 +210,16 @@ export function Combobox<T = unknown>({
     helper: helperSlot,
   } = comboboxVariants()
 
+  const customTriggerProps = mergeProps(api.getTriggerProps(), {
+    onClick: () => {
+      setFilteredItems(items)
+    },
+  })
+
   return (
     <div className={root()}>
       {label && (
-        <Label className={labelStyles()} {...api.getLabelProps()}>
+        <Label className={labelStyles()} size={size} {...api.getLabelProps()}>
           {label}
         </Label>
       )}
@@ -229,13 +234,14 @@ export function Combobox<T = unknown>({
           placeholder={placeholder}
           name={name}
           required={required}
+          size={size}
         />
 
-        {clearable && api.value && (
+        {clearable && api.value.length > 0 && (
           <Button
             className={clearTrigger()}
             theme="borderless"
-            size="sm"
+            size={size}
             {...api.getClearTriggerProps()}
           >
             <Icon icon={'token-icon-combobox-clear'} size="current" />
@@ -243,32 +249,40 @@ export function Combobox<T = unknown>({
         )}
 
         <Button
-          {...api.getTriggerProps()}
+          {...customTriggerProps}
           theme="borderless"
+          size={size}
           className={trigger()}
         >
           <Icon icon="token-icon-combobox-chevron" />
         </Button>
       </div>
 
-      {/* Dropdown content */}
-      <div {...api.getPositionerProps()} className={positioner()}>
-        {api.open && items.length > 0 && (
-          <ul {...api.getContentProps()} className={content()}>
-            {items.map((item) => (
-              <li
-                key={item.value}
-                {...api.getItemProps({ item })}
-                className={itemSlot()}
-              >
-                <span className="flex-1">{item.label}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <Portal>
+        <div {...api.getPositionerProps()} className={positioner()}>
+          {api.open && filteredItems.length > 0 && (
+            <ul {...api.getContentProps()} className={content()}>
+              {filteredItems.map((item) => (
+                <li
+                  key={item.value}
+                  {...api.getItemProps({ item })}
+                  className={itemSlot()}
+                >
+                  <span className="flex-1">{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {api.open && api.inputValue && filteredItems.length === 0 && (
+            <div className={content()}>
+              No results found for "{api.inputValue}"
+            </div>
+          )}
+        </div>
+      </Portal>
+
       {helper && !error && (
-        <ExtraText data-validation={validationState} className={helperSlot()}>
+        <ExtraText data-validation={validationState} size={size} className={helperSlot()}>
           {helper}
         </ExtraText>
       )}
