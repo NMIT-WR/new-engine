@@ -27,13 +27,9 @@ export default meta
 type Story = StoryObj<typeof Switch>
 
 export const Default: Story = {
-  render: () => (
-    <VariantContainer>
-      <Switch>Toggle feature</Switch>
-      <Switch disabled={true}>Toggle feature</Switch>
-      <Switch invalid={true}>Toggle feature</Switch>
-    </VariantContainer>
-  ),
+  args: {
+
+  }
 }
 
 export const ControlledSwitch: Story = {
