@@ -1,0 +1,51 @@
+@theme static {
+  /* === ROOT === */
+  --spacing-carousel-root-sm: 10rem;
+  --spacing-carousel-root-md: 20rem;
+  --spacing-carousel-root-lg: 40rem;
+
+  /* === TRIGGER COMMON === */
+  --padding-carousel-trigger: 0 0;
+  --color-carousel-trigger-bg: var(--color-highlight);
+  --color-carousel-trigger-text: var(--color-fg-dark);
+
+  /* === CONTROL COLORS === */
+  --color-carousel-control-bg: var(--color-overlay);
+  --padding-carousel-control: var(--spacing-3xs);
+  --gap-carousel-control: var(--spacing-xs);
+
+  /* === INDICATOR === */
+  --gap-carousel-indicator: var(--spacing-3xs);
+  --color-carousel-indicator-active: var(--color-primary);
+  --aspect-carousel-indicator: var(--aspect-ratio-square);
+  --width-carousel-indicator: var(--spacing-xs);
+
+  /* === FOCUS STATES === */
+  --color-carousel-focus-ring: --alpha(
+    var(--color-primary) / var(--opacity-ring)
+  );
+
+  /* === SPACING === */
+  --spacing-carousel-gap: var(--spacing-md);
+  --spacing-carousel-padding: var(--spacing-sm);
+  --spacing-carousel-item-gap: var(--spacing-xs);
+
+  /* === ASPECT RATIO === */
+  --aspect-carousel-square: 1 / 1;
+  --aspect-carousel-landscape: 16 / 9;
+  --aspect-carousel-portrait: 3 / 4;
+  --aspect-carousel-wide: 21 / 9;
+
+  /* === BORDER RADIUS === */
+  --radius-carousel: var(--radius-sm);
+
+  --shadow-carousel: var(--shadow-lg);
+}
+
+@utility token-icon-carousel-prev {
+  @apply icon-[mdi--chevron-left];
+}
+
+@utility token-icon-carousel-next {
+  @apply icon-[mdi--chevron-right];
+}

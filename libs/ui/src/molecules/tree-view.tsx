@@ -5,7 +5,7 @@ import { type VariantProps, tv } from 'tailwind-variants'
 import { Icon, type IconType } from '../atoms/icon'
 
 // === COLLECTION TYPES ===
-interface TreeNode {
+export interface TreeNode {
   id: string
   name: string
   children?: TreeNode[]
@@ -209,7 +209,7 @@ export function TreeView({
     rootNode: { id: 'ROOT', name: '', children: data },
   })
 
-  const service = useMachine(tree.machine as any, {
+  const service = useMachine(tree.machine, {
     id,
     collection,
     dir,
