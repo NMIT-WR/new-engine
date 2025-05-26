@@ -466,6 +466,9 @@ importers:
 
   libs/ui:
     dependencies:
+      '@zag-js/carousel':
+        specifier: ^1.12.4
+        version: 1.12.4
       '@zag-js/checkbox':
         specifier: ^1.12.4
         version: 1.12.4
@@ -6869,6 +6872,9 @@ packages:
   '@zag-js/aria-hidden@1.12.4':
     resolution: {integrity: sha512-IA7I8p80H7UecltHPlkHI/3lfyDdxs1BxXzhG1FLWtC6mbNjIL9Ie2mKz/9nYUJYMiIkTephRggX3genFkAwSQ==}
 
+  '@zag-js/carousel@1.12.4':
+    resolution: {integrity: sha512-aemB6w5eTXWaZlijB418l3ZxRFzHmQoAGICFKN9HHqpKxPiBOZUvW3gIf/h022aZ5m/lrOofZrQz7V10Ey/b/Q==}
+
   '@zag-js/checkbox@1.12.4':
     resolution: {integrity: sha512-+JuDJuNuV5zwendNfOTWcylrzT2EQhfDhBWIcgTILfXfaO7BMyPTlbzlCWALTvxM9X5J7XwmPR7P5wHcWd517A==}
 
@@ -6919,6 +6925,9 @@ packages:
 
   '@zag-js/remove-scroll@1.12.4':
     resolution: {integrity: sha512-vyuaHEEHs5IaXAPxuO5KTA9/ds7fMr8TnXdyxbnQJ06+CCEKtuz3GWT027VqOF7zlGHhEpFHxHtepVBaI/iUkA==}
+
+  '@zag-js/scroll-snap@1.12.4':
+    resolution: {integrity: sha512-6/LH1Gq3o7tIEPe2pbSA/UpqaHemGfEe13eC+4Gpwhxu65v7iRUDkUYB5tJ7JhKD4S2GcCFZbxUxlVzlBUX5wg==}
 
   '@zag-js/select@1.12.4':
     resolution: {integrity: sha512-l4ub2ECzBbnPXfwgu9mWAV3Z8OeF9/Pc3W6kj6/mfBe0RIaf3Aiz45x3XS13sJaJ9SQ4MCK8mTGBp8jMBIVqQQ==}
@@ -21599,6 +21608,15 @@ snapshots:
 
   '@zag-js/aria-hidden@1.12.4': {}
 
+  '@zag-js/carousel@1.12.4':
+    dependencies:
+      '@zag-js/anatomy': 1.12.4
+      '@zag-js/core': 1.12.4
+      '@zag-js/dom-query': 1.12.4
+      '@zag-js/scroll-snap': 1.12.4
+      '@zag-js/types': 1.12.4
+      '@zag-js/utils': 1.12.4
+
   '@zag-js/checkbox@1.12.4':
     dependencies:
       '@zag-js/anatomy': 1.12.4
@@ -21694,6 +21712,10 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   '@zag-js/remove-scroll@1.12.4':
+    dependencies:
+      '@zag-js/dom-query': 1.12.4
+
+  '@zag-js/scroll-snap@1.12.4':
     dependencies:
       '@zag-js/dom-query': 1.12.4
 
