@@ -131,7 +131,7 @@ export function Select({
     isItemDisabled: (item) => !!item.disabled,
   })
 
-  const service = useMachine(select.machine as any, {
+  const service = useMachine(select.machine, {
     id,
     collection,
     name,
