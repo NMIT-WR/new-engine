@@ -84,7 +84,6 @@ export interface PaginationProps
   count: number
   pageSize?: number
   siblingCount?: number
-  showFirstLast?: boolean
   showPrevNext?: boolean
   onPageChange?: (page: number) => void
   dir?: 'ltr' | 'rtl'
@@ -96,7 +95,6 @@ export function Pagination({
   count,
   pageSize = 10,
   siblingCount = 1,
-  showFirstLast = true,
   showPrevNext = true,
   onPageChange,
   variant,
