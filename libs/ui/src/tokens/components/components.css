@@ -5,6 +5,7 @@
 @import "./atoms/_input.css";
 @import "./atoms/_range-slider.css";
 @import "./atoms/_rating.css";
+@import "./atoms/_switch.css";
 @import "./atoms/_textarea.css";
 @import "./atoms/_tooltip.css";
 
