@@ -26,7 +26,7 @@ type Story = StoryObj
 export const Default: Story = {
   render: () => {
     const toaster = useToast()
-    const idRef = useRef<string>()
+    const idRef = useRef<string>(null)
 
     return (
       <VariantContainer>
