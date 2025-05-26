@@ -5,7 +5,7 @@ import { buttonVariants } from './button'
 import { Icon, type IconType } from './icon'
 
 const linkButton = tv({
-  extend: buttonVariants(),
+  extend: buttonVariants,
   base: 'cursor-pointer',
   variants: {
     size: {
