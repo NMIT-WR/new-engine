@@ -1,4 +1,4 @@
-@import "../_semantic.css";
+@import "../../_semantic.css";
 
 @theme static {
   --padding-badge-x: var(--spacing-3xs);

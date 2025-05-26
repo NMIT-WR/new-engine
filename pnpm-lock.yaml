@@ -490,6 +490,9 @@ importers:
       '@zag-js/steps':
         specifier: ^1.12.4
         version: 1.12.4
+      '@zag-js/toast':
+        specifier: ^1.12.4
+        version: 1.12.4
       '@zag-js/tooltip':
         specifier: ^1.12.4
         version: 1.12.4
@@ -6931,6 +6934,9 @@ packages:
 
   '@zag-js/store@1.12.4':
     resolution: {integrity: sha512-VBQMa9ArOlIrvpXksk2dTfPL+XsHKSX7OArWJ+YjuYEYCLLVdmVo6M7W1YZyuQu+wQ6udwkOZil1cB9HD6hzIA==}
+
+  '@zag-js/toast@1.12.4':
+    resolution: {integrity: sha512-tUVqmbMLW6tfe9xA3vHlDyhBd5OVxNDy0uuEdq4wTnPYAjwrzU/CzpDrz2YJWwE5gKxgtvURgANaDahyi70c0g==}
 
   '@zag-js/tooltip@1.12.4':
     resolution: {integrity: sha512-8mh/Ko1AbX8SS8OzgF21UfY6Abnjt2jwtwR4PlD4M+/WoekfDVsshEFCCm5lJrTn5l15ZFOedeEZtk1RPItqIw==}
@@ -21718,6 +21724,15 @@ snapshots:
   '@zag-js/store@1.12.4':
     dependencies:
       proxy-compare: 3.0.1
+
+  '@zag-js/toast@1.12.4':
+    dependencies:
+      '@zag-js/anatomy': 1.12.4
+      '@zag-js/core': 1.12.4
+      '@zag-js/dismissable': 1.12.4
+      '@zag-js/dom-query': 1.12.4
+      '@zag-js/types': 1.12.4
+      '@zag-js/utils': 1.12.4
 
   '@zag-js/tooltip@1.12.4':
     dependencies:

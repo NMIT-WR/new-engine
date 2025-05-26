@@ -5,7 +5,7 @@ import { type VariantProps, tv } from 'tailwind-variants'
 import { Icon, type IconType } from '../atoms/icon'
 
 // === COLLECTION TYPES ===
-interface TreeNode {
+export interface TreeNode {
   id: string
   name: string
   children?: TreeNode[]
