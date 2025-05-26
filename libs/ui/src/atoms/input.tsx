@@ -46,6 +46,14 @@ const inputVariants = tv({
         'placeholder:text-input-placeholder-warning',
       ],
     },
+    withButtonInside: {
+      false: '',
+      right: 'pr-with-button',
+      left: 'pl-with-button',
+    },
+    hideSearchClear: {
+      true: '[&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden',
+    },
     disabled: {
       true: [
         'bg-input-disabled',
@@ -58,6 +66,8 @@ const inputVariants = tv({
   defaultVariants: {
     size: 'md',
     variant: 'default',
+    hideSearchClear: true,
+    withIconInside: false,
   },
 })
 
@@ -65,7 +75,6 @@ export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
   ref?: Ref<HTMLInputElement>
-  className?: string
 }
 
 export function Input({
@@ -73,6 +82,7 @@ export function Input({
   variant,
   disabled,
   ref,
+  withButtonInside,
   className,
   ...props
 }: InputProps) {
@@ -82,6 +92,7 @@ export function Input({
         size,
         variant,
         disabled,
+        withButtonInside,
         className,
       })}
       disabled={disabled}

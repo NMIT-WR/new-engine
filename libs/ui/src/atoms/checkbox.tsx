@@ -1,6 +1,6 @@
 import * as checkbox from '@zag-js/checkbox'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type InputHTMLAttributes, type Ref, useEffect, useId } from 'react'
+import { type InputHTMLAttributes, type Ref, useId } from 'react'
 import { tv } from '../utils'
 
 const checkboxVariants = tv({
@@ -44,8 +44,9 @@ export function Checkbox({
   'aria-invalid': ariaInvalid,
   readonly,
 }: CheckboxProps) {
+  const fallbackId = useId()
   const service = useMachine(checkbox.machine as any, {
-    id: id || useId(),
+    id: id || fallbackId,
     name,
     disabled,
     defaultChecked,
@@ -58,7 +59,6 @@ export function Checkbox({
   })
 
   const api = checkbox.connect(service as any, normalizeProps)
-
 
   return (
     <label {...api.getRootProps()}>
