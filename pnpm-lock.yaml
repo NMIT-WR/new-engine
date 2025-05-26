@@ -493,6 +493,9 @@ importers:
       '@zag-js/select':
         specifier: ^1.12.4
         version: 1.12.4
+      '@zag-js/slider':
+        specifier: ^1.12.4
+        version: 1.12.4
       '@zag-js/steps':
         specifier: ^1.12.4
         version: 1.12.4
@@ -6940,6 +6943,9 @@ packages:
 
   '@zag-js/select@1.12.4':
     resolution: {integrity: sha512-l4ub2ECzBbnPXfwgu9mWAV3Z8OeF9/Pc3W6kj6/mfBe0RIaf3Aiz45x3XS13sJaJ9SQ4MCK8mTGBp8jMBIVqQQ==}
+
+  '@zag-js/slider@1.12.4':
+    resolution: {integrity: sha512-AYW4OgDwvdeRQtuxrIhe847HfWenvzhSBwhfv6PxzJyX4Mk21UpfE2UIDGc9ejsVqipVhiAo4r5hcEBmevzW7Q==}
 
   '@zag-js/steps@1.12.4':
     resolution: {integrity: sha512-UuZ7hFl7sPRDMgq9xbTX1q5LgMmONrPddqjey8TaDTcPEudUtCcBwCWDCrXs80thvamWz29c7hCWkav4tcaIjA==}
@@ -21742,6 +21748,14 @@ snapshots:
       '@zag-js/dismissable': 1.12.4
       '@zag-js/dom-query': 1.12.4
       '@zag-js/popper': 1.12.4
+      '@zag-js/types': 1.12.4
+      '@zag-js/utils': 1.12.4
+
+  '@zag-js/slider@1.12.4':
+    dependencies:
+      '@zag-js/anatomy': 1.12.4
+      '@zag-js/core': 1.12.4
+      '@zag-js/dom-query': 1.12.4
       '@zag-js/types': 1.12.4
       '@zag-js/utils': 1.12.4
 
