@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from 'ui/atoms/button'
 import { ProductCard } from 'ui/molecules/product-card'
