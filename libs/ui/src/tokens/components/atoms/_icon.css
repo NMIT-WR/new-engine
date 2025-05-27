@@ -54,3 +54,61 @@
 @utility token-icon-cart-primary {
   @apply token-icon-cart;
 }
+
+/* Navigation icons */
+@utility token-icon-chevron-down {
+  @apply icon-[mdi--chevron-down];
+}
+
+@utility token-icon-chevron-right {
+  @apply icon-[mdi--chevron-right];
+}
+
+@utility token-icon-chevron-left {
+  @apply icon-[mdi--chevron-left];
+}
+
+@utility token-icon-chevron-up {
+  @apply icon-[mdi--chevron-up];
+}
+
+/* Action icons */
+@utility token-icon-plus {
+  @apply icon-[mdi--plus];
+}
+
+@utility token-icon-folder {
+  @apply icon-[mdi--folder];
+}
+
+@utility token-icon-save {
+  @apply icon-[mdi--content-save];
+}
+
+@utility token-icon-trash {
+  @apply icon-[mdi--delete];
+}
+
+@utility token-icon-scissors {
+  @apply icon-[mdi--content-cut];
+}
+
+@utility token-icon-copy {
+  @apply icon-[mdi--content-copy];
+}
+
+@utility token-icon-clipboard {
+  @apply icon-[mdi--clipboard];
+}
+
+@utility token-icon-undo {
+  @apply icon-[mdi--undo];
+}
+
+@utility token-icon-redo {
+  @apply icon-[mdi--redo];
+}
+
+@utility token-icon-check {
+  @apply icon-[mdi--check];
+}
