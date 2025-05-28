@@ -8,7 +8,7 @@
 @theme static {
   /* === BASE COLOR MAPPING === */
   /* Single source of truth */
-  --color-btn-primary: var(--color-primary);
+  --color-btn-primary: light-dark(var(--color-slate-950), var(--color-slate-50));
   --color-btn-secondary: var(--color-secondary);
   --color-btn-tertiary: var(--color-tertiary);
   --color-btn-warning: var(--color-warning);

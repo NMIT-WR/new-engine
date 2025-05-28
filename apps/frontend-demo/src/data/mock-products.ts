@@ -1,0 +1,98 @@
+export const mockProducts = [
+  {
+    id: '1',
+    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop',
+    name: 'White Cotton T-Shirt',
+    price: '€29',
+    originalPrice: '€39',
+    stockStatus: 'In Stock',
+    badges: [
+      { variant: 'success' as const, children: 'New' },
+      { variant: 'danger' as const, children: '-25%' },
+    ],
+  },
+  {
+    id: '2',
+    imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=800&fit=crop',
+    name: 'Blue Denim Jeans',
+    price: '€79',
+    stockStatus: 'In Stock',
+    badges: [{ variant: 'primary' as const, children: 'Bestseller' }],
+  },
+  {
+    id: '3',
+    imageUrl: 'https://images.unsplash.com/photo-1539185441755-769473a23570?w=600&h=800&fit=crop',
+    name: 'Sport Running Shoes',
+    price: '€129',
+    originalPrice: '€159',
+    stockStatus: 'Low Stock',
+    badges: [{ variant: 'danger' as const, children: '-20%' }],
+  },
+  {
+    id: '4',
+    imageUrl: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop',
+    name: 'Black Leather Jacket',
+    price: '€199',
+    stockStatus: 'In Stock',
+    badges: [],
+  },
+  {
+    id: '5',
+    imageUrl: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&h=800&fit=crop',
+    name: 'Striped Casual Shirt',
+    price: '€49',
+    stockStatus: 'In Stock',
+    badges: [{ variant: 'warning' as const, children: 'Limited' }],
+  },
+  {
+    id: '6',
+    imageUrl: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&h=800&fit=crop',
+    name: 'Black Dress Shirt',
+    price: '€69',
+    stockStatus: 'In Stock',
+    badges: [],
+  },
+  {
+    id: '7',
+    imageUrl: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop',
+    name: 'Beige Chino Pants',
+    price: '€89',
+    stockStatus: 'In Stock',
+    badges: [{ variant: 'success' as const, children: 'New' }],
+  },
+  {
+    id: '8',
+    imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=800&fit=crop',
+    name: 'Winter Scarf',
+    price: '€35',
+    stockStatus: 'In Stock',
+    badges: [{ variant: 'primary' as const, children: 'Trending' }],
+  },
+]
+
+export const categories = [
+  {
+    id: '1',
+    name: 'T-Shirts & Tops',
+    imageUrl: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&h=400&fit=crop',
+    count: 156,
+  },
+  {
+    id: '2',
+    name: 'Jeans & Pants',
+    imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&h=400&fit=crop',
+    count: 89,
+  },
+  {
+    id: '3',
+    name: 'Shoes & Sneakers',
+    imageUrl: 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&h=400&fit=crop',
+    count: 124,
+  },
+  {
+    id: '4',
+    name: 'Jackets & Coats',
+    imageUrl: 'https://images.unsplash.com/photo-1557418669-db3f781a58c0?w=600&h=400&fit=crop',
+    count: 67,
+  },
+]

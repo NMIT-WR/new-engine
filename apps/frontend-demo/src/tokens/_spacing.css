@@ -1,12 +1,21 @@
 @theme static {
   /* Primitive Spacing Tokens - Utopia fluid spacing */
-  --spacing-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem); /* 5px */
-  --spacing-2xs: clamp(0.5625rem, 0.5408rem + 0.1087vw, 0.625rem); /* 9px - 10px */
-  --spacing-xs: clamp(0.875rem, 0.8533rem + 0.1087vw, 0.9375rem); /* 14px - 15px */
-  --spacing-sm: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem); /* 18px - 20px */
-  --spacing-md: clamp(1.6875rem, 1.6223rem + 0.3261vw, 1.875rem); /* 27px - 30px */
-  --spacing-lg: clamp(2.25rem, 2.163rem + 0.4348vw, 2.5rem); /* 36px - 40px */
-  --spacing-xl: clamp(3.375rem, 3.2446rem + 0.6522vw, 3.75rem); /* 54px - 60px */
-  --spacing-2xl: clamp(4.5rem, 4.3261rem + 0.8696vw, 5rem); /* 72px - 80px */
-  --spacing-3xl: clamp(6.75rem, 6.4891rem + 1.3043vw, 7.5rem); /* 108px - 120px */
+  /* --spacing-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem); 
+  --spacing-2xs: clamp(0.5625rem, 0.5408rem + 0.1087vw, 0.625rem);
+  --spacing-xs: clamp(0.875rem, 0.8533rem + 0.1087vw, 0.9375rem);
+  --spacing-sm: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem); 
+  --spacing-md: clamp(1.6875rem, 1.6223rem + 0.3261vw, 1.875rem); 
+  --spacing-lg: clamp(2.25rem, 2.163rem + 0.4348vw, 2.5rem); 
+  --spacing-xl: clamp(3.375rem, 3.2446rem + 0.6522vw, 3.75rem); 
+  --spacing-2xl: clamp(4.5rem, 4.3261rem + 0.8696vw, 5rem); 
+  --spacing-3xl: clamp(6.75rem, 6.4891rem + 1.3043vw, 7.5rem);  */
+  --spacing-3xs: 0.25rem; /* 5px */
+  --spacing-2xs: 0.5rem; /* 9px - 10px */
+  --spacing-xs: 0.75rem; /* 14px - 15px */
+  --spacing-sm: 1rem; /* 18px - 20px */
+  --spacing-md: 1.5rem; /* 27px - 30px */
+  --spacing-lg: 2rem; /* 36px - 40px */
+  --spacing-xl: 3rem; /* 54px - 60px */
+  --spacing-2xl: 4rem; /* 72px - 80px */
+  --spacing-3xl: 6rem; /* 108px - 120px */
 }

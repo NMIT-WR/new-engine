@@ -1,9 +1,9 @@
 import clsx from 'clsx'
 import { type HTMLAttributes, useId } from 'react'
-import { Badge, type BadgeProps } from '../atoms/badge.tsx'
-import { Button } from '../atoms/button.tsx'
-import { Image } from '../atoms/image.tsx'
-import { slugify } from '../utils.ts'
+import { Badge, type BadgeProps } from '../atoms/badge'
+import { Button } from '../atoms/button'
+import { Image } from '../atoms/image'
+import { slugify } from '../utils'
 
 export interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   imageUrl: string
