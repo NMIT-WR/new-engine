@@ -1,5 +1,6 @@
 import { Button } from 'ui/src/atoms/button'
 import { Image } from 'ui/src/atoms/image'
+import { tv } from 'ui/src/utils'
 
 interface HeroProps {
   title: string
@@ -15,6 +16,19 @@ interface HeroProps {
   }
 }
 
+const heroVariants = tv({
+  slots: {
+    root: 'relative h-[600px] overflow-hidden',
+    container: 'absolute inset-0',
+    contentWrapper: 'relative flex h-full items-center',
+    content: 'mx-auto flex w-full max-w-7xl bg-red-950/5 px-4 sm:px-6 lg:px-8',
+    title:
+      'mb-6 w-max font-bold text-5xl text-white tracking-tight sm:text-6xl md:text-7xl',
+    subtitle: 'mb-8 w-96 text-gray-100 text-xl',
+    headerButton: 'w-max px-8 py-2',
+  },
+})
+
 export function Hero({
   title,
   subtitle,
@@ -22,10 +36,19 @@ export function Hero({
   primaryAction,
   secondaryAction,
 }: HeroProps) {
+  const {
+    root,
+    container,
+    contentWrapper,
+    content,
+    title: titleSlot,
+    subtitle: subtitleSlot,
+    headerButton,
+  } = heroVariants()
   return (
-    <section className="relative h-[600px] overflow-hidden">
+    <section className={root()}>
       {/* Background Image */}
-      <div className="absolute inset-0">
+      <div className={container()}>
         <Image
           src={backgroundImage}
           alt="Hero background"
@@ -36,36 +59,31 @@ export function Hero({
       </div>
 
       {/* Content */}
-      <div className="relative flex h-full items-center">
-        <div className="mx-auto flex w-full max-w-7xl bg-red-500/10 px-4 sm:px-6 lg:px-8">
+      <div className={contentWrapper()}>
+        <div className={content()}>
           <div className="flex w-full max-w-2xl flex-col">
-            <h1 className="mb-6 w-max font-bold text-5xl text-white tracking-tight sm:text-6xl md:text-7xl">
-              {title}
-            </h1>
-            {subtitle && (
-              <p className="mb-8 w-96 bg-green-200/30 text-gray-100 text-xl">
-                {subtitle}
-              </p>
-            )}
+            <h1 className={titleSlot()}>{title}</h1>
+            {subtitle && <p className={subtitleSlot()}>{subtitle}</p>}
             {(primaryAction || secondaryAction) && (
-              <div className="flex gap-4">
+              <div className="flex w-fit gap-4">
                 {primaryAction && (
                   <Button
                     variant="primary"
                     size="lg"
                     theme="solid"
                     onClick={primaryAction.onClick}
+                    className={headerButton()}
                   >
                     {primaryAction.label}
                   </Button>
                 )}
                 {secondaryAction && (
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     size="lg"
                     theme="outlined"
                     onClick={secondaryAction.onClick}
-                    className="!text-white !border-white hover:!bg-white/10"
+                    className={headerButton()}
                   >
                     {secondaryAction.label}
                   </Button>

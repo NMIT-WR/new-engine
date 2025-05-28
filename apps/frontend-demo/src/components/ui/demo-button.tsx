@@ -11,10 +11,12 @@ const demoButton = tv({
   },
 })
 
-interface DemoButtonProps extends ButtonProps {
+interface DemoButtonProps extends Omit<ButtonProps, 'size'> {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'icon'
 }
 
 export const DemoButton = ({ size, ...props }: DemoButtonProps) => {
-  return <Button size={size} {...props}></Button>
+  // Map custom sizes to Button sizes
+  const buttonSize = size === 'xl' || size === 'icon' ? 'lg' : size
+  return <Button size={buttonSize} {...props} />
 }
