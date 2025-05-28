@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["ui"],
+  output: 'export',
 }
 
 module.exports = nextConfig
