@@ -132,6 +132,7 @@ export default function Home() {
                 stockStatus={product.stockStatus}
                 badges={product.badges}
                 addToCartText="Add to Cart"
+                className="justify-between"
                 onAddToCart={() => console.log('Add to cart:', product.name)}
               />
             ))}

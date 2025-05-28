@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import '../tokens/index.css'
 import type { ReactNode } from 'react'
-import { Navigation } from '../components/navigation'
+import { Header } from '../components/header'
 import { Footer } from '../components/footer'
+import type { NavItem } from '../components/navigation'
 
 export const metadata: Metadata = {
   title: 'Frontend Demo',
@@ -14,10 +15,30 @@ export default function RootLayout({
 }: {
   children: ReactNode
 }) {
+  const navigationItems: NavItem[] = [
+    { title: 'Home', href: '/' },
+    { title: 'Products', href: '/products' },
+    {
+      title: 'Categories',
+      role: 'submenu',
+      children: [
+        { title: 'Clothing', href: '/categories/clothing' },
+        { title: 'Accessories', href: '/categories/accessories' },
+        { title: 'Shoes', href: '/categories/shoes' },
+        { title: 'Sale', href: '/sale', label: 'Hot' },
+      ],
+    },
+    { title: 'About', href: '/about' },
+    { title: 'Contact', href: '/contact' },
+  ]
+
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col">
-        <Navigation />
+        <Header 
+          logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
+          navigationItems={navigationItems}
+        />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

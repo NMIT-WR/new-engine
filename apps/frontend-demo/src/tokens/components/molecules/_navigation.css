@@ -1,0 +1,35 @@
+@theme static {
+  /* === BASE TOKEN MAPPING === */
+  --color-navigation-bg: transparent;
+  --color-navigation-fg: light-dark(
+    var(--color-gray-800),
+    var(--color-gray-800)
+  );
+  --color-navigation-fg-hover: light-dark(
+    var(--color-gray-900),
+    var(--color-gray-100)
+  );
+  --color-navigation-item-hover-bg: light-dark(
+    var(--color-gray-800),
+    var(--color-gray-800)
+  );
+  --color-navigation-item-active-bg: light-dark(
+    var(--color-gray-200),
+    var(--color-gray-700)
+  );
+  --color-navigation-badge-bg: light-dark(
+    var(--color-blue-500),
+    var(--color-blue-600)
+  );
+  --color-navigation-badge-fg: white;
+  --color-navigation-disabled: light-dark(
+    var(--color-gray-400),
+    var(--color-gray-600)
+  );
+
+  /* === SPACING === */
+  --spacing-navigation-gap: var(--spacing-1);
+  --spacing-navigation-item-x: var(--spacing-3);
+  --spacing-navigation-item-y: var(--spacing-2);
+  --radius-navigation-item: var(--radius-md);
+}
