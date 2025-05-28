@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-test: red;
+}
+
+@utility bg-test {
+  background-color: var(--color-test);
+}

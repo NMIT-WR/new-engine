@@ -1,0 +1,142 @@
+@theme static {
+  /* BASE TOKENS - direct mapping from semantic tokens */
+  /* Base input colors */
+  --color-input: var(--color-fill-base);
+  --color-input-border: var(--color-stroke-primary);
+  --color-input-text: var(--color-fg-primary);
+  --color-input-disabled: var(--color-disabled-bg);
+
+  /* Validation states - primary colors */
+  --color-input-danger: var(--color-danger);
+  --color-input-success: var(--color-success);
+  --color-input-warning: var(--color-warning);
+
+  /* DERIVED STATES - automatically calculated from base tokens */
+  /* Default state - hover/focus/disabled */
+  --color-input-hover: oklch(
+    from var(--color-input) calc(l + var(--state-hover)) c h
+  );
+  --color-input-focus: oklch(
+    from var(--color-input) calc(l + var(--state-active)) c h
+  );
+
+  --color-input-border-hover: oklch(
+    from var(--color-input-border) calc(l + var(--state-hover)) c h
+  );
+  --color-input-border-focus: var(--color-primary);
+  --color-input-border-disabled: --alpha(
+    var(--color-input-border) /
+    var(--opacity-disabled)
+  );
+
+  /* Error state - hover/focus */
+  --color-input-border-danger: var(--color-input-danger);
+  --color-input-border-danger-hover: oklch(
+    from var(--color-input-danger) calc(l + var(--state-hover)) c h
+  );
+  --color-input-border-danger-focus: var(--color-input-danger);
+  --color-input-placeholder-danger: --alpha(
+    var(--color-input-danger) /
+    var(--opacity-disabled)
+  );
+
+  /* Success state - hover/focus */
+  --color-input-border-success: var(--color-input-success);
+  --color-input-border-success-hover: oklch(
+    from var(--color-input-success) calc(l + var(--state-hover)) c h
+  );
+  --color-input-border-success-focus: var(--color-input-success);
+  --color-input-placeholder-success: --alpha(
+    var(--color-input-success) /
+    var(--opacity-disabled)
+  );
+
+  /* Warning state - hover/focus */
+  --color-input-border-warning: var(--color-input-warning);
+  --color-input-border-warning-hover: oklch(
+    from var(--color-input-warning) calc(l + var(--state-hover)) c h
+  );
+  --color-input-border-warning-focus: var(--color-input-warning);
+  --color-input-placeholder-warning: --alpha(
+    var(--color-input-warning) /
+    var(--opacity-disabled)
+  );
+
+  /* Text colors */
+  --color-input-text-disabled: --alpha(
+    var(--color-input-text) /
+    var(--opacity-disabled)
+  );
+  --color-input-placeholder: --alpha(
+    var(--color-input-text) /
+    var(--opacity-placeholder)
+  );
+
+  --color-input-placeholder-disabled: --alpha(
+    var(--color-input-text) /
+    var(--opacity-disabled-placeholder)
+  );
+
+  /* Label colors */
+  --color-label-text: var(--color-input-text);
+  --color-label-disabled: var(--color-input-text-disabled);
+  --color-label-required: var(--color-input-danger);
+
+  /* Validation message colors */
+  --color-success-text: var(--color-input-success);
+  --color-warning-text: var(--color-input-warning);
+
+  /* Error/Helper/Extra colors */
+  --color-error-text: var(--color-danger);
+  --color-helper-text: var(--color-input-text);
+
+  /* Focus ring colors - using consistent opacity */
+  --color-input-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-input-ring-error: --alpha(
+    var(--color-input-danger) /
+    var(--opacity-ring)
+  );
+  --color-input-ring-success: --alpha(
+    var(--color-input-success) /
+    var(--opacity-ring)
+  );
+  --color-input-ring-warning: --alpha(
+    var(--color-input-warning) /
+    var(--opacity-ring)
+  );
+
+  /* Spacing - keeping your existing values */
+  --padding-input-sm: var(--spacing-sm) var(--spacing-sm);
+  --padding-input-md: var(--spacing-md) var(--spacing-sm);
+  --padding-input-lg: var(--spacing-lg) var(--spacing-md);
+  --padding-with-button: var(--spacing-3xl);
+
+  /* Typography */
+  --text-input-sm: var(--text-sm);
+  --text-input-md: var(--text-md);
+  --text-input-lg: var(--text-lg);
+
+  /* Border */
+  --border-width-input: 1px;
+  --radius-input: var(--radius-md);
+
+  /* Label */
+
+  --font-label: var(--font-bold);
+  --text-label-sm: var(--text-input-sm);
+  --text-label-md: var(--text-input-md);
+  --text-label-lg: var(--text-input-lg);
+
+  /* Error message */
+  --font-error: var(--font-medium);
+  --text-error-sm: var(--text-input-sm);
+  --text-error-md: var(--text-input-md);
+  --text-error-lg: var(--text-input-lg);
+
+  /* Helper text / Extra text */
+  --font-helper: var(--font-normal);
+  --text-helper-sm: var(--text-input-sm);
+  --text-helper-md: var(--text-input-md);
+  --text-helper-lg: var(--text-input-lg);
+  --color-helper-text: var(--color-fg-secondary);
+}

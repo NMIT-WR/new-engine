@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@import "./_base.css";
+@import "./_colors.css";
+@import "./_spacing.css";
+@import "./_typography.css";
+@import "./_semantic.css";
+@import "./components/components.css";
+/* Tell Tailwind to scan UI library files */
+@source "../../../../libs/ui/src/**/*.{js,ts,jsx,tsx}";
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+@plugin 'tailwindcss-animate';
+@plugin '@iconify/tailwind4';
+/* @import "./components/components.css";
+*/
+:root {
+  color-scheme: light dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.always-light {
+  color-scheme: light;
+}
+
+.always-dark {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  .reverse {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .reverse {
+    color-scheme: light;
+  }
+}
+
+.light .reverse {
+  color-scheme: dark;
+}
+
+.dark .reverse {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-fg-primary);
+
+  font-family: system-ui, sans-serif;
+}
+
+.sbdocs-preview {
+  background-color: var(--color-base) !important;
+  color: var(--color-fg-primary) !important;
+}
