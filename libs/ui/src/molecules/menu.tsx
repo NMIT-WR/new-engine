@@ -1,12 +1,6 @@
 import * as menu from '@zag-js/menu'
 import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import {
-  type ReactElement,
-  type ReactNode,
-  cloneElement,
-  isValidElement,
-  useId,
-} from 'react'
+import { useId } from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { Icon, type IconType } from '../atoms/icon'
@@ -23,7 +17,7 @@ type RadioMenuItem = {
   type: 'radio'
   value: string
   label: string
-  name: string // radio group name
+  name: string
   checked: boolean
 }
 
@@ -36,7 +30,7 @@ type CheckboxMenuItem = {
 
 type SeparatorMenuItem = {
   type: 'separator'
-  id: string // pro key
+  id: string
 }
 
 type MenuItem =
@@ -48,40 +42,27 @@ type MenuItem =
 // === COMPONENT VARIANTS ===
 const menuVariants = tv({
   slots: {
-    trigger: '',
+    trigger: 'p-menu-trigger',
     positioner: ['w-(--reference-width)', 'isolate z-(--z-index)'],
     content: [
       'bg-menu-content-bg border border-menu-content-border',
       'rounded-menu shadow-menu-content-shadow',
-      'p-menu-content',
-      'min-w-menu-content',
-      'max-h-menu-content overflow-auto',
       'focus:outline-none',
-      'data-[state=open]:animate-in',
-      'data-[state=closed]:animate-out',
+      'min-w-(--reference-width)',
     ],
     item: [
-      'flex items-center gap-menu-item',
-      'cursor-pointer',
-      'px-menu-item-x py-menu-item-y',
+      'flex items-center gap-menu-item p-menu-item',
+      'cursor-pointer rounded-menu',
       'text-menu-item-fg',
-      'rounded-menu-item',
-      'hover:bg-menu-item-hover',
       'focus:bg-menu-item-hover focus:outline-none',
       'data-[disabled]:opacity-menu-disabled data-[disabled]:cursor-not-allowed',
       'data-[highlighted]:bg-menu-item-hover',
-      'data-[disabled]:opacity-50',
     ],
-    optionItem: ['data-[state=checked]:font-semibold'],
-    separator: [
-      'my-menu-separator',
-      'h-menu-separator',
-      'bg-menu-separator-bg',
-    ],
-    itemText: ['flex-grow'],
-    itemIcon: ['text-menu-item-icon-size text-menu-item-icon-fg'],
-    submenuIndicator: ['ml-auto text-menu-submenu-indicator-fg'],
+    optionItem: ['data-[state=checked]:text-menu-item-checked'],
+    itemIndicator: ['data-[state=checked]:icon-[mdi--check] text-sm'],
+    separator: ['h-menu-separator', 'bg-menu-separator-bg'],
   },
+
   variants: {
     size: {
       sm: {
@@ -103,14 +84,67 @@ const menuVariants = tv({
   },
 })
 
+// === MENU ITEM COMPONENT ===
+interface MenuItemComponentProps {
+  item: MenuItem
+  api: ReturnType<typeof menu.connect>
+  styles: ReturnType<typeof menuVariants>
+  onCheckedChange?: (item: MenuItem, checked: boolean) => void
+}
+
+function MenuItemComponent({
+  item,
+  api,
+  styles,
+  onCheckedChange,
+}: MenuItemComponentProps) {
+  const { optionItem, item: itemSlot, itemIndicator } = styles
+
+  // Handle radio/checkbox items
+  if (item.type === 'radio' || item.type === 'checkbox') {
+    const opts = {
+      type: item.type,
+      name: item.type === 'radio' ? item.name : undefined,
+      value: item.value,
+      checked: item.checked,
+      onCheckedChange: (checked: boolean) => {
+        onCheckedChange?.(item, checked)
+      },
+    } as const
+    const optionProps = api.getOptionItemProps(opts)
+
+    return (
+      <li className={`${itemSlot()} ${optionItem()}`} {...optionProps}>
+        <span {...api.getItemTextProps(item)}>{item.label}</span>
+        <span
+          className={itemIndicator()}
+          {...api.getItemIndicatorProps(item)}
+          data-type={item.type}
+        />
+      </li>
+    )
+  }
+
+  // Handle action items
+  const actionItem = item as ActionMenuItem
+  const itemProps = api.getItemProps({
+    value: actionItem.value,
+    disabled: actionItem.disabled,
+  })
+
+  return (
+    <li className={itemSlot()} {...itemProps}>
+      {actionItem.icon && <Icon icon={actionItem.icon} />}
+      <span>{actionItem.label}</span>
+    </li>
+  )
+}
+
 // === COMPONENT PROPS ===
-export interface MenuProps
-  extends VariantProps<typeof menuVariants>,
-    menu.Props {
+interface MenuProps extends VariantProps<typeof menuVariants>, menu.Props {
   items: MenuItem[]
   triggerText?: string
   triggerIcon?: IconType
-  customTrigger?: ReactNode
   className?: string
   onCheckedChange?: (item: MenuItem, checked: boolean) => void
 }
@@ -128,13 +162,9 @@ export function Menu({
   defaultOpen,
   composite,
   navigate,
-
-  // Highlighted
   defaultHighlightedValue,
   highlightedValue,
   onHighlightChange,
-
-  // event handlers
   onSelect,
   onOpenChange,
   onEscapeKeyDown,
@@ -145,8 +175,6 @@ export function Menu({
   // CUSTOM PROPS
   items,
   triggerText = 'Menu',
-  triggerIcon,
-  customTrigger,
   size = 'md',
   onCheckedChange,
 }: MenuProps) {
@@ -178,90 +206,42 @@ export function Menu({
 
   const api = menu.connect(service as menu.Service, normalizeProps)
 
-  const {
-    trigger,
-    positioner,
-    content,
-    separator,
-    optionItem,
-    item: itemSlot,
-    itemIcon,
-    itemText,
-  } = menuVariants({ size })
-
-  const renderMenuItem = (item: MenuItem) => {
-    // Handle separator
-    if (item.type === 'separator') {
-      return <hr key={`separator-${item.id}`} className={separator()} />
-    }
-
-    // Handle radio/checkbox items
-    if (item.type === 'radio' || item.type === 'checkbox') {
-      return (
-        <li
-          key={item.value}
-          className={`${itemSlot()} ${optionItem()}`}
-          {...api.getOptionItemProps({
-            type: item.type,
-            value: item.value,
-            checked: item.checked,
-            onCheckedChange: (checked) => {
-              onCheckedChange?.(item, checked)
-            },
-          })}
-        >
-          {/* Icon for checked state */}
-          {item.checked && (
-            <Icon icon="token-icon-check" className={itemIcon()} />
-          )}
-          <span className={itemText()}>{item.label}</span>
-        </li>
-      )
-    }
-
-    // Handle action items
-    return (
-      <li
-        key={item.value}
-        className={itemSlot()}
-        {...api.getItemProps({
-          value: item.value,
-          disabled: item.disabled,
-        })}
-      >
-        {item.icon && <Icon icon={item.icon} className={itemIcon()} />}
-        <span className={itemText()}>{item.label}</span>
-      </li>
-    )
-  }
+  const styles = menuVariants({ size })
+  const { trigger, positioner, content, separator } = styles
 
   return (
     <>
-      {/* Trigger */}
-      {customTrigger ? (
-        isValidElement(customTrigger) ? (
-          cloneElement(customTrigger as ReactElement, {
-            ...api.getTriggerProps(),
-          })
-        ) : (
-          <button {...api.getTriggerProps()}>{customTrigger}</button>
-        )
-      ) : (
-        <Button {...api.getTriggerProps()} className={trigger()}>
-          {triggerText}
-          {triggerIcon && <Icon icon={triggerIcon} className="ml-1" />}
-          {!triggerIcon && (
-            <span {...api.getIndicatorProps()}>
-              <Icon icon="token-icon-menu-trigger" className="ml-1" />
-            </span>
-          )}
-        </Button>
-      )}
+      <Button
+        {...api.getTriggerProps()}
+        icon="token-icon-menu-trigger"
+        iconPosition="right"
+        className={trigger()}
+      >
+        {triggerText}
+      </Button>
 
       <Portal>
         <div className={positioner()} {...api.getPositionerProps()}>
           <ul className={content()} {...api.getContentProps()}>
-            {items.map(renderMenuItem)}
+            {items.map((item) => {
+              const key =
+                item.type === 'separator' ? `separator-${item.id}` : item.value
+              return (
+                <>
+                  {item.type === 'separator' ? (
+                    <hr key={`separator-${item.id}`} className={separator()} />
+                  ) : (
+                    <MenuItemComponent
+                      key={key}
+                      item={item}
+                      api={api}
+                      styles={styles}
+                      onCheckedChange={onCheckedChange}
+                    />
+                  )}
+                </>
+              )
+            })}
           </ul>
         </div>
       </Portal>
