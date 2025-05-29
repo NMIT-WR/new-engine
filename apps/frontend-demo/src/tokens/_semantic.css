@@ -68,7 +68,7 @@
 @theme static {
   /* Colors */
   /* User interface main tone and interactive colors, usually used for main operation button, etc */
-  --color-primary: light-dark(var(--color-blue-500), var(--color-sky-300));
+  --color-primary: light-dark(var(--color-slate-900), var(--color-slate-100));
   --color-primary-hover: oklch(
     from var(--color-primary) calc(l + var(--state-hover)) c h
   );
@@ -78,7 +78,7 @@
   --color-primary-disabled: oklch(
     from var(--color-primary) l var(--state-disabled-chroma) h
   );
-  --color-primary-light: light-dark(var(--color-blue-300), var(--color-sky-200));
+  --color-primary-light: light-dark(var(--color-slate-700), var(--color-slate-200));
   --color-primary-light-hover: oklch(
     from var(--color-primary-light) calc(l + var(--state-hover)) c h
   );
@@ -87,7 +87,7 @@
   );
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
-  --color-secondary: light-dark(var(--color-orange-500), var(--color-amber-400));
+  --color-secondary: light-dark(var(--color-indigo-600), var(--color-indigo-400));
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
   );
@@ -98,8 +98,8 @@
     from var(--color-secondary) l var(--state-disabled-chroma) h
   );
   --color-secondary-light: light-dark(
-    var(--color-orange-300),
-    var(--color-amber-200)
+    var(--color-indigo-400),
+    var(--color-indigo-300)
   );
   --color-secondary-light-hover: oklch(
     from var(--color-secondary-light) calc(l + var(--state-hover)) c h
@@ -109,7 +109,7 @@
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
-  --color-tertiary: light-dark(var(--color-pink-500), var(--color-rose-400));
+  --color-tertiary: light-dark(var(--color-violet-600), var(--color-violet-400));
   --color-tertiary-hover: oklch(
     from var(--color-tertiary) calc(l + var(--state-hover)) c h
   );
@@ -120,8 +120,8 @@
     from var(--color-tertiary) l var(--state-disabled-chroma) h
   );
   --color-tertiary-light: light-dark(
-    var(--color-pink-300),
-    var(--color-rose-200)
+    var(--color-violet-400),
+    var(--color-violet-300)
   );
   --color-tertiary-light-hover: oklch(
     from var(--color-tertiary-light) calc(l + var(--state-hover)) c h
@@ -217,14 +217,14 @@
 
   /* Text colors and Icon colors*/
   /* Four different levels of text / icon colors represent the most important, secondary, minor and minor contents in the product interface */
-  --color-fg-light: var(--color-slate-800); /* Light mode */
-  --color-fg-dark: var(--color-white); /* Dark mode */
+  --color-fg-light: var(--color-slate-950); /* Light mode */
+  --color-fg-dark: var(--color-slate-50); /* Dark mode */
   --color-fg-primary: light-dark(var(--color-fg-light), var(--color-fg-dark));
   --color-fg-primary-light: --alpha(
     var(--color-fg-primary) /
     var(--opacity-text-secondary)
   );
-  --color-fg-secondary: light-dark(var(--color-gray-900), var(--color-gray-200));
+  --color-fg-secondary: light-dark(var(--color-slate-700), var(--color-slate-300));
   --color-fg-secondary-light: --alpha(
     var(--color-fg-secondary) /
     var(--opacity-text-secondary)
@@ -234,7 +234,7 @@
   /* Background colors */
   /* All levels of background color in the application, including container, menu, navigation bar, etc. In dark mode, we usually use the background color to distinguish the front and back levels */
   --color-base-light: var(--color-white);
-  --color-base-dark: var(--color-gray-950);
+  --color-base-dark: var(--color-slate-950);
   --color-base: light-dark(var(--color-base-light), var(--color-base-dark)); /*bottom page*/
   --color-surface: oklch(
     from var(--color-base) calc(l - var(--surface-increment)) c h
@@ -254,15 +254,15 @@
   );
 
   /* Borders */
-  --color-stroke-primary: var(--color-gray-300);
-  --color-stroke-secondary: var(--color-gray-600);
+  --color-stroke-primary: var(--color-slate-200);
+  --color-stroke-secondary: var(--color-slate-400);
   --border-width-none: 0px;
   --border-width-sm: 1px;
   --border-width-md: 2px;
   --border-width-lg: 3px;
 
   /* Links */
-  --color-link: light-dark(var(--color-blue-500), var(--color-sky-300));
+  --color-link: light-dark(var(--color-indigo-600), var(--color-indigo-400));
   --color-link-hover: oklch(
     from var(--color-link) calc(l + var(--state-hover)) c h
   );
