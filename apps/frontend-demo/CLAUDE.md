@@ -38,6 +38,12 @@ bunx nx run frontend-demo:build
 
 # Run type checking
 bunx nx run frontend-demo:typecheck
+
+# Capture screenshots of all pages
+node scripts/auto-screenshot.js
+
+# Watch for changes and auto-capture screenshots
+./scripts/watch-and-screenshot.sh
 ```
 
 ### Code Standards
@@ -45,6 +51,9 @@ bunx nx run frontend-demo:typecheck
 - Follow functional component patterns with hooks
 - Implement proper error boundaries
 - Ensure all interactive elements are keyboard accessible
+- **After every file modification, check TypeScript errors** - run `npx tsc --noEmit` and fix any issues
+- **Before using any component, check its props interface** - read the component file to understand required/optional props and their types
+- **After implementing UI changes, capture screenshots** - run `node scripts/auto-screenshot.js` to document current visual state
 
 ### Testing Guidelines
 - Write integration tests for user flows
@@ -140,6 +149,8 @@ import { Button } from '@/components/ui/button' // ❌
 - Clean up unused code and components
 - Analyze for reusability opportunities
 - Maintain consistent design patterns
+- **When implementing UI changes, always capture screenshots** using `node scripts/auto-screenshot.js`
+- **Screenshots are automatically saved** to `screenshots/auto/` directory for visual documentation
 
 ### Project Requirements
 - This is a proof of concept demo for client presentations
@@ -287,6 +298,33 @@ When creating reusable components in frontend-demo:
 - `error-text` - Validation
 - `toast` - Success/error messages
 
+### TypeScript & Component Usage Guidelines
+
+1. **Before Using Any Component**:
+   ```typescript
+   // 1. First, read the component file to check its interface
+   // 2. Look for required vs optional props
+   // 3. Check prop types (string, number, array, etc.)
+   // 4. Check for specific prop formats (e.g., Select expects 'options' not 'items')
+   ```
+
+2. **After Every Code Change**:
+   ```bash
+   # Run TypeScript check
+   cd apps/frontend-demo && npx tsc --noEmit
+   
+   # Or use Nx command
+   bunx nx run frontend-demo:typecheck
+   ```
+
+3. **Common Component Props Patterns**:
+   - **Select**: uses `options` prop with `{value: string, label: string}[]`
+   - **ProductCard**: requires `name` (not `title`), `imageUrl`, `price`, `stockStatus`
+   - **Carousel**: uses `items` prop with `{src: string, alt: string}[]`
+   - **Accordion**: items need `value`, `trigger`, and `content` properties
+   - **Rating**: uses `readOnly` (not `readonly`)
+   - **NumericInput**: uses `onChange` (not `onValueChange`)
+
 ### Component Best Practices
 
 1. **DO's**:
@@ -324,12 +362,15 @@ When creating reusable components in frontend-demo:
 ### Common Tasks Checklist
 - [ ] Component implementation uses UI library
 - [ ] Check for existing similar components before creating new ones
+- [ ] **Read component's props interface before using it**
 - [ ] CSS token file created with semantic variables
 - [ ] All spacing uses semantic tokens (3xs-3xl)
 - [ ] CSS file imported in components.css
 - [ ] TypeScript interfaces defined for props and data
 - [ ] Data extracted to constants
 - [ ] tv() used with slots only
+- [ ] **TypeScript errors checked and fixed after modifications**
+- [ ] **Screenshots captured after UI implementation** - `node scripts/auto-screenshot.js`
 - [ ] Responsive design tested on mobile/tablet/desktop
 - [ ] Accessibility checked (ARIA labels, keyboard nav)
 - [ ] Unused imports and code removed
