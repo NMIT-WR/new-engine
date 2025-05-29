@@ -23,11 +23,13 @@
   "devDependencies": {
     "@iconify/json": "^2.2.338",
     "@iconify/tailwind4": "^1.0.6",
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4.1.7",
     "@types/node": "^20.17.47",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.21",
+    "chokidar": "^4.0.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
     "tailwindcss-animate": "^1.0.7",
