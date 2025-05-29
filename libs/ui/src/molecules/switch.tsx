@@ -104,7 +104,7 @@ export function Switch({
   })
 
   return (
-    <div>
+    <div className={className}>
       <Label className={root()} {...api.getRootProps()}>
         <input className={hiddenInput()} {...api.getHiddenInputProps()} />
         <span className={control()} {...api.getControlProps()}>

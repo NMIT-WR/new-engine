@@ -1,11 +1,11 @@
 import { type HTMLAttributes, type ReactNode, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { Badge, type BadgeProps } from '../atoms/badge.tsx'
-import { Button } from '../atoms/button.tsx'
-import { Image } from '../atoms/image.tsx'
-import { Rating, type RatingProps } from '../atoms/rating.tsx'
-import { slugify, tv } from '../utils.ts'
-import { NumericInput } from './numeric-input.tsx'
+import { Badge, type BadgeProps } from '../atoms/badge'
+import { Button } from '../atoms/button'
+import { Image } from '../atoms/image'
+import { Rating, type RatingProps } from '../atoms/rating'
+import { slugify, tv } from '../utils'
+import { NumericInput } from './numeric-input'
 
 //object-cover aspect-product-card-image
 const productCard = tv({
