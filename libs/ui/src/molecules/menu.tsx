@@ -59,7 +59,7 @@ const menuVariants = tv({
       'data-[highlighted]:bg-menu-item-hover',
     ],
     optionItem: ['data-[state=checked]:text-menu-item-checked'],
-    itemIndicator: ['data-[state=checked]:icon-[mdi--check] text-sm'],
+    itemIndicator: ['data-[state=checked]:token-icon-menu-check'],
     separator: ['h-menu-separator', 'bg-menu-separator-bg'],
   },
 
