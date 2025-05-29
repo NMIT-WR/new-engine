@@ -51,7 +51,7 @@ export function CategoryGrid({
             >
               <div className={styles.imageWrapper()}>
                 <Image
-                  src={category.imageUrl}
+                  src={category.imageUrl || ''}
                   alt={category.name}
                   className={styles.image()}
                 />
