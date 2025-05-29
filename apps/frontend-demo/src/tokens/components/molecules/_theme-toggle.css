@@ -1,0 +1,38 @@
+@theme static {
+  /* === THEME TOGGLE COLORS === */
+  --color-theme-toggle-icon: var(--color-fg-secondary);
+
+  /* === THEME TOGGLE SPACING === */
+  --spacing-theme-toggle-gap: var(--spacing-sm);
+  --spacing-theme-toggle-icon-gap: var(--spacing-xs);
+
+  /* === THEME TOGGLE TYPOGRAPHY === */
+  --text-theme-toggle-icon-size: var(--text-lg);
+
+  /* === CUSTOM SWITCH STYLING FOR THEME TOGGLE === */
+  /* Override default switch colors for a more modern look */
+  --color-theme-toggle-bg: var(--color-bg-secondary);
+  --color-theme-toggle-bg-hover: var(--color-bg-tertiary);
+  --color-theme-toggle-checked: var(--color-primary);
+  --color-theme-toggle-checked-hover: oklch(
+    from var(--color-primary) calc(l + var(--state-hover)) c h
+  );
+  --color-theme-toggle-border: transparent;
+  --color-theme-toggle-thumb: var(--color-base-light);
+  --shadow-theme-toggle-thumb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px
+    -1px rgb(0 0 0 / 0.1);
+
+  /* Custom sizing for a sleeker look */
+  --spacing-theme-toggle-track-width: 2.75rem;
+  --spacing-theme-toggle-track-height: 1.5rem;
+  --spacing-theme-toggle-padding: 0.125rem;
+
+  --color-theme-toggle-light-active: var(--color-yellow-500);
+  --color-theme-toggle-light: var(--color-yellow-100);
+  --color-theme-toggle-dark: var(--color-sky-600);
+  --color-theme-toggle-dark-active: var(--color-sky-200);
+
+  /* Icon colors based on state */
+  --color-theme-toggle-icon-inactive: var(--color-fg-tertiary);
+  --color-theme-toggle-icon-active: var(--color-primary);
+}

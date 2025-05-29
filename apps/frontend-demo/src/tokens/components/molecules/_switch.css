@@ -6,7 +6,7 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-switch-bg: var(--color-overlay);
-  --color-switch-checked: var(--color-success);
+  --color-switch-checked: var(--color-sky-300);
   --color-switch-border: var(--color-stroke-primary);
   --color-switch-thumb: var(--color-base-light);
 
@@ -47,8 +47,8 @@
   /* === SPACING === */
   --spacing-root: var(--spacing-sm);
   --spacing-control-padding: var(--spacing-3xs);
-  --spacing-track-width: var(--spacing-xl);
-  --spacing-track-height: var(--spacing-md);
+  --spacing-track-width: var(--spacing-lg);
+  --spacing-track-height: var(--spacing-sm);
   /* Padding inside the control container */
   --spacing-control-padding: 0.125rem;
 

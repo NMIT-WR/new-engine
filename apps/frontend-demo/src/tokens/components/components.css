@@ -26,6 +26,7 @@
 @import "./molecules/_select.css";
 @import "./molecules/_steps.css";
 @import "./molecules/_switch.css";
+@import "./molecules/_theme-toggle.css";
 @import "./molecules/_toast.css";
 @import "./molecules/_tree-view.css";
 

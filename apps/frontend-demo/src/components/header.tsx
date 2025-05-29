@@ -5,6 +5,7 @@ import { Icon, type IconType } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
 import { tv } from 'ui/src/utils'
 import { type NavItem, Navigation } from './navigation'
+import { ThemeToggle } from './theme-toggle'
 
 const headerVariants = tv({
   slots: {
@@ -78,6 +79,9 @@ export function Header({
 
           {/* Actions Section */}
           <div className={actionsSection()}>
+            {/* Theme toggle */}
+            <ThemeToggle />
+
             {/* Custom actions */}
             {actions}
 
