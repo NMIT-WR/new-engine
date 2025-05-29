@@ -20,6 +20,8 @@
 @import "./molecules/_menu.css";
 @import "./molecules/_navigation.css";
 @import "./molecules/_product-card.css";
+@import "./molecules/_product-filters.css";
+@import "./molecules/_product-grid.css";
 @import "./molecules/_range-slider.css";
 @import "./molecules/_sale-banner.css";
 @import "./molecules/_search-form.css";
@@ -33,3 +35,5 @@
 @import "./organisms/_footer.css";
 @import "./organisms/_header.css";
 @import "./organisms/_hero.css";
+@import "./organisms/_product-detail.css";
+@import "./organisms/_product-listing.css";
