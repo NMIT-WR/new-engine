@@ -1,5 +1,5 @@
 'use client'
-import { Navigation, type NavItem } from '../../components/navigation'
+import { type NavItem, Navigation } from '../../components/navigation'
 
 export default function NavigationDemoPage() {
   const basicItems: NavItem[] = [
@@ -75,15 +75,15 @@ export default function NavigationDemoPage() {
           <div className="space-y-4">
             <div className="rounded-lg bg-white p-4 shadow">
               <p className="mb-2 text-gray-600 text-sm">Default variant:</p>
-              <Navigation items={basicItems} variant="default" />
+              <Navigation items={basicItems} />
             </div>
             <div className="rounded-lg bg-white p-4 shadow">
               <p className="mb-2 text-gray-600 text-sm">Primary variant:</p>
-              <Navigation items={basicItems} variant="primary" />
+              <Navigation items={basicItems} />
             </div>
             <div className="rounded-lg bg-white p-4 shadow">
               <p className="mb-2 text-gray-600 text-sm">Ghost variant:</p>
-              <Navigation items={basicItems} variant="ghost" />
+              <Navigation items={basicItems} />
             </div>
           </div>
         </section>

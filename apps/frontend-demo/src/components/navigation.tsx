@@ -7,20 +7,13 @@ import { tv } from 'ui/src/utils'
 
 const navigationVariants = tv({
   slots: {
-    root: 'bg-navigation-bg px-3 py-2 rounded-md text-sm font-medium transition-colors',
-    list: 'flex items-center space-x-2',
-    item: 'flex items-center space-x-2 relative',
-    link: 'text-navigation-fg hover:text-navigation-fg-hover',
-  },
-  variants: {
-    variant: {
-      default: 'text-gray-700 hover:text-gray-900 hover:bg-gray-50',
-      primary: 'text-blue-700 hover:text-blue-900 hover:bg-blue-50',
-      ghost: 'text-gray-700 hover:text-gray-900',
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
+    root: 'bg-navigation-bg',
+    list: 'flex items-center gap-navigation-gap',
+    item: 'relative',
+    link: 'flex items-center gap-2 px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
+    submenu: 'absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu',
+    submenuItem: 'block px-navigation-item-x py-navigation-item-y text-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
+    badge: 'ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg',
   },
 })
 
@@ -35,13 +28,15 @@ export type NavItem = {
 }
 
 function Submenu({ items }: { items: NavItem[] }) {
+  const { submenu, submenuItem, badge } = navigationVariants()
+  
   return (
-    <div className="absolute top-full left-0 z-50 mt-1 min-w-[200px] rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+    <div className={submenu()}>
       {items.map((child, index) => (
         <Link
           key={index}
           href={child.href || '#'}
-          className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100"
+          className={submenuItem()}
           target={child.external ? '_blank' : undefined}
           rel={child.external ? 'noopener noreferrer' : undefined}
         >
@@ -50,7 +45,7 @@ function Submenu({ items }: { items: NavItem[] }) {
           )}
           {child.title}
           {child.label && (
-            <span className="ml-2 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-800 text-xs">
+            <span className={badge()}>
               {child.label}
             </span>
           )}
@@ -101,7 +96,7 @@ function NavigationItem({ item }: { item: NavItem }) {
         {item.icon && <Icon icon={item.icon} size="sm" />}
         {item.title}
         {item.label && (
-          <span className="ml-2 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-800 text-xs">
+          <span className={navigationVariants().badge()}>
             {item.label}
           </span>
         )}
@@ -115,12 +110,10 @@ function NavigationItem({ item }: { item: NavItem }) {
 
 export interface NavigationProps extends ComponentPropsWithoutRef<'nav'> {
   items: NavItem[]
-  variant?: 'default' | 'primary' | 'ghost'
 }
 
 export function Navigation({
   items,
-  variant = 'default',
   className,
   ...props
 }: NavigationProps) {

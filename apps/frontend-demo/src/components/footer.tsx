@@ -1,51 +1,103 @@
 import { Button } from 'ui/src/atoms/button'
 import { Input } from 'ui/src/atoms/input'
-import Link from 'next/link'
+import { Link } from 'ui/src/atoms/link'
+import { tv } from 'ui/src/utils'
+
+const footerVariants = tv({
+  slots: {
+    root: 'bg-footer-bg text-footer-text',
+    container:
+      'mx-auto max-w-footer-max-w px-footer-container-x py-footer-container-y sm:px-footer-container-x-sm lg:px-footer-container-x-lg',
+    grid: 'grid grid-cols-1 gap-footer-section md:grid-cols-4',
+    section: '',
+    heading:
+      'mb-footer-heading font-semibold text-footer-heading text-footer-heading',
+    list: 'space-y-footer-list text-footer-body',
+    listItem: '',
+    link: 'text-footer-link hover:text-footer-link-hover transition-colors',
+    description: 'text-footer-body',
+    newsletterWrapper: 'flex gap-footer-input-gap',
+    newsletterInput: 'flex-1',
+    bottomBar:
+      'mt-footer-bottom-bar border-t border-footer-border pt-footer-bottom-bar text-center',
+    copyright: 'text-footer-copyright text-footer-text',
+  },
+})
+
+interface FooterLink {
+  href: string
+  label: string
+}
+
+interface FooterSection {
+  title: string
+  links: FooterLink[]
+}
+
+const footerSections: FooterSection[] = [
+  {
+    title: 'Quick Links',
+    links: [
+      { href: '/products', label: 'All Products' },
+      { href: '/categories', label: 'Categories' },
+      { href: '/about', label: 'About Us' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+  {
+    title: 'Customer Service',
+    links: [
+      { href: '/shipping', label: 'Shipping Info' },
+      { href: '/returns', label: 'Returns' },
+      { href: '/faq', label: 'FAQ' },
+      { href: '/support', label: 'Support' },
+    ],
+  },
+]
 
 export function Footer() {
+  const styles = footerVariants()
+
   return (
-    <footer className="bg-gray-900 text-gray-300">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+    <footer className={styles.root()}>
+      <div className={styles.container()}>
+        <div className={styles.grid()}>
           {/* Company Info */}
-          <div>
-            <h3 className="mb-4 font-semibold text-white text-lg">Store Demo</h3>
-            <p className="text-sm">
-              Your trusted online shopping destination for quality products and great prices.
+          <div className={styles.section()}>
+            <h3 className={styles.heading()}>Store Demo</h3>
+            <p className={styles.description()}>
+              Your trusted online shopping destination for quality products and
+              great prices.
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="mb-4 font-semibold text-white">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/products" className="hover:text-white">All Products</Link></li>
-              <li><Link href="/categories" className="hover:text-white">Categories</Link></li>
-              <li><Link href="/about" className="hover:text-white">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
-            </ul>
-          </div>
-
-          {/* Customer Service */}
-          <div>
-            <h4 className="mb-4 font-semibold text-white">Customer Service</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/shipping" className="hover:text-white">Shipping Info</Link></li>
-              <li><Link href="/returns" className="hover:text-white">Returns</Link></li>
-              <li><Link href="/faq" className="hover:text-white">FAQ</Link></li>
-              <li><Link href="/support" className="hover:text-white">Support</Link></li>
-            </ul>
-          </div>
+          {/* Footer Sections */}
+          {footerSections.map((section) => (
+            <div key={section.title} className={styles.section()}>
+              <h4 className={styles.heading()}>{section.title}</h4>
+              <ul className={styles.list()}>
+                {section.links.map((link) => (
+                  <li key={link.href} className={styles.listItem()}>
+                    <Link href={link.href} className={styles.link()}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
           {/* Newsletter */}
-          <div>
-            <h4 className="mb-4 font-semibold text-white">Newsletter</h4>
-            <p className="mb-4 text-sm">Subscribe to get special offers and updates</p>
-            <div className="flex gap-2">
-              <Input 
-                type="email" 
-                placeholder="Your email" 
-                className="flex-1"
+          <div className={styles.section()}>
+            <h4 className={styles.heading()}>Newsletter</h4>
+            <p className={styles.description()}>
+              Subscribe to get special offers and updates
+            </p>
+            <div className={styles.newsletterWrapper()}>
+              <Input
+                type="email"
+                placeholder="Your email"
+                className={styles.newsletterInput()}
               />
               <Button variant="primary" size="sm">
                 Subscribe
@@ -55,8 +107,10 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 border-t border-gray-800 pt-8 text-center text-sm">
-          <p>&copy; 2024 Store Demo. All rights reserved.</p>
+        <div className={styles.bottomBar()}>
+          <p className={styles.copyright()}>
+            &copy; 2024 Store Demo. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

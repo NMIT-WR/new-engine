@@ -1,35 +1,38 @@
+@import "../../_semantic.css";
+
 @theme static {
-  /* === BASE TOKEN MAPPING === */
+  /* === NAVIGATION COLORS === */
   --color-navigation-bg: transparent;
-  --color-navigation-fg: light-dark(
-    var(--color-gray-800),
-    var(--color-gray-800)
-  );
-  --color-navigation-fg-hover: light-dark(
-    var(--color-gray-900),
-    var(--color-gray-100)
-  );
-  --color-navigation-item-hover-bg: light-dark(
-    var(--color-gray-800),
-    var(--color-gray-800)
-  );
-  --color-navigation-item-active-bg: light-dark(
-    var(--color-gray-200),
-    var(--color-gray-700)
-  );
-  --color-navigation-badge-bg: light-dark(
-    var(--color-blue-500),
-    var(--color-blue-600)
-  );
-  --color-navigation-badge-fg: white;
-  --color-navigation-disabled: light-dark(
-    var(--color-gray-400),
-    var(--color-gray-600)
-  );
+  --color-navigation-fg: var(--color-fg-secondary);
+  --color-navigation-fg-hover: var(--color-fg-primary);
+  --color-navigation-item-hover-bg: var(--color-fill-hover);
+  --color-navigation-item-active-bg: var(--color-fill-active);
+  --color-navigation-badge-bg: var(--color-danger);
+  --color-navigation-badge-fg: var(--color-base);
+  --color-navigation-disabled: var(--color-disabled-text);
+
+  /* Navigation submenu */
+  --color-navigation-submenu-bg: var(--color-surface);
+  --color-navigation-submenu-border: var(--color-stroke-primary);
+  --shadow-navigation-submenu: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px
+    rgba(0, 0, 0, 0.1);
 
   /* === SPACING === */
-  --spacing-navigation-gap: var(--spacing-1);
-  --spacing-navigation-item-x: var(--spacing-3);
-  --spacing-navigation-item-y: var(--spacing-2);
+  --spacing-navigation-gap: var(--spacing-3xs);
+  --spacing-navigation-item-x: var(--spacing-xs);
+  --spacing-navigation-item-y: var(--spacing-2xs);
+  --spacing-navigation-submenu: var(--spacing-3xs);
+  --spacing-navigation-submenu-padding: var(--spacing-3xs);
   --radius-navigation-item: var(--radius-md);
+  --radius-navigation-submenu: var(--radius-lg);
+
+  /* === TYPOGRAPHY === */
+  --text-navigation-item: var(--text-sm);
+  --font-navigation-item: var(--font-medium);
+  --text-navigation-badge: 0.625rem;
+  
+  /* === BADGE === */
+  --spacing-navigation-badge-x: var(--spacing-2xs);
+  --spacing-navigation-badge-y: 0.125rem;
+  --spacing-navigation-badge-ml: var(--spacing-2xs);
 }

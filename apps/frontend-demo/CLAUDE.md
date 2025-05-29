@@ -155,6 +155,35 @@ import { Button } from '@/components/ui/button' // ❌
 5. **Consistent Design**: Maintain unified design language across all pages
 6. **Conventional Commits**: Use conventional commit format for all commits
 
+### Component Development Pattern
+When creating reusable components in frontend-demo:
+
+1. **Use Tailwind Variants (tv)**:
+   ```typescript
+   const componentVariants = tv({
+     slots: {
+       root: 'base-classes',
+       section: 'section-classes',
+       // ... more slots
+     },
+     variants: {
+       // optional variants
+     }
+   })
+   ```
+
+2. **Create corresponding CSS file**:
+   - Place in appropriate directory: `src/tokens/components/[atoms|molecules|organisms]/`
+   - Name: `_componentname.css`
+   - Import semantic tokens: `@import "../../_semantic.css";`
+   - Define component-specific CSS variables
+   - Import in `components.css`
+
+3. **Structure Example** (Footer):
+   - Component: `src/components/footer.tsx` - Uses tv() for styling
+   - CSS: `src/tokens/components/organisms/_footer.css` - Defines CSS variables
+   - Data: Structured with interfaces and extracted data arrays
+
 ### Page-Specific Component Mapping
 
 **Product Listing Page**:

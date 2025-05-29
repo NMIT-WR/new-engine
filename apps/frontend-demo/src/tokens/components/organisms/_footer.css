@@ -1,0 +1,32 @@
+@import "../../_semantic.css";
+
+@theme static {
+  /* === FOOTER COLORS === */
+  --color-footer-bg: var(--color-base-reverse);
+  --color-footer-text: var(--color-fg-reverse);
+  --color-footer-heading: var(--color-fg-reverse);
+  --color-footer-link: --alpha(var(--color-fg-reverse) / 70%);
+  --color-footer-link-hover: var(--color-fg-reverse);
+  --color-footer-border: --alpha(var(--color-fg-reverse) / 20%);
+  
+  /* === FOOTER SPACING === */
+  --spacing-footer-section: var(--spacing-lg);
+  --spacing-footer-container-y: var(--spacing-xl);
+  --spacing-footer-container-x: var(--spacing-sm);
+  --spacing-footer-container-x-sm: var(--spacing-md);
+  --spacing-footer-container-x-lg: var(--spacing-lg);
+  --spacing-footer-heading: var(--spacing-sm);
+  --spacing-footer-list: var(--spacing-2xs);
+  --spacing-footer-bottom-bar: var(--spacing-lg);
+  --spacing-footer-input-gap: var(--spacing-2xs);
+  
+  /* === FOOTER TYPOGRAPHY === */
+  --text-footer-heading: var(--text-lg);
+  --text-footer-body: var(--text-sm);
+  --text-footer-copyright: var(--text-sm);
+  
+  /* === FOOTER LAYOUT === */
+  --spacing-footer-max-w: 80rem; /* 1280px */
+  --grid-footer-cols-mobile: 1;
+  --grid-footer-cols-desktop: 4;
+}

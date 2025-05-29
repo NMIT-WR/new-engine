@@ -8,31 +8,16 @@ import { type NavItem, Navigation } from './navigation'
 
 const headerVariants = tv({
   slots: {
-    root: 'bg-white shadow-sm',
-    container: 'mx-auto max-w-7xl px-4',
-    wrapper: 'flex h-16 items-center justify-between',
+    root: 'bg-header-bg shadow-header-default',
+    container: 'mx-auto max-w-header-max-w px-header-container-x',
+    wrapper: 'flex h-header-height items-center justify-between',
     logoSection: 'flex items-center',
-    logo: 'text-xl font-bold flex items-center gap-2 text-slate-900',
-    navSection: 'ml-10 hidden md:block',
-    actionsSection: 'flex items-center gap-4',
+    logo: 'text-header-logo font-header-logo flex items-center gap-header-logo-gap text-header-text',
+    navSection: 'ml-header-nav-margin hidden md:block',
+    actionsSection: 'flex items-center gap-header-actions-gap',
     mobileMenuButton:
-      'md:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary',
-    userMenu: 'flex items-center gap-2',
-  },
-  variants: {
-    variant: {
-      default: {},
-      transparent: {
-        root: 'bg-transparent shadow-none',
-      },
-      dark: {
-        root: 'bg-gray-900',
-        logo: 'text-white',
-      },
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
+      'md:hidden inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus:outline-none focus:ring-header-mobile-menu-width focus:ring-inset focus:ring-header-mobile-menu-color',
+    userMenu: 'flex items-center gap-header-user-menu-gap',
   },
 })
 
@@ -44,7 +29,6 @@ export interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   }
   navigationItems?: NavItem[]
   actions?: ReactNode
-  variant?: 'default' | 'transparent' | 'dark'
   showMobileMenu?: boolean
   user?: {
     name: string
@@ -56,7 +40,6 @@ export function Header({
   logo = { text: 'Logo', href: '/' },
   navigationItems = [],
   actions,
-  variant = 'default',
   showMobileMenu = true,
   user,
   className,
@@ -72,7 +55,7 @@ export function Header({
     actionsSection,
     mobileMenuButton,
     userMenu,
-  } = headerVariants({ variant })
+  } = headerVariants()
 
   return (
     <header className={root({ className })} {...props}>
