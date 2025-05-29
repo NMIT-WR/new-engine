@@ -78,7 +78,10 @@
   --color-primary-disabled: oklch(
     from var(--color-primary) l var(--state-disabled-chroma) h
   );
-  --color-primary-light: light-dark(var(--color-slate-700), var(--color-slate-200));
+  --color-primary-light: light-dark(
+    var(--color-slate-700),
+    var(--color-slate-200)
+  );
   --color-primary-light-hover: oklch(
     from var(--color-primary-light) calc(l + var(--state-hover)) c h
   );
@@ -87,7 +90,10 @@
   );
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
-  --color-secondary: light-dark(var(--color-indigo-600), var(--color-indigo-400));
+  --color-secondary: light-dark(
+    var(--color-indigo-600),
+    var(--color-indigo-400)
+  );
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
   );
@@ -224,7 +230,10 @@
     var(--color-fg-primary) /
     var(--opacity-text-secondary)
   );
-  --color-fg-secondary: light-dark(var(--color-slate-700), var(--color-slate-300));
+  --color-fg-secondary: light-dark(
+    var(--color-slate-700),
+    var(--color-slate-300)
+  );
   --color-fg-secondary-light: --alpha(
     var(--color-fg-secondary) /
     var(--opacity-text-secondary)

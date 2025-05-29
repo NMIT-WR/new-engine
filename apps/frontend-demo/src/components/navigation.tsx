@@ -11,9 +11,12 @@ const navigationVariants = tv({
     list: 'flex items-center gap-navigation-gap',
     item: 'relative',
     link: 'flex items-center gap-2 px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
-    submenu: 'absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu',
-    submenuItem: 'block px-navigation-item-x py-navigation-item-y text-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
-    badge: 'ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg',
+    submenu:
+      'absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu',
+    submenuItem:
+      'block px-navigation-item-x py-navigation-item-y text-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
+    badge:
+      'ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg',
   },
 })
 
@@ -29,7 +32,7 @@ export type NavItem = {
 
 function Submenu({ items }: { items: NavItem[] }) {
   const { submenu, submenuItem, badge } = navigationVariants()
-  
+
   return (
     <div className={submenu()}>
       {items.map((child, index) => (
@@ -44,11 +47,7 @@ function Submenu({ items }: { items: NavItem[] }) {
             <Icon icon={child.icon} size="sm" className="mr-2 inline" />
           )}
           {child.title}
-          {child.label && (
-            <span className={badge()}>
-              {child.label}
-            </span>
-          )}
+          {child.label && <span className={badge()}>{child.label}</span>}
           {child.external && (
             <Icon
               icon="icon-[mdi--open-in-new]"
@@ -96,9 +95,7 @@ function NavigationItem({ item }: { item: NavItem }) {
         {item.icon && <Icon icon={item.icon} size="sm" />}
         {item.title}
         {item.label && (
-          <span className={navigationVariants().badge()}>
-            {item.label}
-          </span>
+          <span className={navigationVariants().badge()}>{item.label}</span>
         )}
         {item.external && (
           <Icon icon="icon-[mdi--open-in-new]" size="xs" className="ml-1" />
@@ -112,11 +109,7 @@ export interface NavigationProps extends ComponentPropsWithoutRef<'nav'> {
   items: NavItem[]
 }
 
-export function Navigation({
-  items,
-  className,
-  ...props
-}: NavigationProps) {
+export function Navigation({ items, className, ...props }: NavigationProps) {
   const { root, list } = navigationVariants({})
   return (
     <nav className={root()} {...props}>

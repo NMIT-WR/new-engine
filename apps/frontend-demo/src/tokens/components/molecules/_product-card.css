@@ -1,30 +1,95 @@
 @theme static {
-  --color-product-card: var(--color-base);
+  --color-pc: var(--color-surface);
+  --border-pc-border: transparent;
+  --border-pc-width: 0px;
+  --radius-pc: var(--radius-md);
 
-  --border-product-card: var(--color-border-neutral);
-  --border-product-card-width: var(--border-width-none);
-  --radius-product-card: var(--border-radius-md);
+  /* Card spacing */
+  --spacing-pc-row-layout: var(--spacing-sm);
+  --spacing-pc-col-layout: var(--spacing-2xs);
+  --spacing-pc-box: var(--spacing-2xs);
+  --spacing-pc-padding: var(--spacing-2xs);
 
-  --padding-product-card-x: var(--spacing-2);
-  --padding-product-card-y: var(--spacing-1);
+  --shadow-pc: var(--shadow-sm);
+  --shadow-pc-featured: var(--shadow-md);
 
-  --shadow-product-card: var(--shadow-sm);
+  --color-pc-name-fg: var(--color-fg-primary);
+  --text-pc-name-size: var(--text-md);
+  --font-weight-pc-name: var(--font-weight-bold);
+  --leading-pc-name: var(--line-height-snug);
 
-  --aspect-product-card-image: var(--aspect-ratio-square);
+  --color-pc-stock-fg: var(--color-success);
+  --text-pc-stock-size: var(--text-sm);
+  --font-weight-pc-stock: var(--font-weight-medium);
 
-  --color-product-card-name-color: var(--color-text-primary);
-  --text-product-card-name-size: var(--font-size-md);
-  --font-weight-product-card-name: var(--font-weight-bold);
-  --leading-product-card-name: var(--line-height-snug);
+  --color-pc-price-fg: var(--color-fg-primary);
+  --text-pc-price-size: var(--text-lg);
+  --font-weight-pc-price: var(--font-weight-bold);
 
-  --gap-product-card: var(--spacing-3xs);
-  --gap-product-card-badges: var(--spacing-2xs);
+  /* === PRODUCT CARD BUTTONS ===*/
+  /*Add to cart button*/
+  --color-btn-cart: var(--color-btn-primary);
+  --color-btn-cart-hover: oklch(
+    from var(--color-btn-cart) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-cart-ring: --alpha(var(--color-btn-cart) / var(--opacity-ring));
+  --color-btn-cart-fg: var(--color-btn-text);
 
-  --color-product-card-stock-color: var(--color-success);
-  --text-product-card-stock-size: var(--font-size-sm);
-  --font-weight-product-card-stock: var(--font-weight-medium);
+  /* Detail button */
+  --color-btn-detail: var(--color-btn-secondary);
+  --color-btn-detail-hover: oklch(
+    from var(--color-btn-detail) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-detail-ring: --alpha(
+    var(--color-btn-detail) /
+    var(--opacity-ring)
+  );
+  --color-btn-detail-fg: var(--color-btn-text);
 
-  --color-product-card-price-color: var(--color-text-primary);
-  --text-product-card-price-size: var(--font-size-lg);
-  --font-weight-product-card-price: var(--font-weight-bold);
+  /* wishlist button */
+  --color-btn-wishlist: var(--color-btn-tertiary);
+  --color-btn-wishlist-hover: oklch(
+    from var(--color-btn-wishlist) calc(l + var(--state-hover)) c h
+  );
+  --color-btn-wishlist-ring: --alpha(
+    var(--color-btn-wishlist) /
+    var(--opacity-ring)
+  );
+  --color-btn-wishlist-fg: var(--color-btn-text);
+
+  --color-pc-btn-disabled: var(--color-btn-disabled);
+
+  /* === PRODUCT CARD IMAGE === */
+  --aspect-pc-image: var(--aspect-ratio-square);
+  --radius-pc-image: var(--radius-pc);
+}
+
+/* === ORDERS IN LAYOUT === */
+
+@utility order-image {
+  order: 0;
+}
+
+@utility order-name {
+  order: 1;
+}
+
+@utility order-ratings {
+  order: 2;
+}
+
+@utility order-badges {
+  order: 3;
+}
+
+@utility order-stock {
+  order: 4;
+}
+
+@utility order-price {
+  order: 5;
+}
+
+@utility order-buttons {
+  order: 6;
 }

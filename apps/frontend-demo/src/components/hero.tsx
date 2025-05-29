@@ -18,14 +18,19 @@ interface HeroProps {
 
 const heroVariants = tv({
   slots: {
-    root: 'relative h-[600px] overflow-hidden',
+    root: 'relative h-hero-height overflow-hidden',
     container: 'absolute inset-0',
+    overlay: 'absolute inset-0 bg-hero-overlay',
     contentWrapper: 'relative flex h-full items-center',
-    content: 'mx-auto flex w-full max-w-7xl bg-red-950/5 px-4 sm:px-6 lg:px-8',
+    content:
+      'mx-auto w-full max-w-hero-max-w px-hero-container-x sm:px-hero-container-x-sm lg:px-hero-container-x-lg',
+    contentInner:
+      'flex w-full max-w-hero-content-max-w flex-col gap-hero-content-gap',
     title:
-      'mb-6 w-max font-bold text-5xl text-white tracking-tight sm:text-6xl md:text-7xl',
-    subtitle: 'mb-8 w-96 text-gray-100 text-xl',
-    headerButton: 'w-max px-8 py-2',
+      'font-hero-title text-hero-title-size sm:text-hero-title-size-sm md:text-hero-title-size-md text-hero-fg tracking-tight',
+    subtitle: 'max-w-hero-subtitle-max-w text-hero-subtitle-size text-hero-fg',
+    actions: 'flex w-fit gap-hero-button-gap',
+    button: 'px-hero-button-x py-hero-button-y',
   },
 })
 
@@ -36,43 +41,35 @@ export function Hero({
   primaryAction,
   secondaryAction,
 }: HeroProps) {
-  const {
-    root,
-    container,
-    contentWrapper,
-    content,
-    title: titleSlot,
-    subtitle: subtitleSlot,
-    headerButton,
-  } = heroVariants()
+  const styles = heroVariants()
+
   return (
-    <section className={root()}>
+    <section className={styles.root()}>
       {/* Background Image */}
-      <div className={container()}>
+      <div className={styles.container()}>
         <Image
           src={backgroundImage}
           alt="Hero background"
           className="h-full w-full object-cover"
         />
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40" />
+        <div className={styles.overlay()} />
       </div>
 
       {/* Content */}
-      <div className={contentWrapper()}>
-        <div className={content()}>
-          <div className="flex w-full max-w-2xl flex-col">
-            <h1 className={titleSlot()}>{title}</h1>
-            {subtitle && <p className={subtitleSlot()}>{subtitle}</p>}
+      <div className={styles.contentWrapper()}>
+        <div className={styles.content()}>
+          <div className={styles.contentInner()}>
+            <h1 className={styles.title()}>{title}</h1>
+            {subtitle && <p className={styles.subtitle()}>{subtitle}</p>}
             {(primaryAction || secondaryAction) && (
-              <div className="flex w-fit gap-4">
+              <div className={styles.actions()}>
                 {primaryAction && (
                   <Button
                     variant="primary"
                     size="lg"
                     theme="solid"
                     onClick={primaryAction.onClick}
-                    className={headerButton()}
+                    className={styles.button()}
                   >
                     {primaryAction.label}
                   </Button>
@@ -83,7 +80,9 @@ export function Hero({
                     size="lg"
                     theme="outlined"
                     onClick={secondaryAction.onClick}
-                    className={headerButton()}
+                    className={styles.button({
+                      class: 'border-white text-white',
+                    })}
                   >
                     {secondaryAction.label}
                   </Button>

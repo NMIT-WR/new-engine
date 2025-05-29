@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import '../tokens/index.css'
 import type { ReactNode } from 'react'
-import { Header } from '../components/header'
 import { Footer } from '../components/footer'
+import { Header } from '../components/header'
 import type { NavItem } from '../components/navigation'
 
 export const metadata: Metadata = {
@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col">
-        <Header 
+        <Header
           logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
           navigationItems={navigationItems}
         />

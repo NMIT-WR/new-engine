@@ -158,31 +158,94 @@ import { Button } from '@/components/ui/button' // ❌
 ### Component Development Pattern
 When creating reusable components in frontend-demo:
 
-1. **Use Tailwind Variants (tv)**:
+1. **Component Structure (.tsx)**:
    ```typescript
+   import { tv } from 'ui/src/utils'
+   
+   // Define variants using only slots (no variants unless absolutely necessary)
    const componentVariants = tv({
      slots: {
-       root: 'base-classes',
-       section: 'section-classes',
-       // ... more slots
+       root: 'bg-component-bg text-component-text',
+       container: 'max-w-component-max-w px-component-container-x',
+       // Use semantic CSS variables, not Tailwind utilities directly
      },
-     variants: {
-       // optional variants
-     }
    })
+   
+   // Extract data to constants
+   const componentData = [...]
+   
+   // Use TypeScript interfaces
+   interface ComponentProps {...}
+   
+   export function Component(props: ComponentProps) {
+     const styles = componentVariants()
+     return (
+       <div className={styles.root()}>
+         {/* Use styles.slotName() for all elements */}
+       </div>
+     )
+   }
    ```
 
-2. **Create corresponding CSS file**:
-   - Place in appropriate directory: `src/tokens/components/[atoms|molecules|organisms]/`
-   - Name: `_componentname.css`
-   - Import semantic tokens: `@import "../../_semantic.css";`
-   - Define component-specific CSS variables
-   - Import in `components.css`
+2. **CSS Token File (_component.css)**:
+   ```css
+   @import "../../_semantic.css";
+   
+   @theme static {
+     /* Group by type: COLORS, SPACING, TYPOGRAPHY, LAYOUT, EFFECTS */
+     
+     /* === COMPONENT COLORS === */
+     --color-component-bg: var(--color-base);
+     --color-component-text: var(--color-fg-primary);
+     
+     /* === COMPONENT SPACING === */
+     /* Use semantic spacing: 3xs, 2xs, xs, sm, md, lg, xl, 2xl, 3xl */
+     --spacing-component-container-x: var(--spacing-sm);
+     --spacing-component-gap: var(--spacing-2xs);
+     
+     /* === COMPONENT TYPOGRAPHY === */
+     /* Text size variables must use correct Tailwind prefixes:
+        font-, text-, leading-, tracking-, etc.
+        Always end text sizes with -size, -sm, -md, -lg, etc. */
+     --text-component-title-size: var(--text-3xl);
+     --font-component-title-weight: var(--font-bold);
+     
+     /* === COMPONENT LAYOUT === */
+     /* Use --spacing- prefix for max-width too */
+     --spacing-component-max-w: 80rem;
+   }
+   ```
 
-3. **Structure Example** (Footer):
-   - Component: `src/components/footer.tsx` - Uses tv() for styling
-   - CSS: `src/tokens/components/organisms/_footer.css` - Defines CSS variables
-   - Data: Structured with interfaces and extracted data arrays
+3. **File Organization**:
+   - **atoms/**: Basic UI elements from @libs/ui only
+   - **molecules/**: Composite components (navigation, etc.)
+   - **organisms/**: Large sections (header, footer)
+   - Always add CSS import to `components.css`
+
+4. **Naming Conventions**:
+   - CSS variables: `--[type]-[component]-[element]-[modifier]`
+   - Slots: Descriptive names (root, container, list, item, etc.)
+   - Use `base-reverse` for inverted color schemes
+   - Responsive values: Use suffix for breakpoints (`-sm`, `-md`, `-lg`, `-xl`)
+     - Example: `--text-hero-title-size`, `--text-hero-title-size-md`
+     - Example: `--spacing-hero-container-x`, `--spacing-hero-container-x-lg`
+
+5. **Example Implementation** (Footer):
+   ```typescript
+   // footer.tsx
+   const footerVariants = tv({
+     slots: {
+       root: 'bg-footer-bg text-footer-text',
+       container: 'mx-auto max-w-footer-max-w px-footer-container-x',
+       // ... more semantic slots
+     },
+   })
+   ```
+   ```css
+   /* _footer.css */
+   --color-footer-bg: var(--color-base-reverse);
+   --spacing-footer-max-w: 80rem;
+   ```
 
 ### Page-Specific Component Mapping
 
@@ -224,13 +287,49 @@ When creating reusable components in frontend-demo:
 - `error-text` - Validation
 - `toast` - Success/error messages
 
+### Component Best Practices
+
+1. **DO's**:
+   - ✅ Use semantic CSS variables from tokens
+   - ✅ Extract hardcoded values to CSS variables
+   - ✅ Use tv() with slots only (avoid variants)
+   - ✅ Group CSS variables by type (COLORS, SPACING, etc.)
+   - ✅ Use spacing tokens for ALL spacing (including max-width)
+   - ✅ Extract data arrays and interfaces
+   - ✅ Use `base-reverse` for dark sections
+   - ✅ Follow Tailwind 4 theme documentation: https://tailwindcss.com/docs/theme
+   - ✅ Ensure sufficient contrast for both light and dark modes (WCAG AA minimum)
+   - ✅ Always use white text on images/photos for consistency and readability
+
+2. **DON'Ts**:
+   - ❌ Don't use Tailwind utilities directly (e.g., `text-gray-500`)
+   - ❌ Don't create variants unless absolutely necessary
+   - ❌ Don't use numeric spacing (e.g., `spacing-4`), use semantic (e.g., `spacing-sm`)
+   - ❌ Don't mix @libs/ui components with custom UI components
+   - ❌ Don't forget to import CSS in components.css
+
+3. **Spacing Reference**:
+   ```
+   3xs: 0.25rem (4px)
+   2xs: 0.5rem (8px)
+   xs: 0.75rem (12px)
+   sm: 1rem (16px)
+   md: 1.5rem (24px)
+   lg: 2rem (32px)
+   xl: 3rem (48px)
+   2xl: 4rem (64px)
+   3xl: 6rem (96px)
+   ```
+
 ### Common Tasks Checklist
 - [ ] Component implementation uses UI library
 - [ ] Check for existing similar components before creating new ones
+- [ ] CSS token file created with semantic variables
+- [ ] All spacing uses semantic tokens (3xs-3xl)
+- [ ] CSS file imported in components.css
+- [ ] TypeScript interfaces defined for props and data
+- [ ] Data extracted to constants
+- [ ] tv() used with slots only
 - [ ] Responsive design tested on mobile/tablet/desktop
 - [ ] Accessibility checked (ARIA labels, keyboard nav)
-- [ ] TypeScript types properly defined
-- [ ] Design tokens used for styling
-- [ ] Performance optimizations applied
 - [ ] Unused imports and code removed
-- [ ] File structure follows modular pattern

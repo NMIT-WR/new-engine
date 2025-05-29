@@ -1,0 +1,27 @@
+@theme static {
+  /* === HERO COLORS === */
+  /* Always use white text on images for readability */
+  --color-hero-fg: white;
+  --color-hero-subtitle: rgba(255, 255, 255, 0.9);
+  --color-hero-overlay: rgba(0, 0, 0, 0.5); /* Increased for better contrast */
+
+  /* === HERO SPACING === */
+  --spacing-hero-height: 600px;
+  --spacing-hero-max-w: 80rem;
+  --spacing-hero-container-x: var(--spacing-sm);
+  --spacing-hero-container-x-sm: var(--spacing-md);
+  --spacing-hero-container-x-lg: var(--spacing-lg);
+  --spacing-hero-content-gap: var(--spacing-lg);
+  --spacing-hero-subtitle-max-w: 24rem;
+  --spacing-hero-button-gap: var(--spacing-sm);
+  --spacing-hero-button-x: var(--spacing-lg);
+  --spacing-hero-button-y: var(--spacing-2xs);
+  --spacing-hero-content-max-w: 42rem;
+
+  /* === HERO TYPOGRAPHY === */
+  --text-hero-title-size: var(--text-5xl);
+  --text-hero-title-size-sm: var(--text-6xl);
+  --text-hero-title-size-md: var(--text-7xl);
+  --text-hero-subtitle-size: var(--text-xl);
+  --font-weight-hero-title: var(--font-weight-bold);
+}

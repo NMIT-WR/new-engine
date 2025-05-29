@@ -1,5 +1,3 @@
-@import "../../_semantic.css";
-
 @theme static {
   /* === NAVIGATION COLORS === */
   --color-navigation-bg: transparent;
@@ -30,7 +28,7 @@
   --text-navigation-item: var(--text-sm);
   --font-navigation-item: var(--font-medium);
   --text-navigation-badge: 0.625rem;
-  
+
   /* === BADGE === */
   --spacing-navigation-badge-x: var(--spacing-2xs);
   --spacing-navigation-badge-y: 0.125rem;
