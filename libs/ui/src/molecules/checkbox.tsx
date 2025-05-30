@@ -9,8 +9,9 @@ import { tv } from '../utils'
 const checkboxVariants = tv({
   slots: {
     root: [],
+    label: ['flex items-center gap-2 cursor-pointer'],
     checkbox: [
-      'appearance-none relative cursor-pointer',
+      'appearance-none relative cursor-pointer flex-shrink-0',
       'h-checkbox w-checkbox',
       'border border-checkbox-border rounded-checkbox',
       'bg-checkbox data-[state=checked]:bg-checkbox-checked border-checkbox',
@@ -34,6 +35,7 @@ export interface CheckboxProps
   ref?: Ref<HTMLInputElement>
   readOnly?: boolean
 
+  checked?: boolean
   defaultChecked?: boolean
   indeterminate?: boolean
   invalid?: boolean
@@ -42,7 +44,7 @@ export interface CheckboxProps
   helperText?: string
   errorText?: string
 
-  onChange?: (checked: boolean | 'indeterminate') => void
+  onCheckedChange?: checkbox.Props['onCheckedChange']
 }
 
 export function Checkbox({
@@ -52,7 +54,7 @@ export function Checkbox({
   defaultChecked,
   indeterminate,
   disabled,
-  onChange,
+  onCheckedChange,
   className,
   invalid,
   readOnly,
@@ -67,24 +69,32 @@ export function Checkbox({
     disabled,
     defaultChecked,
     readOnly,
-    checked: indeterminate ? 'indeterminate' : checked,
+    checked: indeterminate ? 'indeterminate' : (checked ?? undefined),
     invalid: invalid,
     onCheckedChange: (details) => {
-      onChange?.(details.checked)
+      // Always call the provided handler
+      onCheckedChange?.(details)
     },
   })
 
   const api = checkbox.connect(service, normalizeProps)
 
-  const { checkbox: checkboxSlot, root } = checkboxVariants({
+  const {
+    checkbox: checkboxSlot,
+    root,
+    label: labelSlot,
+  } = checkboxVariants({
     className,
   })
 
   return (
     <div className={root({ className })}>
-      <Label {...api.getRootProps()}>
+      <Label className={labelSlot()} {...api.getRootProps()}>
         <div
           {...api.getControlProps()}
+          onClick={() => {
+            api.setChecked(!api.checked)
+          }}
           className={checkboxSlot({
             className,
           })}

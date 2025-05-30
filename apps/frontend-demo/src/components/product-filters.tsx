@@ -6,7 +6,7 @@ import { Checkbox } from 'ui/src/molecules/checkbox'
 import { Dialog } from 'ui/src/molecules/dialog'
 import { RangeSlider } from 'ui/src/molecules/range-slider'
 import { tv } from 'ui/src/utils'
-import { categories } from '../data/mock-products'
+import { categories, mockProducts } from '../data/mock-products'
 
 const productFiltersVariants = tv({
   slots: {
@@ -31,7 +31,39 @@ interface ProductFiltersProps {
 
 export function ProductFilters({ className }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [priceRange, setPriceRange] = useState([0, 200])
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
+    new Set()
+  )
+  const [selectedSizes, setSelectedSizes] = useState<Set<string>>(new Set())
+  const [selectedColors, setSelectedColors] = useState<Set<string>>(new Set())
   const styles = productFiltersVariants()
+
+  // Calculate counts for sizes
+  const sizeCounts: Record<string, number> = {}
+  mockProducts.forEach((product) => {
+    if (product.variants) {
+      product.variants.forEach((variant) => {
+        if (variant.options?.size) {
+          sizeCounts[variant.options.size] =
+            (sizeCounts[variant.options.size] || 0) + 1
+        }
+      })
+    }
+  })
+
+  // Calculate counts for colors
+  const colorCounts: Record<string, number> = {}
+  mockProducts.forEach((product) => {
+    if (product.variants) {
+      product.variants.forEach((variant) => {
+        if (variant.options?.color) {
+          colorCounts[variant.options.color] =
+            (colorCounts[variant.options.color] || 0) + 1
+        }
+      })
+    }
+  })
 
   const filterContent = (
     <>
@@ -45,9 +77,22 @@ export function ProductFilters({ className }: ProductFiltersProps) {
               id={`category-${category.id}`}
               name="categories"
               value={category.handle}
-            >
-              {category.name} ({category.count})
-            </Checkbox>
+              labelText={`${category.name} (${category.count})`}
+              checked={selectedCategories.has(category.handle)}
+              onCheckedChange={(details) => {
+                const { checked } = details
+                setSelectedCategories((prev) => {
+                  const newSet = new Set(prev)
+                  if (checked) {
+                    newSet.add(category.handle)
+                  } else {
+                    newSet.delete(category.handle)
+                  }
+
+                  return newSet
+                })
+              }}
+            />
           ))}
         </div>
       </div>
@@ -56,7 +101,8 @@ export function ProductFilters({ className }: ProductFiltersProps) {
       <div className={styles.section()}>
         <h3 className={styles.title()}>Price Range</h3>
         <RangeSlider
-          defaultValue={[0, 200]}
+          value={priceRange}
+          onChange={(value) => setPriceRange(value)}
           min={0}
           max={300}
           step={10}
@@ -64,9 +110,13 @@ export function ProductFilters({ className }: ProductFiltersProps) {
           formatValue={(value) => `€${value}`}
         />
         <div className="mt-product-filters-range-margin flex justify-between">
-          <span className="text-product-filters-range-value font-product-filters-range-value text-sm">€0</span>
+          <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
+            €{priceRange[0]}
+          </span>
           <span className="text-product-filters-range-label text-sm">to</span>
-          <span className="text-product-filters-range-value font-product-filters-range-value text-sm">€200</span>
+          <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
+            €{priceRange[1]}
+          </span>
         </div>
       </div>
 
@@ -74,11 +124,32 @@ export function ProductFilters({ className }: ProductFiltersProps) {
       <div className={styles.section()}>
         <h3 className={styles.title()}>Size</h3>
         <div className={styles.filterList()}>
-          {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
-            <Checkbox key={size} id={`size-${size}`} name="sizes" value={size}>
-              {size}
-            </Checkbox>
-          ))}
+          {['XS', 'S', 'M', 'L', 'XL'].map((size) => {
+            const count = sizeCounts[size] || 0
+            if (count === 0) return null
+            return (
+              <Checkbox
+                key={size}
+                id={`size-${size}`}
+                name="sizes"
+                value={size}
+                labelText={`${size} (${count})`}
+                checked={selectedSizes.has(size)}
+                onCheckedChange={(details) => {
+                  const { checked } = details
+                  setSelectedSizes((prev) => {
+                    const newSet = new Set(prev)
+                    if (checked === true) {
+                      newSet.add(size)
+                    } else {
+                      newSet.delete(size)
+                    }
+                    return newSet
+                  })
+                }}
+              />
+            )
+          })}
         </div>
       </div>
 
@@ -86,16 +157,34 @@ export function ProductFilters({ className }: ProductFiltersProps) {
       <div className={styles.section()}>
         <h3 className={styles.title()}>Color</h3>
         <div className={styles.filterList()}>
-          {['Black', 'White', 'Grey', 'Blue', 'Brown'].map((color) => (
-            <Checkbox
-              key={color}
-              id={`color-${color}`}
-              name="colors"
-              value={color}
-            >
-              {color}
-            </Checkbox>
-          ))}
+          {['Black', 'White', 'Grey', 'Blue', 'Brown', 'Navy', 'Red'].map(
+            (color) => {
+              const count = colorCounts[color] || 0
+              if (count === 0) return null
+              return (
+                <Checkbox
+                  key={color}
+                  id={`color-${color}`}
+                  name="colors"
+                  value={color}
+                  labelText={`${color} (${count})`}
+                  checked={selectedColors.has(color)}
+                  onCheckedChange={(details) => {
+                    const { checked } = details
+                    setSelectedColors((prev) => {
+                      const newSet = new Set(prev)
+                      if (checked === true) {
+                        newSet.add(color)
+                      } else {
+                        newSet.delete(color)
+                      }
+                      return newSet
+                    })
+                  }}
+                />
+              )
+            }
+          )}
         </div>
       </div>
     </>
