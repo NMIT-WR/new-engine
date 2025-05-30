@@ -25,19 +25,33 @@ const productFiltersVariants = tv({
   },
 })
 
-interface ProductFiltersProps {
-  className?: string
+export interface FilterState {
+  priceRange: [number, number]
+  categories: Set<string>
+  sizes: Set<string>
+  colors: Set<string>
 }
 
-export function ProductFilters({ className }: ProductFiltersProps) {
+interface ProductFiltersProps {
+  className?: string
+  filters: FilterState
+  onFiltersChange: (filters: FilterState) => void
+}
+
+export function ProductFilters({
+  className,
+  filters,
+  onFiltersChange,
+}: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [priceRange, setPriceRange] = useState([0, 200])
-  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
-    new Set()
-  )
-  const [selectedSizes, setSelectedSizes] = useState<Set<string>>(new Set())
-  const [selectedColors, setSelectedColors] = useState<Set<string>>(new Set())
   const styles = productFiltersVariants()
+
+  const updateFilters = (updates: Partial<FilterState>) => {
+    onFiltersChange({
+      ...filters,
+      ...updates,
+    })
+  }
 
   // Calculate counts for sizes
   const sizeCounts: Record<string, number> = {}
@@ -78,19 +92,16 @@ export function ProductFilters({ className }: ProductFiltersProps) {
               name="categories"
               value={category.handle}
               labelText={`${category.name} (${category.count})`}
-              checked={selectedCategories.has(category.handle)}
+              checked={filters.categories.has(category.handle)}
               onCheckedChange={(details) => {
                 const { checked } = details
-                setSelectedCategories((prev) => {
-                  const newSet = new Set(prev)
-                  if (checked) {
-                    newSet.add(category.handle)
-                  } else {
-                    newSet.delete(category.handle)
-                  }
-
-                  return newSet
-                })
+                const newCategories = new Set(filters.categories)
+                if (checked === true) {
+                  newCategories.add(category.handle)
+                } else {
+                  newCategories.delete(category.handle)
+                }
+                updateFilters({ categories: newCategories })
               }}
             />
           ))}
@@ -101,21 +112,23 @@ export function ProductFilters({ className }: ProductFiltersProps) {
       <div className={styles.section()}>
         <h3 className={styles.title()}>Price Range</h3>
         <RangeSlider
-          value={priceRange}
-          onChange={(value) => setPriceRange(value)}
+          value={filters.priceRange}
+          onChange={(value) =>
+            updateFilters({ priceRange: value as [number, number] })
+          }
           min={0}
           max={300}
           step={10}
-          minStepsBetweenThumbs={10}
+          minStepsBetweenThumbs={0}
           formatValue={(value) => `€${value}`}
         />
         <div className="mt-product-filters-range-margin flex justify-between">
           <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-            €{priceRange[0]}
+            €{filters.priceRange[0]}
           </span>
           <span className="text-product-filters-range-label text-sm">to</span>
           <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-            €{priceRange[1]}
+            €{filters.priceRange[1]}
           </span>
         </div>
       </div>
@@ -134,18 +147,16 @@ export function ProductFilters({ className }: ProductFiltersProps) {
                 name="sizes"
                 value={size}
                 labelText={`${size} (${count})`}
-                checked={selectedSizes.has(size)}
+                checked={filters.sizes.has(size)}
                 onCheckedChange={(details) => {
                   const { checked } = details
-                  setSelectedSizes((prev) => {
-                    const newSet = new Set(prev)
-                    if (checked === true) {
-                      newSet.add(size)
-                    } else {
-                      newSet.delete(size)
-                    }
-                    return newSet
-                  })
+                  const newSizes = new Set(filters.sizes)
+                  if (checked === true) {
+                    newSizes.add(size)
+                  } else {
+                    newSizes.delete(size)
+                  }
+                  updateFilters({ sizes: newSizes })
                 }}
               />
             )
@@ -168,18 +179,16 @@ export function ProductFilters({ className }: ProductFiltersProps) {
                   name="colors"
                   value={color}
                   labelText={`${color} (${count})`}
-                  checked={selectedColors.has(color)}
+                  checked={filters.colors.has(color)}
                   onCheckedChange={(details) => {
                     const { checked } = details
-                    setSelectedColors((prev) => {
-                      const newSet = new Set(prev)
-                      if (checked === true) {
-                        newSet.add(color)
-                      } else {
-                        newSet.delete(color)
-                      }
-                      return newSet
-                    })
+                    const newColors = new Set(filters.colors)
+                    if (checked === true) {
+                      newColors.add(color)
+                    } else {
+                      newColors.delete(color)
+                    }
+                    updateFilters({ colors: newColors })
                   }}
                 />
               )
@@ -233,7 +242,12 @@ export function ProductFilters({ className }: ProductFiltersProps) {
               size="sm"
               className="flex-1"
               onClick={() => {
-                // Reset filters logic
+                updateFilters({
+                  priceRange: [0, 200],
+                  categories: new Set(),
+                  sizes: new Set(),
+                  colors: new Set(),
+                })
                 setIsOpen(false)
               }}
             >

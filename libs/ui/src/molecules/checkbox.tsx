@@ -69,7 +69,7 @@ export function Checkbox({
     disabled,
     defaultChecked,
     readOnly,
-    checked: indeterminate ? 'indeterminate' : (checked ?? undefined),
+    checked: indeterminate ? 'indeterminate' : checked,
     invalid: invalid,
     onCheckedChange: (details) => {
       // Always call the provided handler
@@ -92,9 +92,6 @@ export function Checkbox({
       <Label className={labelSlot()} {...api.getRootProps()}>
         <div
           {...api.getControlProps()}
-          onClick={() => {
-            api.setChecked(!api.checked)
-          }}
           className={checkboxSlot({
             className,
           })}

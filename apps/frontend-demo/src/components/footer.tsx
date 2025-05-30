@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from 'ui/src/atoms/button'
 import { Input } from 'ui/src/atoms/input'
 import { Link } from 'ui/src/atoms/link'
@@ -5,22 +7,24 @@ import { tv } from 'ui/src/utils'
 
 const footerVariants = tv({
   slots: {
-    root: 'bg-footer-bg text-footer-text',
+    root: 'bg-footer-bg text-footer-fg',
     container:
       'mx-auto max-w-footer-max-w px-footer-container-x py-footer-container-y sm:px-footer-container-x-sm lg:px-footer-container-x-lg',
-    grid: 'grid grid-cols-1 gap-footer-section md:grid-cols-4',
+    grid: 'grid grid-cols-1 gap-footer-section md:grid-cols-2 lg:grid-cols-4',
     section: '',
     heading:
       'mb-footer-heading font-semibold text-footer-heading text-footer-heading',
     list: 'space-y-footer-list text-footer-body',
     listItem: '',
     link: 'text-footer-link hover:text-footer-link-hover transition-colors',
-    description: 'text-footer-body',
-    newsletterWrapper: 'flex gap-footer-input-gap',
-    newsletterInput: 'flex-1',
+    description: 'text-footer-body mb-footer-description',
+    newsletterForm: 'mt-footer-form',
+    newsletterWrapper: 'flex flex-col sm:flex-row gap-footer-input-gap',
+    newsletterInput:
+      'w-full hover:bg-footer-input-bg-hover sm:max-w-footer-input bg-footer-input-bg text-footer-input-fg placeholder:text-footer-input-placeholder border-footer-input-border focus-visible:bg-footer-input-bg-focus',
     bottomBar:
       'mt-footer-bottom-bar border-t border-footer-border pt-footer-bottom-bar text-center',
-    copyright: 'text-footer-copyright text-footer-text',
+    copyright: 'text-footer-copyright text-footer-fg',
   },
 })
 
@@ -58,6 +62,12 @@ const footerSections: FooterSection[] = [
 export function Footer() {
   const styles = footerVariants()
 
+  const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    // Handle newsletter submission
+    console.log('Newsletter form submitted')
+  }
+
   return (
     <footer className={styles.root()}>
       <div className={styles.container()}>
@@ -93,16 +103,22 @@ export function Footer() {
             <p className={styles.description()}>
               Subscribe to get special offers and updates
             </p>
-            <div className={styles.newsletterWrapper()}>
-              <Input
-                type="email"
-                placeholder="Your email"
-                className={styles.newsletterInput()}
-              />
-              <Button variant="primary" size="sm">
-                Subscribe
-              </Button>
-            </div>
+            <form
+              className={styles.newsletterForm()}
+              onSubmit={handleNewsletterSubmit}
+            >
+              <div className={styles.newsletterWrapper()}>
+                <Input
+                  type="email"
+                  placeholder="Your email"
+                  size="sm"
+                  className={styles.newsletterInput()}
+                />
+                <Button variant="primary" size="sm" type="submit">
+                  Subscribe
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
 
