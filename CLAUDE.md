@@ -80,6 +80,12 @@ This project includes MCP (Model Context Protocol) servers configuration to enha
 
 ## Development Commands
 
+### Important: Development Server Assumptions
+**NEVER ask to run `pnpm dev` or check if the dev server is running!**
+- Always assume the development server is already running on http://localhost:3000 (for frontend-demo)
+- This saves time and avoids unnecessary communication
+- If you need to interact with the running application, use MCP tools (especially puppeteer-mcp)
+
 ### Package Management
 Always use CLI commands to install packages, never edit package.json directly:
 ```bash

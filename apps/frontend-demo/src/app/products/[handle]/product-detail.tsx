@@ -13,13 +13,9 @@ import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { Select } from 'ui/src/molecules/select'
 import { tv } from 'ui/src/utils'
 import { FeaturedProducts } from '../../../components/featured-products'
-import {
-  getProductBadges,
-  getProductPrice,
-  getProductStock,
-  mockProducts,
-} from '../../../data/mock-products'
+import { mockProducts } from '../../../data/mock-products'
 import type { Product } from '../../../types/product'
+import { extractProductData, getRelatedProducts, getStockStatusText } from '../../../utils/product-utils'
 
 const productDetailVariants = tv({
   slots: {
@@ -60,18 +56,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const [selectedColor, setSelectedColor] = useState<string>('')
   const [quantity, setQuantity] = useState(1)
 
-  const price = getProductPrice(product)
-  const badges = getProductBadges(product)
-  const stock = getProductStock(product)
+  const { price, badges, stockStatus } = extractProductData(product)
 
   // Get available sizes and colors from variants
   const sizes = product.options?.find((opt) => opt.title === 'Size')?.values || []
   const colors = product.options?.find((opt) => opt.title === 'Color')?.values || []
 
-  // Related products (in real app, this would be based on category/collection)
-  const relatedProducts = mockProducts
-    .filter((p) => p.id !== product.id)
-    .slice(0, 4)
+  // Get related products
+  const relatedProducts = getRelatedProducts(product, mockProducts, 4)
 
   const tabItems = [
     {
@@ -241,10 +233,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 variant="primary"
                 size="lg"
                 className="flex-1"
-                disabled={stock === 'out-of-stock'}
+                disabled={stockStatus === 'out-of-stock'}
                 icon="icon-[mdi--cart-plus]"
               >
-                {stock === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
+                {stockStatus === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
               </Button>
               <Button
                 variant="secondary"
@@ -257,19 +249,19 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Stock Info */}
             <div className={styles.stockInfo()}>
-              {stock === 'in-stock' && (
+              {stockStatus === 'in-stock' && (
                 <>
                   <Icon icon="icon-[mdi--check-circle]" className="text-green-600" />
                   <span>In stock and ready to ship</span>
                 </>
               )}
-              {stock === 'low-stock' && (
+              {stockStatus === 'low-stock' && (
                 <>
                   <Icon icon="icon-[mdi--alert-circle]" className="text-orange-600" />
                   <span>Only a few left in stock</span>
                 </>
               )}
-              {stock === 'out-of-stock' && (
+              {stockStatus === 'out-of-stock' && (
                 <>
                   <Icon icon="icon-[mdi--close-circle]" className="text-red-600" />
                   <span>Currently out of stock</span>

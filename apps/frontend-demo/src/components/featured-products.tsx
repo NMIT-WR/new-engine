@@ -1,12 +1,8 @@
 import Link from 'next/link'
 import { ProductCard } from 'ui/src/molecules/product-card'
 import { tv } from 'ui/src/utils'
-import {
-  getProductBadges,
-  getProductPrice,
-  getProductStock,
-} from '../data/mock-products'
 import type { Product } from '../types/product'
+import { extractProductData, getProductPath } from '../utils/product-utils'
 
 const featuredProductsVariants = tv({
   slots: {
@@ -48,14 +44,7 @@ export function FeaturedProducts({
         </div>
         <div className={styles.grid()}>
           {products.map((product) => {
-            const price = getProductPrice(product)
-            const stockStatus = getProductStock(product)
-            const badges = getProductBadges(product)
-            
-            // Add invisible placeholder badge if no badges exist
-            const displayBadges = badges.length > 0 
-              ? badges 
-              : [{ variant: 'success' as const, children: '\u00A0', className: 'invisible' }]
+            const { price, displayBadges, stockText } = extractProductData(product)
 
             return (
               <ProductCard
@@ -63,13 +52,7 @@ export function FeaturedProducts({
                 imageUrl={product.thumbnail || ''}
                 name={product.title}
                 price={price?.calculated_price || ''}
-                stockStatus={
-                  stockStatus === 'in-stock'
-                    ? 'In Stock'
-                    : stockStatus === 'low-stock'
-                      ? 'Low Stock'
-                      : 'Out of Stock'
-                }
+                stockStatus={stockText}
                 badges={displayBadges}
                 hasCartButton={true}
                 cartButtonText="Add to Cart"

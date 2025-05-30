@@ -5,12 +5,8 @@ import { useState } from 'react'
 import { Pagination } from 'ui/src/molecules/pagination'
 import { ProductCard } from 'ui/src/molecules/product-card'
 import { tv } from 'ui/src/utils'
-import {
-  getProductBadges,
-  getProductPrice,
-  getProductStock,
-} from '../data/mock-products'
 import type { Product } from '../types/product'
+import { extractProductData, getProductPath } from '../utils/product-utils'
 
 const productGridVariants = tv({
   slots: {
@@ -49,25 +45,12 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     <div className={styles.root()}>
       <div className={styles.grid()}>
         {currentProducts.map((product) => {
-          const price = getProductPrice(product)
-          const badges = getProductBadges(product)
-          const stock = getProductStock(product)
-          const stockText =
-            stock === 'in-stock'
-              ? 'In Stock'
-              : stock === 'low-stock'
-                ? 'Low Stock'
-                : 'Out of Stock'
-
-          // Add invisible placeholder badge if no badges exist
-          const displayBadges = badges.length > 0 
-            ? badges 
-            : [{ variant: 'success' as const, children: '\u00A0', className: 'invisible' }]
+          const { price, displayBadges, stockText } = extractProductData(product)
 
           return (
             <Link
               key={product.id}
-              href={`/products/${product.handle}`}
+              href={getProductPath(product.handle)}
               className="block"
             >
               <ProductCard

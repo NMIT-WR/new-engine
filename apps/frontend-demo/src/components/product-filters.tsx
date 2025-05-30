@@ -6,7 +6,13 @@ import { Checkbox } from 'ui/src/molecules/checkbox'
 import { Dialog } from 'ui/src/molecules/dialog'
 import { RangeSlider } from 'ui/src/molecules/range-slider'
 import { tv } from 'ui/src/utils'
-import { categories, mockProducts } from '../data/mock-products'
+import { mockProducts } from '../data/mock-products'
+import {
+  calculateProductCounts,
+  getSizesWithCounts,
+  getColorsWithCounts,
+  type FilterState,
+} from '../utils/product-filters'
 
 const productFiltersVariants = tv({
   slots: {
@@ -25,12 +31,6 @@ const productFiltersVariants = tv({
   },
 })
 
-export interface FilterState {
-  priceRange: [number, number]
-  categories: Set<string>
-  sizes: Set<string>
-  colors: Set<string>
-}
 
 interface ProductFiltersProps {
   className?: string
@@ -53,42 +53,21 @@ export function ProductFilters({
     })
   }
 
-  // Calculate counts for sizes
-  const sizeCounts: Record<string, number> = {}
-  mockProducts.forEach((product) => {
-    if (product.variants) {
-      product.variants.forEach((variant) => {
-        if (variant.options?.size) {
-          sizeCounts[variant.options.size] =
-            (sizeCounts[variant.options.size] || 0) + 1
-        }
-      })
-    }
-  })
-
-  // Calculate counts for colors
-  const colorCounts: Record<string, number> = {}
-  mockProducts.forEach((product) => {
-    if (product.variants) {
-      product.variants.forEach((variant) => {
-        if (variant.options?.color) {
-          colorCounts[variant.options.color] =
-            (colorCounts[variant.options.color] || 0) + 1
-        }
-      })
-    }
-  })
+  // Get product counts using utility functions
+  const productCounts = calculateProductCounts(mockProducts)
+  const sizesWithCounts = getSizesWithCounts(mockProducts)
+  const colorsWithCounts = getColorsWithCounts(mockProducts)
 
   const filterContent = (
     <>
-      {/* Categories */}
+      {/* Collections */}
       <div className={styles.section()}>
-        <h3 className={styles.title()}>Categories</h3>
+        <h3 className={styles.title()}>Collections</h3>
         <div className={styles.filterList()}>
-          {categories.map((category) => (
+          {productCounts.categoryCounts.map((category) => (
             <Checkbox
-              key={category.id}
-              id={`category-${category.id}`}
+              key={category.handle}
+              id={`category-${category.handle}`}
               name="categories"
               value={category.handle}
               labelText={`${category.name} (${category.count})`}
@@ -137,30 +116,26 @@ export function ProductFilters({
       <div className={styles.section()}>
         <h3 className={styles.title()}>Size</h3>
         <div className={styles.filterList()}>
-          {['XS', 'S', 'M', 'L', 'XL'].map((size) => {
-            const count = sizeCounts[size] || 0
-            if (count === 0) return null
-            return (
-              <Checkbox
-                key={size}
-                id={`size-${size}`}
-                name="sizes"
-                value={size}
-                labelText={`${size} (${count})`}
-                checked={filters.sizes.has(size)}
-                onCheckedChange={(details) => {
-                  const { checked } = details
-                  const newSizes = new Set(filters.sizes)
-                  if (checked === true) {
-                    newSizes.add(size)
-                  } else {
-                    newSizes.delete(size)
-                  }
-                  updateFilters({ sizes: newSizes })
-                }}
-              />
-            )
-          })}
+          {sizesWithCounts.map(({ size, count }) => (
+            <Checkbox
+              key={size}
+              id={`size-${size}`}
+              name="sizes"
+              value={size}
+              labelText={`${size} (${count})`}
+              checked={filters.sizes.has(size)}
+              onCheckedChange={(details) => {
+                const { checked } = details
+                const newSizes = new Set(filters.sizes)
+                if (checked === true) {
+                  newSizes.add(size)
+                } else {
+                  newSizes.delete(size)
+                }
+                updateFilters({ sizes: newSizes })
+              }}
+            />
+          ))}
         </div>
       </div>
 
@@ -168,32 +143,26 @@ export function ProductFilters({
       <div className={styles.section()}>
         <h3 className={styles.title()}>Color</h3>
         <div className={styles.filterList()}>
-          {['Black', 'White', 'Grey', 'Blue', 'Brown', 'Navy', 'Red'].map(
-            (color) => {
-              const count = colorCounts[color] || 0
-              if (count === 0) return null
-              return (
-                <Checkbox
-                  key={color}
-                  id={`color-${color}`}
-                  name="colors"
-                  value={color}
-                  labelText={`${color} (${count})`}
-                  checked={filters.colors.has(color)}
-                  onCheckedChange={(details) => {
-                    const { checked } = details
-                    const newColors = new Set(filters.colors)
-                    if (checked === true) {
-                      newColors.add(color)
-                    } else {
-                      newColors.delete(color)
-                    }
-                    updateFilters({ colors: newColors })
-                  }}
-                />
-              )
-            }
-          )}
+          {colorsWithCounts.map(({ color, count }) => (
+            <Checkbox
+              key={color}
+              id={`color-${color}`}
+              name="colors"
+              value={color}
+              labelText={`${color} (${count})`}
+              checked={filters.colors.has(color)}
+              onCheckedChange={(details) => {
+                const { checked } = details
+                const newColors = new Set(filters.colors)
+                if (checked === true) {
+                  newColors.add(color)
+                } else {
+                  newColors.delete(color)
+                }
+                updateFilters({ colors: newColors })
+              }}
+            />
+          ))}
         </div>
       </div>
     </>

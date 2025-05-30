@@ -8,25 +8,10 @@ This is a Next.js 15+ demo application showcasing the UI component library from 
 
 ## Development Guidelines
 
-### Core Development Rules
-1. **Component Usage**:
-   - Always import components from `@libs/ui` package - never create duplicates
-   - Follow the atomic design pattern: atoms → molecules → organisms
-   - Before using any component, read its props interface to understand required/optional props and their types
-   - Use the existing token system for styling consistency
-
-2. **Code Quality**:
-   - Use TypeScript for all new files
-   - After every file modification, run `npx tsc --noEmit` and fix any TypeScript errors
-   - After implementing UI changes, run `node scripts/auto-screenshot.js` to document current visual state
-   - Follow functional component patterns with hooks
-   - **React 19**: Avoid unnecessary useCallback, useMemo, and useEffect as React 19 handles optimizations automatically
-   - Ensure all interactive elements are keyboard accessible
-
-3. **Development Server**:
-   - **NEVER ask to run `pnpm dev` or check if the dev server is running!**
-   - Always assume the development server is already running on http://localhost:3000
-   - Use MCP tools (especially puppeteer-mcp) for browser interactions and testing
+### Component Usage
+- Always import components from `@libs/ui` package
+- Follow the atomic design pattern: atoms → molecules → organisms
+- Use the existing token system for styling consistency
 
 ### File Structure
 ```
@@ -64,6 +49,18 @@ node scripts/auto-screenshot.js
 ./scripts/watch-and-screenshot.sh
 ```
 
+### Important Development Notes
+
+**NEVER ask to run `pnpm dev` or check if the dev server is running!**
+- Always assume the development server is already running on http://localhost:3000
+- This saves time and avoids unnecessary back-and-forth communication
+- If you need to interact with the running application, use MCP tools
+
+**Use MCP Tools for Browser Interactions:**
+- For testing UI interactions, taking screenshots, or analyzing the running app, use the **puppeteer-mcp** server
+- This is much more efficient than asking the user to manually test things
+- Example: Testing filters, capturing UI states, verifying component behavior
+
 ### Netlify Deployment
 
 ```bash
@@ -83,6 +80,16 @@ netlify deploy
   - Routing issues - ensure `trailingSlash: true` is configured
 - Test all pages including dynamic routes (e.g., `/products/[handle]`)
 - Verify both draft and production deployments
+
+### Code Standards
+- Use TypeScript for all new files
+- Follow functional component patterns with hooks
+- **React 19**: We use React 19 - avoid unnecessary useCallback, useMemo, and useEffect as React 19 handles optimizations automatically
+- Implement proper error boundaries
+- Ensure all interactive elements are keyboard accessible
+- **After every file modification, check TypeScript errors** - run `npx tsc --noEmit` and fix any issues
+- **Before using any component, check its props interface** - read the component file to understand required/optional props and their types
+- **After implementing UI changes, capture screenshots** - run `node scripts/auto-screenshot.js` to document current visual state
 
 ### Testing Guidelines
 - Write integration tests for user flows
@@ -165,6 +172,22 @@ import { Button } from '@/components/ui/button' // ❌
 - Categories: Shirts, Sweatshirts, Pants, Merch
 - Regions: Europe (EUR), US (USD)
 
+### Response Instructions for Claude
+- When asked about UI components, always check `libs/ui` first
+- Prefer composition over creating new components
+- Follow existing patterns in the codebase
+- Always use English for code and comments
+- Respond to user in Czech when they write in Czech
+- Be concise but thorough in explanations
+- Always verify imports are from the correct package
+- Prioritize modularization over monolithic files
+- Never duplicate existing components
+- Clean up unused code and components
+- Analyze for reusability opportunities
+- Maintain consistent design patterns
+- **When implementing UI changes, always capture screenshots** using `node scripts/auto-screenshot.js`
+- **Screenshots are automatically saved** to `screenshots/auto/` directory for visual documentation
+
 ### Project Requirements
 - This is a proof of concept demo for client presentations
 - Focus on modern UX/UI with good performance and accessibility
@@ -178,7 +201,6 @@ import { Button } from '@/components/ui/button' // ❌
 4. **Clean Codebase**: Remove unused components and dead code
 5. **Consistent Design**: Maintain unified design language across all pages
 6. **Conventional Commits**: Use conventional commit format for all commits
-7. **Language**: Always use English for code and comments, respond to user in Czech when they write in Czech
 
 ### Atomic Design Architecture
 This project follows the **Atomic Design** methodology for organizing UI components:
@@ -384,13 +406,29 @@ When creating reusable components in frontend-demo:
 - `error-text` - Validation
 - `toast` - Success/error messages
 
-### Common Component Props Patterns
-- **Select**: uses `options` prop with `{value: string, label: string}[]`
-- **ProductCard**: requires `name` (not `title`), `imageUrl`, `price`, `stockStatus`
-- **Carousel**: uses `items` prop with `{src: string, alt: string}[]`
-- **Accordion**: items need `value`, `trigger`, and `content` properties
-- **Rating**: uses `readOnly` (not `readonly`)
-- **NumericInput**: uses `onChange` (not `onValueChange`)
+### TypeScript & Component Usage Guidelines
+
+1. **Before Using Any Component**:
+   ```typescript
+   // 1. First, read the component file to check its interface
+   // 2. Look for required vs optional props
+   // 3. Check prop types (string, number, array, etc.)
+   // 4. Check for specific prop formats (e.g., Select expects 'options' not 'items')
+   ```
+
+2. **After Every Code Change**:
+   ```bash
+   # Run TypeScript check
+   npx tsc --noEmit
+   ```
+
+3. **Common Component Props Patterns**:
+   - **Select**: uses `options` prop with `{value: string, label: string}[]`
+   - **ProductCard**: requires `name` (not `title`), `imageUrl`, `price`, `stockStatus`
+   - **Carousel**: uses `items` prop with `{src: string, alt: string}[]`
+   - **Accordion**: items need `value`, `trigger`, and `content` properties
+   - **Rating**: uses `readOnly` (not `readonly`)
+   - **NumericInput**: uses `onChange` (not `onValueChange`)
 
 ### Component Best Practices
 
@@ -429,15 +467,15 @@ When creating reusable components in frontend-demo:
 ### Common Tasks Checklist
 - [ ] Component implementation uses UI library
 - [ ] Check for existing similar components before creating new ones
-- [ ] Read component's props interface before using it
+- [ ] **Read component's props interface before using it**
 - [ ] CSS token file created with semantic variables
 - [ ] All spacing uses semantic tokens (3xs-3xl)
 - [ ] CSS file imported in components.css
 - [ ] TypeScript interfaces defined for props and data
 - [ ] Data extracted to constants
 - [ ] tv() used with slots only
-- [ ] TypeScript errors checked and fixed after modifications
-- [ ] Screenshots captured after UI implementation
+- [ ] **TypeScript errors checked and fixed after modifications**
+- [ ] **Screenshots captured after UI implementation** - `node scripts/auto-screenshot.js`
 - [ ] Responsive design tested on mobile/tablet/desktop
 - [ ] Accessibility checked (ARIA labels, keyboard nav)
 - [ ] Unused imports and code removed

@@ -4,10 +4,15 @@ import { useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Select } from 'ui/src/molecules/select'
 import { tv } from 'ui/src/utils'
-import { ProductFilters, type FilterState } from '../../components/product-filters'
+import { ProductFilters } from '../../components/product-filters'
 import { ProductGrid } from '../../components/product-grid'
 import { mockProducts } from '../../data/mock-products'
-import type { Product } from '../../types/product'
+import {
+  filterProducts,
+  sortProducts,
+  type FilterState,
+  type SortOption,
+} from '../../utils/product-filters'
 
 const productListingVariants = tv({
   slots: {
@@ -36,7 +41,7 @@ const sortOptions = [
 ]
 
 export default function ProductsPage() {
-  const [sortBy, setSortBy] = useState('newest')
+  const [sortBy, setSortBy] = useState<SortOption>('newest')
   const [filters, setFilters] = useState<FilterState>({
     priceRange: [0, 200],
     categories: new Set(),
@@ -45,84 +50,9 @@ export default function ProductsPage() {
   })
   const styles = productListingVariants()
 
-  // Apply filters
-  let filteredProducts = mockProducts.filter((product) => {
-    // Price filter
-    const price = Number.parseFloat(
-      product.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
-    )
-    if (price < filters.priceRange[0] || price > filters.priceRange[1]) {
-      return false
-    }
-
-    // Category filter
-    if (filters.categories.size > 0 && product.collection?.handle) {
-      if (!filters.categories.has(product.collection.handle)) {
-        return false
-      }
-    }
-
-    // Size filter
-    if (filters.sizes.size > 0) {
-      const productSizes = new Set<string>()
-      product.variants?.forEach((variant) => {
-        if (variant.options?.size) {
-          productSizes.add(variant.options.size)
-        }
-      })
-      const hasMatchingSize = Array.from(filters.sizes).some((size) =>
-        productSizes.has(size)
-      )
-      if (!hasMatchingSize) {
-        return false
-      }
-    }
-
-    // Color filter
-    if (filters.colors.size > 0) {
-      const productColors = new Set<string>()
-      product.variants?.forEach((variant) => {
-        if (variant.options?.color) {
-          productColors.add(variant.options.color)
-        }
-      })
-      const hasMatchingColor = Array.from(filters.colors).some((color) =>
-        productColors.has(color)
-      )
-      if (!hasMatchingColor) {
-        return false
-      }
-    }
-
-    return true
-  })
-
-  // Apply sorting
-  if (sortBy === 'price-asc') {
-    filteredProducts.sort((a, b) => {
-      const priceA = Number.parseFloat(
-        a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
-      )
-      const priceB = Number.parseFloat(
-        b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
-      )
-      return priceA - priceB
-    })
-  } else if (sortBy === 'price-desc') {
-    filteredProducts.sort((a, b) => {
-      const priceA = Number.parseFloat(
-        a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
-      )
-      const priceB = Number.parseFloat(
-        b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
-      )
-      return priceB - priceA
-    })
-  } else if (sortBy === 'name-asc') {
-    filteredProducts.sort((a, b) => a.title.localeCompare(b.title))
-  } else if (sortBy === 'name-desc') {
-    filteredProducts.sort((a, b) => b.title.localeCompare(a.title))
-  }
+  // Apply filters and sorting using utility functions
+  const filteredProducts = filterProducts(mockProducts, filters)
+  const sortedProducts = sortProducts(filteredProducts, sortBy)
 
   return (
     <div className={styles.root()}>
@@ -160,7 +90,7 @@ export default function ProductsPage() {
             {/* Controls */}
             <div className={styles.controls()}>
               <p className={styles.resultsText()}>
-                Showing {filteredProducts.length} products
+                Showing {sortedProducts.length} products
               </p>
               <div className={styles.sortWrapper()}>
                 <span className="text-product-listing-sort-label text-sm">
@@ -171,14 +101,14 @@ export default function ProductsPage() {
                   options={sortOptions}
                   placeholder="Select sorting"
                   onValueChange={(details) =>
-                    setSortBy(details.value[0] || 'newest')
+                    setSortBy((details.value[0] as SortOption) || 'newest')
                   }
                 />
               </div>
             </div>
 
             {/* Product Grid with Pagination */}
-            <ProductGrid products={filteredProducts} pageSize={9} />
+            <ProductGrid products={sortedProducts} pageSize={9} />
           </main>
         </div>
       </div>

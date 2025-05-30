@@ -4,6 +4,8 @@ import { Button } from 'ui/src/atoms/button'
 import { Input } from 'ui/src/atoms/input'
 import { Link } from 'ui/src/atoms/link'
 import { tv } from 'ui/src/utils'
+import type { NavSection } from '../types/navigation'
+import { handleFormSubmit } from '../utils/form-utils'
 
 const footerVariants = tv({
   slots: {
@@ -28,17 +30,7 @@ const footerVariants = tv({
   },
 })
 
-interface FooterLink {
-  href: string
-  label: string
-}
-
-interface FooterSection {
-  title: string
-  links: FooterLink[]
-}
-
-const footerSections: FooterSection[] = [
+const footerSections: NavSection[] = [
   {
     title: 'Quick Links',
     links: [
@@ -63,9 +55,10 @@ export function Footer() {
   const styles = footerVariants()
 
   const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    // Handle newsletter submission
-    console.log('Newsletter form submitted')
+    handleFormSubmit(e, () => {
+      // Handle newsletter submission
+      console.log('Newsletter form submitted')
+    })
   }
 
   return (
