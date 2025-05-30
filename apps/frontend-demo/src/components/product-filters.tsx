@@ -63,9 +63,10 @@ export function ProductFilters({ className }: ProductFiltersProps) {
           minStepsBetweenThumbs={10}
           formatValue={(value) => `€${value}`}
         />
-        <div className="mt-2 flex justify-between text-product-filters-range-label text-sm">
-          <span>€0</span>
-          <span>€300</span>
+        <div className="mt-product-filters-range-margin flex justify-between">
+          <span className="text-product-filters-range-value font-product-filters-range-value text-sm">€0</span>
+          <span className="text-product-filters-range-label text-sm">to</span>
+          <span className="text-product-filters-range-value font-product-filters-range-value text-sm">€200</span>
         </div>
       </div>
 

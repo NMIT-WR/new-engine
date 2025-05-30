@@ -3,6 +3,7 @@
   --color-product-filters-title: var(--color-fg-primary);
   --color-product-filters-dialog-title: var(--color-fg-primary);
   --color-product-filters-range-label: var(--color-fg-secondary);
+  --color-product-filters-range-value: var(--color-fg-primary);
   
   /* === PRODUCT FILTERS SPACING === */
   --spacing-product-filters-section-margin: var(--spacing-lg);
@@ -10,10 +11,12 @@
   --spacing-product-filters-item-gap: var(--spacing-xs);
   --spacing-product-filters-dialog-padding: var(--spacing-md);
   --spacing-product-filters-dialog-header-margin: var(--spacing-md);
+  --spacing-product-filters-range-margin: var(--spacing-xs);
   
   /* === PRODUCT FILTERS TYPOGRAPHY === */
   --text-product-filters-title: var(--text-lg);
   --font-product-filters-title: var(--font-semibold);
   --text-product-filters-dialog-title: var(--text-xl);
   --font-product-filters-dialog-title: var(--font-bold);
+  --font-product-filters-range-value: var(--font-medium);
 }

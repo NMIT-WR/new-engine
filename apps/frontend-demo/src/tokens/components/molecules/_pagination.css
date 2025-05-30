@@ -4,15 +4,16 @@
 
 @theme static {
   /* === BASE COLOR MAPPING === */
-  --color-pagination: var(--color-surface);
+  --color-pagination: var(--color-base);
   --color-pagination-active: var(--color-primary);
-  --color-pagination-hover: oklch(
+  --color-pagination-hover: var(--color-base-light);
+  --color-pagination-hover-active: oklch(
     from var(--color-pagination-active) calc(l + var(--state-hover)) c h
   );
 
   /* Text colors */
   --color-pagination-fg: var(--color-fg-primary);
-  --color-pagination-fg-active: var(--color-pagination-fg);
+  --color-pagination-fg-active: var(--color-base);
   --color-pagination-outlined-fg-active: var(--color-pagination-active);
   --color-pagination-fg-disabled: --alpha(
     var(--color-pagination-fg) /

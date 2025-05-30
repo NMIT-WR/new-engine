@@ -59,6 +59,11 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
                 ? 'Low Stock'
                 : 'Out of Stock'
 
+          // Add invisible placeholder badge if no badges exist
+          const displayBadges = badges.length > 0 
+            ? badges 
+            : [{ variant: 'success' as const, children: '\u00A0', className: 'invisible' }]
+
           return (
             <Link
               key={product.id}
@@ -69,7 +74,7 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
                 name={product.title}
                 price={price?.calculated_price || '€0.00'}
                 imageUrl={product.thumbnail || ''}
-                badges={badges}
+                badges={displayBadges}
                 stockStatus={stockText}
                 hasDetailButton
                 detailButtonText="View Details"

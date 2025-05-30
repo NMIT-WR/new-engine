@@ -30,14 +30,17 @@ src/
 
 ### Development Commands
 ```bash
-# Start development server
-bunx nx run frontend-demo:dev
+# Run commands from the frontend-demo directory
+cd apps/frontend-demo
 
-# Build the application
-bunx nx run frontend-demo:build
+# Start development server
+pnpm dev
+
+# Build the application  
+pnpm build
 
 # Run type checking
-bunx nx run frontend-demo:typecheck
+npx tsc --noEmit
 
 # Capture screenshots of all pages
 node scripts/auto-screenshot.js
@@ -45,6 +48,26 @@ node scripts/auto-screenshot.js
 # Watch for changes and auto-capture screenshots
 ./scripts/watch-and-screenshot.sh
 ```
+
+### Netlify Deployment
+
+```bash
+# Deploy to Netlify (production)
+netlify deploy --prod
+
+# Deploy draft for testing
+netlify deploy
+```
+
+**Important Deployment Notes:**
+- Build must complete successfully without errors
+- After deployment, **always verify** the site works correctly
+- Common issues to check:
+  - "Page not found" errors - usually means incorrect build configuration
+  - Missing assets - check that `output: 'export'` is set in `next.config.js`
+  - Routing issues - ensure `trailingSlash: true` is configured
+- Test all pages including dynamic routes (e.g., `/products/[handle]`)
+- Verify both draft and production deployments
 
 ### Code Standards
 - Use TypeScript for all new files
@@ -166,6 +189,17 @@ import { Button } from '@/components/ui/button' // ❌
 5. **Consistent Design**: Maintain unified design language across all pages
 6. **Conventional Commits**: Use conventional commit format for all commits
 
+### Atomic Design Architecture
+This project follows the **Atomic Design** methodology for organizing UI components:
+
+- **Atoms**: Basic building blocks (buttons, inputs, labels, badges)
+- **Molecules**: Simple combinations of atoms (form fields, search bars, cards)
+- **Organisms**: Complex UI sections (headers, footers, product grids)
+- **Templates**: Page layouts without real content
+- **Pages**: Templates with real content
+
+Learn more: https://atomicdesign.bradfrost.com/chapter-2/
+
 ### Component Development Pattern
 When creating reusable components in frontend-demo:
 
@@ -227,21 +261,81 @@ When creating reusable components in frontend-demo:
    }
    ```
 
-3. **File Organization**:
+3. **CSS Token Guidelines**:
+   **ALLOWED token prefixes:**
+   - `--color-`: All color values
+   - `--text-`: Font sizes (must map to Tailwind text sizes)
+   - `--font-weight-`: Font weights (100-900 or semantic)
+   - `--border-`: Border width, style, color
+   - `--opacity-`: Transparency values (0-100%)
+   - `--spacing-`: Padding, margin, gap, AND width/height values that need max/min variants
+   - `--width-`: Width values (only when you don't need max/min variants)
+   - `--height-`: Height values (only when you don't need max/min variants)
+   - `--gap-`: Flex/grid gaps
+   - `--padding-`: Padding values
+   - `--margin-`: Margin values
+   - `--radius-`: Border radius
+   - `--shadow-`: Box shadows
+
+   **IMPORTANT**: Use `--spacing-` prefix for any width/height values that need max-w/min-w/max-h/min-h utilities!
+
+   **FORBIDDEN patterns:**
+   - ❌ `--grid-cols-product-grid-base` (too specific)
+   - ❌ `--layout-*` (use specific properties)
+   - ❌ `--component-specific-anything` (be generic)
+
+4. **File Organization**:
    - **atoms/**: Basic UI elements from @libs/ui only
    - **molecules/**: Composite components (navigation, etc.)
    - **organisms/**: Large sections (header, footer)
    - Always add CSS import to `components.css`
 
-4. **Naming Conventions**:
-   - CSS variables: `--[type]-[component]-[element]-[modifier]`
-   - Slots: Descriptive names (root, container, list, item, etc.)
-   - Use `base-reverse` for inverted color schemes
-   - Responsive values: Use suffix for breakpoints (`-sm`, `-md`, `-lg`, `-xl`)
-     - Example: `--text-hero-title-size`, `--text-hero-title-size-md`
-     - Example: `--spacing-hero-container-x`, `--spacing-hero-container-x-lg`
+5. **CSS Token Naming Convention**:
+   
+   **Pattern**: `--[type]-[component]-[element]-[modifier]-[purpose]-[state]`
+   **Slots**:  `Descriptive names (root, container, list, item, etc.)`
+   
+   **Rules**:
+   - **Type** (required): `color`, `spacing`, `text`, `font`, `border`, `radius`, `shadow`, `opacity`
+   - **Component** (optional): Use abbreviations if readable (e.g., `btn`, `pc`, `nav`)
+   - **Element** (optional): Specific part like `title`, `container`, `button`
+   - **Modifier** (optional): Size (`sm`, `md`, `lg`) or variant (`primary`, `secondary`)
+   - **Purpose** (for colors): `fg` (text/icons), `bg` (background), `border`, `ring`, `shadow`
+   - **State** (optional): `hover`, `active`, `disabled`, `focus`
+   
+   **Size naming**:
+   - Single size: use `-size` suffix (e.g., `--text-hero-title-size`)
+   - Multiple sizes: use size directly (e.g., `--text-hero-title-sm`, NOT `--text-hero-title-size-sm`)
+   
+   **Common abbreviations** (use if readable):
+   - `btn` = button
+   - `pc` = product-card
+   - `nav` = navigation
+   - `acc` = accordion
+   - `cb` = checkbox
+   
+   **Examples**:
+   ```css
+   /* Colors with purpose */
+   --color-btn-primary          /* default = background */
+   --color-btn-primary-fg       /* foreground (text/icons) */
+   --color-btn-primary-hover    /* hover state background */
+   --color-pc-stock-fg         /* product card stock text */
+   
+   /* Spacing */
+   --spacing-pc-padding
+   --spacing-btn-sm
+   
+   /* Typography */
+   --text-hero-title-size      /* single size */
+   --text-pc-name-sm          /* multiple sizes */
+   
+   /* Responsive */
+   --text-hero-title-md       /* medium breakpoint */
+   --spacing-container-x-lg   /* large breakpoint */
+   ```
 
-5. **Example Implementation** (Footer):
+6. **Example Implementation** (Footer):
    ```typescript
    // footer.tsx
    const footerVariants = tv({
@@ -256,6 +350,7 @@ When creating reusable components in frontend-demo:
    /* _footer.css */
    --color-footer-bg: var(--color-base-reverse);
    --spacing-footer-max-w: 80rem;
+   --spacing-footer-container-x: var(--spacing-md);
    ```
 
 ### Page-Specific Component Mapping
@@ -311,10 +406,7 @@ When creating reusable components in frontend-demo:
 2. **After Every Code Change**:
    ```bash
    # Run TypeScript check
-   cd apps/frontend-demo && npx tsc --noEmit
-   
-   # Or use Nx command
-   bunx nx run frontend-demo:typecheck
+   npx tsc --noEmit
    ```
 
 3. **Common Component Props Patterns**:

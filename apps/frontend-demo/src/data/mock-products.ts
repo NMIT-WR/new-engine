@@ -5,7 +5,7 @@ import type { Product } from '../types/product'
 export const mockProducts: Product[] = [
   {
     id: 'prod_01',
-    title: 'White Cotton T-Shirt',
+    title: 'White Cotton T-Shirt with Extra Long Name That Should Be Truncated',
     handle: 'white-cotton-t-shirt',
     description: 'Comfortable cotton t-shirt perfect for everyday wear',
     thumbnail:

@@ -58,6 +58,8 @@
   /* === TYPOGRAPHY === */
   --text-slider-value-size: var(--text-sm);
   --height-marker-vertical: var(--text-md);
+  --color-slider-value-text: var(--color-fg-primary);
+  --font-slider-value-weight: var(--font-semibold);
 
   /* === BORDER & RADIUS === */
   --border-width-slider: var(--border-width-sm);

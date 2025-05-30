@@ -9,6 +9,10 @@
   --spacing-pc-col-layout: var(--spacing-2xs);
   --spacing-pc-box: var(--spacing-2xs);
   --spacing-pc-padding: var(--spacing-2xs);
+  
+  /* Card layout */
+  --height-pc-card: 100%;
+  --height-pc-badges-min: 1.5rem;
 
   --shadow-pc: var(--shadow-sm);
   --shadow-pc-featured: var(--shadow-md);
@@ -17,6 +21,7 @@
   --text-pc-name-size: var(--text-md);
   --font-weight-pc-name: var(--font-weight-bold);
   --leading-pc-name: var(--line-height-snug);
+  --height-pc-name-lines: 1;
 
   --color-pc-stock-fg: var(--color-success);
   --text-pc-stock-size: var(--text-sm);
@@ -92,4 +97,12 @@
 
 @utility order-buttons {
   order: 6;
+}
+
+/* === LINE CLAMP UTILITIES === */
+@utility line-clamp-pc-name {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--height-pc-name-lines);
 }
