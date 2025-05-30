@@ -25,6 +25,59 @@ This is an Nx monorepo for an e-commerce platform built with Medusa.js. The proj
 - **Testing**: Vitest
 - **Code Quality**: Biome for linting and formatting
 
+## MCP Servers for Enhanced Development
+
+This project includes MCP (Model Context Protocol) servers configuration to enhance Claude Code capabilities. Start Claude Code with: `claude --mcp-config .mcp.json`
+
+### Available MCP Servers
+
+1. **puppeteer-mcp** - Automated browser testing and screenshots
+   - Use for: E2E testing, visual regression tests, automated screenshots
+   - Example: "Use puppeteer to capture screenshots of all product pages"
+
+2. **github** - GitHub repository management
+   - Use for: Creating PRs, managing issues, reviewing code
+   - Example: "Create a GitHub issue for refactoring CSS tokens"
+
+3. **tavily-mcp** - Advanced web search
+   - Use for: Researching e-commerce best practices, competitor analysis
+   - Example: "Search for modern e-commerce UI patterns for checkout flow"
+
+4. **sequential-thinking** - Complex problem solving
+   - Use for: Architecture decisions, refactoring planning
+   - Example: "Plan the migration of all CSS files to new naming convention"
+
+5. **desktop-commander** - File system operations
+   - Use for: Batch file operations, asset management
+   - Example: "Rename all product images to follow naming convention"
+
+6. **taskmaster** - Project management
+   - Use for: Sprint planning, task tracking, backlog management
+   - Example: "Create a task list for implementing dark mode"
+
+### Recommended MCP Workflows
+
+**Component Documentation**:
+```
+1. Use puppeteer to screenshot component variations
+2. Use taskmaster to track documentation tasks
+3. Use github to create PR with docs
+```
+
+**CSS Refactoring**:
+```
+1. Use sequential-thinking to plan refactoring strategy
+2. Use desktop-commander for batch file operations
+3. Use github to create refactoring PR
+```
+
+**Feature Implementation**:
+```
+1. Use tavily to research best practices
+2. Use taskmaster to break down into subtasks
+3. Use puppeteer for visual testing
+```
+
 ## Development Commands
 
 ### Package Management

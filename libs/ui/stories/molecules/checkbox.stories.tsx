@@ -34,13 +34,13 @@ const meta = {
       control: 'boolean',
       description: 'Marks checkbox as required for accessibility',
     },
-    onChange: { action: 'changed' },
+    onCheckedChange: { action: 'changed' },
   },
   args: {
-    checked: undefined,
+    /*checked: undefined,
     defaultChecked: false,
     indeterminate: false,
-    disabled: false,
+    disabled: false,*/
     'aria-invalid': false,
     'aria-required': false,
   },
@@ -204,7 +204,7 @@ export const IndeterminateTest: Story = {
             id="parent"
             checked={allChecked}
             indeterminate={isIndeterminate}
-            onChange={handleParentChange}
+            onCheckedChange={handleParentChange}
           />
           <label htmlFor="parent">
             Select All ({checkedCount}/{items.length})
@@ -218,7 +218,7 @@ export const IndeterminateTest: Story = {
               <Checkbox
                 id={`item-${item.id}`}
                 checked={item.checked}
-                onChange={(checked) => handleChildChange(item.id, checked)}
+                onCheckedChange={(checked) => handleChildChange(item.id, checked)}
               />
               <label htmlFor={`item-${item.id}`}>{item.name}</label>
             </div>

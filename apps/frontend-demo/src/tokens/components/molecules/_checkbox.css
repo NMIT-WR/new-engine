@@ -21,6 +21,10 @@
   --text-checkbox-icon-md: var(--text-xs);
   --radius-checkbox: var(--radius-sm);
 
+  /* Checkbox dimensions */
+  --width-checkbox: 1.25rem;
+  --height-checkbox: 1.25rem;
+
   --width-indeterminate: 60%;
   --height-indeterminate: 2px;
 }

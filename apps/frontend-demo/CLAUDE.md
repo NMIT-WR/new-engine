@@ -72,6 +72,7 @@ netlify deploy
 ### Code Standards
 - Use TypeScript for all new files
 - Follow functional component patterns with hooks
+- **React 19**: We use React 19 - avoid unnecessary useCallback, useMemo, and useEffect as React 19 handles optimizations automatically
 - Implement proper error boundaries
 - Ensure all interactive elements are keyboard accessible
 - **After every file modification, check TypeScript errors** - run `npx tsc --noEmit` and fix any issues
