@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { Footer } from '../components/footer'
 import { Header } from '../components/header'
 import type { NavItem } from '../components/navigation'
+import { Providers } from '../components/providers'
 
 export const metadata: Metadata = {
   title: 'Frontend Demo',
@@ -35,12 +36,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col">
-        <Header
-          logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
-          navigationItems={navigationItems}
-        />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <Providers>
+          <Header
+            logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
+            navigationItems={navigationItems}
+          />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   )

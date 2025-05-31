@@ -11,9 +11,11 @@ import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Carousel } from 'ui/src/molecules/carousel'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { Select } from 'ui/src/molecules/select'
+import { useToast } from 'ui/src/molecules/toast'
 import { tv } from 'ui/src/utils'
 import { FeaturedProducts } from '../../../components/featured-products'
 import { mockProducts } from '../../../data/mock-products'
+import { useCart } from '../../../hooks/use-cart'
 import type { Product } from '../../../types/product'
 import { extractProductData, getRelatedProducts, getStockStatusText } from '../../../utils/product-utils'
 
@@ -55,6 +57,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState<string>('')
   const [selectedColor, setSelectedColor] = useState<string>('')
   const [quantity, setQuantity] = useState(1)
+  const { addItem } = useCart()
+  const toast = useToast()
 
   const { price, badges, stockStatus } = extractProductData(product)
 
@@ -235,6 +239,31 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 className="flex-1"
                 disabled={stockStatus === 'out-of-stock'}
                 icon="icon-[mdi--cart-plus]"
+                onClick={() => {
+                  // Validate size/color selection if required
+                  if (sizes.length > 0 && !selectedSize) {
+                    alert('Please select a size')
+                    return
+                  }
+                  if (colors.length > 0 && !selectedColor) {
+                    alert('Please select a color')
+                    return
+                  }
+                  
+                  // Add to cart
+                  addItem(product, {
+                    size: selectedSize,
+                    color: selectedColor,
+                    quantity,
+                  })
+                  
+                  // Show success toast
+                  toast.create({
+                    title: 'Added to cart',
+                    description: `${product.title} has been added to your cart.`,
+                    type: 'success',
+                  })
+                }}
               >
                 {stockStatus === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
               </Button>

@@ -5,6 +5,7 @@ import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
 import { tv } from 'ui/src/utils'
+import { useCart } from '../hooks/use-cart'
 import { MobileMenu } from './mobile-menu'
 import { type NavItem, Navigation } from './navigation'
 import { RegionSelector } from './region-selector'
@@ -50,11 +51,11 @@ export function Header({
   actions,
   showMobileMenu = true,
   user,
-  cartItemsCount = 0,
   className,
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { itemCount } = useCart()
 
   const {
     root,
@@ -122,12 +123,12 @@ export function Header({
                     aria-label="Shopping cart"
                   />
                 </Link>
-                {cartItemsCount > 0 && (
+                {itemCount > 0 && (
                   <Badge
                     variant="danger"
                     className="-right-1 -top-1 absolute flex h-4 w-4 min-w-4 items-center justify-center rounded-full p-0 text-xs"
                   >
-                    {cartItemsCount > 99 ? '99+' : cartItemsCount.toString()}
+                    {itemCount > 99 ? '99+' : itemCount.toString()}
                   </Badge>
                 )}
               </div>
