@@ -45,7 +45,8 @@ export const cartStore = new Store<CartState>({
 
 // Initialize cart from localStorage on client side
 if (typeof window !== 'undefined') {
-  cartStore.setState(() => loadCartFromStorage())
+  const initialState = loadCartFromStorage()
+  cartStore.setState(() => initialState)
   
   // Subscribe to changes and persist to localStorage
   cartStore.subscribe(() => {

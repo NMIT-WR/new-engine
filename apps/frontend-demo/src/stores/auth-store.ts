@@ -1,126 +1,105 @@
 import { Store } from '@tanstack/react-store'
-
-interface User {
-  id: string
-  email: string | null
-  created_at?: string
-}
+import { supabase } from '../lib/supabase'
+import type { User } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null
   isLoading: boolean
+  initialized: boolean
 }
 
 // Create auth store
 export const authStore = new Store<AuthState>({
   user: null,
-  isLoading: false,
+  isLoading: true,
+  initialized: false,
 })
 
-// Mock auth implementation for demo
-const MOCK_USER_KEY = 'mock_auth_user'
-
-// Initialize auth state from localStorage
+// Initialize auth state from Supabase session
 if (typeof window !== 'undefined') {
-  const storedUser = localStorage.getItem(MOCK_USER_KEY)
-  if (storedUser) {
-    try {
-      const user = JSON.parse(storedUser)
-      authStore.setState({ user, isLoading: false })
-    } catch {
-      localStorage.removeItem(MOCK_USER_KEY)
-    }
-  }
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    authStore.setState({
+      user: session?.user ?? null,
+      isLoading: false,
+      initialized: true,
+    })
+  })
+
+  // Listen for auth changes
+  supabase.auth.onAuthStateChange((_event, session) => {
+    authStore.setState({
+      user: session?.user ?? null,
+      isLoading: false,
+      initialized: true,
+    })
+  })
 }
 
 // Auth helpers
 export const authHelpers = {
   signIn: async (email: string, password: string) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    authStore.setState((state) => ({ ...state, isLoading: true }))
     
-    // Mock validation
-    if (!email || !password) {
-      throw new Error('Email and password are required')
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
+      if (error) throw error
+      
+      return { user: data.user }
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to sign in')
+    } finally {
+      authStore.setState((state) => ({ ...state, isLoading: false }))
     }
-    
-    if (password.length < 8) {
-      throw new Error('Invalid credentials')
-    }
-    
-    // Create mock user
-    const user: User = {
-      id: `user_${Date.now()}`,
-      email,
-      created_at: new Date().toISOString(),
-    }
-    
-    // Store in localStorage
-    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user))
-    
-    // Update store
-    authStore.setState({ user, isLoading: false })
-    
-    return { user }
   },
 
   signUp: async (email: string, password: string) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    authStore.setState((state) => ({ ...state, isLoading: true }))
     
-    // Mock validation
-    if (!email || !password) {
-      throw new Error('Email and password are required')
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      
+      if (error) throw error
+      
+      return { user: data.user }
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to sign up')
+    } finally {
+      authStore.setState((state) => ({ ...state, isLoading: false }))
     }
-    
-    if (password.length < 8) {
-      throw new Error('Password must be at least 8 characters')
-    }
-    
-    if (!email.includes('@')) {
-      throw new Error('Invalid email address')
-    }
-    
-    // For demo, check if user already exists
-    const existingUser = localStorage.getItem(MOCK_USER_KEY)
-    if (existingUser) {
-      const parsed = JSON.parse(existingUser)
-      if (parsed.email === email) {
-        throw new Error('User already exists')
-      }
-    }
-    
-    // Create mock user
-    const user: User = {
-      id: `user_${Date.now()}`,
-      email,
-      created_at: new Date().toISOString(),
-    }
-    
-    // Don't auto-login on signup
-    return { user }
   },
 
   signOut: async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500))
+    authStore.setState((state) => ({ ...state, isLoading: true }))
     
-    // Clear localStorage
-    localStorage.removeItem(MOCK_USER_KEY)
-    
-    // Update store
-    authStore.setState({ user: null, isLoading: false })
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to sign out')
+    } finally {
+      authStore.setState((state) => ({ ...state, isLoading: false }))
+    }
   },
 
   resetPassword: async (email: string) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    if (!email || !email.includes('@')) {
-      throw new Error('Invalid email address')
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      })
+      
+      if (error) throw error
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to send reset email')
     }
-    
-    // Mock success
-    console.log(`Password reset email sent to ${email}`)
   },
 }

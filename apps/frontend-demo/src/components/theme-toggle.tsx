@@ -19,10 +19,30 @@ const themeToggleVariants = tv({
 })
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, mounted } = useTheme()
   const styles = themeToggleVariants()
   
   const isDark = theme === 'dark'
+
+  // Don't render switch until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <div className={styles.root()}>
+        <div className={styles.iconWrapper()}>
+          <Icon
+            icon="icon-[mdi--white-balance-sunny]"
+            className={`${styles.sunIcon()} ${styles.icon()}`}
+            data-active
+          />
+          <div className={styles.toggleSwitch()} />
+          <Icon
+            icon="icon-[mdi--moon-and-stars]"
+            className={`${styles.moonIcon()} ${styles.icon()}`}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.root()}>
