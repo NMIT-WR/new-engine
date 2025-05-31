@@ -34,7 +34,27 @@ export default function RootLayout({
   ]
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  // Get theme from storage or system preference
+                  const stored = localStorage.getItem('theme');
+                  const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  const theme = stored || systemPreference;
+                  
+                  // Remove any existing theme classes and add the correct one
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(theme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="flex min-h-screen flex-col">
         <Providers>
           <Header
