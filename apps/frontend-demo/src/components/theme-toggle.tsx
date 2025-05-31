@@ -1,69 +1,48 @@
 'use client'
 
-import { useStore } from '@tanstack/react-store'
 import { Icon } from 'ui/src/atoms/icon'
 import { Switch } from 'ui/src/molecules/switch'
 import { tv } from 'ui/src/utils'
-import { themeStore, themeHelpers } from '../lib/theme-store'
-import { useEffect, useState } from 'react'
+import { useTheme } from '../hooks/use-theme'
 
 const themeToggleVariants = tv({
   slots: {
     root: 'flex items-center gap-theme-toggle-gap',
     iconWrapper: 'flex items-center gap-theme-toggle-icon-gap',
     sunIcon:
-      'text-theme-toggle-sun-inactive data-[state=light]:text-theme-toggle-sun-active data-[state=dark]:text-theme-toggle-sun-inactive transition-colors',
+      'text-theme-toggle-sun-inactive data-[active]:text-theme-toggle-sun-active transition-colors',
     moonIcon:
-      'text-theme-toggle-moon-inactive data-[state=dark]:text-theme-toggle-moon-active data-[state=light]:text-theme-toggle-moon-inactive transition-colors',
+      'text-theme-toggle-moon-inactive data-[active]:text-theme-toggle-moon-active transition-colors',
     toggleSwitch: 'w-theme-toggle-width',
+    icon: 'text-theme-toggle-icon-size',
   },
-  compoundSlots: [
-    {
-      slots: ['moonIcon', 'sunIcon'],
-      class: 'text-theme-toggle-icon-size',
-    },
-  ],
 })
 
 export function ThemeToggle() {
-  const { theme } = useStore(themeStore)
-  const { sunIcon, moonIcon, root, iconWrapper, toggleSwitch } =
-    themeToggleVariants()
+  const { theme, toggleTheme } = useTheme()
+  const styles = themeToggleVariants()
   
-  // Track mounted state to handle SSR/hydration
-  const [mounted, setMounted] = useState(false)
-  
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const handleThemeChange = (checked: boolean) => {
-    themeHelpers.setTheme(checked ? 'dark' : 'light')
-  }
-  
-  // During SSR and initial hydration, show default state
-  // After mount, show the actual theme from DOM/localStorage
-  const currentTheme = mounted ? theme : 'light'
+  const isDark = theme === 'dark'
 
   return (
-    <div className={root()}>
-      <div className={iconWrapper()}>
+    <div className={styles.root()}>
+      <div className={styles.iconWrapper()}>
         <Icon
           icon="icon-[mdi--white-balance-sunny]"
-          className={sunIcon()}
-          data-state={currentTheme}
+          className={`${styles.sunIcon()} ${styles.icon()}`}
+          data-active={!isDark ? '' : undefined}
         />
         <Switch
-          checked={currentTheme === 'dark'}
-          onCheckedChange={handleThemeChange}
-          className={toggleSwitch()}
+          checked={isDark}
+          onCheckedChange={toggleTheme}
+          className={styles.toggleSwitch()}
         >
           <span className="sr-only">Toggle dark mode</span>
         </Switch>
         <Icon
           icon="icon-[mdi--moon-and-stars]"
-          className={moonIcon()}
-          data-state={currentTheme}
+          className={`${styles.moonIcon()} ${styles.icon()}`}
+          data-active={isDark ? '' : undefined}
         />
       </div>
     </div>
