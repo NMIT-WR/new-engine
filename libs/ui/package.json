@@ -23,8 +23,11 @@
     "@zag-js/checkbox": "^1.12.4",
     "@zag-js/combobox": "^1.12.4",
     "@zag-js/dialog": "^1.12.4",
+    "@zag-js/hover-card": "^1.12.4",
     "@zag-js/i18n-utils": "^1.12.4",
+    "@zag-js/menu": "^1.12.4",
     "@zag-js/number-input": "^1.12.4",
+    "@zag-js/pagination": "^1.12.4",
     "@zag-js/rating-group": "^1.12.4",
     "@zag-js/react": "^1.12.4",
     "@zag-js/select": "^1.12.4",
@@ -35,7 +38,6 @@
     "@zag-js/toast": "^1.12.4",
     "@zag-js/tooltip": "^1.12.4",
     "@zag-js/tree-view": "^1.12.4",
-    "@zag-js/pagination": "^1.12.4",
     "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {

@@ -13,6 +13,7 @@
 @import "./molecules/_checkbox.css";
 @import "./molecules/_combobox.css";
 @import "./molecules/_dialog.css";
+@import "./molecules/_hover-card.css";
 @import "./molecules/_numeric-input.css";
 @import "./molecules/_pagination.css";
 @import "./molecules/_product-card.css";
