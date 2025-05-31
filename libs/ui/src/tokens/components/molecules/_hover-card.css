@@ -1,0 +1,19 @@
+
+@theme static {
+  /* === HOVER CARD COLORS === */
+  --color-hover-card-bg: var(--color-overlay);
+  --color-hover-card-border: var(--color-border-secondary);
+  --color-hover-card-arrow-bg: var(--color-overlay);
+  --color-hover-card-arrow-border: var(--color-border-secondary);
+
+  /* === HOVER CARD SPACING === */
+  --spacing-hover-card: var(--spacing-md);
+  --spacing-hover-card-sm: var(--spacing-sm);
+  --spacing-hover-card-lg: var(--spacing-lg);
+  --spacing-hover-card-min-w: 12rem;
+  --spacing-hover-card-max-w: 22rem;
+
+  /* === HOVER CARD EFFECTS === */
+  --shadow-hover-card: var(--shadow-lg);
+  --radius-hover-card: var(--radius-lg);
+}

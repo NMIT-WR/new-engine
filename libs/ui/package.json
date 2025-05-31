@@ -23,6 +23,7 @@
     "@zag-js/checkbox": "^1.13.0",
     "@zag-js/combobox": "^1.13.0",
     "@zag-js/dialog": "^1.13.0",
+    "@zag-js/hover-card": "^1.14.0",
     "@zag-js/i18n-utils": "^1.13.0",
     "@zag-js/menu": "^1.13.0",
     "@zag-js/number-input": "^1.13.0",
