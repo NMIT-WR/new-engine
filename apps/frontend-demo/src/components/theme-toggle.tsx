@@ -1,66 +1,49 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useStore } from '@tanstack/react-store'
 import { Icon } from 'ui/src/atoms/icon'
 import { Switch } from 'ui/src/molecules/switch'
 import { tv } from 'ui/src/utils'
+import { themeStore, themeHelpers } from '../lib/theme-store'
+import { useEffect, useState } from 'react'
 
 const themeToggleVariants = tv({
   slots: {
     root: 'flex items-center gap-theme-toggle-gap',
     iconWrapper: 'flex items-center gap-theme-toggle-icon-gap',
     sunIcon:
-      'text-theme-toggle-light data-[state=light]:text-theme-toggle-light-active',
+      'text-theme-toggle-sun-inactive data-[state=light]:text-theme-toggle-sun-active data-[state=dark]:text-theme-toggle-sun-inactive transition-colors',
     moonIcon:
-      'text-theme-toggle-dark-active data-[state=light]:text-theme-toggle-dark',
-    toggleSwitch: 'w-8',
+      'text-theme-toggle-moon-inactive data-[state=dark]:text-theme-toggle-moon-active data-[state=light]:text-theme-toggle-moon-inactive transition-colors',
+    toggleSwitch: 'w-theme-toggle-width',
   },
   compoundSlots: [
     {
       slots: ['moonIcon', 'sunIcon'],
-      class: 'font-bold',
+      class: 'text-theme-toggle-icon-size',
     },
   ],
 })
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark' | null>(null)
+  const { theme } = useStore(themeStore)
   const { sunIcon, moonIcon, root, iconWrapper, toggleSwitch } =
     themeToggleVariants()
-
+  
+  // Track mounted state to handle SSR/hydration
+  const [mounted, setMounted] = useState(false)
+  
   useEffect(() => {
-    // Check for saved theme preference or default to system preference
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      setTheme(savedTheme)
-      document.documentElement.classList.remove('light', 'dark')
-      document.documentElement.classList.add(savedTheme)
-    } else {
-      // Use system preference
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light'
-      setTheme(systemTheme)
-    }
+    setMounted(true)
   }, [])
 
-  const toggleTheme = (checked: boolean) => {
-    const newTheme = checked ? 'dark' : 'light'
-    setTheme(newTheme)
-
-    // Update DOM
-    document.documentElement.classList.remove('light', 'dark')
-    document.documentElement.classList.add(newTheme)
-
-    // Save preference
-    localStorage.setItem('theme', newTheme)
+  const handleThemeChange = (checked: boolean) => {
+    themeHelpers.setTheme(checked ? 'dark' : 'light')
   }
-
-  // Don't render until we know the theme to avoid hydration mismatch
-  if (theme === null) {
-    return null
-  }
+  
+  // During SSR and initial hydration, show default state
+  // After mount, show the actual theme from DOM/localStorage
+  const currentTheme = mounted ? theme : 'light'
 
   return (
     <div className={root()}>
@@ -68,11 +51,11 @@ export function ThemeToggle() {
         <Icon
           icon="icon-[mdi--white-balance-sunny]"
           className={sunIcon()}
-          data-state={theme}
+          data-state={currentTheme}
         />
         <Switch
-          checked={theme === 'dark'}
-          onCheckedChange={(checked) => toggleTheme(checked)}
+          checked={currentTheme === 'dark'}
+          onCheckedChange={handleThemeChange}
           className={toggleSwitch()}
         >
           <span className="sr-only">Toggle dark mode</span>
@@ -80,7 +63,7 @@ export function ThemeToggle() {
         <Icon
           icon="icon-[mdi--moon-and-stars]"
           className={moonIcon()}
-          data-state={theme}
+          data-state={currentTheme}
         />
       </div>
     </div>

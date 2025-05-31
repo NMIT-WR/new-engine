@@ -25,12 +25,17 @@ function getInitialTheme(): Theme {
 
 // Create centralized theme store
 export const themeStore = new Store<ThemeState>({
-  theme: typeof window !== 'undefined' ? getInitialTheme() : 'light',
-  isLoaded: typeof window !== 'undefined',
+  theme: 'light', // Always start with light during SSR
+  isLoaded: false, // Not loaded until client-side
 })
   
-// Listen for storage changes only on client
+// Initialize theme on client-side only
 if (typeof window !== 'undefined') {
+  // Set initial theme from DOM/localStorage
+  const initialTheme = getInitialTheme()
+  themeStore.setState({ theme: initialTheme, isLoaded: true })
+  
+  // Listen for storage changes
   window.addEventListener('storage', (e) => {
     if (e.key === 'theme' && e.newValue) {
       const newTheme = e.newValue as Theme
