@@ -12,10 +12,11 @@ const productCard = tv({
   slots: {
     base: [
       'rounded-pc p-pc-padding',
-      'border-(length:--border-pc-width) border-pc-border bg-pc',
+      'border-(length:--border-pc-width) border-pc-border bg-pc shadow-sm',
     ],
     imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
-    nameSlot: 'text-pc-name-fg text-pc-name-size font-pc-name leading-pc-name line-clamp-pc-name',
+    nameSlot:
+      'text-pc-name-fg text-pc-name-size font-pc-name leading-pc-name line-clamp-pc-name',
     priceSlot: 'text-pc-price-fg text-pc-price-size',
     stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size font-pc-stock',
     badgesSlot: 'flex flex-wrap gap-pc-box',

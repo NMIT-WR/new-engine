@@ -7,18 +7,23 @@
   --color-header-mobile-menu-hover: var(--color-fill-hover);
   --color-header-mobile-menu-text: var(--color-fg-secondary);
   --color-header-mobile-menu-text-hover: var(--color-fg-primary);
+  --color-header-divider: var(--color-stroke-secondary);
 
   /* === HEADER SPACING === */
-  --spacing-header-container-x: var(--spacing-sm);
-  --spacing-header-height: var(--spacing-2xl); /* 64px */
+  --spacing-header-container-x: var(--spacing-xs);
+  --spacing-header-container-x-lg: var(--spacing-sm);
+  --spacing-header-height: var(--spacing-xl); /* 48px mobile/tablet */
+  --spacing-header-height-lg: var(--spacing-2xl); /* 64px desktop */
   --spacing-header-logo-gap: var(--spacing-2xs);
   --spacing-header-nav-margin: var(--spacing-lg); /* 40px */
-  --spacing-header-actions-gap: var(--spacing-sm);
+  --spacing-header-actions-gap: var(--spacing-2xs);
+  --spacing-header-actions-gap-lg: var(--spacing-sm);
   --spacing-header-mobile-menu-padding: var(--spacing-2xs);
   --spacing-header-user-menu-gap: var(--spacing-2xs);
 
   /* === HEADER TYPOGRAPHY === */
-  --text-header-logo: var(--text-xl);
+  --text-header-logo: var(--text-lg);
+  --text-header-logo-lg: var(--text-xl);
   --font-header-logo: var(--font-bold);
 
   /* === HEADER LAYOUT === */

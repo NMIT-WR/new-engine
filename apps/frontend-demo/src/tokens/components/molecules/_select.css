@@ -1,6 +1,6 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
-  --color-select-bg: var(--color-base);
+  --color-select-bg: var(--color-surface);
   --color-select-border: var(--color-stroke-primary);
   --color-select-fg: var(--color-fg-primary);
   --color-select-placeholder: --alpha(
@@ -24,7 +24,7 @@
   --color-select-trigger-placeholder: var(--color-select-placeholder);
   --color-select-trigger-hover: var(--color-fill-hover);
   --color-select-trigger-focus: var(--color-primary);
-  --padding-select-trigger: var(--spacing-3xs);
+  --color-select-trigger-focus-border: var(--color-primary);
 
   /* === CLEAR TRIGGER === */
   --color-select-clear-trigger-fg: var(--color-select-fg);
@@ -32,31 +32,34 @@
   --padding-select-clear-trigger: var(--spacing-3xs);
 
   /* === DROPDOWN CONTENT === */
-  --color-select-content-bg: var(--color-surface);
+  --color-select-content-bg: var(--color-overlay);
   --color-select-content-border: var(--color-stroke-primary);
-  --color-select-content-shadow: var(--shadow-md);
+  --shadow-select-content-shadow: var(--shadow-lg);
 
   /* === OPTION ITEM === */
   --color-select-item-bg: transparent;
   --color-select-item-fg: var(--color-fg-primary);
   --color-select-item-hover: var(--color-fill-hover);
-  --color-select-item-selected-bg: var(--color-overlay);
+  --color-select-item-selected-bg: var(--color-fill-active);
   --color-select-item-selected-fg: var(--color-primary);
-  --padding-select-item: var(--spacing-2xs) var(--spacing-sm);
+  --padding-select-item: var(--spacing-xs) var(--spacing-sm);
 
   /* === INDICATOR === */
   --color-select-indicator: var(--color-primary);
 
   /* === PADDING === */
-  --padding-select-trigger: var(--spacing-xs);
+  --padding-select-trigger: var(--spacing-xs) var(--spacing-sm);
 
   /* === TYPOGRAPHY === */
-  --text-select-trigger: var(--text-md);
-  --text-select-item: var(--text-md);
+  --text-select-trigger: var(--text-sm);
+  --text-select-item: var(--text-sm);
 
   /* === BORDERS & RADIUS === */
-  --radius-select: var(--radius-sm);
+  --radius-select: var(--radius-md);
   --border-select-width: var(--border-width-sm);
+
+  /* === LAYOUT === */
+  --spacing-select-min-width: 10rem;
 }
 
 /* === ICONS === */
@@ -64,7 +67,7 @@
   @apply icon-[mdi--chevron-down];
 }
 @utility token-icon-select-indicator-open {
-  @apply icon-[mdi--chevron-right];
+  @apply icon-[mdi--chevron-up];
 }
 
 @utility token-icon-select-check {

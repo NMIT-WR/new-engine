@@ -8,10 +8,10 @@ import { ProductFilters } from '../../components/product-filters'
 import { ProductGrid } from '../../components/product-grid'
 import { mockProducts } from '../../data/mock-products'
 import {
-  filterProducts,
-  sortProducts,
   type FilterState,
   type SortOption,
+  filterProducts,
+  sortProducts,
 } from '../../utils/product-filters'
 
 const productListingVariants = tv({
@@ -69,7 +69,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Mobile Filters */}
-        <ProductFilters 
+        <ProductFilters
           className="md:hidden"
           filters={filters}
           onFiltersChange={setFilters}
@@ -79,10 +79,7 @@ export default function ProductsPage() {
         <div className={styles.layoutWrapper()}>
           {/* Desktop Sidebar Filters */}
           <aside className={styles.sidebar()}>
-            <ProductFilters 
-              filters={filters}
-              onFiltersChange={setFilters}
-            />
+            <ProductFilters filters={filters} onFiltersChange={setFilters} />
           </aside>
 
           {/* Main Content */}
@@ -100,6 +97,7 @@ export default function ProductsPage() {
                   value={[sortBy]}
                   options={sortOptions}
                   placeholder="Select sorting"
+                  clearIcon={false}
                   onValueChange={(details) =>
                     setSortBy((details.value[0] as SortOption) || 'newest')
                   }

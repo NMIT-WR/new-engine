@@ -9,7 +9,7 @@
   --spacing-pc-col-layout: var(--spacing-2xs);
   --spacing-pc-box: var(--spacing-2xs);
   --spacing-pc-padding: var(--spacing-2xs);
-  
+
   /* Card layout */
   --height-pc-card: 100%;
   --height-pc-badges-min: 1.5rem;
@@ -67,6 +67,7 @@
   /* === PRODUCT CARD IMAGE === */
   --aspect-pc-image: var(--aspect-ratio-square);
   --radius-pc-image: var(--radius-pc);
+  --shadow-pc-image: var(--shadow-sm);
 }
 
 /* === ORDERS IN LAYOUT === */

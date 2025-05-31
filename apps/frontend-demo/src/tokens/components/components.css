@@ -18,6 +18,7 @@
 @import "./molecules/_numeric-input.css";
 @import "./molecules/_pagination.css";
 @import "./molecules/_menu.css";
+@import "./molecules/_mobile-menu.css";
 @import "./molecules/_navigation.css";
 @import "./molecules/_product-card.css";
 @import "./molecules/_product-filters.css";
