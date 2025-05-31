@@ -69,6 +69,9 @@ importers:
       '@supabase/auth-ui-shared':
         specifier: ~0.1.8
         version: 0.1.8(@supabase/supabase-js@2.49.8)
+      '@supabase/ssr':
+        specifier: ^0.6.1
+        version: 0.6.1(@supabase/supabase-js@2.49.8)
       '@supabase/supabase-js':
         specifier: ^2.49.8
         version: 2.49.8
@@ -84,6 +87,9 @@ importers:
       next:
         specifier: ^15.3.2
         version: 15.3.2(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.84.0)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -565,6 +571,9 @@ importers:
         version: 1.14.0
       '@zag-js/dialog':
         specifier: ^1.13.0
+        version: 1.14.0
+      '@zag-js/hover-card':
+        specifier: ^1.14.0
         version: 1.14.0
       '@zag-js/i18n-utils':
         specifier: ^1.13.0
@@ -6248,6 +6257,11 @@ packages:
   '@supabase/realtime-js@2.11.2':
     resolution: {integrity: sha512-u/XeuL2Y0QEhXSoIPZZwR6wMXgB+RQbJzG9VErA3VghVt7uRfSVsjeqd7m5GhX3JR6dM/WRmLbVR8URpDWG4+w==}
 
+  '@supabase/ssr@0.6.1':
+    resolution: {integrity: sha512-QtQgEMvaDzr77Mk3vZ3jWg2/y+D8tExYF7vcJT+wQ8ysuvOeGGjYbZlvj5bHYsj/SpC0bihcisnwPrM4Gp5G4g==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.43.4
+
   '@supabase/storage-js@2.7.1':
     resolution: {integrity: sha512-asYHcyDR1fKqrMpytAS1zjyEfvxuOIp1CIXX7ji4lHHcJKqyk+sLl/Vxgm4sN6u8zvuUtae9e4kDxQP2qrwWBA==}
 
@@ -7080,6 +7094,9 @@ packages:
 
   '@zag-js/focus-visible@1.14.0':
     resolution: {integrity: sha512-BAuPIqeDL0LhDBUDZZJdRLpFHxEU92TTUX4ThJBXf4vipMsrm3BJD2YHuak3lg07nxIHFR1uTCI/y/QK/BZ4Nw==}
+
+  '@zag-js/hover-card@1.14.0':
+    resolution: {integrity: sha512-DSb+7zCD6lH2lSObhHIBe7Xp/Yxm/oTjuNBMq3W15xSKn9iB6mB5HGHeGHTLHrEL0MmZuzrS0axj4F7A9sjjzA==}
 
   '@zag-js/i18n-utils@1.14.0':
     resolution: {integrity: sha512-c67X/LJICdNZKnDhirY3yTyIxeVqNJfNtmnVIjV4jdk/4kCHVk9iO5Xv7CdhzPFSHbQeeh583VQuQ4uJyUt01Q==}
@@ -7944,6 +7961,10 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   copy-anything@2.0.6:
     resolution: {integrity: sha512-1j20GZTsvKNkc4BY3NpMOM8tt///wY3FpIzozTOFO2ffuZcV61nojHXVKIy3WM+7ADCy5FVhdZYHYDdgTU0yJw==}
@@ -10300,6 +10321,12 @@ packages:
   netmask@2.0.2:
     resolution: {integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==}
     engines: {node: '>= 0.4.0'}
+
+  next-themes@0.4.6:
+    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
 
   next@15.3.0:
     resolution: {integrity: sha512-k0MgP6BsK8cZ73wRjMazl2y2UcXj49ZXLDEgx6BikWuby/CN+nh81qFFI16edgd7xYpe/jj2OZEIwCoqnzz0bQ==}
@@ -21253,6 +21280,11 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  '@supabase/ssr@0.6.1(@supabase/supabase-js@2.49.8)':
+    dependencies:
+      '@supabase/supabase-js': 2.49.8
+      cookie: 1.0.2
+
   '@supabase/storage-js@2.7.1':
     dependencies:
       '@supabase/node-fetch': 2.6.15
@@ -22163,6 +22195,16 @@ snapshots:
   '@zag-js/focus-visible@1.14.0':
     dependencies:
       '@zag-js/dom-query': 1.14.0
+
+  '@zag-js/hover-card@1.14.0':
+    dependencies:
+      '@zag-js/anatomy': 1.14.0
+      '@zag-js/core': 1.14.0
+      '@zag-js/dismissable': 1.14.0
+      '@zag-js/dom-query': 1.14.0
+      '@zag-js/popper': 1.14.0
+      '@zag-js/types': 1.14.0
+      '@zag-js/utils': 1.14.0
 
   '@zag-js/i18n-utils@1.14.0':
     dependencies:
@@ -23257,6 +23299,8 @@ snapshots:
   cookie@0.7.1: {}
 
   cookie@0.7.2: {}
+
+  cookie@1.0.2: {}
 
   copy-anything@2.0.6:
     dependencies:
@@ -25979,6 +26023,11 @@ snapshots:
   neo-async@2.6.2: {}
 
   netmask@2.0.2: {}
+
+  next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   next@15.3.0(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.84.0):
     dependencies:

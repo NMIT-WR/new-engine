@@ -1,6 +1,6 @@
+import type { User } from '@supabase/supabase-js'
 import { Store } from '@tanstack/react-store'
 import { supabase } from '../lib/supabase'
-import type { User } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null
@@ -39,15 +39,15 @@ if (typeof window !== 'undefined') {
 export const authHelpers = {
   signIn: async (email: string, password: string) => {
     authStore.setState((state) => ({ ...state, isLoading: true }))
-    
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
-      
+
       if (error) throw error
-      
+
       return { user: data.user }
     } catch (error: any) {
       throw new Error(error.message || 'Failed to sign in')
@@ -58,7 +58,7 @@ export const authHelpers = {
 
   signUp: async (email: string, password: string) => {
     authStore.setState((state) => ({ ...state, isLoading: true }))
-    
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -67,9 +67,9 @@ export const authHelpers = {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
-      
+
       if (error) throw error
-      
+
       return { user: data.user }
     } catch (error: any) {
       throw new Error(error.message || 'Failed to sign up')
@@ -80,7 +80,7 @@ export const authHelpers = {
 
   signOut: async () => {
     authStore.setState((state) => ({ ...state, isLoading: true }))
-    
+
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
@@ -96,7 +96,7 @@ export const authHelpers = {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       })
-      
+
       if (error) throw error
     } catch (error: any) {
       throw new Error(error.message || 'Failed to send reset email')

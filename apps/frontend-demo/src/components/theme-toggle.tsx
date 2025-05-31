@@ -21,7 +21,7 @@ const themeToggleVariants = tv({
 export function ThemeToggle() {
   const { theme, toggleTheme, mounted } = useTheme()
   const styles = themeToggleVariants()
-  
+
   const isDark = theme === 'dark'
 
   // Don't render switch until mounted to avoid hydration issues
@@ -50,7 +50,7 @@ export function ThemeToggle() {
         <Icon
           icon="icon-[mdi--white-balance-sunny]"
           className={`${styles.sunIcon()} ${styles.icon()}`}
-          data-active={!isDark ? '' : undefined}
+          data-active={isDark ? undefined : ''}
         />
         <Switch
           checked={isDark}

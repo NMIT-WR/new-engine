@@ -19,6 +19,6 @@ export function useTheme() {
     theme: mounted ? resolvedTheme : 'light',
     setTheme: setNextTheme,
     toggleTheme,
-    mounted
+    mounted,
   }
 }

@@ -47,7 +47,7 @@ export const cartStore = new Store<CartState>({
 if (typeof window !== 'undefined') {
   const initialState = loadCartFromStorage()
   cartStore.setState(() => initialState)
-  
+
   // Subscribe to changes and persist to localStorage
   cartStore.subscribe(() => {
     saveCartToStorage(cartStore.state)
@@ -56,7 +56,10 @@ if (typeof window !== 'undefined') {
 
 // Helper functions
 export const cartHelpers = {
-  addItem: (product: Product, options: { size?: string; color?: string; quantity?: number } = {}) => {
+  addItem: (
+    product: Product,
+    options: { size?: string; color?: string; quantity?: number } = {}
+  ) => {
     cartStore.setState((state) => {
       const existingItem = state.items.find(
         (item) =>
@@ -129,7 +132,10 @@ export const cartHelpers = {
   },
 
   getItemCount: () => {
-    return cartStore.state.items.reduce((total, item) => total + item.quantity, 0)
+    return cartStore.state.items.reduce(
+      (total, item) => total + item.quantity,
+      0
+    )
   },
 
   getSubtotal: () => {

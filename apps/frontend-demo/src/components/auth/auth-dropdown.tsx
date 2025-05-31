@@ -1,17 +1,43 @@
 'use client'
-
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
+import { HoverCard } from 'ui/src/molecules/hover-card'
 import { Menu } from 'ui/src/molecules/menu'
 import { useAuth } from '../../hooks/use-auth'
 
 export function AuthDropdown() {
   const { user, signOut } = useAuth()
+  const router = useRouter()
 
   if (!user) {
     return (
-      <Link href="/auth/login">
+      <HoverCard
+        content={
+          <div className="space-y-3">
+            <div className="text-secondary text-sm">
+              Sign in to access your account
+            </div>
+            <div className="space-y-2">
+              <Button
+                variant="primary"
+                size="sm"
+                className="w-full"
+                onClick={() => router.push('/auth/login')}
+              >
+                Sign In
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full"
+                onClick={() => router.push('/auth/register')}
+              >
+                Create Account
+              </Button>
+            </div>
+          </div>
+        }
+      >
         <Button
           variant="tertiary"
           theme="borderless"
@@ -19,7 +45,7 @@ export function AuthDropdown() {
           icon="icon-[mdi--account-outline]"
           aria-label="Sign in"
         />
-      </Link>
+      </HoverCard>
     )
   }
 

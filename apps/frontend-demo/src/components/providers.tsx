@@ -1,12 +1,12 @@
 'use client'
 
 import { ThemeProvider } from 'next-themes'
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Toaster } from 'ui/src/molecules/toast'
 
-export function Providers({ 
-  children
-}: { 
+export function Providers({
+  children,
+}: {
   children: ReactNode
 }) {
   return (
