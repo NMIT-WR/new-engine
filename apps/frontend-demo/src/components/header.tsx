@@ -100,6 +100,17 @@ export function Header({
 
             {/* Core actions - all sizes */}
             <div className="flex items-center">
+              {/* Search button */}
+              <Link href="/search">
+                <Button
+                  variant="tertiary"
+                  theme="borderless"
+                  size="sm"
+                  icon="icon-[mdi--magnify]"
+                  aria-label="Search"
+                />
+              </Link>
+
               {/* Cart button */}
               <div className="relative">
                 <Link href="/cart">
