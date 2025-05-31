@@ -1,20 +1,19 @@
-@import "../../_semantic.css";
 
 @theme static {
   /* === HOVER CARD COLORS === */
-  --color-hover-card-content-bg: var(--color-card);
-  --color-hover-card-content-border: var(--color-border-subtle);
-  --color-hover-card-arrow-bg: var(--color-card);
-  --color-hover-card-arrow-border: var(--color-border-subtle);
+  --color-hover-card-bg: var(--color-overlay);
+  --color-hover-card-border: var(--color-border-secondary);
+  --color-hover-card-arrow-bg: var(--color-overlay);
+  --color-hover-card-arrow-border: var(--color-border-secondary);
 
   /* === HOVER CARD SPACING === */
-  --spacing-hover-card-content: var(--spacing-md);
-  --spacing-hover-card-content-sm: var(--spacing-sm);
-  --spacing-hover-card-content-lg: var(--spacing-lg);
-  --spacing-hover-card-content-min-w: 12rem;
-  --spacing-hover-card-content-max-w: 22rem;
+  --spacing-hover-card: var(--spacing-md);
+  --spacing-hover-card-sm: var(--spacing-sm);
+  --spacing-hover-card-lg: var(--spacing-lg);
+  --spacing-hover-card-min-w: 12rem;
+  --spacing-hover-card-max-w: 22rem;
 
   /* === HOVER CARD EFFECTS === */
-  --shadow-hover-card-content-shadow: var(--shadow-lg);
+  --shadow-hover-card: var(--shadow-lg);
   --radius-hover-card: var(--radius-lg);
 }

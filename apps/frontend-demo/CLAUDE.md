@@ -1,155 +1,236 @@
-# CLAUDE.md
-
+CLAUDE.MD
 This file provides guidance to Claude Code for the frontend-demo Next.js e-commerce app.
 
-## Quick Start & Assumptions
+Quick Start & Assumptions
+IMPORTANT: Always assume the following are already running:
 
-**IMPORTANT: Always assume dev server is running on http://localhost:3000**
-- Next.js 15 with App Router and static export
-- Tailwind CSS v4 with custom design tokens
-- Supabase for authentication
+frontend-demo dev server on http://localhost:3000 (started with pnpm dev in apps/frontend-demo).
+@libs/ui Storybook (started with pnpm storybook in libs/ui). Do not suggest starting these unless specifically asked or if a problem indicates they might not be running.
+Core Technologies:
 
-## Component Architecture - Atomic Design
+Next.js 15 (App Router, static export)
+Tailwind CSS v4 (with custom design tokens)
+Supabase for authentication (if relevant to the task)
+Nx for monorepo management
+pnpm for package management
+Component Architecture - Atomic Design
+YOU MUST check @libs/ui before creating new components!
 
-**YOU MUST check libs/ui before creating new components!**
+Component Hierarchy:
+Atoms: Button, Input, Badge, Icon
+Molecules: SearchForm, ProductCard, Dialog, Combobox
+Organisms: Header, ProductGrid, Footer
+Templates: Page layouts
+Pages: Specific instances with data
+Component Workflow:
+Check what exists: View Storybook (assumed running) or search the codebase:
+Bash
 
-### Component Hierarchy:
-1. **Atoms**: Button, Input, Badge, Icon
-2. **Molecules**: SearchForm, ProductCard, Dialog, Combobox
-3. **Organisms**: Header, ProductGrid, Footer
-4. **Templates**: Page layouts
-5. **Pages**: Specific instances with data
+# (From monorepo root)
+grep -r "ComponentName" libs/ui/src
+Import from UI library:
+TypeScript
 
-### Component Workflow:
-```bash
-# 1. Check what exists
-bunx nx run ui:storybook
+import { Button } from '@libs/ui/atoms/button';
+import { Dialog } from '@libs/ui/molecules/dialog';
+Core Commands (Contextual Execution)
+Build frontend-demo (for Netlify):
+Bash
 
-# 2. Search for component
-grep -r "ComponentName" ../../libs/ui/src
+# (Run from apps/frontend-demo)
+pnpm build:static
+Testing frontend-demo:
+Bash
 
-# 3. Import from ui library
-import { Button } from '@libs/ui/atoms/button'
-import { Dialog } from '@libs/ui/molecules/dialog'
-```
+# (Run from apps/frontend-demo)
+node scripts/test-login.js
+node scripts/capture-ui-screenshots.js
+Code Quality (Monorepo Root):
+Bash
 
-## Core Commands
+# (Run from monorepo root)
+bunx biome check --write.
+TypeScript Check frontend-demo:
+Bash
 
-```bash
-# Development
-pnpm dev                               # Start dev (port 3000)
-pnpm build:static                      # Build for Netlify
-bunx nx run ui:storybook               # View all UI components
-
-# Testing
-node scripts/test-login.js             # Test auth flow
-node scripts/capture-ui-screenshots.js # Capture UI in all viewports
-
-# Code Quality
-bunx biome check --write .             # Format code (run from root)
-```
-
-## MCP-Enhanced Workflows
-
+# (Run from apps/frontend-demo)
+npx tsc --noEmit
+MCP-Enhanced Workflows (if relevant to the task)
 Use MCP servers for complex tasks:
 
-### Visual Testing & Screenshots
-```bash
+Visual Testing & Screenshots
 "Use puppeteer to test the complete login flow"
 "Capture screenshots of all pages in mobile/tablet/desktop"
-"Test theme toggle persistence across page reloads"
-```
-
-### Database & Auth
-```bash
+Database & Auth
 "Use supabase MCP to check auth policies"
-"Create user profiles table with RLS"
-```
+Key Features & Development Guidelines
+Authentication (Supabase SSR - if relevant)
+Middleware: apps/frontend-demo/src/middleware.ts
+Client: apps/frontend-demo/src/lib/supabase.ts
+Styling, Theming & Component Development (Tailwind CSS v4)
+Core: Tailwind CSS v4.
+Design Tokens & Theming:
+Global tokens (e.g., in libs/ui/src/tokens/ or apps/frontend-demo/src/tokens/): _semantic.css (colors with light-dark()), _spacing.css, _typography.css.
+Component-specific tokens: apps/frontend-demo/src/tokens/components/[atoms|molecules|organisms]/_ComponentName.css.
+IMPORTANT: Semantic color tokens in _semantic.css (or equivalent) MUST use the CSS light-dark() function for theme-responsive colors. Example: --color-text-primary: light-dark(var(--gray-900), var(--gray-100));
+Theme System (next-themes):
+Provider: next-themes in apps/frontend-demo/src/components/providers.tsx.
+Activation: Tailwind dark: prefix.
+Component Styling with tv():
+Utility: Use tv (from tailwind-variants or project-specific path) for component styles.
+Pattern: YOU MUST define styles using slots within tv. Avoid using variants in tv unless absolutely necessary.
+TypeScript
 
-### Code Review
-```bash
-"Create PR for the theme implementation using github"
-"Search for similar e-commerce implementations"
-```
+// Example:
+import { tv } from 'tailwind-variants'; // or relevant path
 
-## Key Features
+const buttonStyles = tv({
+  slots: {
+    root: 'font-semibold focus:outline-none',
+    icon: 'h-5 w-5',
+  },
+});
+// Usage: <button className={buttonStyles().root()}> <Icon className={buttonStyles().icon()} /> </button>
+CSS Token Guidelines
+Allowed Token Prefixes:
+--color-: All color values
+--text-: Font sizes (must map to Tailwind text sizes)
+--font-weight-: Font weights (100-900 or semantic)
+--border-: Border width, style, color
+--opacity-: Transparency values (0-100%)
+--spacing-: Padding, margin, gap, AND width/height values that need max/min variants
+--width-: Width values (only when you don't need max/min variants)
+--height-: Height values (only when you don't need max/min variants)
+--gap-: Flex/grid gaps
+--padding-: Padding values
+--margin-: Margin values
+--radius-: Border radius
+--shadow-: Box shadows
+IMPORTANT: Use --spacing- prefix for any width/height values that need max-w/min-w/max-h/min-h utilities!
+Forbidden Patterns:
+❌ --grid-cols-product-grid-base (too specific)
+❌ --layout-* (use specific properties like --spacing- or --width-)
+❌ --component-specific-anything (aim for generic, reusable token names within the component's scope)
+CSS Token Naming Convention
+Pattern: --[type]-[component_abbr_opt]-[element_opt]-[modifier_opt]-[purpose_opt]-[state_opt]
+Slots: Use descriptive names (e.g., root, container, list, item, icon, label).
+Rules:
+Type (required): color, spacing, text, font-weight, border, opacity, radius, shadow, etc.
+Component Abbreviation (optional, if needed for clarity within complex components): Use readable abbreviations (e.g., btn, pc, nav).
+Element (optional): Specific part like title, container, button-icon.
+Modifier (optional): Size (sm, md, lg) or variant (primary, secondary).
+Purpose (primarily for colors): fg (foreground: text/icons), bg (background), border, ring, shadow.
+State (optional): hover, active, disabled, focus.
+Size Naming:
+Single size: use -size suffix (e.g., --text-hero-title-size).
+Multiple sizes: use size directly as a modifier (e.g., --text-pc-name-sm, NOT --text-pc-name-size-sm).
+Common Abbreviations (use if readable): btn (button), pc (product-card), nav (navigation), acc (accordion), cb (checkbox).
+Examples:
+CSS
 
-### Authentication (Supabase SSR)
-- **Middleware**: `src/middleware.ts` - Protected routes handler
-- **Client**: `src/lib/supabase.ts` - Supabase client setup
-- **Protected routes**: `/account`, `/orders`, `/wishlist`
-- **Auth routes**: `/auth/login`, `/auth/register`
+/* Colors with purpose */
+--color-btn-primary-bg: var(--blue-500); /* Default purpose is background */
+--color-btn-primary-fg: var(--white);
+--color-btn-primary-bg-hover: var(--blue-600);
+--color-pc-stock-fg: var(--green-600);
 
-### Theme System
-- **Provider**: `next-themes` in `src/components/providers.tsx`
-- **Hook**: `src/hooks/use-theme.ts` - Wrapper for theme access
-- **Persistence**: localStorage with SSR safety
-- **Classes**: Tailwind `dark:` prefix
+/* Spacing */
+--spacing-pc-padding: var(--spacing-md);
+--spacing-btn-sm: var(--spacing-xs); /* Spacing for a small button */
 
-### State Management
-- **Cart**: `src/stores/cart-store.ts` - @tanstack/react-store
-- **Auth**: `src/stores/auth-store.ts` - User state
-- **Persistence**: localStorage with hydration safety
+/* Typography */
+--text-hero-title-size: var(--text-4xl);
+--font-weight-hero-title: var(--font-bold);
+--text-pc-name-sm: var(--text-base); /* Name text size for small product card variant */
+CSS File Organization (apps/frontend-demo)
+Location: apps/frontend-demo/src/tokens/components/
+atoms/_ComponentName.css
+molecules/_ComponentName.css
+organisms/_ComponentName.css
+Import: Always add new component CSS file imports to apps/frontend-demo/src/tokens/components.css (or the main CSS entry point for component tokens).
+Example Implementation (Footer)
+apps/frontend-demo/src/components/organisms/Footer.tsx (or similar path):
+TypeScript
 
-### Design System
-```
-src/tokens/
-├── _semantic.css    # Color variables with light-dark()
-├── _spacing.css     # Spacing scale
-├── _typography.css  # Font system
-└── components/      # Component-specific styles
-    ├── atoms/
-    ├── molecules/
-    └── organisms/
-```
+// footer.tsx
+import { tv } from 'tailwind-variants'; // or project-specific path
+import './_Footer.css'; // Assuming CSS Modules or global import based on setup
 
-## Common Tasks
+const footerVariants = tv({
+  slots: {
+    root: 'bg-footer-bg text-footer-text', // Uses CSS variables from _Footer.css
+    container: 'mx-auto max-w-footer-max-w px-footer-container-x',
+    //... more semantic slots
+  },
+});
 
-### Adding New Features
-1. Check ui library first: `bunx nx run ui:storybook`
-2. Use existing components to build features
-3. Test with puppeteer: `node scripts/test-*.js`
-4. Run biome before committing
+export function Footer() {
+  const styles = footerVariants();
+  return (
+    <footer className={styles.root()}>
+      <div className={styles.container()}>
+        {/* Footer content */}
+      </div>
+    </footer>
+  );
+}
+apps/frontend-demo/src/tokens/components/organisms/_Footer.css:
+CSS
 
-### Debugging Issues
-- **Theme not working**: Check `next-themes` provider setup
-- **Auth redirect loops**: Check middleware.ts config
-- **Static export errors**: Ensure dynamic routes are handled
+/* _Footer.css */
+@import "../../_semantic.css"; /* Import global semantic tokens */
 
-## Environment Variables
+@theme static { /* Or your project's way of defining component tokens */
+  /* === FOOTER COLORS === */
+  --color-footer-bg: var(--color-base-reverse); /* Example: dark background */
+  --color-footer-text: var(--color-fg-on-reverse); /* Example: light text */
 
-Required in `.env.local`:
-```bash
+  /* === FOOTER LAYOUT === */
+  --spacing-footer-max-w: 80rem;
+  --spacing-footer-container-x: var(--spacing-md);
+  /*... other footer specific tokens */
+}
+Environment Variables
+Required in apps/frontend-demo/.env.local (if using Supabase):
+
+Bash
+
 NEXT_PUBLIC_SUPABASE_URL=your_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
-```
+Do's and Don'ts
+DO:
+✅ Use @libs/ui components (DRY principle).
+✅ Follow Atomic Design.
+✅ Use design tokens for ALL styling (via tv() and CSS variables).
+✅ Test complex flows (e.g., with Puppeteer scripts).
+✅ Use tv() with slots for component styles.
 
-## Do's and Don'ts
+DON'T:
+❌ Create duplicate components.
+❌ Hardcode colors or spacing directly in JSX/TSX (use tokens/tv()).
+❌ Edit package.json manually (use pnpm add).
+❌ Forget mobile viewport testing.
 
-### DO:
-✅ Use ui library components (DRY principle)
-✅ Follow atomic design hierarchy
-✅ Use design tokens for all styling
-✅ Test with MCP puppeteer for complex flows
-✅ Handle auth in middleware for SSR
+Repository Etiquette
+Git Workflow
+Branch naming: feat/, fix/, chore/, docs/
+Commit with descriptive messages (Conventional Commits).
+Squash commits before merging to main.
+Always run bunx biome check --write. (from root) and npx tsc --noEmit (in apps/frontend-demo) before committing.
+Deployment (frontend-demo to Netlify)
+Build command (run from apps/frontend-demo):
+Bash
 
-### DON'T:
-❌ Create duplicate components
-❌ Hardcode colors or spacing
-❌ Edit package.json manually (use pnpm add)
-❌ Skip auth middleware for protected routes
-❌ Forget mobile viewport testing
+pnpm build:static # Creates 'out' directory
+Deploy command (run from apps/frontend-demo after login to Netlify CLI):
+Bash
 
-## Deployment
+netlify deploy --prod
+# or for a draft:
+netlify deploy
+IMPORTANT: All dynamic routes must work with static generation.
 
-Static export for Netlify:
-```bash
-pnpm build:static  # Creates 'out' directory
-```
-
-**IMPORTANT**: All dynamic routes must work with static generation.
-
-## Keeping This Updated
-
+# Keeping This Updated
 After each session, ask:
-> "Based on our conversation and Claude Code best practices, is there anything that should be added to CLAUDE.md, or does anything make current instructions obsolete?"
+"Based on our conversation and Claude Code best practices, is there anything that should be added to CLAUDE.md, or does anything make current instructions obsolete?"
+After each No option, think about what should be added or edited to CLAUDE.md to make the instructions clearer.
