@@ -32,6 +32,7 @@
 @import "./molecules/_theme-toggle.css";
 @import "./molecules/_toast.css";
 @import "./molecules/_tree-view.css";
+@import "./molecules/_auth-forms.css";
 
 @import "./organisms/_footer.css";
 @import "./organisms/_header.css";
@@ -40,3 +41,4 @@
 @import "./organisms/_product-listing.css";
 @import "./organisms/_search.css";
 @import "./organisms/_cart.css";
+@import "./organisms/_auth.css";

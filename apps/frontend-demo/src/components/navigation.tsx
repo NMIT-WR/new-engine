@@ -1,8 +1,8 @@
 'use client'
+import Link from 'next/link'
 import { type ComponentPropsWithoutRef, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
-import { Link } from 'ui/src/atoms/link'
 import { tv } from 'ui/src/utils'
 
 const navigationVariants = tv({

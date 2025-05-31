@@ -1,15 +1,16 @@
 'use client'
+import Link from 'next/link'
 import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
 import { Badge } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
-import { Link } from 'ui/src/atoms/link'
 import { tv } from 'ui/src/utils'
 import { useCart } from '../hooks/use-cart'
 import { MobileMenu } from './mobile-menu'
 import { type NavItem, Navigation } from './navigation'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
+import { AuthDropdown } from './auth/auth-dropdown'
 
 const headerVariants = tv({
   slots: {
@@ -38,11 +39,6 @@ export interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   navigationItems?: NavItem[]
   actions?: ReactNode
   showMobileMenu?: boolean
-  user?: {
-    name: string
-    avatar?: string
-  }
-  cartItemsCount?: number
 }
 
 export function Header({
@@ -50,7 +46,6 @@ export function Header({
   navigationItems = [],
   actions,
   showMobileMenu = true,
-  user,
   className,
   ...props
 }: HeaderProps) {
@@ -134,27 +129,7 @@ export function Header({
               </div>
 
               {/* User/Auth section */}
-              {user ? (
-                <Button
-                  variant="tertiary"
-                  theme="borderless"
-                  size="sm"
-                  icon="icon-[mdi--account-circle]"
-                  aria-label={user.name}
-                >
-                  <span className="hidden lg:inline">{user.name}</span>
-                </Button>
-              ) : (
-                <Link href="/login">
-                  <Button
-                    variant="tertiary"
-                    theme="borderless"
-                    size="sm"
-                    icon="icon-[mdi--account-outline]"
-                    aria-label="Sign in"
-                  />
-                </Link>
-              )}
+              <AuthDropdown />
 
               {/* Custom actions */}
               {actions}
