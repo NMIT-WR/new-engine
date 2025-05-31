@@ -5,14 +5,14 @@
   --color-product-listing-results: var(--color-fg-secondary);
   --color-product-listing-sidebar-title: var(--color-fg-primary);
   --color-product-listing-sort-label: var(--color-fg-secondary);
-  
+
   /* === PRODUCT LISTING SPACING === */
   --spacing-product-listing-max-w: 80rem;
   --spacing-product-listing-container-x: var(--spacing-md);
   --spacing-product-listing-container-x-lg: var(--spacing-lg);
   --spacing-product-listing-container-y: var(--spacing-lg);
   --spacing-product-listing-container-y-lg: var(--spacing-xl);
-  
+
   --spacing-product-listing-header-margin: var(--spacing-lg);
   --spacing-product-listing-title-margin: var(--spacing-md);
   --spacing-product-listing-layout-gap: var(--spacing-lg);
@@ -24,14 +24,14 @@
   --spacing-product-listing-sort-gap: var(--spacing-sm);
   --spacing-product-listing-grid-gap: var(--spacing-md);
   --spacing-product-listing-pagination-margin: var(--spacing-xl);
-  
+
   /* === PRODUCT LISTING TYPOGRAPHY === */
   --text-product-listing-title: var(--text-4xl);
   --font-product-listing-title: var(--font-bold);
   --text-product-listing-sidebar-title: var(--text-lg);
   --font-product-listing-sidebar-title: var(--font-semibold);
   --text-product-listing-results: var(--text-sm);
-  
+
   /* === PRODUCT LISTING GRID === */
   --product-listing-cols-base: 1;
   --product-listing-cols-sm: 2;

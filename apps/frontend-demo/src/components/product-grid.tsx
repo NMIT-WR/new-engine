@@ -45,7 +45,8 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     <div className={styles.root()}>
       <div className={styles.grid()}>
         {currentProducts.map((product) => {
-          const { price, displayBadges, stockText } = extractProductData(product)
+          const { price, displayBadges, stockText } =
+            extractProductData(product)
 
           return (
             <Link

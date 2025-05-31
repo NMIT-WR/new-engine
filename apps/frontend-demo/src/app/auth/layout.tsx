@@ -13,12 +13,10 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   const styles = authLayoutVariants()
-  
+
   return (
     <div className={styles.root()}>
-      <div className={styles.container()}>
-        {children}
-      </div>
+      <div className={styles.container()}>{children}</div>
     </div>
   )
 }

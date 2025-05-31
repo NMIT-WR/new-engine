@@ -6,7 +6,8 @@ import type { Category } from '../types/product'
 const categoryGridVariants = tv({
   slots: {
     root: 'bg-category-section-bg py-category-section-y',
-    container: 'mx-auto max-w-category-max-w px-category-container-x flex flex-col gap-category-container-gap',
+    container:
+      'mx-auto max-w-category-max-w px-category-container-x flex flex-col gap-category-container-gap',
     header: 'flex flex-col gap-category-header-gap',
     title: 'font-bold text-category-title-size',
     subtitle: 'text-category-subtitle',
@@ -17,7 +18,8 @@ const categoryGridVariants = tv({
       'h-full w-full object-cover transition-transform duration-300 group-hover:scale-105',
     overlay: 'absolute inset-0 bg-gradient-to-t from-black/60 to-transparent',
     content: 'absolute bottom-0 left-0 p-category-card-padding',
-    itemTitle: 'font-semibold text-category-item-title-size text-category-item-text',
+    itemTitle:
+      'font-semibold text-category-item-title-size text-category-item-text',
     itemCount: 'text-category-item-count-size text-category-item-count',
   },
 })

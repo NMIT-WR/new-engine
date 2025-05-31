@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { FormInput } from 'ui/src/molecules/form-input'
 import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
+import { FormInput } from 'ui/src/molecules/form-input'
 import { useToast } from 'ui/src/molecules/toast'
 import { tv } from 'ui/src/utils'
 import { useAuth } from '../../hooks/use-auth'
@@ -27,7 +27,7 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const { signIn } = useAuth()
   const router = useRouter()
   const toast = useToast()
@@ -48,7 +48,8 @@ export function LoginForm() {
     } catch (error: any) {
       toast.create({
         title: 'Sign in failed',
-        description: error.message || 'Please check your credentials and try again.',
+        description:
+          error.message || 'Please check your credentials and try again.',
         type: 'error',
       })
     } finally {
@@ -92,7 +93,9 @@ export function LoginForm() {
             id="rememberMe"
             label="Remember me"
             checked={rememberMe}
-            onCheckedChange={(details) => setRememberMe(details.checked === true)}
+            onCheckedChange={(details) =>
+              setRememberMe(details.checked === true)
+            }
             disabled={isLoading}
           />
 
@@ -101,12 +104,7 @@ export function LoginForm() {
           </Link>
         </div>
 
-        <Button
-          type="submit"
-          className="w-full"
-          size="lg"
-          disabled={isLoading}
-        >
+        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
           Sign In
         </Button>
       </form>

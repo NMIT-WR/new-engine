@@ -6,11 +6,11 @@ import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
 import { tv } from 'ui/src/utils'
 import { useCart } from '../hooks/use-cart'
+import { AuthDropdown } from './auth/auth-dropdown'
 import { MobileMenu } from './mobile-menu'
 import { type NavItem, Navigation } from './navigation'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
-import { AuthDropdown } from './auth/auth-dropdown'
 
 const headerVariants = tv({
   slots: {

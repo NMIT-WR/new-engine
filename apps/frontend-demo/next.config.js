@@ -4,9 +4,9 @@ const nextConfig = {
   transpilePackages: ['ui'],
   output: 'export',
   images: {
-    unoptimized: true
+    unoptimized: true,
   },
-  trailingSlash: true
+  trailingSlash: true,
 }
 
 module.exports = nextConfig

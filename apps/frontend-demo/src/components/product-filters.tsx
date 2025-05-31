@@ -8,10 +8,10 @@ import { RangeSlider } from 'ui/src/molecules/range-slider'
 import { tv } from 'ui/src/utils'
 import { mockProducts } from '../data/mock-products'
 import {
-  calculateProductCounts,
-  getSizesWithCounts,
-  getColorsWithCounts,
   type FilterState,
+  calculateProductCounts,
+  getColorsWithCounts,
+  getSizesWithCounts,
 } from '../utils/product-filters'
 
 const productFiltersVariants = tv({
@@ -30,7 +30,6 @@ const productFiltersVariants = tv({
       'text-product-filters-dialog-title font-product-filters-dialog-title',
   },
 })
-
 
 interface ProductFiltersProps {
   className?: string

@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { Badge } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
@@ -24,7 +23,8 @@ const cartPageVariants = tv({
     itemsList: 'divide-y divide-cart-item-divider',
     item: 'py-cart-item-y first:pt-0 last:pb-0',
     itemContent: 'flex gap-cart-item-gap',
-    itemImage: 'w-cart-item-image h-cart-item-image rounded-cart-item-image bg-cart-item-image-bg',
+    itemImage:
+      'w-cart-item-image h-cart-item-image rounded-cart-item-image bg-cart-item-image-bg',
     itemDetails: 'flex-1',
     itemHeader: 'flex justify-between items-start mb-cart-item-header-margin',
     itemTitle: 'text-cart-item-title font-cart-item-title',
@@ -33,24 +33,29 @@ const cartPageVariants = tv({
     itemActions: 'flex items-center gap-cart-item-actions-gap',
     removeButton: 'text-cart-remove hover:text-cart-remove-hover',
     summarySection: 'lg:sticky lg:top-cart-summary-top lg:h-fit',
-    summaryCard: 'bg-cart-summary-bg p-cart-summary-padding rounded-cart-summary shadow-cart-summary',
-    summaryTitle: 'text-cart-summary-title font-cart-summary-title mb-cart-summary-title-margin',
+    summaryCard:
+      'bg-cart-summary-bg p-cart-summary-padding rounded-cart-summary shadow-cart-summary',
+    summaryTitle:
+      'text-cart-summary-title font-cart-summary-title mb-cart-summary-title-margin',
     summaryRows: 'space-y-cart-summary-rows-gap',
     summaryRow: 'flex justify-between text-cart-summary-text',
-    summaryDivider: 'my-cart-summary-divider border-t border-cart-summary-divider',
+    summaryDivider:
+      'my-cart-summary-divider border-t border-cart-summary-divider',
     totalRow: 'flex justify-between text-cart-total font-cart-total',
     checkoutButton: 'w-full mt-cart-checkout-margin',
     emptyState: 'text-center py-cart-empty-y',
     emptyIcon: 'text-cart-empty-icon mb-cart-empty-icon-margin',
-    emptyTitle: 'text-cart-empty-title font-cart-empty-title mb-cart-empty-title-margin',
+    emptyTitle:
+      'text-cart-empty-title font-cart-empty-title mb-cart-empty-title-margin',
     emptyText: 'text-cart-empty-text mb-cart-empty-text-margin',
   },
 })
 
 export default function CartPage() {
-  const { items, subtotal, total, removeItem, updateQuantity, clearCart } = useCart()
+  const { items, subtotal, total, removeItem, updateQuantity, clearCart } =
+    useCart()
   const styles = cartPageVariants()
-  
+
   // Use helper to calculate tax properly
   const tax = subtotal * 0.21 // 21% VAT
   const shipping = 0 // Free shipping
@@ -90,7 +95,7 @@ export default function CartPage() {
                               alt={item.product.title}
                               width={120}
                               height={120}
-                              className="h-full w-full object-cover rounded-cart-item-image"
+                              className="h-full w-full rounded-cart-item-image object-cover"
                             />
                           )}
                         </div>
@@ -99,15 +104,27 @@ export default function CartPage() {
                         <div className={styles.itemDetails()}>
                           <div className={styles.itemHeader()}>
                             <div>
-                              <h3 className={styles.itemTitle()}>{item.product.title}</h3>
+                              <h3 className={styles.itemTitle()}>
+                                {item.product.title}
+                              </h3>
                               <div className={styles.itemOptions()}>
-                                {item.selectedSize && <span>Size: {item.selectedSize}</span>}
-                                {item.selectedSize && item.selectedColor && <span> • </span>}
-                                {item.selectedColor && <span>Color: {item.selectedColor}</span>}
+                                {item.selectedSize && (
+                                  <span>Size: {item.selectedSize}</span>
+                                )}
+                                {item.selectedSize && item.selectedColor && (
+                                  <span> • </span>
+                                )}
+                                {item.selectedColor && (
+                                  <span>Color: {item.selectedColor}</span>
+                                )}
                               </div>
-                              <p className={styles.itemPrice()}>{formatPrice(price)}</p>
+                              <p className={styles.itemPrice()}>
+                                {formatPrice(price)}
+                              </p>
                             </div>
-                            <p className={styles.itemPrice()}>{formatPrice(itemTotal)}</p>
+                            <p className={styles.itemPrice()}>
+                              {formatPrice(itemTotal)}
+                            </p>
                           </div>
 
                           <div className={styles.itemActions()}>
@@ -115,7 +132,9 @@ export default function CartPage() {
                               value={item.quantity}
                               min={1}
                               max={99}
-                              onChange={(value) => updateQuantity(item.id, value)}
+                              onChange={(value) =>
+                                updateQuantity(item.id, value)
+                              }
                               size="sm"
                             />
                             <Button
@@ -154,7 +173,7 @@ export default function CartPage() {
             <div className={styles.summarySection()}>
               <div className={styles.summaryCard()}>
                 <h2 className={styles.summaryTitle()}>Order Summary</h2>
-                
+
                 <div className={styles.summaryRows()}>
                   <div className={styles.summaryRow()}>
                     <span>Subtotal</span>
@@ -162,7 +181,9 @@ export default function CartPage() {
                   </div>
                   <div className={styles.summaryRow()}>
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span>
+                    <span>
+                      {shipping === 0 ? 'FREE' : formatPrice(shipping)}
+                    </span>
                   </div>
                   <div className={styles.summaryRow()}>
                     <span>Tax (21%)</span>
@@ -185,7 +206,7 @@ export default function CartPage() {
                   Proceed to Checkout
                 </Button>
 
-                <Link href="/products" className="block text-center mt-4">
+                <Link href="/products" className="mt-4 block text-center">
                   <Button variant="tertiary" theme="borderless" size="sm">
                     Continue Shopping
                   </Button>
@@ -196,7 +217,11 @@ export default function CartPage() {
         ) : (
           /* Empty Cart */
           <div className={styles.emptyState()}>
-            <Icon icon="icon-[mdi--cart-outline]" size="2xl" className={styles.emptyIcon()} />
+            <Icon
+              icon="icon-[mdi--cart-outline]"
+              size="2xl"
+              className={styles.emptyIcon()}
+            />
             <h2 className={styles.emptyTitle()}>Your cart is empty</h2>
             <p className={styles.emptyText()}>
               Looks like you haven't added any items to your cart yet.

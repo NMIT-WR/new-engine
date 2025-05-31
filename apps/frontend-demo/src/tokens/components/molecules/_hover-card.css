@@ -1,0 +1,20 @@
+@import "../../_semantic.css";
+
+@theme static {
+  /* === HOVER CARD COLORS === */
+  --color-hover-card-content-bg: var(--color-card);
+  --color-hover-card-content-border: var(--color-border-subtle);
+  --color-hover-card-arrow-bg: var(--color-card);
+  --color-hover-card-arrow-border: var(--color-border-subtle);
+
+  /* === HOVER CARD SPACING === */
+  --spacing-hover-card-content: var(--spacing-md);
+  --spacing-hover-card-content-sm: var(--spacing-sm);
+  --spacing-hover-card-content-lg: var(--spacing-lg);
+  --spacing-hover-card-content-min-w: 12rem;
+  --spacing-hover-card-content-max-w: 22rem;
+
+  /* === HOVER CARD EFFECTS === */
+  --shadow-hover-card-content-shadow: var(--shadow-lg);
+  --radius-hover-card: var(--radius-lg);
+}

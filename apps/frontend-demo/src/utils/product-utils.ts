@@ -1,6 +1,10 @@
 import type { BadgeProps } from 'ui/src/atoms/badge'
+import {
+  getProductBadges,
+  getProductPrice,
+  getProductStock,
+} from '../data/mock-products'
 import type { Product } from '../types/product'
-import { getProductPrice, getProductStock, getProductBadges } from '../data/mock-products'
 
 /**
  * Convert stock status to display text
@@ -22,9 +26,15 @@ export function getStockStatusText(status: string): string {
  * Ensure badges array has at least one item (for layout consistency)
  */
 export function ensureBadgesPlaceholder(badges: BadgeProps[]): BadgeProps[] {
-  return badges.length > 0 
-    ? badges 
-    : [{ variant: 'success' as const, children: '\u00A0', className: 'invisible' }]
+  return badges.length > 0
+    ? badges
+    : [
+        {
+          variant: 'success' as const,
+          children: '\u00A0',
+          className: 'invisible',
+        },
+      ]
 }
 
 /**
@@ -42,7 +52,7 @@ export function extractProductData(product: Product): ProductDisplayData {
   const price = getProductPrice(product)
   const badges = getProductBadges(product)
   const stockStatus = getProductStock(product)
-  
+
   return {
     price,
     badges,
@@ -56,13 +66,11 @@ export function extractProductData(product: Product): ProductDisplayData {
  * Get related products (excluding current product)
  */
 export function getRelatedProducts(
-  currentProduct: Product, 
-  allProducts: Product[], 
+  currentProduct: Product,
+  allProducts: Product[],
   limit = 4
 ): Product[] {
-  return allProducts
-    .filter((p) => p.id !== currentProduct.id)
-    .slice(0, limit)
+  return allProducts.filter((p) => p.id !== currentProduct.id).slice(0, limit)
 }
 
 /**

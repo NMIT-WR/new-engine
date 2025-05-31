@@ -683,7 +683,11 @@ export const mockProducts: Product[] = [
       },
     ],
     options: [
-      { id: 'opt_21', title: 'Pattern', values: ['Paisley Blue', 'Floral Red', 'Geometric'] },
+      {
+        id: 'opt_21',
+        title: 'Pattern',
+        values: ['Paisley Blue', 'Floral Red', 'Geometric'],
+      },
     ],
   },
   {
@@ -860,7 +864,11 @@ export const mockProducts: Product[] = [
     ],
     options: [
       { id: 'opt_28', title: 'Size', values: ['XS', 'S', 'M', 'L', 'XL'] },
-      { id: 'opt_29', title: 'Color', values: ['Black', 'Cream', 'Grey', 'Camel'] },
+      {
+        id: 'opt_29',
+        title: 'Color',
+        values: ['Black', 'Cream', 'Grey', 'Camel'],
+      },
     ],
   },
   {
@@ -995,7 +1003,11 @@ export const mockProducts: Product[] = [
       },
     ],
     options: [
-      { id: 'opt_34', title: 'Color', values: ['Black', 'Navy', 'Beige', 'White'] },
+      {
+        id: 'opt_34',
+        title: 'Color',
+        values: ['Black', 'Navy', 'Beige', 'White'],
+      },
     ],
   },
   {
@@ -1038,7 +1050,11 @@ export const mockProducts: Product[] = [
     ],
     options: [
       { id: 'opt_35', title: 'Size', values: ['XS', 'S', 'M', 'L', 'XL'] },
-      { id: 'opt_36', title: 'Wash', values: ['Light Wash', 'Dark Wash', 'Black'] },
+      {
+        id: 'opt_36',
+        title: 'Wash',
+        values: ['Light Wash', 'Dark Wash', 'Black'],
+      },
     ],
   },
   {
@@ -1259,7 +1275,11 @@ export const mockProducts: Product[] = [
       },
     ],
     options: [
-      { id: 'opt_45', title: 'Material', values: ['Cotton', 'Denim', 'Canvas'] },
+      {
+        id: 'opt_45',
+        title: 'Material',
+        values: ['Cotton', 'Denim', 'Canvas'],
+      },
     ],
   },
   {
@@ -1302,7 +1322,11 @@ export const mockProducts: Product[] = [
     ],
     options: [
       { id: 'opt_46', title: 'Size', values: ['XS', 'S', 'M', 'L', 'XL'] },
-      { id: 'opt_47', title: 'Color', values: ['Black', 'Oatmeal', 'Forest Green'] },
+      {
+        id: 'opt_47',
+        title: 'Color',
+        values: ['Black', 'Oatmeal', 'Forest Green'],
+      },
     ],
   },
 ]

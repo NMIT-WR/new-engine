@@ -17,7 +17,10 @@ import { FeaturedProducts } from '../../../components/featured-products'
 import { mockProducts } from '../../../data/mock-products'
 import { useCart } from '../../../hooks/use-cart'
 import type { Product } from '../../../types/product'
-import { extractProductData, getRelatedProducts, getStockStatusText } from '../../../utils/product-utils'
+import {
+  extractProductData,
+  getRelatedProducts,
+} from '../../../utils/product-utils'
 
 const productDetailVariants = tv({
   slots: {
@@ -28,21 +31,29 @@ const productDetailVariants = tv({
     content: 'grid grid-cols-1 lg:grid-cols-2 gap-product-detail-content-gap',
     imageSection: 'relative',
     infoSection: 'flex flex-col',
-    badgeContainer: 'mb-product-detail-badge-margin flex flex-wrap gap-product-detail-badge-gap',
-    title: 'text-product-detail-title font-product-detail-title mb-product-detail-title-margin',
-    ratingWrapper: 'flex items-center gap-product-detail-rating-gap mb-product-detail-rating-margin',
+    badgeContainer:
+      'mb-product-detail-badge-margin flex flex-wrap gap-product-detail-badge-gap',
+    title:
+      'text-product-detail-title font-product-detail-title mb-product-detail-title-margin',
+    ratingWrapper:
+      'flex items-center gap-product-detail-rating-gap mb-product-detail-rating-margin',
     ratingText: 'text-product-detail-rating-text',
     priceSection: 'mb-product-detail-price-margin',
     price: 'text-product-detail-price font-product-detail-price',
-    originalPrice: 'text-product-detail-original-price line-through ml-product-detail-original-price-margin',
-    description: 'text-product-detail-description mb-product-detail-description-margin',
+    originalPrice:
+      'text-product-detail-original-price line-through ml-product-detail-original-price-margin',
+    description:
+      'text-product-detail-description mb-product-detail-description-margin',
     variantSection: 'mb-product-detail-variant-margin',
-    variantLabel: 'text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin',
+    variantLabel:
+      'text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin',
     quantitySection: 'mb-product-detail-quantity-margin',
     quantityWrapper: 'flex items-center gap-product-detail-quantity-gap',
     quantityLabel: 'text-product-detail-quantity-label',
-    actionSection: 'flex gap-product-detail-action-gap mb-product-detail-action-margin',
-    stockInfo: 'flex items-center gap-product-detail-stock-gap text-product-detail-stock',
+    actionSection:
+      'flex gap-product-detail-action-gap mb-product-detail-action-margin',
+    stockInfo:
+      'flex items-center gap-product-detail-stock-gap text-product-detail-stock',
     tabsSection: 'mt-product-detail-tabs-margin',
     relatedSection: 'mt-product-detail-related-margin',
   },
@@ -63,8 +74,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const { price, badges, stockStatus } = extractProductData(product)
 
   // Get available sizes and colors from variants
-  const sizes = product.options?.find((opt) => opt.title === 'Size')?.values || []
-  const colors = product.options?.find((opt) => opt.title === 'Color')?.values || []
+  const sizes =
+    product.options?.find((opt) => opt.title === 'Size')?.values || []
+  const colors =
+    product.options?.find((opt) => opt.title === 'Color')?.values || []
 
   // Get related products
   const relatedProducts = getRelatedProducts(product, mockProducts, 4)
@@ -96,19 +109,22 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               id: 'materials',
               value: 'materials',
               title: 'Materials & Care',
-              content: 'Made from 100% organic cotton. Machine wash cold, tumble dry low.',
+              content:
+                'Made from 100% organic cotton. Machine wash cold, tumble dry low.',
             },
             {
               id: 'shipping',
               value: 'shipping',
               title: 'Shipping & Returns',
-              content: 'Free shipping on orders over €50. 30-day return policy.',
+              content:
+                'Free shipping on orders over €50. 30-day return policy.',
             },
             {
               id: 'sizing',
               value: 'sizing',
               title: 'Size Guide',
-              content: 'True to size. See our size chart for detailed measurements.',
+              content:
+                'True to size. See our size chart for detailed measurements.',
             },
           ]}
         />
@@ -123,17 +139,20 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <Rating value={4.5} readOnly />
             <span>4.5 out of 5</span>
           </div>
-          <p className="text-sm text-gray-600">No reviews yet. Be the first to review!</p>
+          <p className="text-gray-600 text-sm">
+            No reviews yet. Be the first to review!
+          </p>
         </div>
       ),
     },
   ]
 
-  const carouselImages = product.images?.map((img, idx) => ({
-    id: `image-${idx}`,
-    src: img.url,
-    alt: product.title,
-  })) || []
+  const carouselImages =
+    product.images?.map((img, idx) => ({
+      id: `image-${idx}`,
+      src: img.url,
+      alt: product.title,
+    })) || []
 
   return (
     <div className={styles.root()}>
@@ -184,9 +203,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             {/* Price */}
             <div className={styles.priceSection()}>
               <span className={styles.price()}>{price?.calculated_price}</span>
-              {price?.original_price && price.original_price !== price.calculated_price && (
-                <span className={styles.originalPrice()}>{price.original_price}</span>
-              )}
+              {price?.original_price &&
+                price.original_price !== price.calculated_price && (
+                  <span className={styles.originalPrice()}>
+                    {price.original_price}
+                  </span>
+                )}
             </div>
 
             {/* Description */}
@@ -200,7 +222,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   value={selectedSize ? [selectedSize] : []}
                   options={sizes.map((size) => ({ value: size, label: size }))}
                   placeholder="Select size"
-                  onValueChange={(details) => setSelectedSize(details.value[0] || '')}
+                  onValueChange={(details) =>
+                    setSelectedSize(details.value[0] || '')
+                  }
                 />
               </div>
             )}
@@ -211,9 +235,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 <label className={styles.variantLabel()}>Color</label>
                 <Select
                   value={selectedColor ? [selectedColor] : []}
-                  options={colors.map((color) => ({ value: color, label: color }))}
+                  options={colors.map((color) => ({
+                    value: color,
+                    label: color,
+                  }))}
                   placeholder="Select color"
-                  onValueChange={(details) => setSelectedColor(details.value[0] || '')}
+                  onValueChange={(details) =>
+                    setSelectedColor(details.value[0] || '')
+                  }
                 />
               </div>
             )}
@@ -249,14 +278,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     alert('Please select a color')
                     return
                   }
-                  
+
                   // Add to cart
                   addItem(product, {
                     size: selectedSize,
                     color: selectedColor,
                     quantity,
                   })
-                  
+
                   // Show success toast
                   toast.create({
                     title: 'Added to cart',
@@ -265,7 +294,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   })
                 }}
               >
-                {stockStatus === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
+                {stockStatus === 'out-of-stock'
+                  ? 'Out of Stock'
+                  : 'Add to Cart'}
               </Button>
               <Button
                 variant="secondary"
@@ -280,19 +311,28 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <div className={styles.stockInfo()}>
               {stockStatus === 'in-stock' && (
                 <>
-                  <Icon icon="icon-[mdi--check-circle]" className="text-green-600" />
+                  <Icon
+                    icon="icon-[mdi--check-circle]"
+                    className="text-green-600"
+                  />
                   <span>In stock and ready to ship</span>
                 </>
               )}
               {stockStatus === 'low-stock' && (
                 <>
-                  <Icon icon="icon-[mdi--alert-circle]" className="text-orange-600" />
+                  <Icon
+                    icon="icon-[mdi--alert-circle]"
+                    className="text-orange-600"
+                  />
                   <span>Only a few left in stock</span>
                 </>
               )}
               {stockStatus === 'out-of-stock' && (
                 <>
-                  <Icon icon="icon-[mdi--close-circle]" className="text-red-600" />
+                  <Icon
+                    icon="icon-[mdi--close-circle]"
+                    className="text-red-600"
+                  />
                   <span>Currently out of stock</span>
                 </>
               )}

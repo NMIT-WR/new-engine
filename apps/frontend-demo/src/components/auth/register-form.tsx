@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { FormInput } from 'ui/src/molecules/form-input'
 import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
+import { FormInput } from 'ui/src/molecules/form-input'
 import { useToast } from 'ui/src/molecules/toast'
 import { tv } from 'ui/src/utils'
 import { useAuth } from '../../hooks/use-auth'
@@ -28,7 +28,7 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const { signUp } = useAuth()
   const router = useRouter()
   const toast = useToast()
@@ -36,7 +36,7 @@ export function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (password !== confirmPassword) {
       toast.create({
         title: 'Passwords do not match',
@@ -123,7 +123,9 @@ export function RegisterForm() {
           id="acceptTerms"
           label="I agree to the Terms and Conditions"
           checked={acceptTerms}
-          onCheckedChange={(details) => setAcceptTerms(details.checked === true)}
+          onCheckedChange={(details) =>
+            setAcceptTerms(details.checked === true)
+          }
           disabled={isLoading}
         />
 

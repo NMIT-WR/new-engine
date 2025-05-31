@@ -14,6 +14,7 @@ export function convertCentsToAmount(priceInCents: number): number {
  * @returns Price in display currency or 0 if not found
  */
 export function getProductPrice(product: any, variantIndex = 0): number {
-  const priceInCents = product.variants?.[variantIndex]?.prices?.[0]?.amount || 0
+  const priceInCents =
+    product.variants?.[variantIndex]?.prices?.[0]?.amount || 0
   return convertCentsToAmount(priceInCents)
 }

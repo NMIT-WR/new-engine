@@ -64,7 +64,9 @@ export function calculateProductCounts(products: Product[]): ProductCounts {
 /**
  * Get available sizes with their counts
  */
-export function getSizesWithCounts(products: Product[]): Array<{ size: string; count: number }> {
+export function getSizesWithCounts(
+  products: Product[]
+): Array<{ size: string; count: number }> {
   const counts = calculateProductCounts(products)
   return Object.entries(counts.sizeCounts)
     .map(([size, count]) => ({ size, count }))
@@ -78,7 +80,9 @@ export function getSizesWithCounts(products: Product[]): Array<{ size: string; c
 /**
  * Get available colors with their counts
  */
-export function getColorsWithCounts(products: Product[]): Array<{ color: string; count: number }> {
+export function getColorsWithCounts(
+  products: Product[]
+): Array<{ color: string; count: number }> {
   const counts = calculateProductCounts(products)
   return Object.entries(counts.colorCounts)
     .map(([color, count]) => ({ color, count }))
@@ -95,11 +99,15 @@ export interface FilterState {
   colors: Set<string>
 }
 
-export function filterProducts(products: Product[], filters: FilterState): Product[] {
+export function filterProducts(
+  products: Product[],
+  filters: FilterState
+): Product[] {
   return products.filter((product) => {
     // Price filter
     const price = Number.parseFloat(
-      product.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
+      product.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
+        '0'
     )
     if (price < filters.priceRange[0] || price > filters.priceRange[1]) {
       return false
@@ -158,17 +166,22 @@ export function filterProducts(products: Product[], filters: FilterState): Produ
  */
 export type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'name-asc'
 
-export function sortProducts(products: Product[], sortBy: SortOption): Product[] {
+export function sortProducts(
+  products: Product[],
+  sortBy: SortOption
+): Product[] {
   const sorted = [...products]
 
   switch (sortBy) {
     case 'price-asc':
       sorted.sort((a, b) => {
         const priceA = Number.parseFloat(
-          a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
+          a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
+            '0'
         )
         const priceB = Number.parseFloat(
-          b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
+          b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
+            '0'
         )
         return priceA - priceB
       })
@@ -176,10 +189,12 @@ export function sortProducts(products: Product[], sortBy: SortOption): Product[]
     case 'price-desc':
       sorted.sort((a, b) => {
         const priceA = Number.parseFloat(
-          a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
+          a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
+            '0'
         )
         const priceB = Number.parseFloat(
-          b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') || '0'
+          b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
+            '0'
         )
         return priceB - priceA
       })

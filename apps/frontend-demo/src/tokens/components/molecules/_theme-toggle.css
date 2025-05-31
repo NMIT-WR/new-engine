@@ -14,7 +14,7 @@
   /* Sun icon colors */
   --color-theme-toggle-sun-active: var(--color-yellow-500);
   --color-theme-toggle-sun-inactive: var(--color-slate-400);
-  
+
   /* Moon icon colors */
   --color-theme-toggle-moon-active: var(--color-blue-300);
   --color-theme-toggle-moon-inactive: var(--color-slate-400);

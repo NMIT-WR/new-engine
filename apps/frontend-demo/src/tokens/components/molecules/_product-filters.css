@@ -4,7 +4,7 @@
   --color-product-filters-dialog-title: var(--color-fg-primary);
   --color-product-filters-range-label: var(--color-fg-secondary);
   --color-product-filters-range-value: var(--color-fg-primary);
-  
+
   /* === PRODUCT FILTERS SPACING === */
   --spacing-product-filters-section-margin: var(--spacing-lg);
   --spacing-product-filters-title-margin: var(--spacing-sm);
@@ -12,7 +12,7 @@
   --spacing-product-filters-dialog-padding: var(--spacing-md);
   --spacing-product-filters-dialog-header-margin: var(--spacing-md);
   --spacing-product-filters-range-margin: var(--spacing-xs);
-  
+
   /* === PRODUCT FILTERS TYPOGRAPHY === */
   --text-product-filters-title: var(--text-lg);
   --font-product-filters-title: var(--font-semibold);

@@ -32,4 +32,9 @@
   /* === AUTH EFFECTS === */
   --shadow-auth-card: var(--shadow-lg);
   --radius-auth-card: var(--radius-lg);
+
+  /* === AUTH LAYOUT === */
+  --color-auth-layout-bg: var(--color-base);
+  --spacing-auth-layout-max-w: 28rem;
+  --spacing-auth-layout-padding: var(--spacing-lg);
 }

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ProductCard } from 'ui/src/molecules/product-card'
 import { tv } from 'ui/src/utils'
 import type { Product } from '../types/product'
-import { extractProductData, getProductPath } from '../utils/product-utils'
+import { extractProductData } from '../utils/product-utils'
 
 const featuredProductsVariants = tv({
   slots: {
@@ -44,7 +44,8 @@ export function FeaturedProducts({
         </div>
         <div className={styles.grid()}>
           {products.map((product) => {
-            const { price, displayBadges, stockText } = extractProductData(product)
+            const { price, displayBadges, stockText } =
+              extractProductData(product)
 
             return (
               <ProductCard

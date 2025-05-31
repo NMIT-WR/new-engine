@@ -9,14 +9,14 @@
   --color-product-detail-variant-label: var(--color-fg-primary);
   --color-product-detail-quantity-label: var(--color-fg-secondary);
   --color-product-detail-stock: var(--color-fg-secondary);
-  
+
   /* === PRODUCT DETAIL SPACING === */
   --spacing-product-detail-max-w: 80rem;
   --spacing-product-detail-container-x: var(--spacing-md);
   --spacing-product-detail-container-x-lg: var(--spacing-lg);
   --spacing-product-detail-container-y: var(--spacing-lg);
   --spacing-product-detail-container-y-lg: var(--spacing-xl);
-  
+
   --spacing-product-detail-breadcrumb-margin: var(--spacing-md);
   --spacing-product-detail-content-gap: var(--spacing-xl);
   --spacing-product-detail-badge-margin: var(--spacing-sm);
@@ -36,7 +36,7 @@
   --spacing-product-detail-stock-gap: var(--spacing-xs);
   --spacing-product-detail-tabs-margin: var(--spacing-2xl);
   --spacing-product-detail-related-margin: var(--spacing-2xl);
-  
+
   /* === PRODUCT DETAIL TYPOGRAPHY === */
   --text-product-detail-title: var(--text-3xl);
   --font-product-detail-title: var(--font-bold);
