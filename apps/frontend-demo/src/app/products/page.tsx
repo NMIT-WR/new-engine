@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Select } from 'ui/src/molecules/select'
-import { tv } from 'ui/src/utils'
 import { ProductFilters } from '../../components/product-filters'
 import { ProductGrid } from '../../components/product-grid'
 import { mockProducts } from '../../data/mock-products'
@@ -14,23 +13,6 @@ import {
   sortProducts,
 } from '../../utils/product-filters'
 
-const productListingVariants = tv({
-  slots: {
-    root: 'min-h-screen bg-product-listing-bg',
-    container:
-      'mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y lg:px-product-listing-container-x-lg lg:py-product-listing-container-y-lg',
-    header: 'mb-product-listing-header-margin',
-    title:
-      'text-product-listing-title font-product-listing-title mb-product-listing-title-margin',
-    layoutWrapper: 'md:flex gap-product-listing-layout-gap',
-    sidebar: 'hidden md:block w-product-listing-sidebar-width flex-shrink-0',
-    main: 'flex-1',
-    controls:
-      'flex flex-col sm:flex-row items-start sm:items-center justify-between gap-product-listing-controls-gap mb-product-listing-controls-margin',
-    resultsText: 'text-product-listing-results',
-    sortWrapper: 'flex items-center gap-product-listing-sort-gap',
-  },
-})
 
 const sortOptions = [
   { value: 'newest', label: 'Newest' },
@@ -48,24 +30,23 @@ export default function ProductsPage() {
     sizes: new Set(),
     colors: new Set(),
   })
-  const styles = productListingVariants()
 
   // Apply filters and sorting using utility functions
   const filteredProducts = filterProducts(mockProducts, filters)
   const sortedProducts = sortProducts(filteredProducts, sortBy)
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.container()}>
+    <div className='min-h-screen bg-product-listing-bg'>
+      <div className='mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y lg:px-product-listing-container-x-lg lg:py-product-listing-container-y-lg'>
         {/* Header */}
-        <div className={styles.header()}>
+        <div className='mb-product-listing-header-margin'>
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
               { label: 'Products', href: '/products' },
             ]}
           />
-          <h1 className={styles.title()}>All Products</h1>
+          <h1 className='text-product-listing-title font-product-listing-title mb-product-listing-title-margin'>All Products</h1>
         </div>
 
         {/* Mobile Filters */}
@@ -76,20 +57,20 @@ export default function ProductsPage() {
         />
 
         {/* Layout */}
-        <div className={styles.layoutWrapper()}>
+        <div className='md:flex gap-product-listing-layout-gap'>
           {/* Desktop Sidebar Filters */}
-          <aside className={styles.sidebar()}>
+          <aside className='hidden md:block w-product-listing-sidebar-width flex-shrink-0'>
             <ProductFilters filters={filters} onFiltersChange={setFilters} />
           </aside>
 
           {/* Main Content */}
-          <main className={styles.main()}>
+          <main className='flex-1'>
             {/* Controls */}
-            <div className={styles.controls()}>
-              <p className={styles.resultsText()}>
+            <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-product-listing-controls-gap mb-product-listing-controls-margin'>
+              <p className='text-product-listing-results'>
                 Showing {sortedProducts.length} products
               </p>
-              <div className={styles.sortWrapper()}>
+              <div className='flex items-center gap-product-listing-sort-gap'>
                 <span className="text-product-listing-sort-label text-sm">
                   Sort by:
                 </span>

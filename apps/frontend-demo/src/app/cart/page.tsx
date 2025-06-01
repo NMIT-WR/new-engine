@@ -6,65 +6,23 @@ import { Icon } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
-import { tv } from 'ui/src/utils'
 import { useCart } from '../../hooks/use-cart'
 import { getProductPrice } from '../../utils/price-utils'
 import { formatPrice } from '../../utils/product-utils'
 
-const cartPageVariants = tv({
-  slots: {
-    root: 'min-h-screen bg-cart-bg',
-    container:
-      'mx-auto max-w-cart-max-w px-cart-container-x py-cart-container-y lg:px-cart-container-x-lg lg:py-cart-container-y-lg',
-    breadcrumb: 'mb-cart-breadcrumb-margin',
-    title: 'text-cart-title font-cart-title mb-cart-title-margin',
-    content: 'lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap',
-    itemsSection: 'mb-cart-items-margin lg:mb-0',
-    itemsList: 'divide-y divide-cart-item-divider',
-    item: 'py-cart-item-y first:pt-0 last:pb-0',
-    itemContent: 'flex gap-cart-item-gap',
-    itemImage:
-      'w-cart-item-image h-cart-item-image rounded-cart-item-image bg-cart-item-image-bg',
-    itemDetails: 'flex-1',
-    itemHeader: 'flex justify-between items-start mb-cart-item-header-margin',
-    itemTitle: 'text-cart-item-title font-cart-item-title',
-    itemPrice: 'text-cart-item-price font-cart-item-price',
-    itemOptions: 'text-cart-item-options mb-cart-item-options-margin',
-    itemActions: 'flex items-center gap-cart-item-actions-gap',
-    removeButton: 'text-cart-remove hover:text-cart-remove-hover',
-    summarySection: 'lg:sticky lg:top-cart-summary-top lg:h-fit',
-    summaryCard:
-      'bg-cart-summary-bg p-cart-summary-padding rounded-cart-summary shadow-cart-summary',
-    summaryTitle:
-      'text-cart-summary-title font-cart-summary-title mb-cart-summary-title-margin',
-    summaryRows: 'space-y-cart-summary-rows-gap',
-    summaryRow: 'flex justify-between text-cart-summary-text',
-    summaryDivider:
-      'my-cart-summary-divider border-t border-cart-summary-divider',
-    totalRow: 'flex justify-between text-cart-total font-cart-total',
-    checkoutButton: 'w-full mt-cart-checkout-margin',
-    emptyState: 'text-center py-cart-empty-y',
-    emptyIcon: 'text-cart-empty-icon mb-cart-empty-icon-margin',
-    emptyTitle:
-      'text-cart-empty-title font-cart-empty-title mb-cart-empty-title-margin',
-    emptyText: 'text-cart-empty-text mb-cart-empty-text-margin',
-  },
-})
-
 export default function CartPage() {
   const { items, subtotal, total, removeItem, updateQuantity, clearCart } =
     useCart()
-  const styles = cartPageVariants()
 
   // Use helper to calculate tax properly
   const tax = subtotal * 0.21 // 21% VAT
   const shipping = 0 // Free shipping
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.container()}>
+    <div className='min-h-screen bg-cart-bg'>
+      <div className='mx-auto max-w-cart-max-w px-cart-container-x py-cart-container-y lg:px-cart-container-x-lg lg:py-cart-container-y-lg'>
         {/* Breadcrumb */}
-        <div className={styles.breadcrumb()}>
+        <div className='mb-cart-breadcrumb-margin'>
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -73,22 +31,22 @@ export default function CartPage() {
           />
         </div>
 
-        <h1 className={styles.title()}>Shopping Cart</h1>
+        <h1 className='text-cart-title font-cart-title mb-cart-title-margin'>Shopping Cart</h1>
 
         {items.length > 0 ? (
-          <div className={styles.content()}>
+          <div className='lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap'>
             {/* Cart Items */}
-            <div className={styles.itemsSection()}>
-              <div className={styles.itemsList()}>
+            <div className='mb-cart-items-margin lg:mb-0'>
+              <div className='divide-y divide-cart-item-divider'>
                 {items.map((item) => {
                   const price = getProductPrice(item.product)
                   const itemTotal = price * item.quantity
 
                   return (
-                    <div key={item.id} className={styles.item()}>
-                      <div className={styles.itemContent()}>
+                    <div key={item.id} className='py-cart-item-y first:pt-0 last:pb-0'>
+                      <div className='flex gap-cart-item-gap'>
                         {/* Product Image */}
-                        <div className={styles.itemImage()}>
+                        <div className='w-cart-item-image h-cart-item-image rounded-cart-item-image bg-cart-item-image-bg'>
                           {item.product.thumbnail && (
                             <Image
                               src={item.product.thumbnail}
@@ -101,13 +59,13 @@ export default function CartPage() {
                         </div>
 
                         {/* Product Details */}
-                        <div className={styles.itemDetails()}>
-                          <div className={styles.itemHeader()}>
+                        <div className='flex-1'>
+                          <div className='flex justify-between items-start mb-cart-item-header-margin'>
                             <div>
-                              <h3 className={styles.itemTitle()}>
+                              <h3 className='text-cart-item-title font-cart-item-title'>
                                 {item.product.title}
                               </h3>
-                              <div className={styles.itemOptions()}>
+                              <div className='text-cart-item-options mb-cart-item-options-margin'>
                                 {item.selectedSize && (
                                   <span>Size: {item.selectedSize}</span>
                                 )}
@@ -118,16 +76,16 @@ export default function CartPage() {
                                   <span>Color: {item.selectedColor}</span>
                                 )}
                               </div>
-                              <p className={styles.itemPrice()}>
+                              <p className='text-cart-item-price font-cart-item-price'>
                                 {formatPrice(price)}
                               </p>
                             </div>
-                            <p className={styles.itemPrice()}>
+                            <p className='text-cart-item-price font-cart-item-price'>
                               {formatPrice(itemTotal)}
                             </p>
                           </div>
 
-                          <div className={styles.itemActions()}>
+                          <div className='flex items-center gap-cart-item-actions-gap'>
                             <NumericInput
                               value={item.quantity}
                               min={1}
@@ -142,7 +100,6 @@ export default function CartPage() {
                               theme="borderless"
                               size="sm"
                               onClick={() => removeItem(item.id)}
-                              className={styles.removeButton()}
                               icon="icon-[mdi--delete-outline]"
                             >
                               Remove
@@ -170,36 +127,36 @@ export default function CartPage() {
             </div>
 
             {/* Order Summary */}
-            <div className={styles.summarySection()}>
-              <div className={styles.summaryCard()}>
-                <h2 className={styles.summaryTitle()}>Order Summary</h2>
+            <div className='lg:sticky lg:top-cart-summary-top lg:h-fit'>
+              <div className='bg-cart-summary-bg p-cart-summary-padding rounded-cart-summary shadow-cart-summary'>
+                <h2 className='text-cart-summary-title font-cart-summary-title mb-cart-summary-title-margin'>Order Summary</h2>
 
-                <div className={styles.summaryRows()}>
-                  <div className={styles.summaryRow()}>
+                <div className='space-y-cart-summary-rows-gap'>
+                  <div className='flex justify-between text-cart-summary-text'>
                     <span>Subtotal</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
-                  <div className={styles.summaryRow()}>
+                  <div className='flex justify-between text-cart-summary-text'>
                     <span>Shipping</span>
                     <span>
                       {shipping === 0 ? 'FREE' : formatPrice(shipping)}
                     </span>
                   </div>
-                  <div className={styles.summaryRow()}>
+                  <div className='flex justify-between text-cart-summary-text'>
                     <span>Tax (21%)</span>
                     <span>{formatPrice(tax)}</span>
                   </div>
                 </div>
 
-                <div className={styles.summaryDivider()} />
+                <div className='my-cart-summary-divider border-t border-cart-summary-divider' />
 
-                <div className={styles.totalRow()}>
+                <div className='flex justify-between text-cart-summary-text'>
                   <span>Total</span>
                   <span>{formatPrice(total)}</span>
                 </div>
 
                 <Button
-                  className={styles.checkoutButton()}
+                  className='w-full mt-cart-checkout-margin'
                   size="lg"
                   icon="icon-[mdi--lock-outline]"
                 >
@@ -216,14 +173,14 @@ export default function CartPage() {
           </div>
         ) : (
           /* Empty Cart */
-          <div className={styles.emptyState()}>
+          <div className='text-center py-cart-empty-y'>
             <Icon
               icon="icon-[mdi--cart-outline]"
               size="2xl"
-              className={styles.emptyIcon()}
+              className='mb-cart-empty-icon-margin'
             />
-            <h2 className={styles.emptyTitle()}>Your cart is empty</h2>
-            <p className={styles.emptyText()}>
+            <h2 className='text-cart-empty-title font-cart-empty-title mb-cart-empty-title-margin'>Your cart is empty</h2>
+            <p className='text-cart-empty-text mb-cart-empty-text-margin'>
               Looks like you haven't added any items to your cart yet.
             </p>
             <Link href="/products">

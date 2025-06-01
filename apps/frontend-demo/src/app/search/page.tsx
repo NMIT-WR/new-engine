@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Combobox, type ComboboxItem } from 'ui/src/molecules/combobox'
 import { Select } from 'ui/src/molecules/select'
-import { tv } from 'ui/src/utils'
 import { ProductFilters } from '../../components/product-filters'
 import { ProductGrid } from '../../components/product-grid'
 import { mockProducts } from '../../data/mock-products'
@@ -14,31 +13,6 @@ import {
   filterProducts,
   sortProducts,
 } from '../../utils/product-filters'
-
-const searchPageVariants = tv({
-  slots: {
-    root: 'min-h-screen bg-search-bg',
-    container:
-      'mx-auto max-w-search-max-w px-search-container-x py-search-container-y lg:px-search-container-x-lg lg:py-search-container-y-lg',
-    header: 'mb-search-header-margin',
-    breadcrumb: 'mb-search-breadcrumb-margin',
-    heroSection: 'text-center mb-search-hero-margin',
-    title: 'text-search-title font-search-title mb-search-title-margin',
-    subtitle: 'text-search-subtitle mb-search-subtitle-margin',
-    searchWrapper: 'max-w-search-input-max-w mx-auto mb-search-input-margin',
-    resultsSection: 'md:flex gap-search-layout-gap',
-    sidebar: 'hidden md:block w-search-sidebar-width flex-shrink-0',
-    main: 'flex-1',
-    controls:
-      'flex flex-col sm:flex-row items-start sm:items-center justify-between gap-search-controls-gap mb-search-controls-margin',
-    resultsText: 'text-search-results',
-    sortWrapper: 'flex items-center gap-search-sort-gap',
-    emptyState: 'text-center py-search-empty-y',
-    emptyTitle:
-      'text-search-empty-title font-search-empty-title mb-search-empty-title-margin',
-    emptyText: 'text-search-empty-text',
-  },
-})
 
 const sortOptions = [
   { value: 'relevance', label: 'Most Relevant' },
@@ -59,7 +33,6 @@ export default function SearchPage() {
     colors: new Set(),
   })
 
-  const styles = searchPageVariants()
 
   // Create combobox items from products
   const searchItems: ComboboxItem[] = useMemo(() => {
@@ -94,10 +67,10 @@ export default function SearchPage() {
   const hasSearched = searchQuery.length > 0
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.container()}>
+    <div className='min-h-screen bg-search-bg'>
+      <div className='mx-auto max-w-search-max-w px-search-container-x py-search-container-y lg:px-search-container-x-lg lg:py-search-container-y-lg'>
         {/* Breadcrumb */}
-        <div className={styles.breadcrumb()}>
+        <div className='mb-search-breadcrumb-margin'>
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -107,14 +80,14 @@ export default function SearchPage() {
         </div>
 
         {/* Hero Section */}
-        <div className={styles.heroSection()}>
-          <h1 className={styles.title()}>Search Products</h1>
-          <p className={styles.subtitle()}>
+        <div className='text-center mb-search-hero-margin'>
+          <h1 className='text-search-title font-search-title mb-search-title-margin'>Search Products</h1>
+          <p className='text-search-subtitle mb-search-subtitle-margin'>
             Find exactly what you're looking for in our collection
           </p>
 
           {/* Search Input */}
-          <div className={styles.searchWrapper()}>
+          <div className='max-w-search-input-max-w mx-auto mb-search-input-margin'>
             <Combobox
               placeholder="Search for products..."
               items={searchItems}
@@ -146,14 +119,14 @@ export default function SearchPage() {
 
         {/* Results Section */}
         {hasSearched && (
-          <div className={styles.resultsSection()}>
-            <aside className={styles.sidebar()}>
+          <div className='md:flex gap-search-layout-gap'>
+            <aside className='hidden md:block w-search-sidebar-width flex-shrink-0'>
               <ProductFilters filters={filters} onFiltersChange={setFilters} />
             </aside>
 
-            <main className={styles.main()}>
-              <div className={styles.controls()}>
-                <p className={styles.resultsText()}>
+            <main className='flex-1'>
+              <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-search-controls-gap mb-search-controls-margin'>
+                <p className='text-search-results'>
                   {sortedProducts.length === 0
                     ? 'No products found'
                     : `${sortedProducts.length} ${
@@ -161,7 +134,7 @@ export default function SearchPage() {
                       } found`}
                 </p>
                 {sortedProducts.length > 0 && (
-                  <div className={styles.sortWrapper()}>
+                  <div className='flex items-center gap-search-sort-gap'>
                     <Select
                       options={sortOptions}
                       value={[sortBy]}
@@ -183,9 +156,9 @@ export default function SearchPage() {
               {sortedProducts.length > 0 ? (
                 <ProductGrid products={sortedProducts} />
               ) : (
-                <div className={styles.emptyState()}>
-                  <h2 className={styles.emptyTitle()}>No results found</h2>
-                  <p className={styles.emptyText()}>
+                <div className='text-center py-search-empty-y'>
+                  <h2 className='text-search-empty-title font-search-empty-title mb-search-empty-title-margin'>No results found</h2>
+                  <p className='text-search-empty-text'>
                     Try adjusting your search or filters to find what you're
                     looking for
                   </p>
@@ -197,8 +170,8 @@ export default function SearchPage() {
 
         {/* Initial State */}
         {!hasSearched && (
-          <div className={styles.emptyState()}>
-            <p className={styles.emptyText()}>
+          <div className='text-center py-search-empty-y'>
+            <p className='text-search-empty-text'>
               Start typing to search through our products
             </p>
           </div>

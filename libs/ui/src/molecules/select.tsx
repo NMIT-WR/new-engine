@@ -62,7 +62,7 @@ const selectVariants = tv({
       'data-[disabled]:opacity-select-disabled data-[disabled]:cursor-not-allowed',
     ],
     itemIndicator: ['text-select-indicator'],
-    value: ['flex-grow truncate data-[placeholder]:text-select-placeholdr'],
+    value: ['flex-grow truncate data-[placeholder]:text-select-placeholder'],
   },
   variants: {
     size: {
