@@ -17,7 +17,7 @@ import {
 const productFiltersVariants = tv({
   slots: {
     root: 'w-full',
-    mobileButton: 'md:hidden flex items-center gap-2 mb-4',
+    mobileButton: 'md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin',
     desktopFilters: 'hidden md:block',
     section: 'mb-product-filters-section-margin',
     title:
@@ -204,7 +204,7 @@ export function ProductFilters({
             </Button>
           </div>
           {filterContent}
-          <div className="mt-6 flex gap-2">
+          <div className="mt-product-filters-actions-margin flex gap-product-filters-actions-gap">
             <Button
               variant="secondary"
               size="sm"

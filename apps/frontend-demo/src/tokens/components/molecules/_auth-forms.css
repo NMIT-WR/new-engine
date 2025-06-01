@@ -18,7 +18,7 @@
 
   /* === AUTH FORM TYPOGRAPHY === */
   --text-auth-title-size: var(--text-2xl);
-  --font-auth-title-weight: var(--font-semibold);
+  --font-auth-title-weight: var(--font-weight-semibold);
 
   /* === AUTH FORM EFFECTS === */
   --shadow-auth-card: var(--shadow-lg);

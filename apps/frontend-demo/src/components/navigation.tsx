@@ -10,7 +10,7 @@ const navigationVariants = tv({
     root: 'bg-navigation-bg',
     list: 'flex items-center gap-navigation-gap',
     item: 'relative',
-    link: 'flex items-center gap-2 px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
+    link: 'flex items-center gap-navigation-link-icon-gap px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
     submenu:
       'absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu',
     submenuItem:
@@ -44,7 +44,7 @@ function Submenu({ items }: { items: NavItem[] }) {
           rel={child.external ? 'noopener noreferrer' : undefined}
         >
           {child.icon && (
-            <Icon icon={child.icon} size="sm" className="mr-2 inline" />
+            <Icon icon={child.icon} size="sm" className="mr-navigation-submenu-icon inline" />
           )}
           {child.title}
           {child.label && <span className={badge()}>{child.label}</span>}

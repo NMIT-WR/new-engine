@@ -182,21 +182,21 @@
   /* === FOCUS RINGS === */
   --color-btn-ring-primary: --alpha(
     var(--color-btn-primary) /
-    var(--alpha-ring)
+    var(--opacity-ring)
   );
   --color-btn-ring-secondary: --alpha(
     var(--color-btn-secondary) /
-    var(--alpha-ring)
+    var(--opacity-ring)
   );
   --color-btn-ring-tertiary: --alpha(
     var(--color-btn-tertiary) /
-    var(--alpha-ring)
+    var(--opacity-ring)
   );
   --color-btn-ring-warning: --alpha(
     var(--color-btn-warning) /
-    var(--alpha-ring)
+    var(--opacity-ring)
   );
-  --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--alpha-ring));
+  --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--opacity-ring));
 
   /* === PADDING === */
 

@@ -27,9 +27,9 @@
 
   /* === PRODUCT LISTING TYPOGRAPHY === */
   --text-product-listing-title: var(--text-4xl);
-  --font-product-listing-title: var(--font-bold);
+  --font-product-listing-title: var(--font-weight-bold);
   --text-product-listing-sidebar-title: var(--text-lg);
-  --font-product-listing-sidebar-title: var(--font-semibold);
+  --font-product-listing-sidebar-title: var(--font-weight-semibold);
   --text-product-listing-results: var(--text-sm);
 
   /* === PRODUCT LISTING GRID === */

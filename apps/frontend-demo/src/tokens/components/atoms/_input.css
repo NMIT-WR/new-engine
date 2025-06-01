@@ -122,19 +122,19 @@
 
   /* Label */
 
-  --font-label: var(--font-bold);
+  --font-label: var(--font-weight-bold);
   --text-label-sm: var(--text-input-sm);
   --text-label-md: var(--text-input-md);
   --text-label-lg: var(--text-input-lg);
 
   /* Error message */
-  --font-error: var(--font-medium);
+  --font-error: var(--font-weight-medium);
   --text-error-sm: var(--text-input-sm);
   --text-error-md: var(--text-input-md);
   --text-error-lg: var(--text-input-lg);
 
   /* Helper text / Extra text */
-  --font-helper: var(--font-normal);
+  --font-helper: var(--font-weight-normal);
   --text-helper-sm: var(--text-input-sm);
   --text-helper-md: var(--text-input-md);
   --text-helper-lg: var(--text-input-lg);

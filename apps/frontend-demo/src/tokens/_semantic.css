@@ -136,6 +136,11 @@
     from var(--color-tertiary-light) calc(l + var(--state-active)) c h
   );
 
+  /* Accent color - used for highlights and special UI elements */
+  --color-accent: var(--color-secondary);
+  --color-accent-hover: var(--color-secondary-hover);
+  --color-accent-active: var(--color-secondary-active);
+
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
   --color-success: light-dark(
     var(--color-emerald-500),
@@ -238,6 +243,10 @@
     var(--color-fg-secondary) /
     var(--opacity-text-secondary)
   );
+  --color-fg-tertiary: light-dark(
+    var(--color-slate-600),
+    var(--color-slate-400)
+  );
   --color-fg-reverse: light-dark(var(--color-fg-dark), var(--color-fg-light));
 
   /* Background colors */
@@ -248,6 +257,9 @@
   --color-surface: oklch(
     from var(--color-base) calc(l - var(--surface-increment)) c h
   ); /* content that needs to be promoted on the page*/
+  --color-surface-hover: oklch(
+    from var(--color-surface) calc(l + var(--state-hover)) c h
+  );
   --color-overlay: oklch(
     from var(--color-base) calc(l - var(--surface-increment) * 2) c h
   ); /* containers, modals*/
@@ -265,6 +277,10 @@
   /* Borders */
   --color-stroke-primary: var(--color-slate-200);
   --color-stroke-secondary: var(--color-slate-400);
+  --color-border: light-dark(var(--color-slate-200), var(--color-slate-800));
+  --color-border-neutral: light-dark(var(--color-slate-300), var(--color-slate-700));
+  --color-border-secondary: light-dark(var(--color-slate-300), var(--color-slate-700));
+  --color-border-subtle: light-dark(var(--color-slate-100), var(--color-slate-900));
   --border-width-none: 0px;
   --border-width-sm: 1px;
   --border-width-md: 2px;

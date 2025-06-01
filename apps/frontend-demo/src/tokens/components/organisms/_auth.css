@@ -3,7 +3,7 @@
 @theme static {
   /* === AUTH COLORS === */
   --color-auth-bg: var(--color-base);
-  --color-auth-card-bg: var(--color-card);
+  --color-auth-card-bg: var(--color-surface);
   --color-auth-card-border: var(--color-border-subtle);
   --color-auth-title: var(--color-fg-primary);
   --color-auth-subtitle: var(--color-fg-secondary);
@@ -25,7 +25,7 @@
 
   /* === AUTH TYPOGRAPHY === */
   --text-auth-title-size: var(--text-2xl);
-  --font-auth-title-weight: var(--font-bold);
+  --font-auth-title-weight: var(--font-weight-bold);
   --text-auth-subtitle-size: var(--text-base);
   --text-auth-link-size: var(--text-sm);
 

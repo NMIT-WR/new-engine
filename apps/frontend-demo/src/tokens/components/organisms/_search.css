@@ -32,10 +32,10 @@
 
   /* === SEARCH TYPOGRAPHY === */
   --text-search-title-size: var(--text-4xl);
-  --font-search-title-weight: var(--font-bold);
+  --font-search-title-weight: var(--font-weight-bold);
   --text-search-subtitle-size: var(--text-lg);
   --text-search-results-size: var(--text-sm);
   --text-search-empty-title-size: var(--text-2xl);
-  --font-search-empty-title-weight: var(--font-semibold);
+  --font-search-empty-title-weight: var(--font-weight-semibold);
   --text-search-empty-text-size: var(--text-base);
 }

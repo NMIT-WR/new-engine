@@ -12,7 +12,6 @@ import { Carousel } from 'ui/src/molecules/carousel'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { Select } from 'ui/src/molecules/select'
 import { useToast } from 'ui/src/molecules/toast'
-import { tv } from 'ui/src/utils'
 import { FeaturedProducts } from '../../../components/featured-products'
 import { mockProducts } from '../../../data/mock-products'
 import { useCart } from '../../../hooks/use-cart'
@@ -22,49 +21,11 @@ import {
   getRelatedProducts,
 } from '../../../utils/product-utils'
 
-const productDetailVariants = tv({
-  slots: {
-    root: 'min-h-screen bg-product-detail-bg',
-    container:
-      'mx-auto max-w-product-detail-max-w px-product-detail-container-x py-product-detail-container-y lg:px-product-detail-container-x-lg lg:py-product-detail-container-y-lg',
-    breadcrumb: 'mb-product-detail-breadcrumb-margin',
-    content: 'grid grid-cols-1 lg:grid-cols-2 gap-product-detail-content-gap',
-    imageSection: 'relative',
-    infoSection: 'flex flex-col',
-    badgeContainer:
-      'mb-product-detail-badge-margin flex flex-wrap gap-product-detail-badge-gap',
-    title:
-      'text-product-detail-title font-product-detail-title mb-product-detail-title-margin',
-    ratingWrapper:
-      'flex items-center gap-product-detail-rating-gap mb-product-detail-rating-margin',
-    ratingText: 'text-product-detail-rating-text',
-    priceSection: 'mb-product-detail-price-margin',
-    price: 'text-product-detail-price font-product-detail-price',
-    originalPrice:
-      'text-product-detail-original-price line-through ml-product-detail-original-price-margin',
-    description:
-      'text-product-detail-description mb-product-detail-description-margin',
-    variantSection: 'mb-product-detail-variant-margin',
-    variantLabel:
-      'text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin',
-    quantitySection: 'mb-product-detail-quantity-margin',
-    quantityWrapper: 'flex items-center gap-product-detail-quantity-gap',
-    quantityLabel: 'text-product-detail-quantity-label',
-    actionSection:
-      'flex gap-product-detail-action-gap mb-product-detail-action-margin',
-    stockInfo:
-      'flex items-center gap-product-detail-stock-gap text-product-detail-stock',
-    tabsSection: 'mt-product-detail-tabs-margin',
-    relatedSection: 'mt-product-detail-related-margin',
-  },
-})
-
 interface ProductDetailProps {
   product: Product
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
-  const styles = productDetailVariants()
   const [selectedSize, setSelectedSize] = useState<string>('')
   const [selectedColor, setSelectedColor] = useState<string>('')
   const [quantity, setQuantity] = useState(1)
@@ -134,12 +95,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       value: 'reviews',
       label: 'Reviews (24)',
       content: (
-        <div className="space-y-4">
-          <div className="flex items-center gap-4">
+        <div className="space-y-product-detail-review-gap">
+          <div className="flex items-center gap-product-detail-review-rating-gap">
             <Rating value={4.5} readOnly />
             <span>4.5 out of 5</span>
           </div>
-          <p className="text-gray-600 text-sm">
+          <p className="text-product-detail-review-placeholder text-sm">
             No reviews yet. Be the first to review!
           </p>
         </div>
@@ -155,10 +116,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     })) || []
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.container()}>
+    <div className="min-h-screen bg-product-detail-bg">
+      <div className="mx-auto max-w-product-detail-max-w px-product-detail-container-x py-product-detail-container-y lg:px-product-detail-container-x-lg lg:py-product-detail-container-y-lg">
         {/* Breadcrumb */}
-        <div className={styles.breadcrumb()}>
+        <div className="mb-product-detail-breadcrumb-margin">
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -169,9 +130,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         </div>
 
         {/* Main Content */}
-        <div className={styles.content()}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-product-detail-content-gap">
           {/* Image Section */}
-          <div className={styles.imageSection()}>
+          <div className="relative">
             <Carousel
               slides={carouselImages}
               slideCount={carouselImages.length}
@@ -181,10 +142,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           </div>
 
           {/* Info Section */}
-          <div className={styles.infoSection()}>
+          <div className="flex flex-col">
             {/* Badges */}
             {badges.length > 0 && (
-              <div className={styles.badgeContainer()}>
+              <div className="mb-product-detail-badge-margin flex flex-wrap gap-product-detail-badge-gap">
                 {badges.map((badge, idx) => (
                   <Badge key={idx} {...badge} />
                 ))}
@@ -192,32 +153,32 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             )}
 
             {/* Title */}
-            <h1 className={styles.title()}>{product.title}</h1>
+            <h1 className="text-product-detail-title font-product-detail-title mb-product-detail-title-margin">{product.title}</h1>
 
             {/* Rating */}
-            <div className={styles.ratingWrapper()}>
+            <div className="flex items-center gap-product-detail-rating-gap mb-product-detail-rating-margin">
               <Rating value={4.5} readOnly />
-              <span className={styles.ratingText()}>(24 reviews)</span>
+              <span className="text-product-detail-rating-text">(24 reviews)</span>
             </div>
 
             {/* Price */}
-            <div className={styles.priceSection()}>
-              <span className={styles.price()}>{price?.calculated_price}</span>
+            <div className="mb-product-detail-price-margin">
+              <span className="text-product-detail-price font-product-detail-price">{price?.calculated_price}</span>
               {price?.original_price &&
                 price.original_price !== price.calculated_price && (
-                  <span className={styles.originalPrice()}>
+                  <span className="text-product-detail-original-price line-through ml-product-detail-original-price-margin">
                     {price.original_price}
                   </span>
                 )}
             </div>
 
             {/* Description */}
-            <p className={styles.description()}>{product.description}</p>
+            <p className="text-product-detail-description mb-product-detail-description-margin">{product.description}</p>
 
             {/* Size Selector */}
             {sizes.length > 0 && (
-              <div className={styles.variantSection()}>
-                <label htmlFor="size" className={styles.variantLabel()}>
+              <div className="mb-product-detail-variant-margin">
+                <label htmlFor="size" className="text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin">
                   Size
                 </label>
                 <Select
@@ -233,8 +194,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Color Selector */}
             {colors.length > 0 && (
-              <div className={styles.variantSection()}>
-                <label htmlFor="color" className={styles.variantLabel()}>
+              <div className="mb-product-detail-variant-margin">
+                <label htmlFor="color" className="text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin">
                   Color
                 </label>
                 <Select
@@ -252,9 +213,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             )}
 
             {/* Quantity */}
-            <div className={styles.quantitySection()}>
-              <div className={styles.quantityWrapper()}>
-                <span className={styles.quantityLabel()}>Quantity:</span>
+            <div className="mb-product-detail-quantity-margin">
+              <div className="flex items-center gap-product-detail-quantity-gap">
+                <span className="text-product-detail-quantity-label">Quantity:</span>
                 <NumericInput
                   value={quantity}
                   onChange={setQuantity}
@@ -265,7 +226,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             </div>
 
             {/* Actions */}
-            <div className={styles.actionSection()}>
+            <div className="flex gap-product-detail-action-gap mb-product-detail-action-margin">
               <Button
                 variant="primary"
                 size="lg"
@@ -312,12 +273,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             </div>
 
             {/* Stock Info */}
-            <div className={styles.stockInfo()}>
+            <div className="flex items-center gap-product-detail-stock-gap text-product-detail-stock">
               {stockStatus === 'in-stock' && (
                 <>
                   <Icon
                     icon="icon-[mdi--check-circle]"
-                    className="text-green-600"
+                    className="text-product-detail-stock-success"
                   />
                   <span>In stock and ready to ship</span>
                 </>
@@ -326,7 +287,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 <>
                   <Icon
                     icon="icon-[mdi--alert-circle]"
-                    className="text-orange-600"
+                    className="text-product-detail-stock-warning"
                   />
                   <span>Only a few left in stock</span>
                 </>
@@ -335,7 +296,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 <>
                   <Icon
                     icon="icon-[mdi--close-circle]"
-                    className="text-red-600"
+                    className="text-product-detail-stock-error"
                   />
                   <span>Currently out of stock</span>
                 </>
@@ -345,12 +306,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         </div>
 
         {/* Tabs Section */}
-        <div className={styles.tabsSection()}>
+        <div className="mt-product-detail-tabs-margin">
           <Tabs items={tabItems} defaultValue="description" />
         </div>
 
         {/* Related Products */}
-        <div className={styles.relatedSection()}>
+        <div className="mt-product-detail-related-margin">
           <FeaturedProducts
             title="You May Also Like"
             subtitle="Check out these similar products"
