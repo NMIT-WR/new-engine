@@ -99,11 +99,11 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
         
         const buttonStyles = tv({
           slots: {
-            root: 'font-semibold focus:outline-none', // Use Tailwind classes or CSS vars
-            icon: 'h-5 w-5',
+            root: 'font-semibold focus:outline-none bg-btn-primary-bg', // Use Tailwind classes or CSS vars
+            span: 'text-btn-size',
           },
         });
-        // Usage: <button className={buttonStyles().root()}> <Icon className={buttonStyles().icon()} /> </button>
+        // Usage: <button className={root()}><span className={span()}>{children}</span></button>
         ```
         
 
@@ -113,9 +113,9 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     - Located in `libs/ui/src/tokens/` or `apps/frontend-demo/src/tokens/`.
     - Key files: `_semantic.css` (colors with `light-dark()`), `_spacing.css`, `_typography.css`.
 - **Component-Specific Tokens**:
-    - Location: `apps/frontend-demo/src/tokens/components/[atoms|molecules|organisms]/_ComponentName.css`.
+    - Location: `apps/frontend-demo/src/tokens/components/[atoms|molecules|organisms]/_component-name.css`.
 - **Theme Responsiveness**:
-    - **IMPORTANT**: Semantic color tokens in `_semantic.css` (or equivalent) **MUST** use the CSS `light-dark()` function for theme-responsive colors. Example: `--color-text-primary: light-dark(var(--gray-900), var(--gray-100));`
+    - **IMPORTANT**: Semantic color tokens in `_semantic.css` (or equivalent) **MUST** use the CSS `light-dark()` function for theme-responsive colors. Example: `--color-fg-primary: light-dark(var(--gray-900), var(--gray-100));`
 - **Theme System (`next-themes`)**:
     - Provider: `next-themes` in `apps/frontend-demo/src/components/providers.tsx`.
     - Activation: Tailwind `dark:` prefix.
@@ -163,17 +163,17 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     
     ```  CSS
     /* Colors with purpose, referencing semantic globals where possible */
-    --color-btn-primary-bg: var(--color-primary-500); /* Default purpose is background */
-    --color-btn-primary-fg: var(--color-white);
-    --color-btn-primary-bg-hover: var(--color-primary-600);
-    --color-pc-stock-fg: var(--color-success-600);
+    --color-btn-primary-bg: var(--color-primary); /* Default purpose is background */
+    --color-btn-primary-fg: var(--color-fg-primary);
+    --color-btn-primary-bg-hover: var(--color-primary);
+    --color-pc-stock-fg: var(--color-success);
     
     /* Spacing */
     --spacing-pc-padding: var(--spacing-md);
     --spacing-btn-sm: var(--spacing-xs); /* Spacing for a small button */
     
     /* Typography */
-    --text-hero-title-size: var(--text-4xl);
+    --text-hero-title-size: var(--text-md);
     --font-weight-hero-title: var(--font-bold);
     --text-pc-name-sm: var(--text-sm); /* Name text size for small product card variant */
     ```
@@ -182,9 +182,9 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
 ### 4.5. CSS File Organization (`apps/frontend-demo`)
 
 - **Location**: `apps/frontend-demo/src/tokens/components/`
-    - `atoms/_ComponentName.css`
-    - `molecules/_ComponentName.css`
-    - `organisms/_ComponentName.css`
+    - `atoms/_component-name.css`
+    - `molecules/_component-name.css`
+    - `organisms/_component-name.css`
 - **Import**: Always add new component CSS file imports to `apps/frontend-demo/src/tokens/components.css` (or the main CSS entry point for component tokens).
 
 ## 5. Core Commands (Contextual Execution)

@@ -1,114 +1,135 @@
-# UI Library CLAUDE.md
+# CLAUDE.md - UI Library (`@libs/ui`)
 
-This file provides guidance to Claude Code for the UI library component development.
+## Project Context
 
-## Component Architecture
+This is a React 19 + Tailwind v4 UI library using atomic design principles. We exclusively use:
+- **React 19** (no forwardRef - ref is passed as prop, no useCallback needed)
+- **Tailwind v4** (no tailwind.config - uses @theme blocks)
+- **tailwind-variants** for component styling
+- **Zag.js** for complex interactive components
 
-The UI library follows atomic design principles with Zag.js for complex interactions.
+**IMPORTANT**: Never mention or use `tailwind.config`, `forwardRef`, or `useCallback`.
 
-### Component Structure
+## Required Tools
+
+**YOU MUST** use these tools when implementing components:
+- **MCP Quillopy**: For studying Tailwind v4, tailwind-variants, and React 19 documentation
+- **Context7**: For researching Zag.js patterns and component implementations
+
+## File Structure
 
 ```
-libs/ui/
-├── src/
-│   ├── atoms/          # Basic components (button, input, icon)
-│   ├── molecules/      # Composite components (dialog, combobox, toast)
-│   ├── organisms/      # Complex page sections (rarely used in lib)
-│   ├── tokens/         # Design tokens and CSS
-│   └── utils/          # Shared utilities
-└── stories/            # Storybook stories
+libs/ui/src/
+├── atoms/          # Basic components (Button, Input, Icon)
+├── molecules/      # Composite components (Dialog, Combobox, Toast)
+├── organisms/      # Complex sections (rarely used in this library)
+├── tokens/         # Design tokens
+│   └── components/ # Component-specific tokens (_button.css, _combobox.css)
+└── utils/          # Shared utilities (tv setup)
 ```
 
-## Styling Conventions
+## CSS Token System
 
-### 1. Tailwind Variants (tv) Usage
+### Token Definition Rules
 
-Components use `tailwind-variants` for styling with specific conventions:
+**IMPORTANT**: All component tokens must be defined in `@theme static` blocks:
+
+```css
+/* libs/ui/src/tokens/components/_component-name.css */
+@theme static {
+  /* Category-Component-Property-State pattern */
+  --color-button-bg: var(--color-primary);
+  --color-button-bg-hover: oklch(from var(--color-button-bg) calc(l + var(--state-hover)) c h);
+  --spacing-button-sm: var(--spacing-xs);
+}
+```
+
+### Allowed Token Prefixes
+
+**YOU MUST** use these prefixes for design tokens:
+
+- `--color-`: All color values
+- `--text-`: Font sizes (must map to Tailwind text sizes)
+- `--font-weight-`: Font weights (100-900 or semantic)
+- `--border-`: Border width, style, color
+- `--opacity-`: Transparency values (0-100%)
+- `--spacing-`: Padding, margin, gap, AND width/height values that need max/min variants
+- `--width-`: Width values (only when you don't need max/min variants)
+- `--height-`: Height values (only when you don't need max/min variants)
+- `--gap-`: Flex/grid gaps
+- `--padding-`: Padding values
+- `--margin-`: Margin values
+- `--radius-`: Border radius
+- `--shadow-`: Box shadows
+
+**IMPORTANT**: Use `--spacing-` prefix for any width/height values that need `max-w`/`min-w`/`max-h`/`min-h` utilities!
+
+### Forbidden Patterns
+
+- ❌ `--grid-cols-product-grid-base` (too specific)
+- ❌ `--layout-*` (use specific properties like `--spacing-` or `--width-`)
+- ❌ `--component-specific-anything` (aim for generic, reusable token names)
+
+### Token Usage in Components
 
 ```typescript
-import { tv } from '../utils'
+// ✅ CORRECT - Use Tailwind classes that reference your tokens
+'bg-button-bg'         // Uses --color-button-bg
+'text-button-fg'       // Uses --color-button-fg
+'p-button-sm'          // Uses --spacing-button-sm
 
-const componentVariants = tv({
-  base: [...],      // Always use array syntax
-  slots: {          // For multi-part components
-    root: [...],
-    content: [...],
-  },
-  variants: {
-    size: {
-      sm: [...],
-      md: [...],
-    }
-  },
-  compoundVariants: [...],
-  defaultVariants: {
-    size: 'md'
-  }
-})
-```
-
-### 2. CSS Custom Properties in Tailwind Classes
-
-**CRITICAL**: CSS custom properties are used with Tailwind's arbitrary value syntax:
-
-```typescript
-// ✅ CORRECT - Using Tailwind's bracket notation
+// ❌ WRONG - Never use arbitrary values
 'bg-[var(--color-button-bg)]'
 'p-[var(--spacing-button-sm)]'
-'rounded-[var(--radius-button)]'
-'border-(length:--border-width-button)'  // Special syntax for border width
-'z-(--z-index)'                          // Special syntax for z-index
-
-// ❌ WRONG - Direct class names
-'bg-button-bg'
-'p-button-sm'
-'rounded-button'
 ```
 
-### 3. Token Naming Convention
+## Component Development Workflow
 
-Tokens follow a hierarchical naming pattern:
+### 1. Creating New Component
 
-```css
-@theme static {
-  /* Category-Component-Property-Variant */
-  --color-button-bg: var(--color-primary);
-  --color-button-bg-hover: var(--color-primary-hover);
-  --spacing-button-sm: var(--spacing-xs);
-  --radius-button: var(--radius-md);
-}
-```
+1. **Research with MCP Quillopy/Context7**:
+   - For Zag.js components: Study the specific component documentation
+   - For styling: Research tailwind-variants patterns
 
-### 4. CSS File Structure
+2. **Create Files**:
+   - Component: `libs/ui/src/[atoms|molecules]/component-name.tsx`
+   - Tokens: `libs/ui/src/tokens/components/_component-name.css`
+   - Story: `libs/ui/stories/component-name.stories.tsx`
 
-Each component has a corresponding CSS file:
+3. **Define Tokens** (follow prefix rules above)
 
-```css
-/* Always import semantic tokens */
-@import "../../_semantic.css";
+4. **Implement Component**:
+   ```typescript
+   import { tv } from '../utils'
+   
+   const componentVariants = tv({
+     slots: {
+       root: ['flex', 'bg-component-bg', 'data-[state=open]:bg-component-bg-open'],
+       content: ['text-component-fg', 'p-component']
+     },
+     variants: {
+       size: {
+         sm: { root: 'p-component-sm', content: 'text-component-sm' },
+         md: { root: 'p-component-md', content: 'text-component-md' }
+       }
+     }
+   })
+   
+   export function Component({ size = 'md', ref, ...props }) {
+     const { root, content } = componentVariants({ size })
+     return (
+       <div ref={ref} className={root()} {...props}>
+         <div className={content()}>Content</div>
+       </div>
+     )
+   }
+   ```
 
-/* Root-level variables for component-specific values */
-:root {
-  --opacity-button-disabled: 50%;
-}
+5. **Create Comprehensive Stories** covering all variants and states
 
-/* Static theme tokens */
-@theme static {
-  /* Base color mapping */
-  --color-button-primary: var(--color-primary);
-  
-  /* State variations using oklch() */
-  --color-button-primary-hover: oklch(
-    from var(--color-button-primary) calc(l + var(--state-hover)) c h
-  );
-}
-```
+## Zag.js Integration Pattern
 
-## Component Patterns
-
-### 1. Zag.js Integration
-
-For complex interactions, use Zag.js:
+**IMPORTANT**: Always use MCP Quillopy/Context7 to study Zag.js documentation for the specific component.
 
 ```typescript
 import * as component from '@zag-js/component-name'
@@ -116,106 +137,56 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import { useId } from 'react'
 
 export function Component(props: ComponentProps) {
-  const [state, send] = useMachine(component.machine({
+  const service = useMachine(component.machine({
     id: useId(),
     ...props
   }))
   
-  const api = component.connect(state, send, normalizeProps)
+  const api = component.connect(service, normalizeProps)
   
+  // Use data attributes for state-based styling
   return (
-    <div {...api.getRootProps()}>
-      {/* Component parts */}
+    <div {...api.getRootProps()} data-state={api.state}>
+      {/* Component implementation */}
     </div>
   )
 }
 ```
 
-### 2. Token-icon Usage
+## State-Based Styling
 
-Icons use the `token-icon-*` prefix for semantic icons:
-
-```typescript
-'token-icon-close'     // Generic close icon
-'token-icon-chevron'   // Chevron/arrow icon
-'token-icon-check'     // Checkmark icon
-```
-
-### 3. Data Attributes for State
-
-Use data attributes for styling state variations:
+Use data attributes for dynamic styling:
 
 ```typescript
+// State attributes from Zag.js or custom
 'data-[state=open]:rotate-180'
 'data-[highlighted]:bg-item-hover'
-'data-[disabled]:opacity-50'
-'data-[type=error]:bg-error'
+'data-[disabled]:opacity-disabled'
+'data-[validation=error]:border-danger'
 ```
 
-## Common Mistakes to Avoid
+## Common Pitfalls to Avoid
 
-1. **Don't use direct token names as Tailwind classes**
-   ```typescript
-   // ❌ Wrong
-   'bg-button-primary'
-   
-   // ✅ Correct
-   'bg-[var(--color-button-primary)]'
-   ```
+1. **Token Usage**:
+   - ❌ Using arbitrary values: `bg-[#ff0000]`
+   - ✅ Using token-based classes: `bg-button-danger`
 
-2. **Don't forget to import CSS tokens**
-   ```css
-   /* Every component CSS should start with */
-   @import "../../_semantic.css";
-   ```
+2. **React 19 Patterns**:
+   - ❌ `forwardRef<HTMLDivElement, Props>((props, ref) => ...)`
+   - ✅ `function Component({ ref, ...props }: Props & { ref?: Ref<HTMLDivElement> })`
 
-3. **Don't use inline styles for tokens**
-   ```typescript
-   // ❌ Wrong
-   style={{ backgroundColor: 'var(--color-primary)' }}
-   
-   // ✅ Correct
-   className="bg-[var(--color-primary)]"
-   ```
+3. **Tailwind v4**:
+   - ❌ Mentioning `tailwind.config.js`
+   - ✅ Using `@theme static` blocks
 
-## Testing Components
+## Validation Checklist
 
-Always create comprehensive Storybook stories:
+Before considering a component complete:
 
-```typescript
-const meta: Meta<typeof Component> = {
-  title: 'Category/ComponentName',
-  component: Component,
-  parameters: {
-    layout: 'centered',
-  },
-  argTypes: {
-    // Define controls for props
-  },
-}
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
-  args: {
-    // Default props
-  },
-}
-
-// Create variations for all major use cases
-export const Small: Story = { ... }
-export const WithIcon: Story = { ... }
-export const Disabled: Story = { ... }
-```
-
-## Debugging Checklist
-
-If a component doesn't look right:
-
-1. ✅ Check CSS file is imported in `components.css`
-2. ✅ Verify token names match between CSS and TSX
-3. ✅ Ensure using `[var(--token-name)]` syntax
-4. ✅ Check semantic tokens are imported in CSS
-5. ✅ Verify parent containers don't override styles
-6. ✅ Use browser DevTools to inspect computed values
+- [ ] Token file follows all prefix rules
+- [ ] Component uses `tv()` with token-based classes
+- [ ] No arbitrary values in styling
+- [ ] Story file covers all variants and states
+- [ ] Used MCP Quillopy/Context7 for documentation research
+- [ ] No React 18 patterns (forwardRef, useCallback)
+- [ ] Data attributes used for state-based styling
