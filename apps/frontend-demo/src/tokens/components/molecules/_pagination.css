@@ -13,7 +13,10 @@
 
   /* Text colors */
   --color-pagination-fg: var(--color-fg-primary);
-  --color-pagination-fg-hover: light-dark(var(--color-fg-primary),var(--color-base));
+  --color-pagination-fg-hover: light-dark(
+    var(--color-fg-primary),
+    var(--color-base)
+  );
   --color-pagination-fg-active: var(--color-base);
   --color-pagination-outlined-fg-active: var(--color-pagination-active);
   --color-pagination-fg-disabled: --alpha(

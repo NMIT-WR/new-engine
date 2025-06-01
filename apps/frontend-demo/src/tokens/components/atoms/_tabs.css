@@ -3,20 +3,21 @@
   --color-tabs-bg: var(--color-surface);
 
   /* === LIST COMPONENT === */
-  --color-tabs-list-bg: var(--color-overlay);
+  --color-tabs-list-bg: --alpha(var(--color-overlay) / 0.4);
 
   /* === TRIGGER COMPONENT === */
   --color-tabs-trigger-fg: var(--color-fg-secondary);
   --color-tabs-trigger-solid-fg: var(--color-fg-primary);
   --color-tabs-trigger-selected: var(--color-primary);
-  --color-tabs-trigger-selected-bg: var(--color-primary-light);
+  --color-tabs-trigger-selected-bg: var(--color-surface);
 
-  --color-tabs-trigger-hover: var(--color-highlight);
+  --color-tabs-trigger-hover: var(--color-overlay);
 
   /* === INDICATOR === */
-  --color-tabs-indicator: var(--color-primary);
-  --width-tabs-indicator: 1px;
-  --height-tabs-indicator: 1px;
+  --color-tabs-indicator: transparent;
+  --width-tabs-indicator: 0;
+  --height-tabs-indicator: 0;
+  --radius-tabs-indicator: 0;
 
   /* === CONTENT === */
   --color-tabs-content-fg: var(--color-fg-primary);
@@ -25,15 +26,15 @@
   --color-tabs-ring: --alpha(var(--color-primary) / var(--opacity-ring));
 
   /* === PADDING === */
-  /* Trigger padding */
-  --padding-tabs-trigger-sm: var(--spacing-3xs) var(--spacing-2xs);
-  --padding-tabs-trigger-md: var(--spacing-2xs) var(--spacing-xs);
-  --padding-tabs-trigger-lg: var(--spacing-xs) var(--spacing-sm);
+  /* Trigger padding - more generous for modern feel */
+  --padding-tabs-trigger-sm: var(--spacing-2xs) var(--spacing-sm);
+  --padding-tabs-trigger-md: var(--spacing-xs) var(--spacing-md);
+  --padding-tabs-trigger-lg: var(--spacing-sm) var(--spacing-lg);
 
   /* Content padding */
-  --padding-tabs-content-sm: var(--spacing-xs);
-  --padding-tabs-content-md: var(--spacing-sm);
-  --padding-tabs-content-lg: var(--spacing-md);
+  --padding-tabs-content-sm: var(--spacing-sm);
+  --padding-tabs-content-md: var(--spacing-md);
+  --padding-tabs-content-lg: var(--spacing-lg);
 
   /* === TYPOGRAPHY === */
   --text-tabs-trigger-sm: var(--text-sm);
@@ -45,8 +46,7 @@
   --text-tabs-content-lg: var(--text-lg);
 
   /* === BORDER & RADIUS === */
-  --border-width-tabs: var(--border-width-sm);
-  --radius-tabs: 0;
-  --radius-tabs-trigger: 0;
+  --radius-tabs: var(--radius-lg);
+  --radius-tabs-trigger: var(--radius-md);
   --radius-tabs-indicator: 0;
 }

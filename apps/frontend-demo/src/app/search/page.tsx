@@ -33,7 +33,6 @@ export default function SearchPage() {
     colors: new Set(),
   })
 
-
   // Create combobox items from products
   const searchItems: ComboboxItem[] = useMemo(() => {
     return mockProducts.map((product) => ({
@@ -67,10 +66,10 @@ export default function SearchPage() {
   const hasSearched = searchQuery.length > 0
 
   return (
-    <div className='min-h-screen bg-search-bg'>
-      <div className='mx-auto max-w-search-max-w px-search-container-x py-search-container-y lg:px-search-container-x-lg lg:py-search-container-y-lg'>
+    <div className="min-h-screen bg-search-bg">
+      <div className="mx-auto max-w-search-max-w px-search-container-x py-search-container-y lg:px-search-container-x-lg lg:py-search-container-y-lg">
         {/* Breadcrumb */}
-        <div className='mb-search-breadcrumb-margin'>
+        <div className="mb-search-breadcrumb-margin">
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -80,14 +79,16 @@ export default function SearchPage() {
         </div>
 
         {/* Hero Section */}
-        <div className='text-center mb-search-hero-margin'>
-          <h1 className='text-search-title font-search-title mb-search-title-margin'>Search Products</h1>
-          <p className='text-search-subtitle mb-search-subtitle-margin'>
+        <div className="mb-search-hero-margin text-center">
+          <h1 className="mb-search-title-margin font-search-title text-search-title">
+            Search Products
+          </h1>
+          <p className="mb-search-subtitle-margin text-search-subtitle">
             Find exactly what you're looking for in our collection
           </p>
 
           {/* Search Input */}
-          <div className='max-w-search-input-max-w mx-auto mb-search-input-margin'>
+          <div className="mx-auto mb-search-input-margin max-w-search-input-max-w">
             <Combobox
               placeholder="Search for products..."
               items={searchItems}
@@ -119,14 +120,14 @@ export default function SearchPage() {
 
         {/* Results Section */}
         {hasSearched && (
-          <div className='md:flex gap-search-layout-gap'>
-            <aside className='hidden md:block w-search-sidebar-width flex-shrink-0'>
+          <div className="gap-search-layout-gap md:flex">
+            <aside className="hidden w-search-sidebar-width flex-shrink-0 md:block">
               <ProductFilters filters={filters} onFiltersChange={setFilters} />
             </aside>
 
-            <main className='flex-1'>
-              <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-search-controls-gap mb-search-controls-margin'>
-                <p className='text-search-results'>
+            <main className="flex-1">
+              <div className="mb-search-controls-margin flex flex-col items-start justify-between gap-search-controls-gap sm:flex-row sm:items-center">
+                <p className="text-search-results">
                   {sortedProducts.length === 0
                     ? 'No products found'
                     : `${sortedProducts.length} ${
@@ -134,7 +135,7 @@ export default function SearchPage() {
                       } found`}
                 </p>
                 {sortedProducts.length > 0 && (
-                  <div className='flex items-center gap-search-sort-gap'>
+                  <div className="flex items-center gap-search-sort-gap">
                     <Select
                       options={sortOptions}
                       value={[sortBy]}
@@ -156,9 +157,11 @@ export default function SearchPage() {
               {sortedProducts.length > 0 ? (
                 <ProductGrid products={sortedProducts} />
               ) : (
-                <div className='text-center py-search-empty-y'>
-                  <h2 className='text-search-empty-title font-search-empty-title mb-search-empty-title-margin'>No results found</h2>
-                  <p className='text-search-empty-text'>
+                <div className="py-search-empty-y text-center">
+                  <h2 className="mb-search-empty-title-margin font-search-empty-title text-search-empty-title">
+                    No results found
+                  </h2>
+                  <p className="text-search-empty-text">
                     Try adjusting your search or filters to find what you're
                     looking for
                   </p>
@@ -170,8 +173,8 @@ export default function SearchPage() {
 
         {/* Initial State */}
         {!hasSearched && (
-          <div className='text-center py-search-empty-y'>
-            <p className='text-search-empty-text'>
+          <div className="py-search-empty-y text-center">
+            <p className="text-search-empty-text">
               Start typing to search through our products
             </p>
           </div>

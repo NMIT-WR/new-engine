@@ -20,8 +20,8 @@ const authDropdownVariants = tv({
     actions: 'space-y-2',
     signupPrompt: 'flex items-center gap-2 text-xs',
     signupText: 'text-secondary',
-    signupLink: 'p-0 h-auto font-normal text-link hover:text-link-hover'
-  }
+    signupLink: 'p-0 h-auto font-normal text-link hover:text-link-hover',
+  },
 })
 
 export function AuthDropdown() {
@@ -30,13 +30,11 @@ export function AuthDropdown() {
 
   if (!user) {
     return (
-      <HoverCard 
-        id="auth-dropdown" 
+      <HoverCard
+        id="auth-dropdown"
         openDelay={500}
         closeDelay={500}
-        content={
-          <QuickLoginForm />
-        }
+        content={<QuickLoginForm />}
       >
         <Button
           variant="tertiary"
@@ -123,7 +121,7 @@ function QuickLoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  
+
   const styles = authDropdownVariants()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -147,7 +145,7 @@ function QuickLoginForm() {
         <h3 className={styles.title()}>Sign In</h3>
         <p className={styles.subtitle()}>Enter your credentials to continue</p>
       </div>
-      
+
       <div className={styles.inputGroup()}>
         <Input
           type="email"
@@ -158,7 +156,7 @@ function QuickLoginForm() {
           autoComplete="email"
           size="sm"
         />
-        
+
         <Input
           type="password"
           placeholder="Password"
@@ -170,9 +168,7 @@ function QuickLoginForm() {
         />
       </div>
 
-      {error && (
-        <p className={styles.error()}>{error}</p>
-      )}
+      {error && <p className={styles.error()}>{error}</p>}
 
       <div className={styles.actions()}>
         <Button
@@ -184,7 +180,7 @@ function QuickLoginForm() {
         >
           {loading ? 'Signing in...' : 'Sign In'}
         </Button>
-        
+
         <div className={styles.signupPrompt()}>
           <span className={styles.signupText()}>New here?</span>
           <Button

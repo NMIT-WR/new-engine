@@ -23,6 +23,9 @@
 
   /* Focus ring */
   --color-breadcrumb-link-ring: var(--color-primary);
+
+  /* Padding */
+  --padding-breadcrumb: var(--spacing-2xs);
 }
 
 @utility token-icon-breadcrumb-separator {

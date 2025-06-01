@@ -19,10 +19,10 @@ export default function CartPage() {
   const shipping = 0 // Free shipping
 
   return (
-    <div className='min-h-screen bg-cart-bg'>
-      <div className='mx-auto max-w-cart-max-w px-cart-container-x py-cart-container-y lg:px-cart-container-x-lg lg:py-cart-container-y-lg'>
+    <div className="min-h-screen bg-cart-bg">
+      <div className="mx-auto max-w-cart-max-w px-cart-container-x py-cart-container-y lg:px-cart-container-x-lg lg:py-cart-container-y-lg">
         {/* Breadcrumb */}
-        <div className='mb-cart-breadcrumb-margin'>
+        <div className="mb-cart-breadcrumb-margin">
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -31,22 +31,27 @@ export default function CartPage() {
           />
         </div>
 
-        <h1 className='text-cart-title font-cart-title mb-cart-title-margin'>Shopping Cart</h1>
+        <h1 className="mb-cart-title-margin font-cart-title text-cart-title">
+          Shopping Cart
+        </h1>
 
         {items.length > 0 ? (
-          <div className='lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap'>
+          <div className="lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap">
             {/* Cart Items */}
-            <div className='mb-cart-items-margin lg:mb-0'>
-              <div className='divide-y divide-cart-item-divider'>
+            <div className="mb-cart-items-margin lg:mb-0">
+              <div className="divide-y divide-cart-item-divider">
                 {items.map((item) => {
                   const price = getProductPrice(item.product)
                   const itemTotal = price * item.quantity
 
                   return (
-                    <div key={item.id} className='py-cart-item-y first:pt-0 last:pb-0'>
-                      <div className='flex gap-cart-item-gap'>
+                    <div
+                      key={item.id}
+                      className="py-cart-item-y first:pt-0 last:pb-0"
+                    >
+                      <div className="flex gap-cart-item-gap">
                         {/* Product Image */}
-                        <div className='w-cart-item-image h-cart-item-image rounded-cart-item-image bg-cart-item-image-bg'>
+                        <div className="h-cart-item-image w-cart-item-image rounded-cart-item-image bg-cart-item-image-bg">
                           {item.product.thumbnail && (
                             <Image
                               src={item.product.thumbnail}
@@ -59,13 +64,13 @@ export default function CartPage() {
                         </div>
 
                         {/* Product Details */}
-                        <div className='flex-1'>
-                          <div className='flex justify-between items-start mb-cart-item-header-margin'>
+                        <div className="flex-1">
+                          <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div>
-                              <h3 className='text-cart-item-title font-cart-item-title'>
+                              <h3 className="font-cart-item-title text-cart-item-title">
                                 {item.product.title}
                               </h3>
-                              <div className='text-cart-item-options mb-cart-item-options-margin'>
+                              <div className="mb-cart-item-options-margin text-cart-item-options">
                                 {item.selectedSize && (
                                   <span>Size: {item.selectedSize}</span>
                                 )}
@@ -76,16 +81,16 @@ export default function CartPage() {
                                   <span>Color: {item.selectedColor}</span>
                                 )}
                               </div>
-                              <p className='text-cart-item-price font-cart-item-price'>
+                              <p className="font-cart-item-price text-cart-item-price">
                                 {formatPrice(price)}
                               </p>
                             </div>
-                            <p className='text-cart-item-price font-cart-item-price'>
+                            <p className="font-cart-item-price text-cart-item-price">
                               {formatPrice(itemTotal)}
                             </p>
                           </div>
 
-                          <div className='flex items-center gap-cart-item-actions-gap'>
+                          <div className="flex items-center gap-cart-item-actions-gap">
                             <NumericInput
                               value={item.quantity}
                               min={1}
@@ -127,36 +132,38 @@ export default function CartPage() {
             </div>
 
             {/* Order Summary */}
-            <div className='lg:sticky lg:top-cart-summary-top lg:h-fit'>
-              <div className='bg-cart-summary-bg p-cart-summary-padding rounded-cart-summary shadow-cart-summary'>
-                <h2 className='text-cart-summary-title font-cart-summary-title mb-cart-summary-title-margin'>Order Summary</h2>
+            <div className="lg:sticky lg:top-cart-summary-top lg:h-fit">
+              <div className="rounded-cart-summary bg-cart-summary-bg p-cart-summary-padding shadow-cart-summary">
+                <h2 className="mb-cart-summary-title-margin font-cart-summary-title text-cart-summary-title">
+                  Order Summary
+                </h2>
 
-                <div className='space-y-cart-summary-rows-gap'>
-                  <div className='flex justify-between text-cart-summary-text'>
+                <div className="space-y-cart-summary-rows-gap">
+                  <div className="flex justify-between text-cart-summary-text">
                     <span>Subtotal</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
-                  <div className='flex justify-between text-cart-summary-text'>
+                  <div className="flex justify-between text-cart-summary-text">
                     <span>Shipping</span>
                     <span>
                       {shipping === 0 ? 'FREE' : formatPrice(shipping)}
                     </span>
                   </div>
-                  <div className='flex justify-between text-cart-summary-text'>
+                  <div className="flex justify-between text-cart-summary-text">
                     <span>Tax (21%)</span>
                     <span>{formatPrice(tax)}</span>
                   </div>
                 </div>
 
-                <div className='my-cart-summary-divider border-t border-cart-summary-divider' />
+                <div className="my-cart-summary-divider border-cart-summary-divider border-t" />
 
-                <div className='flex justify-between text-cart-summary-text'>
+                <div className="flex justify-between text-cart-summary-text">
                   <span>Total</span>
                   <span>{formatPrice(total)}</span>
                 </div>
 
                 <Button
-                  className='w-full mt-cart-checkout-margin'
+                  className="mt-cart-checkout-margin w-full"
                   size="lg"
                   icon="icon-[mdi--lock-outline]"
                 >
@@ -173,14 +180,16 @@ export default function CartPage() {
           </div>
         ) : (
           /* Empty Cart */
-          <div className='text-center py-cart-empty-y'>
+          <div className="py-cart-empty-y text-center">
             <Icon
               icon="icon-[mdi--cart-outline]"
               size="2xl"
-              className='mb-cart-empty-icon-margin'
+              className="mb-cart-empty-icon-margin"
             />
-            <h2 className='text-cart-empty-title font-cart-empty-title mb-cart-empty-title-margin'>Your cart is empty</h2>
-            <p className='text-cart-empty-text mb-cart-empty-text-margin'>
+            <h2 className="mb-cart-empty-title-margin font-cart-empty-title text-cart-empty-title">
+              Your cart is empty
+            </h2>
+            <p className="mb-cart-empty-text-margin text-cart-empty-text">
               Looks like you haven't added any items to your cart yet.
             </p>
             <Link href="/products">

@@ -89,7 +89,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       content: (
         <div className="prose max-w-none">
           <p>{product.description}</p>
-          <h4>Features:</h4>
+          <h4 className="font-bold">Features:</h4>
           <ul>
             <li>Premium quality materials</li>
             <li>Comfortable fit</li>
@@ -217,7 +217,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             {/* Size Selector */}
             {sizes.length > 0 && (
               <div className={styles.variantSection()}>
-                <label className={styles.variantLabel()}>Size</label>
+                <label htmlFor="size" className={styles.variantLabel()}>
+                  Size
+                </label>
                 <Select
                   value={selectedSize ? [selectedSize] : []}
                   options={sizes.map((size) => ({ value: size, label: size }))}
@@ -232,7 +234,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             {/* Color Selector */}
             {colors.length > 0 && (
               <div className={styles.variantSection()}>
-                <label className={styles.variantLabel()}>Color</label>
+                <label htmlFor="color" className={styles.variantLabel()}>
+                  Color
+                </label>
                 <Select
                   value={selectedColor ? [selectedColor] : []}
                   options={colors.map((color) => ({
