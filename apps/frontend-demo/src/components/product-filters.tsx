@@ -2,29 +2,29 @@
 
 import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
 import { Checkbox } from 'ui/src/molecules/checkbox'
 import { Dialog } from 'ui/src/molecules/dialog'
 import { RangeSlider } from 'ui/src/molecules/range-slider'
 import { TreeView } from 'ui/src/molecules/tree-view'
 import { tv } from 'ui/src/utils'
-import { categories, mockProducts } from '../data/mock-products'
+import { ColorSwatch } from './atoms/color-swatch'
+import { FilterButton } from './atoms/filter-button'
+import { FilterSection } from './molecules/filter-section'
+import { activeFilterConfig, type FilterConfig } from '../data/filter-config'
+import { mockProducts } from '../data/mock-products'
 import {
   type FilterState,
   calculateProductCounts,
   getColorsWithCounts,
   getSizesWithCounts,
 } from '../utils/product-filters'
+import { getColorHex } from '../utils/color-map'
 
 const productFiltersVariants = tv({
   slots: {
     root: 'w-full',
     mobileButton: 'md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin',
     desktopFilters: 'hidden md:block',
-    section: 'mb-product-filters-section-margin',
-    title:
-      'text-product-filters-title font-product-filters-title mb-product-filters-title-margin flex items-center justify-between',
-    filterList: 'space-y-product-filters-item-gap',
     dialogContent: 'p-product-filters-dialog-padding',
     dialogHeader:
       'flex items-center justify-between mb-product-filters-dialog-header-margin',
@@ -32,10 +32,8 @@ const productFiltersVariants = tv({
       'text-product-filters-dialog-title font-product-filters-dialog-title',
     clearButton: 'text-sm text-primary hover:underline cursor-pointer',
     colorGrid: 'grid grid-cols-4 gap-2',
-    colorSwatch: 'group relative w-10 h-10 rounded-full border-2 transition-all cursor-pointer',
     sizeGrid: 'flex flex-wrap gap-2',
-    sizeButton: 'px-3 py-1.5 border rounded transition-all text-sm',
-    viewMore: 'text-sm text-primary hover:underline cursor-pointer mt-2',
+    checkboxList: 'space-y-product-filters-item-gap',
   },
 })
 
@@ -51,9 +49,8 @@ export function ProductFilters({
   onFiltersChange,
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [showAllSizes, setShowAllSizes] = useState(false)
-  const [showAllColors, setShowAllColors] = useState(false)
   const styles = productFiltersVariants()
+  const filterConfig = activeFilterConfig // Use active configuration
 
   const updateFilters = (updates: Partial<FilterState>) => {
     onFiltersChange({
@@ -94,9 +91,152 @@ export function ProductFilters({
     })
   })
 
-  // Limit visible items when collapsed
-  const visibleSizes = showAllSizes ? sizesWithCounts : sizesWithCounts.slice(0, 8)
-  const visibleColors = showAllColors ? colorsWithCounts : colorsWithCounts.slice(0, 8)
+  // Render filter based on config
+  const renderFilter = (config: FilterConfig) => {
+    switch (config.type) {
+      case 'checkbox':
+        return (
+          <FilterSection
+            key={config.id}
+            title={config.title}
+            items={productCounts.categoryCounts}
+            defaultItemsShown={config.defaultItemsShown}
+            onClear={config.showClearButton ? () => updateFilters({ categories: new Set() }) : undefined}
+            className={styles.checkboxList()}
+            renderItem={(category) => {
+              const isDisabled = category.count === 0
+              return (
+                <Checkbox
+                  key={category.handle}
+                  id={`category-${category.handle}`}
+                  name="categories"
+                  value={category.handle}
+                  labelText={`${category.name} (${category.count})`}
+                  checked={filters.categories.has(category.handle)}
+                  disabled={isDisabled}
+                  onCheckedChange={(details) => {
+                    const { checked } = details
+                    const newCategories = new Set(filters.categories)
+                    if (checked === true) {
+                      newCategories.add(category.handle)
+                    } else {
+                      newCategories.delete(category.handle)
+                    }
+                    updateFilters({ categories: newCategories })
+                  }}
+                />
+              )
+            }}
+          />
+        )
+
+      case 'range':
+        return (
+          <FilterSection
+            key={config.id}
+            title={config.title}
+          >
+            <RangeSlider
+              value={filters.priceRange}
+              onChange={(value) =>
+                updateFilters({ priceRange: value as [number, number] })
+              }
+              min={config.range?.min || 0}
+              max={config.range?.max || 300}
+              step={config.range?.step || 10}
+              minStepsBetweenThumbs={0}
+              formatValue={(value) => `${config.range?.prefix || ''}${value}${config.range?.suffix || ''}`}
+            />
+            <div className="mt-product-filters-range-margin flex justify-between">
+              <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
+                {config.range?.prefix}{filters.priceRange[0]}
+              </span>
+              <span className="text-product-filters-range-label text-sm">to</span>
+              <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
+                {config.range?.prefix}{filters.priceRange[1]}
+              </span>
+            </div>
+          </FilterSection>
+        )
+
+      case 'size':
+        return (
+          <FilterSection
+            key={config.id}
+            title={config.title}
+            items={sizesWithCounts}
+            defaultItemsShown={config.defaultItemsShown}
+            onClear={config.showClearButton ? () => updateFilters({ sizes: new Set() }) : undefined}
+            className={styles.sizeGrid()}
+            renderItem={({ size, count }) => {
+              const isSelected = filters.sizes.has(size)
+              const isDisabled = count === 0
+              
+              return (
+                <FilterButton
+                  key={size}
+                  variant={isSelected ? 'selected' : 'default'}
+                  disabled={isDisabled}
+                  onClick={() => {
+                    const newSizes = new Set(filters.sizes)
+                    if (isSelected) {
+                      newSizes.delete(size)
+                    } else {
+                      newSizes.add(size)
+                    }
+                    updateFilters({ sizes: newSizes })
+                  }}
+                >
+                  {size}
+                </FilterButton>
+              )
+            }}
+          />
+        )
+
+      case 'color':
+        return (
+          <FilterSection
+            key={config.id}
+            title={config.title}
+            items={colorsWithCounts}
+            defaultItemsShown={config.defaultItemsShown}
+            onClear={config.showClearButton ? () => updateFilters({ colors: new Set() }) : undefined}
+            className={styles.colorGrid()}
+            renderItem={({ color, count }) => {
+              const isSelected = filters.colors.has(color)
+              const isDisabled = count === 0
+              // First try to get color from product variants, then fall back to color map
+              const colorHex = colorHexMap.get(color.toLowerCase()) || getColorHex(color)
+              
+              return (
+                <ColorSwatch
+                  key={color}
+                  selected={isSelected}
+                  disabled={isDisabled}
+                  color={colorHex}
+                  colorName={color}
+                  onClick={() => {
+                    if (!isDisabled) {
+                      const newColors = new Set(filters.colors)
+                      if (isSelected) {
+                        newColors.delete(color)
+                      } else {
+                        newColors.add(color)
+                      }
+                      updateFilters({ colors: newColors })
+                    }
+                  }}
+                />
+              )
+            }}
+          />
+        )
+
+      default:
+        return null
+    }
+  }
 
   const filterContent = (
     <>
@@ -112,164 +252,8 @@ export function ProductFilters({
         </div>
       )}
 
-      {/* Categories with Tree View */}
-      <div className={styles.section()}>
-        <h3 className={styles.title()}>Categories</h3>
-        <div className={styles.filterList()}>
-          {/* For now, using checkboxes but could be replaced with TreeView for hierarchical categories */}
-          {productCounts.categoryCounts.map((category) => {
-            const isDisabled = category.count === 0
-            return (
-              <Checkbox
-                key={category.handle}
-                id={`category-${category.handle}`}
-                name="categories"
-                value={category.handle}
-                labelText={`${category.name} (${category.count})`}
-                checked={filters.categories.has(category.handle)}
-                disabled={isDisabled}
-                onCheckedChange={(details) => {
-                  const { checked } = details
-                  const newCategories = new Set(filters.categories)
-                  if (checked === true) {
-                    newCategories.add(category.handle)
-                  } else {
-                    newCategories.delete(category.handle)
-                  }
-                  updateFilters({ categories: newCategories })
-                }}
-              />
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Price Range */}
-      <div className={styles.section()}>
-        <h3 className={styles.title()}>Price Range</h3>
-        <RangeSlider
-          value={filters.priceRange}
-          onChange={(value) =>
-            updateFilters({ priceRange: value as [number, number] })
-          }
-          min={0}
-          max={300}
-          step={10}
-          minStepsBetweenThumbs={0}
-          formatValue={(value) => `€${value}`}
-        />
-        <div className="mt-product-filters-range-margin flex justify-between">
-          <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-            €{filters.priceRange[0]}
-          </span>
-          <span className="text-product-filters-range-label text-sm">to</span>
-          <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-            €{filters.priceRange[1]}
-          </span>
-        </div>
-      </div>
-
-      {/* Size Filter with Buttons */}
-      <div className={styles.section()}>
-        <h3 className={styles.title()}>Size</h3>
-        <div className={styles.sizeGrid()}>
-          {visibleSizes.map(({ size, count }) => {
-            const isSelected = filters.sizes.has(size)
-            const isDisabled = count === 0
-            
-            return (
-              <button
-                key={size}
-                onClick={() => {
-                  const newSizes = new Set(filters.sizes)
-                  if (isSelected) {
-                    newSizes.delete(size)
-                  } else {
-                    newSizes.add(size)
-                  }
-                  updateFilters({ sizes: newSizes })
-                }}
-                disabled={isDisabled}
-                className={`
-                  ${styles.sizeButton()}
-                  ${isSelected
-                    ? 'border-primary bg-primary text-white'
-                    : isDisabled
-                    ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
-                    : 'border-gray-300 hover:border-gray-400'
-                  }
-                `}
-                title={`${size} (${count} products)`}
-              >
-                {size}
-              </button>
-            )
-          })}
-        </div>
-        {sizesWithCounts.length > 8 && (
-          <button
-            onClick={() => setShowAllSizes(!showAllSizes)}
-            className={styles.viewMore()}
-          >
-            {showAllSizes ? 'Show less' : `Show ${sizesWithCounts.length - 8} more`}
-          </button>
-        )}
-      </div>
-
-      {/* Color Filter with Swatches */}
-      <div className={styles.section()}>
-        <h3 className={styles.title()}>Color</h3>
-        <div className={styles.colorGrid()}>
-          {visibleColors.map(({ color, count }) => {
-            const isSelected = filters.colors.has(color)
-            const isDisabled = count === 0
-            const colorHex = colorHexMap.get(color.toLowerCase()) || '#ccc'
-            
-            return (
-              <button
-                key={color}
-                onClick={() => {
-                  if (!isDisabled) {
-                    const newColors = new Set(filters.colors)
-                    if (isSelected) {
-                      newColors.delete(color)
-                    } else {
-                      newColors.add(color)
-                    }
-                    updateFilters({ colors: newColors })
-                  }
-                }}
-                disabled={isDisabled}
-                className={`
-                  ${styles.colorSwatch()}
-                  ${isSelected ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-gray-300'}
-                  ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-gray-400'}
-                `}
-                title={`${color} (${count} products)`}
-              >
-                <span
-                  className="absolute inset-1 rounded-full"
-                  style={{ backgroundColor: colorHex }}
-                />
-                {isSelected && (
-                  <Icon
-                    icon="icon-[mdi--check]"
-                    className="absolute inset-0 m-auto text-white mix-blend-difference z-10"
-                  />
-                )}
-              </button>
-            )
-          })}
-        </div>
-        {colorsWithCounts.length > 8 && (
-          <button
-            onClick={() => setShowAllColors(!showAllColors)}
-            className={styles.viewMore()}
-          >
-            {showAllColors ? 'Show less' : `Show ${colorsWithCounts.length - 8} more`}
-          </button>
-        )}
-      </div>
+      {/* Render filters based on configuration */}
+      {filterConfig.map(renderFilter)}
     </>
   )
 
