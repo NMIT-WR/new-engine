@@ -26,19 +26,39 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
-  const [selectedSize, setSelectedSize] = useState<string>('')
-  const [selectedColor, setSelectedColor] = useState<string>('')
+  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null)
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
+    // Initialize with first variant's options
+    return product.variants?.[0]?.options || {}
+  })
   const [quantity, setQuantity] = useState(1)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
   const { addItem } = useCart()
   const toast = useToast()
 
   const { price, badges, stockStatus } = extractProductData(product)
 
-  // Get available sizes and colors from variants
-  const sizes =
-    product.options?.find((opt) => opt.title === 'Size')?.values || []
-  const colors =
-    product.options?.find((opt) => opt.title === 'Color')?.values || []
+  // Get all option types from product
+  const optionTypes = product.options || []
+
+  // Find matching variant based on selected options
+  const findMatchingVariant = (options: Record<string, string>) => {
+    return product.variants?.find((variant) => {
+      return Object.entries(options).every(
+        ([key, value]) => variant.options?.[key] === value
+      )
+    })
+  }
+
+  // Update selected variant when options change
+  const handleOptionChange = (optionTitle: string, value: string) => {
+    const newOptions = { ...selectedOptions, [optionTitle.toLowerCase()]: value }
+    setSelectedOptions(newOptions)
+    const newVariant = findMatchingVariant(newOptions)
+    if (newVariant) {
+      setSelectedVariant(newVariant)
+    }
+  }
 
   // Get related products
   const relatedProducts = getRelatedProducts(product, mockProducts, 4)
@@ -49,14 +69,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       label: 'Description',
       content: (
         <div className="prose max-w-none">
-          <p>{product.description}</p>
-          <h4 className="font-bold">Features:</h4>
-          <ul>
-            <li>Premium quality materials</li>
-            <li>Comfortable fit</li>
-            <li>Machine washable</li>
-            <li>Available in multiple sizes</li>
-          </ul>
+          <p>{product.longDescription || product.description}</p>
+          {product.features && product.features.length > 0 && (
+            <>
+              <h4 className="font-bold">Features:</h4>
+              <ul>
+                {product.features.map((feature, idx) => (
+                  <li key={idx}>{feature}</li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       ),
     },
@@ -64,45 +87,78 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       value: 'details',
       label: 'Product Details',
       content: (
-        <Accordion
-          items={[
-            {
-              id: 'materials',
-              value: 'materials',
-              title: 'Materials & Care',
-              content:
-                'Made from 100% organic cotton. Machine wash cold, tumble dry low.',
-            },
-            {
-              id: 'shipping',
-              value: 'shipping',
-              title: 'Shipping & Returns',
-              content:
-                'Free shipping on orders over €50. 30-day return policy.',
-            },
-            {
-              id: 'sizing',
-              value: 'sizing',
-              title: 'Size Guide',
-              content:
-                'True to size. See our size chart for detailed measurements.',
-            },
-          ]}
-        />
+        <div>
+          {product.specifications && product.specifications.length > 0 && (
+            <div className="mb-6">
+              <h4 className="font-bold mb-4">Specifications</h4>
+              <dl className="grid grid-cols-1 gap-3">
+                {product.specifications.map((spec, idx) => (
+                  <div key={idx} className="flex">
+                    <dt className="font-medium min-w-[150px]">{spec.name}:</dt>
+                    <dd className="text-gray-600">{spec.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+          <Accordion
+            items={[
+              {
+                id: 'shipping',
+                value: 'shipping',
+                title: 'Shipping & Returns',
+                content:
+                  'Free shipping on orders over €50. 30-day return policy. Returns accepted in original condition.',
+              },
+              {
+                id: 'sizing',
+                value: 'sizing',
+                title: 'Size Guide',
+                content:
+                  'True to size. See our size chart for detailed measurements. If between sizes, we recommend sizing up.',
+              },
+            ]}
+          />
+        </div>
       ),
     },
     {
       value: 'reviews',
-      label: 'Reviews (24)',
+      label: `Reviews (${product.reviewCount || 0})`,
       content: (
         <div className="space-y-product-detail-review-gap">
-          <div className="flex items-center gap-product-detail-review-rating-gap">
-            <Rating value={4.5} readOnly />
-            <span>4.5 out of 5</span>
-          </div>
-          <p className="text-product-detail-review-placeholder text-sm">
-            No reviews yet. Be the first to review!
-          </p>
+          {product.rating && (
+            <div className="flex items-center gap-product-detail-review-rating-gap">
+              <Rating value={product.rating} readOnly />
+              <span>{product.rating} out of 5</span>
+              {product.reviewCount && (
+                <span className="text-gray-500">({product.reviewCount} reviews)</span>
+              )}
+            </div>
+          )}
+          {product.reviews && product.reviews.length > 0 ? (
+            <div className="space-y-4">
+              {product.reviews.map((review) => (
+                <div key={review.id} className="border-b pb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Rating value={review.rating} readOnly />
+                    <span className="font-semibold">{review.title}</span>
+                    {review.verified && (
+                      <Badge variant="success">Verified</Badge>
+                    )}
+                  </div>
+                  <p className="text-gray-600 mb-2">{review.comment}</p>
+                  <div className="text-sm text-gray-500">
+                    By {review.author} on {new Date(review.date).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-product-detail-review-placeholder text-sm">
+              No reviews yet. Be the first to review!
+            </p>
+          )}
         </div>
       ),
     },
@@ -112,7 +168,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     product.images?.map((img, idx) => ({
       id: `image-${idx}`,
       src: img.url,
-      alt: product.title,
+      alt: img.alt || product.title,
     })) || []
 
   return (
@@ -156,61 +212,123 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <h1 className="text-product-detail-title font-product-detail-title mb-product-detail-title-margin">{product.title}</h1>
 
             {/* Rating */}
-            <div className="flex items-center gap-product-detail-rating-gap mb-product-detail-rating-margin">
-              <Rating value={4.5} readOnly />
-              <span className="text-product-detail-rating-text">(24 reviews)</span>
-            </div>
+            {product.rating && (
+              <div className="flex items-center gap-product-detail-rating-gap mb-product-detail-rating-margin">
+                <Rating value={product.rating} readOnly />
+                <span className="text-product-detail-rating-text">
+                  ({product.reviewCount || 0} reviews)
+                </span>
+              </div>
+            )}
 
             {/* Price */}
             <div className="mb-product-detail-price-margin">
-              <span className="text-product-detail-price font-product-detail-price">{price?.calculated_price}</span>
-              {price?.original_price &&
-                price.original_price !== price.calculated_price && (
+              <span className="text-product-detail-price font-product-detail-price">
+                {selectedVariant?.prices?.[0]?.calculated_price || price?.calculated_price}
+              </span>
+              {selectedVariant?.prices?.[0]?.original_price &&
+                selectedVariant.prices[0].original_price !== selectedVariant.prices[0].calculated_price && (
                   <span className="text-product-detail-original-price line-through ml-product-detail-original-price-margin">
-                    {price.original_price}
+                    {selectedVariant.prices[0].original_price}
                   </span>
                 )}
             </div>
 
             {/* Description */}
-            <p className="text-product-detail-description mb-product-detail-description-margin">{product.description}</p>
+            <p className="text-product-detail-description mb-product-detail-description-margin">
+              {product.description}
+            </p>
 
-            {/* Size Selector */}
-            {sizes.length > 0 && (
-              <div className="mb-product-detail-variant-margin">
-                <label htmlFor="size" className="text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin">
-                  Size
-                </label>
-                <Select
-                  value={selectedSize ? [selectedSize] : []}
-                  options={sizes.map((size) => ({ value: size, label: size }))}
-                  placeholder="Select size"
-                  onValueChange={(details) =>
-                    setSelectedSize(details.value[0] || '')
-                  }
-                />
+            {/* SKU and Stock Info */}
+            {selectedVariant && (
+              <div className="text-sm text-gray-600 mb-4">
+                <p>SKU: {selectedVariant.sku}</p>
+                {selectedVariant.inventory_quantity !== undefined && (
+                  <p>In Stock: {selectedVariant.inventory_quantity} units</p>
+                )}
               </div>
             )}
 
-            {/* Color Selector */}
-            {colors.length > 0 && (
-              <div className="mb-product-detail-variant-margin">
-                <label htmlFor="color" className="text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin">
-                  Color
-                </label>
-                <Select
-                  value={selectedColor ? [selectedColor] : []}
-                  options={colors.map((color) => ({
-                    value: color,
-                    label: color,
-                  }))}
-                  placeholder="Select color"
-                  onValueChange={(details) =>
-                    setSelectedColor(details.value[0] || '')
-                  }
-                />
-              </div>
-            )}
+            {/* Variant Selectors */}
+            {optionTypes.map((option) => {
+              const optionKey = option.title.toLowerCase()
+              const isColor = optionKey === 'color' || optionKey === 'colour'
+              
+              return (
+                <div key={option.id} className="mb-product-detail-variant-margin">
+                  <label className="text-product-detail-variant-label font-product-detail-variant-label mb-product-detail-variant-label-margin">
+                    {option.title}
+                  </label>
+                  
+                  {isColor ? (
+                    /* Color swatches */
+                    <div className="flex flex-wrap gap-2">
+                      {option.values.map((value) => {
+                        const variantWithColor = product.variants?.find(
+                          (v) => v.options?.[optionKey] === value
+                        )
+                        const isSelected = selectedOptions[optionKey] === value
+                        
+                        return (
+                          <button
+                            key={value}
+                            onClick={() => handleOptionChange(option.title, value)}
+                            className={`
+                              relative w-10 h-10 rounded-full border-2 transition-all
+                              ${isSelected ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-gray-300'}
+                            `}
+                            title={value}
+                          >
+                            <span
+                              className="absolute inset-1 rounded-full"
+                              style={{
+                                backgroundColor: variantWithColor?.colorHex || '#ccc',
+                              }}
+                            />
+                            {isSelected && (
+                              <Icon
+                                icon="icon-[mdi--check]"
+                                className="absolute inset-0 m-auto text-white mix-blend-difference"
+                              />
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    /* Size or other option buttons */
+                    <div className="flex flex-wrap gap-2">
+                      {option.values.map((value) => {
+                        const isSelected = selectedOptions[optionKey] === value
+                        const variantForOption = product.variants?.find(
+                          (v) => v.options?.[optionKey] === value
+                        )
+                        const isOutOfStock = variantForOption?.inventory_quantity === 0
+                        
+                        return (
+                          <button
+                            key={value}
+                            onClick={() => handleOptionChange(option.title, value)}
+                            disabled={isOutOfStock}
+                            className={`
+                              px-4 py-2 border rounded-md transition-all
+                              ${isSelected
+                                ? 'border-primary bg-primary text-white'
+                                : isOutOfStock
+                                ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                                : 'border-gray-300 hover:border-gray-400'
+                              }
+                            `}
+                          >
+                            {value}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
 
             {/* Quantity */}
             <div className="mb-product-detail-quantity-margin">
@@ -231,35 +349,34 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 variant="primary"
                 size="lg"
                 className="flex-1"
-                disabled={stockStatus === 'out-of-stock'}
+                disabled={selectedVariant?.inventory_quantity === 0}
                 icon="icon-[mdi--cart-plus]"
                 onClick={() => {
-                  // Validate size/color selection if required
-                  if (sizes.length > 0 && !selectedSize) {
-                    alert('Please select a size')
-                    return
-                  }
-                  if (colors.length > 0 && !selectedColor) {
-                    alert('Please select a color')
+                  if (!selectedVariant) {
+                    toast.create({
+                      title: 'Please select options',
+                      description: 'Please select all product options before adding to cart.',
+                      type: 'error',
+                    })
                     return
                   }
 
-                  // Add to cart
+                  // Add to cart with variant info
                   addItem(product, {
-                    size: selectedSize,
-                    color: selectedColor,
+                    variantId: selectedVariant.id,
+                    ...selectedOptions,
                     quantity,
                   })
 
-                  // Show success toast
+                  // Show success toast with variant details
                   toast.create({
                     title: 'Added to cart',
-                    description: `${product.title} has been added to your cart.`,
+                    description: `${product.title} (${selectedVariant.title}) has been added to your cart.`,
                     type: 'success',
                   })
                 }}
               >
-                {stockStatus === 'out-of-stock'
+                {selectedVariant?.inventory_quantity === 0
                   ? 'Out of Stock'
                   : 'Add to Cart'}
               </Button>
@@ -274,31 +391,35 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Stock Info */}
             <div className="flex items-center gap-product-detail-stock-gap text-product-detail-stock">
-              {stockStatus === 'in-stock' && (
+              {selectedVariant && selectedVariant.inventory_quantity !== undefined && (
                 <>
-                  <Icon
-                    icon="icon-[mdi--check-circle]"
-                    className="text-product-detail-stock-success"
-                  />
-                  <span>In stock and ready to ship</span>
-                </>
-              )}
-              {stockStatus === 'low-stock' && (
-                <>
-                  <Icon
-                    icon="icon-[mdi--alert-circle]"
-                    className="text-product-detail-stock-warning"
-                  />
-                  <span>Only a few left in stock</span>
-                </>
-              )}
-              {stockStatus === 'out-of-stock' && (
-                <>
-                  <Icon
-                    icon="icon-[mdi--close-circle]"
-                    className="text-product-detail-stock-error"
-                  />
-                  <span>Currently out of stock</span>
+                  {selectedVariant.inventory_quantity > 5 && (
+                    <>
+                      <Icon
+                        icon="icon-[mdi--check-circle]"
+                        className="text-product-detail-stock-success"
+                      />
+                      <span>In stock and ready to ship</span>
+                    </>
+                  )}
+                  {selectedVariant.inventory_quantity > 0 && selectedVariant.inventory_quantity <= 5 && (
+                    <>
+                      <Icon
+                        icon="icon-[mdi--alert-circle]"
+                        className="text-product-detail-stock-warning"
+                      />
+                      <span>Only {selectedVariant.inventory_quantity} left in stock</span>
+                    </>
+                  )}
+                  {selectedVariant.inventory_quantity === 0 && (
+                    <>
+                      <Icon
+                        icon="icon-[mdi--close-circle]"
+                        className="text-product-detail-stock-error"
+                      />
+                      <span>Currently out of stock</span>
+                    </>
+                  )}
                 </>
               )}
             </div>

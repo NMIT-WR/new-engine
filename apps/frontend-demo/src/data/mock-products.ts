@@ -1,5 +1,33 @@
 import type { BadgeProps } from 'ui/src/atoms/badge'
-import type { Product } from '../types/product'
+import type { Product, ProductReview, ProductSpecification } from '../types/product'
+
+// Helper function to generate random reviews
+function generateReviews(count: number, productId: string): ProductReview[] {
+  const reviewTemplates = [
+    { rating: 5, title: 'Excellent quality!', comment: 'The fabric feels premium and the fit is perfect. Highly recommend!' },
+    { rating: 4, title: 'Good product', comment: 'Nice quality, runs a bit small. Order one size up.' },
+    { rating: 5, title: 'Love it!', comment: 'Exactly as described. Fast shipping and great customer service.' },
+    { rating: 3, title: 'Average', comment: 'Quality is okay for the price. Color is slightly different from the photo.' },
+    { rating: 5, title: 'Perfect fit', comment: 'Best purchase I have made this year. Will definitely buy again!' },
+    { rating: 4, title: 'Great value', comment: 'Good quality for the price point. Very satisfied with my purchase.' },
+  ]
+  const authors = ['John D.', 'Sarah M.', 'Mike R.', 'Emma L.', 'Alex K.', 'Lisa T.']
+  
+  const reviews: ProductReview[] = []
+  for (let i = 0; i < count; i++) {
+    const template = reviewTemplates[i % reviewTemplates.length]
+    reviews.push({
+      id: `${productId}_review_${i + 1}`,
+      rating: template.rating,
+      title: template.title,
+      comment: template.comment,
+      author: authors[i % authors.length],
+      date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      verified: Math.random() > 0.3,
+    })
+  }
+  return reviews
+}
 
 // Mock products that match Medusa data structure
 export const mockProducts: Product[] = [
@@ -8,12 +36,24 @@ export const mockProducts: Product[] = [
     title: 'White Cotton T-Shirt with Extra Long Name That Should Be Truncated',
     handle: 'white-cotton-t-shirt',
     description: 'Comfortable cotton t-shirt perfect for everyday wear',
+    longDescription: 'Experience ultimate comfort with our premium White Cotton T-Shirt. Made from 100% organic cotton, this versatile piece features a classic crew neck design and a relaxed fit that works perfectly for any casual occasion. The breathable fabric ensures all-day comfort, while the reinforced seams provide lasting durability.',
     thumbnail:
       'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop',
     images: [
       {
         id: 'img_01',
         url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop',
+        alt: 'White Cotton T-Shirt Front View',
+      },
+      {
+        id: 'img_01_2',
+        url: 'https://images.unsplash.com/photo-1622445275576-721325763afe?w=600&h=800&fit=crop',
+        alt: 'White Cotton T-Shirt Detail View',
+      },
+      {
+        id: 'img_01_3',
+        url: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&h=800&fit=crop',
+        alt: 'White Cotton T-Shirt Model View',
       },
     ],
     status: 'published',
@@ -26,8 +66,8 @@ export const mockProducts: Product[] = [
     variants: [
       {
         id: 'var_01',
-        title: 'S',
-        sku: 'WT-001-S',
+        title: 'S / White',
+        sku: 'WT-001-S-W',
         inventory_quantity: 10,
         prices: [
           {
@@ -38,12 +78,13 @@ export const mockProducts: Product[] = [
             original_price: '€39.00',
           },
         ],
-        options: { size: 'S' },
+        options: { size: 'S', color: 'White' },
+        colorHex: '#FFFFFF',
       },
       {
         id: 'var_02',
-        title: 'M',
-        sku: 'WT-001-M',
+        title: 'M / White',
+        sku: 'WT-001-M-W',
         inventory_quantity: 15,
         prices: [
           {
@@ -54,22 +95,101 @@ export const mockProducts: Product[] = [
             original_price: '€39.00',
           },
         ],
-        options: { size: 'M' },
+        options: { size: 'M', color: 'White' },
+        colorHex: '#FFFFFF',
+      },
+      {
+        id: 'var_02_b',
+        title: 'M / Black',
+        sku: 'WT-001-M-B',
+        inventory_quantity: 8,
+        prices: [
+          {
+            id: 'price_02_b',
+            currency_code: 'EUR',
+            amount: 2900,
+            calculated_price: '€29.00',
+            original_price: '€39.00',
+          },
+        ],
+        options: { size: 'M', color: 'Black' },
+        colorHex: '#000000',
+      },
+      {
+        id: 'var_03',
+        title: 'L / White',
+        sku: 'WT-001-L-W',
+        inventory_quantity: 12,
+        prices: [
+          {
+            id: 'price_03',
+            currency_code: 'EUR',
+            amount: 2900,
+            calculated_price: '€29.00',
+            original_price: '€39.00',
+          },
+        ],
+        options: { size: 'L', color: 'White' },
+        colorHex: '#FFFFFF',
+      },
+      {
+        id: 'var_04',
+        title: 'XL / White',
+        sku: 'WT-001-XL-W',
+        inventory_quantity: 5,
+        prices: [
+          {
+            id: 'price_04',
+            currency_code: 'EUR',
+            amount: 2900,
+            calculated_price: '€29.00',
+            original_price: '€39.00',
+          },
+        ],
+        options: { size: 'XL', color: 'White' },
+        colorHex: '#FFFFFF',
       },
     ],
-    options: [{ id: 'opt_01', title: 'Size', values: ['S', 'M', 'L', 'XL'] }],
+    options: [
+      { id: 'opt_01', title: 'Size', values: ['S', 'M', 'L', 'XL'] },
+      { id: 'opt_01_color', title: 'Color', values: ['White', 'Black'] },
+    ],
+    specifications: [
+      { name: 'Material', value: '100% Organic Cotton' },
+      { name: 'Weight', value: '180 GSM' },
+      { name: 'Fit', value: 'Regular Fit' },
+      { name: 'Care Instructions', value: 'Machine wash cold, tumble dry low' },
+      { name: 'Origin', value: 'Made in Portugal' },
+    ],
+    features: [
+      'Premium organic cotton fabric',
+      'Pre-shrunk for perfect fit',
+      'Reinforced shoulder seams',
+      'Tagless comfort',
+      'Eco-friendly production',
+    ],
+    reviews: generateReviews(5, 'prod_01'),
+    rating: 4.6,
+    reviewCount: 127,
   },
   {
     id: 'prod_02',
     title: 'Blue Denim Jeans',
     handle: 'blue-denim-jeans',
     description: 'Classic blue denim jeans with modern fit',
+    longDescription: 'Our Blue Denim Jeans combine timeless style with modern comfort. Crafted from premium stretch denim, these jeans offer the perfect balance of durability and flexibility. The contemporary slim fit flatters without restricting movement, making them ideal for both casual and semi-formal occasions.',
     thumbnail:
       'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=800&fit=crop',
     images: [
       {
         id: 'img_02',
         url: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=800&fit=crop',
+        alt: 'Blue Denim Jeans Front View',
+      },
+      {
+        id: 'img_02_2',
+        url: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&h=800&fit=crop',
+        alt: 'Blue Denim Jeans Detail',
       },
     ],
     status: 'published',
@@ -77,8 +197,8 @@ export const mockProducts: Product[] = [
     variants: [
       {
         id: 'var_03',
-        title: '30',
-        sku: 'BDJ-001-30',
+        title: '30 / Medium Blue',
+        sku: 'BDJ-001-30-MB',
         inventory_quantity: 8,
         prices: [
           {
@@ -88,12 +208,63 @@ export const mockProducts: Product[] = [
             calculated_price: '€79.00',
           },
         ],
-        options: { size: '30' },
+        options: { size: '30', wash: 'Medium Blue' },
+        colorHex: '#4169E1',
+      },
+      {
+        id: 'var_03_2',
+        title: '32 / Medium Blue',
+        sku: 'BDJ-001-32-MB',
+        inventory_quantity: 12,
+        prices: [
+          {
+            id: 'price_03_2',
+            currency_code: 'EUR',
+            amount: 7900,
+            calculated_price: '€79.00',
+          },
+        ],
+        options: { size: '32', wash: 'Medium Blue' },
+        colorHex: '#4169E1',
+      },
+      {
+        id: 'var_03_3',
+        title: '32 / Dark Blue',
+        sku: 'BDJ-001-32-DB',
+        inventory_quantity: 5,
+        prices: [
+          {
+            id: 'price_03_3',
+            currency_code: 'EUR',
+            amount: 7900,
+            calculated_price: '€79.00',
+          },
+        ],
+        options: { size: '32', wash: 'Dark Blue' },
+        colorHex: '#000080',
       },
     ],
     options: [
       { id: 'opt_02', title: 'Size', values: ['28', '30', '32', '34'] },
+      { id: 'opt_02_wash', title: 'Wash', values: ['Medium Blue', 'Dark Blue'] },
     ],
+    specifications: [
+      { name: 'Material', value: '98% Cotton, 2% Elastane' },
+      { name: 'Fit', value: 'Slim Fit' },
+      { name: 'Rise', value: 'Mid Rise' },
+      { name: 'Leg Opening', value: '14.5 inches' },
+      { name: 'Care', value: 'Machine wash inside out' },
+    ],
+    features: [
+      'Stretch denim for comfort',
+      'Five-pocket styling',
+      'Button fly closure',
+      'Reinforced stress points',
+      'Pre-washed for softness',
+    ],
+    reviews: generateReviews(3, 'prod_02'),
+    rating: 4.3,
+    reviewCount: 89,
   },
   {
     id: 'prod_03',
@@ -406,12 +577,24 @@ export const mockProducts: Product[] = [
     title: 'Classic Oxford Shirt',
     handle: 'classic-oxford-shirt',
     description: 'Timeless oxford shirt for formal and casual occasions',
+    longDescription: 'The Classic Oxford Shirt is a wardrobe essential that seamlessly transitions from boardroom to weekend brunch. Crafted from premium Oxford cotton with a subtle texture, this shirt features a button-down collar, chest pocket, and curved hem. The versatile design pairs perfectly with chinos for smart-casual looks or under a blazer for formal occasions.',
     thumbnail:
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&h=800&fit=crop',
     images: [
       {
         id: 'img_11',
         url: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&h=800&fit=crop',
+        alt: 'Classic Oxford Shirt Front View',
+      },
+      {
+        id: 'img_11_2',
+        url: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&h=800&fit=crop',
+        alt: 'Classic Oxford Shirt Detail View',
+      },
+      {
+        id: 'img_11_3',
+        url: 'https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&h=800&fit=crop',
+        alt: 'Classic Oxford Shirt Lifestyle',
       },
     ],
     status: 'published',
@@ -437,6 +620,7 @@ export const mockProducts: Product[] = [
           },
         ],
         options: { size: 'M', color: 'Light Blue' },
+        colorHex: '#ADD8E6',
       },
       {
         id: 'var_13',
@@ -458,12 +642,63 @@ export const mockProducts: Product[] = [
           },
         ],
         options: { size: 'L', color: 'White' },
+        colorHex: '#FFFFFF',
+      },
+      {
+        id: 'var_13_2',
+        title: 'M / Pink',
+        sku: 'OXF-001-M-P',
+        inventory_quantity: 10,
+        prices: [
+          {
+            id: 'price_13_2',
+            currency_code: 'EUR',
+            amount: 5500,
+            calculated_price: '€55.00',
+          },
+        ],
+        options: { size: 'M', color: 'Pink' },
+        colorHex: '#FFB6C1',
+      },
+      {
+        id: 'var_13_3',
+        title: 'S / Light Blue',
+        sku: 'OXF-001-S-LB',
+        inventory_quantity: 15,
+        prices: [
+          {
+            id: 'price_13_3',
+            currency_code: 'EUR',
+            amount: 5500,
+            calculated_price: '€55.00',
+          },
+        ],
+        options: { size: 'S', color: 'Light Blue' },
+        colorHex: '#ADD8E6',
       },
     ],
     options: [
       { id: 'opt_11', title: 'Size', values: ['S', 'M', 'L', 'XL'] },
       { id: 'opt_12', title: 'Color', values: ['White', 'Light Blue', 'Pink'] },
     ],
+    specifications: [
+      { name: 'Material', value: '100% Cotton Oxford' },
+      { name: 'Weight', value: '140 GSM' },
+      { name: 'Collar', value: 'Button-down' },
+      { name: 'Fit', value: 'Regular Fit' },
+      { name: 'Care', value: 'Machine wash warm, iron medium heat' },
+    ],
+    features: [
+      'Premium Oxford cotton weave',
+      'Button-down collar',
+      'Chest pocket',
+      'Curved hem',
+      'Mother-of-pearl buttons',
+      'Pre-washed for softness',
+    ],
+    reviews: generateReviews(4, 'prod_11'),
+    rating: 4.8,
+    reviewCount: 213,
   },
   {
     id: 'prod_12',

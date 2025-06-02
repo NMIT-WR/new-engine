@@ -36,6 +36,14 @@ export function calculateProductCounts(products: Product[]): ProductCounts {
       if (variant.options?.color) {
         productColors.add(variant.options.color)
       }
+      // Also check for 'wash' option (for denim products)
+      if (variant.options?.wash) {
+        productColors.add(variant.options.wash)
+      }
+      // Also check for 'pattern' option (for patterned products)
+      if (variant.options?.pattern) {
+        productColors.add(variant.options.pattern)
+      }
     })
     productColors.forEach((color) => {
       colorCounts[color] = (colorCounts[color] || 0) + 1
@@ -148,6 +156,14 @@ export function filterProducts(
         if (variant.options?.color) {
           productColors.add(variant.options.color)
         }
+        // Also check for 'wash' option (for denim products)
+        if (variant.options?.wash) {
+          productColors.add(variant.options.wash)
+        }
+        // Also check for 'pattern' option (for patterned products)
+        if (variant.options?.pattern) {
+          productColors.add(variant.options.pattern)
+        }
       })
       const hasMatchingColor = Array.from(filters.colors).some((color) =>
         productColors.has(color)
@@ -164,7 +180,7 @@ export function filterProducts(
 /**
  * Sort products based on sort option
  */
-export type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'name-asc'
+export type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
 
 export function sortProducts(
   products: Product[],
@@ -201,6 +217,9 @@ export function sortProducts(
       break
     case 'name-asc':
       sorted.sort((a, b) => a.title.localeCompare(b.title))
+      break
+    case 'name-desc':
+      sorted.sort((a, b) => b.title.localeCompare(a.title))
       break
     // 'newest' is default, no sorting needed
   }

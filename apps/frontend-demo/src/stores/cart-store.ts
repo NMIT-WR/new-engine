@@ -8,6 +8,7 @@ export interface CartItem {
   quantity: number
   selectedSize?: string
   selectedColor?: string
+  variantId?: string
 }
 
 export interface CartState {
@@ -58,7 +59,7 @@ if (typeof window !== 'undefined') {
 export const cartHelpers = {
   addItem: (
     product: Product,
-    options: { size?: string; color?: string; quantity?: number } = {}
+    options: { size?: string; color?: string; quantity?: number; variantId?: string } = {}
   ) => {
     cartStore.setState((state) => {
       const existingItem = state.items.find(
@@ -87,6 +88,7 @@ export const cartHelpers = {
         quantity: options.quantity || 1,
         selectedSize: options.size,
         selectedColor: options.color,
+        variantId: options.variantId,
       }
 
       return {

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pagination } from 'ui/src/molecules/pagination'
 import { ProductCard } from 'ui/src/molecules/product-card'
 import { tv } from 'ui/src/utils'
@@ -27,11 +27,23 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const styles = productGridVariants()
 
+  // Reset to page 1 when products change (due to filtering)
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [products.length])
+
   // Calculate pagination
   const totalPages = Math.ceil(products.length / pageSize)
   const startIndex = (currentPage - 1) * pageSize
   const endIndex = startIndex + pageSize
   const currentProducts = products.slice(startIndex, endIndex)
+
+  // If current page is out of bounds after filtering, reset to last valid page
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
 
   if (products.length === 0) {
     return (
