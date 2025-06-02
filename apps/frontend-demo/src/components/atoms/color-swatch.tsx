@@ -16,7 +16,7 @@ const colorSwatchVariants = tv({
     selected: {
       true: [
         'border-color-swatch-selected',
-        'ring-2 ring-color-swatch-selected ring-offset-2',
+      //  'ring-2 ring-color-swatch-selected ring-offset-2',
       ],
       false: ['border-color-swatch-border hover:border-color-swatch-border-hover'],
     },
@@ -59,12 +59,6 @@ export const ColorSwatch = forwardRef<HTMLButtonElement, ColorSwatchProps>(
           className="absolute inset-[3px] rounded-color-swatch-inner"
           style={{ backgroundColor: color }}
         />
-        {selected && (
-          <Icon
-            icon="icon-[mdi--check]"
-            className="absolute inset-0 m-auto text-color-swatch-check mix-blend-difference z-10"
-          />
-        )}
       </button>
     )
   }

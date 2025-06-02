@@ -12,6 +12,8 @@ import { Carousel } from 'ui/src/molecules/carousel'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { Select } from 'ui/src/molecules/select'
 import { useToast } from 'ui/src/molecules/toast'
+import { ColorSwatch } from '../../../components/atoms/color-swatch'
+import { FilterButton } from '../../../components/atoms/filter-button'
 import { FeaturedProducts } from '../../../components/featured-products'
 import { mockProducts } from '../../../data/mock-products'
 import { useCart } from '../../../hooks/use-cart'
@@ -20,6 +22,7 @@ import {
   extractProductData,
   getRelatedProducts,
 } from '../../../utils/product-utils'
+import { getColorHex } from '../../../utils/color-map'
 
 interface ProductDetailProps {
   product: Product
@@ -68,17 +71,23 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       value: 'description',
       label: 'Description',
       content: (
-        <div className="prose max-w-none">
-          <p>{product.longDescription || product.description}</p>
+        <div className="space-y-product-detail-tab-content-gap">
+          <p className="text-product-detail-tab-content-size text-product-detail-tab-content-fg leading-relaxed">
+            {product.longDescription || product.description}
+          </p>
           {product.features && product.features.length > 0 && (
-            <>
-              <h4 className="font-bold">Features:</h4>
-              <ul>
+            <div className="space-y-product-detail-tab-content-gap">
+              <h4 className="text-product-detail-tab-heading-size font-product-detail-tab-heading text-product-detail-tab-heading-fg">
+                Key Features
+              </h4>
+              <ul className="space-y-product-detail-tab-features-gap pl-5">
                 {product.features.map((feature, idx) => (
-                  <li key={idx}>{feature}</li>
+                  <li key={idx} className="text-product-detail-tab-content-size text-product-detail-tab-content-fg list-disc">
+                    {feature}
+                  </li>
                 ))}
               </ul>
-            </>
+            </div>
           )}
         </div>
       ),
@@ -87,38 +96,100 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       value: 'details',
       label: 'Product Details',
       content: (
-        <div>
+        <div className="space-y-product-detail-tab-section-gap">
           {product.specifications && product.specifications.length > 0 && (
-            <div className="mb-6">
-              <h4 className="font-bold mb-4">Specifications</h4>
-              <dl className="grid grid-cols-1 gap-3">
+            <div className="space-y-product-detail-tab-content-gap">
+              <h4 className="text-product-detail-tab-heading-size font-product-detail-tab-heading text-product-detail-tab-heading-fg">
+                Specifications
+              </h4>
+              <dl className="space-y-product-detail-tab-spec-gap">
                 {product.specifications.map((spec, idx) => (
-                  <div key={idx} className="flex">
-                    <dt className="font-medium min-w-[150px]">{spec.name}:</dt>
-                    <dd className="text-gray-600">{spec.value}</dd>
+                  <div key={idx} className="flex gap-product-detail-tab-spec-gap py-product-detail-tab-table-cell-y border-b border-product-detail-tab-spec-border last:border-0">
+                    <dt className="font-product-detail-tab-spec-label text-product-detail-tab-spec-size text-product-detail-tab-spec-label min-w-[var(--spacing-product-detail-tab-spec-label-width)]">
+                      {spec.name}
+                    </dt>
+                    <dd className="text-product-detail-tab-spec-size text-product-detail-tab-spec-value">
+                      {spec.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
             </div>
           )}
-          <Accordion
-            items={[
-              {
-                id: 'shipping',
-                value: 'shipping',
-                title: 'Shipping & Returns',
-                content:
-                  'Free shipping on orders over €50. 30-day return policy. Returns accepted in original condition.',
-              },
-              {
-                id: 'sizing',
-                value: 'sizing',
-                title: 'Size Guide',
-                content:
-                  'True to size. See our size chart for detailed measurements. If between sizes, we recommend sizing up.',
-              },
-            ]}
-          />
+          <div className="mt-product-detail-tab-accordion-margin">
+            <Accordion
+              items={[
+                {
+                  id: 'shipping',
+                  value: 'shipping',
+                  title: 'Shipping & Returns',
+                  content: (
+                    <div className="text-product-detail-tab-content-size text-product-detail-tab-content-fg space-y-2">
+                      <p>• Free shipping on orders over €50</p>
+                      <p>• Express delivery available (1-2 business days)</p>
+                      <p>• 30-day return policy</p>
+                      <p>• Returns accepted in original condition with tags</p>
+                    </div>
+                  ),
+                },
+                {
+                  id: 'sizing',
+                  value: 'sizing',
+                  title: 'Size Guide',
+                  content: (
+                    <div className="text-product-detail-tab-content-size text-product-detail-tab-content-fg space-y-2">
+                      <p>Our products are true to size. If you're between sizes, we recommend sizing up for a comfortable fit.</p>
+                      <p className="font-product-detail-tab-spec-label mt-product-detail-tab-spec-gap">Size Chart:</p>
+                      <table className="w-full text-product-detail-tab-review-meta">
+                        <thead>
+                          <tr className="border-b border-product-detail-tab-spec-border">
+                            <th className="text-left py-product-detail-tab-table-cell-y">Size</th>
+                            <th className="text-left py-product-detail-tab-table-cell-y">EU</th>
+                            <th className="text-left py-product-detail-tab-table-cell-y">US</th>
+                            <th className="text-left py-product-detail-tab-table-cell-y">UK</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-product-detail-tab-spec-border">
+                            <td className="py-product-detail-tab-table-cell-y">S</td>
+                            <td className="py-product-detail-tab-table-cell-y">36-38</td>
+                            <td className="py-product-detail-tab-table-cell-y">4-6</td>
+                            <td className="py-product-detail-tab-table-cell-y">8-10</td>
+                          </tr>
+                          <tr className="border-b border-product-detail-tab-spec-border">
+                            <td className="py-product-detail-tab-table-cell-y">M</td>
+                            <td className="py-product-detail-tab-table-cell-y">38-40</td>
+                            <td className="py-product-detail-tab-table-cell-y">6-8</td>
+                            <td className="py-product-detail-tab-table-cell-y">10-12</td>
+                          </tr>
+                          <tr className="border-b border-product-detail-tab-spec-border">
+                            <td className="py-product-detail-tab-table-cell-y">L</td>
+                            <td className="py-product-detail-tab-table-cell-y">40-42</td>
+                            <td className="py-product-detail-tab-table-cell-y">8-10</td>
+                            <td className="py-product-detail-tab-table-cell-y">12-14</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  ),
+                },
+                {
+                  id: 'care',
+                  value: 'care',
+                  title: 'Care Instructions',
+                  content: (
+                    <div className="text-product-detail-tab-content-size text-product-detail-tab-content-fg space-y-2">
+                      <p>• Machine wash cold with like colors</p>
+                      <p>• Do not bleach</p>
+                      <p>• Tumble dry low or hang to dry</p>
+                      <p>• Cool iron if needed</p>
+                      <p>• Do not dry clean</p>
+                    </div>
+                  ),
+                },
+              ]}
+            />
+          </div>
         </div>
       ),
     },
@@ -126,38 +197,69 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       value: 'reviews',
       label: `Reviews (${product.reviewCount || 0})`,
       content: (
-        <div className="space-y-product-detail-review-gap">
+        <div className="space-y-product-detail-tab-section-gap">
           {product.rating && (
-            <div className="flex items-center gap-product-detail-review-rating-gap">
-              <Rating value={product.rating} readOnly />
-              <span>{product.rating} out of 5</span>
-              {product.reviewCount && (
-                <span className="text-gray-500">({product.reviewCount} reviews)</span>
-              )}
+            <div className="bg-product-detail-tab-review-bg p-product-detail-tab-review-card rounded-product-detail-tab-review-bg">
+              <div className="flex items-center gap-product-detail-review-rating-gap">
+                <Rating value={product.rating} readOnly />
+                <span className="text-product-detail-tab-heading-size font-product-detail-tab-heading">
+                  {product.rating} out of 5
+                </span>
+                {product.reviewCount && (
+                  <span className="text-product-detail-tab-content-muted">
+                    ({product.reviewCount} reviews)
+                  </span>
+                )}
+              </div>
             </div>
           )}
           {product.reviews && product.reviews.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-product-detail-tab-content-gap">
               {product.reviews.map((review) => (
-                <div key={review.id} className="border-b pb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Rating value={review.rating} readOnly />
-                    <span className="font-semibold">{review.title}</span>
-                    {review.verified && (
-                      <Badge variant="success">Verified</Badge>
-                    )}
+                <div key={review.id} className="border-b border-product-detail-tab-review-border pb-product-detail-tab-content-gap">
+                  <div className="flex items-start justify-between mb-product-detail-tab-spec-gap">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-product-detail-tab-spec-gap">
+                        <Rating value={review.rating} readOnly />
+                        <h5 className="font-product-detail-tab-spec-label text-product-detail-tab-spec-size">
+                          {review.title}
+                        </h5>
+                        {review.verified && (
+                          <Badge variant="success" size="sm">Verified Purchase</Badge>
+                        )}
+                      </div>
+                      <div className="text-product-detail-tab-review-meta text-product-detail-tab-content-muted">
+                        By {review.author} • {new Date(review.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-gray-600 mb-2">{review.comment}</p>
-                  <div className="text-sm text-gray-500">
-                    By {review.author} on {new Date(review.date).toLocaleDateString()}
-                  </div>
+                  <p className="text-product-detail-tab-content-size text-product-detail-tab-content-fg leading-relaxed">
+                    {review.comment}
+                  </p>
+                  {review.helpful && (
+                    <div className="mt-product-detail-tab-spec-gap text-product-detail-tab-review-meta text-product-detail-tab-content-muted">
+                      {review.helpful} people found this helpful
+                    </div>
+                  )}
                 </div>
               ))}
+              <Button variant="secondary" className="w-full">
+                Load More Reviews
+              </Button>
             </div>
           ) : (
-            <p className="text-product-detail-review-placeholder text-sm">
-              No reviews yet. Be the first to review!
-            </p>
+            <div className="text-center py-product-detail-tab-review-card bg-product-detail-tab-review-bg rounded-product-detail-tab-review-bg">
+              <p className="text-product-detail-tab-content-size text-product-detail-tab-content-muted mb-product-detail-tab-content-gap">
+                No reviews yet. Be the first to share your experience!
+              </p>
+              <Button variant="primary">
+                Write a Review
+              </Button>
+            </div>
           )}
         </div>
       ),
@@ -268,30 +370,16 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                           (v) => v.options?.[optionKey] === value
                         )
                         const isSelected = selectedOptions[optionKey] === value
+                        const colorHex = variantWithColor?.colorHex || getColorHex(value)
                         
                         return (
-                          <button
+                          <ColorSwatch
                             key={value}
+                            selected={isSelected}
+                            color={colorHex}
+                            colorName={value}
                             onClick={() => handleOptionChange(option.title, value)}
-                            className={`
-                              relative w-10 h-10 rounded-full border-2 transition-all
-                              ${isSelected ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-gray-300'}
-                            `}
-                            title={value}
-                          >
-                            <span
-                              className="absolute inset-1 rounded-full"
-                              style={{
-                                backgroundColor: variantWithColor?.colorHex || '#ccc',
-                              }}
-                            />
-                            {isSelected && (
-                              <Icon
-                                icon="icon-[mdi--check]"
-                                className="absolute inset-0 m-auto text-white mix-blend-difference"
-                              />
-                            )}
-                          </button>
+                          />
                         )
                       })}
                     </div>
@@ -306,22 +394,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                         const isOutOfStock = variantForOption?.inventory_quantity === 0
                         
                         return (
-                          <button
+                          <FilterButton
                             key={value}
-                            onClick={() => handleOptionChange(option.title, value)}
+                            variant={isSelected ? 'selected' : 'default'}
                             disabled={isOutOfStock}
-                            className={`
-                              px-4 py-2 border rounded-md transition-all
-                              ${isSelected
-                                ? 'border-primary bg-primary text-white'
-                                : isOutOfStock
-                                ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
-                                : 'border-gray-300 hover:border-gray-400'
-                              }
-                            `}
+                            onClick={() => handleOptionChange(option.title, value)}
                           >
                             {value}
-                          </button>
+                          </FilterButton>
                         )
                       })}
                     </div>
@@ -339,6 +419,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   onChange={setQuantity}
                   min={1}
                   max={10}
+                  hideControls={false}
                 />
               </div>
             </div>

@@ -6,8 +6,8 @@
 @import "./atoms/_tabs.css";
 @import "./atoms/_textarea.css";
 @import "./atoms/_tooltip.css";
-@import "./atoms/_filter-button.css";
 @import "./atoms/_color-swatch.css";
+@import "./atoms/_filter-button.css";
 
 @import "./molecules/_accordion.css";
 @import "./molecules/_breadcrumb.css";

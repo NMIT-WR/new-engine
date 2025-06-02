@@ -42,6 +42,15 @@
   --spacing-product-detail-related-margin: var(--spacing-2xl);
   --spacing-product-detail-review-gap: var(--spacing-sm);
   --spacing-product-detail-review-rating-gap: var(--spacing-sm);
+  
+  /* Tab Content */
+  --spacing-product-detail-tab-content-gap: var(--spacing-md);
+  --spacing-product-detail-tab-section-gap: var(--spacing-lg);
+  --spacing-product-detail-tab-spec-gap: var(--spacing-sm);
+  --spacing-product-detail-tab-spec-label-width: 200px;
+  --spacing-product-detail-tab-features-gap: var(--spacing-xs);
+  --spacing-product-detail-tab-accordion-margin: var(--spacing-lg);
+  --spacing-product-detail-tab-table-cell-y: var(--spacing-xs);
 
   /* === PRODUCT DETAIL TYPOGRAPHY === */
   --text-product-detail-title: var(--text-3xl);
@@ -55,4 +64,22 @@
   --font-product-detail-variant-label: var(--font-weight-medium);
   --text-product-detail-quantity-label: var(--text-sm);
   --text-product-detail-stock: var(--text-sm);
+  
+  /* Tab Content Typography */
+  --color-product-detail-tab-content-fg: var(--color-fg);
+  --color-product-detail-tab-content-muted: var(--color-fg-muted);
+  --color-product-detail-tab-heading-fg: var(--color-fg);
+  --color-product-detail-tab-spec-label: var(--color-fg);
+  --color-product-detail-tab-spec-value: var(--color-fg-secondary);
+  --color-product-detail-tab-spec-border: var(--color-border);
+  --color-product-detail-tab-review-bg: var(--color-muted);
+  --color-product-detail-tab-review-border: var(--color-border);
+  --text-product-detail-tab-content-size: var(--text-base);
+  --text-product-detail-tab-heading-size: var(--text-lg);
+  --font-weight-product-detail-tab-heading: var(--font-semibold);
+  --text-product-detail-tab-spec-size: var(--text-base);
+  --font-weight-product-detail-tab-spec-label: var(--font-medium);
+  --text-product-detail-tab-review-meta: var(--text-sm);
+  --spacing-product-detail-tab-review-card: var(--spacing-md);
+  --radius-product-detail-tab-review-bg: var(--radius-lg);
 }
