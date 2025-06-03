@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { Carousel } from 'ui/src/molecules/carousel'
+import { Gallery } from '../../../components/organisms/gallery'
 import { FeaturedProducts } from '../../../components/featured-products'
 import { ProductInfo } from '../../../components/organisms/product-info'
 import { ProductTabs } from '../../../components/organisms/product-tabs'
@@ -26,7 +26,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   // Get related products
   const relatedProducts = getRelatedProducts(product, mockProducts, 4)
 
-  const carouselImages =
+  const galleryImages =
     product.images?.map((img, idx) => ({
       id: `image-${idx}`,
       src: img.url,
@@ -49,14 +49,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-product-detail-content-gap">
-          {/* Image Section */}
-          <div className="relative">
-            <Carousel
-              slides={carouselImages}
-              slideCount={carouselImages.length}
-              aspectRatio="portrait"
-              loop
-            />
+          {/* Image Gallery */}
+          <div className='aspect-square md:max-h-[60svh]'>
+          <Gallery
+            images={galleryImages}
+            aspectRatio="portrait"
+          />
           </div>
 
           {/* Info Section */}

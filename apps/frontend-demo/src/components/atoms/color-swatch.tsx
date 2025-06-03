@@ -5,7 +5,7 @@ import { tv } from 'ui/src/utils'
 
 const colorSwatchVariants = tv({
   base: [
-    'relative',
+    'relative cursor-pointer',
     'w-color-swatch-size h-color-swatch-size',
     'rounded-color-swatch',
     'border-2 transition-all duration-200',
