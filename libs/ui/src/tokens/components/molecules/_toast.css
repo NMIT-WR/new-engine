@@ -5,7 +5,6 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-toast-bg: var(--color-highlight);
-  --color-toast-border: var(--color-stroke-primary);
   --color-toast-title-fg: var(--color-fg-dark);
   --color-toast-description-fg: var(--color-fg-dark);
 
@@ -44,16 +43,12 @@
   --radius-toast-root: var(--radius-sm);
 
   /* === CLOSE BUTTON === */
-  --text-toast-close-size: var(--text-lg);
   --color-toast-close: var(--color-fg-dark);
   --color-toast-close-hover: var(--color-fg-primary);
 
   /* === PROGRESS BAR === */
-  --color-toast-progress-bg: var(--color-primary);
-  --height-toast-progress: 3px;
 
   /* === FOCUS RING === */
-  --color-toast-ring: --alpha(var(--color-primary) / var(--opacity-ring));
 
   /* === SPACING === */
   --padding-toast: var(--spacing-sm);
@@ -62,7 +57,6 @@
   --spacing-toast-close: var(--spacing-xs);
 
   /* === TYPOGRAPHY === */
-  --font-weight-toast-title: var(--font-weight-medium);
   --text-toast-title-size: var(--text-md);
   --text-toast-description-size: var(--text-sm);
   --text-toast-icon-size: var(--text-lg);

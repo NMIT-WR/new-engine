@@ -83,8 +83,6 @@
   --color-label-required: var(--color-input-danger);
 
   /* Validation message colors */
-  --color-success-text: var(--color-input-success);
-  --color-warning-text: var(--color-input-warning);
 
   /* Error/Helper/Extra colors */
   --color-error-text: var(--color-danger);
@@ -92,10 +90,6 @@
 
   /* Focus ring colors - using consistent opacity */
   --color-input-ring: --alpha(var(--color-primary) / var(--opacity-ring));
-  --color-input-ring-error: --alpha(
-    var(--color-input-danger) /
-    var(--opacity-ring)
-  );
   --color-input-ring-success: --alpha(
     var(--color-input-success) /
     var(--opacity-ring)

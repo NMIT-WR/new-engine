@@ -14,7 +14,6 @@
 
   --color-product-card-name-color: var(--color-text-primary);
   --text-product-card-name-size: var(--font-size-md);
-  --font-weight-product-card-name: var(--font-weight-bold);
   --leading-product-card-name: var(--line-height-snug);
 
   --gap-product-card: var(--spacing-3xs);
@@ -22,9 +21,7 @@
 
   --color-product-card-stock-color: var(--color-success);
   --text-product-card-stock-size: var(--font-size-sm);
-  --font-weight-product-card-stock: var(--font-weight-medium);
 
   --color-product-card-price-color: var(--color-text-primary);
   --text-product-card-price-size: var(--font-size-lg);
-  --font-weight-product-card-price: var(--font-weight-bold);
 }

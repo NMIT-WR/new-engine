@@ -5,8 +5,6 @@
   --spacing-search-form-lg: var(--spacing-sm);
 
   /* Button and input specific styling when in search context */
-  --border-radius-search-input-right: 0;
-  --border-radius-search-button-left: 0;
 }
 
 @utility token-icon-search {

@@ -40,7 +40,6 @@
   --spacing-accordion-content: var(--spacing-2xs);
 
   /* === TYPOGRAPHY === */
-  --font-weight-accordion-title: var(--font-weight-medium);
   --text-accordion-title-size: var(--text-md);
   --text-accordion-content: var(--text-md);
   --text-accordion-subtitle-size: var(--text-sm);
