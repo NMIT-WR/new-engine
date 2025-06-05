@@ -16,9 +16,9 @@ const productCard = tv({
     ],
     imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
     nameSlot:
-      'text-pc-name-fg text-pc-name-size font-pc-name leading-pc-name line-clamp-pc-name',
+      'text-pc-name-fg text-pc-name-size  leading-pc-name line-clamp-pc-name',
     priceSlot: 'text-pc-price-fg text-pc-price-size',
-    stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size font-pc-stock',
+    stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size ',
     badgesSlot: 'flex flex-wrap gap-pc-box',
     ratingSlot: 'flex items-center',
     buttonsSlot: 'flex flex-wrap w-fit',

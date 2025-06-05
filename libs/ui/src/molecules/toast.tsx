@@ -32,7 +32,6 @@ const toastVariants = tv({
       'data-[type=success]:text-toast-success-icon data-[type=success]:token-icon-toast-success',
       'data-[type=info]:text-toast-info-icon data-[type=info]:token-icon-toast-info',
       'data-[type=warning]:text-toast-warning-icon data-[type=warning]:token-icon-toast-warning',
-      'data-[type=loading]:text-toast-loading-icon data-[type=loading]:token-icon-toast-loading',
     ],
     title: [
       'font-toast-title text-toast-title-size text-toast-title-fg',
