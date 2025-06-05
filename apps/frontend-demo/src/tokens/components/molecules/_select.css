@@ -20,8 +20,6 @@
   /* === TRIGGER === */
   --color-select-trigger-bg: var(--color-select-bg);
   --color-select-trigger-border: var(--color-select-border);
-  --color-select-trigger-fg: var(--color-select-fg);
-  --color-select-trigger-placeholder: var(--color-select-placeholder);
   --color-select-trigger-hover: var(--color-fill-hover);
   --color-select-trigger-focus: var(--color-primary);
   --color-select-trigger-focus-border: var(--color-primary);
@@ -56,7 +54,6 @@
 
   /* === BORDERS & RADIUS === */
   --radius-select: var(--radius-md);
-  --border-select-width: var(--border-width-sm);
 
   /* === LAYOUT === */
   --spacing-select-min-width: 10rem;

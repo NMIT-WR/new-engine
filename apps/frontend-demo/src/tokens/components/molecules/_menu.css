@@ -6,8 +6,7 @@
   --shadow-menu-content-shadow: var(--shadow-lg);
 
   --padding-menu-content: var(--spacing-xs);
-  --min-width-menu-content: 12rem;
-  --max-height-menu-content: 24rem;
+  
 
   /* ===== MENU ITEM ===== */
   --color-menu-item-fg: var(--color-fg-primary);
@@ -22,8 +21,7 @@
   --text-menu-item-icon-size: var(--text-lg);
   --color-menu-item-icon-fg: var(--color-fg-secondary);
 
-  /* ===== MENU ITEM DESCRIPTION ===== */
-  --color-menu-item-description-fg: var(--color-fg-tertiary);
+  
 
   /* ===== MENU SEPARATOR ===== */
   --color-menu-separator-bg: var(--color-stroke-primary);

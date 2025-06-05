@@ -147,12 +147,10 @@
   --color-btn-disabled: var(--color-disabled-bg);
   --color-btn-text-disabled: var(--color-disabled-text);
   --color-btn-border-disabled: var(--color-disabled-border);
-  --color-btn-outlined-disabled: var(--color-fill-base);
 
   /* === TEXT COLORS === */
   --color-btn-text: var(--color-fg-reverse);
-  --color-btn-text-solid: var(--color-btn-text);
-  --color-btn-text-light: oklch(from var(--color-btn-text) 0.3 c h);
+  
   --color-btn-text-outlined: var(--color-fg-primary);
 
   --color-btn-text-primary: var(--color-btn-text);
@@ -228,8 +226,6 @@
   --color-btn-border-danger: var(--color-btn-danger);
 
   /* Border width */
-  --color-btn-stroke: var(--color-stroke-primary);
-  --color-btn-stroke-secondary: var(--color-stroke-secondary);
   --border-btn-width-sm: var(--border-width-sm);
   --border-btn-width-md: var(--border-width-md);
   --border-btn-width-lg: var(--border-width-lg);

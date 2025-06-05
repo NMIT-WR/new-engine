@@ -13,7 +13,7 @@
     var(--opacity-ring)
   );
   --color-checkbox-offset: var(--color-base);
-  --color-checkbox-ring-error: var(--color-checkbox-error);
+  
   --color-checkbox-border-error: var(--color-checkbox-error);
 
   --spacing-checkbox: var(--spacing-xs);

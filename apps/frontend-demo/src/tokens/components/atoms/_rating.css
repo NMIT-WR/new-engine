@@ -2,7 +2,7 @@
   /* Base tokens */
   --color-rating: var(--color-highlight);
   --color-rating-active: var(--color-warning);
-  --color-rating-hover: var(--color-warning);
+  
   --color-rating-disabled: --alpha(
     var(--color-rating-active) /
     var(--opacity-disabled)

@@ -31,9 +31,10 @@
   --padding-tabs-trigger-lg: var(--spacing-xs) var(--spacing-sm);
 
   /* Content padding */
-  --padding-tabs-content-sm: var(--spacing-xs);
-  --padding-tabs-content-md: var(--spacing-sm);
-  --padding-tabs-content-lg: var(--spacing-md);
+  --spacing-tabs-content-sm: var(--spacing-xs);
+  --spacing-tabs-content-md: var(--spacing-sm);
+  --spacing-tabs-content-lg: var(--spacing-md);
+  --spacing-tabs-content: var(--spacing-tabs-content-md);
 
   /* === TYPOGRAPHY === */
   --text-tabs-trigger-sm: var(--text-sm);
@@ -45,7 +46,6 @@
   --text-tabs-content-lg: var(--text-lg);
 
   /* === BORDER & RADIUS === */
-  --border-width-tabs: var(--border-width-sm);
   --radius-tabs: 0;
   --radius-tabs-trigger: 0;
   --radius-tabs-indicator: 0;

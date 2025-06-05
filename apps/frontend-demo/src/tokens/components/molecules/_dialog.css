@@ -22,7 +22,6 @@
 
   --gap-dialog-content: var(--spacing-sm);
 
-  --max-width-dialog-content: 90svw;
   --height-dialog-content: 80svh;
   --padding-dialog-content: var(--spacing-lg);
 
@@ -34,8 +33,8 @@
   /* ===== DIALOG DESCRIPTION ===== */
   --text-dialog-description-size: var(--text-md);
   --color-dialog-description-fg: var(--color-dialog-fg);
-  --line-height-dialog-description: var(--line-height-normal);
-  --spacing-dialog-description-margin-top: var(--spacing-xs);
+  
+  
 
   /* ===== DIALOG CLOSE TRIGGER (Button) ===== */
   --color-dialog-close-trigger-fg: var(--color-dialog-fg);

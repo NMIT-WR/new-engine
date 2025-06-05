@@ -1,11 +1,11 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
-  --color-ni-bg: var(--color-input);
+  
   --color-ni-border: var(--color-input-border);
-  --color-ni-text: var(--color-input-text);
+  
   --color-ni-invalid-border: var(--color-danger);
   --color-ni-invalid-bg: --alpha(var(--color-danger) / 10%);
-  --color-ni-invalid-fg: var(--color-danger);
+  
 
   --color-ni-border: var(--color-stroke-primary);
   --border-width-ni: var(--border-width-input);
@@ -31,11 +31,7 @@
   --padding-ni-trigger-y: var(--spacing-3xs);
 
   /* === INCREMENT BUTTON === */
-  --color-ni-increment-btn: var(--color-success);
-  --ring-ni-increment-btn-ring: --alpha(
-    var(--color-success) /
-    var(--opacity-ring)
-  );
+  
 
   --radius-ni: var(--radius-sm);
   --border-width-ni: var(--border-width-input);
