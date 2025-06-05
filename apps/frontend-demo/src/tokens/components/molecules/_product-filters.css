@@ -12,11 +12,15 @@
   --spacing-product-filters-dialog-padding: var(--spacing-md);
   --spacing-product-filters-dialog-header-margin: var(--spacing-md);
   --spacing-product-filters-range-margin: var(--spacing-xs);
+  --spacing-product-filters-mobile-btn-gap: var(--spacing-xs);
+  --spacing-product-filters-mobile-btn-margin: var(--spacing-sm);
+  --spacing-product-filters-actions-margin: var(--spacing-md);
+  --spacing-product-filters-actions-gap: var(--spacing-xs);
 
   /* === PRODUCT FILTERS TYPOGRAPHY === */
   --text-product-filters-title: var(--text-lg);
-  --font-product-filters-title: var(--font-semibold);
+  --font-product-filters-title: var(--font-weight-semibold);
   --text-product-filters-dialog-title: var(--text-xl);
-  --font-product-filters-dialog-title: var(--font-bold);
-  --font-product-filters-range-value: var(--font-medium);
+  --font-product-filters-dialog-title: var(--font-weight-bold);
+  --font-product-filters-range-value: var(--font-weight-medium);
 }

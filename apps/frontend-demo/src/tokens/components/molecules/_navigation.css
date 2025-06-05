@@ -26,11 +26,13 @@
 
   /* === TYPOGRAPHY === */
   --text-navigation-item: var(--text-sm);
-  --font-navigation-item: var(--font-medium);
+  --font-navigation-item: var(--font-weight-medium);
   --text-navigation-badge: 0.625rem;
 
   /* === BADGE === */
   --spacing-navigation-badge-x: var(--spacing-2xs);
   --spacing-navigation-badge-y: 0.125rem;
   --spacing-navigation-badge-ml: var(--spacing-2xs);
+  --spacing-navigation-link-icon-gap: var(--spacing-xs);
+  --spacing-navigation-submenu-icon: var(--spacing-xs);
 }

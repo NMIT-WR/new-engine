@@ -6,7 +6,7 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-switch-bg: var(--color-overlay);
-  --color-switch-checked: var(--color-sky-300);
+  --color-switch-checked: var(--color-success);
   --color-switch-border: var(--color-stroke-primary);
   --color-switch-thumb: var(--color-base-light);
 

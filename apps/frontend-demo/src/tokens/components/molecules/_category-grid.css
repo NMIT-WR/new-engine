@@ -1,6 +1,6 @@
 @theme static {
   /* === CATEGORY GRID COLORS === */
-  --color-category-section-bg: var(--color-bg-muted);
+  --color-category-section-bg: var(--color-surface);
   --color-category-subtitle: var(--color-fg-secondary);
   /* Always use white text on category images */
   --color-category-item-text: white;

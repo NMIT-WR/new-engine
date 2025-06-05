@@ -4,6 +4,7 @@ export interface Product {
   title: string
   handle: string
   description?: string
+  longDescription?: string
   thumbnail?: string
   images?: ProductImage[]
   status: 'draft' | 'published' | 'proposed'
@@ -11,6 +12,11 @@ export interface Product {
   categories?: ProductCategory[]
   variants?: ProductVariant[]
   options?: ProductOption[]
+  specifications?: ProductSpecification[]
+  reviews?: ProductReview[]
+  rating?: number
+  reviewCount?: number
+  features?: string[]
   metadata?: Record<string, unknown>
   created_at?: string
   updated_at?: string
@@ -46,6 +52,7 @@ export interface ProductVariant {
   prices?: ProductPrice[]
   options?: Record<string, string>
   metadata?: Record<string, unknown>
+  colorHex?: string
 }
 
 export interface ProductPrice {
@@ -77,4 +84,20 @@ export interface Category {
 export interface ProductBadge {
   variant: 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
   children: string
+}
+
+// Additional product details types
+export interface ProductSpecification {
+  name: string
+  value: string
+}
+
+export interface ProductReview {
+  id: string
+  rating: number
+  title: string
+  comment: string
+  author: string
+  date: string
+  verified?: boolean
 }

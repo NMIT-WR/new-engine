@@ -1,0 +1,45 @@
+@theme static {
+  /* === FILTER BUTTON COLORS === */
+  /* Default state */
+  --color-filter-btn-bg: var(--color-base);
+  --color-filter-btn-fg: var(--color-fg-primary);
+  --color-filter-btn-border: var(--color-border);
+  
+  /* Hover state */
+  --color-filter-btn-bg-hover: var(--color-fill-hover);
+  --color-filter-btn-border-hover: var(--color-border-secondary);
+  
+  /* Selected state - using accent colors for better contrast */
+  --color-filter-btn-selected-bg: var(--color-accent);
+  --color-filter-btn-selected-fg: var(--color-base); /* Always use base color for contrast */
+  --color-filter-btn-selected-border: var(--color-accent);
+  --color-filter-btn-selected-bg-hover: var(--color-accent-hover);
+  
+  /* Disabled state */
+  --color-filter-btn-disabled-bg: var(--color-disabled-bg);
+  --color-filter-btn-disabled-fg: var(--color-disabled-text);
+  --color-filter-btn-disabled-border: var(--color-disabled-border);
+  
+  /* Focus ring */
+  --color-filter-btn-ring: var(--color-ring-primary);
+  
+  /* Count text */
+  --color-filter-btn-count: var(--color-fg-secondary);
+  
+  /* === FILTER BUTTON SPACING === */
+  --padding-filter-btn-x: var(--spacing-sm);
+  --padding-filter-btn-y: var(--spacing-xs);
+  --spacing-filter-btn-count-margin: var(--spacing-2xs);
+  
+  /* === FILTER BUTTON TYPOGRAPHY === */
+  --text-filter-btn-size: var(--text-sm);
+  --font-filter-btn: var(--font-weight-medium);
+  --text-filter-btn-count: var(--text-xs);
+  
+  /* === FILTER BUTTON OPACITY === */
+  --opacity-filter-btn-disabled: var(--opacity-disabled);
+  --opacity-filter-btn-count: 0.7;
+  
+  /* === FILTER BUTTON RADIUS === */
+  --radius-filter-btn: var(--radius-md);
+}

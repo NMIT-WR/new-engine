@@ -24,7 +24,7 @@
   /* === HEADER TYPOGRAPHY === */
   --text-header-logo: var(--text-lg);
   --text-header-logo-lg: var(--text-xl);
-  --font-header-logo: var(--font-bold);
+  --font-header-logo: var(--font-weight-bold);
 
   /* === HEADER LAYOUT === */
   --spacing-header-max-w: 80rem; /* 1280px */

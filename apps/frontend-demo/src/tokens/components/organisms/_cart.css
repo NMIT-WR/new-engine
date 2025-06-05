@@ -5,13 +5,13 @@
   --color-cart-bg: var(--color-base);
   --color-cart-title: var(--color-fg-primary);
   --color-cart-item-divider: var(--color-border);
-  --color-cart-item-image-bg: var(--color-base-fg-muted);
+  --color-cart-item-image-bg: var(--color-fill-base);
   --color-cart-item-title: var(--color-fg-primary);
   --color-cart-item-price: var(--color-fg-primary);
   --color-cart-item-options: var(--color-fg-secondary);
   --color-cart-remove: var(--color-fg-tertiary);
   --color-cart-remove-hover: var(--color-danger);
-  --color-cart-summary-bg: var(--color-base-card);
+  --color-cart-summary-bg: var(--color-surface);
   --color-cart-summary-title: var(--color-fg-primary);
   --color-cart-summary-text: var(--color-fg-secondary);
   --color-cart-summary-divider: var(--color-border);
@@ -46,22 +46,24 @@
   --spacing-cart-empty-icon-margin: var(--spacing-md);
   --spacing-cart-empty-title-margin: var(--spacing-xs);
   --spacing-cart-empty-text-margin: var(--spacing-lg);
+  --spacing-cart-clear-margin: var(--spacing-sm);
+  --spacing-cart-continue-margin: var(--spacing-sm);
 
   /* === CART TYPOGRAPHY === */
   --text-cart-title-size: var(--text-3xl);
-  --font-cart-title-weight: var(--font-bold);
+  --font-cart-title-weight: var(--font-weight-bold);
   --text-cart-item-title-size: var(--text-base);
-  --font-cart-item-title-weight: var(--font-medium);
+  --font-cart-item-title-weight: var(--font-weight-medium);
   --text-cart-item-price-size: var(--text-base);
-  --font-cart-item-price-weight: var(--font-semibold);
+  --font-cart-item-price-weight: var(--font-weight-semibold);
   --text-cart-item-options-size: var(--text-sm);
   --text-cart-summary-title-size: var(--text-xl);
-  --font-cart-summary-title-weight: var(--font-semibold);
+  --font-cart-summary-title-weight: var(--font-weight-semibold);
   --text-cart-summary-text-size: var(--text-base);
   --text-cart-total-size: var(--text-lg);
-  --font-cart-total-weight: var(--font-bold);
+  --font-cart-total-weight: var(--font-weight-bold);
   --text-cart-empty-title-size: var(--text-2xl);
-  --font-cart-empty-title-weight: var(--font-semibold);
+  --font-cart-empty-title-weight: var(--font-weight-semibold);
   --text-cart-empty-text-size: var(--text-base);
 
   /* === CART LAYOUT === */

@@ -11,16 +11,16 @@ import { authHelpers } from '../../stores/auth-store'
 
 const authDropdownVariants = tv({
   slots: {
-    form: 'space-y-4 w-64',
-    header: 'space-y-1',
-    title: 'font-semibold text-lg text-primary',
-    subtitle: 'text-sm text-secondary',
-    inputGroup: 'space-y-3',
-    error: 'text-xs text-danger',
-    actions: 'space-y-2',
-    signupPrompt: 'flex items-center gap-2 text-xs',
-    signupText: 'text-secondary',
-    signupLink: 'p-0 h-auto font-normal text-link hover:text-link-hover',
+    form: 'space-y-auth-dropdown-form-gap w-auth-dropdown-form',
+    header: 'space-y-auth-dropdown-header-gap',
+    title: 'font-auth-dropdown-title text-auth-dropdown-title-size text-auth-dropdown-title',
+    subtitle: 'text-auth-dropdown-subtitle-size text-auth-dropdown-subtitle',
+    inputGroup: 'space-y-auth-dropdown-input-gap',
+    error: 'text-auth-dropdown-error-size text-auth-dropdown-error',
+    actions: 'space-y-auth-dropdown-actions-gap',
+    signupPrompt: 'flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size',
+    signupText: 'text-auth-dropdown-signup-text',
+    signupLink: 'p-0 h-auto font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover',
   },
 })
 
