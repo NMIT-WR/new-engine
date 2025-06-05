@@ -13,7 +13,7 @@ export function VariantGroup({
 }: VariantGroupProps) {
   return (
     <div className="w-full space-y-2">
-      <h3 className="font-semibold text-fg-primary text-m">{title}</h3>
+      <h3 className="font-semibold text-fg-primary text-md">{title}</h3>
       <div
         className={`flex ${
           fullWidth ? 'flex-col' : 'flex-wrap'

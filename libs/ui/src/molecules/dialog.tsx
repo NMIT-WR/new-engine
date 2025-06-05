@@ -18,7 +18,7 @@ const dialogVariants = tv({
     ],
     title: ['text-dialog-title-size font-dialog-title text-dialog-title-fg'],
     description: [
-      'text-dialog-description-size text-dialog-description-fg line-height-dialog-description',
+      'text-dialog-description-size text-dialog-description-fg',
     ],
     trigger: [],
     closeTrigger: [

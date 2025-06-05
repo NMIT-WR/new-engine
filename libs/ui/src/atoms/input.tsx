@@ -28,7 +28,7 @@ const inputVariants = tv({
         'border-input-border-danger',
         'hover:border-input-border-danger-hover',
         'focus:border-input-border-danger-focus',
-        'focus-visible:ring-input-ring-danger',
+        'focus-visible:ring-input-ring-error',
         'placeholder:text-input-placeholder-danger',
       ],
       success: [
