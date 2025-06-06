@@ -1,8 +1,8 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-tooltip-bg: var(--color-overlay);
-  --color-tooltip-fg: var(--color-base-reverse);
-  --color-tooltip-border: transparent;
+  
+  
 
   /* === SIZING & SPACING === */
   --padding-tooltip-sm: var(--spacing-2xs) var(--spacing-xs);
