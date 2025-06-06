@@ -92,6 +92,9 @@ export interface ProductCardProps
   hasCartButton?: boolean
   hasDetailButton?: boolean
   hasWishlistButton?: boolean
+  onCartClick?: () => void
+  onDetailClick?: () => void
+  onWishlistClick?: () => void
   cartButtonText?: string
   detailButtonText?: string
   wishlistButtonText?: string
@@ -111,6 +114,9 @@ export function ProductCard({
   cartButtonText = 'Add to cart',
   detailButtonText = 'Detail',
   wishlistButtonText = 'Wishlist',
+  onCartClick,
+  onDetailClick,
+  onWishlistClick,
   numericInput,
   rating,
   className,
@@ -176,13 +182,13 @@ export function ProductCard({
           {hasCartButton && (
             <div className="flex gap-pc-box">
               {numericInput && <NumericInput />}
-              <Button size="sm" className={cartButton()} icon="token-icon-cart">
+              <Button size="sm" className={cartButton()} onClick={onCartClick} icon="token-icon-cart">
                 {cartButtonText}
               </Button>
             </div>
           )}
           {hasDetailButton && (
-            <Button size="sm" className={detailButton()} icon="token-icon-eye">
+            <Button size="sm" className={detailButton()} onClick={onDetailClick} icon="token-icon-eye">
               {detailButtonText}
             </Button>
           )}
@@ -190,6 +196,7 @@ export function ProductCard({
             <Button
               size="sm"
               className={wishlistButton()}
+              onClick={onWishlistClick}
               icon="token-icon-heart"
             >
               {wishlistButtonText}
