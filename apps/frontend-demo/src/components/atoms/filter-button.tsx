@@ -1,5 +1,5 @@
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
-import { type VariantProps } from 'tailwind-variants'
+import type { VariantProps } from 'tailwind-variants'
 import { tv } from 'ui/src/utils'
 
 const filterButtonVariants = tv({

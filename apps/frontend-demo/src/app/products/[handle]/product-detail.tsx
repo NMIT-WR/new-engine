@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { Gallery } from '../../../components/organisms/gallery'
 import { FeaturedProducts } from '../../../components/featured-products'
+import { Gallery } from '../../../components/organisms/gallery'
 import { ProductInfo } from '../../../components/organisms/product-info'
 import { ProductTabs } from '../../../components/organisms/product-tabs'
 import { mockProducts } from '../../../data/mock-products'
@@ -18,7 +18,9 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
-  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null)
+  const [selectedVariant, setSelectedVariant] = useState(
+    product.variants?.[0] || null
+  )
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const { price, badges, stockStatus } = extractProductData(product)
@@ -48,13 +50,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-product-detail-content-gap">
+        <div className="grid grid-cols-1 gap-product-detail-content-gap lg:grid-cols-2">
           {/* Image Gallery */}
-          <div className='aspect-square md:max-h-[60svh]'>
-          <Gallery
-            images={galleryImages}
-            aspectRatio="portrait"
-          />
+          <div className="aspect-square md:max-h-[60svh]">
+            <Gallery images={galleryImages} aspectRatio="portrait" />
           </div>
 
           {/* Info Section */}

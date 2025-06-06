@@ -17,6 +17,7 @@ export interface Product {
   rating?: number
   reviewCount?: number
   features?: string[]
+  tags?: Array<{ id: string; value: string }>
   metadata?: Record<string, unknown>
   created_at?: string
   updated_at?: string

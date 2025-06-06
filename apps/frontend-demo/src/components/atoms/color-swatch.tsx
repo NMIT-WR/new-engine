@@ -1,6 +1,5 @@
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
-import { Icon } from 'ui/src/atoms/icon'
-import { type VariantProps } from 'tailwind-variants'
+import type { VariantProps } from 'tailwind-variants'
 import { tv } from 'ui/src/utils'
 
 const colorSwatchVariants = tv({
@@ -16,9 +15,11 @@ const colorSwatchVariants = tv({
     selected: {
       true: [
         'border-color-swatch-selected',
-      //  'ring-2 ring-color-swatch-selected ring-offset-2',
+        //  'ring-2 ring-color-swatch-selected ring-offset-2',
       ],
-      false: ['border-color-swatch-border hover:border-color-swatch-border-hover'],
+      false: [
+        'border-color-swatch-border hover:border-color-swatch-border-hover',
+      ],
     },
     disabled: {
       true: [
@@ -41,7 +42,10 @@ export interface ColorSwatchProps
 }
 
 export const ColorSwatch = forwardRef<HTMLButtonElement, ColorSwatchProps>(
-  ({ className, selected, disabled, color, colorName, count, ...props }, ref) => {
+  (
+    { className, selected, disabled, color, colorName, count, ...props },
+    ref
+  ) => {
     const title = colorName
       ? `${colorName}${count !== undefined ? ` (${count})` : ''}`
       : undefined

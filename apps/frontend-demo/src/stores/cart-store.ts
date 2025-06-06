@@ -59,7 +59,12 @@ if (typeof window !== 'undefined') {
 export const cartHelpers = {
   addItem: (
     product: Product,
-    options: { size?: string; color?: string; quantity?: number; variantId?: string } = {}
+    options: {
+      size?: string
+      color?: string
+      quantity?: number
+      variantId?: string
+    } = {}
   ) => {
     cartStore.setState((state) => {
       const existingItem = state.items.find(

@@ -5,25 +5,25 @@ import { Button } from 'ui/src/atoms/button'
 import { Checkbox } from 'ui/src/molecules/checkbox'
 import { Dialog } from 'ui/src/molecules/dialog'
 import { RangeSlider } from 'ui/src/molecules/range-slider'
-import { TreeView } from 'ui/src/molecules/tree-view'
 import { tv } from 'ui/src/utils'
-import { ColorSwatch } from './atoms/color-swatch'
-import { FilterButton } from './atoms/filter-button'
-import { FilterSection } from './molecules/filter-section'
-import { activeFilterConfig, type FilterConfig } from '../data/filter-config'
+import { type FilterConfig, activeFilterConfig } from '../data/filter-config'
 import { mockProducts } from '../data/mock-products'
+import { getColorHex } from '../utils/color-map'
 import {
   type FilterState,
   calculateProductCounts,
   getColorsWithCounts,
   getSizesWithCounts,
 } from '../utils/product-filters'
-import { getColorHex } from '../utils/color-map'
+import { ColorSwatch } from './atoms/color-swatch'
+import { FilterButton } from './atoms/filter-button'
+import { FilterSection } from './molecules/filter-section'
 
 const productFiltersVariants = tv({
   slots: {
     root: 'w-full',
-    mobileButton: 'md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin',
+    mobileButton:
+      'md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin',
     desktopFilters: 'hidden md:block',
     dialogContent: 'p-product-filters-dialog-padding',
     dialogHeader:
@@ -68,7 +68,7 @@ export function ProductFilters({
     })
   }
 
-  const hasActiveFilters = 
+  const hasActiveFilters =
     filters.categories.size > 0 ||
     filters.sizes.size > 0 ||
     filters.colors.size > 0 ||
@@ -82,8 +82,8 @@ export function ProductFilters({
 
   // Get color hex values from products
   const colorHexMap = new Map<string, string>()
-  mockProducts.forEach(product => {
-    product.variants?.forEach(variant => {
+  mockProducts.forEach((product) => {
+    product.variants?.forEach((variant) => {
       const color = variant.options?.color
       if (color && variant.colorHex) {
         colorHexMap.set(color.toLowerCase(), variant.colorHex)
@@ -101,7 +101,11 @@ export function ProductFilters({
             title={config.title}
             items={productCounts.categoryCounts}
             defaultItemsShown={config.defaultItemsShown}
-            onClear={config.showClearButton ? () => updateFilters({ categories: new Set() }) : undefined}
+            onClear={
+              config.showClearButton
+                ? () => updateFilters({ categories: new Set() })
+                : undefined
+            }
             className={styles.checkboxList()}
             renderItem={(category) => {
               const isDisabled = category.count === 0
@@ -132,10 +136,7 @@ export function ProductFilters({
 
       case 'range':
         return (
-          <FilterSection
-            key={config.id}
-            title={config.title}
-          >
+          <FilterSection key={config.id} title={config.title}>
             <RangeSlider
               value={filters.priceRange}
               onChange={(value) =>
@@ -145,15 +146,21 @@ export function ProductFilters({
               max={config.range?.max || 300}
               step={config.range?.step || 10}
               minStepsBetweenThumbs={0}
-              formatValue={(value) => `${config.range?.prefix || ''}${value}${config.range?.suffix || ''}`}
+              formatValue={(value) =>
+                `${config.range?.prefix || ''}${value}${config.range?.suffix || ''}`
+              }
             />
             <div className="mt-product-filters-range-margin flex justify-between">
               <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-                {config.range?.prefix}{filters.priceRange[0]}
+                {config.range?.prefix}
+                {filters.priceRange[0]}
               </span>
-              <span className="text-product-filters-range-label text-sm">to</span>
+              <span className="text-product-filters-range-label text-sm">
+                to
+              </span>
               <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-                {config.range?.prefix}{filters.priceRange[1]}
+                {config.range?.prefix}
+                {filters.priceRange[1]}
               </span>
             </div>
           </FilterSection>
@@ -166,12 +173,16 @@ export function ProductFilters({
             title={config.title}
             items={sizesWithCounts}
             defaultItemsShown={config.defaultItemsShown}
-            onClear={config.showClearButton ? () => updateFilters({ sizes: new Set() }) : undefined}
+            onClear={
+              config.showClearButton
+                ? () => updateFilters({ sizes: new Set() })
+                : undefined
+            }
             className={styles.sizeGrid()}
             renderItem={({ size, count }) => {
               const isSelected = filters.sizes.has(size)
               const isDisabled = count === 0
-              
+
               return (
                 <FilterButton
                   key={size}
@@ -201,14 +212,19 @@ export function ProductFilters({
             title={config.title}
             items={colorsWithCounts}
             defaultItemsShown={config.defaultItemsShown}
-            onClear={config.showClearButton ? () => updateFilters({ colors: new Set() }) : undefined}
+            onClear={
+              config.showClearButton
+                ? () => updateFilters({ colors: new Set() })
+                : undefined
+            }
             className={styles.colorGrid()}
             renderItem={({ color, count }) => {
               const isSelected = filters.colors.has(color)
               const isDisabled = count === 0
               // First try to get color from product variants, then fall back to color map
-              const colorHex = colorHexMap.get(color.toLowerCase()) || getColorHex(color)
-              
+              const colorHex =
+                colorHexMap.get(color.toLowerCase()) || getColorHex(color)
+
               return (
                 <ColorSwatch
                   key={color}
@@ -243,10 +259,7 @@ export function ProductFilters({
       {/* Clear All Filters */}
       {hasActiveFilters && (
         <div className="mb-4 text-right">
-          <button
-            onClick={clearAllFilters}
-            className={styles.clearButton()}
-          >
+          <button onClick={clearAllFilters} className={styles.clearButton()}>
             Clear all filters
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { Children, type ReactNode, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { tv } from 'ui/src/utils'
 
@@ -35,7 +35,8 @@ export function FilterSection<T>({
   const styles = filterSectionVariants()
 
   const hasItems = items && renderItem
-  const hasMore = hasItems && defaultItemsShown && items.length > defaultItemsShown
+  const hasMore =
+    hasItems && defaultItemsShown && items.length > defaultItemsShown
   const visibleItems = hasItems
     ? showAll || !hasMore
       ? items

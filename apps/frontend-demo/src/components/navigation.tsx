@@ -44,7 +44,11 @@ function Submenu({ items }: { items: NavItem[] }) {
           rel={child.external ? 'noopener noreferrer' : undefined}
         >
           {child.icon && (
-            <Icon icon={child.icon} size="sm" className="mr-navigation-submenu-icon inline" />
+            <Icon
+              icon={child.icon}
+              size="sm"
+              className="mr-navigation-submenu-icon inline"
+            />
           )}
           {child.title}
           {child.label && <span className={badge()}>{child.label}</span>}

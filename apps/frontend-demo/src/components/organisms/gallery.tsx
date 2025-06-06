@@ -1,10 +1,10 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { tv } from 'tailwind-variants'
 import { Button } from 'ui/src/atoms/button'
 import { Image as ImageComponent } from 'ui/src/atoms/image'
-import Image from 'next/image'
 import { Carousel } from 'ui/src/molecules/carousel'
 import type { CarouselSlide } from 'ui/src/molecules/carousel'
 import '@/tokens/components/organisms/_gallery.css'
@@ -31,7 +31,7 @@ const galleryStyles = tv({
       'p-gallery-trigger',
       'data-[active=true]:border-gallery-trigger-active',
       'brightness-gallery-trigger',
-      'hover:brightness-gallery-trigger-active data-[active=true]:brightness-gallery-trigger-active'
+      'hover:brightness-gallery-trigger-active data-[active=true]:brightness-gallery-trigger-active',
     ],
   },
   variants: {
@@ -50,16 +50,22 @@ const galleryStyles = tv({
         scrollArea: 'h-full overflow-y-auto overflow-x-hidden',
         list: 'flex-col px-gallery-list',
       },
-    }
+    },
   },
   defaultVariants: {
-    orientation: "vertical"
-  }
+    orientation: 'vertical',
+  },
 })
 
-export function Gallery({ images, aspectRatio = 'portrait', orientation = 'vertical', className }: GalleryProps) {
+export function Gallery({
+  images,
+  aspectRatio = 'portrait',
+  orientation = 'vertical',
+  className,
+}: GalleryProps) {
   const [currentPage, setCurrentPage] = useState(0)
-  const {trigger, root, container, scrollArea, list, mainCarousel} = galleryStyles({ orientation })
+  const { trigger, root, container, scrollArea, list, mainCarousel } =
+    galleryStyles({ orientation })
 
   const handlePageChange = (details: { page: number }) => {
     setCurrentPage(details.page)
@@ -87,12 +93,12 @@ export function Gallery({ images, aspectRatio = 'portrait', orientation = 'verti
                 aria-current={currentPage === index ? 'true' : 'false'}
               >
                 <ImageComponent
-                as={Image}
+                  as={Image}
                   src={image.src || ''}
                   alt={image.alt || `Product image ${index + 1}`}
                   width={100}
                   height={100}
-                  objectFit='cover'
+                  objectFit="cover"
                   quality={20}
                   //className={image()}
                 />

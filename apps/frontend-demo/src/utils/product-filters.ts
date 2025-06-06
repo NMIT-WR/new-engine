@@ -180,7 +180,12 @@ export function filterProducts(
 /**
  * Sort products based on sort option
  */
-export type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
+export type SortOption =
+  | 'newest'
+  | 'price-asc'
+  | 'price-desc'
+  | 'name-asc'
+  | 'name-desc'
 
 export function sortProducts(
   products: Product[],
@@ -225,4 +230,51 @@ export function sortProducts(
   }
 
   return sorted
+}
+
+/**
+ * Apply filters to products (convenience function for sale page)
+ */
+export interface SaleFilterState {
+  categories: string[]
+  priceRange: [number, number]
+  colors: string[]
+  sizes: string[]
+  inStock: boolean
+  onSale: boolean
+  sortBy: string
+}
+
+export function applyFilters(
+  products: Product[],
+  filters: SaleFilterState
+): Product[] {
+  // Convert arrays to Sets for filter functions
+  const filterState: FilterState = {
+    priceRange: filters.priceRange,
+    categories: new Set(filters.categories),
+    sizes: new Set(filters.sizes),
+    colors: new Set(filters.colors),
+  }
+
+  // Filter products
+  let filtered = filterProducts(products, filterState)
+
+  // Apply additional filters
+  if (filters.inStock) {
+    filtered = filtered.filter((product) =>
+      product.variants?.some(
+        (variant) =>
+          variant.inventory_quantity !== undefined &&
+          variant.inventory_quantity > 0
+      )
+    )
+  }
+
+  // Sort products
+  if (filters.sortBy) {
+    filtered = sortProducts(filtered, filters.sortBy as SortOption)
+  }
+
+  return filtered
 }

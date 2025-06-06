@@ -1,3 +1,6 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { Button } from 'ui/src/atoms/button'
 import { Image } from 'ui/src/atoms/image'
 import { tv } from 'ui/src/utils'
@@ -8,11 +11,13 @@ interface HeroProps {
   backgroundImage: string
   primaryAction?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
+    href?: string
   }
   secondaryAction?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
+    href?: string
   }
 }
 
@@ -42,6 +47,23 @@ export function Hero({
   secondaryAction,
 }: HeroProps) {
   const styles = heroVariants()
+  const router = useRouter()
+
+  const handlePrimaryAction = () => {
+    if (primaryAction?.onClick) {
+      primaryAction.onClick()
+    } else if (primaryAction?.href) {
+      router.push(primaryAction.href)
+    }
+  }
+
+  const handleSecondaryAction = () => {
+    if (secondaryAction?.onClick) {
+      secondaryAction.onClick()
+    } else if (secondaryAction?.href) {
+      router.push(secondaryAction.href)
+    }
+  }
 
   return (
     <section className={styles.root()}>
@@ -68,7 +90,7 @@ export function Hero({
                     variant="primary"
                     size="lg"
                     theme="solid"
-                    onClick={primaryAction.onClick}
+                    onClick={handlePrimaryAction}
                     className={styles.button()}
                   >
                     {primaryAction.label}
@@ -79,7 +101,7 @@ export function Hero({
                     variant="primary"
                     size="lg"
                     theme="outlined"
-                    onClick={secondaryAction.onClick}
+                    onClick={handleSecondaryAction}
                     className={styles.button({
                       class: 'border-white text-white',
                     })}

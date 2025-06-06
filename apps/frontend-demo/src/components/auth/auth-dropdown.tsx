@@ -13,14 +13,17 @@ const authDropdownVariants = tv({
   slots: {
     form: 'space-y-auth-dropdown-form-gap w-auth-dropdown-form',
     header: 'space-y-auth-dropdown-header-gap',
-    title: 'font-auth-dropdown-title text-auth-dropdown-title-size text-auth-dropdown-title',
+    title:
+      'font-auth-dropdown-title text-auth-dropdown-title-size text-auth-dropdown-title',
     subtitle: 'text-auth-dropdown-subtitle-size text-auth-dropdown-subtitle',
     inputGroup: 'space-y-auth-dropdown-input-gap',
     error: 'text-auth-dropdown-error-size text-auth-dropdown-error',
     actions: 'space-y-auth-dropdown-actions-gap',
-    signupPrompt: 'flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size',
+    signupPrompt:
+      'flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size',
     signupText: 'text-auth-dropdown-signup-text',
-    signupLink: 'p-0 h-auto font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover',
+    signupLink:
+      'p-0 h-auto font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover',
   },
 })
 
