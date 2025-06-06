@@ -18,4 +18,13 @@
   --spacing-xl: 3rem; /* 54px - 60px */
   --spacing-2xl: 4rem; /* 72px - 80px */
   --spacing-3xl: 6rem; /* 108px - 120px */
+  --spacing-4xl: 8rem; /* 128px */
+  --spacing-5xl: 10rem; /* 160px */
+  --spacing-6xl: 12rem; /* 192px */
+  
+  /* Container tokens */
+  --spacing-container-max: 80rem; /* 1280px - standard max width for content */
+  --spacing-container-x: var(--spacing-sm); /* horizontal padding for containers */
+  --spacing-container-x-md: var(--spacing-md); /* medium screens */
+  --spacing-container-x-lg: var(--spacing-lg); /* large screens */
 }

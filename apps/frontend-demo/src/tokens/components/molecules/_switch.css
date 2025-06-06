@@ -30,8 +30,8 @@
 
   /* === INVALID STATES === */
   --color-switch-invalid: --alpha(var(--color-danger) / var(--opacity-invalid));
-  --color-switch-border-invalid: var(--color-switch-invalid);
-  --color-switch-thumb-invalid: var(--color-switch-invalid);
+  
+  
   --color-switch-ring-invalid: var(--color-switch-invalid);
 
   /* === TEXT COLORS === */

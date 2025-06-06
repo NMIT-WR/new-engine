@@ -278,9 +278,18 @@
   --color-stroke-primary: var(--color-slate-200);
   --color-stroke-secondary: var(--color-slate-400);
   --color-border: light-dark(var(--color-slate-200), var(--color-slate-800));
-  --color-border-neutral: light-dark(var(--color-slate-300), var(--color-slate-700));
-  --color-border-secondary: light-dark(var(--color-slate-300), var(--color-slate-700));
-  --color-border-subtle: light-dark(var(--color-slate-100), var(--color-slate-900));
+  --color-border-neutral: light-dark(
+    var(--color-slate-300),
+    var(--color-slate-700)
+  );
+  --color-border-secondary: light-dark(
+    var(--color-slate-300),
+    var(--color-slate-700)
+  );
+  --color-border-subtle: light-dark(
+    var(--color-slate-100),
+    var(--color-slate-900)
+  );
   --border-width-none: 0px;
   --border-width-sm: 1px;
   --border-width-md: 2px;

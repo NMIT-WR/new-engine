@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ProductCard } from 'ui/src/molecules/product-card'
 import { tv } from 'ui/src/utils'
 import type { Product } from '../types/product'
@@ -31,9 +32,10 @@ export function FeaturedProducts({
   subtitle,
   products,
   linkText = 'View all products',
-  linkHref = '/products',
+  linkHref = '/products'
 }: FeaturedProductsProps) {
   const styles = featuredProductsVariants()
+  const router = useRouter()
 
   return (
     <section className={styles.root()}>
@@ -55,8 +57,11 @@ export function FeaturedProducts({
                 price={price?.calculated_price || ''}
                 stockStatus={stockText}
                 badges={displayBadges}
-                hasCartButton={true}
-                cartButtonText="Add to Cart"
+                hasCartButton={false}
+                hasDetailButton={true}
+                detailButtonText="View"
+                onDetailClick={() => router.push(`/products/${product.handle}`)}
+                hasWishlistButton={false}
                 layout="column"
               />
             )

@@ -82,7 +82,6 @@
   --color-label-disabled: var(--color-input-text-disabled);
   --color-label-required: var(--color-input-danger);
 
-
   /* Error/Helper/Extra colors */
   --color-error-text: var(--color-danger);
   --color-helper-text: var(--color-input-text);

@@ -2,11 +2,10 @@
 
 @theme static {
   --color-gallery-trigger-active: var(--color-primary);
- --padding-gallery-trigger: 0 0;
- --spacing-gallery-root: var(--spacing-sm);
- --spacing-gallery-list: var(--spacing-sm);
+  --padding-gallery-trigger: 0 0;
+  --spacing-gallery-root: var(--spacing-sm);
+  --spacing-gallery-list: var(--spacing-sm);
 
- --brightness-gallery-trigger: 80%;
- --brightness-gallery-trigger-active: 100%;
- 
+  --brightness-gallery-trigger: 80%;
+  --brightness-gallery-trigger-active: 100%;
 }

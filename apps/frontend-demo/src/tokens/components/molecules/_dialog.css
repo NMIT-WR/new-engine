@@ -33,8 +33,6 @@
   /* ===== DIALOG DESCRIPTION ===== */
   --text-dialog-description-size: var(--text-md);
   --color-dialog-description-fg: var(--color-dialog-fg);
-  
-  
 
   /* ===== DIALOG CLOSE TRIGGER (Button) ===== */
   --color-dialog-close-trigger-fg: var(--color-dialog-fg);

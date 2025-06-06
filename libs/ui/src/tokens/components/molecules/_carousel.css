@@ -27,9 +27,9 @@
   );
 
   /* === SPACING === */
-  --spacing-carousel-gap: var(--spacing-md);
-  --spacing-carousel-padding: var(--spacing-sm);
-  --spacing-carousel-item-gap: var(--spacing-xs);
+  
+  
+  
 
   /* === ASPECT RATIO === */
   --aspect-carousel-square: 1 / 1;
@@ -40,7 +40,7 @@
   /* === BORDER RADIUS === */
   --radius-carousel: var(--radius-sm);
 
-  --shadow-carousel: var(--shadow-lg);
+  
 }
 
 @utility token-icon-carousel-prev {

@@ -16,7 +16,7 @@
   );
 
   /* === ITEM COMPONENT === */
-  --color-accordion-item-border: var(--color-accordion-border);
+  
 
   /* === TITLE COMPONENT === */
   --color-accordion-title-bg: var(--color-accordion);

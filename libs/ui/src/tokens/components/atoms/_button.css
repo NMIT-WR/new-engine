@@ -152,7 +152,7 @@
 
   /* === TEXT COLORS === */
   --color-btn-text: var(--color-fg-reverse);
-  
+
   --color-btn-text-outlined: var(--color-fg-primary);
 
   --color-btn-text-primary: var(--color-btn-text);

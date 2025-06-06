@@ -1,9 +1,11 @@
+@import "../../_semantic.css";
+
 @theme static {
   /* === HERO COLORS === */
   /* Always use white text on images for readability */
-  --color-hero-fg: white;
-  --color-hero-subtitle: rgba(255, 255, 255, 0.9);
-  --color-hero-overlay: rgba(0, 0, 0, 0.5); /* Increased for better contrast */
+  --color-hero-fg: var(--color-base-light);
+  --color-hero-subtitle: --alpha(var(--color-base-light) / 90%);
+  --color-hero-overlay: --alpha(var(--color-base-dark) / 50%);
 
   /* === HERO SPACING === */
   --spacing-hero-height: 600px;

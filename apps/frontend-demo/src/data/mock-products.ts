@@ -1,18 +1,54 @@
 import type { BadgeProps } from 'ui/src/atoms/badge'
-import type { Product, ProductReview, ProductSpecification } from '../types/product'
+import type { Product, ProductReview } from '../types/product'
 
 // Helper function to generate random reviews
 function generateReviews(count: number, productId: string): ProductReview[] {
   const reviewTemplates = [
-    { rating: 5, title: 'Excellent quality!', comment: 'The fabric feels premium and the fit is perfect. Highly recommend!' },
-    { rating: 4, title: 'Good product', comment: 'Nice quality, runs a bit small. Order one size up.' },
-    { rating: 5, title: 'Love it!', comment: 'Exactly as described. Fast shipping and great customer service.' },
-    { rating: 3, title: 'Average', comment: 'Quality is okay for the price. Color is slightly different from the photo.' },
-    { rating: 5, title: 'Perfect fit', comment: 'Best purchase I have made this year. Will definitely buy again!' },
-    { rating: 4, title: 'Great value', comment: 'Good quality for the price point. Very satisfied with my purchase.' },
+    {
+      rating: 5,
+      title: 'Excellent quality!',
+      comment:
+        'The fabric feels premium and the fit is perfect. Highly recommend!',
+    },
+    {
+      rating: 4,
+      title: 'Good product',
+      comment: 'Nice quality, runs a bit small. Order one size up.',
+    },
+    {
+      rating: 5,
+      title: 'Love it!',
+      comment:
+        'Exactly as described. Fast shipping and great customer service.',
+    },
+    {
+      rating: 3,
+      title: 'Average',
+      comment:
+        'Quality is okay for the price. Color is slightly different from the photo.',
+    },
+    {
+      rating: 5,
+      title: 'Perfect fit',
+      comment:
+        'Best purchase I have made this year. Will definitely buy again!',
+    },
+    {
+      rating: 4,
+      title: 'Great value',
+      comment:
+        'Good quality for the price point. Very satisfied with my purchase.',
+    },
   ]
-  const authors = ['John D.', 'Sarah M.', 'Mike R.', 'Emma L.', 'Alex K.', 'Lisa T.']
-  
+  const authors = [
+    'John D.',
+    'Sarah M.',
+    'Mike R.',
+    'Emma L.',
+    'Alex K.',
+    'Lisa T.',
+  ]
+
   const reviews: ProductReview[] = []
   for (let i = 0; i < count; i++) {
     const template = reviewTemplates[i % reviewTemplates.length]
@@ -22,7 +58,9 @@ function generateReviews(count: number, productId: string): ProductReview[] {
       title: template.title,
       comment: template.comment,
       author: authors[i % authors.length],
-      date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      date: new Date(
+        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+      ).toISOString(),
       verified: Math.random() > 0.3,
     })
   }
@@ -36,7 +74,8 @@ export const mockProducts: Product[] = [
     title: 'White Cotton T-Shirt with Extra Long Name That Should Be Truncated',
     handle: 'white-cotton-t-shirt',
     description: 'Comfortable cotton t-shirt perfect for everyday wear',
-    longDescription: 'Experience ultimate comfort with our premium White Cotton T-Shirt. Made from 100% organic cotton, this versatile piece features a classic crew neck design and a relaxed fit that works perfectly for any casual occasion. The breathable fabric ensures all-day comfort, while the reinforced seams provide lasting durability.',
+    longDescription:
+      'Experience ultimate comfort with our premium White Cotton T-Shirt. Made from 100% organic cotton, this versatile piece features a classic crew neck design and a relaxed fit that works perfectly for any casual occasion. The breathable fabric ensures all-day comfort, while the reinforced seams provide lasting durability.',
     thumbnail:
       'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop',
     images: [
@@ -177,7 +216,8 @@ export const mockProducts: Product[] = [
     title: 'Blue Denim Jeans',
     handle: 'blue-denim-jeans',
     description: 'Classic blue denim jeans with modern fit',
-    longDescription: 'Our Blue Denim Jeans combine timeless style with modern comfort. Crafted from premium stretch denim, these jeans offer the perfect balance of durability and flexibility. The contemporary slim fit flatters without restricting movement, making them ideal for both casual and semi-formal occasions.',
+    longDescription:
+      'Our Blue Denim Jeans combine timeless style with modern comfort. Crafted from premium stretch denim, these jeans offer the perfect balance of durability and flexibility. The contemporary slim fit flatters without restricting movement, making them ideal for both casual and semi-formal occasions.',
     thumbnail:
       'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=800&fit=crop',
     images: [
@@ -246,7 +286,11 @@ export const mockProducts: Product[] = [
     ],
     options: [
       { id: 'opt_02', title: 'Size', values: ['28', '30', '32', '34'] },
-      { id: 'opt_02_wash', title: 'Wash', values: ['Medium Blue', 'Dark Blue'] },
+      {
+        id: 'opt_02_wash',
+        title: 'Wash',
+        values: ['Medium Blue', 'Dark Blue'],
+      },
     ],
     specifications: [
       { name: 'Material', value: '98% Cotton, 2% Elastane' },
@@ -577,7 +621,8 @@ export const mockProducts: Product[] = [
     title: 'Classic Oxford Shirt',
     handle: 'classic-oxford-shirt',
     description: 'Timeless oxford shirt for formal and casual occasions',
-    longDescription: 'The Classic Oxford Shirt is a wardrobe essential that seamlessly transitions from boardroom to weekend brunch. Crafted from premium Oxford cotton with a subtle texture, this shirt features a button-down collar, chest pocket, and curved hem. The versatile design pairs perfectly with chinos for smart-casual looks or under a blazer for formal occasions.',
+    longDescription:
+      'The Classic Oxford Shirt is a wardrobe essential that seamlessly transitions from boardroom to weekend brunch. Crafted from premium Oxford cotton with a subtle texture, this shirt features a button-down collar, chest pocket, and curved hem. The versatile design pairs perfectly with chinos for smart-casual looks or under a blazer for formal occasions.',
     thumbnail:
       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&h=800&fit=crop',
     images: [

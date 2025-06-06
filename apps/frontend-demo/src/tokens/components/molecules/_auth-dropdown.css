@@ -6,7 +6,7 @@
   --color-auth-dropdown-signup-text: var(--color-secondary);
   --color-auth-dropdown-signup-link: var(--color-link);
   --color-auth-dropdown-signup-link-hover: var(--color-link-hover);
-  
+
   /* === AUTH DROPDOWN SPACING === */
   --spacing-auth-dropdown-form-gap: var(--spacing-sm);
   --spacing-auth-dropdown-header-gap: var(--spacing-3xs);
@@ -14,7 +14,7 @@
   --spacing-auth-dropdown-actions-gap: var(--spacing-xs);
   --spacing-auth-dropdown-signup-gap: var(--spacing-xs);
   --width-auth-dropdown-form: 16rem;
-  
+
   /* === AUTH DROPDOWN TYPOGRAPHY === */
   --text-auth-dropdown-title-size: var(--text-lg);
   --text-auth-dropdown-subtitle-size: var(--text-sm);

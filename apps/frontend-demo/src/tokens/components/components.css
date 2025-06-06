@@ -51,3 +51,6 @@
 @import "./organisms/_cart.css";
 @import "./organisms/_auth.css";
 @import "./organisms/_not-found.css";
+@import "./organisms/_about.css";
+@import "./organisms/_contact.css";
+@import "./organisms/_sale.css";

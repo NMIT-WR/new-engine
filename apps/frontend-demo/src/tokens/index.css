@@ -4,6 +4,7 @@
 @import "./_colors.css";
 @import "./_spacing.css";
 @import "./_typography.css";
+@import "./_layout.css";
 @import "./_semantic.css";
 @import "./components/components.css";
 /* Tell Tailwind to scan UI library files */

@@ -11,21 +11,18 @@
   --spacing-pc-box: var(--spacing-2xs);
   --spacing-pc-padding: var(--spacing-2xs);
 
-  --shadow-pc: var(--shadow-sm);
   
 
   --color-pc-name-fg: var(--color-fg-primary);
   --text-pc-name-size: var(--text-md);
-  
+
   --leading-pc-name: var(--line-height-snug);
 
   --color-pc-stock-fg: var(--color-success);
   --text-pc-stock-size: var(--text-sm);
-  
 
   --color-pc-price-fg: var(--color-fg-primary);
   --text-pc-price-size: var(--text-lg);
-  
 
   /* === PRODUCT CARD BUTTONS ===*/
   /*Add to cart button*/
@@ -33,7 +30,7 @@
   --color-btn-cart-hover: oklch(
     from var(--color-btn-cart) calc(l + var(--state-hover)) c h
   );
-  
+
   --color-btn-cart-fg: var(--color-btn-text);
 
   /* Detail button */
@@ -41,7 +38,7 @@
   --color-btn-detail-hover: oklch(
     from var(--color-btn-detail) calc(l + var(--state-hover)) c h
   );
-  
+
   --color-btn-detail-fg: var(--color-btn-text);
 
   /* wishlist button */
@@ -49,10 +46,8 @@
   --color-btn-wishlist-hover: oklch(
     from var(--color-btn-wishlist) calc(l + var(--state-hover)) c h
   );
-  
-  --color-btn-wishlist-fg: var(--color-btn-text);
 
-  
+  --color-btn-wishlist-fg: var(--color-btn-text);
 
   /* === PRODUCT CARD IMAGE === */
   --aspect-pc-image: var(--aspect-ratio-square);

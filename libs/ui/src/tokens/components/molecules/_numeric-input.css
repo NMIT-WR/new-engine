@@ -1,11 +1,10 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
-  
+
   --color-ni-border: var(--color-input-border);
-  
+
   --color-ni-invalid-border: var(--color-danger);
   --color-ni-invalid-bg: --alpha(var(--color-danger) / 10%);
-  
 
   --color-ni-border: var(--color-stroke-primary);
   --border-width-ni: var(--border-width-input);
@@ -31,7 +30,6 @@
   --padding-ni-trigger-y: var(--spacing-3xs);
 
   /* === INCREMENT BUTTON === */
-  
 
   --radius-ni: var(--radius-sm);
   --border-width-ni: var(--border-width-input);
