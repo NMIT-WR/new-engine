@@ -13,32 +13,32 @@
   --container-xl: 80rem; /* 1280px */
   --container-2xl: 96rem; /* 1536px */
   --container-full: 100%; /* Full width */
-  
+
   /* Container padding - responsive horizontal padding */
   --container-padding-sm: var(--spacing-sm); /* 1rem */
   --container-padding-md: var(--spacing-md); /* 1.5rem */
   --container-padding-lg: var(--spacing-lg); /* 2rem */
   --container-padding-xl: var(--spacing-xl); /* 3rem */
-  
+
   /* Content widths - for prose and readable content */
   --content-prose: 65ch; /* Optimal reading width */
   --content-narrow: 42rem; /* 672px - narrow content */
   --content-wide: 72rem; /* 1152px - wide content */
-  
+
   /* Grid system */
   --grid-cols: 12; /* Standard 12-column grid */
   --grid-gap-sm: var(--spacing-2xs); /* 0.5rem */
   --grid-gap-md: var(--spacing-xs); /* 0.75rem */
   --grid-gap-lg: var(--spacing-sm); /* 1rem */
   --grid-gap-xl: var(--spacing-md); /* 1.5rem */
-  
+
   /* Layout spacing - commonly used layout dimensions */
   --layout-header-height: 4rem; /* 64px */
   --layout-header-height-lg: 5rem; /* 80px */
   --layout-footer-height: 12rem; /* 192px */
   --layout-sidebar-width: 16rem; /* 256px */
   --layout-sidebar-width-lg: 20rem; /* 320px */
-  
+
   /* Z-index scale */
   --z-index-dropdown: 1000;
   --z-index-sticky: 1020;
@@ -48,7 +48,7 @@
   --z-index-popover: 1060;
   --z-index-tooltip: 1070;
   --z-index-notification: 1080;
-  
+
   /* Screen reader only (sr-only) dimensions */
   --sr-only-width: 1px;
   --sr-only-height: 1px;

@@ -46,11 +46,14 @@
 @import "./organisms/_product-info.css";
 @import "./organisms/_product-tabs.css";
 @import "./organisms/_gallery.css";
-@import "./organisms/_product-listing.css";
-@import "./organisms/_search.css";
 @import "./organisms/_cart.css";
 @import "./organisms/_auth.css";
-@import "./organisms/_not-found.css";
-@import "./organisms/_about.css";
-@import "./organisms/_contact.css";
-@import "./organisms/_sale.css";
+
+@import "./pages/_not-found.css";
+@import "./pages/_about.css";
+@import "./pages/_contact.css";
+@import "./pages/_sale.css";
+@import "./pages/_search.css";
+@import "./pages/_categories.css";
+@import "./pages/_product-listing.css";
+

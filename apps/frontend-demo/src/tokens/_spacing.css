@@ -21,7 +21,7 @@
   --spacing-4xl: 8rem; /* 128px */
   --spacing-5xl: 10rem; /* 160px */
   --spacing-6xl: 12rem; /* 192px */
-  
+
   /* Container tokens */
   --spacing-container-max: 80rem; /* 1280px - standard max width for content */
   --spacing-container-x: var(--spacing-sm); /* horizontal padding for containers */

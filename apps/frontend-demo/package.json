@@ -4,10 +4,10 @@
   "private": true,
   "description": "Frontend demo application",
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3000",
     "build": "next build",
-    "build:static": "next build && next export -o out",
-    "start": "next start -p 3001",
+    "build:static": "next build",
+    "start": "next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
