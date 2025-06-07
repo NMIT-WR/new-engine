@@ -1,0 +1,34 @@
+@theme static {
+  /* Background & Text Colors */
+  --color-popover: var(--color-overlay);
+  --color-popover-fg: var(--color-fg-primary);
+  --color-popover-border: var(--color-stroke-primary);
+  --color-popover-description: var(--color-fg-secondary);
+
+  /* Spacing */
+  --spacing-popover-sm: var(--spacing-xs);
+  --spacing-popover-md: var(--spacing-sm);
+  --spacing-popover-lg: var(--spacing-md);
+
+  /* Title spacing */
+  --spacing-popover-title-mb: var(--spacing-2xs);
+
+  /* Close button positioning */
+  --spacing-popover-close-right: var(--spacing-2xs);
+  --spacing-popover-close-top: var(--spacing-2xs);
+
+  /* Arrow dimensions */
+  --width-popover-arrow: 0.75rem;
+  --height-popover-arrow: 0.75rem;
+
+  /* Shadow */
+  --shadow-popover: var(--shadow-lg);
+
+  /* Radius */
+  --radius-popover: var(--radius-md);
+}
+
+/* Semantic tokens for popover icons */
+@utility token-icon-popover-close {
+  @apply token-icon-close;
+}
