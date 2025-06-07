@@ -4,7 +4,6 @@ import { Portal, mergeProps, normalizeProps, useMachine } from '@zag-js/react'
 import { useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
-
 import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Icon } from '../atoms/icon'
@@ -43,9 +42,11 @@ const comboboxVariants = tv({
       'transition-transform duration-200',
       'data-[state=open]:rotate-180',
     ],
-    positioner: ['z-10 w-full'],
+    positioner: [
+      'z-(--z-index) w-full *:overflow-y-auto *:max-h-(--available-height)',
+    ],
     content: [
-      'flex flex-col overflow-clip z-10',
+      'flex flex-col overflow-clip',
       'rounded-combobox shadow-md',
       'bg-combobox-content-bg',
       'border border-combobox-border',
@@ -115,6 +116,7 @@ export interface ComboboxProps<T = unknown>
   onChange?: (value: string | string[]) => void
   onInputValueChange?: (value: string) => void
   onOpenChange?: (open: boolean) => void
+  inputBehavior?: 'autohighlight' | 'autocomplete' | 'none'
 }
 
 export function Combobox<T = unknown>({
@@ -137,6 +139,7 @@ export function Combobox<T = unknown>({
   selectionBehavior = 'replace',
   closeOnSelect = false,
   allowCustomValue = false,
+  inputBehavior = 'autocomplete',
   onChange,
   onInputValueChange,
   onOpenChange,
@@ -164,6 +167,7 @@ export function Combobox<T = unknown>({
     closeOnSelect,
     selectionBehavior,
     allowCustomValue,
+    inputBehavior,
     ids: {
       label: `${uniqueId}-label`,
       input: `${uniqueId}-input`,
