@@ -188,20 +188,18 @@ export const WithForm: Story = {
   args: {
     trigger: 'Edit Profile',
     title: 'Edit Profile',
-    showCloseButton: true,
     children: (
       <form className="mt-4 space-y-4">
         <div>
           <Label htmlFor="name">Name</Label>
-          <Input id="name" placeholder="Enter your name" />
+          <Input size='sm' className='px-2 py-2' id="name" placeholder="Enter your name" />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="Enter your email" />
+          <Input size='sm' className='px-2 py-2' id="email" type="email" placeholder="Enter your email" />
         </div>
         <div className="flex gap-2">
           <Button type="submit" size="sm">Save</Button>
-          <Button type="button" variant="secondary" size="sm">Cancel</Button>
         </div>
       </form>
     ),
