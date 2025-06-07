@@ -10,9 +10,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
@@ -30,6 +28,7 @@
     "@zag-js/i18n-utils": "^1.12.4",
     "@zag-js/number-input": "^1.12.4",
     "@zag-js/pagination": "^1.12.4",
+    "@zag-js/popover": "^1.15.0",
     "@zag-js/rating-group": "^1.12.4",
     "@zag-js/react": "^1.12.4",
     "@zag-js/select": "^1.12.4",
