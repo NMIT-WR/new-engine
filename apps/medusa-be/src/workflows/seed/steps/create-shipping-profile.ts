@@ -1,0 +1,60 @@
+import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
+import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
+import {createShippingProfilesWorkflow, updateShippingProfilesWorkflow} from "@medusajs/medusa/core-flows"
+
+export type CreateDefaultShippingProfileStepInput = {
+    name: string,
+}
+
+const CreateDefaultShippingProfileStepId = 'create-default-shipping-profile-seed-step'
+export const createDefaultShippingProfileStep = createStep(CreateDefaultShippingProfileStepId, async (
+    input: CreateDefaultShippingProfileStepInput,
+    {container}
+) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+    const fulfillmentModuleService = container.resolve(Modules.FULFILLMENT)
+
+    const shippingProfiles = await fulfillmentModuleService.listShippingProfiles({
+        type: 'default',
+    })
+    let shippingProfile = shippingProfiles.length ? shippingProfiles[0] : null
+
+    if (shippingProfile) {
+        logger.info("Updating shipping profile name...")
+        await updateShippingProfilesWorkflow(container).run({
+            input: {
+                selector: {
+                    type: 'default',
+                },
+                update: {
+                    name: input.name,
+                },
+            },
+        })
+    } else {
+        logger.info("Creating shipping profile...")
+        await createShippingProfilesWorkflow(container).run({
+            input: {
+                data: [
+                    {
+                        name: input.name,
+                        type: 'default',
+                    },
+                ],
+            },
+        })
+    }
+
+    const finalShippingProfiles = await fulfillmentModuleService.listShippingProfiles({
+        type: "default"
+    })
+    const finalShippingProfile = finalShippingProfiles.length ? finalShippingProfiles[0] : null
+
+    if (finalShippingProfile === null) {
+        throw new Error("Could not find default shipping profile")
+    }
+
+    return new StepResponse({
+        result: [finalShippingProfile],
+    })
+})
