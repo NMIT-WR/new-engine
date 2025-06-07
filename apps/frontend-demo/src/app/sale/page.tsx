@@ -1,7 +1,5 @@
 'use client'
-
 import { useState } from 'react'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { ProductFilters } from '../../components/product-filters'
 import { ProductGrid } from '../../components/product-grid'
 import { mockProducts } from '../../data/mock-products'
@@ -14,8 +12,8 @@ import {
 } from '../../utils/product-filters'
 
 export default function SalePage() {
-  const { banner, hero, breadcrumbs } = saleContent
-  
+  const { banner, hero } = saleContent
+
   // Get only sale products
   const saleProducts = mockProducts.filter((product) =>
     product.tags?.some((tag) => tag.value.toLowerCase() === 'sale')
@@ -37,8 +35,8 @@ export default function SalePage() {
   return (
     <>
       {/* Sale Banner */}
-      <div className="bg-sale-banner-bg text-sale-banner-fg py-sale-banner-y text-center mb-sale-banner-bottom">
-        <p className="text-sale-banner-size font-sale-banner">
+      <div className="mb-sale-banner-bottom bg-sale-banner-bg py-sale-banner-y text-center text-sale-banner-fg">
+        <p className="font-sale-banner text-sale-banner-size">
           {banner.icon && <span>{banner.icon} </span>}
           {banner.text}
           {banner.icon && <span> {banner.icon}</span>}
@@ -46,15 +44,12 @@ export default function SalePage() {
       </div>
 
       {/* Header */}
-      <section className="py-sale-header-y border-b border-border">
+      <section className="border-border border-b py-sale-header-y">
         <div className="mx-auto max-w-container-max px-container-x">
-          <div className="mb-sale-breadcrumb-bottom">
-            <Breadcrumb items={breadcrumbs} />
-          </div>
-          <h1 className="text-sale-title-size font-sale-title text-sale-title-fg">
+          <h1 className="font-sale-title text-sale-title-fg text-sale-title-size">
             {hero.title}
           </h1>
-          <p className="text-sale-subtitle-size text-sale-subtitle-fg mt-sale-subtitle-top">
+          <p className="mt-sale-subtitle-top text-sale-subtitle-fg text-sale-subtitle-size">
             {hero.subtitle}
           </p>
         </div>
@@ -70,8 +65,8 @@ export default function SalePage() {
 
           {/* Products Grid */}
           <main className="flex-1">
-            <div className="flex justify-between items-center mb-sale-results-bottom">
-              <p className="text-sale-results-size text-sale-results-fg">
+            <div className="mb-sale-results-bottom flex items-center justify-between">
+              <p className="text-sale-results-fg text-sale-results-size">
                 {filteredProducts.length}{' '}
                 {filteredProducts.length === 1 ? 'product' : 'products'} on sale
               </p>

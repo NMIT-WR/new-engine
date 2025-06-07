@@ -41,12 +41,14 @@ interface ProductFiltersProps {
   className?: string
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
+  hideCategories?: boolean
 }
 
 export function ProductFilters({
   className,
   filters,
   onFiltersChange,
+  hideCategories = false,
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
   const styles = productFiltersVariants()
@@ -266,7 +268,9 @@ export function ProductFilters({
       )}
 
       {/* Render filters based on configuration */}
-      {filterConfig.map(renderFilter)}
+      {filterConfig
+        .filter((config) => !(hideCategories && config.id === 'categories'))
+        .map(renderFilter)}
     </>
   )
 

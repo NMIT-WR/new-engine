@@ -5,7 +5,7 @@
   --spacing-about-container-x: var(--spacing-container-x);
   --spacing-about-container-x-md: var(--spacing-container-x-md);
   --spacing-about-container-x-lg: var(--spacing-container-x-lg);
-  
+
   /* About Hero Section */
   --spacing-about-hero-height: 24rem;
   --spacing-about-hero-height-md: 32rem;
@@ -26,7 +26,7 @@
   /* About Story Section */
   --spacing-about-story-gap: var(--spacing-3xl);
   --spacing-about-image-radius: var(--radius-lg);
-  
+
   /* About Grid */
   --spacing-about-grid-gap: var(--spacing-2xl);
   --spacing-about-grid-item-gap: var(--spacing-lg);
@@ -65,7 +65,7 @@
   --color-about-team-name-fg: var(--color-fg-primary);
   --text-about-team-role-size: var(--text-base);
   --color-about-team-role-fg: var(--color-fg-secondary);
-  
+
   /* About Stats */
   --color-about-stats-bg: var(--color-surface);
   --spacing-about-stats-padding: var(--spacing-2xl);
@@ -75,7 +75,7 @@
   --color-about-stat-number-fg: var(--color-primary);
   --text-about-stat-label-size: var(--text-sm);
   --color-about-stat-label-fg: var(--color-fg-secondary);
-  
+
   /* About CTA */
   --color-about-cta-button-bg: var(--color-primary);
   --color-about-cta-button-bg-hover: var(--color-primary-hover);
