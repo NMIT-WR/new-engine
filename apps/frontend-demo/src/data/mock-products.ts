@@ -101,7 +101,7 @@ export const mockProducts: Product[] = [
       title: 'Summer Collection',
       handle: 'summer-collection',
     },
-    categories: [{ id: 'cat_01', name: 'T-Shirts', handle: 't-shirts' }],
+    categories: [{ id: 'cat_01', name: 'T-Shirts & Tops', handle: 't-shirts-tops' }],
     variants: [
       {
         id: 'var_01',
@@ -233,7 +233,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_02', name: 'Jeans', handle: 'jeans' }],
+    categories: [{ id: 'cat_02', name: 'Jeans & Pants', handle: 'jeans-pants' }],
     variants: [
       {
         id: 'var_03',
@@ -324,7 +324,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_03', name: 'Shoes', handle: 'shoes' }],
+    categories: [{ id: 'cat_03', name: 'Shoes & Sneakers', handle: 'shoes-sneakers' }],
     variants: [
       {
         id: 'var_04',
@@ -361,7 +361,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_04', name: 'Jackets', handle: 'jackets' }],
+    categories: [{ id: 'cat_04', name: 'Jackets & Coats', handle: 'jackets-coats' }],
     variants: [
       {
         id: 'var_05',
@@ -510,7 +510,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_03', name: 'Shoes', handle: 'shoes' }],
+    categories: [{ id: 'cat_03', name: 'Shoes & Sneakers', handle: 'shoes-sneakers' }],
     variants: [
       {
         id: 'var_09',
@@ -551,7 +551,7 @@ export const mockProducts: Product[] = [
       title: 'Summer Collection',
       handle: 'summer-collection',
     },
-    categories: [{ id: 'cat_01', name: 'T-Shirts', handle: 't-shirts' }],
+    categories: [{ id: 'cat_01', name: 'T-Shirts & Tops', handle: 't-shirts-tops' }],
     variants: [
       {
         id: 'var_10',
@@ -643,7 +643,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_01', name: 'T-Shirts', handle: 't-shirts' }],
+    categories: [{ id: 'cat_01', name: 'T-Shirts & Tops', handle: 't-shirts-tops' }],
     variants: [
       {
         id: 'var_12',
@@ -764,7 +764,7 @@ export const mockProducts: Product[] = [
       title: 'Winter Collection',
       handle: 'winter-collection',
     },
-    categories: [{ id: 'cat_04', name: 'Jackets', handle: 'jackets' }],
+    categories: [{ id: 'cat_04', name: 'Jackets & Coats', handle: 'jackets-coats' }],
     variants: [
       {
         id: 'var_14',
@@ -807,7 +807,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_02', name: 'Jeans', handle: 'jeans' }],
+    categories: [{ id: 'cat_02', name: 'Jeans & Pants', handle: 'jeans-pants' }],
     variants: [
       {
         id: 'var_15',
@@ -984,7 +984,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_04', name: 'Jackets', handle: 'jackets' }],
+    categories: [{ id: 'cat_04', name: 'Jackets & Coats', handle: 'jackets-coats' }],
     variants: [
       {
         id: 'var_19',
@@ -1027,7 +1027,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_09', name: 'Skirts', handle: 'skirts' }],
+    categories: [{ id: 'cat_05', name: 'Dresses', handle: 'dresses' }],
     variants: [
       {
         id: 'var_20',
@@ -1070,7 +1070,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_03', name: 'Shoes', handle: 'shoes' }],
+    categories: [{ id: 'cat_03', name: 'Shoes & Sneakers', handle: 'shoes-sneakers' }],
     variants: [
       {
         id: 'var_21',
@@ -1165,7 +1165,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_02', name: 'Jeans', handle: 'jeans' }],
+    categories: [{ id: 'cat_02', name: 'Jeans & Pants', handle: 'jeans-pants' }],
     variants: [
       {
         id: 'var_23',
@@ -1304,7 +1304,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_04', name: 'Jackets', handle: 'jackets' }],
+    categories: [{ id: 'cat_04', name: 'Jackets & Coats', handle: 'jackets-coats' }],
     variants: [
       {
         id: 'var_26',
@@ -1351,7 +1351,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_03', name: 'Shoes', handle: 'shoes' }],
+    categories: [{ id: 'cat_03', name: 'Shoes & Sneakers', handle: 'shoes-sneakers' }],
     variants: [
       {
         id: 'var_27',
@@ -1394,7 +1394,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_01', name: 'T-Shirts', handle: 't-shirts' }],
+    categories: [{ id: 'cat_01', name: 'T-Shirts & Tops', handle: 't-shirts-tops' }],
     variants: [
       {
         id: 'var_28',
@@ -1480,7 +1480,7 @@ export const mockProducts: Product[] = [
       },
     ],
     status: 'published',
-    categories: [{ id: 'cat_02', name: 'Jeans', handle: 'jeans' }],
+    categories: [{ id: 'cat_02', name: 'Jeans & Pants', handle: 'jeans-pants' }],
     variants: [
       {
         id: 'var_30',

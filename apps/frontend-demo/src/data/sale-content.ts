@@ -16,14 +16,15 @@ export interface SaleContent {
 export const saleContent: SaleContent = {
   banner: {
     text: 'End of Season Sale - Up to 50% OFF! Limited time only',
-    icon: '🔥'
+    icon: '🔥',
   },
   hero: {
     title: 'Sale',
-    subtitle: 'Shop our biggest discounts of the season. New markdowns added daily!'
+    subtitle:
+      'Shop our biggest discounts of the season. New markdowns added daily!',
   },
   breadcrumbs: [
     { label: 'Home', href: '/' },
-    { label: 'Sale', href: '/sale' }
-  ]
+    { label: 'Sale', href: '/sale' },
+  ],
 }
