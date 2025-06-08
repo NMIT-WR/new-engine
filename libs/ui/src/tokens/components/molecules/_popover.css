@@ -2,18 +2,21 @@
   --arrow-size: var(--spacing-2xs);
 
   /* Background & Text Colors */
-  --color-popover-bg: var(--color-surface);
+  --color-popover-bg: var(--color-overlay);
   --color-popover-fg: var(--color-fg-primary);
-  --color-popover-border: var(--color-stroke-primary);
+  --color-popover-border: transparent;
   --color-popover-description: var(--color-fg-secondary);
-  --arrow-background: var(--color-popover-border);
+  --arrow-background: var(--color-popover-bg);
 
   /* Spacing */
   --spacing-popover-sm: var(--spacing-xs);
   --spacing-popover-md: var(--spacing-sm);
   --spacing-popover-lg: var(--spacing-md);
 
-
+  /* Trigger */
+  --padding-popover-trigger: var(--spacing-3xs) var(--spacing-2xs);
+ 
+  
   /* Title */
   --text-popover-title-sm: var(--text-md);
   --text-popover-title-md: var(--text-lg);
@@ -21,13 +24,14 @@
   --font-weight-popover-title: var(--font-weight-semibold);
   --spacing-popover-title-mb: var(--spacing-2xs);
 
-  /* Arrow dimensions */
+  /*description*/
+  --text-popover-description: var(--text-sm);
 
   /* Shadow */
-  --shadow-popover: var(--shadow-lg);
+  --shadow-popover: var(--shadow-primary);
 
   /* Radius */
-  --radius-popover: var(--radius-md);
+  --radius-popover: var(--radius-sm);
 }
 
 /* Semantic tokens for popover icons */
