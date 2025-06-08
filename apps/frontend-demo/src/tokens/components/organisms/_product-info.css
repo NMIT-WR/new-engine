@@ -44,4 +44,7 @@
   --font-weight-product-info-variant-label: var(--font-medium);
   --text-product-info-quantity-label: var(--text-sm);
   --text-product-info-stock: var(--text-sm);
+
+  /* === FILTER BUTTON === */
+  --radius-product-btn: var(--radius-sm);
 }

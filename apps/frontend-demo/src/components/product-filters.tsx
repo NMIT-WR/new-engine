@@ -5,7 +5,6 @@ import { Button } from 'ui/src/atoms/button'
 import { Checkbox } from 'ui/src/molecules/checkbox'
 import { Dialog } from 'ui/src/molecules/dialog'
 import { RangeSlider } from 'ui/src/molecules/range-slider'
-import { tv } from 'ui/src/utils'
 import { type FilterConfig, activeFilterConfig } from '../data/filter-config'
 import { mockProducts } from '../data/mock-products'
 import { getColorHex } from '../utils/color-map'
@@ -16,7 +15,6 @@ import {
   getSizesWithCounts,
 } from '../utils/product-filters'
 import { ColorSwatch } from './atoms/color-swatch'
-import { FilterButton } from './atoms/filter-button'
 import { FilterSection } from './molecules/filter-section'
 
 
@@ -168,9 +166,9 @@ export function ProductFilters({
               const isDisabled = count === 0
 
               return (
-                <FilterButton
+                <Button
                   key={size}
-                  variant={isSelected ? 'selected' : 'default'}
+                  theme={isSelected ? 'solid' : 'borderless'}
                   disabled={isDisabled}
                   onClick={() => {
                     const newSizes = new Set(filters.sizes)
@@ -181,9 +179,11 @@ export function ProductFilters({
                     }
                     updateFilters({ sizes: newSizes })
                   }}
+                  size='sm'
+                  className='border rounded-sm'
                 >
                   {size}
-                </FilterButton>
+                </Button>
               )
             }}
           />
@@ -243,9 +243,9 @@ export function ProductFilters({
       {/* Clear All Filters */}
       {hasActiveFilters && (
         <div className="mb-4 text-right">
-          <button onClick={clearAllFilters} className='text-sm text-primary hover:underline cursor-pointer'>
+          <Button theme='borderless' onClick={clearAllFilters} className='text-sm text-primary hover:underline cursor-pointer'>
             Clear all filters
-          </button>
+          </Button>
         </div>
       )}
 

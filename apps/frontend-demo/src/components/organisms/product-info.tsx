@@ -11,7 +11,6 @@ import { useCart } from '../../hooks/use-cart'
 import type { Product, ProductVariant } from '../../types/product'
 import { getColorHex } from '../../utils/color-map'
 import { ColorSwatch } from '../atoms/color-swatch'
-import { FilterButton } from '../atoms/filter-button'
 
 interface ProductInfoProps {
   product: Product
@@ -182,14 +181,16 @@ export function ProductInfo({
                     variantForOption?.inventory_quantity === 0
 
                   return (
-                    <FilterButton
+                    <Button
                       key={value}
-                      variant={isSelected ? 'selected' : 'default'}
+                      theme={isSelected ? 'solid' : 'borderless'}
+                      size='sm'
                       disabled={isOutOfStock}
                       onClick={() => handleOptionChange(option.title, value)}
+                      className='border roundend-product-btn'
                     >
                       {value}
-                    </FilterButton>
+                    </Button>
                   )
                 })}
               </div>
