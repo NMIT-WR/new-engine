@@ -5,96 +5,53 @@ import { Button } from 'ui/src/atoms/button'
 import { Rating } from 'ui/src/atoms/rating'
 import { type TabItem, Tabs } from 'ui/src/atoms/tabs'
 import { Accordion } from 'ui/src/molecules/accordion'
-import { tv } from 'ui/src/utils'
 import type { Product } from '../../types/product'
-
-const productTabsStyles = tv({
-  slots: {
-    root: 'mt-product-tabs-margin',
-    tabContent: 'space-y-product-tabs-content-gap',
-    tabText:
-      'text-product-tabs-content-size text-product-tabs-content-fg leading-relaxed',
-    heading:
-      'text-product-tabs-heading-size font-product-tabs-heading text-product-tabs-heading-fg',
-    featuresList: 'space-y-product-tabs-features-gap pl-5',
-    featureItem:
-      'text-product-tabs-content-size text-product-tabs-content-fg list-disc',
-    specList: 'space-y-product-tabs-spec-gap',
-    specRow:
-      'flex gap-product-tabs-spec-gap py-product-tabs-table-cell-y border-b border-product-tabs-spec-border last:border-0',
-    specLabel:
-      'font-product-tabs-spec-label text-product-tabs-spec-size text-product-tabs-spec-label min-w-[var(--spacing-product-tabs-spec-label-width)]',
-    specValue: 'text-product-tabs-spec-size text-product-tabs-spec-value',
-    accordionContent:
-      'text-product-tabs-content-size text-product-tabs-content-fg space-y-product-tabs-features-gap',
-    accordionContainer: 'mt-product-tabs-accordion-margin',
-    sizeTable: 'w-full text-product-tabs-review-meta',
-    sizeTableRow: 'border-b border-product-tabs-spec-border',
-    sizeTableCell: 'py-product-tabs-table-cell-y',
-    reviewSection: 'space-y-product-tabs-section-gap',
-    reviewSummary:
-      'bg-product-tabs-review-bg p-product-tabs-review-card rounded-product-tabs-review-bg',
-    reviewSummaryContent:
-      'flex items-center gap-product-tabs-review-rating-gap',
-    reviewList: 'space-y-product-tabs-content-gap',
-    reviewCard:
-      'border-b border-product-tabs-review-border pb-product-tabs-content-gap',
-    reviewHeader: 'flex items-start justify-between mb-product-tabs-spec-gap',
-    reviewMeta: 'text-product-tabs-review-meta text-product-tabs-content-muted',
-    reviewComment:
-      'text-product-tabs-content-size text-product-tabs-content-fg leading-relaxed',
-    noReviews:
-      'text-center py-product-tabs-review-card bg-product-tabs-review-bg rounded-product-tabs-review-bg',
-  },
-})
 
 interface ProductTabsProps {
   product: Product
 }
 
 export function ProductTabs({ product }: ProductTabsProps) {
-  const {
-    root,
-    tabContent,
-    tabText,
-    heading,
-    featuresList,
-    featureItem,
-    specList,
-    specRow,
-    specLabel,
-    specValue,
-    accordionContent,
-    accordionContainer,
-    sizeTable,
-    sizeTableRow,
-    sizeTableCell,
-    reviewSection,
-    reviewSummary,
-    reviewSummaryContent,
-    reviewList,
-    reviewCard,
-    reviewHeader,
-    reviewMeta,
-    reviewComment,
-    noReviews,
-  } = productTabsStyles()
+  const mockReviews = [
+    {
+      id: '1',
+      author: 'Sarah M.',
+      rating: 5,
+      date: '2 weeks ago',
+      comment: 'Absolutely love this! The quality is amazing and it fits perfectly.',
+      verified: true,
+    },
+    {
+      id: '2',
+      author: 'John D.',
+      rating: 4,
+      date: '1 month ago',
+      comment: 'Great product, exactly as described. Would recommend.',
+      verified: true,
+    },
+  ]
 
-  const tabItems: TabItem[] = [
+  const tabs: TabItem[] = [
     {
       value: 'description',
       label: 'Description',
       content: (
-        <div className={tabContent()}>
-          <p className={tabText()}>
-            {product.longDescription || product.description}
+        <div className="space-y-product-tabs-content-gap">
+          <p className="text-product-tabs-content-size text-product-tabs-content-fg leading-relaxed">
+            {product.description ||
+              'Experience premium quality and modern design with this exceptional product. Crafted with attention to detail and built to last.'}
           </p>
           {product.features && product.features.length > 0 && (
-            <div className={tabContent()}>
-              <h4 className={heading()}>Key Features</h4>
-              <ul className={featuresList()}>
+            <div>
+              <h4 className="text-product-tabs-heading-size font-product-tabs-heading text-product-tabs-heading-fg">
+                Key Features
+              </h4>
+              <ul className="space-y-product-tabs-features-gap pl-5">
                 {product.features.map((feature, idx) => (
-                  <li key={idx} className={featureItem()}>
+                  <li
+                    key={idx}
+                    className="text-product-tabs-content-size text-product-tabs-content-fg list-disc"
+                  >
                     {feature}
                   </li>
                 ))}
@@ -108,21 +65,21 @@ export function ProductTabs({ product }: ProductTabsProps) {
       value: 'details',
       label: 'Product Details',
       content: (
-        <div className={reviewSection()}>
+        <div className="space-y-product-tabs-section-gap">
           {product.specifications && product.specifications.length > 0 && (
-            <div className={tabContent()}>
-              <h4 className={heading()}>Specifications</h4>
-              <dl className={specList()}>
+            <div className="space-y-product-tabs-content-gap">
+              <h4 className="text-product-tabs-heading-size font-product-tabs-heading text-product-tabs-heading-fg">Specifications</h4>
+              <dl className="space-y-product-tabs-spec-gap">
                 {product.specifications.map((spec, idx) => (
-                  <div key={idx} className={specRow()}>
-                    <dt className={specLabel()}>{spec.name}</dt>
-                    <dd className={specValue()}>{spec.value}</dd>
+                  <div key={idx} className="flex gap-product-tabs-spec-gap py-product-tabs-table-cell-y border-b border-product-tabs-spec-border last:border-0">
+                    <dt className="font-product-tabs-spec-label text-product-tabs-spec-size text-product-tabs-spec-label min-w-[var(--spacing-product-tabs-spec-label-width)]">{spec.name}</dt>
+                    <dd className="text-product-tabs-spec-size text-product-tabs-spec-value">{spec.value}</dd>
                   </div>
                 ))}
               </dl>
             </div>
           )}
-          <div className={accordionContainer()}>
+          <div className="mt-product-tabs-accordion-margin">
             <Accordion
               items={[
                 {
@@ -130,7 +87,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   value: 'shipping',
                   title: 'Shipping & Returns',
                   content: (
-                    <div className={accordionContent()}>
+                    <div className="text-product-tabs-content-size text-product-tabs-content-fg space-y-product-tabs-features-gap">
                       <p>• Free shipping on orders over €50</p>
                       <p>• Express delivery available (1-2 business days)</p>
                       <p>• 30-day return policy</p>
@@ -143,52 +100,35 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   value: 'sizing',
                   title: 'Size Guide',
                   content: (
-                    <div className={accordionContent()}>
+                    <div className="text-product-tabs-content-size text-product-tabs-content-fg space-y-product-tabs-features-gap">
                       <p>
                         Our products are true to size. If you're between sizes,
                         we recommend sizing up for a comfortable fit.
                       </p>
-                      <p
-                        className={`mt-product-tabs-spec-gap font-product-tabs-spec-label`}
-                      >
-                        Size Chart:
-                      </p>
-                      <table className={sizeTable()}>
+                      <table className="w-full text-product-tabs-review-meta">
                         <thead>
-                          <tr className={sizeTableRow()}>
-                            <th className={`text-left ${sizeTableCell()}`}>
-                              Size
-                            </th>
-                            <th className={`text-left ${sizeTableCell()}`}>
-                              EU
-                            </th>
-                            <th className={`text-left ${sizeTableCell()}`}>
-                              US
-                            </th>
-                            <th className={`text-left ${sizeTableCell()}`}>
-                              UK
-                            </th>
+                          <tr className="border-b border-product-tabs-spec-border">
+                            <th className="py-product-tabs-table-cell-y text-left">Size</th>
+                            <th className="py-product-tabs-table-cell-y">Chest (cm)</th>
+                            <th className="py-product-tabs-table-cell-y">Length (cm)</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className={sizeTableRow()}>
-                            <td className={sizeTableCell()}>S</td>
-                            <td className={sizeTableCell()}>36-38</td>
-                            <td className={sizeTableCell()}>4-6</td>
-                            <td className={sizeTableCell()}>8-10</td>
-                          </tr>
-                          <tr className={sizeTableRow()}>
-                            <td className={sizeTableCell()}>M</td>
-                            <td className={sizeTableCell()}>38-40</td>
-                            <td className={sizeTableCell()}>6-8</td>
-                            <td className={sizeTableCell()}>10-12</td>
-                          </tr>
-                          <tr className={sizeTableRow()}>
-                            <td className={sizeTableCell()}>L</td>
-                            <td className={sizeTableCell()}>40-42</td>
-                            <td className={sizeTableCell()}>8-10</td>
-                            <td className={sizeTableCell()}>12-14</td>
-                          </tr>
+                          {[
+                            { size: 'S', chest: '90-95', length: '68' },
+                            { size: 'M', chest: '96-101', length: '70' },
+                            { size: 'L', chest: '102-107', length: '72' },
+                            { size: 'XL', chest: '108-113', length: '74' },
+                          ].map(({ size, chest, length }) => (
+                            <tr
+                              key={size}
+                              className="border-b border-product-tabs-spec-border"
+                            >
+                              <td className="py-product-tabs-table-cell-y">{size}</td>
+                              <td className="py-product-tabs-table-cell-y text-center">{chest}</td>
+                              <td className="py-product-tabs-table-cell-y text-center">{length}</td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>
@@ -199,10 +139,10 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   value: 'care',
                   title: 'Care Instructions',
                   content: (
-                    <div className={accordionContent()}>
+                    <div className="text-product-tabs-content-size text-product-tabs-content-fg space-y-product-tabs-features-gap">
                       <p>• Machine wash cold with like colors</p>
                       <p>• Do not bleach</p>
-                      <p>• Tumble dry low or hang to dry</p>
+                      <p>• Tumble dry low</p>
                       <p>• Cool iron if needed</p>
                       <p>• Do not dry clean</p>
                     </div>
@@ -216,66 +156,60 @@ export function ProductTabs({ product }: ProductTabsProps) {
     },
     {
       value: 'reviews',
-      label: `Reviews (${product.reviewCount || 0})`,
+      label: 'Reviews',
       content: (
-        <div className={reviewSection()}>
-          {product.rating && (
-            <div className={reviewSummary()}>
-              <div className={reviewSummaryContent()}>
-                <Rating value={product.rating} readOnly />
-                <span className={`${heading()}`}>
-                  {product.rating} out of 5
-                </span>
-                {product.reviewCount && (
-                  <span className="text-product-tabs-content-muted">
-                    ({product.reviewCount} reviews)
+        <div className="space-y-product-tabs-section-gap">
+          {mockReviews.length > 0 ? (
+            <>
+              <div className="bg-product-tabs-review-bg p-product-tabs-review-card rounded-product-tabs-review-bg">
+                <div className="flex items-center gap-product-tabs-review-rating-gap">
+                  <span className="text-product-tabs-heading-size font-product-tabs-heading text-product-tabs-heading-fg">
+                    4.5
                   </span>
-                )}
-              </div>
-            </div>
-          )}
-          {product.reviews && product.reviews.length > 0 ? (
-            <div className={reviewList()}>
-              {product.reviews.map((review) => (
-                <div key={review.id} className={reviewCard()}>
-                  <div className={reviewHeader()}>
-                    <div className="space-y-1">
-                      <div
-                        className={`flex items-center gap-product-tabs-spec-gap`}
-                      >
-                        <Rating value={review.rating} readOnly />
-                        <h5
-                          className={`${specLabel().replace('min-w-[var(--spacing-product-tabs-spec-label-width)]', '')}`}
-                        >
-                          {review.title}
-                        </h5>
-                        {review.verified && (
-                          <Badge variant="success">Verified Purchase</Badge>
-                        )}
-                      </div>
-                      <div className={reviewMeta()}>
-                        By {review.author} •{' '}
-                        {new Date(review.date).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                  <p className={reviewComment()}>{review.comment}</p>
+                  <Rating value={4.5} />
+                  <span className="text-product-tabs-review-meta text-product-tabs-content-muted">
+                    Based on {mockReviews.length} reviews
+                  </span>
                 </div>
-              ))}
-              <Button variant="secondary" className="w-full">
-                Load More Reviews
-              </Button>
-            </div>
+              </div>
+              <div className="space-y-product-tabs-content-gap">
+                {mockReviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="border-b border-product-tabs-review-border pb-product-tabs-content-gap"
+                  >
+                    <div className="flex items-start justify-between mb-product-tabs-spec-gap">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{review.author}</span>
+                          {review.verified && (
+                            <Badge variant="success">
+                              Verified
+                            </Badge>
+                          )}
+                        </div>
+                        <Rating value={review.rating} size="sm" />
+                      </div>
+                      <span className="text-product-tabs-review-meta text-product-tabs-content-muted">
+                        {review.date}
+                      </span>
+                    </div>
+                    <p className="text-product-tabs-content-size text-product-tabs-content-fg leading-relaxed">
+                      {review.comment}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-center">
+                <Button variant="secondary">Load More Reviews</Button>
+              </div>
+            </>
           ) : (
-            <div className={noReviews()}>
-              <p className={`${tabText()} mb-product-tabs-content-gap`}>
-                No reviews yet. Be the first to share your experience!
+            <div className="text-center py-product-tabs-review-card bg-product-tabs-review-bg rounded-product-tabs-review-bg">
+              <p className="text-product-tabs-content-size text-product-tabs-content-fg leading-relaxed">
+                No reviews yet. Be the first to review this product!
               </p>
-              <Button variant="primary">Write a Review</Button>
+              <Button className="mt-4">Write a Review</Button>
             </div>
           )}
         </div>
@@ -284,8 +218,8 @@ export function ProductTabs({ product }: ProductTabsProps) {
   ]
 
   return (
-    <div className={root()}>
-      <Tabs items={tabItems} defaultValue="description" />
+    <div className="mt-product-tabs-margin">
+      <Tabs defaultValue="description" items={tabs} />
     </div>
   )
 }

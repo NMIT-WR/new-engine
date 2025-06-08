@@ -19,23 +19,6 @@ import { ColorSwatch } from './atoms/color-swatch'
 import { FilterButton } from './atoms/filter-button'
 import { FilterSection } from './molecules/filter-section'
 
-const productFiltersVariants = tv({
-  slots: {
-    root: 'w-full',
-    mobileButton:
-      'md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin',
-    desktopFilters: 'hidden md:block',
-    dialogContent: 'p-product-filters-dialog-padding',
-    dialogHeader:
-      'flex items-center justify-between mb-product-filters-dialog-header-margin',
-    dialogTitle:
-      'text-product-filters-dialog-title font-product-filters-dialog-title',
-    clearButton: 'text-sm text-primary hover:underline cursor-pointer',
-    colorGrid: 'grid grid-cols-4 gap-2',
-    sizeGrid: 'flex flex-wrap gap-2',
-    checkboxList: 'space-y-product-filters-item-gap',
-  },
-})
 
 interface ProductFiltersProps {
   className?: string
@@ -51,7 +34,6 @@ export function ProductFilters({
   hideCategories = false,
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const styles = productFiltersVariants()
   const filterConfig = activeFilterConfig // Use active configuration
 
   const updateFilters = (updates: Partial<FilterState>) => {
@@ -108,7 +90,7 @@ export function ProductFilters({
                 ? () => updateFilters({ categories: new Set() })
                 : undefined
             }
-            className={styles.checkboxList()}
+            className='space-y-product-filters-item-gap'
             renderItem={(category) => {
               const isDisabled = category.count === 0
               return (
@@ -180,7 +162,7 @@ export function ProductFilters({
                 ? () => updateFilters({ sizes: new Set() })
                 : undefined
             }
-            className={styles.sizeGrid()}
+            className='flex flex-wrap gap-2'
             renderItem={({ size, count }) => {
               const isSelected = filters.sizes.has(size)
               const isDisabled = count === 0
@@ -219,7 +201,7 @@ export function ProductFilters({
                 ? () => updateFilters({ colors: new Set() })
                 : undefined
             }
-            className={styles.colorGrid()}
+            className='grid grid-cols-4 gap-2'
             renderItem={({ color, count }) => {
               const isSelected = filters.colors.has(color)
               const isDisabled = count === 0
@@ -261,7 +243,7 @@ export function ProductFilters({
       {/* Clear All Filters */}
       {hasActiveFilters && (
         <div className="mb-4 text-right">
-          <button onClick={clearAllFilters} className={styles.clearButton()}>
+          <button onClick={clearAllFilters} className='text-sm text-primary hover:underline cursor-pointer'>
             Clear all filters
           </button>
         </div>
@@ -275,20 +257,20 @@ export function ProductFilters({
   )
 
   return (
-    <div className={`${styles.root()} ${className || ''}`}>
+    <div className={`w-full ${className || ''}`}>
       {/* Mobile Filter Button */}
       <Button
         variant="secondary"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className={styles.mobileButton()}
+        className='md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin'
         icon="icon-[mdi--filter-variant]"
       >
         Filters
       </Button>
 
       {/* Desktop Filters */}
-      <div className={styles.desktopFilters()}>{filterContent}</div>
+      <div className='hidden md:block'>{filterContent}</div>
 
       {/* Mobile Filter Dialog */}
       <Dialog
@@ -297,9 +279,9 @@ export function ProductFilters({
         title="Filters"
         description="Refine your product search"
       >
-        <div className={styles.dialogContent()}>
-          <div className={styles.dialogHeader()}>
-            <h2 className={styles.dialogTitle()}>Filters</h2>
+        <div className='p-product-filters-dialog-padding'>
+          <div className='flex items-center justify-between mb-product-filters-dialog-header-margin'>
+            <h2 className='text-product-filters-dialog-title font-product-filters-dialog-title'>Filters</h2>
             <Button
               variant="tertiary"
               theme="borderless"

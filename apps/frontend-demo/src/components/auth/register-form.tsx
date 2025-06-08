@@ -1,5 +1,4 @@
 'use client'
-
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -7,20 +6,7 @@ import { Button } from 'ui/src/atoms/button'
 import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
 import { FormInput } from 'ui/src/molecules/form-input'
 import { useToast } from 'ui/src/molecules/toast'
-import { tv } from 'ui/src/utils'
 import { useAuth } from '../../hooks/use-auth'
-
-const registerFormVariants = tv({
-  slots: {
-    root: 'bg-auth-card-bg p-auth-card-padding rounded-auth-card shadow-auth-card',
-    header: 'text-center mb-auth-header-margin',
-    title: 'text-auth-title font-auth-title mb-auth-title-margin',
-    subtitle: 'text-auth-subtitle',
-    form: 'space-y-auth-form-gap',
-    footer: 'mt-auth-footer-margin text-center text-auth-footer',
-    link: 'text-auth-link hover:text-auth-link-hover',
-  },
-})
 
 export function RegisterForm() {
   const [email, setEmail] = useState('')
@@ -32,7 +18,6 @@ export function RegisterForm() {
   const { signUp } = useAuth()
   const router = useRouter()
   const toast = useToast()
-  const styles = registerFormVariants()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -77,13 +62,13 @@ export function RegisterForm() {
   }
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.header()}>
-        <h1 className={styles.title()}>Create Account</h1>
-        <p className={styles.subtitle()}>Sign up to get started</p>
+    <div className='bg-auth-card-bg p-auth-card-padding rounded-auth-card shadow-auth-card'>
+      <div className='text-center mb-auth-header-margin'>
+        <h1 className='text-auth-title font-auth-title mb-auth-title-margin'>Create Account</h1>
+        <p className='text-auth-subtitle'>Sign up to get started</p>
       </div>
 
-      <form onSubmit={handleSubmit} className={styles.form()}>
+      <form onSubmit={handleSubmit} className='space-y-auth-form-gap'>
         <FormInput
           id="email"
           label="Email"
@@ -139,9 +124,9 @@ export function RegisterForm() {
         </Button>
       </form>
 
-      <div className={styles.footer()}>
+      <div className='mt-auth-footer-margin text-center text-auth-footer'>
         Already have an account?{' '}
-        <Link href="/auth/login" className={styles.link()}>
+        <Link href="/auth/login" className='text-auth-link hover:text-auth-link-hover'>
           Sign in
         </Link>
       </div>

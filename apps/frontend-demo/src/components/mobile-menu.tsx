@@ -4,39 +4,9 @@ import { Badge } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
-import { tv } from 'ui/src/utils'
 import type { NavItem } from './navigation'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
-
-const mobileMenuVariants = tv({
-  slots: {
-    root: 'fixed inset-0 z-50 lg:hidden',
-    overlay:
-      'fixed inset-0 bg-mobile-menu-overlay-bg transition-mobile-menu-overlay',
-    panel:
-      'fixed right-0 top-0 h-full w-full max-w-mobile-menu-panel-max-w bg-mobile-menu-panel-bg shadow-mobile-menu-panel transition-mobile-menu-panel',
-    header:
-      'flex items-center justify-between border-b border-mobile-menu-border p-mobile-menu-header-padding',
-    title:
-      'text-mobile-menu-title-size font-mobile-menu-title-weight text-mobile-menu-text',
-    closeButton:
-      'rounded-mobile-menu-close p-mobile-menu-close-padding hover:bg-mobile-menu-close-hover-bg transition-colors',
-    nav: 'flex flex-col p-mobile-menu-nav-padding',
-    navItem:
-      'block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y text-mobile-menu-item-size font-mobile-menu-item-weight text-mobile-menu-text hover:bg-mobile-menu-item-hover-bg transition-colors',
-    submenu:
-      'ml-mobile-menu-submenu-indent mt-mobile-menu-submenu-gap flex flex-col gap-mobile-menu-submenu-gap',
-    submenuItem:
-      'block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y text-mobile-menu-submenu-size text-mobile-menu-text hover:bg-mobile-menu-item-hover-bg transition-colors',
-    divider:
-      'my-mobile-menu-divider-margin border-t border-mobile-menu-divider',
-    settingsSection: 'mb-mobile-menu-divider-margin space-y-mobile-menu-item-y',
-    settingsRow: 'flex items-center justify-between px-mobile-menu-item-x',
-    settingsLabel:
-      'text-mobile-menu-submenu-size text-mobile-menu-text-secondary',
-  },
-})
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -50,7 +20,6 @@ export function MobileMenu({
   navigationItems,
 }: MobileMenuProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([])
-  const styles = mobileMenuVariants()
 
   useEffect(() => {
     if (isOpen) {
@@ -74,20 +43,20 @@ export function MobileMenu({
   }
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.overlay()} onClick={onClose} />
-      <div className={styles.panel()}>
-        <div className={styles.header()}>
-          <h2 className={styles.title()}>Menu</h2>
+    <div className="fixed inset-0 z-50 lg:hidden">
+      <div className="fixed inset-0 bg-mobile-menu-overlay-bg transition-mobile-menu-overlay" onClick={onClose} />
+      <div className="fixed right-0 top-0 h-full w-full max-w-mobile-menu-panel-max-w bg-mobile-menu-panel-bg shadow-mobile-menu-panel transition-mobile-menu-panel">
+        <div className="flex items-center justify-between border-b border-mobile-menu-border p-mobile-menu-header-padding">
+          <h2 className="text-mobile-menu-title-size font-mobile-menu-title-weight text-mobile-menu-text">Menu</h2>
           <button
             type="button"
             onClick={onClose}
-            className={styles.closeButton()}
+            className="rounded-mobile-menu-close p-mobile-menu-close-padding hover:bg-mobile-menu-close-hover-bg transition-colors"
           >
             <Icon icon="icon-[mdi--close]" size="md" />
           </button>
         </div>
-        <nav className={styles.nav()}>
+        <nav className="flex flex-col p-mobile-menu-nav-padding">
           {navigationItems.map((item) => (
             <div key={item.title}>
               {item.role === 'submenu' && item.children ? (
@@ -95,7 +64,7 @@ export function MobileMenu({
                   <button
                     type="button"
                     onClick={() => toggleExpanded(item.title)}
-                    className={`${styles.navItem()} flex w-full items-center justify-between`}
+                    className="block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y text-mobile-menu-item-size font-mobile-menu-item-weight text-mobile-menu-text hover:bg-mobile-menu-item-hover-bg transition-colors flex w-full items-center justify-between"
                   >
                     {item.title}
                     <Icon
@@ -108,13 +77,13 @@ export function MobileMenu({
                     />
                   </button>
                   {expandedItems.includes(item.title) && (
-                    <div className={styles.submenu()}>
+                    <div className="ml-mobile-menu-submenu-indent mt-mobile-menu-submenu-gap flex flex-col gap-mobile-menu-submenu-gap">
                       {item.children.map((child) => (
                         <Link
                           key={child.title}
                           href={child.href}
                           onClick={onClose}
-                          className={styles.submenuItem()}
+                          className="block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y text-mobile-menu-submenu-size text-mobile-menu-text hover:bg-mobile-menu-item-hover-bg transition-colors"
                         >
                           {child.title}
                           {child.label && (
@@ -131,7 +100,7 @@ export function MobileMenu({
                 <Link
                   href={item.href || '#'}
                   onClick={onClose}
-                  className={styles.navItem()}
+                  className="block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y text-mobile-menu-item-size font-mobile-menu-item-weight text-mobile-menu-text hover:bg-mobile-menu-item-hover-bg transition-colors"
                 >
                   {item.title}
                 </Link>
@@ -140,22 +109,22 @@ export function MobileMenu({
           ))}
 
           {/* Divider */}
-          <div className={styles.divider()} />
+          <div className="my-mobile-menu-divider-margin border-t border-mobile-menu-divider" />
 
           {/* Settings section */}
-          <div className={styles.settingsSection()}>
-            <div className={styles.settingsRow()}>
-              <span className={styles.settingsLabel()}>Region</span>
+          <div className="mb-mobile-menu-divider-margin space-y-mobile-menu-item-y">
+            <div className="flex items-center justify-between px-mobile-menu-item-x">
+              <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">Region</span>
               <RegionSelector />
             </div>
-            <div className={styles.settingsRow()}>
-              <span className={styles.settingsLabel()}>Theme</span>
+            <div className="flex items-center justify-between px-mobile-menu-item-x">
+              <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">Theme</span>
               <ThemeToggle />
             </div>
           </div>
 
           {/* Divider */}
-          <div className={styles.divider()} />
+          <div className="my-mobile-menu-divider-margin border-t border-mobile-menu-divider" />
 
           {/* Auth buttons */}
           <Link href="/login" onClick={onClose} className="mb-2">

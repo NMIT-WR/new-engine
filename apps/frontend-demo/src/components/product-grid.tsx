@@ -4,19 +4,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Pagination } from 'ui/src/molecules/pagination'
 import { ProductCard } from 'ui/src/molecules/product-card'
-import { tv } from 'ui/src/utils'
 import type { Product } from '../types/product'
 import { extractProductData, getProductPath } from '../utils/product-utils'
-
-const productGridVariants = tv({
-  slots: {
-    root: 'w-full',
-    grid: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-product-grid-gap',
-    paginationWrapper: 'mt-product-grid-pagination-margin flex justify-center',
-    emptyState: 'text-center py-product-grid-empty-padding',
-    emptyText: 'text-product-grid-empty-text',
-  },
-})
 
 interface ProductGridProps {
   products: Product[]
@@ -25,7 +14,6 @@ interface ProductGridProps {
 
 export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
   const [currentPage, setCurrentPage] = useState(1)
-  const styles = productGridVariants()
 
   // Reset to page 1 when products change (due to filtering)
   useEffect(() => {
@@ -47,15 +35,15 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
 
   if (products.length === 0) {
     return (
-      <div className={styles.emptyState()}>
-        <p className={styles.emptyText()}>No products found</p>
+      <div className="text-center py-product-grid-empty-padding">
+        <p className="text-product-grid-empty-text">No products found</p>
       </div>
     )
   }
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.grid()}>
+    <div className="w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-product-grid-gap">
         {currentProducts.map((product) => {
           const { price, displayBadges, stockText } =
             extractProductData(product)
@@ -81,7 +69,7 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
       </div>
 
       {totalPages > 1 && (
-        <div className={styles.paginationWrapper()}>
+        <div className="mt-product-grid-pagination-margin flex justify-center">
           <Pagination
             count={products.length}
             page={currentPage}

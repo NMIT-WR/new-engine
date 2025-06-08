@@ -2,30 +2,11 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { Input } from 'ui/src/atoms/input'
+import { FormInput } from 'ui/src/molecules/form-input'
 import { HoverCard } from 'ui/src/molecules/hover-card'
 import { Menu } from 'ui/src/molecules/menu'
-import { tv } from 'ui/src/utils'
 import { useAuth } from '../../hooks/use-auth'
 import { authHelpers } from '../../stores/auth-store'
-
-const authDropdownVariants = tv({
-  slots: {
-    form: 'space-y-auth-dropdown-form-gap w-auth-dropdown-form',
-    header: 'space-y-auth-dropdown-header-gap',
-    title:
-      'font-auth-dropdown-title text-auth-dropdown-title-size text-auth-dropdown-title',
-    subtitle: 'text-auth-dropdown-subtitle-size text-auth-dropdown-subtitle',
-    inputGroup: 'space-y-auth-dropdown-input-gap',
-    error: 'text-auth-dropdown-error-size text-auth-dropdown-error',
-    actions: 'space-y-auth-dropdown-actions-gap',
-    signupPrompt:
-      'flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size',
-    signupText: 'text-auth-dropdown-signup-text',
-    signupLink:
-      'p-0 h-auto font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover',
-  },
-})
 
 export function AuthDropdown() {
   const { user, signOut } = useAuth()
@@ -125,7 +106,6 @@ function QuickLoginForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const styles = authDropdownVariants()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,16 +123,17 @@ function QuickLoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form()}>
-      <div className={styles.header()}>
-        <h3 className={styles.title()}>Sign In</h3>
-        <p className={styles.subtitle()}>Enter your credentials to continue</p>
+    <form onSubmit={handleSubmit} className="space-y-auth-dropdown-form-gap w-auth-dropdown-form">
+      <div className="space-y-auth-dropdown-header-gap">
+        <h3 className="font-auth-dropdown-title text-auth-dropdown-title-size text-auth-dropdown-title">Sign In</h3>
+        <p className="text-auth-dropdown-subtitle-size text-auth-dropdown-subtitle">Enter your credentials to continue</p>
       </div>
 
-      <div className={styles.inputGroup()}>
-        <Input
+      <div className="space-y-auth-dropdown-input-gap">
+        <FormInput
+          id="quick-login-email"
+          label="Email"
           type="email"
-          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -160,9 +141,10 @@ function QuickLoginForm() {
           size="sm"
         />
 
-        <Input
+        <FormInput
+          id="quick-login-password"
+          label="Password"
           type="password"
-          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -171,9 +153,9 @@ function QuickLoginForm() {
         />
       </div>
 
-      {error && <p className={styles.error()}>{error}</p>}
+      {error && <p className="text-auth-dropdown-error-size text-auth-dropdown-error">{error}</p>}
 
-      <div className={styles.actions()}>
+      <div className="space-y-auth-dropdown-actions-gap">
         <Button
           type="submit"
           variant="primary"
@@ -184,15 +166,15 @@ function QuickLoginForm() {
           {loading ? 'Signing in...' : 'Sign In'}
         </Button>
 
-        <div className={styles.signupPrompt()}>
-          <span className={styles.signupText()}>New here?</span>
+        <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">
+          <span className="text-auth-dropdown-signup-text">New here?</span>
           <Button
             type="button"
             variant="tertiary"
             theme="borderless"
             size="sm"
             onClick={() => router.push('/auth/register')}
-            className={styles.signupLink()}
+            className="p-0 h-auto font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover"
           >
             Create account
           </Button>

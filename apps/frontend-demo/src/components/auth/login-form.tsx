@@ -7,20 +7,8 @@ import { Button } from 'ui/src/atoms/button'
 import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
 import { FormInput } from 'ui/src/molecules/form-input'
 import { useToast } from 'ui/src/molecules/toast'
-import { tv } from 'ui/src/utils'
 import { useAuth } from '../../hooks/use-auth'
 
-const loginFormVariants = tv({
-  slots: {
-    root: 'bg-auth-card-bg p-auth-card-padding rounded-auth-card shadow-auth-card',
-    header: 'text-center mb-auth-header-margin',
-    title: 'text-auth-title font-auth-title mb-auth-title-margin',
-    subtitle: 'text-auth-subtitle',
-    form: 'space-y-auth-form-gap',
-    footer: 'mt-auth-footer-margin text-center text-auth-footer',
-    link: 'text-auth-link hover:text-auth-link-hover',
-  },
-})
 
 export function LoginForm() {
   const [email, setEmail] = useState('')
@@ -31,7 +19,6 @@ export function LoginForm() {
   const { signIn } = useAuth()
   const router = useRouter()
   const toast = useToast()
-  const styles = loginFormVariants()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,13 +45,13 @@ export function LoginForm() {
   }
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.header()}>
-        <h1 className={styles.title()}>Welcome Back</h1>
-        <p className={styles.subtitle()}>Sign in to your account to continue</p>
+    <div className='bg-auth-card-bg p-auth-card-padding rounded-auth-card shadow-auth-card'>
+      <div className='text-center mb-auth-header-margin'>
+        <h1 className='text-auth-title font-auth-title mb-auth-title-margin'>Welcome Back</h1>
+        <p className='text-auth-subtitle'>Sign in to your account to continue</p>
       </div>
 
-      <form onSubmit={handleSubmit} className={styles.form()}>
+      <form onSubmit={handleSubmit} className='space-y-auth-form-gap'>
         <FormInput
           id="email"
           label="Email"
@@ -99,7 +86,7 @@ export function LoginForm() {
             disabled={isLoading}
           />
 
-          <Link href="/auth/forgot-password" className={styles.link()}>
+          <Link href="/auth/forgot-password" className='text-auth-link hover:text-auth-link-hover'>
             Forgot password?
           </Link>
         </div>
@@ -109,9 +96,9 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <div className={styles.footer()}>
+      <div className='mt-auth-footer-margin text-center text-auth-footer'>
         Don't have an account?{' '}
-        <Link href="/auth/register" className={styles.link()}>
+        <Link href="/auth/register" className='text-auth-link hover:text-auth-link-hover'>
           Sign up
         </Link>
       </div>

@@ -1,16 +1,5 @@
 import { type ReactNode, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { tv } from 'ui/src/utils'
-
-const filterSectionVariants = tv({
-  slots: {
-    root: 'mb-filter-section-margin',
-    header: 'flex items-center justify-between mb-filter-section-header-margin',
-    title: 'text-filter-section-title font-filter-section-title',
-    content: '',
-    viewMore: 'mt-filter-section-view-more-margin',
-  },
-})
 
 export interface FilterSectionProps<T = any> {
   title: string
@@ -32,7 +21,6 @@ export function FilterSection<T>({
   className,
 }: FilterSectionProps<T>) {
   const [showAll, setShowAll] = useState(false)
-  const styles = filterSectionVariants()
 
   const hasItems = items && renderItem
   const hasMore =
@@ -44,9 +32,9 @@ export function FilterSection<T>({
     : []
 
   return (
-    <div className={styles.root()}>
-      <div className={styles.header()}>
-        <h3 className={styles.title()}>{title}</h3>
+    <div className="mb-filter-section-margin">
+      <div className="flex items-center justify-between mb-filter-section-header-margin">
+        <h3 className="text-filter-section-title font-filter-section-title">{title}</h3>
         {onClear && (
           <Button
             variant="tertiary"
@@ -58,13 +46,13 @@ export function FilterSection<T>({
           </Button>
         )}
       </div>
-      <div className={`${styles.content()} ${className || ''}`}>
+      <div className={className || ''}>
         {hasItems
           ? visibleItems.map((item, index) => renderItem!(item, index))
           : children}
       </div>
       {hasMore && (
-        <div className={styles.viewMore()}>
+        <div className="mt-filter-section-view-more-margin">
           <Button
             variant="tertiary"
             theme="borderless"

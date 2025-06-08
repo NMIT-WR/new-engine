@@ -3,22 +3,6 @@ import Link from 'next/link'
 import { type ComponentPropsWithoutRef, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
-import { tv } from 'ui/src/utils'
-
-const navigationVariants = tv({
-  slots: {
-    root: 'bg-navigation-bg',
-    list: 'flex items-center gap-navigation-gap',
-    item: 'relative',
-    link: 'flex items-center gap-navigation-link-icon-gap px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
-    submenu:
-      'absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu',
-    submenuItem:
-      'block px-navigation-item-x py-navigation-item-y text-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors',
-    badge:
-      'ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg',
-  },
-})
 
 export type NavItem = {
   title: string
@@ -31,15 +15,13 @@ export type NavItem = {
 }
 
 function Submenu({ items }: { items: NavItem[] }) {
-  const { submenu, submenuItem, badge } = navigationVariants()
-
   return (
-    <div className={submenu()}>
+    <div className="absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu">
       {items.map((child, index) => (
         <Link
           key={index}
           href={child.href || '#'}
-          className={submenuItem()}
+          className="block px-navigation-item-x py-navigation-item-y text-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors"
           target={child.external ? '_blank' : undefined}
           rel={child.external ? 'noopener noreferrer' : undefined}
         >
@@ -51,7 +33,7 @@ function Submenu({ items }: { items: NavItem[] }) {
             />
           )}
           {child.title}
-          {child.label && <span className={badge()}>{child.label}</span>}
+          {child.label && <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg">{child.label}</span>}
           {child.external && (
             <Icon
               icon="icon-[mdi--open-in-new]"
@@ -66,12 +48,11 @@ function Submenu({ items }: { items: NavItem[] }) {
 }
 
 function NavigationItem({ item }: { item: NavItem }) {
-  const { item: itemSlot, link: linkSlot } = navigationVariants()
   const [isOpen, setIsOpen] = useState(false)
 
   if (item.role === 'submenu' && item.children) {
     return (
-      <li className={itemSlot()}>
+      <li className="relative">
         <Button
           icon="icon-[mdi--chevron-down]"
           iconPosition="right"
@@ -89,17 +70,17 @@ function NavigationItem({ item }: { item: NavItem }) {
   }
 
   return (
-    <li className={itemSlot()}>
+    <li className="relative">
       <Link
         href={item.href || '#'}
-        className={linkSlot()}
+        className="flex items-center gap-navigation-link-icon-gap px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors"
         target={item.external ? '_blank' : undefined}
         rel={item.external ? 'noopener noreferrer' : undefined}
       >
         {item.icon && <Icon icon={item.icon} size="sm" />}
         {item.title}
         {item.label && (
-          <span className={navigationVariants().badge()}>{item.label}</span>
+          <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg">{item.label}</span>
         )}
         {item.external && (
           <Icon icon="icon-[mdi--open-in-new]" size="xs" className="ml-1" />
@@ -114,10 +95,9 @@ export interface NavigationProps extends ComponentPropsWithoutRef<'nav'> {
 }
 
 export function Navigation({ items, className, ...props }: NavigationProps) {
-  const { root, list } = navigationVariants({})
   return (
-    <nav className={root()} {...props}>
-      <ul className={list()}>
+    <nav className="bg-navigation-bg" {...props}>
+      <ul className="flex items-center gap-navigation-gap">
         {items.map((item, index) => (
           <NavigationItem key={index} item={item} />
         ))}

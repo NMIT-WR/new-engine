@@ -7,47 +7,11 @@ import { Icon } from 'ui/src/atoms/icon'
 import { Rating } from 'ui/src/atoms/rating'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { useToast } from 'ui/src/molecules/toast'
-import { tv } from 'ui/src/utils'
 import { useCart } from '../../hooks/use-cart'
 import type { Product, ProductVariant } from '../../types/product'
 import { getColorHex } from '../../utils/color-map'
 import { ColorSwatch } from '../atoms/color-swatch'
 import { FilterButton } from '../atoms/filter-button'
-
-const productInfoStyles = tv({
-  slots: {
-    root: 'flex flex-col',
-    badgeContainer:
-      'mb-product-info-badge-margin flex flex-wrap gap-product-info-badge-gap',
-    title:
-      'text-product-info-title font-product-info-title mb-product-info-title-margin',
-    ratingContainer:
-      'flex items-center gap-product-info-rating-gap mb-product-info-rating-margin',
-    ratingText: 'text-product-info-rating-text',
-    priceContainer: 'mb-product-info-price-margin',
-    price: 'text-product-info-price font-product-info-price',
-    originalPrice:
-      'text-product-info-original-price line-through ml-product-info-original-price-margin',
-    description:
-      'text-product-info-description mb-product-info-description-margin',
-    skuInfo:
-      'text-product-info-variant-label text-product-info-variant-label mb-product-info-variant-margin',
-    variantSection: 'mb-product-info-variant-margin',
-    variantLabel:
-      'text-product-info-variant-label font-product-info-variant-label mb-product-info-variant-label-margin',
-    variantOptions: 'flex flex-wrap gap-product-info-variant-gap',
-    quantitySection: 'mb-product-info-quantity-margin',
-    quantityContainer: 'flex items-center gap-product-info-quantity-gap',
-    quantityLabel: 'text-product-info-quantity-label',
-    actionContainer:
-      'flex gap-product-info-action-gap mb-product-info-action-margin',
-    stockInfo:
-      'flex items-center gap-product-info-stock-gap text-product-info-stock',
-    stockIconSuccess: 'text-product-info-stock-success',
-    stockIconWarning: 'text-product-info-stock-warning',
-    stockIconError: 'text-product-info-stock-error',
-  },
-})
 
 interface ProductInfoProps {
   product: Product
@@ -72,30 +36,6 @@ export function ProductInfo({
   const [quantity, setQuantity] = useState(1)
   const { addItem } = useCart()
   const toast = useToast()
-
-  const {
-    root,
-    badgeContainer,
-    title,
-    ratingContainer,
-    ratingText,
-    priceContainer,
-    price: priceClass,
-    originalPrice,
-    description,
-    skuInfo,
-    variantSection,
-    variantLabel,
-    variantOptions,
-    quantitySection,
-    quantityContainer,
-    quantityLabel,
-    actionContainer,
-    stockInfo,
-    stockIconSuccess,
-    stockIconWarning,
-    stockIconError,
-  } = productInfoStyles()
 
   // Get all option types from product
   const optionTypes = product.options || []
@@ -148,10 +88,10 @@ export function ProductInfo({
   }
 
   return (
-    <div className={root()}>
+    <div className="flex flex-col">
       {/* Badges */}
       {badges.length > 0 && (
-        <div className={badgeContainer()}>
+        <div className="mb-product-info-badge-margin flex flex-wrap gap-product-info-badge-gap">
           {badges.map((badge, idx) => (
             <Badge key={idx} {...badge} />
           ))}
@@ -159,39 +99,39 @@ export function ProductInfo({
       )}
 
       {/* Title */}
-      <h1 className={title()}>{product.title}</h1>
+      <h1 className="text-product-info-title font-product-info-title mb-product-info-title-margin">{product.title}</h1>
 
       {/* Rating */}
       {product.rating && (
-        <div className={ratingContainer()}>
+        <div className="flex items-center gap-product-info-rating-gap mb-product-info-rating-margin">
           <Rating value={product.rating} readOnly />
-          <span className={ratingText()}>
+          <span className="text-product-info-rating-text">
             ({product.reviewCount || 0} reviews)
           </span>
         </div>
       )}
 
       {/* Price */}
-      <div className={priceContainer()}>
-        <span className={priceClass()}>
+      <div className="mb-product-info-price-margin">
+        <span className="text-product-info-price font-product-info-price">
           {selectedVariant?.prices?.[0]?.calculated_price ||
             price?.calculated_price}
         </span>
         {selectedVariant?.prices?.[0]?.original_price &&
           selectedVariant.prices[0].original_price !==
             selectedVariant.prices[0].calculated_price && (
-            <span className={originalPrice()}>
+            <span className="text-product-info-original-price line-through ml-product-info-original-price-margin">
               {selectedVariant.prices[0].original_price}
             </span>
           )}
       </div>
 
       {/* Description */}
-      <p className={description()}>{product.description}</p>
+      <p className="text-product-info-description mb-product-info-description-margin">{product.description}</p>
 
       {/* SKU and Stock Info */}
       {selectedVariant && (
-        <div className={skuInfo()}>
+        <div className="text-product-info-variant-label text-product-info-variant-label mb-product-info-variant-margin">
           <p>SKU: {selectedVariant.sku}</p>
           {selectedVariant.inventory_quantity !== undefined && (
             <p>In Stock: {selectedVariant.inventory_quantity} units</p>
@@ -205,12 +145,12 @@ export function ProductInfo({
         const isColor = optionKey === 'color' || optionKey === 'colour'
 
         return (
-          <div key={option.id} className={variantSection()}>
-            <label className={variantLabel()}>{option.title}</label>
+          <div key={option.id} className="mb-product-info-variant-margin">
+            <label className="text-product-info-variant-label font-product-info-variant-label mb-product-info-variant-label-margin">{option.title}</label>
 
             {isColor ? (
               /* Color swatches */
-              <div className={variantOptions()}>
+              <div className="flex flex-wrap gap-product-info-variant-gap">
                 {option.values.map((value) => {
                   const variantWithColor = product.variants?.find(
                     (v) => v.options?.[optionKey] === value
@@ -232,7 +172,7 @@ export function ProductInfo({
               </div>
             ) : (
               /* Size or other option buttons */
-              <div className={variantOptions()}>
+              <div className="flex flex-wrap gap-product-info-variant-gap">
                 {option.values.map((value) => {
                   const isSelected = selectedOptions[optionKey] === value
                   const variantForOption = product.variants?.find(
@@ -259,9 +199,9 @@ export function ProductInfo({
       })}
 
       {/* Quantity */}
-      <div className={quantitySection()}>
-        <div className={quantityContainer()}>
-          <span className={quantityLabel()}>Quantity:</span>
+      <div className="mb-product-info-quantity-margin">
+        <div className="flex items-center gap-product-info-quantity-gap">
+          <span className="text-product-info-quantity-label">Quantity:</span>
           <NumericInput
             value={quantity}
             onChange={setQuantity}
@@ -273,7 +213,7 @@ export function ProductInfo({
       </div>
 
       {/* Actions */}
-      <div className={actionContainer()}>
+      <div className="flex gap-product-info-action-gap mb-product-info-action-margin">
         <Button
           variant="primary"
           size="lg"
@@ -292,7 +232,7 @@ export function ProductInfo({
       </div>
 
       {/* Stock Info */}
-      <div className={stockInfo()}>
+      <div className="flex items-center gap-product-info-stock-gap text-product-info-stock">
         {selectedVariant &&
           selectedVariant.inventory_quantity !== undefined && (
             <>
@@ -300,7 +240,7 @@ export function ProductInfo({
                 <>
                   <Icon
                     icon="icon-[mdi--check-circle]"
-                    className={stockIconSuccess()}
+                    className="text-product-info-stock-success"
                   />
                   <span>In stock and ready to ship</span>
                 </>
@@ -310,7 +250,7 @@ export function ProductInfo({
                   <>
                     <Icon
                       icon="icon-[mdi--alert-circle]"
-                      className={stockIconWarning()}
+                      className="text-product-info-stock-warning"
                     />
                     <span>
                       Only {selectedVariant.inventory_quantity} left in stock
@@ -321,7 +261,7 @@ export function ProductInfo({
                 <>
                   <Icon
                     icon="icon-[mdi--close-circle]"
-                    className={stockIconError()}
+                    className="text-product-info-stock-error"
                   />
                   <span>Currently out of stock</span>
                 </>
