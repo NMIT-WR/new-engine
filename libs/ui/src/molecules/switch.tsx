@@ -117,7 +117,7 @@ export function Switch({
         )}
       </Label>
       {(errorText || helperText) && (
-        <div className="">
+        <div>
           {invalid && errorText && <ErrorText size="sm">{errorText}</ErrorText>}
           {!invalid && helperText && (
             <ExtraText size="sm">{helperText}</ExtraText>

@@ -39,10 +39,11 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     - Component: `apps/frontend-demo/src/components/[atoms|molecules|organisms]/component-name.tsx`.
     - CSS Tokens: `apps/frontend-demo/src/tokens/components/[atoms|molecules|organisms]/_component-name.css`.
 3. **Component Implementation (`component-name.tsx`)**:
-    
+
     - Define props with TypeScript interfaces.
     - Implement logic using functional components and hooks.
-    - Style using `tv()` with `slots` (see "Component Styling with `tv()`" below).
+    - Style using `tv()` with `slots` only if file need more variants/sizes (see "Component     
+    Styling with `tv()`" below).
     - Import its CSS token file (e.g., `import './_component-name.css';`).
 4. **CSS Token Definition (`_component-name.css`)**:
     
@@ -57,8 +58,8 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     
     - Write unit/integration tests.
     - Capture UI screenshots: `node scripts/capture-ui-screenshots.js` (from `apps/frontend-demo`).
-    - Run TypeScript check: `npx tsc --noEmit` (from `apps/frontend-demo`).
-    - Run Biome: `bunx biome check --write.` (from monorepo root).
+    - Run TypeScript check: `bunx tsc --noEmit` (from `apps/frontend-demo`).
+    - Run Biome: `bunx biome check --write .` (from monorepo root).
 
 ### 3.2. Workflow: Using Components from `@libs/ui`
 
@@ -80,17 +81,12 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
 2. **CSS Token Modification**:
     - Modify/add CSS tokens in `_component-name.css`, primarily referencing `_semantic.css` variables and adhering to all token guidelines.
     - Use **MCP Quillopy/Context7** to research Tailwind CSS/`tailwind-variants` documentation if needed.
-3. **`tv()` Updates**: Update `slots` in the `tv()` definition within the `.tsx` file if necessary to apply new/changed styles.
+3. **`tv()` Updates**: If file has `tv()` with `slots` Update `slots` in the `tv()` definition within the `.tsx` file if necessary to apply new/changed styles.
 4. **Testing & Validation**: Follow step 6 from "Workflow: Creating a New Component".
 
 ## 4. Styling, Theming & Component Development Details
 
 ### 4.1. Core Styling Approach
-
-- **Tailwind CSS v4**: Primary styling engine.
-- **`tv()` (from `tailwind-variants`)**: For component-level style definitions.
-    - **Pattern: YOU MUST define styles using `slots` within `tv()`. Avoid using `variants` in `tv()` unless absolutely necessary and discussed.**
-        
         
         
         ```TypeScript
@@ -210,14 +206,14 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     
     ``` Bash
     # (Run from monorepo root)
-    bunx biome check --write.
+    bunx biome check --write .
     ```
     
 - **TypeScript Check `frontend-demo`**:
     
     ```bash
     # (Run from apps/frontend-demo)
-    npx tsc --noEmit
+    bunx tsc --noEmit
     ```
     
 
@@ -244,7 +240,9 @@ _(This section is for general guidance on how MCP tools can be leveraged, specif
 
 ✅ Follow Atomic Design.
 
-✅ Use design tokens for ALL styling (via tv() and CSS variables, referencing globals).
+✅ Use design tokens for ALL styling.
+
+✅ If component has more variants style it via tv() and CSS variables, referencing semantics(_semantic.css).
 
 ✅ Use MCP Quillopy/Context7 to research documentation (Zag.js, Tailwind, etc.)
 
@@ -270,8 +268,8 @@ _(This section is for general guidance on how MCP tools can be leveraged, specif
 
 - Branch naming: `feat/`, `fix/`, `chore/`, `docs/`
 - Commit with descriptive messages (Conventional Commits).
-- Squash commits before merging to `main`.
-- **Always run `bunx biome check --write.` (from root) and `npx tsc --noEmit` (in `apps/frontend-demo`) before committing.**
+- Use meaningful commit squashing when merging to `main` - preserve important granularity especially when working with AI tools. Only squash truly related commits.
+- **Always run `bunx biome check --write .` (from root) and `bunx tsc --noEmit` (in `apps/frontend-demo`) before committing.**
 
 ## 9. Deployment (`frontend-demo` to Netlify)
 

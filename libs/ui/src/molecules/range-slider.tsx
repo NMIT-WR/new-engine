@@ -66,7 +66,6 @@ const rangeSliderVariants = tv({
     markerText: [
       'absolute top-full',
       'data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full',
-      '',
       'data-[orientation=vertical]:h-full',
     ],
     footer: ['flex flex-col'],
