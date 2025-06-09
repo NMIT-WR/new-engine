@@ -1,6 +1,6 @@
 import {createWorkflow, transform, WorkflowResponse,} from "@medusajs/framework/workflows-sdk"
 import * as Steps from "../steps"
-import { ApiKeyDTO } from "@medusajs/framework/types"
+import { ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types"
 
 const SeedDatabaseWorkflowId = 'seed-database-workflow'
 
@@ -72,7 +72,7 @@ const seedDatabaseWorkflow = createWorkflow(
             createStockLocationResult, input, createFulfillmentSetsResult
         }, (data) => ({
                 stockLocations: data.createStockLocationResult.result,
-                fulfillmentSet: data.createFulfillmentSetsResult.result[0]
+                fulfillmentSet: data.createFulfillmentSetsResult.result[0] as FulfillmentSetDTO
             }
         ))
 
@@ -87,8 +87,8 @@ const seedDatabaseWorkflow = createWorkflow(
                 data.input.shippingOptions.map(option => ({
                     name: option.name,
                     providerId: data.input.fulfillmentProviderId || 'manual_manual',
-                    serviceZoneId: data.createFulfillmentSetsResult.result[0].service_zones[0].id,
-                    shippingProfileId: data.createDefaultShippingProfileResult.result[0].id,
+                    serviceZoneId: data.createFulfillmentSetsResult.result[0]?.service_zones[0]?.id as string,
+                    shippingProfileId: data.createDefaultShippingProfileResult.result[0]?.id as string,
                     regions: data.createRegionsResult.result.map(region => ({
                         ...region,
                         amount: 10 as number

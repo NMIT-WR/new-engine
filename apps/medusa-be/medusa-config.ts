@@ -106,5 +106,8 @@ module.exports = defineConfig({
     {
       resolve: './src/modules/data-layer',
     },
+    {
+      resolve: './src/modules/database',
+    },
   ],
 })

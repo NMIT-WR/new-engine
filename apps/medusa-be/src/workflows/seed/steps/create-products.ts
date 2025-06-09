@@ -116,7 +116,6 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
 
     }).filter(product => product !== null)
 
-    console.log(updateProducts.map(p => p.variants))
     if (missingProducts.length !== 0) {
         logger.info("Creating missing products...")
 
