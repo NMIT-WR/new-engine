@@ -40,7 +40,6 @@ export const createRegionsStep = createStep(CreateRegionsStepId, async (
         return null
     }).filter((region): region is NonNullable<typeof region> => region !== null)
 
-
     if (missingRegions.length !== 0) {
         logger.info("Creating missing region data...")
 

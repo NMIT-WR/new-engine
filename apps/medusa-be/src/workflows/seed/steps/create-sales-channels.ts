@@ -1,7 +1,7 @@
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createSalesChannelsWorkflow} from "@medusajs/medusa/core-flows"
-import {SalesChannelDTO} from "@medusajs/types"
+import {SalesChannelDTO} from "@medusajs/framework/types"
 
 export type CreateSalesChannelsStepInput = {
     name: string,
@@ -36,7 +36,7 @@ export const createSalesChannelsStep = createStep(CreateSalesChannelsStepId, asy
             },
         })
 
-        const defaultTarget = input.find(i => i.default)?.name ?? salesChannelResult[0].name
+        const defaultTarget = input.find(i => i.default)?.name ?? salesChannelResult[0]?.name
         for (const salesChannelResultElement of salesChannelResult) {
             result.push(
                 {

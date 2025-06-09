@@ -16,6 +16,7 @@ export const createDefaultShippingProfileStep = createStep(CreateDefaultShipping
 
     const shippingProfiles = await fulfillmentModuleService.listShippingProfiles({
         type: 'default',
+        name: input.name,
     })
     let shippingProfile = shippingProfiles.length ? shippingProfiles[0] : null
 
@@ -25,6 +26,7 @@ export const createDefaultShippingProfileStep = createStep(CreateDefaultShipping
             input: {
                 selector: {
                     type: 'default',
+                    name: input.name,
                 },
                 update: {
                     name: input.name,

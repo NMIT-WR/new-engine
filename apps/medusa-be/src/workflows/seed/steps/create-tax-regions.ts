@@ -29,7 +29,7 @@ export const createTaxRegionsStep = createStep(CreateTaxRegionsStepId, async (
         logger.info("Creating missing tax regions...")
 
         const {result: createTaxRegionsResult} = await createTaxRegionsWorkflow(container).run({
-            input: input.countries.map((country_code) => ({
+            input: missingTaxRegions.map((country_code) => ({
                 country_code,
                 provider_id: input.taxProviderId || "tp_system"
             })),

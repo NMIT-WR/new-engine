@@ -1,7 +1,7 @@
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createStockLocationsWorkflow, updateStockLocationsWorkflow} from "@medusajs/medusa/core-flows"
-import {StockLocationDTO} from "@medusajs/types"
+import {StockLocationDTO} from "@medusajs/framework/types"
 
 export type CreateStockLocationStepInput = {
     locations: {

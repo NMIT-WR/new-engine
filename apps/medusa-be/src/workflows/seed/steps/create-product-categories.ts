@@ -6,6 +6,7 @@ import {createProductCategoriesWorkflow, updateProductCategoriesWorkflow} from "
 export type CreateProductCategoriesStepInput = {
     name: string,
     isActive: boolean
+    parent?: string,
 }[]
 
 const CreateProductCategoriesStepId = 'create-product-categories-seed-step'
@@ -21,8 +22,9 @@ export const createProductCategoriesStep = createStep(CreateProductCategoriesSte
 
     const existingProductCategories = await productService.listProductCategories({
         name: input.map(i => i.name),
+        include_ancestors_tree: true,
     }, {
-        select: ["id", "name", "is_active"],
+        select: ["id", "name", "is_active", "parent_category_id"],
     })
 
     const missingProductCategories = input.filter(i => !existingProductCategories.find(j => j.name === i.name))
@@ -74,7 +76,7 @@ export const createProductCategoriesStep = createStep(CreateProductCategoriesSte
                     }
                 }
             })
-            productCategoriesUpdateResult.push(categoryResult[0])
+            productCategoriesUpdateResult.push(categoryResult[0] as ProductCategoryDTO)
         }
     }
 

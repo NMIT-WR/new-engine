@@ -1,5 +1,6 @@
 import {createWorkflow, transform, WorkflowResponse,} from "@medusajs/framework/workflows-sdk"
 import * as Steps from "../steps"
+import { ApiKeyDTO } from "@medusajs/framework/types"
 
 const SeedDatabaseWorkflowId = 'seed-database-workflow'
 
@@ -115,6 +116,16 @@ const seedDatabaseWorkflow = createWorkflow(
 
         const createPublishableKeyResult = Steps.createPublishableKeyStep(input.publishableKey)
 
+        // link publishable key to salesChannels
+        const linkSalesChannelsApiKeyStepInput: Steps.LinkSalesChannelsApiKeyStepInput = transform({
+            createPublishableKeyResult, salesChannelsResult
+        }, (data) => ({
+            salesChannels: data.salesChannelsResult.result,
+            publishableApiKey: data.createPublishableKeyResult.result[0] as ApiKeyDTO,
+        }))
+
+        const linkSalesChannelsApiKeyStepInputResult = Steps.linkSalesChannelsApiKeyStep(linkSalesChannelsApiKeyStepInput)
+
         // create product categories
 
         const createProductCategoriesResult = Steps.createProductCategoriesStep(input.productCategories)
@@ -148,6 +159,7 @@ const seedDatabaseWorkflow = createWorkflow(
             createShippingOptionsResult,
             linkSalesChannelsToStockLocationResult,
             createPublishableKeyResult,
+            linkSalesChannelsApiKeyStepInputResult,
             createProductCategoriesResult,
             createProductsResult,
             createInventoryLevelsResult,
