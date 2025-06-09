@@ -68,7 +68,7 @@ export const WithCustomPositioning: Story = {
 }
 
 const itemsWithDisabled: MenuItem[] = [
-  { type: 'action', value: 'cut', label: 'Cut', icon: 'token-icon-scissors' },
+  { type: 'action', value: 'cut', label: 'Cut', icon: 'icon-[mdi--content-cut]' },
   { type: 'action', value: 'copy', label: 'Copy', icon: 'token-icon-copy' },
   { type: 'action', value: 'paste', label: 'Paste', icon: 'token-icon-clipboard', disabled: true },
   { type: 'separator', id: 'separator' },

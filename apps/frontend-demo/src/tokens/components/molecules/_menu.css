@@ -34,7 +34,7 @@
 
 /* Semantic tokens for menu icons */
 @utility token-icon-menu-trigger {
-  @apply icon-[mdi--chevron-down];
+  @apply token-icon-chevron-down;
 }
 
 @utility token-icon-menu-submenu {
@@ -45,6 +45,3 @@
   @apply token-icon-check;
 }
 
-@utility token-icon-menu {
-  @apply icon-[mdi--hamburger-menu];
-}

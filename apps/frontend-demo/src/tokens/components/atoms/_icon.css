@@ -87,9 +87,6 @@
   @apply icon-[mdi--delete];
 }
 
-@utility token-icon-scissors {
-  @apply icon-[mdi--content-cut];
-}
 
 @utility token-icon-copy {
   @apply icon-[mdi--content-copy];
