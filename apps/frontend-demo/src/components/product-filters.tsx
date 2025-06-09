@@ -273,6 +273,7 @@ export function ProductFilters({
       <div className='hidden md:block'>{filterContent}</div>
 
       {/* Mobile Filter Dialog */}
+      <div className='md:hidden'>
       <Dialog
         open={isOpen}
         onOpenChange={({ open }) => setIsOpen(open)}
@@ -315,7 +316,7 @@ export function ProductFilters({
             </Button>
           </div>
         </div>
-      </Dialog>
+      </Dialog></div>
     </div>
   )
 }
