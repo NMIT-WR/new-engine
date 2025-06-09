@@ -5,12 +5,11 @@ import { Button } from 'ui/src/atoms/button'
 import { FormInput } from 'ui/src/molecules/form-input'
 import { Popover } from 'ui/src/molecules/popover'
 import { Menu } from 'ui/src/molecules/menu'
-import { useAuth } from '../../hooks/use-auth'
-import { authHelpers } from '../../stores/auth-store'
 import { Icon } from 'ui/src/atoms/icon'
 
 export function AuthDropdown() {
-  const { user, signOut } = useAuth()
+  const user = null
+  const signOut = () => {}
 
   if (!user) {
     return (
@@ -78,8 +77,8 @@ export function AuthDropdown() {
 
   return (
     <Menu
-      id="auth-dropdown"
       items={menuItems}
+      // @ts-ignore
       onSelect={({ value }) => handleSelect(value)}
       customTrigger={
         <Button
@@ -87,9 +86,8 @@ export function AuthDropdown() {
           theme="borderless"
           size="sm"
           icon="icon-[mdi--account-circle]"
-          aria-label={user.email || 'User menu'}
         >
-          <span className="hidden lg:inline">{user.email}</span>
+          <span className="hidden lg:inline">email</span>
         </Button>
       }
     />
@@ -103,6 +101,8 @@ function QuickLoginForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const signIn = async (email: string, password: string) => {}
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -110,7 +110,7 @@ function QuickLoginForm() {
     setLoading(true)
 
     try {
-      await authHelpers.signIn(email, password)
+      await signIn(email, password)
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Invalid credentials')

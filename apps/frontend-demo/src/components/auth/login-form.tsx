@@ -7,7 +7,6 @@ import { Button } from 'ui/src/atoms/button'
 import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
 import { FormInput } from 'ui/src/molecules/form-input'
 import { useToast } from 'ui/src/molecules/toast'
-import { useAuth } from '../../hooks/use-auth'
 
 
 export function LoginForm() {
@@ -16,7 +15,7 @@ export function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const { signIn } = useAuth()
+  const signIn = async (email: string, password: string) => {}
   const router = useRouter()
   const toast = useToast()
 
