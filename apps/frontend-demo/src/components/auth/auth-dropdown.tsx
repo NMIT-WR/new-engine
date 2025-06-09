@@ -3,31 +3,28 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { FormInput } from 'ui/src/molecules/form-input'
-import { HoverCard } from 'ui/src/molecules/hover-card'
+import { Popover } from 'ui/src/molecules/popover'
 import { Menu } from 'ui/src/molecules/menu'
 import { useAuth } from '../../hooks/use-auth'
 import { authHelpers } from '../../stores/auth-store'
+import { Icon } from 'ui/src/atoms/icon'
 
 export function AuthDropdown() {
   const { user, signOut } = useAuth()
-  const router = useRouter()
 
   if (!user) {
     return (
-      <HoverCard
+      <Popover
         id="auth-dropdown"
-        openDelay={500}
-        closeDelay={500}
-        content={<QuickLoginForm />}
+       trigger={
+          <Icon className='text-tertiary' icon='icon-[mdi--account-outline]' />
+        }
+       triggerClassName="rounded-header-action p-header-action-padding hover:bg-header-action-bg-hover"
+        placement='bottom-end'
+        size='sm'
       >
-        <Button
-          variant="tertiary"
-          theme="borderless"
-          size="sm"
-          icon="icon-[mdi--account-outline]"
-          aria-label="Sign in"
-        />
-      </HoverCard>
+        <QuickLoginForm />
+      </Popover>
     )
   }
 

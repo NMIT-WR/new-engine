@@ -6,10 +6,12 @@ import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
 import { useCart } from '../hooks/use-cart'
 import { AuthDropdown } from './auth/auth-dropdown'
+import { CartPreview } from './molecules/cart-preview'
 import { MobileMenu } from './mobile-menu'
 import { type NavItem, Navigation } from './navigation'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
+import { Popover } from 'ui/src/molecules/popover'
 
 export interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   logo?: {
@@ -77,7 +79,30 @@ export function Header({
               </Link>
 
               {/* Cart button */}
-              <div className="relative">
+              <Popover
+                id="cart-preview"
+                trigger={
+                  <div className="relative flex items-center">
+                    <Icon className='text-tertiary' icon="icon-[mdi--cart-outline]" />
+                    {itemCount > 0 && (
+                      <Badge
+                        variant="danger"
+              
+                        className="-right-2 -top-2 absolute h-4 w-4 min-w-4 rounded-full text-xs"
+                      >
+                        {itemCount > 99 ? '99+' : itemCount.toString()}
+                      </Badge>
+                    )}
+                  </div>
+                }
+                placement="bottom-end"
+                triggerClassName='rounded-header-action p-header-action-padding text-header-action-fg transition-colors hover:bg-header-action-bg-hover hover:text-header-action-fg-hover'
+                showArrow={false}
+                size="lg"
+              >
+                <CartPreview/>
+              </Popover>
+              {/* <div className="relative">
                 <Link href="/cart">
                   <Button
                     variant="tertiary"
@@ -95,7 +120,7 @@ export function Header({
                     {itemCount > 99 ? '99+' : itemCount.toString()}
                   </Badge>
                 )}
-              </div>
+              </div> */}
 
               {/* User/Auth section */}
               <AuthDropdown />

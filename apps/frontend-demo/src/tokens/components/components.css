@@ -12,12 +12,12 @@
 @import "./molecules/_accordion.css";
 @import "./molecules/_breadcrumb.css";
 @import "./molecules/_carousel.css";
+@import "./molecules/_cart-preview.css";
 @import "./molecules/_category-grid.css";
 @import "./molecules/_checkbox.css";
 @import "./molecules/_combobox.css";
 @import "./molecules/_dialog.css";
 @import "./molecules/_featured-products.css";
-@import "./molecules/_hover-card.css";
 @import "./molecules/_numeric-input.css";
 @import "./molecules/_pagination.css";
 @import "./molecules/_popover.css";
