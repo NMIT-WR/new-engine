@@ -32,6 +32,7 @@
     "@zag-js/number-input": "^1.13.0",
     "@zag-js/pagination": "^1.13.0",
     "@zag-js/rating-group": "^1.13.0",
+    "@zag-js/popover": "^1.13.0",
     "@zag-js/react": "^1.13.0",
     "@zag-js/select": "^1.13.0",
     "@zag-js/slider": "^1.13.0",
