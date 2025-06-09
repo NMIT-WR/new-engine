@@ -4,7 +4,6 @@ import { Portal, mergeProps, normalizeProps, useMachine } from '@zag-js/react'
 import { useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
-
 import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Icon } from '../atoms/icon'

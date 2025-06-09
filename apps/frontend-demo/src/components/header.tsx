@@ -74,6 +74,7 @@ export function Header({
                   theme="borderless"
                   size="sm"
                   icon="icon-[mdi--magnify]"
+                  className='font-bold text-md'
                   aria-label="Search"
                 />
               </Link>
