@@ -12,8 +12,13 @@ export function CartPreview() {
   if (items.length === 0) {
     return (
       <div className="max-w-cart-preview-max">
-        <div className="py-cart-preview-empty-padding text-center">
-          <p className="text-cart-preview-empty-size text-cart-preview-fg">Cart is empty</p>
+        <div className="flex flex-col gap-4 py-cart-preview-empty-padding text-center">
+          <p className="text-cart-preview-empty-size font-semibold text-cart-preview-fg">Cart is empty</p>
+          <Link href="/products" className="mt-cart-preview-empty-mt inline-block">
+            <Button variant="primary" size="sm" block>
+              Browse Products
+            </Button>
+          </Link> 
         </div>
       </div>
     )

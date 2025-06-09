@@ -108,3 +108,11 @@
 @utility token-icon-check {
   @apply icon-[mdi--check];
 }
+
+@utility token-icon-cart {
+  @apply icon-[mdi--cart-outline];
+}
+
+@utility token-icon-search {
+  @apply icon-[mdi--magnify];
+}

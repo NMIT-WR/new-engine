@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
+import React, { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
 import { Badge } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
@@ -73,7 +73,7 @@ export function Header({
                   variant="tertiary"
                   theme="borderless"
                   size="sm"
-                  icon="icon-[mdi--magnify]"
+                  icon="token-icon-search"
                   className='font-bold text-md'
                   aria-label="Search"
                 />
@@ -84,7 +84,7 @@ export function Header({
                 id="cart-preview"
                 trigger={
                   <div className="relative flex items-center">
-                    <Icon className='text-tertiary' icon="icon-[mdi--cart-outline]" />
+                    <Icon className='text-tertiary' icon="token-icon-cart" />
                     {itemCount > 0 && (
                       <Badge
                         variant="danger"
@@ -98,29 +98,10 @@ export function Header({
                 }
                 placement="bottom-end"
                 triggerClassName='rounded-header-action p-header-action-padding text-header-action-fg transition-colors hover:bg-header-action-bg-hover hover:text-header-action-fg-hover'
-                size="lg"
               >
                 <CartPreview/>
               </Popover>
-              {/* <div className="relative">
-                <Link href="/cart">
-                  <Button
-                    variant="tertiary"
-                    theme="borderless"
-                    size="sm"
-                    icon="icon-[mdi--cart-outline]"
-                    aria-label="Shopping cart"
-                  />
-                </Link>
-                {itemCount > 0 && (
-                  <Badge
-                    variant="danger"
-                    className="-right-1 -top-1 absolute flex h-4 w-4 min-w-4 items-center justify-center rounded-full p-0 text-xs"
-                  >
-                    {itemCount > 99 ? '99+' : itemCount.toString()}
-                  </Badge>
-                )}
-              </div> */}
+              
 
               {/* User/Auth section */}
               <AuthDropdown />
