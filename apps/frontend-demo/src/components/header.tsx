@@ -97,7 +97,6 @@ export function Header({
                 }
                 placement="bottom-end"
                 triggerClassName='rounded-header-action p-header-action-padding text-header-action-fg transition-colors hover:bg-header-action-bg-hover hover:text-header-action-fg-hover'
-                showArrow={false}
                 size="lg"
               >
                 <CartPreview/>
