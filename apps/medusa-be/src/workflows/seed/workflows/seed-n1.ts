@@ -15,6 +15,12 @@ type CategoryRaw = {
     parentHandle?: string
 }
 
+// type ProductRaw = {
+//     title: string,
+//     description: string,
+//     handle: string,
+// }
+
 const seedN1Workflow = createWorkflow(
     seedN1WorkflowId,
     (input: seedN1WorkflowInput) => {
@@ -60,19 +66,51 @@ const seedN1Workflow = createWorkflow(
             }))
         })
 
-        Steps.createProductCategoriesStep(productCategories)
+        // Steps.createProductCategoriesStep(productCategories)
 
-
-        // const seedDatabaseInput: SeedDatabaseWorkflowInput = {} as SeedDatabaseWorkflowInput
+        // const productsStep = createStep(
+        //     "seed-n1-workflow-step-1-products",
+        //     async (_, {container}) => {
+        //         const dbService = container.resolve(DATABASE_MODULE)
+        //         const result = await dbService.sqlRaw<ProductRaw>(
+        //             sql`
+        //                 select pl.title, pl.rewrite_title as handle, pl.description
+        //                 from product p
+        //                          join product_lang pl on pl.id_product = p.id and pl.id_lang in (select id from lang where abbreviation = 'cz')
+        //                     and p.base_product = 1
+        //                     and p.deleted = 0
+        //                     and p.id_product_group is not null
+        //             `)
         //
-        // const seedDatabaseWorkflowResult = seedDatabaseWorkflow.runAsStep({
-        //     input: seedDatabaseInput
+        //         return new StepResponse({
+        //             result
+        //         })
+        //     }
+        // )
+        // const {result: productsStepResult} = productsStep()
+        //
+        // const products: Steps.CreateProductsStepInput = transform({
+        //     productsStepResult
+        // }, (data) => {
+        //     return data.productsStepResult.map(i => ({
+        //         title: i.title,
+        //         categories: [],
+        //         description: i.description,
+        //         handle: i.handle,
+        //         weight: 1,
+        //         shippingProfileName: 'string',
+        //         images: [],
+        //         options: [],
+        //         variants: [],
+        //         salesChannelNames: [],
+        //     }))
         // })
+        //
+        // Steps.createProductsStep(products)
 
 
         return new WorkflowResponse({
             in: 'N1 seed done'
-            // seedDatabaseWorkflowResult
         })
     }
 )

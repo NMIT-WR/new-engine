@@ -8,7 +8,7 @@ export type CreateProductsStepInput = {
     categories: string[]
     description: string
     handle: string
-    weight: number
+    weight?: number
     status?: ProductStatus
     shippingProfileName: string
     images: {
