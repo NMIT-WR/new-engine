@@ -2,8 +2,8 @@ import * as popover from '@zag-js/popover'
 import { Portal, normalizeProps, useMachine } from '@zag-js/react'
 import { type ReactNode, type Ref, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { tv } from '../utils'
 import { Button } from '../atoms/button'
+import { tv } from '../utils'
 
 const popoverVariants = tv({
   slots: {
@@ -25,9 +25,13 @@ const popoverVariants = tv({
       'shadow-popover',
       'outline-none',
     ],
-    arrow: ['relative',],
+    arrow: ['relative'],
     title: ['font-popover-title', 'leading-none', 'mb-popover-title-mb'],
-    description: ['text-popover-description', 'text-popover-description', 'leading-normal'],
+    description: [
+      'text-popover-description',
+      'text-popover-description',
+      'leading-normal',
+    ],
   },
   variants: {
     size: {
@@ -50,7 +54,9 @@ const popoverVariants = tv({
   },
 })
 
-export interface PopoverProps extends VariantProps<typeof popoverVariants>, popover.Props {
+export interface PopoverProps
+  extends VariantProps<typeof popoverVariants>,
+    popover.Props {
   trigger: ReactNode
   children: ReactNode
   placement?: popover.Placement
@@ -116,7 +122,6 @@ export function Popover({
     portalled,
     // Callbacks
     onOpenChange,
-
   })
 
   const api = popover.connect(service as popover.Service, normalizeProps)
@@ -141,7 +146,7 @@ export function Popover({
       >
         {showArrow && (
           <div {...api.getArrowProps()} className={arrow()}>
-            <div {...api.getArrowTipProps()}/>
+            <div {...api.getArrowTipProps()} />
           </div>
         )}
 
@@ -172,11 +177,11 @@ export function Popover({
         {trigger}
       </Button>
 
-        {portalled ? (
-          <Portal>{api.open && renderContent()}</Portal>
-        ) : (
-          api.open && renderContent()
-        )}
+      {portalled ? (
+        <Portal>{api.open && renderContent()}</Portal>
+      ) : (
+        api.open && renderContent()
+      )}
     </>
   )
 }

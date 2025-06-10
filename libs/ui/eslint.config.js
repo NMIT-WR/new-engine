@@ -1,5 +1,5 @@
-import tailwind from 'eslint-plugin-tailwindcss';
-import tsParser from '@typescript-eslint/parser';
+import tsParser from '@typescript-eslint/parser'
+import tailwind from 'eslint-plugin-tailwindcss'
 
 export default [
   {
@@ -17,7 +17,7 @@ export default [
     settings: {
       tailwindcss: {
         // For TailwindCSS v4 - point to CSS config file
-        config: "D:\\Work\\new-engine\\libs\\ui\\src\\tokens\\index.css",
+        config: 'D:\\Work\\new-engine\\libs\\ui\\src\\tokens\\index.css',
       },
     },
     plugins: {
@@ -39,4 +39,4 @@ export default [
     // Exclude generated/dist files from linting
     ignores: ['dist/**/*', 'storybook-static/**/*'],
   },
-];
+]

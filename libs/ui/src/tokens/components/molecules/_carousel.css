@@ -27,9 +27,6 @@
   );
 
   /* === SPACING === */
-  
-  
-  
 
   /* === ASPECT RATIO === */
   --aspect-carousel-square: 1 / 1;
@@ -39,8 +36,6 @@
 
   /* === BORDER RADIUS === */
   --radius-carousel: var(--radius-sm);
-
-  
 }
 
 @utility token-icon-carousel-prev {

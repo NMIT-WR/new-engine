@@ -56,9 +56,7 @@ const stepsVariants = tv({
       'data-[orientation=horizontal]:h-steps-separator data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-1',
       'data-[orientation=vertical]:w-steps-separator data-[orientation=vertical]:h-full',
     ],
-    progress: [
-      'absolute top-0 left-0 h-full  transition-all duration-300',
-    ],
+    progress: ['absolute top-0 left-0 h-full  transition-all duration-300'],
     containerButtons: [
       'flex gap-2 h-fit',
       'data-[orientation=vertical]:col-start-2',

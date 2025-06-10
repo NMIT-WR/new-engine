@@ -182,13 +182,23 @@ export function ProductCard({
           {hasCartButton && (
             <div className="flex gap-pc-box">
               {numericInput && <NumericInput />}
-              <Button size="sm" className={cartButton()} onClick={onCartClick} icon="token-icon-cart">
+              <Button
+                size="sm"
+                className={cartButton()}
+                onClick={onCartClick}
+                icon="token-icon-cart"
+              >
                 {cartButtonText}
               </Button>
             </div>
           )}
           {hasDetailButton && (
-            <Button size="sm" className={detailButton()} onClick={onDetailClick} icon="token-icon-eye">
+            <Button
+              size="sm"
+              className={detailButton()}
+              onClick={onDetailClick}
+              icon="token-icon-eye"
+            >
               {detailButtonText}
             </Button>
           )}
