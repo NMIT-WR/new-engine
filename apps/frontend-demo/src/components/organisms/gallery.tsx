@@ -7,7 +7,6 @@ import { Button } from 'ui/src/atoms/button'
 import { Image as ImageComponent } from 'ui/src/atoms/image'
 import { Carousel } from 'ui/src/molecules/carousel'
 import type { CarouselSlide } from 'ui/src/molecules/carousel'
-import '@/tokens/components/organisms/_gallery.css'
 
 interface GalleryProps {
   images: CarouselSlide[]

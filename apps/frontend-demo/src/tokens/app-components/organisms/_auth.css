@@ -1,0 +1,39 @@
+
+@theme static {
+  /* === AUTH COLORS === */
+  --color-auth-bg: var(--color-base);
+  --color-auth-card-bg: var(--color-surface);
+  --color-auth-card-border: var(--color-border-subtle);
+  --color-auth-title: var(--color-fg-primary);
+  --color-auth-subtitle: var(--color-fg-secondary);
+  --color-auth-link: var(--color-accent);
+  --color-auth-link-hover: var(--color-accent-hover);
+  --color-auth-divider: var(--color-border-subtle);
+
+  /* === AUTH SPACING === */
+  --spacing-auth-max-w: 24rem;
+  --spacing-auth-container-x: var(--spacing-md);
+  --spacing-auth-container-y: var(--spacing-2xl);
+  --spacing-auth-card-padding: var(--spacing-xl);
+  --spacing-auth-form-gap: var(--spacing-md);
+  --spacing-auth-header-margin: var(--spacing-lg);
+  --spacing-auth-title-margin: var(--spacing-xs);
+  --spacing-auth-subtitle-margin: var(--spacing-lg);
+  --spacing-auth-footer-margin: var(--spacing-md);
+  --spacing-auth-divider-margin: var(--spacing-lg);
+
+  /* === AUTH TYPOGRAPHY === */
+  --text-auth-title-size: var(--text-2xl);
+  --font-auth-title-weight: var(--font-weight-bold);
+  --text-auth-subtitle-size: var(--text-base);
+  --text-auth-link-size: var(--text-sm);
+
+  /* === AUTH EFFECTS === */
+  --shadow-auth-card: var(--shadow-lg);
+  --radius-auth-card: var(--radius-lg);
+
+  /* === AUTH LAYOUT === */
+  --color-auth-layout-bg: var(--color-base);
+  --spacing-auth-layout-max-w: 28rem;
+  --spacing-auth-layout-padding: var(--spacing-lg);
+}
