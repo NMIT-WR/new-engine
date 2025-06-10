@@ -38,7 +38,7 @@ services:
     volumes:
       - .:/var/www
     command: pnpm --filter medusa-demo dev
-    #    command: ["tail" ,"-f"]
+#    command: ["tail" ,"-f"]
     ports:
       - "8000:8000"
       - "8080:8080"
@@ -171,6 +171,22 @@ services:
       POSTGRES_USER: root
       POSTGRES_DB: medusa
       PGDATA: "/var/lib/postgresql/data"
+  engine-db:
+    image: mariadb:latest
+    restart: no
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: wrshop
+      MYSQL_USER: wruser
+      MYSQL_PASSWORD: 1234
+    command: --sql_mode="NO_ENGINE_SUBSTITUTION"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.docker_data/dbmysql:/var/lib/mysql
+      - ./docker/development/mariadb/wr.cnf:/etc/mysql/conf.d/wr.cnf
+    networks:
+      - internal
   adminer:
     image: adminer
     restart: unless-stopped
