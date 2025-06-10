@@ -52,8 +52,7 @@
   --spacing-container-max: 80rem; /* 1280px - standard max width for content */
   --spacing-container-x: var(--spacing-sm); /* horizontal padding for containers */
   --spacing-container-x-md: var(--spacing-md); /* medium screens */
-  --spacing-container-x-lg: var(--spacing-lg); 
-
+  --spacing-container-x-lg: var(--spacing-lg);
 
   /* === TYPOGRAPHY.CSS OVERRIDES === */
   --text-5xl: 3rem; /* 48px */
@@ -74,9 +73,7 @@
   --line-height-relaxed: 1.625;
   --line-height-loose: 2;
 
-
   /* === SEMANTIC.CSS OVERRIDES === */
-
 
   --color-primary: light-dark(var(--color-slate-900), var(--color-slate-100));
   --color-primary-hover: oklch(
@@ -356,5 +353,4 @@
   --aspect-ratio-portrait: 3 / 4;
   --aspect-ratio-landscape: 4 / 3;
   --aspect-ratio-16-9: 16 / 9;
-
 }

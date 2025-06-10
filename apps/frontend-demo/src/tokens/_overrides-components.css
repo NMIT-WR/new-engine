@@ -17,11 +17,26 @@
 
   /* === BUTTON === */
   /* Change from --alpha-ring to --opacity-ring for all focus rings */
-  --color-btn-ring-primary: --alpha(var(--color-btn-primary) / var(--opacity-ring));
-  --color-btn-ring-secondary: --alpha(var(--color-btn-secondary) / var(--opacity-ring));
-  --color-btn-ring-tertiary: --alpha(var(--color-btn-tertiary) / var(--opacity-ring));
-  --color-btn-ring-warning: --alpha(var(--color-btn-warning) / var(--opacity-ring));
-  --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--opacity-ring));
+  --color-btn-ring-primary: --alpha(
+    var(--color-btn-primary) /
+    var(--opacity-ring)
+  );
+  --color-btn-ring-secondary: --alpha(
+    var(--color-btn-secondary) /
+    var(--opacity-ring)
+  );
+  --color-btn-ring-tertiary: --alpha(
+    var(--color-btn-tertiary) /
+    var(--opacity-ring)
+  );
+  --color-btn-ring-warning: --alpha(
+    var(--color-btn-warning) /
+    var(--opacity-ring)
+  );
+  --color-btn-ring-danger: --alpha(
+    var(--color-btn-danger) /
+    var(--opacity-ring)
+  );
 
   /* === INPUT === */
   /* Different padding for small inputs */
@@ -88,9 +103,14 @@
   --color-pagination: var(--color-base);
   /* Different hover states */
   --color-pagination-hover: var(--color-base-light);
-  --color-pagination-hover-active: oklch(from var(--color-pagination-active) calc(l + var(--state-hover)) c h);
+  --color-pagination-hover-active: oklch(
+    from var(--color-pagination-active) calc(l + var(--state-hover)) c h
+  );
   /* Different text colors */
-  --color-pagination-fg-hover: light-dark(var(--color-fg-primary), var(--color-base));
+  --color-pagination-fg-hover: light-dark(
+    var(--color-fg-primary),
+    var(--color-base)
+  );
   --color-pagination-fg-active: var(--color-base);
 
   /* === POPOVER === */
@@ -110,7 +130,6 @@
   /* Different spacing for track */
   --spacing-track-width: var(--spacing-lg);
   --spacing-track-height: var(--spacing-sm);
-
 
   /* === TYPOGRAPHY === */
   /* Add base text size explicitly */

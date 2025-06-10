@@ -1,7 +1,6 @@
 @import "./atoms/_color-swatch.css";
 
 @import "./molecules/_auth-dropdown.css";
-@import "./molecules/_auth-forms.css";
 @import "./molecules/_cart-preview.css";
 @import "./molecules/_category-grid.css";
 @import "./molecules/_featured-products.css";
