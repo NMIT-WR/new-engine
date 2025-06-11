@@ -1,15 +1,14 @@
 'use client'
 
+import { useAuth } from '@/hooks/use-auth'
 import {
   AUTH_ERRORS,
   AUTH_MESSAGES,
   authFormFields,
   getAuthErrorMessage,
-  useAuthForm,
   validateEmail,
   withLoading,
 } from '@/lib/auth'
-import { useAuth } from '@/lib/context/auth-context'
 import Link from 'next/link'
 import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
@@ -23,16 +22,17 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
 
-  const { login, error } = useAuth()
   const {
-    isLoading,
-    setIsLoading,
+    login,
+    error,
+    isFormLoading,
+    setFormLoading,
     getFieldError,
     setFieldError,
     clearErrors,
     showError,
     showSuccess,
-  } = useAuthForm()
+  } = useAuth()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -49,7 +49,7 @@ export function LoginForm() {
       return
     }
 
-    setIsLoading(true)
+    setFormLoading(true)
 
     try {
       await login(email, password)
@@ -67,7 +67,7 @@ export function LoginForm() {
 
       showError('Sign in failed', errorMessage)
     } finally {
-      setIsLoading(false)
+      setFormLoading(false)
     }
   }
 
@@ -89,7 +89,7 @@ export function LoginForm() {
                 clearErrors()
               },
             }),
-            isLoading
+            isFormLoading
           )}
           validateStatus={getFieldError('email') ? 'error' : 'default'}
           helpText={
@@ -108,7 +108,7 @@ export function LoginForm() {
                 clearErrors()
               },
             }),
-            isLoading
+            isFormLoading
           )}
           validateStatus={getFieldError('password') ? 'error' : 'default'}
           helpText={
@@ -126,7 +126,7 @@ export function LoginForm() {
             onCheckedChange={(details) =>
               setRememberMe(details.checked === true)
             }
-            disabled={isLoading}
+            disabled={isFormLoading}
           />
 
           <Link
@@ -143,8 +143,13 @@ export function LoginForm() {
           </div>
         )}
 
-        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-          {isLoading ? 'Signing In...' : 'Sign In'}
+        <Button
+          type="submit"
+          className="w-full"
+          size="lg"
+          disabled={isFormLoading}
+        >
+          {isFormLoading ? 'Signing In...' : 'Sign In'}
         </Button>
       </form>
     </AuthFormWrapper>

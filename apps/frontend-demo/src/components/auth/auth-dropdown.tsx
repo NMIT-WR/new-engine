@@ -3,10 +3,9 @@ import {
   AUTH_MESSAGES,
   authFormFields,
   getAuthErrorMessage,
-  useAuthForm,
   withLoading,
 } from '@/lib/auth'
-import { useAuth } from '@/lib/context/auth-context'
+import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
@@ -16,9 +15,8 @@ import { Menu } from 'ui/src/molecules/menu'
 import { Popover } from 'ui/src/molecules/popover'
 
 export function AuthDropdown() {
-  const { user, logout } = useAuth()
+  const { user, logout, showSuccess } = useAuth()
   const router = useRouter()
-  const { showSuccess } = useAuthForm()
 
   const signOut = async () => {
     await logout()
@@ -115,16 +113,15 @@ export function AuthDropdown() {
 
 function QuickLoginForm() {
   const router = useRouter()
-  const { login } = useAuth()
+  const { login, isFormLoading, setFormLoading, showSuccess } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { isLoading, setIsLoading, showSuccess } = useAuthForm()
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setIsLoading(true)
+    setFormLoading(true)
 
     try {
       await login(email, password)
@@ -135,7 +132,7 @@ function QuickLoginForm() {
     } catch (err: unknown) {
       setError(getAuthErrorMessage(err))
     } finally {
-      setIsLoading(false)
+      setFormLoading(false)
     }
   }
 
@@ -162,7 +159,7 @@ function QuickLoginForm() {
               value: email,
               onChange: (e) => setEmail(e.target.value),
             }),
-            isLoading
+            isFormLoading
           )}
         />
 
@@ -174,7 +171,7 @@ function QuickLoginForm() {
               value: password,
               onChange: (e) => setPassword(e.target.value),
             }),
-            isLoading
+            isFormLoading
           )}
         />
       </div>
@@ -191,9 +188,9 @@ function QuickLoginForm() {
           variant="primary"
           size="sm"
           className="w-full"
-          disabled={isLoading}
+          disabled={isFormLoading}
         >
-          {isLoading ? 'Signing in...' : 'Sign In'}
+          {isFormLoading ? 'Signing in...' : 'Sign In'}
         </Button>
 
         <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">

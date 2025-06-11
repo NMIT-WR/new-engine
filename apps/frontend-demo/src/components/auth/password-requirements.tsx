@@ -1,10 +1,11 @@
-import { usePasswordStrength } from '@/lib/auth'
+import { useAuth } from '@/hooks/use-auth'
 
 interface PasswordRequirementsProps {
   password: string
 }
 
 export function PasswordRequirements({ password }: PasswordRequirementsProps) {
+  const { usePasswordStrength } = useAuth()
   const { requirements } = usePasswordStrength(password)
 
   return (

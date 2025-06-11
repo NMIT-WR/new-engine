@@ -1,16 +1,15 @@
 'use client'
+import { useAuth } from '@/hooks/use-auth'
 import {
   AUTH_ERRORS,
   AUTH_MESSAGES,
   type ValidationError,
   authFormFields,
   getAuthErrorMessage,
-  useAuthForm,
   validateEmail,
   validatePassword,
   withLoading,
 } from '@/lib/auth'
-import { useAuth } from '@/lib/context/auth-context'
 import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { ErrorText } from 'ui/src/atoms/error-text'
@@ -27,16 +26,16 @@ export function RegisterForm() {
   const [lastName, setLastName] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
 
-  const { register } = useAuth()
   const {
-    isLoading,
-    setIsLoading,
+    register,
+    isFormLoading,
+    setFormLoading,
     setValidationErrors,
     getFieldError,
     showError,
     showSuccess,
     clearErrors,
-  } = useAuthForm()
+  } = useAuth()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -84,7 +83,7 @@ export function RegisterForm() {
       return
     }
 
-    setIsLoading(true)
+    setFormLoading(true)
 
     try {
       await register(email, password, firstName, lastName)
@@ -96,7 +95,7 @@ export function RegisterForm() {
       const errorMessage = getAuthErrorMessage(error)
       showError('Registration failed', errorMessage)
     } finally {
-      setIsLoading(false)
+      setFormLoading(false)
     }
   }
 
@@ -116,7 +115,7 @@ export function RegisterForm() {
                 value: firstName,
                 onChange: (e) => setFirstName(e.target.value),
               }),
-              isLoading
+              isFormLoading
             )}
           />
 
@@ -126,7 +125,7 @@ export function RegisterForm() {
                 value: lastName,
                 onChange: (e) => setLastName(e.target.value),
               }),
-              isLoading
+              isFormLoading
             )}
           />
         </div>
@@ -140,7 +139,7 @@ export function RegisterForm() {
                 clearErrors()
               },
             }),
-            isLoading
+            isFormLoading
           )}
           validateStatus={getFieldError('email') ? 'error' : 'default'}
           helpText={
@@ -159,7 +158,7 @@ export function RegisterForm() {
                 clearErrors()
               },
             }),
-            isLoading
+            isFormLoading
           )}
           validateStatus={getFieldError('password') ? 'error' : 'default'}
           helpText={
@@ -178,7 +177,7 @@ export function RegisterForm() {
                 clearErrors()
               },
             }),
-            isLoading
+            isFormLoading
           )}
           validateStatus={
             getFieldError('confirmPassword') ? 'error' : 'default'
@@ -198,7 +197,7 @@ export function RegisterForm() {
             onCheckedChange={(details) =>
               setAcceptTerms(details.checked === true)
             }
-            disabled={isLoading}
+            disabled={isFormLoading}
           />
           {getFieldError('terms') && (
             <p className="text-red-600 text-sm">{getFieldError('terms')}</p>
@@ -209,9 +208,9 @@ export function RegisterForm() {
           type="submit"
           className="w-full"
           size="lg"
-          disabled={isLoading || !acceptTerms}
+          disabled={isFormLoading || !acceptTerms}
         >
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+          {isFormLoading ? 'Creating Account...' : 'Create Account'}
         </Button>
 
         <PasswordRequirements password={password} />
