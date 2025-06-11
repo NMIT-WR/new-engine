@@ -1,5 +1,4 @@
 import { sdk } from '@/lib/medusa-client'
-import { useQuery } from '@tanstack/react-query'
 
 // Fetch all categories
 export async function fetchCategories() {
@@ -19,20 +18,4 @@ export async function fetchCategory(handle: string) {
   })
 
   return product_categories[0] || null
-}
-
-// React Query hooks
-export function useCategories() {
-  return useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategories,
-  })
-}
-
-export function useCategory(handle: string) {
-  return useQuery({
-    queryKey: ['category', handle],
-    queryFn: () => fetchCategory(handle),
-    enabled: !!handle,
-  })
 }

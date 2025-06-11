@@ -3,7 +3,7 @@
  * @param priceInCents - Price in cents (e.g., 2900 for €29.00)
  * @returns Price in display currency (e.g., 29.00)
  */
-export function convertCentsToAmount(priceInCents: number): number {
+function convertCentsToAmount(priceInCents: number): number {
   return priceInCents / 100
 }
 

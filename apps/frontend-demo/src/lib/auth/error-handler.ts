@@ -34,20 +34,3 @@ export function getAuthErrorMessage(error: any): string {
   // Default error
   return AUTH_ERRORS.GENERIC_ERROR
 }
-
-/**
- * Extract field-specific errors from a general error
- */
-export function extractFieldError(
-  error: string,
-  field: string
-): string | undefined {
-  const lowerError = error.toLowerCase()
-  const lowerField = field.toLowerCase()
-
-  if (lowerError.includes(lowerField)) {
-    return error
-  }
-
-  return undefined
-}

@@ -1,5 +1,4 @@
 import { sdk } from '@/lib/medusa-client'
-import { useQuery } from '@tanstack/react-query'
 
 // Fetch functions
 export async function fetchProducts(params: {
@@ -23,26 +22,4 @@ export async function fetchProducts(params: {
       hasPrev: offset > 0,
     },
   }
-}
-
-// React Query hooks
-export function useProducts(params: Parameters<typeof fetchProducts>[0] = {}) {
-  return useQuery({
-    queryKey: ['products', params],
-    queryFn: () => fetchProducts(params),
-  })
-}
-
-export function useProduct(handle: string) {
-  return useQuery({
-    queryKey: ['product', handle],
-    queryFn: async () => {
-      const { products } = await sdk.store.product.list({
-        handle,
-        fields: '*variants.calculated_price,*categories,*images',
-      })
-      return products[0] || null
-    },
-    enabled: !!handle,
-  })
 }
