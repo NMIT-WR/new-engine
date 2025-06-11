@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import '../tokens/index.css'
+import { Footer } from '@/components/footer'
+import { Header } from '@/components/header'
+import type { NavItem } from '@/components/molecules/navigation'
+import { Providers } from '@/components/providers'
 import type { ReactNode } from 'react'
-import { Footer } from '../components/footer'
-import { Header } from '../components/header'
-import type { NavItem } from '../components/navigation'
-import { Providers } from '../components/providers'
 
 export const metadata: Metadata = {
   title: 'Frontend Demo',

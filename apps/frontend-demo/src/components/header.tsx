@@ -1,15 +1,15 @@
 'use client'
+import { useCart } from '@/hooks/use-cart'
 import Link from 'next/link'
 import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
 import { Badge } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon, type IconType } from 'ui/src/atoms/icon'
 import { Popover } from 'ui/src/molecules/popover'
-import { useCart } from '../hooks/use-cart'
 import { AuthDropdown } from './auth/auth-dropdown'
-import { MobileMenu } from './mobile-menu'
 import { CartPreview } from './molecules/cart-preview'
-import { type NavItem, Navigation } from './navigation'
+import { type NavItem, Navigation } from './molecules/navigation'
+import { MobileMenu } from './organisms/mobile-menu'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
 
@@ -136,5 +136,3 @@ export function Header({
     </header>
   )
 }
-
-export default Header

@@ -45,32 +45,38 @@ export function Hero({
   }
 
   return (
-    <section className='relative h-hero-height overflow-hidden'>
+    <section className="relative h-hero-height overflow-hidden">
       {/* Background Image */}
-      <div className='absolute inset-0'>
+      <div className="absolute inset-0">
         <Image
           src={backgroundImage}
           alt="Hero background"
           className="h-full w-full object-cover"
         />
-        <div className='absolute inset-0 bg-hero-overlay' />
+        <div className="absolute inset-0 bg-hero-overlay" />
       </div>
 
       {/* Content */}
-      <div className='relative flex h-full items-center'>
-        <div className='mx-auto w-full max-w-hero-max-w px-hero-container-x sm:px-hero-container-x-sm lg:px-hero-container-x-lg'>
-          <div className='flex w-full max-w-hero-content-max-w flex-col gap-hero-content-gap'>
-            <h1 className='font-hero-title text-hero-title-size sm:text-hero-title-size-sm md:text-hero-title-size-md text-hero-fg tracking-tight'>{title}</h1>
-            {subtitle && <p className='max-w-hero-subtitle-max-w text-hero-subtitle-size text-hero-fg'>{subtitle}</p>}
+      <div className="relative flex h-full items-center">
+        <div className="mx-auto w-full max-w-hero-max-w px-hero-container-x sm:px-hero-container-x-sm lg:px-hero-container-x-lg">
+          <div className="flex w-full max-w-hero-content-max-w flex-col gap-hero-content-gap">
+            <h1 className="font-hero-title text-hero-fg text-hero-title-size tracking-tight sm:text-hero-title-size-sm md:text-hero-title-size-md">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="max-w-hero-subtitle-max-w text-hero-fg text-hero-subtitle-size">
+                {subtitle}
+              </p>
+            )}
             {(primaryAction || secondaryAction) && (
-              <div className='flex w-fit gap-hero-button-gap'>
+              <div className="flex w-fit gap-hero-button-gap">
                 {primaryAction && (
                   <Button
                     variant="primary"
                     size="lg"
                     theme="solid"
                     onClick={handlePrimaryAction}
-                    className='px-hero-button-x py-hero-button-y'
+                    className="px-hero-button-x py-hero-button-y"
                   >
                     {primaryAction.label}
                   </Button>
@@ -81,7 +87,7 @@ export function Hero({
                     size="lg"
                     theme="outlined"
                     onClick={handleSecondaryAction}
-                    className={`border-white text-white px-hero-button-x py-hero-button-y`}
+                    className={`border-white px-hero-button-x py-hero-button-y text-white`}
                   >
                     {secondaryAction.label}
                   </Button>

@@ -1,10 +1,10 @@
 'use client'
-import { CategoryGrid } from '../components/category-grid'
-import { FeaturedProducts } from '../components/featured-products'
-import { Hero } from '../components/hero'
-import { SaleBanner } from '../components/sale-banner'
-import { homeContent } from '../data/home-content'
-import { categories, mockProducts } from '../data/mock-products'
+import { SaleBanner } from '@/components/molecules/sale-banner'
+import { CategoryGrid } from '@/components/organisms/category-grid'
+import { FeaturedProducts } from '@/components/organisms/featured-products'
+import { Hero } from '@/components/organisms/hero'
+import { homeContent } from '@/data/home-content'
+import { categories, mockProducts } from '@/data/mock-products'
 
 export default function Home() {
   const {

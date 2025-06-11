@@ -1,11 +1,11 @@
 'use client'
+import { contactContent } from '@/data/contact-content'
 import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { FormInput } from 'ui/src/molecules/form-input'
 import { FormTextarea } from 'ui/src/molecules/form-textarea'
 import { Select } from 'ui/src/molecules/select'
 import { useToast } from 'ui/src/molecules/toast'
-import { contactContent } from '../../data/contact-content'
 
 export default function ContactPage() {
   const { hero, form, info, hours, help } = contactContent

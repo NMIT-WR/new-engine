@@ -1,4 +1,4 @@
-import type { Product } from '../types/product'
+import type { Product } from '@/types/product'
 
 export interface ProductCounts {
   sizeCounts: Record<string, number>

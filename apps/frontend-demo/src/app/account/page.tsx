@@ -4,7 +4,6 @@ import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import '@/tokens/app-components/pages/_account.css'
 
 export default function AccountPage() {
   const { user, isLoading, isInitialized, logout } = useAuth()

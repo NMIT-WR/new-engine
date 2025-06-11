@@ -4,9 +4,9 @@ import { Badge } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
-import type { NavItem } from './navigation'
-import { RegionSelector } from './region-selector'
-import { ThemeToggle } from './theme-toggle'
+import type { NavItem } from '../molecules/navigation'
+import { RegionSelector } from '../region-selector'
+import { ThemeToggle } from '../theme-toggle'
 
 interface MobileMenuProps {
   isOpen: boolean

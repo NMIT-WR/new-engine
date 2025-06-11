@@ -1,11 +1,11 @@
 'use client'
 
+import type { Product } from '@/types/product'
+import { extractProductData, getProductPath } from '@/utils/product-utils'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Pagination } from 'ui/src/molecules/pagination'
 import { ProductCard } from 'ui/src/molecules/product-card'
-import type { Product } from '../types/product'
-import { extractProductData, getProductPath } from '../utils/product-utils'
 
 interface ProductGridProps {
   products: Product[]
@@ -35,7 +35,7 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
 
   if (products.length === 0) {
     return (
-      <div className="text-center py-product-grid-empty-padding">
+      <div className="py-product-grid-empty-padding text-center">
         <p className="text-product-grid-empty-text">No products found</p>
       </div>
     )
@@ -43,7 +43,7 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-product-grid-gap">
+      <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {currentProducts.map((product) => {
           const { price, displayBadges, stockText } =
             extractProductData(product)

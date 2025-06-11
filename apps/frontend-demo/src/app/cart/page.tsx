@@ -1,14 +1,14 @@
 'use client'
 
+import { useCart } from '@/hooks/use-cart'
+import { getProductPrice } from '@/utils/price-utils'
+import { formatPrice, getProductPath } from '@/utils/product-utils'
 import Image from 'next/image'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
-import { useCart } from '../../hooks/use-cart'
-import { getProductPrice } from '../../utils/price-utils'
-import { formatPrice, getProductPath } from '../../utils/product-utils'
 
 export default function CartPage() {
   const { items, subtotal, total, removeItem, updateQuantity, clearCart } =
@@ -67,12 +67,11 @@ export default function CartPage() {
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div>
-                              
-                              <Link href={getProductPath(item.product.handle)} >
-             <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
-                                {item.product.title}
-                              </h3>
-                </Link>
+                              <Link href={getProductPath(item.product.handle)}>
+                                <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
+                                  {item.product.title}
+                                </h3>
+                              </Link>
                               <div className="mb-cart-item-options-margin text-cart-item-options">
                                 {item.selectedSize && (
                                   <span>Size: {item.selectedSize}</span>

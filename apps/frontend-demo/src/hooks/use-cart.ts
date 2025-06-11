@@ -1,5 +1,5 @@
+import { cartHelpers, cartStore } from '@/stores/cart-store'
 import { useStore } from '@tanstack/react-store'
-import { cartHelpers, cartStore } from '../stores/cart-store'
 
 export function useCart() {
   const state = useStore(cartStore)

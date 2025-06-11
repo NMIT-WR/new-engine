@@ -1,5 +1,9 @@
 'use client'
 
+import { ColorSwatch } from '@/components/atoms/color-swatch'
+import { useCart } from '@/hooks/use-cart'
+import type { Product, ProductVariant } from '@/types/product'
+import { getColorHex } from '@/utils/color-map'
 import { useState } from 'react'
 import { Badge, type BadgeProps } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
@@ -7,10 +11,6 @@ import { Icon } from 'ui/src/atoms/icon'
 import { Rating } from 'ui/src/atoms/rating'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { useToast } from 'ui/src/molecules/toast'
-import { useCart } from '../../hooks/use-cart'
-import type { Product, ProductVariant } from '../../types/product'
-import { getColorHex } from '../../utils/color-map'
-import { ColorSwatch } from '../atoms/color-swatch'
 
 interface ProductInfoProps {
   product: Product
@@ -98,11 +98,13 @@ export function ProductInfo({
       )}
 
       {/* Title */}
-      <h1 className="text-product-info-title font-product-info-title mb-product-info-title-margin">{product.title}</h1>
+      <h1 className="mb-product-info-title-margin font-product-info-title text-product-info-title">
+        {product.title}
+      </h1>
 
       {/* Rating */}
       {product.rating && (
-        <div className="flex items-center gap-product-info-rating-gap mb-product-info-rating-margin">
+        <div className="mb-product-info-rating-margin flex items-center gap-product-info-rating-gap">
           <Rating value={product.rating} readOnly />
           <span className="text-product-info-rating-text">
             ({product.reviewCount || 0} reviews)
@@ -112,25 +114,27 @@ export function ProductInfo({
 
       {/* Price */}
       <div className="mb-product-info-price-margin">
-        <span className="text-product-info-price font-product-info-price">
+        <span className="font-product-info-price text-product-info-price">
           {selectedVariant?.prices?.[0]?.calculated_price ||
             price?.calculated_price}
         </span>
         {selectedVariant?.prices?.[0]?.original_price &&
           selectedVariant.prices[0].original_price !==
             selectedVariant.prices[0].calculated_price && (
-            <span className="text-product-info-original-price line-through ml-product-info-original-price-margin">
+            <span className="ml-product-info-original-price-margin text-product-info-original-price line-through">
               {selectedVariant.prices[0].original_price}
             </span>
           )}
       </div>
 
       {/* Description */}
-      <p className="text-product-info-description mb-product-info-description-margin">{product.description}</p>
+      <p className="mb-product-info-description-margin text-product-info-description">
+        {product.description}
+      </p>
 
       {/* SKU and Stock Info */}
       {selectedVariant && (
-        <div className="text-product-info-variant-label text-product-info-variant-label mb-product-info-variant-margin">
+        <div className="mb-product-info-variant-margin text-product-info-variant-label text-product-info-variant-label">
           <p>SKU: {selectedVariant.sku}</p>
           {selectedVariant.inventory_quantity !== undefined && (
             <p>In Stock: {selectedVariant.inventory_quantity} units</p>
@@ -145,7 +149,9 @@ export function ProductInfo({
 
         return (
           <div key={option.id} className="mb-product-info-variant-margin">
-            <label className="text-product-info-variant-label font-product-info-variant-label mb-product-info-variant-label-margin">{option.title}</label>
+            <label className="mb-product-info-variant-label-margin font-product-info-variant-label text-product-info-variant-label">
+              {option.title}
+            </label>
 
             {isColor ? (
               /* Color swatches */
@@ -184,10 +190,10 @@ export function ProductInfo({
                     <Button
                       key={value}
                       theme={isSelected ? 'solid' : 'borderless'}
-                      size='sm'
+                      size="sm"
                       disabled={isOutOfStock}
                       onClick={() => handleOptionChange(option.title, value)}
-                      className='border roundend-product-btn'
+                      className="roundend-product-btn border"
                     >
                       {value}
                     </Button>
@@ -214,7 +220,7 @@ export function ProductInfo({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-product-info-action-gap mb-product-info-action-margin">
+      <div className="mb-product-info-action-margin flex gap-product-info-action-gap">
         <Button
           variant="primary"
           size="lg"

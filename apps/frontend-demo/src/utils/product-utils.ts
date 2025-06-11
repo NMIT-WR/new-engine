@@ -1,10 +1,10 @@
-import type { BadgeProps } from 'ui/src/atoms/badge'
 import {
   getProductBadges,
   getProductPrice,
   getProductStock,
-} from '../data/mock-products'
-import type { Product } from '../types/product'
+} from '@/data/mock-products'
+import type { Product } from '@/types/product'
+import type { BadgeProps } from 'ui/src/atoms/badge'
 
 /**
  * Convert stock status to display text
