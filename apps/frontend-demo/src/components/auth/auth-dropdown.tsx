@@ -1,11 +1,11 @@
 'use client'
+import { useAuth } from '@/hooks/use-auth'
 import {
   AUTH_MESSAGES,
   authFormFields,
   getAuthErrorMessage,
   withLoading,
 } from '@/lib/auth'
-import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'

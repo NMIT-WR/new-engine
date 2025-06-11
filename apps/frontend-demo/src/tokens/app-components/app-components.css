@@ -24,6 +24,7 @@
 @import "./organisms/_product-tabs.css";
 
 @import "./pages/_about.css";
+@import "./pages/_account.css";
 @import "./pages/_categories.css";
 @import "./pages/_contact.css";
 @import "./pages/_not-found.css";
