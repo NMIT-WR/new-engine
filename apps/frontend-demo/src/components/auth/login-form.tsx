@@ -1,83 +1,127 @@
 'use client'
 
+import {
+  AUTH_ERRORS,
+  AUTH_MESSAGES,
+  authFormFields,
+  getAuthErrorMessage,
+  useAuthForm,
+  validateEmail,
+  withLoading,
+} from '@/lib/auth'
+import { useAuth } from '@/lib/context/auth-context'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
+import { ErrorText } from 'ui/src/atoms/error-text'
+import { Checkbox } from 'ui/src/molecules/checkbox'
 import { FormInput } from 'ui/src/molecules/form-input'
-import { useToast } from 'ui/src/molecules/toast'
-
+import { AuthFormWrapper } from './auth-form-wrapper'
 
 export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
-  const signIn = async (email: string, password: string) => {}
-  const router = useRouter()
-  const toast = useToast()
+  const { login, error } = useAuth()
+  const {
+    isLoading,
+    setIsLoading,
+    getFieldError,
+    setFieldError,
+    clearErrors,
+    showError,
+    showSuccess,
+  } = useAuthForm()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    clearErrors()
+
+    // Client-side validation
+    if (!validateEmail(email)) {
+      setFieldError('email', AUTH_ERRORS.INVALID_EMAIL)
+      showError('Invalid Email', AUTH_ERRORS.INVALID_EMAIL)
+      return
+    }
+    if (password.length < 1) {
+      setFieldError('password', AUTH_ERRORS.PASSWORD_REQUIRED)
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      await signIn(email, password)
-      toast.create({
-        title: 'Welcome back!',
-        description: 'You have successfully signed in.',
-        type: 'success',
-      })
-      router.push('/')
-    } catch (error: any) {
-      toast.create({
-        title: 'Sign in failed',
-        description:
-          error.message || 'Please check your credentials and try again.',
-        type: 'error',
-      })
+      await login(email, password)
+      showSuccess(
+        AUTH_MESSAGES.LOGIN_SUCCESS.title,
+        AUTH_MESSAGES.LOGIN_SUCCESS.description
+      )
+    } catch (error: unknown) {
+      const errorMessage = getAuthErrorMessage(error)
+
+      // Set field-specific error if it's an email error
+      if (error instanceof Error && error.message.includes('Invalid email')) {
+        setFieldError('email', errorMessage)
+      }
+
+      showError('Sign in failed', errorMessage)
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className='bg-auth-card-bg p-auth-card-padding rounded-auth-card shadow-auth-card'>
-      <div className='text-center mb-auth-header-margin'>
-        <h1 className='text-auth-title font-auth-title mb-auth-title-margin'>Welcome Back</h1>
-        <p className='text-auth-subtitle'>Sign in to your account to continue</p>
-      </div>
-
-      <form onSubmit={handleSubmit} className='space-y-auth-form-gap'>
+    <AuthFormWrapper
+      title="Welcome Back"
+      subtitle="Sign in to your account to continue"
+      footerText="Don't have an account?"
+      footerLinkText="Sign up"
+      footerLinkHref="/auth/register"
+    >
+      <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
         <FormInput
-          id="email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          required
-          disabled={isLoading}
+          {...withLoading(
+            authFormFields.email({
+              value: email,
+              onChange: (e) => {
+                setEmail(e.target.value)
+                clearErrors()
+              },
+            }),
+            isLoading
+          )}
+          validateStatus={getFieldError('email') ? 'error' : 'default'}
+          helpText={
+            getFieldError('email') && (
+              <ErrorText showIcon>{getFieldError('email')}</ErrorText>
+            )
+          }
         />
 
         <FormInput
-          id="password"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          required
-          disabled={isLoading}
-          autoComplete="current-password"
+          {...withLoading(
+            authFormFields.password({
+              value: password,
+              onChange: (e) => {
+                setPassword(e.target.value)
+                clearErrors()
+              },
+            }),
+            isLoading
+          )}
+          validateStatus={getFieldError('password') ? 'error' : 'default'}
+          helpText={
+            getFieldError('password') && (
+              <ErrorText>{getFieldError('password')}</ErrorText>
+            )
+          }
         />
 
         <div className="flex items-center justify-between">
-          <FormCheckbox
+          <Checkbox
             id="rememberMe"
-            label="Remember me"
+            labelText="Remember me"
             checked={rememberMe}
             onCheckedChange={(details) =>
               setRememberMe(details.checked === true)
@@ -85,22 +129,24 @@ export function LoginForm() {
             disabled={isLoading}
           />
 
-          <Link href="/auth/forgot-password" className='text-auth-link hover:text-auth-link-hover'>
+          <Link
+            href="/auth/forgot-password"
+            className="text-auth-link hover:text-auth-link-hover"
+          >
             Forgot password?
           </Link>
         </div>
 
+        {error && !getFieldError('email') && !getFieldError('password') && (
+          <div className="rounded-md bg-red-50 p-3">
+            <p className="text-red-800 text-sm">{error}</p>
+          </div>
+        )}
+
         <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-          Sign In
+          {isLoading ? 'Signing In...' : 'Sign In'}
         </Button>
       </form>
-
-      <div className='mt-auth-footer-margin text-center text-auth-footer'>
-        Don't have an account?{' '}
-        <Link href="/auth/register" className='text-auth-link hover:text-auth-link-hover'>
-          Sign up
-        </Link>
-      </div>
-    </div>
+    </AuthFormWrapper>
   )
 }

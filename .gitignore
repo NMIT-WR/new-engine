@@ -58,3 +58,10 @@ test-output
 
 # MCP configuration
 .mcp.json
+
+
+/test-auth/
+
+# Frontend demo test pages
+apps/frontend-demo/src/app/test-auth/
+apps/medusa-demo/.next/
