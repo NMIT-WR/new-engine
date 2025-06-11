@@ -1,37 +1,19 @@
 'use client'
 
+import { ProductFilters } from '@/components/organisms/product-filters'
+import { ProductGrid } from '@/components/organisms/product-grid'
+import { mockProducts } from '@/data/mock-products'
+import {
+  SEARCH_SORT_OPTIONS,
+  useProductListing,
+} from '@/hooks/use-product-listing'
 import { useMemo, useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Combobox, type ComboboxItem } from 'ui/src/molecules/combobox'
 import { Select } from 'ui/src/molecules/select'
-import { ProductFilters } from '../../components/product-filters'
-import { ProductGrid } from '../../components/product-grid'
-import { mockProducts } from '../../data/mock-products'
-import {
-  type FilterState,
-  type SortOption,
-  filterProducts,
-  sortProducts,
-} from '../../utils/product-filters'
-
-const sortOptions = [
-  { value: 'relevance', label: 'Most Relevant' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'name-asc', label: 'Name: A to Z' },
-  { value: 'name-desc', label: 'Name: Z to A' },
-]
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState<SortOption | 'relevance'>('relevance')
-  const [filters, setFilters] = useState<FilterState>({
-    priceRange: [0, 200],
-    categories: new Set(),
-    sizes: new Set(),
-    colors: new Set(),
-  })
 
   // Create combobox items from products
   const searchItems: ComboboxItem[] = useMemo(() => {
@@ -56,12 +38,17 @@ export default function SearchPage() {
     })
   }, [searchQuery])
 
-  // Apply filters and sorting
-  const filteredProducts = filterProducts(searchFilteredProducts, filters)
-  const sortedProducts = sortProducts(
-    filteredProducts,
-    sortBy === 'relevance' ? 'newest' : sortBy
-  )
+  const {
+    sortBy,
+    setSortBy,
+    filters,
+    setFilters,
+    sortedProducts,
+    productCount,
+  } = useProductListing(searchFilteredProducts, {
+    initialSortBy: 'relevance',
+    sortOptions: SEARCH_SORT_OPTIONS,
+  })
 
   const hasSearched = searchQuery.length > 0
 
@@ -137,7 +124,7 @@ export default function SearchPage() {
                 {sortedProducts.length > 0 && (
                   <div className="flex items-center gap-search-sort-gap">
                     <Select
-                      options={sortOptions}
+                      options={SEARCH_SORT_OPTIONS}
                       value={[sortBy]}
                       clearIcon={false}
                       onValueChange={({ value }) => {
