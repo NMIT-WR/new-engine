@@ -1,5 +1,6 @@
 import type { Category } from '@/types/product'
 import Link from 'next/link'
+import { Button } from 'ui/src/atoms/button'
 import { Image } from 'ui/src/atoms/image'
 
 interface CategoryGridProps {
@@ -39,13 +40,13 @@ export function CategoryGrid({
 
     if (onCategoryClick) {
       return (
-        <button
+        <Button
           key={category.id}
           onClick={() => onCategoryClick(category)}
-          className="group relative overflow-hidden rounded-category-card-radius text-left w-full"
+          className="group relative w-full overflow-hidden rounded-category-card-radius text-left"
         >
           {content}
-        </button>
+        </Button>
       )
     }
 

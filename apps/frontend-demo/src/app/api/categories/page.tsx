@@ -67,7 +67,7 @@ export default function ApiCategoriesPage() {
           <Button
             variant="tertiary"
             size="sm"
-            onPress={() => setSelectedCategory(null)}
+            onClick={() => setSelectedCategory(null)}
           >
             ← Back to Categories
           </Button>
