@@ -4,6 +4,7 @@ export interface ProductCounts {
   sizeCounts: Record<string, number>
   colorCounts: Record<string, number>
   categoryCounts: Array<{
+    id: string
     name: string
     handle: string
     count: number
@@ -47,16 +48,16 @@ export function calculateProductCounts(products: Product[]): ProductCounts {
     })
 
     // Count categories
-    if (product.collection) {
-      const key = `${product.collection.handle}:${product.collection.title}`
+    product.categories?.forEach((category) => {
+      const key = `${category.id}:${category.handle}:${category.name}`
       categoryCounts[key] = (categoryCounts[key] || 0) + 1
-    }
+    })
   })
 
   // Transform category counts to array format
   const categoryArray = Object.entries(categoryCounts).map(([key, count]) => {
-    const [handle, name] = key.split(':')
-    return { name, handle, count }
+    const [id, handle, name] = key.split(':')
+    return { id, name, handle, count }
   })
 
   return {
@@ -110,10 +111,14 @@ export function filterProducts(
 ): Product[] {
   return products.filter((product) => {
     // Price filter
-    const priceString = product.variants?.[0]?.prices?.[0]?.calculated_price || '0'
-    const price = Number.parseFloat(
-      priceString.replace(/[€$]/g, '').trim() || '0'
-    )
+    const priceData = product.variants?.[0]?.prices?.[0]
+    const price =
+      typeof priceData?.calculated_price === 'number'
+        ? priceData.calculated_price // Prices are already in major units (dollars/euros)
+        : typeof priceData?.amount === 'number'
+          ? priceData.amount
+          : 0
+
     if (price < filters.priceRange[0] || price > filters.priceRange[1]) {
       return false
     }
@@ -197,27 +202,45 @@ export function sortProducts(
   switch (sortBy) {
     case 'price-asc':
       sorted.sort((a, b) => {
-        const priceA = Number.parseFloat(
-          a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
-            '0'
-        )
-        const priceB = Number.parseFloat(
-          b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
-            '0'
-        )
+        const priceDataA = a.variants?.[0]?.prices?.[0]
+        const priceDataB = b.variants?.[0]?.prices?.[0]
+
+        const priceA =
+          typeof priceDataA?.calculated_price === 'number'
+            ? priceDataA.calculated_price
+            : typeof priceDataA?.amount === 'number'
+              ? priceDataA.amount
+              : 0
+
+        const priceB =
+          typeof priceDataB?.calculated_price === 'number'
+            ? priceDataB.calculated_price
+            : typeof priceDataB?.amount === 'number'
+              ? priceDataB.amount
+              : 0
+
         return priceA - priceB
       })
       break
     case 'price-desc':
       sorted.sort((a, b) => {
-        const priceA = Number.parseFloat(
-          a.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
-            '0'
-        )
-        const priceB = Number.parseFloat(
-          b.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
-            '0'
-        )
+        const priceDataA = a.variants?.[0]?.prices?.[0]
+        const priceDataB = b.variants?.[0]?.prices?.[0]
+
+        const priceA =
+          typeof priceDataA?.calculated_price === 'number'
+            ? priceDataA.calculated_price
+            : typeof priceDataA?.amount === 'number'
+              ? priceDataA.amount
+              : 0
+
+        const priceB =
+          typeof priceDataB?.calculated_price === 'number'
+            ? priceDataB.calculated_price
+            : typeof priceDataB?.amount === 'number'
+              ? priceDataB.amount
+              : 0
+
         return priceB - priceA
       })
       break

@@ -1,7 +1,6 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
-import { mockProducts } from '@/data/mock-products'
 import { getColorHex } from '@/utils/color-map'
 import {
   type FilterState,
@@ -9,6 +8,7 @@ import {
   getColorsWithCounts,
   getSizesWithCounts,
 } from '@/utils/product-filters'
+import type { Product } from '@/types/product'
 import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { Checkbox } from 'ui/src/molecules/checkbox'
@@ -22,6 +22,7 @@ interface ProductFiltersProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
   hideCategories?: boolean
+  products?: Product[]
 }
 
 export function ProductFilters({
@@ -29,6 +30,7 @@ export function ProductFilters({
   filters,
   onFiltersChange,
   hideCategories = false,
+  products = [],
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
   const filterConfig = activeFilterConfig // Use active configuration
@@ -57,13 +59,13 @@ export function ProductFilters({
     filters.priceRange[1] < 300
 
   // Get product counts using utility functions
-  const productCounts = calculateProductCounts(mockProducts)
-  const sizesWithCounts = getSizesWithCounts(mockProducts)
-  const colorsWithCounts = getColorsWithCounts(mockProducts)
+  const productCounts = calculateProductCounts(products)
+  const sizesWithCounts = getSizesWithCounts(products)
+  const colorsWithCounts = getColorsWithCounts(products)
 
   // Get color hex values from products
   const colorHexMap = new Map<string, string>()
-  mockProducts.forEach((product) => {
+  products.forEach((product) => {
     product.variants?.forEach((variant) => {
       const color = variant.options?.color
       if (color && variant.colorHex) {
@@ -92,20 +94,20 @@ export function ProductFilters({
               const isDisabled = category.count === 0
               return (
                 <Checkbox
-                  key={category.handle}
-                  id={`category-${category.handle}`}
+                  key={category.id}
+                  id={`category-${category.id}`}
                   name="categories"
-                  value={category.handle}
+                  value={category.id}
                   labelText={`${category.name} (${category.count})`}
-                  checked={filters.categories.has(category.handle)}
+                  checked={filters.categories.has(category.id)}
                   disabled={isDisabled}
                   onCheckedChange={(details) => {
                     const { checked } = details
                     const newCategories = new Set(filters.categories)
                     if (checked === true) {
-                      newCategories.add(category.handle)
+                      newCategories.add(category.id)
                     } else {
-                      newCategories.delete(category.handle)
+                      newCategories.delete(category.id)
                     }
                     updateFilters({ categories: newCategories })
                   }}
