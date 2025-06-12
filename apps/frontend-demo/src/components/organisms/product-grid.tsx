@@ -1,6 +1,8 @@
 'use client'
 
+import { useCurrentRegion } from '@/hooks/use-region'
 import type { Product } from '@/types/product'
+import { formatPrice } from '@/utils/price-utils'
 import { extractProductData, getProductPath } from '@/utils/product-utils'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -14,6 +16,7 @@ interface ProductGridProps {
 
 export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
   const [currentPage, setCurrentPage] = useState(1)
+  const { region } = useCurrentRegion()
 
   // Reset to page 1 when products change (due to filtering)
   useEffect(() => {
@@ -48,6 +51,16 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
           const { price, displayBadges, stockText } =
             extractProductData(product)
 
+          // Format the price for display
+          // Prices from Medusa are already in dollars/euros, NOT cents
+          const formattedPrice =
+            price?.calculated_price !== undefined &&
+            typeof price.calculated_price === 'number'
+              ? formatPrice(price.calculated_price, region?.currency_code)
+              : price?.amount !== undefined && typeof price.amount === 'number'
+                ? formatPrice(price.amount, region?.currency_code)
+                : 'Price not available'
+
           return (
             <Link
               key={product.id}
@@ -56,7 +69,7 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
             >
               <ProductCard
                 name={product.title}
-                price={price?.calculated_price || '€0.00'}
+                price={formattedPrice}
                 imageUrl={product.thumbnail || ''}
                 badges={displayBadges}
                 stockStatus={stockText}

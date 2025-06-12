@@ -7,7 +7,7 @@ import { useCurrentRegion } from './use-region'
 import { queryKeys } from '@/lib/query-keys'
 
 // Transform Medusa product to our Product type
-function transformProduct(medusaProduct: any, regionCurrencyCode?: string): Product {
+export function transformProduct(medusaProduct: any, regionCurrencyCode?: string): Product {
   // Fix image URLs - replace internal MinIO URL with localhost
   const fixImageUrl = (url: string) => {
     return url?.replace('http://medusa-minio:9004', 'http://localhost:9004') || ''
@@ -65,43 +65,30 @@ function transformProduct(medusaProduct: any, regionCurrencyCode?: string): Prod
                         regionCurrencyCode ||
                         'eur'
         
-        // Format price string based on currency
-        // Check if amount is already in major units (euros/dollars) or minor units (cents)
-        // If amount is less than 100, it's likely already in major units
-        const formattedPrice = currency.toLowerCase() === 'eur' 
-          ? `€${amount.toFixed(2)}`
-          : currency.toLowerCase() === 'usd'
-          ? `$${amount.toFixed(2)}`
-          : `${currency.toUpperCase()} ${amount.toFixed(2)}`
-        
         prices.push({
           id: variant.id,
           amount: amount,
-          currency_code: currency.toUpperCase(),
-          calculated_price: formattedPrice,
+          currency_code: currency.toLowerCase(),
+          calculated_price: amount,
         })
-      } else if (regionCurrencyCode === 'usd') {
-        // Fallback: Convert EUR price to USD with approximate rate
-        // This is temporary until all products have USD prices in database
-        const eurToUsdRate = 1.1 // Approximate conversion rate
-        
-        // Try to find EUR price for this variant
-        const eurPrice = variant.prices?.find((p: any) => p.currency_code === 'eur')
-        if (eurPrice && eurPrice.amount) {
-          const usdAmount = Math.round(eurPrice.amount * eurToUsdRate)
-          prices.push({
-            id: variant.id,
-            amount: usdAmount,
-            currency_code: 'USD',
-            calculated_price: `$${usdAmount.toFixed(2)}`,
+      } else {
+        // No calculated price, use raw prices from variant
+        if (variant.prices && variant.prices.length > 0) {
+          variant.prices.forEach((price: any) => {
+            prices.push({
+              id: price.id,
+              amount: price.amount,
+              currency_code: price.currency_code.toLowerCase(),
+              calculated_price: price.amount,
+            })
           })
         } else {
-          // If no EUR price either, show not available
+          // No prices at all, add placeholder
           prices.push({
             id: variant.id,
             amount: 0,
-            currency_code: 'USD',
-            calculated_price: 'Price not available',
+            currency_code: regionCurrencyCode?.toLowerCase() || 'eur',
+            calculated_price: 0,
           })
         }
       }
@@ -131,7 +118,7 @@ export function useProducts(filters?: any) {
     queryFn: async () => {
       const response = await sdk.store.product.list({
         limit: 100,
-        fields: '*variants.calculated_price,*variants.prices,*variants.options.option,*images,*categories,*collection,*tags',
+        fields: '*variants.calculated_price,*variants.prices,*variants.options.option,*variants.inventory_quantity,*images,*categories,*collection,*tags',
         region_id: region!.id,
         ...filters,
       })
@@ -159,7 +146,7 @@ export function useProduct(handle: string) {
       const listResponse = await sdk.store.product.list({
         handle,
         limit: 1,
-        fields: '*variants.calculated_price,*variants.prices,*variants.options.option,*images,*categories,*collection,*tags',
+        fields: '*variants.calculated_price,*variants.prices,*variants.options.option,*variants.inventory_quantity,*images,*categories,*collection,*tags',
         region_id: region!.id,
       })
       

@@ -2,80 +2,105 @@
 
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import { mockProducts } from '@/data/mock-products'
 import { useProductListing } from '@/hooks/use-product-listing'
-import type { SortOption } from '@/utils/product-filters'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
+import { useProducts } from '@/hooks/use-products'
+import { useRegions } from '@/hooks/use-region'
+import { useState } from 'react'
 import { Select } from 'ui/src/molecules/select'
 
-export default function ProductsPage() {
+// Loading skeleton for products
+function ProductGridSkeleton() {
+  return (
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {[...Array(8)].map((_, i) => (
+        <div key={i} className="animate-pulse space-y-3">
+          <div className="aspect-square rounded-lg bg-gray-200 dark:bg-gray-700" />
+          <div className="space-y-2">
+            <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default function ApiTestPage() {
+  const { products, isLoading, error } = useProducts()
+  const {
+    regions,
+    selectedRegion,
+    setSelectedRegion,
+    isLoading: regionsLoading,
+  } = useRegions()
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 12
+
   const {
     sortBy,
     setSortBy,
     filters,
     setFilters,
     sortedProducts,
-    productCount,
     sortOptions,
-  } = useProductListing(mockProducts)
+  } = useProductListing(products)
+
+  // Calculate paginated products
+  const totalPages = Math.ceil(sortedProducts.length / pageSize)
+  const paginatedProducts = sortedProducts.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  )
 
   return (
-    <div className="min-h-screen bg-product-listing-bg">
-      <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y lg:px-product-listing-container-x-lg lg:py-product-listing-container-y-lg">
-        {/* Header */}
-        <div className="mb-product-listing-header-margin">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/' },
-              { label: 'Products', href: '/products' },
-            ]}
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="mb-4 font-bold text-3xl">API Integration Test</h1>
+      </div>
+
+      <div className="flex gap-8">
+        {/* Filters Sidebar */}
+        <aside className="hidden w-64 flex-shrink-0 lg:block">
+          <ProductFilters 
+            filters={filters} 
+            onFiltersChange={setFilters} 
+            products={products}
           />
-          <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
-            All Products
-          </h1>
-        </div>
+        </aside>
 
-        {/* Mobile Filters */}
-        <ProductFilters
-          className="md:hidden"
-          filters={filters}
-          onFiltersChange={setFilters}
-        />
+        {/* Products Grid */}
+        <main className="flex-1">
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-gray-600 text-sm dark:text-gray-400">
+              Showing {paginatedProducts.length} of {sortedProducts.length}{' '}
+              products
+            </p>
+            <Select
+              value={[sortBy]}
+              options={sortOptions.map((opt) => ({
+                value: opt.value.toString(),
+                label: opt.label,
+              }))}
+              clearIcon={false}
+              placeholder="Select sorting"
+              onValueChange={(details) => {
+                const value = details.value[0] as any
+                if (value) setSortBy(value)
+              }}
+              size="md"
+            />
+          </div>
 
-        {/* Layout */}
-        <div className="gap-product-listing-layout-gap md:flex">
-          {/* Desktop Sidebar Filters */}
-          <aside className="hidden w-product-listing-sidebar-width flex-shrink-0 md:block">
-            <ProductFilters filters={filters} onFiltersChange={setFilters} />
-          </aside>
-
-          {/* Main Content */}
-          <main className="flex-1">
-            {/* Controls */}
-            <div className="mb-product-listing-controls-margin flex flex-col items-start justify-between gap-product-listing-controls-gap sm:flex-row sm:items-center">
-              <p className="text-product-listing-results">
-                Showing {sortedProducts.length} products
-              </p>
-              <div className="flex items-center gap-product-listing-sort-gap">
-                <span className="text-product-listing-sort-label text-sm">
-                  Sort by:
-                </span>
-                <Select
-                  value={[sortBy]}
-                  options={sortOptions}
-                  placeholder="Select sorting"
-                  clearIcon={false}
-                  onValueChange={(details) =>
-                    setSortBy((details.value[0] as SortOption) || 'newest')
-                  }
-                />
-              </div>
+          {isLoading ? (
+            <ProductGridSkeleton />
+          ) : paginatedProducts.length > 0 ? (
+            <ProductGrid products={paginatedProducts} />
+          ) : (
+            <div className="py-12 text-center">
+              <p className="text-gray-500">No products found</p>
             </div>
-
-            {/* Product Grid with Pagination */}
-            <ProductGrid products={sortedProducts} pageSize={9} />
-          </main>
-        </div>
+          )}
+        </main>
       </div>
     </div>
   )

@@ -1,10 +1,51 @@
-import { mockProducts } from '@/data/mock-products'
+import { sdk } from '@/lib/medusa-client'
 import ProductDetail from './product-detail'
+import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
-  return mockProducts.map((product) => ({
-    handle: product.handle,
-  }))
+  try {
+    const response = await sdk.store.product.list({
+      limit: 100,
+    })
+    return response.products.map((product) => ({
+      handle: product.handle || product.id,
+    }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>
+}): Promise<Metadata> {
+  const resolvedParams = await params
+  
+  try {
+    const response = await sdk.store.product.list({
+      handle: resolvedParams.handle,
+      limit: 1,
+    })
+    
+    const product = response.products[0]
+    
+    if (!product) {
+      return {
+        title: 'Product Not Found',
+      }
+    }
+    
+    return {
+      title: `${product.title} | Demo Store`,
+      description: product.description || `Shop ${product.title} at our store`,
+    }
+  } catch (error) {
+    return {
+      title: 'Product | Demo Store',
+    }
+  }
 }
 
 export default async function ProductDetailPage({
@@ -14,12 +55,5 @@ export default async function ProductDetailPage({
 }) {
   const resolvedParams = await params
 
-  // Find product by handle (in real app, this would be an API call)
-  const product = mockProducts.find((p) => p.handle === resolvedParams.handle)
-
-  if (!product) {
-    return <div>Product not found</div>
-  }
-
-  return <ProductDetail product={product} />
+  return <ProductDetail handle={resolvedParams.handle} />
 }
