@@ -9,16 +9,23 @@ if (!PUBLISHABLE_KEY) {
   console.warn('⚠️ NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY is not set!')
 }
 
-// SDK instance
-export const sdk = new Medusa({
-  baseUrl: BACKEND_URL,
-  publishableKey: PUBLISHABLE_KEY,
-  auth: {
-    type: 'jwt',
-    jwtTokenStorageKey: 'medusa_jwt_token',
-    jwtTokenStorageMethod: 'local',
-  },
-})
+// SDK instance for client-side with JWT auth
+export const sdk = 
+  typeof window !== 'undefined'
+    ? new Medusa({
+        baseUrl: BACKEND_URL,
+        publishableKey: PUBLISHABLE_KEY,
+        auth: {
+          type: 'jwt',
+          jwtTokenStorageKey: 'medusa_jwt_token',
+          jwtTokenStorageMethod: 'local',
+        },
+      })
+    : new Medusa({
+        baseUrl: BACKEND_URL,
+        publishableKey: PUBLISHABLE_KEY,
+        // No auth for server-side/static generation
+      })
 
 // Helper functions
 export async function checkBackendHealth(): Promise<{
@@ -40,6 +47,9 @@ export async function checkBackendHealth(): Promise<{
 
 // Auth headers helper for custom requests
 export function getAuthHeaders(): HeadersInit {
+  if (typeof window === 'undefined') {
+    return {}
+  }
   const token = localStorage.getItem('medusa_jwt_token')
   return token ? { Authorization: `Bearer ${token}` } : {}
 }

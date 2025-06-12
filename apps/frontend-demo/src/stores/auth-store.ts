@@ -17,6 +17,17 @@ export interface AuthState {
 
 // Helper function to load auth from localStorage
 function loadAuthFromStorage(): Partial<AuthState> {
+  if (typeof window === 'undefined') {
+    return {
+      user: null,
+      isLoading: false,
+      error: null,
+      isInitialized: false,
+      isFormLoading: false,
+      validationErrors: [],
+    }
+  }
+  
   try {
     const token = localStorage.getItem('medusa_jwt_token')
     const email = localStorage.getItem('medusa_user_email')
@@ -72,7 +83,7 @@ export const authHelpers = {
         error: null,
       }))
 
-      const token = localStorage.getItem('medusa_jwt_token')
+      const token = typeof window !== 'undefined' ? localStorage.getItem('medusa_jwt_token') : null
       console.log('[Auth Store] Token found:', !!token)
 
       if (!token) {
@@ -115,8 +126,10 @@ export const authHelpers = {
         console.error('[Auth Store] Failed to fetch user:', response.status)
         if (response.status === 401) {
           console.log('[Auth Store] Unauthorized, removing tokens')
-          localStorage.removeItem('medusa_jwt_token')
-          localStorage.removeItem('medusa_user_email')
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('medusa_jwt_token')
+            localStorage.removeItem('medusa_user_email')
+          }
         }
         authStore.setState((state) => ({
           ...state,
@@ -175,8 +188,10 @@ export const authHelpers = {
       }
 
       // Step 2: Store token and email
-      localStorage.setItem('medusa_jwt_token', token)
-      localStorage.setItem('medusa_user_email', email)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('medusa_jwt_token', token)
+        localStorage.setItem('medusa_user_email', email)
+      }
 
       // Step 3: Fetch customer profile
       const response = await fetch(
@@ -265,9 +280,11 @@ export const authHelpers = {
       }
 
       // Step 4: Clear anonymous cart ID (cart will be merged automatically)
-      const anonymousCartId = localStorage.getItem('medusa_cart_id')
-      if (anonymousCartId) {
-        localStorage.removeItem('medusa_cart_id')
+      if (typeof window !== 'undefined') {
+        const anonymousCartId = localStorage.getItem('medusa_cart_id')
+        if (anonymousCartId) {
+          localStorage.removeItem('medusa_cart_id')
+        }
       }
     } catch (err: any) {
       const message = err?.message || 'Login failed'
@@ -318,8 +335,10 @@ export const authHelpers = {
   logout: async () => {
     try {
       await sdk.auth.logout()
-      localStorage.removeItem('medusa_jwt_token')
-      localStorage.removeItem('medusa_user_email')
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('medusa_jwt_token')
+        localStorage.removeItem('medusa_user_email')
+      }
       authStore.setState(() => ({
         user: null,
         isLoading: false,
@@ -338,7 +357,7 @@ export const authHelpers = {
     try {
       authStore.setState((state) => ({ ...state, error: null }))
 
-      const token = localStorage.getItem('medusa_jwt_token')
+      const token = typeof window !== 'undefined' ? localStorage.getItem('medusa_jwt_token') : null
 
       if (!token) throw new Error('User not authenticated')
 
