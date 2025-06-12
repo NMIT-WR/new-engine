@@ -2,52 +2,157 @@
 
 import { authHelpers, authStore } from '@/stores/auth-store'
 import { useStore } from '@tanstack/react-store'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import { useToast } from 'ui/src/molecules/toast'
+import { queryKeys } from '@/lib/query-keys'
+import type { HttpTypes } from '@medusajs/types'
 
 export function useAuth() {
   const authState = useStore(authStore)
   const router = useRouter()
   const toast = useToast()
+  const queryClient = useQueryClient()
 
-  // Initialize auth on mount
+  // Use React Query for initial auth check
+  const { data: currentUser } = useQuery({
+    queryKey: queryKeys.auth.customer(),
+    queryFn: authHelpers.fetchUser,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false,
+    enabled: !authState.isInitialized,
+  })
+
+  // Update store when query data changes
   useEffect(() => {
-    console.log(
-      '[useAuth] Effect running, isInitialized:',
-      authState.isInitialized,
-      'isLoading:',
-      authState.isLoading
-    )
-    if (!authState.isInitialized) {
-      console.log('[useAuth] Calling fetchUser')
-      authHelpers.fetchUser()
+    if (currentUser !== undefined && !authState.isInitialized) {
+      authStore.setState((state) => ({
+        ...state,
+        user: currentUser,
+        isInitialized: true,
+        isLoading: false,
+      }))
     }
-  }, [authState.isInitialized])
+  }, [currentUser, authState.isInitialized])
 
-  // Enhanced login with navigation
-  const login = useCallback(
-    async (
-      email: string,
-      password: string,
-      firstName?: string,
+  // Login mutation
+  const loginMutation = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+      firstName,
+      lastName,
+    }: {
+      email: string
+      password: string
+      firstName?: string
       lastName?: string
-    ) => {
-      await authHelpers.login(email, password, firstName, lastName)
-
+    }) => {
+      return authHelpers.login(email, password, firstName, lastName)
+    },
+    onSuccess: () => {
+      // Invalidate auth queries to refetch user
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
+      
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
         router.push('/')
       }
+      
+      toast.create({
+        title: 'Welcome back!',
+        description: 'You have successfully logged in.',
+        type: 'success',
+      })
     },
-    [router]
-  )
+    onError: (error: Error) => {
+      toast.create({
+        title: 'Login failed',
+        description: error.message,
+        type: 'error',
+      })
+    },
+  })
 
-  // Enhanced logout with navigation
-  const logout = useCallback(async () => {
-    await authHelpers.logout()
-    router.push('/')
-  }, [router])
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+      firstName,
+      lastName,
+    }: {
+      email: string
+      password: string
+      firstName?: string
+      lastName?: string
+    }) => {
+      return authHelpers.register(email, password, firstName, lastName)
+    },
+    onSuccess: () => {
+      // Invalidate auth queries to refetch user
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
+      
+      // Only redirect if not on test page
+      if (!window.location.pathname.includes('/test-auth')) {
+        router.push('/')
+      }
+      
+      toast.create({
+        title: 'Account created!',
+        description: 'Welcome to our store.',
+        type: 'success',
+      })
+    },
+    onError: (error: Error) => {
+      toast.create({
+        title: 'Registration failed',
+        description: error.message,
+        type: 'error',
+      })
+    },
+  })
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: authHelpers.logout,
+    onSuccess: () => {
+      // Invalidate all queries since user context changed
+      queryClient.invalidateQueries()
+      router.push('/')
+      
+      toast.create({
+        title: 'Logged out',
+        description: 'You have been successfully logged out.',
+        type: 'success',
+      })
+    },
+  })
+
+  // Update profile mutation
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: Partial<HttpTypes.StoreCustomer>) => {
+      return authHelpers.updateProfile(data)
+    },
+    onSuccess: () => {
+      // Invalidate auth queries to refetch updated user
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
+      
+      toast.create({
+        title: 'Profile updated',
+        description: 'Your profile has been successfully updated.',
+        type: 'success',
+      })
+    },
+    onError: (error: Error) => {
+      toast.create({
+        title: 'Update failed',
+        description: error.message,
+        type: 'error',
+      })
+    },
+  })
 
   // Form helpers with toast notifications
   const showError = useCallback(
@@ -102,19 +207,28 @@ export function useAuth() {
   return {
     // Auth state
     user: authState.user,
-    isLoading: authState.isLoading,
+    isLoading: authState.isLoading || loginMutation.isPending || registerMutation.isPending,
     isInitialized: authState.isInitialized,
     error: authState.error,
 
-    // Auth actions
-    login,
-    register: authHelpers.register,
-    logout,
-    updateProfile: authHelpers.updateProfile,
-    refetch: authHelpers.fetchUser,
+    // Auth actions with mutations
+    login: (email: string, password: string, firstName?: string, lastName?: string) => 
+      loginMutation.mutate({ email, password, firstName, lastName }),
+    register: (email: string, password: string, firstName?: string, lastName?: string) => 
+      registerMutation.mutate({ email, password, firstName, lastName }),
+    logout: () => logoutMutation.mutate(),
+    updateProfile: (data: Partial<HttpTypes.StoreCustomer>) => 
+      updateProfileMutation.mutate(data),
+    refetch: () => queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() }),
+
+    // Mutation states
+    loginMutation,
+    registerMutation,
+    logoutMutation,
+    updateProfileMutation,
 
     // Form state
-    isFormLoading: authState.isFormLoading,
+    isFormLoading: authState.isFormLoading || loginMutation.isPending || registerMutation.isPending,
     validationErrors: authState.validationErrors,
 
     // Form actions

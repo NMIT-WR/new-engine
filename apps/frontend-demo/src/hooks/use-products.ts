@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { sdk } from '@/lib/medusa-client'
 import type { Product } from '@/types/product'
 import { useCurrentRegion } from './use-region'
+import { queryKeys } from '@/lib/query-keys'
 
 // Transform Medusa product to our Product type
-function transformProduct(medusaProduct: any): Product {
+function transformProduct(medusaProduct: any, regionCurrencyCode?: string): Product {
   // Fix image URLs - replace internal MinIO URL with localhost
   const fixImageUrl = (url: string) => {
     return url?.replace('http://medusa-minio:9004', 'http://localhost:9004') || ''
@@ -42,101 +43,140 @@ function transformProduct(medusaProduct: any): Product {
       title: opt.title,
       values: opt.values?.map((val: any) => val.value) || [],
     })) || [],
-    variants: medusaProduct.variants?.map((variant: any) => ({
-      id: variant.id,
-      title: variant.title,
-      sku: variant.sku || '',
-      inventory_quantity: variant.inventory_quantity || 0,
-      prices: variant.calculated_price ? [{
+    variants: medusaProduct.variants?.map((variant: any) => {
+      const calculatedPrice = variant.calculated_price
+      const prices = []
+      
+      // Debug: log products without calculated_price for USD
+      if (!calculatedPrice && regionCurrencyCode === 'usd') {
+        console.log('No USD calculated_price for:', medusaProduct.title, '- checking variant.prices:', variant.prices)
+      }
+      
+      if (calculatedPrice) {
+        // Try different paths to get the amount
+        const amount = calculatedPrice.calculated_amount || 
+                      calculatedPrice.calculated_price?.calculated_amount || 
+                      calculatedPrice.calculated_price || 
+                      calculatedPrice.amount ||
+                      0
+        
+        const currency = calculatedPrice.currency_code || 
+                        calculatedPrice.calculated_price?.currency_code || 
+                        regionCurrencyCode ||
+                        'eur'
+        
+        // Format price string based on currency
+        // Check if amount is already in major units (euros/dollars) or minor units (cents)
+        // If amount is less than 100, it's likely already in major units
+        const formattedPrice = currency.toLowerCase() === 'eur' 
+          ? `€${amount.toFixed(2)}`
+          : currency.toLowerCase() === 'usd'
+          ? `$${amount.toFixed(2)}`
+          : `${currency.toUpperCase()} ${amount.toFixed(2)}`
+        
+        prices.push({
+          id: variant.id,
+          amount: amount,
+          currency_code: currency.toUpperCase(),
+          calculated_price: formattedPrice,
+        })
+      } else if (regionCurrencyCode === 'usd') {
+        // Fallback: Convert EUR price to USD with approximate rate
+        // This is temporary until all products have USD prices in database
+        const eurToUsdRate = 1.1 // Approximate conversion rate
+        
+        // Try to find EUR price for this variant
+        const eurPrice = variant.prices?.find((p: any) => p.currency_code === 'eur')
+        if (eurPrice && eurPrice.amount) {
+          const usdAmount = Math.round(eurPrice.amount * eurToUsdRate)
+          prices.push({
+            id: variant.id,
+            amount: usdAmount,
+            currency_code: 'USD',
+            calculated_price: `$${usdAmount.toFixed(2)}`,
+          })
+        } else {
+          // If no EUR price either, show not available
+          prices.push({
+            id: variant.id,
+            amount: 0,
+            currency_code: 'USD',
+            calculated_price: 'Price not available',
+          })
+        }
+      }
+      
+      return {
         id: variant.id,
-        amount: variant.calculated_price.calculated_amount || 0,
-        currency_code: variant.calculated_price.currency_code || 'usd',
-      }] : [],
-      options: variant.options?.reduce((acc: any, opt: any) => {
-        acc[opt.option.title.toLowerCase()] = opt.value
-        return acc
-      }, {}) || {},
-    })) || [],
+        title: variant.title,
+        sku: variant.sku || '',
+        inventory_quantity: variant.inventory_quantity || 0,
+        prices: prices,
+        options: variant.options?.reduce((acc: any, opt: any) => {
+          acc[opt.option.title.toLowerCase()] = opt.value
+          return acc
+        }, {}) || {},
+      }
+    }) || [],
     status: medusaProduct.status || 'published',
     metadata: medusaProduct.metadata || {},
   }
 }
 
-export function useProducts() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export function useProducts(filters?: any) {
   const { region } = useCurrentRegion()
 
-  useEffect(() => {
-    async function fetchProducts() {
-      if (!region) return // Wait for region to be loaded
+  const { data: products = [], isLoading, error } = useQuery({
+    queryKey: queryKeys.products(region?.id, filters),
+    queryFn: async () => {
+      const response = await sdk.store.product.list({
+        limit: 100,
+        fields: '*variants.calculated_price,*variants.prices,*variants.options.option,*images,*categories,*collection,*tags',
+        region_id: region!.id,
+        ...filters,
+      })
       
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        const response = await sdk.store.product.list({
-          limit: 100,
-          fields: '*variants.options.option,*images,*categories,*collection,*tags',
-          region_id: region.id,
-        })
-        
-        const transformedProducts = response.products.map(transformProduct)
-        setProducts(transformedProducts)
-      } catch (err) {
-        console.error('Failed to fetch products:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch products')
-      } finally {
-        setIsLoading(false)
-      }
-    }
+      return response.products.map(product => transformProduct(product, region?.currency_code))
+    },
+    enabled: !!region, // Only run query when region is available
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
-    fetchProducts()
-  }, [region])
-
-  return { products, isLoading, error }
+  return { 
+    products, 
+    isLoading, 
+    error: error instanceof Error ? error.message : error ? String(error) : null 
+  }
 }
 
 export function useProduct(handle: string) {
-  const [product, setProduct] = useState<Product | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const { region } = useCurrentRegion()
 
-  useEffect(() => {
-    async function fetchProduct() {
-      if (!handle || !region) return // Wait for region to be loaded
+  const { data: product = null, isLoading, error } = useQuery({
+    queryKey: queryKeys.product(handle, region?.id),
+    queryFn: async () => {
+      // First get product by handle
+      const listResponse = await sdk.store.product.list({
+        handle,
+        limit: 1,
+        fields: '*variants.calculated_price,*variants.prices,*variants.options.option,*images,*categories,*collection,*tags',
+        region_id: region!.id,
+      })
       
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        // First get product by handle
-        const listResponse = await sdk.store.product.list({
-          handle,
-          limit: 1,
-          fields: '*variants.options.option,*images,*categories,*collection,*tags',
-          region_id: region.id,
-        })
-        
-        if (listResponse.products.length === 0) {
-          throw new Error('Product not found')
-        }
-        
-        const medusaProduct = listResponse.products[0]
-        const transformedProduct = transformProduct(medusaProduct)
-        setProduct(transformedProduct)
-      } catch (err) {
-        console.error('Failed to fetch product:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch product')
-      } finally {
-        setIsLoading(false)
+      if (listResponse.products.length === 0) {
+        throw new Error('Product not found')
       }
-    }
+      
+      const medusaProduct = listResponse.products[0]
+      return transformProduct(medusaProduct, region?.currency_code)
+    },
+    enabled: !!handle && !!region, // Only run query when handle and region are available
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 
-    fetchProduct()
-  }, [handle, region])
-
-  return { product, isLoading, error }
+  return { 
+    product, 
+    isLoading, 
+    error: error instanceof Error ? error.message : error ? String(error) : null 
+  }
 }

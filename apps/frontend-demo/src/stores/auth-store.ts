@@ -83,7 +83,7 @@ export const authHelpers = {
           isLoading: false,
           isInitialized: true,
         }))
-        return
+        return null
       }
 
       // Direct API call to get current customer
@@ -110,6 +110,7 @@ export const authHelpers = {
           isLoading: false,
           isInitialized: true,
         }))
+        return data.customer
       } else {
         console.error('[Auth Store] Failed to fetch user:', response.status)
         if (response.status === 401) {
@@ -123,6 +124,7 @@ export const authHelpers = {
           isLoading: false,
           isInitialized: true,
         }))
+        return null
       }
     } catch (err: any) {
       console.error('Failed to fetch user:', err)
@@ -133,6 +135,7 @@ export const authHelpers = {
         error: err.message,
         isInitialized: true,
       }))
+      return null
     }
   },
 

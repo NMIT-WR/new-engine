@@ -72,11 +72,7 @@ export function ProductInfo({
     }
 
     // Add to cart with variant info
-    addItem(product, {
-      variantId: selectedVariant.id,
-      ...selectedOptions,
-      quantity,
-    })
+    addItem(selectedVariant.id, quantity)
 
     // Show success toast with variant details
     toast.create({

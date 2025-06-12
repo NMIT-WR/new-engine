@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { sdk } from '@/lib/medusa-client'
 import type { Category } from '@/types/product'
+import { queryKeys } from '@/lib/query-keys'
 
-interface CategoryWithStats extends Category {
+export interface CategoryWithStats extends Category {
   count: number
   description?: string
 }
@@ -20,72 +21,49 @@ function transformCategory(medusaCategory: any): CategoryWithStats {
 }
 
 export function useCategories() {
-  const [categories, setCategories] = useState<CategoryWithStats[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: categories = [], isLoading, error } = useQuery({
+    queryKey: queryKeys.categories(),
+    queryFn: async () => {
+      const response = await sdk.admin.productCategory.list({
+        include_descendants_tree: true,
+        include_ancestors_tree: true,
+      })
+      
+      return response.product_categories.map(transformCategory)
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  })
 
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        const response = await sdk.store.productCategory.list({
-          include_descendants_tree: true,
-          include_ancestors_tree: true,
-        })
-        
-        const transformedCategories = response.product_categories.map(transformCategory)
-        setCategories(transformedCategories)
-      } catch (err) {
-        console.error('Failed to fetch categories:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch categories')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchCategories()
-  }, [])
-
-  return { categories, isLoading, error }
+  return { 
+    categories, 
+    isLoading, 
+    error: error instanceof Error ? error.message : error ? String(error) : null 
+  }
 }
 
 export function useCategory(handle: string) {
-  const [category, setCategory] = useState<CategoryWithStats | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function fetchCategory() {
-      if (!handle) return
+  const { data: category = null, isLoading, error } = useQuery({
+    queryKey: queryKeys.category(handle),
+    queryFn: async () => {
+      const response = await sdk.admin.productCategory.list({
+        handle,
+        include_descendants_tree: true,
+        include_ancestors_tree: true,
+      })
       
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        const response = await sdk.store.productCategory.list({
-          handle,
-          include_descendants_tree: true,
-          include_ancestors_tree: true,
-        })
-        
-        if (response.product_categories.length === 0) {
-          throw new Error('Category not found')
-        }
-        
-        const transformedCategory = transformCategory(response.product_categories[0])
-        setCategory(transformedCategory)
-      } catch (err) {
-        console.error('Failed to fetch category:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch category')
-      } finally {
-        setIsLoading(false)
+      if (response.product_categories.length === 0) {
+        throw new Error('Category not found')
       }
-    }
+      
+      return transformCategory(response.product_categories[0])
+    },
+    enabled: !!handle,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  })
 
-    fetchCategory()
-  }, [handle])
-
-  return { category, isLoading, error }
+  return { 
+    category, 
+    isLoading, 
+    error: error instanceof Error ? error.message : error ? String(error) : null 
+  }
 }

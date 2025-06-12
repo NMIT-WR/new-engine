@@ -1,41 +1,59 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { sdk } from '@/lib/medusa-client'
+import { queryKeys } from '@/lib/query-keys'
+import { regionStore, setSelectedRegionId } from '@/stores/region-store'
+import { useStore } from '@tanstack/react-store'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
 export function useRegions() {
-  const [regions, setRegions] = useState<any[]>([])
-  const [selectedRegion, setSelectedRegion] = useState<any | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const selectedRegionId = useStore(regionStore, (state) => state.selectedRegionId)
 
+  const { data: regions = [], isLoading, error } = useQuery({
+    queryKey: queryKeys.regions(),
+    queryFn: async () => {
+      const response = await sdk.store.region.list()
+      return response.regions
+    },
+    staleTime: Number.POSITIVE_INFINITY, // Regions rarely change
+    gcTime: 24 * 60 * 60 * 1000, // Cache for 24 hours
+  })
+
+  // Initialize selected region from store/localStorage or default
   useEffect(() => {
-    async function fetchRegions() {
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        const response = await sdk.store.region.list()
-        setRegions(response.regions)
-        
-        // Select US region by default or first available
-        const usRegion = response.regions.find(r => r.currency_code === 'usd')
-        setSelectedRegion(usRegion || response.regions[0])
-      } catch (err) {
-        console.error('Failed to fetch regions:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch regions')
-      } finally {
-        setIsLoading(false)
+    if (regions.length > 0 && !selectedRegionId) {
+      // Default to EUR region if no stored preference
+      const defaultRegion =
+        regions.find((r) => r.currency_code === 'eur') ||
+        regions.find((r) => r.currency_code === 'usd') ||
+        regions[0]
+      
+      if (defaultRegion) {
+        setSelectedRegionId(defaultRegion.id)
       }
     }
+  }, [regions, selectedRegionId])
 
-    fetchRegions()
-  }, [])
+  const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 
-  return { regions, selectedRegion, setSelectedRegion, isLoading, error }
+  const setSelectedRegion = (region: any) => {
+    if (region?.id) {
+      setSelectedRegionId(region.id)
+    }
+  }
+
+  return {
+    regions,
+    selectedRegion,
+    setSelectedRegion,
+    isLoading,
+    error:
+      error instanceof Error ? error.message : error ? String(error) : null,
+  }
 }
 
-// Hook to get current region (can be expanded to use localStorage)
+// Hook to get current region (with localStorage persistence)
 export function useCurrentRegion() {
   const { selectedRegion, isLoading, error } = useRegions()
   return { region: selectedRegion, isLoading, error }

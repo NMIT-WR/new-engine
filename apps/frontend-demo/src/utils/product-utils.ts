@@ -49,7 +49,11 @@ export interface ProductDisplayData {
 }
 
 export function extractProductData(product: Product): ProductDisplayData {
-  const price = getProductPrice(product)
+  // For API products, use the first price from the first variant
+  // (API already returns prices for the selected region)
+  const firstVariant = product.variants?.[0]
+  const price = firstVariant?.prices?.[0] || getProductPrice(product)
+  
   const badges = getProductBadges(product)
   const stockStatus = getProductStock(product)
 
