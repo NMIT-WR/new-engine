@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { Badge, type BadgeProps } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
+import { Label } from 'ui/src/atoms/label'
 import { Rating } from 'ui/src/atoms/rating'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { useToast } from 'ui/src/molecules/toast'
@@ -16,7 +17,7 @@ interface ProductInfoProps {
   product: Product
   selectedVariant: ProductVariant | null
   badges: BadgeProps[]
-  price: any
+  price: string
   onVariantChange: (variant: ProductVariant) => void
 }
 
@@ -111,8 +112,7 @@ export function ProductInfo({
       {/* Price */}
       <div className="mb-product-info-price-margin">
         <span className="font-product-info-price text-product-info-price">
-          {selectedVariant?.prices?.[0]?.calculated_price ||
-            price?.calculated_price}
+          {selectedVariant?.prices?.[0]?.calculated_price || price}
         </span>
         {selectedVariant?.prices?.[0]?.original_price &&
           selectedVariant.prices[0].original_price !==
@@ -130,7 +130,7 @@ export function ProductInfo({
 
       {/* SKU and Stock Info */}
       {selectedVariant && (
-        <div className="mb-product-info-variant-margin text-product-info-variant-label text-product-info-variant-label">
+        <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>SKU: {selectedVariant.sku}</p>
           {selectedVariant.inventory_quantity !== undefined && (
             <p>In Stock: {selectedVariant.inventory_quantity} units</p>
@@ -145,9 +145,9 @@ export function ProductInfo({
 
         return (
           <div key={option.id} className="mb-product-info-variant-margin">
-            <label className="mb-product-info-variant-label-margin font-product-info-variant-label text-product-info-variant-label">
+            <Label className="mb-product-info-variant-label-margin font-product-info-variant-label text-product-info-variant-label">
               {option.title}
-            </label>
+            </Label>
 
             {isColor ? (
               /* Color swatches */

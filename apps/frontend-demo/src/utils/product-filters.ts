@@ -110,9 +110,9 @@ export function filterProducts(
 ): Product[] {
   return products.filter((product) => {
     // Price filter
+    const priceString = product.variants?.[0]?.prices?.[0]?.calculated_price || '0'
     const price = Number.parseFloat(
-      product.variants?.[0]?.prices?.[0]?.calculated_price?.replace('€', '') ||
-        '0'
+      priceString.replace(/[€$]/g, '').trim() || '0'
     )
     if (price < filters.priceRange[0] || price > filters.priceRange[1]) {
       return false
