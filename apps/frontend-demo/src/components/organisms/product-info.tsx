@@ -73,14 +73,8 @@ export function ProductInfo({
     }
 
     // Add to cart with variant info
+    // The success toast is handled by the cart hook
     addItem(selectedVariant.id, quantity)
-
-    // Show success toast with variant details
-    toast.create({
-      title: 'Added to cart',
-      description: `${product.title} (${selectedVariant.title}) has been added to your cart.`,
-      type: 'success',
-    })
   }
 
   return (
@@ -112,15 +106,8 @@ export function ProductInfo({
       {/* Price */}
       <div className="mb-product-info-price-margin">
         <span className="font-product-info-price text-product-info-price">
-          {selectedVariant?.prices?.[0]?.calculated_price || price}
+          {price}
         </span>
-        {selectedVariant?.prices?.[0]?.original_price &&
-          selectedVariant.prices[0].original_price !==
-            selectedVariant.prices[0].calculated_price && (
-            <span className="ml-product-info-original-price-margin text-product-info-original-price line-through">
-              {selectedVariant.prices[0].original_price}
-            </span>
-          )}
       </div>
 
       {/* Description */}

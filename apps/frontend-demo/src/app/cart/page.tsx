@@ -1,8 +1,8 @@
 'use client'
 
 import { useCart } from '@/hooks/use-cart'
-import { getProductPrice } from '@/utils/price-utils'
-import { formatPrice, getProductPath } from '@/utils/product-utils'
+import { formatPrice } from '@/utils/price-utils'
+import { getProductPath } from '@/utils/product-utils'
 import Image from 'next/image'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
@@ -11,9 +11,13 @@ import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 
 export default function CartPage() {
-  const { items, subtotal, total, removeItem, updateQuantity, clearCart } =
-    useCart()
-
+  const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
+  
+  const items = cart?.items || []
+  const subtotal = cart?.subtotal || 0
+  const total = cart?.total || 0
+  const currencyCode = cart?.region?.currency_code
+  
   // Use helper to calculate tax properly
   const tax = subtotal * 0.21 // 21% VAT
   const shipping = 0 // Free shipping
@@ -35,13 +39,19 @@ export default function CartPage() {
           Shopping Cart
         </h1>
 
-        {items.length > 0 ? (
+        {isLoading ? (
+          <div className="space-y-4">
+            <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          </div>
+        ) : items.length > 0 ? (
           <div className="lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap">
             {/* Cart Items */}
             <div className="mb-cart-items-margin lg:mb-0">
               <div className="divide-y divide-cart-item-divider">
                 {items.map((item) => {
-                  const price = getProductPrice(item.product)
+                  const price = item.unit_price || 0
                   const itemTotal = price * item.quantity
 
                   return (
@@ -52,10 +62,10 @@ export default function CartPage() {
                       <div className="flex gap-cart-item-gap">
                         {/* Product Image */}
                         <div className="h-cart-item-image w-cart-item-image rounded-cart-item-image bg-cart-item-image-bg">
-                          {item.product.thumbnail && (
+                          {item.thumbnail && (
                             <Image
-                              src={item.product.thumbnail}
-                              alt={item.product.title}
+                              src={item.thumbnail}
+                              alt={item.title}
                               width={120}
                               height={120}
                               className="h-full w-full rounded-cart-item-image object-cover"
@@ -67,28 +77,22 @@ export default function CartPage() {
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div>
-                              <Link href={getProductPath(item.product.handle)}>
+                              <Link href={getProductPath(item.variant?.product?.handle || '')}>
                                 <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
-                                  {item.product.title}
+                                  {item.title}
                                 </h3>
                               </Link>
                               <div className="mb-cart-item-options-margin text-cart-item-options">
-                                {item.selectedSize && (
-                                  <span>Size: {item.selectedSize}</span>
-                                )}
-                                {item.selectedSize && item.selectedColor && (
-                                  <span> • </span>
-                                )}
-                                {item.selectedColor && (
-                                  <span>Color: {item.selectedColor}</span>
+                                {item.variant?.title && item.variant.title !== item.title && (
+                                  <span>{item.variant.title}</span>
                                 )}
                               </div>
                               <p className="font-cart-item-price text-cart-item-price">
-                                {formatPrice(price)}
+                                {formatPrice(price / 100, currencyCode)}
                               </p>
                             </div>
                             <p className="font-cart-item-price text-cart-item-price">
-                              {formatPrice(itemTotal)}
+                              {formatPrice(itemTotal / 100, currencyCode)}
                             </p>
                           </div>
 
@@ -143,17 +147,17 @@ export default function CartPage() {
                 <div className="space-y-cart-summary-rows-gap">
                   <div className="flex justify-between text-cart-summary-text">
                     <span>Subtotal</span>
-                    <span>{formatPrice(subtotal)}</span>
+                    <span>{formatPrice(subtotal / 100, currencyCode)}</span>
                   </div>
                   <div className="flex justify-between text-cart-summary-text">
                     <span>Shipping</span>
                     <span>
-                      {shipping === 0 ? 'FREE' : formatPrice(shipping)}
+                      {shipping === 0 ? 'FREE' : formatPrice(shipping / 100, currencyCode)}
                     </span>
                   </div>
                   <div className="flex justify-between text-cart-summary-text">
                     <span>Tax (21%)</span>
-                    <span>{formatPrice(tax)}</span>
+                    <span>{formatPrice(tax / 100, currencyCode)}</span>
                   </div>
                 </div>
 
@@ -161,7 +165,7 @@ export default function CartPage() {
 
                 <div className="flex justify-between text-cart-summary-text">
                   <span>Total</span>
-                  <span>{formatPrice(total)}</span>
+                  <span>{formatPrice(total / 100, currencyCode)}</span>
                 </div>
 
                 <Button

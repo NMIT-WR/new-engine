@@ -33,7 +33,8 @@ export function Header({
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { itemCount } = useCart()
+  const { cart } = useCart()
+  const itemCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
 
   return (
     <header
@@ -64,7 +65,6 @@ export function Header({
           <div className="flex items-center gap-header-actions-gap lg:gap-header-actions-gap-lg">
             {/* Desktop utilities */}
             <div className="hidden items-center gap-2 lg:flex">
-              <RegionSelector />
               <ThemeToggle />
             </div>
 
@@ -87,6 +87,7 @@ export function Header({
 
               {/* Cart button */}
               <Popover
+                id="cart-preview"
                 trigger={
                   <div className="relative flex items-center">
                     <Icon className="text-tertiary" icon="token-icon-cart" />
@@ -108,6 +109,7 @@ export function Header({
 
               {/* User/Auth section */}
               <AuthDropdown />
+              <RegionSelector />
 
               {/* Custom actions */}
               {actions}
