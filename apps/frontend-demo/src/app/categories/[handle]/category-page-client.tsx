@@ -1,26 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { Hero } from '@/components/organisms/hero'
+import { ProductFilters } from '@/components/organisms/product-filters'
+import { ProductGrid } from '@/components/organisms/product-grid'
+import type { CategoryData } from '@/data/categories-content'
+import { mockProducts } from '@/data/mock-products'
+import { useProductListing } from '@/hooks/use-product-listing'
+import type { SortOption } from '@/utils/product-filters'
 import { Select } from 'ui/src/molecules/select'
-import { Hero } from '../../../components/hero'
-import { ProductFilters } from '../../../components/product-filters'
-import { ProductGrid } from '../../../components/product-grid'
-import type { CategoryData } from '../../../data/categories-content'
-import { mockProducts } from '../../../data/mock-products'
-import {
-  type FilterState,
-  type SortOption,
-  filterProducts,
-  sortProducts,
-} from '../../../utils/product-filters'
-
-const sortOptions = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'name-asc', label: 'Name: A to Z' },
-  { value: 'name-desc', label: 'Name: Z to A' },
-]
 
 interface CategoryPageClientProps {
   category: CategoryData
@@ -29,25 +16,30 @@ interface CategoryPageClientProps {
 export default function CategoryPageClient({
   category,
 }: CategoryPageClientProps) {
-  const [sortBy, setSortBy] = useState<SortOption>('newest')
-  const [filters, setFilters] = useState<FilterState>({
-    priceRange: [0, 200],
-    categories: new Set([category.id]),
-    sizes: new Set(),
-    colors: new Set(),
-  })
-
   // Filter products by category
   const categoryProducts = mockProducts.filter((product) =>
     product.categories?.some((cat) => cat.id === category.id)
   )
 
-  // Apply additional filters and sorting
-  const filteredProducts = filterProducts(categoryProducts, {
-    ...filters,
-    categories: new Set(), // Don't re-filter by category since we already filtered
+  const {
+    sortBy,
+    setSortBy,
+    filters,
+    setFilters,
+    sortedProducts,
+    productCount,
+    sortOptions,
+  } = useProductListing(categoryProducts, {
+    initialFilters: {
+      categories: new Set([category.id]),
+    },
   })
-  const sortedProducts = sortProducts(filteredProducts, sortBy)
+
+  // Override filters to exclude category filtering since we're already filtered
+  const adjustedFilters = {
+    ...filters,
+    categories: new Set(),
+  }
 
   return (
     <div className="min-h-screen bg-product-listing-bg">
@@ -91,8 +83,10 @@ export default function CategoryPageClient({
         {/* Mobile Filters */}
         <ProductFilters
           className="md:hidden"
-          filters={filters}
-          onFiltersChange={setFilters}
+          filters={adjustedFilters}
+          onFiltersChange={(newFilters) =>
+            setFilters({ ...newFilters, categories: new Set([category.id]) })
+          }
           hideCategories // Hide category filter since we're already in a category
         />
 
@@ -101,8 +95,13 @@ export default function CategoryPageClient({
           {/* Desktop Sidebar Filters */}
           <aside className="hidden w-product-listing-sidebar-width flex-shrink-0 md:block">
             <ProductFilters
-              filters={filters}
-              onFiltersChange={setFilters}
+              filters={adjustedFilters}
+              onFiltersChange={(newFilters) =>
+                setFilters({
+                  ...newFilters,
+                  categories: new Set([category.id]),
+                })
+              }
               hideCategories // Hide category filter since we're already in a category
             />
           </aside>
@@ -112,8 +111,7 @@ export default function CategoryPageClient({
             {/* Controls */}
             <div className="mb-product-listing-controls-margin flex flex-col items-start justify-between gap-product-listing-controls-gap sm:flex-row sm:items-center">
               <p className="text-product-listing-results">
-                Showing {sortedProducts.length} of {categoryProducts.length}{' '}
-                products
+                Showing {productCount} of {categoryProducts.length} products
               </p>
               <div className="flex items-center gap-product-listing-sort-gap">
                 <span className="text-product-listing-sort-label text-sm">

@@ -21,7 +21,7 @@ function Submenu({ items }: { items: NavItem[] }) {
         <Link
           key={index}
           href={child.href || '#'}
-          className="block px-navigation-item-x py-navigation-item-y text-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors"
+          className="block px-navigation-item-x py-navigation-item-y text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
           target={child.external ? '_blank' : undefined}
           rel={child.external ? 'noopener noreferrer' : undefined}
         >
@@ -33,7 +33,11 @@ function Submenu({ items }: { items: NavItem[] }) {
             />
           )}
           {child.title}
-          {child.label && <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg">{child.label}</span>}
+          {child.label && (
+            <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y font-medium text-navigation-badge text-navigation-badge-fg">
+              {child.label}
+            </span>
+          )}
           {child.external && (
             <Icon
               icon="icon-[mdi--open-in-new]"
@@ -73,14 +77,16 @@ function NavigationItem({ item }: { item: NavItem }) {
     <li className="relative">
       <Link
         href={item.href || '#'}
-        className="flex items-center gap-navigation-link-icon-gap px-navigation-item-x py-navigation-item-y rounded-navigation-item text-navigation-item font-navigation-item text-navigation-fg hover:text-navigation-fg-hover hover:bg-navigation-item-hover-bg transition-colors"
+        className="flex items-center gap-navigation-link-icon-gap rounded-navigation-item px-navigation-item-x py-navigation-item-y font-navigation-item text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
         target={item.external ? '_blank' : undefined}
         rel={item.external ? 'noopener noreferrer' : undefined}
       >
         {item.icon && <Icon icon={item.icon} size="sm" />}
         {item.title}
         {item.label && (
-          <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y text-navigation-badge font-medium text-navigation-badge-fg">{item.label}</span>
+          <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y font-medium text-navigation-badge text-navigation-badge-fg">
+            {item.label}
+          </span>
         )}
         {item.external && (
           <Icon icon="icon-[mdi--open-in-new]" size="xs" className="ml-1" />
@@ -90,7 +96,7 @@ function NavigationItem({ item }: { item: NavItem }) {
   )
 }
 
-export interface NavigationProps extends ComponentPropsWithoutRef<'nav'> {
+interface NavigationProps extends ComponentPropsWithoutRef<'nav'> {
   items: NavItem[]
 }
 

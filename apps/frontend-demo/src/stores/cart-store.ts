@@ -1,6 +1,6 @@
+import type { Product } from '@/types/product'
+import { getProductPrice } from '@/utils/price-utils'
 import { Store } from '@tanstack/react-store'
-import type { Product } from '../types/product'
-import { getProductPrice } from '../utils/price-utils'
 
 export interface CartItem {
   id: string

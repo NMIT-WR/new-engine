@@ -1,38 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { ProductFilters } from '@/components/organisms/product-filters'
+import { ProductGrid } from '@/components/organisms/product-grid'
+import { mockProducts } from '@/data/mock-products'
+import { useProductListing } from '@/hooks/use-product-listing'
+import type { SortOption } from '@/utils/product-filters'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Select } from 'ui/src/molecules/select'
-import { ProductFilters } from '../../components/product-filters'
-import { ProductGrid } from '../../components/product-grid'
-import { mockProducts } from '../../data/mock-products'
-import {
-  type FilterState,
-  type SortOption,
-  filterProducts,
-  sortProducts,
-} from '../../utils/product-filters'
-
-const sortOptions = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'name-asc', label: 'Name: A to Z' },
-  { value: 'name-desc', label: 'Name: Z to A' },
-]
 
 export default function ProductsPage() {
-  const [sortBy, setSortBy] = useState<SortOption>('newest')
-  const [filters, setFilters] = useState<FilterState>({
-    priceRange: [0, 200],
-    categories: new Set(),
-    sizes: new Set(),
-    colors: new Set(),
-  })
-
-  // Apply filters and sorting using utility functions
-  const filteredProducts = filterProducts(mockProducts, filters)
-  const sortedProducts = sortProducts(filteredProducts, sortBy)
+  const {
+    sortBy,
+    setSortBy,
+    filters,
+    setFilters,
+    sortedProducts,
+    productCount,
+    sortOptions,
+  } = useProductListing(mockProducts)
 
   return (
     <div className="min-h-screen bg-product-listing-bg">

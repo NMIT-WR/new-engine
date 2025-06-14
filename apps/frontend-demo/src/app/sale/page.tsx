@@ -1,15 +1,9 @@
 'use client'
-import { useState } from 'react'
-import { ProductFilters } from '../../components/product-filters'
-import { ProductGrid } from '../../components/product-grid'
-import { mockProducts } from '../../data/mock-products'
-import { saleContent } from '../../data/sale-content'
-import {
-  type FilterState,
-  type SortOption,
-  filterProducts,
-  sortProducts,
-} from '../../utils/product-filters'
+import { ProductFilters } from '@/components/organisms/product-filters'
+import { ProductGrid } from '@/components/organisms/product-grid'
+import { mockProducts } from '@/data/mock-products'
+import { saleContent } from '@/data/sale-content'
+import { useProductListing } from '@/hooks/use-product-listing'
 
 export default function SalePage() {
   const { banner, hero } = saleContent
@@ -19,18 +13,15 @@ export default function SalePage() {
     product.tags?.some((tag) => tag.value.toLowerCase() === 'sale')
   )
 
-  const [filters, setFilters] = useState<FilterState>({
-    categories: new Set(),
-    priceRange: [0, 300],
-    colors: new Set(),
-    sizes: new Set(),
-  })
-
-  const [sortBy, setSortBy] = useState<SortOption>('price-asc')
-
-  // Apply filters to sale products
-  let filteredProducts = filterProducts(saleProducts, filters)
-  filteredProducts = sortProducts(filteredProducts, sortBy)
+  const { filters, setFilters, sortedProducts } = useProductListing(
+    saleProducts,
+    {
+      initialSortBy: 'price-asc',
+      initialFilters: {
+        priceRange: [0, 300],
+      },
+    }
+  )
 
   return (
     <>
@@ -67,11 +58,11 @@ export default function SalePage() {
           <main className="flex-1">
             <div className="mb-sale-results-bottom flex items-center justify-between">
               <p className="text-sale-results-fg text-sale-results-size">
-                {filteredProducts.length}{' '}
-                {filteredProducts.length === 1 ? 'product' : 'products'} on sale
+                {sortedProducts.length}{' '}
+                {sortedProducts.length === 1 ? 'product' : 'products'} on sale
               </p>
             </div>
-            <ProductGrid products={filteredProducts} />
+            <ProductGrid products={sortedProducts} />
           </main>
         </div>
       </section>

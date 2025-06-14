@@ -1,4 +1,4 @@
-import { mockProducts } from '../../../data/mock-products'
+import { mockProducts } from '@/data/mock-products'
 import ProductDetail from './product-detail'
 
 export async function generateStaticParams() {

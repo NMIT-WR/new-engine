@@ -1,134 +1,220 @@
 'use client'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useAuth } from '@/hooks/use-auth'
+import {
+  AUTH_ERRORS,
+  AUTH_MESSAGES,
+  type ValidationError,
+  authFormFields,
+  getAuthErrorMessage,
+  validateEmail,
+  validatePassword,
+  withLoading,
+} from '@/lib/auth'
+import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { FormCheckbox } from 'ui/src/molecules/form-checkbox'
+import { ErrorText } from 'ui/src/atoms/error-text'
+import { Checkbox } from 'ui/src/molecules/checkbox'
 import { FormInput } from 'ui/src/molecules/form-input'
-import { useToast } from 'ui/src/molecules/toast'
+import { AuthFormWrapper } from './auth-form-wrapper'
+import { PasswordRequirements } from './password-requirements'
 
 export function RegisterForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
-  const signUp = async(email: string, password: string) => {}
-  const router = useRouter()
-  const toast = useToast()
+  const {
+    register,
+    isFormLoading,
+    setFormLoading,
+    setValidationErrors,
+    getFieldError,
+    showError,
+    showSuccess,
+    clearErrors,
+  } = useAuth()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    clearErrors()
 
+    // Client-side validation
+    const errors: ValidationError[] = []
+
+    // Email validation
+    if (!validateEmail(email)) {
+      errors.push({
+        field: 'email',
+        message: AUTH_ERRORS.INVALID_EMAIL,
+      })
+    }
+
+    // Password validation
+    const passwordValidation = validatePassword(password)
+    if (!passwordValidation.isValid) {
+      errors.push({
+        field: 'password',
+        message: passwordValidation.errors[0], // Show first error
+      })
+    }
+
+    // Password match validation
     if (password !== confirmPassword) {
-      toast.create({
-        title: 'Passwords do not match',
-        description: 'Please make sure your passwords match.',
-        type: 'error',
+      errors.push({
+        field: 'confirmPassword',
+        message: AUTH_ERRORS.PASSWORD_MISMATCH,
       })
-      return
     }
 
+    // Terms validation
     if (!acceptTerms) {
-      toast.create({
-        title: 'Terms not accepted',
-        description: 'Please accept the terms and conditions.',
-        type: 'error',
+      errors.push({
+        field: 'terms',
+        message: AUTH_ERRORS.TERMS_REQUIRED,
       })
+    }
+
+    if (errors.length > 0) {
+      setValidationErrors(errors)
+      showError('Validation Error', errors[0].message)
       return
     }
 
-    setIsLoading(true)
+    setFormLoading(true)
 
     try {
-      await signUp(email, password)
-      toast.create({
-        title: 'Account created!',
-        description: 'Please check your email to verify your account.',
-        type: 'success',
-      })
-      router.push('/auth/login')
-    } catch (error: any) {
-      toast.create({
-        title: 'Registration failed',
-        description: error.message || 'Please try again later.',
-        type: 'error',
-      })
+      await register(email, password, firstName, lastName)
+      showSuccess(
+        AUTH_MESSAGES.REGISTER_SUCCESS.title,
+        AUTH_MESSAGES.REGISTER_SUCCESS.description
+      )
+    } catch (error: unknown) {
+      const errorMessage = getAuthErrorMessage(error)
+      showError('Registration failed', errorMessage)
     } finally {
-      setIsLoading(false)
+      setFormLoading(false)
     }
   }
 
   return (
-    <div className='bg-auth-card-bg p-auth-card-padding rounded-auth-card shadow-auth-card'>
-      <div className='text-center mb-auth-header-margin'>
-        <h1 className='text-auth-title font-auth-title mb-auth-title-margin'>Create Account</h1>
-        <p className='text-auth-subtitle'>Sign up to get started</p>
-      </div>
+    <AuthFormWrapper
+      title="Create Account"
+      subtitle="Sign up to get started"
+      footerText="Already have an account?"
+      footerLinkText="Sign in"
+      footerLinkHref="/auth/login"
+    >
+      <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
+        <div className="grid grid-cols-2 gap-4">
+          <FormInput
+            {...withLoading(
+              authFormFields.firstName({
+                value: firstName,
+                onChange: (e) => setFirstName(e.target.value),
+              }),
+              isFormLoading
+            )}
+          />
 
-      <form onSubmit={handleSubmit} className='space-y-auth-form-gap'>
+          <FormInput
+            {...withLoading(
+              authFormFields.lastName({
+                value: lastName,
+                onChange: (e) => setLastName(e.target.value),
+              }),
+              isFormLoading
+            )}
+          />
+        </div>
+
         <FormInput
-          id="email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          required
-          disabled={isLoading}
-        />
-
-        <FormInput
-          id="password"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          required
-          disabled={isLoading}
-          autoComplete="new-password"
-        />
-
-        <FormInput
-          id="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="••••••••"
-          required
-          disabled={isLoading}
-          autoComplete="new-password"
-        />
-
-        <FormCheckbox
-          id="acceptTerms"
-          label="I agree to the Terms and Conditions"
-          checked={acceptTerms}
-          onCheckedChange={(details) =>
-            setAcceptTerms(details.checked === true)
+          {...withLoading(
+            authFormFields.email({
+              value: email,
+              onChange: (e) => {
+                setEmail(e.target.value)
+                clearErrors()
+              },
+            }),
+            isFormLoading
+          )}
+          validateStatus={getFieldError('email') ? 'error' : 'default'}
+          helpText={
+            getFieldError('email') && (
+              <ErrorText showIcon>{getFieldError('email')}</ErrorText>
+            )
           }
-          disabled={isLoading}
         />
+
+        <FormInput
+          {...withLoading(
+            authFormFields.newPassword({
+              value: password,
+              onChange: (e) => {
+                setPassword(e.target.value)
+                clearErrors()
+              },
+            }),
+            isFormLoading
+          )}
+          validateStatus={getFieldError('password') ? 'error' : 'default'}
+          helpText={
+            getFieldError('password') && (
+              <ErrorText>{getFieldError('password')}</ErrorText>
+            )
+          }
+        />
+
+        <FormInput
+          {...withLoading(
+            authFormFields.confirmPassword({
+              value: confirmPassword,
+              onChange: (e) => {
+                setConfirmPassword(e.target.value)
+                clearErrors()
+              },
+            }),
+            isFormLoading
+          )}
+          validateStatus={
+            getFieldError('confirmPassword') ? 'error' : 'default'
+          }
+          helpText={
+            getFieldError('confirmPassword') ? (
+              <ErrorText>{getFieldError('confirmPassword')}</ErrorText>
+            ) : undefined
+          }
+        />
+
+        <div className="space-y-2">
+          <Checkbox
+            id="acceptTerms"
+            labelText="I agree to the Terms and Conditions"
+            checked={acceptTerms}
+            onCheckedChange={(details) =>
+              setAcceptTerms(details.checked === true)
+            }
+            disabled={isFormLoading}
+          />
+          {getFieldError('terms') && (
+            <p className="text-red-600 text-sm">{getFieldError('terms')}</p>
+          )}
+        </div>
 
         <Button
           type="submit"
           className="w-full"
           size="lg"
-          disabled={isLoading || !acceptTerms}
+          disabled={isFormLoading || !acceptTerms}
         >
-          Create Account
+          {isFormLoading ? 'Creating Account...' : 'Create Account'}
         </Button>
-      </form>
 
-      <div className='mt-auth-footer-margin text-center text-auth-footer'>
-        Already have an account?{' '}
-        <Link href="/auth/login" className='text-auth-link hover:text-auth-link-hover'>
-          Sign in
-        </Link>
-      </div>
-    </div>
+        <PasswordRequirements password={password} />
+      </form>
+    </AuthFormWrapper>
   )
 }

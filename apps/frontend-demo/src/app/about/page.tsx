@@ -1,6 +1,6 @@
 'use client'
 
-import { aboutContent } from '../../data/about-content'
+import { aboutContent } from '@/data/about-content'
 
 export default function AboutPage() {
   const { hero, story, stats, values, team } = aboutContent
@@ -8,18 +8,18 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section with Background Image */}
-      <section 
-        className="relative h-about-hero-height md:h-about-hero-height-md bg-cover bg-center flex items-center"
+      <section
+        className="relative flex h-about-hero-height items-center bg-center bg-cover md:h-about-hero-height-md"
         style={{
-          backgroundImage: `url("${hero.backgroundImage}")`
+          backgroundImage: `url("${hero.backgroundImage}")`,
         }}
       >
         <div className="absolute inset-0 bg-about-hero-overlay" />
-        <div className="relative z-10 text-center text-white max-w-container-max mx-auto px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
-          <h1 className="text-5xl md:text-7xl font-about-hero-title mb-about-hero-title-bottom">
+        <div className="relative z-10 mx-auto max-w-container-max px-about-container-x text-center text-white md:px-about-container-x-md lg:px-about-container-x-lg">
+          <h1 className="mb-about-hero-title-bottom font-about-hero-title text-5xl md:text-7xl">
             {hero.title}
           </h1>
-          <p className="text-about-hero-subtitle-size max-w-about-hero-subtitle-max mx-auto opacity-90">
+          <p className="mx-auto max-w-about-hero-subtitle-max text-about-hero-subtitle-size opacity-90">
             {hero.subtitle}
           </p>
         </div>
@@ -28,22 +28,25 @@ export default function AboutPage() {
       {/* Brand Story Section */}
       <section className="py-about-section-y">
         <div className="mx-auto max-w-container-max px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-about-story-gap items-center">
+          <div className="grid grid-cols-1 items-center gap-about-story-gap lg:grid-cols-2">
             <div className="space-y-about-grid-item-gap">
-              <h2 className="text-about-grid-title-size font-about-grid-title text-about-grid-title-fg">
+              <h2 className="font-about-grid-title text-about-grid-title-fg text-about-grid-title-size">
                 {story.title}
               </h2>
               {story.paragraphs.map((paragraph, index) => (
-                <p key={index} className="text-about-grid-text-size text-about-grid-text-fg leading-relaxed">
+                <p
+                  key={index}
+                  className="text-about-grid-text-fg text-about-grid-text-size leading-relaxed"
+                >
                   {paragraph}
                 </p>
               ))}
             </div>
-            <div className="rounded-about-image-radius overflow-hidden">
-              <img 
+            <div className="overflow-hidden rounded-about-image-radius">
+              <img
                 src={story.image}
                 alt={story.imageAlt}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
           </div>
@@ -53,14 +56,14 @@ export default function AboutPage() {
       {/* Stats Section */}
       <section className="py-about-section-y">
         <div className="mx-auto max-w-container-max px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
-          <div className="bg-about-stats-bg py-about-stats-padding rounded-about-image-radius">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-about-stats-gap text-center">
+          <div className="rounded-about-image-radius bg-about-stats-bg py-about-stats-padding">
+            <div className="grid grid-cols-2 gap-about-stats-gap text-center md:grid-cols-4">
               {stats.map((stat, index) => (
                 <div key={index}>
-                  <div className="text-about-stat-number-size font-about-stat-number text-about-stat-number-fg">
+                  <div className="font-about-stat-number text-about-stat-number-fg text-about-stat-number-size">
                     {stat.value}
                   </div>
-                  <div className="text-about-stat-label-size text-about-stat-label-fg mt-2">
+                  <div className="mt-2 text-about-stat-label-fg text-about-stat-label-size">
                     {stat.label}
                   </div>
                 </div>
@@ -73,14 +76,17 @@ export default function AboutPage() {
       {/* Values Section */}
       <section className="bg-about-values-section-bg py-about-section-y">
         <div className="mx-auto max-w-container-max px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
-          <h2 className="text-about-section-title-size font-about-section-title text-about-section-title-fg mb-about-section-title-bottom text-center">
+          <h2 className="mb-about-section-title-bottom text-center font-about-section-title text-about-section-title-fg text-about-section-title-size">
             {values.title}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-about-values-gap">
+          <div className="grid grid-cols-1 gap-about-values-gap sm:grid-cols-2 lg:grid-cols-3">
             {values.items.map((value, index) => (
-              <div key={index} className="bg-about-value-bg rounded-about-value p-about-value-padding border border-about-value-border hover:shadow-about-value-hover transition-shadow text-center">
+              <div
+                key={index}
+                className="rounded-about-value border border-about-value-border bg-about-value-bg p-about-value-padding text-center transition-shadow hover:shadow-about-value-hover"
+              >
                 <svg
-                  className="w-about-value-icon h-about-value-icon text-about-value-icon-fg mb-about-value-icon-bottom mx-auto"
+                  className="mx-auto mb-about-value-icon-bottom h-about-value-icon w-about-value-icon text-about-value-icon-fg"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -92,10 +98,10 @@ export default function AboutPage() {
                     d={value.icon}
                   />
                 </svg>
-                <h3 className="text-about-value-title-size font-about-value-title text-about-value-title-fg mb-about-value-title-bottom">
+                <h3 className="mb-about-value-title-bottom font-about-value-title text-about-value-title-fg text-about-value-title-size">
                   {value.title}
                 </h3>
-                <p className="text-about-value-text-size text-about-value-text-fg">
+                <p className="text-about-value-text-fg text-about-value-text-size">
                   {value.description}
                 </p>
               </div>
@@ -107,23 +113,23 @@ export default function AboutPage() {
       {/* Team Section */}
       <section className="py-about-section-y">
         <div className="mx-auto max-w-container-max px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
-          <h2 className="text-about-section-title-size font-about-section-title text-about-section-title-fg mb-about-section-title-bottom text-center">
+          <h2 className="mb-about-section-title-bottom text-center font-about-section-title text-about-section-title-fg text-about-section-title-size">
             {team.title}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-about-team-gap">
+          <div className="grid grid-cols-1 gap-about-team-gap sm:grid-cols-2 lg:grid-cols-4">
             {team.members.map((member, index) => (
-              <div key={index} className="text-center group">
-                <div className="relative overflow-hidden rounded-about-image-radius mb-about-team-image-bottom">
-                  <img 
+              <div key={index} className="group text-center">
+                <div className="relative mb-about-team-image-bottom overflow-hidden rounded-about-image-radius">
+                  <img
                     src={member.image}
                     alt={member.name}
-                    className="w-full h-about-team-image object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="h-about-team-image w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                <h3 className="text-about-team-name-size font-about-team-name text-about-team-name-fg">
+                <h3 className="font-about-team-name text-about-team-name-fg text-about-team-name-size">
                   {member.name}
                 </h3>
-                <p className="text-about-team-role-size text-about-team-role-fg">
+                <p className="text-about-team-role-fg text-about-team-role-size">
                   {member.role}
                 </p>
               </div>

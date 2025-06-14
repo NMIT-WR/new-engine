@@ -1,9 +1,6 @@
+import { categoriesData, getCategoryByHandle } from '@/data/categories-content'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import {
-  categoriesData,
-  getCategoryByHandle,
-} from '../../../data/categories-content'
 import CategoryPageClient from './category-page-client'
 
 export async function generateStaticParams() {

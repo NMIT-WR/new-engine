@@ -1,4 +1,4 @@
-import type { Product } from '../types/product'
+import type { Product } from '@/types/product'
 
 export interface ProductCounts {
   sizeCounts: Record<string, number>
@@ -10,9 +10,6 @@ export interface ProductCounts {
   }>
 }
 
-/**
- * Calculate product counts for filter options
- */
 export function calculateProductCounts(products: Product[]): ProductCounts {
   const sizeCounts: Record<string, number> = {}
   const colorCounts: Record<string, number> = {}
@@ -102,7 +99,7 @@ export function getColorsWithCounts(
  */
 export interface FilterState {
   priceRange: [number, number]
-  categories: Set<string>
+  categories: Set<unknown>
   sizes: Set<string>
   colors: Set<string>
 }
@@ -121,14 +118,18 @@ export function filterProducts(
       return false
     }
 
-    // Category filter (actually collection filter)
+    // Category filter
     if (filters.categories.size > 0) {
-      // If any collection is selected, products without collection should be hidden
-      if (!product.collection?.handle) {
+      // Check if product has any categories
+      if (!product.categories || product.categories.length === 0) {
         return false
       }
-      // Check if product's collection is in selected filters
-      if (!filters.categories.has(product.collection.handle)) {
+      // Check if any of the product's categories match the selected filters
+      const productCategoryIds = product.categories.map((cat) => cat.id)
+      const hasMatchingCategory = productCategoryIds.some((catId) =>
+        filters.categories.has(catId)
+      )
+      if (!hasMatchingCategory) {
         return false
       }
     }

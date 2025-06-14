@@ -1,5 +1,5 @@
 // Common color names to hex mapping
-export const colorNameToHex: Record<string, string> = {
+const colorNameToHex: Record<string, string> = {
   // Basic colors
   white: '#FFFFFF',
   black: '#000000',

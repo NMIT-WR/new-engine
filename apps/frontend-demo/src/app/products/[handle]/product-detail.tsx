@@ -1,17 +1,14 @@
 'use client'
 
+import { FeaturedProducts } from '@/components/organisms/featured-products'
+import { Gallery } from '@/components/organisms/gallery'
+import { ProductInfo } from '@/components/organisms/product-info'
+import { ProductTabs } from '@/components/organisms/product-tabs'
+import { mockProducts } from '@/data/mock-products'
+import type { Product } from '@/types/product'
+import { extractProductData, getRelatedProducts } from '@/utils/product-utils'
 import { useState } from 'react'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { FeaturedProducts } from '../../../components/featured-products'
-import { Gallery } from '../../../components/organisms/gallery'
-import { ProductInfo } from '../../../components/organisms/product-info'
-import { ProductTabs } from '../../../components/organisms/product-tabs'
-import { mockProducts } from '../../../data/mock-products'
-import type { Product } from '../../../types/product'
-import {
-  extractProductData,
-  getRelatedProducts,
-} from '../../../utils/product-utils'
 
 interface ProductDetailProps {
   product: Product
