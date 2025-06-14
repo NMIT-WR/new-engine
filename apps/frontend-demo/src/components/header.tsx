@@ -34,7 +34,8 @@ export function Header({
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { cart } = useCart()
-  const itemCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+  const itemCount =
+    cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
 
   return (
     <header
