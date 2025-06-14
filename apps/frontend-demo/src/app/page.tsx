@@ -4,7 +4,8 @@ import { CategoryGrid } from '@/components/organisms/category-grid'
 import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Hero } from '@/components/organisms/hero'
 import { homeContent } from '@/data/home-content'
-import { categories, mockProducts } from '@/data/mock-products'
+import { mockProducts } from '@/data/mock-products'
+import { useCategories } from '@/hooks/use-categories'
 
 export default function Home() {
   const {
@@ -14,6 +15,8 @@ export default function Home() {
     saleBanner,
     newArrivals,
   } = homeContent
+
+  const { categories } = useCategories()
 
   return (
     <div>
