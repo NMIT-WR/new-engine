@@ -48,8 +48,10 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {currentProducts.map((product) => {
-          const { price, displayBadges, stockText } =
-            extractProductData(product)
+          const { price, displayBadges, stockText } = extractProductData(
+            product,
+            region?.currency_code
+          )
 
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents

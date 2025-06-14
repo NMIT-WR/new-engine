@@ -1,6 +1,6 @@
 import { sdk } from '@/lib/medusa-client'
-import ProductDetail from './product-detail'
 import type { Metadata } from 'next'
+import ProductDetail from './product-detail'
 
 export async function generateStaticParams() {
   try {
@@ -22,21 +22,21 @@ export async function generateMetadata({
   params: Promise<{ handle: string }>
 }): Promise<Metadata> {
   const resolvedParams = await params
-  
+
   try {
     const response = await sdk.store.product.list({
       handle: resolvedParams.handle,
       limit: 1,
     })
-    
+
     const product = response.products[0]
-    
+
     if (!product) {
       return {
         title: 'Product Not Found',
       }
     }
-    
+
     return {
       title: `${product.title} | Demo Store`,
       description: product.description || `Shop ${product.title} at our store`,

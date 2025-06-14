@@ -67,8 +67,17 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   }
 
   // Get price for selected variant and region
-  // Prices are already in the correct currency from the API based on region
-  const variantPrice = selectedVariant?.prices?.[0]
+  // Find the price that matches the current currency
+  let variantPrice = null
+  if (selectedVariant?.prices && region?.currency_code) {
+    variantPrice = selectedVariant.prices.find(
+      (p) => p.currency_code === region.currency_code
+    )
+    // If not found, use the first available price
+    if (!variantPrice && selectedVariant.prices.length > 0) {
+      variantPrice = selectedVariant.prices[0]
+    }
+  }
 
   // Prices from Medusa are already in dollars/euros, NOT cents
   const price =

@@ -4,8 +4,8 @@ import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
-import { useRegions } from '@/hooks/use-region'
 import { useState } from 'react'
+import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { Select } from 'ui/src/molecules/select'
 
 // Loading skeleton for products
@@ -26,13 +26,7 @@ function ProductGridSkeleton() {
 }
 
 export default function ApiTestPage() {
-  const { products, isLoading, error } = useProducts()
-  const {
-    regions,
-    selectedRegion,
-    setSelectedRegion,
-    isLoading: regionsLoading,
-  } = useRegions()
+  const { products, isLoading } = useProducts()
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 12
 
@@ -54,16 +48,24 @@ export default function ApiTestPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="mb-4 font-bold text-3xl">API Integration Test</h1>
+      <div className="mb-product-listing-header-margin">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Products', href: '/products' },
+          ]}
+        />
+        <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
+          All Products
+        </h1>
       </div>
 
       <div className="flex gap-8">
         {/* Filters Sidebar */}
         <aside className="hidden w-64 flex-shrink-0 lg:block">
-          <ProductFilters 
-            filters={filters} 
-            onFiltersChange={setFilters} 
+          <ProductFilters
+            filters={filters}
+            onFiltersChange={setFilters}
             products={products}
           />
         </aside>

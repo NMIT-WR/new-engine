@@ -1,6 +1,7 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
+import type { Product } from '@/types/product'
 import { getColorHex } from '@/utils/color-map'
 import {
   type FilterState,
@@ -8,7 +9,6 @@ import {
   getColorsWithCounts,
   getSizesWithCounts,
 } from '@/utils/product-filters'
-import type { Product } from '@/types/product'
 import { useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
 import { Checkbox } from 'ui/src/molecules/checkbox'
