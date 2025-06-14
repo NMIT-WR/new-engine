@@ -17,14 +17,27 @@ export function CartPrefetch() {
 
     // Prefetch cart data
     queryClient.prefetchQuery({
-      queryKey: queryKeys.cart(typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) || undefined : undefined),
+      queryKey: queryKeys.cart(
+        typeof window !== 'undefined'
+          ? localStorage.getItem(CART_ID_KEY) || undefined
+          : undefined
+      ),
       queryFn: async () => {
-        const cartId = typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
+        const cartId =
+          typeof window !== 'undefined'
+            ? localStorage.getItem(CART_ID_KEY)
+            : null
 
         if (cartId) {
           try {
             const { cart } = await sdk.store.cart.retrieve(cartId)
-            console.log('[Cart Prefetch] Retrieved cart:', cart.id, 'with', cart.items?.length || 0, 'items')
+            console.log(
+              '[Cart Prefetch] Retrieved cart:',
+              cart.id,
+              'with',
+              cart.items?.length || 0,
+              'items'
+            )
             return cart
           } catch (err) {
             // Cart not found, will create new one below
