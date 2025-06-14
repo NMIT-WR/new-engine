@@ -13,13 +13,11 @@ const dialogVariants = tv({
       'bg-dialog-content-bg text-dialog-content-fg',
       'border-(length:--border-width-dialog) border-dialog-content-border',
       'rounded-dialog-content shadow-dialog-content',
-      'max-h-dialog-content max-w-dialog-content overflow-y-auto',
+      'max-h-dialog-content overflow-y-auto',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dialog-ring focus-visible:ring-offset-2',
     ],
     title: ['text-dialog-title-size font-dialog-title text-dialog-title-fg'],
-    description: [
-      'text-dialog-description-size text-dialog-description-fg line-height-dialog-description',
-    ],
+    description: ['text-dialog-description-size text-dialog-description-fg'],
     trigger: [],
     closeTrigger: [
       'absolute top-sm right-sm',

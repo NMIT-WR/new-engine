@@ -258,6 +258,7 @@ export const Modal: Story = {
     title: 'Modal Popover',
     description: 'This popover acts as a modal - it traps focus and blocks interactions outside.',
     showCloseButton: true,
+    closeOnInteractOutside: false,
     children: (
       <div className="mt-4">
         <p>Try clicking outside - it won't close!</p>

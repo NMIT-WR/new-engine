@@ -17,7 +17,8 @@
     "dev": "rslib build --watch",
     "storybook": "storybook dev",
     "lint:tailwind": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js",
-    "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix"
+    "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix",
+    "check:unused-tokens": "node scripts/check-unused-tokens.js"
   },
   "dependencies": {
     "@zag-js/accordion": "^1.15.0",
@@ -63,6 +64,7 @@
     "clsx": "^2.1.1",
     "eslint": "^9.0.0",
     "eslint-plugin-tailwindcss": "npm:@hyoban/eslint-plugin-tailwindcss@4.0.0-alpha.12",
+    "glob": "^11.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "storybook": "^8.6.12",

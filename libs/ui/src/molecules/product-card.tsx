@@ -1,18 +1,105 @@
-import clsx from 'clsx'
-import { type HTMLAttributes, useId } from 'react'
-import { Badge, type BadgeProps } from '../atoms/badge.tsx'
-import { Button } from '../atoms/button.tsx'
-import { Image } from '../atoms/image.tsx'
-import { slugify } from '../utils.ts'
+import { type HTMLAttributes, type ReactNode, useId } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { Badge, type BadgeProps } from '../atoms/badge'
+import { Button } from '../atoms/button'
+import { Image } from '../atoms/image'
+import { Rating, type RatingProps } from '../atoms/rating'
+import { slugify, tv } from '../utils'
+import { NumericInput } from './numeric-input'
 
-export interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
+//object-cover aspect-product-card-image
+const productCard = tv({
+  slots: {
+    base: [
+      'rounded-pc p-pc-padding',
+      'border-(length:--border-pc-width) border-pc-border bg-pc shadow-sm',
+    ],
+    imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
+    nameSlot:
+      'text-pc-name-fg text-pc-name-size  leading-pc-name line-clamp-pc-name',
+    priceSlot: 'text-pc-price-fg text-pc-price-size',
+    stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size ',
+    badgesSlot: 'flex flex-wrap gap-pc-box',
+    ratingSlot: 'flex items-center',
+    buttonsSlot: 'flex flex-wrap w-fit',
+    cartButton: 'bg-btn-cart hover:bg-btn-cart-hover text-btn-cart-fg w-max',
+    detailButton:
+      'bg-btn-detail hover:bg-btn-detail-hover text-btn-detail-fg w-max',
+    wishlistButton:
+      'bg-btn-wishlist hover:bg-btn-wishlist-hover text-btn-wishlist-fg w-max',
+  },
+  variants: {
+    // variant for layout of the card
+    layout: {
+      column: {
+        base: ['grid grid-cols-1 gap-pc-col-layout'],
+        imageSlot: 'w-full order-image',
+        nameSlot: 'order-name',
+        priceSlot: 'order-price',
+        stockStatusSlot: 'order-stock',
+        badgesSlot: 'order-badges',
+        ratingSlot: 'order-ratings',
+        buttonsSlot: 'order-buttons',
+      },
+      row: {
+        base: 'grid grid-cols-[auto_1fr] gap-x-pc-row-layout',
+        imageSlot: 'row-span-6',
+      },
+    },
+    // variant for layout of the buttons
+    buttonLayout: {
+      horizontal: {
+        buttonsSlot: 'justify-center gap-2',
+      },
+      vertical: {
+        buttonsSlot: 'flex-col gap-2',
+      },
+    },
+  },
+  /* Define compound styles for slots */
+  compoundSlots: [
+    {
+      layout: 'row',
+      slots: [
+        'nameSlot',
+        'priceSlot',
+        'stockStatusSlot',
+        'badgesSlot',
+        'ratingSlot',
+        'buttonsSlot',
+      ],
+      class: ['col-start-2'],
+    },
+  ],
+  defaultVariants: {
+    layout: 'column',
+    buttonLayout: 'horizontal',
+  },
+})
+
+type ProductCardVariants = VariantProps<typeof productCard>
+
+export interface ProductCardProps
+  extends ProductCardVariants,
+    HTMLAttributes<HTMLDivElement> {
   imageUrl: string
   name: string
   price: string
   stockStatus: string
   badges?: BadgeProps[]
-  onAddToCart?: () => void
-  addToCartText?: string
+  rating?: RatingProps
+  // Set prepared button options
+  hasCartButton?: boolean
+  hasDetailButton?: boolean
+  hasWishlistButton?: boolean
+  onCartClick?: () => void
+  onDetailClick?: () => void
+  onWishlistClick?: () => void
+  cartButtonText?: string
+  detailButtonText?: string
+  wishlistButtonText?: string
+  numericInput?: boolean
+  customButtons?: ReactNode
 }
 
 export function ProductCard({
@@ -21,52 +108,61 @@ export function ProductCard({
   price,
   stockStatus,
   badges = [],
-  onAddToCart,
-  addToCartText,
+  hasCartButton,
+  hasDetailButton,
+  hasWishlistButton,
+  cartButtonText = 'Add to cart',
+  detailButtonText = 'Detail',
+  wishlistButtonText = 'Wishlist',
+  onCartClick,
+  onDetailClick,
+  onWishlistClick,
+  numericInput,
+  rating,
   className,
+  layout,
+  buttonLayout,
+  customButtons,
   ...props
 }: ProductCardProps) {
   const productCardId = useId()
 
-  return (
-    <div
-      className={clsx(
-        'flex flex-col items-center gap-product-card',
-        'bg-product-card',
-        'border-(length:--border-product-card-width) rounded-product-card border-product-card',
-        'px-product-card-x py-product-card-y',
-        'shadow-product-card',
-        className
-      )}
-      {...props}
-    >
-      <h3
-        className={clsx(
-          'text-center font-product-card-name text-product-card-name-color text-product-card-name-size leading-product-card-name'
-        )}
-      >
-        {name}
-      </h3>
+  const {
+    base,
+    imageSlot,
+    nameSlot,
+    priceSlot,
+    badgesSlot,
+    ratingSlot,
+    buttonsSlot,
+    stockStatusSlot,
+    cartButton,
+    detailButton,
+    wishlistButton,
+  } = productCard({ layout, buttonLayout })
 
-      <Image
-        src={imageUrl}
-        alt={name}
-        className={clsx('w-full object-cover', 'aspect-product-card-image')}
-      />
+  return (
+    <div className={base({ className, layout })} {...props}>
+      {/* Image always rendered first for semantics, position controlled by CSS */}
+      <Image src={imageUrl} alt={name} className={imageSlot({ layout })} />
+
+      {/* Elements with grid positioning based on layout */}
+      <h3 className={nameSlot({ layout })}>{name}</h3>
+
+      {rating && (
+        <div className={ratingSlot({ layout })}>
+          <Rating {...rating} />
+        </div>
+      )}
 
       {badges.length > 0 && (
-        <div
-          className={clsx(
-            'flex flex-wrap items-center justify-center gap-product-card-badges'
-          )}
-        >
+        <div className={badgesSlot({ layout })}>
           {badges.map((badge) => (
             <Badge
-              key={`${productCardId}-${slugify(badge.children)}-${badge.variant}`}
-              variant={badge.variant}
-              bgColor={badge.variant === 'dynamic' ? badge.bgColor : ''}
-              fgColor={badge.variant === 'dynamic' ? badge.fgColor : ''}
-              borderColor={badge.variant === 'dynamic' ? badge.borderColor : ''}
+              key={`${productCardId}-${slugify(badge.children)}-${
+                badge.variant
+              }`}
+              {...badge}
             >
               {badge.children}
             </Badge>
@@ -74,31 +170,51 @@ export function ProductCard({
         </div>
       )}
 
-      <p
-        className={clsx(
-          'text-center font-product-card-stock text-product-card-stock-color text-product-card-stock-size'
-        )}
-      >
-        {stockStatus}
-      </p>
+      <p className={stockStatusSlot({ layout })}>{stockStatus}</p>
 
-      <p
-        className={clsx(
-          'text-center font-product-card-price text-product-card-price-color text-product-card-price-size'
-        )}
-      >
-        {price}
-      </p>
+      <p className={priceSlot({ layout })}>{price}</p>
 
-      <Button
-        variant="primary"
-        theme="solid"
-        onClick={onAddToCart}
-        icon="token-icon-cart-primary"
-        block
-      >
-        {addToCartText}
-      </Button>
+      {(hasCartButton ||
+        hasDetailButton ||
+        hasWishlistButton ||
+        customButtons) && (
+        <div className={buttonsSlot({ buttonLayout })}>
+          {hasCartButton && (
+            <div className="flex gap-pc-box">
+              {numericInput && <NumericInput />}
+              <Button
+                size="sm"
+                className={cartButton()}
+                onClick={onCartClick}
+                icon="token-icon-cart"
+              >
+                {cartButtonText}
+              </Button>
+            </div>
+          )}
+          {hasDetailButton && (
+            <Button
+              size="sm"
+              className={detailButton()}
+              onClick={onDetailClick}
+              icon="token-icon-eye"
+            >
+              {detailButtonText}
+            </Button>
+          )}
+          {hasWishlistButton && (
+            <Button
+              size="sm"
+              className={wishlistButton()}
+              onClick={onWishlistClick}
+              icon="token-icon-heart"
+            >
+              {wishlistButtonText}
+            </Button>
+          )}
+          {customButtons}
+        </div>
+      )}
     </div>
   )
 }

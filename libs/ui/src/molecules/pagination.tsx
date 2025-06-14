@@ -46,6 +46,7 @@ const paginationVariants = tv({
         link: [
           'data-[current=true]:bg-pagination-active data-[current=true]:text-pagination-fg-active data-[current=true]:border-pagination-border-active',
           'hover:bg-pagination-hover hover:border-pagination-border-hover',
+          'hover:text-pagination-fg-hover',
           'data-[disabled]:border-pagination-border-disabled',
         ],
         nav: 'hover:bg-pagination-hover hover:border-pagination-border-hover',

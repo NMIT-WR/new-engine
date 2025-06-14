@@ -13,7 +13,7 @@
   --font-weight-tree-label: var(--font-weight-medium);
 
   /* Node states - common styles for branch and leaf */
-  --color-tree-node-bg: transparent;
+
   --color-tree-node-hover: var(--color-primary-hover);
   --color-tree-node-selected: var(--color-primary-active);
   --color-tree-node-focus: var(--color-ring-primary);
@@ -22,7 +22,6 @@
   /* Text colors */
   --color-tree-fg-hover: var(--color-fg-reverse);
   --color-tree-fg-selected: var(--color-fg-reverse);
-  --color-tree-fg-muted: var(--color-fg-secondary);
 
   /* Icons */
   --color-tree-icon: current;
@@ -39,7 +38,6 @@
 
   /* === BORDERS & RADIUS === */
   --radius-tree-node: var(--radius-sm);
-  --border-tree-focus-width: var(--border-width-md);
 
   /* === INDENT GUIDE === */
   --color-tree-indent: var(--color-tree-border);
@@ -47,8 +45,6 @@
   --width-tree-indent: 1px;
 
   /* === TRANSITIONS === */
-  --duration-tree-animation: 200ms;
-  --timing-tree-animation: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Tree Icons - using semantic tokens */

@@ -15,8 +15,7 @@
 
   /* Trigger */
   --padding-popover-trigger: var(--spacing-3xs) var(--spacing-2xs);
- 
-  
+
   /* Title */
   --text-popover-title-sm: var(--text-md);
   --text-popover-title-md: var(--text-lg);

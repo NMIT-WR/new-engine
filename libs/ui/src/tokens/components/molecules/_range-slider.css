@@ -53,7 +53,6 @@
 
   /* === SPACING === */
   --spacing-slider-root: var(--spacing-xs);
-  --margin-slider-marker-vertical: var(--spacing-2xs);
 
   /* === TYPOGRAPHY === */
   --text-slider-value-size: var(--text-sm);

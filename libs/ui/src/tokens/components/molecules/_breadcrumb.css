@@ -21,6 +21,9 @@
   --gap-breadcrumb-md: var(--spacing-2xs);
   --gap-breadcrumb-lg: var(--spacing-xs);
 
+  /* Padding */
+  --spacing-breadcrumb: var(--spacing-2xs);
+
   /* Focus ring */
   --color-breadcrumb-link-ring: var(--color-primary);
 }

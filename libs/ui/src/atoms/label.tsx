@@ -48,7 +48,7 @@ export function Label({
       htmlFor={props.htmlFor}
     >
       {children}
-      {required && <span className="ml-label text-label-required">*</span>}
+      {required && <span className="ml-1 text-label-required">*</span>}
     </label>
   )
 }

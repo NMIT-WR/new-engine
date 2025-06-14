@@ -168,10 +168,10 @@ export const RichContent: Story = {
           View and edit your profile settings
         </div>
         <div className="mt-3 flex gap-2">
-          <button className="rounded bg-primary px-2 py-1 text-primary-foreground text-xs">
+          <button className="rounded bg-primary px-2 py-1 text-xs">
             Edit
           </button>
-          <button className="rounded bg-secondary px-2 py-1 text-secondary-foreground text-xs">
+          <button className="rounded bg-secondary px-2 py-1 text-xs">
             View
           </button>
         </div>
@@ -391,7 +391,7 @@ export const ControlledTooltip: Story = {
               </Tooltip>
             </div>
 
-            <div className="text-center text-muted-foreground text-sm">
+            <div className="text-center text-sm">
               Tooltip state: {isOpen ? 'Open' : 'Closed'}
             </div>
           </div>
@@ -464,7 +464,7 @@ export const NavigationTooltips: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Navigation Bar">
-        <div className="flex gap-1 rounded-lg bg-muted p-2">
+        <div className="flex gap-1 rounded-lg p-2">
           {[
             { icon: 'icon-[mdi--home]', label: 'Dashboard' },
             { icon: 'icon-[mdi--chart-line]', label: 'Analytics' },
@@ -473,7 +473,7 @@ export const NavigationTooltips: Story = {
             { icon: 'icon-[mdi--help-circle]', label: 'Help & Support' },
           ].map(({ icon, label }) => (
             <Tooltip key={label} content={label} placement="bottom">
-              <button className="rounded p-2 transition-colors hover:bg-background">
+              <button className="rounded p-2 transition-colors">
                 <Icon icon={icon as IconType} />
               </button>
             </Tooltip>
@@ -508,8 +508,8 @@ export const DataPreview: Story = {
               interactive={true}
               placement="top"
             >
-              <div className="cursor-pointer rounded-lg border bg-card p-4 transition-colors hover:bg-muted">
-                <div className="text-muted-foreground text-sm">{label}</div>
+              <div className="cursor-pointer rounded-lg border p-4 transition-colors">
+                <div className="text-sm">{label}</div>
                 <div className="font-bold text-2xl">{value}</div>
               </div>
             </Tooltip>

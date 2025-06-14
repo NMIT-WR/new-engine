@@ -1,0 +1,25 @@
+@theme static {
+  /* === COLOR SWATCH COLORS === */
+  /* Default state */
+  --color-color-swatch-border: var(--color-border);
+  --color-color-swatch-border-hover: var(--color-border-secondary);
+
+  /* Selected state */
+  --color-color-swatch-selected: var(--color-accent);
+
+  /* Check icon */
+  --color-color-swatch-check: var(--color-white);
+
+  /* Focus ring */
+  --color-color-swatch-ring: var(--color-ring-primary);
+
+  /* === COLOR SWATCH SIZING === */
+  --spacing-color-swatch-size: 2.5rem; /* 40px */
+
+  /* === COLOR SWATCH OPACITY === */
+  --opacity-color-swatch-disabled: 0.5;
+
+  /* === COLOR SWATCH RADIUS === */
+  --radius-color-swatch: var(--radius-full);
+  --radius-color-swatch-inner: calc(var(--radius-full) - 3px);
+}

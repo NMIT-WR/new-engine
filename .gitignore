@@ -52,3 +52,9 @@ test-output
 
 # PNPM store
 .pnpm-store
+
+# Local Netlify folder
+.netlify
+
+# MCP configuration
+.mcp.json

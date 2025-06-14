@@ -104,7 +104,7 @@ export function Switch({
   })
 
   return (
-    <div>
+    <div className={className}>
       <Label className={root()} {...api.getRootProps()}>
         <input className={hiddenInput()} {...api.getHiddenInputProps()} />
         <span className={control()} {...api.getControlProps()}>
@@ -117,7 +117,7 @@ export function Switch({
         )}
       </Label>
       {(errorText || helperText) && (
-        <div className="pl-switch-text-offset">
+        <div>
           {invalid && errorText && <ErrorText size="sm">{errorText}</ErrorText>}
           {!invalid && helperText && (
             <ExtraText size="sm">{helperText}</ExtraText>

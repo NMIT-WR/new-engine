@@ -47,7 +47,7 @@ const selectVariants = tv({
     ],
     content: [
       'bg-select-content-bg border border-select-content-border',
-      'rounded-select shadow-select-content-shadow',
+      'rounded-select shadow-select-content-shadow max-h-fit',
       'h-[calc(var(--available-height)-var(--spacing-lg))]',
       'overflow-auto',
     ],
@@ -62,20 +62,29 @@ const selectVariants = tv({
       'data-[disabled]:opacity-select-disabled data-[disabled]:cursor-not-allowed',
     ],
     itemIndicator: ['text-select-indicator'],
+    value: ['flex-grow truncate data-[placeholder]:text-select-placeholder'],
   },
   variants: {
     size: {
+      xs: {
+        trigger: 'text-xs py-1',
+        item: 'text-xs',
+        value: 'text-xs',
+      },
       sm: {
         trigger: 'text-sm',
         item: 'text-sm',
+        value: 'text-sm',
       },
       md: {
         trigger: 'text-md',
         item: 'text-md',
+        value: 'text-md',
       },
       lg: {
         trigger: 'text-lg',
         item: 'text-lg',
+        value: 'text-lg',
       },
     },
   },
@@ -95,6 +104,7 @@ export interface SelectProps
   errorText?: string
   className?: string
   id?: string
+  clearIcon?: boolean
 }
 
 export function Select({
@@ -105,6 +115,7 @@ export function Select({
   value,
   defaultValue,
   multiple = false,
+  clearIcon = true,
   disabled = false,
   invalid = false,
   required = false,
@@ -161,6 +172,7 @@ export function Select({
     positioner,
     item,
     itemIndicator,
+    value: valueSlot,
   } = selectVariants({ size })
 
   return (
@@ -179,11 +191,7 @@ export function Select({
       </select>
 
       <div className={root({ className })} {...api.getRootProps()}>
-        {label && (
-          <Label size={size} {...api.getLabelProps()}>
-            {label}
-          </Label>
-        )}
+        {label && <Label {...api.getLabelProps()}>{label}</Label>}
         <div className={control()} {...api.getControlProps()}>
           <Button
             theme="borderless"
@@ -197,19 +205,21 @@ export function Select({
             iconPosition="right"
           >
             <span
-              className="flex-grow truncate data-[placeholder]:text-select-placeholdr"
+              className={valueSlot()}
               data-placeholder={api.valueAsString === ''}
             >
               {api.valueAsString || placeholder}
             </span>
           </Button>
-          <Button
-            theme="borderless"
-            {...api.getClearTriggerProps()}
-            className={clearTrigger()}
-            aria-label="Clear selection"
-            icon="token-icon-select-clear"
-          />
+          {clearIcon && (
+            <Button
+              theme="borderless"
+              {...api.getClearTriggerProps()}
+              className={clearTrigger()}
+              aria-label="Clear selection"
+              icon="token-icon-select-clear"
+            />
+          )}
         </div>
         {/* Dropdown content portal */}
         <Portal>

@@ -5,7 +5,10 @@ import { Link } from '../atoms/link'
 // === VARIANTS ===
 const breadcrumbsVariants = tv({
   slots: {
-    root: ['inline-flex flex-wrap items-center', 'bg-breadcrumb-bg'],
+    root: [
+      'inline-flex flex-wrap items-center p-breadcrumb',
+      'bg-breadcrumb-bg',
+    ],
     list: ['flex items-center', 'break-words', 'list-none'],
     item: [
       'inline-flex items-center',
