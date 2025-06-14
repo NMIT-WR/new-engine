@@ -1,8 +1,40 @@
 'use client'
-import { getCategoriesWithStats } from '@/data/categories-content'
+import { useCategories } from '@/hooks/use-categories'
+import Link from 'next/link'
 
 export default function CategoriesPage() {
-  const categoriesWithStats = getCategoriesWithStats()
+  const { categories, isLoading, error } = useCategories()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-categories-bg">
+        <div className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile py-categories-section-y-mobile md:px-categories-container-x-desktop md:py-categories-section-y-desktop">
+          <div className="animate-pulse">
+            <div className="mb-4 h-12 w-1/3 rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="mb-8 h-6 w-2/3 rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="grid grid-cols-2 gap-category-grid-gap md:grid-cols-4">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-[4/3] rounded-category-card-radius bg-gray-200 dark:bg-gray-700"
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-categories-bg">
+        <div className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile py-categories-section-y-mobile md:px-categories-container-x-desktop md:py-categories-section-y-desktop">
+          <p className="text-red-500">Error loading categories: {error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-categories-bg">
@@ -20,18 +52,17 @@ export default function CategoriesPage() {
       {/* Categories grid - reuse the component without wrapper section */}
       <div className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile pb-categories-section-y-mobile md:px-categories-container-x-desktop md:pb-categories-section-y-desktop">
         <div className="grid grid-cols-2 gap-category-grid-gap md:grid-cols-4">
-          {categoriesWithStats.map((category) => (
-            <a
+          {categories.map((category: any) => (
+            <Link
               key={category.id}
               href={`/categories/${category.handle}`}
               className="group relative overflow-hidden rounded-category-card-radius"
             >
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={category.imageUrl}
-                  alt={category.name}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+              <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-700">
+                {/* Using placeholder since categories don't have images in Medusa */}
+                <div className="flex h-full w-full items-center justify-center text-gray-400 dark:text-gray-600">
+                  <span className="text-4xl">📁</span>
+                </div>
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20" />
               <div className="absolute bottom-0 left-0 p-category-card-padding">
@@ -39,10 +70,10 @@ export default function CategoriesPage() {
                   {category.name}
                 </h3>
                 <p className="text-category-item-count text-category-item-count-size">
-                  {category.count} items
+                  {category.count > 0 ? `${category.count} items` : ''}
                 </p>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
