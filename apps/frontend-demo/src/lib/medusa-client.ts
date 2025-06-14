@@ -10,7 +10,7 @@ if (!PUBLISHABLE_KEY) {
 }
 
 // SDK instance for client-side with JWT auth
-export const sdk = 
+export const sdk =
   typeof window !== 'undefined'
     ? new Medusa({
         baseUrl: BACKEND_URL,
