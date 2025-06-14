@@ -27,7 +27,7 @@ function loadAuthFromStorage(): Partial<AuthState> {
       validationErrors: [],
     }
   }
-  
+
   try {
     const token = localStorage.getItem('medusa_jwt_token')
     const email = localStorage.getItem('medusa_user_email')
@@ -83,7 +83,10 @@ export const authHelpers = {
         error: null,
       }))
 
-      const token = typeof window !== 'undefined' ? localStorage.getItem('medusa_jwt_token') : null
+      const token =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('medusa_jwt_token')
+          : null
       console.log('[Auth Store] Token found:', !!token)
 
       if (!token) {
@@ -357,7 +360,10 @@ export const authHelpers = {
     try {
       authStore.setState((state) => ({ ...state, error: null }))
 
-      const token = typeof window !== 'undefined' ? localStorage.getItem('medusa_jwt_token') : null
+      const token =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('medusa_jwt_token')
+          : null
 
       if (!token) throw new Error('User not authenticated')
 

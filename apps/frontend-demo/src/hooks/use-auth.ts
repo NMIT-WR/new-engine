@@ -1,13 +1,13 @@
 'use client'
 
+import { queryKeys } from '@/lib/query-keys'
 import { authHelpers, authStore } from '@/stores/auth-store'
-import { useStore } from '@tanstack/react-store'
+import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useStore } from '@tanstack/react-store'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import { useToast } from 'ui/src/molecules/toast'
-import { queryKeys } from '@/lib/query-keys'
-import type { HttpTypes } from '@medusajs/types'
 
 export function useAuth() {
   const authState = useStore(authStore)
@@ -54,12 +54,12 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
+
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
         router.push('/')
       }
-      
+
       toast.create({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
@@ -93,12 +93,12 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
+
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
         router.push('/')
       }
-      
+
       toast.create({
         title: 'Account created!',
         description: 'Welcome to our store.',
@@ -121,7 +121,7 @@ export function useAuth() {
       // Invalidate all queries since user context changed
       queryClient.invalidateQueries()
       router.push('/')
-      
+
       toast.create({
         title: 'Logged out',
         description: 'You have been successfully logged out.',
@@ -138,7 +138,7 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate auth queries to refetch updated user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
+
       toast.create({
         title: 'Profile updated',
         description: 'Your profile has been successfully updated.',
@@ -207,19 +207,31 @@ export function useAuth() {
   return {
     // Auth state
     user: authState.user,
-    isLoading: authState.isLoading || loginMutation.isPending || registerMutation.isPending,
+    isLoading:
+      authState.isLoading ||
+      loginMutation.isPending ||
+      registerMutation.isPending,
     isInitialized: authState.isInitialized,
     error: authState.error,
 
     // Auth actions with mutations
-    login: (email: string, password: string, firstName?: string, lastName?: string) => 
-      loginMutation.mutate({ email, password, firstName, lastName }),
-    register: (email: string, password: string, firstName?: string, lastName?: string) => 
-      registerMutation.mutate({ email, password, firstName, lastName }),
+    login: (
+      email: string,
+      password: string,
+      firstName?: string,
+      lastName?: string
+    ) => loginMutation.mutate({ email, password, firstName, lastName }),
+    register: (
+      email: string,
+      password: string,
+      firstName?: string,
+      lastName?: string
+    ) => registerMutation.mutate({ email, password, firstName, lastName }),
     logout: () => logoutMutation.mutate(),
-    updateProfile: (data: Partial<HttpTypes.StoreCustomer>) => 
+    updateProfile: (data: Partial<HttpTypes.StoreCustomer>) =>
       updateProfileMutation.mutate(data),
-    refetch: () => queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() }),
+    refetch: () =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() }),
 
     // Mutation states
     loginMutation,
@@ -228,7 +240,10 @@ export function useAuth() {
     updateProfileMutation,
 
     // Form state
-    isFormLoading: authState.isFormLoading || loginMutation.isPending || registerMutation.isPending,
+    isFormLoading:
+      authState.isFormLoading ||
+      loginMutation.isPending ||
+      registerMutation.isPending,
     validationErrors: authState.validationErrors,
 
     // Form actions
