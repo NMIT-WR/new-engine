@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
 import { Toaster } from 'ui/src/molecules/toast'
+import { CartPrefetch } from './cart-prefetch'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,7 @@ export function Providers({
         enableSystem
         disableTransitionOnChange
       >
+        <CartPrefetch />
         {children}
         <Toaster />
       </ThemeProvider>

@@ -19,19 +19,38 @@ export function useMedusaCart() {
 
   // Get or create cart
   const { data: cart, isLoading, error } = useQuery({
-    queryKey: queryKeys.cart(),
+    queryKey: queryKeys.cart(typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) || undefined : undefined),
     queryFn: async () => {
-      const cartId = localStorage.getItem(CART_ID_KEY)
+      const cartId = typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
 
       if (cartId) {
         try {
-          const { cart } = await sdk.store.cart.retrieve(cartId, {
-            fields: '*items.variant.product,*items.variant.calculated_price',
-          })
+          const { cart } = await sdk.store.cart.retrieve(cartId)
+          console.log('[Cart Hook] Retrieved cart:', cart.id, 'with', cart.items?.length || 0, 'items')
+          
+          // If cart region doesn't match current region, update it instead of creating new
+          if (region && cart.region_id !== region.id) {
+            console.log('[Cart Hook] Updating cart region from', cart.region_id, 'to', region.id)
+            const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
+              region_id: region.id,
+            })
+            return updatedCart
+          }
+          
           return cart
-        } catch (err) {
-          // Cart not found, will create new one below
-          localStorage.removeItem(CART_ID_KEY)
+        } catch (err: any) {
+          console.error('[Cart Hook] Failed to retrieve cart:', err)
+          // Only remove cart ID if it's a 404 (cart not found)
+          if (err?.status === 404 || err?.response?.status === 404) {
+            console.log('[Cart Hook] Cart not found (404), removing from localStorage')
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem(CART_ID_KEY)
+            }
+          } else {
+            // For other errors, don't remove cart ID - might be network issue
+            console.log('[Cart Hook] Non-404 error, keeping cart ID in localStorage')
+            throw err
+          }
         }
       }
 
@@ -44,19 +63,32 @@ export function useMedusaCart() {
         region_id: region.id,
       })
 
-      localStorage.setItem(CART_ID_KEY, newCart.id)
+      console.log('[Cart Hook] Created new cart:', newCart.id)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CART_ID_KEY, newCart.id)
+      }
       return newCart
     },
     enabled: !!region,
     staleTime: 30 * 1000, // 30 seconds
     gcTime: 5 * 60 * 1000, // 5 minutes
+    retry: (failureCount, error: any) => {
+      // Don't retry if cart was not found
+      if (error?.status === 404) return false
+      // Retry up to 3 times for other errors
+      return failureCount < 3
+    },
   })
 
   // Update cart region when region changes
   useEffect(() => {
+    // Disabled automatic region update - handled in query function
+    // This prevents unnecessary cart updates and potential data loss
+    /*
     if (cart && region && cart.region_id !== region.id) {
       updateRegionMutation.mutate(region.id)
     }
+    */
   }, [cart?.region_id, region?.id])
 
   // Add item mutation
@@ -71,7 +103,7 @@ export function useMedusaCart() {
       return updatedCart
     },
     onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(), updatedCart)
+      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
         title: 'Added to cart',
         description: 'Item has been added to your cart',
@@ -94,9 +126,7 @@ export function useMedusaCart() {
       
       if (quantity <= 0) {
         await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
-        const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id, {
-          fields: '*items.variant.product,*items.variant.calculated_price',
-        })
+        const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
         return updatedCart
       }
       
@@ -108,7 +138,7 @@ export function useMedusaCart() {
       return updatedCart
     },
     onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(), updatedCart)
+      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
     },
     onError: (error: Error) => {
       toast.create({
@@ -125,13 +155,11 @@ export function useMedusaCart() {
       if (!cart) throw new Error('No cart available')
       
       await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
-      const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id, {
-        fields: '*items.variant.product,*items.variant.calculated_price',
-      })
+      const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
       return updatedCart
     },
     onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(), updatedCart)
+      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
         title: 'Removed from cart',
         description: 'Item has been removed from your cart',
@@ -157,13 +185,11 @@ export function useMedusaCart() {
         await sdk.store.cart.deleteLineItem(cart.id, item.id)
       }
       
-      const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id, {
-        fields: '*items.variant.product,*items.variant.calculated_price',
-      })
+      const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
       return updatedCart
     },
     onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(), updatedCart)
+      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
         title: 'Cart cleared',
         description: 'All items have been removed from your cart',
@@ -184,7 +210,7 @@ export function useMedusaCart() {
       return updatedCart
     },
     onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(), updatedCart)
+      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
         title: 'Discount applied',
         description: 'Your discount code has been applied',
@@ -211,7 +237,7 @@ export function useMedusaCart() {
       return updatedCart
     },
     onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(), updatedCart)
+      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
     },
   })
 
@@ -236,7 +262,7 @@ export function useMedusaCart() {
       removeItemMutation.mutate(lineItemId),
     clearCart: () => clearCartMutation.mutate(),
     applyDiscount: (code: string) => applyDiscountMutation.mutate(code),
-    refetch: () => queryClient.invalidateQueries({ queryKey: queryKeys.cart() }),
+    refetch: () => queryClient.invalidateQueries({ queryKey: queryKeys.cart(cart?.id) }),
     
     // Mutations for direct access
     addItemMutation,
