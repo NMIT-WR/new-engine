@@ -1,9 +1,9 @@
 'use client'
 
+import { useCurrentRegion } from '@/hooks/use-region'
+import { cacheConfig } from '@/lib/cache-config'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
-import { useCurrentRegion } from '@/hooks/use-region'
-import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useToast } from 'ui/src/molecules/toast'
@@ -18,37 +18,61 @@ export function useMedusaCart() {
   const [isOpen, setIsOpen] = useState(false)
 
   // Get or create cart
-  const { data: cart, isLoading, error } = useQuery({
-    queryKey: queryKeys.cart(typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) || undefined : undefined),
+  const {
+    data: cart,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: queryKeys.cart(
+      typeof window !== 'undefined'
+        ? localStorage.getItem(CART_ID_KEY) || undefined
+        : undefined
+    ),
     queryFn: async () => {
-      const cartId = typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
+      const cartId =
+        typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
 
       if (cartId) {
         try {
           const { cart } = await sdk.store.cart.retrieve(cartId)
-          console.log('[Cart Hook] Retrieved cart:', cart.id, 'with', cart.items?.length || 0, 'items')
-          
+          console.log(
+            '[Cart Hook] Retrieved cart:',
+            cart.id,
+            'with',
+            cart.items?.length || 0,
+            'items'
+          )
+
           // If cart region doesn't match current region, update it instead of creating new
           if (region && cart.region_id !== region.id) {
-            console.log('[Cart Hook] Updating cart region from', cart.region_id, 'to', region.id)
+            console.log(
+              '[Cart Hook] Updating cart region from',
+              cart.region_id,
+              'to',
+              region.id
+            )
             const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
               region_id: region.id,
             })
             return updatedCart
           }
-          
+
           return cart
         } catch (err: any) {
           console.error('[Cart Hook] Failed to retrieve cart:', err)
           // Only remove cart ID if it's a 404 (cart not found)
           if (err?.status === 404 || err?.response?.status === 404) {
-            console.log('[Cart Hook] Cart not found (404), removing from localStorage')
+            console.log(
+              '[Cart Hook] Cart not found (404), removing from localStorage'
+            )
             if (typeof window !== 'undefined') {
               localStorage.removeItem(CART_ID_KEY)
             }
           } else {
             // For other errors, don't remove cart ID - might be network issue
-            console.log('[Cart Hook] Non-404 error, keeping cart ID in localStorage')
+            console.log(
+              '[Cart Hook] Non-404 error, keeping cart ID in localStorage'
+            )
             throw err
           }
         }
@@ -70,8 +94,7 @@ export function useMedusaCart() {
       return newCart
     },
     enabled: !!region,
-    staleTime: 30 * 1000, // 30 seconds
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    ...cacheConfig.realtime, // 30s stale, 5m gc, refetch on focus
     retry: (failureCount, error: any) => {
       // Don't retry if cart was not found
       if (error?.status === 404) return false
@@ -93,13 +116,19 @@ export function useMedusaCart() {
 
   // Add item mutation
   const addItemMutation = useMutation({
-    mutationFn: async ({ variantId, quantity = 1 }: { variantId: string; quantity?: number }) => {
+    mutationFn: async ({
+      variantId,
+      quantity = 1,
+    }: { variantId: string; quantity?: number }) => {
       if (!cart) throw new Error('No cart available')
-      
-      const { cart: updatedCart } = await sdk.store.cart.createLineItem(cart.id, {
-        variant_id: variantId,
-        quantity,
-      })
+
+      const { cart: updatedCart } = await sdk.store.cart.createLineItem(
+        cart.id,
+        {
+          variant_id: variantId,
+          quantity,
+        }
+      )
       return updatedCart
     },
     onSuccess: (updatedCart) => {
@@ -121,15 +150,18 @@ export function useMedusaCart() {
 
   // Update quantity mutation
   const updateQuantityMutation = useMutation({
-    mutationFn: async ({ lineItemId, quantity }: { lineItemId: string; quantity: number }) => {
+    mutationFn: async ({
+      lineItemId,
+      quantity,
+    }: { lineItemId: string; quantity: number }) => {
       if (!cart) throw new Error('No cart available')
-      
+
       if (quantity <= 0) {
         await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
         const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
         return updatedCart
       }
-      
+
       const { cart: updatedCart } = await sdk.store.cart.updateLineItem(
         cart.id,
         lineItemId,
@@ -153,7 +185,7 @@ export function useMedusaCart() {
   const removeItemMutation = useMutation({
     mutationFn: async (lineItemId: string) => {
       if (!cart) throw new Error('No cart available')
-      
+
       await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
       const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
       return updatedCart
@@ -179,12 +211,12 @@ export function useMedusaCart() {
   const clearCartMutation = useMutation({
     mutationFn: async () => {
       if (!cart) throw new Error('No cart available')
-      
+
       // Remove all items
       for (const item of cart.items || []) {
         await sdk.store.cart.deleteLineItem(cart.id, item.id)
       }
-      
+
       const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
       return updatedCart
     },
@@ -202,7 +234,7 @@ export function useMedusaCart() {
   const applyDiscountMutation = useMutation({
     mutationFn: async (code: string) => {
       if (!cart) throw new Error('No cart available')
-      
+
       // @ts-ignore - Medusa v2 types might not be fully updated
       const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
         promo_codes: [code],
@@ -230,7 +262,7 @@ export function useMedusaCart() {
   const updateRegionMutation = useMutation({
     mutationFn: async (regionId: string) => {
       if (!cart) throw new Error('No cart available')
-      
+
       const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
         region_id: regionId,
       })
@@ -245,32 +277,33 @@ export function useMedusaCart() {
     // Cart data
     cart,
     isLoading,
-    error: error instanceof Error ? error.message : error ? String(error) : null,
-    
+    error:
+      error instanceof Error ? error.message : error ? String(error) : null,
+
     // UI state
     isOpen,
-    toggleCart: () => setIsOpen(prev => !prev),
+    toggleCart: () => setIsOpen((prev) => !prev),
     openCart: () => setIsOpen(true),
     closeCart: () => setIsOpen(false),
-    
+
     // Actions
-    addItem: (variantId: string, quantity?: number) => 
+    addItem: (variantId: string, quantity?: number) =>
       addItemMutation.mutate({ variantId, quantity }),
-    updateQuantity: (lineItemId: string, quantity: number) => 
+    updateQuantity: (lineItemId: string, quantity: number) =>
       updateQuantityMutation.mutate({ lineItemId, quantity }),
-    removeItem: (lineItemId: string) => 
-      removeItemMutation.mutate(lineItemId),
+    removeItem: (lineItemId: string) => removeItemMutation.mutate(lineItemId),
     clearCart: () => clearCartMutation.mutate(),
     applyDiscount: (code: string) => applyDiscountMutation.mutate(code),
-    refetch: () => queryClient.invalidateQueries({ queryKey: queryKeys.cart(cart?.id) }),
-    
+    refetch: () =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.cart(cart?.id) }),
+
     // Mutations for direct access
     addItemMutation,
     updateQuantityMutation,
     removeItemMutation,
     clearCartMutation,
     applyDiscountMutation,
-    
+
     // Computed values
     itemCount: cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     subtotal: cart?.subtotal || 0,

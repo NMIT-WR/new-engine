@@ -12,12 +12,12 @@ import { NumericInput } from 'ui/src/molecules/numeric-input'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
-  
+
   const items = cart?.items || []
   const subtotal = cart?.subtotal || 0
   const total = cart?.total || 0
   const currencyCode = cart?.region?.currency_code
-  
+
   // Use helper to calculate tax properly
   const tax = subtotal * 0.21 // 21% VAT
   const shipping = 0 // Free shipping
@@ -77,22 +77,27 @@ export default function CartPage() {
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div>
-                              <Link href={getProductPath(item.variant?.product?.handle || '')}>
+                              <Link
+                                href={getProductPath(
+                                  item.variant?.product?.handle || ''
+                                )}
+                              >
                                 <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
                                   {item.title}
                                 </h3>
                               </Link>
                               <div className="mb-cart-item-options-margin text-cart-item-options">
-                                {item.variant?.title && item.variant.title !== item.title && (
-                                  <span>{item.variant.title}</span>
-                                )}
+                                {item.variant?.title &&
+                                  item.variant.title !== item.title && (
+                                    <span>{item.variant.title}</span>
+                                  )}
                               </div>
                               <p className="font-cart-item-price text-cart-item-price">
-                                {formatPrice(price / 100, currencyCode)}
+                                {formatPrice(price, currencyCode)}
                               </p>
                             </div>
                             <p className="font-cart-item-price text-cart-item-price">
-                              {formatPrice(itemTotal / 100, currencyCode)}
+                              {formatPrice(itemTotal, currencyCode)}
                             </p>
                           </div>
 
@@ -147,17 +152,19 @@ export default function CartPage() {
                 <div className="space-y-cart-summary-rows-gap">
                   <div className="flex justify-between text-cart-summary-text">
                     <span>Subtotal</span>
-                    <span>{formatPrice(subtotal / 100, currencyCode)}</span>
+                    <span>{formatPrice(subtotal, currencyCode)}</span>
                   </div>
                   <div className="flex justify-between text-cart-summary-text">
                     <span>Shipping</span>
                     <span>
-                      {shipping === 0 ? 'FREE' : formatPrice(shipping / 100, currencyCode)}
+                      {shipping === 0
+                        ? 'FREE'
+                        : formatPrice(shipping, currencyCode)}
                     </span>
                   </div>
                   <div className="flex justify-between text-cart-summary-text">
                     <span>Tax (21%)</span>
-                    <span>{formatPrice(tax / 100, currencyCode)}</span>
+                    <span>{formatPrice(tax, currencyCode)}</span>
                   </div>
                 </div>
 
@@ -165,7 +172,7 @@ export default function CartPage() {
 
                 <div className="flex justify-between text-cart-summary-text">
                   <span>Total</span>
-                  <span>{formatPrice(total / 100, currencyCode)}</span>
+                  <span>{formatPrice(total, currencyCode)}</span>
                 </div>
 
                 <Button

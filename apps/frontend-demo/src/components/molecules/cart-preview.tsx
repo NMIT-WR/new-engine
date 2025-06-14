@@ -52,7 +52,7 @@ export function CartPreview() {
       </div>
 
       <div className="max-h-cart-preview-height overflow-y-auto">
-        {items.map((item) => {          
+        {items.map((item) => {
           const price = item.unit_price || 0
           const imageUrl = item.thumbnail || '/placeholder.png'
 
@@ -98,7 +98,10 @@ export function CartPreview() {
                   icon="token-icon-close"
                 />
                 <p className="font-cart-preview-item text-cart-preview-fg text-cart-preview-item-size">
-                  {formatPrice((price * item.quantity) / 100, cart?.region?.currency_code)}
+                  {formatPrice(
+                    price * item.quantity,
+                    cart?.region?.currency_code
+                  )}
                 </p>
               </div>
             </div>
@@ -112,7 +115,7 @@ export function CartPreview() {
             Total
           </span>
           <span className="font-cart-preview-subtotal-amount text-cart-preview-fg text-cart-preview-subtotal-size">
-            {formatPrice(total / 100, cart?.region?.currency_code)}
+            {formatPrice(total, cart?.region?.currency_code)}
           </span>
         </div>
         <div className="flex flex-col gap-cart-preview-actions-gap">
