@@ -3,15 +3,22 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { regionStore, setSelectedRegionId } from '@/stores/region-store'
-import { useStore } from '@tanstack/react-store'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useStore } from '@tanstack/react-store'
 import { useEffect } from 'react'
 
 export function useRegions() {
   const queryClient = useQueryClient()
-  const selectedRegionId = useStore(regionStore, (state) => state.selectedRegionId)
+  const selectedRegionId = useStore(
+    regionStore,
+    (state) => state.selectedRegionId
+  )
 
-  const { data: regions = [], isLoading, error } = useQuery({
+  const {
+    data: regions = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: queryKeys.regions(),
     queryFn: async () => {
       const response = await sdk.store.region.list()
@@ -29,7 +36,7 @@ export function useRegions() {
         regions.find((r) => r.currency_code === 'usd') ||
         regions.find((r) => r.currency_code === 'eur') ||
         regions[0]
-      
+
       if (defaultRegion) {
         setSelectedRegionId(defaultRegion.id)
         // Invalidate queries that depend on region

@@ -48,12 +48,28 @@ export interface ProductDisplayData {
   stockText: string
 }
 
-export function extractProductData(product: Product): ProductDisplayData {
-  // For API products, use the first price from the first variant
-  // (API already returns prices for the selected region)
+export function extractProductData(
+  product: Product,
+  currencyCode?: string
+): ProductDisplayData {
+  // For API products, find the price that matches the current currency
   const firstVariant = product.variants?.[0]
-  const price = firstVariant?.prices?.[0] || getProductPrice(product)
-  
+  let price = null
+
+  if (firstVariant?.prices && currencyCode) {
+    // Try to find a price matching the current currency
+    price = firstVariant.prices.find((p) => p.currency_code === currencyCode)
+    // If not found, use the first available price
+    if (!price && firstVariant.prices.length > 0) {
+      price = firstVariant.prices[0]
+    }
+  }
+
+  // Fallback to getProductPrice for mock data
+  if (!price) {
+    price = getProductPrice(product)
+  }
+
   const badges = getProductBadges(product)
   const stockStatus = getProductStock(product)
 

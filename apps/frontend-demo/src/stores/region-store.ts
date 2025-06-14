@@ -14,7 +14,7 @@ export function setSelectedRegionId(regionId: string) {
     ...state,
     selectedRegionId: regionId,
   }))
-  
+
   // Persist to localStorage
   if (typeof window !== 'undefined') {
     localStorage.setItem('medusa_region_id', regionId)
