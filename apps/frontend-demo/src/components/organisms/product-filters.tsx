@@ -1,22 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { Checkbox } from 'ui/src/molecules/checkbox'
-import { Dialog } from 'ui/src/molecules/dialog'
-import { RangeSlider } from 'ui/src/molecules/range-slider'
-import { type FilterConfig, activeFilterConfig } from '../data/filter-config'
-import { mockProducts } from '../data/mock-products'
-import { getColorHex } from '../utils/color-map'
+import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
+import { mockProducts } from '@/data/mock-products'
+import { getColorHex } from '@/utils/color-map'
 import {
   type FilterState,
   calculateProductCounts,
   getColorsWithCounts,
   getSizesWithCounts,
-} from '../utils/product-filters'
-import { ColorSwatch } from './atoms/color-swatch'
-import { FilterSection } from './molecules/filter-section'
-
+} from '@/utils/product-filters'
+import { useState } from 'react'
+import { Button } from 'ui/src/atoms/button'
+import { Checkbox } from 'ui/src/molecules/checkbox'
+import { Dialog } from 'ui/src/molecules/dialog'
+import { RangeSlider } from 'ui/src/molecules/range-slider'
+import { ColorSwatch } from '../atoms/color-swatch'
+import { FilterSection } from '../molecules/filter-section'
 
 interface ProductFiltersProps {
   className?: string
@@ -88,7 +87,7 @@ export function ProductFilters({
                 ? () => updateFilters({ categories: new Set() })
                 : undefined
             }
-            className='space-y-product-filters-item-gap'
+            className="space-y-product-filters-item-gap"
             renderItem={(category) => {
               const isDisabled = category.count === 0
               return (
@@ -160,7 +159,7 @@ export function ProductFilters({
                 ? () => updateFilters({ sizes: new Set() })
                 : undefined
             }
-            className='flex flex-wrap gap-2'
+            className="flex flex-wrap gap-2"
             renderItem={({ size, count }) => {
               const isSelected = filters.sizes.has(size)
               const isDisabled = count === 0
@@ -179,8 +178,8 @@ export function ProductFilters({
                     }
                     updateFilters({ sizes: newSizes })
                   }}
-                  size='sm'
-                  className='border rounded-sm'
+                  size="sm"
+                  className="rounded-sm border"
                 >
                   {size}
                 </Button>
@@ -201,7 +200,7 @@ export function ProductFilters({
                 ? () => updateFilters({ colors: new Set() })
                 : undefined
             }
-            className='grid grid-cols-4 gap-2'
+            className="grid grid-cols-4 gap-2"
             renderItem={({ color, count }) => {
               const isSelected = filters.colors.has(color)
               const isDisabled = count === 0
@@ -243,7 +242,11 @@ export function ProductFilters({
       {/* Clear All Filters */}
       {hasActiveFilters && (
         <div className="mb-4 text-right">
-          <Button theme='borderless' onClick={clearAllFilters} className='text-sm text-primary hover:underline cursor-pointer'>
+          <Button
+            theme="borderless"
+            onClick={clearAllFilters}
+            className="cursor-pointer text-primary text-sm hover:underline"
+          >
             Clear all filters
           </Button>
         </div>
@@ -263,60 +266,63 @@ export function ProductFilters({
         variant="secondary"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className='md:hidden flex items-center gap-product-filters-mobile-btn-gap mb-product-filters-mobile-btn-margin'
+        className="mb-product-filters-mobile-btn-margin flex items-center gap-product-filters-mobile-btn-gap md:hidden"
         icon="icon-[mdi--filter-variant]"
       >
         Filters
       </Button>
 
       {/* Desktop Filters */}
-      <div className='hidden md:block'>{filterContent}</div>
+      <div className="hidden md:block">{filterContent}</div>
 
       {/* Mobile Filter Dialog */}
-      <div className='md:hidden'>
-      <Dialog
-        open={isOpen}
-        onOpenChange={({ open }) => setIsOpen(open)}
-        title="Filters"
-        description="Refine your product search"
-      >
-        <div className='p-product-filters-dialog-padding'>
-          <div className='flex items-center justify-between mb-product-filters-dialog-header-margin'>
-            <h2 className='text-product-filters-dialog-title font-product-filters-dialog-title'>Filters</h2>
-            <Button
-              variant="tertiary"
-              theme="borderless"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-              icon="icon-[mdi--close]"
-            >
-              Close
-            </Button>
+      <div className="md:hidden">
+        <Dialog
+          open={isOpen}
+          onOpenChange={({ open }) => setIsOpen(open)}
+          title="Filters"
+          description="Refine your product search"
+        >
+          <div className="p-product-filters-dialog-padding">
+            <div className="mb-product-filters-dialog-header-margin flex items-center justify-between">
+              <h2 className="font-product-filters-dialog-title text-product-filters-dialog-title">
+                Filters
+              </h2>
+              <Button
+                variant="tertiary"
+                theme="borderless"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+                icon="icon-[mdi--close]"
+              >
+                Close
+              </Button>
+            </div>
+            {filterContent}
+            <div className="mt-product-filters-actions-margin flex gap-product-filters-actions-gap">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="flex-1"
+                onClick={() => {
+                  clearAllFilters()
+                  setIsOpen(false)
+                }}
+              >
+                Clear All
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                className="flex-1"
+                onClick={() => setIsOpen(false)}
+              >
+                Apply Filters
+              </Button>
+            </div>
           </div>
-          {filterContent}
-          <div className="mt-product-filters-actions-margin flex gap-product-filters-actions-gap">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="flex-1"
-              onClick={() => {
-                clearAllFilters()
-                setIsOpen(false)
-              }}
-            >
-              Clear All
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              className="flex-1"
-              onClick={() => setIsOpen(false)}
-            >
-              Apply Filters
-            </Button>
-          </div>
-        </div>
-      </Dialog></div>
+        </Dialog>
+      </div>
     </div>
   )
 }

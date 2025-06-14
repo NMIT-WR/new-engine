@@ -1,12 +1,11 @@
 'use client'
-import { getCategoriesWithStats } from '../../data/categories-content'
+import { getCategoriesWithStats } from '@/data/categories-content'
 
 export default function CategoriesPage() {
   const categoriesWithStats = getCategoriesWithStats()
 
   return (
     <div className="min-h-screen bg-categories-bg">
-
       {/* Hero section */}
       <section className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile pb-categories-section-y-mobile md:px-categories-container-x-desktop md:pb-categories-section-y-desktop">
         <h1 className="font-categories-heading text-categories-heading-fg text-categories-heading-size-mobile md:text-categories-heading-size-desktop">

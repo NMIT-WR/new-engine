@@ -1,26 +1,40 @@
 'use client'
+import { useAuth } from '@/hooks/use-auth'
+import {
+  AUTH_MESSAGES,
+  authFormFields,
+  getAuthErrorMessage,
+  withLoading,
+} from '@/lib/auth'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { Button } from 'ui/src/atoms/button'
-import { FormInput } from 'ui/src/molecules/form-input'
-import { Popover } from 'ui/src/molecules/popover'
-import { Menu } from 'ui/src/molecules/menu'
 import { Icon } from 'ui/src/atoms/icon'
+import { FormInput } from 'ui/src/molecules/form-input'
+import { Menu } from 'ui/src/molecules/menu'
+import { Popover } from 'ui/src/molecules/popover'
 
 export function AuthDropdown() {
-  const user = null
-  const signOut = () => {}
+  const { user, logout, showSuccess } = useAuth()
+  const router = useRouter()
+
+  const signOut = async () => {
+    await logout()
+    showSuccess(
+      AUTH_MESSAGES.LOGOUT_SUCCESS.title,
+      AUTH_MESSAGES.LOGOUT_SUCCESS.description
+    )
+  }
 
   if (!user) {
     return (
       <Popover
-        id="auth-dropdown"
-       trigger={
-          <Icon className='text-tertiary' icon='icon-[mdi--account-outline]' />
+        trigger={
+          <Icon className="text-tertiary" icon="icon-[mdi--account-outline]" />
         }
-       triggerClassName="rounded-header-action p-header-action-padding hover:bg-header-action-bg-hover"
-        placement='bottom-end'
-        size='sm'
+        triggerClassName="rounded-header-action p-header-action-padding hover:bg-header-action-bg-hover"
+        placement="bottom-end"
+        size="sm"
       >
         <QuickLoginForm />
       </Popover>
@@ -64,19 +78,22 @@ export function AuthDropdown() {
         signOut()
         break
       case 'profile':
-        // Navigate to profile
+        router.push('/account/profile')
         break
       case 'orders':
-        // Navigate to orders
+        router.push('/account/orders')
         break
       case 'settings':
-        // Navigate to settings
+        router.push('/account/settings')
+        break
+      default:
         break
     }
   }
 
   return (
     <Menu
+      id="user-menu"
       items={menuItems}
       // @ts-ignore
       onSelect={({ value }) => handleSelect(value)}
@@ -87,7 +104,7 @@ export function AuthDropdown() {
           size="sm"
           icon="icon-[mdi--account-circle]"
         >
-          <span className="hidden lg:inline">email</span>
+          <span className="hidden xl:inline">{user.email}</span>
         </Button>
       }
     />
@@ -96,61 +113,74 @@ export function AuthDropdown() {
 
 function QuickLoginForm() {
   const router = useRouter()
+  const { login, isFormLoading, setFormLoading, showSuccess } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
 
-  const signIn = async (email: string, password: string) => {}
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
+    setFormLoading(true)
 
     try {
-      await signIn(email, password)
-      router.refresh()
-    } catch (err: any) {
-      setError(err.message || 'Invalid credentials')
+      await login(email, password)
+      showSuccess(
+        AUTH_MESSAGES.LOGIN_SUCCESS.title,
+        AUTH_MESSAGES.LOGIN_SUCCESS.description
+      )
+    } catch (err: unknown) {
+      setError(getAuthErrorMessage(err))
     } finally {
-      setLoading(false)
+      setFormLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-auth-dropdown-form-gap w-auth-dropdown-form">
+    <form
+      onSubmit={handleSubmit}
+      className="w-auth-dropdown-form space-y-auth-dropdown-form-gap"
+    >
       <div className="space-y-auth-dropdown-header-gap">
-        <h3 className="font-auth-dropdown-title text-auth-dropdown-title-size text-auth-dropdown-title">Sign In</h3>
-        <p className="text-auth-dropdown-subtitle-size text-auth-dropdown-subtitle">Enter your credentials to continue</p>
+        <h3 className="font-auth-dropdown-title text-auth-dropdown-title text-auth-dropdown-title-size">
+          Sign In
+        </h3>
+        <p className="text-auth-dropdown-subtitle text-auth-dropdown-subtitle-size">
+          Enter your credentials to continue
+        </p>
       </div>
 
       <div className="space-y-auth-dropdown-input-gap">
         <FormInput
-          id="quick-login-email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoComplete="email"
-          size="sm"
+          {...withLoading(
+            authFormFields.email({
+              id: 'quick-login-email',
+              size: 'sm',
+              value: email,
+              onChange: (e) => setEmail(e.target.value),
+            }),
+            isFormLoading
+          )}
         />
 
         <FormInput
-          id="quick-login-password"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          autoComplete="current-password"
-          size="sm"
+          {...withLoading(
+            authFormFields.password({
+              id: 'quick-login-password',
+              size: 'sm',
+              value: password,
+              onChange: (e) => setPassword(e.target.value),
+            }),
+            isFormLoading
+          )}
         />
       </div>
 
-      {error && <p className="text-auth-dropdown-error-size text-auth-dropdown-error">{error}</p>}
+      {error && (
+        <p className="text-auth-dropdown-error text-auth-dropdown-error-size">
+          {error}
+        </p>
+      )}
 
       <div className="space-y-auth-dropdown-actions-gap">
         <Button
@@ -158,9 +188,9 @@ function QuickLoginForm() {
           variant="primary"
           size="sm"
           className="w-full"
-          disabled={loading}
+          disabled={isFormLoading}
         >
-          {loading ? 'Signing in...' : 'Sign In'}
+          {isFormLoading ? 'Signing in...' : 'Sign In'}
         </Button>
 
         <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">
@@ -171,7 +201,7 @@ function QuickLoginForm() {
             theme="borderless"
             size="sm"
             onClick={() => router.push('/auth/register')}
-            className="p-0 h-auto font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover"
+            className="h-auto p-0 font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover"
           >
             Create account
           </Button>

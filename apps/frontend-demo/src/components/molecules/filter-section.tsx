@@ -33,8 +33,10 @@ export function FilterSection<T>({
 
   return (
     <div className="mb-filter-section-margin">
-      <div className="flex items-center justify-between mb-filter-section-header-margin">
-        <h3 className="text-filter-section-title font-filter-section-title">{title}</h3>
+      <div className="mb-filter-section-header-margin flex items-center justify-between">
+        <h3 className="font-filter-section-title text-filter-section-title">
+          {title}
+        </h3>
         {onClear && (
           <Button
             variant="tertiary"

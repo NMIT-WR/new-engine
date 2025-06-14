@@ -1,48 +1,49 @@
 'use client'
-import { useState } from 'react'
+import { useRegions } from '@/hooks/use-region'
 import { Select } from 'ui/src/molecules/select'
 
-export type Region = {
-  code: string
-  name: string
-  currency: string
-  flag: string
+const currencyFlags: Record<string, string> = {
+  EUR: '🇪🇺',
+  USD: '🇺🇸',
+  GBP: '🇬🇧',
+  SEK: '🇸🇪',
+  DKK: '🇩🇰',
+  NOK: '🇳🇴',
+  PLN: '🇵🇱',
+  CZK: '🇨🇿',
 }
 
-const regions: Region[] = [
-  { code: 'eu', name: 'Europe', currency: 'EUR', flag: '🇪🇺' },
-  { code: 'us', name: 'United States', currency: 'USD', flag: '🇺🇸' },
-]
+export function RegionSelector() {
+  const { regions, selectedRegion, setSelectedRegion, isLoading } = useRegions()
 
-interface RegionSelectorProps {
-  onRegionChange?: (region: Region) => void
-}
-
-export function RegionSelector({ onRegionChange }: RegionSelectorProps) {
-  const [selectedRegion, setSelectedRegion] = useState(regions[0])
+  if (isLoading || !regions.length) {
+    return (
+      <div className="h-8 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+    )
+  }
 
   const handleChange = (details: { value: string[] }) => {
-    const regionCode = details.value[0]
-    const region = regions.find((r) => r.code === regionCode)
+    const regionId = details.value[0]
+    const region = regions.find((r) => r.id === regionId)
     if (region) {
       setSelectedRegion(region)
-      onRegionChange?.(region)
     }
   }
 
   const options = regions.map((region) => ({
-    value: region.code,
-    label: `${region.flag} ${region.currency}`,
+    value: region.id,
+    label: `${currencyFlags[region.currency_code.toUpperCase()] || '🌍'} ${region.currency_code.toUpperCase()}`,
   }))
 
   return (
     <Select
       options={options}
-      value={[selectedRegion.code]}
+      value={selectedRegion ? [selectedRegion.id] : []}
       onValueChange={handleChange}
       size="xs"
       className="w-28"
       clearIcon={false}
+      placeholder="Region"
     />
   )
 }

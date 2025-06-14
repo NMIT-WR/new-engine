@@ -8,10 +8,12 @@
     "build": "next build",
     "build:static": "next build",
     "start": "next start -p 3000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check:unused": "node scripts/check-unused-exports.js"
   },
   "dependencies": {
     "@medusajs/js-sdk": "2.6.1",
+    "@medusajs/types": "^2.8.4",
     "@tanstack/react-query": "^5.76.1",
     "@tanstack/react-store": "^0.7.1",
     "@zag-js/carousel": "^1.14.0",
