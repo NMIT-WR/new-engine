@@ -14,11 +14,9 @@ export function CartPreview() {
 
   if (isLoading) {
     return (
-      <div className="max-w-cart-preview-max">
+      <div className="max-w-cart-preview-max w-cart-preview-max">
         <div className="space-y-4 p-4">
-          <SkeletonLoader variant="text" size="md" block={true} />
-          <SkeletonLoader variant="box" className="h-20" />
-          <SkeletonLoader variant="box" className="h-20" block={true} />
+          <SkeletonLoader variant="box" size='md' />
         </div>
       </div>
     )
