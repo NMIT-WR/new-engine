@@ -139,12 +139,40 @@ export function useMedusaCart() {
         type: 'success',
       })
     },
-    onError: (error: Error) => {
-      toast.create({
-        title: 'Failed to add item',
-        description: error.message,
-        type: 'error',
-      })
+    onError: (error: any) => {
+      console.error('[Cart Hook] Add item error:', error)
+
+      // Parse error message for specific inventory issue
+      const errorMessage =
+        error?.message || error?.response?.data?.message || 'Unknown error'
+
+      if (errorMessage.toLowerCase().includes('inventory')) {
+        toast.create({
+          title: 'Out of Stock',
+          description:
+            'This product variant is not available in the requested quantity.',
+          type: 'error',
+        })
+      } else if (errorMessage.toLowerCase().includes('cart') && errorMessage.toLowerCase().includes('not found')) {
+        // Cart was likely deleted or expired, clear localStorage and retry
+        console.log('[Cart Hook] Cart not found, clearing localStorage and retrying')
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(CART_ID_KEY)
+        }
+        toast.create({
+          title: 'Cart expired',
+          description: 'Your cart has expired. Please try again.',
+          type: 'error',
+        })
+        // Invalidate cart query to trigger recreation
+        queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
+      } else {
+        toast.create({
+          title: 'Failed to add item',
+          description: errorMessage,
+          type: 'error',
+        })
+      }
     },
   })
 

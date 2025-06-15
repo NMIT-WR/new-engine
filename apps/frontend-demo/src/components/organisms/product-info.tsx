@@ -59,6 +59,8 @@ export function ProductInfo({
     const newVariant = findMatchingVariant(newOptions)
     if (newVariant) {
       onVariantChange(newVariant)
+      // Reset quantity to 1 when variant changes
+      setQuantity(1)
     }
   }
 
@@ -67,6 +69,29 @@ export function ProductInfo({
       toast.create({
         title: 'Please select options',
         description: 'Please select all product options before adding to cart.',
+        type: 'error',
+      })
+      return
+    }
+
+    // Check inventory
+    if (
+      !selectedVariant.inventory_quantity ||
+      selectedVariant.inventory_quantity <= 0
+    ) {
+      toast.create({
+        title: 'Out of Stock',
+        description: 'This product variant is currently out of stock.',
+        type: 'error',
+      })
+      return
+    }
+
+    // Check if quantity exceeds inventory
+    if (quantity > selectedVariant.inventory_quantity) {
+      toast.create({
+        title: 'Insufficient Stock',
+        description: `Only ${selectedVariant.inventory_quantity} items available.`,
         type: 'error',
       })
       return
@@ -167,7 +192,8 @@ export function ProductInfo({
                     (v) => v.options?.[optionKey] === value
                   )
                   const isOutOfStock =
-                    variantForOption?.inventory_quantity === 0
+                    !variantForOption?.inventory_quantity ||
+                    variantForOption.inventory_quantity <= 0
 
                   return (
                     <Button
@@ -196,7 +222,11 @@ export function ProductInfo({
             value={quantity}
             onChange={setQuantity}
             min={1}
-            max={10}
+            max={
+              selectedVariant?.inventory_quantity
+                ? Math.min(selectedVariant.inventory_quantity, 10)
+                : 10
+            }
             hideControls={false}
           />
         </div>
@@ -208,11 +238,17 @@ export function ProductInfo({
           variant="primary"
           size="lg"
           className="flex-1"
-          disabled={selectedVariant?.inventory_quantity === 0}
+          disabled={
+            !selectedVariant ||
+            !selectedVariant.inventory_quantity ||
+            selectedVariant.inventory_quantity <= 0
+          }
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
         >
-          {selectedVariant?.inventory_quantity === 0
+          {!selectedVariant ||
+          !selectedVariant.inventory_quantity ||
+          selectedVariant.inventory_quantity <= 0
             ? 'Out of Stock'
             : 'Add to Cart'}
         </Button>
@@ -247,7 +283,8 @@ export function ProductInfo({
                     </span>
                   </>
                 )}
-              {selectedVariant.inventory_quantity === 0 && (
+              {(!selectedVariant.inventory_quantity ||
+                selectedVariant.inventory_quantity <= 0) && (
                 <>
                   <Icon
                     icon="icon-[mdi--close-circle]"

@@ -97,17 +97,15 @@ export default function ApiTestPage() {
             />
           </div>
 
-          {isLoading ? ( 
+          {isLoading ? (
             <ProductGridSkeleton />
-          ) :
-         ( paginatedProducts.length > 0 ? (
-              <ProductGrid products={paginatedProducts} />
-            ) : (
-              <div className="py-12 text-center">
-                <p className="text-gray-500">No products found</p>
-              </div>
-            )
-          ) }
+          ) : paginatedProducts.length > 0 ? (
+            <ProductGrid products={paginatedProducts} />
+          ) : (
+            <div className="py-12 text-center">
+              <p className="text-gray-500">No products found</p>
+            </div>
+          )}
         </main>
       </div>
     </div>
