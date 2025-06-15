@@ -1,5 +1,5 @@
 'use client'
-
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProductListing } from '@/hooks/use-product-listing'
@@ -13,11 +13,15 @@ function ProductGridSkeleton() {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
       {[...Array(8)].map((_, i) => (
-        <div key={i} className="animate-pulse space-y-3">
-          <div className="aspect-square rounded-lg bg-gray-200 dark:bg-gray-700" />
+        <div key={i} className="space-y-3">
+          <SkeletonLoader
+            variant="box"
+            size="fit"
+            className="aspect-square w-full"
+          />
           <div className="space-y-2">
-            <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700" />
+            <SkeletonLoader variant="text" size="md" className="w-3/4" />
+            <SkeletonLoader variant="text" size="sm" className="w-1/2" />
           </div>
         </div>
       ))}
@@ -93,15 +97,17 @@ export default function ApiTestPage() {
             />
           </div>
 
-          {isLoading ? (
+          {isLoading ? ( 
             <ProductGridSkeleton />
-          ) : paginatedProducts.length > 0 ? (
-            <ProductGrid products={paginatedProducts} />
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-gray-500">No products found</p>
-            </div>
-          )}
+          ) :
+         ( paginatedProducts.length > 0 ? (
+              <ProductGrid products={paginatedProducts} />
+            ) : (
+              <div className="py-12 text-center">
+                <p className="text-gray-500">No products found</p>
+              </div>
+            )
+          ) }
         </main>
       </div>
     </div>

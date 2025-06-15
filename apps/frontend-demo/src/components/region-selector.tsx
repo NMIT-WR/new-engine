@@ -1,4 +1,5 @@
 'use client'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useRegions } from '@/hooks/use-region'
 import { Select } from 'ui/src/molecules/select'
 
@@ -17,9 +18,7 @@ export function RegionSelector() {
   const { regions, selectedRegion, setSelectedRegion, isLoading } = useRegions()
 
   if (isLoading || !regions.length) {
-    return (
-      <div className="h-8 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-    )
+    return <SkeletonLoader variant="box" className="h-8 w-28" />
   }
 
   const handleChange = (details: { value: string[] }) => {

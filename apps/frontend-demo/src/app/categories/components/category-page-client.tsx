@@ -1,4 +1,5 @@
 'use client'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { type CategoryWithStats, useCategory } from '@/hooks/use-categories'
@@ -30,7 +31,7 @@ export default function CategoryPageClient({
   // Filter products by category id or handle
   const categoryProducts = allProducts.filter((product) =>
     product.categories?.some(
-      (cat) => cat.id === category.id || cat.handle === category.handle
+      (cat) => cat.id === category?.id || cat.handle === category?.handle
     )
   )
 
@@ -54,14 +55,11 @@ export default function CategoryPageClient({
     return (
       <div className="min-h-screen bg-product-listing-bg">
         <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y">
-          <div className="animate-pulse">
-            <div className="mb-8 h-8 w-48 rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div>
+            <SkeletonLoader variant="text" size="xl" className="mb-8 w-48" />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-64 rounded bg-gray-200 dark:bg-gray-700"
-                ></div>
+                <SkeletonLoader key={i} variant="box" className="h-64 w-full" />
               ))}
             </div>
           </div>

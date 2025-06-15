@@ -1,5 +1,6 @@
 'use client'
 
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
@@ -41,9 +42,9 @@ export default function CartPage() {
 
         {isLoading ? (
           <div className="space-y-4">
-            <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            <div className="h-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <SkeletonLoader variant="box" className="h-32 w-full" />
+            <SkeletonLoader variant="box" className="h-32 w-full" />
+            <SkeletonLoader variant="box" className="h-32 w-full" />
           </div>
         ) : items.length > 0 ? (
           <div className="lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap">

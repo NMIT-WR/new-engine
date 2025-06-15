@@ -7,6 +7,9 @@
   --breakpoint-2xl: 96rem; /* 1536px */
 
   /* Container widths - responsive max-widths */
+  --container-3xs: 5rem;
+  --container-2xs: 10rem; /* 160px */
+  --container-xs: 20rem; /* 320px */
   --container-sm: 40rem; /* 640px */
   --container-md: 48rem; /* 768px */
   --container-lg: 64rem; /* 1024px */

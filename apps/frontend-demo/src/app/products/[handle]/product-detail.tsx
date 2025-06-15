@@ -1,5 +1,6 @@
 'use client'
 
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Gallery } from '@/components/organisms/gallery'
 import { ProductInfo } from '@/components/organisms/product-info'
@@ -36,14 +37,14 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
     return (
       <div className="min-h-screen bg-product-detail-bg">
         <div className="mx-auto max-w-product-detail-max-w px-product-detail-container-x py-product-detail-container-y">
-          <div className="animate-pulse">
-            <div className="mb-8 h-4 w-48 rounded bg-gray-200 dark:bg-gray-700" />
+          <div>
+            <SkeletonLoader variant="text" size="md" className="mb-8 w-48" />
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              <div className="aspect-square rounded-lg bg-gray-200 dark:bg-gray-700" />
+              <SkeletonLoader variant="box" className="aspect-square w-full" />
               <div className="space-y-4">
-                <div className="h-8 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
-                <div className="h-6 w-1/4 rounded bg-gray-200 dark:bg-gray-700" />
-                <div className="h-24 rounded bg-gray-200 dark:bg-gray-700" />
+                <SkeletonLoader variant="text" size="xl" className="w-3/4" />
+                <SkeletonLoader variant="text" size="lg" className="w-1/4" />
+                <SkeletonLoader variant="box" className="h-24 w-full" />
               </div>
             </div>
           </div>

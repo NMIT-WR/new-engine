@@ -1,4 +1,5 @@
 'use client'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
@@ -15,9 +16,9 @@ export function CartPreview() {
     return (
       <div className="max-w-cart-preview-max">
         <div className="space-y-4 p-4">
-          <div className="h-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-          <div className="h-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-          <div className="h-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          <SkeletonLoader variant="text" size="md" block={true} />
+          <SkeletonLoader variant="box" className="h-20" />
+          <SkeletonLoader variant="box" className="h-20" block={true}/>
         </div>
       </div>
     )

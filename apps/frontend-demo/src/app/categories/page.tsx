@@ -1,4 +1,5 @@
 'use client'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCategories } from '@/hooks/use-categories'
 import Link from 'next/link'
 
@@ -9,15 +10,16 @@ export default function CategoriesPage() {
     return (
       <div className="min-h-screen bg-categories-bg">
         <div className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile py-categories-section-y-mobile md:px-categories-container-x-desktop md:py-categories-section-y-desktop">
-          <div className="animate-pulse">
-            <div className="mb-4 h-12 w-1/3 rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-8 h-6 w-2/3 rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div>
+            <SkeletonLoader variant="text" size="xl" className="mb-4 w-1/3" />
+            <SkeletonLoader variant="text" size="lg" className="mb-8 w-2/3" />
             <div className="grid grid-cols-2 gap-category-grid-gap md:grid-cols-4">
               {[...Array(8)].map((_, i) => (
-                <div
+                <SkeletonLoader
                   key={i}
-                  className="aspect-[4/3] rounded-category-card-radius bg-gray-200 dark:bg-gray-700"
-                ></div>
+                  variant="box"
+                  className="aspect-[4/3] w-full rounded-category-card-radius"
+                />
               ))}
             </div>
           </div>
