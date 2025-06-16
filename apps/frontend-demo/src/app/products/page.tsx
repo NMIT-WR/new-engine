@@ -90,8 +90,8 @@ export default function ApiTestPage() {
               clearIcon={false}
               placeholder="Select sorting"
               onValueChange={(details) => {
-                const value = details.value[0] as any
-                if (value) setSortBy(value)
+                const value = details.value[0]
+                if (value) setSortBy(value as any)
               }}
               size="md"
             />

@@ -153,9 +153,11 @@ export function useMedusaCart() {
             'This product variant is not available in the requested quantity.',
           type: 'error',
         })
-      } else if (errorMessage.toLowerCase().includes('cart') && errorMessage.toLowerCase().includes('not found')) {
+      } else if (
+        errorMessage.toLowerCase().includes('cart') &&
+        errorMessage.toLowerCase().includes('not found')
+      ) {
         // Cart was likely deleted or expired, clear localStorage and retry
-        console.log('[Cart Hook] Cart not found, clearing localStorage and retrying')
         if (typeof window !== 'undefined') {
           localStorage.removeItem(CART_ID_KEY)
         }

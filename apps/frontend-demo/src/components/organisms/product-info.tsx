@@ -2,16 +2,19 @@
 
 import { ColorSwatch } from '@/components/atoms/color-swatch'
 import { useCart } from '@/hooks/use-cart'
+import { useCurrentRegion } from '@/hooks/use-region'
+import { getVariantInventory, isQuantityAvailable } from '@/lib/inventory'
 import type { Product, ProductVariant } from '@/types/product'
 import { getColorHex } from '@/utils/color-map'
 import { useState } from 'react'
 import { Badge, type BadgeProps } from 'ui/src/atoms/badge'
 import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
 import { Label } from 'ui/src/atoms/label'
 import { Rating } from 'ui/src/atoms/rating'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 import { useToast } from 'ui/src/molecules/toast'
+
+const MAXIMUM_QUANTITY = 10
 
 interface ProductInfoProps {
   product: Product
@@ -36,6 +39,7 @@ export function ProductInfo({
   const [quantity, setQuantity] = useState(1)
   const { addItem } = useCart()
   const toast = useToast()
+  const { region } = useCurrentRegion()
 
   // Get all option types from product
   const optionTypes = product.options || []
@@ -74,24 +78,23 @@ export function ProductInfo({
       return
     }
 
-    // Check inventory
-    if (
-      !selectedVariant.inventory_quantity ||
-      selectedVariant.inventory_quantity <= 0
-    ) {
+    const inventory = getVariantInventory(selectedVariant, region)
+
+    // Check if variant is in stock
+    if (inventory.status === 'out-of-stock') {
       toast.create({
         title: 'Out of Stock',
-        description: 'This product variant is currently out of stock.',
+        description: inventory.message,
         type: 'error',
       })
       return
     }
 
-    // Check if quantity exceeds inventory
-    if (quantity > selectedVariant.inventory_quantity) {
+    // Check if requested quantity is available
+    if (!isQuantityAvailable(selectedVariant, quantity, region)) {
       toast.create({
         title: 'Insufficient Stock',
-        description: `Only ${selectedVariant.inventory_quantity} items available.`,
+        description: `Only ${inventory.quantity} items available.`,
         type: 'error',
       })
       return
@@ -101,6 +104,10 @@ export function ProductInfo({
     // The success toast is handled by the cart hook
     addItem(selectedVariant.id, quantity)
   }
+
+  const maxQuantity =
+    selectedVariant?.inventory_quantity !== undefined &&
+    selectedVariant?.inventory_quantity > MAXIMUM_QUANTITY
 
   return (
     <div className="flex flex-col">
@@ -145,7 +152,12 @@ export function ProductInfo({
         <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>SKU: {selectedVariant.sku}</p>
           {selectedVariant.inventory_quantity !== undefined && (
-            <p>In Stock: {selectedVariant.inventory_quantity} units</p>
+            <p>
+              In Stock:{' '}
+              {maxQuantity
+                ? `${10}+ units`
+                : `${selectedVariant.inventory_quantity} units`}
+            </p>
           )}
         </div>
       )}
@@ -191,9 +203,12 @@ export function ProductInfo({
                   const variantForOption = product.variants?.find(
                     (v) => v.options?.[optionKey] === value
                   )
+                  const variantInventory = getVariantInventory(
+                    variantForOption,
+                    region
+                  )
                   const isOutOfStock =
-                    !variantForOption?.inventory_quantity ||
-                    variantForOption.inventory_quantity <= 0
+                    variantInventory.status === 'out-of-stock'
 
                   return (
                     <Button
@@ -223,8 +238,11 @@ export function ProductInfo({
             onChange={setQuantity}
             min={1}
             max={
-              selectedVariant?.inventory_quantity
-                ? Math.min(selectedVariant.inventory_quantity, 10)
+              selectedVariant
+                ? Math.min(
+                    getVariantInventory(selectedVariant, region).quantity || 10,
+                    10
+                  )
                 : 10
             }
             hideControls={false}
@@ -240,61 +258,20 @@ export function ProductInfo({
           className="flex-1"
           disabled={
             !selectedVariant ||
-            !selectedVariant.inventory_quantity ||
-            selectedVariant.inventory_quantity <= 0
+            getVariantInventory(selectedVariant, region).status ===
+              'out-of-stock'
           }
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
         >
           {!selectedVariant ||
-          !selectedVariant.inventory_quantity ||
-          selectedVariant.inventory_quantity <= 0
+          getVariantInventory(selectedVariant, region).status === 'out-of-stock'
             ? 'Out of Stock'
             : 'Add to Cart'}
         </Button>
         <Button variant="secondary" size="lg" icon="icon-[mdi--heart-outline]">
           <span className="sr-only">Add to wishlist</span>
         </Button>
-      </div>
-
-      {/* Stock Info */}
-      <div className="flex items-center gap-product-info-stock-gap text-product-info-stock">
-        {selectedVariant &&
-          selectedVariant.inventory_quantity !== undefined && (
-            <>
-              {selectedVariant.inventory_quantity > 5 && (
-                <>
-                  <Icon
-                    icon="icon-[mdi--check-circle]"
-                    className="text-product-info-stock-success"
-                  />
-                  <span>In stock and ready to ship</span>
-                </>
-              )}
-              {selectedVariant.inventory_quantity > 0 &&
-                selectedVariant.inventory_quantity <= 5 && (
-                  <>
-                    <Icon
-                      icon="icon-[mdi--alert-circle]"
-                      className="text-product-info-stock-warning"
-                    />
-                    <span>
-                      Only {selectedVariant.inventory_quantity} left in stock
-                    </span>
-                  </>
-                )}
-              {(!selectedVariant.inventory_quantity ||
-                selectedVariant.inventory_quantity <= 0) && (
-                <>
-                  <Icon
-                    icon="icon-[mdi--close-circle]"
-                    className="text-product-info-stock-error"
-                  />
-                  <span>Currently out of stock</span>
-                </>
-              )}
-            </>
-          )}
       </div>
     </div>
   )

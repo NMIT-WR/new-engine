@@ -1,6 +1,8 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
+import { useCurrentRegion } from '@/hooks/use-region'
+import { getVariantInventory, isQuantityAvailable } from '@/lib/inventory'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
 import Image from 'next/image'
@@ -9,14 +11,15 @@ import { Button } from 'ui/src/atoms/button'
 
 export function CartPreview() {
   const { cart, removeItem, isLoading } = useCart()
+  const { region } = useCurrentRegion()
   const items = cart?.items || []
   const total = cart?.total || 0
 
   if (isLoading) {
     return (
-      <div className="max-w-cart-preview-max w-cart-preview-max">
+      <div className="w-cart-preview-max max-w-cart-preview-max">
         <div className="space-y-4 p-4">
-          <SkeletonLoader variant="box" size='md' />
+          <SkeletonLoader variant="box" size="md" />
         </div>
       </div>
     )
@@ -54,6 +57,12 @@ export function CartPreview() {
         {items.map((item) => {
           const price = item.unit_price || 0
           const imageUrl = item.thumbnail || '/placeholder.png'
+          const inventory = item.variant
+            ? getVariantInventory(item.variant, region)
+            : null
+          const hasStockIssue =
+            inventory &&
+            !isQuantityAvailable(item.variant, item.quantity, region)
 
           return (
             <div
@@ -86,6 +95,11 @@ export function CartPreview() {
                 <p className="text-cart-preview-detail-size text-cart-preview-fg-secondary">
                   Amount: {item.quantity}
                 </p>
+                {hasStockIssue && (
+                  <p className="mt-cart-preview-error-margin-top text-cart-preview-error-size text-cart-preview-error-fg">
+                    ⚠ Low stock
+                  </p>
+                )}
               </div>
               <div className="flex flex-col items-end justify-between">
                 <Button

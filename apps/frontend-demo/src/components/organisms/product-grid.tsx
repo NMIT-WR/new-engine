@@ -3,8 +3,8 @@
 import { useCurrentRegion } from '@/hooks/use-region'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
-import { extractProductData, getProductPath } from '@/utils/product-utils'
-import Link from 'next/link'
+import { extractProductData } from '@/utils/product-utils'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Pagination } from 'ui/src/molecules/pagination'
 import { ProductCard } from 'ui/src/molecules/product-card'
@@ -17,11 +17,7 @@ interface ProductGridProps {
 export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const { region } = useCurrentRegion()
-
-  // Reset to page 1 when products change (due to filtering)
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [products.length])
+  const navigate = useRouter()
 
   // Calculate pagination
   const totalPages = Math.ceil(products.length / pageSize)
@@ -36,6 +32,10 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     }
   }, [currentPage, totalPages])
 
+  /*const handleNavigate = (handle: string) => {  
+    navigate.push(`/products/${handle}`)
+  }*/
+
   if (products.length === 0) {
     return (
       <div className="py-product-grid-empty-padding text-center">
@@ -48,10 +48,8 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {currentProducts.map((product) => {
-          const { price, displayBadges, stockText } = extractProductData(
-            product,
-            region?.currency_code
-          )
+          const { price, displayBadges, stockText, stockStatus } =
+            extractProductData(product, region?.currency_code, region)
 
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
@@ -64,21 +62,17 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
                 : 'Price not available'
 
           return (
-            <Link
+            <ProductCard
               key={product.id}
-              href={getProductPath(product.handle)}
-              className="block"
-            >
-              <ProductCard
-                name={product.title}
-                price={formattedPrice}
-                imageUrl={product.thumbnail || ''}
-                badges={displayBadges}
-                stockStatus={stockText}
-                hasDetailButton
-                detailButtonText="View Details"
-              />
-            </Link>
+              name={product.title}
+              price={formattedPrice}
+              imageUrl={product.thumbnail || ''}
+              badges={displayBadges}
+              stockStatus="" // Empty since we show stock in badges
+              hasDetailButton
+              onDetailClick={() => navigate.push(`/products/${product.handle}`)}
+              detailButtonText="View Details"
+            />
           )
         })}
       </div>
