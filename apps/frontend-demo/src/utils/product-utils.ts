@@ -17,19 +17,6 @@ export function getStockStatusText(status: StockStatus): string {
   }
 }
 
-/**
- * Ensure badges array has at least one item (for layout consistency)
- */
-export function ensureBadgesPlaceholder(badges: BadgeProps[]): BadgeProps[] {
-  return badges.length > 0
-    ? badges
-    : [
-        {
-          children: '\u00A0',
-          className: 'invisible',
-        },
-      ]
-}
 
 /**
  * Extract all common product display data

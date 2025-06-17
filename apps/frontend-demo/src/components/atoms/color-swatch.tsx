@@ -1,4 +1,4 @@
-import { type ButtonHTMLAttributes, forwardRef } from 'react'
+import { type ButtonHTMLAttributes } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '@ui/utils'
 
@@ -39,33 +39,38 @@ export interface ColorSwatchProps
   color: string
   colorName?: string
   count?: number
+  ref?: React.Ref<HTMLButtonElement>
 }
 
-export const ColorSwatch = forwardRef<HTMLButtonElement, ColorSwatchProps>(
-  (
-    { className, selected, disabled, color, colorName, count, ...props },
-    ref
-  ) => {
-    const title = colorName
-      ? `${colorName}${count !== undefined ? ` (${count})` : ''}`
-      : undefined
+export const ColorSwatch = ({
+  className,
+  selected,
+  disabled,
+  color,
+  colorName,
+  count,
+  ref,
+  ...props
+}: ColorSwatchProps) => {
+  const title = colorName
+    ? `${colorName}${count !== undefined ? ` (${count})` : ''}`
+    : undefined
 
-    return (
-      <button
-        ref={ref}
-        className={colorSwatchVariants({ selected, disabled, className })}
-        disabled={disabled}
-        title={title}
-        aria-label={title}
-        {...props}
-      >
-        <span
-          className="absolute inset-[3px] rounded-color-swatch-inner"
-          style={{ backgroundColor: color }}
-        />
-      </button>
-    )
-  }
-)
+  return (
+    <button
+      ref={ref}
+      className={colorSwatchVariants({ selected, disabled, className })}
+      disabled={disabled}
+      title={title}
+      aria-label={title}
+      {...props}
+    >
+      <span
+        className="absolute inset-[3px] rounded-color-swatch-inner"
+        style={{ backgroundColor: color }}
+      />
+    </button>
+  )
+}
 
 ColorSwatch.displayName = 'ColorSwatch'

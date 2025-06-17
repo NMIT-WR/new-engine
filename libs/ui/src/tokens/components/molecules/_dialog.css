@@ -23,6 +23,10 @@
   --gap-dialog-content: var(--spacing-sm);
   --height-dialog-content: 80svh;
   --padding-dialog-content: var(--spacing-lg);
+  
+  /* Dialog actions spacing */
+  --gap-dialog-actions: var(--spacing-2xs); /* 9-10px - gap between action buttons */
+  --padding-dialog-actions: var(--spacing-xs); /* 14-15px - top padding for actions */
 
   /* ===== DIALOG TITLE ===== */
   --text-dialog-title-size: var(--text-xl);

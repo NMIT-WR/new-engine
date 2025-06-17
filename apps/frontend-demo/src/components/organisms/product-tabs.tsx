@@ -48,9 +48,9 @@ export function ProductTabs({ product }: ProductTabsProps) {
                 Key Features
               </h4>
               <ul className="space-y-product-tabs-features-gap pl-5">
-                {product.features.map((feature, idx) => (
+                {product.features.map((feature) => (
                   <li
-                    key={idx}
+                    key={feature}
                     className="list-disc text-product-tabs-content-fg text-product-tabs-content-size"
                   >
                     {feature}
@@ -73,9 +73,9 @@ export function ProductTabs({ product }: ProductTabsProps) {
                 Specifications
               </h4>
               <dl className="space-y-product-tabs-spec-gap">
-                {product.specifications.map((spec, idx) => (
+                {product.specifications.map((spec) => (
                   <div
-                    key={idx}
+                    key={spec.name}
                     className="flex gap-product-tabs-spec-gap border-product-tabs-spec-border border-b py-product-tabs-table-cell-y last:border-0"
                   >
                     <dt className="min-w-[var(--spacing-product-tabs-spec-label-width)] font-product-tabs-spec-label text-product-tabs-spec-label text-product-tabs-spec-size">

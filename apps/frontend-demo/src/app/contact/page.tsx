@@ -111,14 +111,10 @@ export default function ContactPage() {
                       setFormData({ ...formData, phone: e.target.value })
                     }
                   />
-                  <div className="space-y-contact-field-gap md:col-span-2">
-                    <label
-                      htmlFor="subject"
-                      className="font-contact-label text-contact-label-fg text-contact-label-size"
-                    >
-                      {form.labels.subject}
-                    </label>
+                  <div className="md:col-span-2">
                     <Select
+                      id="subject"
+                      label={form.labels.subject}
                       options={form.subjects}
                       value={[formData.subject]}
                       onValueChange={(details) =>
@@ -157,9 +153,9 @@ export default function ContactPage() {
                 <h3 className="mb-contact-info-title-bottom font-contact-info-title text-contact-info-title-fg text-contact-info-title-size">
                   {info.title}
                 </h3>
-                {info.items.map((item, index) => (
+                {info.items.map((item) => (
                   <div
-                    key={index}
+                    key={`${item.icon}-${item.label}`}
                     className="mb-contact-info-item-gap flex items-start space-x-contact-info-icon-gap"
                   >
                     <svg
@@ -202,9 +198,9 @@ export default function ContactPage() {
                   {hours.title}
                 </h3>
                 <div className="space-y-contact-hours-gap">
-                  {hours.schedule.map((item, index) => (
+                  {hours.schedule.map((item) => (
                     <div
-                      key={index}
+                      key={item.day}
                       className="flex justify-between text-contact-hours-size"
                     >
                       <span className="text-contact-hours-day-fg">

@@ -36,7 +36,7 @@ const treeVariants = tv({
     branchIndicator: ['data-[state=open]:token-icon-tree-indicator-open'],
     branchContent: ['relative', 'data-[state=closed]:hidden'],
     branchIndentGuide: [
-      'absolute top-0 bottom-0 left-1',
+      'absolute top-0 bottom-0 left-tooltip',
       'w-tree-indent bg-tree-indent',
       'opacity-tree-indent',
     ],

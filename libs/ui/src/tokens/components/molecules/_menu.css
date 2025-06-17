@@ -27,6 +27,9 @@
 
   /* ===== MENU SUBMENU INDICATOR ===== */
   --color-menu-submenu-indicator-fg: var(--color-fg-secondary);
+  
+  /* ===== MENU TRIGGER ICON ===== */
+  --margin-menu-icon: var(--spacing-3xs); /* 5px - space before trigger icon */
 
   /* ===== MENU DISABLED STATE ===== */
   --opacity-menu-disabled: 50%;

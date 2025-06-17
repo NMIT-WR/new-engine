@@ -53,6 +53,7 @@
 
   /* === SPACING === */
   --padding-toast-root: var(--spacing-sm);
+  --padding-toast-close: 0 0;
   --gap-toast-content: var(--spacing-xs);
   --spacing-toast-description-gap: var(--spacing-3xs);
 

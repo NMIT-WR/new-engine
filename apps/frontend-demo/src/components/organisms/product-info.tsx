@@ -114,8 +114,8 @@ export function ProductInfo({
       {/* Badges */}
       {badges.length > 0 && (
         <div className="mb-product-info-badge-margin flex flex-wrap gap-product-info-badge-gap">
-          {badges.map((badge, idx) => (
-            <Badge key={idx} {...badge} />
+          {badges.map((badge) => (
+            <Badge key={`${badge.variant}-${badge.children}`} {...badge} />
           ))}
         </div>
       )}
