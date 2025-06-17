@@ -1,24 +1,38 @@
 'use client'
-
-import { Hero } from '@/components/organisms/hero'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import type { CategoryData } from '@/data/categories-content'
-import { mockProducts } from '@/data/mock-products'
+import { type CategoryWithStats, useCategory } from '@/hooks/use-categories'
 import { useProductListing } from '@/hooks/use-product-listing'
+import { useProducts } from '@/hooks/use-products'
 import type { SortOption } from '@/utils/product-filters'
-import { Select } from 'ui/src/molecules/select'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Select } from '@ui/molecules/select'
 
 interface CategoryPageClientProps {
-  category: CategoryData
+  category?: CategoryWithStats
+  categoryHandle?: string
 }
 
 export default function CategoryPageClient({
-  category,
+  category: categoryProp,
+  categoryHandle,
 }: CategoryPageClientProps) {
-  // Filter products by category
-  const categoryProducts = mockProducts.filter((product) =>
-    product.categories?.some((cat) => cat.id === category.id)
+  // If categoryHandle is provided, fetch the category
+  const {
+    category: fetchedCategory,
+    isLoading: categoryLoading,
+    error: categoryError,
+  } = useCategory(categoryHandle || '')
+  const category = categoryProp || fetchedCategory
+  // Get all products and filter by category
+  const { products: allProducts, isLoading: productsLoading } = useProducts()
+
+  // Filter products by category id or handle
+  const categoryProducts = allProducts.filter((product) =>
+    product.categories?.some(
+      (cat) => cat.id === category?.id || cat.handle === category?.handle
+    )
   )
 
   const {
@@ -29,11 +43,7 @@ export default function CategoryPageClient({
     sortedProducts,
     productCount,
     sortOptions,
-  } = useProductListing(categoryProducts, {
-    initialFilters: {
-      categories: new Set([category.id]),
-    },
-  })
+  } = useProductListing(categoryProducts)
 
   // Override filters to exclude category filtering since we're already filtered
   const adjustedFilters = {
@@ -41,52 +51,71 @@ export default function CategoryPageClient({
     categories: new Set(),
   }
 
+  if (productsLoading || categoryLoading || !category) {
+    return (
+      <div className="min-h-screen bg-product-listing-bg">
+        <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y">
+          <div>
+            <SkeletonLoader variant="text" size="xl" className="mb-8 w-48" />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {[...Array(8)].map((_, i) => (
+                <SkeletonLoader key={i} variant="box" className="h-64 w-full" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!category) {
+    return (
+      <div className="min-h-screen bg-product-listing-bg">
+        <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y text-center">
+          <h1 className="mb-4 font-bold text-2xl">Category Not Found</h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            The requested category does not exist.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-product-listing-bg">
       {/* Breadcrumb */}
-
-      {/* Category Hero */}
-      {category.heroImage && (
-        <Hero
-          title={category.name}
-          subtitle={
-            category.description ||
-            `Explore our collection of ${category.count} products`
-          }
-          backgroundImage={category.heroImage}
-          primaryAction={{
-            label: 'Shop Now',
-            href: '#products',
-          }}
+      <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x pt-product-listing-container-y">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Categories', href: '/categories' },
+            { label: category.name, href: `/categories/${category.handle}` },
+          ]}
         />
-      )}
+      </div>
 
       {/* Main Content */}
       <div
         className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y lg:px-product-listing-container-x-lg"
         id="products"
       >
-        {/* Header (if no hero image) */}
-        {!category.heroImage && (
-          <div className="mb-product-listing-header-margin">
-            <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
-              {category.name}
-            </h1>
-            {category.description && (
-              <p className="max-w-3xl text-body-lg text-foreground-muted">
-                {category.description}
-              </p>
-            )}
-          </div>
-        )}
+        {/* Header */}
+        <div className="mb-product-listing-header-margin">
+          <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
+            {category.name}
+          </h1>
+          {category.description && (
+            <p className="max-w-3xl text-body-lg text-foreground-muted">
+              {category.description}
+            </p>
+          )}
+        </div>
 
         {/* Mobile Filters */}
         <ProductFilters
           className="md:hidden"
           filters={adjustedFilters}
-          onFiltersChange={(newFilters) =>
-            setFilters({ ...newFilters, categories: new Set([category.id]) })
-          }
+          onFiltersChange={setFilters}
           hideCategories // Hide category filter since we're already in a category
         />
 
@@ -96,12 +125,7 @@ export default function CategoryPageClient({
           <aside className="hidden w-product-listing-sidebar-width flex-shrink-0 md:block">
             <ProductFilters
               filters={adjustedFilters}
-              onFiltersChange={(newFilters) =>
-                setFilters({
-                  ...newFilters,
-                  categories: new Set([category.id]),
-                })
-              }
+              onFiltersChange={setFilters}
               hideCategories // Hide category filter since we're already in a category
             />
           </aside>

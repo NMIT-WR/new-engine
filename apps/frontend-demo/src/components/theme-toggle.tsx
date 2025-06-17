@@ -1,8 +1,8 @@
 'use client'
 
 import { useTheme } from '@/hooks/use-theme'
-import { Icon } from 'ui/src/atoms/icon'
-import { Switch } from 'ui/src/molecules/switch'
+import { Icon } from '@ui/atoms/icon'
+import { Switch } from '@ui/molecules/switch'
 
 export function ThemeToggle() {
   const { theme, toggleTheme, mounted } = useTheme()

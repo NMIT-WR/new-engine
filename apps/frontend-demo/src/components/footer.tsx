@@ -1,9 +1,9 @@
 'use client'
 import type { NavSection } from '@/types/navigation'
 import { handleFormSubmit } from '@/utils/form-utils'
-import { Button } from 'ui/src/atoms/button'
-import { Input } from 'ui/src/atoms/input'
-import { Link } from 'ui/src/atoms/link'
+import { Button } from '@ui/atoms/button'
+import { Input } from '@ui/atoms/input'
+import { Link } from '@ui/atoms/link'
 
 const footerSections: NavSection[] = [
   {

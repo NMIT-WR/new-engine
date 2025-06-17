@@ -1,11 +1,11 @@
 'use client'
 
 import type { Product } from '@/types/product'
-import { Badge } from 'ui/src/atoms/badge'
-import { Button } from 'ui/src/atoms/button'
-import { Rating } from 'ui/src/atoms/rating'
-import { type TabItem, Tabs } from 'ui/src/atoms/tabs'
-import { Accordion } from 'ui/src/molecules/accordion'
+import { Badge } from '@ui/atoms/badge'
+import { Button } from '@ui/atoms/button'
+import { Rating } from '@ui/atoms/rating'
+import { type TabItem, Tabs } from '@ui/atoms/tabs'
+import { Accordion } from '@ui/molecules/accordion'
 
 interface ProductTabsProps {
   product: Product

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import '../tokens/index.css'
 import { Footer } from '@/components/footer'
-import { Header } from '@/components/header'
-import type { NavItem } from '@/components/molecules/navigation'
+import { HeaderWrapper } from '@/components/header-wrapper'
 import { Providers } from '@/components/providers'
 import type { ReactNode } from 'react'
 
@@ -16,35 +15,12 @@ export default function RootLayout({
 }: {
   children: ReactNode
 }) {
-  const navigationItems: NavItem[] = [
-    { title: 'Home', href: '/' },
-    { title: 'Products', href: '/products' },
-    {
-      title: 'Categories',
-      role: 'submenu',
-      children: [
-        { title: 'All Categories', href: '/categories' },
-        { title: 'T-Shirts & Tops', href: '/categories/t-shirts-tops' },
-        { title: 'Jeans & Pants', href: '/categories/jeans-pants' },
-        { title: 'Shoes & Sneakers', href: '/categories/shoes-sneakers' },
-        { title: 'Jackets & Coats', href: '/categories/jackets-coats' },
-        { title: 'Dresses', href: '/categories/dresses' },
-        { title: 'Accessories', href: '/categories/accessories' },
-        { title: 'Knitwear', href: '/categories/knitwear' },
-        { title: 'Activewear', href: '/categories/activewear' },
-      ],
-    },
-    { title: 'About', href: '/about' },
-    { title: 'Contact', href: '/contact' },
-  ]
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <Providers>
-          <Header
+          <HeaderWrapper
             logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
-            navigationItems={navigationItems}
           />
           <main className="flex-1">{children}</main>
           <Footer />

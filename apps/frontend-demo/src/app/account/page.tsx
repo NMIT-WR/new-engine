@@ -1,9 +1,9 @@
 'use client'
 
 import { useAuth } from '@/hooks/use-auth'
+import { Button } from '@ui/atoms/button'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { Button } from 'ui/src/atoms/button'
 
 export default function AccountPage() {
   const { user, isLoading, isInitialized, logout } = useAuth()
