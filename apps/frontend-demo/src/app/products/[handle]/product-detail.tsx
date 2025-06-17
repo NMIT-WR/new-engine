@@ -9,8 +9,8 @@ import { useProduct, useProducts } from '@/hooks/use-products'
 import { useCurrentRegion } from '@/hooks/use-region'
 import { formatPrice } from '@/utils/price-utils'
 import { useEffect, useState } from 'react'
-import { ErrorText } from 'ui/src/atoms/error-text'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
+import { ErrorText } from '@ui/atoms/error-text'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
 
 interface ProductDetailProps {
   handle: string

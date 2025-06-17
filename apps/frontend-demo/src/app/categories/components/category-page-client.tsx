@@ -6,8 +6,8 @@ import { type CategoryWithStats, useCategory } from '@/hooks/use-categories'
 import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
 import type { SortOption } from '@/utils/product-filters'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { Select } from 'ui/src/molecules/select'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Select } from '@ui/molecules/select'
 
 interface CategoryPageClientProps {
   category?: CategoryWithStats

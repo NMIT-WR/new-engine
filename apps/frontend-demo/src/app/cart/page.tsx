@@ -4,12 +4,12 @@ import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
+import { Button } from '@ui/atoms/button'
+import { Icon } from '@ui/atoms/icon'
+import { Link } from '@ui/atoms/link'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { NumericInput } from '@ui/molecules/numeric-input'
 import Image from 'next/image'
-import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
-import { Link } from 'ui/src/atoms/link'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { NumericInput } from 'ui/src/molecules/numeric-input'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()

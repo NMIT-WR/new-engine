@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
+import { Button } from '@ui/atoms/button'
 
 export interface FilterSectionProps<T = any> {
   title: string

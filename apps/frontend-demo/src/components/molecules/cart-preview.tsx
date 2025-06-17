@@ -7,7 +7,7 @@ import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from 'ui/src/atoms/button'
+import { Button } from '@ui/atoms/button'
 
 export function CartPreview() {
   const { cart, removeItem, isLoading } = useCart()

@@ -2,7 +2,7 @@ import type { Product } from '@/types/product'
 import { extractProductData } from '@/utils/product-utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ProductCard } from 'ui/src/molecules/product-card'
+import { ProductCard } from '@ui/molecules/product-card'
 
 interface FeaturedProductsProps {
   title: string

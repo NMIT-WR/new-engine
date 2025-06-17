@@ -4,10 +4,10 @@ import { useCurrentRegion } from '@/hooks/use-region'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
+import { Pagination } from '@ui/molecules/pagination'
+import { ProductCard } from '@ui/molecules/product-card'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Pagination } from 'ui/src/molecules/pagination'
-import { ProductCard } from 'ui/src/molecules/product-card'
 
 interface ProductGridProps {
   products: Product[]

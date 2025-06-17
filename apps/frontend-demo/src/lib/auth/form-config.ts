@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-import type { FormInput } from 'ui/src/molecules/form-input'
+import type { FormInput } from '@ui/molecules/form-input'
 import { AUTH_FORM_CONFIG } from './constants'
 
 type FormInputProps = ComponentProps<typeof FormInput>

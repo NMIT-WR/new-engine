@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { tv } from 'ui/src/utils'
+import { tv } from '@ui/utils'
 
 export const skeletonVariants = tv({
   base: [

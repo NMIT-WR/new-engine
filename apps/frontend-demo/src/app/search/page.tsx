@@ -8,9 +8,9 @@ import {
   useProductListing,
 } from '@/hooks/use-product-listing'
 import { useMemo, useState } from 'react'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { Combobox, type ComboboxItem } from 'ui/src/molecules/combobox'
-import { Select } from 'ui/src/molecules/select'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
+import { Select } from '@ui/molecules/select'
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState('')

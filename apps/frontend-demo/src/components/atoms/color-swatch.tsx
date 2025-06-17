@@ -1,6 +1,6 @@
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { tv } from 'ui/src/utils'
+import { tv } from '@ui/utils'
 
 const colorSwatchVariants = tv({
   base: [

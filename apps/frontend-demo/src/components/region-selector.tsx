@@ -1,7 +1,7 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useRegions } from '@/hooks/use-region'
-import { Select } from 'ui/src/molecules/select'
+import { Select } from '@ui/molecules/select'
 
 const currencyFlags: Record<string, string> = {
   EUR: '🇪🇺',

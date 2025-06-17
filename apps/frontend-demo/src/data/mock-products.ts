@@ -1,5 +1,5 @@
 import type { Product, ProductReview } from '@/types/product'
-import type { BadgeProps } from 'ui/src/atoms/badge'
+import type { BadgeProps } from '@ui/atoms/badge'
 
 // Helper function to generate random reviews
 function generateReviews(count: number, productId: string): ProductReview[] {

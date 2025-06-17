@@ -6,7 +6,7 @@ import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { useToast } from 'ui/src/molecules/toast'
+import { useToast } from '@ui/molecules/toast'
 
 const CART_ID_KEY = 'medusa_cart_id'
 

@@ -1,7 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { Button } from 'ui/src/atoms/button'
-import { Image } from 'ui/src/atoms/image'
+import { Button } from '@ui/atoms/button'
+import { Image } from '@ui/atoms/image'
 
 interface HeroProps {
   title: string

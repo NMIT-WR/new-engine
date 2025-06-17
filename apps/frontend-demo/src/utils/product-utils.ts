@@ -1,7 +1,7 @@
 import { type StockStatus, getProductInventory } from '@/lib/inventory'
 import type { Product } from '@/types/product'
 import type { StoreRegion } from '@medusajs/types'
-import type { BadgeProps } from 'ui/src/atoms/badge'
+import type { BadgeProps } from '@ui/atoms/badge'
 
 /**
  * Convert stock status to display text

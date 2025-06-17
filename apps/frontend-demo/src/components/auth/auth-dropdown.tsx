@@ -8,11 +8,11 @@ import {
 } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
-import { FormInput } from 'ui/src/molecules/form-input'
-import { Menu } from 'ui/src/molecules/menu'
-import { Popover } from 'ui/src/molecules/popover'
+import { Button } from '@ui/atoms/button'
+import { Icon } from '@ui/atoms/icon'
+import { FormInput } from '@ui/molecules/form-input'
+import { Menu } from '@ui/molecules/menu'
+import { Popover } from '@ui/molecules/popover'
 
 export function AuthDropdown() {
   const { user, logout, showSuccess } = useAuth()

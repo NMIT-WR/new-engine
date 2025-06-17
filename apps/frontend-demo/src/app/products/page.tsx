@@ -5,8 +5,8 @@ import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
 import { useState } from 'react'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { Select } from 'ui/src/molecules/select'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Select } from '@ui/molecules/select'
 
 // Loading skeleton for products
 function ProductGridSkeleton() {

@@ -9,11 +9,11 @@ import {
   getColorsWithCounts,
   getSizesWithCounts,
 } from '@/utils/product-filters'
+import { Button } from '@ui/atoms/button'
+import { Checkbox } from '@ui/molecules/checkbox'
+import { Dialog } from '@ui/molecules/dialog'
+import { RangeSlider } from '@ui/molecules/range-slider'
 import { useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { Checkbox } from 'ui/src/molecules/checkbox'
-import { Dialog } from 'ui/src/molecules/dialog'
-import { RangeSlider } from 'ui/src/molecules/range-slider'
 import { ColorSwatch } from '../atoms/color-swatch'
 import { FilterSection } from '../molecules/filter-section'
 

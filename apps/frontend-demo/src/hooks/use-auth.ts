@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
-import { useToast } from 'ui/src/molecules/toast'
+import { useToast } from '@ui/molecules/toast'
 
 export function useAuth() {
   const authState = useStore(authStore)
