@@ -16,7 +16,7 @@ export default function CategoriesPage() {
             <div className="grid grid-cols-2 gap-category-grid-gap md:grid-cols-4">
               {[...Array(8)].map((_, i) => (
                 <SkeletonLoader
-                  key={i}
+                  key={`skeleton-${i}`}
                   variant="box"
                   className="aspect-[4/3] w-full rounded-category-card-radius"
                 />

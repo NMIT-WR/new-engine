@@ -13,6 +13,7 @@
 
   --radius-tooltip: var(--radius-md);
   --shadow-tooltip: var(--shadow-md);
+  --spacing-tooltip: var(--spacing-3xs);
 
   /* Required for Zag.js */
   --tooltip-arrow-size: var(--spacing-2xs);

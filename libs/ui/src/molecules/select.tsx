@@ -67,7 +67,7 @@ const selectVariants = tv({
   variants: {
     size: {
       xs: {
-        trigger: 'text-xs py-1',
+        trigger: 'text-xs py-select-sm',
         item: 'text-xs',
         value: 'text-xs',
       },

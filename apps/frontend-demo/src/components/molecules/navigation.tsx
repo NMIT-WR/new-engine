@@ -17,9 +17,9 @@ export type NavItem = {
 function Submenu({ items }: { items: NavItem[] }) {
   return (
     <div className="absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu">
-      {items.map((child, index) => (
+      {items.map((child) => (
         <Link
-          key={index}
+          key={child.href || child.title}
           href={child.href || '#'}
           className="block px-navigation-item-x py-navigation-item-y text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
           target={child.external ? '_blank' : undefined}
@@ -104,8 +104,8 @@ export function Navigation({ items, className, ...props }: NavigationProps) {
   return (
     <nav className="bg-navigation-bg" {...props}>
       <ul className="flex items-center gap-navigation-gap">
-        {items.map((item, index) => (
-          <NavigationItem key={index} item={item} />
+        {items.map((item) => (
+          <NavigationItem key={item.href || item.title} item={item} />
         ))}
       </ul>
     </nav>

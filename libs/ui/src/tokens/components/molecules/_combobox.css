@@ -40,6 +40,9 @@
     var(--opacity-ring)
   );
 
+  /* ===== LABEL ===== */
+  --spacing-combobox-label: var(--spacing-2xs);
+
   /* ===== INPUT SLOT ===== */
   --color-combobox-fg: var(--color-fg-primary);
   --color-combobox-placeholder: --alpha(

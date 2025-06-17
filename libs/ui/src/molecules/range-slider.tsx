@@ -227,7 +227,7 @@ export function RangeSlider({
                   min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
-                    key={index}
+                    key={`marker-${markerValue}`}
                     className={marker()}
                     {...api.getMarkerProps({ value: markerValue })}
                   >
@@ -253,9 +253,9 @@ export function RangeSlider({
             </div>
           )}
         </div>
-        {api.value.map((_, index) => (
+        {api.value.map((value, index) => (
           <div
-            key={index}
+            key={`thumb-${index}-${value}`}
             className={thumb({ size })}
             {...api.getThumbProps({ index })}
           >

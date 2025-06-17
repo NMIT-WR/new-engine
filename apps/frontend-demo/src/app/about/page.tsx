@@ -35,7 +35,7 @@ export default function AboutPage() {
               </h2>
               {story.paragraphs.map((paragraph, index) => (
                 <p
-                  key={index}
+                  key={`story-paragraph-${index}-${paragraph.slice(0, 20)}`}
                   className="text-about-grid-text-fg text-about-grid-text-size leading-relaxed"
                 >
                   {paragraph}
@@ -58,8 +58,8 @@ export default function AboutPage() {
         <div className="mx-auto max-w-container-max px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
           <div className="rounded-about-image-radius bg-about-stats-bg py-about-stats-padding">
             <div className="grid grid-cols-2 gap-about-stats-gap text-center md:grid-cols-4">
-              {stats.map((stat, index) => (
-                <div key={index}>
+              {stats.map((stat) => (
+                <div key={stat.label}>
                   <div className="font-about-stat-number text-about-stat-number-fg text-about-stat-number-size">
                     {stat.value}
                   </div>
@@ -80,9 +80,9 @@ export default function AboutPage() {
             {values.title}
           </h2>
           <div className="grid grid-cols-1 gap-about-values-gap sm:grid-cols-2 lg:grid-cols-3">
-            {values.items.map((value, index) => (
+            {values.items.map((value) => (
               <div
-                key={index}
+                key={value.title}
                 className="rounded-about-value border border-about-value-border bg-about-value-bg p-about-value-padding text-center transition-shadow hover:shadow-about-value-hover"
               >
                 <svg
@@ -117,8 +117,8 @@ export default function AboutPage() {
             {team.title}
           </h2>
           <div className="grid grid-cols-1 gap-about-team-gap sm:grid-cols-2 lg:grid-cols-4">
-            {team.members.map((member, index) => (
-              <div key={index} className="group text-center">
+            {team.members.map((member) => (
+              <div key={member.name} className="group text-center">
                 <div className="relative mb-about-team-image-bottom overflow-hidden rounded-about-image-radius">
                   <img
                     src={member.image}

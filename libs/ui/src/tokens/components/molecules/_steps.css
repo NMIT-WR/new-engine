@@ -38,7 +38,8 @@
   --height-steps-separator: 2px;
   --width-steps-separator: 2px;
 
-  /* === BUTTON STEPS === */
+  /* === BUTTONS === */
+  --gap-steps-btn: var(--spacing-2xs);
   --padding-steps-btn: var(--spacing-3xs) var(--spacing-xs);
 }
 

@@ -26,6 +26,9 @@
     var(--opacity-ring)
   );
 
+  /* === AUTOPLAY === */
+  --spacing-carousel-autoplay: var(--spacing-3xs);
+
   /* === SPACING === */
 
   /* === ASPECT RATIO === */

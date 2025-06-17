@@ -47,6 +47,7 @@
 
   /* === PADDING === */
   --padding-select-trigger: var(--spacing-xs);
+  --padding-select-sm: var(--spacing-3xs);
 
   /* === TYPOGRAPHY === */
   --text-select-trigger: var(--text-md);

@@ -1,0 +1,17 @@
+@theme static {
+  /* === LABEL SPACING === */
+  --margin-label-required: var(--spacing-3xs); /* 5px - small gap before asterisk */
+  
+  /* === LABEL COLORS === */
+  --color-label-text: var(--color-fg-primary);
+  --color-label-disabled: var(--color-fg-disabled);
+  --color-label-required: var(--color-danger);
+  
+  /* === LABEL TYPOGRAPHY === */
+  --font-weight-label: 500;
+  
+  /* === LABEL TEXT SIZES === */
+  --text-label-sm: var(--text-sm);
+  --text-label-md: var(--text-md);
+  --text-label-lg: var(--text-lg);
+}

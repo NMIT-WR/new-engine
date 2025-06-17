@@ -89,7 +89,7 @@ export function SkeletonLoader({
       <div className={containerClassName}>
         {Array.from({ length: count }).map((_, index) => (
           <div
-            key={`skeleton-${index}`}
+            key={`skeleton-${variant}-${size}-${index}`}
             className={skeletonVariants({ variant, size, block, className })}
             style={style}
             {...props}

@@ -249,10 +249,10 @@ export function Menu({
       ) : (
         <Button {...api.getTriggerProps()} className={trigger()}>
           {triggerText}
-          {triggerIcon && <Icon icon={triggerIcon} className="ml-1" />}
+          {triggerIcon && <Icon icon={triggerIcon} className="ml-menu-icon" />}
           {!triggerIcon && (
             <span {...api.getIndicatorProps()}>
-              <Icon icon="token-icon-menu-trigger" className="ml-1" />
+              <Icon icon="token-icon-menu-trigger" className="ml-menu-icon" />
             </span>
           )}
         </Button>

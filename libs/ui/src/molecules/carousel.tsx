@@ -51,7 +51,7 @@ const carouselVariants = tv({
       'data-[current]:bg-carousel-indicator-active',
     ],
     autoplayIcon: ['icon-[mdi--play]', 'data-[pressed=true]:icon-[mdi--pause]'],
-    autoplayTrigger: ['absolute top-1 right-1 z-10'],
+    autoplayTrigger: ['absolute top-carousel-autoplay right-carousel-autoplay z-10'],
     spacer: ['flex-1'],
   },
   compoundSlots: [
@@ -239,7 +239,7 @@ export function Carousel<T extends ElementType = typeof Image>({
         <div className={slideGroup()} {...api.getItemGroupProps()}>
           {slides.map((slide, index) => (
             <div
-              key={index}
+              key={slide.id}
               className={slideSlot()}
               {...api.getItemProps({ index })}
             >
@@ -267,7 +267,7 @@ export function Carousel<T extends ElementType = typeof Image>({
             {api.pageSnapPoints.map((_, index) => (
               <Button
                 className={indicator()}
-                key={index}
+                key={`carousel-indicator-${index}`}
                 {...api.getIndicatorProps({ index })}
               />
             ))}
