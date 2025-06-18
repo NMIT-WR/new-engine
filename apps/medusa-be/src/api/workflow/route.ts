@@ -156,7 +156,7 @@ export async function GET(
         products: [
             {
                 title: "Medusa T-Shirt",
-                categories: ['Shirts'],
+                categories: [{name: 'Shirts', handle: 'shirts'}],
                 description:
                     "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
                 handle: "t-shirt",
@@ -197,14 +197,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -219,14 +219,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -241,14 +241,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -263,14 +263,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -285,14 +285,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -307,14 +307,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -329,14 +329,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -351,14 +351,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -368,7 +368,7 @@ export async function GET(
             },
             {
                 title: "Medusa Sweatshirt",
-                categories: ["Sweatshirts"],
+                categories: [{name: "Sweatshirts", handle: 'sweatshirts'}],
                 description:
                     "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
                 handle: "sweatshirt",
@@ -398,14 +398,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -419,14 +419,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -440,14 +440,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -461,14 +461,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -478,7 +478,7 @@ export async function GET(
             },
             {
                 title: "Medusa Sweatpants",
-                categories: ["Pants"],
+                categories: [{name: "Pants", handle: 'pants'}],
                 description:
                     "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
                 handle: "sweatpants",
@@ -508,14 +508,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -529,14 +529,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -550,14 +550,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -571,14 +571,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -588,7 +588,7 @@ export async function GET(
             },
             {
                 title: "Medusa Shorts",
-                categories: ["Merch"],
+                categories: [{name: "Merch", handle: 'merch'}],
                 description:
                     "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",
                 handle: "shorts",
@@ -618,14 +618,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -639,14 +639,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -660,14 +660,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],
@@ -681,14 +681,14 @@ export async function GET(
                         prices: [
                             {
                                 amount: 10,
-                                currencyCode: "eur",
+                                currency_code: "eur",
                             },
                             {
                                 amount: 15,
-                                currencyCode: "usd",
+                                currency_code: "usd",
                             },
                             {
-                                currencyCode: "czk",
+                                currency_code: "czk",
                                 amount: 250,
                             },
                         ],

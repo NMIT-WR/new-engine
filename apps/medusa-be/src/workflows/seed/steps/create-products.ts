@@ -5,7 +5,10 @@ import {createProductsWorkflow, updateProductsWorkflow} from "@medusajs/medusa/c
 
 export type CreateProductsStepInput = {
     title: string
-    categories: string[]
+    categories: {
+        name?: string
+        handle: string
+    }[]
     description: string
     handle: string
     weight?: number
@@ -14,19 +17,20 @@ export type CreateProductsStepInput = {
     images: {
         url: string
     }[]
-    options: {
+    options?: {
         title: string
         values: string[]
     }[]
-    variants: {
+    variants?: {
         title: string
         sku: string
-        options: {
+        ean?: string
+        options?: {
             [key: string]: string
         }
-        prices: {
+        prices?: {
             amount: number
-            currencyCode: string
+            currency_code: string
         }[]
     }[]
     salesChannelNames: string[]
@@ -44,12 +48,11 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
     const salesChannelService = container.resolve(Modules.SALES_CHANNEL)
 
     const existingCategories = await productService.listProductCategories({
-        name: input.reduce((acc: string[], i) => {
-            i.categories.map(cat => acc.push(cat))
+        handle: input.reduce((acc: string[], i) => {
+            i.categories?.map(cat => acc.push(cat.handle))
             return acc
         }, [])
     })
-
     const existingSalesChannels = await salesChannelService.listSalesChannels({
         name: input.reduce((acc: string[], i) => {
             return [...new Set([...acc, ...i.salesChannelNames])]
@@ -63,7 +66,9 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
     const existingProducts = await productService.listProducts({
         handle: input.map((i) => i.handle)
     }, {
-        relations: ['variants']
+        relations: ['variants', 'variants.options'],
+        select: ['variants.*', 'variants.options.*', '*']
+
     })
 
     const missingProducts = input.filter(i => !existingProducts.find(j => j.handle === i.handle))
@@ -79,10 +84,10 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             title: inputProduct.title,
             categories:
                 existingCategories.filter((cat) => {
-                    if (cat.name === inputProduct.categories.find(t => t === cat.name)) {
+                    if (cat.handle === inputProduct.categories.find(t => t.handle === cat.handle)?.handle) {
                         return cat
                     }
-                    throw new Error(`Category ${cat.name} not found`)
+                    throw new Error(`Category "${cat.handle}" not found`)
                 }),
             description: inputProduct.description,
             weight: inputProduct.weight,
@@ -91,19 +96,20 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 if (sp.name === inputProduct.shippingProfileName) {
                     return sp.id
                 }
-                throw new Error(`Shipping profile ${sp.name} not found`)
+                throw new Error(`Shipping profile "${sp.name}" not found`)
             })[0],
             images: inputProduct.images,
             options: inputProduct.options,
-            variants: inputProduct.variants.map(inputVariant => {
+            variants: inputProduct.variants?.map(inputVariant => {
                 const existingVariant = existingProduct.variants.find(v => v.sku === inputVariant.sku)
                 return existingVariant ? {
                         title: inputVariant.title,
                         sku: inputVariant.sku,
+                        ean: inputVariant.ean,
                         options: inputVariant.options,
-                        prices: inputVariant.prices.map(p => ({
+                        prices: inputVariant.prices?.map(p => ({
                             amount: p.amount,
-                            currency_code: p.currencyCode
+                            currency_code: p.currency_code,
                     })), id: existingVariant.id} : inputVariant
             }),
             sales_channels: existingSalesChannels.filter((sc) => {
@@ -123,7 +129,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             title: p.title,
             category_ids:
                 existingCategories.filter((cat) => {
-                    if (cat.name === p.categories.find(t => t === cat.name)) {
+                    if (cat.handle === p.categories.find(t => t.handle === cat.handle)?.handle) {
                         return cat
                     }
                     throw new Error(`Category '${cat.name}' not found`)
@@ -140,13 +146,14 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             })[0],
             images: p.images,
             options: p.options,
-            variants: p.variants.map(v => ({
+            variants: p.variants?.map(v => ({
                 title: v.title,
                 sku: v.sku,
+                ean: v.ean,
                 options: v.options,
-                prices: v.prices.map(p => ({
+                prices: v.prices?.map(p => ({
                     amount: p.amount,
-                    currency_code: p.currencyCode
+                    currency_code: p.currency_code,
                 }))
             })),
             sales_channels: existingSalesChannels.filter((sc) => {
