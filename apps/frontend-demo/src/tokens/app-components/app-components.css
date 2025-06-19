@@ -1,4 +1,4 @@
-@import "./atoms/_color-swatch.css";
+@import "./atoms/_color-select.css";
 
 @import "./molecules/_auth-dropdown.css";
 @import "./molecules/_cart-preview.css";
