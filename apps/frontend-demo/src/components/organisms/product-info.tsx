@@ -14,8 +14,6 @@ import { NumericInput } from '@ui/molecules/numeric-input'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 
-const MAXIMUM_QUANTITY = 10
-
 interface ProductInfoProps {
   product: Product
   selectedVariant: ProductVariant | null
@@ -38,8 +36,10 @@ export function ProductInfo({
   })
   const [quantity, setQuantity] = useState(1)
   const { addItem } = useCart()
-  const toast = useToast()
   const { region } = useCurrentRegion()
+  const toast = useToast()
+  const inventory = getVariantInventory(selectedVariant, region)
+  const isAvailable = isQuantityAvailable(selectedVariant, quantity, region)
 
   // Get all option types from product
   const optionTypes = product.options || []
@@ -78,8 +78,6 @@ export function ProductInfo({
       return
     }
 
-    const inventory = getVariantInventory(selectedVariant, region)
-
     // Check if variant is in stock
     if (inventory.status === 'out-of-stock') {
       toast.create({
@@ -91,7 +89,7 @@ export function ProductInfo({
     }
 
     // Check if requested quantity is available
-    if (!isQuantityAvailable(selectedVariant, quantity, region)) {
+    if (!isAvailable) {
       toast.create({
         title: 'Insufficient Stock',
         description: `Only ${inventory.quantity} items available.`,
@@ -104,10 +102,6 @@ export function ProductInfo({
     // The success toast is handled by the cart hook
     addItem(selectedVariant.id, quantity)
   }
-
-  const maxQuantity =
-    selectedVariant?.inventory_quantity !== undefined &&
-    selectedVariant?.inventory_quantity > MAXIMUM_QUANTITY
 
   return (
     <div className="flex flex-col">
@@ -151,14 +145,7 @@ export function ProductInfo({
       {selectedVariant && (
         <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>SKU: {selectedVariant.sku}</p>
-          {selectedVariant.inventory_quantity !== undefined && (
-            <p>
-              In Stock:{' '}
-              {maxQuantity
-                ? `${10}+ units`
-                : `${selectedVariant.inventory_quantity} units`}
-            </p>
-          )}
+          <p>{inventory.message}</p>
         </div>
       )}
 
@@ -204,8 +191,7 @@ export function ProductInfo({
                     (v) => v.options?.[optionKey] === value
                   )
                   const variantInventory = getVariantInventory(
-                    variantForOption,
-                    region
+                    variantForOption
                   )
                   const isOutOfStock =
                     variantInventory.status === 'out-of-stock'
@@ -240,7 +226,7 @@ export function ProductInfo({
             max={
               selectedVariant
                 ? Math.min(
-                    getVariantInventory(selectedVariant, region).quantity || 10,
+                    getVariantInventory(selectedVariant).quantity || 10,
                     10
                   )
                 : 10
@@ -258,14 +244,13 @@ export function ProductInfo({
           className="flex-1"
           disabled={
             !selectedVariant ||
-            getVariantInventory(selectedVariant, region).status ===
-              'out-of-stock'
+            inventory.status === 'out-of-stock'
           }
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
         >
           {!selectedVariant ||
-          getVariantInventory(selectedVariant, region).status === 'out-of-stock'
+          inventory.status === 'out-of-stock'
             ? 'Out of Stock'
             : 'Add to Cart'}
         </Button>

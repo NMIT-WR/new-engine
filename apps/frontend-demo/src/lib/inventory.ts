@@ -25,8 +25,34 @@ export function getVariantInventory(
     }
   }
 
-  // TODO: Add region-specific inventory when backend supports it
-  // For now, use the global inventory_quantity
+  // Check if variant has price for the region
+  if (region) {
+    // For StoreProductVariant (from API)
+    if ('calculated_price' in variant) {
+      if (!variant.calculated_price) {
+        return {
+          status: 'out-of-stock',
+          quantity: 0,
+          message: 'Not available in this region',
+        }
+      }
+    }
+    // For ProductVariant (transformed)
+    else if ('prices' in variant && variant.prices) {
+      const hasRegionPrice = variant.prices.some(
+        (p: any) => p.currency_code === region.currency_code
+      )
+      if (!hasRegionPrice) {
+        return {
+          status: 'out-of-stock',
+          quantity: 0,
+          message: 'Not available in this region',
+        }
+      }
+    }
+  }
+
+  // Check physical inventory
   const quantity = variant.inventory_quantity || 0
 
   if (quantity <= 0) {
@@ -68,18 +94,35 @@ export function getProductInventory(
     }
   }
 
-  // Calculate total inventory across all variants
+  // Calculate total inventory across all variants available in the region
   let totalQuantity = 0
   let hasAnyInStock = false
   let allOutOfStock = true
+  let hasAnyRegionPrice = false
 
   for (const variant of product.variants) {
     const variantInventory = getVariantInventory(variant, region)
+    
+    // Check if variant is available in region
+    if (variantInventory.message === 'Not available in this region') {
+      continue // Skip variants not available in this region
+    }
+    
+    hasAnyRegionPrice = true
     totalQuantity += variantInventory.quantity
 
     if (variantInventory.status !== 'out-of-stock') {
       hasAnyInStock = true
       allOutOfStock = false
+    }
+  }
+
+  // If no variants have prices for this region
+  if (!hasAnyRegionPrice) {
+    return {
+      status: 'out-of-stock',
+      quantity: 0,
+      message: 'Not available in this region',
     }
   }
 

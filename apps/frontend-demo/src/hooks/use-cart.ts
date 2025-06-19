@@ -4,18 +4,19 @@ import { useCurrentRegion } from '@/hooks/use-region'
 import { cacheConfig } from '@/lib/cache-config'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
+import { cartStore, setCartId, openCart, closeCart, toggleCart } from '@/stores/cart-store'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useStore } from '@tanstack/react-store'
 import { useToast } from '@ui/molecules/toast'
-
-const CART_ID_KEY = 'medusa_cart_id'
 
 // Cart hook using React Query
 export function useMedusaCart() {
   const { region } = useCurrentRegion()
   const queryClient = useQueryClient()
   const toast = useToast()
-  const [isOpen, setIsOpen] = useState(false)
+  const cartState = useStore(cartStore)
+  const cartId = cartState.cartId
+  const isOpen = cartState.isOpen
 
   // Get or create cart
   const {
@@ -23,34 +24,14 @@ export function useMedusaCart() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: queryKeys.cart(
-      typeof window !== 'undefined'
-        ? localStorage.getItem(CART_ID_KEY) || undefined
-        : undefined
-    ),
+    queryKey: queryKeys.cart(cartId || undefined),
     queryFn: async () => {
-      const cartId =
-        typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
-
       if (cartId) {
         try {
           const { cart } = await sdk.store.cart.retrieve(cartId)
-          console.log(
-            '[Cart Hook] Retrieved cart:',
-            cart.id,
-            'with',
-            cart.items?.length || 0,
-            'items'
-          )
 
           // If cart region doesn't match current region, update it instead of creating new
           if (region && cart.region_id !== region.id) {
-            console.log(
-              '[Cart Hook] Updating cart region from',
-              cart.region_id,
-              'to',
-              region.id
-            )
             const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
               region_id: region.id,
             })
@@ -59,20 +40,11 @@ export function useMedusaCart() {
 
           return cart
         } catch (err: any) {
-          console.error('[Cart Hook] Failed to retrieve cart:', err)
           // Only remove cart ID if it's a 404 (cart not found)
           if (err?.status === 404 || err?.response?.status === 404) {
-            console.log(
-              '[Cart Hook] Cart not found (404), removing from localStorage'
-            )
-            if (typeof window !== 'undefined') {
-              localStorage.removeItem(CART_ID_KEY)
-            }
+            setCartId(null)
           } else {
             // For other errors, don't remove cart ID - might be network issue
-            console.log(
-              '[Cart Hook] Non-404 error, keeping cart ID in localStorage'
-            )
             throw err
           }
         }
@@ -87,10 +59,7 @@ export function useMedusaCart() {
         region_id: region.id,
       })
 
-      console.log('[Cart Hook] Created new cart:', newCart.id)
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(CART_ID_KEY, newCart.id)
-      }
+      setCartId(newCart.id)
       return newCart
     },
     enabled: !!region,
@@ -102,17 +71,6 @@ export function useMedusaCart() {
       return failureCount < 3
     },
   })
-
-  // Update cart region when region changes
-  useEffect(() => {
-    // Disabled automatic region update - handled in query function
-    // This prevents unnecessary cart updates and potential data loss
-    /*
-    if (cart && region && cart.region_id !== region.id) {
-      updateRegionMutation.mutate(region.id)
-    }
-    */
-  }, [cart?.region_id, region?.id])
 
   // Add item mutation
   const addItemMutation = useMutation({
@@ -138,9 +96,9 @@ export function useMedusaCart() {
         description: 'Item has been added to your cart',
         type: 'success',
       })
+      openCart()
     },
     onError: (error: any) => {
-      console.error('[Cart Hook] Add item error:', error)
 
       // Parse error message for specific inventory issue
       const errorMessage =
@@ -158,9 +116,7 @@ export function useMedusaCart() {
         errorMessage.toLowerCase().includes('not found')
       ) {
         // Cart was likely deleted or expired, clear localStorage and retry
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem(CART_ID_KEY)
-        }
+        setCartId(null)
         toast.create({
           title: 'Cart expired',
           description: 'Your cart has expired. Please try again.',
@@ -223,7 +179,7 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Removed from cart',
+        title: 'Item removed',
         description: 'Item has been removed from your cart',
         type: 'success',
       })
@@ -242,7 +198,7 @@ export function useMedusaCart() {
     mutationFn: async () => {
       if (!cart) throw new Error('No cart available')
 
-      // Remove all items
+      // Delete all line items
       for (const item of cart.items || []) {
         await sdk.store.cart.deleteLineItem(cart.id, item.id)
       }
@@ -256,6 +212,13 @@ export function useMedusaCart() {
         title: 'Cart cleared',
         description: 'All items have been removed from your cart',
         type: 'success',
+      })
+    },
+    onError: (error: Error) => {
+      toast.create({
+        title: 'Failed to clear cart',
+        description: error.message,
+        type: 'error',
       })
     },
   })
@@ -312,9 +275,9 @@ export function useMedusaCart() {
 
     // UI state
     isOpen,
-    toggleCart: () => setIsOpen((prev) => !prev),
-    openCart: () => setIsOpen(true),
-    closeCart: () => setIsOpen(false),
+    toggleCart,
+    openCart,
+    closeCart,
 
     // Actions
     addItem: (variantId: string, quantity?: number) =>
