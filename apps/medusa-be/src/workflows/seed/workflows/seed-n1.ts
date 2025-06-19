@@ -74,27 +74,38 @@ const seedN1Workflow = createWorkflow(
         //         const dbService = container.resolve(DATABASE_MODULE)
         //         const result = await dbService.sqlRaw<ProductRaw>(
         //             sql`
-        //                 ;
-        // WITH product_with_variant_nums AS (
+        //              ;
+        // WITH cte_products_base AS (
+        //     SELECT
+        //         p.*,
+        //         ROW_NUMBER() over (PARTITION BY IF(p.EAN = '', p.id, p.EAN) ORDER BY p.id) AS ean_duplicate_number
+        //     FROM product p
+        //     WHERE p.deleted = 0
+        // ), cte_products AS (
+        //     SELECT
+        //         p.*
+        //     FROM cte_products_base p
+        //     WHERE p.ean_duplicate_number = 1
+        // ), cte_product_with_variant_nums AS (
         //     SELECT
         //         p.*,
         //         ROW_NUMBER() over (PARTITION BY p.id_product_group, p.variant_name ORDER BY p.id) AS variant_num
         //     FROM product p
         //     WHERE p.deleted = 0
         //     AND id_product_group IS NOT NULL
-        // ), product_with_unique_variant_name AS (
+        // ), cte_product_with_unique_variant_name AS (
         //     SELECT
         //         *,
         //         CONCAT(TRIM(variant_name), IF(variant_num = 1, '', CONCAT('_',variant_num))) as variant_name_unique
-        //     FROM product_with_variant_nums
+        //     FROM cte_product_with_variant_nums
         //     WHERE base_product = 0
         //     AND variant_name IS NOT NULL
         //     AND TRIM(variant_name) <> ''
-        // ), variant_option_agg AS (
+        // ), cte_variant_option_agg AS (
         //   SELECT
         //     id_product_group,
         //     JSON_ARRAYAGG(DISTINCT variant_name_unique) AS option_values
-        //   FROM product_with_unique_variant_name
+        //   FROM cte_product_with_unique_variant_name
         //   GROUP BY id_product_group
         // ), cte_category_product AS (
         //     select p.id, cl.rewrite_title from product p
@@ -124,15 +135,14 @@ const seedN1Workflow = createWorkflow(
         //             price_type.default_discount,
         //             price.valid_from_quantity,
         //             LOWER(c.code) as currency_code,
-        //             COALESCE(price_type_lang.title, price_type_lang_alt.title) AS price_type_title
+        //             price_type_lang.title AS price_type_title
         //         FROM price_type
         //         LEFT JOIN price ON price.id_price_type = price_type.id AND price.id_domain = (select id from domain where id = 1) AND price.id_currency = (select id from currency where code = 'czk')
         //         LEFT JOIN currency c ON c.id = price.id_currency
         //             LEFT JOIN product p on p.id = price.id_product
         //             LEFT JOIN vat ON price.id_vat = vat.id
         //         LEFT JOIN price_type_lang ON price_type.id = price_type_lang.id_price_type AND price_type_lang.id_lang in (select id from lang where abbreviation = 'cz')
-        //         LEFT JOIN price_type_lang AS price_type_lang_alt ON price_type_lang.id_lang IS NULL AND price_type_lang_alt.id_price_type = price_type.id AND price_type_lang_alt.id_lang in (select id from lang where abbreviation = 'cz')
-        //         WHERE COALESCE(price_type_lang.title, price_type_lang_alt.title) = 'MOC'
+        //         WHERE price_type_lang.title = 'MOC'
         //         and p.deleted = 0
         //         ORDER BY valid_from_quantity DESC, vat.rate DESC, price.value ASC
         // ), cte_product_prices_agg AS (
@@ -146,6 +156,33 @@ const seedN1Workflow = createWorkflow(
         //   ) AS prices
         //  from cte_product_prices cpp
         //  group by cpp.productId
+        // ), cte_product_stores as (
+        //     select
+        //         psq.id_product as productId,
+        //         SUM(psq.quantity) as quantity,
+        //         SUM(psq.supplier_quantity) as supplier_quantity
+        //     from product_store_quantity psq
+        //     join product pwvn on pwvn.id = psq.id_product
+        //     where pwvn.deleted = 0
+        //     GROUP BY psq.id_product
+        // ), cte_product_images as (
+        //     select
+        //         p.id_product_group,
+        //         ROW_NUMBER() over (PARTITION BY i.id_product) as image_num,
+        //         i.*
+        //     from image i
+        //     join product p on p.id = i.id_product
+        //     where p.deleted = 0
+        // ), cte_product_images_grouped AS (
+        //         select
+        //         cpi.id_product_group,
+        //   JSON_ARRAYAGG(
+        //     JSON_OBJECT(
+        //       'url', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cpi.url)
+        //     )
+        //   ) AS images
+        //  from cte_product_images cpi
+        //  group by cpi.id_product_group
         // ), cte_result AS (
         //
         // SELECT
@@ -154,11 +191,15 @@ const seedN1Workflow = createWorkflow(
         //   pl.title,
         //   pl.rewrite_title AS handle,
         //   pl.description,
+        //   COALESCE(vcps.quantity, bpcps.quantity) AS quantity,
+        //   COALESCE(vcps.supplier_quantity, bpcps.supplier_quantity) AS supplier_quantity,
+        //   CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cbppi.url) AS thumbnail,
+        //   cpig.images AS images,
         //   JSON_ARRAYAGG(
         //     JSON_OBJECT(
         //       'title', COALESCE(TRIM(v.variant_name_unique), pl.title),
         //       'sku', COALESCE(v_pl.rewrite_title, pl.rewrite_title),
-        //       'ean', COALESCE(COALESCE(v.EAN,  v.EAN_original), bp.EAN),
+        // #       'ean', COALESCE(COALESCE(v.EAN,  v.EAN_original), bp.EAN), #has duplicates in n1 db
         //       'options', JSON_OBJECT('Variant', TRIM(v.variant_name_unique)),
         //       'prices', COALESCE(cpp.prices, cpbp.prices)
         //     )
@@ -170,22 +211,26 @@ const seedN1Workflow = createWorkflow(
         //     )
         //   ) AS options,
         //     vc.categories
-        // FROM product bp
+        // FROM cte_products bp
         // JOIN product_lang pl
         //   ON pl.id_product = bp.id
         //   AND pl.id_lang = (SELECT id FROM lang WHERE abbreviation = 'cz' LIMIT 1)
-        // LEFT JOIN product_with_unique_variant_name v
+        // LEFT JOIN cte_product_with_unique_variant_name v
         //   ON v.id_product_group = bp.id_product_group
         //   AND v.base_product = 0
         //   AND v.deleted = 0
         // LEFT JOIN product_lang v_pl
         //   ON v_pl.id_product = v.id
         //   AND v_pl.id_lang = pl.id_lang
-        // LEFT JOIN variant_option_agg voa
+        // LEFT JOIN cte_variant_option_agg voa
         //   ON voa.id_product_group = bp.id_product_group
         // LEFT JOIN cte_category_product_unique vc ON vc.id = bp.id
         // LEFT JOIN cte_product_prices_agg cpbp ON cpbp.productId = bp.id
         // LEFT JOIN cte_product_prices_agg cpp ON cpp.productId = v.id
+        // LEFT JOIN cte_product_stores vcps ON vcps.productId = v.id
+        // LEFT JOIN cte_product_stores bpcps ON bpcps.productId = bp.id
+        // LEFT JOIN cte_product_images_grouped cpig ON cpig.id_product_group = bp.id_product_group
+        // LEFT JOIN cte_product_images cbppi ON cbppi.id_product = bp.id AND cbppi.image_num = 1
         // WHERE
         //   bp.base_product = 1
         //   AND bp.deleted = 0
@@ -204,6 +249,7 @@ const seedN1Workflow = createWorkflow(
         //     )
         //     AND deleted = 0
         //   )
+        //  AND pl.title <> ''
         // GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description, voa.option_values
         // )
         // # select count(*) from cte_result
@@ -243,6 +289,10 @@ const seedN1Workflow = createWorkflow(
                 "title": "Dětská Skla - Main Youth Single FOX RACING Skla - Main Youth Single",
                 "handle": "detska-skla-main-youth-single-fox-racing-skla-main-youth-single",
                 "description": "<p>N&#225;hradn&#237; skla pro d&#283;tsk&#233; br&#253;le Fox Main</p>",
+                "quantity": 6.00000,
+                "supplier_quantity": 0.00000,
+                "thumbnail": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/3053731e40-12-30-291.jpg",
+                "images": [{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/3053731e40-12-30-291.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/52653de0e9-12-30-292.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/dd94e6a408-12-30-293.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/65afeb3a38-12-30-294.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/12-30-291.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/12-30-292.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/12-30-293.jpg"},{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/12-30-294.jpg"}],
                 "variants": [{"title": "One Size", "sku": "detska-skla-main-youth-single-fox-racing-skla-main-youth-single-product-2", "ean": "700285294452", "options": {"Variant": "One Size"}, "prices": [{"currency_code": "czk", "amount": 81.81818}]},{"title": "One Size_2", "sku": "detska-skla-main-youth-single-fox-racing-skla-main-youth-single-product-3", "ean": "700285294469", "options": {"Variant": "One Size_2"}, "prices": [{"currency_code": "czk", "amount": 81.81818}]},{"title": "One Size_3", "sku": "detska-skla-main-youth-single-fox-racing-skla-main-youth-single-product-4", "ean": "700285294476", "options": {"Variant": "One Size_3"}, "prices": [{"currency_code": "czk", "amount": 81.81818}]},{"title": "One Size_4", "sku": "detska-skla-main-youth-single-fox-racing-skla-main-youth-single-product-5", "ean": "700285304939", "options": {"Variant": "One Size_4"}, "prices": [{"currency_code": "czk", "amount": 81.81818}]}],
                 "options": [{"title": "Variant", "option_values": ["One Size","One Size_2","One Size_3","One Size_4"]}],
                 "categories": [{"handle": "bryle-category-296"},{"handle": "bryle-category-393"}]
@@ -253,6 +303,10 @@ const seedN1Workflow = createWorkflow(
                 "title": "Pánské brýle FOX RACING Duncan Sport Replacement Lens",
                 "handle": "panske-bryle-fox-racing-duncan-sport-replacement-lens",
                 "description": "Náhradní sklo pro brýle Duncan sport. Propustnost skel: Titanium clear- 54%, Black fade - 53%, Light grey -39%,Bronze - 22%, Grey-18%, Gold iridium - 12%, Black iridium - 10%.",
+                "quantity": 2.00000,
+                "supplier_quantity": 0.00000,
+                "thumbnail": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/59896-000.jpg",
+                "images": [{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/59896-000.jpg"}],
                 "variants": [{"title": "Pánské brýle FOX RACING Duncan Sport Replacement Lens", "sku": "panske-bryle-fox-racing-duncan-sport-replacement-lens", "ean": "700285387628", "options": {"Variant": null}, "prices": [{"currency_code": "czk", "amount": 652.89256}]}],
                 "options": [{"title": "Variant", "option_values": null}],
                 "categories": [{"handle": "slunecni-bryle"},{"handle": "slunecni-bryle-category-375"}]
@@ -263,6 +317,10 @@ const seedN1Workflow = createWorkflow(
                 "title": "Pánské brýle FOX RACING Duncan Sport Replacement Lens",
                 "handle": "panske-bryle-fox-racing-duncan-sport-replacement-lens-product-7",
                 "description": "<p>N&#225;hradn&#237; skla pro d&#283;tsk&#233; br&#253;le Fox Main</p>",
+                "quantity": 2.00000,
+                "supplier_quantity": 0.00000,
+                "thumbnail": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/59902-000.jpg",
+                "images": [{"url": "https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/59902-000.jpg"}],
                 "variants": [{"title": "Pánské brýle FOX RACING Duncan Sport Replacement Lens", "sku": "panske-bryle-fox-racing-duncan-sport-replacement-lens-product-7", "ean": "700285387659", "options": {"Variant": null}, "prices": [{"currency_code": "czk", "amount": 842.97521}]}],
                 "options": [{"title": "Variant", "option_values": null}],
                 "categories": [{"handle": "slunecni-bryle"},{"handle": "slunecni-bryle-category-375"}]
@@ -294,7 +352,8 @@ const seedN1Workflow = createWorkflow(
                 handle: i.handle,
                 weight: 1,
                 shippingProfileName: 'Default Shipping Profile',
-                images: [],
+                thumbnail: i.thumbnail,
+                images: i.images,
                 options: options.length === 0 ? undefined : options,
                 variants: variants.length === 0 ? undefined : variants,
                 salesChannelNames: ['Default Sales Channel'],

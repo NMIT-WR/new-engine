@@ -14,6 +14,7 @@ export type CreateProductsStepInput = {
     weight?: number
     status?: ProductStatus
     shippingProfileName: string
+    thumbnail?: string
     images: {
         url: string
     }[]
@@ -84,7 +85,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             title: inputProduct.title,
             categories:
                 existingCategories.filter((cat) => {
-                    if (cat.handle === inputProduct.categories.find(t => t.handle === cat.handle)?.handle) {
+                    if (cat.handle === inputProduct.categories?.find(t => t.handle === cat.handle)?.handle) {
                         return cat
                     }
                     throw new Error(`Category "${cat.handle}" not found`)
@@ -98,6 +99,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 }
                 throw new Error(`Shipping profile "${sp.name}" not found`)
             })[0],
+            thumbnail: inputProduct.thumbnail || existingProduct.thumbnail,
             images: inputProduct.images,
             options: inputProduct.options,
             variants: inputProduct.variants?.map(inputVariant => {
@@ -129,7 +131,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             title: p.title,
             category_ids:
                 existingCategories.filter((cat) => {
-                    if (cat.handle === p.categories.find(t => t.handle === cat.handle)?.handle) {
+                    if (cat.handle === p.categories?.find(t => t.handle === cat.handle)?.handle) {
                         return cat
                     }
                     throw new Error(`Category '${cat.name}' not found`)
@@ -144,6 +146,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 }
                 throw new Error(`Shipping profile '${sp.name}' not found`)
             })[0],
+            thumbnail: p.thumbnail,
             images: p.images,
             options: p.options,
             variants: p.variants?.map(v => ({
