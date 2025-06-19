@@ -6,11 +6,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./tokens/*": "./src/tokens/*"
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": ["dist", "src/tokens"],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
