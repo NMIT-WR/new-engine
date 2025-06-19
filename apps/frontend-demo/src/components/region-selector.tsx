@@ -25,6 +25,7 @@ export function RegionSelector() {
     const regionId = details.value[0]
     const region = regions.find((r) => r.id === regionId)
     if (region) {
+      // setSelectedRegion now uses the setRegion action from store
       setSelectedRegion(region)
     }
   }

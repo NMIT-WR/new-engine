@@ -194,15 +194,6 @@ function transformProduct(
         const calculatedPrice = variant.calculated_price
         const prices = []
 
-        // Debug: log products without calculated_price for USD
-        if (!calculatedPrice && regionCurrencyCode === 'usd') {
-          console.log(
-            'No USD calculated_price for:',
-            medusaProduct.title,
-            '- checking variant.prices:',
-            variant.prices
-          )
-        }
 
         if (calculatedPrice) {
           // Try different paths to get the amount

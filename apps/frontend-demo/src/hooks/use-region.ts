@@ -3,6 +3,7 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { regionStore, setSelectedRegionId } from '@/stores/region-store'
+import { setCartId } from '@/stores/cart-store'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
 import { useEffect } from 'react'
@@ -49,7 +50,9 @@ export function useRegions() {
   const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 
   const setSelectedRegion = (region: any) => {
-    if (region?.id) {
+    if (region?.id && region.id !== selectedRegionId) {
+      // Clear cart when region changes
+      setCartId(null)
       setSelectedRegionId(region.id)
       // Invalidate queries that depend on region
       queryClient.invalidateQueries({ queryKey: queryKeys.products() })
