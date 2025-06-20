@@ -3,9 +3,9 @@ import type { VariantProps } from 'tailwind-variants'
 import { Badge, type BadgeProps } from '../atoms/badge'
 import { Button } from '../atoms/button'
 import { Image } from '../atoms/image'
+import { NumericInput } from '../atoms/numeric-input'
 import { Rating, type RatingProps } from '../atoms/rating'
 import { slugify, tv } from '../utils'
-import { NumericInput } from './numeric-input'
 
 //object-cover aspect-product-card-image
 const productCard = tv({

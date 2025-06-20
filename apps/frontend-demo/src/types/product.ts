@@ -42,6 +42,16 @@ export interface ProductCategory {
   parent_category_id?: string
 }
 
+// Main Category type used in components
+export interface Category {
+  id: string
+  name: string
+  handle: string
+  count?: number
+  imageUrl?: string
+  description?: string
+}
+
 export interface ProductVariant {
   id: string
   title: string

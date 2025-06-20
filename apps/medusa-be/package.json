@@ -26,6 +26,7 @@
     "seedInitialData": "medusa exec ./src/scripts/seed.ts",
     "seedInitialDataTs": "medusa exec ./src/scripts/seed.ts",
     "seedEnhanced": "medusa exec ./src/scripts/seed-enhanced.ts",
+    "linkCategories": "medusa exec ./src/scripts/link-products-categories.ts",
     "seedDefaultData": "medusa exec ./src/scripts/seed-products-from-db.ts",
     "seedDefaultDataTs": "medusa exec ./src/scripts/seed-products-from-db.ts",
     "addInitialSearchDocuments": "medusa exec ./src/scripts/search-index.ts",

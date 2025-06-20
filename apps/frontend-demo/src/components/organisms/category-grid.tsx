@@ -1,6 +1,7 @@
 import type { Category } from '@/types/product'
 import Link from 'next/link'
-import { Image } from 'ui/src/atoms/image'
+import { Button } from '@ui/atoms/button'
+import { Image } from '@ui/atoms/image'
 
 interface CategoryGridProps {
   title?: string
@@ -18,12 +19,18 @@ export function CategoryGrid({
   const CategoryCard = ({ category }: { category: Category }) => {
     const content = (
       <>
-        <div className="aspect-[4/3] overflow-hidden">
-          <Image
-            src={category.imageUrl || ''}
-            alt={category.name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+        <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-700">
+          {category.imageUrl ? (
+            <Image
+              src={category.imageUrl}
+              alt={category.name}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-gray-400 dark:text-gray-600">
+              <span className="text-4xl">📁</span>
+            </div>
+          )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="absolute bottom-0 left-0 p-category-card-padding">
@@ -39,13 +46,13 @@ export function CategoryGrid({
 
     if (onCategoryClick) {
       return (
-        <button
+        <Button
           key={category.id}
           onClick={() => onCategoryClick(category)}
-          className="group relative overflow-hidden rounded-category-card-radius text-left w-full"
+          className="group relative w-full overflow-hidden rounded-category-card-radius text-left"
         >
           {content}
-        </button>
+        </Button>
       )
     }
 

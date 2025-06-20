@@ -1,6 +1,6 @@
-import { Store } from '@tanstack/store'
+import { Store } from '@tanstack/react-store'
 
-interface RegionState {
+export interface RegionState {
   selectedRegionId: string | null
 }
 
@@ -14,7 +14,7 @@ export function setSelectedRegionId(regionId: string) {
     ...state,
     selectedRegionId: regionId,
   }))
-  
+
   // Persist to localStorage
   if (typeof window !== 'undefined') {
     localStorage.setItem('medusa_region_id', regionId)
@@ -25,7 +25,7 @@ export function getSelectedRegionId(): string | null {
   return regionStore.state.selectedRegionId
 }
 
-// Initialize from localStorage
+// Initialize from localStorage on client side
 if (typeof window !== 'undefined') {
   const storedRegionId = localStorage.getItem('medusa_region_id')
   if (storedRegionId) {

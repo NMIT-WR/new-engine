@@ -29,6 +29,11 @@
 
   /* === LINE CLAMP === */
   --height-cart-preview-item-name-lines: 1;
+  
+  /* === ERROR MESSAGES === */
+  --text-cart-preview-error-size: var(--text-xs);
+  --color-cart-preview-error-fg: light-dark(var(--red-600), var(--red-400));
+  --spacing-cart-preview-error-margin-top: var(--spacing-xs);
 }
 
 @utility line-clamp-cart-item-name {

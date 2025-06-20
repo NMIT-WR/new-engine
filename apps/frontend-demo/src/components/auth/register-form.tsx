@@ -11,10 +11,10 @@ import {
   withLoading,
 } from '@/lib/auth'
 import { type FormEvent, useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { ErrorText } from 'ui/src/atoms/error-text'
-import { Checkbox } from 'ui/src/molecules/checkbox'
-import { FormInput } from 'ui/src/molecules/form-input'
+import { Button } from '@ui/atoms/button'
+import { ErrorText } from '@ui/atoms/error-text'
+import { Checkbox } from '@ui/molecules/checkbox'
+import { FormInput } from '@ui/molecules/form-input'
 import { AuthFormWrapper } from './auth-form-wrapper'
 import { PasswordRequirements } from './password-requirements'
 

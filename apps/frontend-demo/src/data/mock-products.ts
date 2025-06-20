@@ -1,5 +1,5 @@
 import type { Product, ProductReview } from '@/types/product'
-import type { BadgeProps } from 'ui/src/atoms/badge'
+import type { BadgeProps } from '@ui/atoms/badge'
 
 // Helper function to generate random reviews
 function generateReviews(count: number, productId: string): ProductReview[] {
@@ -1728,6 +1728,20 @@ export function getProductPrice(product: Product, currencyCode = 'EUR') {
   const price = firstVariant.prices?.find(
     (p) => p.currency_code === currencyCode
   )
+
+  // If price doesn't have calculated_price string, generate it from amount
+  if (price && !price.calculated_price && price.amount) {
+    const formattedPrice =
+      currencyCode === 'EUR'
+        ? `€${(price.amount / 100).toFixed(2)}`
+        : `$${(price.amount / 100).toFixed(2)}`
+
+    return {
+      ...price,
+      calculated_price: formattedPrice,
+    }
+  }
+
   return price || null
 }
 
@@ -1740,8 +1754,18 @@ export function getProductStock(
       0
     ) || 0
 
-  if (totalStock === 0) {
+  // For demo purposes, if all variants have 0 inventory, assume the product is in stock
+  // This handles cases where inventory tracking isn't set up yet
+  const allVariantsZeroInventory = product.variants?.every(
+    (variant) => variant.inventory_quantity === 0
+  )
+
+  if (totalStock === 0 && !allVariantsZeroInventory) {
     return 'out-of-stock'
+  }
+  if (totalStock === 0 && allVariantsZeroInventory) {
+    // Assume products without inventory tracking are in stock
+    return 'in-stock'
   }
   if (totalStock < 5) {
     return 'low-stock'

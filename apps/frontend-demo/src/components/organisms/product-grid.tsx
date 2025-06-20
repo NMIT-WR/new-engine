@@ -1,11 +1,13 @@
 'use client'
 
+import { useCurrentRegion } from '@/hooks/use-region'
 import type { Product } from '@/types/product'
-import { extractProductData, getProductPath } from '@/utils/product-utils'
-import Link from 'next/link'
+import { formatPrice } from '@/utils/price-utils'
+import { extractProductData } from '@/utils/product-utils'
+import { Pagination } from '@ui/molecules/pagination'
+import { ProductCard } from '@ui/molecules/product-card'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Pagination } from 'ui/src/molecules/pagination'
-import { ProductCard } from 'ui/src/molecules/product-card'
 
 interface ProductGridProps {
   products: Product[]
@@ -14,11 +16,8 @@ interface ProductGridProps {
 
 export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
   const [currentPage, setCurrentPage] = useState(1)
-
-  // Reset to page 1 when products change (due to filtering)
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [products.length])
+  const { region } = useCurrentRegion()
+  const navigate = useRouter()
 
   // Calculate pagination
   const totalPages = Math.ceil(products.length / pageSize)
@@ -33,6 +32,10 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     }
   }, [currentPage, totalPages])
 
+  /*const handleNavigate = (handle: string) => {  
+    navigate.push(`/products/${handle}`)
+  }*/
+
   if (products.length === 0) {
     return (
       <div className="py-product-grid-empty-padding text-center">
@@ -45,25 +48,31 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {currentProducts.map((product) => {
-          const { price, displayBadges, stockText } =
-            extractProductData(product)
+          const { price, displayBadges, stockText, stockStatus } =
+            extractProductData(product, region?.currency_code, region)
+
+          // Format the price for display
+          // Prices from Medusa are already in dollars/euros, NOT cents
+          const formattedPrice =
+            price?.calculated_price !== undefined &&
+            typeof price.calculated_price === 'number'
+              ? formatPrice(price.calculated_price, region?.currency_code)
+              : price?.amount !== undefined && typeof price.amount === 'number'
+                ? formatPrice(price.amount, region?.currency_code)
+                : 'Price not available'
 
           return (
-            <Link
+            <ProductCard
               key={product.id}
-              href={getProductPath(product.handle)}
-              className="block"
-            >
-              <ProductCard
-                name={product.title}
-                price={price?.calculated_price || '€0.00'}
-                imageUrl={product.thumbnail || ''}
-                badges={displayBadges}
-                stockStatus={stockText}
-                hasDetailButton
-                detailButtonText="View Details"
-              />
-            </Link>
+              name={product.title}
+              price={formattedPrice}
+              imageUrl={product.thumbnail || ''}
+              badges={displayBadges}
+              stockStatus="" // Empty since we show stock in badges
+              hasDetailButton
+              onDetailClick={() => navigate.push(`/products/${product.handle}`)}
+              detailButtonText="View Details"
+            />
           )
         })}
       </div>
