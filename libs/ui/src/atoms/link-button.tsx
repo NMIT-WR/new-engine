@@ -7,11 +7,14 @@ import { Icon, type IconType } from './icon'
 const linkButton = tv({
   extend: buttonVariants,
   base: 'cursor-pointer',
-  variants: {
-    size: {
-      current: 'text-current',
-    },
+  variants:{
+    size:{
+      current: ""
+    }
   },
+  defaultVariants: {
+    size: "current"
+  }
 })
 
 export interface LinkButtonProps
@@ -21,8 +24,8 @@ export interface LinkButtonProps
   icon?: IconType
   iconPosition?: 'left' | 'right'
   children?: ReactNode
-  size?: 'current'
   disabled?: boolean
+  uppercase?: boolean
   ref?: Ref<HTMLAnchorElement>
 }
 
@@ -31,7 +34,12 @@ export function LinkButton({
   icon,
   iconPosition = 'left',
   children,
-  size = 'current',
+  variant,
+  theme,
+  size,
+  block,
+  uppercase,
+  className,
   disabled,
   ref,
   ...props
@@ -39,7 +47,14 @@ export function LinkButton({
   return (
     <a
       ref={ref}
-      className={linkButton()}
+      className={linkButton({
+        variant,
+        theme,
+        size,
+        block,
+        uppercase,
+        className,
+      })}
       href={disabled ? undefined : href}
       tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled}

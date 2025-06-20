@@ -12,6 +12,7 @@ import { type NavItem, Navigation } from './molecules/navigation'
 import { MobileMenu } from './organisms/mobile-menu'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
+import { LinkButton } from 'ui/src/atoms/link-button'
 
 interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   logo?: {
@@ -74,19 +75,20 @@ export function Header({
             {/* Core actions - all sizes */}
             <div className="flex items-center">
               {/* Search button */}
-              <Link href="/search">
-                <Button
-                  variant="tertiary"
-                  theme="borderless"
-                  size="sm"
-                  icon="token-icon-search"
-                  className="font-bold text-md"
-                  aria-label="Search"
-                />
-              </Link>
+              <LinkButton
+                href="/search"
+                variant="tertiary"
+                theme="borderless"
+                size="current"
+                icon="token-icon-search"
+                className="font-bold text-md p-2 hover:bg-transparent"
+                aria-label="Search"
+              />
+   
 
               {/* Cart button */}
               <Popover
+              id='cart-popover'
                 trigger={
                   <div className="relative flex items-center">
                     <Icon className="text-tertiary" icon="token-icon-cart" />

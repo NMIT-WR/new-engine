@@ -5,6 +5,7 @@ import { getProductPath } from '@/utils/product-utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from 'ui/src/atoms/button'
+import { LinkButton } from 'ui/src/atoms/link-button'
 
 export function CartPreview() {
   const { items, removeItem, total } = useCart()
@@ -16,14 +17,11 @@ export function CartPreview() {
           <p className="font-semibold text-cart-preview-empty-size text-cart-preview-fg">
             Cart is empty
           </p>
-          <Link
-            href="/products"
-            className="mt-cart-preview-empty-mt inline-block"
-          >
-            <Button variant="primary" size="sm" block>
+    
+            <LinkButton   href="/products" variant="primary" size="sm" block>
               Browse Products
-            </Button>
-          </Link>
+            </LinkButton>
+        
         </div>
       </div>
     )
@@ -41,8 +39,8 @@ export function CartPreview() {
         {items.map((cartItem) => {
           const price = getProductPrice(cartItem.product)
           const imageUrl =
-            cartItem.product.thumbnail ||
-            cartItem.product.images?.[0]?.url ||
+            cartItem?.product.thumbnail ||
+            cartItem?.product.images?.[0]?.url ||
             '/placeholder.png'
 
           return (
@@ -53,7 +51,7 @@ export function CartPreview() {
               <div className="h-cart-preview-item-image w-cart-preview-item-image rounded-cart-preview bg-cart-preview-item-image-bg">
                 <Image
                   src={imageUrl}
-                  alt={cartItem.product.title}
+                  alt={cartItem?.product.title}
                   width={60}
                   height={60}
                   className="h-full w-full object-cover p-1"
@@ -108,11 +106,9 @@ export function CartPreview() {
           </span>
         </div>
         <div className="flex flex-col gap-cart-preview-actions-gap">
-          <Link href="/cart" className="block">
-            <Button variant="primary" size="md" block>
-              To cart
-            </Button>
-          </Link>
+          <LinkButton href="/cart" variant="primary" size="md" block>
+            To cart
+          </LinkButton>
         </div>
       </div>
     </div>
