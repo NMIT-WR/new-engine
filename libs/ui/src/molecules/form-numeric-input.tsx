@@ -28,7 +28,7 @@ export function FormNumericInputRaw({
   const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2xs">
       <Label htmlFor={id} size={size} required={required} disabled={disabled}>
         {label}
       </Label>

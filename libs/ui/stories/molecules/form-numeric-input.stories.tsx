@@ -247,7 +247,7 @@ export const FormExample: Story = {
     
     return (
       <VariantContainer>
-        <form className="space-y-4 w-full max-w-md">
+        <form className="space-y-4 w-[20rem]">
           <h3 className="text-lg font-semibold mb-4">Order Form</h3>
           
           <FormNumericInput
