@@ -102,7 +102,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 throw new Error(`Shipping profile "${sp.name}" not found`)
             })[0],
             thumbnail: inputProduct.thumbnail || existingProduct.thumbnail,
-            images: inputProduct.images,
+            images: inputProduct.images ?? [],
             options: inputProduct.options,
             variants: inputProduct.variants?.map(inputVariant => {
                 const existingVariant = existingProduct.variants.find(v => v.sku === inputVariant.sku)
@@ -150,7 +150,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 throw new Error(`Shipping profile '${sp.name}' not found`)
             })[0],
             thumbnail: p.thumbnail,
-            images: p.images,
+            images: p.images ?? [],
             options: p.options,
             variants: p.variants?.map(v => ({
                 title: v.title,

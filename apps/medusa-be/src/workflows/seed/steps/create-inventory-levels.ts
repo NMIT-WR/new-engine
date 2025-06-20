@@ -61,7 +61,7 @@ export const createInventoryLevelsStep = createStep(CreateInventoryLevelsStepId,
     if (missingInventoryLevels.length !== 0) {
         const createResult = await createInventoryLevelsWorkflow(container).run({
             input: {
-                inventory_levels: inventoryLevels,
+                inventory_levels: missingInventoryLevels,
             },
         })
         for (const resultElement of createResult.result) {
