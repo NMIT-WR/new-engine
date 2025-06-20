@@ -10,7 +10,7 @@ import { Badge, type BadgeProps } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
 import { Label } from '@ui/atoms/label'
 import { Rating } from '@ui/atoms/rating'
-import { NumericInput } from '@ui/molecules/numeric-input'
+import { NumericInput } from '@ui/atoms/numeric-input'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 

@@ -8,7 +8,7 @@ import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { Link } from '@ui/atoms/link'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
-import { NumericInput } from '@ui/molecules/numeric-input'
+import { NumericInput } from '@ui/atoms/numeric-input'
 import Image from 'next/image'
 
 export default function CartPage() {
