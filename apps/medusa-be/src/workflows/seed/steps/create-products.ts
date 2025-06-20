@@ -53,6 +53,8 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             i.categories?.map(cat => acc.push(cat.handle))
             return acc
         }, [])
+    }, {
+        select: ['id', 'handle']
     })
     const existingSalesChannels = await salesChannelService.listSalesChannels({
         name: input.reduce((acc: string[], i) => {
@@ -83,13 +85,13 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
         return {
             id: existingProduct.id,
             title: inputProduct.title,
-            categories:
-                existingCategories.filter((cat) => {
-                    if (cat.handle === inputProduct.categories?.find(t => t.handle === cat.handle)?.handle) {
-                        return cat
-                    }
-                    throw new Error(`Category "${cat.handle}" not found`)
-                }),
+            categories: inputProduct.categories?.map((inputCat) => {
+                const existingCategory = existingCategories.find((cat) => cat.handle === inputCat.handle)
+                if (!existingCategory) {
+                    throw new Error(`Category "${inputCat.handle}" not found`)
+                }
+                return existingCategory
+            }),
             description: inputProduct.description,
             weight: inputProduct.weight,
             status: inputProduct.status || ProductStatus.PUBLISHED,
@@ -127,15 +129,16 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
     if (missingProducts.length !== 0) {
         logger.info("Creating missing products...")
 
-        const products = missingProducts.map(p => ({
+        const createProducts = missingProducts.map(p => ({
             title: p.title,
             category_ids:
-                existingCategories.filter((cat) => {
-                    if (cat.handle === p.categories?.find(t => t.handle === cat.handle)?.handle) {
-                        return cat
+                p.categories?.map((inputCat) => {
+                    const existingCategory = existingCategories.find((cat) => cat.handle === inputCat.handle)
+                    if (!existingCategory) {
+                        throw new Error(`Category "${inputCat.handle}" not found`)
                     }
-                    throw new Error(`Category '${cat.name}' not found`)
-                }).map(cat => cat.id),
+                    return existingCategory.id
+                }),
             description: p.description,
             handle: p.handle,
             weight: p.weight,
@@ -169,7 +172,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
 
         const createResult = await createProductsWorkflow(container).run({
             input: {
-                products
+                products: createProducts
             }
         })
 

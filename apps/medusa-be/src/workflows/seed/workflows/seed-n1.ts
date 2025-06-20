@@ -2,6 +2,8 @@ import {createStep, createWorkflow, StepResponse, transform, WorkflowResponse,} 
 import {DATABASE_MODULE} from "../../../modules/database";
 import {sql} from "drizzle-orm";
 import * as Steps from "../steps";
+import {batchProductsWorkflow} from "@medusajs/medusa/core-flows";
+
 
 const seedN1WorkflowId = 'seed-n1-workflow'
 
