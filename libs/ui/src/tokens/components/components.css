@@ -6,6 +6,7 @@
 @import "./atoms/_tabs.css";
 @import "./atoms/_textarea.css";
 @import "./atoms/_tooltip.css";
+@import "./atoms/_numeric-input.css";
 
 @import "./molecules/_accordion.css";
 @import "./molecules/_breadcrumb.css";
@@ -13,7 +14,6 @@
 @import "./molecules/_checkbox.css";
 @import "./molecules/_combobox.css";
 @import "./molecules/_dialog.css";
-@import "./molecules/_numeric-input.css";
 @import "./molecules/_pagination.css";
 @import "./molecules/_popover.css";
 @import "./molecules/_menu.css";
