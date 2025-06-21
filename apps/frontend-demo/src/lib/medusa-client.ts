@@ -1,4 +1,6 @@
 import Medusa from '@medusajs/js-sdk'
+import { STORAGE_KEYS } from './constants'
+import { httpClient } from './http-client'
 
 // Environment validation
 const BACKEND_URL =
@@ -17,7 +19,7 @@ export const sdk =
         publishableKey: PUBLISHABLE_KEY,
         auth: {
           type: 'jwt',
-          jwtTokenStorageKey: 'medusa_jwt_token',
+          jwtTokenStorageKey: STORAGE_KEYS.AUTH_TOKEN,
           jwtTokenStorageMethod: 'local',
         },
       })
@@ -34,22 +36,12 @@ export async function checkBackendHealth(): Promise<{
   details?: unknown
 }> {
   try {
-    const response = await fetch(`${BACKEND_URL}/health`)
-    const data = await response.json()
-    return { healthy: response.ok, details: data }
+    const data = await httpClient.get('/health')
+    return { healthy: true, details: data }
   } catch (error) {
     return {
       healthy: false,
       error: error instanceof Error ? error.message : 'Unknown error',
     }
   }
-}
-
-// Auth headers helper for custom requests
-export function getAuthHeaders(): HeadersInit {
-  if (typeof window === 'undefined') {
-    return {}
-  }
-  const token = localStorage.getItem('medusa_jwt_token')
-  return token ? { Authorization: `Bearer ${token}` } : {}
 }

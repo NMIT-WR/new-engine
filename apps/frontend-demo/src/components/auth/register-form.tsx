@@ -10,11 +10,11 @@ import {
   validatePassword,
   withLoading,
 } from '@/lib/auth'
-import { type FormEvent, useState } from 'react'
 import { Button } from '@ui/atoms/button'
 import { ErrorText } from '@ui/atoms/error-text'
 import { Checkbox } from '@ui/molecules/checkbox'
 import { FormInput } from '@ui/molecules/form-input'
+import { type FormEvent, useState } from 'react'
 import { AuthFormWrapper } from './auth-form-wrapper'
 import { PasswordRequirements } from './password-requirements'
 
@@ -28,14 +28,13 @@ export function RegisterForm() {
 
   const {
     register,
-    isFormLoading,
-    setFormLoading,
+    registerMutation,
     setValidationErrors,
     getFieldError,
-    showError,
-    showSuccess,
     clearErrors,
   } = useAuth()
+  
+  const isFormLoading = registerMutation.isPending
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -79,24 +78,11 @@ export function RegisterForm() {
 
     if (errors.length > 0) {
       setValidationErrors(errors)
-      showError('Validation Error', errors[0].message)
       return
     }
 
-    setFormLoading(true)
-
-    try {
-      await register(email, password, firstName, lastName)
-      showSuccess(
-        AUTH_MESSAGES.REGISTER_SUCCESS.title,
-        AUTH_MESSAGES.REGISTER_SUCCESS.description
-      )
-    } catch (error: unknown) {
-      const errorMessage = getAuthErrorMessage(error)
-      showError('Registration failed', errorMessage)
-    } finally {
-      setFormLoading(false)
-    }
+    // The mutation handles loading state and success/error toasts
+    register(email, password, firstName, lastName)
   }
 
   return (

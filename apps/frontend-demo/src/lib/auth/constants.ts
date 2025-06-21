@@ -26,6 +26,19 @@ export const AUTH_MESSAGES = {
     title: 'Signed out',
     description: 'You have been successfully signed out.',
   },
+  LOGIN_ERROR: {
+    title: 'Login failed',
+  },
+  REGISTER_ERROR: {
+    title: 'Registration failed',
+  },
+  UPDATE_SUCCESS: {
+    title: 'Profile updated',
+    description: 'Your profile has been successfully updated.',
+  },
+  UPDATE_ERROR: {
+    title: 'Update failed',
+  },
 } as const
 
 export const AUTH_FORM_CONFIG = {

@@ -1,12 +1,11 @@
-import { useAuth } from '@/hooks/use-auth'
+import { validatePassword } from '@/lib/auth/validation'
 
 interface PasswordRequirementsProps {
   password: string
 }
 
 export function PasswordRequirements({ password }: PasswordRequirementsProps) {
-  const { usePasswordStrength } = useAuth()
-  const { requirements } = usePasswordStrength(password)
+  const { requirements } = validatePassword(password)
 
   return (
     <div className="space-y-1 text-gray-500 text-xs">

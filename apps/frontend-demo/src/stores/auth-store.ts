@@ -1,7 +1,13 @@
 import type { ValidationError } from '@/lib/auth/validation'
+import { STORAGE_KEYS } from '@/lib/constants'
+import { httpClient } from '@/lib/http-client'
+import { storage } from '@/lib/local-storage'
 import { sdk } from '@/lib/medusa-client'
 import type { HttpTypes } from '@medusajs/types'
 import { Store } from '@tanstack/react-store'
+
+// In-memory token cache for better security
+let tokenCache: string | null = null
 
 export interface AuthState {
   // Auth state
@@ -11,8 +17,24 @@ export interface AuthState {
   isInitialized: boolean
 
   // Form state
-  isFormLoading: boolean
   validationErrors: ValidationError[]
+}
+
+// Helper to check if JWT token is expired
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload.exp * 1000 < Date.now()
+  } catch {
+    return true
+  }
+}
+
+// Helper to process auth response from SDK
+const processAuthResponse = (response: any): string => {
+  if (typeof response === 'string') return response
+  if (response?.token) return response.token
+  throw new Error('Invalid auth response')
 }
 
 // Helper function to load auth from localStorage
@@ -23,33 +45,33 @@ function loadAuthFromStorage(): Partial<AuthState> {
       isLoading: false,
       error: null,
       isInitialized: false,
-      isFormLoading: false,
       validationErrors: [],
     }
   }
 
   try {
-    const token = localStorage.getItem('medusa_jwt_token')
-    const email = localStorage.getItem('medusa_user_email')
+    const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-    if (token && email) {
+    if (token && !isTokenExpired(token)) {
+      tokenCache = token
       return {
-        isLoading: false, // Don't set loading here, fetchUser will handle it
+        isLoading: false,
         error: null,
         isInitialized: false,
-        isFormLoading: false,
         validationErrors: [],
       }
+    } else if (token) {
+      // Token expired, remove it
+      storage.remove(STORAGE_KEYS.AUTH_TOKEN)
     }
   } catch (error) {
-    console.error('Failed to load auth from storage:', error)
+    // Silent fail - no console.log in production
   }
   return {
     user: null,
     isLoading: false,
     error: null,
     isInitialized: false,
-    isFormLoading: false,
     validationErrors: [],
   }
 }
@@ -60,14 +82,12 @@ export const authStore = new Store<AuthState>({
   isLoading: false,
   error: null,
   isInitialized: false,
-  isFormLoading: false,
   validationErrors: [],
 })
 
 // Initialize auth from localStorage on client side
 if (typeof window !== 'undefined') {
   const initialState = loadAuthFromStorage()
-  console.log('[Auth Store] Initial state from storage:', initialState)
   authStore.setState((state) => ({ ...state, ...initialState }))
 }
 
@@ -75,7 +95,6 @@ if (typeof window !== 'undefined') {
 export const authHelpers = {
   // Fetch current user
   fetchUser: async () => {
-    console.log('[Auth Store] fetchUser called')
     try {
       authStore.setState((state) => ({
         ...state,
@@ -83,14 +102,14 @@ export const authHelpers = {
         error: null,
       }))
 
-      const token =
-        typeof window !== 'undefined'
-          ? localStorage.getItem('medusa_jwt_token')
-          : null
-      console.log('[Auth Store] Token found:', !!token)
+      // Try memory cache first, then localStorage
+      const token = tokenCache || storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-      if (!token) {
-        console.log('[Auth Store] No token, setting user to null')
+      if (!token || isTokenExpired(token)) {
+        if (token) {
+          tokenCache = null
+          storage.remove(STORAGE_KEYS.AUTH_TOKEN)
+        }
         authStore.setState((state) => ({
           ...state,
           user: null,
@@ -100,24 +119,16 @@ export const authHelpers = {
         return null
       }
 
-      // Direct API call to get current customer
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'x-publishable-api-key':
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-        }
-      )
+      // Cache token in memory if not already cached
+      if (!tokenCache && token) {
+        tokenCache = token
+      }
 
-      console.log('[Auth Store] Fetch user response:', response.status)
-
-      if (response.ok) {
-        const data = await response.json()
-        console.log('[Auth Store] User data received:', data.customer?.email)
+      // Use httpClient instead of direct fetch
+      try {
+        const data = await httpClient.get<{
+          customer: HttpTypes.StoreCustomer
+        }>('/store/customers/me')
         authStore.setState((state) => ({
           ...state,
           user: data.customer,
@@ -125,14 +136,10 @@ export const authHelpers = {
           isInitialized: true,
         }))
         return data.customer
-      } else {
-        console.error('[Auth Store] Failed to fetch user:', response.status)
-        if (response.status === 401) {
-          console.log('[Auth Store] Unauthorized, removing tokens')
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('medusa_jwt_token')
-            localStorage.removeItem('medusa_user_email')
-          }
+      } catch (error: any) {
+        if (error.status === 401) {
+          tokenCache = null
+          storage.remove(STORAGE_KEYS.AUTH_TOKEN)
         }
         authStore.setState((state) => ({
           ...state,
@@ -143,7 +150,6 @@ export const authHelpers = {
         return null
       }
     } catch (err: any) {
-      console.error('Failed to fetch user:', err)
       authStore.setState((state) => ({
         ...state,
         user: null,
@@ -166,7 +172,6 @@ export const authHelpers = {
       authStore.setState((state) => ({
         ...state,
         error: null,
-        isFormLoading: true,
         validationErrors: [],
       }))
 
@@ -176,106 +181,56 @@ export const authHelpers = {
         password,
       })
 
-      // Check if response is a string (token) or object with location
-      let token: string
-      if (typeof authResponse === 'string') {
-        token = authResponse
-      } else if (
-        authResponse &&
-        typeof authResponse === 'object' &&
-        'token' in authResponse
-      ) {
-        token = (authResponse as unknown as { token: string }).token
-      } else {
-        throw new Error('Invalid auth response')
-      }
+      // Process response with helper
+      const token = processAuthResponse(authResponse)
 
-      // Step 2: Store token and email
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('medusa_jwt_token', token)
-        localStorage.setItem('medusa_user_email', email)
-      }
+      // Step 2: Store token in memory and localStorage
+      tokenCache = token
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
 
-      // Step 3: Fetch customer profile
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'x-publishable-api-key':
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-        }
-      )
-
-      if (response.ok) {
-        const data = await response.json()
+      // Step 3: Fetch customer profile using httpClient
+      try {
+        const data = await httpClient.get<{
+          customer: HttpTypes.StoreCustomer
+        }>('/store/customers/me')
         authStore.setState((state) => ({
           ...state,
           user: data.customer,
           isLoading: false,
-          isFormLoading: false,
         }))
-      } else {
-        console.error('Failed to fetch customer profile:', response.status)
+      } catch (error: any) {
         // If customer doesn't exist or unauthorized, try to create one
-        if (response.status === 404 || response.status === 401) {
-          const createResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-                'x-publishable-api-key':
-                  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-              },
-              body: JSON.stringify({
-                email,
-                first_name: firstName,
-                last_name: lastName,
-              }),
-            }
-          )
-
-          if (createResponse.ok) {
-            const createData = await createResponse.json()
+        if (error.status === 404 || error.status === 401) {
+          try {
+            const createData = await httpClient.post<{
+              customer: HttpTypes.StoreCustomer
+            }>('/store/customers', {
+              email,
+              first_name: firstName,
+              last_name: lastName,
+            })
             authStore.setState((state) => ({
               ...state,
               user: createData.customer,
               isLoading: false,
-              isFormLoading: false,
             }))
-          } else {
-            const errorData = await createResponse.json()
-            console.log('Create customer error:', errorData)
-
+          } catch (createError: any) {
             // If customer already exists, try fetching again
             if (
-              errorData.message?.includes('already authenticated') ||
-              errorData.message?.includes('already exists')
+              createError.message?.includes('already authenticated') ||
+              createError.message?.includes('already exists')
             ) {
-              const retryResponse = await fetch(
-                `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-                {
-                  method: 'GET',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'x-publishable-api-key':
-                      process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-                  },
-                }
-              )
-
-              if (retryResponse.ok) {
-                const retryData = await retryResponse.json()
+              try {
+                const retryData = await httpClient.get<{
+                  customer: HttpTypes.StoreCustomer
+                }>('/store/customers/me')
                 authStore.setState((state) => ({
                   ...state,
                   user: retryData.customer,
                   isLoading: false,
-                  isFormLoading: false,
                 }))
+              } catch (retryError) {
+                // Silent fail
               }
             }
           }
@@ -283,18 +238,15 @@ export const authHelpers = {
       }
 
       // Step 4: Clear anonymous cart ID (cart will be merged automatically)
-      if (typeof window !== 'undefined') {
-        const anonymousCartId = localStorage.getItem('medusa_cart_id')
-        if (anonymousCartId) {
-          localStorage.removeItem('medusa_cart_id')
-        }
+      const anonymousCartId = storage.get<string>(STORAGE_KEYS.CART_ID)
+      if (anonymousCartId) {
+        storage.remove(STORAGE_KEYS.CART_ID)
       }
     } catch (err: any) {
       const message = err?.message || 'Login failed'
       authStore.setState((state) => ({
         ...state,
         error: message,
-        isFormLoading: false,
       }))
       throw new Error(message)
     }
@@ -311,7 +263,6 @@ export const authHelpers = {
       authStore.setState((state) => ({
         ...state,
         error: null,
-        isFormLoading: true,
         validationErrors: [],
       }))
 
@@ -321,14 +272,57 @@ export const authHelpers = {
         password,
       })
 
-      // Step 2: Auto-login which will create customer profile
-      await authHelpers.login(email, password, firstName, lastName)
+      // Step 2: Login immediately to get auth token
+      const authResponse = await sdk.auth.login('customer', 'emailpass', {
+        email,
+        password,
+      })
+
+      // Process response with helper
+      const token = processAuthResponse(authResponse)
+
+      // Store in memory and localStorage
+      tokenCache = token
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
+
+      // Step 3: Create customer profile using httpClient
+      try {
+        await httpClient.post('/store/customers', {
+          email,
+          first_name: firstName,
+          last_name: lastName,
+        })
+      } catch (error: any) {
+        // Silent fail - customer might already exist
+      }
+
+      // Step 4: Re-login to get token with actor_id
+      const finalAuthResponse = await sdk.auth.login('customer', 'emailpass', {
+        email,
+        password,
+      })
+
+      // Update token with the new one that has actor_id
+      const finalToken = processAuthResponse(finalAuthResponse)
+      tokenCache = finalToken
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, finalToken)
+
+      // Step 5: Fetch customer profile using httpClient
+      const data = await httpClient.get<{ customer: HttpTypes.StoreCustomer }>(
+        '/store/customers/me'
+      )
+      authStore.setState((state) => ({
+        ...state,
+        user: data.customer,
+        isLoading: false,
+        isInitialized: true,
+      }))
+      return data.customer
     } catch (err: any) {
       const message = err?.message || 'Registration failed'
       authStore.setState((state) => ({
         ...state,
         error: message,
-        isFormLoading: false,
       }))
       throw new Error(message)
     }
@@ -338,20 +332,17 @@ export const authHelpers = {
   logout: async () => {
     try {
       await sdk.auth.logout()
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('medusa_jwt_token')
-        localStorage.removeItem('medusa_user_email')
-      }
+      tokenCache = null
+      storage.remove(STORAGE_KEYS.AUTH_TOKEN)
       authStore.setState(() => ({
         user: null,
         isLoading: false,
         error: null,
         isInitialized: true,
-        isFormLoading: false,
         validationErrors: [],
       }))
     } catch (err) {
-      console.error('Logout failed:', err)
+      // Silent fail
     }
   },
 
@@ -360,36 +351,19 @@ export const authHelpers = {
     try {
       authStore.setState((state) => ({ ...state, error: null }))
 
-      const token =
-        typeof window !== 'undefined'
-          ? localStorage.getItem('medusa_jwt_token')
-          : null
+      const token = tokenCache || storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-      if (!token) throw new Error('User not authenticated')
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-            'x-publishable-api-key':
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-          body: JSON.stringify(data),
-        }
-      )
-
-      if (response.ok) {
-        const result = await response.json()
-        authStore.setState((state) => ({
-          ...state,
-          user: result.customer,
-        }))
-      } else {
-        throw new Error('Failed to update profile')
+      if (!token || isTokenExpired(token)) {
+        throw new Error('User not authenticated')
       }
+
+      const result = await httpClient.post<{
+        customer: HttpTypes.StoreCustomer
+      }>('/store/customers/me', data)
+      authStore.setState((state) => ({
+        ...state,
+        user: result.customer,
+      }))
     } catch (err: any) {
       const message = err?.message || 'Profile update failed'
       authStore.setState((state) => ({ ...state, error: message }))
@@ -428,9 +402,5 @@ export const authHelpers = {
       ...state,
       validationErrors: state.validationErrors.filter((e) => e.field !== field),
     }))
-  },
-
-  setFormLoading: (loading: boolean) => {
-    authStore.setState((state) => ({ ...state, isFormLoading: loading }))
   },
 }

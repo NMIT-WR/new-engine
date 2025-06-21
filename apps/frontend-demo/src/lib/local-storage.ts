@@ -159,30 +159,6 @@ export const storage = {
 }
 
 /**
- * Storage keys constants
- */
-export const STORAGE_KEYS = {
-  // User preferences
-  THEME: 'theme',
-  LANGUAGE: 'language',
-  CURRENCY: 'currency',
-
-  // UI state
-  SIDEBAR_OPEN: 'sidebar_open',
-  FILTERS_OPEN: 'filters_open',
-
-  // Feature data
-  RECENTLY_VIEWED: 'recently_viewed_products',
-  SEARCH_HISTORY: 'search_history',
-
-  // Temporary data
-  FORM_DRAFT: 'temp_form_draft',
-
-  // Cart & checkout
-  CHECKOUT_DRAFT: 'temp_checkout_draft',
-} as const
-
-/**
  * Hook for automatic cleanup on mount
  */
 export function useStorageCleanup() {
