@@ -1,11 +1,6 @@
 'use client'
 import { useAuth } from '@/hooks/use-auth'
-import {
-  AUTH_MESSAGES,
-  authFormFields,
-  getAuthErrorMessage,
-  withLoading,
-} from '@/lib/auth'
+import { authFormFields, getAuthErrorMessage, withLoading } from '@/lib/auth'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { FormInput } from '@ui/molecules/form-input'
@@ -111,7 +106,7 @@ export function AuthDropdown() {
 
 function QuickLoginForm() {
   const router = useRouter()
-  const { login, isFormLoading, setFormLoading } = useAuth()
+  const { login, isFormLoading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -119,15 +114,12 @@ function QuickLoginForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setFormLoading(true)
 
     try {
       await login(email, password)
       // Toast is already shown in use-auth hook
     } catch (err: unknown) {
       setError(getAuthErrorMessage(err))
-    } finally {
-      setFormLoading(false)
     }
   }
 

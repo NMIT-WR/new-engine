@@ -6,6 +6,9 @@ import { sdk } from '@/lib/medusa-client'
 import type { HttpTypes } from '@medusajs/types'
 import { Store } from '@tanstack/react-store'
 
+// In-memory token cache for better security
+let tokenCache: string | null = null
+
 export interface AuthState {
   // Auth state
   user: HttpTypes.StoreCustomer | null
@@ -14,8 +17,24 @@ export interface AuthState {
   isInitialized: boolean
 
   // Form state
-  isFormLoading: boolean
   validationErrors: ValidationError[]
+}
+
+// Helper to check if JWT token is expired
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload.exp * 1000 < Date.now()
+  } catch {
+    return true
+  }
+}
+
+// Helper to process auth response from SDK
+const processAuthResponse = (response: any): string => {
+  if (typeof response === 'string') return response
+  if (response?.token) return response.token
+  throw new Error('Invalid auth response')
 }
 
 // Helper function to load auth from localStorage
@@ -26,7 +45,6 @@ function loadAuthFromStorage(): Partial<AuthState> {
       isLoading: false,
       error: null,
       isInitialized: false,
-      isFormLoading: false,
       validationErrors: [],
     }
   }
@@ -34,24 +52,26 @@ function loadAuthFromStorage(): Partial<AuthState> {
   try {
     const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-    if (token) {
+    if (token && !isTokenExpired(token)) {
+      tokenCache = token
       return {
-        isLoading: false, // Don't set loading here, fetchUser will handle it
+        isLoading: false,
         error: null,
         isInitialized: false,
-        isFormLoading: false,
         validationErrors: [],
       }
+    } else if (token) {
+      // Token expired, remove it
+      storage.remove(STORAGE_KEYS.AUTH_TOKEN)
     }
   } catch (error) {
-    console.error('Failed to load auth from storage:', error)
+    // Silent fail - no console.log in production
   }
   return {
     user: null,
     isLoading: false,
     error: null,
     isInitialized: false,
-    isFormLoading: false,
     validationErrors: [],
   }
 }
@@ -62,14 +82,12 @@ export const authStore = new Store<AuthState>({
   isLoading: false,
   error: null,
   isInitialized: false,
-  isFormLoading: false,
   validationErrors: [],
 })
 
 // Initialize auth from localStorage on client side
 if (typeof window !== 'undefined') {
   const initialState = loadAuthFromStorage()
-  console.log('[Auth Store] Initial state from storage:', initialState)
   authStore.setState((state) => ({ ...state, ...initialState }))
 }
 
@@ -77,7 +95,6 @@ if (typeof window !== 'undefined') {
 export const authHelpers = {
   // Fetch current user
   fetchUser: async () => {
-    console.log('[Auth Store] fetchUser called')
     try {
       authStore.setState((state) => ({
         ...state,
@@ -85,11 +102,14 @@ export const authHelpers = {
         error: null,
       }))
 
-      const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
-      console.log('[Auth Store] Token found:', !!token)
+      // Try memory cache first, then localStorage
+      const token = tokenCache || storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-      if (!token) {
-        console.log('[Auth Store] No token, setting user to null')
+      if (!token || isTokenExpired(token)) {
+        if (token) {
+          tokenCache = null
+          storage.remove(STORAGE_KEYS.AUTH_TOKEN)
+        }
         authStore.setState((state) => ({
           ...state,
           user: null,
@@ -99,12 +119,16 @@ export const authHelpers = {
         return null
       }
 
+      // Cache token in memory if not already cached
+      if (!tokenCache && token) {
+        tokenCache = token
+      }
+
       // Use httpClient instead of direct fetch
       try {
         const data = await httpClient.get<{
           customer: HttpTypes.StoreCustomer
         }>('/store/customers/me')
-        console.log('[Auth Store] User data received:', data.customer?.email)
         authStore.setState((state) => ({
           ...state,
           user: data.customer,
@@ -113,9 +137,8 @@ export const authHelpers = {
         }))
         return data.customer
       } catch (error: any) {
-        console.error('[Auth Store] Failed to fetch user:', error)
         if (error.status === 401) {
-          console.log('[Auth Store] Unauthorized, removing token')
+          tokenCache = null
           storage.remove(STORAGE_KEYS.AUTH_TOKEN)
         }
         authStore.setState((state) => ({
@@ -127,7 +150,6 @@ export const authHelpers = {
         return null
       }
     } catch (err: any) {
-      console.error('Failed to fetch user:', err)
       authStore.setState((state) => ({
         ...state,
         user: null,
@@ -150,7 +172,6 @@ export const authHelpers = {
       authStore.setState((state) => ({
         ...state,
         error: null,
-        isFormLoading: true,
         validationErrors: [],
       }))
 
@@ -160,21 +181,11 @@ export const authHelpers = {
         password,
       })
 
-      // Check if response is a string (token) or object with location
-      let token: string
-      if (typeof authResponse === 'string') {
-        token = authResponse
-      } else if (
-        authResponse &&
-        typeof authResponse === 'object' &&
-        'token' in authResponse
-      ) {
-        token = (authResponse as unknown as { token: string }).token
-      } else {
-        throw new Error('Invalid auth response')
-      }
+      // Process response with helper
+      const token = processAuthResponse(authResponse)
 
-      // Step 2: Store token only (not email)
+      // Step 2: Store token in memory and localStorage
+      tokenCache = token
       storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
 
       // Step 3: Fetch customer profile using httpClient
@@ -186,10 +197,8 @@ export const authHelpers = {
           ...state,
           user: data.customer,
           isLoading: false,
-          isFormLoading: false,
         }))
       } catch (error: any) {
-        console.error('Failed to fetch customer profile:', error)
         // If customer doesn't exist or unauthorized, try to create one
         if (error.status === 404 || error.status === 401) {
           try {
@@ -204,11 +213,8 @@ export const authHelpers = {
               ...state,
               user: createData.customer,
               isLoading: false,
-              isFormLoading: false,
             }))
           } catch (createError: any) {
-            console.log('Create customer error:', createError)
-
             // If customer already exists, try fetching again
             if (
               createError.message?.includes('already authenticated') ||
@@ -222,10 +228,9 @@ export const authHelpers = {
                   ...state,
                   user: retryData.customer,
                   isLoading: false,
-                  isFormLoading: false,
                 }))
               } catch (retryError) {
-                console.error('Retry fetch failed:', retryError)
+                // Silent fail
               }
             }
           }
@@ -242,7 +247,6 @@ export const authHelpers = {
       authStore.setState((state) => ({
         ...state,
         error: message,
-        isFormLoading: false,
       }))
       throw new Error(message)
     }
@@ -259,7 +263,6 @@ export const authHelpers = {
       authStore.setState((state) => ({
         ...state,
         error: null,
-        isFormLoading: true,
         validationErrors: [],
       }))
 
@@ -275,20 +278,11 @@ export const authHelpers = {
         password,
       })
 
-      // Store the initial token
-      let token: string
-      if (typeof authResponse === 'string') {
-        token = authResponse
-      } else if (
-        authResponse &&
-        typeof authResponse === 'object' &&
-        'token' in authResponse
-      ) {
-        token = (authResponse as any).token
-      } else {
-        throw new Error('Invalid auth response')
-      }
+      // Process response with helper
+      const token = processAuthResponse(authResponse)
 
+      // Store in memory and localStorage
+      tokenCache = token
       storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
 
       // Step 3: Create customer profile using httpClient
@@ -299,7 +293,7 @@ export const authHelpers = {
           last_name: lastName,
         })
       } catch (error: any) {
-        console.log('[Auth Store] Customer creation failed:', error)
+        // Silent fail - customer might already exist
       }
 
       // Step 4: Re-login to get token with actor_id
@@ -309,17 +303,9 @@ export const authHelpers = {
       })
 
       // Update token with the new one that has actor_id
-      if (typeof finalAuthResponse === 'string') {
-        token = finalAuthResponse
-      } else if (
-        finalAuthResponse &&
-        typeof finalAuthResponse === 'object' &&
-        'token' in finalAuthResponse
-      ) {
-        token = (finalAuthResponse as any).token
-      }
-
-      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
+      const finalToken = processAuthResponse(finalAuthResponse)
+      tokenCache = finalToken
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, finalToken)
 
       // Step 5: Fetch customer profile using httpClient
       const data = await httpClient.get<{ customer: HttpTypes.StoreCustomer }>(
@@ -329,7 +315,6 @@ export const authHelpers = {
         ...state,
         user: data.customer,
         isLoading: false,
-        isFormLoading: false,
         isInitialized: true,
       }))
       return data.customer
@@ -338,7 +323,6 @@ export const authHelpers = {
       authStore.setState((state) => ({
         ...state,
         error: message,
-        isFormLoading: false,
       }))
       throw new Error(message)
     }
@@ -348,17 +332,17 @@ export const authHelpers = {
   logout: async () => {
     try {
       await sdk.auth.logout()
+      tokenCache = null
       storage.remove(STORAGE_KEYS.AUTH_TOKEN)
       authStore.setState(() => ({
         user: null,
         isLoading: false,
         error: null,
         isInitialized: true,
-        isFormLoading: false,
         validationErrors: [],
       }))
     } catch (err) {
-      console.error('Logout failed:', err)
+      // Silent fail
     }
   },
 
@@ -367,9 +351,11 @@ export const authHelpers = {
     try {
       authStore.setState((state) => ({ ...state, error: null }))
 
-      const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
+      const token = tokenCache || storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-      if (!token) throw new Error('User not authenticated')
+      if (!token || isTokenExpired(token)) {
+        throw new Error('User not authenticated')
+      }
 
       const result = await httpClient.post<{
         customer: HttpTypes.StoreCustomer
@@ -416,9 +402,5 @@ export const authHelpers = {
       ...state,
       validationErrors: state.validationErrors.filter((e) => e.field !== field),
     }))
-  },
-
-  setFormLoading: (loading: boolean) => {
-    authStore.setState((state) => ({ ...state, isFormLoading: loading }))
   },
 }
