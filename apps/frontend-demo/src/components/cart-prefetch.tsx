@@ -1,12 +1,11 @@
 'use client'
 
 import { useCurrentRegion } from '@/hooks/use-region'
+import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-
-const CART_ID_KEY = 'medusa_cart_id'
 
 export function CartPrefetch() {
   const queryClient = useQueryClient()
@@ -19,13 +18,13 @@ export function CartPrefetch() {
     queryClient.prefetchQuery({
       queryKey: queryKeys.cart(
         typeof window !== 'undefined'
-          ? localStorage.getItem(CART_ID_KEY) || undefined
+          ? localStorage.getItem(STORAGE_KEYS.CART_ID) || undefined
           : undefined
       ),
       queryFn: async () => {
         const cartId =
           typeof window !== 'undefined'
-            ? localStorage.getItem(CART_ID_KEY)
+            ? localStorage.getItem(STORAGE_KEYS.CART_ID)
             : null
 
         if (cartId) {
@@ -42,7 +41,7 @@ export function CartPrefetch() {
           } catch (err) {
             // Cart not found, will create new one below
             console.error('[Cart Prefetch] Failed to retrieve cart:', err)
-            localStorage.removeItem(CART_ID_KEY)
+            localStorage.removeItem(STORAGE_KEYS.CART_ID)
           }
         }
 
@@ -51,7 +50,7 @@ export function CartPrefetch() {
           region_id: region.id,
         })
 
-        localStorage.setItem(CART_ID_KEY, newCart.id)
+        localStorage.setItem(STORAGE_KEYS.CART_ID, newCart.id)
         return newCart
       },
       staleTime: 5 * 60 * 1000, // 5 minutes

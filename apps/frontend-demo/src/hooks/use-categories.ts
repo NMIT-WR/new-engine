@@ -1,14 +1,10 @@
 'use client'
 
 import { cacheConfig } from '@/lib/cache-config'
+import { httpClient } from '@/lib/http-client'
 import { queryKeys } from '@/lib/query-keys'
 import type { Category } from '@/types/product'
 import { useQuery } from '@tanstack/react-query'
-
-// Use constants from the top of the file to ensure they're available
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
-const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ''
 
 export interface CategoryWithStats extends Category {
   count: number
@@ -33,22 +29,16 @@ export function useCategories() {
   } = useQuery({
     queryKey: queryKeys.categories(),
     queryFn: async () => {
-      // Use direct fetch instead of SDK client
-      const response = await fetch(
-        `${BACKEND_URL}/store/product-categories?fields=*products&include_descendants_tree=true&include_ancestors_tree=true`,
+      const data = await httpClient.get<{ product_categories: any[] }>(
+        '/store/product-categories',
         {
-          headers: {
-            'x-publishable-api-key': PUBLISHABLE_KEY,
-            'Content-Type': 'application/json',
+          params: {
+            fields: '*products',
+            include_descendants_tree: true,
+            include_ancestors_tree: true,
           },
         }
       )
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch categories: ${response.status}`)
-      }
-
-      const data = await response.json()
       return (data.product_categories || []).map(transformCategory)
     },
     ...cacheConfig.static, // 24h stale, 7d gc - categories rarely change
@@ -70,22 +60,17 @@ export function useCategory(handle: string) {
   } = useQuery({
     queryKey: queryKeys.category(handle),
     queryFn: async () => {
-      // Use direct fetch instead of SDK client
-      const response = await fetch(
-        `${BACKEND_URL}/store/product-categories?handle=${handle}&fields=*products&include_descendants_tree=true&include_ancestors_tree=true`,
+      const data = await httpClient.get<{ product_categories: any[] }>(
+        '/store/product-categories',
         {
-          headers: {
-            'x-publishable-api-key': PUBLISHABLE_KEY,
-            'Content-Type': 'application/json',
+          params: {
+            handle,
+            fields: '*products',
+            include_descendants_tree: true,
+            include_ancestors_tree: true,
           },
         }
       )
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch category: ${response.status}`)
-      }
-
-      const data = await response.json()
       const categories = data.product_categories || []
 
       if (categories.length === 0) {

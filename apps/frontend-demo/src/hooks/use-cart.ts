@@ -2,13 +2,12 @@
 
 import { useCurrentRegion } from '@/hooks/use-region'
 import { cacheConfig } from '@/lib/cache-config'
+import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { useToast } from '@ui/molecules/toast'
-
-const CART_ID_KEY = 'medusa_cart_id'
+import { useEffect, useState } from 'react'
 
 // Cart hook using React Query
 export function useMedusaCart() {
@@ -25,12 +24,14 @@ export function useMedusaCart() {
   } = useQuery({
     queryKey: queryKeys.cart(
       typeof window !== 'undefined'
-        ? localStorage.getItem(CART_ID_KEY) || undefined
+        ? localStorage.getItem(STORAGE_KEYS.CART_ID) || undefined
         : undefined
     ),
     queryFn: async () => {
       const cartId =
-        typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
+        typeof window !== 'undefined'
+          ? localStorage.getItem(STORAGE_KEYS.CART_ID)
+          : null
 
       if (cartId) {
         try {
@@ -66,7 +67,7 @@ export function useMedusaCart() {
               '[Cart Hook] Cart not found (404), removing from localStorage'
             )
             if (typeof window !== 'undefined') {
-              localStorage.removeItem(CART_ID_KEY)
+              localStorage.removeItem(STORAGE_KEYS.CART_ID)
             }
           } else {
             // For other errors, don't remove cart ID - might be network issue
@@ -89,7 +90,7 @@ export function useMedusaCart() {
 
       console.log('[Cart Hook] Created new cart:', newCart.id)
       if (typeof window !== 'undefined') {
-        localStorage.setItem(CART_ID_KEY, newCart.id)
+        localStorage.setItem(STORAGE_KEYS.CART_ID, newCart.id)
       }
       return newCart
     },
@@ -159,7 +160,7 @@ export function useMedusaCart() {
       ) {
         // Cart was likely deleted or expired, clear localStorage and retry
         if (typeof window !== 'undefined') {
-          localStorage.removeItem(CART_ID_KEY)
+          localStorage.removeItem(STORAGE_KEYS.CART_ID)
         }
         toast.create({
           title: 'Cart expired',

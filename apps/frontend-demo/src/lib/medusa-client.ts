@@ -1,4 +1,6 @@
 import Medusa from '@medusajs/js-sdk'
+import { httpClient } from './http-client'
+import { storage } from './local-storage'
 
 // Environment validation
 const BACKEND_URL =
@@ -34,9 +36,8 @@ export async function checkBackendHealth(): Promise<{
   details?: unknown
 }> {
   try {
-    const response = await fetch(`${BACKEND_URL}/health`)
-    const data = await response.json()
-    return { healthy: response.ok, details: data }
+    const data = await httpClient.get('/health')
+    return { healthy: true, details: data }
   } catch (error) {
     return {
       healthy: false,
@@ -50,6 +51,6 @@ export function getAuthHeaders(): HeadersInit {
   if (typeof window === 'undefined') {
     return {}
   }
-  const token = localStorage.getItem('medusa_auth_token')
+  const token = storage.get<string>('medusa_auth_token')
   return token ? { Authorization: `Bearer ${token}` } : {}
 }

@@ -1,4 +1,7 @@
 import type { ValidationError } from '@/lib/auth/validation'
+import { STORAGE_KEYS } from '@/lib/constants'
+import { httpClient } from '@/lib/http-client'
+import { storage } from '@/lib/local-storage'
 import { sdk } from '@/lib/medusa-client'
 import type { HttpTypes } from '@medusajs/types'
 import { Store } from '@tanstack/react-store'
@@ -29,10 +32,9 @@ function loadAuthFromStorage(): Partial<AuthState> {
   }
 
   try {
-    const token = localStorage.getItem('medusa_auth_token')
-    const email = localStorage.getItem('medusa_user_email')
+    const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
-    if (token && email) {
+    if (token) {
       return {
         isLoading: false, // Don't set loading here, fetchUser will handle it
         error: null,
@@ -83,10 +85,7 @@ export const authHelpers = {
         error: null,
       }))
 
-      const token =
-        typeof window !== 'undefined'
-          ? localStorage.getItem('medusa_auth_token')
-          : null
+      const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
       console.log('[Auth Store] Token found:', !!token)
 
       if (!token) {
@@ -100,23 +99,11 @@ export const authHelpers = {
         return null
       }
 
-      // Direct API call to get current customer
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'x-publishable-api-key':
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-        }
-      )
-
-      console.log('[Auth Store] Fetch user response:', response.status)
-
-      if (response.ok) {
-        const data = await response.json()
+      // Use httpClient instead of direct fetch
+      try {
+        const data = await httpClient.get<{
+          customer: HttpTypes.StoreCustomer
+        }>('/store/customers/me')
         console.log('[Auth Store] User data received:', data.customer?.email)
         authStore.setState((state) => ({
           ...state,
@@ -125,14 +112,11 @@ export const authHelpers = {
           isInitialized: true,
         }))
         return data.customer
-      } else {
-        console.error('[Auth Store] Failed to fetch user:', response.status)
-        if (response.status === 401) {
-          console.log('[Auth Store] Unauthorized, removing tokens')
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem('medusa_auth_token')
-            localStorage.removeItem('medusa_user_email')
-          }
+      } catch (error: any) {
+        console.error('[Auth Store] Failed to fetch user:', error)
+        if (error.status === 401) {
+          console.log('[Auth Store] Unauthorized, removing token')
+          storage.remove(STORAGE_KEYS.AUTH_TOKEN)
         }
         authStore.setState((state) => ({
           ...state,
@@ -190,92 +174,58 @@ export const authHelpers = {
         throw new Error('Invalid auth response')
       }
 
-      // Step 2: Store token and email
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('medusa_auth_token', token)
-        localStorage.setItem('medusa_user_email', email)
-      }
+      // Step 2: Store token only (not email)
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
 
-      // Step 3: Fetch customer profile
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'x-publishable-api-key':
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-        }
-      )
-
-      if (response.ok) {
-        const data = await response.json()
+      // Step 3: Fetch customer profile using httpClient
+      try {
+        const data = await httpClient.get<{
+          customer: HttpTypes.StoreCustomer
+        }>('/store/customers/me')
         authStore.setState((state) => ({
           ...state,
           user: data.customer,
           isLoading: false,
           isFormLoading: false,
         }))
-      } else {
-        console.error('Failed to fetch customer profile:', response.status)
+      } catch (error: any) {
+        console.error('Failed to fetch customer profile:', error)
         // If customer doesn't exist or unauthorized, try to create one
-        if (response.status === 404 || response.status === 401) {
-          const createResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-                'x-publishable-api-key':
-                  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-              },
-              body: JSON.stringify({
-                email,
-                first_name: firstName,
-                last_name: lastName,
-              }),
-            }
-          )
-
-          if (createResponse.ok) {
-            const createData = await createResponse.json()
+        if (error.status === 404 || error.status === 401) {
+          try {
+            const createData = await httpClient.post<{
+              customer: HttpTypes.StoreCustomer
+            }>('/store/customers', {
+              email,
+              first_name: firstName,
+              last_name: lastName,
+            })
             authStore.setState((state) => ({
               ...state,
               user: createData.customer,
               isLoading: false,
               isFormLoading: false,
             }))
-          } else {
-            const errorData = await createResponse.json()
-            console.log('Create customer error:', errorData)
+          } catch (createError: any) {
+            console.log('Create customer error:', createError)
 
             // If customer already exists, try fetching again
             if (
-              errorData.message?.includes('already authenticated') ||
-              errorData.message?.includes('already exists')
+              createError.message?.includes('already authenticated') ||
+              createError.message?.includes('already exists')
             ) {
-              const retryResponse = await fetch(
-                `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-                {
-                  method: 'GET',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'x-publishable-api-key':
-                      process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-                  },
-                }
-              )
-
-              if (retryResponse.ok) {
-                const retryData = await retryResponse.json()
+              try {
+                const retryData = await httpClient.get<{
+                  customer: HttpTypes.StoreCustomer
+                }>('/store/customers/me')
                 authStore.setState((state) => ({
                   ...state,
                   user: retryData.customer,
                   isLoading: false,
                   isFormLoading: false,
                 }))
+              } catch (retryError) {
+                console.error('Retry fetch failed:', retryError)
               }
             }
           }
@@ -283,11 +233,9 @@ export const authHelpers = {
       }
 
       // Step 4: Clear anonymous cart ID (cart will be merged automatically)
-      if (typeof window !== 'undefined') {
-        const anonymousCartId = localStorage.getItem('medusa_cart_id')
-        if (anonymousCartId) {
-          localStorage.removeItem('medusa_cart_id')
-        }
+      const anonymousCartId = storage.get<string>(STORAGE_KEYS.CART_ID)
+      if (anonymousCartId) {
+        storage.remove(STORAGE_KEYS.CART_ID)
       }
     } catch (err: any) {
       const message = err?.message || 'Login failed'
@@ -326,84 +274,65 @@ export const authHelpers = {
         email,
         password,
       })
-      
+
       // Store the initial token
       let token: string
       if (typeof authResponse === 'string') {
         token = authResponse
-      } else if (authResponse && typeof authResponse === 'object' && 'token' in authResponse) {
+      } else if (
+        authResponse &&
+        typeof authResponse === 'object' &&
+        'token' in authResponse
+      ) {
         token = (authResponse as any).token
       } else {
         throw new Error('Invalid auth response')
       }
-      
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('medusa_auth_token', token)
-        localStorage.setItem('medusa_user_email', email)
+
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
+
+      // Step 3: Create customer profile using httpClient
+      try {
+        await httpClient.post('/store/customers', {
+          email,
+          first_name: firstName,
+          last_name: lastName,
+        })
+      } catch (error: any) {
+        console.log('[Auth Store] Customer creation failed:', error)
       }
-      
-      // Step 3: Create customer profile
-      const createResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-          body: JSON.stringify({
-            email,
-            first_name: firstName,
-            last_name: lastName,
-          }),
-        }
-      )
-      
-      if (!createResponse.ok) {
-        const errorData = await createResponse.json()
-        console.log('[Auth Store] Customer creation failed:', errorData)
-      }
-      
+
       // Step 4: Re-login to get token with actor_id
       const finalAuthResponse = await sdk.auth.login('customer', 'emailpass', {
         email,
         password,
       })
-      
+
       // Update token with the new one that has actor_id
       if (typeof finalAuthResponse === 'string') {
         token = finalAuthResponse
-      } else if (finalAuthResponse && typeof finalAuthResponse === 'object' && 'token' in finalAuthResponse) {
+      } else if (
+        finalAuthResponse &&
+        typeof finalAuthResponse === 'object' &&
+        'token' in finalAuthResponse
+      ) {
         token = (finalAuthResponse as any).token
       }
-      
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('medusa_auth_token', token)
-      }
-      
-      // Step 5: Fetch customer profile
-      const customerResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-        }
+
+      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
+
+      // Step 5: Fetch customer profile using httpClient
+      const data = await httpClient.get<{ customer: HttpTypes.StoreCustomer }>(
+        '/store/customers/me'
       )
-      
-      if (customerResponse.ok) {
-        const data = await customerResponse.json()
-        authStore.setState((state) => ({
-          ...state,
-          user: data.customer,
-          isLoading: false,
-          isFormLoading: false,
-          isInitialized: true,
-        }))
-        return data.customer
-      }
+      authStore.setState((state) => ({
+        ...state,
+        user: data.customer,
+        isLoading: false,
+        isFormLoading: false,
+        isInitialized: true,
+      }))
+      return data.customer
     } catch (err: any) {
       const message = err?.message || 'Registration failed'
       authStore.setState((state) => ({
@@ -419,10 +348,7 @@ export const authHelpers = {
   logout: async () => {
     try {
       await sdk.auth.logout()
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('medusa_auth_token')
-        localStorage.removeItem('medusa_user_email')
-      }
+      storage.remove(STORAGE_KEYS.AUTH_TOKEN)
       authStore.setState(() => ({
         user: null,
         isLoading: false,
@@ -441,36 +367,17 @@ export const authHelpers = {
     try {
       authStore.setState((state) => ({ ...state, error: null }))
 
-      const token =
-        typeof window !== 'undefined'
-          ? localStorage.getItem('medusa_auth_token')
-          : null
+      const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
 
       if (!token) throw new Error('User not authenticated')
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-            'x-publishable-api-key':
-              process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-          body: JSON.stringify(data),
-        }
-      )
-
-      if (response.ok) {
-        const result = await response.json()
-        authStore.setState((state) => ({
-          ...state,
-          user: result.customer,
-        }))
-      } else {
-        throw new Error('Failed to update profile')
-      }
+      const result = await httpClient.post<{
+        customer: HttpTypes.StoreCustomer
+      }>('/store/customers/me', data)
+      authStore.setState((state) => ({
+        ...state,
+        user: result.customer,
+      }))
     } catch (err: any) {
       const message = err?.message || 'Profile update failed'
       authStore.setState((state) => ({ ...state, error: message }))

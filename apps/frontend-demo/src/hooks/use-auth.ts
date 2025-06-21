@@ -51,19 +51,9 @@ export function useAuth() {
     }) => {
       return authHelpers.login(email, password, firstName, lastName)
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
-      // Update store with user data
-      if (data) {
-        authStore.setState((state) => ({
-          ...state,
-          user: data,
-          isLoading: false,
-          error: null,
-        }))
-      }
 
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
@@ -100,19 +90,9 @@ export function useAuth() {
     }) => {
       return authHelpers.register(email, password, firstName, lastName)
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
-      // Update store with user data
-      if (data) {
-        authStore.setState((state) => ({
-          ...state,
-          user: data,
-          isLoading: false,
-          error: null,
-        }))
-      }
 
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
