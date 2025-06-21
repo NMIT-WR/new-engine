@@ -5,9 +5,9 @@ import { authHelpers, authStore } from '@/stores/auth-store'
 import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
+import { useToast } from '@ui/molecules/toast'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
-import { useToast } from '@ui/molecules/toast'
 
 export function useAuth() {
   const authState = useStore(authStore)
@@ -51,9 +51,19 @@ export function useAuth() {
     }) => {
       return authHelpers.login(email, password, firstName, lastName)
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
+      
+      // Update store with user data
+      if (data) {
+        authStore.setState((state) => ({
+          ...state,
+          user: data,
+          isLoading: false,
+          error: null,
+        }))
+      }
 
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
@@ -90,9 +100,19 @@ export function useAuth() {
     }) => {
       return authHelpers.register(email, password, firstName, lastName)
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
+      
+      // Update store with user data
+      if (data) {
+        authStore.setState((state) => ({
+          ...state,
+          user: data,
+          isLoading: false,
+          error: null,
+        }))
+      }
 
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {

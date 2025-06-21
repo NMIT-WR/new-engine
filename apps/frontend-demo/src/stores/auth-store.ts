@@ -29,7 +29,7 @@ function loadAuthFromStorage(): Partial<AuthState> {
   }
 
   try {
-    const token = localStorage.getItem('medusa_jwt_token')
+    const token = localStorage.getItem('medusa_auth_token')
     const email = localStorage.getItem('medusa_user_email')
 
     if (token && email) {
@@ -85,7 +85,7 @@ export const authHelpers = {
 
       const token =
         typeof window !== 'undefined'
-          ? localStorage.getItem('medusa_jwt_token')
+          ? localStorage.getItem('medusa_auth_token')
           : null
       console.log('[Auth Store] Token found:', !!token)
 
@@ -130,7 +130,7 @@ export const authHelpers = {
         if (response.status === 401) {
           console.log('[Auth Store] Unauthorized, removing tokens')
           if (typeof window !== 'undefined') {
-            localStorage.removeItem('medusa_jwt_token')
+            localStorage.removeItem('medusa_auth_token')
             localStorage.removeItem('medusa_user_email')
           }
         }
@@ -192,7 +192,7 @@ export const authHelpers = {
 
       // Step 2: Store token and email
       if (typeof window !== 'undefined') {
-        localStorage.setItem('medusa_jwt_token', token)
+        localStorage.setItem('medusa_auth_token', token)
         localStorage.setItem('medusa_user_email', email)
       }
 
@@ -321,8 +321,89 @@ export const authHelpers = {
         password,
       })
 
-      // Step 2: Auto-login which will create customer profile
-      await authHelpers.login(email, password, firstName, lastName)
+      // Step 2: Login immediately to get auth token
+      const authResponse = await sdk.auth.login('customer', 'emailpass', {
+        email,
+        password,
+      })
+      
+      // Store the initial token
+      let token: string
+      if (typeof authResponse === 'string') {
+        token = authResponse
+      } else if (authResponse && typeof authResponse === 'object' && 'token' in authResponse) {
+        token = (authResponse as any).token
+      } else {
+        throw new Error('Invalid auth response')
+      }
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('medusa_auth_token', token)
+        localStorage.setItem('medusa_user_email', email)
+      }
+      
+      // Step 3: Create customer profile
+      const createResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+          },
+          body: JSON.stringify({
+            email,
+            first_name: firstName,
+            last_name: lastName,
+          }),
+        }
+      )
+      
+      if (!createResponse.ok) {
+        const errorData = await createResponse.json()
+        console.log('[Auth Store] Customer creation failed:', errorData)
+      }
+      
+      // Step 4: Re-login to get token with actor_id
+      const finalAuthResponse = await sdk.auth.login('customer', 'emailpass', {
+        email,
+        password,
+      })
+      
+      // Update token with the new one that has actor_id
+      if (typeof finalAuthResponse === 'string') {
+        token = finalAuthResponse
+      } else if (finalAuthResponse && typeof finalAuthResponse === 'object' && 'token' in finalAuthResponse) {
+        token = (finalAuthResponse as any).token
+      }
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('medusa_auth_token', token)
+      }
+      
+      // Step 5: Fetch customer profile
+      const customerResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customers/me`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+          },
+        }
+      )
+      
+      if (customerResponse.ok) {
+        const data = await customerResponse.json()
+        authStore.setState((state) => ({
+          ...state,
+          user: data.customer,
+          isLoading: false,
+          isFormLoading: false,
+          isInitialized: true,
+        }))
+        return data.customer
+      }
     } catch (err: any) {
       const message = err?.message || 'Registration failed'
       authStore.setState((state) => ({
@@ -339,7 +420,7 @@ export const authHelpers = {
     try {
       await sdk.auth.logout()
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('medusa_jwt_token')
+        localStorage.removeItem('medusa_auth_token')
         localStorage.removeItem('medusa_user_email')
       }
       authStore.setState(() => ({
@@ -362,7 +443,7 @@ export const authHelpers = {
 
       const token =
         typeof window !== 'undefined'
-          ? localStorage.getItem('medusa_jwt_token')
+          ? localStorage.getItem('medusa_auth_token')
           : null
 
       if (!token) throw new Error('User not authenticated')

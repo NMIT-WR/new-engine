@@ -17,7 +17,7 @@ export const sdk =
         publishableKey: PUBLISHABLE_KEY,
         auth: {
           type: 'jwt',
-          jwtTokenStorageKey: 'medusa_jwt_token',
+          jwtTokenStorageKey: 'medusa_auth_token',
           jwtTokenStorageMethod: 'local',
         },
       })
@@ -50,6 +50,6 @@ export function getAuthHeaders(): HeadersInit {
   if (typeof window === 'undefined') {
     return {}
   }
-  const token = localStorage.getItem('medusa_jwt_token')
+  const token = localStorage.getItem('medusa_auth_token')
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
