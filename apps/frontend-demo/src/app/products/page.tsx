@@ -4,9 +4,10 @@ import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
-import { useState } from 'react'
+import { useUrlFilters } from '@/hooks/use-url-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
+import { Suspense, useState } from 'react'
 
 // Loading skeleton for products
 function ProductGridSkeleton() {
@@ -29,10 +30,13 @@ function ProductGridSkeleton() {
   )
 }
 
-export default function ApiTestPage() {
+function ProductsPageContent() {
   const { products, isLoading } = useProducts()
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage] = useState(1)
   const pageSize = 12
+
+  // Use URL state for filters and sorting
+  const urlFilters = useUrlFilters()
 
   const {
     sortBy,
@@ -41,10 +45,14 @@ export default function ApiTestPage() {
     setFilters,
     sortedProducts,
     sortOptions,
-  } = useProductListing(products)
+  } = useProductListing(products, {
+    externalSortBy: urlFilters.sortBy,
+    externalSetSortBy: urlFilters.setSortBy,
+    externalFilters: urlFilters.filters,
+    externalSetFilters: urlFilters.setFilters,
+  })
 
   // Calculate paginated products
-  const totalPages = Math.ceil(sortedProducts.length / pageSize)
   const paginatedProducts = sortedProducts.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -109,5 +117,13 @@ export default function ApiTestPage() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton />}>
+      <ProductsPageContent />
+    </Suspense>
   )
 }

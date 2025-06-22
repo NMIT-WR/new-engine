@@ -25,7 +25,7 @@ export function HeaderWrapper({ logo }: HeaderWrapperProps) {
       categoryItems.push(
         ...categories.slice(0, 10).map((cat: any) => ({
           title: cat.name,
-          href: `/categories/${cat.handle}`,
+          href: `/products?categories=${cat.id}`,
         }))
       )
     }
