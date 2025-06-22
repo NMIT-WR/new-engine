@@ -276,7 +276,17 @@ export function ProductFilters({
                 labelText="On Sale"
                 checked={filters.onSale || false}
                 onCheckedChange={(details) => {
-                  updateFilters({ onSale: details.checked === true })
+                  const isChecked = details.checked === true
+                  if (!isChecked) {
+                    // Reset discount range when unchecking
+                    updateFilters({ 
+                      onSale: false,
+                      discountRange: [0, 100]
+                    })
+                    setLocalDiscountRange([0, 100])
+                  } else {
+                    updateFilters({ onSale: true })
+                  }
                 }}
               />
               {filters.onSale && (

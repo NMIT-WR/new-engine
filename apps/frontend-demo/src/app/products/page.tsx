@@ -7,7 +7,7 @@ import { useProducts } from '@/hooks/use-products'
 import { useUrlFilters } from '@/hooks/use-url-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
-import { Suspense, useState } from 'react'
+import { Suspense } from 'react'
 
 // Loading skeleton for products
 function ProductGridSkeleton() {
@@ -32,10 +32,9 @@ function ProductGridSkeleton() {
 
 function ProductsPageContent() {
   const { products, isLoading } = useProducts()
-  const [currentPage] = useState(1)
   const pageSize = 12
 
-  // Use URL state for filters and sorting
+  // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
   const {
@@ -53,6 +52,8 @@ function ProductsPageContent() {
   })
 
   // Calculate paginated products
+  const totalPages = Math.ceil(sortedProducts.length / pageSize)
+  const currentPage = Math.min(urlFilters.page, totalPages || 1)
   const paginatedProducts = sortedProducts.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -108,7 +109,13 @@ function ProductsPageContent() {
           {isLoading ? (
             <ProductGridSkeleton />
           ) : paginatedProducts.length > 0 ? (
-            <ProductGrid products={paginatedProducts} />
+            <ProductGrid 
+              products={paginatedProducts}
+              totalCount={sortedProducts.length}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              onPageChange={urlFilters.setPage}
+            />
           ) : (
             <div className="py-12 text-center">
               <p className="text-gray-500">No products found</p>
