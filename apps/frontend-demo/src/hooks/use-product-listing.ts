@@ -23,6 +23,8 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   categories: new Set(),
   sizes: new Set(),
   colors: new Set(),
+  onSale: false,
+  discountRange: [0, 100],
 }
 
 type ExtendedSortOption = SortOption | 'relevance'
