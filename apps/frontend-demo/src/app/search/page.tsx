@@ -3,6 +3,7 @@
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { mockProducts } from '@/data/mock-products'
+import { useDebounce } from '@/hooks/use-debounce'
 import {
   SEARCH_SORT_OPTIONS,
   useProductListing,
@@ -14,6 +15,7 @@ import { Select } from '@ui/molecules/select'
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState('')
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
   // Create combobox items from products
   const searchItems: ComboboxItem[] = useMemo(() => {
@@ -24,19 +26,19 @@ export default function SearchPage() {
     }))
   }, [])
 
-  // Filter products based on search query
+  // Filter products based on debounced search query
   const searchFilteredProducts = useMemo(() => {
-    if (!searchQuery) return []
+    if (!debouncedSearchQuery) return []
 
     return mockProducts.filter((product) => {
-      const query = searchQuery.toLowerCase()
+      const query = debouncedSearchQuery.toLowerCase()
       return (
         product.title.toLowerCase().includes(query) ||
         product.description?.toLowerCase().includes(query) ||
         product.handle.toLowerCase().includes(query)
       )
     })
-  }, [searchQuery])
+  }, [debouncedSearchQuery])
 
   const {
     sortBy,
@@ -51,6 +53,7 @@ export default function SearchPage() {
   })
 
   const hasSearched = searchQuery.length > 0
+  const hasResults = debouncedSearchQuery.length > 0
 
   return (
     <div className="min-h-screen bg-search-bg">
@@ -84,6 +87,7 @@ export default function SearchPage() {
               selectionBehavior="replace"
               clearable
               size="lg"
+              value={searchQuery ? [searchQuery] : []}
               onChange={(value) => {
                 // When item is selected from dropdown
                 const selectedValue = Array.isArray(value) ? value[0] : value
@@ -106,7 +110,7 @@ export default function SearchPage() {
         </div>
 
         {/* Results Section */}
-        {hasSearched && (
+        {hasResults && (
           <div className="gap-search-layout-gap md:flex">
             <aside className="hidden w-search-sidebar-width flex-shrink-0 md:block">
               <ProductFilters filters={filters} onFiltersChange={setFilters} />
@@ -158,12 +162,19 @@ export default function SearchPage() {
           </div>
         )}
 
-        {/* Initial State */}
+        {/* Initial State and Loading */}
         {!hasSearched && (
           <div className="py-search-empty-y text-center">
             <p className="text-search-empty-text">
               Start typing to search through our products
             </p>
+          </div>
+        )}
+        
+        {/* Show loading state when user is typing but results haven't updated yet */}
+        {hasSearched && !hasResults && (
+          <div className="py-search-empty-y text-center">
+            <p className="text-search-empty-text">Searching...</p>
           </div>
         )}
       </div>
