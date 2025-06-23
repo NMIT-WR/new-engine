@@ -16,6 +16,7 @@ zerops:
         - rm -rf node_modules
         - pnpm i
         - node_modules/.bin/nx run medusa-be:build --skip-nx-cache --verbose
+        - rm -rf apps/medusa-be/node_modules
         - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
         - mv medusa-be-temp-deploy/node_modules apps/medusa-be/
       deployFiles:
