@@ -35,7 +35,9 @@ export function ProductFilters({
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [localPriceRange, setLocalPriceRange] = useState(filters.priceRange)
-  const [localDiscountRange, setLocalDiscountRange] = useState(filters.discountRange || [0, 100])
+  const [localDiscountRange, setLocalDiscountRange] = useState(
+    filters.discountRange || [0, 100]
+  )
   const filterConfig = activeFilterConfig // Use active configuration
 
   // Sync local state with props
@@ -277,21 +279,20 @@ export function ProductFilters({
                 checked={filters.onSale || false}
                 onCheckedChange={(details) => {
                   const isChecked = details.checked === true
-                  if (!isChecked) {
-                    // Reset discount range when unchecking
-                    updateFilters({ 
+                  if (isChecked) {
+                    updateFilters({ onSale: true })
+                  } else {
+                    updateFilters({
                       onSale: false,
-                      discountRange: [0, 100]
+                      discountRange: [0, 100],
                     })
                     setLocalDiscountRange([0, 100])
-                  } else {
-                    updateFilters({ onSale: true })
                   }
                 }}
               />
               {filters.onSale && (
                 <div className="mt-4">
-                  <label className="mb-2 block text-sm font-medium">
+                  <label className="mb-2 block font-medium text-sm">
                     Discount Range
                   </label>
                   <RangeSlider

@@ -37,6 +37,18 @@ function ProductsPageContent() {
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
+  // Filter products by search query first
+  const searchFilteredProducts = urlFilters.searchQuery
+    ? products.filter((product) => {
+        const query = urlFilters.searchQuery.toLowerCase()
+        return (
+          product.title.toLowerCase().includes(query) ||
+          product.description?.toLowerCase().includes(query) ||
+          product.handle.toLowerCase().includes(query)
+        )
+      })
+    : products
+
   const {
     sortBy,
     setSortBy,
@@ -44,7 +56,7 @@ function ProductsPageContent() {
     setFilters,
     sortedProducts,
     sortOptions,
-  } = useProductListing(products, {
+  } = useProductListing(searchFilteredProducts, {
     externalSortBy: urlFilters.sortBy,
     externalSetSortBy: urlFilters.setSortBy,
     externalFilters: urlFilters.filters,
@@ -109,7 +121,7 @@ function ProductsPageContent() {
           {isLoading ? (
             <ProductGridSkeleton />
           ) : paginatedProducts.length > 0 ? (
-            <ProductGrid 
+            <ProductGrid
               products={paginatedProducts}
               totalCount={sortedProducts.length}
               currentPage={currentPage}

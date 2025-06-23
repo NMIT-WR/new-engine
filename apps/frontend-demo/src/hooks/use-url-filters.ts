@@ -15,6 +15,9 @@ export function useUrlFilters() {
   // Parse page from URL
   const page = Number.parseInt(searchParams.get('page') || '1', 10)
 
+  // Parse search query from URL
+  const searchQuery = searchParams.get('q') || ''
+
   // Parse filters from URL
   const filters: FilterState = useMemo(() => {
     const priceMin = searchParams.get('priceMin')
@@ -138,6 +141,22 @@ export function useUrlFilters() {
     [searchParams, router]
   )
 
+  // Update search query in URL
+  const setSearchQuery = useCallback(
+    (query: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (query) {
+        params.set('q', query)
+      } else {
+        params.delete('q')
+      }
+      // Reset to first page when searching
+      params.set('page', '1')
+      router.push(`?${params.toString()}`)
+    },
+    [searchParams, router]
+  )
+
   return {
     filters,
     setFilters,
@@ -145,5 +164,7 @@ export function useUrlFilters() {
     setSortBy,
     page,
     setPage,
+    searchQuery,
+    setSearchQuery,
   }
 }
