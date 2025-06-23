@@ -368,7 +368,7 @@ const seedN1Workflow = createWorkflow(
         const productsStep = createStep(
             "seed-n1-workflow-step-1-products",
             async (_, {container}) => {
-                const dbService = container.resolve(DATABASE_MODULE)
+                const dbService: DatabaseModuleService = container.resolve(DATABASE_MODULE)
                 const result = await dbService.sqlRaw<any>(
                     sql`
                         ${productSql}
