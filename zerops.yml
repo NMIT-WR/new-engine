@@ -23,6 +23,8 @@ zerops:
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
         - apps/medusa-be/src/scripts/seed-files
+        - apps/medusa-be/src/scripts
+        - apps/medusa-be/tsconfig.json
       cache:
         - node_modules
     deploy:
@@ -54,7 +56,7 @@ zerops:
         - zsc execOnce ${appVersionId}_links -- npm run syncLinks
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
-        - zsc execOnce seedInitialData -- npm run seedInitialData
+        # - zsc execOnce seedInitialData -- npm run seedInitialData
         - zsc execOnce setInitialPublishableKey -- npm run setInitialPublishableKey
         - zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
       ports:
