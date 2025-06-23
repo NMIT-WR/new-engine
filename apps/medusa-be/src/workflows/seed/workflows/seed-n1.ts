@@ -3,6 +3,7 @@ import {DATABASE_MODULE} from "../../../modules/database";
 import {sql} from "drizzle-orm";
 import * as Steps from "../steps";
 import {ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types";
+import DatabaseModuleService from "../../../modules/database/service";
 
 
 const seedN1WorkflowId = 'seed-n1-workflow'
@@ -144,7 +145,7 @@ const seedN1Workflow = createWorkflow(
         const categoriesStep = createStep(
             "seed-n1-workflow-step-1-categories",
             async (_, {container}) => {
-                const dbService = container.resolve(DATABASE_MODULE)
+                const dbService: DatabaseModuleService = container.resolve(DATABASE_MODULE)
                 const result = await dbService.sqlRaw<CategoryRaw>(
                     sql`select cl.title,
                                cl.description,
