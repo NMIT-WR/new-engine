@@ -248,7 +248,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         name: 'Standard Shipping',
         price_type: 'flat',
         provider_id: 'manual_manual',
-        service_zone_id: fulfillmentSet.service_zones[0].id,
+        service_zone_id: fulfillmentSet.service_zones[0]?.id as string,
         shipping_profile_id: shippingProfile.id,
         type: {
           label: 'Standard',
@@ -265,7 +265,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
             amount: 10,
           },
           {
-            region_id: region.id,
+            region_id: region?.id as string,
             amount: 10,
           },
         ],
@@ -286,7 +286,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         name: 'Express Shipping',
         price_type: 'flat',
         provider_id: 'manual_manual',
-        service_zone_id: fulfillmentSet.service_zones[0].id,
+        service_zone_id: fulfillmentSet.service_zones[0]?.id as string,
         shipping_profile_id: shippingProfile.id,
         type: {
           label: 'Express',
@@ -303,7 +303,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
             amount: 10,
           },
           {
-            region_id: region.id,
+            region_id: region?.id as string,
             amount: 10,
           },
         ],
@@ -327,7 +327,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   await linkSalesChannelsToStockLocationWorkflow(container).run({
     input: {
       id: stockLocation.id,
-      add: [defaultSalesChannel[0].id],
+      add: [defaultSalesChannel[0]?.id as string],
     },
   })
   logger.info('Finished seeding stock location data.')
@@ -357,7 +357,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   await linkSalesChannelsToApiKeyWorkflow(container).run({
     input: {
       id: publishableApiKey.id,
-      add: [defaultSalesChannel[0].id],
+      add: [defaultSalesChannel[0]?.id as string],
     },
   })
   logger.info('Finished seeding publishable API key data.')
@@ -578,7 +578,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: 'Medusa T-Shirt',
           category_ids: [
-            categoryResult.find((cat) => cat.name === 'Shirts').id,
+            categoryResult.find((cat) => cat.name === 'Shirts')?.id as string,
           ],
           description:
             'Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.',
@@ -744,14 +744,14 @@ export default async function seedDemoData({ container }: ExecArgs) {
           ],
           sales_channels: [
             {
-              id: defaultSalesChannel[0].id,
+              id: defaultSalesChannel[0]?.id as string,
             },
           ],
         },
         {
           title: 'Medusa Sweatshirt',
           category_ids: [
-            categoryResult.find((cat) => cat.name === 'Sweatshirts').id,
+            categoryResult.find((cat) => cat.name === 'Sweatshirts')?.id as string,
           ],
           description:
             'Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.',
@@ -837,13 +837,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
           ],
           sales_channels: [
             {
-              id: defaultSalesChannel[0].id,
+              id: defaultSalesChannel[0]?.id as string,
             },
           ],
         },
         {
           title: 'Medusa Sweatpants',
-          category_ids: [categoryResult.find((cat) => cat.name === 'Pants').id],
+          category_ids: [categoryResult.find((cat) => cat.name === 'Pants')?.id as string],
           description:
             'Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.',
           handle: 'sweatpants',
@@ -928,13 +928,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
           ],
           sales_channels: [
             {
-              id: defaultSalesChannel[0].id,
+              id: defaultSalesChannel[0]?.id as string,
             },
           ],
         },
         {
           title: 'Medusa Shorts',
-          category_ids: [categoryResult.find((cat) => cat.name === 'Merch').id],
+          category_ids: [categoryResult.find((cat) => cat.name === 'Merch')?.id as string],
           description:
             'Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.',
           handle: 'shorts',
@@ -1019,7 +1019,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
           ],
           sales_channels: [
             {
-              id: defaultSalesChannel[0].id,
+              id: defaultSalesChannel[0]?.id as string,
             },
           ],
         },
@@ -1069,12 +1069,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   await batchLinkProductsToCollectionWorkflow(container).run({
     input: {
-      id: collections[0].id,
+      id: collections[0]?.id as string,
       add: products.map((p) => p.id),
     },
   })
 
   logger.info(
-    `Created collection: ${collections[0].title} with ${products.length} products`
+    `Created collection: ${collections[0]?.title as string} with ${products.length} products`
   )
 }

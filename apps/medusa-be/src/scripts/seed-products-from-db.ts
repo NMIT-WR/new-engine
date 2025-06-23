@@ -1,10 +1,5 @@
-import type { ExecArgs } from '@medusajs/framework/types'
-import {
-  ContainerRegistrationKeys,
-  MedusaError,
-  Modules,
-  ProductStatus,
-} from '@medusajs/framework/utils'
+import type {CreateProductWorkflowInputDTO, ExecArgs} from '@medusajs/framework/types'
+import {ContainerRegistrationKeys, MedusaError, Modules, ProductStatus,} from '@medusajs/framework/utils'
 // @ts-nocheck necessary due to Medusa failing with strict mode
 import {
   createCollectionsWorkflow,
@@ -13,8 +8,8 @@ import {
   createProductsWorkflow,
   createStockLocationsWorkflow,
 } from '@medusajs/medusa/core-flows'
-import { sql } from 'drizzle-orm'
-import { sqlRaw } from '../utils/db'
+import {sql} from 'drizzle-orm'
+import {sqlRaw} from '../utils/db'
 
 // Product record shape from the database
 type ProductRecord = {
@@ -42,7 +37,7 @@ async function importProductPage(
   step = 10
 ): Promise<ProductRecord[]> {
   // Query products with pagination
-  const productList = await sqlRaw<ProductRecord>(sql`
+  return await sqlRaw<ProductRecord>(sql`
       SELECT
         p.slug AS product_slug,
         p.name AS product_name,
@@ -65,8 +60,6 @@ async function importProductPage(
       JOIN collections cl ON cl.id = ca.collection_id
       LIMIT ${step}
       OFFSET ${page * step}`)
-
-  return productList
 }
 
 let i = 0
@@ -127,11 +120,11 @@ function convertToMedusaProducts(
           sku: `SKU-${safeHandle}`, // Use sanitized handle for SKU as well
           prices: [
             {
-              amount: Number.parseInt(product.product_price * 100), // Medusa expects prices in cents
+              amount: product.product_price * 100, // Medusa expects prices in cents
               currency_code: 'eur',
             },
             {
-              amount: Number.parseInt(product.product_price * 100 * 1.1), // Simple USD conversion
+              amount: product.product_price * 100 * 1.1, // Simple USD conversion
               currency_code: 'usd',
             },
           ],
@@ -143,7 +136,7 @@ function convertToMedusaProducts(
           id: defaultSalesChannelId,
         },
       ],
-    }
+    } as CreateProductWorkflowInputDTO
   })
 }
 
@@ -167,7 +160,7 @@ async function checkExistingCategories(
 
   // Create a map of handle -> id for existing categories
   const existingCategoryMap: Record<string, string> = {}
-  existingCategories.forEach((category) => {
+  existingCategories.forEach((category: any) => {
     existingCategoryMap[category.handle] = category.id
   })
 
@@ -194,7 +187,7 @@ async function checkExistingCollections(
 
   // Create a map of handle -> id for existing collections
   const existingCollectionMap: Record<string, string> = {}
-  existingCollections.forEach((collection) => {
+  existingCollections.forEach((collection: any) => {
     existingCollectionMap[collection.handle] = collection.id
   })
 
@@ -221,7 +214,7 @@ async function checkExistingProducts(
 
   // Create a map of handle -> id for existing products
   const existingProductMap: Record<string, string> = {}
-  existingProducts.forEach((product) => {
+  existingProducts.forEach((product: any) => {
     existingProductMap[product.handle] = product.id
   })
 
@@ -296,7 +289,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
     )
   }
 
-  const defaultSalesChannelId = defaultSalesChannel[0].id
+  const defaultSalesChannelId = defaultSalesChannel[0]?.id as string
   logger.info(`Found default sales channel with ID: ${defaultSalesChannelId}`)
 
   // 2. Import a small batch of products first to extract categories and collections
@@ -343,7 +336,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   }))
 
   // Only run creation workflow if there are new categories to create
-  let categoryResult = []
+  let categoryResult: any[] = []
   if (productCategories.length > 0) {
     logger.info('Creating product categories...')
     const { result } = await createProductCategoriesWorkflow(container).run({
@@ -433,7 +426,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       )
 
       // Check which products already exist
-      const productHandles = medusaProducts.map((product) => product.handle)
+      const productHandles = medusaProducts.map((product) => product.handle as string)
       logger.info(
         `Checking for existing products with ${productHandles.length} handles...`
       )
@@ -444,7 +437,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
 
       // Filter out products that already exist
       const newProducts = medusaProducts.filter(
-        (product) => !existingProductMap[product.handle]
+        (product) => !existingProductMap[product.handle as string]
       )
       logger.info(
         `Found ${Object.keys(existingProductMap).length} existing products, creating ${newProducts.length} new products`
@@ -454,11 +447,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
         logger.info('No new products to create in this batch, skipping...')
         page++
         // If we got fewer products than the chunk size, we've reached the end
-        if (productRecords.length < CHUNK_SIZE) {
-          hasMore = false
-        } else {
-          hasMore = true
-        }
+        hasMore = productRecords.length >= CHUNK_SIZE;
         continue
       }
 
@@ -536,12 +525,8 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       logger.info(`Total products imported so far: ${totalImported}`)
 
       // If we got fewer products than the chunk size, we've reached the end
-      if (productRecords.length < CHUNK_SIZE) {
-        hasMore = false
-      } else {
-        hasMore = true
-      }
-    } catch (error) {
+      hasMore = productRecords.length >= CHUNK_SIZE;
+    } catch (error: any) {
       console.log(error)
       const errorMessage =
         error instanceof Error ? error.message : JSON.stringify(error.message)

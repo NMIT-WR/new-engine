@@ -1,0 +1,17 @@
+/dist
+.env
+.env.local
+.DS_Store
+/node_modules
+
+.idea
+
+coverage
+
+!src/**
+
+./tsconfig.tsbuildinfo
+build
+.cache
+
+.next

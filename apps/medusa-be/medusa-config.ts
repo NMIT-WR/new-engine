@@ -19,6 +19,9 @@ module.exports = defineConfig({
     },
   },
   projectConfig: {
+    // databaseLogging: [
+    //     'query'
+    // ],
     databaseUrl: process.env.DATABASE_URL,
     http: {
       storeCors: process.env.STORE_CORS!,
@@ -71,6 +74,14 @@ module.exports = defineConfig({
       },
     },
     {
+      resolve: "@medusajs/medusa/workflow-engine-redis",
+      options: {
+        redis: {
+          url: process.env.WE_REDIS_URL,
+        },
+      },
+    },
+    {
       resolve: '@medusajs/medusa/file',
       options: {
         providers: [
@@ -94,6 +105,9 @@ module.exports = defineConfig({
     },
     {
       resolve: './src/modules/data-layer',
+    },
+    {
+      resolve: './src/modules/database',
     },
   ],
 })
