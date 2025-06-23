@@ -1,6 +1,6 @@
 import {drizzle, MySql2Database} from "drizzle-orm/mysql2";
 import type {SQL} from "drizzle-orm/sql/sql";
-import mysql from "mysql2/promise"
+import mysql, {type FieldPacket} from "mysql2/promise"
 
 class DatabaseModuleService {
     private db_: MySql2Database | undefined = undefined
@@ -24,11 +24,11 @@ class DatabaseModuleService {
     /**
      * Execute a raw SQL query and return the results
      */
-    public async sqlRaw<T = object>(sql: SQL<T>): Promise<T[]> {
+    public async sqlRaw<T = object>(sql: SQL<T>) {
         const db = await this.initDatabase()
-        const [rows] = (await db.execute(sql)) as unknown as T[]
+        const [rows] = (await db.execute(sql))
 
-        const rowsTyped = rows as unknown as T[]
+        const rowsTyped = rows as unknown as FieldPacket[]
         return  rowsTyped.map(
             (row) =>
             {

@@ -29,7 +29,7 @@ export const updateStoreCurrenciesStep = createStep(UpdateStoreCurrenciesStepId,
     const currencies = input.currencies.map(i => ({currency_code: i.code, is_default: i.default}))
     const result = await updateStoresWorkflow(container).run({
         input: {
-            selector: {id: store.id},
+            selector: {id: store?.id},
             update: {
                 supported_currencies: currencies,
                 default_sales_channel_id: input.defaultSalesChannelId,

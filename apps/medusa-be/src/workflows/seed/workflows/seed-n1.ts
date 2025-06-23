@@ -1,7 +1,8 @@
-import {createStep, createWorkflow, StepResponse, transform, WorkflowResponse, when} from "@medusajs/framework/workflows-sdk"
+import {createStep, createWorkflow, StepResponse, transform, WorkflowResponse} from "@medusajs/framework/workflows-sdk"
 import {DATABASE_MODULE} from "../../../modules/database";
 import {sql} from "drizzle-orm";
 import * as Steps from "../steps";
+import {ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types";
 
 
 const seedN1WorkflowId = 'seed-n1-workflow'
@@ -52,13 +53,13 @@ const seedN1Workflow = createWorkflow(
                 defaultSalesChannelId: defaultSalesChannel.id,
             }
         })
-        const updateStoreCurrenciesResult = Steps.updateStoreCurrenciesStep(updateStoreCurrenciesStepInput)
+        Steps.updateStoreCurrenciesStep(updateStoreCurrenciesStepInput)
 
         // create regions
         const createRegionsResult = Steps.createRegionsStep(input.regions)
 
         // create tax regions
-        const createTaxRegionsResult = Steps.createTaxRegionsStep(input.taxRegions)
+        Steps.createTaxRegionsStep(input.taxRegions)
 
         // create stock locations
         const createStockLocationResult = Steps.createStockLocationSeedStep(input.stockLocations)
@@ -71,7 +72,7 @@ const seedN1Workflow = createWorkflow(
             fulfillmentProviderId: data.input.fulfillmentProviderId
         }))
 
-        const linkStockLocationsFulfillmentProviderResult = Steps.linkStockLocationFulfillmentProviderSeedStep(linkStockLocationsFulfillmentProviderInput)
+        Steps.linkStockLocationFulfillmentProviderSeedStep(linkStockLocationsFulfillmentProviderInput)
 
         // create a shipping profile
         const createDefaultShippingProfileResult = Steps.createDefaultShippingProfileStep(input.defaultShippingProfile)
@@ -89,7 +90,7 @@ const seedN1Workflow = createWorkflow(
             }
         ))
 
-        const linkStockLocationsFulfillmentSetResult = Steps.linkStockLocationFulfillmentSetStep(linkStockLocationsFulfillmentSetInput)
+        Steps.linkStockLocationFulfillmentSetStep(linkStockLocationsFulfillmentSetInput)
 
 
         // create shipping options
@@ -112,7 +113,7 @@ const seedN1Workflow = createWorkflow(
                 }))
         )
 
-        const createShippingOptionsResult = Steps.createShippingOptionsStep(createShippingOptionsInput)
+        Steps.createShippingOptionsStep(createShippingOptionsInput)
 
 
         // link sales channels to stock location
@@ -123,7 +124,7 @@ const seedN1Workflow = createWorkflow(
             salesChannels: data.salesChannelsResult.result,
         }))
 
-        const linkSalesChannelsToStockLocationResult = Steps.linkSalesChannelsStockLocationStep(linkSalesChannelsToStockLocationInput)
+        Steps.linkSalesChannelsStockLocationStep(linkSalesChannelsToStockLocationInput)
 
         // create publishable key
 
@@ -137,7 +138,7 @@ const seedN1Workflow = createWorkflow(
             publishableApiKey: data.createPublishableKeyResult.result[0] as ApiKeyDTO,
         }))
 
-        const linkSalesChannelsApiKeyStepInputResult = Steps.linkSalesChannelsApiKeyStep(linkSalesChannelsApiKeyStepInput)
+        Steps.linkSalesChannelsApiKeyStep(linkSalesChannelsApiKeyStepInput)
 
 
         const categoriesStep = createStep(
@@ -181,7 +182,7 @@ const seedN1Workflow = createWorkflow(
             }))
         })
 
-        // Steps.createProductCategoriesStep(productCategories)
+        Steps.createProductCategoriesStep(productCategories)
 
         const productSql = sql`
             WITH cte_products_base AS (
@@ -367,7 +368,7 @@ const seedN1Workflow = createWorkflow(
             "seed-n1-workflow-step-1-products",
             async (_, {container}) => {
                 const dbService = container.resolve(DATABASE_MODULE)
-                const result = await dbService.sqlRaw<ProductRaw>(
+                const result = await dbService.sqlRaw<any>(
                     sql`
                         ${productSql}
                         select *
@@ -394,14 +395,14 @@ const seedN1Workflow = createWorkflow(
                     categories: JSON.parse(raw.categories)
                 }
 
-                const options = i.options.map(o => {
+                const options = i.options.map((o: any) => {
                     return {
                         title: o.title ?? 'Variant',
                         values: o.option_values ?? ['Default'],
                     }
                 })
 
-                const variants = i.variants.filter(f => f.sku !== null).map(v => {
+                const variants = i.variants.filter((f: any) => f.sku !== null).map((v: any) => {
                     return {
                         title: v.title ?? undefined,
                         sku: v.sku ?? undefined,
@@ -514,11 +515,12 @@ const seedN1Workflow = createWorkflow(
             stockLocations: data.createStockLocationResult.result,
         }))
 
-        const createInventoryLevelsResult = Steps.createInventoryLevelsStep(createInventoryLevelsInput)
+        Steps.createInventoryLevelsStep(createInventoryLevelsInput)
 
 
         return new WorkflowResponse({
-            in: 'N1 seed done'
+            publishableKey: createPublishableKeyResult.result,
+            result: 'N1 seed done'
         })
     }
 )
