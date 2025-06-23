@@ -69,7 +69,7 @@ export const homeContent: HomeContent = {
     backgroundImage:
       'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&h=600&fit=crop',
     linkText: 'Shop Sale',
-    linkHref: '/sale',
+    linkHref: '/products?onSale=true',
   },
   newArrivals: {
     title: 'New Arrivals',

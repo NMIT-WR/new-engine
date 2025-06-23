@@ -59,7 +59,7 @@ export function CategoryGrid({
     return (
       <Link
         key={category.id}
-        href={`/categories/${category.handle}`}
+        href={`/products?categories=${category.id}`}
         className="group relative overflow-hidden rounded-category-card-radius"
       >
         {content}

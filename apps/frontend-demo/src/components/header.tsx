@@ -1,13 +1,14 @@
 'use client'
 import { useCart } from '@/hooks/use-cart'
-import Link from 'next/link'
-import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
 import { Badge } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
 import { Icon, type IconType } from '@ui/atoms/icon'
 import { Popover } from '@ui/molecules/popover'
+import Link from 'next/link'
+import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
 import { AuthDropdown } from './auth/auth-dropdown'
 import { CartPreview } from './molecules/cart-preview'
+import { HeaderSearch } from './molecules/header-search'
 import { type NavItem, Navigation } from './molecules/navigation'
 import { MobileMenu } from './organisms/mobile-menu'
 import { RegionSelector } from './region-selector'
@@ -74,18 +75,7 @@ export function Header({
 
             {/* Core actions - all sizes */}
             <div className="flex items-center">
-              {/* Search button */}
-              <Link href="/search">
-                <Button
-                  variant="tertiary"
-                  theme="borderless"
-                  size="sm"
-                  icon="token-icon-search"
-                  className="font-bold text-md"
-                  aria-label="Search"
-                />
-              </Link>
-
+              <HeaderSearch />
               {/* Cart button */}
               <Popover
                 id="cart-preview"

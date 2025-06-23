@@ -1,4 +1,4 @@
-export type FilterType = 'checkbox' | 'color' | 'size' | 'range' | 'tree'
+export type FilterType = 'checkbox' | 'color' | 'size' | 'range' | 'tree' | 'sale'
 
 export interface FilterOption {
   value: string
@@ -45,6 +45,12 @@ export const fashionFilters: FilterConfig[] = [
       step: 10,
       prefix: '€',
     },
+  },
+  {
+    id: 'sale',
+    type: 'sale',
+    title: 'Sale & Discounts',
+    field: 'sale',
   },
   {
     id: 'size',

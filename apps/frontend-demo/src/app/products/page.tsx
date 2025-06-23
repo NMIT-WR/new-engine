@@ -4,9 +4,10 @@ import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
-import { useState } from 'react'
+import { useUrlFilters } from '@/hooks/use-url-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
+import { Suspense } from 'react'
 
 // Loading skeleton for products
 function ProductGridSkeleton() {
@@ -29,10 +30,24 @@ function ProductGridSkeleton() {
   )
 }
 
-export default function ApiTestPage() {
+function ProductsPageContent() {
   const { products, isLoading } = useProducts()
-  const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 12
+
+  // Use URL state for filters, sorting and pagination
+  const urlFilters = useUrlFilters()
+
+  // Filter products by search query first
+  const searchFilteredProducts = urlFilters.searchQuery
+    ? products.filter((product) => {
+        const query = urlFilters.searchQuery.toLowerCase()
+        return (
+          product.title.toLowerCase().includes(query) ||
+          product.description?.toLowerCase().includes(query) ||
+          product.handle.toLowerCase().includes(query)
+        )
+      })
+    : products
 
   const {
     sortBy,
@@ -41,10 +56,16 @@ export default function ApiTestPage() {
     setFilters,
     sortedProducts,
     sortOptions,
-  } = useProductListing(products)
+  } = useProductListing(searchFilteredProducts, {
+    externalSortBy: urlFilters.sortBy,
+    externalSetSortBy: urlFilters.setSortBy,
+    externalFilters: urlFilters.filters,
+    externalSetFilters: urlFilters.setFilters,
+  })
 
   // Calculate paginated products
   const totalPages = Math.ceil(sortedProducts.length / pageSize)
+  const currentPage = Math.min(urlFilters.page, totalPages || 1)
   const paginatedProducts = sortedProducts.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -100,7 +121,13 @@ export default function ApiTestPage() {
           {isLoading ? (
             <ProductGridSkeleton />
           ) : paginatedProducts.length > 0 ? (
-            <ProductGrid products={paginatedProducts} />
+            <ProductGrid
+              products={paginatedProducts}
+              totalCount={sortedProducts.length}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              onPageChange={urlFilters.setPage}
+            />
           ) : (
             <div className="py-12 text-center">
               <p className="text-gray-500">No products found</p>
@@ -109,5 +136,13 @@ export default function ApiTestPage() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton />}>
+      <ProductsPageContent />
+    </Suspense>
   )
 }
