@@ -58,7 +58,7 @@ zerops:
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
         # - zsc execOnce seedInitialData -- npm run seedInitialData
         - zsc execOnce setInitialPublishableKey -- npm run setInitialPublishableKey
-        - zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
+        #- zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
