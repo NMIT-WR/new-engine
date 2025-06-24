@@ -109,7 +109,6 @@ export function HeaderSearch() {
 
   return (
     <Popover
-      id="search-popover"
       trigger={
         <Button
           variant="tertiary"

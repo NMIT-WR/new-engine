@@ -17,7 +17,7 @@ import { Dialog } from '@ui/molecules/dialog'
 import { RangeSlider } from '@ui/molecules/range-slider'
 import { TreeView } from '@ui/molecules/tree-view'
 import { useEffect, useState } from 'react'
-import { ColorSwatch } from '../atoms/color-swatch'
+import { ColorSwatch } from '@/components/atoms/color-swatch'
 import { FilterSection } from '../molecules/filter-section'
 
 interface ProductFiltersProps {
@@ -92,6 +92,14 @@ export function ProductFilters({
     filters.onSale ||
     (filters.discountRange && filters.discountRange[0] > 0)
 
+  // Count active filters for mobile button
+  const activeFilterCount =
+    filters.categories.size +
+    filters.sizes.size +
+    filters.colors.size +
+    (filters.priceRange[0] > 0 || filters.priceRange[1] < 300 ? 1 : 0) +
+    (filters.onSale ? 1 : 0)
+
   // Get product counts using utility functions
   const productCounts = calculateProductCounts(products)
   const sizesWithCounts = getSizesWithCounts(products)
@@ -141,7 +149,7 @@ export function ProductFilters({
                     id="category-tree"
                     data={categoryTree as any}
                     selectionMode="single"
-                    selectedValue={selectedIds.length > 0 ? [selectedIds[0]] : []}
+                    selectedValue={selectedIds}
                     defaultExpandedValue={[]}
                     expandOnClick={true}
                     showIndentGuides={true}
@@ -166,16 +174,26 @@ export function ProductFilters({
                       // Get the selected value (single selection mode returns array with one item)
                       const selectedValue = details.selectedValue?.[0]
                       
-                      if (!selectedValue) {
-                        // Nothing selected, clear filter
+                      // Get currently selected category
+                      const currentSelection = Array.from(filters.categories)[0]
+                      
+                      // Check if selection is empty (deselect happened)
+                      if (!selectedValue || selectedValue === undefined || details.selectedValue.length === 0) {
+                        // Nothing selected or deselected, clear filter
                         updateFilters({ categories: new Set() })
                         return
                       }
                       
                       // Check if it's a leaf node
                       if (!hasChildren(String(selectedValue))) {
-                        // It's a leaf node, apply filter
-                        updateFilters({ categories: new Set([String(selectedValue)]) })
+                        // It's a leaf node
+                        if (currentSelection === String(selectedValue)) {
+                          // Clicking on already selected item - deselect it
+                          updateFilters({ categories: new Set() })
+                        } else {
+                          // New selection - apply filter
+                          updateFilters({ categories: new Set([String(selectedValue)]) })
+                        }
                       }
                       // If it's not a leaf node, do nothing (just expand/collapse)
                     }}
@@ -431,13 +449,18 @@ export function ProductFilters({
     <div className={`w-full ${className || ''}`}>
       {/* Mobile Filter Button */}
       <Button
-        variant="secondary"
+        theme="outlined"
         size="sm"
         onClick={() => setIsOpen(true)}
         className="mb-product-filters-mobile-btn-margin flex items-center gap-product-filters-mobile-btn-gap md:hidden"
         icon="icon-[mdi--filter-variant]"
       >
         Filters
+        {activeFilterCount > 0 && (
+          <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-white text-xs">
+            {activeFilterCount}
+          </span>
+        )}
       </Button>
 
       {/* Desktop Filters */}
@@ -451,25 +474,25 @@ export function ProductFilters({
           title="Filters"
           description="Refine your product search"
         >
-          <div className="p-product-filters-dialog-padding">
-            <div className="mb-product-filters-dialog-header-margin flex items-center justify-between">
-              <h2 className="font-product-filters-dialog-title text-product-filters-dialog-title">
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b p-4">
+              <h2 className="font-semibold text-lg">
                 Filters
               </h2>
               <Button
-                variant="tertiary"
                 theme="borderless"
                 size="sm"
                 onClick={() => setIsOpen(false)}
                 icon="icon-[mdi--close]"
-              >
-                Close
-              </Button>
+                aria-label="Close filters"
+              />
             </div>
-            {filterContent}
-            <div className="mt-product-filters-actions-margin flex gap-product-filters-actions-gap">
+            <div className="flex-1 overflow-y-auto p-4">
+              {filterContent}
+            </div>
+            <div className="border-t p-4 flex gap-2">
               <Button
-                variant="secondary"
+                theme="outlined"
                 size="sm"
                 className="flex-1"
                 onClick={() => {
@@ -480,7 +503,7 @@ export function ProductFilters({
                 Clear All
               </Button>
               <Button
-                variant="primary"
+                theme="solid"
                 size="sm"
                 className="flex-1"
                 onClick={() => setIsOpen(false)}

@@ -3,7 +3,7 @@ import '../tokens/index.css'
 import { Footer } from '@/components/footer'
 import { HeaderWrapper } from '@/components/header-wrapper'
 import { Providers } from '@/components/providers'
-import type { ReactNode } from 'react'
+import * as React from 'react'
 
 export const metadata: Metadata = {
   title: 'Frontend Demo',
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: ReactNode
+  children: React.ReactNode
 }) {
   return (
     <html lang="en" suppressHydrationWarning>

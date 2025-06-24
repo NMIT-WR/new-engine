@@ -5,7 +5,8 @@ import { Button } from '@ui/atoms/button'
 import { Icon, type IconType } from '@ui/atoms/icon'
 import { Popover } from '@ui/molecules/popover'
 import Link from 'next/link'
-import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
+import * as React from 'react'
+import { type ComponentPropsWithoutRef, useState } from 'react'
 import { AuthDropdown } from './auth/auth-dropdown'
 import { CartPreview } from './molecules/cart-preview'
 import { HeaderSearch } from './molecules/header-search'
@@ -21,7 +22,7 @@ interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
     href?: string
   }
   navigationItems?: NavItem[]
-  actions?: ReactNode
+  actions?: React.ReactNode
   showMobileMenu?: boolean
 }
 
@@ -78,7 +79,6 @@ export function Header({
               <HeaderSearch />
               {/* Cart button */}
               <Popover
-                id="cart-preview"
                 trigger={
                   <div className="relative flex items-center">
                     <Icon className="text-tertiary" icon="token-icon-cart" />

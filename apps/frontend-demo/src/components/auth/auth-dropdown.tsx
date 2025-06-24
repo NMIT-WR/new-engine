@@ -21,7 +21,6 @@ export function AuthDropdown() {
   if (!user) {
     return (
       <Popover
-        id="auth-dropdown"
         trigger={
           <Icon className="text-tertiary" icon="icon-[mdi--account-outline]" />
         }

@@ -1,77 +1,54 @@
 'use client'
-
-import { useCategories } from '@/hooks/use-categories'
-import { useProducts } from '@/hooks/use-products'
+import { useCategories } from '@/hooks/use-categories-v2'
+import { categoriesToTreeNodes } from '@/utils/category-tree'
+import { TreeView } from '@ui/molecules/tree-view'
 
 export default function TestCategoriesPage() {
-  const {
-    categories,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useCategories()
-  const {
-    products,
-    isLoading: productsLoading,
-    error: productsError,
-  } = useProducts()
+  const { categories, isLoading, error } = useCategories()
+
+  if (isLoading) return <div>Loading categories...</div>
+  if (error) return <div>Error: {error}</div>
+
+  const rootCategories = categories.filter(cat => !cat.parent_category_id)
+  const treeData = categoriesToTreeNodes(rootCategories.length > 0 ? rootCategories : categories)
 
   return (
-    <div className="p-8">
-      <h1 className="mb-4 font-bold text-2xl">Categories Test</h1>
+    <div className="container mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-4">Test Categories</h1>
+      
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Stats:</h2>
+        <ul>
+          <li>Total categories: {categories.length}</li>
+          <li>Root categories: {rootCategories.length}</li>
+          <li>Tree nodes: {treeData.length}</li>
+        </ul>
+      </div>
 
       <div className="mb-8">
-        <h2 className="mb-2 font-semibold text-xl">Categories from API:</h2>
-        {categoriesLoading ? (
-          <p>Loading categories...</p>
-        ) : categoriesError ? (
-          <p className="text-red-500">Error: {categoriesError}</p>
-        ) : (
-          <div>
-            <p className="mb-2">Found {categories.length} categories:</p>
-            <ul className="list-disc pl-6">
-              {categories.map((cat: any) => (
-                <li key={cat.id}>
-                  {cat.name} ({cat.handle})
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <h2 className="text-xl font-semibold mb-2">Root Categories:</h2>
+        <ul>
+          {rootCategories.map(cat => (
+            <li key={cat.id}>{cat.name} ({cat.handle})</li>
+          ))}
+        </ul>
       </div>
 
       <div>
-        <h2 className="mb-2 font-semibold text-xl">
-          Products with Categories:
-        </h2>
-        {productsLoading ? (
-          <p>Loading products...</p>
-        ) : productsError ? (
-          <p className="text-red-500">Error: {productsError}</p>
+        <h2 className="text-xl font-semibold mb-2">Tree View:</h2>
+        {treeData.length > 0 ? (
+          <TreeView
+            id="test-category-tree"
+            data={treeData}
+            selectionMode="multiple"
+            defaultExpandedValue={[]}
+            expandOnClick={true}
+            showIndentGuides={true}
+            showNodeIcons={false}
+            className="max-h-96 overflow-auto"
+          />
         ) : (
-          <div>
-            <p className="mb-2">Checking first 10 products:</p>
-            <ul className="list-disc pl-6">
-              {products.slice(0, 10).map((product: any) => (
-                <li key={product.id}>
-                  <strong>{product.title}</strong> ({product.handle}):
-                  {product.categories && product.categories.length > 0 ? (
-                    product.categories.map((c: any) => c.name).join(', ')
-                  ) : (
-                    <span className="text-red-500"> NO CATEGORIES</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-4">
-              Products with categories:{' '}
-              {
-                products.filter(
-                  (p: any) => p.categories && p.categories.length > 0
-                ).length
-              }{' '}
-              / {products.length}
-            </p>
-          </div>
+          <div>No tree data</div>
         )}
       </div>
     </div>

@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import * as React from 'react'
 
 interface AuthFormWrapperProps {
   title: string
   subtitle: string
-  children: ReactNode
+  children: React.ReactNode
   footerText: string
   footerLinkText: string
   footerLinkHref: string
