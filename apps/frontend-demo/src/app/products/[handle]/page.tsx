@@ -1,13 +1,47 @@
-import { sdk } from '@/lib/medusa-client'
+import { httpClient } from '@/lib/http-client'
 import type { Metadata } from 'next'
 import ProductDetail from './product-detail'
 
+// Use error fallback for missing pages in static export
+export const dynamic = 'error'
+
 export async function generateStaticParams() {
   try {
-    const response = await sdk.store.product.list({
-      limit: 100,
-    })
-    return response.products.map((product) => ({
+    // Fetch ALL products to generate static pages
+    const allProducts = []
+    let offset = 0
+    const limit = 100
+    
+    // Fetch products in batches
+    while (true) {
+      const response = await httpClient.get<{ products: any[]; count: number }>(
+        '/store/products',
+        {
+          params: {
+            limit,
+            offset,
+            fields: 'id,handle',
+          },
+        }
+      )
+
+      if (!response.products || response.products.length === 0) {
+        break
+      }
+
+      allProducts.push(...response.products)
+      
+      // Check if we've fetched all products
+      if (allProducts.length >= response.count || response.products.length < limit) {
+        break
+      }
+      
+      offset += limit
+    }
+
+    console.log(`[generateStaticParams] Generating params for ${allProducts.length} products`)
+
+    return allProducts.map((product) => ({
       handle: product.handle || product.id,
     }))
   } catch (error) {
@@ -24,12 +58,18 @@ export async function generateMetadata({
   const resolvedParams = await params
 
   try {
-    const response = await sdk.store.product.list({
-      handle: resolvedParams.handle,
-      limit: 1,
-    })
+    const response = await httpClient.get<{ products: any[] }>(
+      '/store/products',
+      {
+        params: {
+          handle: resolvedParams.handle,
+          limit: 1,
+          fields: 'id,title,description,handle',
+        },
+      }
+    )
 
-    const product = response.products[0]
+    const product = response.products?.[0]
 
     if (!product) {
       return {

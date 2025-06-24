@@ -8,9 +8,9 @@ import { ProductTabs } from '@/components/organisms/product-tabs'
 import { useProduct, useProducts } from '@/hooks/use-products'
 import { useCurrentRegion } from '@/hooks/use-region'
 import { formatPrice } from '@/utils/price-utils'
-import { useEffect, useState } from 'react'
 import { ErrorText } from '@ui/atoms/error-text'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { useEffect, useState } from 'react'
 
 interface ProductDetailProps {
   handle: string

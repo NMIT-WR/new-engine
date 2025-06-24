@@ -1,10 +1,9 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
-import { useCategories } from '@/hooks/use-categories-v2'
+import { useCategoryTree } from '@/hooks/use-categories-v2'
 import { useDebouncedCallback } from '@/hooks/use-debounce'
 import type { Product } from '@/types/product'
-import { categoriesToTreeNodes } from '@/utils/category-tree'
 import { getColorHex } from '@/utils/color-map'
 import {
   type FilterState,
@@ -42,8 +41,7 @@ export function ProductFilters({
     filters.discountRange || [0, 100]
   )
   const filterConfig = activeFilterConfig // Use active configuration
-  const { categories: allCategories, isLoading: categoriesLoading } =
-    useCategories()
+  const { tree: categoryTree, isLoading: categoriesLoading } = useCategoryTree()
 
   // Sync local state with props
   useEffect(() => {
@@ -115,14 +113,7 @@ export function ProductFilters({
     switch (config.type) {
       case 'checkbox':
         // For categories, use TreeView instead of checkboxes
-        if (config.id === 'categories' && allCategories) {
-          // Build tree structure from categories
-          const rootCategories = allCategories.filter(
-            (cat) => !cat.parent_category_id
-          )
-          const treeData = categoriesToTreeNodes(
-            rootCategories.length > 0 ? rootCategories : allCategories
-          )
+        if (config.id === 'categories') {
 
           // Get selected category IDs as array
           const selectedIds = Array.from(filters.categories) as string[]
@@ -141,25 +132,22 @@ export function ProductFilters({
                 <div className="text-gray-500 text-sm">
                   Loading categories...
                 </div>
-              ) : treeData.length > 0 ? (
+              ) : categoryTree.length > 0 ? (
                 <TreeView
                   id="category-tree"
-                  data={treeData}
+                  data={categoryTree as any}
                   selectionMode="multiple"
                   selectedValue={selectedIds}
                   defaultExpandedValue={[]}
                   expandOnClick={true}
                   showIndentGuides={true}
                   showNodeIcons={false}
-                  /* onSelectionChange={(details) => {
-                    // Get all category IDs including descendants
-                    const allSelectedIds = getSelectedCategoryIds(
-                      details.selectedValue,
-                      treeData
-                    )
-                    updateFilters({ categories: new Set(allSelectedIds) })
-                  }}*/
-                  //  className="max-h-96 overflow-auto"
+                  onSelectionChange={(details) => {
+                    // Convert selected values to Set
+                    const selectedIds = new Set(details.selectedValue)
+                    updateFilters({ categories: selectedIds })
+                  }}
+                  className="max-h-96 overflow-auto"
                 />
               ) : (
                 <div className="text-gray-500 text-sm">
