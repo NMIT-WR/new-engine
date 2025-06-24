@@ -1,8 +1,8 @@
 'use client'
-import Link from 'next/link'
-import { type ComponentPropsWithoutRef, useState } from 'react'
 import { Button } from '@ui/atoms/button'
 import { Icon, type IconType } from '@ui/atoms/icon'
+import Link from 'next/link'
+import { type ComponentPropsWithoutRef, useState } from 'react'
 
 export type NavItem = {
   title: string

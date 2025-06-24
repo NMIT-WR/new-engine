@@ -1,7 +1,7 @@
 import type { Category } from '@/types/product'
-import Link from 'next/link'
 import { Button } from '@ui/atoms/button'
 import { Image } from '@ui/atoms/image'
+import Link from 'next/link'
 
 interface CategoryGridProps {
   title?: string

@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Image } from '@ui/atoms/image'
+import Link from 'next/link'
 
 interface SaleBannerProps {
   title: string
