@@ -16,17 +16,44 @@ export class CategoryService {
    * Fetch all categories
    */
   static async getCategories(): Promise<MedusaCategory[]> {
-    const response = await httpClient.get<{ product_categories: any[] }>(
-      '/store/product-categories',
-      {
-        params: {
-          include_descendants_tree: true,
-          limit: 1000,
-        },
-      }
-    )
+    try {
+      let allCategories: any[] = []
+      let offset = 0
+      const limit = 100
+      let hasMore = true
 
-    return response.product_categories || []
+      // Fetch all categories in batches
+      while (hasMore) {
+        const response = await httpClient.get<{ 
+          product_categories: any[], 
+          count: number,
+          offset: number,
+          limit: number 
+        }>('/store/product-categories', {
+          params: {
+            limit,
+            offset,
+          },
+        })
+        
+        if (!response || !response.product_categories) {
+          console.error('[CategoryService] Invalid response structure:', response)
+          break
+        }
+
+        allCategories = [...allCategories, ...response.product_categories]
+        
+        // Check if there are more categories to fetch
+        hasMore = response.product_categories.length === limit && allCategories.length < response.count
+        offset += limit
+      }
+
+      console.log('[CategoryService] Loaded all categories:', allCategories.length)
+      return allCategories
+    } catch (error) {
+      console.error('[CategoryService] Error fetching categories:', error)
+      return []
+    }
   }
 
   /**

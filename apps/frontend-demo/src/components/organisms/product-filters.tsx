@@ -133,22 +133,55 @@ export function ProductFilters({
                   Loading categories...
                 </div>
               ) : categoryTree.length > 0 ? (
-                <TreeView
-                  id="category-tree"
-                  data={categoryTree as any}
-                  selectionMode="multiple"
-                  selectedValue={selectedIds}
-                  defaultExpandedValue={[]}
-                  expandOnClick={true}
-                  showIndentGuides={true}
-                  showNodeIcons={false}
-                  onSelectionChange={(details) => {
-                    // Convert selected values to Set
-                    const selectedIds = new Set(details.selectedValue)
-                    updateFilters({ categories: selectedIds })
-                  }}
-                  className="max-h-96 overflow-auto"
-                />
+                <>
+                  <div className="text-xs text-gray-500 mb-2">
+                    Tip: Filters are applied only to the final subcategories
+                  </div>
+                  <TreeView
+                    id="category-tree"
+                    data={categoryTree as any}
+                    selectionMode="single"
+                    selectedValue={selectedIds.length > 0 ? [selectedIds[0]] : []}
+                    defaultExpandedValue={[]}
+                    expandOnClick={true}
+                    showIndentGuides={true}
+                    showNodeIcons={false}
+                    onSelectionChange={(details) => {
+                      // Helper function to check if a node has children
+                      const hasChildren = (nodeId: string): boolean => {
+                        const findNode = (nodes: any[]): any => {
+                          for (const node of nodes) {
+                            if (node.id === nodeId) return node
+                            if (node.children) {
+                              const found = findNode(node.children)
+                              if (found) return found
+                            }
+                          }
+                          return null
+                        }
+                        const node = findNode(categoryTree)
+                        return node && node.children && node.children.length > 0
+                      }
+
+                      // Get the selected value (single selection mode returns array with one item)
+                      const selectedValue = details.selectedValue?.[0]
+                      
+                      if (!selectedValue) {
+                        // Nothing selected, clear filter
+                        updateFilters({ categories: new Set() })
+                        return
+                      }
+                      
+                      // Check if it's a leaf node
+                      if (!hasChildren(String(selectedValue))) {
+                        // It's a leaf node, apply filter
+                        updateFilters({ categories: new Set([String(selectedValue)]) })
+                      }
+                      // If it's not a leaf node, do nothing (just expand/collapse)
+                    }}
+                    className="max-h-96 overflow-auto"
+                  />
+                </>
               ) : (
                 <div className="text-gray-500 text-sm">
                   No categories available

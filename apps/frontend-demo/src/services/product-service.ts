@@ -109,13 +109,11 @@ export class ProductService {
       queryParams.order = sortMap[sort] || sort
     }
 
-
     try {
       const response = await httpClient.get<{ products: any[]; count: number }>(
         '/store/products',
         { params: queryParams }
       )
-
 
       if (!response.products) {
         console.error('[ProductService] Invalid response structure:', response)
@@ -123,6 +121,12 @@ export class ProductService {
       }
 
       const products = response.products.map((p) => this.transformProduct(p))
+
+      // Don't filter out products without prices - just show them
+      console.log('[ProductService] Total products:', products.length)
+      console.log('[ProductService] Products with prices:', products.filter(p => 
+        p.variants?.some((v: any) => v.prices?.length > 0)
+      ).length)
 
       return {
         products,
