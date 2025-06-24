@@ -10,10 +10,12 @@ export const queryKeys = {
     [...queryKeys.products(regionId), handle] as const,
   categories: () => [...queryKeys.all, 'categories'] as const,
   category: (handle: string) => [...queryKeys.categories(), handle] as const,
+  allCategories: () => [...queryKeys.all, 'all-categories'] as const,
   cart: (id?: string) => [...queryKeys.all, 'cart', id] as const,
   auth: {
     customer: () => [...queryKeys.all, 'auth', 'customer'] as const,
     session: () => [...queryKeys.all, 'auth', 'session'] as const,
   },
   collections: () => [...queryKeys.all, 'collections'] as const,
+  homeProducts: () => [...queryKeys.all, 'home-products'] as const,
 } as const

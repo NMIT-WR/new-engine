@@ -29,6 +29,14 @@ export const sdk =
         // No auth for server-side/static generation
       })
 
+// Export a simple client config for direct fetch calls
+export const medusaClient = {
+  config: {
+    baseUrl: BACKEND_URL,
+    publishableKey: PUBLISHABLE_KEY,
+  },
+}
+
 // Helper functions
 export async function checkBackendHealth(): Promise<{
   healthy: boolean

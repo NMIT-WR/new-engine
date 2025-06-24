@@ -1,8 +1,10 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
+import { useCategories } from '@/hooks/use-categories-v2'
 import { useDebouncedCallback } from '@/hooks/use-debounce'
 import type { Product } from '@/types/product'
+import { categoriesToTreeNodes } from '@/utils/category-tree'
 import { getColorHex } from '@/utils/color-map'
 import {
   type FilterState,
@@ -14,6 +16,7 @@ import { Button } from '@ui/atoms/button'
 import { Checkbox } from '@ui/molecules/checkbox'
 import { Dialog } from '@ui/molecules/dialog'
 import { RangeSlider } from '@ui/molecules/range-slider'
+import { TreeView } from '@ui/molecules/tree-view'
 import { useEffect, useState } from 'react'
 import { ColorSwatch } from '../atoms/color-swatch'
 import { FilterSection } from '../molecules/filter-section'
@@ -39,6 +42,8 @@ export function ProductFilters({
     filters.discountRange || [0, 100]
   )
   const filterConfig = activeFilterConfig // Use active configuration
+  const { categories: allCategories, isLoading: categoriesLoading } =
+    useCategories()
 
   // Sync local state with props
   useEffect(() => {
@@ -109,6 +114,63 @@ export function ProductFilters({
   const renderFilter = (config: FilterConfig) => {
     switch (config.type) {
       case 'checkbox':
+        // For categories, use TreeView instead of checkboxes
+        if (config.id === 'categories' && allCategories) {
+          // Build tree structure from categories
+          const rootCategories = allCategories.filter(
+            (cat) => !cat.parent_category_id
+          )
+          const treeData = categoriesToTreeNodes(
+            rootCategories.length > 0 ? rootCategories : allCategories
+          )
+
+          // Get selected category IDs as array
+          const selectedIds = Array.from(filters.categories) as string[]
+
+          return (
+            <FilterSection
+              key={config.id}
+              title={config.title}
+              onClear={
+                config.showClearButton && filters.categories.size > 0
+                  ? () => updateFilters({ categories: new Set() })
+                  : undefined
+              }
+            >
+              {categoriesLoading ? (
+                <div className="text-gray-500 text-sm">
+                  Loading categories...
+                </div>
+              ) : treeData.length > 0 ? (
+                <TreeView
+                  id="category-tree"
+                  data={treeData}
+                  selectionMode="multiple"
+                  selectedValue={selectedIds}
+                  defaultExpandedValue={[]}
+                  expandOnClick={true}
+                  showIndentGuides={true}
+                  showNodeIcons={false}
+                  /* onSelectionChange={(details) => {
+                    // Get all category IDs including descendants
+                    const allSelectedIds = getSelectedCategoryIds(
+                      details.selectedValue,
+                      treeData
+                    )
+                    updateFilters({ categories: new Set(allSelectedIds) })
+                  }}*/
+                  //  className="max-h-96 overflow-auto"
+                />
+              ) : (
+                <div className="text-gray-500 text-sm">
+                  No categories available
+                </div>
+              )}
+            </FilterSection>
+          )
+        }
+
+        // Fallback for other checkbox filters (if any)
         return (
           <FilterSection
             key={config.id}

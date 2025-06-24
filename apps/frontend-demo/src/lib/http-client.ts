@@ -22,7 +22,7 @@ export interface HttpClientConfig {
 }
 
 export interface RequestOptions extends RequestInit {
-  params?: Record<string, string | number | boolean>
+  params?: Record<string, any>
   retry?: boolean
 }
 
@@ -55,15 +55,17 @@ class HttpClient {
     return headers
   }
 
-  private buildUrl(
-    path: string,
-    params?: Record<string, string | number | boolean>
-  ): string {
+  private buildUrl(path: string, params?: Record<string, any>): string {
     const url = new URL(path, this.config.baseUrl)
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value))
+        if (Array.isArray(value)) {
+          // For arrays, join with comma (Medusa v2 format)
+          url.searchParams.append(key, value.join(','))
+        } else {
+          url.searchParams.append(key, String(value))
+        }
       })
     }
 

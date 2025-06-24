@@ -2,12 +2,20 @@
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import { useProductListing } from '@/hooks/use-product-listing'
-import { useProducts } from '@/hooks/use-products'
+import { useProducts } from '@/hooks/use-products-v2'
 import { useUrlFilters } from '@/hooks/use-url-filters'
+import { sortProducts } from '@/utils/product-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
-import { Suspense } from 'react'
+import { useMemo } from 'react'
+
+const SORT_OPTIONS = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'price-asc', label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
+  { value: 'name-asc', label: 'Name: A to Z' },
+  { value: 'name-desc', label: 'Name: Z to A' },
+]
 
 // Loading skeleton for products
 function ProductGridSkeleton() {
@@ -31,45 +39,48 @@ function ProductGridSkeleton() {
 }
 
 function ProductsPageContent() {
-  const { products, isLoading } = useProducts()
   const pageSize = 12
 
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
-  // Filter products by search query first
-  const searchFilteredProducts = urlFilters.searchQuery
-    ? products.filter((product) => {
-        const query = urlFilters.searchQuery.toLowerCase()
-        return (
-          product.title.toLowerCase().includes(query) ||
-          product.description?.toLowerCase().includes(query) ||
-          product.handle.toLowerCase().includes(query)
-        )
-      })
-    : products
+  // Convert filter state to ProductFilters format
+  const productFilters = useMemo(
+    () => ({
+      categories: Array.from(urlFilters.filters.categories) as string[],
+      priceRange: urlFilters.filters.priceRange as [number, number],
+      sizes: Array.from(urlFilters.filters.sizes) as string[],
+      colors: Array.from(urlFilters.filters.colors) as string[],
+      onSale: urlFilters.filters.onSale,
+      search: urlFilters.searchQuery || undefined,
+    }),
+    [urlFilters.filters, urlFilters.searchQuery]
+  )
 
+  // Use the v2 products hook with server-side pagination and filtering
   const {
-    sortBy,
-    setSortBy,
-    filters,
-    setFilters,
-    sortedProducts,
-    sortOptions,
-  } = useProductListing(searchFilteredProducts, {
-    externalSortBy: urlFilters.sortBy,
-    externalSetSortBy: urlFilters.setSortBy,
-    externalFilters: urlFilters.filters,
-    externalSetFilters: urlFilters.setFilters,
+    products,
+    isLoading,
+    totalCount,
+    currentPage,
+    totalPages,
+    hasNextPage,
+    hasPrevPage,
+  } = useProducts({
+    page: urlFilters.page,
+    limit: pageSize,
+    filters: productFilters,
+    sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
   })
 
-  // Calculate paginated products
-  const totalPages = Math.ceil(sortedProducts.length / pageSize)
-  const currentPage = Math.min(urlFilters.page, totalPages || 1)
-  const paginatedProducts = sortedProducts.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  )
+  // Apply client-side sorting for display
+  const sortedProducts = useMemo(() => {
+    const sortBy =
+      urlFilters.sortBy === 'relevance'
+        ? 'newest'
+        : urlFilters.sortBy || 'newest'
+    return sortProducts(products, sortBy as any)
+  }, [products, urlFilters.sortBy])
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -89,8 +100,8 @@ function ProductsPageContent() {
         {/* Filters Sidebar */}
         <aside className="hidden w-64 flex-shrink-0 lg:block">
           <ProductFilters
-            filters={filters}
-            onFiltersChange={setFilters}
+            filters={urlFilters.filters}
+            onFiltersChange={urlFilters.setFilters}
             products={products}
           />
         </aside>
@@ -99,20 +110,19 @@ function ProductsPageContent() {
         <main className="flex-1">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-gray-600 text-sm dark:text-gray-400">
-              Showing {paginatedProducts.length} of {sortedProducts.length}{' '}
-              products
+              Showing {products.length} of {totalCount} products
             </p>
             <Select
-              value={[sortBy]}
-              options={sortOptions.map((opt) => ({
-                value: opt.value.toString(),
+              value={[urlFilters.sortBy || 'newest']}
+              options={SORT_OPTIONS.map((opt) => ({
+                value: opt.value,
                 label: opt.label,
               }))}
               clearIcon={false}
               placeholder="Select sorting"
               onValueChange={(details) => {
                 const value = details.value[0]
-                if (value) setSortBy(value as any)
+                if (value) urlFilters.setSortBy(value as any)
               }}
               size="md"
             />
@@ -120,10 +130,10 @@ function ProductsPageContent() {
 
           {isLoading ? (
             <ProductGridSkeleton />
-          ) : paginatedProducts.length > 0 ? (
+          ) : sortedProducts.length > 0 ? (
             <ProductGrid
-              products={paginatedProducts}
-              totalCount={sortedProducts.length}
+              products={sortedProducts}
+              totalCount={totalCount}
               currentPage={currentPage}
               pageSize={pageSize}
               onPageChange={urlFilters.setPage}
@@ -140,9 +150,5 @@ function ProductsPageContent() {
 }
 
 export default function ProductsPage() {
-  return (
-    <Suspense fallback={<ProductGridSkeleton />}>
-      <ProductsPageContent />
-    </Suspense>
-  )
+  return <ProductsPageContent />
 }
