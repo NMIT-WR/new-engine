@@ -57,7 +57,7 @@ export default function CategoriesPage() {
           {categories.map((category: any) => (
             <Link
               key={category.id}
-              href={`/categories/${category.handle}`}
+              href={`/products?categories=${category.id}`}
               className="group relative overflow-hidden rounded-category-card-radius"
             >
               <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-700">

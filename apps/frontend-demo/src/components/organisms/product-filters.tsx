@@ -1,6 +1,7 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
+import { useDebouncedCallback } from '@/hooks/use-debounce'
 import type { Product } from '@/types/product'
 import { getColorHex } from '@/utils/color-map'
 import {
@@ -13,7 +14,7 @@ import { Button } from '@ui/atoms/button'
 import { Checkbox } from '@ui/molecules/checkbox'
 import { Dialog } from '@ui/molecules/dialog'
 import { RangeSlider } from '@ui/molecules/range-slider'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ColorSwatch } from '../atoms/color-swatch'
 import { FilterSection } from '../molecules/filter-section'
 
@@ -33,7 +34,17 @@ export function ProductFilters({
   products = [],
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [localPriceRange, setLocalPriceRange] = useState(filters.priceRange)
+  const [localDiscountRange, setLocalDiscountRange] = useState(
+    filters.discountRange || [0, 100]
+  )
   const filterConfig = activeFilterConfig // Use active configuration
+
+  // Sync local state with props
+  useEffect(() => {
+    setLocalPriceRange(filters.priceRange)
+    setLocalDiscountRange(filters.discountRange || [0, 100])
+  }, [filters.priceRange, filters.discountRange])
 
   const updateFilters = (updates: Partial<FilterState>) => {
     onFiltersChange({
@@ -42,12 +53,30 @@ export function ProductFilters({
     })
   }
 
+  // Debounced update for price range
+  const debouncedPriceUpdate = useDebouncedCallback(
+    (value: [number, number]) => {
+      updateFilters({ priceRange: value })
+    },
+    500
+  )
+
+  // Debounced update for discount range
+  const debouncedDiscountUpdate = useDebouncedCallback(
+    (value: [number, number]) => {
+      updateFilters({ discountRange: value })
+    },
+    500
+  )
+
   const clearAllFilters = () => {
     onFiltersChange({
       priceRange: [0, 300],
       categories: new Set(),
       sizes: new Set(),
       colors: new Set(),
+      onSale: false,
+      discountRange: [0, 100],
     })
   }
 
@@ -56,7 +85,9 @@ export function ProductFilters({
     filters.sizes.size > 0 ||
     filters.colors.size > 0 ||
     filters.priceRange[0] > 0 ||
-    filters.priceRange[1] < 300
+    filters.priceRange[1] < 300 ||
+    filters.onSale ||
+    (filters.discountRange && filters.discountRange[0] > 0)
 
   // Get product counts using utility functions
   const productCounts = calculateProductCounts(products)
@@ -121,10 +152,12 @@ export function ProductFilters({
         return (
           <FilterSection key={config.id} title={config.title}>
             <RangeSlider
-              value={filters.priceRange}
-              onChange={(value) =>
-                updateFilters({ priceRange: value as [number, number] })
-              }
+              value={localPriceRange}
+              onChange={(value) => {
+                const newRange = value as [number, number]
+                setLocalPriceRange(newRange)
+                debouncedPriceUpdate(newRange)
+              }}
               min={config.range?.min || 0}
               max={config.range?.max || 300}
               step={config.range?.step || 10}
@@ -136,14 +169,14 @@ export function ProductFilters({
             <div className="mt-product-filters-range-margin flex justify-between">
               <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
                 {config.range?.prefix}
-                {filters.priceRange[0]}
+                {localPriceRange[0]}
               </span>
               <span className="text-product-filters-range-label text-sm">
                 to
               </span>
               <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
                 {config.range?.prefix}
-                {filters.priceRange[1]}
+                {localPriceRange[1]}
               </span>
             </div>
           </FilterSection>
@@ -232,6 +265,56 @@ export function ProductFilters({
               )
             }}
           />
+        )
+
+      case 'sale':
+        return (
+          <FilterSection key={config.id} title={config.title}>
+            <div className="space-y-4">
+              <Checkbox
+                id="on-sale"
+                name="onSale"
+                value="true"
+                labelText="On Sale"
+                checked={filters.onSale || false}
+                onCheckedChange={(details) => {
+                  const isChecked = details.checked === true
+                  if (isChecked) {
+                    updateFilters({ onSale: true })
+                  } else {
+                    updateFilters({
+                      onSale: false,
+                      discountRange: [0, 100],
+                    })
+                    setLocalDiscountRange([0, 100])
+                  }
+                }}
+              />
+              {filters.onSale && (
+                <div className="mt-4">
+                  <label className="mb-2 block font-medium text-sm">
+                    Discount Range
+                  </label>
+                  <RangeSlider
+                    value={localDiscountRange}
+                    onChange={(value) => {
+                      const newRange = value as [number, number]
+                      setLocalDiscountRange(newRange)
+                      debouncedDiscountUpdate(newRange)
+                    }}
+                    min={0}
+                    max={100}
+                    step={5}
+                    minStepsBetweenThumbs={5}
+                    formatValue={(value) => `${value}%`}
+                    showValueText
+                    markerCount={5}
+                    showMarkers
+                  />
+                </div>
+              )}
+            </div>
+          </FilterSection>
         )
 
       default:
