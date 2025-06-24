@@ -32,15 +32,15 @@ interface PageProps {
 export default async function CategoryPage({ params }: PageProps) {
   const resolvedParams = await params
   const handle = resolvedParams.slug[0]
-  
+
   // Find category by handle
-  const category = KNOWN_CATEGORIES.find(cat => cat.handle === handle)
-  
+  const category = KNOWN_CATEGORIES.find((cat) => cat.handle === handle)
+
   if (category) {
     // Redirect to products page with category filter
     redirect(`/products?categories=${category.id}`)
   }
-  
+
   // If category not found, redirect to products page
   redirect('/products')
 }

@@ -1,10 +1,11 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { useCategories } from '@/hooks/use-categories'
-import Link from 'next/link'
+import { CategoryGrid } from '@/components/organisms/category-grid'
+import { CategoryTreeSection } from '@/components/organisms/category-tree-section'
+import { useRootCategories } from '@/hooks/use-categories-v2'
 
 export default function CategoriesPage() {
-  const { categories, isLoading, error } = useCategories()
+  const { categories: orderedCategories, isLoading, error } = useRootCategories()
 
   if (isLoading) {
     return (
@@ -41,7 +42,7 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-categories-bg">
       {/* Hero section */}
-      <section className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile pb-categories-section-y-mobile md:px-categories-container-x-desktop md:pb-categories-section-y-desktop">
+      <section className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile pt-categories-section-y-mobile md:px-categories-container-x-desktop md:pt-categories-section-y-desktop">
         <h1 className="font-categories-heading text-categories-heading-fg text-categories-heading-size-mobile md:text-categories-heading-size-desktop">
           All Categories
         </h1>
@@ -51,34 +52,16 @@ export default function CategoriesPage() {
         </p>
       </section>
 
-      {/* Categories grid - reuse the component without wrapper section */}
-      <div className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile pb-categories-section-y-mobile md:px-categories-container-x-desktop md:pb-categories-section-y-desktop">
-        <div className="grid grid-cols-2 gap-category-grid-gap md:grid-cols-4">
-          {categories.map((category: any) => (
-            <Link
-              key={category.id}
-              href={`/products?categories=${category.id}`}
-              className="group relative overflow-hidden rounded-category-card-radius"
-            >
-              <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-700">
-                {/* Using placeholder since categories don't have images in Medusa */}
-                <div className="flex h-full w-full items-center justify-center text-gray-400 dark:text-gray-600">
-                  <span className="text-4xl">📁</span>
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20" />
-              <div className="absolute bottom-0 left-0 p-category-card-padding">
-                <h3 className="font-semibold text-category-item-text text-category-item-title-size">
-                  {category.name}
-                </h3>
-                <p className="text-category-item-count text-category-item-count-size">
-                  {category.count > 0 ? `${category.count} items` : ''}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      {/* Categories grid - using the same component as homepage */}
+      <CategoryGrid
+        categories={orderedCategories}
+      />
+      
+      {/* Category tree view 
+      <CategoryTreeSection
+        title="Browse by Hierarchy"
+        subtitle="Navigate through our category structure"
+      />*/}
     </div>
   )
 }
