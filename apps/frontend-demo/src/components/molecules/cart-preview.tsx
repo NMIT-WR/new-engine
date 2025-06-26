@@ -8,6 +8,7 @@ import { getProductPath } from '@/utils/product-utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@ui/atoms/button'
+import { LinkButton } from '@ui/atoms/link-button'
 
 export function CartPreview() {
   const { cart, removeItem, isLoading } = useCart()
@@ -32,14 +33,11 @@ export function CartPreview() {
           <p className="font-semibold text-cart-preview-empty-size text-cart-preview-fg">
             Košík je prázdný
           </p>
-          <Link
-            href="/products"
-            className="mt-cart-preview-empty-mt inline-block"
-          >
-            <Button variant="primary" size="sm" block>
-              Prohlédnout produkty
-            </Button>
-          </Link>
+    
+            <LinkButton   href="/products" variant="primary" size="sm" block>
+              Prohlédnout Produkty
+            </LinkButton>
+        
         </div>
       </div>
     )
@@ -132,11 +130,9 @@ export function CartPreview() {
           </span>
         </div>
         <div className="flex flex-col gap-cart-preview-actions-gap">
-          <Link href="/cart" className="block">
-            <Button variant="primary" size="md" block>
-              Do košíku
-            </Button>
-          </Link>
+          <LinkButton href="/cart" variant="primary" size="md" block>
+            Do Košíku
+          </LinkButton>
         </div>
       </div>
     </div>

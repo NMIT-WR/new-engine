@@ -4,12 +4,13 @@ import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
+import Image from 'next/image'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { Link } from '@ui/atoms/link'
+import { LinkButton } from '@ui/atoms/link-button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { NumericInput } from '@ui/molecules/numeric-input'
-import Image from 'next/image'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
@@ -205,11 +206,13 @@ export default function CartPage() {
             <p className="mb-cart-empty-text-margin text-cart-empty-text">
               Vypadá to, že jste do košíku ještě nic nepřidali.
             </p>
-            <Link href="/products">
-              <Button size="lg" icon="icon-[mdi--shopping-outline]">
-                Začít nakupovat
-              </Button>
-            </Link>
+            <LinkButton 
+              href="/products" 
+              size="lg" 
+              icon="icon-[mdi--shopping-outline]"
+            >
+              Začít Nakupovat
+            </LinkButton>
           </div>
         )}
       </div>

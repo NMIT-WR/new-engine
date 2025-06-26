@@ -14,6 +14,7 @@ import { type NavItem, Navigation } from './molecules/navigation'
 import { MobileMenu } from './organisms/mobile-menu'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
+import { LinkButton } from '@ui/atoms/link-button'
 
 interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   logo?: {
