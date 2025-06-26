@@ -79,6 +79,7 @@ export function Header({
               <HeaderSearch />
               {/* Cart button */}
               <Popover
+              id='popover-header'
                 trigger={
                   <div className="relative flex items-center">
                     <Icon className="text-tertiary" icon="token-icon-cart" />
