@@ -14,6 +14,15 @@ export const cacheConfig = {
     refetchOnMount: false,
   },
 
+  // Kategorie - téměř nikdy se nemění
+  categories: {
+    staleTime: Infinity, // Nikdy není stale
+    gcTime: Infinity, // Nikdy se nesmaže z cache
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  },
+
   // Občas se měnící data (product catalog, shipping options)
   semiStatic: {
     staleTime: 60 * 60 * 1000, // 1 hodina
