@@ -1,7 +1,6 @@
 'use client'
-import { Button } from '@ui/atoms/button'
 import { Image } from '@ui/atoms/image'
-import { useRouter } from 'next/navigation'
+import { LinkButton } from '@ui/atoms/link-button'
 
 interface HeroProps {
   title: string
@@ -26,23 +25,6 @@ export function Hero({
   primaryAction,
   secondaryAction,
 }: HeroProps) {
-  const router = useRouter()
-
-  const handlePrimaryAction = () => {
-    if (primaryAction?.onClick) {
-      primaryAction.onClick()
-    } else if (primaryAction?.href) {
-      router.push(primaryAction.href)
-    }
-  }
-
-  const handleSecondaryAction = () => {
-    if (secondaryAction?.onClick) {
-      secondaryAction.onClick()
-    } else if (secondaryAction?.href) {
-      router.push(secondaryAction.href)
-    }
-  }
 
   return (
     <section className="relative h-hero-height overflow-hidden">
@@ -69,28 +51,28 @@ export function Hero({
               </p>
             )}
             {(primaryAction || secondaryAction) && (
-              <div className="flex w-fit gap-hero-button-gap">
+              <div className="flex flex-col md:flex-row w-fit gap-hero-button-gap">
                 {primaryAction && (
-                  <Button
+                  <LinkButton
                     variant="primary"
                     size="lg"
                     theme="solid"
-                    onClick={handlePrimaryAction}
-                    className="px-hero-button-x py-hero-button-y"
+                    href="/products"
+                    className="py-xs h-fit lg:px-hero-button-x lg:py-hero-button-y"
                   >
                     {primaryAction.label}
-                  </Button>
+                  </LinkButton>
                 )}
                 {secondaryAction && (
-                  <Button
+                  <LinkButton
                     variant="primary"
                     size="lg"
-                    theme="outlined"
-                    onClick={handleSecondaryAction}
-                    className={`border-white px-hero-button-x py-hero-button-y text-white`}
+                    theme="borderless"
+                    href="/products"
+                    className='py-xs outline-2 border-white lg:px-hero-button-x lg:py-hero-button-y text-white'
                   >
                     {secondaryAction.label}
-                  </Button>
+                  </LinkButton>
                 )}
               </div>
             )}

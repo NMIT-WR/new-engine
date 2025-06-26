@@ -127,6 +127,7 @@ export function Pagination({
         {showPrevNext && (
           <li className={item()}>
             <LinkButton
+            theme='borderless'
               className={link()}
               icon="token-icon-pagination-prev"
               onClick={() => api.goToPrevPage()}
@@ -141,6 +142,7 @@ export function Pagination({
             return (
               <li key={page.value} className={item()}>
                 <LinkButton
+                  theme='borderless'
                   className={link()}
                   onClick={() => api.setPage(page.value)}
                   aria-current={api.page === page.value ? 'page' : undefined}
@@ -168,6 +170,7 @@ export function Pagination({
         {showPrevNext && (
           <li className={item()}>
             <LinkButton
+              theme='borderless'
               className={link()}
               icon="token-icon-pagination-next"
               onClick={() => api.goToNextPage()}
