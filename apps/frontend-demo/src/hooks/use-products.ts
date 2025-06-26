@@ -10,7 +10,6 @@ import { useCurrentRegion } from './use-region'
 // Helper to assign categories based on product handle/title
 function assignFallbackCategories(product: any): any[] {
   const handle = product.handle?.toLowerCase() || ''
-  const title = product.title?.toLowerCase() || ''
 
   // T-Shirts & Tops
   if (
@@ -217,7 +216,7 @@ function transformProduct(
             calculatedPrice.currency_code ||
             calculatedPrice.calculated_price?.currency_code ||
             regionCurrencyCode ||
-            'eur'
+            'czk'
 
           prices.push({
             id: variant.id,
@@ -241,7 +240,7 @@ function transformProduct(
             prices.push({
               id: variant.id,
               amount: 0,
-              currency_code: regionCurrencyCode?.toLowerCase() || 'eur',
+              currency_code: regionCurrencyCode?.toLowerCase() || 'czk',
               calculated_price: 0,
             })
           }
@@ -275,15 +274,21 @@ export function useProducts(filters?: any) {
   } = useQuery({
     queryKey: queryKeys.products(region?.id, filters),
     queryFn: async () => {
+      // LIMIT NA 100 PRODUKTŮ PRO DEMO
+      const MAX_PRODUCTS = 100
+      
       const response = await sdk.store.product.list({
-        limit: 100,
+        limit: MAX_PRODUCTS,
         fields:
           '*variants.calculated_price,*variants.prices,*variants.options.option,*variants.inventory_quantity,*images,*categories,*collection,*tags',
         region_id: region!.id,
         ...filters,
       })
 
-      return response.products.map((product) =>
+      // Vezmi pouze prvních MAX_PRODUCTS produktů
+      const limitedProducts = response.products.slice(0, MAX_PRODUCTS)
+      
+      return limitedProducts.map((product) =>
         transformProduct(product, region?.currency_code)
       )
     },
