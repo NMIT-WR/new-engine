@@ -27,6 +27,8 @@
 
   /* ===== MENU SUBMENU INDICATOR ===== */
   --color-menu-submenu-indicator-fg: var(--color-fg-secondary);
+  --spacing-menu-submenu-indicator: var(--spacing-sm);
+  --spacing-menu-submenu-offset: var(--spacing-xs);
 
   /* ===== MENU DISABLED STATE ===== */
   --opacity-menu-disabled: 50%;

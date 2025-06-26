@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import React from 'react'
 import { Menu, type MenuItem } from '../../src/molecules/menu'
 
 const meta: Meta<typeof Menu> = {
@@ -115,7 +116,7 @@ export const WithSelectHandler: Story = {
   args: {
     items: basicItems,
     triggerText: 'Actions',
-    onSelect: (details) => {
+    onSelect: (details: { value: string }) => {
       console.log('Selected:', details.value)
       alert(`You selected: ${details.value}`)
     },
@@ -136,8 +137,8 @@ export const WithOptionsMenu: Story = {
   args: {
     items: viewMenuItems,
     triggerText: 'View',
-    onCheckedChange: (item, checked) => {
-      console.log('Option changed:', item.value, 'checked:', checked)
+    onCheckedChange: (item: MenuItem, checked: boolean) => {
+      console.log('Option changed:', (item as any).value, 'checked:', checked)
     },
   },
 }
@@ -217,6 +218,249 @@ export const ScrollableMenu: Story = {
     docs: {
       description: {
         story: 'Menu with many items shows scrollbar when exceeding max height',
+      },
+    },
+  },
+}
+
+// Story pro nested menu
+const nestedMenuItems: MenuItem[] = [
+  { type: 'action', value: 'new-file', label: 'New File', icon: 'token-icon-plus' },
+  { type: 'action', value: 'open', label: 'Open...', icon: 'token-icon-folder' },
+  { type: 'separator', id: 'sep-1' },
+  {
+    type: 'submenu',
+    value: 'recent',
+    label: 'Recent Files',
+    icon: 'token-icon-clock',
+    items: [
+      { type: 'action', value: 'recent-1', label: 'project-config.json' },
+      { type: 'action', value: 'recent-2', label: 'README.md' },
+      { type: 'action', value: 'recent-3', label: 'package.json' },
+      { type: 'separator', id: 'sep-recent' },
+      { type: 'action', value: 'clear-recent', label: 'Clear Recent Files' },
+    ],
+  },
+  { type: 'separator', id: 'sep-2' },
+  {
+    type: 'submenu',
+    value: 'share',
+    label: 'Share',
+    icon: 'token-icon-share',
+    items: [
+      { type: 'action', value: 'email', label: 'Email', icon: 'token-icon-email' },
+      { type: 'action', value: 'link', label: 'Copy Link', icon: 'token-icon-link' },
+      { type: 'separator', id: 'sep-share' },
+      {
+        type: 'submenu',
+        value: 'social',
+        label: 'Social Media',
+        icon: 'token-icon-share',
+        items: [
+          { type: 'action', value: 'twitter', label: 'Twitter' },
+          { type: 'action', value: 'facebook', label: 'Facebook' },
+          { type: 'action', value: 'linkedin', label: 'LinkedIn' },
+        ],
+      },
+    ],
+  },
+  { type: 'action', value: 'print', label: 'Print...', icon: 'token-icon-print' },
+  { type: 'separator', id: 'sep-3' },
+  { type: 'action', value: 'exit', label: 'Exit', icon: 'token-icon-close' },
+]
+
+export const NestedMenu: Story = {
+  args: {
+    items: nestedMenuItems,
+    triggerText: 'File',
+    onSelect: (details: { value: string }) => {
+      console.log('Selected from nested menu:', details.value)
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Menu with nested submenus. Supports multiple levels of nesting.',
+      },
+    },
+  },
+}
+
+// Story pro complex nested menu (like categories)
+const categoryMenuItems: MenuItem[] = [
+  { type: 'action', value: 'all', label: 'All Products' },
+  { type: 'separator', id: 'sep-categories' },
+  {
+    type: 'submenu',
+    value: 'electronics',
+    label: 'Electronics',
+    items: [
+      {
+        type: 'submenu',
+        value: 'computers',
+        label: 'Computers & Tablets',
+        items: [
+          { type: 'action', value: 'laptops', label: 'Laptops' },
+          { type: 'action', value: 'desktops', label: 'Desktop Computers' },
+          { type: 'action', value: 'tablets', label: 'Tablets' },
+          {
+            type: 'submenu',
+            value: 'accessories',
+            label: 'Computer Accessories',
+            items: [
+              { type: 'action', value: 'keyboards', label: 'Keyboards' },
+              { type: 'action', value: 'mice', label: 'Mice & Trackpads' },
+              { type: 'action', value: 'monitors', label: 'Monitors' },
+              { type: 'action', value: 'webcams', label: 'Webcams' },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'submenu',
+        value: 'phones',
+        label: 'Phones & Accessories',
+        items: [
+          { type: 'action', value: 'smartphones', label: 'Smartphones' },
+          { type: 'action', value: 'cases', label: 'Phone Cases' },
+          { type: 'action', value: 'chargers', label: 'Chargers & Cables' },
+          { type: 'action', value: 'headphones', label: 'Headphones' },
+        ],
+      },
+      { type: 'action', value: 'cameras', label: 'Cameras & Photo' },
+      { type: 'action', value: 'tv', label: 'TV & Home Theater' },
+    ],
+  },
+  {
+    type: 'submenu',
+    value: 'clothing',
+    label: 'Clothing & Fashion',
+    items: [
+      {
+        type: 'submenu',
+        value: 'mens',
+        label: "Men's Clothing",
+        items: [
+          { type: 'action', value: 'mens-shirts', label: 'Shirts' },
+          { type: 'action', value: 'mens-pants', label: 'Pants' },
+          { type: 'action', value: 'mens-shoes', label: 'Shoes' },
+          { type: 'action', value: 'mens-accessories', label: 'Accessories' },
+        ],
+      },
+      {
+        type: 'submenu',
+        value: 'womens',
+        label: "Women's Clothing",
+        items: [
+          { type: 'action', value: 'womens-dresses', label: 'Dresses' },
+          { type: 'action', value: 'womens-tops', label: 'Tops' },
+          { type: 'action', value: 'womens-shoes', label: 'Shoes' },
+          { type: 'action', value: 'womens-bags', label: 'Bags & Purses' },
+        ],
+      },
+      { type: 'action', value: 'kids', label: "Kids' Clothing" },
+      { type: 'action', value: 'sports', label: 'Sportswear' },
+    ],
+  },
+  {
+    type: 'submenu',
+    value: 'home',
+    label: 'Home & Garden',
+    items: [
+      { type: 'action', value: 'furniture', label: 'Furniture' },
+      { type: 'action', value: 'kitchen', label: 'Kitchen & Dining' },
+      { type: 'action', value: 'bedding', label: 'Bedding & Bath' },
+      { type: 'action', value: 'decor', label: 'Home Decor' },
+      { type: 'action', value: 'garden', label: 'Garden & Outdoor' },
+    ],
+  },
+]
+
+export const CategoryMenu: Story = {
+  args: {
+    items: categoryMenuItems,
+    triggerText: 'Shop by Category',
+    triggerIcon: 'token-icon-grid',
+    onSelect: (details: { value: string }) => {
+      console.log('Selected category:', details.value)
+      alert(`Navigate to category: ${details.value}`)
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Complex nested menu structure suitable for e-commerce categories with multiple levels of hierarchy.',
+      },
+    },
+  },
+}
+
+// Story pro mixed nested menu with options
+const mixedNestedItems: MenuItem[] = [
+  { type: 'action', value: 'dashboard', label: 'Dashboard', icon: 'token-icon-home' },
+  { type: 'separator', id: 'sep-1' },
+  {
+    type: 'submenu',
+    value: 'view',
+    label: 'View',
+    icon: 'token-icon-eye',
+    items: [
+      { type: 'checkbox', value: 'show-sidebar', label: 'Show Sidebar', checked: true },
+      { type: 'checkbox', value: 'show-toolbar', label: 'Show Toolbar', checked: true },
+      { type: 'separator', id: 'sep-view' },
+      {
+        type: 'submenu',
+        value: 'theme',
+        label: 'Theme',
+        items: [
+          { type: 'radio', value: 'light', label: 'Light', name: 'theme', checked: true },
+          { type: 'radio', value: 'dark', label: 'Dark', name: 'theme', checked: false },
+          { type: 'radio', value: 'system', label: 'System', name: 'theme', checked: false },
+        ],
+      },
+      {
+        type: 'submenu',
+        value: 'layout',
+        label: 'Layout',
+        items: [
+          { type: 'radio', value: 'comfortable', label: 'Comfortable', name: 'layout', checked: true },
+          { type: 'radio', value: 'compact', label: 'Compact', name: 'layout', checked: false },
+          { type: 'radio', value: 'spacious', label: 'Spacious', name: 'layout', checked: false },
+        ],
+      },
+    ],
+  },
+  {
+    type: 'submenu',
+    value: 'tools',
+    label: 'Tools',
+    icon: 'token-icon-settings',
+    items: [
+      { type: 'action', value: 'import', label: 'Import Data...', icon: 'token-icon-download' },
+      { type: 'action', value: 'export', label: 'Export Data...', icon: 'token-icon-upload' },
+      { type: 'separator', id: 'sep-tools' },
+      { type: 'action', value: 'preferences', label: 'Preferences...', icon: 'token-icon-settings' },
+    ],
+  },
+  { type: 'separator', id: 'sep-2' },
+  { type: 'action', value: 'help', label: 'Help', icon: 'token-icon-help' },
+]
+
+export const MixedNestedMenu: Story = {
+  args: {
+    items: mixedNestedItems,
+    triggerText: 'Application',
+    onSelect: (details: { value: string }) => {
+      console.log('Action selected:', details.value)
+    },
+    onCheckedChange: (item: MenuItem, checked: boolean) => {
+      console.log('Option changed:', (item as any).value, 'checked:', checked)
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Nested menu with mixed content types including checkboxes and radio buttons in submenus.',
       },
     },
   },

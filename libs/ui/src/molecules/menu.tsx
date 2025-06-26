@@ -5,6 +5,7 @@ import {
   type ReactNode,
   cloneElement,
   isValidElement,
+  useEffect,
   useId,
 } from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
@@ -39,11 +40,21 @@ type SeparatorMenuItem = {
   id: string // pro key
 }
 
-type MenuItem =
+type SubmenuMenuItem = {
+  type: 'submenu'
+  value: string
+  label: string
+  icon?: IconType
+  disabled?: boolean
+  items: MenuItem[] // nested items
+}
+
+export type MenuItem =
   | ActionMenuItem
   | RadioMenuItem
   | CheckboxMenuItem
   | SeparatorMenuItem
+  | SubmenuMenuItem
 
 // === COMPONENT VARIANTS ===
 const menuVariants = tv({
@@ -80,7 +91,9 @@ const menuVariants = tv({
     ],
     itemText: ['flex-grow'],
     itemIcon: ['text-menu-item-icon-size text-menu-item-icon-fg'],
-    submenuIndicator: ['ml-auto text-menu-submenu-indicator-fg'],
+    submenuIndicator: [
+      'ml-menu-submenu-indicator text-menu-submenu-indicator-fg',
+    ],
   },
   variants: {
     size: {
@@ -103,16 +116,174 @@ const menuVariants = tv({
   },
 })
 
+// === SUBMENU COMPONENT ===
+interface SubmenuItemProps {
+  item: SubmenuMenuItem
+  parentApi: menu.Api
+  parentService: menu.Service
+  size?: 'sm' | 'md' | 'lg'
+  onCheckedChange?: (item: MenuItem, checked: boolean) => void
+  onSelect?: (details: { value: string }) => void
+  closeOnSelect?: boolean
+}
+
+function SubmenuItem({
+  item,
+  parentApi,
+  parentService,
+  size = 'md',
+  onCheckedChange,
+  onSelect,
+  closeOnSelect = true,
+}: SubmenuItemProps) {
+  const submenuService = useMachine(menu.machine as any, {
+    id: useId(),
+    closeOnSelect,
+    onSelect,
+  })
+
+  const submenuApi = menu.connect(
+    submenuService as menu.Service,
+    normalizeProps
+  )
+
+  useEffect(() => {
+    // Setup parent-child relationship
+    parentApi.setChild(submenuService as menu.Service)
+    submenuApi.setParent(parentService)
+  }, [parentApi, submenuApi, submenuService, parentService])
+
+  const {
+    positioner,
+    content,
+    separator,
+    optionItem,
+    item: itemSlot,
+    itemIcon,
+    itemText,
+    submenuIndicator,
+  } = menuVariants({ size })
+
+  const renderMenuItem = (menuItem: MenuItem) => {
+    // Handle separator
+    if (menuItem.type === 'separator') {
+      return <hr key={`separator-${menuItem.id}`} className={separator()} />
+    }
+
+    // Handle submenu
+    if (menuItem.type === 'submenu') {
+      return (
+        <SubmenuItem
+          key={menuItem.value}
+          item={menuItem}
+          parentApi={submenuApi}
+          parentService={submenuService as menu.Service}
+          size={size}
+          onCheckedChange={onCheckedChange}
+          onSelect={onSelect}
+          closeOnSelect={closeOnSelect}
+        />
+      )
+    }
+
+    // Handle radio/checkbox items
+    if (menuItem.type === 'radio' || menuItem.type === 'checkbox') {
+      return (
+        <li
+          key={menuItem.value}
+          className={`${itemSlot()} ${optionItem()}`}
+          {...(submenuApi.getOptionItemProps({
+            type: menuItem.type,
+            value: menuItem.value,
+            checked: menuItem.checked,
+            onCheckedChange: (checked) => {
+              onCheckedChange?.(menuItem, checked)
+            },
+          }) as any)}
+        >
+          {menuItem.checked && (
+            <Icon icon="token-icon-check" className={itemIcon()} />
+          )}
+          <span className={itemText()}>{menuItem.label}</span>
+        </li>
+      )
+    }
+
+    // Handle action items
+    return (
+      <li
+        key={menuItem.value}
+        className={itemSlot()}
+        {...(submenuApi.getItemProps({
+          value: menuItem.value,
+          disabled: menuItem.disabled,
+        }) as any)}
+      >
+        {menuItem.icon && <Icon icon={menuItem.icon} className={itemIcon()} />}
+        <span className={itemText()}>{menuItem.label}</span>
+      </li>
+    )
+  }
+
+  // Get trigger props from parent
+  const triggerProps = parentApi.getTriggerItemProps(submenuApi)
+
+  return (
+    <>
+      <li
+        className={itemSlot()}
+        {...(triggerProps as any)}
+        data-disabled={item.disabled || undefined}
+      >
+        {item.icon && <Icon icon={item.icon} className={itemIcon()} />}
+        <span className={itemText()}>{item.label}</span>
+        <Icon icon="token-icon-menu-submenu" className={submenuIndicator()} />
+      </li>
+
+      <Portal>
+        <div
+          className={positioner()}
+          {...(submenuApi.getPositionerProps() as any)}
+        >
+          <ul className={content()} {...(submenuApi.getContentProps() as any)}>
+            {item.items.map(renderMenuItem)}
+          </ul>
+        </div>
+      </Portal>
+    </>
+  )
+}
+
 // === COMPONENT PROPS ===
-export interface MenuProps
-  extends VariantProps<typeof menuVariants>,
-    menu.Props {
+export interface MenuProps extends VariantProps<typeof menuVariants> {
   items: MenuItem[]
   triggerText?: string
   triggerIcon?: IconType
   customTrigger?: ReactNode
   className?: string
   onCheckedChange?: (item: MenuItem, checked: boolean) => void
+  // menu.Props
+  'aria-label'?: string
+  dir?: 'ltr' | 'rtl'
+  id?: string
+  closeOnSelect?: boolean
+  loopFocus?: boolean
+  typeahead?: boolean
+  positioning?: any
+  anchorPoint?: any
+  open?: boolean
+  defaultOpen?: boolean
+  composite?: boolean
+  navigate?: (value: string) => void
+  defaultHighlightedValue?: string
+  highlightedValue?: string
+  onHighlightChange?: (details: { highlightedValue: string | null }) => void
+  onSelect?: (details: { value: string }) => void
+  onOpenChange?: (details: { open: boolean }) => void
+  onEscapeKeyDown?: (event: KeyboardEvent) => void
+  onPointerDownOutside?: (event: PointerEvent) => void
+  onInteractOutside?: (event: FocusEvent | PointerEvent) => void
+  onFocusOutside?: (event: FocusEvent) => void
 }
 export function Menu({
   // NATIVE PROPS
@@ -152,7 +323,7 @@ export function Menu({
 }: MenuProps) {
   const generatedId = useId()
 
-  const service = useMachine(menu.machine, {
+  const service = useMachine(menu.machine as any, {
     id: id || generatedId,
     dir,
     closeOnSelect,
@@ -195,20 +366,36 @@ export function Menu({
       return <hr key={`separator-${item.id}`} className={separator()} />
     }
 
+    // Handle submenu
+    if (item.type === 'submenu') {
+      return (
+        <SubmenuItem
+          key={item.value}
+          item={item}
+          parentApi={api}
+          parentService={service as menu.Service}
+          size={size}
+          onCheckedChange={onCheckedChange}
+          onSelect={onSelect}
+          closeOnSelect={closeOnSelect}
+        />
+      )
+    }
+
     // Handle radio/checkbox items
     if (item.type === 'radio' || item.type === 'checkbox') {
       return (
         <li
           key={item.value}
           className={`${itemSlot()} ${optionItem()}`}
-          {...api.getOptionItemProps({
+          {...(api.getOptionItemProps({
             type: item.type,
             value: item.value,
             checked: item.checked,
             onCheckedChange: (checked) => {
               onCheckedChange?.(item, checked)
             },
-          })}
+          }) as any)}
         >
           {/* Icon for checked state */}
           {item.checked && (
@@ -224,10 +411,10 @@ export function Menu({
       <li
         key={item.value}
         className={itemSlot()}
-        {...api.getItemProps({
+        {...(api.getItemProps({
           value: item.value,
           disabled: item.disabled,
-        })}
+        }) as any)}
       >
         {item.icon && <Icon icon={item.icon} className={itemIcon()} />}
         <span className={itemText()}>{item.label}</span>
@@ -259,8 +446,8 @@ export function Menu({
       )}
 
       <Portal>
-        <div className={positioner()} {...api.getPositionerProps()}>
-          <ul className={content()} {...api.getContentProps()}>
+        <div className={positioner()} {...(api.getPositionerProps() as any)}>
+          <ul className={content()} {...(api.getContentProps() as any)}>
             {items.map(renderMenuItem)}
           </ul>
         </div>
