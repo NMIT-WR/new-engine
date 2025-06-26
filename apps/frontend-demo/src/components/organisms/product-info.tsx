@@ -1,6 +1,6 @@
 'use client'
 
-import { ColorSwatch } from '@/components/atoms/color-swatch'
+import { ColorSelect } from '@/components/atoms/color-select'
 import { useCart } from '@/hooks/use-cart'
 import type { Product, ProductVariant } from '@/types/product'
 import { getColorHex } from '@/utils/color-map'
@@ -130,7 +130,7 @@ export function ProductInfo({
 
       {/* SKU and Stock Info */}
       {selectedVariant && (
-        <div className="mb-product-info-variant-margin text-product-info-variant-label text-product-info-variant-label">
+        <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>SKU: {selectedVariant.sku}</p>
           {selectedVariant.inventory_quantity !== undefined && (
             <p>In Stock: {selectedVariant.inventory_quantity} units</p>
@@ -161,11 +161,12 @@ export function ProductInfo({
                     variantWithColor?.colorHex || getColorHex(value)
 
                   return (
-                    <ColorSwatch
+                    <ColorSelect
                       key={value}
                       selected={isSelected}
                       color={colorHex}
                       colorName={value}
+                      size="md"
                       onClick={() => handleOptionChange(option.title, value)}
                     />
                   )

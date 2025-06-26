@@ -14,7 +14,7 @@ import { Button } from 'ui/src/atoms/button'
 import { Checkbox } from 'ui/src/molecules/checkbox'
 import { Dialog } from 'ui/src/molecules/dialog'
 import { RangeSlider } from 'ui/src/molecules/range-slider'
-import { ColorSwatch } from '../atoms/color-swatch'
+import { ColorSelect } from '../atoms/color-select'
 import { FilterSection } from '../molecules/filter-section'
 
 interface ProductFiltersProps {
@@ -200,7 +200,7 @@ export function ProductFilters({
                 ? () => updateFilters({ colors: new Set() })
                 : undefined
             }
-            className="grid grid-cols-4 gap-2"
+            className="grid grid-cols-4 lg:grid-cols-5 gap-2"
             renderItem={({ color, count }) => {
               const isSelected = filters.colors.has(color)
               const isDisabled = count === 0
@@ -209,12 +209,13 @@ export function ProductFilters({
                 colorHexMap.get(color.toLowerCase()) || getColorHex(color)
 
               return (
-                <ColorSwatch
+                <ColorSelect
                   key={color}
                   selected={isSelected}
                   disabled={isDisabled}
                   color={colorHex}
                   colorName={color}
+                  size="md"
                   onClick={() => {
                     if (!isDisabled) {
                       const newColors = new Set(filters.colors)
