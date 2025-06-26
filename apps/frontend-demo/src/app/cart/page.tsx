@@ -77,7 +77,7 @@ export default function CartPage() {
                         {/* Product Details */}
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
-                            <div>
+                            <div >
                               <Link
                                 href={getProductPath(
                                   item.variant?.product?.handle || ''
@@ -97,9 +97,7 @@ export default function CartPage() {
                                 {formatPrice(price, currencyCode)}
                               </p>
                             </div>
-                            <p className="font-cart-item-price text-cart-item-price">
-                              {formatPrice(itemTotal, currencyCode)}
-                            </p>
+
                           </div>
 
                           <div className="flex items-center gap-cart-item-actions-gap">
@@ -111,6 +109,7 @@ export default function CartPage() {
                                 updateQuantity(item.id, value)
                               }
                               size="sm"
+                              className='py-0'
                             />
                             <Button
                               variant="tertiary"

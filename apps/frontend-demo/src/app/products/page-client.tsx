@@ -7,7 +7,7 @@ import { useUrlFilters } from '@/hooks/use-url-filters'
 import { sortProducts } from '@/utils/product-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
-import { Suspense, useMemo } from 'react'
+import React,{ Suspense, useMemo } from 'react'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
@@ -97,7 +97,7 @@ function ProductsPageContent() {
       </div>
 
       {/* Mobile Filter Button - Sticky */}
-      <div className="sticky top-16 z-40 mb-4 lg:hidden">
+      <div className="sticky top-16 z-40 mb-4 sm:static lg:hidden">
         <ProductFilters
           filters={urlFilters.filters}
           onFiltersChange={urlFilters.setFilters}

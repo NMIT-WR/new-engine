@@ -72,12 +72,23 @@ export function ProductGrid({
 
       {totalPages > 1 && onPageChange && (
         <div className="mt-product-grid-pagination-margin flex justify-center">
+          {/* Mobile pagination with no siblings */}
+          <Pagination
+            count={totalCount || products.length}
+            page={currentPage}
+            onPageChange={onPageChange}
+            pageSize={pageSize}
+            siblingCount={0}
+            className="sm:hidden"
+          />
+          {/* Desktop pagination with siblings */}
           <Pagination
             count={totalCount || products.length}
             page={currentPage}
             onPageChange={onPageChange}
             pageSize={pageSize}
             siblingCount={1}
+            className="hidden sm:flex"
           />
         </div>
       )}

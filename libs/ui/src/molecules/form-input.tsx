@@ -39,6 +39,7 @@ export function FormInputRaw({
         variant={validateStatus}
         disabled={disabled}
         {...props}
+        className='p-input-sm md:p-input-md'
       />
 
       {/* Status message */}

@@ -55,12 +55,12 @@ export default function AboutPage() {
 
       {/* Stats Section */}
       <section className="py-about-section-y">
-        <div className="mx-auto max-w-container-max px-about-container-x md:px-about-container-x-md lg:px-about-container-x-lg">
-          <div className="rounded-about-image-radius bg-about-stats-bg py-about-stats-padding">
+        <div className="mx-auto max-w-container-max px-about-container-x">
+          <div className="rounded-about-image-radius bg-about-stats-bg px-about-container-x-lg py-about-stats-padding">
             <div className="grid grid-cols-2 gap-about-stats-gap text-center md:grid-cols-4">
               {stats.map((stat, index) => (
                 <div key={index}>
-                  <div className="font-about-stat-number text-about-stat-number-fg text-about-stat-number-size">
+                  <div className="font-about-stat-number text-about-stat-number-fg text-about-sm md:text-about-md ">
                     {stat.value}
                   </div>
                   <div className="mt-2 text-about-stat-label-fg text-about-stat-label-size">
