@@ -2,52 +2,13 @@ import { httpClient } from '@/lib/http-client'
 import type { Metadata } from 'next'
 import ProductDetail from './product-detail'
 
-// Use error fallback for missing pages in static export
-export const dynamic = 'error'
+// Enable ISR with 60 second revalidation
+export const revalidate = 60
 
+// Don't pre-generate any products at build time
+// They will be generated on-demand
 export async function generateStaticParams() {
-  try {
-    // Fetch ALL products to generate static pages
-    const allProducts = []
-    let offset = 0
-    const limit = 100
-    
-    // Fetch products in batches
-    while (true) {
-      const response = await httpClient.get<{ products: any[]; count: number }>(
-        '/store/products',
-        {
-          params: {
-            limit,
-            offset,
-            fields: 'id,handle',
-          },
-        }
-      )
-
-      if (!response.products || response.products.length === 0) {
-        break
-      }
-
-      allProducts.push(...response.products)
-      
-      // Check if we've fetched all products
-      if (allProducts.length >= response.count || response.products.length < limit) {
-        break
-      }
-      
-      offset += limit
-    }
-
-    console.log(`[generateStaticParams] Generating params for ${allProducts.length} products`)
-
-    return allProducts.map((product) => ({
-      handle: product.handle || product.id,
-    }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
+  return []
 }
 
 export async function generateMetadata({

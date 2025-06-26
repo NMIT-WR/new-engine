@@ -53,7 +53,7 @@ export function Header({
               className="flex items-center gap-header-logo-gap font-header-logo text-header-logo text-header-text lg:text-header-logo-lg"
             >
               {logo.icon && <Icon icon={logo.icon} size="lg" />}
-              {logo.text && <span className="lg:text-md">{logo.text}</span>}
+              {logo.text && <span className="lg:text-md text-sm">{logo.text}</span>}
             </Link>
 
             {/* Navigation */}

@@ -98,6 +98,9 @@
   --width-checkbox: 1.25rem;
   --height-checkbox: 1.25rem;
 
+  /* === PRODUCT CARD === */
+  --spacing-pc-max: 90svw;
+
   /* === PAGINATION === */
   /* Different base background */
   --color-pagination: var(--color-base);

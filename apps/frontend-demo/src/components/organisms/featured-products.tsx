@@ -30,7 +30,7 @@ export function FeaturedProducts({
           </h2>
           {subtitle && <p className="text-featured-subtitle">{subtitle}</p>}
         </div>
-        <div className="grid grid-cols-1 gap-featured-grid-gap sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-featured-grid-gap sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => {
             const { price, displayBadges, stockText } =
               extractProductData(product)

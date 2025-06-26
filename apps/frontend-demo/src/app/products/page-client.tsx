@@ -117,7 +117,7 @@ function ProductsPageContent() {
         </aside>
 
         {/* Products Grid */}
-        <main className="flex-1">
+        <main className="flex-1 w-full">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-gray-600 text-sm dark:text-gray-400">
               Showing {products.length} of {totalCount} products

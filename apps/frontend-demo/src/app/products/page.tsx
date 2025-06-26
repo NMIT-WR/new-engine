@@ -2,9 +2,8 @@ import { HydrationBoundary } from '@tanstack/react-query'
 import { prefetchProductsWithFilters } from '@/lib/prefetch-helpers'
 import ProductsPageClient from './page-client'
 
-// Force static generation at build time with ISR
-export const dynamic = 'force-static'
-export const revalidate = 3600 // Revalidate every hour
+// Enable ISR (Incremental Static Regeneration) with cache
+export const revalidate = 60 // Revalidate every 60 seconds as requested
 
 interface PageProps {
   params: Promise<{}>
