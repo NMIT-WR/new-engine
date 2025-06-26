@@ -14,7 +14,7 @@ interface AllProductsSectionProps {
 }
 
 export function AllProductsSection({
-  title = 'All Products',
+  title = 'Všechny produkty',
   subtitle,
   limit = 20,
 }: AllProductsSectionProps) {
@@ -25,7 +25,7 @@ export function AllProductsSection({
     return (
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="text-center">Loading products...</div>
+          <div className="text-center">Načítání produktů...</div>
         </div>
       </section>
     )
@@ -39,7 +39,7 @@ export function AllProductsSection({
             <h2 className="font-bold text-3xl">{title}</h2>
             {subtitle && <p className="mt-2 text-gray-600">{subtitle}</p>}
             <p className="mt-1 text-gray-500 text-sm">
-              Showing {products.length} of {totalCount} products
+              Zobrazeno {products.length} z {totalCount} produktů
             </p>
           </div>
         )}
@@ -59,7 +59,7 @@ export function AllProductsSection({
                 badges={displayBadges}
                 hasCartButton={false}
                 hasDetailButton={true}
-                detailButtonText="View"
+                detailButtonText="Zobrazit"
                 onDetailClick={() => router.push(`/products/${product.handle}`)}
                 hasWishlistButton={false}
                 layout="column"
@@ -71,7 +71,7 @@ export function AllProductsSection({
         {totalCount > limit && (
           <div className="mt-8 text-center">
             <Link href="/products">
-              <Button size="lg">View All {totalCount} Products</Button>
+              <Button size="lg">Zobrazit všech {totalCount} produktů</Button>
             </Link>
           </div>
         )}

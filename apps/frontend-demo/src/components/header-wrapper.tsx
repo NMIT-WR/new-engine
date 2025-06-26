@@ -17,7 +17,7 @@ export function HeaderWrapper({ logo }: HeaderWrapperProps) {
 
   const navigationItems = useMemo<NavItem[]>(() => {
     const categoryItems: NavItem[] = [
-      { title: 'All Categories', href: '/categories' },
+      { title: 'Všechny kategorie', href: '/categories' },
     ]
 
     // Add dynamic categories if loaded
@@ -31,15 +31,15 @@ export function HeaderWrapper({ logo }: HeaderWrapperProps) {
     }
 
     return [
-      { title: 'Home', href: '/' },
-      { title: 'Products', href: '/products' },
+      { title: 'Domů', href: '/' },
+      { title: 'Produkty', href: '/products' },
       {
-        title: 'Categories',
+        title: 'Kategorie',
         role: 'submenu' as const,
         children: categoryItems,
       },
-      { title: 'About', href: '/about' },
-      { title: 'Contact', href: '/contact' },
+      { title: 'O nás', href: '/about' },
+      { title: 'Kontakt', href: '/contact' },
     ]
   }, [categories, isLoading])
 

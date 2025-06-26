@@ -21,7 +21,7 @@ export default function AccountPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <p className="text-lg">Loading...</p>
+          <p className="text-lg">Načítání...</p>
         </div>
       </div>
     )
@@ -35,12 +35,12 @@ export default function AccountPage() {
     <div className="min-h-screen bg-account-bg py-account-page-py">
       <div className="mx-auto max-w-account-container-max-w px-account-container-px">
         <h1 className="mb-account-title-mb font-account-title text-account-title-fg text-account-title-size">
-          My Account
+          Můj účet
         </h1>
 
         <div className="mb-account-card-mb rounded-account-card bg-account-card-bg p-account-card-p shadow-account-card">
           <h2 className="mb-account-subtitle-mb font-account-subtitle text-account-subtitle-fg text-account-subtitle-size">
-            Profile Information
+            Profilové informace
           </h2>
           <div className="space-y-account-field-gap">
             <div>
@@ -53,17 +53,17 @@ export default function AccountPage() {
             </div>
             <div>
               <span className="font-account-label text-account-label-fg">
-                Name:
+                Jméno:
               </span>
               <span className="ml-account-label-mr text-account-value-fg">
                 {user.first_name || user.last_name
                   ? `${user.first_name || ''} ${user.last_name || ''}`
-                  : 'Not set'}
+                  : 'Nenastavené'}
               </span>
             </div>
             <div>
               <span className="font-account-label text-account-label-fg">
-                Customer ID:
+                ID zákazníka:
               </span>
               <span className="ml-account-label-mr font-mono text-account-id-fg text-account-id-size">
                 {user.id}
@@ -71,20 +71,20 @@ export default function AccountPage() {
             </div>
             <div>
               <span className="font-account-label text-account-label-fg">
-                Phone:
+                Telefon:
               </span>
               <span className="ml-account-label-mr text-account-value-fg">
-                {user.phone || 'Not set'}
+                {user.phone || 'Nenastavené'}
               </span>
             </div>
             <div>
               <span className="font-account-label text-account-label-fg">
-                Member since:
+                Člen od:
               </span>
               <span className="ml-account-label-mr text-account-value-fg">
                 {user.created_at
                   ? new Date(user.created_at).toLocaleDateString()
-                  : 'Unknown'}
+                  : 'Neznámé'}
               </span>
             </div>
           </div>
@@ -92,7 +92,7 @@ export default function AccountPage() {
 
         <div className="rounded-account-card bg-account-card-bg p-account-card-p shadow-account-card">
           <h2 className="mb-account-subtitle-mb font-account-subtitle text-account-subtitle-fg text-account-subtitle-size">
-            Account Actions
+            Akce účtu
           </h2>
           <div className="flex gap-account-actions-gap">
             <Button
@@ -100,10 +100,10 @@ export default function AccountPage() {
               theme="solid"
               onClick={() => router.push('/')}
             >
-              Continue Shopping
+              Pokračovat v nakupování
             </Button>
             <Button variant="danger" theme="solid" onClick={() => logout()}>
-              Sign Out
+              Odhlásit se
             </Button>
           </div>
         </div>

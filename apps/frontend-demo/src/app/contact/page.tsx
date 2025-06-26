@@ -127,7 +127,7 @@ export default function ContactPage() {
                           subject: details.value[0] || 'general',
                         })
                       }
-                      placeholder="Select a subject"
+                      placeholder="Vyberte téma"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -234,7 +234,7 @@ export default function ContactPage() {
                   >
                     {help.linkText}
                   </a>{' '}
-                  page for instant help with common queries.
+                  pro okamžitou pomoc s častými dotazy.
                 </p>
               </div>
             </div>

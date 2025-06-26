@@ -135,8 +135,8 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Added to cart',
-        description: 'Item has been added to your cart',
+        title: 'Přidáno do košíku',
+        description: 'Položka byla přidána do vašeho košíku',
         type: 'success',
       })
     },
@@ -149,9 +149,9 @@ export function useMedusaCart() {
 
       if (errorMessage.toLowerCase().includes('inventory')) {
         toast.create({
-          title: 'Out of Stock',
+          title: 'Vyprodáno',
           description:
-            'This product variant is not available in the requested quantity.',
+            'Tato varianta produktu není dostupná v požadovaném množství.',
           type: 'error',
         })
       } else if (
@@ -163,15 +163,15 @@ export function useMedusaCart() {
           localStorage.removeItem(STORAGE_KEYS.CART_ID)
         }
         toast.create({
-          title: 'Cart expired',
-          description: 'Your cart has expired. Please try again.',
+          title: 'Košík vypršel',
+          description: 'Váš košík vypršel. Zkuste to prosím znovu.',
           type: 'error',
         })
         // Invalidate cart query to trigger recreation
         queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
       } else {
         toast.create({
-          title: 'Failed to add item',
+          title: 'Nepodařilo se přidat položku',
           description: errorMessage,
           type: 'error',
         })
@@ -205,7 +205,7 @@ export function useMedusaCart() {
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Failed to update quantity',
+        title: 'Nepodařilo se aktualizovat množství',
         description: error.message,
         type: 'error',
       })
@@ -224,14 +224,14 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Removed from cart',
-        description: 'Item has been removed from your cart',
+        title: 'Odebráno z košíku',
+        description: 'Položka byla odebrána z vašeho košíku',
         type: 'success',
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Failed to remove item',
+        title: 'Nepodařilo se odebrat položku',
         description: error.message,
         type: 'error',
       })
@@ -254,8 +254,8 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Cart cleared',
-        description: 'All items have been removed from your cart',
+        title: 'Košík vyprázdněn',
+        description: 'Všechny položky byly odebrány z vašeho košíku',
         type: 'success',
       })
     },
@@ -275,14 +275,14 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Discount applied',
-        description: 'Your discount code has been applied',
+        title: 'Sleva aplikována',
+        description: 'Váš slevový kód byl aplikován',
         type: 'success',
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Invalid discount code',
+        title: 'Neplatný slevový kód',
         description: error.message,
         type: 'error',
       })

@@ -30,14 +30,14 @@ export default function CartPage() {
         <div className="mb-cart-breadcrumb-margin">
           <Breadcrumb
             items={[
-              { label: 'Home', href: '/' },
-              { label: 'Cart', href: '/cart' },
+              { label: 'Domů', href: '/' },
+              { label: 'Košík', href: '/cart' },
             ]}
           />
         </div>
 
         <h1 className="mb-cart-title-margin font-cart-title text-cart-title">
-          Shopping Cart
+          Nákupní košík
         </h1>
 
         {isLoading ? (
@@ -119,7 +119,7 @@ export default function CartPage() {
                               onClick={() => removeItem(item.id)}
                               icon="icon-[mdi--delete-outline]"
                             >
-                              Remove
+                              Odebrat
                             </Button>
                           </div>
                         </div>
@@ -138,7 +138,7 @@ export default function CartPage() {
                   onClick={clearCart}
                   icon="icon-[mdi--delete-sweep-outline]"
                 >
-                  Clear Cart
+                  Vyprázdnit košík
                 </Button>
               </div>
             </div>
@@ -147,24 +147,24 @@ export default function CartPage() {
             <div className="lg:sticky lg:top-cart-summary-top lg:h-fit">
               <div className="rounded-cart-summary bg-cart-summary-bg p-cart-summary-padding shadow-cart-summary">
                 <h2 className="mb-cart-summary-title-margin font-cart-summary-title text-cart-summary-title">
-                  Order Summary
+                  Souhrn objednávky
                 </h2>
 
                 <div className="space-y-cart-summary-rows-gap">
                   <div className="flex justify-between text-cart-summary-text">
-                    <span>Subtotal</span>
+                    <span>Mezisoučet</span>
                     <span>{formatPrice(subtotal, currencyCode)}</span>
                   </div>
                   <div className="flex justify-between text-cart-summary-text">
-                    <span>Shipping</span>
+                    <span>Doprava</span>
                     <span>
                       {shipping === 0
-                        ? 'FREE'
+                        ? 'ZDARMA'
                         : formatPrice(shipping, currencyCode)}
                     </span>
                   </div>
                   <div className="flex justify-between text-cart-summary-text">
-                    <span>Tax (21%)</span>
+                    <span>DPH (21%)</span>
                     <span>{formatPrice(tax, currencyCode)}</span>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export default function CartPage() {
                 <div className="my-cart-summary-divider border-cart-summary-divider border-t" />
 
                 <div className="flex justify-between text-cart-summary-text">
-                  <span>Total</span>
+                  <span>Celkem</span>
                   <span>{formatPrice(total, currencyCode)}</span>
                 </div>
 
@@ -181,12 +181,12 @@ export default function CartPage() {
                   size="lg"
                   icon="icon-[mdi--lock-outline]"
                 >
-                  Proceed to Checkout
+                  Přejít k platbě
                 </Button>
 
                 <Link href="/products" className="mt-4 block text-center">
                   <Button variant="tertiary" theme="borderless" size="sm">
-                    Continue Shopping
+                    Pokračovat v nakupování
                   </Button>
                 </Link>
               </div>
@@ -201,14 +201,14 @@ export default function CartPage() {
               className="mb-cart-empty-icon-margin"
             />
             <h2 className="mb-cart-empty-title-margin font-cart-empty-title text-cart-empty-title">
-              Your cart is empty
+              Váš košík je prázdný
             </h2>
             <p className="mb-cart-empty-text-margin text-cart-empty-text">
-              Looks like you haven't added any items to your cart yet.
+              Vypadá to, že jste do košíku ještě nic nepřidali.
             </p>
             <Link href="/products">
               <Button size="lg" icon="icon-[mdi--shopping-outline]">
-                Start Shopping
+                Začít nakupovat
               </Button>
             </Link>
           </div>

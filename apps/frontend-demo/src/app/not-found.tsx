@@ -8,17 +8,17 @@ export default function NotFound() {
           404
         </h1>
         <h2 className="mb-not-found-title-margin font-not-found-title text-not-found-title text-not-found-title-size">
-          Page Not Found
+          Stránka nenalezena
         </h2>
         <p className="mb-not-found-text-margin text-not-found-text">
-          The page you're looking for doesn't exist or has been moved.
+          Stránka, kterou hledáte, neexistuje nebo byla přesunuta.
         </p>
         <div className="flex justify-center gap-not-found-actions-gap">
           <Link href="/" className="">
-            Go to Homepage
+            Přejít na úvodní stránku
           </Link>
           <Link href="/products" className="">
-            Browse Products
+            Prohlédnout produkty
           </Link>
         </div>
       </div>

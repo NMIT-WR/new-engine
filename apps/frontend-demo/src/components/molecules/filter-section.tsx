@@ -45,7 +45,7 @@ export function FilterSection<T>({
             size="sm"
             onClick={onClear}
           >
-            Clear
+            Vymazat
           </Button>
         )}
       </div>
@@ -63,8 +63,8 @@ export function FilterSection<T>({
             onClick={() => setShowAll(!showAll)}
           >
             {showAll
-              ? 'Show less'
-              : `Show ${items!.length - defaultItemsShown!} more`}
+              ? 'Zobrazit méně'
+              : `Zobrazit dalších ${items!.length - defaultItemsShown!}`}
           </Button>
         </div>
       )}

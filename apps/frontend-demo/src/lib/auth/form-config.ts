@@ -10,7 +10,7 @@ type FormInputProps = ComponentProps<typeof FormInput>
 export const authFormFields = {
   email: (props?: Partial<FormInputProps>): FormInputProps => ({
     id: props?.id || 'email',
-    label: 'Email',
+    label: 'E-mail',
     type: 'email',
     placeholder: AUTH_FORM_CONFIG.EMAIL_PLACEHOLDER,
     required: true,
@@ -21,7 +21,7 @@ export const authFormFields = {
 
   password: (props?: Partial<FormInputProps>): FormInputProps => ({
     id: props?.id || 'password',
-    label: 'Password',
+    label: 'Heslo',
     type: 'password',
     placeholder: AUTH_FORM_CONFIG.PASSWORD_PLACEHOLDER,
     required: true,
@@ -31,7 +31,7 @@ export const authFormFields = {
 
   newPassword: (props?: Partial<FormInputProps>): FormInputProps => ({
     id: props?.id || 'password',
-    label: 'Password',
+    label: 'Heslo',
     type: 'password',
     placeholder: AUTH_FORM_CONFIG.PASSWORD_PLACEHOLDER,
     required: true,
@@ -42,7 +42,7 @@ export const authFormFields = {
 
   confirmPassword: (props?: Partial<FormInputProps>): FormInputProps => ({
     id: props?.id || 'confirmPassword',
-    label: 'Confirm Password',
+    label: 'Potvrdit heslo',
     type: 'password',
     placeholder: AUTH_FORM_CONFIG.PASSWORD_PLACEHOLDER,
     required: true,
@@ -52,17 +52,17 @@ export const authFormFields = {
 
   firstName: (props?: Partial<FormInputProps>): FormInputProps => ({
     id: props?.id || 'firstName',
-    label: 'First Name',
+    label: 'Jméno',
     type: 'text',
-    placeholder: 'John',
+    placeholder: 'Jan',
     ...props,
   }),
 
   lastName: (props?: Partial<FormInputProps>): FormInputProps => ({
     id: props?.id || 'lastName',
-    label: 'Last Name',
+    label: 'Příjmení',
     type: 'text',
-    placeholder: 'Doe',
+    placeholder: 'Novák',
     ...props,
   }),
 }

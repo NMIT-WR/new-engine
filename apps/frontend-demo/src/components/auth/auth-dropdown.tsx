@@ -38,13 +38,13 @@ export function AuthDropdown() {
     {
       type: 'action' as const,
       value: 'profile',
-      label: 'My Profile',
+      label: 'Můj profil',
       icon: 'icon-[mdi--account-outline]' as const,
     },
     {
       type: 'action' as const,
       value: 'orders',
-      label: 'My Orders',
+      label: 'Moje objednávky',
       icon: 'icon-[mdi--package-variant-closed]' as const,
     },
     {
@@ -54,13 +54,13 @@ export function AuthDropdown() {
     {
       type: 'action' as const,
       value: 'settings',
-      label: 'Settings',
+      label: 'Nastavení',
       icon: 'icon-[mdi--cog-outline]' as const,
     },
     {
       type: 'action' as const,
       value: 'logout',
-      label: 'Sign Out',
+      label: 'Odhlásit se',
       icon: 'icon-[mdi--logout]' as const,
     },
   ]
@@ -130,10 +130,10 @@ function QuickLoginForm() {
     >
       <div className="space-y-auth-dropdown-header-gap">
         <h3 className="font-auth-dropdown-title text-auth-dropdown-title text-auth-dropdown-title-size">
-          Sign In
+          Přihlásit se
         </h3>
         <p className="text-auth-dropdown-subtitle text-auth-dropdown-subtitle-size">
-          Enter your credentials to continue
+          Zadejte své přihlašovací údaje pro pokračování
         </p>
       </div>
 
@@ -177,11 +177,11 @@ function QuickLoginForm() {
           className="w-full"
           disabled={isFormLoading}
         >
-          {isFormLoading ? 'Signing in...' : 'Sign In'}
+          {isFormLoading ? 'Přihlašování...' : 'Přihlásit se'}
         </Button>
 
         <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">
-          <span className="text-auth-dropdown-signup-text">New here?</span>
+          <span className="text-auth-dropdown-signup-text">Jste tu noví?</span>
           <Button
             type="button"
             variant="tertiary"
@@ -190,7 +190,7 @@ function QuickLoginForm() {
             onClick={() => router.push('/auth/register')}
             className="h-auto p-0 font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover"
           >
-            Create account
+            Vytvořit účet
           </Button>
         </div>
       </div>

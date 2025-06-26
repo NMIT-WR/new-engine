@@ -46,7 +46,7 @@ export function HeaderSearch() {
   if (searchQuery && filteredProducts.length > 0) {
     searchItems.push({
       value: '__search__',
-      label: `View all results for "${searchQuery}"`,
+      label: `Zobrazit všechny výsledky pro "${searchQuery}"`,
       data: undefined,
     })
   }
@@ -117,13 +117,13 @@ export function HeaderSearch() {
           size="sm"
           icon="token-icon-search"
           className="px-0 py-0 font-bold text-md hover:bg-transparent"
-          aria-label="Search"
+          aria-label="Hledat"
         />
       }
     >
       <div ref={containerRef}>
         <Combobox
-          placeholder={isLoading ? 'Loading products...' : 'Search products...'}
+          placeholder={isLoading ? 'Načítání produktů...' : 'Hledat produkty...'}
           items={searchItems}
           value={selectedValue}
           onChange={handleSelect}

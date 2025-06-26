@@ -11,7 +11,7 @@ interface CategoryTreeSectionProps {
 }
 
 export function CategoryTreeSection({
-  title = 'Browse Categories',
+  title = 'Procházet kategorie',
   subtitle,
   className = '',
 }: CategoryTreeSectionProps) {
@@ -30,7 +30,7 @@ export function CategoryTreeSection({
     return (
       <section className={`py-12 ${className}`}>
         <div className="mx-auto px-4">
-          <div className="text-center">Loading categories...</div>
+          <div className="text-center">Načítání kategorií...</div>
         </div>
       </section>
     )
@@ -56,7 +56,7 @@ export function CategoryTreeSection({
             />
           ) : (
             <div className="text-center text-gray-500">
-              No categories available
+              Žádné kategorie nejsou k dispozici
             </div>
           )}
         </div>

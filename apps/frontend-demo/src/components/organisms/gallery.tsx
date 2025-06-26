@@ -88,13 +88,13 @@ export function Gallery({
                 onClick={() => handleThumbnailClick(index)}
                 className={trigger()}
                 data-active={currentPage === index}
-                aria-label={`View image ${index + 1}`}
+                aria-label={`Zobrazit obrázek ${index + 1}`}
                 aria-current={currentPage === index ? 'true' : 'false'}
               >
                 <ImageComponent
                   as={Image}
                   src={image.src || ''}
-                  alt={image.alt || `Product image ${index + 1}`}
+                  alt={image.alt || `Obrázek produktu ${index + 1}`}
                   width={100}
                   height={100}
                   objectFit="cover"

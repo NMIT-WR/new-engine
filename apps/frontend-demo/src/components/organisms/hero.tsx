@@ -50,7 +50,7 @@ export function Hero({
       <div className="absolute inset-0">
         <Image
           src={backgroundImage}
-          alt="Hero background"
+          alt="Pozadí hero sekce"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-hero-overlay" />

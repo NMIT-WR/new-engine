@@ -30,14 +30,14 @@ export const fashionFilters: FilterConfig[] = [
   {
     id: 'categories',
     type: 'checkbox',
-    title: 'Categories',
+    title: 'Kategorie',
     field: 'collection.handle',
     showClearButton: false,
   },
   {
     id: 'price',
     type: 'range',
-    title: 'Price Range',
+    title: 'Cenové rozpětí',
     field: 'price',
     range: {
       min: 0,
@@ -49,13 +49,13 @@ export const fashionFilters: FilterConfig[] = [
   {
     id: 'sale',
     type: 'sale',
-    title: 'Sale & Discounts',
+    title: 'Výprodej a slevy',
     field: 'sale',
   },
   {
     id: 'size',
     type: 'size',
-    title: 'Size',
+    title: 'Velikost',
     field: 'variants.options.size',
     defaultItemsShown: 4,
     showClearButton: true,
@@ -63,7 +63,7 @@ export const fashionFilters: FilterConfig[] = [
   {
     id: 'color',
     type: 'color',
-    title: 'Color',
+    title: 'Barva',
     field: 'variants.options.color',
     defaultItemsShown: 4,
     showClearButton: true,
@@ -75,24 +75,24 @@ export const automotiveFilters: FilterConfig[] = [
   {
     id: 'categories',
     type: 'tree',
-    title: 'Categories',
+    title: 'Kategorie',
     field: 'categories',
     options: [
       {
         value: 'parts',
-        label: 'Parts',
+        label: 'Díly',
         children: [
-          { value: 'engine', label: 'Engine Parts' },
-          { value: 'brakes', label: 'Brake System' },
-          { value: 'suspension', label: 'Suspension' },
+          { value: 'engine', label: 'Motorové díly' },
+          { value: 'brakes', label: 'Brzdový systém' },
+          { value: 'suspension', label: 'Odpružení' },
         ],
       },
       {
         value: 'accessories',
-        label: 'Accessories',
+        label: 'Příslušenství',
         children: [
-          { value: 'interior', label: 'Interior' },
-          { value: 'exterior', label: 'Exterior' },
+          { value: 'interior', label: 'Interiér' },
+          { value: 'exterior', label: 'Exteriér' },
         ],
       },
     ],
@@ -100,14 +100,14 @@ export const automotiveFilters: FilterConfig[] = [
   {
     id: 'brand',
     type: 'checkbox',
-    title: 'Brand',
+    title: 'Značka',
     field: 'brand',
     defaultItemsShown: 10,
   },
   {
     id: 'price',
     type: 'range',
-    title: 'Price Range',
+    title: 'Cenové rozpětí',
     field: 'price',
     range: {
       min: 0,
@@ -119,7 +119,7 @@ export const automotiveFilters: FilterConfig[] = [
   {
     id: 'compatibility',
     type: 'checkbox',
-    title: 'Vehicle Compatibility',
+    title: 'Kompatibilita s vozidlem',
     field: 'compatibility',
     defaultItemsShown: 5,
   },
@@ -130,25 +130,25 @@ export const electronicsFilters: FilterConfig[] = [
   {
     id: 'categories',
     type: 'tree',
-    title: 'Categories',
+    title: 'Kategorie',
     field: 'categories',
     options: [
       {
         value: 'computers',
-        label: 'Computers',
+        label: 'Počítače',
         children: [
-          { value: 'laptops', label: 'Laptops' },
-          { value: 'desktops', label: 'Desktop PCs' },
-          { value: 'tablets', label: 'Tablets' },
+          { value: 'laptops', label: 'Notebooky' },
+          { value: 'desktops', label: 'Stolní počítače' },
+          { value: 'tablets', label: 'Tablety' },
         ],
       },
       {
         value: 'phones',
-        label: 'Phones & Accessories',
+        label: 'Telefony a příslušenství',
         children: [
-          { value: 'smartphones', label: 'Smartphones' },
-          { value: 'cases', label: 'Cases & Covers' },
-          { value: 'chargers', label: 'Chargers' },
+          { value: 'smartphones', label: 'Chytré telefony' },
+          { value: 'cases', label: 'Pouzdra a obaly' },
+          { value: 'chargers', label: 'Nabíječky' },
         ],
       },
     ],
@@ -156,14 +156,14 @@ export const electronicsFilters: FilterConfig[] = [
   {
     id: 'brand',
     type: 'checkbox',
-    title: 'Brand',
+    title: 'Značka',
     field: 'brand',
     defaultItemsShown: 8,
   },
   {
     id: 'price',
     type: 'range',
-    title: 'Price Range',
+    title: 'Cenové rozpětí',
     field: 'price',
     range: {
       min: 0,
@@ -175,18 +175,18 @@ export const electronicsFilters: FilterConfig[] = [
   {
     id: 'rating',
     type: 'checkbox',
-    title: 'Customer Rating',
+    title: 'Hodnocení zákazníků',
     field: 'rating',
     options: [
-      { value: '4+', label: '4 Stars & Up' },
-      { value: '3+', label: '3 Stars & Up' },
-      { value: '2+', label: '2 Stars & Up' },
+      { value: '4+', label: '4 hvězdičky a více' },
+      { value: '3+', label: '3 hvězdičky a více' },
+      { value: '2+', label: '2 hvězdičky a více' },
     ],
   },
   {
     id: 'features',
     type: 'checkbox',
-    title: 'Features',
+    title: 'Funkce',
     field: 'features',
     defaultItemsShown: 5,
   },

@@ -7,21 +7,21 @@ import { Link } from '@ui/atoms/link'
 
 const footerSections: NavSection[] = [
   {
-    title: 'Quick Links',
+    title: 'Rychlé odkazy',
     links: [
-      { href: '/products', label: 'All Products' },
-      { href: '/categories', label: 'Categories' },
-      { href: '/about', label: 'About Us' },
-      { href: '/contact', label: 'Contact' },
+      { href: '/products', label: 'Všechny produkty' },
+      { href: '/categories', label: 'Kategorie' },
+      { href: '/about', label: 'O nás' },
+      { href: '/contact', label: 'Kontakt' },
     ],
   },
   {
-    title: 'Customer Service',
+    title: 'Zákaznický servis',
     links: [
-      { href: '/shipping', label: 'Shipping Info' },
-      { href: '/returns', label: 'Returns' },
-      { href: '/faq', label: 'FAQ' },
-      { href: '/support', label: 'Support' },
+      { href: '/shipping', label: 'Informace o dopravě' },
+      { href: '/returns', label: 'Vrácení' },
+      { href: '/faq', label: 'Časté dotazy' },
+      { href: '/support', label: 'Podpora' },
     ],
   },
 ]
@@ -41,11 +41,11 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <h3 className="mb-footer-heading font-semibold text-footer-heading text-footer-heading">
-              Store Demo
+              Demo obchodu
             </h3>
             <p className="mb-footer-description text-footer-body">
-              Your trusted online shopping destination for quality products and
-              great prices.
+              Váš spolehlivý online obchod s kvalitními produkty
+              za skvělé ceny.
             </p>
           </div>
 
@@ -73,21 +73,21 @@ export function Footer() {
           {/* Newsletter */}
           <div>
             <h4 className="mb-footer-heading font-semibold text-footer-heading text-footer-heading">
-              Newsletter
+              Odběr novinek
             </h4>
             <p className="mb-footer-description text-footer-body">
-              Subscribe to get special offers and updates
+              Přihlaste se k odběru speciálních nabídek a novinek
             </p>
             <form className="mt-footer-form" onSubmit={handleNewsletterSubmit}>
               <div className="flex flex-col gap-footer-input-gap sm:flex-row">
                 <Input
                   type="email"
-                  placeholder="Your email"
+                  placeholder="Váš email"
                   size="sm"
                   className="w-full border-footer-input-border bg-footer-input-bg text-footer-input-fg placeholder:text-footer-input-placeholder hover:bg-footer-input-bg-hover focus-visible:bg-footer-input-bg-focus sm:max-w-footer-input"
                 />
                 <Button variant="primary" size="sm" type="submit">
-                  Subscribe
+                  Přihlásit se
                 </Button>
               </div>
             </form>
@@ -97,7 +97,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-footer-bottom-bar border-footer-border border-t pt-footer-bottom-bar text-center">
           <p className="text-footer-copyright text-footer-fg">
-            &copy; 2024 Store Demo. All rights reserved.
+            &copy; 2024 Demo obchodu. Všechna práva vyhrazena.
           </p>
         </div>
       </div>

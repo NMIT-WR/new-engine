@@ -6,47 +6,47 @@ function generateReviews(count: number, productId: string): ProductReview[] {
   const reviewTemplates = [
     {
       rating: 5,
-      title: 'Excellent quality!',
+      title: 'Vynikající kvalita!',
       comment:
-        'The fabric feels premium and the fit is perfect. Highly recommend!',
+        'Látka působí prémiově a střih je dokonalý. Vrîle doporučuji!',
     },
     {
       rating: 4,
-      title: 'Good product',
-      comment: 'Nice quality, runs a bit small. Order one size up.',
+      title: 'Dobrý produkt',
+      comment: 'Pěkná kvalita, trochu menší velikost. Objednejte o číslo větší.',
     },
     {
       rating: 5,
-      title: 'Love it!',
+      title: 'Miluji to!',
       comment:
-        'Exactly as described. Fast shipping and great customer service.',
+        'Přesně jak bylo popsáno. Rychlé doručení a skvělá zákaznická podpora.',
     },
     {
       rating: 3,
-      title: 'Average',
+      title: 'Průměrné',
       comment:
-        'Quality is okay for the price. Color is slightly different from the photo.',
+        'Kvalita je za tu cenu v pořádku. Barva se mírně liší od fotografie.',
     },
     {
       rating: 5,
-      title: 'Perfect fit',
+      title: 'Dokonalé sedení',
       comment:
-        'Best purchase I have made this year. Will definitely buy again!',
+        'Nejlepší nákup, který jsem letos udělal. Určitě koupím znovu!',
     },
     {
       rating: 4,
-      title: 'Great value',
+      title: 'Skvělá hodnota',
       comment:
-        'Good quality for the price point. Very satisfied with my purchase.',
+        'Dobrá kvalita za tuto cenu. Velmi spokojen s nákupem.',
     },
   ]
   const authors = [
-    'John D.',
-    'Sarah M.',
-    'Mike R.',
-    'Emma L.',
+    'Jan D.',
+    'Sára M.',
+    'Michal R.',
+    'Ema L.',
     'Alex K.',
-    'Lisa T.',
+    'Liška T.',
   ]
 
   const reviews: ProductReview[] = []

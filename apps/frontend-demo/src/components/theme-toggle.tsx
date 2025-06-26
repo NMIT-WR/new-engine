@@ -42,7 +42,7 @@ export function ThemeToggle() {
           onCheckedChange={toggleTheme}
           className="w-theme-toggle-width"
         >
-          <span className="sr-only">Toggle dark mode</span>
+          <span className="sr-only">Přepnout tmavý režim</span>
         </Switch>
         <Icon
           icon="icon-[mdi--moon-and-stars]"

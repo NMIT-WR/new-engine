@@ -138,12 +138,12 @@ export function ProductFilters({
             >
               {categoriesLoading ? (
                 <div className="text-gray-500 text-sm">
-                  Loading categories...
+                  Načítání kategorií...
                 </div>
               ) : categoryTree.length > 0 ? (
                 <>
                   <div className="text-xs text-gray-500 mb-2">
-                    Tip: Filters are applied only to the final subcategories
+                    Tip: Filtry se aplikují pouze na koncové podkategorie
                   </div>
                   <TreeView
                     id="category-tree"
@@ -202,7 +202,7 @@ export function ProductFilters({
                 </>
               ) : (
                 <div className="text-gray-500 text-sm">
-                  No categories available
+                  Žádné kategorie nejsou k dispozici
                 </div>
               )}
             </FilterSection>
@@ -273,7 +273,7 @@ export function ProductFilters({
                 {localPriceRange[0]}
               </span>
               <span className="text-product-filters-range-label text-sm">
-                to
+                do
               </span>
               <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
                 {config.range?.prefix}
@@ -376,7 +376,7 @@ export function ProductFilters({
                 id="on-sale"
                 name="onSale"
                 value="true"
-                labelText="On Sale"
+                labelText="Ve výprodeji"
                 checked={filters.onSale || false}
                 onCheckedChange={(details) => {
                   const isChecked = details.checked === true
@@ -394,7 +394,7 @@ export function ProductFilters({
               {filters.onSale && (
                 <div className="mt-4">
                   <label className="mb-2 block font-medium text-sm">
-                    Discount Range
+                    Rozsah slevy
                   </label>
                   <RangeSlider
                     value={localDiscountRange}
@@ -433,7 +433,7 @@ export function ProductFilters({
             onClick={clearAllFilters}
             className="cursor-pointer text-primary text-sm hover:underline"
           >
-            Clear all filters
+            Vymazat všechny filtry
           </Button>
         </div>
       )}
@@ -455,7 +455,7 @@ export function ProductFilters({
         className="flex items-center md:hidden bg-surface"
         icon="icon-[mdi--filter-variant]"
       >
-        Filters
+        Filtry
         {activeFilterCount > 0 && (
           <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-white text-xs">
             {activeFilterCount}
@@ -471,20 +471,20 @@ export function ProductFilters({
         <Dialog
           open={isOpen}
           onOpenChange={({ open }) => setIsOpen(open)}
-          title="Filters"
-          description="Refine your product search"
+          title="Filtry"
+          description="Upřesněte hledání produktů"
         >
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b p-4">
               <h2 className="font-semibold text-lg">
-                Filters
+                Filtry
               </h2>
               <Button
                 theme="borderless"
                 size="sm"
                 onClick={() => setIsOpen(false)}
                 icon="icon-[mdi--close]"
-                aria-label="Close filters"
+                aria-label="Zavřít filtry"
               />
             </div>
             <div className="flex-1 overflow-y-auto p-4">
@@ -500,7 +500,7 @@ export function ProductFilters({
                   setIsOpen(false)
                 }}
               >
-                Clear All
+                Vymazat vše
               </Button>
               <Button
                 theme="solid"
@@ -508,7 +508,7 @@ export function ProductFilters({
                 className="flex-1"
                 onClick={() => setIsOpen(false)}
               >
-                Apply Filters
+                Použít filtry
               </Button>
             </div>
           </div>

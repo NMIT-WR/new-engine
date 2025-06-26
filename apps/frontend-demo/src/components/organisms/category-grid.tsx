@@ -38,7 +38,7 @@ export function CategoryGrid({
             {category.name}
           </h3>
           <p className="text-category-item-count text-category-item-count-size">
-            {category.count} items
+            {category.count} položek
           </p>
         </div>
       </>

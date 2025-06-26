@@ -53,10 +53,10 @@ export function LoginForm() {
 
   return (
     <AuthFormWrapper
-      title="Welcome Back"
-      subtitle="Sign in to your account to continue"
-      footerText="Don't have an account?"
-      footerLinkText="Sign up"
+      title="Vítejte zpět"
+      subtitle="Přihlaste se ke svému účtu a pokračujte"
+      footerText="Nemáte účet?"
+      footerLinkText="Zaregistrovat se"
       footerLinkHref="/auth/register"
     >
       <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
@@ -101,7 +101,7 @@ export function LoginForm() {
         <div className="flex items-center justify-between">
           <Checkbox
             id="rememberMe"
-            labelText="Remember me"
+            labelText="Zapamatovat si mě"
             checked={rememberMe}
             onCheckedChange={(details) =>
               setRememberMe(details.checked === true)
@@ -113,7 +113,7 @@ export function LoginForm() {
             href="/auth/forgot-password"
             className="text-auth-link hover:text-auth-link-hover"
           >
-            Forgot password?
+            Zapoměli jste heslo?
           </Link>
         </div>
 
@@ -129,7 +129,7 @@ export function LoginForm() {
           size="lg"
           disabled={isFormLoading}
         >
-          {isFormLoading ? 'Signing In...' : 'Sign In'}
+          {isFormLoading ? 'Přihlašování...' : 'Přihlásit se'}
         </Button>
       </form>
     </AuthFormWrapper>

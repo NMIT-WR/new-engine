@@ -87,10 +87,10 @@ export function RegisterForm() {
 
   return (
     <AuthFormWrapper
-      title="Create Account"
-      subtitle="Sign up to get started"
-      footerText="Already have an account?"
-      footerLinkText="Sign in"
+      title="Vytvořit účet"
+      subtitle="Zaregistrujte se a začněte"
+      footerText="Již máte účet?"
+      footerLinkText="Přihlásit se"
       footerLinkHref="/auth/login"
     >
       <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
@@ -178,7 +178,7 @@ export function RegisterForm() {
         <div className="space-y-2">
           <Checkbox
             id="acceptTerms"
-            labelText="I agree to the Terms and Conditions"
+            labelText="Souhlasím s obchodními podmínkami"
             checked={acceptTerms}
             onCheckedChange={(details) =>
               setAcceptTerms(details.checked === true)
@@ -196,7 +196,7 @@ export function RegisterForm() {
           size="lg"
           disabled={isFormLoading || !acceptTerms}
         >
-          {isFormLoading ? 'Creating Account...' : 'Create Account'}
+          {isFormLoading ? 'Vytváření účtu...' : 'Vytvořit účet'}
         </Button>
 
         <PasswordRequirements password={password} />

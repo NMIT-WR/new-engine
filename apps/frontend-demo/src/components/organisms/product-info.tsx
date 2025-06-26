@@ -71,8 +71,8 @@ export function ProductInfo({
   const handleAddToCart = () => {
     if (!selectedVariant) {
       toast.create({
-        title: 'Please select options',
-        description: 'Please select all product options before adding to cart.',
+        title: 'Vyberte prosím možnosti',
+        description: 'Před přidáním do košíku vyberte prosím všechny možnosti produktu.',
         type: 'error',
       })
       return
@@ -83,7 +83,7 @@ export function ProductInfo({
     // Check if variant is in stock
     if (inventory.status === 'out-of-stock') {
       toast.create({
-        title: 'Out of Stock',
+        title: 'Vyprodané',
         description: inventory.message,
         type: 'error',
       })
@@ -93,8 +93,8 @@ export function ProductInfo({
     // Check if requested quantity is available
     if (!isQuantityAvailable(selectedVariant, quantity, region)) {
       toast.create({
-        title: 'Insufficient Stock',
-        description: `Only ${inventory.quantity} items available.`,
+        title: 'Nedostatečná zásoba',
+        description: `K dispozici je pouze ${inventory.quantity} kusů.`,
         type: 'error',
       })
       return
@@ -130,7 +130,7 @@ export function ProductInfo({
         <div className="mb-product-info-rating-margin flex items-center gap-product-info-rating-gap">
           <Rating value={product.rating} readOnly />
           <span className="text-product-info-rating-text">
-            ({product.reviewCount || 0} reviews)
+            ({product.reviewCount || 0} recenzí)
           </span>
         </div>
       )}
@@ -150,13 +150,13 @@ export function ProductInfo({
       {/* SKU and Stock Info */}
       {selectedVariant && (
         <div className="mb-product-info-variant-margin text-product-info-variant-label">
-          <p>SKU: {selectedVariant.sku}</p>
+          <p>Kód: {selectedVariant.sku}</p>
           {selectedVariant.inventory_quantity !== undefined && (
             <p>
-              In Stock:{' '}
+              Skladem:{' '}
               {maxQuantity
-                ? `${10}+ units`
-                : `${selectedVariant.inventory_quantity} units`}
+                ? `${10}+ kusů`
+                : `${selectedVariant.inventory_quantity} kusů`}
             </p>
           )}
         </div>
@@ -232,7 +232,7 @@ export function ProductInfo({
       {/* Quantity */}
       <div className="mb-product-info-quantity-margin">
         <div className="flex items-center gap-product-info-quantity-gap">
-          <span className="text-product-info-quantity-label">Quantity:</span>
+          <span className="text-product-info-quantity-label">Množství:</span>
           <NumericInput
             value={quantity}
             onChange={setQuantity}
@@ -266,11 +266,11 @@ export function ProductInfo({
         >
           {!selectedVariant ||
           getVariantInventory(selectedVariant, region).status === 'out-of-stock'
-            ? 'Out of Stock'
-            : 'Add to Cart'}
+            ? 'Vyprodané'
+            : 'Přidat do košíku'}
         </Button>
         <Button variant="secondary" size="lg" icon="icon-[mdi--heart-outline]">
-          <span className="sr-only">Add to wishlist</span>
+          <span className="sr-only">Přidat do seznamu přání</span>
         </Button>
       </div>
     </div>

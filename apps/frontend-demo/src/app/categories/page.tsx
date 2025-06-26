@@ -33,7 +33,7 @@ export default function CategoriesPage() {
     return (
       <div className="min-h-screen bg-categories-bg">
         <div className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile py-categories-section-y-mobile md:px-categories-container-x-desktop md:py-categories-section-y-desktop">
-          <p className="text-red-500">Error loading categories: {error}</p>
+          <p className="text-red-500">Chyba při načítání kategorií: {error}</p>
         </div>
       </div>
     )
@@ -44,11 +44,11 @@ export default function CategoriesPage() {
       {/* Hero section */}
       <section className="mx-auto max-w-categories-container-max-w px-categories-container-x-mobile pt-categories-section-y-mobile md:px-categories-container-x-desktop md:pt-categories-section-y-desktop">
         <h1 className="font-categories-heading text-categories-heading-fg text-categories-heading-size-mobile md:text-categories-heading-size-desktop">
-          All Categories
+          Všechny kategorie
         </h1>
         <p className="mt-categories-hero-gap max-w-categories-description-max-w text-categories-description-fg text-categories-description-size">
-          Explore our complete range of products. From everyday essentials to
-          statement pieces, find everything you need in one place.
+          Prozkoumejte naši kompletní nabídku produktů. Od každodenních
+          nezbyností po výjimečné kousky, najdete vše, co potřebujete, na jednom místě.
         </p>
       </section>
 

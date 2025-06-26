@@ -28,7 +28,7 @@ export function CategoryMenu() {
     }
 
     const items: MenuItem[] = [
-      { type: 'action', value: 'all', label: 'All Categories' },
+      { type: 'action', value: 'all', label: 'Všechny kategorie' },
     ]
 
     if (!isLoading && categoryTree.length > 0) {
@@ -52,7 +52,7 @@ export function CategoryMenu() {
   return (
     <Menu
       items={categoryMenuItems}
-      triggerText={isLoading ? 'Loading...' : 'Categories'}
+      triggerText={isLoading ? 'Načítání...' : 'Kategorie'}
       triggerIcon="token-icon-grid"
       onSelect={handleSelect}
       size="md"

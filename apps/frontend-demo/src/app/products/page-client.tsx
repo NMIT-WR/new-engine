@@ -10,11 +10,11 @@ import { Select } from '@ui/molecules/select'
 import { Suspense, useMemo } from 'react'
 
 const SORT_OPTIONS = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'name-asc', label: 'Name: A to Z' },
-  { value: 'name-desc', label: 'Name: Z to A' },
+  { value: 'newest', label: 'Nejnovější' },
+  { value: 'price-asc', label: 'Cena: od nejnižší' },
+  { value: 'price-desc', label: 'Cena: od nejvyšší' },
+  { value: 'name-asc', label: 'Název: A-Z' },
+  { value: 'name-desc', label: 'Název: Z-A' },
 ]
 
 // Loading skeleton for products
@@ -87,12 +87,12 @@ function ProductsPageContent() {
       <div className="mb-product-listing-header-margin">
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Products', href: '/products' },
+            { label: 'Domů', href: '/' },
+            { label: 'Produkty', href: '/products' },
           ]}
         />
         <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
-          All Products
+          Všechny produkty
         </h1>
       </div>
 
@@ -119,7 +119,7 @@ function ProductsPageContent() {
         <main className="flex-1 w-full">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-gray-600 text-sm dark:text-gray-400">
-              Showing {products.length} of {totalCount} products
+              Zobrazeno {products.length} z {totalCount} produktů
             </p>
             <Select
               value={[urlFilters.sortBy || 'newest']}
@@ -128,7 +128,7 @@ function ProductsPageContent() {
                 label: opt.label,
               }))}
               clearIcon={false}
-              placeholder="Select sorting"
+              placeholder="Vybrat řazení"
               onValueChange={(details) => {
                 const value = details.value[0]
                 if (value) urlFilters.setSortBy(value as any)
@@ -149,7 +149,7 @@ function ProductsPageContent() {
             />
           ) : (
             <div className="py-12 text-center">
-              <p className="text-gray-500">No products found</p>
+              <p className="text-gray-500">Žádné produkty nenalezeny</p>
             </div>
           )}
         </main>

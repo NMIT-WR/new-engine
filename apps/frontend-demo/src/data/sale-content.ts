@@ -15,16 +15,16 @@ export interface SaleContent {
 
 export const saleContent: SaleContent = {
   banner: {
-    text: 'End of Season Sale - Up to 50% OFF! Limited time only',
+    text: 'Sezonní výprodej - Až 50% SLEVA! Pouze omezený čas',
     icon: '🔥',
   },
   hero: {
-    title: 'Sale',
+    title: 'Výprodej',
     subtitle:
-      'Shop our biggest discounts of the season. New markdowns added daily!',
+      'Nakupujte naše největší slevy sezony. Nové slevy přidáváme denně!',
   },
   breadcrumbs: [
-    { label: 'Home', href: '/' },
-    { label: 'Sale', href: '/sale' },
+    { label: 'Domů', href: '/' },
+    { label: 'Výprodej', href: '/sale' },
   ],
 }

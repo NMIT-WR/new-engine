@@ -30,14 +30,14 @@ export function CartPreview() {
       <div className="max-w-cart-preview-max">
         <div className="flex flex-col gap-4 py-cart-preview-empty-padding text-center">
           <p className="font-semibold text-cart-preview-empty-size text-cart-preview-fg">
-            Cart is empty
+            Košík je prázdný
           </p>
           <Link
             href="/products"
             className="mt-cart-preview-empty-mt inline-block"
           >
             <Button variant="primary" size="sm" block>
-              Browse Products
+              Prohlédnout produkty
             </Button>
           </Link>
         </div>
@@ -49,7 +49,7 @@ export function CartPreview() {
     <div className="max-w-cart-preview-max">
       <div className="pb-cart-preview">
         <h3 className="font-cart-preview-title text-cart-preview-fg text-cart-preview-title-size">
-          Your Cart:
+          Váš košík:
         </h3>
       </div>
 
@@ -93,11 +93,11 @@ export function CartPreview() {
                   </p>
                 )}
                 <p className="text-cart-preview-detail-size text-cart-preview-fg-secondary">
-                  Amount: {item.quantity}
+                  Množství: {item.quantity}
                 </p>
                 {hasStockIssue && (
                   <p className="mt-cart-preview-error-margin-top text-cart-preview-error-size text-cart-preview-error-fg">
-                    ⚠ Low stock
+                    ⚠ Nízká zásoba
                   </p>
                 )}
               </div>
@@ -107,7 +107,7 @@ export function CartPreview() {
                   theme="borderless"
                   onClick={() => removeItem(item.id)}
                   className="px-0 py-0 text-cart-preview-fg-secondary hover:text-cart-preview-fg"
-                  aria-label="Remove from cart"
+                  aria-label="Odebrat z košíku"
                   icon="token-icon-close"
                 />
                 <p className="font-cart-preview-item text-cart-preview-fg text-cart-preview-item-size">
@@ -125,7 +125,7 @@ export function CartPreview() {
       <div className="border-cart-preview-footer-border border-t pt-cart-preview">
         <div className="mb-cart-preview flex items-center justify-between">
           <span className="font-cart-preview-subtotal-label text-cart-preview-fg-secondary text-cart-preview-subtotal-label-size">
-            Total
+            Celkem
           </span>
           <span className="font-cart-preview-subtotal-amount text-cart-preview-fg text-cart-preview-subtotal-size">
             {formatPrice(total, cart?.region?.currency_code)}
@@ -134,7 +134,7 @@ export function CartPreview() {
         <div className="flex flex-col gap-cart-preview-actions-gap">
           <Link href="/cart" className="block">
             <Button variant="primary" size="md" block>
-              To cart
+              Do košíku
             </Button>
           </Link>
         </div>

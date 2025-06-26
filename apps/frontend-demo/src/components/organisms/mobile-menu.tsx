@@ -51,7 +51,7 @@ export function MobileMenu({
       <div className="fixed top-0 right-0 h-full w-full max-w-mobile-menu-panel-max-w bg-mobile-menu-panel-bg shadow-mobile-menu-panel transition-mobile-menu-panel">
         <div className="flex items-center justify-between border-mobile-menu-border border-b p-mobile-menu-header-padding">
           <h2 className="font-mobile-menu-title-weight text-mobile-menu-text text-mobile-menu-title-size">
-            Menu
+            Nabídka
           </h2>
           <Button
             theme="borderless"
@@ -125,7 +125,7 @@ export function MobileMenu({
             </div>
             <div className="flex items-center justify-between px-mobile-menu-item-x">
               <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">
-                Theme
+                Téma
               </span>
               <ThemeToggle />
             </div>

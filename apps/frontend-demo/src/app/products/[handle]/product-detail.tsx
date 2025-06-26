@@ -157,8 +157,8 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         {/* Related Products */}
         <div className="mt-product-detail-related-margin">
           <FeaturedProducts
-            title="You May Also Like"
-            subtitle="Check out these similar products"
+            title="Mohlo by se vám líbit"
+            subtitle="Koukněte na podobné produkty"
             products={relatedProducts}
           />
         </div>

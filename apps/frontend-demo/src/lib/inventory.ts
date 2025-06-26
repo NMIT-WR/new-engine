@@ -21,7 +21,7 @@ export function getVariantInventory(
     return {
       status: 'out-of-stock',
       quantity: 0,
-      message: 'Variant not available',
+      message: 'Varianta není dostupná',
     }
   }
 
@@ -33,7 +33,7 @@ export function getVariantInventory(
     return {
       status: 'out-of-stock',
       quantity: 0,
-      message: 'Out of Stock',
+      message: 'Vyprodáno',
     }
   }
 
@@ -41,14 +41,14 @@ export function getVariantInventory(
     return {
       status: 'low-stock',
       quantity,
-      message: `Only ${quantity} left in stock`,
+      message: `Zbývá pouze ${quantity} kusů`,
     }
   }
 
   return {
     status: 'in-stock',
     quantity,
-    message: 'In Stock',
+    message: 'Skladem',
   }
 }
 
@@ -64,7 +64,7 @@ export function getProductInventory(
     return {
       status: 'out-of-stock',
       quantity: 0,
-      message: 'Product not available',
+      message: 'Produkt není dostupný',
     }
   }
 
@@ -87,7 +87,7 @@ export function getProductInventory(
     return {
       status: 'out-of-stock',
       quantity: 0,
-      message: 'Out of Stock',
+      message: 'Vyprodáno',
     }
   }
 
@@ -95,14 +95,14 @@ export function getProductInventory(
     return {
       status: 'low-stock',
       quantity: totalQuantity,
-      message: 'Low Stock',
+      message: 'Malé množství',
     }
   }
 
   return {
     status: 'in-stock',
     quantity: totalQuantity,
-    message: 'In Stock',
+    message: 'Skladem',
   }
 }
 

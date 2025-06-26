@@ -32,7 +32,7 @@ export function ProductGrid({
   if (products.length === 0) {
     return (
       <div className="py-product-grid-empty-padding text-center">
-        <p className="text-product-grid-empty-text">No products found</p>
+        <p className="text-product-grid-empty-text">Žádné produkty nenalezeny</p>
       </div>
     )
   }
@@ -52,7 +52,7 @@ export function ProductGrid({
               ? formatPrice(price.calculated_price, region?.currency_code)
               : price?.amount !== undefined && typeof price.amount === 'number'
                 ? formatPrice(price.amount, region?.currency_code)
-                : 'Price not available'
+                : 'Cena není k dispozici'
 
           return (
             <ProductCard
@@ -64,7 +64,7 @@ export function ProductGrid({
               stockStatus="" // Empty since we show stock in badges
               hasDetailButton
               onDetailClick={() => navigate.push(`/products/${product.handle}`)}
-              detailButtonText="View Details"
+              detailButtonText="Zobrazit detaily"
             />
           )
         })}

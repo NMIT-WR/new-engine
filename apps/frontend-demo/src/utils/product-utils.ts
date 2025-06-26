@@ -9,11 +9,11 @@ import type { BadgeProps } from '@ui/atoms/badge'
 export function getStockStatusText(status: StockStatus): string {
   switch (status) {
     case 'in-stock':
-      return 'In Stock'
+      return 'Skladem'
     case 'low-stock':
-      return 'Low Stock'
+      return 'Malé množství'
     case 'out-of-stock':
-      return 'Out of Stock'
+      return 'Vyprodáno'
   }
 }
 
@@ -93,7 +93,7 @@ export function extractProductData(
     const daysSinceCreated =
       (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
     if (daysSinceCreated <= 7) {
-      badges.push({ variant: 'success' as const, children: 'New' })
+      badges.push({ variant: 'success' as const, children: 'Nové' })
     }
   }
 
@@ -101,11 +101,11 @@ export function extractProductData(
 
   // Stock status badge - always show stock status
   if (inventory.status === 'out-of-stock') {
-    badges.push({ variant: 'danger' as const, children: 'Out of Stock' })
+    badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
   } else if (inventory.status === 'low-stock') {
-    badges.push({ variant: 'warning' as const, children: 'Low Stock' })
+    badges.push({ variant: 'warning' as const, children: 'Malé množství' })
   } else {
-    badges.push({ variant: 'success' as const, children: 'In Stock' })
+    badges.push({ variant: 'success' as const, children: 'Skladem' })
   }
 
   return {

@@ -16,7 +16,7 @@ export function FeaturedProducts({
   title,
   subtitle,
   products,
-  linkText = 'View all products',
+  linkText = 'Zobrazit všechny produkty',
   linkHref = '/products',
 }: FeaturedProductsProps) {
   const router = useRouter()
@@ -45,7 +45,7 @@ export function FeaturedProducts({
                 badges={displayBadges}
                 hasCartButton={false}
                 hasDetailButton={true}
-                detailButtonText="View"
+                detailButtonText="Zobrazit"
                 onDetailClick={() => router.push(`/products/${product.handle}`)}
                 hasWishlistButton={false}
                 layout="column"

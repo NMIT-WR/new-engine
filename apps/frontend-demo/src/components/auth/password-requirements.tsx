@@ -9,19 +9,19 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
 
   return (
     <div className="space-y-1 text-gray-500 text-xs">
-      <p className="font-semibold">Password requirements:</p>
+      <p className="font-semibold">Požadavky na heslo:</p>
       <ul className="list-inside list-disc space-y-0.5">
         <li className={requirements.length ? 'text-green-600' : ''}>
-          At least 8 characters
+          Alespoň 8 znaků
         </li>
         <li className={requirements.uppercase ? 'text-green-600' : ''}>
-          One uppercase letter
+          Jedno velké písmeno
         </li>
         <li className={requirements.lowercase ? 'text-green-600' : ''}>
-          One lowercase letter
+          Jedno malé písmeno
         </li>
         <li className={requirements.number ? 'text-green-600' : ''}>
-          One number
+          Jedno číslo
         </li>
       </ul>
     </div>
