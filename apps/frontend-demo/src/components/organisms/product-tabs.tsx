@@ -227,7 +227,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
           ) : (
             <div className="rounded-product-tabs-review-bg bg-product-tabs-review-bg py-product-tabs-review-card text-center">
               <p className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed">
-                Zatím žádné recenze. Buďte první, kdo tento produkt ohodno>tí!
+                Zatím žádné recenze. Buďte první, kdo tento produkt ohodnotí!
               </p>
               <Button className="mt-4">Napsat recenzi</Button>
             </div>

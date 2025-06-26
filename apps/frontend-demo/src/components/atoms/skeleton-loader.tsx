@@ -1,5 +1,5 @@
 import { tv } from '@ui/utils'
-import type { HTMLAttributes } from 'react'
+import * as React from 'react'
 import type { VariantProps } from 'tailwind-variants'
 
 export const skeletonVariants = tv({
@@ -68,7 +68,7 @@ export const skeletonVariants = tv({
 })
 
 export interface SkeletonLoaderProps
-  extends HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof skeletonVariants> {
   count?: number
   containerClassName?: string
