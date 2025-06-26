@@ -15,7 +15,7 @@ export default function AboutPage() {
         }}
       >
         <div className="absolute inset-0 bg-about-hero-overlay" />
-        <div className="relative z-10 mx-auto max-w-container-max px-about-container-x text-center text-white md:px-about-container-x-md lg:px-about-container-x-lg">
+        <div className="relative mx-auto max-w-container-max px-about-container-x text-center text-white md:px-about-container-x-md lg:px-about-container-x-lg">
           <h1 className="mb-about-hero-title-bottom font-about-hero-title text-5xl md:text-7xl">
             {hero.title}
           </h1>

@@ -4,6 +4,7 @@ import { useRegions } from '@/hooks/use-region'
 import { Select } from '@ui/molecules/select'
 
 const currencyFlags: Record<string, string> = {
+  CZK: '🇨🇿',
   EUR: '🇪🇺',
   USD: '🇺🇸',
   GBP: '🇬🇧',
@@ -11,7 +12,6 @@ const currencyFlags: Record<string, string> = {
   DKK: '🇩🇰',
   NOK: '🇳🇴',
   PLN: '🇵🇱',
-  CZK: '🇨🇿',
 }
 
 export function RegionSelector() {
@@ -40,7 +40,6 @@ export function RegionSelector() {
       value={selectedRegion ? [selectedRegion.id] : []}
       onValueChange={handleChange}
       size="xs"
-      className="w-28"
       clearIcon={false}
       placeholder="Region"
     />
