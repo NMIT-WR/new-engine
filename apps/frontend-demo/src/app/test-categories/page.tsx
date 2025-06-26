@@ -2,12 +2,18 @@
 
 import { useState } from 'react'
 import { httpClient } from '@/lib/http-client'
-import { useCategories, useRootCategories, useCategoryTree } from '@/hooks/use-categories'
+import { useCategories, useDetailedCategories, useRootCategories, useCategoryTree } from '@/hooks/use-categories'
 
 export default function TestCategoryPerformanceAll() {
   const [results, setResults] = useState<any>({})
   const [loading, setLoading] = useState<string | null>(null)
   const [hookResults, setHookResults] = useState<any>({})
+  
+  // Hooks must be called at the top level
+  const { categories: allCats, isLoading: loading1 } = useCategories()
+  const { categories: detailedCats, isLoading: loading2 } = useDetailedCategories()
+  const { categories: rootCats, isLoading: loading3 } = useRootCategories()
+  const { tree, isLoading: loading4 } = useCategoryTree()
 
   // Test configurations
   const tests = [
@@ -73,7 +79,7 @@ export default function TestCategoryPerformanceAll() {
           const data = await httpClient.get('/store/product-categories', {
             params: { limit: 200, offset }
           })
-          allData.push(...(data.product_categories || []))
+          allData.push(...((data as any).product_categories || []))
         }
         
         const end = performance.now()
@@ -89,19 +95,19 @@ export default function TestCategoryPerformanceAll() {
     setLoading(test.name)
     try {
       const result = await test.test()
-      const categories = result.data?.product_categories || []
+      const categories = (result.data as any)?.product_categories || []
       const rootCategories = categories.filter((c: any) => !c.parent_category_id)
       
       setResults((prev: any) => ({
         ...prev,
         [test.name]: {
-          success: !result.error,
+          success: !(result as any).error,
           time: result.time.toFixed(0),
           size: result.data ? (JSON.stringify(result.data).length / 1024).toFixed(2) : '0',
           totalCategories: categories.length,
           rootCategories: rootCategories.length,
           rootNames: rootCategories.map((c: any) => c.name),
-          error: result.error,
+          error: (result as any).error,
           avgTimePerCategory: categories.length > 0 ? (result.time / categories.length).toFixed(2) : 'N/A'
         },
       }))
@@ -125,42 +131,56 @@ export default function TestCategoryPerformanceAll() {
     }
   }
 
-  // Test React hooks
-  const testHooks = () => {
-    const start1 = performance.now()
-    const { categories: allCats, isLoading: loading1 } = useCategories()
-    const time1 = performance.now() - start1
-
-    const start2 = performance.now()
-    const { categories: rootCats, isLoading: loading2 } = useRootCategories()
-    const time2 = performance.now() - start2
-
-    const start3 = performance.now()
-    const { tree, isLoading: loading3 } = useCategoryTree()
-    const time3 = performance.now() - start3
-
-    setHookResults({
+  // Test individual hooks
+  const testUseCategories = () => {
+    setHookResults((prev: any) => ({
+      ...prev,
       useCategories: {
-        time: time1.toFixed(2),
+        time: '0',
         count: allCats.length,
         loading: loading1,
+        size: (JSON.stringify(allCats).length / 1024).toFixed(2),
       },
+    }))
+  }
+
+  const testUseDetailedCategories = () => {
+    setHookResults((prev: any) => ({
+      ...prev,
+      useDetailedCategories: {
+        time: '0',
+        count: detailedCats.length,
+        loading: loading2,
+        size: (JSON.stringify(detailedCats).length / 1024).toFixed(2),
+      },
+    }))
+  }
+
+  const testUseRootCategories = () => {
+    setHookResults((prev: any) => ({
+      ...prev,
       useRootCategories: {
-        time: time2.toFixed(2),
+        time: '0',
         count: rootCats.length,
         names: rootCats.map((c: any) => c.name),
-        loading: loading2,
-      },
-      useCategoryTree: {
-        time: time3.toFixed(2),
-        count: tree.length,
         loading: loading3,
       },
-    })
+    }))
+  }
+
+  const testUseCategoryTree = () => {
+    setHookResults((prev: any) => ({
+      ...prev,
+      useCategoryTree: {
+        time: '0',
+        count: tree.length,
+        loading: loading4,
+      },
+    }))
   }
 
   // Calculate statistics
-  const stats = Object.entries(results).reduce((acc, [name, result]: [string, any]) => {
+  const stats = Object.entries(results).reduce((acc, [, result]: [string, any]) => {
     if (result.success && result.time) {
       acc.times.push(Number(result.time))
       acc.sizes.push(Number(result.size))
@@ -189,10 +209,31 @@ export default function TestCategoryPerformanceAll() {
         </button>
         
         <button
-          onClick={testHooks}
+          onClick={testUseCategories}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          Test React Hooks
+          Test useCategories
+        </button>
+        
+        <button
+          onClick={testUseDetailedCategories}
+          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+        >
+          Test useDetailedCategories
+        </button>
+        
+        <button
+          onClick={testUseRootCategories}
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+        >
+          Test useRootCategories
+        </button>
+        
+        <button
+          onClick={testUseCategoryTree}
+          className="px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
+        >
+          Test useCategoryTree
         </button>
       </div>
 
@@ -285,12 +326,15 @@ export default function TestCategoryPerformanceAll() {
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium">{hookName}()</h3>
                 <span className="font-mono text-sm text-blue-600">
-                  {result.time}ms
+                  {result.loading ? 'Loading...' : 'Loaded'}
                 </span>
               </div>
               <div className="text-sm">
                 <p>Count: {result.count}</p>
                 <p>Loading: {result.loading ? 'Yes' : 'No'}</p>
+                {result.size && (
+                  <p>Size: {result.size} KB</p>
+                )}
                 {result.names && (
                   <p>Categories: {result.names.join(', ')}</p>
                 )}
