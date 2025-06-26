@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex min-h-screen flex-col">
+      <body className="flex min-h-screen flex-col min-w-layout-min">
         <Providers>
           <HeaderWrapper
             logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}

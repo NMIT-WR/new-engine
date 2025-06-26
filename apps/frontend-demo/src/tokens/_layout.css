@@ -17,6 +17,8 @@
   --container-2xl: 96rem; /* 1536px */
   --container-full: 100%; /* Full width */
 
+  --spacing-layout-min: var(--container-xs);
+
   /* Container padding - responsive horizontal padding */
   --container-padding-sm: var(--spacing-sm); /* 1rem */
   --container-padding-md: var(--spacing-md); /* 1.5rem */
