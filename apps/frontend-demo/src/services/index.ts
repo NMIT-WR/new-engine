@@ -5,6 +5,3 @@ export type {
   ProductListResponse,
   HomePageProducts,
 } from './product-service'
-
-export { CategoryService } from './category-service'
-export type { CategoryTreeNode } from './category-service'

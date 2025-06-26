@@ -31,6 +31,16 @@ export interface HomePageProducts {
 }
 
 export class ProductService {
+  // HARD LIMIT PRO DEMO - maximálně 100 produktů
+  static readonly MAX_DEMO_PRODUCTS = 100
+  static productsLoaded = 0
+  
+  // Reset počítadla (užitečné pro development)
+  static resetDemoLimit() {
+    this.productsLoaded = 0
+    console.log('[ProductService] Demo limit counter reset')
+  }
+  
   static readonly DEFAULT_FIELDS = [
     'id',
     'title',
@@ -65,8 +75,17 @@ export class ProductService {
   ): Promise<ProductListResponse> {
     const { limit = 20, offset = 0, filters, sort } = params
 
+    // DEMO LIMIT - pokud už máme 100 produktů, vrať prázdný výsledek
+    if (this.productsLoaded >= this.MAX_DEMO_PRODUCTS) {
+      console.log('[ProductService] Demo limit reached, returning empty result')
+      return { products: [], count: this.MAX_DEMO_PRODUCTS, limit, offset }
+    }
+
+    // Upravíme limit aby nepřekročil MAX_DEMO_PRODUCTS
+    const adjustedLimit = Math.min(limit, this.MAX_DEMO_PRODUCTS - this.productsLoaded)
+    
     const queryParams: Record<string, any> = {
-      limit,
+      limit: adjustedLimit,
       offset,
       fields: this.DEFAULT_FIELDS,
     }
@@ -78,10 +97,9 @@ export class ProductService {
       }
 
       if (filters.priceRange) {
-        // Convert to cents and format for Medusa
-        const [min, max] = filters.priceRange
         // Note: Medusa v2 might not support price filtering via query params
         // We'll need to filter client-side for now
+        // const [min, max] = filters.priceRange
         // queryParams['variants.prices.amount'] = `gte:${min * 100},lte:${max * 100}`
       }
 
@@ -120,17 +138,24 @@ export class ProductService {
         return { products: [], count: 0, limit, offset }
       }
 
-      const products = response.products.map((p) => this.transformProduct(p))
+      // DEMO LIMIT - vezmi pouze tolik produktů, kolik můžeme
+      const productsToTake = Math.min(
+        response.products.length, 
+        this.MAX_DEMO_PRODUCTS - this.productsLoaded
+      )
+      
+      const limitedProducts = response.products.slice(0, productsToTake)
+      const products = limitedProducts.map((p) => this.transformProduct(p))
+      
+      // Aktualizuj počítadlo
+      this.productsLoaded += products.length
 
-      // Don't filter out products without prices - just show them
-      console.log('[ProductService] Total products:', products.length)
-      console.log('[ProductService] Products with prices:', products.filter(p => 
-        p.variants?.some((v: any) => v.prices?.length > 0)
-      ).length)
+      console.log('[ProductService] Demo products loaded:', this.productsLoaded, '/', this.MAX_DEMO_PRODUCTS)
+      console.log('[ProductService] Products in this batch:', products.length)
 
       return {
         products,
-        count: response.count || products.length,
+        count: Math.min(response.count || products.length, this.MAX_DEMO_PRODUCTS),
         limit,
         offset,
       }
@@ -165,8 +190,20 @@ export class ProductService {
    * Get products for homepage sections
    */
   static async getHomePageProducts(): Promise<HomePageProducts> {
-    // Fetch products with specific tags or latest products
-    const response = await this.getProducts({ limit: 100 })
+    // DEMO LIMIT - fetch pouze pokud ještě nemáme limit
+    const remainingSlots = this.MAX_DEMO_PRODUCTS - this.productsLoaded
+    const fetchLimit = Math.min(12, remainingSlots) // Potřebujeme max 12 pro homepage
+    
+    if (fetchLimit <= 0) {
+      console.log('[ProductService] Demo limit reached, returning empty homepage products')
+      return {
+        featured: [],
+        newArrivals: [],
+        trending: [],
+      }
+    }
+    
+    const response = await this.getProducts({ limit: fetchLimit })
 
     const allProducts = response.products
 
