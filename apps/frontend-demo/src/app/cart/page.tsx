@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button } from 'ui/src/atoms/button'
 import { Icon } from 'ui/src/atoms/icon'
 import { Link } from 'ui/src/atoms/link'
+import { LinkButton } from 'ui/src/atoms/link-button'
 import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
 import { NumericInput } from 'ui/src/molecules/numeric-input'
 
@@ -194,11 +195,13 @@ export default function CartPage() {
             <p className="mb-cart-empty-text-margin text-cart-empty-text">
               Looks like you haven't added any items to your cart yet.
             </p>
-            <Link href="/products">
-              <Button size="lg" icon="icon-[mdi--shopping-outline]">
-                Start Shopping
-              </Button>
-            </Link>
+            <LinkButton 
+              href="/products" 
+              size="lg" 
+              icon="icon-[mdi--shopping-outline]"
+            >
+              Start Shopping
+            </LinkButton>
           </div>
         )}
       </div>
