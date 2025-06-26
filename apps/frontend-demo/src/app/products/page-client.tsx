@@ -102,7 +102,6 @@ function ProductsPageContent() {
           filters={urlFilters.filters}
           onFiltersChange={urlFilters.setFilters}
           products={products}
-          className="bg-white dark:bg-gray-900 py-2"
         />
       </div>
 

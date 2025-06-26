@@ -452,7 +452,7 @@ export function ProductFilters({
         theme="outlined"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="mb-product-filters-mobile-btn-margin flex items-center gap-product-filters-mobile-btn-gap md:hidden"
+        className="flex items-center md:hidden bg-surface"
         icon="icon-[mdi--filter-variant]"
       >
         Filters
@@ -467,7 +467,7 @@ export function ProductFilters({
       <div className="hidden md:block">{filterContent}</div>
 
       {/* Mobile Filter Dialog */}
-      <div className="md:hidden">
+      <div className="hidden">
         <Dialog
           open={isOpen}
           onOpenChange={({ open }) => setIsOpen(open)}
