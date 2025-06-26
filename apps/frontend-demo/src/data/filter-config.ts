@@ -43,7 +43,7 @@ export const fashionFilters: FilterConfig[] = [
       min: 0,
       max: 300,
       step: 10,
-      prefix: '€',
+      prefix: 'Kč',
     },
   },
   {
@@ -113,7 +113,7 @@ export const automotiveFilters: FilterConfig[] = [
       min: 0,
       max: 5000,
       step: 50,
-      prefix: '€',
+      prefix: 'Kč',
     },
   },
   {
@@ -169,7 +169,7 @@ export const electronicsFilters: FilterConfig[] = [
       min: 0,
       max: 3000,
       step: 50,
-      prefix: '€',
+      prefix: 'Kč',
     },
   },
   {

@@ -132,7 +132,7 @@ export function getRelatedProducts(
 /**
  * Format price display with currency
  */
-export function formatPrice(price: number, currency = '€'): string {
+export function formatPrice(price: number, currency = 'Kč'): string {
   return `${currency}${price.toFixed(2)}`
 }
 

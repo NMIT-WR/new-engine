@@ -1,7 +1,7 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
-import { useCategoryTree } from '@/hooks/use-categories-v2'
+import { useCategoryTree } from '@/hooks/use-categories'
 import { useDebouncedCallback } from '@/hooks/use-debounce'
 import type { Product } from '@/types/product'
 import { getColorHex } from '@/utils/color-map'

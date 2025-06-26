@@ -1,6 +1,6 @@
 'use client'
 
-import { useCategoryTree } from '@/hooks/use-categories-v2'
+import { useCategoryTree } from '@/hooks/use-categories'
 import { TreeView } from '@ui/molecules/tree-view'
 import { useRouter } from 'next/navigation'
 

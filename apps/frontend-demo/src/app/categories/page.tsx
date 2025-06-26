@@ -2,7 +2,7 @@
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { CategoryGrid } from '@/components/organisms/category-grid'
 import { CategoryTreeSection } from '@/components/organisms/category-tree-section'
-import { useRootCategories } from '@/hooks/use-categories-v2'
+import { useRootCategories } from '@/hooks/use-categories'
 
 export default function CategoriesPage() {
   const { categories: orderedCategories, isLoading, error } = useRootCategories()

@@ -24,6 +24,7 @@ export function getProductPrice(product: any, variantIndex = 0): number {
  * Currency symbol mapping
  */
 const currencySymbols: Record<string, string> = {
+  CZK: 'Kč',
   EUR: '€',
   USD: '$',
   GBP: '£',
@@ -31,7 +32,6 @@ const currencySymbols: Record<string, string> = {
   DKK: 'kr',
   NOK: 'kr',
   PLN: 'zł',
-  CZK: 'Kč',
 }
 
 /**
@@ -40,7 +40,7 @@ const currencySymbols: Record<string, string> = {
  * @param currencyCode - ISO currency code (e.g., 'EUR', 'USD')
  * @returns Formatted price string
  */
-export function formatPrice(amount: number, currencyCode = 'EUR'): string {
+export function formatPrice(amount: number, currencyCode = 'CZK'): string {
   const symbol = currencySymbols[currencyCode.toUpperCase()] || currencyCode
 
   // For currencies that typically place symbol after (Nordic, Czech, Polish)

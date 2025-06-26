@@ -6,7 +6,7 @@ import { CategoryTreeSection } from '@/components/organisms/category-tree-sectio
 import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Hero } from '@/components/organisms/hero'
 import { homeContent } from '@/data/home-content'
-import { useRootCategories } from '@/hooks/use-categories-v2'
+import { useRootCategories } from '@/hooks/use-categories'
 import { useHomeProducts } from '@/hooks/use-products-v2'
 
 export default function Home() {
