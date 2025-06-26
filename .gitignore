@@ -64,3 +64,4 @@ test-output
 
 local/
 .claude/
+opencode.json
