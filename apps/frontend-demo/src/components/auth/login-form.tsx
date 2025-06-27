@@ -3,9 +3,7 @@
 import { useAuth } from '@/hooks/use-auth'
 import {
   AUTH_ERRORS,
-  AUTH_MESSAGES,
   authFormFields,
-  getAuthErrorMessage,
   validateEmail,
   withLoading,
 } from '@/lib/auth'
@@ -30,7 +28,7 @@ export function LoginForm() {
     setFieldError,
     clearErrors,
   } = useAuth()
-  
+
   const isFormLoading = loginMutation.isPending
 
   const handleSubmit = async (e: FormEvent) => {

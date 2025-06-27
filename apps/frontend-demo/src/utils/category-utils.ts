@@ -1,5 +1,15 @@
 import type { Category } from '@/types/product'
-import type { MedusaCategory } from './category-tree'
+
+export interface MedusaCategory {
+  id: string
+  name: string
+  handle: string
+  description?: string
+  parent_category_id?: string | null
+  category_children?: MedusaCategory[]
+  is_active?: boolean
+  rank?: number
+}
 
 // Define the preferred order for root categories
 export const ROOT_CATEGORY_ORDER = [

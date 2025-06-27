@@ -2,38 +2,35 @@
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import { type CategoryWithStats, useCategory } from '@/hooks/use-categories'
 import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
+import { allCategories } from '@/lib/static-data/categories'
+import { findCategoryByHandle } from '@/utils/category-helpers'
 import type { SortOption } from '@/utils/product-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
 
 interface CategoryPageClientProps {
-  category?: CategoryWithStats
-  categoryHandle?: string
+  categoryHandle: string
 }
 
 export default function CategoryPageClient({
-  category: categoryProp,
   categoryHandle,
 }: CategoryPageClientProps) {
-  // If categoryHandle is provided, fetch the category
-  const {
-    category: fetchedCategory,
-    isLoading: categoryLoading,
-    error: categoryError,
-  } = useCategory(categoryHandle || '')
-  const category = categoryProp || fetchedCategory
+  // Find category from static data
+  const category = findCategoryByHandle(categoryHandle, allCategories)
+
   // Get all products and filter by category
   const { products: allProducts, isLoading: productsLoading } = useProducts()
 
   // Filter products by category id or handle
-  const categoryProducts = allProducts.filter((product) =>
-    product.categories?.some(
-      (cat) => cat.id === category?.id || cat.handle === category?.handle
-    )
-  )
+  const categoryProducts = category
+    ? allProducts.filter((product) =>
+        product.categories?.some(
+          (cat) => cat.id === category.id || cat.handle === category.handle
+        )
+      )
+    : []
 
   const {
     sortBy,
@@ -51,7 +48,7 @@ export default function CategoryPageClient({
     categories: new Set(),
   }
 
-  if (productsLoading || categoryLoading || !category) {
+  if (productsLoading) {
     return (
       <div className="min-h-screen bg-product-listing-bg">
         <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y">

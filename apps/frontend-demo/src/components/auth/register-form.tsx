@@ -2,10 +2,8 @@
 import { useAuth } from '@/hooks/use-auth'
 import {
   AUTH_ERRORS,
-  AUTH_MESSAGES,
   type ValidationError,
   authFormFields,
-  getAuthErrorMessage,
   validateEmail,
   validatePassword,
   withLoading,
@@ -33,7 +31,7 @@ export function RegisterForm() {
     getFieldError,
     clearErrors,
   } = useAuth()
-  
+
   const isFormLoading = registerMutation.isPending
 
   const handleSubmit = async (e: FormEvent) => {

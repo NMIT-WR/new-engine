@@ -1,13 +1,11 @@
 'use client'
 import { SaleBanner } from '@/components/molecules/sale-banner'
 import { CategoryGrid } from '@/components/organisms/category-grid'
-import { AllProductsSection } from '@/components/organisms/all-products-section'
-import { CategoryTreeSection } from '@/components/organisms/category-tree-section'
 import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Hero } from '@/components/organisms/hero'
 import { homeContent } from '@/data/home-content'
-import { useRootCategories } from '@/hooks/use-categories'
 import { useHomeProducts } from '@/hooks/use-products-v2'
+import { rootCategories } from '@/lib/static-data/categories'
 
 export default function Home() {
   const {
@@ -19,7 +17,6 @@ export default function Home() {
   } = homeContent
 
   const { featured, newArrivals: newProducts } = useHomeProducts()
-  const { categories: orderedCategories } = useRootCategories()
 
   return (
     <div>
@@ -45,9 +42,15 @@ export default function Home() {
       <CategoryGrid
         title={categoriesSection.title}
         subtitle={categoriesSection.subtitle}
-        categories={orderedCategories}
+        categories={rootCategories.map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          handle: cat.handle,
+          description: cat.description,
+          // Note: count and imageUrl would need to be fetched separately if needed
+        }))}
       />
-      
+
       {/* Categories - Tree View 
       <CategoryTreeSection
         title="Browse All Categories"
@@ -70,7 +73,7 @@ export default function Home() {
         products={newProducts}
         linkHref={newArrivals.linkHref}
       />
-      
+
       {/* All Products Section 
       <AllProductsSection
         title="Explore Our Collection"

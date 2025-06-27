@@ -1,6 +1,6 @@
 'use client'
 
-import { useCategoryTree } from '@/hooks/use-categories'
+import { categoryTree } from '@/lib/static-data/categories'
 import { TreeView } from '@ui/molecules/tree-view'
 import { useRouter } from 'next/navigation'
 
@@ -15,7 +15,6 @@ export function CategoryTreeSection({
   subtitle,
   className = '',
 }: CategoryTreeSectionProps) {
-  const { tree, isLoading } = useCategoryTree()
   const router = useRouter()
 
   const handleCategorySelect = (details: { selectedValue: string[] }) => {
@@ -24,16 +23,6 @@ export function CategoryTreeSection({
       const categoryId = details.selectedValue[0] // Take first selected
       router.push(`/products?categories=${categoryId}`)
     }
-  }
-
-  if (isLoading) {
-    return (
-      <section className={`py-12 ${className}`}>
-        <div className="mx-auto px-4">
-          <div className="text-center">Načítání kategorií...</div>
-        </div>
-      </section>
-    )
   }
 
   return (
@@ -47,10 +36,10 @@ export function CategoryTreeSection({
         )}
 
         <div className="mx-auto max-w-96">
-          {tree.length > 0 ? (
+          {categoryTree.length > 0 ? (
             <TreeView
               id="homepage-category-tree"
-              data={tree as any}
+              data={categoryTree as any}
               selectionMode="single"
               onSelectionChange={handleCategorySelect}
             />
