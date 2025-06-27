@@ -14,32 +14,6 @@ export interface MedusaCategory {
 /**
  * Transform Medusa categories to TreeView format
  */
-export function categoriesToTreeNodes(
-  categories: MedusaCategory[],
-  parentId: string | null = null
-): TreeNode[] {
-  // Filter categories for current level
-  const levelCategories = categories
-    .filter(
-      (cat) => cat.parent_category_id === parentId && cat.is_active !== false
-    )
-    .sort((a, b) => (a.rank || 0) - (b.rank || 0))
-
-  return levelCategories.map((category) => {
-    // Get children recursively
-    const children = category.category_children
-      ? categoriesToTreeNodes(category.category_children, category.id)
-      : categoriesToTreeNodes(categories, category.id)
-
-    const node: TreeNode = {
-      id: category.id,
-      name: category.name,
-      children: children.length > 0 ? children : undefined,
-    }
-
-    return node
-  })
-}
 
 /**
  * Get all category IDs in a tree branch (including parent and all descendants)
