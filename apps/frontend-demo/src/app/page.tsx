@@ -4,7 +4,7 @@ import { CategoryGrid } from '@/components/organisms/category-grid'
 import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Hero } from '@/components/organisms/hero'
 import { homeContent } from '@/data/home-content'
-import { useHomeProducts } from '@/hooks/use-products-v2'
+import { useHomeProducts } from '@/hooks/use-products'
 import { rootCategories } from '@/lib/static-data/categories'
 
 export default function Home() {

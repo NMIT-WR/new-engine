@@ -2,7 +2,7 @@
 
 import { Header } from '@/components/header'
 import type { NavItem } from '@/components/molecules/navigation'
-import { useCategories } from '@/hooks/use-categories'
+import { allCategories } from '@/lib/static-data/categories'
 import { useMemo } from 'react'
 
 interface HeaderWrapperProps {
@@ -13,17 +13,15 @@ interface HeaderWrapperProps {
 }
 
 export function HeaderWrapper({ logo }: HeaderWrapperProps) {
-  const { categories, isLoading } = useCategories()
-
   const navigationItems = useMemo<NavItem[]>(() => {
     const categoryItems: NavItem[] = [
       { title: 'Všechny kategorie', href: '/categories' },
     ]
 
-    // Add dynamic categories if loaded
-    if (!isLoading && categories.length > 0) {
+    // Add static categories
+    if (allCategories.length > 0) {
       categoryItems.push(
-        ...categories.slice(0, 10).map((cat: any) => ({
+        ...allCategories.slice(0, 10).map((cat) => ({
           title: cat.name,
           href: `/products?categories=${cat.id}`,
         }))
@@ -41,7 +39,7 @@ export function HeaderWrapper({ logo }: HeaderWrapperProps) {
       { title: 'O nás', href: '/about' },
       { title: 'Kontakt', href: '/contact' },
     ]
-  }, [categories, isLoading])
+  }, [])
 
   return <Header logo={logo} navigationItems={navigationItems} />
 }

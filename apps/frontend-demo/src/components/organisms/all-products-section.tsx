@@ -1,6 +1,6 @@
 'use client'
 
-import { useProducts } from '@/hooks/use-products-v2'
+import { useProducts } from '@/hooks/use-products'
 import { extractProductData } from '@/utils/product-utils'
 import { Button } from '@ui/atoms/button'
 import { ProductCard } from '@ui/molecules/product-card'

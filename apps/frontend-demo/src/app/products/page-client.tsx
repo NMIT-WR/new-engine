@@ -2,7 +2,7 @@
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import { useProducts } from '@/hooks/use-products-v2'
+import { useProducts } from '@/hooks/use-products'
 import { useUrlFilters } from '@/hooks/use-url-filters'
 import { sortProducts } from '@/utils/product-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'

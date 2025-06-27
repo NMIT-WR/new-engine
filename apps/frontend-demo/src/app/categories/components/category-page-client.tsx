@@ -20,17 +20,11 @@ export default function CategoryPageClient({
   // Find category from static data
   const category = findCategoryByHandle(categoryHandle, allCategories)
 
-  // Get all products and filter by category
-  const { products: allProducts, isLoading: productsLoading } = useProducts()
-
-  // Filter products by category id or handle
-  const categoryProducts = category
-    ? allProducts.filter((product) =>
-        product.categories?.some(
-          (cat) => cat.id === category.id || cat.handle === category.handle
-        )
-      )
-    : []
+  // Get products filtered by category using server-side filtering
+  const { products: categoryProducts, isLoading: productsLoading } = useProducts({
+    filters: category ? { categories: [category.id] } : undefined,
+    limit: 100, // Adjust as needed
+  })
 
   const {
     sortBy,

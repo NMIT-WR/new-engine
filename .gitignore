@@ -65,3 +65,5 @@ test-output
 local/
 .claude/
 opencode.json
+apps/frontend-demo/public/data/
+static-data/

@@ -1,7 +1,7 @@
 'use client'
 
 import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
-import { useCategoryTree } from '@/hooks/use-categories'
+import { categoryTree } from '@/lib/static-data/categories'
 import { useDebouncedCallback } from '@/hooks/use-debounce'
 import type { Product } from '@/types/product'
 import { getColorHex } from '@/utils/color-map'
@@ -41,8 +41,6 @@ export function ProductFilters({
     filters.discountRange || [0, 100]
   )
   const filterConfig = activeFilterConfig // Use active configuration
-  const { tree: categoryTree, isLoading: categoriesLoading } = useCategoryTree()
-
   // Sync local state with props
   useEffect(() => {
     setLocalPriceRange(filters.priceRange)
@@ -136,11 +134,7 @@ export function ProductFilters({
                   : undefined
               }
             >
-              {categoriesLoading ? (
-                <div className="text-gray-500 text-sm">
-                  Načítání kategorií...
-                </div>
-              ) : categoryTree.length > 0 ? (
+             {categoryTree.length > 0 && (
                 <>
                   <div className="text-xs text-gray-500 mb-2">
                     Tip: Filtry se aplikují pouze na koncové podkategorie
@@ -200,10 +194,6 @@ export function ProductFilters({
                     className="max-h-96 overflow-auto"
                   />
                 </>
-              ) : (
-                <div className="text-gray-500 text-sm">
-                  Žádné kategorie nejsou k dispozici
-                </div>
               )}
             </FilterSection>
           )
