@@ -2,45 +2,43 @@
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import { useProductListing } from '@/hooks/use-product-listing'
 import { useProducts } from '@/hooks/use-products'
 import { allCategories } from '@/lib/static-data/categories'
 import { findCategoryByHandle } from '@/utils/category-helpers'
-import type { SortOption } from '@/utils/product-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
+import { useState } from 'react'
 
 interface CategoryPageClientProps {
   categoryHandle: string
 }
+
+const SORT_OPTIONS = [
+  { value: 'newest', label: 'Nejnovější' },
+  { value: 'price-asc', label: 'Cena: od nejnižší' },
+  { value: 'price-desc', label: 'Cena: od nejvyšší' },
+  { value: 'name-asc', label: 'Název: A-Z' },
+  { value: 'name-desc', label: 'Název: Z-A' },
+]
 
 export default function CategoryPageClient({
   categoryHandle,
 }: CategoryPageClientProps) {
   // Find category from static data
   const category = findCategoryByHandle(categoryHandle, allCategories)
+  
+  // Local state for sorting
+  const [sortBy, setSortBy] = useState('newest')
+  const [page, setPage] = useState(1)
+  const pageSize = 12
 
-  // Get products filtered by category using server-side filtering
-  const { products: categoryProducts, isLoading: productsLoading } = useProducts({
+  // Get products filtered by category using server-side filtering and sorting
+  const { products, isLoading: productsLoading, totalCount } = useProducts({
     filters: category ? { categories: [category.id] } : undefined,
-    limit: 100, // Adjust as needed
+    sort: sortBy,
+    page,
+    limit: pageSize,
   })
-
-  const {
-    sortBy,
-    setSortBy,
-    filters,
-    setFilters,
-    sortedProducts,
-    productCount,
-    sortOptions,
-  } = useProductListing(categoryProducts)
-
-  // Override filters to exclude category filtering since we're already filtered
-  const adjustedFilters = {
-    ...filters,
-    categories: new Set(),
-  }
 
   if (productsLoading) {
     return (
@@ -102,60 +100,46 @@ export default function CategoryPageClient({
           )}
         </div>
 
-        {/* Mobile Filters */}
-        <ProductFilters
-          className="md:hidden"
-          filters={adjustedFilters}
-          onFiltersChange={setFilters}
-          hideCategories // Hide category filter since we're already in a category
-        />
-
-        {/* Layout */}
-        <div className="gap-product-listing-layout-gap md:flex">
-          {/* Desktop Sidebar Filters */}
-          <aside className="hidden w-product-listing-sidebar-width flex-shrink-0 md:block">
-            <ProductFilters
-              filters={adjustedFilters}
-              onFiltersChange={setFilters}
-              hideCategories // Hide category filter since we're already in a category
-            />
-          </aside>
-
-          {/* Main Content */}
-          <main className="flex-1">
-            {/* Controls */}
-            <div className="mb-product-listing-controls-margin flex flex-col items-start justify-between gap-product-listing-controls-gap sm:flex-row sm:items-center">
-              <p className="text-product-listing-results">
-                Showing {productCount} of {categoryProducts.length} products
-              </p>
-              <div className="flex items-center gap-product-listing-sort-gap">
-                <span className="text-product-listing-sort-label text-sm">
-                  Sort by:
-                </span>
-                <Select
-                  value={[sortBy]}
-                  options={sortOptions}
-                  placeholder="Select sorting"
-                  clearIcon={false}
-                  onValueChange={(details) =>
-                    setSortBy((details.value[0] as SortOption) || 'newest')
-                  }
-                />
-              </div>
+        {/* Main Content */}
+        <main className="w-full">
+          {/* Controls */}
+          <div className="mb-product-listing-controls-margin flex flex-col items-start justify-between gap-product-listing-controls-gap sm:flex-row sm:items-center">
+            <p className="text-product-listing-results">
+              {totalCount || products.length} produktů v kategorii
+            </p>
+            <div className="flex items-center gap-product-listing-sort-gap">
+              <span className="text-product-listing-sort-label text-sm">
+                Řadit podle:
+              </span>
+              <Select
+                value={[sortBy]}
+                options={SORT_OPTIONS}
+                placeholder="Vyberte řazení"
+                clearIcon={false}
+                onValueChange={(details) =>
+                  setSortBy(details.value[0] || 'newest')
+                }
+              />
             </div>
+          </div>
 
-            {/* Product Grid */}
-            {sortedProducts.length > 0 ? (
-              <ProductGrid products={sortedProducts} pageSize={9} />
-            ) : (
-              <div className="py-16 text-center">
-                <p className="text-foreground-muted text-lg">
-                  No products found in this category.
-                </p>
-              </div>
-            )}
-          </main>
-        </div>
+          {/* Product Grid */}
+          {products.length > 0 ? (
+            <ProductGrid 
+              products={products} 
+              totalCount={totalCount}
+              currentPage={page}
+              pageSize={pageSize}
+              onPageChange={setPage}
+            />
+          ) : (
+            <div className="py-16 text-center">
+              <p className="text-foreground-muted text-lg">
+                V této kategorii nejsou žádné produkty.
+              </p>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   )

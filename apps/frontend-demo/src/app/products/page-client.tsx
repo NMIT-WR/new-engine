@@ -4,10 +4,9 @@ import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProducts } from '@/hooks/use-products'
 import { useUrlFilters } from '@/hooks/use-url-filters'
-import { sortProducts } from '@/utils/product-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
-import React,{ Suspense, useMemo } from 'react'
+import React,{ Suspense } from 'react'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
@@ -45,17 +44,14 @@ function ProductsPageContent() {
   const urlFilters = useUrlFilters()
 
   // Convert filter state to ProductFilters format
-  const productFilters = useMemo(
-    () => ({
-      categories: Array.from(urlFilters.filters.categories) as string[],
-      priceRange: urlFilters.filters.priceRange as [number, number],
-      sizes: Array.from(urlFilters.filters.sizes) as string[],
-      colors: Array.from(urlFilters.filters.colors) as string[],
-      onSale: urlFilters.filters.onSale,
-      search: urlFilters.searchQuery || undefined,
-    }),
-    [urlFilters.filters, urlFilters.searchQuery]
-  )
+  const productFilters = {
+    categories: Array.from(urlFilters.filters.categories) as string[],
+    priceRange: urlFilters.filters.priceRange as [number, number],
+    sizes: Array.from(urlFilters.filters.sizes) as string[],
+    colors: Array.from(urlFilters.filters.colors) as string[],
+    onSale: urlFilters.filters.onSale,
+    search: urlFilters.searchQuery || undefined,
+  }
 
   // Use the v2 products hook with server-side pagination and filtering
   const {
@@ -73,14 +69,8 @@ function ProductsPageContent() {
     sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
   })
 
-  // Apply client-side sorting for display
-  const sortedProducts = useMemo(() => {
-    const sortBy =
-      urlFilters.sortBy === 'relevance'
-        ? 'newest'
-        : urlFilters.sortBy || 'newest'
-    return sortProducts(products, sortBy as any)
-  }, [products, urlFilters.sortBy])
+  // Products are already sorted by the backend
+  const sortedProducts = products
 
   return (
     <div className="container mx-auto px-4 py-8">

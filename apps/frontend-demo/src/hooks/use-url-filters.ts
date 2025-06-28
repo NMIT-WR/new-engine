@@ -1,6 +1,14 @@
 'use client'
 
-import { DEFAULT_FILTER_STATE } from '@/hooks/use-product-listing'
+// Default filter state
+const DEFAULT_FILTER_STATE = {
+  priceRange: [0, 200] as [number, number],
+  categories: new Set<string>(),
+  sizes: new Set<string>(),
+  colors: new Set<string>(),
+  onSale: false,
+  discountRange: [0, 100] as [number, number],
+}
 import type { FilterState, SortOption } from '@/utils/product-filters'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
