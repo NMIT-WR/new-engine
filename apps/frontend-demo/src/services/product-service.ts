@@ -31,11 +31,11 @@ export interface HomePageProducts {
 }
 
 export class ProductService {
-  // HARD LIMIT PRO DEMO - maximálně 100 produktů
+  // HARD LIMIT PRO DEMO 
   static readonly MAX_DEMO_PRODUCTS = 100
   static productsLoaded = 0
 
-  // Reset počítadla (užitečné pro development)
+  // Reset counter (for development)
   static resetDemoLimit() {
     this.productsLoaded = 0
     console.log('[ProductService] Demo limit counter reset')
@@ -75,13 +75,12 @@ export class ProductService {
   ): Promise<ProductListResponse> {
     const { limit = 20, offset = 0, filters, sort } = params
 
-    // DEMO LIMIT - pokud už máme 100 produktů, vrať prázdný výsledek
+    // DEMO LIMIT
     if (this.productsLoaded >= this.MAX_DEMO_PRODUCTS) {
       console.log('[ProductService] Demo limit reached, returning empty result')
       return { products: [], count: this.MAX_DEMO_PRODUCTS, limit, offset }
     }
 
-    // Upravíme limit aby nepřekročil MAX_DEMO_PRODUCTS
     const adjustedLimit = Math.min(
       limit,
       this.MAX_DEMO_PRODUCTS - this.productsLoaded
@@ -141,7 +140,7 @@ export class ProductService {
         return { products: [], count: 0, limit, offset }
       }
 
-      // DEMO LIMIT - vezmi pouze tolik produktů, kolik můžeme
+ 
       const productsToTake = Math.min(
         response.products.length,
         this.MAX_DEMO_PRODUCTS - this.productsLoaded
@@ -150,7 +149,6 @@ export class ProductService {
       const limitedProducts = response.products.slice(0, productsToTake)
       const products = limitedProducts.map((p) => this.transformProduct(p))
 
-      // Aktualizuj počítadlo
       this.productsLoaded += products.length
 
       console.log(
@@ -242,7 +240,7 @@ export class ProductService {
       throw new Error('Cannot transform null product')
     }
 
-    // Fix image URLs if they're using internal MinIO URLs
+    // Fix image URLs if they're using internal MinIO URLsd
     const fixImageUrl = (url?: string) => {
       if (!url) return url
       return url.replace(
