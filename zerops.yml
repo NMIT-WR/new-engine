@@ -10,6 +10,10 @@ zerops:
         - |
           shopt -s extglob
           rm -rf apps/!(medusa-be)
+        - rm -rf apps/medusa-be/node_modules
+        - rm -rf node_modules
+        - pnpm i
+        - rm -rf node_modules
         - pnpm i
         - node_modules/.bin/nx run medusa-be:build --skip-nx-cache --verbose
         - rm -rf apps/medusa-be/node_modules
@@ -19,6 +23,8 @@ zerops:
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
         - apps/medusa-be/src/scripts/seed-files
+        - apps/medusa-be/src/scripts
+        - apps/medusa-be/tsconfig.json
       cache:
         - node_modules
     deploy:
@@ -32,7 +38,9 @@ zerops:
         DATABASE_TYPE: postgres
         NODE_ENV: production
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        STORE_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},http://localhost:5173,http://localhost:3000
+        STORE_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+        ADMIN_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+        AUTH_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
         DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?ssl_mode=disable
         MINIO_BUCKET: ${storage_bucketName}
         MINIO_ENDPOINT: ${storage_apiUrl}
@@ -41,6 +49,7 @@ zerops:
         REDIS_URL: redis://${redis_hostname}:6379
         CACHE_REDIS_URL: redis://${redis_hostname}:6379
         EVENTS_REDIS_URL: redis://${redis_hostname}:6379
+        WE_REDIS_URL: redis://${redis_hostname}:6379
         MEILISEARCH_HOST: http://${search_hostname}:${search_port}
         MEILISEARCH_API_KEY: ${search_masterKey}
       initCommands:
@@ -49,9 +58,9 @@ zerops:
         - zsc execOnce ${appVersionId}_links -- npm run syncLinks
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
-        - zsc execOnce seedInitialData -- npm run seedInitialData
+        # - zsc execOnce seedInitialData -- npm run seedInitialData
         - zsc execOnce setInitialPublishableKey -- npm run setInitialPublishableKey
-        - zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
+        #- zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
       ports:
         - port: 9000
           httpSupport: true
