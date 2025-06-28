@@ -33,7 +33,7 @@ export function useRegions() {
     if (regions.length > 0 && !selectedRegionId) {
       // Default to USD region if no stored preference
       const defaultRegion =
-        regions.find((r) => r.currency_code === 'usd') ||
+        regions.find((r) => r.currency_code === 'czk') ||
         regions.find((r) => r.currency_code === 'eur') ||
         regions[0]
 
