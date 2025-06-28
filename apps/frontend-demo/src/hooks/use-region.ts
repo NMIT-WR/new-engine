@@ -40,7 +40,7 @@ export function useRegions() {
       if (defaultRegion) {
         setSelectedRegionId(defaultRegion.id)
         // Invalidate queries that depend on region
-        queryClient.invalidateQueries({ queryKey: queryKeys.products() })
+        queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
         queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
       }
     }
@@ -52,7 +52,7 @@ export function useRegions() {
     if (region?.id) {
       setSelectedRegionId(region.id)
       // Invalidate queries that depend on region
-      queryClient.invalidateQueries({ queryKey: queryKeys.products() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
       queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
     }
   }

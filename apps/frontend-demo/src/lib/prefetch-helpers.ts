@@ -1,6 +1,7 @@
 import { dehydrate } from '@tanstack/react-query'
 import { ProductService } from '@/services/product-service'
 import { getQueryClient } from './query-client'
+import { queryKeys } from './query-keys'
 
 export async function prefetchProducts(page: number = 1, limit: number = 12) {
   const queryClient = getQueryClient()
@@ -8,7 +9,7 @@ export async function prefetchProducts(page: number = 1, limit: number = 12) {
   
   // Prefetch products data
   await queryClient.prefetchQuery({
-    queryKey: ['products', 'list', { page, limit, filters: undefined, sort: undefined }],
+    queryKey: queryKeys.products.list({ page, limit }),
     queryFn: () => ProductService.getProducts({ limit, offset }),
   })
   
@@ -30,7 +31,7 @@ export async function prefetchProductsWithFilters({
   const offset = (page - 1) * limit
   
   await queryClient.prefetchQuery({
-    queryKey: ['products', 'list', { page, limit, filters, sort }],
+    queryKey: queryKeys.products.list({ page, limit, filters, sort }),
     queryFn: () => ProductService.getProducts({ limit, offset, filters, sort }),
   })
   

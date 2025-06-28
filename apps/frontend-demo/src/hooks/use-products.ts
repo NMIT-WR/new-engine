@@ -31,11 +31,8 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
   const { page = 1, limit = 20, filters, sort } = params
   const offset = (page - 1) * limit
 
-  // Create a stable query key
-  const queryKey = ['products', 'list', { page, limit, filters, sort }] as const
-
   const { data, isLoading, error } = useQuery({
-    queryKey,
+    queryKey: queryKeys.products.list({ page, limit, filters, sort }),
     queryFn: () => ProductService.getProducts({ limit, offset, filters, sort }),
     ...cacheConfig.semiStatic,
   })
