@@ -31,7 +31,7 @@ export interface HomePageProducts {
 }
 
 export class ProductService {
-  // HARD LIMIT PRO DEMO 
+  // HARD LIMIT PRO DEMO
   static readonly MAX_DEMO_PRODUCTS = 100
   static productsLoaded = 0
 
@@ -140,7 +140,6 @@ export class ProductService {
         return { products: [], count: 0, limit, offset }
       }
 
- 
       const productsToTake = Math.min(
         response.products.length,
         this.MAX_DEMO_PRODUCTS - this.productsLoaded
@@ -231,22 +230,12 @@ export class ProductService {
     }
   }
 
-
   /**
    * Transform raw product data from API
    */
   static transformProduct(product: any): Product {
     if (!product) {
       throw new Error('Cannot transform null product')
-    }
-
-    // Fix image URLs if they're using internal MinIO URLsd
-    const fixImageUrl = (url?: string) => {
-      if (!url) return url
-      return url.replace(
-        'http://minio:9000/medusa-media',
-        'https://medusa-13d1-9000.prg1.zerops.app/uploads'
-      )
     }
 
     // Get primary variant (first one)
@@ -261,11 +250,11 @@ export class ProductService {
 
     return {
       ...product,
-      thumbnail: fixImageUrl(product.thumbnail),
+      thumbnail: product.thumbnail,
       images:
         product.images?.map((img: any) => ({
           ...img,
-          url: fixImageUrl(img.url),
+          url: img.url,
         })) || [],
       // Add computed properties
       inStock,

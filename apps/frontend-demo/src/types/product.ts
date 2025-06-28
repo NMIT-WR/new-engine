@@ -4,7 +4,6 @@ export interface Product {
   title: string
   handle: string
   description?: string
-  longDescription?: string
   thumbnail?: string
   images?: ProductImage[]
   status: 'draft' | 'published' | 'proposed'
@@ -12,15 +11,14 @@ export interface Product {
   categories?: ProductCategory[]
   variants?: ProductVariant[]
   options?: ProductOption[]
-  specifications?: ProductSpecification[]
-  reviews?: ProductReview[]
   rating?: number
-  reviewCount?: number
-  features?: string[]
   tags?: Array<{ id: string; value: string }>
   metadata?: Record<string, unknown>
   created_at?: string
   updated_at?: string
+  reviewCount?: number
+  features?: string[]
+  specifications?: {name: string, value: string}[]
 }
 
 export interface ProductImage {
@@ -81,34 +79,13 @@ export interface ProductOption {
   values: string[]
 }
 
-// Additional types for categories
+// Main Category type used in components
 export interface Category {
   id: string
   name: string
   handle: string
-  imageUrl?: string
   count?: number
+  imageUrl?: string
+  description?: string
   parent_category_id?: string
-}
-
-// Type for badge used in UI
-export interface ProductBadge {
-  variant: 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
-  children: string
-}
-
-// Additional product details types
-export interface ProductSpecification {
-  name: string
-  value: string
-}
-
-export interface ProductReview {
-  id: string
-  rating: number
-  title: string
-  comment: string
-  author: string
-  date: string
-  verified?: boolean
 }
