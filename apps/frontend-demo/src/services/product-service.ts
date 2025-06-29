@@ -1,4 +1,4 @@
-import { httpClient } from '@/lib/http-client'
+import { sdk } from '@/lib/medusa-client'
 import type { Product } from '@/types/product'
 
 export interface ProductFilters {
@@ -130,10 +130,7 @@ export class ProductService {
     }
 
     try {
-      const response = await httpClient.get<{ products: any[]; count: number }>(
-        '/store/products',
-        { params: queryParams }
-      )
+      const response = await sdk.store.product.list(queryParams)
 
       if (!response.products) {
         console.error('[ProductService] Invalid response structure:', response)
@@ -177,15 +174,11 @@ export class ProductService {
    * Fetch a single product by handle
    */
   static async getProduct(handle: string): Promise<Product> {
-    const response = await httpClient.get<{ products: any[] }>(
-      '/store/products',
-      {
-        params: {
-          handle,
-          fields: this.DEFAULT_FIELDS,
-        },
-      }
-    )
+    const response = await sdk.store.product.list({
+      handle,
+      fields: this.DEFAULT_FIELDS,
+      limit: 1,
+    })
 
     if (!response.products?.length) {
       throw new Error('Product not found')

@@ -4,7 +4,16 @@ const nextConfig = {
   transpilePackages: ['ui'],
   // Removed 'output: export' to enable SSG with dynamic functions
   images: {
-    domains: ['medusa-13d1-9000.prg1.zerops.app'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'medusa-13d1-9000.prg1.zerops.app'
+      },
+      {
+        protocol: 'https',
+        hostname: 'pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev'
+      }
+    ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/webp'],

@@ -1,6 +1,5 @@
 import Medusa from '@medusajs/js-sdk'
 import { STORAGE_KEYS } from './constants'
-import { httpClient } from './http-client'
 
 // Environment validation
 const BACKEND_URL =
@@ -22,6 +21,8 @@ export const sdk =
           jwtTokenStorageKey: STORAGE_KEYS.AUTH_TOKEN,
           jwtTokenStorageMethod: 'local',
         },
+        // Add debug logging
+        debug: process.env.NODE_ENV === 'development',
       })
     : new Medusa({
         baseUrl: BACKEND_URL,
@@ -29,27 +30,18 @@ export const sdk =
         // No auth for server-side/static generation
       })
 
+// Initialize token from localStorage if available
+if (typeof window !== 'undefined') {
+  const existingToken = window.localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
+  if (existingToken && sdk.client && sdk.client.setToken) {
+    sdk.client.setToken(existingToken)
+  }
+}
+
 // Export a simple client config for direct fetch calls
 export const medusaClient = {
   config: {
     baseUrl: BACKEND_URL,
     publishableKey: PUBLISHABLE_KEY,
   },
-}
-
-// Helper functions
-export async function checkBackendHealth(): Promise<{
-  healthy: boolean
-  error?: string
-  details?: unknown
-}> {
-  try {
-    const data = await httpClient.get('/health')
-    return { healthy: true, details: data }
-  } catch (error) {
-    return {
-      healthy: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }
-  }
 }
