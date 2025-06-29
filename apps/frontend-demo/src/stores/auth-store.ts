@@ -1,13 +1,7 @@
 import type { ValidationError } from '@/lib/auth/validation'
-import { STORAGE_KEYS } from '@/lib/constants'
-import { httpClient } from '@/lib/http-client'
-import { storage } from '@/lib/local-storage'
 import { sdk } from '@/lib/medusa-client'
 import type { HttpTypes } from '@medusajs/types'
 import { Store } from '@tanstack/react-store'
-
-// In-memory token cache for better security
-let tokenCache: string | null = null
 
 export interface AuthState {
   // Auth state
@@ -20,62 +14,6 @@ export interface AuthState {
   validationErrors: ValidationError[]
 }
 
-// Helper to check if JWT token is expired
-const isTokenExpired = (token: string): boolean => {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.exp * 1000 < Date.now()
-  } catch {
-    return true
-  }
-}
-
-// Helper to process auth response from SDK
-const processAuthResponse = (response: any): string => {
-  if (typeof response === 'string') return response
-  if (response?.token) return response.token
-  throw new Error('Invalid auth response')
-}
-
-// Helper function to load auth from localStorage
-function loadAuthFromStorage(): Partial<AuthState> {
-  if (typeof window === 'undefined') {
-    return {
-      user: null,
-      isLoading: false,
-      error: null,
-      isInitialized: false,
-      validationErrors: [],
-    }
-  }
-
-  try {
-    const token = storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
-
-    if (token && !isTokenExpired(token)) {
-      tokenCache = token
-      return {
-        isLoading: false,
-        error: null,
-        isInitialized: false,
-        validationErrors: [],
-      }
-    } else if (token) {
-      // Token expired, remove it
-      storage.remove(STORAGE_KEYS.AUTH_TOKEN)
-    }
-  } catch (error) {
-    // Silent fail - no console.log in production
-  }
-  return {
-    user: null,
-    isLoading: false,
-    error: null,
-    isInitialized: false,
-    validationErrors: [],
-  }
-}
-
 // Create the auth store
 export const authStore = new Store<AuthState>({
   user: null,
@@ -84,12 +22,6 @@ export const authStore = new Store<AuthState>({
   isInitialized: false,
   validationErrors: [],
 })
-
-// Initialize auth from localStorage on client side
-if (typeof window !== 'undefined') {
-  const initialState = loadAuthFromStorage()
-  authStore.setState((state) => ({ ...state, ...initialState }))
-}
 
 // Helper functions
 export const authHelpers = {
@@ -102,45 +34,19 @@ export const authHelpers = {
         error: null,
       }))
 
-      // Try memory cache first, then localStorage
-      const token = tokenCache || storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
-
-      if (!token || isTokenExpired(token)) {
-        if (token) {
-          tokenCache = null
-          storage.remove(STORAGE_KEYS.AUTH_TOKEN)
-        }
-        authStore.setState((state) => ({
-          ...state,
-          user: null,
-          isLoading: false,
-          isInitialized: true,
-        }))
-        return null
-      }
-
-      // Cache token in memory if not already cached
-      if (!tokenCache && token) {
-        tokenCache = token
-      }
-
-      // Use httpClient instead of direct fetch
+      // SDK manages the token automatically
+      // Just try to fetch the customer
       try {
-        const data = await httpClient.get<{
-          customer: HttpTypes.StoreCustomer
-        }>('/store/customers/me')
+        const { customer } = await sdk.store.customer.retrieve()
         authStore.setState((state) => ({
           ...state,
-          user: data.customer,
+          user: customer,
           isLoading: false,
           isInitialized: true,
         }))
-        return data.customer
+        return customer
       } catch (error: any) {
-        if (error.status === 401) {
-          tokenCache = null
-          storage.remove(STORAGE_KEYS.AUTH_TOKEN)
-        }
+        // If 401, user is not authenticated
         authStore.setState((state) => ({
           ...state,
           user: null,
@@ -175,73 +81,48 @@ export const authHelpers = {
         validationErrors: [],
       }))
 
-      // Step 1: Authenticate
-      const authResponse = await sdk.auth.login('customer', 'emailpass', {
+      // Step 1: Login using SDK auth
+      const result = await sdk.auth.login('customer', 'emailpass', {
         email,
         password,
       })
 
-      // Process response with helper
-      const token = processAuthResponse(authResponse)
+      // Check if authentication requires more actions (e.g., third-party redirect)
+      if (typeof result !== 'string') {
+        throw new Error('Authentication requires additional steps')
+      }
 
-      // Step 2: Store token in memory and localStorage
-      tokenCache = token
-      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
+      // SDK automatically stores and manages the token
+      // All subsequent requests will be authenticated
 
-      // Step 3: Fetch customer profile using httpClient
+      // Step 2: Fetch customer profile
       try {
-        const data = await httpClient.get<{
-          customer: HttpTypes.StoreCustomer
-        }>('/store/customers/me')
+        const { customer } = await sdk.store.customer.retrieve()
         authStore.setState((state) => ({
           ...state,
-          user: data.customer,
+          user: customer,
           isLoading: false,
         }))
       } catch (error: any) {
-        // If customer doesn't exist or unauthorized, try to create one
-        if (error.status === 404 || error.status === 401) {
-          try {
-            const createData = await httpClient.post<{
-              customer: HttpTypes.StoreCustomer
-            }>('/store/customers', {
-              email,
-              first_name: firstName,
-              last_name: lastName,
-            })
-            authStore.setState((state) => ({
-              ...state,
-              user: createData.customer,
-              isLoading: false,
-            }))
-          } catch (createError: any) {
-            // If customer already exists, try fetching again
-            if (
-              createError.message?.includes('already authenticated') ||
-              createError.message?.includes('already exists')
-            ) {
-              try {
-                const retryData = await httpClient.get<{
-                  customer: HttpTypes.StoreCustomer
-                }>('/store/customers/me')
-                authStore.setState((state) => ({
-                  ...state,
-                  user: retryData.customer,
-                  isLoading: false,
-                }))
-              } catch (retryError) {
-                // Silent fail
-              }
-            }
-          }
+        // If customer doesn't exist, create one
+        if (error.status === 404) {
+          const { customer } = await sdk.store.customer.create({
+            email,
+            first_name: firstName,
+            last_name: lastName,
+          })
+          authStore.setState((state) => ({
+            ...state,
+            user: customer,
+            isLoading: false,
+          }))
+        } else {
+          throw error
         }
       }
 
-      // Step 4: Clear anonymous cart ID (cart will be merged automatically)
-      const anonymousCartId = storage.get<string>(STORAGE_KEYS.CART_ID)
-      if (anonymousCartId) {
-        storage.remove(STORAGE_KEYS.CART_ID)
-      }
+      // Step 3: Clear anonymous cart ID
+      // Cart will be merged automatically by Medusa
     } catch (err: any) {
       const message = err?.message || 'Login failed'
       authStore.setState((state) => ({
@@ -266,58 +147,28 @@ export const authHelpers = {
         validationErrors: [],
       }))
 
-      // Step 1: Register auth user
+      // Step 1: Register auth identity
       await sdk.auth.register('customer', 'emailpass', {
         email,
         password,
       })
 
-      // Step 2: Login immediately to get auth token
-      const authResponse = await sdk.auth.login('customer', 'emailpass', {
+      // SDK automatically stores and manages the token
+      // All subsequent requests will be authenticated
+
+      // Step 2: Create customer profile
+      const { customer } = await sdk.store.customer.create({
         email,
-        password,
+        first_name: firstName,
+        last_name: lastName,
       })
-
-      // Process response with helper
-      const token = processAuthResponse(authResponse)
-
-      // Store in memory and localStorage
-      tokenCache = token
-      storage.set(STORAGE_KEYS.AUTH_TOKEN, token)
-
-      // Step 3: Create customer profile using httpClient
-      try {
-        await httpClient.post('/store/customers', {
-          email,
-          first_name: firstName,
-          last_name: lastName,
-        })
-      } catch (error: any) {
-        // Silent fail - customer might already exist
-      }
-
-      // Step 4: Re-login to get token with actor_id
-      const finalAuthResponse = await sdk.auth.login('customer', 'emailpass', {
-        email,
-        password,
-      })
-
-      // Update token with the new one that has actor_id
-      const finalToken = processAuthResponse(finalAuthResponse)
-      tokenCache = finalToken
-      storage.set(STORAGE_KEYS.AUTH_TOKEN, finalToken)
-
-      // Step 5: Fetch customer profile using httpClient
-      const data = await httpClient.get<{ customer: HttpTypes.StoreCustomer }>(
-        '/store/customers/me'
-      )
       authStore.setState((state) => ({
         ...state,
-        user: data.customer,
+        user: customer,
         isLoading: false,
         isInitialized: true,
       }))
-      return data.customer
+      return customer
     } catch (err: any) {
       const message = err?.message || 'Registration failed'
       authStore.setState((state) => ({
@@ -332,8 +183,6 @@ export const authHelpers = {
   logout: async () => {
     try {
       await sdk.auth.logout()
-      tokenCache = null
-      storage.remove(STORAGE_KEYS.AUTH_TOKEN)
       authStore.setState(() => ({
         user: null,
         isLoading: false,
@@ -351,18 +200,23 @@ export const authHelpers = {
     try {
       authStore.setState((state) => ({ ...state, error: null }))
 
-      const token = tokenCache || storage.get<string>(STORAGE_KEYS.AUTH_TOKEN)
+      // SDK manages authentication, just make the request
 
-      if (!token || isTokenExpired(token)) {
-        throw new Error('User not authenticated')
-      }
+      // SDK's update method expects a different type, filter out null values
+      const updateData = Object.entries(data).reduce(
+        (acc, [key, value]) => {
+          if (value !== null && value !== undefined) {
+            acc[key as keyof typeof acc] = value
+          }
+          return acc
+        },
+        {} as Record<string, any>
+      )
 
-      const result = await httpClient.post<{
-        customer: HttpTypes.StoreCustomer
-      }>('/store/customers/me', data)
+      const { customer } = await sdk.store.customer.update(updateData)
       authStore.setState((state) => ({
         ...state,
-        user: result.customer,
+        user: customer,
       }))
     } catch (err: any) {
       const message = err?.message || 'Profile update failed'
