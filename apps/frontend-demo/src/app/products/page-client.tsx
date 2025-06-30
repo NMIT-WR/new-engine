@@ -6,7 +6,10 @@ import { useProducts } from '@/hooks/use-products'
 import { useUrlFilters } from '@/hooks/use-url-filters'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
-import React,{ Suspense } from 'react'
+import React,{ Suspense, useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/lib/query-keys'
+import { ProductService } from '@/services/product-service'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
@@ -39,6 +42,7 @@ function ProductGridSkeleton() {
 
 function ProductsPageContent() {
   const pageSize = 12
+  const queryClient = useQueryClient()
 
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
@@ -71,6 +75,29 @@ function ProductsPageContent() {
 
   // Products are already sorted by the backend
   const sortedProducts = products
+
+  // Prefetch next page when we have products
+  useEffect(() => {
+    if (hasNextPage && products.length > 0) {
+      const nextPage = currentPage + 1
+      const offset = (nextPage - 1) * pageSize
+      
+      queryClient.prefetchQuery({
+        queryKey: queryKeys.products.list({ 
+          page: nextPage, 
+          limit: pageSize, 
+          filters: productFilters, 
+          sort: urlFilters.sortBy 
+        }),
+        queryFn: () => ProductService.getProducts({ 
+          limit: pageSize, 
+          offset, 
+          filters: productFilters, 
+          sort: urlFilters.sortBy 
+        }),
+      })
+    }
+  }, [currentPage, hasNextPage, products.length, queryClient, pageSize, productFilters, urlFilters.sortBy])
 
   return (
     <div className="container mx-auto px-4 py-8">

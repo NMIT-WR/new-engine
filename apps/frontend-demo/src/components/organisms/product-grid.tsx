@@ -6,7 +6,10 @@ import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
 import { Pagination } from '@ui/molecules/pagination'
 import { DemoProductCard } from '@/components/molecules/demo-product-card'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/lib/query-keys'
+import { ProductService } from '@/services'
 
 interface ProductGridProps {
   products: Product[]
@@ -24,7 +27,15 @@ export function ProductGrid({
   onPageChange 
 }: ProductGridProps) {
   const { region } = useCurrentRegion()
-  const navigate = useRouter()
+  const queryClient = useQueryClient()
+
+  const prefetchProduct = (handle: string) => {
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.product(handle),
+      queryFn: () => ProductService.getProduct(handle),
+      staleTime: 60 * 60 * 1000,
+    })
+  }
 
   // Calculate total pages based on totalCount or products length
   const totalPages = Math.ceil((totalCount || products.length) / pageSize)
@@ -55,17 +66,16 @@ export function ProductGrid({
                 : 'Cena není k dispozici'
 
           return (
+            <Link key={product.id} prefetch={true} href={`/products/${product.handle}`} onMouseEnter={() => prefetchProduct(product.handle)}
+            onTouchStart={() => prefetchProduct(product.handle)}>
             <DemoProductCard
-              key={product.id}
+            
               name={product.title}
               price={formattedPrice}
               imageUrl={product.thumbnail || ''}
               badges={displayBadges}
-             // stockStatus="" // Empty since we show stock in badges
-              hasDetailButton
-              onDetailClick={() => navigate.push(`/products/${product.handle}`)}
-              detailButtonText="Zobrazit detaily"
-            />
+              className='hover:bg-highlight'
+            /></Link>
           )
         })}
       </div>

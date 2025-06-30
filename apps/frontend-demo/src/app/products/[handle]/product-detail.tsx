@@ -127,8 +127,8 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         <div className="mb-product-detail-breadcrumb-margin">
           <Breadcrumb
             items={[
-              { label: 'Home', href: '/' },
-              { label: 'Products', href: '/products' },
+              { label: 'Domů', href: '/' },
+              { label: 'Produkty', href: '/products' },
               { label: product.title, href: `/products/${product.handle}` },
             ]}
           />
