@@ -31,7 +31,22 @@ export interface HomePageProducts {
 }
 
 export class ProductService {
-  static readonly DEFAULT_FIELDS = [
+  // Fields for product list views (minimal data)
+  static readonly LIST_FIELDS = [
+    'id',
+    'title',
+    'handle',
+    'thumbnail',
+    'variants.id',
+    'variants.prices.amount',
+    'variants.prices.currency_code',
+    '+variants.inventory_quantity',
+    'variants.manage_inventory',
+    'tags',
+  ].join(',')
+
+  // Fields for product detail views (all data)
+  static readonly DETAIL_FIELDS = [
     'id',
     'title',
     'handle',
@@ -59,6 +74,9 @@ export class ProductService {
     'variants.options',
   ].join(',')
 
+  // Keep DEFAULT_FIELDS for backward compatibility
+  static readonly DEFAULT_FIELDS = this.DETAIL_FIELDS
+
   /**
    * Fetch products with filtering, pagination and sorting
    */
@@ -70,7 +88,7 @@ export class ProductService {
     const queryParams: Record<string, any> = {
       limit,
       offset,
-      fields: this.DEFAULT_FIELDS,
+      fields: this.LIST_FIELDS, // Use optimized fields for list views
     }
 
     // Apply filters
@@ -138,7 +156,7 @@ export class ProductService {
   static async getProduct(handle: string): Promise<Product> {
     const response = await sdk.store.product.list({
       handle,
-      fields: this.DEFAULT_FIELDS,
+      fields: this.DETAIL_FIELDS, // Use full fields for detail views
       limit: 1,
     })
 

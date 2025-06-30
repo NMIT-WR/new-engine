@@ -24,6 +24,7 @@ function Submenu({ items }: { items: NavItem[] }) {
           className="block px-navigation-item-x py-navigation-item-y text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
           target={child.external ? '_blank' : undefined}
           rel={child.external ? 'noopener noreferrer' : undefined}
+          prefetch={!child.external}
         >
           {child.icon && (
             <Icon
@@ -80,6 +81,7 @@ function NavigationItem({ item }: { item: NavItem }) {
         className="flex items-center gap-navigation-link-icon-gap rounded-navigation-item px-navigation-item-x py-navigation-item-y font-navigation-item text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
         target={item.external ? '_blank' : undefined}
         rel={item.external ? 'noopener noreferrer' : undefined}
+        prefetch={!item.external}
       >
         {item.icon && <Icon icon={item.icon} size="sm" />}
         {item.title}
