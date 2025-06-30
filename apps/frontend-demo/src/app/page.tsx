@@ -74,12 +74,7 @@ export default function Home() {
         linkHref={newArrivals.linkHref}
       />
 
-      {/* All Products Section 
-      <AllProductsSection
-        title="Explore Our Collection"
-        subtitle="Discover our complete range of products"
-        limit={20}
-      />*/}
+
     </div>
   )
 }

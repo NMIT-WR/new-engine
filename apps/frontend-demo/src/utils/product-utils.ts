@@ -1,7 +1,7 @@
 import { type StockStatus, getProductInventory } from '@/lib/inventory'
 import type { Product } from '@/types/product'
-import type { StoreRegion } from '@medusajs/types'
 import type { BadgeProps } from '@ui/atoms/badge'
+import type { StoreRegion } from '@medusajs/types'
 
 /**
  * Convert stock status to display text
@@ -17,30 +17,17 @@ export function getStockStatusText(status: StockStatus): string {
   }
 }
 
-/**
- * Ensure badges array has at least one item (for layout consistency)
- */
-export function ensureBadgesPlaceholder(badges: BadgeProps[]): BadgeProps[] {
-  return badges.length > 0
-    ? badges
-    : [
-        {
-          children: '\u00A0',
-          className: 'invisible',
-        },
-      ]
-}
+
 
 /**
  * Extract all common product display data
  */
-export interface ProductDisplayData {
+interface ProductDisplayData {
   price: any // Price object from variant
   badges: BadgeProps[]
   displayBadges: BadgeProps[]
-  stockStatus: StockStatus
-  stockText: string
-  stockQuantity: number
+  stockText?: string
+  stockStatus?: StockStatus
 }
 
 export function extractProductData(
@@ -97,24 +84,38 @@ export function extractProductData(
     }
   }
 
-  const inventory = getProductInventory(product, region)
-
-  // Stock status badge - always show stock status
-  if (inventory.status === 'out-of-stock') {
-    badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
-  } else if (inventory.status === 'low-stock') {
-    badges.push({ variant: 'warning' as const, children: 'Malé množství' })
-  } else {
-    badges.push({ variant: 'success' as const, children: 'Skladem' })
+  // Add stock badge for products with inventory data
+  let stockStatus: StockStatus | undefined
+  let stockText: string | undefined
+  
+  // Check if any variant has inventory_quantity
+  const hasInventoryData = product.variants?.some(v => 
+    v.manage_inventory && 'inventory_quantity' in v
+  )
+  
+  if (hasInventoryData) {
+    // Check if at least one variant is in stock
+    const hasStock = product.variants?.some(v => {
+      if (!v.manage_inventory) return true
+      if ('inventory_quantity' in v && typeof v.inventory_quantity === 'number') {
+        return v.inventory_quantity > 0
+      }
+      return v.allow_backorder
+    })
+    
+    if (hasStock) {
+      badges.push({ variant: 'success' as const, children: 'Skladem' })
+      stockStatus = 'in-stock'
+      stockText = 'Skladem'
+    }
   }
 
   return {
     price,
     badges,
-    displayBadges: badges, // Don't use placeholder since we always have stock badge
-    stockStatus: inventory.status,
-    stockText: inventory.message,
-    stockQuantity: inventory.quantity,
+    displayBadges: badges,
+    stockStatus,
+    stockText,
   }
 }
 

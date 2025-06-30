@@ -56,11 +56,11 @@ export function CartPreview() {
           const price = item.unit_price || 0
           const imageUrl = item.thumbnail || '/placeholder.png'
           const inventory = item.variant
-            ? getVariantInventory(item.variant, region)
+            ? getVariantInventory(item.variant)
             : null
           const hasStockIssue =
             inventory &&
-            !isQuantityAvailable(item.variant, item.quantity, region)
+            !isQuantityAvailable(item.variant, item.quantity)
 
           return (
             <div

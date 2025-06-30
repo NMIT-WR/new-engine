@@ -19,6 +19,10 @@ export interface Product {
   reviewCount?: number
   features?: string[]
   specifications?: {name: string, value: string}[]
+  // Computed properties from transformProduct
+  inStock?: boolean
+  price?: any
+  primaryVariant?: ProductVariant
 }
 
 export interface ProductImage {
@@ -57,7 +61,9 @@ export interface ProductVariant {
   barcode?: string
   ean?: string
   upc?: string
-  inventory_quantity?: number
+  manage_inventory?: boolean
+  allow_backorder?: boolean
+  inventory_quantity?: number // deprecated, keeping for backward compatibility
   prices?: ProductPrice[]
   options?: Record<string, string>
   metadata?: Record<string, unknown>

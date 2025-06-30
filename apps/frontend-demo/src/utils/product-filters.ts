@@ -319,13 +319,7 @@ export function applyFilters(
 
   // Apply additional filters
   if (filters.inStock) {
-    filtered = filtered.filter((product) =>
-      product.variants?.some(
-        (variant) =>
-          variant.inventory_quantity !== undefined &&
-          variant.inventory_quantity > 0
-      )
-    )
+    filtered = filtered.filter((product) => product.inStock === true)
   }
 
   // Sort products

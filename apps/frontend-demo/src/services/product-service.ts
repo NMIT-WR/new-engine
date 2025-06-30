@@ -60,6 +60,8 @@ export class ProductService {
     'variants.id',
     'variants.title',
     'variants.sku',
+    'variants.manage_inventory',
+    'variants.allow_backorder',
     '+variants.inventory_quantity',
     'variants.prices.amount',
     'variants.prices.currency_code',
@@ -237,9 +239,9 @@ export class ProductService {
     // Get price from primary variant
     const price = primaryVariant?.prices?.[0]
 
-    // Check stock status
-    const inStock =
-      product.variants?.some((v: any) => v.inventory_quantity > 0) ?? false
+    // Since Store API doesn't provide real inventory data, we can't determine stock status
+    // We'll default to true and let the detailed product page handle variant-specific availability
+    const inStock = true
 
     return {
       ...product,

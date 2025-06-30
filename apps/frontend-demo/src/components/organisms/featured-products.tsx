@@ -41,7 +41,7 @@ export function FeaturedProducts({
                 imageUrl={product.thumbnail || ''}
                 name={product.title}
                 price={price?.calculated_price || ''}
-                stockStatus={stockText}
+                stockStatus=""
                 badges={displayBadges}
                 hasCartButton={false}
                 hasDetailButton={true}

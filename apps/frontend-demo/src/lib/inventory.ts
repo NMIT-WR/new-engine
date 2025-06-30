@@ -15,7 +15,6 @@ export interface InventoryInfo {
  */
 export function getVariantInventory(
   variant: ProductVariant | StoreProductVariant | undefined | null,
-  region?: StoreRegion | null
 ): InventoryInfo {
   if (!variant) {
     return {
@@ -25,29 +24,56 @@ export function getVariantInventory(
     }
   }
 
-  // TODO: Add region-specific inventory when backend supports it
-  // For now, use the global inventory_quantity
-  const quantity = variant.inventory_quantity || 0
-
-  if (quantity <= 0) {
+  // Check manage_inventory flag
+  // If inventory is not managed, always return in stock
+  if (!variant.manage_inventory) {
     return {
-      status: 'out-of-stock',
-      quantity: 0,
-      message: 'Vyprodáno',
+      status: 'in-stock',
+      quantity: 999, // Unlimited stock
+      message: 'Skladem',
     }
   }
 
-  if (quantity <= 5) {
-    return {
-      status: 'low-stock',
-      quantity,
-      message: `Zbývá pouze ${quantity} kusů`,
+  // Check if we have actual inventory_quantity from API
+  if ('inventory_quantity' in variant && typeof variant.inventory_quantity === 'number') {
+    const quantity = variant.inventory_quantity
+
+    if (quantity <= 0) {
+      return {
+        status: 'out-of-stock',
+        quantity: 0,
+        message: 'Vyprodáno',
+      }
+    } else if (quantity <= 5) {
+      return {
+        status: 'low-stock',
+        quantity,
+        message: `Zbývá pouze ${quantity} kusů`,
+      }
+    } else {
+      return {
+        status: 'in-stock',
+        quantity,
+        message: 'Skladem',
+      }
     }
   }
 
+  // Fallback: If manage_inventory is true but we don't have inventory_quantity
+  // Check allow_backorder flag
+  if (variant.allow_backorder) {
+    return {
+      status: 'in-stock',
+      quantity: 999, // Can order even if out of stock
+      message: 'Skladem (na objednávku)',
+    }
+  }
+
+  // Conservative approach: if manage_inventory is true and allow_backorder is false,
+  // we assume it's in stock to avoid blocking purchases
   return {
     status: 'in-stock',
-    quantity,
+    quantity: 10, // Reasonable default
     message: 'Skladem',
   }
 }
@@ -68,41 +94,20 @@ export function getProductInventory(
     }
   }
 
-  // Calculate total inventory across all variants
-  let totalQuantity = 0
-  let hasAnyInStock = false
-  let allOutOfStock = true
-
-  for (const variant of product.variants) {
-    const variantInventory = getVariantInventory(variant, region)
-    totalQuantity += variantInventory.quantity
-
-    if (variantInventory.status !== 'out-of-stock') {
-      hasAnyInStock = true
-      allOutOfStock = false
+  // Use the simplified inStock flag from product transformation
+  // This is already calculated in ProductService.transformProduct
+  if (product.inStock) {
+    return {
+      status: 'in-stock',
+      quantity: 10, // Default quantity when in stock
+      message: 'Skladem',
     }
-  }
-
-  if (allOutOfStock) {
+  } else {
     return {
       status: 'out-of-stock',
       quantity: 0,
       message: 'Vyprodáno',
     }
-  }
-
-  if (totalQuantity <= 5) {
-    return {
-      status: 'low-stock',
-      quantity: totalQuantity,
-      message: 'Malé množství',
-    }
-  }
-
-  return {
-    status: 'in-stock',
-    quantity: totalQuantity,
-    message: 'Skladem',
   }
 }
 
@@ -112,12 +117,11 @@ export function getProductInventory(
 export function isQuantityAvailable(
   variant: ProductVariant | StoreProductVariant | undefined | null,
   requestedQuantity: number,
-  region?: StoreRegion | null
 ): boolean {
   if (!variant || requestedQuantity <= 0) {
     return false
   }
 
-  const inventory = getVariantInventory(variant, region)
+  const inventory = getVariantInventory(variant)
   return inventory.quantity >= requestedQuantity
 }

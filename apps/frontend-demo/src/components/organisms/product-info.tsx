@@ -78,7 +78,7 @@ export function ProductInfo({
       return
     }
 
-    const inventory = getVariantInventory(selectedVariant, region)
+    const inventory = getVariantInventory(selectedVariant)
 
     // Check if variant is in stock
     if (inventory.status === 'out-of-stock') {
@@ -91,7 +91,7 @@ export function ProductInfo({
     }
 
     // Check if requested quantity is available
-    if (!isQuantityAvailable(selectedVariant, quantity, region)) {
+    if (!isQuantityAvailable(selectedVariant, quantity)) {
       toast.create({
         title: 'Nedostatečná zásoba',
         description: `K dispozici je pouze ${inventory.quantity} kusů.`,
@@ -105,9 +105,8 @@ export function ProductInfo({
     addItem(selectedVariant.id, quantity)
   }
 
-  const maxQuantity =
-    selectedVariant?.inventory_quantity !== undefined &&
-    selectedVariant?.inventory_quantity > MAXIMUM_QUANTITY
+  const inventory = selectedVariant ? getVariantInventory(selectedVariant) : null
+  const maxQuantity = inventory && inventory.quantity > MAXIMUM_QUANTITY
 
   return (
     <div className="flex flex-col">
@@ -151,13 +150,8 @@ export function ProductInfo({
       {selectedVariant && (
         <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>Kód: {selectedVariant.sku}</p>
-          {selectedVariant.inventory_quantity !== undefined && (
-            <p>
-              Skladem:{' '}
-              {maxQuantity
-                ? `${10}+ kusů`
-                : `${selectedVariant.inventory_quantity} kusů`}
-            </p>
+          {inventory && inventory.status !== 'out-of-stock' && (
+            <p>{inventory.message}</p>
           )}
         </div>
       )}
@@ -204,8 +198,7 @@ export function ProductInfo({
                     (v) => v.options?.[optionKey] === value
                   )
                   const variantInventory = getVariantInventory(
-                    variantForOption,
-                    region
+                    variantForOption
                   )
                   const isOutOfStock =
                     variantInventory.status === 'out-of-stock'
@@ -240,7 +233,7 @@ export function ProductInfo({
             max={
               selectedVariant
                 ? Math.min(
-                    getVariantInventory(selectedVariant, region).quantity || 10,
+                    getVariantInventory(selectedVariant).quantity || 10,
                     10
                   )
                 : 10
@@ -258,14 +251,14 @@ export function ProductInfo({
           className="flex-1"
           disabled={
             !selectedVariant ||
-            getVariantInventory(selectedVariant, region).status ===
+            getVariantInventory(selectedVariant).status ===
               'out-of-stock'
           }
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
         >
           {!selectedVariant ||
-          getVariantInventory(selectedVariant, region).status === 'out-of-stock'
+          getVariantInventory(selectedVariant).status === 'out-of-stock'
             ? 'Vyprodané'
             : 'Přidat do košíku'}
         </Button>
