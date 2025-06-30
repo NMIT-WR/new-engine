@@ -31,7 +31,6 @@ interface ProductDisplayData {
 export function extractProductData(
   product: Product,
   currencyCode?: string,
-  region?: StoreRegion | null
 ): ProductDisplayData {
   // For API products, find the price that matches the current currency
   const firstVariant = product.variants?.[0]
@@ -77,7 +76,7 @@ export function extractProductData(
     const createdDate = new Date(product.created_at)
     const daysSinceCreated =
       (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
-    if (daysSinceCreated <= 7) {
+    if (daysSinceCreated <= 10) {
       badges.push({ variant: 'success' as const, children: 'Nové' })
     }
   }
@@ -100,7 +99,10 @@ export function extractProductData(
     
     if (hasStock) {
       badges.push({ variant: 'success' as const, children: 'Skladem' })
-    }
+    } 
+  }
+  if (!hasInventoryData) {
+    badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
   }
 
   return {

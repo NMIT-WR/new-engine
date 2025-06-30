@@ -5,7 +5,7 @@ import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
 import { Pagination } from '@ui/molecules/pagination'
-import { ProductCard } from '@ui/molecules/product-card'
+import { DemoProductCard } from '@/components/molecules/demo-product-card'
 import { useRouter } from 'next/navigation'
 
 interface ProductGridProps {
@@ -42,7 +42,7 @@ export function ProductGrid({
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => {
           const { price, displayBadges } =
-            extractProductData(product, region?.currency_code, region)
+            extractProductData(product, region?.currency_code)
 
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
@@ -55,13 +55,13 @@ export function ProductGrid({
                 : 'Cena není k dispozici'
 
           return (
-            <ProductCard
+            <DemoProductCard
               key={product.id}
               name={product.title}
               price={formattedPrice}
               imageUrl={product.thumbnail || ''}
               badges={displayBadges}
-              stockStatus="" // Empty since we show stock in badges
+             // stockStatus="" // Empty since we show stock in badges
               hasDetailButton
               onDetailClick={() => navigate.push(`/products/${product.handle}`)}
               detailButtonText="Zobrazit detaily"

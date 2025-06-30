@@ -1,6 +1,6 @@
 import type { Product } from '@/types/product'
 import { extractProductData } from '@/utils/product-utils'
-import { ProductCard } from '@ui/molecules/product-card'
+import { DemoProductCard } from '@/components/molecules/demo-product-card'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -36,18 +36,16 @@ export function FeaturedProducts({
               extractProductData(product)
 
             return (
-              <ProductCard
+              <DemoProductCard
                 key={product.id}
                 imageUrl={product.thumbnail || ''}
                 name={product.title}
                 price={price?.calculated_price || ''}
                 stockStatus=""
                 badges={displayBadges}
-                hasCartButton={false}
                 hasDetailButton={true}
                 detailButtonText="Zobrazit"
                 onDetailClick={() => router.push(`/products/${product.handle}`)}
-                hasWishlistButton={false}
                 layout="column"
               />
             )
