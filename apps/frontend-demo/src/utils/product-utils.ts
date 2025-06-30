@@ -26,8 +26,6 @@ interface ProductDisplayData {
   price: any // Price object from variant
   badges: BadgeProps[]
   displayBadges: BadgeProps[]
-  stockText?: string
-  stockStatus?: StockStatus
 }
 
 export function extractProductData(
@@ -84,9 +82,6 @@ export function extractProductData(
     }
   }
 
-  // Add stock badge for products with inventory data
-  let stockStatus: StockStatus | undefined
-  let stockText: string | undefined
   
   // Check if any variant has inventory_quantity
   const hasInventoryData = product.variants?.some(v => 
@@ -105,8 +100,6 @@ export function extractProductData(
     
     if (hasStock) {
       badges.push({ variant: 'success' as const, children: 'Skladem' })
-      stockStatus = 'in-stock'
-      stockText = 'Skladem'
     }
   }
 
@@ -114,8 +107,6 @@ export function extractProductData(
     price,
     badges,
     displayBadges: badges,
-    stockStatus,
-    stockText,
   }
 }
 

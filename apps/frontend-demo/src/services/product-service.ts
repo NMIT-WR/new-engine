@@ -31,16 +31,6 @@ export interface HomePageProducts {
 }
 
 export class ProductService {
-  // HARD LIMIT PRO DEMO
-  static readonly MAX_DEMO_PRODUCTS = 100
-  static productsLoaded = 0
-
-  // Reset counter (for development)
-  static resetDemoLimit() {
-    this.productsLoaded = 0
-    console.log('[ProductService] Demo limit counter reset')
-  }
-
   static readonly DEFAULT_FIELDS = [
     'id',
     'title',
@@ -77,19 +67,8 @@ export class ProductService {
   ): Promise<ProductListResponse> {
     const { limit = 20, offset = 0, filters, sort } = params
 
-    // DEMO LIMIT
-    if (this.productsLoaded >= this.MAX_DEMO_PRODUCTS) {
-      console.log('[ProductService] Demo limit reached, returning empty result')
-      return { products: [], count: this.MAX_DEMO_PRODUCTS, limit, offset }
-    }
-
-    const adjustedLimit = Math.min(
-      limit,
-      this.MAX_DEMO_PRODUCTS - this.productsLoaded
-    )
-
     const queryParams: Record<string, any> = {
-      limit: adjustedLimit,
+      limit,
       offset,
       fields: this.DEFAULT_FIELDS,
     }
@@ -139,30 +118,11 @@ export class ProductService {
         return { products: [], count: 0, limit, offset }
       }
 
-      const productsToTake = Math.min(
-        response.products.length,
-        this.MAX_DEMO_PRODUCTS - this.productsLoaded
-      )
-
-      const limitedProducts = response.products.slice(0, productsToTake)
-      const products = limitedProducts.map((p) => this.transformProduct(p))
-
-      this.productsLoaded += products.length
-
-      console.log(
-        '[ProductService] Demo products loaded:',
-        this.productsLoaded,
-        '/',
-        this.MAX_DEMO_PRODUCTS
-      )
-      console.log('[ProductService] Products in this batch:', products.length)
+      const products = response.products.map((p) => this.transformProduct(p))
 
       return {
         products,
-        count: Math.min(
-          response.count || products.length,
-          this.MAX_DEMO_PRODUCTS
-        ),
+        count: response.count || products.length,
         limit,
         offset,
       }
@@ -193,22 +153,7 @@ export class ProductService {
    * Get products for homepage sections
    */
   static async getHomePageProducts(): Promise<HomePageProducts> {
-    // DEMO LIMIT - fetch pouze pokud ještě nemáme limit
-    const remainingSlots = this.MAX_DEMO_PRODUCTS - this.productsLoaded
-    const fetchLimit = Math.min(12, remainingSlots) // Potřebujeme max 12 pro homepage
-
-    if (fetchLimit <= 0) {
-      console.log(
-        '[ProductService] Demo limit reached, returning empty homepage products'
-      )
-      return {
-        featured: [],
-        newArrivals: [],
-        trending: [],
-      }
-    }
-
-    const response = await this.getProducts({ limit: fetchLimit })
+    const response = await this.getProducts({ limit: 12 })
 
     const allProducts = response.products
 

@@ -32,7 +32,7 @@ export function FeaturedProducts({
         </div>
         <div className="grid grid-cols-2 gap-featured-grid-gap sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => {
-            const { price, displayBadges, stockText } =
+            const { price, displayBadges } =
               extractProductData(product)
 
             return (

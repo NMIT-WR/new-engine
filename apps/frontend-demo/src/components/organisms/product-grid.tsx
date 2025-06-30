@@ -41,7 +41,7 @@ export function ProductGrid({
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => {
-          const { price, displayBadges, stockText, stockStatus } =
+          const { price, displayBadges } =
             extractProductData(product, region?.currency_code, region)
 
           // Format the price for display
