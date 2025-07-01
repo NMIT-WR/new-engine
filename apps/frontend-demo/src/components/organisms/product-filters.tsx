@@ -51,7 +51,7 @@ export function ProductFilters({
     filters.categories.size +
     filters.sizes.size
 
-  const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2X']
+  const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
 
   const renderCategories = () => {
     const selectedIds = Array.from(filters.categories) as string[]

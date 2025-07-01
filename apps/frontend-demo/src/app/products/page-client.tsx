@@ -71,28 +71,59 @@ function ProductsPageContent() {
   // Products are already sorted by the backend
   const sortedProducts = products
 
-  // Prefetch next page when we have products
+  // Prefetch strategic pages when we have products
   useEffect(() => {
-    if (hasNextPage && products.length > 0) {
-      const nextPage = currentPage + 1
-      const offset = (nextPage - 1) * pageSize
+    if (products.length > 0) {
+      const pagesToPrefetch = []
       
-      queryClient.prefetchQuery({
-        queryKey: queryKeys.products.list({ 
-          page: nextPage, 
-          limit: pageSize, 
-          filters: productFilters, 
-          sort: urlFilters.sortBy 
-        }),
-        queryFn: () => ProductService.getProducts({ 
-          limit: pageSize, 
-          offset, 
-          filters: productFilters, 
-          sort: urlFilters.sortBy 
-        }),
+      // Always prefetch first page (if not current)
+      if (currentPage !== 1) {
+        pagesToPrefetch.push(1)
+      }
+      
+      // Prefetch previous pages
+      if (hasPrevPage) {
+        pagesToPrefetch.push(currentPage - 1)
+        // Also prefetch page -2 if it exists
+        if (currentPage - 2 >= 1) {
+          pagesToPrefetch.push(currentPage - 2)
+        }
+      }
+      
+      // Prefetch next pages
+      if (hasNextPage) {
+        pagesToPrefetch.push(currentPage + 1)
+        // Also prefetch page +2 if it exists
+        if (currentPage + 2 <= totalPages) {
+          pagesToPrefetch.push(currentPage + 2)
+        }
+      }
+      
+      // Prefetch last page (if known and not current)
+      if (totalPages > 1 && currentPage !== totalPages) {
+        pagesToPrefetch.push(totalPages)
+      }
+      
+      // Execute all prefetches
+      pagesToPrefetch.forEach(page => {
+        const offset = (page - 1) * pageSize
+        queryClient.prefetchQuery({
+          queryKey: queryKeys.products.list({ 
+            page, 
+            limit: pageSize, 
+            filters: productFilters, 
+            sort: urlFilters.sortBy 
+          }),
+          queryFn: () => ProductService.getProducts({ 
+            limit: pageSize, 
+            offset, 
+            filters: productFilters, 
+            sort: urlFilters.sortBy 
+          }),
+        })
       })
     }
-  }, [currentPage, hasNextPage, products.length, queryClient, pageSize, productFilters, urlFilters.sortBy])
+  }, [currentPage, hasNextPage, hasPrevPage, products.length, queryClient, pageSize, productFilters, urlFilters.sortBy, totalPages])
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -12,10 +12,6 @@ interface PageProps {
     sort?: string
     categories?: string | string[]
     sizes?: string | string[]
-    colors?: string | string[]
-    minPrice?: string
-    maxPrice?: string
-    onSale?: string
     search?: string
   }>
 }
