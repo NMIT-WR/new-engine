@@ -52,7 +52,6 @@ export function Header({
             <Link
               href={logo.href || '/'}
               className="flex items-center gap-header-logo-gap font-header-logo text-header-logo text-header-text lg:text-header-logo-lg"
-              prefetch={true}
             >
               {logo.icon && <Icon icon={logo.icon} size="lg" />}
               {logo.text && <span className="lg:text-md text-sm">{logo.text}</span>}

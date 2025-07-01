@@ -29,15 +29,16 @@ export function HeaderWrapper({ logo }: HeaderWrapperProps) {
     }
 
     return [
-      { title: 'Domů', href: '/' },
-      { title: 'Produkty', href: '/products' },
+      { title: 'Domů', href: '/', prefetch: false },
+      { title: 'Produkty', href: '/products', prefetch: true },
       {
         title: 'Kategorie',
         role: 'submenu' as const,
         children: categoryItems,
+        prefetch: false
       },
-      { title: 'O nás', href: '/about' },
-      { title: 'Kontakt', href: '/contact' },
+      { title: 'O nás', href: '/about', prefetch: false },
+      { title: 'Kontakt', href: '/contact', prefetch: false },
     ]
   }, [])
 
