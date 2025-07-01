@@ -6,51 +6,50 @@
  */
 
 export const cacheConfig = {
-  // Dlouhodobě stabilní data (categories, regions)
+// categories, regions
   static: {
-    staleTime: 24 * 60 * 60 * 1000, // 24 hodin
-    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 dní
+    staleTime: 24 * 60 * 60 * 1000,
+    gcTime: 7 * 24 * 60 * 60 * 1000, 
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   },
 
-  // Kategorie - téměř nikdy se nemění
   categories: {
-    staleTime: Infinity, // Nikdy není stale
-    gcTime: Infinity, // Nikdy se nesmaže z cache
+    staleTime: Infinity, 
+    gcTime: Infinity, 
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
   },
 
-  // Občas se měnící data (product catalog, shipping options)
+  // product catalog, shipping options
   semiStatic: {
-    staleTime: 60 * 60 * 1000, // 1 hodina
-    gcTime: 24 * 60 * 60 * 1000, // 24 hodin
+    staleTime: 60 * 60 * 1000, 
+    gcTime: 24 * 60 * 60 * 1000, 
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   },
 
-  // Často se měnící data (product detail, search)
+  // product detail, search
   dynamic: {
-    staleTime: 5 * 60 * 1000, // 5 minut
-    gcTime: 30 * 60 * 1000, // 30 minut
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000, 
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   },
 
   // Real-time data (cart, inventory)
   realtime: {
-    staleTime: 30 * 1000, // 30 sekund
-    gcTime: 5 * 60 * 1000, // 5 minut
+    staleTime: 30 * 1000, 
+    gcTime: 5 * 60 * 1000, 
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   },
 
   // User-specific data (profile, preferences)
   user: {
-    staleTime: 0, // Vždy stale
-    gcTime: 10 * 60 * 1000, // 10 minut
+    staleTime: 0,
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: true,
     refetchOnMount: 'always',
   },

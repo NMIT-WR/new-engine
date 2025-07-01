@@ -13,8 +13,6 @@ import { ProductService } from '@/services/product-service'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
-  { value: 'price-asc', label: 'Cena: od nejnižší' },
-  { value: 'price-desc', label: 'Cena: od nejvyšší' },
   { value: 'name-asc', label: 'Název: A-Z' },
   { value: 'name-desc', label: 'Název: Z-A' },
 ]
@@ -50,10 +48,7 @@ function ProductsPageContent() {
   // Convert filter state to ProductFilters format
   const productFilters = {
     categories: Array.from(urlFilters.filters.categories) as string[],
-    priceRange: urlFilters.filters.priceRange as [number, number],
     sizes: Array.from(urlFilters.filters.sizes) as string[],
-    colors: Array.from(urlFilters.filters.colors) as string[],
-    onSale: urlFilters.filters.onSale,
     search: urlFilters.searchQuery || undefined,
   }
 
@@ -118,7 +113,6 @@ function ProductsPageContent() {
         <ProductFilters
           filters={urlFilters.filters}
           onFiltersChange={urlFilters.setFilters}
-          products={products}
         />
       </div>
 
@@ -128,7 +122,6 @@ function ProductsPageContent() {
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
-            products={products}
           />
         </aside>
 

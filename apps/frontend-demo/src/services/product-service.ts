@@ -1,12 +1,10 @@
 import { sdk } from '@/lib/medusa-client'
 import type { Product } from '@/types/product'
+import { buildMedusaQuery } from '@/utils/server-filters'
 
 export interface ProductFilters {
   categories?: string[]
-  priceRange?: [number, number]
   sizes?: string[]
-  colors?: string[]
-  onSale?: boolean
   search?: string
 }
 
@@ -38,6 +36,7 @@ export class ProductService {
     'handle',
     'thumbnail',
     'variants.id',
+    'variants.title',
     'variants.prices.amount',
     'variants.prices.currency_code',
     '+variants.inventory_quantity',
@@ -85,39 +84,15 @@ export class ProductService {
   ): Promise<ProductListResponse> {
     const { limit = 20, offset = 0, filters, sort } = params
 
-    const queryParams: Record<string, any> = {
+    // Build base query
+    const baseQuery: Record<string, any> = {
       limit,
       offset,
-      fields: this.LIST_FIELDS, // Use optimized fields for list views
+      fields: this.LIST_FIELDS,
     }
 
-    // Apply filters
-    if (filters) {
-      if (filters.categories?.length) {
-        queryParams.category_id = filters.categories
-      }
-
-      if (filters.priceRange) {
-        // Note: Medusa v2 might not support price filtering via query params
-        // We'll need to filter client-side for now
-        // const [min, max] = filters.priceRange
-        // queryParams['variants.prices.amount'] = `gte:${min * 100},lte:${max * 100}`
-      }
-
-      if (filters.search) {
-        queryParams.q = filters.search
-      }
-
-      if (filters.onSale) {
-        queryParams.tags = 'sale'
-      }
-
-      // Note: Size and color filtering might need to be done client-side
-      // as Medusa doesn't have built-in variant option filtering
-    }
-
+    // Add sorting
     if (sort) {
-      // Map our sort values to Medusa API format
       const sortMap: Record<string, string> = {
         newest: '-created_at',
         'price-asc': 'variants.prices.amount',
@@ -125,8 +100,11 @@ export class ProductService {
         'name-asc': 'title',
         'name-desc': '-title',
       }
-      queryParams.order = sortMap[sort] || sort
+      baseQuery.order = sortMap[sort] || sort
     }
+
+    // Build query with server-side filters
+    const queryParams = buildMedusaQuery(filters, baseQuery)
 
     try {
       const response = await sdk.store.product.list(queryParams)

@@ -33,13 +33,6 @@ export default async function ProductsPageServer({ searchParams }: PageProps) {
     sizes: params.sizes
       ? (Array.isArray(params.sizes) ? params.sizes : [params.sizes])
       : undefined,
-    colors: params.colors
-      ? (Array.isArray(params.colors) ? params.colors : [params.colors])
-      : undefined,
-    priceRange: params.minPrice && params.maxPrice
-      ? [Number(params.minPrice), Number(params.maxPrice)] as [number, number]
-      : undefined,
-    onSale: params.onSale === 'true',
     search: params.search,
   }
   
