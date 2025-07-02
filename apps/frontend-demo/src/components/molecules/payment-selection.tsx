@@ -40,13 +40,13 @@ export interface PaymentMethod {
 
 const paymentMethods: PaymentMethod[] = [
   { id: 'comgate', name: 'Comgate', image: '/assets/comgate.webp' },
-  { id: 'gopay', name: 'GoPay', image: '/assets/gpay.gif' },
+  { id: 'gopay', name: 'GoPay', image: '/assets/gpay.webp' },
   { id: 'paypal', name: 'PayPal', image: '/assets/paypal.webp' },
-  { id: 'cash', name: 'Hotovost', image: '/assets/hotovost.gif' },
-  { id: 'skippay', name: 'SkipPay', image: '/assets/skippay.gif' },
+  { id: 'cash', name: 'Dobírkou', image: '/assets/cash.webp' },
+  { id: 'skippay', name: 'SkipPay', image: '/assets/skippay.webp' },
   { id: 'stripe', name: 'Stripe', image: '/assets/stripe.webp' },
-  { id: 'card', name: 'Platební kartou', image: '/assets/card.gif' },
-  { id: 'qr', name: 'QR platba', image: '/assets/qr.gif' },
+  { id: 'card', name: 'Platební kartou', image: '/assets/card.webp' },
+  { id: 'qr', name: 'QR platba', image: '/assets/qr.webp' },
 ]
 
 export interface PaymentSelectionProps {
