@@ -1,0 +1,44 @@
+@theme static {
+  /* === Root === */
+  --padding-payment-root: var(--spacing-md);
+
+  /* === Grid === */
+  --gap-payment-grid: var(--spacing-sm);
+
+  /* === Card === */
+  --padding-payment-card: var(--spacing-md);
+  --color-payment-card-bg: var(--color-surface);
+  --color-payment-card-bg-hover: var(--color-surface-hover);
+  --color-payment-card-bg-selected: var(--color-surface-selected);
+  --border-payment-card: 2px solid var(--color-border-subtle);
+  --border-payment-card-selected: 2px solid var(--color-primary);
+  --radius-payment-card: var(--radius-lg);
+  --shadow-payment-card-hover: var(--shadow-md);
+  --shadow-payment-card-selected: var(--shadow-lg);
+  --height-payment-card: 180px;
+  --spacing-payment-card: 100% 1fr;
+
+  /* === Image === */
+  --width-payment-img: 100px;
+  --height-payment-img: 60px;
+
+  /* === Label === */
+  --margin-payment-label: var(--spacing-xs) 0 0 0;
+  --text-payment-label: var(--text-sm);
+  --font-weight-payment-label: var(--font-weight-medium);
+
+  /* === Badge === */
+  --spacing-payment-badge: var(--spacing-xs);
+  --width-payment-badge: var(--spacing-md);
+  --height-payment-badge: var(--spacing-md);
+  --color-payment-badge: var(--color-primary);
+
+  /* === Icon === */
+  --width-payment-icon: var(--spacing-sm);
+  --height-payment-icon: var(--spacing-sm);
+  --color-payment-icon: var(--color-fg-reverse);
+
+  /* === Focus === */
+  --color-payment-ring: var(--color-primary);
+  --color-payment-bg: var(--color-base);
+}

@@ -1,0 +1,54 @@
+@theme static {
+  /* === Root === */
+  --padding-shipping-root: var(--spacing-md);
+
+  /* === List === */
+  --spacing-shipping-list: var(--spacing-sm);
+
+  /* === Card === */
+  --padding-shipping-card: var(--spacing-md);
+  --color-shipping-card-bg: var(--color-surface);
+  --color-shipping-card-bg-hover: var(--color-surface-hover);
+  --color-shipping-card-bg-selected: var(--color-surface-selected);
+  --border-shipping-card: 2px solid var(--color-border-subtle);
+  --border-shipping-card-selected: 2px solid var(--color-primary);
+  --radius-shipping-card: var(--radius-lg);
+  --shadow-shipping-card-hover: var(--shadow-md);
+  --shadow-shipping-card-selected: var(--shadow-lg);
+
+  /* === Content === */
+  --gap-shipping-content: var(--spacing-md);
+
+  /* === Image === */
+  --width-shipping-img: 100px;
+  --height-shipping-img: 50px;
+
+  /* === Text === */
+  --text-shipping-name: var(--text-base);
+  --font-weight-shipping-name: var(--font-weight-semibold);
+  --text-shipping-desc: var(--text-sm);
+  --margin-shipping-desc: var(--spacing-2xs) 0;
+  --text-shipping-delivery: var(--text-xs);
+  --font-weight-shipping-delivery: var(--font-weight-medium);
+  --color-shipping-delivery: var(--color-fg-secondary);
+
+  /* === Price === */
+  --text-shipping-price: var(--text-lg);
+  --font-weight-shipping-price: var(--font-weight-bold);
+  --color-shipping-price: var(--color-primary);
+
+  /* === Radio === */
+  --width-shipping-radio: var(--spacing-md);
+  --height-shipping-radio: var(--spacing-md);
+  --border-shipping-radio: 2px solid var(--color-border);
+  --color-shipping-radio-bg: var(--color-surface);
+  
+  /* === Radio Dot === */
+  --width-shipping-radio-dot: var(--spacing-xs);
+  --height-shipping-radio-dot: var(--spacing-xs);
+  --color-shipping-radio-dot: var(--color-primary);
+
+  /* === Focus === */
+  --color-shipping-ring: var(--color-primary);
+  --color-shipping-bg: var(--color-base);
+}

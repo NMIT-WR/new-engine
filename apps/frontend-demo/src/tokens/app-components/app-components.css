@@ -13,6 +13,8 @@
 @import "./molecules/_product-grid.css";
 @import "./molecules/_sale-banner.css";
 @import "./molecules/_theme-toggle.css";
+@import "./molecules/_payment-selection.css";
+@import "./molecules/_shipping-selection.css";
 
 @import "./organisms/_auth.css";
 @import "./organisms/_cart.css";
