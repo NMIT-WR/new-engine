@@ -7,6 +7,10 @@ import { Dialog } from '@ui/molecules/dialog'
 import { TreeView } from '@ui/molecules/tree-view'
 import { useState } from 'react'
 import { FilterSection } from '../molecules/filter-section'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/lib/query-keys'
+import { ProductService } from '@/services/product-service'
+import { cacheConfig } from '@/lib/cache-config'
 
 export interface FilterState {
   categories: Set<string>
@@ -27,6 +31,43 @@ export function ProductFilters({
   hideCategories = false,
 }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+  // Prefetch products with specific filters
+  const prefetchFilteredProducts = (newFilters: Partial<FilterState>) => {
+    const updatedFilters = {
+      categories: newFilters.categories || filters.categories,
+      sizes: newFilters.sizes || filters.sizes,
+    }
+    
+    const productFilters = {
+      categories: Array.from(updatedFilters.categories),
+      sizes: Array.from(updatedFilters.sizes),
+    }
+    
+    const queryKey = queryKeys.products.list({ 
+      page: 1, 
+      limit: 12, 
+      filters: productFilters 
+    })
+    
+    // Check if data is already in cache and fresh
+    const cachedData = queryClient.getQueryData(queryKey)
+    const queryState = queryClient.getQueryState(queryKey)
+    
+    // Only prefetch if data is not in cache or is stale
+    if (!cachedData || (queryState && queryState.isInvalidated)) {
+      queryClient.prefetchQuery({
+        queryKey,
+        queryFn: () => ProductService.getProducts({ 
+          limit: 12, 
+          offset: 0, 
+          filters: productFilters 
+        }),
+        ...cacheConfig.semiStatic, // Use consistent cache config
+      })
+    }
+  }
 
   const updateFilters = (updates: Partial<FilterState>) => {
     onFiltersChange({
@@ -79,6 +120,31 @@ export function ProductFilters({
               expandOnClick={true}
               showIndentGuides={true}
               showNodeIcons={false}
+              onFocusChange={(details) => {
+                // Prefetch on focus/hover of category items
+                if (details.focusedValue) {
+                  const hasChildren = (nodeId: string): boolean => {
+                    const findNode = (nodes: any[]): any => {
+                      for (const node of nodes) {
+                        if (node.id === nodeId) return node
+                        if (node.children) {
+                          const found = findNode(node.children)
+                          if (found) return found
+                        }
+                      }
+                      return null
+                    }
+                    const node = findNode(categoryTree)
+                    return node && node.children && node.children.length > 0
+                  }
+                  
+                  if (!hasChildren(String(details.focusedValue))) {
+                    prefetchFilteredProducts({ 
+                      categories: new Set([String(details.focusedValue)]) 
+                    })
+                  }
+                }
+              }}
               onSelectionChange={(details) => {
                 // Helper function to check if a node has children
                 const hasChildren = (nodeId: string): boolean => {
@@ -138,13 +204,19 @@ export function ProductFilters({
                 key={size}
                 theme={isSelected ? 'solid' : 'borderless'}
                 onClick={() => {
-                  const newSizes = new Set(filters.sizes)
-                  if (isSelected) {
-                    newSizes.delete(size)
-                  } else {
+                  const newSizes = new Set<string>()
+                  // If clicking on already selected size, deselect it
+                  // Otherwise, select only this size
+                  if (!isSelected) {
                     newSizes.add(size)
                   }
                   updateFilters({ sizes: newSizes })
+                }}
+                onMouseEnter={() => {
+                  // Prefetch products with this size filter
+                  if (!isSelected) {
+                    prefetchFilteredProducts({ sizes: new Set([size]) })
+                  }
                 }}
                 size="sm"
                 className="rounded-sm border"
