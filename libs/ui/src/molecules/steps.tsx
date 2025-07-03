@@ -70,7 +70,8 @@ const stepsVariants = tv({
 
 export type StepItem = {
   value: number
-  title: ReactNode
+  customStep?: ReactNode
+  title?: ReactNode
   description?: ReactNode
   icon?: ReactNode
 }
@@ -86,6 +87,8 @@ export interface StepsProps extends VariantProps<typeof stepsVariants> {
   onStepChange?: (step: number) => void
   onStepComplete?: () => void
   className?: string
+  custom?: boolean
+  visibleControls?: boolean
 }
 
 export function Steps({
@@ -93,7 +96,9 @@ export function Steps({
   items,
   currentStep = 0,
   orientation = 'horizontal',
+  custom = false,
   linear = false,
+  visibleControls = true,
   completeText,
   onStepChange,
   onStepComplete,
@@ -152,18 +157,30 @@ export function Steps({
           </div>
         ))}
       </div>
-      {items.map((step, index) => (
-        <div
-          className={content()}
-          key={index}
-          {...api.getContentProps({ index })}
-        >
-          <article className="h-fit">
-            <h3>{step.title}</h3>
-            {step.description && <p>{step.description}</p>}
-          </article>
-        </div>
-      ))}
+      {custom ? (
+        items.map((step, index) => (
+          <div
+            className={content()}
+            key={`step-content-${index}`}
+            {...api.getContentProps({ index })}
+          >
+            {step.customStep}
+          </div>
+        ))
+      ) : (
+        items.map((step, index) => (
+          <div
+            className={content()}
+            key={`step-content-${index}`}
+            {...api.getContentProps({ index })}
+          >
+            <article className="h-fit">
+              <h3>{step.title}</h3>
+              {step.description && <p>{step.description}</p>}
+            </article>
+          </div>
+        ))
+      )}
       <div
         className={content()}
         {...api.getContentProps({ index: items.length })}
@@ -171,7 +188,7 @@ export function Steps({
         {completeText}
       </div>
 
-      <div className={containerButtons()} data-orientation={orientation}>
+      {visibleControls && <div className={containerButtons()} data-orientation={orientation}>
         <Button
           theme="solid"
           size="sm"
@@ -188,7 +205,7 @@ export function Steps({
         >
           Next
         </Button>
-      </div>
+      </div>}
     </div>
   )
 }

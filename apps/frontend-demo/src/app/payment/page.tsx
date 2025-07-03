@@ -56,26 +56,75 @@ export default function PaymentPage() {
   const shippingPrice = selectedShippingMethod?.price || 0
   const paymentFee = selectedPaymentMethod?.fee || 0
 
+  const handleComplete = async () => {
+    // Here you would normally:
+    // 1. Create order in Medusa
+    // 2. Process payment
+    // 3. Redirect to success page
+    console.log('Order data:', {
+      address: addressData,
+      shipping: selectedShipping,
+      payment: selectedPayment,
+      cart: cart
+    })
+    // For now, just show alert
+    alert('Objednávka byla úspěšně odeslána!')
+    router.push('/')
+  }
+
   const steps = [
     {
       value: 0,
       title: 'Adresa',
-      description: 'Vyplňte doručovací údaje',
+      customStep: (
+        <AddressForm
+          onComplete={(data) => {
+            setAddressData(data)
+            setTimeout(() => setCurrentStep(1), 300)
+          }}
+          initialData={addressData}
+        />
+      ),
     },
     {
       value: 1,
       title: 'Doprava',
-      description: 'Vyberte způsob doručení',
+      customStep: (
+        <ShippingSelection
+          selected={selectedShipping}
+          onSelect={(method) => {
+            setSelectedShipping(method)
+            // Auto-advance to next step after selection
+            setTimeout(() => setCurrentStep(2), 300)
+          }}
+        />
+      ),
     },
     {
       value: 2,
       title: 'Platba',
-      description: 'Vyberte způsob platby',
+      customStep: (
+        <PaymentSelection
+          selected={selectedPayment}
+          onSelect={(method) => {
+            setSelectedPayment(method)
+            // Auto-advance to summary step after selection
+            setTimeout(() => setCurrentStep(3), 300)
+          }}
+        />
+      ),
     },
     {
       value: 3,
       title: 'Souhrn',
-      description: 'Zkontrolujte objednávku',
+      customStep: (
+        <OrderSummary
+          addressData={addressData}
+          selectedShipping={selectedShippingMethod}
+          selectedPayment={selectedPaymentMethod}
+          onCompleteClick={handleComplete}
+        />
+      ),
     },
   ]
 
@@ -101,20 +150,7 @@ export default function PaymentPage() {
     setCurrentStep(step)
   }
 
-  const handleComplete = async () => {
-    // Here you would normally:
-    // 1. Create order in Medusa
-    // 2. Process payment
-    // 3. Redirect to success page
-    console.log('Order data:', {
-      address: addressData,
-      shipping: selectedShipping,
-      payment: selectedPayment,
-      cart: cart
-    })
-    // For now, just show alert
-    alert('Objednávka byla úspěšně odeslána!')
-  }
+
 
   return (
     <div className="container mx-auto max-w-[80rem] px-4 py-8">
@@ -131,63 +167,14 @@ export default function PaymentPage() {
         <div>
           <Steps
             items={steps}
+            custom={true}
             currentStep={currentStep}
             onStepChange={handleStepChange}
             onStepComplete={handleComplete}
             orientation="horizontal"
             linear={false}
-
+            visibleControls={false}
           />
-
-          <div className="mt-8">
-            {currentStep === 0 && (
-              <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
-                <AddressForm
-                  onComplete={(data) => {
-                    setAddressData(data)
-                    setTimeout(() => setCurrentStep(1), 300)
-                  }}
-                  initialData={addressData}
-                />
-              </div>
-            )}
-
-            {currentStep === 1 && (
-              <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
-                <ShippingSelection
-                  selected={selectedShipping}
-                  onSelect={(method) => {
-                    setSelectedShipping(method)
-                    // Auto-advance to next step after selection
-                    setTimeout(() => setCurrentStep(2), 300)
-                  }}
-                />
-              </div>
-            )}
-
-            {currentStep === 2 && (
-              <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
-                <PaymentSelection
-                  selected={selectedPayment}
-                  onSelect={(method) => {
-                    setSelectedPayment(method)
-                    // Auto-advance to summary step after selection
-                    setTimeout(() => setCurrentStep(3), 300)
-                  }}
-                />
-              </div>
-            )}
-            
-            {currentStep === 3 && (
-              <OrderSummary
-                addressData={addressData}
-                selectedShipping={selectedShippingMethod}
-                selectedPayment={selectedPaymentMethod}
-                // onEditClick={() => setCurrentStep(0)}
-                // onCompleteClick={handleComplete}
-              />
-            )}
-          </div>
         </div>
         
         <div className="lg:pl-8">

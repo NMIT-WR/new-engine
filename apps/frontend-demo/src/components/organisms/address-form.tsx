@@ -313,8 +313,7 @@ export function AddressForm({ onComplete, initialData }: AddressFormProps) {
           </div>
         </div>
       )}
-
-      <Button type="submit">Submit</Button>
+      <Button type="submit">Pokračovat</Button>
     </form>
   )
 }

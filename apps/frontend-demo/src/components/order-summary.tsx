@@ -36,7 +36,7 @@ interface OrderSummaryProps {
   selectedShipping: ShippingMethod | undefined
   selectedPayment: PaymentMethod | undefined
   // onEditClick: () => void
- // onCompleteClick: () => void
+  onCompleteClick: () => void
 }
 
 const orderSummaryStyles = tv({
@@ -57,9 +57,20 @@ export function OrderSummary({
   selectedShipping, 
   selectedPayment,
   // onEditClick,
- // onCompleteClick
+  onCompleteClick
 }: OrderSummaryProps) {
   const { root, container, title, content, section, sectionTitle, sectionText, actions } = orderSummaryStyles()
+
+  if (!addressData || !addressData.shipping) {
+    return (
+      <div className={root()}>
+        <div className={container()}>
+          <h2 className={title()}>Zkontrolujte objednávku</h2>
+          <p className={sectionText()}>Nejprve vyplňte všechny potřebné údaje.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={root()}>
@@ -83,7 +94,7 @@ export function OrderSummary({
             </p>
           </div>
           
-          {!addressData.useSameAddress && (
+          {!addressData.useSameAddress && addressData.billing && (
             <div className={section()}>
               <h3 className={sectionTitle()}>Fakturační adresa</h3>
               <p className={sectionText()}>
@@ -121,7 +132,7 @@ export function OrderSummary({
             Upravit údaje
           </Button>
           <Button
-           // onClick={onCompleteClick}
+            onClick={onCompleteClick}
             icon="icon-[mdi--check-circle]"
             className="flex-1"
           >
