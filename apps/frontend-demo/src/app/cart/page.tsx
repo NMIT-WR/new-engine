@@ -176,13 +176,15 @@ export default function CartPage() {
                   <span>{formatPrice(total, currencyCode)}</span>
                 </div>
 
-                <Button
-                  className="mt-cart-checkout-margin w-full"
-                  size="lg"
-                  icon="icon-[mdi--lock-outline]"
-                >
-                  Přejít k platbě
-                </Button>
+                <Link href="/payment" className="block">
+                  <Button
+                    className="mt-cart-checkout-margin w-full"
+                    size="lg"
+                    icon="icon-[mdi--lock-outline]"
+                  >
+                    Přejít k platbě
+                  </Button>
+                </Link>
 
                 <Link href="/products" className="mt-4 block text-center">
                   <Button variant="tertiary" theme="borderless" size="sm">

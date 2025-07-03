@@ -5,7 +5,7 @@ import '../../tokens/app-components/molecules/_shipping-selection.css'
 const shippingSelectionStyles = tv({
   slots: {
     root: 'w-full p-shipping-root',
-    list: 'space-y-shipping-list grid grid-cols-1 lg:grid-cols-2 gap-4',
+    list: 'space-y-shipping-list grid grid-cols-1 l:grid-cols-2 gap-4',
     card: [
       'relative flex items-center p-shipping-card',
       'bg-shipping-card-bg border-shipping-card rounded-shipping-card',

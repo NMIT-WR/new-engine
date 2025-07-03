@@ -40,7 +40,8 @@
 
   /* === INPUT === */
   /* Different padding for small inputs */
-  --padding-input-sm: var(--spacing-2xs) var(--spacing-xs);
+  --padding-input-sm: var(--spacing-3xs) var(--spacing-2xs);
+  --padding-input-md: var(--spacing-2xs) var(--spacing-xs);
   /* Font weight token name change */
   --font-label: var(--font-weight-bold);
 

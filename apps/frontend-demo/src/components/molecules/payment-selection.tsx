@@ -1,6 +1,7 @@
 import { tv } from '@ui/utils'
 import Image from 'next/image'
 import '../../tokens/app-components/molecules/_payment-selection.css'
+import { Button } from '@ui/atoms/button'
 
 const paymentSelectionStyles = tv({
   slots: {
@@ -65,8 +66,8 @@ export function PaymentSelection({
     <div className={root()}>
       <div className={grid()}>
         {paymentMethods.map((method) => (
-          <button
-            type="button"
+          <Button
+            theme='borderless'
             key={method.id}
             onClick={() => onSelect(method.id)}
             className={card()}
@@ -91,7 +92,7 @@ export function PaymentSelection({
               className={image()}
             />
             <span className={label()}>{method.name}</span>
-          </button>
+          </Button>
         ))}
       </div>
     </div>

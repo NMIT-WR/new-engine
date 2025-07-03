@@ -35,8 +35,8 @@ interface OrderSummaryProps {
   }
   selectedShipping: ShippingMethod | undefined
   selectedPayment: PaymentMethod | undefined
-  onEditClick: () => void
-  onCompleteClick: () => void
+  // onEditClick: () => void
+ // onCompleteClick: () => void
 }
 
 const orderSummaryStyles = tv({
@@ -56,8 +56,8 @@ export function OrderSummary({
   addressData, 
   selectedShipping, 
   selectedPayment,
-  onEditClick,
-  onCompleteClick
+  // onEditClick,
+ // onCompleteClick
 }: OrderSummaryProps) {
   const { root, container, title, content, section, sectionTitle, sectionText, actions } = orderSummaryStyles()
 
@@ -116,12 +116,12 @@ export function OrderSummary({
         <div className={actions()}>
           <Button
             variant="secondary"
-            onClick={onEditClick}
+           // onClick={onEditClick}
           >
             Upravit údaje
           </Button>
           <Button
-            onClick={onCompleteClick}
+           // onClick={onCompleteClick}
             icon="icon-[mdi--check-circle]"
             className="flex-1"
           >
