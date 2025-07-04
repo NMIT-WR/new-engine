@@ -28,6 +28,7 @@
   --color-select-clear-trigger-fg: var(--color-select-fg);
   --color-select-clear-trigger-bg: transparent;
   --padding-select-clear-trigger: var(--spacing-3xs);
+  --spacing-select-right: var(--spacing-lg);
 
   /* === DROPDOWN CONTENT === */
   --color-select-content-bg: var(--color-surface);

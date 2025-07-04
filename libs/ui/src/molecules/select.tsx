@@ -38,7 +38,7 @@ const selectVariants = tv({
       'data-[invalid]:border-select-danger data-[invalid]:ring-select-danger',
     ],
     clearTrigger: [
-      'absolute right-10 h-full',
+      'absolute right-select-right h-full',
       'p-select-clear-trigger',
       'hover:bg-select-clear-trigger-bg',
       'text-select-clear-trigger-fg hover:text-select-danger',
@@ -176,7 +176,7 @@ export function Select({
   } = selectVariants({ size })
 
   return (
-    <form>
+    <>
       {/* Hidden form select for native form submission */}
       <select {...api.getHiddenSelectProps()}>
         {options.map((option) => (
@@ -249,7 +249,7 @@ export function Select({
         {invalid && <ErrorText>{errorText}</ErrorText>}
         {!invalid && helperText && <ExtraText>{helperText}</ExtraText>}
       </div>
-    </form>
+    </>
   )
 }
 
