@@ -76,7 +76,8 @@ export default function PaymentPage() {
     {
       value: 0,
       title: 'Adresa',
-      customStep: (
+      description: 'Vyplňte doručovací údaje',
+      content: (
         <AddressForm
           onComplete={(data) => {
             setAddressData(data)
@@ -89,7 +90,8 @@ export default function PaymentPage() {
     {
       value: 1,
       title: 'Doprava',
-      customStep: (
+      description: 'Vyberte způsob doručení',
+      content: (
         <ShippingSelection
           selected={selectedShipping}
           onSelect={(method) => {
@@ -103,7 +105,8 @@ export default function PaymentPage() {
     {
       value: 2,
       title: 'Platba',
-      customStep: (
+      description: 'Vyberte způsob platby',
+      content: (
         <PaymentSelection
           selected={selectedPayment}
           onSelect={(method) => {
@@ -117,7 +120,8 @@ export default function PaymentPage() {
     {
       value: 3,
       title: 'Souhrn',
-      customStep: (
+      description: 'Zkontrolujte objednávku',
+      content: (
         <OrderSummary
           addressData={addressData}
           selectedShipping={selectedShippingMethod}
@@ -167,13 +171,12 @@ export default function PaymentPage() {
         <div>
           <Steps
             items={steps}
-            custom={true}
             currentStep={currentStep}
             onStepChange={handleStepChange}
             onStepComplete={handleComplete}
             orientation="horizontal"
             linear={false}
-            visibleControls={false}
+            showControls={false}
           />
         </div>
         
