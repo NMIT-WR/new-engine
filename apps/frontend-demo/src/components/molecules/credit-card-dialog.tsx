@@ -6,40 +6,7 @@ import { Dialog } from '@ui/molecules/dialog'
 import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { tv } from 'tailwind-variants'
 import '../../tokens/app-components/molecules/_credit-card-dialog.css'
-
-const creditCardDialogStyles = tv({
-  slots: {
-    root: 'flex flex-col gap-cc-dialog-root',
-    form: 'flex flex-col gap-cc-dialog-form',
-    cardLogos:
-      'flex gap-cc-dialog-logos items-center mb-cc-dialog-logos-margin',
-    cardLogo: 'h-cc-dialog-logo-height opacity-cc-dialog-logo-opacity',
-    cardLogoActive: 'opacity-cc-dialog-logo-active',
-    cardNumberWrapper: 'relative',
-    cardTypeIcon:
-      'absolute right-cc-dialog-icon-right top-cc-dialog-icon-top h-cc-dialog-icon-height',
-    cvvWrapper: 'relative',
-    cvvTooltip: [
-      'absolute right-cc-dialog-tooltip-right top-cc-dialog-tooltip-top',
-      'text-cc-dialog-tooltip-fg cursor-help',
-    ],
-    cvvTooltipContent: [
-      'absolute right-0 bottom-full mb-cc-dialog-tooltip-margin',
-      'bg-cc-dialog-tooltip-bg text-cc-dialog-tooltip-content-fg',
-      'p-cc-dialog-tooltip-padding rounded-cc-dialog-tooltip',
-      'shadow-cc-dialog-tooltip text-cc-dialog-tooltip-size',
-      'w-cc-dialog-tooltip-width',
-    ],
-    securityInfo: [
-      'flex items-center gap-cc-dialog-security-gap',
-      'text-cc-dialog-security-fg text-cc-dialog-security-size',
-      'mt-cc-dialog-security-margin',
-    ],
-    securityIcon: 'w-cc-dialog-security-icon h-cc-dialog-security-icon',
-  },
-})
 
 interface CreditCardDialogProps {
   open: boolean
@@ -107,21 +74,6 @@ export function CreditCardDialog({
   const [cardType, setCardType] = useState<'visa' | 'mastercard' | 'unknown'>(
     'unknown'
   )
-
-  const {
-    root,
-    form,
-    cardLogos,
-    cardLogo,
-    cardLogoActive,
-    cardNumberWrapper,
-    cardTypeIcon,
-    cvvWrapper,
-    cvvTooltip,
-    cvvTooltipContent,
-    securityInfo,
-    securityIcon,
-  } = creditCardDialogStyles()
 
   useEffect(() => {
     setCardType(detectCardType(cardData.cardNumber))
@@ -218,26 +170,26 @@ export function CreditCardDialog({
       description="Zadejte údaje z vaší platební karty"
       customTrigger
     >
-      <div className={root()}>
-        <div className={cardLogos()}>
+      <div className="flex flex-col gap-cc-dialog-root">
+        <div className="flex gap-cc-dialog-logos items-center mb-cc-dialog-logos-margin">
           <Image
             src="/assets/visa.svg"
             alt="Visa"
             width={40}
             height={25}
-            className={`${cardLogo()} ${cardType === 'visa' ? cardLogoActive() : ''}`}
+            className={`h-cc-dialog-logo-height opacity-cc-dialog-logo-opacity ${cardType === 'visa' ? 'opacity-cc-dialog-logo-active' : ''}`}
           />
           <Image
             src="/assets/mastercard.svg"
             alt="Mastercard"
             width={40}
             height={25}
-            className={`${cardLogo()} ${cardType === 'mastercard' ? cardLogoActive() : ''}`}
+            className={`h-cc-dialog-logo-height opacity-cc-dialog-logo-opacity ${cardType === 'mastercard' ? 'opacity-cc-dialog-logo-active' : ''}`}
           />
         </div>
 
-        <form onSubmit={handleSubmit} className={form()}>
-          <div className={cardNumberWrapper()}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-cc-dialog-form">
+          <div className="relative">
             <FormInput
               id="card-number"
               label="Číslo karty"
@@ -256,7 +208,7 @@ export function CreditCardDialog({
                 alt={cardType}
                 width={32}
                 height={20}
-                className={cardTypeIcon()}
+                className="absolute right-cc-dialog-icon-right top-cc-dialog-icon-top h-cc-dialog-icon-height"
               />
             )}
           </div>
@@ -290,7 +242,7 @@ export function CreditCardDialog({
               }
             />
 
-            <div className={cvvWrapper()}>
+            <div className="relative">
               <FormInput
                 id="cvv"
                 label="CVV"
@@ -303,7 +255,7 @@ export function CreditCardDialog({
                 helpText={errors.cvv && <ErrorText>{errors.cvv}</ErrorText>}
               />
               <div
-                className={cvvTooltip()}
+                className="absolute right-cc-dialog-tooltip-right top-cc-dialog-tooltip-top text-cc-dialog-tooltip-fg cursor-help"
                 onMouseEnter={() => setShowCvvTooltip(true)}
                 onMouseLeave={() => setShowCvvTooltip(false)}
               >
@@ -321,7 +273,7 @@ export function CreditCardDialog({
                   />
                 </svg>
                 {showCvvTooltip && (
-                  <div className={cvvTooltipContent()}>
+                  <div className="absolute right-0 bottom-full mb-cc-dialog-tooltip-margin bg-cc-dialog-tooltip-bg text-cc-dialog-tooltip-content-fg p-cc-dialog-tooltip-padding rounded-cc-dialog-tooltip shadow-cc-dialog-tooltip text-cc-dialog-tooltip-size w-cc-dialog-tooltip-width">
                     3-4 místný kód na zadní straně karty
                   </div>
                 )}
@@ -329,9 +281,9 @@ export function CreditCardDialog({
             </div>
           </div>
 
-          <div className={securityInfo()}>
+          <div className="flex items-center gap-cc-dialog-security-gap text-cc-dialog-security-fg text-cc-dialog-security-size mt-cc-dialog-security-margin">
             <svg
-              className={securityIcon()}
+              className="w-cc-dialog-security-icon h-cc-dialog-security-icon"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

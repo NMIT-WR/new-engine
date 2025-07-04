@@ -1,43 +1,5 @@
-import { tv } from '@ui/utils'
 import Image from 'next/image'
 import '../../tokens/app-components/molecules/_shipping-selection.css'
-
-const shippingSelectionStyles = tv({
-  slots: {
-    root: 'w-full p-shipping-root',
-    list: 'space-y-shipping-list grid grid-cols-1 l:grid-cols-2 gap-4',
-    card: [
-      'relative flex items-center p-shipping-card',
-      'bg-shipping-card-bg border-shipping-card rounded-shipping-card',
-      'cursor-pointer transition-all duration-200',
-      'hover:bg-shipping-card-bg-hover hover:shadow-shipping-card-hover',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-shipping-ring',
-      'focus-visible:ring-offset-2 focus-visible:ring-offset-shipping-bg',
-      'data-[selected=true]:bg-shipping-card-bg-selected',
-      'data-[selected=true]:border-shipping-card-selected',
-      'data-[selected=true]:shadow-shipping-card-selected',
-    ],
-    content: 'flex items-center gap-shipping-content flex-1',
-    image: 'w-shipping-img h-shipping-img object-contain',
-    info: 'flex-1',
-    name: 'text-shipping-name font-shipping-name',
-    description: 'text-shipping-desc mt-shipping-desc',
-    delivery: 'text-shipping-delivery font-shipping-delivery',
-    price: 'text-shipping-price font-shipping-price ml-auto',
-    radio: [
-      'w-shipping-radio h-shipping-radio rounded-full',
-      'border-shipping-radio bg-shipping-radio-bg',
-      'flex items-center justify-center',
-      'transition-all duration-200',
-    ],
-    radioDot: [
-      'w-shipping-radio-dot h-shipping-radio-dot rounded-full',
-      'bg-shipping-radio-dot scale-0 opacity-0',
-      'transition-all duration-200',
-      'data-[selected=true]:scale-100 data-[selected=true]:opacity-100',
-    ],
-  },
-})
 
 export interface ShippingMethod {
   id: string
@@ -116,25 +78,10 @@ export function ShippingSelection({
   selected,
   onSelect,
 }: ShippingSelectionProps) {
-  const {
-    root,
-    list,
-    card,
-    content,
-    image,
-    info,
-    name,
-    description,
-    delivery,
-    price,
-    radio,
-    radioDot,
-  } = shippingSelectionStyles()
-
   return (
-    <div className={root()}>
+    <div className="w-full p-shipping-root">
       <div
-        className={list()}
+        className="space-y-shipping-list grid grid-cols-1 l:grid-cols-2 gap-4"
         role="radiogroup"
         aria-label="Vyberte způsob dopravy"
       >
@@ -143,24 +90,24 @@ export function ShippingSelection({
             type="button"
             key={method.id}
             onClick={() => onSelect(method.id)}
-            className={card()}
+            className="relative flex items-center p-shipping-card bg-shipping-card-bg border-shipping-card rounded-shipping-card cursor-pointer transition-all duration-200 hover:bg-shipping-card-bg-hover hover:shadow-shipping-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-shipping-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shipping-bg data-[selected=true]:bg-shipping-card-bg-selected data-[selected=true]:border-shipping-card-selected data-[selected=true]:shadow-shipping-card-selected"
             data-selected={selected === method.id}
             role="radio"
             aria-checked={selected === method.id}
             aria-label={`${method.name} - ${method.description} - ${method.price}`}
           >
-            <div className={content()}>
+            <div className="flex items-center gap-shipping-content flex-1">
               {method.image ? (
                 <Image
                   src={method.image}
                   alt={method.name}
                   width={100}
                   height={50}
-                  className={image()}
+                  className="w-shipping-img h-shipping-img object-contain"
                 />
               ) : (
                 <div
-                  className={`${image()} flex items-center justify-center rounded bg-gray-100 dark:bg-gray-800`}
+                  className="w-shipping-img h-shipping-img object-contain flex items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
                 >
                   <svg
                     className="h-8 w-8 text-gray-400"
@@ -178,15 +125,15 @@ export function ShippingSelection({
                   </svg>
                 </div>
               )}
-              <div className={info()}>
-                <h3 className={name()}>{method.name}</h3>
-                <p className={description()}>{method.description}</p>
-                <p className={delivery()}>{method.deliveryDate || method.delivery}</p>
+              <div className="flex-1">
+                <h3 className="text-shipping-name font-shipping-name">{method.name}</h3>
+                <p className="text-shipping-desc mt-shipping-desc">{method.description}</p>
+                <p className="text-shipping-delivery font-shipping-delivery">{method.deliveryDate || method.delivery}</p>
               </div>
-              <span className={price()}>{method.price}</span>
-              <div className={radio()}>
+              <span className="text-shipping-price font-shipping-price ml-auto">{method.price}</span>
+              <div className="w-shipping-radio h-shipping-radio rounded-full border-shipping-radio bg-shipping-radio-bg flex items-center justify-center transition-all duration-200">
                 <div
-                  className={radioDot()}
+                  className="w-shipping-radio-dot h-shipping-radio-dot rounded-full bg-shipping-radio-dot scale-0 opacity-0 transition-all duration-200 data-[selected=true]:scale-100 data-[selected=true]:opacity-100"
                   data-selected={selected === method.id}
                 />
               </div>

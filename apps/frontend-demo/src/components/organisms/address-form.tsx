@@ -6,7 +6,6 @@ import { FormCheckboxRaw as FormCheckbox } from '@ui/molecules/form-checkbox'
 import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import { Select } from '@ui/molecules/select'
 import { useState } from 'react'
-import { tv } from 'tailwind-variants'
 
 interface AddressData {
   firstName: string
@@ -42,23 +41,11 @@ const countries = [
   { label: 'Rakousko', value: 'AT' },
 ]
 
-const addressFormStyles = tv({
-  slots: {
-    root: 'flex flex-col relative',
-    section: 'flex flex-col gap-5',
-    title: 'text-lg font-semibold text-fg-primary mb-2',
-    grid: 'grid grid-cols-2 gap-4 max-sm:grid-cols-1',
-    country: 'max-w-[20rem]',
-    divider: 'mt-md',
-  },
-})
-
 export function AddressForm({
   onComplete,
   initialData,
   isLoading = false,
 }: AddressFormProps) {
-  const { root, section, title, grid, country, divider } = addressFormStyles()
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
     firstName: initialData?.shipping?.firstName || '',
     lastName: initialData?.shipping?.lastName || '',
@@ -177,17 +164,17 @@ export function AddressForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={root()}>
+    <form onSubmit={handleSubmit} className="flex flex-col relative">
       <Button size="sm" className="absolute right-0" onClick={setTestInfo}>
         Vyplnit
       </Button>
-      <div className={section()}>
-        <h3 className={title()}>Doručovací adresa</h3>
+      <div className="flex flex-col gap-5">
+        <h3 className="text-lg font-semibold text-fg-primary mb-2">Doručovací adresa</h3>
         <p className="mb-4 text-fg-secondary text-sm">
           Pole označená <span className="text-red-500">*</span> jsou povinná
         </p>
 
-        <div className={grid()}>
+        <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
           <FormInput
             id="shipping-first-name"
             label="Jméno"
@@ -240,7 +227,7 @@ export function AddressForm({
             setShippingAddress({ ...shippingAddress, company: e.target.value })
           }
         />
-        <div className={grid()}>
+        <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
           <FormInput
             id="shipping-email"
             label="Email"
@@ -305,7 +292,7 @@ export function AddressForm({
           }
         />
 
-        <div className={grid()}>
+        <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
           <FormInput
             id="shipping-city"
             label="Město"
@@ -341,7 +328,7 @@ export function AddressForm({
           />
         </div>
 
-        <div className={country()}>
+        <div className="max-w-[20rem]">
           <Select
             options={countries}
             value={[shippingAddress.country]}
@@ -356,7 +343,7 @@ export function AddressForm({
         </div>
       </div>
 
-      <div className={divider()}>
+      <div className="mt-md">
         <FormCheckbox
           id="same-address"
           label="Fakturační adresa je stejná jako doručovací"
@@ -368,10 +355,10 @@ export function AddressForm({
       </div>
 
       {!useSameAddress && (
-        <div className={section()}>
-          <h3 className={title()}>Fakturační adresa</h3>
+        <div className="flex flex-col gap-5">
+          <h3 className="text-lg font-semibold text-fg-primary mb-2">Fakturační adresa</h3>
 
-          <div className={grid()}>
+          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
             <FormInput
               id="billing-first-name"
               label="Jméno"
@@ -436,7 +423,7 @@ export function AddressForm({
             }
           />
 
-          <div className={grid()}>
+          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
             <FormInput
               id="billing-city"
               label="Město"
@@ -473,7 +460,7 @@ export function AddressForm({
             />
           </div>
 
-          <div className={country()}>
+          <div className="max-w-[20rem]">
             <Select
               options={countries}
               value={[billingAddress.country]}

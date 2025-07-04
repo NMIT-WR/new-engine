@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from '@ui/atoms/button'
-import { tv } from 'tailwind-variants'
 
 interface AddressData {
   firstName: string
@@ -42,19 +41,6 @@ interface OrderSummaryProps {
   isLoading?: boolean
 }
 
-const orderSummaryStyles = tv({
-  slots: {
-    root: 'fade-in slide-in-from-bottom-2 animate-in duration-300',
-    container: 'rounded-lg p-6 bg-surface ',
-    title: 'mb-6 font-bold text-xl',
-    content: 'space-y-6',
-    section: '',
-    sectionTitle: 'mb-2 font-semibold text-fg-primary',
-    sectionText: 'text-sm text-fg-secondary',
-    actions: 'mt-8 flex gap-4',
-  },
-})
-
 export function OrderSummary({
   addressData,
   selectedShipping,
@@ -65,23 +51,12 @@ export function OrderSummary({
   orderNumber,
   isLoading = false,
 }: OrderSummaryProps) {
-  const {
-    root,
-    container,
-    title,
-    content,
-    section,
-    sectionTitle,
-    sectionText,
-    actions,
-  } = orderSummaryStyles()
-
   if (!addressData || !addressData.shipping) {
     return (
-      <div className={root()}>
-        <div className={container()}>
-          <h2 className={title()}>Zkontrolujte objednávku</h2>
-          <p className={sectionText()}>
+      <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
+        <div className="rounded-lg p-6 bg-surface">
+          <h2 className="mb-6 font-bold text-xl">Zkontrolujte objednávku</h2>
+          <p className="text-sm text-fg-secondary">
             Nejprve vyplňte všechny potřebné údaje.
           </p>
         </div>
@@ -95,8 +70,8 @@ export function OrderSummary({
     deliveryDate.setDate(deliveryDate.getDate() + 3) // Add 3 days for delivery
 
     return (
-      <div className={root()}>
-        <div className={container()}>
+      <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
+        <div className="rounded-lg p-6 bg-surface">
           <div className="mb-6 text-center">
             <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
               <svg
@@ -113,16 +88,16 @@ export function OrderSummary({
                 />
               </svg>
             </div>
-            <h2 className={title()}>Objednávka byla úspěšně odeslána!</h2>
+            <h2 className="mb-6 font-bold text-xl">Objednávka byla úspěšně odeslána!</h2>
             <p className="mt-2 font-semibold text-fg-primary text-lg">
               Číslo objednávky: #{orderNumber}
             </p>
           </div>
 
-          <div className={content()}>
-            <div className={section()}>
-              <h3 className={sectionTitle()}>Předpokládané doručení</h3>
-              <p className={sectionText()}>
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-2 font-semibold text-fg-primary">Předpokládané doručení</h3>
+              <p className="text-sm text-fg-secondary">
                 {deliveryDate.toLocaleDateString('cs-CZ', {
                   weekday: 'long',
                   year: 'numeric',
@@ -132,9 +107,9 @@ export function OrderSummary({
               </p>
             </div>
 
-            <div className={section()}>
-              <h3 className={sectionTitle()}>Co bude následovat?</h3>
-              <ul className={`${sectionText()} space-y-2`}>
+            <div>
+              <h3 className="mb-2 font-semibold text-fg-primary">Co bude následovat?</h3>
+              <ul className="text-sm text-fg-secondary space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-600 dark:text-green-400">
                     ✓
@@ -159,10 +134,10 @@ export function OrderSummary({
               </ul>
             </div>
 
-            <div className={section()}>
-              <h3 className={sectionTitle()}>Souhrn objednávky</h3>
+            <div>
+              <h3 className="mb-2 font-semibold text-fg-primary">Souhrn objednávky</h3>
               <div className="space-y-1">
-                <p className={sectionText()}>
+                <p className="text-sm text-fg-secondary">
                   <strong>Doručovací adresa:</strong>
                   <br />
                   {addressData.shipping.firstName}{' '}
@@ -171,17 +146,17 @@ export function OrderSummary({
                   {addressData.shipping.street}, {addressData.shipping.city}{' '}
                   {addressData.shipping.postalCode}
                 </p>
-                <p className={sectionText()}>
+                <p className="text-sm text-fg-secondary">
                   <strong>Způsob dopravy:</strong> {selectedShipping?.name}
                 </p>
-                <p className={sectionText()}>
+                <p className="text-sm text-fg-secondary">
                   <strong>Způsob platby:</strong> {selectedPayment?.name}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className={actions()}>
+          <div className="mt-8 flex gap-4">
             <Button
               onClick={() => window.print()}
               variant="secondary"
@@ -204,14 +179,14 @@ export function OrderSummary({
   }
 
   return (
-    <div className={root()}>
-      <div className={container()}>
-        <h2 className={title()}>Zkontrolujte objednávku</h2>
+    <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
+      <div className="rounded-lg p-6 bg-surface">
+        <h2 className="mb-6 font-bold text-xl">Zkontrolujte objednávku</h2>
 
-        <div className={content()}>
-          <div className={section()}>
-            <h3 className={sectionTitle()}>Doručovací adresa</h3>
-            <p className={sectionText()}>
+        <div className="space-y-6">
+          <div>
+            <h3 className="mb-2 font-semibold text-fg-primary">Doručovací adresa</h3>
+            <p className="text-sm text-fg-secondary">
               {addressData.shipping.firstName} {addressData.shipping.lastName}
               <br />
               {addressData.shipping.company && (
@@ -235,9 +210,9 @@ export function OrderSummary({
           </div>
 
           {!addressData.useSameAddress && addressData.billing && (
-            <div className={section()}>
-              <h3 className={sectionTitle()}>Fakturační adresa</h3>
-              <p className={sectionText()}>
+            <div>
+              <h3 className="mb-2 font-semibold text-fg-primary">Fakturační adresa</h3>
+              <p className="text-sm text-fg-secondary">
                 {addressData.billing.firstName} {addressData.billing.lastName}
                 <br />
                 {addressData.billing.company && (
@@ -253,9 +228,9 @@ export function OrderSummary({
             </div>
           )}
 
-          <div className={section()}>
-            <h3 className={sectionTitle()}>Doprava</h3>
-            <p className={sectionText()}>
+          <div>
+            <h3 className="mb-2 font-semibold text-fg-primary">Doprava</h3>
+            <p className="text-sm text-fg-secondary">
               {selectedShipping?.name} -{' '}
               {selectedShipping?.price
                 ? `${selectedShipping.price} Kč`
@@ -265,16 +240,16 @@ export function OrderSummary({
             </p>
           </div>
 
-          <div className={section()}>
-            <h3 className={sectionTitle()}>Platba</h3>
-            <p className={sectionText()}>
+          <div>
+            <h3 className="mb-2 font-semibold text-fg-primary">Platba</h3>
+            <p className="text-sm text-fg-secondary">
               {selectedPayment?.name}{' '}
               {selectedPayment?.fee ? `(+${selectedPayment.fee} Kč)` : ''}
             </p>
           </div>
         </div>
 
-        <div className={actions()}>
+        <div className="mt-8 flex gap-4">
           <Button
             variant="secondary"
             // onClick={onEditClick}
