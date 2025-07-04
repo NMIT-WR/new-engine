@@ -7,7 +7,7 @@ import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@ui/molecules/toast'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 // Cart hook using React Query
 export function useMedusaCart() {
@@ -103,17 +103,6 @@ export function useMedusaCart() {
       return failureCount < 3
     },
   })
-
-  // Update cart region when region changes
-  useEffect(() => {
-    // Disabled automatic region update - handled in query function
-    // This prevents unnecessary cart updates and potential data loss
-    /*
-    if (cart && region && cart.region_id !== region.id) {
-      updateRegionMutation.mutate(region.id)
-    }
-    */
-  }, [cart?.region_id, region?.id])
 
   // Add item mutation
   const addItemMutation = useMutation({
@@ -286,21 +275,6 @@ export function useMedusaCart() {
         description: error.message,
         type: 'error',
       })
-    },
-  })
-
-  // Update region mutation (internal use)
-  const updateRegionMutation = useMutation({
-    mutationFn: async (regionId: string) => {
-      if (!cart) throw new Error('No cart available')
-
-      const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
-        region_id: regionId,
-      })
-      return updatedCart
-    },
-    onSuccess: (updatedCart) => {
-      queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
     },
   })
 
