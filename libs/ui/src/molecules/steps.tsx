@@ -70,9 +70,9 @@ const stepsVariants = tv({
 
 export type StepItem = {
   value: number
-  customStep?: ReactNode
-  title?: ReactNode
+  title: ReactNode
   description?: ReactNode
+  content?: ReactNode
   icon?: ReactNode
 }
 
@@ -87,8 +87,7 @@ export interface StepsProps extends VariantProps<typeof stepsVariants> {
   onStepChange?: (step: number) => void
   onStepComplete?: () => void
   className?: string
-  custom?: boolean
-  visibleControls?: boolean
+  showControls?: boolean
 }
 
 export function Steps({
@@ -96,9 +95,8 @@ export function Steps({
   items,
   currentStep = 0,
   orientation = 'horizontal',
-  custom = false,
   linear = false,
-  visibleControls = true,
+  showControls = true,
   completeText,
   onStepChange,
   onStepComplete,
@@ -157,30 +155,20 @@ export function Steps({
           </div>
         ))}
       </div>
-      {custom ? (
-        items.map((step, index) => (
-          <div
-            className={content()}
-            key={`step-content-${index}`}
-            {...api.getContentProps({ index })}
-          >
-            {step.customStep}
-          </div>
-        ))
-      ) : (
-        items.map((step, index) => (
-          <div
-            className={content()}
-            key={`step-content-${index}`}
-            {...api.getContentProps({ index })}
-          >
+      {items.map((step, index) => (
+        <div
+          className={content()}
+          key={`step-content-${index}`}
+          {...api.getContentProps({ index })}
+        >
+          {step.content || (
             <article className="h-fit">
               <h3>{step.title}</h3>
               {step.description && <p>{step.description}</p>}
             </article>
-          </div>
-        ))
-      )}
+          )}
+        </div>
+      ))}
       <div
         className={content()}
         {...api.getContentProps({ index: items.length })}
@@ -188,24 +176,26 @@ export function Steps({
         {completeText}
       </div>
 
-      {visibleControls && <div className={containerButtons()} data-orientation={orientation}>
-        <Button
-          theme="solid"
-          size="sm"
-          className={stepButton()}
-          {...api.getPrevTriggerProps()}
-        >
-          Back
-        </Button>
-        <Button
-          size="sm"
-          theme="solid"
-          className={stepButton()}
-          {...api.getNextTriggerProps()}
-        >
-          Next
-        </Button>
-      </div>}
+      {showControls && (
+        <div className={containerButtons()} data-orientation={orientation}>
+          <Button
+            theme="solid"
+            size="sm"
+            className={stepButton()}
+            {...api.getPrevTriggerProps()}
+          >
+            Back
+          </Button>
+          <Button
+            size="sm"
+            theme="solid"
+            className={stepButton()}
+            {...api.getNextTriggerProps()}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
