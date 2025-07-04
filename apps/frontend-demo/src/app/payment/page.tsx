@@ -1,16 +1,16 @@
 'use client'
 
+import { CreditCardDialog } from '@/components/molecules/credit-card-dialog'
+import { OrderSummary } from '@/components/order-summary'
+import { useCart } from '@/hooks/use-cart'
 import { Steps } from '@ui/molecules/steps'
-import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { PaymentSelection } from '../../components/molecules/payment-selection'
 import { ShippingSelection } from '../../components/molecules/shipping-selection'
 import { AddressForm } from '../../components/organisms/address-form'
 import { OrderPreview } from '../../components/organisms/order-preview'
-import { OrderSummary } from '@/components/order-summary'
-import { Button } from '@ui/atoms/button'
-import { useCart } from '@/hooks/use-cart'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 // Import payment and shipping methods data with prices
 const paymentMethods = [
@@ -24,52 +24,144 @@ const paymentMethods = [
   { id: 'qr', name: 'QR platba', fee: 0 },
 ]
 
+// Helper function to calculate delivery date
+const getDeliveryDate = (daysToAdd: number) => {
+  const date = new Date()
+  date.setDate(date.getDate() + daysToAdd)
+  return date.toLocaleDateString('cs-CZ', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'numeric',
+  })
+}
+
 const shippingMethods = [
-  { id: 'ppl', name: 'PPL', price: 99, estimatedDays: '2-3 dny' },
-  { id: 'dhl', name: 'DHL Express', price: 149, estimatedDays: '1-2 dny' },
-  { id: 'zasilkovna', name: 'Zásilkovna', price: 69, estimatedDays: '2-3 dny' },
-  { id: 'balikovna', name: 'Balíkovna', price: 79, estimatedDays: '2-3 dny' },
-  { id: 'personal', name: 'Osobní odběr', price: 0, estimatedDays: 'Ihned' },
+  {
+    id: 'ppl',
+    name: 'PPL',
+    price: 99,
+    estimatedDays: '2-3 dny',
+    deliveryDate: `${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
+  },
+  {
+    id: 'dhl',
+    name: 'DHL Express',
+    price: 149,
+    estimatedDays: '1-2 dny',
+    deliveryDate: `${getDeliveryDate(1)} - ${getDeliveryDate(2)}`,
+  },
+  {
+    id: 'zasilkovna',
+    name: 'Zásilkovna',
+    price: 69,
+    estimatedDays: '2-3 dny',
+    deliveryDate: `${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
+  },
+  {
+    id: 'balikovna',
+    name: 'Balíkovna',
+    price: 79,
+    estimatedDays: '2-3 dny',
+    deliveryDate: `${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
+  },
+  {
+    id: 'personal',
+    name: 'Osobní odběr',
+    price: 0,
+    estimatedDays: 'Ihned',
+    deliveryDate: 'Dnes',
+  },
 ]
 
 export default function PaymentPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedPayment, setSelectedPayment] = useState<string>('')
   const [selectedShipping, setSelectedShipping] = useState<string>('')
-  const [addressData, setAddressData] = useState<any>(null)
-  const { cart } = useCart()
+  const [addressData, setAddressData] = useState<{
+    shipping: any
+    billing: any
+    useSameAddress: boolean
+  } | null>(null)
+  const [showCreditCardDialog, setShowCreditCardDialog] = useState(false)
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [isOrderComplete, setIsOrderComplete] = useState(false)
+  const [orderNumber, setOrderNumber] = useState<string>('')
+  const { cart, clearCart } = useCart()
   const router = useRouter()
-  
+
   // Redirect if cart is empty
   useEffect(() => {
-    if (cart && cart.items && cart.items.length === 0) {
+    if (cart?.items && cart.items.length === 0) {
       router.push('/cart')
     }
   }, [cart, router])
-  
+
   if (!cart || !cart.items || cart.items.length === 0) {
     return null
   }
-  
-  const selectedShippingMethod = shippingMethods.find(m => m.id === selectedShipping)
-  const selectedPaymentMethod = paymentMethods.find(m => m.id === selectedPayment)
+
+  const selectedShippingMethod = shippingMethods.find(
+    (m) => m.id === selectedShipping
+  )
+  const selectedPaymentMethod = paymentMethods.find(
+    (m) => m.id === selectedPayment
+  )
   const shippingPrice = selectedShippingMethod?.price || 0
   const paymentFee = selectedPaymentMethod?.fee || 0
 
-  const handleComplete = async () => {
+  const handleComplete = () => {
+    // Check if payment method is credit card
+    if (selectedPayment === 'card') {
+      setShowCreditCardDialog(true)
+      return
+    }
+
+    // For other payment methods, process directly
+    processOrder()
+  }
+
+  const processOrder = async () => {
+    setIsProcessingPayment(true)
+
     // Here you would normally:
     // 1. Create order in Medusa
     // 2. Process payment
     // 3. Redirect to success page
-    console.log('Order data:', {
-      address: addressData,
-      shipping: selectedShipping,
-      payment: selectedPayment,
-      cart: cart
-    })
-    // For now, just show alert
-    alert('Objednávka byla úspěšně odeslána!')
-    router.push('/')
+    // Log order data for debugging (remove in production)
+    // console.log('Order data:', {
+    //   address: addressData,
+    //   shipping: selectedShipping,
+    //   payment: selectedPayment,
+    //   cart: cart,
+    // })
+
+    // Simulate processing
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    // Generate order number
+    const newOrderNumber = `CZ${Date.now().toString().slice(-8)}`
+    setOrderNumber(newOrderNumber)
+
+    setIsProcessingPayment(false)
+    setIsOrderComplete(true)
+
+    // Clear the cart after successful order
+    clearCart()
+
+    // Move to final step
+    setCurrentStep(3)
+  }
+
+  const handleCreditCardSubmit = async (_cardData: {
+    cardNumber: string
+    cardHolder: string
+    expiryDate: string
+    cvv: string
+  }) => {
+    // Process card payment
+    // In production, you would send _cardData to payment processor
+    setShowCreditCardDialog(false)
+    await processOrder()
   }
 
   const steps = [
@@ -83,7 +175,7 @@ export default function PaymentPage() {
             setAddressData(data)
             setTimeout(() => setCurrentStep(1), 300)
           }}
-          initialData={addressData}
+          initialData={addressData || undefined}
         />
       ),
     },
@@ -123,10 +215,13 @@ export default function PaymentPage() {
       description: 'Zkontrolujte objednávku',
       content: (
         <OrderSummary
-          addressData={addressData}
+          addressData={addressData!}
           selectedShipping={selectedShippingMethod}
           selectedPayment={selectedPaymentMethod}
           onCompleteClick={handleComplete}
+          isOrderComplete={isOrderComplete}
+          orderNumber={orderNumber}
+          isLoading={isProcessingPayment}
         />
       ),
     },
@@ -138,7 +233,7 @@ export default function PaymentPage() {
       setCurrentStep(step)
       return
     }
-    
+
     // Only allow forward movement if current step is completed
     if (step > currentStep) {
       if (currentStep === 0 && !addressData) {
@@ -154,14 +249,24 @@ export default function PaymentPage() {
     setCurrentStep(step)
   }
 
-
-
   return (
     <div className="container mx-auto max-w-[80rem] px-4 py-8">
       <div className="mb-6 flex items-center gap-4">
         <Link href="/cart" className="text-fg-primary hover:text-fg-secondary">
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-label="Zpět do košíku"
+          >
+            <title>Zpět do košíku</title>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </Link>
         <h1 className="font-bold text-3xl">Dokončení objednávky</h1>
@@ -179,7 +284,7 @@ export default function PaymentPage() {
             showControls={false}
           />
         </div>
-        
+
         <div className="lg:pl-8">
           <OrderPreview
             shippingPrice={shippingPrice}
@@ -188,6 +293,13 @@ export default function PaymentPage() {
           />
         </div>
       </div>
+
+      <CreditCardDialog
+        open={showCreditCardDialog}
+        onOpenChange={(details) => setShowCreditCardDialog(details.open)}
+        onSubmit={handleCreditCardSubmit}
+        isLoading={isProcessingPayment}
+      />
     </div>
   )
 }
