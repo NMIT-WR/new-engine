@@ -45,7 +45,19 @@ export interface ShippingMethod {
   description: string
   price: string
   delivery: string
+  deliveryDate?: string
   image?: string
+}
+
+// Helper function to calculate delivery date
+const getDeliveryDate = (daysToAdd: number) => {
+  const date = new Date()
+  date.setDate(date.getDate() + daysToAdd)
+  return date.toLocaleDateString('cs-CZ', { 
+    weekday: 'short', 
+    day: 'numeric', 
+    month: 'numeric' 
+  })
 }
 
 const shippingMethods: ShippingMethod[] = [
@@ -55,6 +67,7 @@ const shippingMethods: ShippingMethod[] = [
     description: 'Doručení na adresu',
     price: '89 Kč',
     delivery: 'Doručení za 2-3 pracovní dny',
+    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
     image: '/assets/ppl.webp',
   },
   {
@@ -63,6 +76,7 @@ const shippingMethods: ShippingMethod[] = [
     description: 'Expresní doručení',
     price: '129 Kč',
     delivery: 'Doručení za 1-2 pracovní dny',
+    deliveryDate: `Doručení ${getDeliveryDate(1)} - ${getDeliveryDate(2)}`,
     image: '/assets/dhl.webp',
   },
   {
@@ -71,6 +85,7 @@ const shippingMethods: ShippingMethod[] = [
     description: 'Výdejní místa po celé ČR',
     price: '65 Kč',
     delivery: 'Doručení za 2-3 pracovní dny',
+    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
     image: '/assets/zasilkovna.webp',
   },
   {
@@ -79,6 +94,7 @@ const shippingMethods: ShippingMethod[] = [
     description: 'Široká síť výdejních míst',
     price: '59 Kč',
     delivery: 'Doručení za 2-3 pracovní dny',
+    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
     image: '/assets/balikovna.webp',
   },
   {
@@ -87,6 +103,7 @@ const shippingMethods: ShippingMethod[] = [
     description: 'Vyzvednutí na prodejně',
     price: 'Zdarma',
     delivery: 'Připraveno ihned',
+    deliveryDate: 'Vyzvednutí dnes',
   },
 ]
 
@@ -164,7 +181,7 @@ export function ShippingSelection({
               <div className={info()}>
                 <h3 className={name()}>{method.name}</h3>
                 <p className={description()}>{method.description}</p>
-                <p className={delivery()}>{method.delivery}</p>
+                <p className={delivery()}>{method.deliveryDate || method.delivery}</p>
               </div>
               <span className={price()}>{method.price}</span>
               <div className={radio()}>
