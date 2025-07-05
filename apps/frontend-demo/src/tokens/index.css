@@ -5,6 +5,7 @@
 @import "./_layout.css";
 @import "./_overrides-components.css";
 @import "./app-components/app-components.css";
+@import "./_icons.css";
 
 /* Tell Tailwind where to look for classes in both UI library and local components */
 @source "../../../../libs/ui/src/**/*.{js,ts,jsx,tsx}";

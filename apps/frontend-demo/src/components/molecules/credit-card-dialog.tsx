@@ -7,6 +7,7 @@ import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import '../../tokens/app-components/molecules/_credit-card-dialog.css'
+import { Icon } from '@ui/atoms/icon'
 
 interface CreditCardDialogProps {
   open: boolean
@@ -70,7 +71,6 @@ export function CreditCardDialog({
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [showCvvTooltip, setShowCvvTooltip] = useState(false)
   const [cardType, setCardType] = useState<'visa' | 'mastercard' | 'unknown'>(
     'unknown'
   )
@@ -173,18 +173,18 @@ export function CreditCardDialog({
       <div className="flex flex-col gap-cc-dialog-root">
         <div className="flex gap-cc-dialog-logos items-center mb-cc-dialog-logos-margin">
           <Image
-            src="/assets/visa.svg"
+            src="/assets/visa.webp"
             alt="Visa"
             width={40}
             height={25}
-            className={`h-cc-dialog-logo-height opacity-cc-dialog-logo-opacity ${cardType === 'visa' ? 'opacity-cc-dialog-logo-active' : ''}`}
+            className={`h-cc-dialog-logo-height ${cardType === 'visa' ? 'opacity-1' : 'opacity-50'}`}
           />
           <Image
-            src="/assets/mastercard.svg"
+            src="/assets/mastercard.webp"
             alt="Mastercard"
             width={40}
             height={25}
-            className={`h-cc-dialog-logo-height opacity-cc-dialog-logo-opacity ${cardType === 'mastercard' ? 'opacity-cc-dialog-logo-active' : ''}`}
+            className={`h-cc-dialog-logo-height ${cardType === 'mastercard' ? 'opacity-100' : 'opacity-50'}`}
           />
         </div>
 
@@ -202,15 +202,6 @@ export function CreditCardDialog({
                 errors.cardNumber && <ErrorText>{errors.cardNumber}</ErrorText>
               }
             />
-            {cardType !== 'unknown' && (
-              <Image
-                src={`/assets/${cardType}.svg`}
-                alt={cardType}
-                width={32}
-                height={20}
-                className="absolute right-cc-dialog-icon-right top-cc-dialog-icon-top h-cc-dialog-icon-height"
-              />
-            )}
           </div>
 
           <FormInput
@@ -256,45 +247,13 @@ export function CreditCardDialog({
               />
               <div
                 className="absolute right-cc-dialog-tooltip-right top-cc-dialog-tooltip-top text-cc-dialog-tooltip-fg cursor-help"
-                onMouseEnter={() => setShowCvvTooltip(true)}
-                onMouseLeave={() => setShowCvvTooltip(false)}
               >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {showCvvTooltip && (
-                  <div className="absolute right-0 bottom-full mb-cc-dialog-tooltip-margin bg-cc-dialog-tooltip-bg text-cc-dialog-tooltip-content-fg p-cc-dialog-tooltip-padding rounded-cc-dialog-tooltip shadow-cc-dialog-tooltip text-cc-dialog-tooltip-size w-cc-dialog-tooltip-width">
-                    3-4 místný kód na zadní straně karty
-                  </div>
-                )}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-cc-dialog-security-gap text-cc-dialog-security-fg text-cc-dialog-security-size mt-cc-dialog-security-margin">
-            <svg
-              className="w-cc-dialog-security-icon h-cc-dialog-security-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+            <Icon icon="token-icon-lock" />
             <span>Vaše platební údaje jsou bezpečně šifrovány</span>
           </div>
 

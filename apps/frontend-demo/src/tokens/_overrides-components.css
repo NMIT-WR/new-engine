@@ -135,6 +135,9 @@
   --spacing-track-width: var(--spacing-lg);
   --spacing-track-height: var(--spacing-sm);
 
+  /* === STEPS === */
+  --color-steps-content-bg: var(--color-base);
+
   /* === TYPOGRAPHY === */
   /* Add base text size explicitly */
   --text-base: 1rem; /* 16px */

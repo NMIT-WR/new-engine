@@ -4,13 +4,13 @@ import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
-import Image from 'next/image'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { Link } from '@ui/atoms/link'
 import { LinkButton } from '@ui/atoms/link-button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { NumericInput } from '@ui/molecules/numeric-input'
+import Image from 'next/image'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
@@ -78,7 +78,7 @@ export default function CartPage() {
                         {/* Product Details */}
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
-                            <div >
+                            <div>
                               <Link
                                 href={getProductPath(
                                   item.variant?.product?.handle || ''
@@ -98,7 +98,6 @@ export default function CartPage() {
                                 {formatPrice(price, currencyCode)}
                               </p>
                             </div>
-
                           </div>
 
                           <div className="flex items-center gap-cart-item-actions-gap">
@@ -110,14 +109,14 @@ export default function CartPage() {
                                 updateQuantity(item.id, value)
                               }
                               size="sm"
-                              className='py-0'
+                              className="py-0"
                             />
                             <Button
                               variant="tertiary"
                               theme="borderless"
                               size="sm"
                               onClick={() => removeItem(item.id)}
-                              icon="icon-[mdi--delete-outline]"
+                              icon="token-icon-remove"
                             >
                               Odebrat
                             </Button>
@@ -136,7 +135,7 @@ export default function CartPage() {
                   theme="borderless"
                   size="sm"
                   onClick={clearCart}
-                  icon="icon-[mdi--delete-sweep-outline]"
+                  icon="token-icon-remove-all"
                 >
                   Vyprázdnit košík
                 </Button>
@@ -176,21 +175,24 @@ export default function CartPage() {
                   <span>{formatPrice(total, currencyCode)}</span>
                 </div>
 
-                <Link href="/payment" className="block">
-                  <Button
-                    className="mt-cart-checkout-margin w-full"
-                    size="lg"
-                    icon="icon-[mdi--lock-outline]"
-                  >
-                    Přejít k platbě
-                  </Button>
-                </Link>
+                <LinkButton
+                  href="/payment"
+                  className="mt-cart-checkout-margin w-full"
+                  size="lg"
+                  icon="token-icon-lock"
+                >
+                  Přejít k platbě
+                </LinkButton>
 
-                <Link href="/products" className="mt-4 block text-center">
-                  <Button variant="tertiary" theme="borderless" size="sm">
-                    Pokračovat v nakupování
-                  </Button>
-                </Link>
+                <LinkButton
+                  href="/products"
+                  className="mt-4 w-full"
+                  variant="tertiary"
+                  theme="borderless"
+                  size="sm"
+                >
+                  Pokračovat v nakupování
+                </LinkButton>
               </div>
             </div>
           </div>
@@ -208,9 +210,9 @@ export default function CartPage() {
             <p className="mb-cart-empty-text-margin text-cart-empty-text">
               Vypadá to, že jste do košíku ještě nic nepřidali.
             </p>
-            <LinkButton 
-              href="/products" 
-              size="lg" 
+            <LinkButton
+              href="/products"
+              size="lg"
               icon="icon-[mdi--shopping-outline]"
             >
               Začít Nakupovat

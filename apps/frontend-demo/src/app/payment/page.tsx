@@ -3,6 +3,7 @@
 import { CreditCardDialog } from '@/components/molecules/credit-card-dialog'
 import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
+import { orderHelpers } from '@/stores/order-store'
 import { Steps } from '@ui/molecules/steps'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -11,6 +12,7 @@ import { PaymentSelection } from '../../components/molecules/payment-selection'
 import { ShippingSelection } from '../../components/molecules/shipping-selection'
 import { AddressForm } from '../../components/organisms/address-form'
 import { OrderPreview } from '../../components/organisms/order-preview'
+import { Icon } from '@ui/atoms/icon'
 
 // Import payment and shipping methods data with prices
 const paymentMethods = [
@@ -86,17 +88,44 @@ export default function PaymentPage() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [isOrderComplete, setIsOrderComplete] = useState(false)
   const [orderNumber, setOrderNumber] = useState<string>('')
-  const { cart, clearCart } = useCart()
+  const { cart, clearCart, isLoading } = useCart()
   const router = useRouter()
 
-  // Redirect if cart is empty
+  // Redirect if cart is empty and no completed order
   useEffect(() => {
-    if (cart?.items && cart.items.length === 0) {
-      router.push('/cart')
-    }
-  }, [cart, router])
+    // Wait for cart to load before checking
+    if (!isLoading) {
+      const hasCompletedOrder = orderHelpers.getOrderData(null) !== null
 
-  if (!cart || !cart.items || cart.items.length === 0) {
+      // Only redirect if cart is empty AND no completed order exists
+      if (
+        (!cart || cart.items?.length === 0) &&
+        !hasCompletedOrder &&
+        !isOrderComplete
+      ) {
+      //  router.push('/cart')
+      }
+    }
+  }, [cart, router, isLoading, isOrderComplete])
+
+  // Show loading state while cart is loading
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-[80rem] px-4 py-8">
+        <div className="flex min-h-[400px] items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2"></div>
+            <p className="text-fg-secondary">Načítání...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Get order data (either from cart or saved completed order)
+  const orderData = orderHelpers.getOrderData(cart)
+
+  if (!orderData || !orderData.items || orderData.items.length === 0) {
     return null
   }
 
@@ -127,20 +156,15 @@ export default function PaymentPage() {
     // 1. Create order in Medusa
     // 2. Process payment
     // 3. Redirect to success page
-    // Log order data for debugging (remove in production)
-    // console.log('Order data:', {
-    //   address: addressData,
-    //   shipping: selectedShipping,
-    //   payment: selectedPayment,
-    //   cart: cart,
-    // })
-
-    // Simulate processing
-    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Generate order number
     const newOrderNumber = `CZ${Date.now().toString().slice(-8)}`
     setOrderNumber(newOrderNumber)
+
+    // Save cart data before clearing
+    if (cart) {
+      orderHelpers.saveCompletedOrder(cart)
+    }
 
     setIsProcessingPayment(false)
     setIsOrderComplete(true)
@@ -219,6 +243,7 @@ export default function PaymentPage() {
           selectedShipping={selectedShippingMethod}
           selectedPayment={selectedPaymentMethod}
           onCompleteClick={handleComplete}
+          onEditClick={() => setCurrentStep(() => currentStep -1)}
           isOrderComplete={isOrderComplete}
           orderNumber={orderNumber}
           isLoading={isProcessingPayment}
@@ -252,22 +277,8 @@ export default function PaymentPage() {
   return (
     <div className="container mx-auto max-w-[80rem] px-4 py-8">
       <div className="mb-6 flex items-center gap-4">
-        <Link href="/cart" className="text-fg-primary hover:text-fg-secondary">
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-label="Zpět do košíku"
-          >
-            <title>Zpět do košíku</title>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+        <Link href="/cart">
+        <Icon icon="token-icon-arrow-left text-lg" className="text-fg-primary hover:text-fg-secondary" />
         </Link>
         <h1 className="font-bold text-3xl">Dokončení objednávky</h1>
       </div>

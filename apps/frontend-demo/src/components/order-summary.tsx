@@ -1,6 +1,8 @@
 'use client'
 
 import { Button } from '@ui/atoms/button'
+import { Icon } from '@ui/atoms/icon'
+import { LinkButton } from '@ui/atoms/link-button'
 
 interface AddressData {
   firstName: string
@@ -34,7 +36,7 @@ interface OrderSummaryProps {
   }
   selectedShipping: ShippingMethod | undefined
   selectedPayment: PaymentMethod | undefined
-  // onEditClick: () => void
+  onEditClick: () => void
   onCompleteClick: () => void
   isOrderComplete?: boolean
   orderNumber?: string
@@ -45,7 +47,7 @@ export function OrderSummary({
   addressData,
   selectedShipping,
   selectedPayment,
-  // onEditClick,
+  onEditClick,
   onCompleteClick,
   isOrderComplete = false,
   orderNumber,
@@ -73,20 +75,8 @@ export function OrderSummary({
       <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
         <div className="rounded-lg p-6 bg-surface">
           <div className="mb-6 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-              <svg
-                className="h-8 w-8 text-green-600 dark:text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-success">
+             <Icon icon='token-icon-check' className='text-white text-lg'/>
             </div>
             <h2 className="mb-6 font-bold text-xl">Objednávka byla úspěšně odeslána!</h2>
             <p className="mt-2 font-semibold text-fg-primary text-lg">
@@ -110,25 +100,19 @@ export function OrderSummary({
             <div>
               <h3 className="mb-2 font-semibold text-fg-primary">Co bude následovat?</h3>
               <ul className="text-sm text-fg-secondary space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-green-600 dark:text-green-400">
-                    ✓
-                  </span>
+              <li className="flex items-center gap-2">
+              <Icon icon="token-icon-circle-md"/>
                   <span>Obdržíte e-mail s potvrzením objednávky</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-green-600 dark:text-green-400">
-                    ✓
-                  </span>
+                <li className="flex items-center gap-2">
+                  <Icon icon="token-icon-circle-md"/>
                   <span>
                     Jakmile bude objednávka odeslána, pošleme vám sledovací
                     číslo
                   </span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 text-green-600 dark:text-green-400">
-                    ✓
-                  </span>
+                <li className="flex items-center gap-2">
+                  <Icon icon="token-icon-circle-md"/>
                   <span>Můžete sledovat stav objednávky ve svém účtu</span>
                 </li>
               </ul>
@@ -160,18 +144,18 @@ export function OrderSummary({
             <Button
               onClick={() => window.print()}
               variant="secondary"
-              icon="icon-[mdi--printer]"
+              icon="token-icon-printer"
             >
               Vytisknout potvrzení
             </Button>
-            <Button
-              onClick={() => (window.location.href = '/products')}
+            <LinkButton
+              href='/products'
               variant="primary"
-              icon="icon-[mdi--shopping]"
-              className="flex-1"
+              icon="token-icon-shopping-bag"
+              className="flex-1 gap-2 text-md rounded-sm"
             >
               Pokračovat v nákupu
-            </Button>
+            </LinkButton>
           </div>
         </div>
       </div>
@@ -252,7 +236,7 @@ export function OrderSummary({
         <div className="mt-8 flex gap-4">
           <Button
             variant="secondary"
-            // onClick={onEditClick}
+            onClick={onEditClick}
           >
             Upravit údaje
           </Button>
@@ -265,7 +249,6 @@ export function OrderSummary({
           >
             <span className="flex items-center gap-2">
               Dokončit objednávku
-              <span className="text-xs opacity-80">• Bezpečná platba</span>
             </span>
           </Button>{' '}
         </div>

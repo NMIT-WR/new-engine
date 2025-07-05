@@ -343,7 +343,7 @@ export function AddressForm({
         </div>
       </div>
 
-      <div className="mt-md">
+      <div className="my-md">
         <FormCheckbox
           id="same-address"
           label="Fakturační adresa je stejná jako doručovací"
