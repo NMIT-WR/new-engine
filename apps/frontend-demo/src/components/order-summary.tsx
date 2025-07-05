@@ -142,7 +142,15 @@ export function OrderSummary({
 
           <div className="mt-8 flex gap-4">
             <Button
-              onClick={() => window.print()}
+              onClick={() => {
+                // Add print date to body for CSS
+                document.body.setAttribute('data-print-date', new Date().toLocaleDateString('cs-CZ'))
+                window.print()
+                // Clean up after print
+                setTimeout(() => {
+                  document.body.removeAttribute('data-print-date')
+                }, 1000)
+              }}
               variant="secondary"
               icon="token-icon-printer"
             >
