@@ -8,7 +8,9 @@ import { queryKeys } from '@/lib/query-keys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
+import { HttpTypes } from '@medusajs/types'
 
+export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query
 export function useMedusaCart() {
   const { region } = useCurrentRegion()

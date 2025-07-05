@@ -1,8 +1,5 @@
+import { Cart } from '@/hooks/use-cart'
 import { Store } from '@tanstack/react-store'
-
-// Using any type for Cart to avoid type conflicts with Medusa
-// In production, you would import the proper type from @medusajs/js-sdk
-type Cart = any
 
 interface OrderState {
   completedOrder: Cart | null
