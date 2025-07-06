@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import '../../tokens/app-components/molecules/_shipping-selection.css'
+import { Button } from '@ui/atoms/button'
 
 export interface ShippingMethod {
   id: string
@@ -15,10 +16,10 @@ export interface ShippingMethod {
 const getDeliveryDate = (daysToAdd: number) => {
   const date = new Date()
   date.setDate(date.getDate() + daysToAdd)
-  return date.toLocaleDateString('cs-CZ', { 
-    weekday: 'short', 
-    day: 'numeric', 
-    month: 'numeric' 
+  return date.toLocaleDateString('cs-CZ', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'numeric',
   })
 }
 
@@ -66,6 +67,7 @@ const shippingMethods: ShippingMethod[] = [
     price: 'Zdarma',
     delivery: 'Připraveno ihned',
     deliveryDate: 'Vyzvednutí dnes',
+    image: '/assets/instore.webp',
   },
 ]
 
@@ -79,69 +81,57 @@ export function ShippingSelection({
   onSelect,
 }: ShippingSelectionProps) {
   return (
-    <div className="w-full p-shipping-root">
+    <div className="w-full p-2 sm:p-4">
       <div
-        className="space-y-shipping-list grid grid-cols-1 l:grid-cols-2 gap-4"
+        className="grid grid-cols-1 gap-3 sm:gap-4"
         role="radiogroup"
         aria-label="Vyberte způsob dopravy"
       >
         {shippingMethods.map((method) => (
-          <button
-            type="button"
+          <Button
             key={method.id}
             onClick={() => onSelect(method.id)}
-            className="relative flex items-center p-shipping-card bg-shipping-card-bg border-shipping-card rounded-shipping-card cursor-pointer transition-all duration-200 hover:bg-shipping-card-bg-hover hover:shadow-shipping-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-shipping-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shipping-bg data-[selected=true]:bg-shipping-card-bg-selected data-[selected=true]:border-shipping-card-selected data-[selected=true]:shadow-shipping-card-selected"
+            className="relative flex items-center rounded-lg border-2 border-border-subtle bg-surface p-3 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:p-4"
             data-selected={selected === method.id}
             role="radio"
             aria-checked={selected === method.id}
             aria-label={`${method.name} - ${method.description} - ${method.price}`}
           >
-            <div className="flex items-center gap-shipping-content flex-1">
-              {method.image ? (
+            {' '}
+            <div className="flex flex-1 items-center gap-3 sm:gap-4">
+              {method.image && (
                 <Image
                   src={method.image}
                   alt={method.name}
                   width={100}
                   height={50}
-                  className="w-shipping-img h-shipping-img object-contain"
+                  className="h-[30px] w-[60px] object-contain sm:h-[40px] sm:w-[80px] lg:h-[50px] lg:w-[100px]"
                 />
-              ) : (
-                <div
-                  className="w-shipping-img h-shipping-img object-contain flex items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
-                >
-                  <svg
-                    className="h-8 w-8 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                    />
-                  </svg>
-                </div>
               )}
               <div className="flex-1">
-                <h3 className="text-shipping-name font-shipping-name">{method.name}</h3>
-                <p className="text-shipping-desc mt-shipping-desc">{method.description}</p>
-                <p className="text-shipping-delivery font-shipping-delivery">{method.deliveryDate || method.delivery}</p>
+                <h3 className="font-semibold text-sm text-fg-primary">
+                  {method.name}
+                </h3>
+                <p className="mt-0.5 text-fg-secondary text-xs sm:text-sm">
+                  {method.description}
+                </p>
+                <p className="font-medium text-fg-secondary text-xs">
+                  {method.deliveryDate || method.delivery}
+                </p>
               </div>
-              <span className="text-shipping-price font-shipping-price ml-auto">{method.price}</span>
-              <div className="w-shipping-radio h-shipping-radio rounded-full border-shipping-radio bg-shipping-radio-bg flex items-center justify-center transition-all duration-200">
+              <span className="ml-auto font-bold text-fg-primary sm:text-lg">
+                {method.price}
+              </span>
+              <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-border bg-base transition-all duration-200 sm:h-5 sm:w-5">
                 <div
-                  className="w-shipping-radio-dot h-shipping-radio-dot rounded-full bg-shipping-radio-dot scale-0 opacity-0 transition-all duration-200 data-[selected=true]:scale-100 data-[selected=true]:opacity-100"
+                  className="h-2 w-2 scale-0 rounded-full bg-primary opacity-0 transition-all duration-200 data-[selected=true]:scale-100 data-[selected=true]:opacity-100 sm:h-2.5 sm:w-2.5"
                   data-selected={selected === method.id}
                 />
               </div>
             </div>
-          </button>
+          </Button>
         ))}
       </div>
     </div>
   )
 }
-
