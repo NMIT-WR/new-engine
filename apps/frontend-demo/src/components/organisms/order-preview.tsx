@@ -2,8 +2,7 @@
 
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/lib/format-price'
-import { orderHelpers, orderStore } from '@/stores/order-store'
-import { useStore } from '@tanstack/react-store'
+import { orderHelpers } from '@/stores/order-store'
 import { Icon } from '@ui/atoms/icon'
 import Image from 'next/image'
 
@@ -21,7 +20,6 @@ export function OrderPreview({
   className = '',
 }: OrderPreviewProps) {
   const { cart } = useCart()
-  const orderState = useStore(orderStore)
 
   // Use order data from store or current cart
   const orderData = orderHelpers.getOrderData(cart)
@@ -33,22 +31,20 @@ export function OrderPreview({
   const finalTotal = orderData.total + shippingPrice + paymentFee
 
   return (
-    <div
-      className={`rounded-lg p-6 ${className.includes('sticky') ? 'sticky top-4' : ''}`}
-    >
-      <h3 className="mb-4 font-semibold text-fg-primary text-lg">
+    <div className={`rounded-lg p-4 sm:p-6 ${className}`}>
+      <h3 className="mb-3 font-semibold text-fg-primary sm:mb-4 sm:text-lg">
         Souhrn objednávky
       </h3>
 
       {showDetails && orderData.items && orderData.items.length > 0 && (
-        <div className="mb-4 flex flex-col gap-3 border-gray-200 border-b pb-4 dark:border-gray-700">
+        <div className="mb-3 flex flex-col gap-2 border-gray-200 border-b pb-3 sm:mb-4 sm:gap-3 sm:pb-4 dark:border-gray-700">
           {orderData.items.map((cartItem) => (
             <div
               key={cartItem.id}
-              className="grid grid-cols-[auto_1fr_auto] items-start gap-3"
+              className="grid grid-cols-[auto_1fr_auto] items-start gap-2 sm:gap-3"
             >
               {cartItem.thumbnail && (
-                <div className="h-[60px] w-[60px] flex-shrink-0">
+                <div className="h-[48px] w-[48px] flex-shrink-0 sm:h-[60px] sm:w-[60px]">
                   <Image
                     src={cartItem.thumbnail}
                     alt={cartItem.title}
@@ -58,8 +54,8 @@ export function OrderPreview({
                   />
                 </div>
               )}
-              <div className="flex flex-col gap-1">
-                <div className="font-medium text-fg-primary text-sm">
+              <div className="flex flex-col gap-0.5 sm:gap-1">
+                <div className="font-medium text-fg-primary text-xs sm:text-sm">
                   {cartItem.title}
                 </div>
                 {cartItem.variant && (
@@ -71,7 +67,7 @@ export function OrderPreview({
                   Množství: {cartItem.quantity}
                 </div>
               </div>
-              <div className="font-medium text-fg-primary text-sm">
+              <div className="font-medium text-fg-primary text-xs sm:text-sm">
                 {formatPrice(cartItem.unit_price * cartItem.quantity)}
               </div>
             </div>
@@ -79,25 +75,25 @@ export function OrderPreview({
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between py-3 text-fg-primary text-sm">
+      <div className="flex flex-col gap-1 sm:gap-2">
+        <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>Mezisoučet</span>
           <span>{formatPrice(orderData.subtotal)}</span>
         </div>
 
         {orderData.discount_total > 0 && (
-          <div className="flex items-center justify-between py-3 text-fg-primary text-green-600 text-sm dark:text-green-400">
+          <div className="flex items-center justify-between text-success text-xs sm:text-sm">
             <span>Sleva</span>
             <span>-{formatPrice(orderData.discount_total)}</span>
           </div>
         )}
 
-        <div className="flex items-center justify-between py-3 text-fg-primary text-sm">
+        <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>DPH (21%)</span>
           <span>{formatPrice(orderData.tax_total)}</span>
         </div>
 
-        <div className="flex items-center justify-between py-3 text-fg-primary text-sm">
+        <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>Doprava</span>
           <span>
             {shippingPrice > 0 ? formatPrice(shippingPrice) : 'Zdarma'}
@@ -105,29 +101,29 @@ export function OrderPreview({
         </div>
 
         {paymentFee > 0 && (
-          <div className="flex items-center justify-between py-3 text-fg-primary text-sm">
+          <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
             <span>Poplatek za platbu</span>
             <span>{formatPrice(paymentFee)}</span>
           </div>
         )}
 
-        <div className="mt-2 flex items-center justify-between border-gray-200 border-t-2 py-3 pt-4 font-semibold text-base text-fg-primary text-sm dark:border-gray-700">
+        <div className="mt-2 flex items-center justify-between border-gray-200 border-t-2 py-2 pt-3 font-semibold text-fg-primary text-sm sm:py-3 sm:pt-4 dark:border-gray-700">
           <span>Celkem</span>
           <span>{formatPrice(finalTotal)}</span>
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 border-gray-200 border-t pt-4 dark:border-gray-700">
-        <div className="flex items-center gap-2 text-fg-secondary text-sm">
-          <Icon icon="token-icon-lock" />
+      <div className="mt-3 flex flex-col gap-1.5 border-gray-200 border-t pt-3 sm:mt-4 sm:gap-2 sm:pt-4 dark:border-gray-700">
+        <div className="flex items-center gap-2 text-fg-secondary text-xs sm:text-sm">
+          <Icon icon="token-icon-lock" className="text-sm" />
           <span>Zabezpečená platba</span>
         </div>
-        <div className="flex items-center gap-2 text-fg-secondary text-sm">
-          <Icon icon='token-icon-check-decagram'/>
+        <div className="flex items-center gap-2 text-fg-secondary text-xs sm:text-sm">
+          <Icon icon="token-icon-check-decagram" className="text-sm" />
           <span>100% garance kvality</span>
         </div>
-        <div className="flex items-center gap-2 text-fg-secondary text-sm">
-          <Icon icon='token-icon-back'/>
+        <div className="flex items-center gap-2 text-fg-secondary text-xs sm:text-sm">
+          <Icon icon="token-icon-back" className="text-sm" />
           <span>30denní garance vrácení peněz</span>
         </div>
       </div>

@@ -3,7 +3,9 @@
 import { CreditCardDialog } from '@/components/molecules/credit-card-dialog'
 import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
+import { formatPrice } from '@/lib/format-price'
 import { orderHelpers } from '@/stores/order-store'
+import { Icon } from '@ui/atoms/icon'
 import { Steps } from '@ui/molecules/steps'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -12,7 +14,7 @@ import { PaymentSelection } from '../../components/molecules/payment-selection'
 import { ShippingSelection } from '../../components/molecules/shipping-selection'
 import { AddressForm } from '../../components/organisms/address-form'
 import { OrderPreview } from '../../components/organisms/order-preview'
-import { Icon } from '@ui/atoms/icon'
+import { Button } from '@ui/atoms/button'
 
 // Import payment and shipping methods data with prices
 const paymentMethods = [
@@ -88,6 +90,7 @@ export default function PaymentPage() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [isOrderComplete, setIsOrderComplete] = useState(false)
   const [orderNumber, setOrderNumber] = useState<string>('')
+  const [showOrderSummary, setShowOrderSummary] = useState(false)
   const { cart, clearCart, isLoading } = useCart()
   const router = useRouter()
 
@@ -103,7 +106,7 @@ export default function PaymentPage() {
         !hasCompletedOrder &&
         !isOrderComplete
       ) {
-      //  router.push('/cart')
+        //  router.push('/cart')
       }
     }
   }, [cart, router, isLoading, isOrderComplete])
@@ -243,7 +246,7 @@ export default function PaymentPage() {
           selectedShipping={selectedShippingMethod}
           selectedPayment={selectedPaymentMethod}
           onCompleteClick={handleComplete}
-          onEditClick={() => setCurrentStep(() => currentStep -1)}
+          onEditClick={() => setCurrentStep(() => currentStep - 1)}
           isOrderComplete={isOrderComplete}
           orderNumber={orderNumber}
           isLoading={isProcessingPayment}
@@ -275,15 +278,55 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-[80rem] px-4 py-8">
-      <div className="mb-6 flex items-center gap-4">
-        <Link href="/cart">
-        <Icon icon="token-icon-arrow-left text-lg" className="text-fg-primary hover:text-fg-secondary" />
-        </Link>
-        <h1 className="font-bold text-3xl">Dokončení objednávky</h1>
+    <div className="container mx-auto max-w-[80rem] px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      {/* Mobile/Tablet: Sticky progress bar */}
+      <div className="-mx-4 sm:-mx-6 sticky mb-4 top-0 z-20 bg-base border-b-2 border-border lg:border-b-0 px-4 pb-4 shadow-sm sm:px-6 lg:relative lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:shadow-none">
+        <div className="mb-4 flex items-center gap-3 pt-4 lg:mb-6 lg:pt-0">
+          <Link
+            href="/cart"
+            className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface-hover lg:h-auto lg:w-auto"
+          >
+            <Icon
+              icon="token-icon-arrow-left"
+              className="text-fg-primary text-lg hover:text-fg-secondary"
+            />
+          </Link>
+          <h1 className="font-bold text-2xl sm:text-3xl">
+            Dokončení objednávky
+          </h1>
+        </div>
+
+        {/* Mobile: Collapsible order summary */}
+        <Button
+          onClick={() => setShowOrderSummary(!showOrderSummary)}
+          className="hover:bg-surface-hover active:bg-surface-hover text-fg-primary bg-surface lg:hidden"
+          icon={
+            showOrderSummary
+              ? 'token-icon-chevron-up'
+              : 'token-icon-chevron-down'
+          }
+          iconPosition="left"
+        >
+          <div className="flex items-center gap-2">
+            <span className="font-medium">
+              {showOrderSummary ? 'Skrýt' : 'Zobrazit'} souhrn objednávky
+            </span>
+          </div>
+          <span className="font-bold">
+            {formatPrice(orderData?.total || 0 + shippingPrice + paymentFee)}
+          </span>
+        </Button>
+            {/* Mobile: Collapsible order summary content */}
+      {showOrderSummary && (
+        <div className="-mx-4 sm:-mx-6 mb-6 py-4 sm:px-6 lg:hidden">
+          <OrderPreview shippingPrice={shippingPrice} paymentFee={paymentFee} />
+        </div>
+      )}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
+  
+
+      <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-8">
         <div>
           <Steps
             items={steps}
@@ -296,12 +339,14 @@ export default function PaymentPage() {
           />
         </div>
 
-        <div className="lg:pl-8">
-          <OrderPreview
-            shippingPrice={shippingPrice}
-            paymentFee={paymentFee}
-            className="order-summary--sticky"
-          />
+        {/* Desktop: Sticky sidebar */}
+        <div className="hidden lg:block lg:pl-8">
+          <div className="sticky top-8">
+            <OrderPreview
+              shippingPrice={shippingPrice}
+              paymentFee={paymentFee}
+            />
+          </div>
         </div>
       </div>
 

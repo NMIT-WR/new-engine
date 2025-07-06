@@ -56,9 +56,11 @@ export function OrderSummary({
   if (!addressData || !addressData.shipping) {
     return (
       <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
-        <div className="rounded-lg p-6 bg-surface">
-          <h2 className="mb-6 font-bold text-xl">Zkontrolujte objednávku</h2>
-          <p className="text-sm text-fg-secondary">
+        <div className="rounded-lg bg-surface p-4 sm:p-6">
+          <h2 className="mb-4 font-bold text-lg sm:mb-6 sm:text-xl">
+            Zkontrolujte objednávku
+          </h2>
+          <p className="text-fg-secondary text-sm">
             Nejprve vyplňte všechny potřebné údaje.
           </p>
         </div>
@@ -73,21 +75,28 @@ export function OrderSummary({
 
     return (
       <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
-        <div className="rounded-lg p-6 bg-surface">
-          <div className="mb-6 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-success">
-             <Icon icon='token-icon-check' className='text-white text-lg'/>
+        <div className="rounded-lg bg-surface p-4 sm:p-6">
+          <div className="mb-4 text-center sm:mb-6">
+            <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-success sm:mb-4 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+              <Icon
+                icon="token-icon-check"
+                className="text-white sm:text-lg"
+              />
             </div>
-            <h2 className="mb-6 font-bold text-xl">Objednávka byla úspěšně odeslána!</h2>
-            <p className="mt-2 font-semibold text-fg-primary text-lg">
+            <h2 className="mb-4 font-bold text-lg sm:mb-6 sm:text-xl">
+              Objednávka byla úspěšně odeslána!
+            </h2>
+            <p className="mt-2 font-semibold text-fg-primary sm:text-lg">
               Číslo objednávky: #{orderNumber}
             </p>
           </div>
 
           <div className="space-y-6">
             <div>
-              <h3 className="mb-2 font-semibold text-fg-primary">Předpokládané doručení</h3>
-              <p className="text-sm text-fg-secondary">
+              <h3 className="mb-2 font-semibold text-fg-primary">
+                Předpokládané doručení
+              </h3>
+              <p className="text-fg-secondary text-sm">
                 {deliveryDate.toLocaleDateString('cs-CZ', {
                   weekday: 'long',
                   year: 'numeric',
@@ -98,30 +107,34 @@ export function OrderSummary({
             </div>
 
             <div>
-              <h3 className="mb-2 font-semibold text-fg-primary">Co bude následovat?</h3>
-              <ul className="text-sm text-fg-secondary space-y-2">
-              <li className="flex items-center gap-2">
-              <Icon icon="token-icon-circle-md"/>
+              <h3 className="mb-2 font-semibold text-fg-primary">
+                Co bude následovat?
+              </h3>
+              <ul className="space-y-2 text-fg-secondary text-sm">
+                <li className="flex items-center gap-2">
+                  <Icon icon="token-icon-circle-md" />
                   <span>Obdržíte e-mail s potvrzením objednávky</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Icon icon="token-icon-circle-md"/>
+                  <Icon icon="token-icon-circle-md" />
                   <span>
                     Jakmile bude objednávka odeslána, pošleme vám sledovací
                     číslo
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Icon icon="token-icon-circle-md"/>
+                  <Icon icon="token-icon-circle-md" />
                   <span>Můžete sledovat stav objednávky ve svém účtu</span>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="mb-2 font-semibold text-fg-primary">Souhrn objednávky</h3>
+              <h3 className="mb-2 font-semibold text-fg-primary">
+                Souhrn objednávky
+              </h3>
               <div className="space-y-1">
-                <p className="text-sm text-fg-secondary">
+                <p className="text-fg-secondary text-sm">
                   <strong>Doručovací adresa:</strong>
                   <br />
                   {addressData.shipping.firstName}{' '}
@@ -130,21 +143,24 @@ export function OrderSummary({
                   {addressData.shipping.street}, {addressData.shipping.city}{' '}
                   {addressData.shipping.postalCode}
                 </p>
-                <p className="text-sm text-fg-secondary">
+                <p className="text-fg-secondary text-sm">
                   <strong>Způsob dopravy:</strong> {selectedShipping?.name}
                 </p>
-                <p className="text-sm text-fg-secondary">
+                <p className="text-fg-secondary text-sm">
                   <strong>Způsob platby:</strong> {selectedPayment?.name}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 flex gap-4">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4">
             <Button
               onClick={() => {
                 // Add print date to body for CSS
-                document.body.setAttribute('data-print-date', new Date().toLocaleDateString('cs-CZ'))
+                document.body.setAttribute(
+                  'data-print-date',
+                  new Date().toLocaleDateString('cs-CZ')
+                )
                 window.print()
                 // Clean up after print
                 setTimeout(() => {
@@ -153,14 +169,15 @@ export function OrderSummary({
               }}
               variant="secondary"
               icon="token-icon-printer"
+              className="hidden sm:flex"
             >
               Vytisknout potvrzení
             </Button>
             <LinkButton
-              href='/products'
+              href="/products"
               variant="primary"
               icon="token-icon-shopping-bag"
-              className="flex-1 gap-2 text-md rounded-sm"
+              className="w-full gap-2 rounded-sm text-md sm:flex-1"
             >
               Pokračovat v nákupu
             </LinkButton>
@@ -172,13 +189,17 @@ export function OrderSummary({
 
   return (
     <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
-      <div className="rounded-lg p-6 bg-surface">
-        <h2 className="mb-6 font-bold text-xl">Zkontrolujte objednávku</h2>
+      <div className="rounded-lg bg-surface p-4 sm:p-6">
+        <h2 className="mb-4 font-bold text-lg sm:mb-6 sm:text-xl">
+          Zkontrolujte objednávku
+        </h2>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <h3 className="mb-2 font-semibold text-fg-primary">Doručovací adresa</h3>
-            <p className="text-sm text-fg-secondary">
+            <h3 className="mb-2 font-semibold text-fg-primary">
+              Doručovací adresa
+            </h3>
+            <p className="text-fg-secondary text-sm">
               {addressData.shipping.firstName} {addressData.shipping.lastName}
               <br />
               {addressData.shipping.company && (
@@ -203,8 +224,10 @@ export function OrderSummary({
 
           {!addressData.useSameAddress && addressData.billing && (
             <div>
-              <h3 className="mb-2 font-semibold text-fg-primary">Fakturační adresa</h3>
-              <p className="text-sm text-fg-secondary">
+              <h3 className="mb-2 font-semibold text-fg-primary">
+                Fakturační adresa
+              </h3>
+              <p className="text-fg-secondary text-sm">
                 {addressData.billing.firstName} {addressData.billing.lastName}
                 <br />
                 {addressData.billing.company && (
@@ -222,7 +245,7 @@ export function OrderSummary({
 
           <div>
             <h3 className="mb-2 font-semibold text-fg-primary">Doprava</h3>
-            <p className="text-sm text-fg-secondary">
+            <p className="text-fg-secondary text-sm">
               {selectedShipping?.name} -{' '}
               {selectedShipping?.price
                 ? `${selectedShipping.price} Kč`
@@ -234,30 +257,29 @@ export function OrderSummary({
 
           <div>
             <h3 className="mb-2 font-semibold text-fg-primary">Platba</h3>
-            <p className="text-sm text-fg-secondary">
+            <p className="text-fg-secondary text-sm">
               {selectedPayment?.name}{' '}
               {selectedPayment?.fee ? `(+${selectedPayment.fee} Kč)` : ''}
             </p>
           </div>
         </div>
 
-        <div className="mt-8 flex gap-4">
+        <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4">
           <Button
             variant="secondary"
             onClick={onEditClick}
+            className="w-full sm:w-auto"
           >
             Upravit údaje
           </Button>
           <Button
             onClick={onCompleteClick}
             icon="icon-[mdi--lock-outline]"
-            className="flex-1"
+            className="w-full sm:flex-1"
             isLoading={isLoading}
             disabled={isLoading}
           >
-            <span className="flex items-center gap-2">
-              Dokončit objednávku
-            </span>
+            <span className="flex items-center gap-2">Dokončit objednávku</span>
           </Button>{' '}
         </div>
       </div>

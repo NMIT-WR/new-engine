@@ -164,17 +164,23 @@ export function AddressForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col relative">
-      <Button size="sm" className="absolute right-0" onClick={setTestInfo}>
+    <form onSubmit={handleSubmit} className="relative flex flex-col">
+      <Button
+        size="sm"
+        className="absolute top-0 right-0 z-10"
+        onClick={setTestInfo}
+      >
         Vyplnit
       </Button>
-      <div className="flex flex-col gap-5">
-        <h3 className="text-lg font-semibold text-fg-primary mb-2">Doručovací adresa</h3>
-        <p className="mb-4 text-fg-secondary text-sm">
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <h3 className="mb-1 font-semibold text-fg-primary sm:mb-2 sm:text-lg">
+          Doručovací adresa
+        </h3>
+        <p className="mb-3 text-fg-secondary text-xs sm:mb-4 sm:text-sm">
           Pole označená <span className="text-red-500">*</span> jsou povinná
         </p>
 
-        <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <FormInput
             id="shipping-first-name"
             label="Jméno"
@@ -292,7 +298,7 @@ export function AddressForm({
           }
         />
 
-        <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <FormInput
             id="shipping-city"
             label="Město"
@@ -328,7 +334,7 @@ export function AddressForm({
           />
         </div>
 
-        <div className="max-w-[20rem]">
+        <div className="max-w-[20rem] mb-4 sm:mb-6">
           <Select
             options={countries}
             value={[shippingAddress.country]}
@@ -343,7 +349,7 @@ export function AddressForm({
         </div>
       </div>
 
-      <div className="my-md">
+      <div className='mb-4 sm:mb-6'>
         <FormCheckbox
           id="same-address"
           label="Fakturační adresa je stejná jako doručovací"
@@ -355,10 +361,12 @@ export function AddressForm({
       </div>
 
       {!useSameAddress && (
-        <div className="flex flex-col gap-5">
-          <h3 className="text-lg font-semibold text-fg-primary mb-2">Fakturační adresa</h3>
+        <div className="flex flex-col gap-4 sm:gap-5">
+          <h3 className="mb-1 font-semibold text-fg-primary sm:mb-2 sm:text-lg">
+            Fakturační adresa
+          </h3>
 
-          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <FormInput
               id="billing-first-name"
               label="Jméno"
@@ -423,7 +431,7 @@ export function AddressForm({
             }
           />
 
-          <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <FormInput
               id="billing-city"
               label="Město"
@@ -460,7 +468,7 @@ export function AddressForm({
             />
           </div>
 
-          <div className="max-w-[20rem]">
+          <div className="max-w-[20rem] mb-4 sm:mb-6">
             <Select
               options={countries}
               value={[billingAddress.country]}
@@ -475,7 +483,12 @@ export function AddressForm({
           </div>
         </div>
       )}
-      <Button type="submit" isLoading={isLoading} disabled={isLoading}>
+      <Button
+        type="submit"
+        isLoading={isLoading}
+        disabled={isLoading}
+        className="w-full sm:w-auto"
+      >
         Pokračovat
       </Button>
     </form>
