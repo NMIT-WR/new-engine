@@ -51,6 +51,30 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     - Define component-specific CSS variables. **Primarily, these variables SHOULD reference variables from `_semantic.css`** (e.g., `--color-component-xyz-bg: var(--color-primary);`).
     - Adhere strictly to "CSS Token Guidelines" and "CSS Token Naming Convention" (see sections below).
     - If unsure about Tailwind CSS features or `tailwind-variants` usage, use **MCP Quillopy/Context7** to research their documentation.
+
+**EXAMPLE**
+
+### Token Definition Rules
+
+**IMPORTANT**: All component tokens must be defined in `@theme static` blocks:
+
+```css
+/*If you need to specify different values for breakpoints*/
+:root {
+
+    @media (min-width: 768px) {
+        --color-button-bg: var(--color-secondary);
+        --spacing-button-sm: var(--spacing-2xs);
+    }
+}
+/* libs/ui/src/tokens/components/_component-name.css */
+@theme static {
+  /* Category-Component-Property-State pattern */
+  --color-button-bg: var(--color-primary);
+  --color-button-bg-hover: oklch(from var(--color-button-bg) calc(l + var(--state-hover)) c h);
+  --spacing-button-sm: var(--spacing-xs);
+}
+```
 5. **Integrate CSS**:
     
     - Import the new `_component-name.css` into the main component token stylesheet (e.g., `apps/frontend-demo/src/tokens/components.css`).
@@ -139,6 +163,19 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
 - **Examples**:
 `libs/ui/src/tokens/components/atoms/_button.css`
 `libs/ui/src/tokens/components/molecules/_combobox.css`
+
+### Token Usage in Components
+
+```typescript
+// ✅ CORRECT - Use Tailwind classes that reference your tokens
+'bg-button-bg'         // Uses --color-button-bg
+'text-button-fg'       // Uses --color-button-fg
+'p-button-sm'          // Uses --spacing-button-sm
+
+// ❌ WRONG - Never use arbitrary values
+'bg-[var(--color-button-bg)]'
+'p-[var(--spacing-button-sm)]'
+```
     
 
 ### 4.5. CSS File Organization (`apps/frontend-demo`)
