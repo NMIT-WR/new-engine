@@ -1,29 +1,21 @@
 'use client'
 import { useAuth } from '@/hooks/use-auth'
-import {
-  AUTH_MESSAGES,
-  authFormFields,
-  getAuthErrorMessage,
-  withLoading,
-} from '@/lib/auth'
-import { useRouter } from 'next/navigation'
-import { type FormEvent, useState } from 'react'
+import { authFormFields, getAuthErrorMessage, withLoading } from '@/lib/auth'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { FormInput } from '@ui/molecules/form-input'
 import { Menu } from '@ui/molecules/menu'
 import { Popover } from '@ui/molecules/popover'
+import { useRouter } from 'next/navigation'
+import { type FormEvent, useState } from 'react'
 
 export function AuthDropdown() {
-  const { user, logout, showSuccess } = useAuth()
+  const { user, logout } = useAuth()
   const router = useRouter()
 
   const signOut = async () => {
     await logout()
-    showSuccess(
-      AUTH_MESSAGES.LOGOUT_SUCCESS.title,
-      AUTH_MESSAGES.LOGOUT_SUCCESS.description
-    )
+    // Toast is already shown in use-auth hook
   }
 
   if (!user) {
@@ -114,7 +106,7 @@ export function AuthDropdown() {
 
 function QuickLoginForm() {
   const router = useRouter()
-  const { login, isFormLoading, setFormLoading, showSuccess } = useAuth()
+  const { login, isFormLoading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -122,18 +114,12 @@ function QuickLoginForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setFormLoading(true)
 
     try {
       await login(email, password)
-      showSuccess(
-        AUTH_MESSAGES.LOGIN_SUCCESS.title,
-        AUTH_MESSAGES.LOGIN_SUCCESS.description
-      )
+      // Toast is already shown in use-auth hook
     } catch (err: unknown) {
       setError(getAuthErrorMessage(err))
-    } finally {
-      setFormLoading(false)
     }
   }
 

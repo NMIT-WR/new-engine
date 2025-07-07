@@ -9,12 +9,12 @@ import {
   validateEmail,
   withLoading,
 } from '@/lib/auth'
-import Link from 'next/link'
-import { type FormEvent, useState } from 'react'
 import { Button } from '@ui/atoms/button'
 import { ErrorText } from '@ui/atoms/error-text'
 import { Checkbox } from '@ui/molecules/checkbox'
 import { FormInput } from '@ui/molecules/form-input'
+import Link from 'next/link'
+import { type FormEvent, useState } from 'react'
 import { AuthFormWrapper } from './auth-form-wrapper'
 
 export function LoginForm() {
@@ -24,15 +24,14 @@ export function LoginForm() {
 
   const {
     login,
+    loginMutation,
     error,
-    isFormLoading,
-    setFormLoading,
     getFieldError,
     setFieldError,
     clearErrors,
-    showError,
-    showSuccess,
   } = useAuth()
+  
+  const isFormLoading = loginMutation.isPending
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -41,7 +40,6 @@ export function LoginForm() {
     // Client-side validation
     if (!validateEmail(email)) {
       setFieldError('email', AUTH_ERRORS.INVALID_EMAIL)
-      showError('Invalid Email', AUTH_ERRORS.INVALID_EMAIL)
       return
     }
     if (password.length < 1) {
@@ -49,26 +47,8 @@ export function LoginForm() {
       return
     }
 
-    setFormLoading(true)
-
-    try {
-      await login(email, password)
-      showSuccess(
-        AUTH_MESSAGES.LOGIN_SUCCESS.title,
-        AUTH_MESSAGES.LOGIN_SUCCESS.description
-      )
-    } catch (error: unknown) {
-      const errorMessage = getAuthErrorMessage(error)
-
-      // Set field-specific error if it's an email error
-      if (error instanceof Error && error.message.includes('Invalid email')) {
-        setFieldError('email', errorMessage)
-      }
-
-      showError('Sign in failed', errorMessage)
-    } finally {
-      setFormLoading(false)
-    }
+    // The mutation handles loading state and success/error toasts
+    login(email, password)
   }
 
   return (
