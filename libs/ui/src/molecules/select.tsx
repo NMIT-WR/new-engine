@@ -19,11 +19,7 @@ export interface SelectOption {
 // === COMPONENT VARIANTS ===
 const selectVariants = tv({
   slots: {
-    root: [
-      'relative',
-      'flex flex-col gap-select-root',
-      'w-full',
-    ],
+    root: ['relative', 'flex flex-col gap-select-root', 'w-full'],
     control: ['flex relative items-center justify-between', 'w-full'],
     positioner: ['w-(--reference-width)', 'isolate z-(--z-index)'],
     trigger: [
@@ -49,7 +45,7 @@ const selectVariants = tv({
       'bg-select-content-bg border border-select-content-border',
       'rounded-select shadow-select-content-shadow max-h-fit',
       'h-[calc(var(--available-height)-var(--spacing-lg))]',
-      'overflow-auto',
+      'overflow-auto z-50',
     ],
     item: [
       'flex items-center justify-between',
