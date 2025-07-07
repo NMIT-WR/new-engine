@@ -1,18 +1,16 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
-import { useCurrentRegion } from '@/hooks/use-region'
 import { getVariantInventory, isQuantityAvailable } from '@/lib/inventory'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
-import Image from 'next/image'
-import Link from 'next/link'
 import { Button } from '@ui/atoms/button'
 import { LinkButton } from '@ui/atoms/link-button'
+import Image from 'next/image'
+import Link from 'next/link'
 
 export function CartPreview() {
   const { cart, removeItem, isLoading } = useCart()
-  const { region } = useCurrentRegion()
   const items = cart?.items || []
   const total = cart?.total || 0
 
@@ -33,11 +31,10 @@ export function CartPreview() {
           <p className="font-semibold text-cart-preview-empty-size text-cart-preview-fg">
             Košík je prázdný
           </p>
-    
-            <LinkButton   href="/products" variant="primary" size="sm" block>
-              Prohlédnout Produkty
-            </LinkButton>
-        
+
+          <LinkButton href="/products" variant="primary" size="sm" block>
+            Prohlédnout Produkty
+          </LinkButton>
         </div>
       </div>
     )
@@ -59,8 +56,7 @@ export function CartPreview() {
             ? getVariantInventory(item.variant)
             : null
           const hasStockIssue =
-            inventory &&
-            !isQuantityAvailable(item.variant, item.quantity)
+            inventory && !isQuantityAvailable(item.variant, item.quantity)
 
           return (
             <div
@@ -94,7 +90,7 @@ export function CartPreview() {
                   Množství: {item.quantity}
                 </p>
                 {hasStockIssue && (
-                  <p className="mt-cart-preview-error-margin-top text-cart-preview-error-size text-cart-preview-error-fg">
+                  <p className="mt-cart-preview-error-margin-top text-cart-preview-error-fg text-cart-preview-error-size">
                     ⚠ Nízká zásoba
                   </p>
                 )}
@@ -130,7 +126,14 @@ export function CartPreview() {
           </span>
         </div>
         <div className="flex flex-col gap-cart-preview-actions-gap">
-          <LinkButton href="/cart" variant="primary" size="md" block>
+          <LinkButton
+            as={Link}
+            prefetch={true}
+            href="/cart"
+            variant="primary"
+            size="md"
+            block
+          >
             Do Košíku
           </LinkButton>
         </div>

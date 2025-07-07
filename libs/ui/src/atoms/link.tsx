@@ -13,18 +13,19 @@ export interface BaseLinkProps extends VariantProps<typeof linkVariants> {
   external?: boolean
   className?: string
 }
-
+/*
 type NativeLinkProps = BaseLinkProps &
   Omit<ComponentPropsWithoutRef<'a'>, keyof BaseLinkProps>
 
 type CustomLinkProps<T extends ElementType> = BaseLinkProps &
   Omit<ComponentPropsWithoutRef<T>, keyof BaseLinkProps> & {
-    as: T
+    as?: T
   }
-
-export type LinkProps<T extends ElementType = 'a'> = T extends 'a'
-  ? NativeLinkProps & { as?: 'a' }
-  : CustomLinkProps<T>
+*/
+export type LinkProps<T extends ElementType = 'a'> = BaseLinkProps &
+  Omit<ComponentPropsWithoutRef<T>, keyof BaseLinkProps> & {
+    as?: T
+  }
 
 export function Link<T extends ElementType = 'a'>({
   as,

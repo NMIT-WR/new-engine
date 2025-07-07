@@ -6,11 +6,11 @@ import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
-import { Link } from '@ui/atoms/link'
 import { LinkButton } from '@ui/atoms/link-button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { NumericInput } from '@ui/molecules/numeric-input'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
@@ -180,6 +180,8 @@ export default function CartPage() {
                   className="mt-cart-checkout-margin w-full"
                   size="lg"
                   icon="token-icon-lock"
+                  as={Link}
+                  prefetch={true}
                 >
                   Přejít k platbě
                 </LinkButton>
