@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { authFormFields, getAuthErrorMessage, withLoading } from '@/lib/auth'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
+import { LinkButton } from '@ui/atoms/link-button'
 import { FormInput } from '@ui/molecules/form-input'
 import { Menu } from '@ui/molecules/menu'
 import { Popover } from '@ui/molecules/popover'
@@ -21,13 +22,17 @@ export function AuthDropdown() {
   if (!user) {
     return (
       <Popover
-      id="auth-dropdown"
+        id="auth-dropdown"
         trigger={
-          <Icon className="text-tertiary" icon="icon-[mdi--account-outline]" />
+          <Icon
+            className="text-header-icon-size text-tertiary"
+            icon="token-icon-account"
+          />
         }
-        triggerClassName="rounded-header-action p-header-action-padding hover:bg-header-action-bg-hover"
         placement="bottom-end"
         size="sm"
+        contentClassName="z-50"
+        triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
       >
         <QuickLoginForm />
       </Popover>
@@ -105,7 +110,6 @@ export function AuthDropdown() {
 }
 
 function QuickLoginForm() {
-  const router = useRouter()
   const { login, isFormLoading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -133,7 +137,7 @@ function QuickLoginForm() {
           Přihlásit se
         </h3>
         <p className="text-auth-dropdown-subtitle text-auth-dropdown-subtitle-size">
-          Zadejte své přihlašovací údaje pro pokračování
+          Zadejte své přihlašovací údaje
         </p>
       </div>
 
@@ -182,16 +186,15 @@ function QuickLoginForm() {
 
         <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">
           <span className="text-auth-dropdown-signup-text">Jste tu noví?</span>
-          <Button
-            type="button"
+          <LinkButton
+            href="/auth/register"
             variant="tertiary"
             theme="borderless"
             size="sm"
-            onClick={() => router.push('/auth/register')}
             className="h-auto p-0 font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover"
           >
             Vytvořit účet
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </form>

@@ -2,7 +2,7 @@
 import { useDebounce } from '@/hooks/use-debounce'
 import { useProducts } from '@/hooks/use-products'
 import type { Product } from '@/types/product'
-import { Button } from '@ui/atoms/button'
+import { Icon } from '@ui/atoms/icon'
 import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
 import { Popover } from '@ui/molecules/popover'
 import { useRouter } from 'next/navigation'
@@ -109,21 +109,21 @@ export function HeaderSearch() {
 
   return (
     <Popover
-    id='header-search-popover'
+      id="header-search-popover"
       trigger={
-        <Button
-          variant="tertiary"
-          theme="borderless"
-          size="sm"
+        <Icon
+          className="text-header-icon-size text-tertiary"
           icon="token-icon-search"
-          className="px-0 py-0 font-bold text-md hover:bg-transparent"
-          aria-label="Hledat"
         />
       }
+      triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
+      contentClassName="z-50"
     >
       <div ref={containerRef}>
         <Combobox
-          placeholder={isLoading ? 'Načítání produktů...' : 'Hledat produkty...'}
+          placeholder={
+            isLoading ? 'Načítání produktů...' : 'Hledat produkty...'
+          }
           items={searchItems}
           value={selectedValue}
           onChange={handleSelect}

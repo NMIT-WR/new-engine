@@ -42,9 +42,8 @@ export const AUTH_MESSAGES = {
 } as const
 
 export const AUTH_FORM_CONFIG = {
-  EMAIL_PLACEHOLDER: 'vy@example.cz',
-  EMAIL_HELP_TEXT: 'Použijte platný formát e-mailu (např. uzivatel@example.cz)',
+  EMAIL_PLACEHOLDER: 'uzivatel@email.cz',
+  EMAIL_HELP_TEXT: 'Použijte platný formát e-mailu (např. uzivatel@email.cz)',
   PASSWORD_PLACEHOLDER: '••••••••',
-  PASSWORD_HELP_TEXT:
-    'Alespoň 8 znaků včetně velkých a malých písmen a čísel',
+  PASSWORD_HELP_TEXT: 'Alespoň 8 znaků včetně velkých a malých písmen a čísel',
 } as const

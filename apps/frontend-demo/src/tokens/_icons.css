@@ -1,41 +1,47 @@
-
-
 @utility token-icon-lock {
-    @apply icon-[mdi--lock];
+  @apply icon-[mdi--lock];
 }
 
 @utility token-icon-shopping-bag {
-    @apply icon-[mdi--shopping];
+  @apply icon-[mdi--shopping];
 }
 
 @utility token-icon-printer {
-    @apply icon-[mdi--printer];
+  @apply icon-[mdi--printer];
 }
 
 @utility token-icon-circle-md {
-    @apply icon-[mdi--circle-medium];
+  @apply icon-[mdi--circle-medium];
 }
 
 @utility token-icon-check-decagram {
-    @apply icon-[mdi--check-decagram];
+  @apply icon-[mdi--check-decagram];
 }
 
 @utility token-icon-spinner {
-    @apply icon-[svg-spinners--ring-resize];
+  @apply icon-[svg-spinners--ring-resize];
 }
 
 @utility token-icon-back {
-    @apply icon-[lucide--undo-2];
+  @apply icon-[lucide--undo-2];
 }
 
 @utility token-icon-arrow-left {
-    @apply icon-[ic--baseline-arrow-back-ios-new];
+  @apply icon-[ic--baseline-arrow-back-ios-new];
 }
 
 @utility token-icon-remove {
-    @apply icon-[mdi--delete-outline];
+  @apply icon-[mdi--delete-outline];
 }
 
 @utility token-icon-remove-all {
-    @apply icon-[mdi--delete-sweep-outline];
+  @apply icon-[mdi--delete-sweep-outline];
+}
+
+@utility token-icon-menu {
+  @apply icon-[mdi--menu];
+}
+
+@utility token-icon-account {
+  @apply icon-[mdi--account-outline];
 }

@@ -5,8 +5,7 @@ import { Button } from '@ui/atoms/button'
 import { Icon, type IconType } from '@ui/atoms/icon'
 import { Popover } from '@ui/molecules/popover'
 import Link from 'next/link'
-import * as React from 'react'
-import { type ComponentPropsWithoutRef, useState } from 'react'
+import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
 import { AuthDropdown } from './auth/auth-dropdown'
 import { CartPreview } from './molecules/cart-preview'
 import { HeaderSearch } from './molecules/header-search'
@@ -15,7 +14,6 @@ import { MobileMenu } from './organisms/mobile-menu'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
 
-
 interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   logo?: {
     text?: string
@@ -23,7 +21,7 @@ interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
     href?: string
   }
   navigationItems?: NavItem[]
-  actions?: React.ReactNode
+  actions?: ReactNode
   showMobileMenu?: boolean
 }
 
@@ -42,19 +40,21 @@ export function Header({
 
   return (
     <header
-      className={`bg-header-bg shadow-header-default ${className}`}
+      className={`sticky top-0 z-10 bg-header-bg shadow-header-default ${className}`}
       {...props}
     >
       <div className="mx-auto max-w-header-max-w px-header-container-x lg:px-header-container-x-lg">
-        <div className="flex h-header-height items-center justify-between lg:h-header-height-lg">
+        <div className="flex h-header-height-lg items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center">
             <Link
               href={logo.href || '/'}
-              className="flex items-center gap-header-logo-gap font-header-logo text-header-logo text-header-text lg:text-header-logo-lg"
+              className="flex items-center gap-header-logo-gap font-header-logo"
             >
               {logo.icon && <Icon icon={logo.icon} size="lg" />}
-              {logo.text && <span className="lg:text-md text-sm">{logo.text}</span>}
+              {logo.text && (
+                <span className="font-medium text-md">{logo.text}</span>
+              )}
             </Link>
 
             {/* Navigation */}
@@ -80,10 +80,13 @@ export function Header({
               <HeaderSearch />
               {/* Cart button */}
               <Popover
-              id='popover-header'
+                id="popover-header"
                 trigger={
                   <div className="relative flex items-center">
-                    <Icon className="text-tertiary" icon="token-icon-cart" />
+                    <Icon
+                      className="text-header-icon-size text-tertiary"
+                      icon="token-icon-cart"
+                    />
                     {itemCount > 0 && (
                       <Badge
                         variant="danger"
@@ -95,14 +98,15 @@ export function Header({
                   </div>
                 }
                 placement="bottom-end"
-                triggerClassName="rounded-header-action p-header-action-padding text-header-action-fg transition-colors hover:bg-header-action-bg-hover hover:text-header-action-fg-hover"
+                contentClassName="z-50"
+                triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
               >
                 <CartPreview />
               </Popover>
 
               {/* User/Auth section */}
               <AuthDropdown />
-              <RegionSelector />
+              <RegionSelector className="hidden lg:flex" />
 
               {/* Custom actions */}
               {actions}
@@ -112,8 +116,8 @@ export function Header({
                 <Button
                   theme="borderless"
                   size="sm"
-                  icon="icon-[mdi--menu]"
-                  className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus:outline-none focus:ring-header-mobile-menu-color focus:ring-header-mobile-menu-width focus:ring-inset lg:hidden"
+                  icon="token-icon-menu"
+                  className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-icon-size text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus:outline-none focus:ring-header-mobile-menu-color focus:ring-header-mobile-menu-width focus:ring-inset lg:hidden"
                   onClick={() => setIsMobileMenuOpen(true)}
                 />
               )}

@@ -15,7 +15,7 @@ export const authFormFields = {
     placeholder: AUTH_FORM_CONFIG.EMAIL_PLACEHOLDER,
     required: true,
     autoComplete: 'email',
-    extraText: AUTH_FORM_CONFIG.EMAIL_HELP_TEXT,
+    //extraText: AUTH_FORM_CONFIG.EMAIL_HELP_TEXT,
     ...props,
   }),
 

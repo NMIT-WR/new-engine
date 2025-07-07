@@ -14,11 +14,11 @@ const currencyFlags: Record<string, string> = {
   PLN: '🇵🇱',
 }
 
-export function RegionSelector() {
+export function RegionSelector({ className }: { className?: string }) {
   const { regions, selectedRegion, setSelectedRegion, isLoading } = useRegions()
 
   if (isLoading || !regions.length) {
-    return <SkeletonLoader variant="box" className="h-8 w-28" />
+    return <SkeletonLoader variant="box" className="hidden h-8 w-28 lg:block" />
   }
 
   const handleChange = (details: { value: string[] }) => {
@@ -42,6 +42,7 @@ export function RegionSelector() {
       size="xs"
       clearIcon={false}
       placeholder="Region"
+      className={className}
     />
   )
 }

@@ -1,9 +1,9 @@
 @theme static {
   /* === AUTH DROPDOWN COLORS === */
   --color-auth-dropdown-title: var(--color-primary);
-  --color-auth-dropdown-subtitle: var(--color-secondary);
+  --color-auth-dropdown-subtitle: var(--color-fg-secondary);
   --color-auth-dropdown-error: var(--color-danger);
-  --color-auth-dropdown-signup-text: var(--color-secondary);
+  --color-auth-dropdown-signup-text: var(--color-fg-secondary);
   --color-auth-dropdown-signup-link: var(--color-link);
   --color-auth-dropdown-signup-link-hover: var(--color-link-hover);
 

@@ -74,8 +74,8 @@ export function MobileMenu({
                     <Icon
                       icon={
                         expandedItems.includes(item.title)
-                          ? 'icon-[mdi--chevron-up]'
-                          : 'icon-[mdi--chevron-down]'
+                          ? 'token-icon-chevron-up'
+                          : 'token-icon-chevron-down'
                       }
                       size="sm"
                     />
@@ -121,7 +121,7 @@ export function MobileMenu({
               <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">
                 Region
               </span>
-              <RegionSelector />
+              <RegionSelector className="z-50 max-w-4xl" />
             </div>
             <div className="flex items-center justify-between px-mobile-menu-item-x">
               <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">
