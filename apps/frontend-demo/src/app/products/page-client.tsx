@@ -21,7 +21,7 @@ const SORT_OPTIONS = [
 function ProductGridSkeleton() {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {[...Array(8)].map((_, i) => (
+      {[...Array(12)].map((_, i) => (
         <div key={i} className="space-y-3">
           <SkeletonLoader
             variant="box"
