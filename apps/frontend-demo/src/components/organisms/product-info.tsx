@@ -1,11 +1,6 @@
 'use client'
-
-import { ColorSwatch } from '@/components/atoms/color-swatch'
 import { useCart } from '@/hooks/use-cart'
-import { useCurrentRegion } from '@/hooks/use-region'
-import { getVariantInventory, isQuantityAvailable } from '@/lib/inventory'
 import type { Product, ProductVariant } from '@/types/product'
-import { getColorHex } from '@/utils/color-map'
 import { Badge, type BadgeProps } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
 import { Label } from '@ui/atoms/label'
@@ -13,8 +8,6 @@ import { Rating } from '@ui/atoms/rating'
 import { NumericInput } from '@ui/molecules/numeric-input'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
-
-const MAXIMUM_QUANTITY = 10
 
 interface ProductInfoProps {
   product: Product
@@ -31,70 +24,17 @@ export function ProductInfo({
   price,
   onVariantChange,
 }: ProductInfoProps) {
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
-  >(() => {
-    return selectedVariant?.options || {}
-  })
   const [quantity, setQuantity] = useState(1)
   const { addItem } = useCart()
   const toast = useToast()
-  const { region } = useCurrentRegion()
-
-  // Get all option types from product
-  const optionTypes = product.options || []
-
-  // Find matching variant based on selected options
-  const findMatchingVariant = (options: Record<string, string>) => {
-    return product.variants?.find((variant) => {
-      return Object.entries(options).every(
-        ([key, value]) => variant.options?.[key] === value
-      )
-    })
-  }
-
-  // Update selected variant when options change
-  const handleOptionChange = (optionTitle: string, value: string) => {
-    const newOptions = {
-      ...selectedOptions,
-      [optionTitle.toLowerCase()]: value,
-    }
-    setSelectedOptions(newOptions)
-    const newVariant = findMatchingVariant(newOptions)
-    if (newVariant) {
-      onVariantChange(newVariant)
-      // Reset quantity to 1 when variant changes
-      setQuantity(1)
-    }
-  }
+  const productVariants = product.variants || []
 
   const handleAddToCart = () => {
     if (!selectedVariant) {
       toast.create({
         title: 'Vyberte prosím možnosti',
-        description: 'Před přidáním do košíku vyberte prosím všechny možnosti produktu.',
-        type: 'error',
-      })
-      return
-    }
-
-    const inventory = getVariantInventory(selectedVariant)
-
-    // Check if variant is in stock
-    if (inventory.status === 'out-of-stock') {
-      toast.create({
-        title: 'Vyprodané',
-        description: inventory.message,
-        type: 'error',
-      })
-      return
-    }
-
-    // Check if requested quantity is available
-    if (!isQuantityAvailable(selectedVariant, quantity)) {
-      toast.create({
-        title: 'Nedostatečná zásoba',
-        description: `K dispozici je pouze ${inventory.quantity} kusů.`,
+        description:
+          'Před přidáním do košíku vyberte prosím všechny možnosti produktu.',
         type: 'error',
       })
       return
@@ -104,9 +44,6 @@ export function ProductInfo({
     // The success toast is handled by the cart hook
     addItem(selectedVariant.id, quantity)
   }
-
-  const inventory = selectedVariant ? getVariantInventory(selectedVariant) : null
-  const maxQuantity = inventory && inventory.quantity > MAXIMUM_QUANTITY
 
   return (
     <div className="flex flex-col">
@@ -150,77 +87,38 @@ export function ProductInfo({
       {selectedVariant && (
         <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>Kód: {selectedVariant.sku}</p>
-          {inventory && inventory.status !== 'out-of-stock' && (
-            <p>{inventory.message}</p>
-          )}
         </div>
       )}
 
       {/* Variant Selectors */}
-      {optionTypes.map((option) => {
-        const optionKey = option.title.toLowerCase()
-        const isColor = optionKey === 'color' || optionKey === 'colour'
+      {productVariants.length > 0 && (
+        <div className="mb-product-info-variant-margin">
+          <Label className="mb-product-info-variant-label-margin font-product-info-variant-label text-product-info-variant-label">
+            Velikosti
+          </Label>
 
-        return (
-          <div key={option.id} className="mb-product-info-variant-margin">
-            <Label className="mb-product-info-variant-label-margin font-product-info-variant-label text-product-info-variant-label">
-              {option.title}
-            </Label>
+          {
+            /* Size or other option buttons */
+            <div className="flex flex-wrap gap-product-info-variant-gap">
+              {productVariants.map((variant) => {
+                const isSelected = selectedVariant?.id === variant.id
 
-            {isColor ? (
-              /* Color swatches */
-              <div className="flex flex-wrap gap-product-info-variant-gap">
-                {option.values.map((value) => {
-                  const variantWithColor = product.variants?.find(
-                    (v) => v.options?.[optionKey] === value
-                  )
-                  const isSelected = selectedOptions[optionKey] === value
-                  const colorHex =
-                    variantWithColor?.colorHex || getColorHex(value)
-
-                  return (
-                    <ColorSwatch
-                      key={value}
-                      selected={isSelected}
-                      color={colorHex}
-                      colorName={value}
-                      onClick={() => handleOptionChange(option.title, value)}
-                    />
-                  )
-                })}
-              </div>
-            ) : (
-              /* Size or other option buttons */
-              <div className="flex flex-wrap gap-product-info-variant-gap">
-                {option.values.map((value) => {
-                  const isSelected = selectedOptions[optionKey] === value
-                  const variantForOption = product.variants?.find(
-                    (v) => v.options?.[optionKey] === value
-                  )
-                  const variantInventory = getVariantInventory(
-                    variantForOption
-                  )
-                  const isOutOfStock =
-                    variantInventory.status === 'out-of-stock'
-
-                  return (
-                    <Button
-                      key={value}
-                      theme={isSelected ? 'solid' : 'borderless'}
-                      size="sm"
-                      disabled={isOutOfStock}
-                      onClick={() => handleOptionChange(option.title, value)}
-                      className="roundend-product-btn border"
-                    >
-                      {value}
-                    </Button>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        )
-      })}
+                return (
+                  <Button
+                    key={variant.id}
+                    theme={isSelected ? 'solid' : 'borderless'}
+                    size="sm"
+                    onClick={() => onVariantChange(variant)}
+                    className="roundend-product-btn border"
+                  >
+                    {variant.title}
+                  </Button>
+                )
+              })}
+            </div>
+          }
+        </div>
+      )}
 
       {/* Quantity */}
       <div className="mb-product-info-quantity-margin">
@@ -230,14 +128,7 @@ export function ProductInfo({
             value={quantity}
             onChange={setQuantity}
             min={1}
-            max={
-              selectedVariant
-                ? Math.min(
-                    getVariantInventory(selectedVariant).quantity || 10,
-                    10
-                  )
-                : 10
-            }
+            max={10}
             hideControls={false}
           />
         </div>
@@ -249,18 +140,10 @@ export function ProductInfo({
           variant="primary"
           size="lg"
           className="flex-1"
-          disabled={
-            !selectedVariant ||
-            getVariantInventory(selectedVariant).status ===
-              'out-of-stock'
-          }
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
         >
-          {!selectedVariant ||
-          getVariantInventory(selectedVariant).status === 'out-of-stock'
-            ? 'Vyprodané'
-            : 'Přidat do košíku'}
+          Přidat do košíku
         </Button>
         <Button variant="secondary" size="lg" icon="icon-[mdi--heart-outline]">
           <span className="sr-only">Přidat do seznamu přání</span>
