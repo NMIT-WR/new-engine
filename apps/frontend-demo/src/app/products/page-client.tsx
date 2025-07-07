@@ -4,12 +4,12 @@ import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProducts } from '@/hooks/use-products'
 import { useUrlFilters } from '@/hooks/use-url-filters'
-import { Breadcrumb } from '@ui/molecules/breadcrumb'
-import { Select } from '@ui/molecules/select'
-import React,{ Suspense, useEffect } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query-keys'
 import { ProductService } from '@/services/product-service'
+import { useQueryClient } from '@tanstack/react-query'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Select } from '@ui/molecules/select'
+import { Suspense, useEffect } from 'react'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
@@ -75,12 +75,12 @@ function ProductsPageContent() {
   useEffect(() => {
     if (products.length > 0) {
       const pagesToPrefetch = []
-      
+
       // Always prefetch first page (if not current)
       if (currentPage !== 1) {
         pagesToPrefetch.push(1)
       }
-      
+
       // Prefetch previous pages
       if (hasPrevPage) {
         pagesToPrefetch.push(currentPage - 1)
@@ -89,7 +89,7 @@ function ProductsPageContent() {
           pagesToPrefetch.push(currentPage - 2)
         }
       }
-      
+
       // Prefetch next pages
       if (hasNextPage) {
         pagesToPrefetch.push(currentPage + 1)
@@ -98,32 +98,43 @@ function ProductsPageContent() {
           pagesToPrefetch.push(currentPage + 2)
         }
       }
-      
+
       // Prefetch last page (if known and not current)
       if (totalPages > 1 && currentPage !== totalPages) {
         pagesToPrefetch.push(totalPages)
       }
-      
+
       // Execute all prefetches
-      pagesToPrefetch.forEach(page => {
+      pagesToPrefetch.forEach((page) => {
         const offset = (page - 1) * pageSize
         queryClient.prefetchQuery({
-          queryKey: queryKeys.products.list({ 
-            page, 
-            limit: pageSize, 
-            filters: productFilters, 
-            sort: urlFilters.sortBy 
+          queryKey: queryKeys.products.list({
+            page,
+            limit: pageSize,
+            filters: productFilters,
+            sort: urlFilters.sortBy,
           }),
-          queryFn: () => ProductService.getProducts({ 
-            limit: pageSize, 
-            offset, 
-            filters: productFilters, 
-            sort: urlFilters.sortBy 
-          }),
+          queryFn: () =>
+            ProductService.getProducts({
+              limit: pageSize,
+              offset,
+              filters: productFilters,
+              sort: urlFilters.sortBy,
+            }),
         })
       })
     }
-  }, [currentPage, hasNextPage, hasPrevPage, products.length, queryClient, pageSize, productFilters, urlFilters.sortBy, totalPages])
+  }, [
+    currentPage,
+    hasNextPage,
+    hasPrevPage,
+    products.length,
+    queryClient,
+    pageSize,
+    productFilters,
+    urlFilters.sortBy,
+    totalPages,
+  ])
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -157,7 +168,7 @@ function ProductsPageContent() {
         </aside>
 
         {/* Products Grid */}
-        <main className="flex-1 w-full">
+        <main className="w-full flex-1">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-gray-600 text-sm dark:text-gray-400">
               Zobrazeno {products.length} z {totalCount} produktů
@@ -174,7 +185,8 @@ function ProductsPageContent() {
                 const value = details.value[0]
                 if (value) urlFilters.setSortBy(value as any)
               }}
-              size="md"
+              size="sm"
+              className="max-w-64"
             />
           </div>
 
