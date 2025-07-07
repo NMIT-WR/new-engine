@@ -28,7 +28,7 @@ export function HeaderWrapper({ logo }: HeaderWrapperProps) {
         href: '/products?categories=pcat_01JYERRDV0ZKND1HNDAEATS1YN,pcat_01JYERRDVQDFDX10CCPPCYR06T,pcat_01JYERRDW8KWJ8D39PFQ3CEJVZ',
       },
       {
-        title: 'Doplǩy',
+        title: 'Doplňky',
         href: '/products?categories=pcat_01JYERRF0F4T1VXMEEGDV9Z2VK,pcat_01JYERRF13W6SR9SNBCB543D5B,pcat_01JYERRF2XXRH863JMAC438GTD',
       },
     ]

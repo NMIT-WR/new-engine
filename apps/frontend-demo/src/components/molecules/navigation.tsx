@@ -1,8 +1,8 @@
 'use client'
-import { Button } from '@ui/atoms/button'
 import { Icon, type IconType } from '@ui/atoms/icon'
+import { Popover } from '@ui/molecules/popover'
 import Link from 'next/link'
-import { type ComponentPropsWithoutRef, useState } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
 export type NavItem = {
   title: string
@@ -14,53 +14,37 @@ export type NavItem = {
   children?: NavItem[]
 }
 
-function Submenu({ items }: { items: NavItem[] }) {
-  return (
-    <div className="absolute top-full left-0 z-50 mt-navigation-submenu min-w-[200px] rounded-navigation-submenu border border-navigation-submenu-border bg-navigation-submenu-bg p-navigation-submenu-padding shadow-navigation-submenu">
-      {items.map((child, index) => (
-        <Link
-          key={index}
-          href={child.href || '#'}
-          className="block px-navigation-item-x py-navigation-item-y text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
-          prefetch={child.prefetch}
-        >
-          {child.icon && (
-            <Icon
-              icon={child.icon}
-              size="sm"
-              className="mr-navigation-submenu-icon inline"
-            />
-          )}
-          {child.title}
-          {child.label && (
-            <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y font-medium text-navigation-badge text-navigation-badge-fg">
-              {child.label}
-            </span>
-          )}
-        </Link>
-      ))}
-    </div>
-  )
-}
-
 function NavigationItem({ item }: { item: NavItem }) {
-  const [isOpen, setIsOpen] = useState(false)
-
   if (item.role === 'submenu' && item.children) {
     return (
-      <li className="relative">
-        <Button
-          icon="icon-[mdi--chevron-down]"
-          iconPosition="right"
-          variant="tertiary"
-          theme="borderless"
-          size="sm"
-          onClick={() => setIsOpen(!isOpen)}
+      <li>
+        <Popover
+          id="submenu-category"
+          trigger={
+            <div className="flex items-center gap-2">
+              {item.icon && <Icon icon={item.icon} size="sm" />}
+              <span className="text-sm">{item.title}</span>
+              <Icon icon="token-icon-chevron-down" size="sm" />
+            </div>
+          }
+          showArrow={true}
+          contentClassName="z-50 bg-nav-submenu-bg px-0 py-2 shadow-light"
+          triggerClassName=""
         >
-          {item.icon && <Icon icon={item.icon} size="sm" />}
-          {item.title}
-        </Button>
-        {isOpen && <Submenu items={item.children} />}
+          <nav className="flex min-w-[200px] flex-col gap-nav-submenu">
+            {item.children.map((child, index) => (
+              <Link
+                key={index}
+                href={child.href || '#'}
+                className="px-nav-submenu-padding hover:bg-nav-submenu-item-hover"
+                prefetch={child.prefetch}
+              >
+                {child.icon && <Icon icon={child.icon} size="sm" />}
+                {child.title}
+              </Link>
+            ))}
+          </nav>
+        </Popover>
       </li>
     )
   }
@@ -69,13 +53,13 @@ function NavigationItem({ item }: { item: NavItem }) {
     <li className="relative">
       <Link
         href={item.href || '#'}
-        className="flex items-center gap-navigation-link-icon-gap rounded-navigation-item px-navigation-item-x py-navigation-item-y font-navigation-item text-navigation-fg text-navigation-item transition-colors hover:bg-navigation-item-hover-bg hover:text-navigation-fg-hover"
+        className="flex items-center gap-nav-link-icon-gap rounded-nav-item px-nav-item-x py-nav-item-y font-nav-item text-nav-fg text-nav-item transition-colors hover:bg-nav-item-hover-bg hover:text-nav-fg-hover"
         prefetch={item.prefetch ?? false}
       >
         {item.icon && <Icon icon={item.icon} size="sm" />}
         {item.title}
         {item.label && (
-          <span className="ml-navigation-badge-ml rounded-full bg-navigation-badge-bg px-navigation-badge-x py-navigation-badge-y font-medium text-navigation-badge text-navigation-badge-fg">
+          <span className="ml-nav-badge-ml rounded-full bg-nav-badge-bg px-nav-badge-x py-nav-badge-y font-medium text-nav-badge text-nav-badge-fg">
             {item.label}
           </span>
         )}
@@ -90,8 +74,8 @@ interface NavigationProps extends ComponentPropsWithoutRef<'nav'> {
 
 export function Navigation({ items, className, ...props }: NavigationProps) {
   return (
-    <nav className="bg-navigation-bg" {...props}>
-      <ul className="flex items-center gap-navigation-gap">
+    <nav className="bg-nav-bg" {...props}>
+      <ul className="flex items-center gap-nav-gap">
         {items.map((item, index) => (
           <NavigationItem key={index} item={item} />
         ))}

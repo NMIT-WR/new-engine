@@ -1,38 +1,38 @@
 @theme static {
   /* === NAVIGATION COLORS === */
-  --color-navigation-bg: transparent;
-  --color-navigation-fg: var(--color-fg-secondary);
-  --color-navigation-fg-hover: var(--color-fg-primary);
-  --color-navigation-item-hover-bg: var(--color-fill-hover);
-  --color-navigation-item-active-bg: var(--color-fill-active);
-  --color-navigation-badge-bg: var(--color-danger);
-  --color-navigation-badge-fg: var(--color-base);
-  --color-navigation-disabled: var(--color-disabled-text);
+  --color-nav-bg: transparent;
+  --color-nav-fg: var(--color-fg-secondary);
+  --color-nav-fg-hover: var(--color-fg-primary);
+  --color-nav-item-hover-bg: var(--color-fill-hover);
+  --color-nav-item-active-bg: var(--color-fill-active);
+  --color-nav-badge-bg: var(--color-danger);
+  --color-nav-badge-fg: var(--color-base);
+  --color-nav-disabled: var(--color-disabled-text);
 
   /* Navigation submenu */
-  --color-navigation-submenu-bg: var(--color-surface);
-  --color-navigation-submenu-border: var(--color-stroke-primary);
-  --shadow-navigation-submenu: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px
+  --color-nav-submenu-bg: var(--color-surface);
+  --color-nav-submenu-item-hover: var(--color-surface-hover);
+  --color-nav-submenu-border: var(--color-stroke-primary);
+  --shadow-nav-submenu: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px
     rgba(0, 0, 0, 0.1);
 
   /* === SPACING === */
-  --spacing-navigation-gap: var(--spacing-3xs);
-  --spacing-navigation-item-x: var(--spacing-xs);
-  --spacing-navigation-item-y: var(--spacing-2xs);
-  --spacing-navigation-submenu: var(--spacing-3xs);
-  --spacing-navigation-submenu-padding: var(--spacing-3xs);
-  --radius-navigation-item: var(--radius-md);
-  --radius-navigation-submenu: var(--radius-lg);
+  --spacing-nav-gap: var(--spacing-3xs);
+  --spacing-nav-item-x: var(--spacing-xs);
+  --spacing-nav-item-y: var(--spacing-2xs);
+  --spacing-nav-submenu: var(--spacing-3xs);
+  --spacing-nav-submenu-padding: var(--spacing-sm);
+  --radius-nav-item: var(--radius-md);
 
   /* === TYPOGRAPHY === */
-  --text-navigation-item: var(--text-sm);
-  --font-navigation-item: var(--font-weight-medium);
-  --text-navigation-badge: 0.625rem;
+  --text-nav-item: var(--text-sm);
+  --font-nav-item: var(--font-weight-medium);
+  --text-nav-badge: 0.625rem;
 
   /* === BADGE === */
-  --spacing-navigation-badge-x: var(--spacing-2xs);
-  --spacing-navigation-badge-y: 0.125rem;
-  --spacing-navigation-badge-ml: var(--spacing-2xs);
-  --spacing-navigation-link-icon-gap: var(--spacing-xs);
-  --spacing-navigation-submenu-icon: var(--spacing-xs);
+  --spacing-nav-badge-x: var(--spacing-2xs);
+  --spacing-nav-badge-y: 0.125rem;
+  --spacing-nav-badge-ml: var(--spacing-2xs);
+  --spacing-nav-link-icon-gap: var(--spacing-xs);
+  --spacing-nav-submenu-icon: var(--spacing-xs);
 }
