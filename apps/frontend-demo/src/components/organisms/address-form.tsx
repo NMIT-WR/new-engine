@@ -167,7 +167,7 @@ export function AddressForm({
     <form onSubmit={handleSubmit} className="relative flex flex-col">
       <Button
         size="sm"
-        className="absolute top-0 right-0 z-10"
+        className="absolute top-0 right-0 z-1"
         onClick={setTestInfo}
       >
         Vyplnit
@@ -334,7 +334,7 @@ export function AddressForm({
           />
         </div>
 
-        <div className="max-w-[20rem] mb-4 sm:mb-6">
+        <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
             options={countries}
             value={[shippingAddress.country]}
@@ -349,7 +349,7 @@ export function AddressForm({
         </div>
       </div>
 
-      <div className='mb-4 sm:mb-6'>
+      <div className="mb-4 sm:mb-6">
         <FormCheckbox
           id="same-address"
           label="Fakturační adresa je stejná jako doručovací"
@@ -468,7 +468,7 @@ export function AddressForm({
             />
           </div>
 
-          <div className="max-w-[20rem] mb-4 sm:mb-6">
+          <div className="mb-4 max-w-[20rem] sm:mb-6">
             <Select
               options={countries}
               value={[billingAddress.country]}

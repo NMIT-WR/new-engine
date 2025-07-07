@@ -5,6 +5,7 @@ import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/lib/format-price'
 import { orderHelpers } from '@/stores/order-store'
+import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { Steps } from '@ui/molecules/steps'
 import Link from 'next/link'
@@ -14,7 +15,6 @@ import { PaymentSelection } from '../../components/molecules/payment-selection'
 import { ShippingSelection } from '../../components/molecules/shipping-selection'
 import { AddressForm } from '../../components/organisms/address-form'
 import { OrderPreview } from '../../components/organisms/order-preview'
-import { Button } from '@ui/atoms/button'
 
 // Import payment and shipping methods data with prices
 const paymentMethods = [
@@ -280,7 +280,10 @@ export default function PaymentPage() {
   return (
     <div className="container mx-auto max-w-[80rem] px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       {/* Mobile/Tablet: Sticky progress bar */}
-      <div className="-mx-4 sm:-mx-6 sticky mb-4 top-0 z-20 bg-base border-b-2 border-border lg:border-b-0 px-4 pb-4 shadow-sm sm:px-6 lg:relative lg:mx-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:shadow-none">
+      <div
+        id="payment-header"
+        className="-mx-4 sm:-mx-6 sticky top-0 z-2 mb-4 border-border border-b-2 bg-base px-4 pb-4 shadow-sm sm:px-6 lg:relative lg:mx-0 lg:border-b-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:shadow-none"
+      >
         <div className="mb-4 flex items-center gap-3 pt-4 lg:mb-6 lg:pt-0">
           <Link
             href="/cart"
@@ -299,7 +302,7 @@ export default function PaymentPage() {
         {/* Mobile: Collapsible order summary */}
         <Button
           onClick={() => setShowOrderSummary(!showOrderSummary)}
-          className="hover:bg-surface-hover active:bg-surface-hover text-fg-primary bg-surface lg:hidden"
+          className="bg-surface text-fg-primary hover:bg-surface-hover active:bg-surface-hover lg:hidden"
           icon={
             showOrderSummary
               ? 'token-icon-chevron-up'
@@ -316,15 +319,16 @@ export default function PaymentPage() {
             {formatPrice(orderData?.total || 0 + shippingPrice + paymentFee)}
           </span>
         </Button>
-            {/* Mobile: Collapsible order summary content */}
-      {showOrderSummary && (
-        <div className="-mx-4 sm:-mx-6 mb-6 py-4 sm:px-6 lg:hidden">
-          <OrderPreview shippingPrice={shippingPrice} paymentFee={paymentFee} />
-        </div>
-      )}
+        {/* Mobile: Collapsible order summary content */}
+        {showOrderSummary && (
+          <div className="-mx-4 sm:-mx-6 mb-6 py-4 sm:px-6 lg:hidden">
+            <OrderPreview
+              shippingPrice={shippingPrice}
+              paymentFee={paymentFee}
+            />
+          </div>
+        )}
       </div>
-
-  
 
       <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-8">
         <div>
