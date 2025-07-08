@@ -18,7 +18,7 @@ export interface Product {
   updated_at?: string
   reviewCount?: number
   features?: string[]
-  specifications?: {name: string, value: string}[]
+  specifications?: { name: string; value: string }[]
   // Computed properties from transformProduct
   inStock?: boolean
   price?: any
@@ -49,9 +49,11 @@ export interface Category {
   id: string
   name: string
   handle: string
+  parent_category_id?: string
   count?: number
   imageUrl?: string
   description?: string
+  leaves?: string[]
 }
 
 export interface ProductVariant {

@@ -3,9 +3,8 @@ import { SaleBanner } from '@/components/molecules/sale-banner'
 import { CategoryGrid } from '@/components/organisms/category-grid'
 import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Hero } from '@/components/organisms/hero'
-import { homeContent } from '@/data/home-content'
+import { homeCategories, homeContent } from '@/data/home-content'
 import { useHomeProducts } from '@/hooks/use-products'
-import { rootCategories } from '@/lib/static-data/categories'
 
 export default function Home() {
   const {
@@ -42,11 +41,13 @@ export default function Home() {
       <CategoryGrid
         title={categoriesSection.title}
         subtitle={categoriesSection.subtitle}
-        categories={rootCategories.map(cat => ({
+        categories={homeCategories.map((cat) => ({
           id: cat.id,
           name: cat.name,
           handle: cat.handle,
-          description: cat.description,
+          parent_category_id: cat.parent_category_id,
+          imageUrl: cat.imageUrl,
+          leaves: cat.leaves,
           // Note: count and imageUrl would need to be fetched separately if needed
         }))}
       />
@@ -73,8 +74,6 @@ export default function Home() {
         products={newProducts}
         linkHref={newArrivals.linkHref}
       />
-
-
     </div>
   )
 }

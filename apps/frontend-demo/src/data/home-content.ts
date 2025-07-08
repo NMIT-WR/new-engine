@@ -1,3 +1,6 @@
+import data from '@/lib/static-data/test-categories'
+import type { Category } from '@/types/product'
+
 export interface HeroContent {
   title: string
   subtitle: string
@@ -124,6 +127,19 @@ export const alternativeHeroContent: HeroContent[] = [
   },
 ]
 
+const getLeavesByRootId = (id: string) => {
+  const leaves = data.allCategories
+    .filter(
+      (category) =>
+        category.root_category_id === id && category.children_ids.length === 0
+    )
+    .map((cat) => cat.id)
+  // const leavesIds = leaves.map((category) => category.id)
+  // console.log('details leaves', leaves)
+  console.log('leavesIds', leaves)
+  return leaves
+}
+
 // Alternative banner content for different promotions
 export const alternativeBannerContent: BannerContent[] = [
   {
@@ -149,5 +165,88 @@ export const alternativeBannerContent: BannerContent[] = [
       'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1920&h=600&fit=crop',
     linkText: 'Nakupovat v blesckovém výprodeji',
     linkHref: '/sale',
+  },
+]
+
+const leavesIds = [
+  [
+    'pcat_01JYERRCMBCA6DTA9D2QK47365',
+    'pcat_01JYERRCP6DE4WW4SBG3AXM3ZY',
+    'pcat_01JYERRCR52228KG73ZTFJDFDH',
+    'pcat_01JYERRCSD2K0XS2TBXGVZHP40',
+  ],
+  [
+    'pcat_01JYERRF8KC497Q89YKG8AM070',
+    'pcat_01JYERRFB0APW1Z05B4A2A4AKF',
+    'pcat_01JYERRFCRRQYS9Q55P7JSNJHR',
+    'pcat_01JYERRFDZZF1S1VFMQ3V58KSY',
+    'pcat_01JYERRFF61KF8AETW3EPEFRJ7',
+  ],
+  [
+    'pcat_01JYERRHRVVWF9VZ6Q7B59W6G7',
+    'pcat_01JYERRHWSYBG6XCHN6XVS5RHK',
+    'pcat_01JYERRJ25417E3TYAHKGBSRNA',
+  ],
+  [
+    'pcat_01JYERRD7N18T77AQFSJ7EMVGC',
+    'pcat_01JYERRD9ZB0MNZP706FQG453H',
+    'pcat_01JYERRDBVCK53EDJV8YE7HXR7',
+    'pcat_01JYERRDDMQZSJDR2MAGY0XS6K',
+  ],
+  [
+    'pcat_01JYERRE42351JWPZ2YXE6NWDX',
+    'pcat_01JYERRE4NBWBM76Q5JZMSVSA5',
+    'pcat_01JYERRE721CXXPKAD0TCNSZCJ',
+    'pcat_01JYERRE7PRKJC4PXQFXCJ581F',
+  ],
+  [
+    'pcat_01JYERREJFEWQTJPKEA0YMHPCG',
+    'pcat_01JYERREK5YAVKTW6R4G716KSP',
+    'pcat_01JYERREMBWHZM6XNPH5T4YJTP',
+  ],
+]
+
+export const homeCategories: Category[] = [
+  {
+    id: 'pcat_01JYERRCJGHMCBWSWD91X1DKC7',
+    name: 'Pánské',
+    handle: 'panske',
+    imageUrl: '/assets/cat-images/cat-men.webp',
+    leaves: leavesIds[0],
+  },
+  {
+    id: 'pcat_01JYERRF472Y089AH84CR8G6JZ',
+    name: 'Dámské',
+    handle: 'damske',
+    imageUrl: '/assets/cat-images/cat-women.webp',
+    leaves: leavesIds[1],
+  },
+  {
+    id: 'pcat_01JYERRHQ0RZVNG6385W59YR8D',
+    name: 'Dětské',
+    handle: 'detske',
+    imageUrl: '/assets/cat-images/cat-kids.webp',
+    leaves: leavesIds[2],
+  },
+  {
+    id: 'pcat_01JYERRKZ0S59AM6S49PP1RMP6',
+    name: 'Cyklo',
+    handle: 'cyklo-category-378',
+    imageUrl: '/assets/cat-images/cat-cyclo.webp',
+    leaves: leavesIds[3],
+  },
+  {
+    id: 'pcat_01JYERRMVRA45GBAS2E0MPAWQW',
+    name: 'Moto',
+    handle: 'moto-category-424',
+    imageUrl: '/assets/cat-images/cat-moto.webp',
+    leaves: leavesIds[4],
+  },
+  {
+    id: 'pcat_01JYERRNAJJ776Y5QJ5WTEGR80',
+    name: 'Snb-Skate',
+    handle: 'snb-skate-category-448',
+    imageUrl: '/assets/cat-images/cat-ski.webp',
+    leaves: leavesIds[5],
   },
 ]
