@@ -1,0 +1,6 @@
+@theme static {
+  /* Form spacing tokens */
+  --gap-form: var(--spacing-3xs); /* 5px - gap between label and input */
+  --gap-form-help: var(--spacing-2xs); /* 9-10px - gap before help text */
+  --mt-form-checkbox: var(--spacing-2xs); /* 9-10px - top margin for checkbox alignment */
+}

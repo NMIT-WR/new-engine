@@ -1,0 +1,12 @@
+@theme static {
+  /* === ERROR TEXT SPACING === */
+  --gap-error-icon: var(--spacing-3xs); /* 5px - small gap between icon and text */
+  
+  /* === ERROR TEXT COLORS === */
+  --color-error-fg: var(--color-danger);
+  
+  /* === ERROR TEXT SIZES === */
+  --text-error-sm: var(--text-xs);
+  --text-error-md: var(--text-sm);
+  --text-error-lg: var(--text-md);
+}

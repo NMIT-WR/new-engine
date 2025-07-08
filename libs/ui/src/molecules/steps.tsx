@@ -58,7 +58,7 @@ const stepsVariants = tv({
     ],
     progress: ['absolute top-0 left-0 h-full  transition-all duration-300'],
     containerButtons: [
-      'flex gap-2 h-fit',
+      'flex gap-steps-btn h-fit',
       'data-[orientation=vertical]:col-start-2',
     ],
     stepButton: [
@@ -133,7 +133,7 @@ export function Steps({
     <div className={root()} {...api.getRootProps()}>
       <div className={list()} {...api.getListProps()}>
         {items.map((step, index) => (
-          <div className={item()} key={index} {...api.getItemProps({ index })}>
+          <div className={item()} key={`step-item-${step.value}`} {...api.getItemProps({ index })}>
             <button className={trigger()} {...api.getTriggerProps({ index })}>
               <span
                 className={indicator()}
@@ -155,7 +155,7 @@ export function Steps({
       {items.map((step, index) => (
         <div
           className={content()}
-          key={index}
+          key={`step-item-${step.value}`}
           {...api.getContentProps({ index })}
         >
           <article className="h-fit">

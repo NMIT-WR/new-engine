@@ -143,7 +143,7 @@ export function Dialog({
               <div className="flex-grow overflow-y-auto">{children}</div>
 
               {actions && (
-                <div className="mt-auto flex shrink-0 justify-end gap-2 pt-4">
+                <div className="mt-auto flex shrink-0 justify-end gap-dialog-actions pt-dialog-actions">
                   {actions}
                 </div>
               )}

@@ -9,7 +9,7 @@ import { tv } from '../utils'
 const checkboxVariants = tv({
   slots: {
     root: [],
-    label: ['flex items-center gap-2 cursor-pointer'],
+    label: ['flex items-center gap-checkbox cursor-pointer'],
     checkbox: [
       'appearance-none relative cursor-pointer flex-shrink-0',
       'h-checkbox w-checkbox',

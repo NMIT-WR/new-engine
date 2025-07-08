@@ -14,7 +14,7 @@ import { tv } from '../utils'
 const comboboxVariants = tv({
   slots: {
     root: ['flex flex-col relative w-full gap-combobox-root'],
-    label: ['block text-label-md font-label mb-1'],
+    label: ['block text-label-md font-label mb-combobox-label'],
     control: [
       'flex items-center w-full relative',
       'bg-combobox border-(length:--border-width-combobox) border-combobox-border rounded-combobox',

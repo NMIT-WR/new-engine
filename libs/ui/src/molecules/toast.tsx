@@ -44,7 +44,7 @@ const toastVariants = tv({
       'text-toast-description-size text-toast-description-fg mt-toast-description-gap',
     ],
     closeButton: [
-      'grid place-items-center flex-shrink-0 ml-auto py-0 px-0',
+      'grid place-items-center flex-shrink-0 ml-auto p-toast-close',
       'cursor-pointer',
       'text-toast-close hover:text-toast-close-hover',
     ],

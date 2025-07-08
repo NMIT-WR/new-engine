@@ -30,7 +30,7 @@ export function FormCheckboxRaw({
 
   return (
     <div className="flex gap-2xs">
-      <div className="mt-2 flex items-start">
+      <div className="mt-form-checkbox flex items-start">
         <Checkbox id={id} required={required} disabled={disabled} {...props} />
       </div>
       <div className="flex flex-col">
