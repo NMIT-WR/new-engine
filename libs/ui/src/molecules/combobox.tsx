@@ -102,6 +102,7 @@ export interface ComboboxProps<T = unknown>
   items: ComboboxItem<T>[]
   value?: string | string[]
   defaultValue?: string | string[]
+  inputValue?: string
   multiple?: boolean
   validationState?: 'normal' | 'error' | 'success' | 'warning'
   error?: string
@@ -111,6 +112,9 @@ export interface ComboboxProps<T = unknown>
   selectionBehavior?: 'replace' | 'clear' | 'preserve'
   closeOnSelect?: boolean
   allowCustomValue?: boolean
+  loopFocus?: boolean
+  autoFocus?: boolean
+  disableFiltering?: boolean
   triggerIcon?: string
   clearIcon?: string
   onChange?: (value: string | string[]) => void
@@ -131,6 +135,7 @@ export function Combobox<T = unknown>({
   items = [],
   value,
   defaultValue,
+  inputValue,
   multiple = false,
   validationState = 'normal',
   error,
@@ -139,6 +144,9 @@ export function Combobox<T = unknown>({
   selectionBehavior = 'replace',
   closeOnSelect = false,
   allowCustomValue = false,
+  loopFocus = true,
+  autoFocus = false,
+  disableFiltering = false,
   inputBehavior = 'autocomplete',
   onChange,
   onInputValueChange,
@@ -167,7 +175,9 @@ export function Combobox<T = unknown>({
     closeOnSelect,
     selectionBehavior,
     allowCustomValue,
+    autoFocus,
     inputBehavior,
+    loopFocus,
     ids: {
       label: `${uniqueId}-label`,
       input: `${uniqueId}-input`,
@@ -176,12 +186,14 @@ export function Combobox<T = unknown>({
     value: value as string[] | undefined,
     defaultValue: defaultValue as string[] | undefined,
     multiple,
+    inputValue,
     onValueChange: ({ value: selectedValue }) => {
       onChange?.(selectedValue)
     },
     onInputValueChange: ({ inputValue }) => {
       let newFilteredItems: typeof items
-      if (inputValue) {
+      
+      if (!disableFiltering && inputValue) {
         const filtered = items.filter((item) =>
           i18nFilter.contains(item.label, inputValue)
         )
@@ -189,6 +201,7 @@ export function Combobox<T = unknown>({
       } else {
         newFilteredItems = items
       }
+      
       setFilteredItems(newFilteredItems)
       onInputValueChange?.(inputValue)
     },

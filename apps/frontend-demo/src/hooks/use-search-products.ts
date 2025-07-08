@@ -1,6 +1,6 @@
 import { sdk } from '@/lib/medusa-client'
 import type { StoreProduct } from '@medusajs/types'
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 interface UseSearchProductsOptions {
   limit?: number
@@ -27,7 +27,7 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
       try {
         const response = await sdk.store.product.list({
           q: query,
-          fields: options?.fields || 'id,title,handle,thumbnail',
+          fields: options?.fields || 'id,title,handle',
           limit: options?.limit || 10,
         })
 
