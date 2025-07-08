@@ -23,6 +23,8 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   categories: new Set(),
   sizes: new Set(),
   colors: new Set(),
+  onSale: false,
+  discountRange: [0, 100],
 }
 
 type ExtendedSortOption = SortOption | 'relevance'
@@ -31,6 +33,11 @@ interface UseProductListingOptions {
   initialSortBy?: ExtendedSortOption
   initialFilters?: Partial<FilterState>
   sortOptions?: Array<{ value: ExtendedSortOption; label: string }>
+  // External state management
+  externalSortBy?: ExtendedSortOption
+  externalSetSortBy?: (value: ExtendedSortOption) => void
+  externalFilters?: FilterState
+  externalSetFilters?: (filters: FilterState) => void
 }
 
 interface UseProductListingReturn {
@@ -52,13 +59,23 @@ export function useProductListing(
     initialSortBy = 'newest',
     initialFilters = {},
     sortOptions = DEFAULT_SORT_OPTIONS,
+    externalSortBy,
+    externalSetSortBy,
+    externalFilters,
+    externalSetFilters,
   } = options
 
-  const [sortBy, setSortBy] = useState<ExtendedSortOption>(initialSortBy)
-  const [filters, setFilters] = useState<FilterState>({
+  // Use external state if provided, otherwise use internal state
+  const [internalSortBy, setInternalSortBy] = useState<ExtendedSortOption>(initialSortBy)
+  const [internalFilters, setInternalFilters] = useState<FilterState>({
     ...DEFAULT_FILTER_STATE,
     ...initialFilters,
   })
+
+  const sortBy = externalSortBy ?? internalSortBy
+  const setSortBy = externalSetSortBy ?? setInternalSortBy
+  const filters = externalFilters ?? internalFilters
+  const setFilters = externalSetFilters ?? setInternalFilters
 
   const filteredProducts = useMemo(
     () => filterProducts(products, filters),

@@ -7,34 +7,27 @@ import { extractProductData } from '@/utils/product-utils'
 import { Pagination } from '@ui/molecules/pagination'
 import { ProductCard } from '@ui/molecules/product-card'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 interface ProductGridProps {
   products: Product[]
+  totalCount?: number
+  currentPage?: number
   pageSize?: number
+  onPageChange?: (page: number) => void
 }
 
-export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
-  const [currentPage, setCurrentPage] = useState(1)
+export function ProductGrid({ 
+  products, 
+  totalCount,
+  currentPage = 1,
+  pageSize = 12,
+  onPageChange 
+}: ProductGridProps) {
   const { region } = useCurrentRegion()
   const navigate = useRouter()
 
-  // Calculate pagination
-  const totalPages = Math.ceil(products.length / pageSize)
-  const startIndex = (currentPage - 1) * pageSize
-  const endIndex = startIndex + pageSize
-  const currentProducts = products.slice(startIndex, endIndex)
-
-  // If current page is out of bounds after filtering, reset to last valid page
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages)
-    }
-  }, [currentPage, totalPages])
-
-  /*const handleNavigate = (handle: string) => {  
-    navigate.push(`/products/${handle}`)
-  }*/
+  // Calculate total pages based on totalCount or products length
+  const totalPages = Math.ceil((totalCount || products.length) / pageSize)
 
   if (products.length === 0) {
     return (
@@ -47,7 +40,7 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {currentProducts.map((product) => {
+        {products.map((product) => {
           const { price, displayBadges, stockText, stockStatus } =
             extractProductData(product, region?.currency_code, region)
 
@@ -77,12 +70,12 @@ export function ProductGrid({ products, pageSize = 9 }: ProductGridProps) {
         })}
       </div>
 
-      {totalPages > 1 && (
+      {totalPages > 1 && onPageChange && (
         <div className="mt-product-grid-pagination-margin flex justify-center">
           <Pagination
-            count={products.length}
+            count={totalCount || products.length}
             page={currentPage}
-            onPageChange={(page) => setCurrentPage(page)}
+            onPageChange={onPageChange}
             pageSize={pageSize}
             siblingCount={1}
           />

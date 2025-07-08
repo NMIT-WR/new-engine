@@ -103,6 +103,8 @@ export interface FilterState {
   categories: Set<unknown>
   sizes: Set<string>
   colors: Set<string>
+  onSale?: boolean
+  discountRange?: [number, number]
 }
 
 export function filterProducts(
@@ -175,6 +177,37 @@ export function filterProducts(
         productColors.has(color)
       )
       if (!hasMatchingColor) {
+        return false
+      }
+    }
+
+    // On Sale filter
+    if (filters.onSale) {
+      const isOnSale = product.tags?.some(
+        (tag) => tag.value.toLowerCase() === 'sale'
+      )
+      if (!isOnSale) {
+        return false
+      }
+    }
+
+    // Discount range filter
+    if (filters.discountRange && filters.discountRange[0] > 0) {
+      // For now, we'll check if product has sale tag and estimated discount
+      // In real implementation, you'd have original_price field
+      const isOnSale = product.tags?.some(
+        (tag) => tag.value.toLowerCase() === 'sale'
+      )
+      
+      if (isOnSale) {
+        // Estimate discount percentage based on sale tag
+        // This is a simplified approach - in production you'd have actual discount data
+        const estimatedDiscount = 30 // Default 30% for sale items
+        if (estimatedDiscount < filters.discountRange[0] || estimatedDiscount > filters.discountRange[1]) {
+          return false
+        }
+      } else if (filters.discountRange[0] > 0) {
+        // If there's no sale tag but filter requires discount, exclude the product
         return false
       }
     }
