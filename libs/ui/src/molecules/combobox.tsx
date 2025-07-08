@@ -49,7 +49,7 @@ const comboboxVariants = tv({
       'flex flex-col overflow-clip',
       'rounded-combobox shadow-md',
       'bg-combobox-content-bg',
-      'border border-combobox-border z-1',
+      'border border-combobox-border z-(--z-combobox-content)',
     ],
     item: [
       'flex items-center px-combobox-item-lg py-combobox-item',

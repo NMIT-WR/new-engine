@@ -117,7 +117,7 @@ export function HeaderSearch() {
         />
       }
       triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
-      contentClassName="z-50"
+      contentClassName="z-10"
     >
       <div ref={containerRef}>
         <Combobox
