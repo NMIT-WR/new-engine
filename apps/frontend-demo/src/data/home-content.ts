@@ -1,4 +1,3 @@
-import data from '@/lib/static-data/test-categories'
 import type { Category } from '@/types/product'
 
 export interface HeroContent {
@@ -126,19 +125,6 @@ export const alternativeHeroContent: HeroContent[] = [
     },
   },
 ]
-
-const getLeavesByRootId = (id: string) => {
-  const leaves = data.allCategories
-    .filter(
-      (category) =>
-        category.root_category_id === id && category.children_ids.length === 0
-    )
-    .map((cat) => cat.id)
-  // const leavesIds = leaves.map((category) => category.id)
-  // console.log('details leaves', leaves)
-  console.log('leavesIds', leaves)
-  return leaves
-}
 
 // Alternative banner content for different promotions
 export const alternativeBannerContent: BannerContent[] = [
