@@ -1,7 +1,7 @@
 'use client'
-import { useDebounce } from '@/hooks/use-debounce'
-import { useProducts } from '@/hooks/use-products'
-import type { Product } from '@/types/product'
+import { useDebouncedCallback } from '@/hooks/use-debounce'
+import { useSearchProducts } from '@/hooks/use-search-products'
+import type { StoreProduct } from '@medusajs/types'
 import { Icon } from '@ui/atoms/icon'
 import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
 import { Popover } from '@ui/molecules/popover'
@@ -12,42 +12,37 @@ export function HeaderSearch() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedValue, setSelectedValue] = useState<string[]>([])
-  const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Get products from database
-  const { products, isLoading } = useProducts()
+  // Use search hook
+  const { searchResults, isSearching, searchProducts } = useSearchProducts({
+    limit: 6, // Limit to 6 results for better UX
+  })
 
-  // Filter products based on search query
-  const filteredProducts =
-    debouncedSearchQuery && products
-      ? products
-          .filter((product) => {
-            const query = debouncedSearchQuery.toLowerCase()
-            return (
-              product.title.toLowerCase().includes(query) ||
-              product.description?.toLowerCase().includes(query) ||
-              product.handle.toLowerCase().includes(query)
-            )
-          })
-          .slice(0, 6) // Limit to 6 results for better UX
-      : []
+  // Create debounced search function
+  const debouncedSearch = useDebouncedCallback(searchProducts, 300)
+
+  // Update search query and trigger debounced search
+  const handleInputChange = (value: string) => {
+    setSearchQuery(value)
+    debouncedSearch(value)
+  }
 
   // Create combobox items
-  const searchItems: ComboboxItem<Product>[] = filteredProducts.map(
+  const searchItems: ComboboxItem<StoreProduct>[] = searchResults.map(
     (product) => ({
-      value: product.handle,
-      label: product.title,
+      value: product.handle || product.id,
+      label: product.title || 'Untitled Product',
       data: product,
     })
   )
 
   // Add "View all results" option if there's a search query
-  if (searchQuery && filteredProducts.length > 0) {
+  if (searchQuery && searchResults.length > 0) {
     searchItems.push({
       value: '__search__',
       label: `Zobrazit všechny výsledky pro "${searchQuery}"`,
-      data: undefined,
+      data: undefined as any,
     })
   }
 
@@ -122,17 +117,17 @@ export function HeaderSearch() {
       <div ref={containerRef}>
         <Combobox
           placeholder={
-            isLoading ? 'Načítání produktů...' : 'Hledat produkty...'
+            isSearching ? 'Hledám...' : 'Hledat produkty...'
           }
           items={searchItems}
           value={selectedValue}
           onChange={handleSelect}
-          onInputValueChange={setSearchQuery}
+          onInputValueChange={handleInputChange}
           allowCustomValue={true}
           closeOnSelect
           clearable={false}
           size="sm"
-          disabled={isLoading}
+          disabled={isSearching}
         />
       </div>
     </Popover>
