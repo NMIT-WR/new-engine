@@ -1,15 +1,15 @@
 'use client'
 
+import { DemoProductCard } from '@/components/molecules/demo-product-card'
 import { useCurrentRegion } from '@/hooks/use-region'
+import { queryKeys } from '@/lib/query-keys'
+import { ProductService } from '@/services'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
-import { Pagination } from '@ui/molecules/pagination'
-import { DemoProductCard } from '@/components/molecules/demo-product-card'
-import Link from 'next/link'
 import { useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '@/lib/query-keys'
-import { ProductService } from '@/services'
+import { Pagination } from '@ui/molecules/pagination'
+import Link from 'next/link'
 
 interface ProductGridProps {
   products: Product[]
@@ -19,12 +19,12 @@ interface ProductGridProps {
   onPageChange?: (page: number) => void
 }
 
-export function ProductGrid({ 
-  products, 
+export function ProductGrid({
+  products,
   totalCount,
   currentPage = 1,
   pageSize = 12,
-  onPageChange 
+  onPageChange,
 }: ProductGridProps) {
   const { region } = useCurrentRegion()
   const queryClient = useQueryClient()
@@ -43,7 +43,9 @@ export function ProductGrid({
   if (products.length === 0) {
     return (
       <div className="py-product-grid-empty-padding text-center">
-        <p className="text-product-grid-empty-text">Žádné produkty nenalezeny</p>
+        <p className="text-product-grid-empty-text">
+          Žádné produkty nenalezeny
+        </p>
       </div>
     )
   }
@@ -52,9 +54,10 @@ export function ProductGrid({
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => {
-          const { price, displayBadges } =
-            extractProductData(product, region?.currency_code)
-
+          const { price, displayBadges } = extractProductData(
+            product,
+            region?.currency_code
+          )
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
           const formattedPrice =
@@ -65,17 +68,27 @@ export function ProductGrid({
                 ? formatPrice(price.amount, region?.currency_code)
                 : 'Cena není k dispozici'
 
+          const calculatedPrice = price?.calculated_price
+          const originalPrice = price?.original_price
+
+          console.log('original & calculated: ', calculatedPrice, originalPrice)
+
           return (
-            <Link key={product.id} prefetch={true} href={`/products/${product.handle}`} onMouseEnter={() => prefetchProduct(product.handle)}
-            onTouchStart={() => prefetchProduct(product.handle)}>
-            <DemoProductCard
-            
-              name={product.title}
-              price={formattedPrice}
-              imageUrl={product.thumbnail || ''}
-              badges={displayBadges}
-              className='hover:bg-highlight'
-            /></Link>
+            <Link
+              key={product.id}
+              prefetch={true}
+              href={`/products/${product.handle}`}
+              onMouseEnter={() => prefetchProduct(product.handle)}
+              onTouchStart={() => prefetchProduct(product.handle)}
+            >
+              <DemoProductCard
+                name={product.title}
+                price={formattedPrice}
+                imageUrl={product.thumbnail || ''}
+                badges={displayBadges}
+                className="hover:bg-highlight"
+              />
+            </Link>
           )
         })}
       </div>

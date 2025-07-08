@@ -37,7 +37,7 @@ export function formatPrice(amount: number, currencyCode = 'CZK'): string {
   if (
     ['SEK', 'DKK', 'NOK', 'PLN', 'CZK'].includes(currencyCode.toUpperCase())
   ) {
-    return `${amount.toFixed(2)} ${symbol}`
+    return `${amount.toFixed(0)} ${symbol}`
   }
 
   // Default: symbol before amount

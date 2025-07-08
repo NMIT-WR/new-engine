@@ -1,22 +1,21 @@
-import { type HTMLAttributes, type ReactNode, useId } from 'react'
-import type { VariantProps } from 'tailwind-variants'
 import { Badge, type BadgeProps } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
-import Image from 'next/image'
 import { Rating, type RatingProps } from '@ui/atoms/rating'
-import { slugify, tv } from '@ui/utils'
 import { NumericInput } from '@ui/molecules/numeric-input'
+import { slugify, tv } from '@ui/utils'
+import Image from 'next/image'
+import { type HTMLAttributes, type ReactNode, useId } from 'react'
+import type { VariantProps } from 'tailwind-variants'
 
 //object-cover aspect-product-card-image
 const productCard = tv({
   slots: {
     base: [
-      'rounded-pc p-pc-padding',
+      'rounded-pc p-pc-padding h-full',
       'border-(length:--border-pc-width) border-pc-border bg-pc max-w-pc-max shadow-sm',
     ],
     imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
-    nameSlot:
-      'text-pc-name-fg text-pc-name-size  leading-pc-name line-clamp-pc-name',
+    nameSlot: 'text-pc-name-fg text-pc-name-size truncate',
     priceSlot: 'text-pc-price-fg text-pc-price-size',
     stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size ',
     badgesSlot: 'flex flex-wrap gap-pc-box',
@@ -145,9 +144,9 @@ export function DemoProductCard({
     <div className={base({ className, layout })} {...props}>
       {/* Optimized Next.js Image */}
       <div className={`relative ${imageSlot({ layout })}`}>
-        <Image 
-          src={imageUrl || '/images/placeholder-product.png'} 
-          alt={name} 
+        <Image
+          src={imageUrl || '/images/placeholder-product.png'}
+          alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 20vw, 15vw"
           className="object-cover"
@@ -182,7 +181,9 @@ export function DemoProductCard({
         </div>
       )}
 
-      {stockStatus && <p className={stockStatusSlot({ layout })}>{stockStatus}</p>}
+      {stockStatus && (
+        <p className={stockStatusSlot({ layout })}>{stockStatus}</p>
+      )}
 
       <p className={priceSlot({ layout })}>{price}</p>
 
