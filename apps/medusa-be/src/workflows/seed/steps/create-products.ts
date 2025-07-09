@@ -29,6 +29,12 @@ export type CreateProductsStepInput = {
         options?: {
             [key: string]: string
         }
+        metadata?: {
+            images?: {
+                url: string
+            }[]
+            thumbnail?: string
+        }
         prices?: {
             amount: number
             currency_code: string
@@ -107,14 +113,17 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             variants: inputProduct.variants?.map(inputVariant => {
                 const existingVariant = existingProduct.variants.find(v => v.sku === inputVariant.sku)
                 return existingVariant ? {
-                        title: inputVariant.title,
-                        sku: inputVariant.sku,
-                        ean: inputVariant.ean,
-                        options: inputVariant.options,
-                        prices: inputVariant.prices?.map(p => ({
-                            amount: p.amount,
-                            currency_code: p.currency_code,
-                    })), id: existingVariant.id} : inputVariant
+                    title: inputVariant.title,
+                    sku: inputVariant.sku,
+                    ean: inputVariant.ean,
+                    options: inputVariant.options,
+                    prices: inputVariant.prices?.map(p => ({
+                        amount: p.amount,
+                        currency_code: p.currency_code,
+                    })),
+                    metadata: inputVariant.metadata,
+                    id: existingVariant.id
+                } : inputVariant
             }),
             sales_channels: existingSalesChannels.filter((sc) => {
                 if (sc.name === inputProduct.salesChannelNames.find(t => t === sc.name)) {
@@ -160,7 +169,8 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 prices: v.prices?.map(p => ({
                     amount: p.amount,
                     currency_code: p.currency_code,
-                }))
+                })),
+                metadata: v.metadata,
             })),
             sales_channels: existingSalesChannels.filter((sc) => {
                 if (sc.name === p.salesChannelNames.find(t => t === sc.name)) {
