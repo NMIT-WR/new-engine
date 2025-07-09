@@ -1,4 +1,4 @@
-import { Cart } from '@/hooks/use-cart'
+import type { Cart } from '@/hooks/use-cart'
 import { Store } from '@tanstack/react-store'
 
 interface OrderState {

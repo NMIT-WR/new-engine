@@ -1,80 +1,8 @@
 import Image from 'next/image'
 import '../../tokens/app-components/molecules/_shipping-selection.css'
 import { Button } from '@ui/atoms/button'
-
-export interface ShippingMethod {
-  id: string
-  name: string
-  description: string
-  price: string
-  delivery: string
-  deliveryDate?: string
-  image?: string
-}
-
-// Helper function to calculate delivery date
-const getDeliveryDate = (daysToAdd: number) => {
-  const date = new Date()
-  date.setDate(date.getDate() + daysToAdd)
-  return date.toLocaleDateString('cs-CZ', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'numeric',
-  })
-}
-
-const shippingMethods: ShippingMethod[] = [
-  {
-    id: 'ppl',
-    name: 'PPL',
-    description: 'Doručení na adresu',
-    price: '89 Kč',
-    delivery: 'Doručení za 2-3 pracovní dny',
-    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
-    image: '/assets/ppl.webp',
-  },
-  {
-    id: 'dhl',
-    name: 'DHL',
-    description: 'Expresní doručení',
-    price: '129 Kč',
-    delivery: 'Doručení za 1-2 pracovní dny',
-    deliveryDate: `Doručení ${getDeliveryDate(1)} - ${getDeliveryDate(2)}`,
-    image: '/assets/dhl.webp',
-  },
-  {
-    id: 'zasilkovna',
-    name: 'Zásilkovna',
-    description: 'Výdejní místa po celé ČR',
-    price: '65 Kč',
-    delivery: 'Doručení za 2-3 pracovní dny',
-    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
-    image: '/assets/zasilkovna.webp',
-  },
-  {
-    id: 'balikovna',
-    name: 'Balíkovna',
-    description: 'Široká síť výdejních míst',
-    price: '59 Kč',
-    delivery: 'Doručení za 2-3 pracovní dny',
-    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
-    image: '/assets/balikovna.webp',
-  },
-  {
-    id: 'personal',
-    name: 'Osobní odběr',
-    description: 'Vyzvednutí na prodejně',
-    price: 'Zdarma',
-    delivery: 'Připraveno ihned',
-    deliveryDate: 'Vyzvednutí dnes',
-    image: '/assets/instore.webp',
-  },
-]
-
-export interface ShippingSelectionProps {
-  selected: string
-  onSelect: (method: string) => void
-}
+import { SHIPPING_METHODS } from '@/lib/checkout-data'
+import type { ShippingSelectionProps } from '@/types/checkout'
 
 export function ShippingSelection({
   selected,
@@ -87,7 +15,7 @@ export function ShippingSelection({
         role="radiogroup"
         aria-label="Vyberte způsob dopravy"
       >
-        {shippingMethods.map((method) => (
+        {SHIPPING_METHODS.map((method) => (
           <Button
             key={method.id}
             onClick={() => onSelect(method.id)}
@@ -120,7 +48,7 @@ export function ShippingSelection({
                 </p>
               </div>
               <span className="ml-auto font-bold text-fg-primary sm:text-lg">
-                {method.price}
+                {method.priceFormatted}
               </span>
               <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-border bg-base transition-all duration-200 sm:h-5 sm:w-5">
                 <div

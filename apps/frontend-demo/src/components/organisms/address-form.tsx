@@ -6,40 +6,8 @@ import { FormCheckboxRaw as FormCheckbox } from '@ui/molecules/form-checkbox'
 import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import { Select } from '@ui/molecules/select'
 import { useState } from 'react'
-
-interface AddressData {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  street: string
-  city: string
-  postalCode: string
-  country: string
-  company?: string
-}
-
-interface AddressFormProps {
-  onComplete: (data: {
-    shipping: AddressData
-    billing: AddressData
-    useSameAddress: boolean
-  }) => void
-  initialData?: {
-    shipping?: Partial<AddressData>
-    billing?: Partial<AddressData>
-    useSameAddress?: boolean
-  }
-  isLoading?: boolean
-}
-
-const countries = [
-  { label: 'Česká republika', value: 'CZ' },
-  { label: 'Slovensko', value: 'SK' },
-  { label: 'Polsko', value: 'PL' },
-  { label: 'Německo', value: 'DE' },
-  { label: 'Rakousko', value: 'AT' },
-]
+import { COUNTRIES } from '@/lib/checkout-data'
+import type { AddressData, AddressFormProps } from '@/types/checkout'
 
 export function AddressForm({
   onComplete,
@@ -54,7 +22,7 @@ export function AddressForm({
     street: initialData?.shipping?.street || '',
     city: initialData?.shipping?.city || '',
     postalCode: initialData?.shipping?.postalCode || '',
-    country: initialData?.shipping?.country || 'CZ',
+    country: initialData?.shipping?.country || 'cz',
     company: initialData?.shipping?.company || '',
   })
 
@@ -66,7 +34,7 @@ export function AddressForm({
     street: initialData?.billing?.street || '',
     city: initialData?.billing?.city || '',
     postalCode: initialData?.billing?.postalCode || '',
-    country: initialData?.billing?.country || 'CZ',
+    country: initialData?.billing?.country || 'cz',
     company: initialData?.billing?.company || '',
   })
 
@@ -157,7 +125,7 @@ export function AddressForm({
       street: 'Hlavní',
       city: 'Praha',
       postalCode: '100 00',
-      country: 'CZ',
+      country: 'cz',
       company: 'Test',
     }
     setShippingAddress(data)
@@ -336,7 +304,7 @@ export function AddressForm({
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
-            options={countries}
+            options={COUNTRIES}
             value={[shippingAddress.country]}
             onValueChange={(details) =>
               setShippingAddress({
@@ -470,7 +438,7 @@ export function AddressForm({
 
           <div className="mb-4 max-w-[20rem] sm:mb-6">
             <Select
-              options={countries}
+              options={COUNTRIES}
               value={[billingAddress.country]}
               onValueChange={(details) =>
                 setBillingAddress({

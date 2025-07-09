@@ -2,29 +2,8 @@ import Image from 'next/image'
 import '../../tokens/app-components/molecules/_payment-selection.css'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
-
-export interface PaymentMethod {
-  id: string
-  name: string
-  image: string
-  available?: boolean
-}
-
-const paymentMethods: PaymentMethod[] = [
-  { id: 'comgate', name: 'Comgate', image: '/assets/comgate.webp' },
-  { id: 'gopay', name: 'GoPay', image: '/assets/gpay.webp' },
-  { id: 'paypal', name: 'PayPal', image: '/assets/paypal.webp' },
-  { id: 'cash', name: 'Dobírkou', image: '/assets/cash.webp' },
-  { id: 'skippay', name: 'SkipPay', image: '/assets/skippay.webp' },
-  { id: 'stripe', name: 'Stripe', image: '/assets/stripe.webp' },
-  { id: 'card', name: 'Platební kartou', image: '/assets/card.webp' },
-  { id: 'qr', name: 'QR platba', image: '/assets/qr.webp' },
-]
-
-export interface PaymentSelectionProps {
-  selected: string
-  onSelect: (method: string) => void
-}
+import { PAYMENT_METHODS } from '@/lib/checkout-data'
+import type { PaymentSelectionProps } from '@/types/checkout'
 
 export function PaymentSelection({
   selected,
@@ -37,7 +16,7 @@ export function PaymentSelection({
         <span>Všechny platby jsou zabezpečené a šifrované</span>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 xl:grid-cols-4 lg:gap-4">
-        {paymentMethods.map((method) => (
+        {PAYMENT_METHODS.map((method) => (
           <Button
             theme="borderless"
             key={method.id}
