@@ -34,7 +34,6 @@ export const orderHelpers = {
     if (state.completedOrder) {
       return state.completedOrder
     }
-
     // Otherwise use current cart
     return currentCart
   },

@@ -5,10 +5,10 @@ import { cacheConfig } from '@/lib/cache-config'
 import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
+import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
-import { HttpTypes } from '@medusajs/types'
 
 export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query

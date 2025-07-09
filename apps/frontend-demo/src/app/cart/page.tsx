@@ -2,6 +2,7 @@
 
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
+import { orderHelpers } from '@/stores/order-store'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
 import { Button } from '@ui/atoms/button'
@@ -23,6 +24,9 @@ export default function CartPage() {
   // Use helper to calculate tax properly
   const tax = subtotal * 0.21 // 21% VAT
   const shipping = 0 // Free shipping
+
+  // Clear previous completed order
+  orderHelpers.clearCompletedOrder()
 
   return (
     <div className="min-h-screen bg-cart-bg">
