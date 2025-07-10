@@ -180,7 +180,7 @@ export default function CartPage() {
                 </div>
 
                 <LinkButton
-                  href="/payment"
+                  href="/checkout"
                   className="mt-cart-checkout-margin w-full"
                   size="lg"
                   icon="token-icon-lock"

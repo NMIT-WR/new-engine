@@ -18,7 +18,7 @@ import { ShippingSelection } from '../../components/molecules/shipping-selection
 import { AddressForm } from '../../components/organisms/address-form'
 import { OrderPreview } from '../../components/organisms/order-preview'
 
-export default function PaymentPage() {
+export default function CheckoutPage() {
   const { cart, isLoading } = useCart()
   const router = useRouter()
 
