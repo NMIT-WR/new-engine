@@ -102,7 +102,9 @@ export function AuthDropdown() {
           size="sm"
           icon="icon-[mdi--account-circle]"
         >
-          <span className="hidden xl:inline">{user.email}</span>
+          <span className="hidden truncate xl:inline">
+            {user.email.split('@')[0]}
+          </span>
         </Button>
       }
     />
