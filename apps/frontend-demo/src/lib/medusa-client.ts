@@ -62,8 +62,8 @@ export const sdk = createSDK()
 
 // Initialize auth on client side
 if (typeof window !== 'undefined') {
-  // Wait for SDK to be ready and try to refresh token if it exists
-  setTimeout(async () => {
+  // Try to refresh token if it exists
+  const initializeAuth = async () => {
     const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
     if (token && sdk.auth) {
       try {
@@ -72,7 +72,8 @@ if (typeof window !== 'undefined') {
         // Silent fail - let the app handle auth errors
       }
     }
-  }, 100)
+  }
+  initializeAuth()
 }
 
 
