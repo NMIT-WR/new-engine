@@ -92,9 +92,6 @@ export const authHelpers = {
         throw new Error('Authentication requires additional steps')
       }
 
-      // SDK automatically stores and manages the token
-      // All subsequent requests will be authenticated
-
       // Step 2: Fetch customer profile
       try {
         const { customer } = await sdk.store.customer.retrieve()
@@ -153,10 +150,18 @@ export const authHelpers = {
         password,
       })
 
-      // SDK automatically stores and manages the token
-      // All subsequent requests will be authenticated
+      // Step 2: Login to get JWT token (register doesn't return token)
+      const result = await sdk.auth.login('customer', 'emailpass', {
+        email,
+        password,
+      })
 
-      // Step 2: Create customer profile
+      // Check if authentication requires more actions
+      if (typeof result !== 'string') {
+        throw new Error('Authentication requires additional steps')
+      }
+
+      // Step 3: Create customer profile
       const { customer } = await sdk.store.customer.create({
         email,
         first_name: firstName,

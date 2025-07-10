@@ -10,33 +10,71 @@ if (!PUBLISHABLE_KEY) {
   console.warn('⚠️ NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY is not set!')
 }
 
-// SDK instance for client-side with JWT auth
-export const sdk =
-  typeof window !== 'undefined'
-    ? new Medusa({
-        baseUrl: BACKEND_URL,
-        publishableKey: PUBLISHABLE_KEY,
-        auth: {
-          type: 'jwt',
-          jwtTokenStorageKey: STORAGE_KEYS.AUTH_TOKEN,
-          jwtTokenStorageMethod: 'local',
-        },
-        // Add debug logging
-        debug: process.env.NODE_ENV === 'development',
-      })
-    : new Medusa({
-        baseUrl: BACKEND_URL,
-        publishableKey: PUBLISHABLE_KEY,
-        // No auth for server-side/static generation
-      })
-
-// Initialize token from localStorage if available
-if (typeof window !== 'undefined') {
-  const existingToken = window.localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
-  if (existingToken && sdk.client && sdk.client.setToken) {
-    sdk.client.setToken(existingToken)
+// Custom storage implementation
+const customStorage = {
+  setItem: (key: string, value: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, value)
+    }
+  },
+  getItem: (key: string) => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(key)
+    }
+    return null
+  },
+  removeItem: (key: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(key)
+    }
   }
 }
+
+// Function to create SDK instance
+const createSDK = () => {
+  if (typeof window === 'undefined') {
+    return new Medusa({
+      baseUrl: BACKEND_URL,
+      publishableKey: PUBLISHABLE_KEY,
+      // No auth for server-side/static generation
+    })
+  }
+
+  const sdkInstance = new Medusa({
+    baseUrl: BACKEND_URL,
+    publishableKey: PUBLISHABLE_KEY,
+    auth: {
+      type: 'jwt',
+      jwtTokenStorageKey: STORAGE_KEYS.AUTH_TOKEN,
+      jwtTokenStorageMethod: 'custom',
+      storage: customStorage,
+    },
+    // Add debug logging
+    debug: process.env.NODE_ENV === 'development',
+  })
+
+
+  return sdkInstance
+}
+
+// Create SDK instance
+export const sdk = createSDK()
+
+// Initialize auth on client side
+if (typeof window !== 'undefined') {
+  // Wait for SDK to be ready and try to refresh token if it exists
+  setTimeout(async () => {
+    const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
+    if (token && sdk.auth) {
+      try {
+        await sdk.auth.refresh()
+      } catch (error) {
+        // Silent fail - let the app handle auth errors
+      }
+    }
+  }, 100)
+}
+
 
 // Export a simple client config for direct fetch calls
 export const medusaClient = {
