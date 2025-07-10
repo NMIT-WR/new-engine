@@ -41,6 +41,17 @@ export const queryKeys = {
   // Home page specific queries
   homeProducts: () => [...queryKeys.all, 'home-products'] as const,
   
+  // Order queries
+  orders: {
+    all: () => [...queryKeys.all, 'orders'] as const,
+    list: (params?: {
+      page?: number
+      limit?: number
+      status?: string[]
+    }) => [...queryKeys.orders.all(), 'list', params || {}] as const,
+    detail: (id: string) => [...queryKeys.orders.all(), 'detail', id] as const,
+  },
+  
   // Legacy aliases for backward compatibility
   product: (handle: string) => queryKeys.products.detail(handle),
 } as const

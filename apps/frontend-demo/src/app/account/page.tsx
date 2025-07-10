@@ -98,6 +98,13 @@ export default function AccountPage() {
             <Button
               variant="primary"
               theme="solid"
+              onClick={() => router.push('/account/orders')}
+            >
+              Moje objednávky
+            </Button>
+            <Button
+              variant="secondary"
+              theme="solid"
               onClick={() => router.push('/')}
             >
               Pokračovat v nakupování
