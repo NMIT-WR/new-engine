@@ -11,8 +11,8 @@ export function HeaderSearch() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedValue, setSelectedValue] = useState<string[]>([])
-  const debounceTimerRef = useRef<NodeJS.Timeout>()
-  
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+
   // Cleanup timer on unmount
   useEffect(() => {
     return () => {
@@ -24,23 +24,32 @@ export function HeaderSearch() {
 
   // Use search hook
   const { searchResults, isSearching, searchProducts } = useSearchProducts({
-    limit: 20,
+    limit: 5,
   })
 
+  const comboboxItems = searchResults.map((product) => ({
+    id: product.id,
+    value: product.handle || product.id,
+    label: product.title || 'Untitled Product',
+  }))
+
   // Update search query and trigger debounced search
-  const handleInputChange = useCallback((value: string) => {
-    setSearchQuery(value)
-    
-    // Clear existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-    }
-    
-    // Set new timer
-    debounceTimerRef.current = setTimeout(() => {
-      searchProducts(value)
-    }, 300)
-  }, [searchProducts])
+  const handleInputChange = useCallback(
+    (value: string) => {
+      setSearchQuery(value)
+
+      // Clear existing timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+
+      // Set new timer
+      debounceTimerRef.current = setTimeout(() => {
+        searchProducts(value)
+      }, 300)
+    },
+    [searchProducts]
+  )
 
   // Create combobox items
   const searchItems: ComboboxItem<StoreProduct>[] = searchResults.map(
@@ -56,7 +65,7 @@ export function HeaderSearch() {
     searchItems.push({
       value: '__search__',
       label: `Zobrazit všechny výsledky pro "${searchQuery}"`,
-      data: undefined as any,
+      data: undefined,
     })
   }
 
@@ -70,51 +79,27 @@ export function HeaderSearch() {
 
   const handleSelect = (value: string | string[]) => {
     const selectedValues = Array.isArray(value) ? value : [value]
+    console.log('Selected values:', selectedValues)
 
     if (selectedValues.length > 0 && selectedValues[0]) {
       const selectedValue = selectedValues[0]
 
-      // Check if it's a search query (not a product handle)
-      if (selectedValue === '__search__') {
-        handleSearch(searchQuery)
+      // Zkontrolovat jestli je to existující produkt nebo custom search
+      const isProductHandle = searchItems.some(
+        (item) => item.value === selectedValue
+      )
+
+      if (isProductHandle) {
+        router.push(`/products/${selectedValue}`)
       } else {
-        // Check if it's a product handle or a custom search query
-        const isProductHandle = searchItems.some(
-          (item) => item.value === selectedValue
-        )
-        if (isProductHandle) {
-          router.push(`/products/${selectedValue}`)
-          setSearchQuery('')
-          setSelectedValue([])
-        } else {
-          // It's a custom search query (user pressed Enter with custom value)
-          handleSearch(selectedValue)
-        }
+        // Custom hodnota = search query
+        handleSearch(selectedValue)
       }
+
+      setSearchQuery('')
+      setSelectedValue([])
     }
   }
-
-  // Handle Enter key press
-  /* useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        const inputElement = containerRef.current?.querySelector('input')
-        if (inputElement && document.activeElement === inputElement) {
-          // Only handle Enter if no item is selected in dropdown
-          if (
-            searchItems.length === 0 ||
-            !document.querySelector('[data-highlighted="true"]')
-          ) {
-            e.preventDefault()
-            handleSearch(searchQuery)
-          }
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [searchQuery, searchItems])*/
 
   return (
     <Popover
@@ -128,12 +113,18 @@ export function HeaderSearch() {
       triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
       contentClassName="z-10"
     >
-      <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (searchQuery.trim()) {
+            handleSearch(searchQuery)
+          }
+        }}
+      >
         <Combobox
           placeholder="Hledat produkty..."
-          items={searchItems}
+          items={comboboxItems}
           value={selectedValue}
-          inputValue={searchQuery}
           onChange={handleSelect}
           onInputValueChange={handleInputChange}
           allowCustomValue={true}
@@ -141,9 +132,8 @@ export function HeaderSearch() {
           closeOnSelect
           clearable={false}
           size="sm"
-          disableFiltering={true}
         />
-      </div>
+      </form>
     </Popover>
   )
 }

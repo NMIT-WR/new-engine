@@ -27,7 +27,7 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
       try {
         const response = await sdk.store.product.list({
           q: query,
-          fields: options?.fields || 'id,title,handle',
+          fields: options?.fields || 'id, handle, title',
           limit: options?.limit || 10,
         })
 
