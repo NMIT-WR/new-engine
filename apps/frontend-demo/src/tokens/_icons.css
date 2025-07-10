@@ -45,3 +45,19 @@
 @utility token-icon-account {
   @apply icon-[mdi--account-outline];
 }
+
+@utility token-icon-exit {
+  @apply icon-[solar--exit-linear];
+}
+
+@utility token-icon-help {
+  @apply icon-[solar--question-circle-linear];
+}
+
+@utility token-icon-setting {
+  @apply icon-[solar--settings-linear];
+}
+
+@utility token-icon-profile {
+  @apply icon-[solar--user-bold];
+}

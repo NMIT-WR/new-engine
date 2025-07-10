@@ -18,6 +18,7 @@
   --container-full: 100%; /* Full width */
 
   --spacing-layout-min: var(--container-xs);
+  --spacing-layout-max: var(--container-xl);
 
   /* Container padding - responsive horizontal padding */
   --container-padding-sm: var(--spacing-sm); /* 1rem */
