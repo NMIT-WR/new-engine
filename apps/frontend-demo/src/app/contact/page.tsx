@@ -23,7 +23,6 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // In a real app, this would send to an API
-    console.log('Contact form submitted:', formData)
     toast.create({
       title: form.successMessage.title,
       description: form.successMessage.description,

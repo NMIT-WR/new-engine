@@ -3,45 +3,7 @@
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { LinkButton } from '@ui/atoms/link-button'
-
-interface AddressData {
-  firstName: string
-  lastName: string
-  street: string
-  city: string
-  postalCode: string
-  email?: string
-  phone?: string
-  company?: string
-}
-
-interface ShippingMethod {
-  id: string
-  name: string
-  price: number
-  estimatedDays: string
-}
-
-interface PaymentMethod {
-  id: string
-  name: string
-  fee: number
-}
-
-interface OrderSummaryProps {
-  addressData: {
-    shipping: AddressData
-    billing: AddressData
-    useSameAddress: boolean
-  }
-  selectedShipping: ShippingMethod | undefined
-  selectedPayment: PaymentMethod | undefined
-  onEditClick: () => void
-  onCompleteClick: () => void
-  isOrderComplete?: boolean
-  orderNumber?: string
-  isLoading?: boolean
-}
+import type { OrderSummaryProps } from '@/types/checkout'
 
 export function OrderSummary({
   addressData,
@@ -78,10 +40,7 @@ export function OrderSummary({
         <div className="rounded-lg bg-surface p-4 sm:p-6">
           <div className="mb-4 text-center sm:mb-6">
             <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-success sm:mb-4 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
-              <Icon
-                icon="token-icon-check"
-                className="text-white sm:text-lg"
-              />
+              <Icon icon="token-icon-check" className="text-white sm:text-lg" />
             </div>
             <h2 className="mb-4 font-bold text-lg sm:mb-6 sm:text-xl">
               Objednávka byla úspěšně odeslána!
@@ -251,7 +210,7 @@ export function OrderSummary({
                 ? `${selectedShipping.price} Kč`
                 : 'Zdarma'}
               <br />
-              Očekávané doručení: {selectedShipping?.estimatedDays}
+              Očekávané doručení: {selectedShipping?.delivery}
             </p>
           </div>
 

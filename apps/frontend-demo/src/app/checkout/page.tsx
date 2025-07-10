@@ -3,6 +3,8 @@
 import { CreditCardDialog } from '@/components/molecules/credit-card-dialog'
 import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
+import { useCheckout } from '@/hooks/use-checkout'
+import { PAYMENT_METHODS, SHIPPING_METHODS } from '@/lib/checkout-data'
 import { formatPrice } from '@/lib/format-price'
 import { orderHelpers } from '@/stores/order-store'
 import { Button } from '@ui/atoms/button'
@@ -16,83 +18,29 @@ import { ShippingSelection } from '../../components/molecules/shipping-selection
 import { AddressForm } from '../../components/organisms/address-form'
 import { OrderPreview } from '../../components/organisms/order-preview'
 
-// Import payment and shipping methods data with prices
-const paymentMethods = [
-  { id: 'comgate', name: 'Comgate', fee: 0 },
-  { id: 'gopay', name: 'GoPay', fee: 0 },
-  { id: 'paypal', name: 'PayPal', fee: 50 },
-  { id: 'cash', name: 'Hotovost při převzetí', fee: 30 },
-  { id: 'skippay', name: 'SkipPay', fee: 0 },
-  { id: 'stripe', name: 'Stripe', fee: 0 },
-  { id: 'card', name: 'Platební kartou', fee: 0 },
-  { id: 'qr', name: 'QR platba', fee: 0 },
-]
+export default function CheckoutPage() {
+  const { cart, isLoading } = useCart()
+  const router = useRouter()
 
-// Helper function to calculate delivery date
-const getDeliveryDate = (daysToAdd: number) => {
-  const date = new Date()
-  date.setDate(date.getDate() + daysToAdd)
-  return date.toLocaleDateString('cs-CZ', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'numeric',
-  })
-}
+  const {
+    currentStep,
+    selectedPayment,
+    selectedShipping,
+    addressData,
+    isProcessingPayment,
+    setCurrentStep,
+    setSelectedPayment,
+    setSelectedShipping,
+    updateAddresses,
+    addShippingMethod,
+    processOrder,
+    canProceedToStep,
+  } = useCheckout()
 
-const shippingMethods = [
-  {
-    id: 'ppl',
-    name: 'PPL',
-    price: 99,
-    estimatedDays: '2-3 dny',
-    deliveryDate: `${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
-  },
-  {
-    id: 'dhl',
-    name: 'DHL Express',
-    price: 149,
-    estimatedDays: '1-2 dny',
-    deliveryDate: `${getDeliveryDate(1)} - ${getDeliveryDate(2)}`,
-  },
-  {
-    id: 'zasilkovna',
-    name: 'Zásilkovna',
-    price: 69,
-    estimatedDays: '2-3 dny',
-    deliveryDate: `${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
-  },
-  {
-    id: 'balikovna',
-    name: 'Balíkovna',
-    price: 79,
-    estimatedDays: '2-3 dny',
-    deliveryDate: `${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
-  },
-  {
-    id: 'personal',
-    name: 'Osobní odběr',
-    price: 0,
-    estimatedDays: 'Ihned',
-    deliveryDate: 'Dnes',
-  },
-]
-
-export default function PaymentPage() {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [selectedPayment, setSelectedPayment] = useState<string>('')
-  const [selectedShipping, setSelectedShipping] = useState<string>('')
-  const [addressData, setAddressData] = useState<{
-    shipping: any
-    billing: any
-    useSameAddress: boolean
-  } | null>(null)
   const [showCreditCardDialog, setShowCreditCardDialog] = useState(false)
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [isOrderComplete, setIsOrderComplete] = useState(false)
   const [orderNumber, setOrderNumber] = useState<string>('')
   const [showOrderSummary, setShowOrderSummary] = useState(false)
-  const { cart, clearCart, isLoading } = useCart()
-  const router = useRouter()
 
   // Redirect if cart is empty and no completed order
   useEffect(() => {
@@ -117,7 +65,7 @@ export default function PaymentPage() {
       <div className="container mx-auto max-w-[80rem] px-4 py-8">
         <div className="flex min-h-[400px] items-center justify-center">
           <div className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2"></div>
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2" />
             <p className="text-fg-secondary">Načítání...</p>
           </div>
         </div>
@@ -132,16 +80,16 @@ export default function PaymentPage() {
     return null
   }
 
-  const selectedShippingMethod = shippingMethods.find(
+  const selectedShippingMethod = SHIPPING_METHODS.find(
     (m) => m.id === selectedShipping
   )
-  const selectedPaymentMethod = paymentMethods.find(
+  const selectedPaymentMethod = PAYMENT_METHODS.find(
     (m) => m.id === selectedPayment
   )
   const shippingPrice = selectedShippingMethod?.price || 0
   const paymentFee = selectedPaymentMethod?.fee || 0
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     // Check if payment method is credit card
     if (selectedPayment === 'card') {
       setShowCreditCardDialog(true)
@@ -149,34 +97,18 @@ export default function PaymentPage() {
     }
 
     // For other payment methods, process directly
-    processOrder()
-  }
-
-  const processOrder = async () => {
-    setIsProcessingPayment(true)
-
-    // Here you would normally:
-    // 1. Create order in Medusa
-    // 2. Process payment
-    // 3. Redirect to success page
-
-    // Generate order number
-    const newOrderNumber = `CZ${Date.now().toString().slice(-8)}`
-    setOrderNumber(newOrderNumber)
-
-    // Save cart data before clearing
-    if (cart) {
-      orderHelpers.saveCompletedOrder(cart)
+    try {
+      const order = await processOrder()
+      if (order) {
+        setOrderNumber(
+          String(order.display_id) || `CZ${Date.now().toString().slice(-8)}`
+        )
+        setIsOrderComplete(true)
+        setCurrentStep(3)
+      }
+    } catch (error) {
+      // Error already handled in hook
     }
-
-    setIsProcessingPayment(false)
-    setIsOrderComplete(true)
-
-    // Clear the cart after successful order
-    clearCart()
-
-    // Move to final step
-    setCurrentStep(3)
   }
 
   const handleCreditCardSubmit = async (_cardData: {
@@ -188,7 +120,19 @@ export default function PaymentPage() {
     // Process card payment
     // In production, you would send _cardData to payment processor
     setShowCreditCardDialog(false)
-    await processOrder()
+
+    try {
+      const order = await processOrder()
+      if (order) {
+        setOrderNumber(
+          String(order.display_id) || `CZ${Date.now().toString().slice(-8)}`
+        )
+        setIsOrderComplete(true)
+        setCurrentStep(3)
+      }
+    } catch (error) {
+      // Error already handled in hook
+    }
   }
 
   const steps = [
@@ -198,9 +142,13 @@ export default function PaymentPage() {
       description: 'Vyplňte doručovací údaje',
       content: (
         <AddressForm
-          onComplete={(data) => {
-            setAddressData(data)
-            setTimeout(() => setCurrentStep(1), 300)
+          onComplete={async (data) => {
+            try {
+              await updateAddresses(data)
+              setCurrentStep(1)
+            } catch (err) {
+              // Error already handled in hook
+            }
           }}
           initialData={addressData || undefined}
         />
@@ -213,10 +161,15 @@ export default function PaymentPage() {
       content: (
         <ShippingSelection
           selected={selectedShipping}
-          onSelect={(method) => {
+          onSelect={async (method) => {
             setSelectedShipping(method)
-            // Auto-advance to next step after selection
-            setTimeout(() => setCurrentStep(2), 300)
+
+            try {
+              await addShippingMethod(method)
+              setCurrentStep(2)
+            } catch (error) {
+              // Error already handled in hook
+            }
           }}
         />
       ),
@@ -230,8 +183,7 @@ export default function PaymentPage() {
           selected={selectedPayment}
           onSelect={(method) => {
             setSelectedPayment(method)
-            // Auto-advance to summary step after selection
-            setTimeout(() => setCurrentStep(3), 300)
+            setCurrentStep(3)
           }}
         />
       ),
@@ -242,11 +194,11 @@ export default function PaymentPage() {
       description: 'Zkontrolujte objednávku',
       content: (
         <OrderSummary
-          addressData={addressData!}
+          addressData={addressData || undefined}
           selectedShipping={selectedShippingMethod}
           selectedPayment={selectedPaymentMethod}
           onCompleteClick={handleComplete}
-          onEditClick={() => setCurrentStep(() => currentStep - 1)}
+          onEditClick={() => setCurrentStep(currentStep - 1)}
           isOrderComplete={isOrderComplete}
           orderNumber={orderNumber}
           isLoading={isProcessingPayment}
@@ -263,17 +215,10 @@ export default function PaymentPage() {
     }
 
     // Only allow forward movement if current step is completed
-    if (step > currentStep) {
-      if (currentStep === 0 && !addressData) {
-        return
-      }
-      if (currentStep === 1 && !selectedShipping) {
-        return
-      }
-      if (currentStep === 2 && !selectedPayment) {
-        return
-      }
+    if (step > currentStep && !canProceedToStep(step)) {
+      return
     }
+
     setCurrentStep(step)
   }
 

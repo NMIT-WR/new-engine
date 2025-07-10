@@ -35,7 +35,6 @@
     "@iconify/tailwind4": "^1.0.6",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4.1.7",
-    "@tanstack/react-query-devtools": "^5.80.7",
     "@types/node": "^20.17.47",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",

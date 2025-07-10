@@ -1,32 +1,55 @@
 'use client'
-import { useDebouncedCallback } from '@/hooks/use-debounce'
 import { useSearchProducts } from '@/hooks/use-search-products'
 import type { StoreProduct } from '@medusajs/types'
 import { Icon } from '@ui/atoms/icon'
 import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
 import { Popover } from '@ui/molecules/popover'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function HeaderSearch() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedValue, setSelectedValue] = useState<string[]>([])
-  const containerRef = useRef<HTMLDivElement>(null)
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+    }
+  }, [])
 
   // Use search hook
   const { searchResults, isSearching, searchProducts } = useSearchProducts({
-    limit: 6, // Limit to 6 results for better UX
+    limit: 5,
   })
 
-  // Create debounced search function
-  const debouncedSearch = useDebouncedCallback(searchProducts, 300)
+  const comboboxItems = searchResults.map((product) => ({
+    id: product.id,
+    value: product.handle || product.id,
+    label: product.title || 'Untitled Product',
+  }))
 
   // Update search query and trigger debounced search
-  const handleInputChange = (value: string) => {
-    setSearchQuery(value)
-    debouncedSearch(value)
-  }
+  const handleInputChange = useCallback(
+    (value: string) => {
+      setSearchQuery(value)
+
+      // Clear existing timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+
+      // Set new timer
+      debounceTimerRef.current = setTimeout(() => {
+        searchProducts(value)
+      }, 300)
+    },
+    [searchProducts]
+  )
 
   // Create combobox items
   const searchItems: ComboboxItem<StoreProduct>[] = searchResults.map(
@@ -42,7 +65,7 @@ export function HeaderSearch() {
     searchItems.push({
       value: '__search__',
       label: `Zobrazit všechny výsledky pro "${searchQuery}"`,
-      data: undefined as any,
+      data: undefined,
     })
   }
 
@@ -56,51 +79,27 @@ export function HeaderSearch() {
 
   const handleSelect = (value: string | string[]) => {
     const selectedValues = Array.isArray(value) ? value : [value]
+    console.log('Selected values:', selectedValues)
 
     if (selectedValues.length > 0 && selectedValues[0]) {
       const selectedValue = selectedValues[0]
 
-      // Check if it's a search query (not a product handle)
-      if (selectedValue === '__search__') {
-        handleSearch(searchQuery)
+      // Zkontrolovat jestli je to existující produkt nebo custom search
+      const isProductHandle = searchItems.some(
+        (item) => item.value === selectedValue
+      )
+
+      if (isProductHandle) {
+        router.push(`/products/${selectedValue}`)
       } else {
-        // Check if it's a product handle or a custom search query
-        const isProductHandle = searchItems.some(
-          (item) => item.value === selectedValue
-        )
-        if (isProductHandle) {
-          router.push(`/products/${selectedValue}`)
-          setSearchQuery('')
-          setSelectedValue([])
-        } else {
-          // It's a custom search query (user pressed Enter with custom value)
-          handleSearch(selectedValue)
-        }
+        // Custom hodnota = search query
+        handleSearch(selectedValue)
       }
+
+      setSearchQuery('')
+      setSelectedValue([])
     }
   }
-
-  // Handle Enter key press
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        const inputElement = containerRef.current?.querySelector('input')
-        if (inputElement && document.activeElement === inputElement) {
-          // Only handle Enter if no item is selected in dropdown
-          if (
-            searchItems.length === 0 ||
-            !document.querySelector('[data-highlighted="true"]')
-          ) {
-            e.preventDefault()
-            handleSearch(searchQuery)
-          }
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [searchQuery, searchItems])
 
   return (
     <Popover
@@ -114,22 +113,27 @@ export function HeaderSearch() {
       triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
       contentClassName="z-10"
     >
-      <div ref={containerRef}>
-        <Combobox
-          placeholder={
-            isSearching ? 'Hledám...' : 'Hledat produkty...'
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (searchQuery.trim()) {
+            handleSearch(searchQuery)
           }
-          items={searchItems}
+        }}
+      >
+        <Combobox
+          placeholder="Hledat produkty..."
+          items={comboboxItems}
           value={selectedValue}
           onChange={handleSelect}
           onInputValueChange={handleInputChange}
           allowCustomValue={true}
+          autoFocus={true}
           closeOnSelect
           clearable={false}
           size="sm"
-          disabled={isSearching}
         />
-      </div>
+      </form>
     </Popover>
   )
 }

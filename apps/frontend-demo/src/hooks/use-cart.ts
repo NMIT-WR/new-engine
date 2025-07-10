@@ -5,10 +5,10 @@ import { cacheConfig } from '@/lib/cache-config'
 import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
+import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
-import { HttpTypes } from '@medusajs/types'
 
 export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query
@@ -38,22 +38,9 @@ export function useMedusaCart() {
       if (cartId) {
         try {
           const { cart } = await sdk.store.cart.retrieve(cartId)
-          console.log(
-            '[Cart Hook] Retrieved cart:',
-            cart.id,
-            'with',
-            cart.items?.length || 0,
-            'items'
-          )
 
           // If cart region doesn't match current region, update it instead of creating new
           if (region && cart.region_id !== region.id) {
-            console.log(
-              '[Cart Hook] Updating cart region from',
-              cart.region_id,
-              'to',
-              region.id
-            )
             const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
               region_id: region.id,
             })
@@ -65,17 +52,11 @@ export function useMedusaCart() {
           console.error('[Cart Hook] Failed to retrieve cart:', err)
           // Only remove cart ID if it's a 404 (cart not found)
           if (err?.status === 404 || err?.response?.status === 404) {
-            console.log(
-              '[Cart Hook] Cart not found (404), removing from localStorage'
-            )
             if (typeof window !== 'undefined') {
               localStorage.removeItem(STORAGE_KEYS.CART_ID)
             }
           } else {
             // For other errors, don't remove cart ID - might be network issue
-            console.log(
-              '[Cart Hook] Non-404 error, keeping cart ID in localStorage'
-            )
             throw err
           }
         }
@@ -90,7 +71,6 @@ export function useMedusaCart() {
         region_id: region.id,
       })
 
-      console.log('[Cart Hook] Created new cart:', newCart.id)
       if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEYS.CART_ID, newCart.id)
       }
