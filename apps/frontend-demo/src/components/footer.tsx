@@ -30,7 +30,6 @@ export function Footer() {
   const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     handleFormSubmit(e, () => {
       // Handle newsletter submission
-      console.log('Newsletter form submitted')
     })
   }
 
@@ -44,8 +43,7 @@ export function Footer() {
               Demo obchodu
             </h3>
             <p className="mb-footer-description text-footer-body">
-              Váš spolehlivý online obchod s kvalitními produkty
-              za skvělé ceny.
+              Váš spolehlivý online obchod s kvalitními produkty za skvělé ceny.
             </p>
           </div>
 

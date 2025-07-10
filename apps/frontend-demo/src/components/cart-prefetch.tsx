@@ -30,13 +30,6 @@ export function CartPrefetch() {
         if (cartId) {
           try {
             const { cart } = await sdk.store.cart.retrieve(cartId)
-            console.log(
-              '[Cart Prefetch] Retrieved cart:',
-              cart.id,
-              'with',
-              cart.items?.length || 0,
-              'items'
-            )
             return cart
           } catch (err) {
             // Cart not found, will create new one below

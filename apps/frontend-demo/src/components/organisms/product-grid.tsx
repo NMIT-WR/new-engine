@@ -68,11 +68,6 @@ export function ProductGrid({
                 ? formatPrice(price.amount, region?.currency_code)
                 : 'Cena není k dispozici'
 
-          const calculatedPrice = price?.calculated_price
-          const originalPrice = price?.original_price
-
-          console.log('original & calculated: ', calculatedPrice, originalPrice)
-
           return (
             <Link
               key={product.id}
