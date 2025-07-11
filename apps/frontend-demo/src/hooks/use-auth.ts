@@ -165,7 +165,8 @@ export function useAuth() {
     isLoading:
       authState.isLoading ||
       loginMutation.isPending ||
-      registerMutation.isPending,
+      registerMutation.isPending ||
+      updateProfileMutation.isPending,
     isInitialized: authState.isInitialized,
     error: authState.error,
 

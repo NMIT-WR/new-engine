@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import '../../tokens/app-components/molecules/_shipping-selection.css'
-import { Button } from '@ui/atoms/button'
 import { SHIPPING_METHODS } from '@/lib/checkout-data'
 import type { ShippingSelectionProps } from '@/types/checkout'
+import { Button } from '@ui/atoms/button'
 
 export function ShippingSelection({
   selected,
@@ -21,7 +21,6 @@ export function ShippingSelection({
             onClick={() => onSelect(method.id)}
             className="relative flex items-center rounded-lg border-2 border-border-subtle bg-surface p-3 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:p-4"
             data-selected={selected === method.id}
-            role="radio"
             aria-checked={selected === method.id}
             aria-label={`${method.name} - ${method.description} - ${method.price}`}
           >
@@ -37,7 +36,7 @@ export function ShippingSelection({
                 />
               )}
               <div className="flex-1">
-                <h3 className="font-semibold text-sm text-fg-primary">
+                <h3 className="font-semibold text-fg-primary text-sm">
                   {method.name}
                 </h3>
                 <p className="mt-0.5 text-fg-secondary text-xs sm:text-sm">

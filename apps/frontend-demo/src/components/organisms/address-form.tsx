@@ -1,41 +1,88 @@
 'use client'
 
+import { useAuth } from '@/hooks/use-auth'
+import {
+  ADDRESS_ERRORS,
+  COUNTRIES,
+  formatPhoneNumber,
+  formatPostalCode,
+  getAddressFromMetadata,
+  validateEmail,
+  validatePhone,
+  validatePostalCode,
+} from '@/lib/address'
+import type { AddressData, AddressFormProps } from '@/types/checkout'
 import { Button } from '@ui/atoms/button'
 import { ErrorText } from '@ui/atoms/error-text'
 import { FormCheckboxRaw as FormCheckbox } from '@ui/molecules/form-checkbox'
 import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import { Select } from '@ui/molecules/select'
 import { useState } from 'react'
-import { COUNTRIES } from '@/lib/checkout-data'
-import type { AddressData, AddressFormProps } from '@/types/checkout'
 
 export function AddressForm({
   onComplete,
   initialData,
   isLoading = false,
 }: AddressFormProps) {
+  const { user } = useAuth()
+
+  // Use profile data if no initial data provided
+  const getInitialValue = (
+    field: keyof AddressData,
+    source?: Partial<AddressData>
+  ) => {
+    if (source?.[field]) return source[field] as string
+
+    // Get address from metadata
+    const addressData = getAddressFromMetadata(user)
+
+    // Map user profile fields to address fields
+    switch (field) {
+      case 'firstName':
+        return user?.first_name || ''
+      case 'lastName':
+        return user?.last_name || ''
+      case 'email':
+        return user?.email || ''
+      case 'phone':
+        return user?.phone || ''
+      case 'company':
+        return user?.company_name || ''
+      case 'street':
+        return addressData.street || ''
+      case 'city':
+        return addressData.city || ''
+      case 'postalCode':
+        return addressData.postal_code || ''
+      case 'country':
+        return addressData.country || 'cz'
+      default:
+        return ''
+    }
+  }
+
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
-    firstName: initialData?.shipping?.firstName || '',
-    lastName: initialData?.shipping?.lastName || '',
-    email: initialData?.shipping?.email || '',
-    phone: initialData?.shipping?.phone || '',
-    street: initialData?.shipping?.street || '',
-    city: initialData?.shipping?.city || '',
-    postalCode: initialData?.shipping?.postalCode || '',
-    country: initialData?.shipping?.country || 'cz',
-    company: initialData?.shipping?.company || '',
+    firstName: getInitialValue('firstName', initialData?.shipping),
+    lastName: getInitialValue('lastName', initialData?.shipping),
+    email: getInitialValue('email', initialData?.shipping),
+    phone: getInitialValue('phone', initialData?.shipping),
+    street: getInitialValue('street', initialData?.shipping),
+    city: getInitialValue('city', initialData?.shipping),
+    postalCode: getInitialValue('postalCode', initialData?.shipping),
+    country: getInitialValue('country', initialData?.shipping),
+    company: getInitialValue('company', initialData?.shipping),
   })
 
   const [billingAddress, setBillingAddress] = useState<AddressData>({
-    firstName: initialData?.billing?.firstName || '',
-    lastName: initialData?.billing?.lastName || '',
-    email: initialData?.billing?.email || '',
-    phone: initialData?.billing?.phone || '',
-    street: initialData?.billing?.street || '',
-    city: initialData?.billing?.city || '',
-    postalCode: initialData?.billing?.postalCode || '',
-    country: initialData?.billing?.country || 'cz',
-    company: initialData?.billing?.company || '',
+    firstName: getInitialValue('firstName', initialData?.billing),
+    lastName: getInitialValue('lastName', initialData?.billing),
+    email: getInitialValue('email', initialData?.billing),
+    phone: getInitialValue('phone', initialData?.billing),
+    street: getInitialValue('street', initialData?.billing),
+    city: getInitialValue('city', initialData?.billing),
+    postalCode: getInitialValue('postalCode', initialData?.billing),
+    country: getInitialValue('country', initialData?.billing),
+    company: getInitialValue('company', initialData?.billing),
   })
 
   const [useSameAddress, setUseSameAddress] = useState(
@@ -43,69 +90,53 @@ export function AddressForm({
   )
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Email validation regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-  // Format phone number
-  const formatPhoneNumber = (value: string) => {
-    const cleaned = value.replace(/\D/g, '')
-    if (cleaned.length <= 3) return cleaned
-    if (cleaned.length <= 6) return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`
-    if (cleaned.length <= 9)
-      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`
-    return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6, 9)}`
-  }
-
-  // Format postal code
-  const formatPostalCode = (value: string) => {
-    const cleaned = value.replace(/\D/g, '')
-    if (cleaned.length <= 3) return cleaned
-    return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 5)}`
-  }
+  // Removed formatters - now imported from lib/address
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
     // Validate shipping address
     if (!shippingAddress.firstName)
-      newErrors.shippingFirstName = 'Jméno je povinné'
+      newErrors.shippingFirstName = ADDRESS_ERRORS.firstName
     if (!shippingAddress.lastName)
-      newErrors.shippingLastName = 'Příjmení je povinné'
+      newErrors.shippingLastName = ADDRESS_ERRORS.lastName
     if (!shippingAddress.email) {
-      newErrors.shippingEmail = 'Email je povinný'
-    } else if (!emailRegex.test(shippingAddress.email)) {
-      newErrors.shippingEmail = 'Neplatný formát emailu'
+      newErrors.shippingEmail = ADDRESS_ERRORS.email
+    } else if (!validateEmail(shippingAddress.email)) {
+      newErrors.shippingEmail = ADDRESS_ERRORS.emailInvalid
     }
     if (!shippingAddress.phone) {
-      newErrors.shippingPhone = 'Telefon je povinný'
-    } else if (shippingAddress.phone.replace(/\D/g, '').length < 9) {
-      newErrors.shippingPhone = 'Telefon musí mít alespoň 9 číslic'
+      newErrors.shippingPhone = ADDRESS_ERRORS.phone
+    } else if (!validatePhone(shippingAddress.phone)) {
+      newErrors.shippingPhone = ADDRESS_ERRORS.phoneInvalid
     }
-    if (!shippingAddress.street) newErrors.shippingStreet = 'Ulice je povinná'
-    if (!shippingAddress.city) newErrors.shippingCity = 'Město je povinné'
+    if (!shippingAddress.street)
+      newErrors.shippingStreet = ADDRESS_ERRORS.street
+    if (!shippingAddress.city) newErrors.shippingCity = ADDRESS_ERRORS.city
     if (!shippingAddress.postalCode) {
-      newErrors.shippingPostalCode = 'PSČ je povinné'
-    } else if (shippingAddress.postalCode.replace(/\D/g, '').length !== 5) {
-      newErrors.shippingPostalCode = 'PSČ musí mít 5 číslic'
+      newErrors.shippingPostalCode = ADDRESS_ERRORS.postalCode
+    } else if (!validatePostalCode(shippingAddress.postalCode)) {
+      newErrors.shippingPostalCode = ADDRESS_ERRORS.postalCodeInvalid
     }
 
     // Validate billing address if different
     if (!useSameAddress) {
       if (!billingAddress.firstName)
-        newErrors.billingFirstName = 'Jméno je povinné'
+        newErrors.billingFirstName = ADDRESS_ERRORS.firstName
       if (!billingAddress.lastName)
-        newErrors.billingLastName = 'Příjmení je povinné'
-      if (!billingAddress.street) newErrors.billingStreet = 'Ulice je povinná'
-      if (!billingAddress.city) newErrors.billingCity = 'Město je povinné'
+        newErrors.billingLastName = ADDRESS_ERRORS.lastName
+      if (!billingAddress.street)
+        newErrors.billingStreet = ADDRESS_ERRORS.street
+      if (!billingAddress.city) newErrors.billingCity = ADDRESS_ERRORS.city
       if (!billingAddress.postalCode)
-        newErrors.billingPostalCode = 'PSČ je povinné'
+        newErrors.billingPostalCode = ADDRESS_ERRORS.postalCode
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (validateForm()) {
       onComplete({
@@ -213,10 +244,10 @@ export function AddressForm({
             }
             onBlur={(e) => {
               const email = e.target.value
-              if (email && !emailRegex.test(email)) {
+              if (email && !validateEmail(email)) {
                 setErrors({
                   ...errors,
-                  shippingEmail: 'Neplatný formát emailu',
+                  shippingEmail: ADDRESS_ERRORS.emailInvalid,
                 })
               } else {
                 setErrors({ ...errors, shippingEmail: '' })

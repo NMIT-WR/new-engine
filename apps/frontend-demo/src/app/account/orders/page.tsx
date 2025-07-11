@@ -1,4 +1,5 @@
 'use client'
+import { AccountLayout } from '@/components/templates/account-layout'
 import { useAuth } from '@/hooks/use-auth'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
@@ -32,11 +33,14 @@ export default function OrdersPage() {
 
   if (!isInitialized || authLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <p className="text-lg">Načítání...</p>
+      <AccountLayout>
+        <div className="flex min-h-[400px] items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2" />
+            <p className="text-fg-secondary">Načítání...</p>
+          </div>
         </div>
-      </div>
+      </AccountLayout>
     )
   }
 
@@ -47,11 +51,9 @@ export default function OrdersPage() {
   const orders = ordersData?.orders || []
 
   return (
-    <div className="min-h-screen bg-account-bg py-account-page-py">
-      <div className="mx-auto max-w-account-container-max-w px-account-container-px">
-        <h1 className="mb-account-title-mb font-account-title text-account-title-fg text-account-title-size">
-          Tvé objednávky
-        </h1>
+    <AccountLayout>
+      <div>
+        <h1 className="mb-8 font-semibold text-2xl">Tvé objednávky</h1>
 
         {error ? (
           <div className="rounded-account-card bg-account-card-bg p-account-card-p text-center shadow-account-card">
@@ -130,6 +132,6 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
-    </div>
+    </AccountLayout>
   )
 }

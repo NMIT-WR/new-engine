@@ -1,7 +1,10 @@
-// Centrální místo pro checkout data
-import type { ShippingMethod, PaymentMethod, Country, ShippingOptionMap } from '@/types/checkout'
+import type {
+  Country,
+  PaymentMethod,
+  ShippingMethod,
+  ShippingOptionMap,
+} from '@/types/checkout'
 
-// Helper funkce pro výpočet dodání
 export const getDeliveryDate = (daysToAdd: number) => {
   const date = new Date()
   date.setDate(date.getDate() + daysToAdd)
@@ -12,13 +15,12 @@ export const getDeliveryDate = (daysToAdd: number) => {
   })
 }
 
-// Mapování frontend shipping ID na backend option ID
 export const SHIPPING_OPTION_MAP: ShippingOptionMap = {
-  'ppl': 'so_01JZQ61P66XZR92M17YDTJ4676',        // PPL - 89 CZK
-  'dhl': 'so_01JZQ62M923S25PH2GPAP7WBJG',        // DHL - 129 CZK
-  'zasilkovna': 'so_01JZQ644TRK071DXXXHPFCX1JQ', // Zásilkovna - 65 CZK
-  'balikovna': 'so_01JZQ63J2Z9FXY5BB41N6YVR62',  // Balíkovna - 59 CZK
-  'personal': 'so_01JZQ64TDTKDHNBHXTD3G2ZW4Q',   // Osobní odběr - 0 CZK
+  ppl: 'so_01JZQ61P66XZR92M17YDTJ4676', // PPL - 89 CZK
+  dhl: 'so_01JZQ62M923S25PH2GPAP7WBJG', // DHL - 129 CZK
+  zasilkovna: 'so_01JZQ644TRK071DXXXHPFCX1JQ', // Zásilkovna - 65 CZK
+  balikovna: 'so_01JZQ63J2Z9FXY5BB41N6YVR62', // Balíkovna - 59 CZK
+  personal: 'so_01JZQ64TDTKDHNBHXTD3G2ZW4Q', // Osobní odběr - 0 CZK
 }
 
 export const SHIPPING_METHODS: ShippingMethod[] = [
