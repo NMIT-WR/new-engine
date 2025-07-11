@@ -1,8 +1,5 @@
-// Centrální typy pro checkout flow
-
 import type { HttpTypes } from '@medusajs/types'
 
-// Základní adresní data
 export interface AddressData {
   firstName: string
   lastName: string
@@ -15,7 +12,6 @@ export interface AddressData {
   company?: string
 }
 
-// Adresní data pro zobrazení (bez některých povinných polí)
 export interface AddressDisplayData {
   firstName: string
   lastName: string
@@ -27,14 +23,12 @@ export interface AddressDisplayData {
   company?: string
 }
 
-// Kompletní adresní informace včetně billing/shipping
 export interface CheckoutAddressData {
   shipping: AddressData
   billing: AddressData
   useSameAddress: boolean
 }
 
-// Dopravní metoda
 export interface ShippingMethod {
   id: string
   name: string
@@ -46,7 +40,6 @@ export interface ShippingMethod {
   image: string
 }
 
-// Platební metoda
 export interface PaymentMethod {
   id: string
   name: string
@@ -54,14 +47,12 @@ export interface PaymentMethod {
   image: string
 }
 
-// Země (kompatibilní s SelectOption z @ui)
 export interface Country {
   label: string
   value: string
   [key: string]: unknown
 }
 
-// Props pro komponenty
 export interface ShippingSelectionProps {
   selected: string
   onSelect: (method: string) => void
@@ -113,5 +104,4 @@ export interface UseCheckoutReturn {
   canProceedToStep: (step: number) => boolean
 }
 
-// Mapování shipping metod na backend ID
 export type ShippingOptionMap = Record<string, string>

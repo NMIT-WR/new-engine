@@ -1,8 +1,8 @@
 @theme static {
   /* Profile form container */
-  --color-pf-container-bg: var(--color-bg-surface);
-  --color-pf-container-border: var(--color-border-primary);
-  --radius-pf-container: var(--radius-lg);
+  --color-pf-container-bg: var(--color-base);
+  --color-pf-container-border: var(--color-border);
+  --radius-pf: var(--radius-md);
   --spacing-pf-container-padding: var(--spacing-lg);
 
   /* Profile form header */
@@ -24,4 +24,6 @@
   /* Profile form actions */
   --spacing-pf-actions-gap: var(--spacing-md);
   --spacing-pf-actions-margin-top: var(--spacing-lg);
+
+  --shadow-pf: var(--shadow-light);
 }

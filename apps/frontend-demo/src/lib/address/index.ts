@@ -1,8 +1,9 @@
+import type { AddressData } from '@/types/checkout'
 import type { HttpTypes } from '@medusajs/types'
 import type { ChangeEvent } from 'react'
 
 // Re-export types and constants
-export type { AddressData } from '@/types/checkout'
+export type { AddressData }
 export { COUNTRIES } from '@/lib/checkout-data'
 
 // Email validation regex
@@ -176,3 +177,53 @@ export const ADDRESS_ERRORS = {
   postalCode: 'PSČ je povinné',
   postalCodeInvalid: 'PSČ musí mít 5 číslic',
 } as const
+
+// Address validation options
+export interface AddressValidationOptions {
+  requireEmail?: boolean
+  requirePhone?: boolean
+  prefix?: string // prefix for error keys (e.g., 'shipping' or 'billing')
+}
+
+// Universal address validation function
+export const validateAddress = (
+  address: Partial<AddressData>,
+  options: AddressValidationOptions = { requireEmail: true, requirePhone: true }
+): Record<string, string> => {
+  const errors: Record<string, string> = {}
+  const prefix = options.prefix ? `${options.prefix}` : ''
+
+  // Required fields for all addresses
+  if (!address.firstName)
+    errors[`${prefix}FirstName`] = ADDRESS_ERRORS.firstName
+  if (!address.lastName) errors[`${prefix}LastName`] = ADDRESS_ERRORS.lastName
+  if (!address.street) errors[`${prefix}Street`] = ADDRESS_ERRORS.street
+  if (!address.city) errors[`${prefix}City`] = ADDRESS_ERRORS.city
+
+  // Postal code validation
+  if (!address.postalCode) {
+    errors[`${prefix}PostalCode`] = ADDRESS_ERRORS.postalCode
+  } else if (!validatePostalCode(address.postalCode)) {
+    errors[`${prefix}PostalCode`] = ADDRESS_ERRORS.postalCodeInvalid
+  }
+
+  // Optional email validation (typically for shipping address)
+  if (options.requireEmail) {
+    if (!address.email) {
+      errors[`${prefix}Email`] = ADDRESS_ERRORS.email
+    } else if (!validateEmail(address.email)) {
+      errors[`${prefix}Email`] = ADDRESS_ERRORS.emailInvalid
+    }
+  }
+
+  // Optional phone validation (typically for shipping address)
+  if (options.requirePhone) {
+    if (!address.phone) {
+      errors[`${prefix}Phone`] = ADDRESS_ERRORS.phone
+    } else if (!validatePhone(address.phone)) {
+      errors[`${prefix}Phone`] = ADDRESS_ERRORS.phoneInvalid
+    }
+  }
+
+  return errors
+}

@@ -7,9 +7,8 @@ import {
   formatPhoneNumber,
   formatPostalCode,
   getAddressFromMetadata,
+  validateAddress,
   validateEmail,
-  validatePhone,
-  validatePostalCode,
 } from '@/lib/address'
 import type { AddressData, AddressFormProps } from '@/types/checkout'
 import { Button } from '@ui/atoms/button'
@@ -93,43 +92,24 @@ export function AddressForm({
   // Removed formatters - now imported from lib/address
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {}
+    let newErrors: Record<string, string> = {}
 
-    // Validate shipping address
-    if (!shippingAddress.firstName)
-      newErrors.shippingFirstName = ADDRESS_ERRORS.firstName
-    if (!shippingAddress.lastName)
-      newErrors.shippingLastName = ADDRESS_ERRORS.lastName
-    if (!shippingAddress.email) {
-      newErrors.shippingEmail = ADDRESS_ERRORS.email
-    } else if (!validateEmail(shippingAddress.email)) {
-      newErrors.shippingEmail = ADDRESS_ERRORS.emailInvalid
-    }
-    if (!shippingAddress.phone) {
-      newErrors.shippingPhone = ADDRESS_ERRORS.phone
-    } else if (!validatePhone(shippingAddress.phone)) {
-      newErrors.shippingPhone = ADDRESS_ERRORS.phoneInvalid
-    }
-    if (!shippingAddress.street)
-      newErrors.shippingStreet = ADDRESS_ERRORS.street
-    if (!shippingAddress.city) newErrors.shippingCity = ADDRESS_ERRORS.city
-    if (!shippingAddress.postalCode) {
-      newErrors.shippingPostalCode = ADDRESS_ERRORS.postalCode
-    } else if (!validatePostalCode(shippingAddress.postalCode)) {
-      newErrors.shippingPostalCode = ADDRESS_ERRORS.postalCodeInvalid
-    }
+    // Validate shipping address (with email and phone required)
+    const shippingErrors = validateAddress(shippingAddress, {
+      requireEmail: true,
+      requirePhone: true,
+      prefix: 'shipping',
+    })
+    newErrors = { ...newErrors, ...shippingErrors }
 
-    // Validate billing address if different
+    // Validate billing address if different (without email and phone)
     if (!useSameAddress) {
-      if (!billingAddress.firstName)
-        newErrors.billingFirstName = ADDRESS_ERRORS.firstName
-      if (!billingAddress.lastName)
-        newErrors.billingLastName = ADDRESS_ERRORS.lastName
-      if (!billingAddress.street)
-        newErrors.billingStreet = ADDRESS_ERRORS.street
-      if (!billingAddress.city) newErrors.billingCity = ADDRESS_ERRORS.city
-      if (!billingAddress.postalCode)
-        newErrors.billingPostalCode = ADDRESS_ERRORS.postalCode
+      const billingErrors = validateAddress(billingAddress, {
+        requireEmail: false,
+        requirePhone: false,
+        prefix: 'billing',
+      })
+      newErrors = { ...newErrors, ...billingErrors }
     }
 
     setErrors(newErrors)
