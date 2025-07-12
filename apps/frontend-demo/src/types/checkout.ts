@@ -12,6 +12,8 @@ export interface AddressData {
   company?: string
 }
 
+export interface UserData extends HttpTypes.StoreCustomer {}
+
 export interface AddressDisplayData {
   firstName: string
   lastName: string
@@ -102,6 +104,22 @@ export interface UseCheckoutReturn {
   addShippingMethod: (methodId: string) => Promise<void>
   processOrder: () => Promise<HttpTypes.StoreOrder | undefined>
   canProceedToStep: (step: number) => boolean
+}
+
+export interface FormUserData {
+  id: string
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  company_name: string
+}
+
+export interface FormAddressData {
+  street: string
+  city: string
+  postalCode: string
+  country: string
 }
 
 export type ShippingOptionMap = Record<string, string>

@@ -2,8 +2,6 @@ import type { AddressData } from '@/types/checkout'
 import type { HttpTypes } from '@medusajs/types'
 import type { ChangeEvent } from 'react'
 
-// Re-export types and constants
-export type { AddressData }
 export { COUNTRIES } from '@/lib/checkout-data'
 
 // Email validation regex

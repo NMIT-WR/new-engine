@@ -52,6 +52,11 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.orders.all(), 'detail', id] as const,
   },
   
+  // Customer queries
+  customer: {
+    addresses: () => [...queryKeys.all, 'customer', 'addresses'] as const,
+  },
+  
   // Legacy aliases for backward compatibility
   product: (handle: string) => queryKeys.products.detail(handle),
 } as const

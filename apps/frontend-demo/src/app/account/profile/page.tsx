@@ -3,12 +3,15 @@
 import { ProfileForm } from '@/components/organisms/profile-form'
 import { AccountLayout } from '@/components/templates/account-layout'
 import { useAuth } from '@/hooks/use-auth'
+import { useCustomer } from '@/hooks/use-customer'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function ProfilePage() {
   const { user, isLoading, isInitialized } = useAuth()
   const router = useRouter()
+
+  const { address, isLoading: isAddressLoading } = useCustomer()
 
   useEffect(() => {
     if (isInitialized && !user) {
@@ -37,7 +40,11 @@ export default function ProfilePage() {
     <AccountLayout>
       <div className="mx-auto max-w-layout-max">
         <h1 className="mb-8 font-semibold text-2xl">Profil & zabezpečení</h1>
-        <ProfileForm user={user} />
+        <ProfileForm
+          key={isAddressLoading ? 'loading' : address ? 'exists' : 'new'}
+          initialAddress={address}
+          user={user}
+        />
       </div>
     </AccountLayout>
   )
