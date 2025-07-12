@@ -167,13 +167,32 @@ export const authHelpers = {
         first_name: firstName,
         last_name: lastName,
       })
-      authStore.setState((state) => ({
-        ...state,
-        user: customer,
-        isLoading: false,
-        isInitialized: true,
-      }))
-      return customer
+
+      // Step 4: Refresh token to ensure proper permissions
+      try {
+        await sdk.auth.refresh()
+      } catch (refreshError) {}
+
+      // Step 5: Fetch the customer again to ensure we have the latest data
+      try {
+        const { customer: refreshedCustomer } =
+          await sdk.store.customer.retrieve()
+        authStore.setState((state) => ({
+          ...state,
+          user: refreshedCustomer,
+          isLoading: false,
+          isInitialized: true,
+        }))
+        return refreshedCustomer
+      } catch (fetchError) {
+        authStore.setState((state) => ({
+          ...state,
+          user: customer,
+          isLoading: false,
+          isInitialized: true,
+        }))
+        return customer
+      }
     } catch (err: any) {
       const message = err?.message || 'Registration failed'
       authStore.setState((state) => ({
