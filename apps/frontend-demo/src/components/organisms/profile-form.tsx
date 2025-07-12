@@ -33,29 +33,42 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
     company_name: user.company_name || '',
   })
 
-  const [companyName, setCompanyName] = useState(user.company_name || '')
+  const hasProfileChanges =
+    formUserData.first_name !== user.first_name ||
+    formUserData.last_name !== user.last_name ||
+    formUserData.phone !== (user.phone || '') ||
+    formUserData.company_name !== (user.company_name || '')
+
+  const hasAddressChanges =
+    formAddressData.street !== initialAddress?.street ||
+    formAddressData.city !== initialAddress?.city ||
+    formAddressData.postalCode !== initialAddress?.postalCode ||
+    formAddressData.country !== initialAddress?.country
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      // Create complete AddressData with empty email
       const addressData: FormAddressData = {
         ...formAddressData,
       }
-
       const userData: FormUserData = {
         ...formUserData,
       }
 
-      // Run both mutations in parallel for better performance
-      await Promise.all([updateProfile(userData), saveAddress(addressData)])
+      const promises = []
 
-      // Both mutations succeeded - data is already optimistically updated
-      // and will be refreshed with server data via invalidation
+      if (hasProfileChanges) {
+        promises.push(updateProfile(userData))
+      }
+      if (hasAddressChanges) {
+        promises.push(saveAddress(addressData))
+      }
+      if (promises.length > 0) {
+        await Promise.all(promises)
+      }
     } catch (error) {
-      // Error handling is done in mutation onError callbacks
-      // which will show toasts and rollback optimistic updates
       console.error('Failed to save profile:', error)
     }
   }
