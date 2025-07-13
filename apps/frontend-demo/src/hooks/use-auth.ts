@@ -22,12 +22,11 @@ export function useAuth() {
     queryFn: authHelpers.fetchUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false,
-    enabled: !authState.isInitialized,
   })
 
   // Update store when query data changes
   useEffect(() => {
-    if (currentUser !== undefined && !authState.isInitialized) {
+    if (currentUser !== undefined) {
       authStore.setState((state) => ({
         ...state,
         user: currentUser,
@@ -35,7 +34,7 @@ export function useAuth() {
         isLoading: false,
       }))
     }
-  }, [currentUser, authState.isInitialized])
+  }, [currentUser])
 
   // Login mutation
   const loginMutation = useMutation({

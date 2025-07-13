@@ -236,8 +236,6 @@ export function useMedusaCart() {
   const applyDiscountMutation = useMutation({
     mutationFn: async (code: string) => {
       if (!cart) throw new Error('No cart available')
-
-      // @ts-ignore - Medusa v2 types might not be fully updated
       const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
         promo_codes: [code],
       })

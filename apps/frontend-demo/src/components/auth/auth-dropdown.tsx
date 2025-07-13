@@ -58,12 +58,6 @@ export function AuthDropdown() {
     },
     {
       type: 'action' as const,
-      value: 'settings',
-      label: 'Nastavení',
-      icon: 'icon-[mdi--cog-outline]' as const,
-    },
-    {
-      type: 'action' as const,
       value: 'logout',
       label: 'Odhlásit se',
       icon: 'icon-[mdi--logout]' as const,

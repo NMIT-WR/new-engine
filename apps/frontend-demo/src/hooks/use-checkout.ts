@@ -8,9 +8,11 @@ import type { CheckoutAddressData, UseCheckoutReturn } from '@/types/checkout'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 import { useCart } from './use-cart'
+import { useCustomer } from './use-customer'
 
 export function useCheckout(): UseCheckoutReturn {
   const { cart, refetch, clearCart } = useCart()
+  const { address } = useCustomer()
   const toast = useToast()
 
   const [currentStep, setCurrentStep] = useState(0)
@@ -131,7 +133,7 @@ export function useCheckout(): UseCheckoutReturn {
           })
           return
         }
-        
+
         const providers = await sdk.store.payment.listPaymentProviders({
           region_id: currentCart.region_id,
         })
@@ -177,8 +179,6 @@ export function useCheckout(): UseCheckoutReturn {
 
         // Return success with order data
         return order
-      } else {
-        throw new Error('Failed to complete order')
       }
     } catch (error) {
       console.error('Order creation error:', error)
@@ -200,11 +200,11 @@ export function useCheckout(): UseCheckoutReturn {
   const canProceedToStep = (step: number) => {
     switch (step) {
       case 1: // Shipping
-        return !!addressData
+        return !!address
       case 2: // Payment
-        return !!addressData && !!selectedShipping
+        return !!address && !!selectedShipping
       case 3: // Summary
-        return !!addressData && !!selectedShipping && !!selectedPayment
+        return !!address && !!selectedShipping && !!selectedPayment
       default:
         return true
     }

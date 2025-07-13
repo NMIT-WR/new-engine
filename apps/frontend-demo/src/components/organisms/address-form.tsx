@@ -1,12 +1,11 @@
 'use client'
-
 import { useAuth } from '@/hooks/use-auth'
+import { useCustomer } from '@/hooks/use-customer'
 import {
   ADDRESS_ERRORS,
   COUNTRIES,
   formatPhoneNumber,
   formatPostalCode,
-  getAddressFromMetadata,
   validateAddress,
   validateEmail,
 } from '@/lib/address'
@@ -24,6 +23,7 @@ export function AddressForm({
   isLoading = false,
 }: AddressFormProps) {
   const { user } = useAuth()
+  const { address } = useCustomer()
 
   // Use profile data if no initial data provided
   const getInitialValue = (
@@ -31,9 +31,6 @@ export function AddressForm({
     source?: Partial<AddressData>
   ) => {
     if (source?.[field]) return source[field] as string
-
-    // Get address from metadata
-    const addressData = getAddressFromMetadata(user)
 
     // Map user profile fields to address fields
     switch (field) {
@@ -48,13 +45,13 @@ export function AddressForm({
       case 'company':
         return user?.company_name || ''
       case 'street':
-        return addressData.street || ''
+        return address?.street || ''
       case 'city':
-        return addressData.city || ''
+        return address?.city || ''
       case 'postalCode':
-        return addressData.postal_code || ''
+        return address?.postalCode || ''
       case 'country':
-        return addressData.country || 'cz'
+        return address?.country || 'cz'
       default:
         return ''
     }

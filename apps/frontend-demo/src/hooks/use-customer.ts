@@ -21,11 +21,9 @@ export function useCustomer() {
         const response = await sdk.store.customer.listAddress()
         return response
       } catch (error) {
-        console.error('Failed to fetch addresses:', error)
         return { addresses: [] }
       }
     },
-    enabled: true,
   })
 
   // Get the first address as the main address
@@ -74,9 +72,9 @@ export function useCustomer() {
       queryClient.setQueryData(
         queryKeys.customer.addresses(),
         (old: { addresses: HttpTypes.StoreCustomerAddress[] } | undefined) => ({
-          addresses: old?.addresses?.length 
-            ? [optimisticAddress, ...old.addresses.slice(1)] 
-            : [optimisticAddress]
+          addresses: old?.addresses?.length
+            ? [optimisticAddress, ...old.addresses.slice(1)]
+            : [optimisticAddress],
         })
       )
 
@@ -97,13 +95,6 @@ export function useCustomer() {
         type: 'error',
       })
     },
-    onSettled: () => {
-      // Always invalidate to ensure we're in sync with server
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.customer.addresses(),
-      })
-      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-    },
     onSuccess: () => {
       toast.create({
         title: 'Adresa byla úspěšně uložena',
@@ -121,12 +112,12 @@ export function useCustomer() {
         phone: data.phone || undefined,
         company_name: data.company_name || undefined,
       }
-      return await sdk.store.customer.update(updateData)
+      const updatedCustomer = await sdk.store.customer.update(updateData)
+      return updatedCustomer
     },
     onMutate: async (newData) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.auth.customer() })
-
       // Snapshot the previous value
       const previousCustomer = queryClient.getQueryData(
         queryKeys.auth.customer()
@@ -160,10 +151,6 @@ export function useCustomer() {
         description: error?.message || 'Zkuste to prosím znovu',
         type: 'error',
       })
-    },
-    onSettled: () => {
-      // Always invalidate to ensure we're in sync
-      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
     },
     onSuccess: () => {
       toast.create({
