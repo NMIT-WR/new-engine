@@ -15,78 +15,53 @@ import { ErrorText } from '@ui/atoms/error-text'
 import { FormCheckboxRaw as FormCheckbox } from '@ui/molecules/form-checkbox'
 import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import { Select } from '@ui/molecules/select'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function AddressForm({
   onComplete,
-  initialData,
   isLoading = false,
 }: AddressFormProps) {
   const { user } = useAuth()
-  const { address } = useCustomer()
-
-  // Use profile data if no initial data provided
-  const getInitialValue = (
-    field: keyof AddressData,
-    source?: Partial<AddressData>
-  ) => {
-    if (source?.[field]) return source[field] as string
-
-    // Map user profile fields to address fields
-    switch (field) {
-      case 'firstName':
-        return user?.first_name || ''
-      case 'lastName':
-        return user?.last_name || ''
-      case 'email':
-        return user?.email || ''
-      case 'phone':
-        return user?.phone || ''
-      case 'company':
-        return user?.company_name || ''
-      case 'street':
-        return address?.street || ''
-      case 'city':
-        return address?.city || ''
-      case 'postalCode':
-        return address?.postalCode || ''
-      case 'country':
-        return address?.country || 'cz'
-      default:
-        return ''
-    }
-  }
+  const { address, isLoading: isAddressLoading } = useCustomer()
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
-    firstName: getInitialValue('firstName', initialData?.shipping),
-    lastName: getInitialValue('lastName', initialData?.shipping),
-    email: getInitialValue('email', initialData?.shipping),
-    phone: getInitialValue('phone', initialData?.shipping),
-    street: getInitialValue('street', initialData?.shipping),
-    city: getInitialValue('city', initialData?.shipping),
-    postalCode: getInitialValue('postalCode', initialData?.shipping),
-    country: getInitialValue('country', initialData?.shipping),
-    company: getInitialValue('company', initialData?.shipping),
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    street: address?.street || '',
+    city: address?.city || '',
+    postalCode: address?.postalCode || '',
+    country: address?.country || 'cz',
+    company: user?.company_name || '',
   })
 
   const [billingAddress, setBillingAddress] = useState<AddressData>({
-    firstName: getInitialValue('firstName', initialData?.billing),
-    lastName: getInitialValue('lastName', initialData?.billing),
-    email: getInitialValue('email', initialData?.billing),
-    phone: getInitialValue('phone', initialData?.billing),
-    street: getInitialValue('street', initialData?.billing),
-    city: getInitialValue('city', initialData?.billing),
-    postalCode: getInitialValue('postalCode', initialData?.billing),
-    country: getInitialValue('country', initialData?.billing),
-    company: getInitialValue('company', initialData?.billing),
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    street: address?.street || '',
+    city: address?.city || '',
+    postalCode: address?.postalCode || '',
+    country: address?.country || 'cz',
+    company: user?.company_name || '',
   })
 
-  const [useSameAddress, setUseSameAddress] = useState(
-    initialData?.useSameAddress ?? true
-  )
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  useEffect(() => {
+    if (address) {
+      setShippingAddress((prev) => ({
+        ...prev,
+        street: address.street || prev.street,
+        city: address.city || prev.city,
+        postalCode: address.postalCode || prev.postalCode,
+        country: address.country || prev.country,
+      }))
+    }
+  }, [address?.street, address?.city, address?.postalCode, address?.country])
 
-  // Removed formatters - now imported from lib/address
+  const [useSameAddress, setUseSameAddress] = useState(true)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const validateForm = () => {
     let newErrors: Record<string, string> = {}

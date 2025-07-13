@@ -1,5 +1,6 @@
 'use client'
 
+import { LoadingPage } from '@/components/loading-page'
 import { CreditCardDialog } from '@/components/molecules/credit-card-dialog'
 import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
@@ -60,18 +61,7 @@ export default function CheckoutPage() {
   }, [cart, router, isLoading, isOrderComplete])
 
   // Show loading state while cart is loading
-  if (isLoading) {
-    return (
-      <div className="container mx-auto max-w-[80rem] px-4 py-8">
-        <div className="flex min-h-[400px] items-center justify-center">
-          <div className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2" />
-            <p className="text-fg-secondary">Načítání...</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  if (isLoading) return <LoadingPage />
 
   // Get order data (either from cart or saved completed order)
   const orderData = orderHelpers.getOrderData(cart)
@@ -150,7 +140,6 @@ export default function CheckoutPage() {
               // Error already handled in hook
             }
           }}
-          initialData={addressData || undefined}
         />
       ),
     },

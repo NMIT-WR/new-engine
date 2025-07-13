@@ -67,11 +67,7 @@ export interface PaymentSelectionProps {
 
 export interface AddressFormProps {
   onComplete: (data: CheckoutAddressData) => void | Promise<void>
-  initialData?: {
-    shipping?: Partial<AddressData>
-    billing?: Partial<AddressData>
-    useSameAddress?: boolean
-  }
+  sameData?: boolean
   isLoading?: boolean
 }
 
