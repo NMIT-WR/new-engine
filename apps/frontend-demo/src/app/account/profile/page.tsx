@@ -39,7 +39,7 @@ export default function ProfilePage() {
   return (
     <AccountLayout>
       <div className="mx-auto max-w-layout-max">
-        <h1 className="mb-8 font-semibold text-2xl">Profil & zabezpečení</h1>
+        <h1 className="mb-8 font-semibold text-2xl">Profil</h1>
         <ProfileForm
           key={isAddressLoading ? 'loading' : address ? 'exists' : 'new'}
           initialAddress={address}

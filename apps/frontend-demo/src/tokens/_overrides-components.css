@@ -42,6 +42,7 @@
   /* Different padding for small inputs */
   --padding-input-sm: var(--spacing-3xs) var(--spacing-2xs);
   --padding-input-md: var(--spacing-2xs) var(--spacing-xs);
+  --color-input-ring: --alpha(var(--color-tertiary) / 50%);
   /* Font weight token name change */
   --font-label: var(--font-weight-bold);
 

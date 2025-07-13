@@ -45,7 +45,6 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
     formAddressData.postalCode !== initialAddress?.postalCode ||
     formAddressData.country !== initialAddress?.country
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -77,7 +76,7 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="rounded-pf-container border border-pf-container-border bg-pf-container-bg p-pf-container-padding shadow-pf">
         <div className="mb-pf-header-margin-bottom flex items-center gap-pf-header-gap">
-          <h2 className="font-pf-title text-pf-title-size">Profil & adresa</h2>
+          <h2 className="font-pf-title text-pf-title-size">Osobní údaje</h2>
         </div>
 
         <div className="space-y-pf-fields-gap">
@@ -209,16 +208,16 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
             />
           </div>
         </div>
-      </div>
-
-      <div className="flex justify-end gap-pf-actions-gap">
-        <Button
-          type="submit"
-          isLoading={isSaving || isUpdating}
-          disabled={isSaving || isUpdating}
-        >
-          Uložit změny
-        </Button>
+        <div className="flex justify-end gap-pf-actions-gap">
+          <Button
+            type="submit"
+            size="sm"
+            isLoading={isSaving || isUpdating}
+            disabled={isSaving || isUpdating}
+          >
+            Uložit změny
+          </Button>
+        </div>
       </div>
     </form>
   )

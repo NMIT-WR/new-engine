@@ -15,10 +15,10 @@ const accountLinks = [
   },
   {
     href: '/account/profile',
-    label: 'Profil & zabezpečení',
+    label: 'Osobní údaje',
     icon: 'token-icon-profile' as const,
   },
-  {
+  /*{
     href: '/account/settings',
     label: 'Nastavení',
     icon: 'token-icon-setting' as const,
@@ -27,7 +27,7 @@ const accountLinks = [
     href: '#',
     label: 'Pomoc',
     icon: 'token-icon-help' as const,
-  },
+  },*/
 ]
 
 interface AccountLayoutProps {
@@ -67,10 +67,11 @@ export function AccountLayout({ children }: AccountLayoutProps) {
 
           <Button
             onClick={handleLogout}
-            className="text-fg-reverse transition-colors"
+            className="mx-3 text-fg-reverse"
             icon="token-icon-exit"
+            size="sm"
           >
-            <span className="font-medium text-sm">Odhlásit se</span>
+            <span className="font-medium text-xs">Odhlásit se</span>
           </Button>
         </nav>
 
