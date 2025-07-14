@@ -1,10 +1,22 @@
 'use client'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { AccountLayout } from '@/components/templates/account-layout'
 import { useAuth } from '@/hooks/use-auth'
+import { formatPrice } from '@/lib/format-price'
 import { sdk } from '@/lib/medusa-client'
+import {
+  ORDER_FIELDS,
+  formatOrderDate,
+  getOrderStatusLabel,
+  truncateProductTitle,
+} from '@/lib/order-utils'
 import { queryKeys } from '@/lib/query-keys'
 import { useQuery } from '@tanstack/react-query'
+import { Badge } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
+import { Image } from '@ui/atoms/image'
+import { LinkButton } from '@ui/atoms/link-button'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -25,20 +37,35 @@ export default function OrdersPage() {
   } = useQuery({
     queryKey: queryKeys.orders.list(),
     queryFn: async () => {
-      const response = await sdk.store.order.list()
+      const response = await sdk.store.order.list({
+        fields: ORDER_FIELDS.join(','),
+      })
       return response
     },
     enabled: !!user,
+    staleTime: 5 * 60 * 1000,
   })
 
   if (!isInitialized || authLoading) {
     return (
       <AccountLayout>
-        <div className="flex min-h-[400px] items-center justify-center">
-          <div className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2" />
-            <p className="text-fg-secondary">Načítání...</p>
-          </div>
+        <div className="space-y-4">
+          <SkeletonLoader className="h-8 w-48" />
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="rounded-account-card bg-account-card-bg p-account-card-p shadow-account-card"
+            >
+              <div className="flex gap-4">
+                <SkeletonLoader className="h-20 w-20" />
+                <div className="flex-1 space-y-2">
+                  <SkeletonLoader className="h-4 w-32" />
+                  <SkeletonLoader className="h-6 w-48" />
+                  <SkeletonLoader className="h-4 w-24" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </AccountLayout>
     )
@@ -70,8 +97,22 @@ export default function OrdersPage() {
             </Button>
           </div>
         ) : ordersLoading ? (
-          <div className="text-center">
-            <p className="text-lg">Načítání objednávek...</p>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="rounded-account-card bg-account-card-bg p-account-card-p shadow-account-card"
+              >
+                <div className="flex gap-4">
+                  <SkeletonLoader className="h-20 w-20" />
+                  <div className="flex-1 space-y-2">
+                    <SkeletonLoader className="h-4 w-32" />
+                    <SkeletonLoader className="h-6 w-48" />
+                    <SkeletonLoader className="h-4 w-24" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : orders.length === 0 ? (
           <div className="rounded-account-card bg-account-card-bg p-account-card-p text-center shadow-account-card">
@@ -95,37 +136,72 @@ export default function OrdersPage() {
               >
                 <div className="mb-4 flex items-center justify-between">
                   <div>
-                    <h2 className="font-account-subtitle text-account-subtitle-fg text-account-subtitle-size">
-                      Objednávka z{' '}
-                      {order.created_at
-                        ? new Date(order.created_at).toLocaleDateString('cs-CZ')
-                        : 'Neznámé datum'}
+                    <h2 className="mb-1 font-account-subtitle text-account-subtitle-fg text-account-subtitle-size">
+                      Objednávka č. {order.display_id}
                     </h2>
-                    <p className="text-account-label-fg text-sm">{order.id}</p>
+                    <p className="text-account-label-fg text-sm">
+                      {formatOrderDate(order.created_at as string)}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-account-value-fg">
-                      {order.total ? order.total.toFixed(0) : '0.00'}{' '}
-                      {order.currency_code?.toUpperCase()}
+                    <p className="mb-2 font-semibold text-account-value-fg">
+                      {formatPrice(
+                        order.summary?.current_order_total || order.total || 0,
+                        order.currency_code
+                      )}
                     </p>
-                    <p className="text-account-label-fg text-sm">
-                      Stav: {order.status}
-                    </p>
+                    <Badge>{getOrderStatusLabel(order.status)}</Badge>
                   </div>
                 </div>
 
                 <div className="border-t pt-4">
-                  <p className="mb-2 text-account-label-fg text-sm">Položky:</p>
-                  <ul className="space-y-2">
-                    {order.items?.map((item) => (
-                      <li
-                        key={item.id}
-                        className="text-account-value-fg text-sm"
-                      >
-                        {item.title} - {item.quantity}x
-                      </li>
+                  <div className="space-y-3">
+                    {order.items?.slice(0, 3).map((item) => (
+                      <div key={item.id} className="flex gap-3">
+                        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded">
+                          {item.thumbnail ? (
+                            <Image
+                              src={item.thumbnail}
+                              alt={item.product_title || ''}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-gray-100">
+                              <span className="text-gray-400 text-xs">
+                                Bez obrázku
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <Link
+                            href={`/products/${item.product_handle}`}
+                            className="font-medium text-account-link-fg text-sm hover:text-primary"
+                          >
+                            {truncateProductTitle(item.product_title || '')}
+                          </Link>
+                          <p className="text-account-label-fg text-xs">
+                            {item.variant_title} • {item.quantity}x
+                          </p>
+                        </div>
+                      </div>
                     ))}
-                  </ul>
+                    {order.items && order.items.length > 3 && (
+                      <p className="text-account-label-fg text-xs">
+                        +{order.items.length - 3} dalších položek
+                      </p>
+                    )}
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <LinkButton
+                      as={Link}
+                      prefetch={true}
+                      href={`/account/orders/${order.id}`}
+                      size="sm"
+                    >
+                      Detail objednávky
+                    </LinkButton>
+                  </div>
                 </div>
               </div>
             ))}

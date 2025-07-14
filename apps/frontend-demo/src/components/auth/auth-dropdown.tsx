@@ -83,7 +83,7 @@ export function AuthDropdown() {
     >
       <ul className="space-y-1">
         {menuItems.map((item) => (
-          <li key={item.value}>
+          <li key={item.href}>
             {item.type === 'action' ? (
               <LinkButton
                 theme="borderless"
