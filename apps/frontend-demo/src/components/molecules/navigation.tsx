@@ -28,7 +28,7 @@ function NavigationItem({ item }: { item: NavItem }) {
             </div>
           }
           showArrow={true}
-          contentClassName="z-50 bg-nav-submenu-bg px-0 py-2 shadow-light"
+          contentClassName="z-50 bg-nav-submenu-bg px-0 py-2 shadow-primary"
           triggerClassName=""
         >
           <nav className="flex min-w-[200px] flex-col gap-nav-submenu">

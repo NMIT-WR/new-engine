@@ -25,5 +25,5 @@
   --spacing-pf-actions-gap: var(--spacing-md);
   --spacing-pf-actions-margin-top: var(--spacing-lg);
 
-  --shadow-pf: var(--shadow-light);
+  --shadow-pf: var(--shadow-primary);
 }

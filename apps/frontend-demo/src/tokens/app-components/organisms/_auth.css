@@ -26,7 +26,7 @@
   --text-auth-link-size: var(--text-sm);
 
   /* === AUTH FORM EFFECTS === */
-  --shadow-auth-card: var(--shadow-light);
+  --shadow-auth-card: var(--shadow-primary);
   --radius-auth-card: var(--radius-lg);
 
   /* === AUTH LAYOUT === */
