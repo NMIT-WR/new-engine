@@ -5,8 +5,8 @@ import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { LinkButton } from '@ui/atoms/link-button'
 import { FormInput } from '@ui/molecules/form-input'
-import { Menu } from '@ui/molecules/menu'
 import { Popover } from '@ui/molecules/popover'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 
@@ -44,12 +44,14 @@ export function AuthDropdown() {
       type: 'action' as const,
       value: 'profile',
       label: 'Můj profil',
+      href: '/account/profile',
       icon: 'icon-[mdi--account-outline]' as const,
     },
     {
       type: 'action' as const,
       value: 'orders',
       label: 'Moje objednávky',
+      href: '/account/orders',
       icon: 'icon-[mdi--package-variant-closed]' as const,
     },
     {
@@ -60,48 +62,48 @@ export function AuthDropdown() {
       type: 'action' as const,
       value: 'logout',
       label: 'Odhlásit se',
+      href: '/',
       icon: 'icon-[mdi--logout]' as const,
     },
   ]
 
-  const handleSelect = (value: string) => {
-    switch (value) {
-      case 'logout':
-        signOut()
-        break
-      case 'profile':
-        router.push('/account/profile')
-        break
-      case 'orders':
-        router.push('/account/orders')
-        break
-      case 'settings':
-        router.push('/account/settings')
-        break
-      default:
-        break
-    }
-  }
-
   return (
-    <Menu
+    <Popover
       id="user-menu"
-      items={menuItems}
-      // @ts-ignore
-      onSelect={({ value }) => handleSelect(value)}
-      customTrigger={
-        <Button
-          variant="tertiary"
-          theme="borderless"
-          size="sm"
-          icon="icon-[mdi--account-circle]"
-        >
+      trigger={
+        <span className="flex h-full items-center gap-2 rounded-md px-2 py-1 text-sm text-tertiary hover:bg-surface">
+          <Icon icon="icon-[mdi--account-circle]" />
           <span className="hidden truncate xl:inline">
             {user.email.split('@')[0]}
           </span>
-        </Button>
+        </span>
       }
-    />
+      contentClassName="z-50"
+      triggerClassName="hover:bg-transparent active:bg-transparent data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
+    >
+      <ul className="space-y-1">
+        {menuItems.map((item) => (
+          <li key={item.value}>
+            {item.type === 'action' ? (
+              <LinkButton
+                theme="borderless"
+                size="sm"
+                as={Link}
+                prefetch={true}
+                href={item.href ?? ''}
+                onClick={item.value === 'logout' ? signOut : undefined}
+                className="w-full justify-start"
+                icon={item.icon}
+              >
+                {item.label}
+              </LinkButton>
+            ) : (
+              <div className="h-px w-full bg-highlight" />
+            )}
+          </li>
+        ))}
+      </ul>
+    </Popover>
   )
 }
 
