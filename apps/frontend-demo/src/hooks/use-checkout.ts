@@ -3,8 +3,10 @@
 import { SHIPPING_OPTION_MAP } from '@/lib/checkout-data'
 import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
+import { queryKeys } from '@/lib/query-keys'
 import { orderHelpers } from '@/stores/order-store'
 import type { CheckoutAddressData, UseCheckoutReturn } from '@/types/checkout'
+import { useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 import { useCart } from './use-cart'
@@ -14,6 +16,7 @@ export function useCheckout(): UseCheckoutReturn {
   const { cart, refetch, clearCart } = useCart()
   const { address } = useCustomer()
   const toast = useToast()
+  const queryClient = useQueryClient()
 
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedPayment, setSelectedPayment] = useState('')
@@ -176,6 +179,9 @@ export function useCheckout(): UseCheckoutReturn {
         }
 
         clearCart()
+
+        // Invalidate orders cache to refresh the list
+        await queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
 
         // Return success with order data
         return order
