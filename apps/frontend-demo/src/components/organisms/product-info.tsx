@@ -1,6 +1,7 @@
 'use client'
 import { useCart } from '@/hooks/use-cart'
 import type { Product, ProductVariant } from '@/types/product'
+import { sortVariantsBySize } from '@/utils/variant-utils'
 import { Badge, type BadgeProps } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
 import { Label } from '@ui/atoms/label'
@@ -83,12 +84,12 @@ export function ProductInfo({
         {product.description}
       </p>
 
-      {/* SKU and Stock Info */}
-      {selectedVariant && (
+      {/* SKU and Stock Info probably not needed */}
+      {/*selectedVariant && (
         <div className="mb-product-info-variant-margin text-product-info-variant-label">
           <p>Kód: {selectedVariant.sku}</p>
         </div>
-      )}
+      )*/}
 
       {/* Variant Selectors */}
       {productVariants.length > 0 && (
@@ -100,7 +101,7 @@ export function ProductInfo({
           {
             /* Size or other option buttons */
             <div className="flex flex-wrap gap-product-info-variant-gap">
-              {productVariants.map((variant) => {
+              {sortVariantsBySize(productVariants).map((variant) => {
                 const isSelected = selectedVariant?.id === variant.id
 
                 return (
