@@ -67,6 +67,7 @@ export interface ProductVariant {
   allow_backorder?: boolean
   inventory_quantity?: number // deprecated, keeping for backward compatibility
   prices?: ProductPrice[]
+  calculated_price?: ProductPrice // For API products
   options?: Record<string, string>
   metadata?: Record<string, unknown>
   colorHex?: string
@@ -75,6 +76,7 @@ export interface ProductVariant {
 export interface ProductPrice {
   id: string
   currency_code: string
+  calculated_amount?: number // Amount in dollars/euros
   amount: number // Amount in cents
   calculated_price?: string // Formatted price
   original_price?: string // Formatted original price
