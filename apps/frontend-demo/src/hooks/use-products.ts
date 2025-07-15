@@ -2,7 +2,7 @@
 
 import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
-import { type ProductFilters, ProductService } from '@/services/product-service'
+import { getHomePageProducts, getProduct, getProducts, type ProductFilters } from '@/services/product-service'
 import type { Product } from '@/types/product'
 import { useQuery } from '@tanstack/react-query'
 
@@ -33,7 +33,7 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.products.list({ page, limit, filters, sort }),
-    queryFn: () => ProductService.getProducts({ limit, offset, filters, sort }),
+    queryFn: () => getProducts({ limit, offset, filters, sort }),
     ...cacheConfig.semiStatic,
   })
 
@@ -63,7 +63,7 @@ export function useProduct(handle: string) {
     error,
   } = useQuery({
     queryKey: queryKeys.product(handle),
-    queryFn: () => ProductService.getProduct(handle),
+    queryFn: () => getProduct(handle),
     enabled: !!handle,
     ...cacheConfig.semiStatic,
   })
@@ -82,7 +82,7 @@ export function useProduct(handle: string) {
 export function useHomeProducts() {
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.homeProducts(),
-    queryFn: () => ProductService.getHomePageProducts(),
+    queryFn: () => getHomePageProducts(),
     ...cacheConfig.dynamic,
   })
 

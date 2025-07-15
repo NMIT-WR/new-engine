@@ -28,24 +28,24 @@ export interface HomePageProducts {
   trending: Product[]
 }
 
-export class ProductService {
   // Fields for product list views (minimal data)
-  static readonly LIST_FIELDS = [
+  const LIST_FIELDS = [
     'id',
     'title',
     'handle',
     'thumbnail',
-    'variants.id',
-    'variants.title',
-    'variants.prices.amount',
-    'variants.prices.currency_code',
-    '+variants.inventory_quantity',
+    '*variants.calculated_price',
+    //'variants.id',
+    //'variants.title',
+    /*'variants.prices.amount',
+    'variants.prices.currency_code',*/
+    'variants.inventory_quantity',
     'variants.manage_inventory',
     'tags',
   ].join(',')
 
   // Fields for product detail views (all data)
-  static readonly DETAIL_FIELDS = [
+  const DETAIL_FIELDS = [
     'id',
     'title',
     'handle',
@@ -73,22 +73,20 @@ export class ProductService {
     'variants.options',
   ].join(',')
 
-  // Keep DEFAULT_FIELDS for backward compatibility
-  static readonly DEFAULT_FIELDS = this.DETAIL_FIELDS
-
   /**
    * Fetch products with filtering, pagination and sorting
    */
-  static async getProducts(
+  export const getProducts = async (
     params: ProductListParams = {}
-  ): Promise<ProductListResponse> {
+  ): Promise<ProductListResponse> => {
     const { limit = 20, offset = 0, filters, sort } = params
 
     // Build base query
     const baseQuery: Record<string, any> = {
       limit,
       offset,
-      fields: this.LIST_FIELDS,
+      fields: LIST_FIELDS,
+      region_id: 'reg_01JYERR9Q8RA3MZXC0M310DDPZ'
     }
 
     // Add sorting
@@ -114,7 +112,7 @@ export class ProductService {
         return { products: [], count: 0, limit, offset }
       }
 
-      const products = response.products.map((p) => this.transformProduct(p))
+      const products = response.products.map((p) => transformProduct(p))
 
       return {
         products,
@@ -128,28 +126,57 @@ export class ProductService {
     }
   }
 
-  /**
-   * Fetch a single product by handle
-   */
-  static async getProduct(handle: string): Promise<Product> {
-    const response = await sdk.store.product.list({
-      handle,
-      fields: this.DETAIL_FIELDS, // Use full fields for detail views
-      limit: 1,
-    })
 
-    if (!response.products?.length) {
-      throw new Error('Product not found')
+  /**
+   * Transform raw product data from API
+   */
+const transformProduct =(product: any): Product => {
+    if (!product) {
+      throw new Error('Cannot transform null product')
     }
 
-    return this.transformProduct(response.products[0])
+    // Get primary variant (first one)
+    const primaryVariant = product.variants?.[0]
+
+    // Get price from primary variant
+    const price = primaryVariant?.calculated_price?.calculated_amount
+
+    // Since Store API doesn't provide real inventory data, we can't determine stock status
+    // We'll default to true and let the detailed product page handle variant-specific availability
+    const inStock = true
+
+    // Remove variants array from the result to reduce payload size
+    const { variants, ...productWithoutVariants } = product
+
+    return {
+      ...productWithoutVariants,
+      thumbnail: product.thumbnail,
+      inStock,
+      price,
+      primaryVariant,
+    } as Product
+}
+
+export async function getProduct(handle: string): Promise<Product> {
+  const response = await sdk.store.product.list({
+    handle,
+    fields: DETAIL_FIELDS, // Use full fields for detail views
+    limit: 1,
+  })
+
+  if (!response.products?.length) {
+    throw new Error('Product not found')
   }
+
+  return transformProduct(response.products[0])
+}
+
 
   /**
    * Get products for homepage sections
    */
-  static async getHomePageProducts(): Promise<HomePageProducts> {
-    const response = await this.getProducts({ limit: 12 })
+  export const getHomePageProducts = async (): Promise<HomePageProducts> => {
+    const response = await getProducts({ limit: 12 })
 
     const allProducts = response.products
 
@@ -165,37 +192,3 @@ export class ProductService {
       trending,
     }
   }
-
-  /**
-   * Transform raw product data from API
-   */
-  static transformProduct(product: any): Product {
-    if (!product) {
-      throw new Error('Cannot transform null product')
-    }
-
-    // Get primary variant (first one)
-    const primaryVariant = product.variants?.[0]
-
-    // Get price from primary variant
-    const price = primaryVariant?.prices?.[0]
-
-    // Since Store API doesn't provide real inventory data, we can't determine stock status
-    // We'll default to true and let the detailed product page handle variant-specific availability
-    const inStock = true
-
-    return {
-      ...product,
-      thumbnail: product.thumbnail,
-      images:
-        product.images?.map((img: any) => ({
-          ...img,
-          url: img.url,
-        })) || [],
-      // Add computed properties
-      inStock,
-      price,
-      primaryVariant,
-    } as Product
-  }
-}

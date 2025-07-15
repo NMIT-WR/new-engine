@@ -1,4 +1,4 @@
-export { ProductService } from './product-service'
+export { getProducts, getProduct, getHomePageProducts } from './product-service'
 export type {
   ProductFilters,
   ProductListParams,
