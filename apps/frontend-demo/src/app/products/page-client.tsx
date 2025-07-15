@@ -5,7 +5,7 @@ import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProducts } from '@/hooks/use-products'
 import { useUrlFilters } from '@/hooks/use-url-filters'
 import { queryKeys } from '@/lib/query-keys'
-import { ProductService } from '@/services/product-service'
+import { getProducts } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
@@ -52,7 +52,6 @@ function ProductsPageContent() {
     search: urlFilters.searchQuery || undefined,
   }
 
-  // Use the v2 products hook with server-side pagination and filtering
   const {
     products,
     isLoading,
@@ -67,9 +66,6 @@ function ProductsPageContent() {
     filters: productFilters,
     sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
   })
-
-  // Products are already sorted by the backend
-  const sortedProducts = products
 
   // Prefetch strategic pages when we have products
   useEffect(() => {
@@ -115,7 +111,7 @@ function ProductsPageContent() {
             sort: urlFilters.sortBy,
           }),
           queryFn: () =>
-            ProductService.getProducts({
+            getProducts({
               limit: pageSize,
               offset,
               filters: productFilters,
@@ -192,9 +188,9 @@ function ProductsPageContent() {
 
           {isLoading ? (
             <ProductGridSkeleton />
-          ) : sortedProducts.length > 0 ? (
+          ) : products.length > 0 ? (
             <ProductGrid
-              products={sortedProducts}
+              products={products}
               totalCount={totalCount}
               currentPage={currentPage}
               pageSize={pageSize}

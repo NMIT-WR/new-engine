@@ -3,7 +3,7 @@
 import { DemoProductCard } from '@/components/molecules/demo-product-card'
 import { useCurrentRegion } from '@/hooks/use-region'
 import { queryKeys } from '@/lib/query-keys'
-import { ProductService } from '@/services'
+import { getProduct } from '@/services/product-service'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
@@ -32,7 +32,7 @@ export function ProductGrid({
   const prefetchProduct = (handle: string) => {
     queryClient.prefetchQuery({
       queryKey: queryKeys.product(handle),
-      queryFn: () => ProductService.getProduct(handle),
+      queryFn: () => getProduct(handle),
       staleTime: 60 * 60 * 1000,
     })
   }
@@ -54,19 +54,13 @@ export function ProductGrid({
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => {
-          const { price, displayBadges } = extractProductData(
+          const { displayBadges } = extractProductData(
             product,
             region?.currency_code
           )
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
-          const formattedPrice =
-            price?.calculated_price !== undefined &&
-            typeof price.calculated_price === 'number'
-              ? formatPrice(price.calculated_price, region?.currency_code)
-              : price?.amount !== undefined && typeof price.amount === 'number'
-                ? formatPrice(price.amount, region?.currency_code)
-                : 'Cena není k dispozici'
+          const formattedPrice = product.price && formatPrice(product.price, region?.currency_code)
 
           return (
             <Link
@@ -78,7 +72,7 @@ export function ProductGrid({
             >
               <DemoProductCard
                 name={product.title}
-                price={formattedPrice}
+                price={formattedPrice || 'není k dispozici'}
                 imageUrl={product.thumbnail || ''}
                 badges={displayBadges}
                 className="hover:bg-highlight"
