@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { FilterSection } from '../molecules/filter-section'
 import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query-keys'
-import { ProductService } from '@/services/product-service'
+import { getProducts } from '@/services/product-service'
 import { cacheConfig } from '@/lib/cache-config'
 
 export interface FilterState {
@@ -59,7 +59,7 @@ export function ProductFilters({
     if (!cachedData || (queryState && queryState.isInvalidated)) {
       queryClient.prefetchQuery({
         queryKey,
-        queryFn: () => ProductService.getProducts({ 
+        queryFn: () => getProducts({ 
           limit: 12, 
           offset: 0, 
           filters: productFilters 

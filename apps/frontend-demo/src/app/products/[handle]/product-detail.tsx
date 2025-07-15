@@ -5,7 +5,7 @@ import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Gallery } from '@/components/organisms/gallery'
 import { ProductInfo } from '@/components/organisms/product-info'
 import { ProductTabs } from '@/components/organisms/product-tabs'
-import { useProduct, useProducts } from '@/hooks/use-products'
+import { useProduct } from '@/hooks/use-products'
 import { useCurrentRegion } from '@/hooks/use-region'
 import { formatPrice } from '@/utils/price-utils'
 import { ErrorText } from '@ui/atoms/error-text'
@@ -19,7 +19,6 @@ interface ProductDetailProps {
 export default function ProductDetail({ handle }: ProductDetailProps) {
   const { product, isLoading, error } = useProduct(handle)
   const { region } = useCurrentRegion()
-  const { products: allProducts = [] } = useProducts()
 
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
@@ -81,14 +80,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   }
 
   // Prices from Medusa are already in dollars/euros, NOT cents
-  const price =
-    variantPrice?.calculated_price !== undefined &&
-    typeof variantPrice.calculated_price === 'number'
-      ? formatPrice(variantPrice.calculated_price, region?.currency_code)
-      : variantPrice?.amount !== undefined &&
-          typeof variantPrice.amount === 'number'
-        ? formatPrice(variantPrice.amount, region?.currency_code)
-        : 'Price not available'
+  const price = variantPrice?.amount && formatPrice(variantPrice.amount, region?.currency_code)
 
   // Get badges for the product
   const badges = []
@@ -102,16 +94,6 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
     })
   }
 
-  // Get related products from API
-  const relatedProducts = allProducts
-    .filter(
-      (p) =>
-        p.id !== product.id &&
-        p.categories?.some((cat) =>
-          product.categories?.some((pCat) => pCat.id === cat.id)
-        )
-    )
-    .slice(0, 4)
 
   const galleryImages =
     product.images?.map((img, idx) => ({
@@ -146,7 +128,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
             product={product}
             selectedVariant={selectedVariant}
             badges={badges}
-            price={price}
+            price={price || 'Cena není k dispozici'}
             onVariantChange={setSelectedVariant}
           />
         </div>
@@ -159,7 +141,8 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
           <FeaturedProducts
             title="Mohlo by se vám líbit"
             subtitle="Koukněte na podobné produkty"
-            products={relatedProducts}
+            // wip
+            products={[]}
           />
         </div>
       </div>

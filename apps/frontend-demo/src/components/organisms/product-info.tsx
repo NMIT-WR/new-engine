@@ -14,7 +14,7 @@ interface ProductInfoProps {
   product: Product
   selectedVariant: ProductVariant | null
   badges: BadgeProps[]
-  price: string
+  price: string | number
   onVariantChange: (variant: ProductVariant) => void
 }
 
