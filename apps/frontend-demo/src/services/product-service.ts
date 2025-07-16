@@ -1,6 +1,7 @@
 import { sdk } from '@/lib/medusa-client'
 import type { Product } from '@/types/product'
 import { buildMedusaQuery } from '@/utils/server-filters'
+import { ImageResponse } from 'next/server'
 
 export interface ProductFilters {
   categories?: string[]
@@ -183,12 +184,15 @@ const transformProduct =(product: any): Product => {
     // We'll default to true and let the detailed product page handle variant-specific availability
     const inStock = true
 
+    const reducedImages = product.images && product.images.length > 2 && product.images.slice(0,2)
+
     // Remove variants array from the result to reduce payload size
     const { variants, ...productWithoutVariants } = product
 
     return {
       ...productWithoutVariants,
       thumbnail: product.thumbnail,
+      images: reducedImages || product.images,
       inStock,
       price,
       primaryVariant,
