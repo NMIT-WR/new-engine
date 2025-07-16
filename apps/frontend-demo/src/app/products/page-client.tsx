@@ -1,5 +1,4 @@
 'use client'
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'

@@ -1,10 +1,12 @@
 'use client'
+import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { SaleBanner } from '@/components/molecules/sale-banner'
 import { CategoryGrid } from '@/components/organisms/category-grid'
-import { FeaturedProducts } from '@/components/organisms/featured-products'
 import { Hero } from '@/components/organisms/hero'
+import { ProductGrid } from '@/components/organisms/product-grid'
 import { homeCategories, homeContent } from '@/data/home-content'
-import { useHomeProducts } from '@/hooks/use-products'
+import { useProducts } from '@/hooks/use-products'
+import { Button } from '@ui/atoms/button'
 
 export default function Home() {
   const {
@@ -14,8 +16,15 @@ export default function Home() {
     saleBanner,
     newArrivals,
   } = homeContent
+  const { products, isLoading } = useProducts({
+    q: 'triko',
+    sort: 'newest',
+    limit: 8,
+    category: 'pcat_01JYERRCMBCA6DTA9D2QK47365',
+  })
 
-  const { featured, newArrivals: newProducts } = useHomeProducts()
+  const featuredProducts = products.slice(0, 4)
+  const newProductsList = products.slice(4, 8)
 
   return (
     <div>
@@ -29,13 +38,21 @@ export default function Home() {
       />
 
       {/* Featured Products */}
-      <FeaturedProducts
-        title={trending.title}
-        subtitle={trending.subtitle}
-        products={featured}
-        linkText={trending.linkText}
-        linkHref={trending.linkHref}
-      />
+      <div className="mx-auto max-w-layout-max px-4 py-16">
+        <div className="mb-4 flex flex-col">
+          <h2 className="font-bold text-featured-title text-featured-title-size">
+            {trending.title}
+          </h2>
+          {trending.subtitle && (
+            <p className="text-featured-subtitle">{trending.subtitle}</p>
+          )}
+        </div>
+        {isLoading ? (
+          <ProductGridSkeleton numberOfItems={4} />
+        ) : (
+          <ProductGrid products={featuredProducts} />
+        )}
+      </div>
 
       {/* Categories - Grid View */}
       <CategoryGrid
@@ -52,12 +69,6 @@ export default function Home() {
         }))}
       />
 
-      {/* Categories - Tree View 
-      <CategoryTreeSection
-        title="Browse All Categories"
-        subtitle="Navigate through our complete category hierarchy"
-      />*/}
-
       {/* Banner Section */}
       <SaleBanner
         title={saleBanner.title}
@@ -68,12 +79,21 @@ export default function Home() {
       />
 
       {/* New Arrivals */}
-      <FeaturedProducts
-        title={newArrivals.title}
-        subtitle={newArrivals.subtitle}
-        products={newProducts}
-        linkHref={newArrivals.linkHref}
-      />
+      <div className="mx-auto max-w-layout-max px-4 py-16">
+        <div className="mb-4 flex flex-col">
+          <h2 className="font-bold text-featured-title text-featured-title-size">
+            {newArrivals.title}
+          </h2>
+          {newArrivals.subtitle && (
+            <p className="text-featured-subtitle">{newArrivals.subtitle}</p>
+          )}
+        </div>
+        {isLoading ? (
+          <ProductGridSkeleton numberOfItems={4} />
+        ) : (
+          <ProductGrid products={newProductsList} />
+        )}
+      </div>
     </div>
   )
 }
