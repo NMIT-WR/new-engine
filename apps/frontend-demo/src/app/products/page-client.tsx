@@ -1,5 +1,6 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
+import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useProducts } from '@/hooks/use-products'
@@ -16,27 +17,6 @@ const SORT_OPTIONS = [
   { value: 'name-asc', label: 'Název: A-Z' },
   { value: 'name-desc', label: 'Název: Z-A' },
 ]
-
-// Loading skeleton for products
-function ProductGridSkeleton() {
-  return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {[...Array(12)].map((_, i) => (
-        <div key={i} className="space-y-3">
-          <SkeletonLoader
-            variant="box"
-            size="fit"
-            className="aspect-square w-full"
-          />
-          <div className="space-y-2">
-            <SkeletonLoader variant="text" size="md" className="w-3/4" />
-            <SkeletonLoader variant="text" size="sm" className="w-1/2" />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 function ProductsPageContent() {
   const pageSize = 12
@@ -187,7 +167,7 @@ function ProductsPageContent() {
           </div>
 
           {isLoading ? (
-            <ProductGridSkeleton />
+            <ProductGridSkeleton numberOfItems={12} />
           ) : products.length > 0 ? (
             <ProductGrid
               products={products}
@@ -209,7 +189,7 @@ function ProductsPageContent() {
 
 export default function ProductsPageClient() {
   return (
-    <Suspense fallback={<ProductGridSkeleton />}>
+    <Suspense fallback={<ProductGridSkeleton numberOfItems={12} />}>
       <ProductsPageContent />
     </Suspense>
   )
