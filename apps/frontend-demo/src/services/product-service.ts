@@ -72,13 +72,8 @@ export interface ProductListResponse {
     'handle',
     'thumbnail',
     '*variants.calculated_price',
-    //'variants.id',
-    //'variants.title',
-    /*'variants.prices.amount',
-    'variants.prices.currency_code',*/
     'variants.inventory_quantity',
     'variants.manage_inventory',
-    'tags',
   ].join(',')
 
   // Fields for product detail views (all data)
