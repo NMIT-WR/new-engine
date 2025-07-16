@@ -13,6 +13,9 @@ export const queryKeys = {
       limit?: number
       filters?: any  // Flexible to accommodate various filter types
       sort?: string
+      fields?: string
+      q?: string
+      category?: string | string[]
     }) => [...queryKeys.products.lists(), params || {}] as const,
     detail: (handle: string) => 
       [...queryKeys.products.all(), 'detail', handle] as const,

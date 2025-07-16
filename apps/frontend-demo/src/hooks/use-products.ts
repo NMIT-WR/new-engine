@@ -2,15 +2,12 @@
 
 import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
-import { getHomePageProducts, getProduct, getProducts, type ProductFilters } from '@/services/product-service'
+import { getProduct, getProducts, ProductListParams, type ProductFilters } from '@/services/product-service'
 import type { Product } from '@/types/product'
 import { useQuery } from '@tanstack/react-query'
 
-interface UseProductsParams {
+interface UseProductsParams extends ProductListParams {
   page?: number
-  limit?: number
-  filters?: ProductFilters
-  sort?: string
 }
 
 interface UseProductsReturn {
@@ -28,12 +25,12 @@ interface UseProductsReturn {
  * Hook for fetching product lists with pagination and filtering
  */
 export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
-  const { page = 1, limit = 20, filters, sort } = params
+  const { page = 1, limit = 20, filters, sort, fields, q, category, } = params
   const offset = (page - 1) * limit
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.products.list({ page, limit, filters, sort }),
-    queryFn: () => getProducts({ limit, offset, filters, sort }),
+    queryFn: () => getProducts({ limit, offset, filters, sort, fields, q, category }),
     ...cacheConfig.semiStatic,
   })
 
@@ -75,24 +72,3 @@ export function useProduct(handle: string) {
       error instanceof Error ? error.message : error ? String(error) : null,
   }
 }
-
-/**
- * Hook for fetching homepage products
- */
-export function useHomeProducts() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: queryKeys.homeProducts(),
-    queryFn: () => getHomePageProducts(),
-    ...cacheConfig.dynamic,
-  })
-
-  return {
-    featured: data?.featured || [],
-    newArrivals: data?.newArrivals || [],
-    trending: data?.trending || [],
-    isLoading,
-    error:
-      error instanceof Error ? error.message : error ? String(error) : null,
-  }
-}
-

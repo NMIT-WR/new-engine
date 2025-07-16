@@ -11,8 +11,11 @@ export interface ProductFilters {
 export interface ProductListParams {
   limit?: number
   offset?: number
+  fields?: string
   filters?: ProductFilters
+  category?: string | string[]
   sort?: string
+  q?: string
 }
 
 export interface ProductListResponse {
@@ -22,11 +25,44 @@ export interface ProductListResponse {
   offset: number
 }
 
-export interface HomePageProducts {
-  featured: Product[]
-  newArrivals: Product[]
-  trending: Product[]
-}
+
+  const ALL_FIELDS = [
+    'id',
+    'title',
+    'handle',
+    'description',
+    'subtitle',
+    'status',
+    'external_id',
+    'thumbnail',
+    'weight',
+    'length',
+    'height',
+    'width',
+    'hs_code',
+    'origin_country',
+    'mid_code',
+    'material',
+    'collection_id',
+    'type_id',
+    'created_at',
+    'updated_at',
+    'deleted_at',
+    'metadata',
+    'tags.*',
+    'images.*',
+    'options.*',
+    'profiles.*',
+    'categories.*',
+    'collection.*',
+    'type.*',
+    'variants.*',
+    'variants.prices.*',
+    'variants.calculated_price.*',
+    'variants.options.*',
+    'variants.inventory_items.*',
+    'sales_channels.*'
+  ].join(',')
 
   // Fields for product list views (minimal data)
   const LIST_FIELDS = [
@@ -79,13 +115,15 @@ export interface HomePageProducts {
   export const getProducts = async (
     params: ProductListParams = {}
   ): Promise<ProductListResponse> => {
-    const { limit = 20, offset = 0, filters, sort } = params
+    const { limit = 20, offset = 0, filters, category, fields = LIST_FIELDS,sort, q } = params
 
     // Build base query
     const baseQuery: Record<string, any> = {
       limit,
       offset,
-      fields: LIST_FIELDS,
+      q,
+      category_id: category,
+      fields: fields,
       region_id: 'reg_01JYERR9Q8RA3MZXC0M310DDPZ'
     }
 
@@ -170,25 +208,3 @@ export async function getProduct(handle: string): Promise<Product> {
 
   return transformProduct(response.products[0])
 }
-
-
-  /**
-   * Get products for homepage sections
-   */
-  export const getHomePageProducts = async (): Promise<HomePageProducts> => {
-    const response = await getProducts({ limit: 12 })
-
-    const allProducts = response.products
-
-    // For now, simple split logic
-    // In production, you might want to use tags, collections, or metadata
-    const featured = allProducts.slice(0, 4)
-    const newArrivals = allProducts.slice(4, 8)
-    const trending = allProducts.slice(8, 12)
-
-    return {
-      featured,
-      newArrivals,
-      trending,
-    }
-  }
