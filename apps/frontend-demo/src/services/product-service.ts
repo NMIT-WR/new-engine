@@ -164,7 +164,7 @@ export interface ProductListResponse {
   /**
    * Transform raw product data from API
    */
-const transformProduct =(product: any): Product => {
+const transformProduct =(product: any, withVariants?: boolean): Product => {
     if (!product) {
       throw new Error('Cannot transform null product')
     }
@@ -184,8 +184,10 @@ const transformProduct =(product: any): Product => {
     // Remove variants array from the result to reduce payload size
     const { variants, ...productWithoutVariants } = product
 
+    const result = withVariants ? product : productWithoutVariants
+
     return {
-      ...productWithoutVariants,
+      ...result,
       thumbnail: product.thumbnail,
       images: reducedImages || product.images,
       inStock,
@@ -193,6 +195,7 @@ const transformProduct =(product: any): Product => {
       primaryVariant,
     } as Product
 }
+
 
 export async function getProduct(handle: string): Promise<Product> {
   const response = await sdk.store.product.list({
@@ -205,5 +208,5 @@ export async function getProduct(handle: string): Promise<Product> {
     throw new Error('Product not found')
   }
 
-  return transformProduct(response.products[0])
+  return transformProduct(response.products[0], true)
 }
