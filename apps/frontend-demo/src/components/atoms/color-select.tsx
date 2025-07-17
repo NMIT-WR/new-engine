@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { Button } from 'ui/src/atoms/button'
-import { tv } from 'ui/src/utils'
+import { Button } from '@ui/atoms/button'
+import { tv } from '@ui/utils'
 
 const colorSelectVariants = tv({
   slots: {
