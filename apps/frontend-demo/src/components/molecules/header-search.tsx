@@ -1,5 +1,6 @@
 'use client'
 import { useSearchProducts } from '@/hooks/use-search-products'
+import { Product } from '@/types/product'
 import type { StoreProduct } from '@medusajs/types'
 import { Icon } from '@ui/atoms/icon'
 import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
@@ -52,7 +53,7 @@ export function HeaderSearch() {
   )
 
   // Create combobox items
-  const searchItems: ComboboxItem<StoreProduct>[] = searchResults.map(
+  const searchItems: ComboboxItem<Product>[] = searchResults.map(
     (product) => ({
       value: product.handle || product.id,
       label: product.title || 'Untitled Product',
@@ -121,7 +122,7 @@ export function HeaderSearch() {
           }
         }}
       >
-        <Combobox
+         <Combobox
           placeholder="Hledat produkty..."
           items={comboboxItems}
           value={selectedValue}
@@ -132,7 +133,7 @@ export function HeaderSearch() {
           closeOnSelect
           clearable={false}
           size="sm"
-        />
+        /> 
       </form>
     </Popover>
   )

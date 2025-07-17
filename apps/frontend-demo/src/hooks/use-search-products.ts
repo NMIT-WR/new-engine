@@ -1,6 +1,7 @@
-import { sdk } from '@/lib/medusa-client'
 import type { StoreProduct } from '@medusajs/types'
 import { useCallback, useState } from 'react'
+import { getProducts } from '@/services'
+import { Product } from '@/types/product'
 
 interface UseSearchProductsOptions {
   limit?: number
@@ -8,7 +9,7 @@ interface UseSearchProductsOptions {
 }
 
 export function useSearchProducts(options?: UseSearchProductsOptions) {
-  const [searchResults, setSearchResults] = useState<StoreProduct[]>([])
+  const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
@@ -25,10 +26,11 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
       setError(null)
 
       try {
-        const response = await sdk.store.product.list({
+        const response = await getProducts({
           q: query,
           fields: options?.fields || 'id, handle, title',
           limit: options?.limit || 10,
+          sort: 'newest',
         })
 
         setSearchResults(response.products)
