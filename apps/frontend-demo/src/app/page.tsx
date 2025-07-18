@@ -6,7 +6,6 @@ import { Hero } from '@/components/organisms/hero'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { homeCategories, homeContent } from '@/data/home-content'
 import { useProducts } from '@/hooks/use-products'
-import { Button } from '@ui/atoms/button'
 
 export default function Home() {
   const {
