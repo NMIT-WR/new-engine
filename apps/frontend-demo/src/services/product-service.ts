@@ -1,7 +1,6 @@
 import { sdk } from '@/lib/medusa-client'
 import type { Product } from '@/types/product'
 import { buildMedusaQuery } from '@/utils/server-filters'
-import { ImageResponse } from 'next/server'
 
 export interface ProductFilters {
   categories?: string[]
@@ -17,6 +16,7 @@ export interface ProductListParams {
   category?: string | string[]
   sort?: string
   q?: string
+  region_id?: string
 }
 
 export interface ProductListResponse {
@@ -25,45 +25,6 @@ export interface ProductListResponse {
   limit: number
   offset: number
 }
-
-
-  const ALL_FIELDS = [
-    'id',
-    'title',
-    'handle',
-    'description',
-    'subtitle',
-    'status',
-    'external_id',
-    'thumbnail',
-    'weight',
-    'length',
-    'height',
-    'width',
-    'hs_code',
-    'origin_country',
-    'mid_code',
-    'material',
-    'collection_id',
-    'type_id',
-    'created_at',
-    'updated_at',
-    'deleted_at',
-    'metadata',
-    'tags.*',
-    'images.*',
-    'options.*',
-    'profiles.*',
-    'categories.*',
-    'collection.*',
-    'type.*',
-    'variants.*',
-    'variants.prices.*',
-    'variants.calculated_price.*',
-    'variants.options.*',
-    'variants.inventory_items.*',
-    'sales_channels.*'
-  ].join(',')
 
   // Fields for product list views (minimal data)
   const LIST_FIELDS = [
@@ -111,7 +72,7 @@ export interface ProductListResponse {
   export const getProducts = async (
     params: ProductListParams = {}
   ): Promise<ProductListResponse> => {
-    const { limit = 20, offset = 0, filters, category, fields = LIST_FIELDS,sort, q } = params
+    const { limit = 20, offset = 0, filters, category, fields = LIST_FIELDS, sort, q, region_id } = params
 
     // Build base query
     const baseQuery: Record<string, any> = {
@@ -120,7 +81,7 @@ export interface ProductListResponse {
       q,
       category_id: category,
       fields: fields,
-      region_id: 'reg_01JYERR9Q8RA3MZXC0M310DDPZ'
+      ...(region_id && { region_id })
     }
 
     // Add sorting
@@ -145,6 +106,8 @@ export interface ProductListResponse {
         console.error('[ProductService] Invalid response structure:', response)
         return { products: [], count: 0, limit, offset }
       }
+
+      console.log('[ProductService] Fetched products:', response.products.length)
 
       const products = response.products.map((p) => transformProduct(p))
 
@@ -197,11 +160,12 @@ const transformProduct =(product: any, withVariants?: boolean): Product => {
 }
 
 
-export async function getProduct(handle: string): Promise<Product> {
+export async function getProduct(handle: string, region_id?: string): Promise<Product> {
   const response = await sdk.store.product.list({
     handle,
     fields: DETAIL_FIELDS, // Use full fields for detail views
     limit: 1,
+    region_id,
   })
 
   if (!response.products?.length) {

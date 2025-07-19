@@ -1,7 +1,7 @@
 'use client'
 
 import { DemoProductCard } from '@/components/molecules/demo-product-card'
-import { useCurrentRegion } from '@/hooks/use-region'
+import { useRegions } from '@/hooks/use-region'
 import { queryKeys } from '@/lib/query-keys'
 import { getProduct } from '@/services/product-service'
 import type { Product } from '@/types/product'
@@ -26,13 +26,13 @@ export function ProductGrid({
   pageSize = 12,
   onPageChange,
 }: ProductGridProps) {
-  const { region } = useCurrentRegion()
+  const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
 
   const prefetchProduct = (handle: string) => {
     queryClient.prefetchQuery({
-      queryKey: queryKeys.product(handle),
-      queryFn: () => getProduct(handle),
+      queryKey: queryKeys.product(handle, selectedRegion?.id),
+      queryFn: () => getProduct(handle, selectedRegion?.id),
       staleTime: 60 * 60 * 1000,
     })
   }
@@ -56,11 +56,11 @@ export function ProductGrid({
         {products.map((product) => {
           const { displayBadges } = extractProductData(
             product,
-            region?.currency_code
+            selectedRegion?.currency_code
           )
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
-          const formattedPrice = product.price && formatPrice(product.price, region?.currency_code)
+          const formattedPrice = product.price && formatPrice(product.price, selectedRegion?.currency_code)
 
           return (
             <Link

@@ -24,7 +24,7 @@ export function DisclaimerWrapper() {
   return (
     <Disclaimer hideIcon variant="default" size="sm" className="fixed z-50 w-full">
       <article className='flex flex-col gap-2'>
-        <h2>Demo aplikace</h2>
+        <h2 className='font-bold text-md'>Demo aplikace</h2>
         <p>
           Aplikace slouží jenom jako ukázka možností nové platformy. Všechny
           objednávky a transakce jsou fiktivní a nemají žádnou reálnou hodnotu.

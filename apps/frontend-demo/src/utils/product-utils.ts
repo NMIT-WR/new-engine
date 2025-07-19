@@ -1,4 +1,4 @@
-import { type StockStatus, getProductInventory } from '@/lib/inventory'
+import { type StockStatus } from '@/lib/inventory'
 import type { Product } from '@/types/product'
 import type { BadgeProps } from '@ui/atoms/badge'
 import type { StoreRegion } from '@medusajs/types'

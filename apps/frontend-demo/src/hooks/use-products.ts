@@ -25,12 +25,13 @@ interface UseProductsReturn {
  * Hook for fetching product lists with pagination and filtering
  */
 export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
-  const { page = 1, limit = 20, filters, sort, fields, q, category, } = params
+  const { page = 1, limit = 20, filters, sort, fields, q, category, region_id } = params
   const offset = (page - 1) * limit
 
   const { data, isLoading, error } = useQuery({
-    queryKey: queryKeys.products.list({ page, limit, filters, sort }),
-    queryFn: () => getProducts({ limit, offset, filters, sort, fields, q, category }),
+    queryKey: queryKeys.products.list({ page, limit, filters, sort, region_id }),
+    queryFn: () => getProducts({ limit, offset, filters, sort, fields, q, category, region_id }),
+    enabled: !!region_id,
     ...cacheConfig.semiStatic,
   })
 
@@ -53,14 +54,14 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
 /**
  * Hook for fetching a single product by handle
  */
-export function useProduct(handle: string) {
+export function useProduct(handle: string, regionId?: string) {
   const {
     data: product,
     isLoading,
     error,
   } = useQuery({
-    queryKey: queryKeys.product(handle),
-    queryFn: () => getProduct(handle),
+    queryKey: queryKeys.product(handle, regionId),
+    queryFn: () => getProduct(handle, regionId),
     enabled: !!handle,
     ...cacheConfig.semiStatic,
   })

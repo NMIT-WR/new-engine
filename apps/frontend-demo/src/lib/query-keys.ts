@@ -16,9 +16,10 @@ export const queryKeys = {
       fields?: string
       q?: string
       category?: string | string[]
+      region_id?: string
     }) => [...queryKeys.products.lists(), params || {}] as const,
-    detail: (handle: string) => 
-      [...queryKeys.products.all(), 'detail', handle] as const,
+    detail: (handle: string, region_id?: string) => 
+      [...queryKeys.products.all(), 'detail', handle, region_id] as const,
   },
   
   // Region queries
@@ -61,5 +62,5 @@ export const queryKeys = {
   },
   
   // Legacy aliases for backward compatibility
-  product: (handle: string) => queryKeys.products.detail(handle),
+  product: (handle: string, region_id?: string) => queryKeys.products.detail(handle, region_id),
 } as const

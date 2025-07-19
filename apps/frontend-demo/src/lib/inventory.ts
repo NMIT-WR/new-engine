@@ -78,38 +78,6 @@ export function getVariantInventory(
   }
 }
 
-/**
- * Get overall product inventory status
- * Considers all variants to determine product availability
- */
-export function getProductInventory(
-  product: Product | undefined | null,
-  region?: StoreRegion | null
-): InventoryInfo {
-  if (!product || !product.variants?.length) {
-    return {
-      status: 'out-of-stock',
-      quantity: 0,
-      message: 'Produkt není dostupný',
-    }
-  }
-
-  // Use the simplified inStock flag from product transformation
-  // This is already calculated in ProductService.transformProduct
-  if (product.inStock) {
-    return {
-      status: 'in-stock',
-      quantity: 10, // Default quantity when in stock
-      message: 'Skladem',
-    }
-  } else {
-    return {
-      status: 'out-of-stock',
-      quantity: 0,
-      message: 'Vyprodáno',
-    }
-  }
-}
 
 /**
  * Check if a specific quantity is available for a variant

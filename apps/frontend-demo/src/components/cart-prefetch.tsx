@@ -1,6 +1,6 @@
 'use client'
 
-import { useCurrentRegion } from '@/hooks/use-region'
+import { useRegions } from '@/hooks/use-region'
 import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
@@ -9,10 +9,10 @@ import { useEffect } from 'react'
 
 export function CartPrefetch() {
   const queryClient = useQueryClient()
-  const { region } = useCurrentRegion()
+  const { selectedRegion } = useRegions()
 
   useEffect(() => {
-    if (!region) return
+    if (!selectedRegion) return
 
     // Prefetch cart data
     queryClient.prefetchQuery({
@@ -40,7 +40,7 @@ export function CartPrefetch() {
 
         // Create new cart
         const { cart: newCart } = await sdk.store.cart.create({
-          region_id: region.id,
+          region_id: selectedRegion.id,
         })
 
         localStorage.setItem(STORAGE_KEYS.CART_ID, newCart.id)
@@ -49,7 +49,7 @@ export function CartPrefetch() {
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
     })
-  }, [queryClient, region])
+  }, [queryClient, selectedRegion])
 
   return null
 }

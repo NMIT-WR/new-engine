@@ -6,8 +6,10 @@ import { Hero } from '@/components/organisms/hero'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { homeCategories, homeContent } from '@/data/home-content'
 import { useProducts } from '@/hooks/use-products'
+import { useRegions } from '@/hooks/use-region'
 
 export default function Home() {
+  const {selectedRegion} = useRegions()
   const {
     hero,
     trending,
@@ -20,6 +22,7 @@ export default function Home() {
     sort: 'newest',
     limit: 8,
     category: 'pcat_01JYERRCMBCA6DTA9D2QK47365',
+    region_id: selectedRegion?.id
   })
 
   const featuredProducts = products.slice(0, 4)

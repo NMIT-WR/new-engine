@@ -3,9 +3,10 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { regionStore, setSelectedRegionId } from '@/stores/region-store'
+import { StoreRegion } from '@medusajs/types'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export function useRegions() {
   const queryClient = useQueryClient()
@@ -30,6 +31,8 @@ export function useRegions() {
 
   // Initialize selected region from regions list or default to USD
   useEffect(() => {
+    if( regions.length === 0 || selectedRegionId) return
+
     if (regions.length > 0 && !selectedRegionId) {
       // Default to USD region if no stored preference
       const defaultRegion =
@@ -39,23 +42,20 @@ export function useRegions() {
 
       if (defaultRegion) {
         setSelectedRegionId(defaultRegion.id)
-        // Invalidate queries that depend on region
-        queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
-        queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
       }
     }
-  }, [regions, selectedRegionId, queryClient])
+  }, [regions])
 
   const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 
-  const setSelectedRegion = (region: any) => {
-    if (region?.id) {
+  const setSelectedRegion = useCallback((region: StoreRegion) => {
+    if (region?.id && region.id !== selectedRegionId) {
       setSelectedRegionId(region.id)
       // Invalidate queries that depend on region
       queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
       queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
     }
-  }
+  }, [selectedRegionId, queryClient])
 
   return {
     regions,
@@ -65,10 +65,4 @@ export function useRegions() {
     error:
       error instanceof Error ? error.message : error ? String(error) : null,
   }
-}
-
-// Hook to get current region (with localStorage persistence)
-export function useCurrentRegion() {
-  const { selectedRegion, isLoading, error } = useRegions()
-  return { region: selectedRegion, isLoading, error }
 }

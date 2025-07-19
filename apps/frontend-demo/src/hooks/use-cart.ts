@@ -1,6 +1,6 @@
 'use client'
 
-import { useCurrentRegion } from '@/hooks/use-region'
+import { useRegions } from '@/hooks/use-region'
 import { cacheConfig } from '@/lib/cache-config'
 import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
@@ -13,7 +13,7 @@ import { useState } from 'react'
 export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query
 export function useMedusaCart() {
-  const { region } = useCurrentRegion()
+  const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
   const toast = useToast()
   const [isOpen, setIsOpen] = useState(false)
@@ -40,9 +40,9 @@ export function useMedusaCart() {
           const { cart } = await sdk.store.cart.retrieve(cartId)
 
           // If cart region doesn't match current region, update it instead of creating new
-          if (region && cart.region_id !== region.id) {
+          if (selectedRegion && cart.region_id !== selectedRegion.id) {
             const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
-              region_id: region.id,
+              region_id: selectedRegion.id,
             })
             return updatedCart
           }
@@ -63,12 +63,12 @@ export function useMedusaCart() {
       }
 
       // Create new cart
-      if (!region) {
+      if (!selectedRegion) {
         throw new Error('No region available')
       }
 
       const { cart: newCart } = await sdk.store.cart.create({
-        region_id: region.id,
+        region_id: selectedRegion.id,
       })
 
       if (typeof window !== 'undefined') {
@@ -76,7 +76,7 @@ export function useMedusaCart() {
       }
       return newCart
     },
-    enabled: !!region,
+    enabled: !!selectedRegion,
     ...cacheConfig.realtime, // 30s stale, 5m gc, refetch on focus
     retry: (failureCount, error: any) => {
       // Don't retry if cart was not found

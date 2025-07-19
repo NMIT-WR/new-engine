@@ -1,5 +1,5 @@
 import { DemoProductCard } from '@/components/molecules/demo-product-card'
-import { useCurrentRegion } from '@/hooks/use-region'
+import { useRegions } from '@/hooks/use-region'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
@@ -22,7 +22,7 @@ export function FeaturedProducts({
   linkHref = '/products',
 }: FeaturedProductsProps) {
   const router = useRouter()
-  const { region } = useCurrentRegion()
+  const { selectedRegion } = useRegions()
 
   return (
     <section className="py-featured-section-y">
@@ -35,8 +35,8 @@ export function FeaturedProducts({
         </div>
         <div className="grid grid-cols-2 gap-featured-grid-gap sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => {
-            const { displayBadges } = extractProductData(product, region?.currency_code)
-            const formattedPrice = product.price && formatPrice(product.price, region?.currency_code)
+            const { displayBadges } = extractProductData(product, selectedRegion?.currency_code)
+            const formattedPrice = product.price && formatPrice(product.price, selectedRegion?.currency_code)
 
 
             return (

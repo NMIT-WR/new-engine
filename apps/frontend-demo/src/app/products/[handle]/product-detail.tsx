@@ -6,7 +6,7 @@ import { Gallery } from '@/components/organisms/gallery'
 import { ProductInfo } from '@/components/organisms/product-info'
 import { ProductTabs } from '@/components/organisms/product-tabs'
 import { useProduct } from '@/hooks/use-products'
-import { useCurrentRegion } from '@/hooks/use-region'
+import { useRegions } from '@/hooks/use-region'
 import { formatPrice } from '@/utils/price-utils'
 import { ErrorText } from '@ui/atoms/error-text'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
@@ -17,8 +17,8 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ handle }: ProductDetailProps) {
-  const { product, isLoading, error } = useProduct(handle)
-  const { region } = useCurrentRegion()
+  const { selectedRegion } = useRegions()
+  const { product, isLoading, error } = useProduct(handle, selectedRegion?.id)
 
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
@@ -69,9 +69,9 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   // Get price for selected variant and region
   // Find the price that matches the current currency
   let variantPrice = null
-  if (selectedVariant?.prices && region?.currency_code) {
+  if (selectedVariant?.prices && selectedRegion?.currency_code) {
     variantPrice = selectedVariant.prices.find(
-      (p) => p.currency_code === region.currency_code
+      (p) => p.currency_code === selectedRegion.currency_code
     )
     // If not found, use the first available price
     if (!variantPrice && selectedVariant.prices.length > 0) {
@@ -80,7 +80,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   }
 
   // Prices from Medusa are already in dollars/euros, NOT cents
-  const price = variantPrice?.amount && formatPrice(variantPrice.amount, region?.currency_code)
+  const price = variantPrice?.amount && formatPrice(variantPrice.amount, selectedRegion?.currency_code)
 
   // Get badges for the product
   const badges = []

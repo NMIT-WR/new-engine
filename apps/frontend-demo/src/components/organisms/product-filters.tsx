@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
 import { cacheConfig } from '@/lib/cache-config'
+import { useRegions } from '@/hooks/use-region'
 
 export interface FilterState {
   categories: Set<string>
@@ -30,6 +31,7 @@ export function ProductFilters({
   onFiltersChange,
   hideCategories = false,
 }: ProductFiltersProps) {
+  const {selectedRegion} = useRegions()
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
 
@@ -62,7 +64,8 @@ export function ProductFilters({
         queryFn: () => getProducts({ 
           limit: 12, 
           offset: 0, 
-          filters: productFilters 
+          filters: productFilters,
+          region_id: selectedRegion?.id
         }),
         ...cacheConfig.semiStatic, // Use consistent cache config
       })

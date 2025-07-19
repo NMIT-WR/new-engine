@@ -79,35 +79,3 @@ export function buildMedusaQuery(
   return query
 }
 
-/**
- * Build variant option filters for advanced queries
- * Note: This is experimental based on Medusa v2 documentation
- */
-export function buildVariantOptionFilter(
-  optionType: 'size',
-  values: string[]
-): Record<string, any> {
-  if (!values.length) return {}
-  
-  // For single value
-  if (values.length === 1) {
-    return {
-      variants: {
-        options: {
-          value: values[0]
-        }
-      }
-    }
-  }
-  
-  // For multiple values, we might need to use $in operator
-  return {
-    variants: {
-      options: {
-        value: {
-          $in: values
-        }
-      }
-    }
-  }
-}

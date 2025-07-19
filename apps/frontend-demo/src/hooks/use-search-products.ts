@@ -2,6 +2,7 @@ import type { StoreProduct } from '@medusajs/types'
 import { useCallback, useState } from 'react'
 import { getProducts } from '@/services'
 import { Product } from '@/types/product'
+import { useRegions } from './use-region'
 
 interface UseSearchProductsOptions {
   limit?: number
@@ -9,6 +10,7 @@ interface UseSearchProductsOptions {
 }
 
 export function useSearchProducts(options?: UseSearchProductsOptions) {
+  const {selectedRegion} = useRegions()
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState<Error | null>(null)
@@ -31,6 +33,7 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
           fields: options?.fields || 'id, handle, title',
           limit: options?.limit || 10,
           sort: 'newest',
+          region_id: selectedRegion?.id,
         })
 
         setSearchResults(response.products)
