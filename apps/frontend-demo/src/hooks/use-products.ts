@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query'
 
 interface UseProductsParams extends ProductListParams {
   page?: number
+  enabled?: boolean
 }
 
 interface UseProductsReturn {
@@ -25,13 +26,13 @@ interface UseProductsReturn {
  * Hook for fetching product lists with pagination and filtering
  */
 export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
-  const { page = 1, limit = 20, filters, sort, fields, q, category, region_id } = params
+  const { page = 1, limit = 20, filters, sort, fields, q, category, region_id, enabled } = params
   const offset = (page - 1) * limit
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.products.list({ page, limit, filters, sort, region_id }),
     queryFn: () => getProducts({ limit, offset, filters, sort, fields, q, category, region_id }),
-    enabled: !!region_id,
+    enabled: enabled !== undefined ? enabled : !!region_id,
     ...cacheConfig.semiStatic,
   })
 

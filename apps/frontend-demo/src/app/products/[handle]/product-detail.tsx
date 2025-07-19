@@ -1,11 +1,12 @@
 'use client'
 
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { FeaturedProducts } from '@/components/organisms/featured-products'
+import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { Gallery } from '@/components/organisms/gallery'
+import { ProductGrid } from '@/components/organisms/product-grid'
 import { ProductInfo } from '@/components/organisms/product-info'
 import { ProductTabs } from '@/components/organisms/product-tabs'
-import { useProduct } from '@/hooks/use-products'
+import { useProduct, useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { formatPrice } from '@/utils/price-utils'
 import { ErrorText } from '@ui/atoms/error-text'
@@ -19,11 +20,10 @@ interface ProductDetailProps {
 export default function ProductDetail({ handle }: ProductDetailProps) {
   const { selectedRegion } = useRegions()
   const { product, isLoading, error } = useProduct(handle, selectedRegion?.id)
-
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
   )
-
+  const titleQuery = product?.title.split(' ').slice(0, 3).join(' ') || ''
   // Update selected variant when product loads or changes
   useEffect(() => {
     if (product?.variants?.[0]) {
@@ -31,7 +31,13 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
     }
   }, [product])
 
-  // Loading state
+
+  const {products: relatedProducts, isLoading: isLoadingRelated} = useProducts({q:titleQuery, region_id: selectedRegion?.id, limit: 5, sort: 'newest', enabled: !!titleQuery && !!selectedRegion?.id})
+
+  // Filter out the current product from related products
+  const filteredRelatedProducts = relatedProducts?.filter(p => p.handle !== handle)
+
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-product-detail-bg">
@@ -138,12 +144,15 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
 
         {/* Related Products */}
         <div className="mt-product-detail-related-margin">
-          <FeaturedProducts
-            title="Mohlo by se vám líbit"
-            subtitle="Koukněte na podobné produkty"
-            // wip
-            products={[]}
-          />
+          <div className="mb-4 flex flex-col">
+          <h2 className="font-bold text-featured-title text-featured-title-size">
+            Mohlo by se vám líbit
+          </h2>
+            <p className="text-featured-subtitle">Koukněte na podobné produkty</p>
+        </div>
+          {isLoadingRelated ? <ProductGridSkeleton numberOfItems={4}/>: <ProductGrid
+            products={filteredRelatedProducts}
+          />}
         </div>
       </div>
     </div>

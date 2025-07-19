@@ -84,15 +84,8 @@ export function ProductInfo({
         {product.description}
       </p>
 
-      {/* SKU and Stock Info probably not needed */}
-      {/*selectedVariant && (
-        <div className="mb-product-info-variant-margin text-product-info-variant-label">
-          <p>Kód: {selectedVariant.sku}</p>
-        </div>
-      )*/}
-
       {/* Variant Selectors */}
-      {productVariants.length > 0 && (
+      {productVariants.length > 1 && (
         <div className="mb-product-info-variant-margin">
           <Label className="mb-product-info-variant-label-margin font-product-info-variant-label text-product-info-variant-label">
             Velikosti
