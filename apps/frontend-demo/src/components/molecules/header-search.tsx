@@ -1,7 +1,6 @@
 'use client'
 import { useSearchProducts } from '@/hooks/use-search-products'
 import { Product } from '@/types/product'
-import type { StoreProduct } from '@medusajs/types'
 import { Icon } from '@ui/atoms/icon'
 import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
 import { Popover } from '@ui/molecules/popover'

@@ -34,7 +34,7 @@ interface AccountLayoutProps {
   children: ReactNode
 }
 
-export function AccountLayout({ children }: AccountLayoutProps) {
+export default function AccountLayout({ children }: AccountLayoutProps) {
   const pathname = usePathname()
   const { logout } = useAuth()
 
@@ -43,10 +43,10 @@ export function AccountLayout({ children }: AccountLayoutProps) {
   }
 
   return (
-    <div className="container mx-auto max-w-layout-max px-4 py-8">
+    <div className="mx-auto max-w-layout-max px-4 py-8">
       <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
         {/* Sidebar */}
-        <nav className="space-y-1">
+        <nav className="flex border-b pb-4 sticky z-1 bg-base h-fit top-16 lg:border-none lg:block space-y-1">
           {accountLinks.map((link) => {
             const isActive = pathname === link.href
             return (

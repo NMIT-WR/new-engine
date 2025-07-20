@@ -1,7 +1,5 @@
 'use client'
-
 import { ProfileForm } from '@/components/organisms/profile-form'
-import { AccountLayout } from '@/components/templates/account-layout'
 import { useAuth } from '@/hooks/use-auth'
 import { useCustomer } from '@/hooks/use-customer'
 import { useRouter } from 'next/navigation'
@@ -21,14 +19,12 @@ export default function ProfilePage() {
 
   if (isLoading || !isInitialized) {
     return (
-      <AccountLayout>
         <div className="flex min-h-[400px] items-center justify-center">
           <div className="text-center">
             <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-primary border-b-2" />
             <p className="text-fg-secondary">Načítání...</p>
           </div>
         </div>
-      </AccountLayout>
     )
   }
 
@@ -37,7 +33,6 @@ export default function ProfilePage() {
   }
 
   return (
-    <AccountLayout>
       <div className="mx-auto max-w-layout-max">
         <h1 className="mb-8 font-semibold text-2xl">Profil</h1>
         <ProfileForm
@@ -46,6 +41,5 @@ export default function ProfilePage() {
           user={user}
         />
       </div>
-    </AccountLayout>
   )
 }

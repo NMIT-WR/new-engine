@@ -8,6 +8,7 @@
 
   /* Container widths - responsive max-widths */
   --container-3xs: 5rem;
+  --container-test: 15rem;
   --container-2xs: 10rem; /* 160px */
   --container-xs: 20rem; /* 320px */
   --container-sm: 40rem; /* 640px */
@@ -17,6 +18,9 @@
   --container-2xl: 96rem; /* 1536px */
   --container-full: 100%; /* Full width */
 
+  --spacing-container-sm: 15rem;
+  --spacing-container-md: 40rem;
+  --spacing-container-lg: 64rem;
   --spacing-layout-min: var(--container-xs);
   --spacing-layout-max: var(--container-xl);
 

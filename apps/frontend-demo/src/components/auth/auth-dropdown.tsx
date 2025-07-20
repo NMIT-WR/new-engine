@@ -41,6 +41,7 @@ export function AuthDropdown() {
 
   const menuItems = [
     {
+      id: 'menu-profile',
       type: 'action' as const,
       value: 'profile',
       label: 'Můj profil',
@@ -48,6 +49,7 @@ export function AuthDropdown() {
       icon: 'icon-[mdi--account-outline]' as const,
     },
     {
+      id: 'menu-orders',
       type: 'action' as const,
       value: 'orders',
       label: 'Moje objednávky',
@@ -56,9 +58,10 @@ export function AuthDropdown() {
     },
     {
       type: 'separator' as const,
-      id: 'sep-1',
+      id: 'menu-separator-1',
     },
     {
+      id: 'menu-logout',
       type: 'action' as const,
       value: 'logout',
       label: 'Odhlásit se',
@@ -72,7 +75,7 @@ export function AuthDropdown() {
       id="user-menu"
       trigger={
         <span className="flex h-full items-center gap-2 rounded-md px-2 py-1 text-sm text-tertiary hover:bg-surface">
-          <Icon icon="icon-[mdi--account-circle]" />
+          <Icon icon="icon-[mdi--account-circle]" className='text-header-icon-size' />
           <span className="hidden truncate xl:inline">
             {user.email.split('@')[0]}
           </span>
@@ -83,7 +86,7 @@ export function AuthDropdown() {
     >
       <ul className="space-y-1">
         {menuItems.map((item) => (
-          <li key={item.href}>
+          <li key={item.id}>
             {item.type === 'action' ? (
               <LinkButton
                 theme="borderless"

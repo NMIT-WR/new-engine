@@ -12,6 +12,7 @@
 
   /* Account Page Spacing */
   --spacing-account-page-py: var(--spacing-xl);
+  --spacing-accont-lg: 10rem;
   --spacing-account-container-max-w: var(--container-lg);
   --spacing-account-container-px: var(--spacing-md);
   --spacing-account-title-mb: var(--spacing-lg);

@@ -1,6 +1,5 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { AccountLayout } from '@/components/templates/account-layout'
 import { useAuth } from '@/hooks/use-auth'
 import { formatPrice } from '@/lib/format-price'
 import { sdk } from '@/lib/medusa-client'
@@ -72,7 +71,6 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
 
   if (!isInitialized || authLoading) {
     return (
-      <AccountLayout>
         <div className="space-y-6">
           <div className="flex items-center gap-4">
             <SkeletonLoader className="h-6 w-6" />
@@ -89,7 +87,6 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             </div>
           </div>
         </div>
-      </AccountLayout>
     )
   }
 
@@ -100,7 +97,6 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const order = orderData?.order
 
   return (
-    <AccountLayout>
       <div>
         <div className="mb-6 flex items-center gap-4">
           <LinkButton
@@ -338,6 +334,5 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           </div>
         )}
       </div>
-    </AccountLayout>
   )
 }

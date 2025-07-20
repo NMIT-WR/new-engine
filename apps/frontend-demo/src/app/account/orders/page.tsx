@@ -1,6 +1,5 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { AccountLayout } from '@/components/templates/account-layout'
 import { useAuth } from '@/hooks/use-auth'
 import { formatPrice } from '@/lib/format-price'
 import { sdk } from '@/lib/medusa-client'
@@ -48,7 +47,6 @@ export default function OrdersPage() {
 
   if (!isInitialized || authLoading) {
     return (
-      <AccountLayout>
         <div className="space-y-4">
           <SkeletonLoader className="h-8 w-48" />
           {[1, 2, 3].map((i) => (
@@ -67,7 +65,6 @@ export default function OrdersPage() {
             </div>
           ))}
         </div>
-      </AccountLayout>
     )
   }
 
@@ -78,7 +75,6 @@ export default function OrdersPage() {
   const orders = ordersData?.orders || []
 
   return (
-    <AccountLayout>
       <div>
         <h1 className="mb-8 font-semibold text-2xl">Tvé objednávky</h1>
 
@@ -132,7 +128,7 @@ export default function OrdersPage() {
             {orders.map((order) => (
               <div
                 key={order.id}
-                className="rounded-account-card bg-account-card-bg p-account-card-p shadow-account-card"
+                className="rounded-account-card bg-account-card-bg/20 p-account-card-p shadow-account-card shadow-primary"
               >
                 <div className="mb-4 flex items-center justify-between">
                   <div>
@@ -208,6 +204,5 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
-    </AccountLayout>
   )
 }
