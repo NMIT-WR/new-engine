@@ -1,4 +1,5 @@
 import type { Category, CategoryTreeNode } from '@/lib/server/categories'
+import { categoryMap } from '@/lib/static-data/categories'
 
 /**
  * Find category by handle in the tree
@@ -54,4 +55,15 @@ export function categoryTreeToMenuItems(tree: CategoryTreeNode[]): any[] {
   }
 
   return tree.map(categoryToMenuItem)
+}
+
+
+export function getCategoryIdByHandle(handle: string): string | undefined {
+  return Object.values(categoryMap).find(cat => cat.handle === handle)?.id
+}
+
+export function getCategoryIdsByHandles(handles: string[]): string[] {
+  return handles
+    .map(handle => getCategoryIdByHandle(handle))
+    .filter(id => id !== undefined)
 }

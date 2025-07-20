@@ -37,13 +37,6 @@ export interface ProductCollection {
   handle: string
 }
 
-export interface ProductCategory {
-  id: string
-  name: string
-  handle: string
-  parent_category_id?: string
-}
-
 // Main Category type used in components
 export interface Category {
   id: string
@@ -54,6 +47,19 @@ export interface Category {
   imageUrl?: string
   description?: string
   leaves?: string[]
+}
+
+export interface ProductCategory {
+  id: string
+  name: string
+  handle: string
+  parent_category_id?: string
+}
+
+export interface HomeCategory {
+  name: string
+  leaves: string[]
+  imageUrl: string
 }
 
 export interface ProductVariant {
@@ -89,13 +95,3 @@ export interface ProductOption {
   values: string[]
 }
 
-// Main Category type used in components
-export interface Category {
-  id: string
-  name: string
-  handle: string
-  count?: number
-  imageUrl?: string
-  description?: string
-  parent_category_id?: string
-}

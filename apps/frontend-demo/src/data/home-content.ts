@@ -1,4 +1,5 @@
-import type { Category } from '@/types/product'
+import type { HomeCategory } from '@/types/product'
+import { getCategoryIdsByHandles } from '@/utils/category-helpers'
 
 export interface HeroContent {
   title: string
@@ -154,85 +155,27 @@ export const alternativeBannerContent: BannerContent[] = [
   },
 ]
 
-const leavesIds = [
-  [
-    'pcat_01JYERRCMBCA6DTA9D2QK47365',
-    'pcat_01JYERRCP6DE4WW4SBG3AXM3ZY',
-    'pcat_01JYERRCR52228KG73ZTFJDFDH',
-    'pcat_01JYERRCSD2K0XS2TBXGVZHP40',
-  ],
-  [
-    'pcat_01JYERRF8KC497Q89YKG8AM070',
-    'pcat_01JYERRFB0APW1Z05B4A2A4AKF',
-    'pcat_01JYERRFCRRQYS9Q55P7JSNJHR',
-    'pcat_01JYERRFDZZF1S1VFMQ3V58KSY',
-    'pcat_01JYERRFF61KF8AETW3EPEFRJ7',
-  ],
-  [
-    'pcat_01JYERRHRVVWF9VZ6Q7B59W6G7',
-    'pcat_01JYERRHWSYBG6XCHN6XVS5RHK',
-    'pcat_01JYERRJ25417E3TYAHKGBSRNA',
-  ],
-  [
-    'pcat_01JYERRD7N18T77AQFSJ7EMVGC',
-    'pcat_01JYERRD9ZB0MNZP706FQG453H',
-    'pcat_01JYERRDBVCK53EDJV8YE7HXR7',
-    'pcat_01JYERRDDMQZSJDR2MAGY0XS6K',
-  ],
-  [
-    'pcat_01JYERRE42351JWPZ2YXE6NWDX',
-    'pcat_01JYERRE4NBWBM76Q5JZMSVSA5',
-    'pcat_01JYERRE721CXXPKAD0TCNSZCJ',
-    'pcat_01JYERRE7PRKJC4PXQFXCJ581F',
-  ],
-  [
-    'pcat_01JYERREJFEWQTJPKEA0YMHPCG',
-    'pcat_01JYERREK5YAVKTW6R4G716KSP',
-    'pcat_01JYERREMBWHZM6XNPH5T4YJTP',
-  ],
+const categoryHandles = {
+  "panske" : ['kratke-rukavy', 'na-zip', 'street', 'svetry'],
+  "damske" : ['pres-hlavu-category-140','svetry-category-144', 'street-category-147', 'kratasy-category-149', 'saty-a-sukne'],
+  "detske" : ['kratke-rukavy-category-268', 'street-category-274', 'boty-category-282'],
+  "cyklo": ['dlouhy-rukav', 'xc-dh-volne', 'xc-dh-volne-category-43', 'dlouhe'],
+  "moto": ['bundy-category-81', 'kalhoty-category-82', 'mx-offroad', 'otevrene'],
+  "snowboard": ['snowboardy', 'vazani', 'prilby-category-107'],
+}
+
+type CategoryKey = keyof typeof categoryHandles
+const categoryConfig: { key: CategoryKey; name: string; image: string }[] = [
+  { key: 'panske', name: 'Pánské', image: 'cat-men.webp' },
+  { key: 'damske', name: 'Dámské', image: 'cat-women.webp' },
+  { key: 'detske', name: 'Dětské', image: 'cat-kids.webp' },
+  { key: 'cyklo', name: 'Cyklo', image: 'cat-cyclo.webp' },
+  { key: 'moto', name: 'Moto', image: 'cat-moto.webp' },
+  { key: 'snowboard', name: 'Snowboard', image: 'cat-ski.webp' },
 ]
 
-export const homeCategories: Category[] = [
-  {
-    id: 'pcat_01JYERRCJGHMCBWSWD91X1DKC7',
-    name: 'Pánské',
-    handle: 'panske',
-    imageUrl: '/assets/cat-images/cat-men.webp',
-    leaves: leavesIds[0],
-  },
-  {
-    id: 'pcat_01JYERRF472Y089AH84CR8G6JZ',
-    name: 'Dámské',
-    handle: 'damske',
-    imageUrl: '/assets/cat-images/cat-women.webp',
-    leaves: leavesIds[1],
-  },
-  {
-    id: 'pcat_01JYERRHQ0RZVNG6385W59YR8D',
-    name: 'Dětské',
-    handle: 'detske',
-    imageUrl: '/assets/cat-images/cat-kids.webp',
-    leaves: leavesIds[2],
-  },
-  {
-    id: 'pcat_01JYERRKZ0S59AM6S49PP1RMP6',
-    name: 'Cyklo',
-    handle: 'cyklo-category-378',
-    imageUrl: '/assets/cat-images/cat-cyclo.webp',
-    leaves: leavesIds[3],
-  },
-  {
-    id: 'pcat_01JYERRMVRA45GBAS2E0MPAWQW',
-    name: 'Moto',
-    handle: 'moto-category-424',
-    imageUrl: '/assets/cat-images/cat-moto.webp',
-    leaves: leavesIds[4],
-  },
-  {
-    id: 'pcat_01JYERRNAJJ776Y5QJ5WTEGR80',
-    name: 'Snb-Skate',
-    handle: 'snb-skate-category-448',
-    imageUrl: '/assets/cat-images/cat-ski.webp',
-    leaves: leavesIds[5],
-  },
-]
+export const homeCategories: HomeCategory[] = categoryConfig.map(cat => ({
+  name: cat.name,
+  imageUrl: `/assets/cat-images/${cat.image}`,
+  leaves: getCategoryIdsByHandles(categoryHandles[cat.key]),
+}))

@@ -2,6 +2,7 @@
 
 import { Header } from '@/components/header'
 import type { NavItem } from '@/components/molecules/navigation'
+import { getCategoryIdsByHandles } from '@/utils/category-helpers'
 import type { IconType } from '@ui/atoms/icon'
 import { useMemo } from 'react'
 
@@ -13,39 +14,31 @@ interface HeaderWrapperProps {
 }
 
 export function HeaderWrapper({ logo }: HeaderWrapperProps) {
-  const navigationItems = useMemo<NavItem[]>(() => {
-    const categoryItems: NavItem[] = [
-      {
-        title: 'Trika',
-        href: '/products?categories=pcat_01JYERRCMBCA6DTA9D2QK47365,pcat_01JYERRCMZ5D5VXQNW13ZQ8B42',
-      },
-      {
-        title: 'Bundy',
-        href: '/products?categories=pcat_01JYERRCR52228KG73ZTFJDFDH,pcat_01JYERRCRSY098ZP2TPDC8D8F3',
-      },
-      {
-        title: 'Kola',
-        href: '/products?categories=pcat_01JYERRDV0ZKND1HNDAEATS1YN,pcat_01JYERRDVQDFDX10CCPPCYR06T,pcat_01JYERRDW8KWJ8D39PFQ3CEJVZ',
-      },
-      {
-        title: 'Doplňky',
-        href: '/products?categories=pcat_01JYERRF0F4T1VXMEEGDV9Z2VK,pcat_01JYERRF13W6SR9SNBCB543D5B,pcat_01JYERRF2XXRH863JMAC438GTD',
-      },
-    ]
+  const headerCategories = {
+    "Město": getCategoryIdsByHandles(["kosile", "svetry", "street"]),
+    "Zimní": getCategoryIdsByHandles(["zimni", "kalhoty-category-469", "rukavice", "kulichy"]),
+    "Obuv": getCategoryIdsByHandles(["street-category-22", "zabky"]),
+    "Sport": getCategoryIdsByHandles(["plavky", "silnicni-gravel-category-412", "snowboardy-category-450", "longboardy-category-463", "prilby-category-475"]),
+  }
 
-    return [
+    const categoryItems: NavItem[] = Object.entries(headerCategories).map(([title, categoryIds]) => ({
+      title,
+      href: `/products?categories=${categoryIds.join(',')}`,
+    }))
+
+    const navigationItems: NavItem[] = [
       { title: 'Domů', href: '/', prefetch: false },
       { title: 'Produkty', href: '/products', prefetch: true },
       {
         title: 'Kategorie',
         role: 'submenu' as const,
         children: categoryItems,
-        prefetch: false,
+        prefetch: true,
       },
       { title: 'O nás', href: '/about', prefetch: false },
       { title: 'Kontakt', href: '/contact', prefetch: false },
     ]
-  }, [])
+
 
   return <Header logo={logo} navigationItems={navigationItems} />
 }

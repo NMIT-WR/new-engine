@@ -7,6 +7,7 @@ import { ProductGrid } from '@/components/organisms/product-grid'
 import { homeCategories, homeContent } from '@/data/home-content'
 import { useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
+import { getCategoryIdByHandle } from '@/utils/category-helpers'
 
 export default function Home() {
   const {selectedRegion} = useRegions()
@@ -21,7 +22,7 @@ export default function Home() {
     q: 'triko',
     sort: 'newest',
     limit: 8,
-    category: 'pcat_01JYERRCMBCA6DTA9D2QK47365',
+    category: getCategoryIdByHandle('kratke-rukavy'),
     region_id: selectedRegion?.id
   })
 
@@ -61,13 +62,9 @@ export default function Home() {
         title={categoriesSection.title}
         subtitle={categoriesSection.subtitle}
         categories={homeCategories.map((cat) => ({
-          id: cat.id,
           name: cat.name,
-          handle: cat.handle,
-          parent_category_id: cat.parent_category_id,
           imageUrl: cat.imageUrl,
           leaves: cat.leaves,
-          // Note: count and imageUrl would need to be fetched separately if needed
         }))}
       />
 
