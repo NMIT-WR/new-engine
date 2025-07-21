@@ -50,6 +50,7 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
       filters,
       sort,
       region_id,
+      q,
     }),
     queryFn: () =>
       getProducts({
