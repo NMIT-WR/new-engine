@@ -12,6 +12,7 @@ import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { NumericInput } from '@ui/molecules/numeric-input'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect } from 'react'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
@@ -27,6 +28,11 @@ export default function CartPage() {
 
   // Clear previous completed order
   orderHelpers.clearCompletedOrder()
+
+  useEffect(() => {
+    console.log(cart)
+    console.log(items)
+  }, [cart, items])
 
   return (
     <div className="min-h-screen bg-cart-bg">
@@ -84,9 +90,7 @@ export default function CartPage() {
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div>
                               <Link
-                                href={getProductPath(
-                                  item.variant?.product?.handle || ''
-                                )}
+                                href={getProductPath(item.product_handle || '')}
                               >
                                 <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
                                   {item.title}
@@ -123,6 +127,9 @@ export default function CartPage() {
                               icon="token-icon-remove"
                             >
                               Odebrat
+                            </Button>
+                            <Button onClick={() => console.log(item)}>
+                              Check item
                             </Button>
                           </div>
                         </div>
