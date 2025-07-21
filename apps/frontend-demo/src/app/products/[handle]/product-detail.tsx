@@ -31,12 +31,19 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
     }
   }, [product])
 
-
-  const {products: relatedProducts, isLoading: isLoadingRelated} = useProducts({q:titleQuery, region_id: selectedRegion?.id, limit: 5, sort: 'newest', enabled: !!titleQuery && !!selectedRegion?.id})
+  const { products: relatedProducts, isLoading: isLoadingRelated } =
+    useProducts({
+      q: titleQuery,
+      region_id: selectedRegion?.id,
+      limit: 5,
+      sort: 'newest',
+      enabled: !!titleQuery && !!selectedRegion?.id,
+    })
 
   // Filter out the current product from related products
-  const filteredRelatedProducts = relatedProducts?.filter(p => p.handle !== handle)
-
+  const filteredRelatedProducts = relatedProducts
+    ?.filter((p) => p.handle !== handle)
+    .slice(0, 4)
 
   if (isLoading) {
     return (
@@ -86,7 +93,9 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   }
 
   // Prices from Medusa are already in dollars/euros, NOT cents
-  const price = variantPrice?.amount && formatPrice(variantPrice.amount, selectedRegion?.currency_code)
+  const price =
+    variantPrice?.amount &&
+    formatPrice(variantPrice.amount, selectedRegion?.currency_code)
 
   // Get badges for the product
   const badges = []
@@ -99,7 +108,6 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
       variant: 'warning' as const,
     })
   }
-
 
   const galleryImages =
     product.images?.map((img, idx) => ({
@@ -145,14 +153,18 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         {/* Related Products */}
         <div className="mt-product-detail-related-margin">
           <div className="mb-4 flex flex-col">
-          <h2 className="font-bold text-featured-title text-featured-title-size">
-            Mohlo by se vám líbit
-          </h2>
-            <p className="text-featured-subtitle">Koukněte na podobné produkty</p>
-        </div>
-          {isLoadingRelated ? <ProductGridSkeleton numberOfItems={4}/>: <ProductGrid
-            products={filteredRelatedProducts}
-          />}
+            <h2 className="font-bold text-featured-title text-featured-title-size">
+              Mohlo by se vám líbit
+            </h2>
+            <p className="text-featured-subtitle">
+              Koukněte na podobné produkty
+            </p>
+          </div>
+          {isLoadingRelated ? (
+            <ProductGridSkeleton numberOfItems={4} />
+          ) : (
+            <ProductGrid products={filteredRelatedProducts} />
+          )}
         </div>
       </div>
     </div>

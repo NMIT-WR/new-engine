@@ -19,7 +19,7 @@ const SORT_OPTIONS = [
 ]
 
 function ProductsPageContent() {
-  const {selectedRegion} = useRegions()
+  const { selectedRegion } = useRegions()
   const pageSize = 12
   const queryClient = useQueryClient()
 
@@ -46,7 +46,7 @@ function ProductsPageContent() {
     limit: pageSize,
     filters: productFilters,
     sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
-    region_id: selectedRegion?.id
+    region_id: selectedRegion?.id,
   })
 
   // Prefetch strategic pages when we have products
@@ -91,7 +91,7 @@ function ProductsPageContent() {
             limit: pageSize,
             filters: productFilters,
             sort: urlFilters.sortBy,
-            region_id: selectedRegion?.id
+            region_id: selectedRegion?.id,
           }),
           queryFn: () =>
             getProducts({
@@ -99,7 +99,7 @@ function ProductsPageContent() {
               offset,
               filters: productFilters,
               sort: urlFilters.sortBy,
-              region_id: selectedRegion?.id
+              region_id: selectedRegion?.id,
             }),
         })
       })
@@ -111,7 +111,6 @@ function ProductsPageContent() {
     products.length,
     queryClient,
     pageSize,
-    productFilters,
     urlFilters.sortBy,
     totalPages,
     selectedRegion?.id,

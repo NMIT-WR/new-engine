@@ -1,7 +1,6 @@
-import { type StockStatus } from '@/lib/inventory'
+import type { StockStatus } from '@/lib/inventory'
 import type { Product } from '@/types/product'
 import type { BadgeProps } from '@ui/atoms/badge'
-import type { StoreRegion } from '@medusajs/types'
 
 /**
  * Convert stock status to display text
@@ -27,7 +26,7 @@ interface ProductDisplayData {
 
 export function extractProductData(
   product: Product,
-  currencyCode?: string,
+  currencyCode?: string
 ): ProductDisplayData {
   // For API products, find the price that matches the current currency
   const primaryVariant = product.primaryVariant
@@ -45,44 +44,26 @@ export function extractProductData(
     }
   }
 
-  
-  // Check if any variant has inventory_quantity
-  /*const hasInventoryData = product.variants?.some(v => 
-    v.manage_inventory && 'inventory_quantity' in v
-  )*/
-
- if (primaryVariant) {
-    if(!primaryVariant.manage_inventory) {
+  if (primaryVariant) {
+    if (!primaryVariant.manage_inventory) {
       badges.push({ variant: 'success' as const, children: 'Skladem' })
     } else if (typeof primaryVariant.inventory_quantity === 'number') {
       if (primaryVariant.inventory_quantity > 0) {
         badges.push({ variant: 'success' as const, children: 'Skladem' })
       }
     } else if (primaryVariant.allow_backorder) {
-        badges.push({ variant: 'warning' as const, children: 'Na objednávku' })
-      }
-      else {
-        badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
-      }
- }
- if (!primaryVariant) {
-   badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
- }
+      badges.push({ variant: 'warning' as const, children: 'Na objednávku' })
+    } else {
+      badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
+    }
+  }
+  if (!primaryVariant) {
+    badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
+  }
   return {
     badges,
     displayBadges: badges,
   }
-}
-
-/**
- * Get related products (excluding current product)
- */
-export function getRelatedProducts(
-  currentProduct: Product,
-  allProducts: Product[],
-  limit = 4
-): Product[] {
-  return allProducts.filter((p) => p.id !== currentProduct.id).slice(0, limit)
 }
 
 /**

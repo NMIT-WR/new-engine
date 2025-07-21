@@ -2,7 +2,11 @@
 
 import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
-import { getProduct, getProducts, ProductListParams, type ProductFilters } from '@/services/product-service'
+import {
+  type ProductListParams,
+  getProduct,
+  getProducts,
+} from '@/services/product-service'
 import type { Product } from '@/types/product'
 import { useQuery } from '@tanstack/react-query'
 
@@ -26,12 +30,38 @@ interface UseProductsReturn {
  * Hook for fetching product lists with pagination and filtering
  */
 export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
-  const { page = 1, limit = 20, filters, sort, fields, q, category, region_id, enabled } = params
+  const {
+    page = 1,
+    limit = 20,
+    filters,
+    sort,
+    fields,
+    q,
+    category,
+    region_id,
+    enabled,
+  } = params
   const offset = (page - 1) * limit
 
   const { data, isLoading, error } = useQuery({
-    queryKey: queryKeys.products.list({ page, limit, filters, sort, region_id }),
-    queryFn: () => getProducts({ limit, offset, filters, sort, fields, q, category, region_id }),
+    queryKey: queryKeys.products.list({
+      page,
+      limit,
+      filters,
+      sort,
+      region_id,
+    }),
+    queryFn: () =>
+      getProducts({
+        limit,
+        offset,
+        filters,
+        sort,
+        fields,
+        q,
+        category,
+        region_id,
+      }),
     enabled: enabled !== undefined ? enabled : !!region_id,
     ...cacheConfig.semiStatic,
   })

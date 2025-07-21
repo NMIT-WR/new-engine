@@ -1,13 +1,11 @@
 'use client'
 
 import { DemoProductCard } from '@/components/molecules/demo-product-card'
+import { usePrefetchProduct } from '@/hooks/use-prefetch-product'
 import { useRegions } from '@/hooks/use-region'
-import { queryKeys } from '@/lib/query-keys'
-import { getProduct } from '@/services/product-service'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
-import { useQueryClient } from '@tanstack/react-query'
 import { Pagination } from '@ui/molecules/pagination'
 import Link from 'next/link'
 
@@ -27,15 +25,7 @@ export function ProductGrid({
   onPageChange,
 }: ProductGridProps) {
   const { selectedRegion } = useRegions()
-  const queryClient = useQueryClient()
-
-  const prefetchProduct = (handle: string) => {
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.product(handle, selectedRegion?.id),
-      queryFn: () => getProduct(handle, selectedRegion?.id),
-      staleTime: 60 * 60 * 1000,
-    })
-  }
+  const prefetchProduct = usePrefetchProduct()
 
   // Calculate total pages based on totalCount or products length
   const totalPages = Math.ceil((totalCount || products.length) / pageSize)
@@ -60,7 +50,9 @@ export function ProductGrid({
           )
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
-          const formattedPrice = product.price && formatPrice(product.price, selectedRegion?.currency_code)
+          const formattedPrice =
+            product.price &&
+            formatPrice(product.price, selectedRegion?.currency_code)
 
           return (
             <Link

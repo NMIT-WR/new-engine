@@ -10,7 +10,7 @@ import { useRegions } from '@/hooks/use-region'
 import { getCategoryIdByHandle } from '@/utils/category-helpers'
 
 export default function Home() {
-  const {selectedRegion} = useRegions()
+  const { selectedRegion } = useRegions()
   const {
     hero,
     trending,
@@ -23,7 +23,7 @@ export default function Home() {
     sort: 'newest',
     limit: 8,
     category: getCategoryIdByHandle('kratke-rukavy'),
-    region_id: selectedRegion?.id
+    region_id: selectedRegion?.id,
   })
 
   const featuredProducts = products.slice(0, 4)

@@ -26,141 +26,152 @@ export interface ProductListResponse {
   offset: number
 }
 
-  // Fields for product list views (minimal data)
-  const LIST_FIELDS = [
-    'id',
-    'title',
-    'handle',
-    'thumbnail',
-    '*variants.calculated_price',
-    'variants.inventory_quantity',
-    'variants.manage_inventory',
-  ].join(',')
+// Fields for product list views (minimal data)
+const LIST_FIELDS = [
+  'id',
+  'title',
+  'handle',
+  'thumbnail',
+  '*variants.calculated_price',
+  'variants.inventory_quantity',
+  'variants.manage_inventory',
+].join(',')
 
-  // Fields for product detail views (all data)
-  const DETAIL_FIELDS = [
-    'id',
-    'title',
-    'handle',
-    'description',
-    'thumbnail',
-    'status',
-    'collection_id',
-    'created_at',
-    'updated_at',
-    'tags',
-    'images.id',
-    'images.url',
-    'categories.id',
-    'categories.name',
-    'categories.handle',
-    'variants.id',
-    'variants.title',
-    'variants.sku',
-    'variants.manage_inventory',
-    'variants.allow_backorder',
-    '+variants.inventory_quantity',
-    'variants.prices.amount',
-    'variants.prices.currency_code',
-    'variants.prices.calculated_price',
-    'variants.options',
-  ].join(',')
+// Fields for product detail views (all data)
+const DETAIL_FIELDS = [
+  'id',
+  'title',
+  'handle',
+  'description',
+  'thumbnail',
+  'status',
+  'collection_id',
+  'created_at',
+  'updated_at',
+  'tags',
+  'images.id',
+  'images.url',
+  'categories.id',
+  'categories.name',
+  'categories.handle',
+  'variants.id',
+  'variants.title',
+  'variants.sku',
+  'variants.manage_inventory',
+  'variants.allow_backorder',
+  '+variants.inventory_quantity',
+  'variants.prices.amount',
+  'variants.prices.currency_code',
+  'variants.prices.calculated_price',
+  'variants.options',
+].join(',')
 
-  /**
-   * Fetch products with filtering, pagination and sorting
-   */
-  export const getProducts = async (
-    params: ProductListParams = {}
-  ): Promise<ProductListResponse> => {
-    const { limit = 20, offset = 0, filters, category, fields = LIST_FIELDS, sort, q, region_id } = params
+/**
+ * Fetch products with filtering, pagination and sorting
+ */
+export const getProducts = async (
+  params: ProductListParams = {}
+): Promise<ProductListResponse> => {
+  const {
+    limit = 20,
+    offset = 0,
+    filters,
+    category,
+    fields = LIST_FIELDS,
+    sort,
+    q,
+    region_id,
+  } = params
 
-    // Build base query
-    const baseQuery: Record<string, any> = {
-      limit,
-      offset,
-      q,
-      category_id: category,
-      fields: fields,
-      ...(region_id && { region_id })
-    }
-
-    // Add sorting
-    if (sort) {
-      const sortMap: Record<string, string> = {
-        newest: '-created_at',
-        'price-asc': 'variants.prices.amount',
-        'price-desc': '-variants.prices.amount',
-        'name-asc': 'title',
-        'name-desc': '-title',
-      }
-      baseQuery.order = sortMap[sort] || sort
-    }
-
-    // Build query with server-side filters
-    const queryParams = buildMedusaQuery(filters, baseQuery)
-
-    try {
-      const response = await sdk.store.product.list(queryParams)
-
-      if (!response.products) {
-        console.error('[ProductService] Invalid response structure:', response)
-        return { products: [], count: 0, limit, offset }
-      }
-
-      console.log('[ProductService] Fetched products:', response.products.length)
-
-      const products = response.products.map((p) => transformProduct(p))
-
-      return {
-        products,
-        count: response.count || products.length,
-        limit,
-        offset,
-      }
-    } catch (error) {
-      console.error('[ProductService] Error fetching products:', error)
-      throw error
-    }
+  // Build base query
+  const baseQuery: Record<string, any> = {
+    limit,
+    offset,
+    q,
+    category_id: category,
+    fields: fields,
+    ...(region_id && { region_id }),
   }
 
+  // Add sorting
+  if (sort) {
+    const sortMap: Record<string, string> = {
+      newest: '-created_at',
+      'price-asc': 'variants.prices.amount',
+      'price-desc': '-variants.prices.amount',
+      'name-asc': 'title',
+      'name-desc': '-title',
+    }
+    baseQuery.order = sortMap[sort] || sort
+  }
 
-  /**
-   * Transform raw product data from API
-   */
-const transformProduct =(product: any, withVariants?: boolean): Product => {
-    if (!product) {
-      throw new Error('Cannot transform null product')
+  // Build query with server-side filters
+  const queryParams = buildMedusaQuery(filters, baseQuery)
+
+  try {
+    const response = await sdk.store.product.list(queryParams)
+
+    if (!response.products) {
+      console.error('[ProductService] Invalid response structure:', response)
+      return { products: [], count: 0, limit, offset }
     }
 
-    // Get primary variant (first one)
-    const primaryVariant = product.variants?.[0]
+    console.log('[ProductService] Fetched products:', response.products.length)
 
-    // Get price from primary variant
-    const price = primaryVariant?.calculated_price?.calculated_amount
-
-    // Since Store API doesn't provide real inventory data, we can't determine stock status
-    // We'll default to true and let the detailed product page handle variant-specific availability
-    const inStock = true
-
-    const reducedImages = product.images && product.images.length > 2 && product.images.slice(0,2)
-
-    // Remove variants array from the result to reduce payload size
-    const { variants, ...productWithoutVariants } = product
-
-    const result = withVariants ? product : productWithoutVariants
+    const products = response.products.map((p) => transformProduct(p))
 
     return {
-      ...result,
-      thumbnail: product.thumbnail,
-      images: reducedImages || product.images,
-      inStock,
-      price,
-      primaryVariant,
-    } as Product
+      products,
+      count: response.count || products.length,
+      limit,
+      offset,
+    }
+  } catch (error) {
+    console.error('[ProductService] Error fetching products:', error)
+    throw error
+  }
 }
 
+/**
+ * Transform raw product data from API
+ */
+const transformProduct = (product: any, withVariants?: boolean): Product => {
+  if (!product) {
+    throw new Error('Cannot transform null product')
+  }
 
-export async function getProduct(handle: string, region_id?: string): Promise<Product> {
+  // Get primary variant (first one)
+  const primaryVariant = product.variants?.[0]
+
+  // Get price from primary variant
+  const price = primaryVariant?.calculated_price?.calculated_amount
+
+  // Since Store API doesn't provide real inventory data, we can't determine stock status
+  // We'll default to true and let the detailed product page handle variant-specific availability
+  const inStock = true
+
+  const reducedImages =
+    product.images && product.images.length > 2 && product.images.slice(0, 2)
+
+  // Remove variants array from the result to reduce payload size
+  const { variants, ...productWithoutVariants } = product
+
+  const result = withVariants ? product : productWithoutVariants
+
+  return {
+    ...result,
+    thumbnail: product.thumbnail,
+    images: reducedImages || product.images,
+    inStock,
+    price,
+    primaryVariant,
+  } as Product
+}
+
+export async function getProduct(
+  handle: string,
+  region_id?: string
+): Promise<Product> {
   const response = await sdk.store.product.list({
     handle,
     fields: DETAIL_FIELDS, // Use full fields for detail views
@@ -171,6 +182,8 @@ export async function getProduct(handle: string, region_id?: string): Promise<Pr
   if (!response.products?.length) {
     throw new Error('Product not found')
   }
+
+  console.log('[ProductService-Product] Fetched product:', response.products[0])
 
   return transformProduct(response.products[0], true)
 }
