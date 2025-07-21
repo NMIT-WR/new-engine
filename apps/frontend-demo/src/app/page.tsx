@@ -5,11 +5,14 @@ import { CategoryGrid } from '@/components/organisms/category-grid'
 import { Hero } from '@/components/organisms/hero'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { homeCategories, homeContent } from '@/data/home-content'
+import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
 import { useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { getCategoryIdByHandle } from '@/utils/category-helpers'
+import { useEffect } from 'react'
 
 export default function Home() {
+  const { prefetchDefaultProducts } = usePrefetchProducts()
   const { selectedRegion } = useRegions()
   const {
     hero,
@@ -25,6 +28,13 @@ export default function Home() {
     category: getCategoryIdByHandle('kratke-rukavy'),
     region_id: selectedRegion?.id,
   })
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      prefetchDefaultProducts()
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [prefetchDefaultProducts])
 
   const featuredProducts = products.slice(0, 4)
   const newProductsList = products.slice(4, 8)

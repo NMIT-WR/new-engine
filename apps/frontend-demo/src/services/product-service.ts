@@ -108,6 +108,19 @@ export const getProducts = async (
   // Build query with server-side filters
   const queryParams = buildMedusaQuery(filters, baseQuery)
 
+  // Enhanced logging for debugging
+  const caller = new Error().stack?.split('\n')[2]?.trim() || 'Unknown'
+  const page = Math.floor(offset / limit) + 1
+  console.log(
+    `[ProductService] Fetching products:
+    - Page: ${page} (offset: ${offset}, limit: ${limit})
+    - Sort: ${sort || 'default'}
+    - Filters: ${JSON.stringify(filters || {})}
+    - Category: ${category || 'all'}
+    - Region: ${region_id || 'none'}
+    - Called from: ${caller}`
+  )
+
   try {
     const response = await sdk.store.product.list(queryParams)
 
@@ -116,7 +129,7 @@ export const getProducts = async (
       return { products: [], count: 0, limit, offset }
     }
 
-    console.log('[ProductService] Fetched products:', response.products.length)
+    console.log(`[ProductService] Fetched ${response.products.length} products for page ${page}`)
 
     const products = response.products.map((p) => transformProduct(p))
 
