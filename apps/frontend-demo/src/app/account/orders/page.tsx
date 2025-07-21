@@ -1,5 +1,6 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
+import { MobileOrderCard } from '@/components/molecules/mobile-order-card'
 import { useAuth } from '@/hooks/use-auth'
 import { formatPrice } from '@/lib/format-price'
 import { sdk } from '@/lib/medusa-client'
@@ -95,26 +96,28 @@ export default function OrdersPage() {
   ).length
 
   return (
-    <div className="mx-auto max-w-layout-max px-sm py-lg">
+    <div className="mx-auto max-w-layout-max px-sm sm:py-lg">
       <div className="mb-xl">
-        <div className="mb-md flex items-end justify-between">
+        <div className="flex flex-col sm:mb-md sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="mb-xs font-semibold text-3xl text-fg-primary">
+            <h1 className="font-semibold text-fg-primary text-md sm:mb-xs sm:text-3xl">
               Přehled objednávek
             </h1>
             <p className="text-fg-secondary">
               Kompletní historie vašich nákupů
             </p>
           </div>
-          <div className="text-right">
-            <p className="mb-3xs text-fg-secondary text-sm">Celková útrata</p>
-            <p className="font-bold text-2xl text-primary">
+          <div className="flex items-center gap-xs sm:block sm:text-right">
+            <p className="text-fg-secondary text-sm sm:mb-3xs">
+              Celková útrata
+            </p>
+            <p className="font-bold text-primary text-sm sm:text-2xl">
               {formatPrice(totalAmount, 'CZK')}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-md border-t pt-md">
+        <div className="flex flex-col border-t pt-md sm:flex-row sm:items-center sm:gap-md">
           <div className="flex items-center gap-xs">
             <Icon
               icon="icon-[mdi--shopping-outline]"
@@ -127,7 +130,7 @@ export default function OrdersPage() {
               </span>
             </span>
           </div>
-          <div className="text-fg-secondary">•</div>
+          <div className="hidden sm:block sm:text-fg-secondary">•</div>
           <div className="flex items-center gap-xs">
             <Icon
               icon="icon-[mdi--check-circle-outline]"
@@ -138,7 +141,7 @@ export default function OrdersPage() {
               <span className="ml-3xs text-fg-secondary">dokončených</span>
             </span>
           </div>
-          <div className="text-fg-secondary">•</div>
+          <div className="hidden sm:block sm:text-fg-secondary">•</div>
           <div className="flex items-center gap-xs">
             <Icon icon="icon-[mdi--clock-outline]" className="text-warning" />
             <span className="text-sm">
@@ -210,114 +213,124 @@ export default function OrdersPage() {
           </Button>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-sm border border-border-subtle bg-surface">
-          <div className="grid grid-cols-12 gap-sm border-border-subtle border-b bg-fill-base p-sm font-medium text-fg-secondary text-xs uppercase tracking-wider">
-            <div className="col-span-2">Číslo</div>
-            <div className="col-span-2">Datum</div>
-            <div className="col-span-4">Položky</div>
-            <div className="col-span-2 text-right">Celkem</div>
-            <div className="col-span-2 text-right">Akce</div>
+        <>
+          {/* Mobilní zobrazení */}
+          <div className="block space-y-3 sm:hidden">
+            {orders.map((order) => (
+              <MobileOrderCard key={order.id} order={order} />
+            ))}
           </div>
 
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm transition-colors hover:bg-fill-base"
-            >
-              <div className="col-span-2 flex items-center">
-                <div>
-                  <p className="font-medium text-fg-primary text-sm">
-                    #{order.display_id}
-                  </p>
-                  <Badge
-                    variant={
-                      order.status === 'completed'
-                        ? 'success'
-                        : order.status === 'pending'
-                          ? 'warning'
-                          : order.status === 'canceled'
-                            ? 'danger'
-                            : 'info'
-                    }
-                    className="mt-3xs inline-flex"
-                  >
-                    {getOrderStatusLabel(order.status)}
-                  </Badge>
-                </div>
-              </div>
-
-              <div className="col-span-2 flex items-center">
-                <p className="text-fg-secondary text-sm">
-                  {formatOrderDate(order.created_at as string)}
-                </p>
-              </div>
-
-              <div className="col-span-4 flex items-center">
-                <div className="flex items-center gap-xs">
-                  <div className="-space-x-2 flex">
-                    {order.items?.slice(0, 3).map((item, index) => (
-                      <div
-                        key={item.id}
-                        className="relative h-fit w-10 overflow-hidden rounded-full border-2 border-base bg-fill-base"
-                        style={{ zIndex: 3 - index }}
-                      >
-                        {item.thumbnail && (
-                          <Image
-                            src={item.thumbnail}
-                            alt={item.product_title || ''}
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                          />
-                        )}
-                      </div>
-                    ))}
-                    {order.items && order.items.length > 3 && (
-                      <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-base bg-fill-base">
-                        <span className="font-medium text-fg-secondary text-xs">
-                          +{order.items.length - 3}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="line-clamp-1 text-fg-primary text-sm">
-                      {order.items?.[0] &&
-                        order.items.length < 2 &&
-                        truncateProductTitle(
-                          order.items[0].product_title || ''
-                        )}
-                    </p>
-                    <p className="text-fg-tertiary text-xs">
-                      {order.items?.length || 0} položek
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-span-2 flex items-center justify-end">
-                <p className="font-semibold text-fg-primary">
-                  {formatPrice(
-                    order.summary?.current_order_total || order.total || 0,
-                    order.currency_code
-                  )}
-                </p>
-              </div>
-
-              <div className="col-span-2 flex items-center justify-end">
-                <LinkButton
-                  as={Link}
-                  prefetch={true}
-                  href={`/account/orders/${order.id}`}
-                  size="sm"
-                  variant="primary"
-                >
-                  Detail
-                </LinkButton>
-              </div>
+          {/* Desktop zobrazení */}
+          <div className="hidden overflow-hidden rounded-sm border border-border-subtle bg-surface sm:block">
+            <div className="grid grid-cols-12 gap-sm border-border-subtle border-b bg-fill-base p-sm font-medium text-fg-secondary text-xs uppercase tracking-wider">
+              <div className="col-span-2">Číslo</div>
+              <div className="col-span-2">Datum</div>
+              <div className="col-span-4">Položky</div>
+              <div className="col-span-2 text-right">Celkem</div>
+              <div className="col-span-2 text-right">Akce</div>
             </div>
-          ))}
-        </div>
+
+            {orders.map((order) => (
+              <div
+                key={order.id}
+                className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm transition-colors hover:bg-fill-base"
+              >
+                <div className="col-span-2 flex items-center">
+                  <div>
+                    <p className="font-medium text-fg-primary text-sm">
+                      #{order.display_id}
+                    </p>
+                    <Badge
+                      variant={
+                        order.status === 'completed'
+                          ? 'success'
+                          : order.status === 'pending'
+                            ? 'warning'
+                            : order.status === 'canceled'
+                              ? 'danger'
+                              : 'info'
+                      }
+                      className="mt-3xs inline-flex"
+                    >
+                      {getOrderStatusLabel(order.status)}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="col-span-2 flex items-center">
+                  <p className="text-fg-secondary text-sm">
+                    {formatOrderDate(order.created_at as string)}
+                  </p>
+                </div>
+
+                <div className="col-span-4 flex items-center">
+                  <div className="flex items-center gap-xs">
+                    <div className="-space-x-2 flex">
+                      {order.items?.slice(0, 3).map((item, index) => (
+                        <div
+                          key={item.id}
+                          className="relative h-fit w-10 overflow-hidden rounded-full border-2 border-base bg-fill-base"
+                          style={{ zIndex: 3 - index }}
+                        >
+                          {item.thumbnail && (
+                            <Image
+                              src={item.thumbnail}
+                              alt={item.product_title || ''}
+                              className="h-full w-full object-cover"
+                              width={40}
+                              height={40}
+                            />
+                          )}
+                        </div>
+                      ))}
+                      {order.items && order.items.length > 3 && (
+                        <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-base bg-fill-base">
+                          <span className="font-medium text-fg-secondary text-xs">
+                            +{order.items.length - 3}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-1 text-fg-primary text-sm">
+                        {order.items?.[0] &&
+                          order.items.length < 2 &&
+                          truncateProductTitle(
+                            order.items[0].product_title || ''
+                          )}
+                      </p>
+                      <p className="text-fg-tertiary text-xs">
+                        {order.items?.length || 0} položek
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-span-2 flex items-center justify-end">
+                  <p className="font-semibold text-fg-primary">
+                    {formatPrice(
+                      order.summary?.current_order_total || order.total || 0,
+                      order.currency_code
+                    )}
+                  </p>
+                </div>
+
+                <div className="col-span-2 flex items-center justify-end">
+                  <LinkButton
+                    as={Link}
+                    prefetch={true}
+                    href={`/account/orders/${order.id}`}
+                    size="sm"
+                    variant="primary"
+                  >
+                    Detail
+                  </LinkButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

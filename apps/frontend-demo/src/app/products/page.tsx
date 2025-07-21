@@ -111,7 +111,6 @@ function ProductsPageContent() {
     products.length,
     queryClient,
     pageSize,
-    productFilters,
     urlFilters.sortBy,
     totalPages,
     selectedRegion?.id,

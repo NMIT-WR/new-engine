@@ -1,8 +1,10 @@
-import { SkeletonLoader } from "../atoms/skeleton-loader";
+import { SkeletonLoader } from '../atoms/skeleton-loader'
 
-export function ProductGridSkeleton({numberOfItems = 1} : { numberOfItems?: number }) {
+export function ProductGridSkeleton({
+  numberOfItems = 1,
+}: { numberOfItems?: number }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {[...Array(numberOfItems)].map((_, i) => (
         <div key={i} className="space-y-3">
           <SkeletonLoader

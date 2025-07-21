@@ -46,20 +46,20 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
     <div className="mx-auto max-w-layout-max px-4 py-8">
       <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
         {/* Sidebar */}
-        <nav className="flex border-b pb-4 sticky z-1 bg-base h-fit top-16 lg:border-none lg:block space-y-1">
+        <nav className="sticky top-16 z-10 flex h-fit gap-3 space-y-1 border-b bg-base pb-4 lg:block lg:border-none">
           {accountLinks.map((link) => {
             const isActive = pathname === link.href
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${
+                className={`flex items-center gap-3 rounded-md py-2 transition-colors sm:px-3 ${
                   isActive
                     ? 'bg-bg-surface-hover text-fg-primary'
                     : 'text-fg-secondary hover:bg-bg-surface hover:text-fg-primary'
                 }`}
               >
-                <Icon icon={link.icon} className="h-5 w-5" />
+                <Icon icon={link.icon} className="hidden h-5 w-5 sm:block" />
                 <span className="font-medium text-sm">{link.label}</span>
               </Link>
             )
@@ -67,8 +67,15 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
 
           <Button
             onClick={handleLogout}
-            className="mx-3 text-fg-reverse"
+            className="mx-3 hidden text-fg-reverse sm:flex"
             icon="token-icon-exit"
+            size="sm"
+          >
+            <span className="font-medium text-xs">Odhlásit se</span>
+          </Button>
+          <Button
+            onClick={handleLogout}
+            className="mx-3 text-fg-reverse sm:hidden"
             size="sm"
           >
             <span className="font-medium text-xs">Odhlásit se</span>
