@@ -18,9 +18,9 @@
   --container-2xl: 96rem; /* 1536px */
   --container-full: 100%; /* Full width */
 
-  --spacing-container-sm: 15rem;
-  --spacing-container-md: 40rem;
-  --spacing-container-lg: 64rem;
+  --spacing-layout-sm: 15rem;
+  --spacing-layout-md: 40rem;
+  --spacing-layout-lg: 64rem;
   --spacing-layout-min: var(--container-xs);
   --spacing-layout-max: var(--container-xl);
 
