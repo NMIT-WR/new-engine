@@ -11,11 +11,7 @@ import { LinkButton } from '@ui/atoms/link-button'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface MobileOrderCardProps {
-  order: StoreOrder
-}
-
-export function MobileOrderCard({ order }: MobileOrderCardProps) {
+export function MobileOrderCard({ order }: { order: StoreOrder }) {
   const statusVariant =
     order.status === 'completed'
       ? 'success'
@@ -30,14 +26,14 @@ export function MobileOrderCard({ order }: MobileOrderCardProps) {
   const hasMultipleItems = itemCount > 1
 
   return (
-    <div className="rounded-md border border-border-subtle bg-surface p-4">
+    <div className="rounded-md border border-orders-border bg-orders-card-bg p-4">
       {/* Header with order number and status */}
       <div className="mb-3 flex items-start justify-between">
         <div>
-          <p className="font-medium text-fg-primary">
+          <p className="font-medium text-orders-fg-primary">
             Objednávka #{order.display_id}
           </p>
-          <p className="mt-1 text-fg-secondary text-sm">
+          <p className="mt-1 text-orders-fg-secondary text-orders-md">
             {formatOrderDate(order.created_at as string)}
           </p>
         </div>
@@ -54,7 +50,7 @@ export function MobileOrderCard({ order }: MobileOrderCardProps) {
             {order.items?.slice(0, 3).map((item, index) => (
               <div
                 key={item.id}
-                className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-surface bg-fill-base"
+                className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-orders-border bg-orders-overlay"
                 style={{ zIndex: 3 - index }}
               >
                 {item.thumbnail && (
@@ -69,8 +65,8 @@ export function MobileOrderCard({ order }: MobileOrderCardProps) {
               </div>
             ))}
             {itemCount > 3 && (
-              <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-surface bg-fill-base">
-                <span className="font-medium text-fg-secondary text-sm">
+              <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-orders-border bg-orders-overlay">
+                <span className="font-medium text-orders-fg-secondary text-orders-md">
                   +{itemCount - 3}
                 </span>
               </div>
@@ -80,13 +76,15 @@ export function MobileOrderCard({ order }: MobileOrderCardProps) {
           {/* Product info */}
           <div className="min-w-0 flex-1">
             {hasMultipleItems ? (
-              <p className="text-fg-primary text-sm">{itemCount} položek</p>
+              <p className="text-orders-fg-primary text-orders-md">
+                {itemCount} položek
+              </p>
             ) : firstItem ? (
-              <p className="line-clamp-1 text-fg-primary text-sm">
+              <p className="line-clamp-1 text-orders-fg-primary text-orders-md">
                 {truncateProductTitle(firstItem.product_title || '')}
               </p>
             ) : null}
-            <p className="text-fg-tertiary text-xs">
+            <p className="text-orders-fg-secondary text-xs">
               {hasMultipleItems && firstItem && (
                 <span className="line-clamp-1">
                   {truncateProductTitle(firstItem.product_title || '')}
@@ -99,14 +97,14 @@ export function MobileOrderCard({ order }: MobileOrderCardProps) {
       </div>
 
       {/* Footer with price and action */}
-      <div className="flex items-center justify-between border-border-subtle border-t pt-3">
+      <div className="flex items-center justify-between border-orders-border border-t pt-3">
         <div className="flex items-center gap-2">
           <Icon
             icon="icon-[mdi--cash]"
-            className="text-fg-secondary"
+            className="text-orders-fg-secondary"
             size="sm"
           />
-          <span className="font-semibold text-fg-primary">
+          <span className="font-semibold text-orders-fg-primary">
             {formatPrice(
               order.summary?.current_order_total || order.total || 0,
               order.currency_code

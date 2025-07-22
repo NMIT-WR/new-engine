@@ -10,24 +10,14 @@ import type { ReactNode } from 'react'
 const accountLinks = [
   {
     href: '/account/orders',
-    label: 'Tvé objednávky',
+    label: 'Moje objednávky',
     icon: 'token-icon-shopping-bag' as const,
   },
   {
     href: '/account/profile',
-    label: 'Osobní údaje',
+    label: 'Můj profil',
     icon: 'token-icon-profile' as const,
   },
-  /*{
-    href: '/account/settings',
-    label: 'Nastavení',
-    icon: 'token-icon-setting' as const,
-  },
-  {
-    href: '#',
-    label: 'Pomoc',
-    icon: 'token-icon-help' as const,
-  },*/
 ]
 
 interface AccountLayoutProps {

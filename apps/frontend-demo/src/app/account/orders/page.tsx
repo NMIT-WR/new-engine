@@ -1,26 +1,17 @@
 'use client'
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { MobileOrderCard } from '@/components/molecules/mobile-order-card'
+import { DesktopOrderCard } from '@/components/account/desktop-order-card'
+import { MobileOrderCard } from '@/components/account/mobile-order-card'
+import { OrdersEmpty } from '@/components/account/orders-empty'
+import { OrdersError } from '@/components/account/orders-error'
+import { OrdersSkeleton } from '@/components/account/orders-skeleton'
+import { OrdersSummary } from '@/components/account/orders-summary'
+import { OrdersTableHeader } from '@/components/account/orders-table-header'
 import { useAuth } from '@/hooks/use-auth'
-import { formatPrice } from '@/lib/format-price'
-import { sdk } from '@/lib/medusa-client'
-import {
-  ORDER_FIELDS,
-  formatOrderDate,
-  getOrderStatusLabel,
-  truncateProductTitle,
-} from '@/lib/order-utils'
-import { queryKeys } from '@/lib/query-keys'
-import { useQuery } from '@tanstack/react-query'
-import { Badge } from '@ui/atoms/badge'
-import { Button } from '@ui/atoms/button'
-import { Icon } from '@ui/atoms/icon'
-import { LinkButton } from '@ui/atoms/link-button'
-import Image from 'next/image'
-import Link from 'next/link'
+import { useOrders } from '@/hooks/use-orders'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
+const MIN_ORDERS_COUNT = 5
 export default function OrdersPage() {
   const { user, isLoading: authLoading, isInitialized } = useAuth()
   const router = useRouter()
@@ -35,45 +26,12 @@ export default function OrdersPage() {
     data: ordersData,
     isLoading: ordersLoading,
     error,
-  } = useQuery({
-    queryKey: queryKeys.orders.list(),
-    queryFn: async () => {
-      const response = await sdk.store.order.list({
-        fields: ORDER_FIELDS.join(','),
-      })
-      return response
-    },
-    enabled: !!user,
-    staleTime: 5 * 60 * 1000,
-  })
+  } = useOrders(user?.id)
 
   if (!isInitialized || authLoading) {
     return (
-      <div className="mx-auto max-w-layout-max px-sm py-lg">
-        <SkeletonLoader className="mb-lg h-8 w-48" />
-        <div className="space-y-3xs">
-          <div className="rounded-sm bg-surface">
-            <div className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm">
-              <SkeletonLoader className="col-span-2 h-4" />
-              <SkeletonLoader className="col-span-2 h-4" />
-              <SkeletonLoader className="col-span-4 h-4" />
-              <SkeletonLoader className="col-span-2 h-4" />
-              <SkeletonLoader className="col-span-2 h-4" />
-            </div>
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm"
-              >
-                <SkeletonLoader className="col-span-2 h-5" />
-                <SkeletonLoader className="col-span-2 h-5" />
-                <SkeletonLoader className="col-span-4 h-12" />
-                <SkeletonLoader className="col-span-2 h-5" />
-                <SkeletonLoader className="col-span-2 h-8" />
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mx-auto max-w-layout-max p-orders-container">
+        <OrdersSkeleton itemsCount={MIN_ORDERS_COUNT} />
       </div>
     )
   }
@@ -83,6 +41,7 @@ export default function OrdersPage() {
   }
 
   const orders = ordersData?.orders || []
+
   const totalAmount = orders.reduce(
     (sum, order) =>
       sum + (order.summary?.current_order_total || order.total || 0),
@@ -96,240 +55,40 @@ export default function OrdersPage() {
   ).length
 
   return (
-    <div className="mx-auto max-w-layout-max px-sm sm:py-lg">
-      <div className="mb-xl">
-        <div className="flex flex-col sm:mb-md sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="font-semibold text-fg-primary text-md sm:mb-xs sm:text-3xl">
-              Přehled objednávek
-            </h1>
-            <p className="text-fg-secondary">
-              Kompletní historie vašich nákupů
-            </p>
-          </div>
-          <div className="flex items-center gap-xs sm:block sm:text-right">
-            <p className="text-fg-secondary text-sm sm:mb-3xs">
-              Celková útrata
-            </p>
-            <p className="font-bold text-primary text-sm sm:text-2xl">
-              {formatPrice(totalAmount, 'CZK')}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col border-t pt-md sm:flex-row sm:items-center sm:gap-md">
-          <div className="flex items-center gap-xs">
-            <Icon
-              icon="icon-[mdi--shopping-outline]"
-              className="text-fg-secondary"
-            />
-            <span className="text-sm">
-              <strong className="text-fg-primary">{orders.length}</strong>
-              <span className="ml-3xs text-fg-secondary">
-                objednávek celkem
-              </span>
-            </span>
-          </div>
-          <div className="hidden sm:block sm:text-fg-secondary">•</div>
-          <div className="flex items-center gap-xs">
-            <Icon
-              icon="icon-[mdi--check-circle-outline]"
-              className="text-success"
-            />
-            <span className="text-sm">
-              <strong className="text-success">{completedOrders}</strong>
-              <span className="ml-3xs text-fg-secondary">dokončených</span>
-            </span>
-          </div>
-          <div className="hidden sm:block sm:text-fg-secondary">•</div>
-          <div className="flex items-center gap-xs">
-            <Icon icon="icon-[mdi--clock-outline]" className="text-warning" />
-            <span className="text-sm">
-              <strong className="text-warning">{pendingOrders}</strong>
-              <span className="ml-3xs text-fg-secondary">zpracovávaných</span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {error ? (
-        <div className="rounded-sm border border-danger bg-surface p-lg text-center">
-          <p className="mb-xs font-medium text-danger">
-            Chyba při načítání objednávek
-          </p>
-          <p className="mb-sm text-fg-secondary text-sm">
-            Zkontrolujte console pro více informací
-          </p>
-          <Button
-            variant="secondary"
-            theme="solid"
-            onClick={() => window.location.reload()}
-            size="sm"
-          >
-            Zkusit znovu
-          </Button>
-        </div>
-      ) : ordersLoading ? (
-        <div className="space-y-3xs">
-          <div className="rounded-sm bg-surface">
-            <div className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm">
-              <SkeletonLoader className="col-span-2 h-4" />
-              <SkeletonLoader className="col-span-2 h-4" />
-              <SkeletonLoader className="col-span-4 h-4" />
-              <SkeletonLoader className="col-span-2 h-4" />
-              <SkeletonLoader className="col-span-2 h-4" />
-            </div>
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm"
-              >
-                <SkeletonLoader className="col-span-2 h-5" />
-                <SkeletonLoader className="col-span-2 h-5" />
-                <SkeletonLoader className="col-span-4 h-12" />
-                <SkeletonLoader className="col-span-2 h-5" />
-                <SkeletonLoader className="col-span-2 h-8" />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : orders.length === 0 ? (
-        <div className="rounded-sm border border-border-subtle bg-surface p-2xl text-center">
-          <Icon
-            icon="icon-[mdi--archive-outline]"
-            className="mx-auto mb-md h-16 w-16 text-fg-tertiary"
-          />
-          <p className="mb-xs font-medium text-fg-primary">Žádné objednávky</p>
-          <p className="mb-md text-fg-secondary text-sm">
-            Zatím jste nevytvořili žádnou objednávku
-          </p>
-          <Button
-            variant="primary"
-            theme="solid"
-            onClick={() => router.push('/')}
-            size="sm"
-          >
-            Začít nakupovat
-          </Button>
-        </div>
+    <div className="mx-auto max-w-layout-max p-orders-container">
+      {ordersLoading ? (
+        <OrdersSkeleton itemsCount={orders.length || MIN_ORDERS_COUNT} />
       ) : (
         <>
-          {/* Mobilní zobrazení */}
-          <div className="block space-y-3 sm:hidden">
-            {orders.map((order) => (
-              <MobileOrderCard key={order.id} order={order} />
-            ))}
-          </div>
+          <OrdersSummary
+            totalAmount={totalAmount}
+            completedOrders={completedOrders}
+            pendingOrders={pendingOrders}
+            numberOfOrders={orders.length}
+          />
 
-          {/* Desktop zobrazení */}
-          <div className="hidden overflow-hidden rounded-sm border border-border-subtle bg-surface sm:block">
-            <div className="grid grid-cols-12 gap-sm border-border-subtle border-b bg-fill-base p-sm font-medium text-fg-secondary text-xs uppercase tracking-wider">
-              <div className="col-span-2">Číslo</div>
-              <div className="col-span-2">Datum</div>
-              <div className="col-span-4">Položky</div>
-              <div className="col-span-2 text-right">Celkem</div>
-              <div className="col-span-2 text-right">Akce</div>
-            </div>
-
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                className="grid grid-cols-12 gap-sm border-border-subtle border-b p-sm transition-colors hover:bg-fill-base"
-              >
-                <div className="col-span-2 flex items-center">
-                  <div>
-                    <p className="font-medium text-fg-primary text-sm">
-                      #{order.display_id}
-                    </p>
-                    <Badge
-                      variant={
-                        order.status === 'completed'
-                          ? 'success'
-                          : order.status === 'pending'
-                            ? 'warning'
-                            : order.status === 'canceled'
-                              ? 'danger'
-                              : 'info'
-                      }
-                      className="mt-3xs inline-flex"
-                    >
-                      {getOrderStatusLabel(order.status)}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="col-span-2 flex items-center">
-                  <p className="text-fg-secondary text-sm">
-                    {formatOrderDate(order.created_at as string)}
-                  </p>
-                </div>
-
-                <div className="col-span-4 flex items-center">
-                  <div className="flex items-center gap-xs">
-                    <div className="-space-x-2 flex">
-                      {order.items?.slice(0, 3).map((item, index) => (
-                        <div
-                          key={item.id}
-                          className="relative h-fit w-10 overflow-hidden rounded-full border-2 border-base bg-fill-base"
-                          style={{ zIndex: 3 - index }}
-                        >
-                          {item.thumbnail && (
-                            <Image
-                              src={item.thumbnail}
-                              alt={item.product_title || ''}
-                              className="h-full w-full object-cover"
-                              width={40}
-                              height={40}
-                            />
-                          )}
-                        </div>
-                      ))}
-                      {order.items && order.items.length > 3 && (
-                        <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-base bg-fill-base">
-                          <span className="font-medium text-fg-secondary text-xs">
-                            +{order.items.length - 3}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="line-clamp-1 text-fg-primary text-sm">
-                        {order.items?.[0] &&
-                          order.items.length < 2 &&
-                          truncateProductTitle(
-                            order.items[0].product_title || ''
-                          )}
-                      </p>
-                      <p className="text-fg-tertiary text-xs">
-                        {order.items?.length || 0} položek
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-span-2 flex items-center justify-end">
-                  <p className="font-semibold text-fg-primary">
-                    {formatPrice(
-                      order.summary?.current_order_total || order.total || 0,
-                      order.currency_code
-                    )}
-                  </p>
-                </div>
-
-                <div className="col-span-2 flex items-center justify-end">
-                  <LinkButton
-                    as={Link}
-                    prefetch={true}
-                    href={`/account/orders/${order.id}`}
-                    size="sm"
-                    variant="primary"
-                  >
-                    Detail
-                  </LinkButton>
-                </div>
+          {error ? (
+            <OrdersError />
+          ) : orders.length === 0 ? (
+            <OrdersEmpty />
+          ) : (
+            <>
+              {/* Mobile view */}
+              <div className="block space-y-3 sm:hidden">
+                {orders.map((order) => (
+                  <MobileOrderCard key={order.id} order={order} />
+                ))}
               </div>
-            ))}
-          </div>
+
+              {/* Desktop view */}
+              <div className="hidden overflow-hidden rounded-sm border border-orders-border bg-orders-card-bg sm:block">
+                <OrdersTableHeader />
+                {orders.map((order) => (
+                  <DesktopOrderCard key={order.id} order={order} />
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
