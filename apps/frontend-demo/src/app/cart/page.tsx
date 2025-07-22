@@ -2,6 +2,7 @@
 
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useCart } from '@/hooks/use-cart'
+import { truncateProductTitle } from '@/lib/order-utils'
 import { orderHelpers } from '@/stores/order-store'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
@@ -93,7 +94,7 @@ export default function CartPage() {
                                 href={getProductPath(item.product_handle || '')}
                               >
                                 <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
-                                  {item.title}
+                                  {truncateProductTitle(item.title)}
                                 </h3>
                               </Link>
                               <div className="mb-cart-item-options-margin text-cart-item-options">
@@ -108,11 +109,12 @@ export default function CartPage() {
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-cart-item-actions-gap">
+                          <div className="flex flex-col gap-cart-item-actions-gap sm:flex-row sm:items-center">
                             <NumericInput
                               value={item.quantity}
                               min={1}
                               max={99}
+                              hideControls={false}
                               onChange={(value) =>
                                 updateQuantity(item.id, value)
                               }
@@ -128,7 +130,7 @@ export default function CartPage() {
                             >
                               Odebrat
                             </Button>
-                            <Button onClick={() => console.log(item)}>
+                            <Button size="sm" onClick={() => console.log(item)}>
                               Check item
                             </Button>
                           </div>
@@ -189,7 +191,7 @@ export default function CartPage() {
                 <LinkButton
                   href="/checkout"
                   className="mt-cart-checkout-margin w-full"
-                  size="lg"
+                  size="md"
                   icon="token-icon-lock"
                   as={Link}
                   prefetch={true}
