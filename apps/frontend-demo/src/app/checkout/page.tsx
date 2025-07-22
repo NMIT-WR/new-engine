@@ -233,7 +233,7 @@ export default function CheckoutPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-8">
-        <div>
+        <div className="hidden sm:block">
           <Steps
             items={steps}
             currentStep={currentStep}
@@ -242,8 +242,9 @@ export default function CheckoutPage() {
             orientation="horizontal"
             linear={false}
             showControls={false}
-            className="hidden sm:flex"
           />
+        </div>
+        <div className="sm:hidden">
           <Steps
             items={steps}
             currentStep={currentStep}
@@ -252,7 +253,6 @@ export default function CheckoutPage() {
             orientation="vertical"
             linear={false}
             showControls={false}
-            className="sm:hidden"
           />
         </div>
 
