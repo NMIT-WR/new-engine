@@ -8,6 +8,7 @@ import { ProductInfo } from '@/components/organisms/product-info'
 import { ProductTabs } from '@/components/organisms/product-tabs'
 import { useProduct, useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
+import { truncateProductTitle } from '@/lib/order-utils'
 import { formatPrice } from '@/utils/price-utils'
 import { ErrorText } from '@ui/atoms/error-text'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
@@ -125,7 +126,10 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
             items={[
               { label: 'Domů', href: '/' },
               { label: 'Produkty', href: '/products' },
-              { label: product.title, href: `/products/${product.handle}` },
+              {
+                label: truncateProductTitle(product.title),
+                href: `/products/${product.handle}`,
+              },
             ]}
           />
         </div>
