@@ -1,7 +1,6 @@
 'use client'
 
 import { LoadingPage } from '@/components/loading-page'
-import { CreditCardDialog } from '@/components/molecules/credit-card-dialog'
 import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
 import { useCheckout } from '@/hooks/use-checkout'
@@ -38,7 +37,6 @@ export default function CheckoutPage() {
     canProceedToStep,
   } = useCheckout()
 
-  const [showCreditCardDialog, setShowCreditCardDialog] = useState(false)
   const [isOrderComplete, setIsOrderComplete] = useState(false)
   const [orderNumber, setOrderNumber] = useState<string>('')
   const [showOrderSummary, setShowOrderSummary] = useState(false)
@@ -58,7 +56,7 @@ export default function CheckoutPage() {
         //  router.push('/cart')
       }
     }
-  }, [cart, router, isLoading, isOrderComplete])
+  }, [cart, isLoading, isOrderComplete])
 
   // Show loading state while cart is loading
   if (isLoading) return <LoadingPage />
@@ -80,37 +78,7 @@ export default function CheckoutPage() {
   const paymentFee = selectedPaymentMethod?.fee || 0
 
   const handleComplete = async () => {
-    // Check if payment method is credit card
-    if (selectedPayment === 'card') {
-      setShowCreditCardDialog(true)
-      return
-    }
-
     // For other payment methods, process directly
-    try {
-      const order = await processOrder()
-      if (order) {
-        setOrderNumber(
-          String(order.display_id) || `CZ${Date.now().toString().slice(-8)}`
-        )
-        setIsOrderComplete(true)
-        setCurrentStep(3)
-      }
-    } catch (error) {
-      // Error already handled in hook
-    }
-  }
-
-  const handleCreditCardSubmit = async (_cardData: {
-    cardNumber: string
-    cardHolder: string
-    expiryDate: string
-    cvv: string
-  }) => {
-    // Process card payment
-    // In production, you would send _cardData to payment processor
-    setShowCreditCardDialog(false)
-
     try {
       const order = await processOrder()
       if (order) {
@@ -274,6 +242,17 @@ export default function CheckoutPage() {
             orientation="horizontal"
             linear={false}
             showControls={false}
+            className="hidden sm:flex"
+          />
+          <Steps
+            items={steps}
+            currentStep={currentStep}
+            onStepChange={handleStepChange}
+            onStepComplete={handleComplete}
+            orientation="vertical"
+            linear={false}
+            showControls={false}
+            className="sm:hidden"
           />
         </div>
 
@@ -287,13 +266,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-
-      <CreditCardDialog
-        open={showCreditCardDialog}
-        onOpenChange={(details) => setShowCreditCardDialog(details.open)}
-        onSubmit={handleCreditCardSubmit}
-        isLoading={isProcessingPayment}
-      />
     </div>
   )
 }
