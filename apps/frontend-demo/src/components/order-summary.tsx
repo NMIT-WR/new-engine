@@ -1,9 +1,9 @@
 'use client'
 
+import type { OrderSummaryProps } from '@/types/checkout'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { LinkButton } from '@ui/atoms/link-button'
-import type { OrderSummaryProps } from '@/types/checkout'
 
 export function OrderSummary({
   addressData,
@@ -126,6 +126,7 @@ export function OrderSummary({
                   document.body.removeAttribute('data-print-date')
                 }, 1000)
               }}
+              size="sm"
               variant="secondary"
               icon="token-icon-printer"
               className="hidden sm:flex"
@@ -137,6 +138,7 @@ export function OrderSummary({
               variant="primary"
               icon="token-icon-shopping-bag"
               className="w-full gap-2 rounded-sm text-md sm:flex-1"
+              size="sm"
             >
               Pokračovat v nákupu
             </LinkButton>
@@ -228,6 +230,7 @@ export function OrderSummary({
             variant="secondary"
             onClick={onEditClick}
             className="w-full sm:w-auto"
+            size="sm"
           >
             Upravit údaje
           </Button>
@@ -237,6 +240,7 @@ export function OrderSummary({
             className="w-full sm:flex-1"
             isLoading={isLoading}
             disabled={isLoading}
+            size="sm"
           >
             <span className="flex items-center gap-2">Dokončit objednávku</span>
           </Button>{' '}

@@ -1,19 +1,18 @@
 'use client'
 
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
+import { CartSummary } from '@/components/cart/cart-summary'
+import { EmptyCart } from '@/components/cart/empty-cart'
 import { useCart } from '@/hooks/use-cart'
 import { truncateProductTitle } from '@/lib/order-utils'
 import { orderHelpers } from '@/stores/order-store'
 import { formatPrice } from '@/utils/price-utils'
 import { getProductPath } from '@/utils/product-utils'
 import { Button } from '@ui/atoms/button'
-import { Icon } from '@ui/atoms/icon'
-import { LinkButton } from '@ui/atoms/link-button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { NumericInput } from '@ui/molecules/numeric-input'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect } from 'react'
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
@@ -29,11 +28,6 @@ export default function CartPage() {
 
   // Clear previous completed order
   orderHelpers.clearCompletedOrder()
-
-  useEffect(() => {
-    console.log(cart)
-    console.log(items)
-  }, [cart, items])
 
   return (
     <div className="min-h-screen bg-cart-bg">
@@ -94,15 +88,9 @@ export default function CartPage() {
                                 href={getProductPath(item.product_handle || '')}
                               >
                                 <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
-                                  {truncateProductTitle(item.title)}
+                                  {`${truncateProductTitle(item.title)} (${item.variant_title})`}
                                 </h3>
                               </Link>
-                              <div className="mb-cart-item-options-margin text-cart-item-options">
-                                {item.variant?.title &&
-                                  item.variant.title !== item.title && (
-                                    <span>{item.variant.title}</span>
-                                  )}
-                              </div>
                               <p className="font-cart-item-price text-cart-item-price">
                                 {formatPrice(price, currencyCode)}
                               </p>
@@ -130,9 +118,6 @@ export default function CartPage() {
                             >
                               Odebrat
                             </Button>
-                            <Button size="sm" onClick={() => console.log(item)}>
-                              Check item
-                            </Button>
                           </div>
                         </div>
                       </div>
@@ -155,84 +140,16 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="lg:sticky lg:top-cart-summary-top lg:h-fit">
-              <div className="rounded-cart-summary bg-cart-summary-bg p-cart-summary-padding shadow-cart-summary">
-                <h2 className="mb-cart-summary-title-margin font-cart-summary-title text-cart-summary-title">
-                  Souhrn objednávky
-                </h2>
-
-                <div className="space-y-cart-summary-rows-gap">
-                  <div className="flex justify-between text-cart-summary-text">
-                    <span>Mezisoučet</span>
-                    <span>{formatPrice(subtotal, currencyCode)}</span>
-                  </div>
-                  <div className="flex justify-between text-cart-summary-text">
-                    <span>Doprava</span>
-                    <span>
-                      {shipping === 0
-                        ? 'ZDARMA'
-                        : formatPrice(shipping, currencyCode)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-cart-summary-text">
-                    <span>DPH (21%)</span>
-                    <span>{formatPrice(tax, currencyCode)}</span>
-                  </div>
-                </div>
-
-                <div className="my-cart-summary-divider border-cart-summary-divider border-t" />
-
-                <div className="flex justify-between text-cart-summary-text">
-                  <span>Celkem</span>
-                  <span>{formatPrice(total, currencyCode)}</span>
-                </div>
-
-                <LinkButton
-                  href="/checkout"
-                  className="mt-cart-checkout-margin w-full"
-                  size="md"
-                  icon="token-icon-lock"
-                  as={Link}
-                  prefetch={true}
-                >
-                  Přejít k platbě
-                </LinkButton>
-
-                <LinkButton
-                  href="/products"
-                  className="mt-4 w-full"
-                  variant="tertiary"
-                  theme="borderless"
-                  size="sm"
-                >
-                  Pokračovat v nakupování
-                </LinkButton>
-              </div>
-            </div>
+            <CartSummary
+              subtotal={subtotal}
+              total={total}
+              tax={tax}
+              shipping={shipping}
+              currencyCode={currencyCode}
+            />
           </div>
         ) : (
-          /* Empty Cart */
-          <div className="py-cart-empty-y text-center">
-            <Icon
-              icon="icon-[mdi--cart-outline]"
-              size="2xl"
-              className="mb-cart-empty-icon-margin"
-            />
-            <h2 className="mb-cart-empty-title-margin font-cart-empty-title text-cart-empty-title">
-              Váš košík je prázdný
-            </h2>
-            <p className="mb-cart-empty-text-margin text-cart-empty-text">
-              Vypadá to, že jste do košíku ještě nic nepřidali.
-            </p>
-            <LinkButton
-              href="/products"
-              size="lg"
-              icon="icon-[mdi--shopping-outline]"
-            >
-              Začít Nakupovat
-            </LinkButton>
-          </div>
+          <EmptyCart />
         )}
       </div>
     </div>
