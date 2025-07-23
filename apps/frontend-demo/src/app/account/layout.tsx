@@ -36,7 +36,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
     <div className="mx-auto max-w-layout-max px-4 py-8">
       <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
         {/* Sidebar */}
-        <nav className="sticky top-16 z-10 flex h-fit gap-3 space-y-1 border-b bg-base pb-4 lg:block lg:border-none">
+        <nav className="sticky top-16 z-5 flex h-fit gap-3 space-y-1 border-b bg-base py-4 lg:block lg:border-none">
           {accountLinks.map((link) => {
             const isActive = pathname === link.href
             return (

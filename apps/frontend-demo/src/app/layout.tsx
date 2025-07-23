@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import '../tokens/index.css'
+import { DisclaimerWrapper } from '@/components/disclaimer-wrapper'
 import { Footer } from '@/components/footer'
 import { HeaderWrapper } from '@/components/header-wrapper'
 import { Providers } from '@/components/providers'
-import * as React from 'react'
-import { DisclaimerWrapper } from '@/components/disclaimer-wrapper'
+import type * as React from 'react'
 
 export const metadata: Metadata = {
   title: 'Frontend Demo',
@@ -16,17 +16,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex min-h-screen flex-col min-w-layout-min">
+      <body className="flex min-h-screen min-w-layout-min flex-col">
         <Providers>
           <HeaderWrapper
             logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
           />
           <main className="flex-1">
-                  <DisclaimerWrapper />
-            {children}</main>
+            <DisclaimerWrapper />
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>

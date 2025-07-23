@@ -1,5 +1,6 @@
 @theme static {
   /* Breakpoints - matching Tailwind defaults but customizable */
+  --breakpoint-xs: 30rem; /* 400px */
   --breakpoint-sm: 40rem; /* 640px */
   --breakpoint-md: 48rem; /* 768px */
   --breakpoint-lg: 64rem; /* 1024px */
