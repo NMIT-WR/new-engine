@@ -1,43 +1,15 @@
 'use client'
 import { contactContent } from '@/data/contact-content'
+import { useContactForm } from '@/hooks/use-contact-form'
 import { Button } from '@ui/atoms/button'
+import { Icon, type IconType } from '@ui/atoms/icon'
 import { FormInput } from '@ui/molecules/form-input'
 import { FormTextarea } from '@ui/molecules/form-textarea'
 import { Select } from '@ui/molecules/select'
-import { useToast } from '@ui/molecules/toast'
-import { useState } from 'react'
 
 export default function ContactPage() {
   const { hero, form, info, hours, help } = contactContent
-  const toast = useToast()
-
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    subject: 'general',
-    message: '',
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // In a real app, this would send to an API
-    toast.create({
-      title: form.successMessage.title,
-      description: form.successMessage.description,
-      duration: 5000,
-    })
-    // Reset form
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      subject: 'general',
-      message: '',
-    })
-  }
+  const { formData, updateField, handleSubmit, isSubmitting } = useContactForm()
 
   return (
     <>
@@ -75,7 +47,7 @@ export default function ContactPage() {
                     size="sm"
                     value={formData.firstName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setFormData({ ...formData, firstName: e.target.value })
+                      updateField('firstName', e.target.value)
                     }
                     required
                   />
@@ -85,7 +57,7 @@ export default function ContactPage() {
                     size="sm"
                     value={formData.lastName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setFormData({ ...formData, lastName: e.target.value })
+                      updateField('lastName', e.target.value)
                     }
                     required
                   />
@@ -96,7 +68,7 @@ export default function ContactPage() {
                     size="sm"
                     value={formData.email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setFormData({ ...formData, email: e.target.value })
+                      updateField('email', e.target.value)
                     }
                     required
                   />
@@ -107,25 +79,18 @@ export default function ContactPage() {
                     size="sm"
                     value={formData.phone}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setFormData({ ...formData, phone: e.target.value })
+                      updateField('phone', e.target.value)
                     }
                   />
                   <div className="space-y-contact-field-gap md:col-span-2">
-                    <label
-                      htmlFor="subject"
-                      className="font-contact-label text-contact-label-fg text-contact-label-size"
-                    >
-                      {form.labels.subject}
-                    </label>
                     <Select
+                      label={form.labels.subject}
                       options={form.subjects}
                       value={[formData.subject]}
                       onValueChange={(details) =>
-                        setFormData({
-                          ...formData,
-                          subject: details.value[0] || 'general',
-                        })
+                        updateField('subject', details.value[0] || 'general')
                       }
+                      size="sm"
                       placeholder="Vyberte téma"
                     />
                   </div>
@@ -137,14 +102,18 @@ export default function ContactPage() {
                       size="sm"
                       value={formData.message}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setFormData({ ...formData, message: e.target.value })
+                        updateField('message', e.target.value)
                       }
                       required
                     />
                   </div>
                 </div>
-                <Button type="submit" className="mt-6 w-full">
-                  {form.labels.submit}
+                <Button
+                  type="submit"
+                  className="mt-6 w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Odesílám...' : form.labels.submit}
                 </Button>
               </form>
             </div>
@@ -161,19 +130,10 @@ export default function ContactPage() {
                     key={index}
                     className="mb-contact-info-item-gap flex items-start space-x-contact-info-icon-gap"
                   >
-                    <svg
-                      className="mt-1 h-contact-info-icon w-contact-info-icon flex-shrink-0 text-contact-info-icon-fg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={item.icon}
-                      />
-                    </svg>
+                    <Icon
+                      icon={item.icon as IconType}
+                      className="h-6 text-md"
+                    />
                     <div>
                       <p className="text-contact-info-text-fg text-contact-info-text-size">
                         {item.label}

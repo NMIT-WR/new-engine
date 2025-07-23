@@ -61,3 +61,17 @@
 @utility token-icon-profile {
   @apply icon-[solar--user-bold];
 }
+
+/* === CONTACT ICONS === */
+
+@utility token-icon-email {
+  @apply icon-[mdi--email];
+}
+
+@utility token-icon-phone {
+  @apply icon-[mdi--phone];
+}
+
+@utility token-icon-location {
+  @apply icon-[mdi--map-marker];
+}
