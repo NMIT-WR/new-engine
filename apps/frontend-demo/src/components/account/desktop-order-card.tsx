@@ -57,7 +57,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
                   <Image
                     src={item.thumbnail}
                     alt={item.product_title || ''}
-                    className="h-full w-full object-cover"
+                    className="aspect-square object-cover"
                     width={40}
                     height={40}
                   />
