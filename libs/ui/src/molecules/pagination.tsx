@@ -1,6 +1,6 @@
 import * as pagination from '@zag-js/pagination'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type HTMLAttributes, useId } from 'react'
+import { type ElementType, type HTMLAttributes, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Icon } from '../atoms/icon'
 import { LinkButton } from '../atoms/link-button'
@@ -88,6 +88,7 @@ export interface PaginationProps
   showPrevNext?: boolean
   onPageChange?: (page: number) => void
   dir?: 'ltr' | 'rtl'
+  linkAs?: ElementType
 }
 
 export function Pagination({
@@ -101,6 +102,7 @@ export function Pagination({
   variant,
   className,
   dir = 'ltr',
+  linkAs,
   ...props
 }: PaginationProps) {
   const uniqueId = useId()
@@ -127,11 +129,12 @@ export function Pagination({
         {showPrevNext && (
           <li className={item()}>
             <LinkButton
-            theme='borderless'
+              theme="borderless"
               className={link()}
               icon="token-icon-pagination-prev"
               onClick={() => api.goToPrevPage()}
               disabled={api.page === 1}
+              as={linkAs}
               {...api.getPrevTriggerProps()}
             />
           </li>
@@ -142,11 +145,12 @@ export function Pagination({
             return (
               <li key={page.value} className={item()}>
                 <LinkButton
-                  theme='borderless'
+                  theme="borderless"
                   className={link()}
                   onClick={() => api.setPage(page.value)}
                   aria-current={api.page === page.value ? 'page' : undefined}
                   data-current={api.page === page.value}
+                  as={linkAs}
                   {...api.getItemProps(page)}
                 >
                   {page.value}
@@ -170,11 +174,12 @@ export function Pagination({
         {showPrevNext && (
           <li className={item()}>
             <LinkButton
-              theme='borderless'
+              theme="borderless"
               className={link()}
               icon="token-icon-pagination-next"
               onClick={() => api.goToNextPage()}
               disabled={api.page === api.totalPages}
+              as={linkAs}
               {...api.getNextTriggerProps()}
             />
           </li>
