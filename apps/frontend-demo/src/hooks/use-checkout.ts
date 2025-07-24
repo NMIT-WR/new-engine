@@ -1,12 +1,12 @@
 'use client'
 
-import { SHIPPING_OPTION_MAP } from '@/lib/checkout-data'
+import { cacheConfig } from '@/lib/cache-config'
 import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { orderHelpers } from '@/stores/order-store'
 import type { CheckoutAddressData, UseCheckoutReturn } from '@/types/checkout'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 import { useCart } from './use-cart'
@@ -76,19 +76,36 @@ export function useCheckout(): UseCheckoutReturn {
     }
   }
 
+  const {
+    data: shippingMethods,
+    isLoading: isLoadingShipping,
+    error: shippingError,
+  } = useQuery({
+    queryKey: queryKeys.fulfillment.cartOptions(cart?.id || ''),
+    queryFn: async () => {
+      if (!cart?.id) throw new Error('No cart ID available')
+      const response = await sdk.store.fulfillment.listCartOptions({
+        cart_id: cart.id,
+      })
+
+      const reducedShippingMethods = response.shipping_options.map((o) => ({
+        id: o.id,
+        name: o.name,
+        calculated_price: o.calculated_price,
+      }))
+      return reducedShippingMethods
+    },
+    enabled: !!cart?.id,
+    ...cacheConfig.semiStatic,
+  })
+
   // Add shipping method to cart
   const addShippingMethod = async (methodId: string) => {
     if (!cart?.id) return
 
-    const backendOptionId = SHIPPING_OPTION_MAP[methodId]
-    if (!backendOptionId) {
-      console.error('Unknown shipping method:', methodId)
-      return
-    }
-
     try {
       await sdk.store.cart.addShippingMethod(cart.id, {
-        option_id: backendOptionId,
+        option_id: methodId,
       })
       await refetch()
     } catch (error) {
@@ -181,7 +198,9 @@ export function useCheckout(): UseCheckoutReturn {
         clearCart()
 
         // Invalidate orders cache to refresh the list
-        await queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.orders.all(),
+        })
 
         // Return success with order data
         return order
@@ -223,6 +242,9 @@ export function useCheckout(): UseCheckoutReturn {
     selectedShipping,
     addressData,
     isProcessingPayment,
+    shippingMethods,
+    isLoadingShipping,
+    shippingError,
 
     // Actions
     setCurrentStep,

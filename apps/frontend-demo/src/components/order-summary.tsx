@@ -1,9 +1,25 @@
 'use client'
-
-import type { OrderSummaryProps } from '@/types/checkout'
+import { formatPrice } from '@/lib/format-price'
+import type {
+  CheckoutAddressData,
+  PaymentMethod,
+  ReducedShippingMethod,
+} from '@/types/checkout'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { LinkButton } from '@ui/atoms/link-button'
+import Link from 'next/link'
+
+interface OrderSummaryProps {
+  addressData?: CheckoutAddressData
+  selectedShipping: ReducedShippingMethod | undefined
+  selectedPayment: PaymentMethod | undefined
+  onCompleteClick: () => void
+  onEditClick: () => void
+  isOrderComplete?: boolean
+  orderNumber?: string
+  isLoading?: boolean
+}
 
 export function OrderSummary({
   addressData,
@@ -29,6 +45,11 @@ export function OrderSummary({
       </div>
     )
   }
+
+  const shippingPrice = formatPrice(
+    selectedShipping?.calculated_price.calculated_amount || 0,
+    selectedShipping?.calculated_price.currency_code || 'CZK'
+  )
 
   // Order complete state
   if (isOrderComplete && orderNumber) {
@@ -139,6 +160,7 @@ export function OrderSummary({
               icon="token-icon-shopping-bag"
               className="w-full gap-2 rounded-sm text-md sm:flex-1"
               size="sm"
+              as={Link}
             >
               Pokračovat v nákupu
             </LinkButton>
@@ -207,12 +229,9 @@ export function OrderSummary({
           <div>
             <h3 className="mb-2 font-semibold text-fg-primary">Doprava</h3>
             <p className="text-fg-secondary text-sm">
-              {selectedShipping?.name} -{' '}
-              {selectedShipping?.price
-                ? `${selectedShipping.price} Kč`
-                : 'Zdarma'}
+              {selectedShipping?.name} - {shippingPrice}
               <br />
-              Očekávané doručení: {selectedShipping?.delivery}
+              Očekávané doručení: 1-2 dny
             </p>
           </div>
 

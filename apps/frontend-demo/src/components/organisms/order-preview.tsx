@@ -28,7 +28,7 @@ export function OrderPreview({
     return null
   }
 
-  const finalTotal = orderData.total + shippingPrice + paymentFee
+  const finalTotal = orderData.total + paymentFee
 
   return (
     <div className={`rounded-lg p-4 sm:p-6 ${className}`}>
@@ -78,7 +78,7 @@ export function OrderPreview({
       <div className="flex flex-col gap-1 sm:gap-2">
         <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>Mezisoučet</span>
-          <span>{formatPrice(orderData.subtotal)}</span>
+          <span>{formatPrice(orderData.original_item_subtotal)}</span>
         </div>
 
         {orderData.discount_total > 0 && (
@@ -90,13 +90,15 @@ export function OrderPreview({
 
         <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>DPH (21%)</span>
-          <span>{formatPrice(orderData.tax_total)}</span>
+          <span>{formatPrice(orderData.original_item_tax_total)}</span>
         </div>
 
         <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>Doprava</span>
           <span>
-            {shippingPrice > 0 ? formatPrice(shippingPrice) : 'Zdarma'}
+            {shippingPrice > 0
+              ? formatPrice(orderData.shipping_total)
+              : 'Zdarma'}
           </span>
         </div>
 

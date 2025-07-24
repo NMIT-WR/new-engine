@@ -4,14 +4,13 @@ import { LoadingPage } from '@/components/loading-page'
 import { OrderSummary } from '@/components/order-summary'
 import { useCart } from '@/hooks/use-cart'
 import { useCheckout } from '@/hooks/use-checkout'
-import { PAYMENT_METHODS, SHIPPING_METHODS } from '@/lib/checkout-data'
+import { PAYMENT_METHODS } from '@/lib/checkout-data'
 import { formatPrice } from '@/lib/format-price'
 import { orderHelpers } from '@/stores/order-store'
 import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import { Steps } from '@ui/molecules/steps'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { PaymentSelection } from '../../components/molecules/payment-selection'
 import { ShippingSelection } from '../../components/molecules/shipping-selection'
@@ -20,7 +19,6 @@ import { OrderPreview } from '../../components/organisms/order-preview'
 
 export default function CheckoutPage() {
   const { cart, isLoading } = useCart()
-  const router = useRouter()
 
   const {
     currentStep,
@@ -35,6 +33,8 @@ export default function CheckoutPage() {
     addShippingMethod,
     processOrder,
     canProceedToStep,
+    shippingMethods,
+    isLoadingShipping,
   } = useCheckout()
 
   const [isOrderComplete, setIsOrderComplete] = useState(false)
@@ -68,13 +68,15 @@ export default function CheckoutPage() {
     return null
   }
 
-  const selectedShippingMethod = SHIPPING_METHODS.find(
+  const selectedShippingMethod = shippingMethods?.find(
     (m) => m.id === selectedShipping
   )
   const selectedPaymentMethod = PAYMENT_METHODS.find(
     (m) => m.id === selectedPayment
   )
-  const shippingPrice = selectedShippingMethod?.price || 0
+  const shippingPrice =
+    selectedShippingMethod?.calculated_price.calculated_amount || 0
+
   const paymentFee = selectedPaymentMethod?.fee || 0
 
   const handleComplete = async () => {
@@ -118,6 +120,8 @@ export default function CheckoutPage() {
       content: (
         <ShippingSelection
           selected={selectedShipping}
+          shippingMethods={shippingMethods}
+          isLoading={isLoadingShipping}
           onSelect={async (method) => {
             setSelectedShipping(method)
 

@@ -55,6 +55,12 @@ export const queryKeys = {
     addresses: () => [...queryKeys.all, 'customer', 'addresses'] as const,
   },
 
+  // Fulfillment queries
+  fulfillment: {
+    cartOptions: (cartId: string) => 
+      [...queryKeys.all, 'fulfillment', 'cart-options', cartId] as const,
+  },
+
   // Legacy aliases for backward compatibility
   product: (handle: string, region_id?: string) =>
     queryKeys.products.detail(handle, region_id),

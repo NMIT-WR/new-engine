@@ -58,6 +58,8 @@ export interface Country {
 export interface ShippingSelectionProps {
   selected: string
   onSelect: (method: string) => void
+  shippingMethods: ReducedShippingMethod[] | undefined
+  isLoading: boolean
 }
 
 export interface PaymentSelectionProps {
@@ -71,15 +73,10 @@ export interface AddressFormProps {
   isLoading?: boolean
 }
 
-export interface OrderSummaryProps {
-  addressData?: CheckoutAddressData
-  selectedShipping: ShippingMethod | undefined
-  selectedPayment: PaymentMethod | undefined
-  onCompleteClick: () => void
-  onEditClick: () => void
-  isOrderComplete?: boolean
-  orderNumber?: string
-  isLoading?: boolean
+export interface ReducedShippingMethod {
+  id: string
+  name: string
+  calculated_price: HttpTypes.StoreCalculatedPrice
 }
 
 // UseCheckout hook return type
@@ -90,6 +87,9 @@ export interface UseCheckoutReturn {
   selectedShipping: string
   addressData: CheckoutAddressData | null
   isProcessingPayment: boolean
+  shippingMethods: ReducedShippingMethod[] | undefined
+  isLoadingShipping: boolean
+  shippingError: Error | null
 
   // Actions
   setCurrentStep: (step: number) => void
@@ -100,6 +100,7 @@ export interface UseCheckoutReturn {
   addShippingMethod: (methodId: string) => Promise<void>
   processOrder: () => Promise<HttpTypes.StoreOrder | undefined>
   canProceedToStep: (step: number) => boolean
+  // getShippingMethod: () => void
 }
 
 export interface FormUserData {
