@@ -84,6 +84,7 @@ export function ProductGrid({
             pageSize={pageSize}
             siblingCount={0}
             className="sm:hidden"
+            linkAs={Link}
           />
           {/* Desktop pagination with siblings */}
           <Pagination
@@ -93,6 +94,7 @@ export function ProductGrid({
             pageSize={pageSize}
             siblingCount={1}
             className="hidden sm:flex"
+            linkAs={Link}
           />
         </div>
       )}

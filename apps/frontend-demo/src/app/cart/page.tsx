@@ -39,6 +39,7 @@ export default function CartPage() {
               { label: 'Domů', href: '/' },
               { label: 'Košík', href: '/cart' },
             ]}
+            linkComponent={Link}
           />
         </div>
 

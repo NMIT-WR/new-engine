@@ -96,6 +96,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           theme="borderless"
           size="sm"
           className="mb-4 gap-2"
+          as={Link}
         >
           <Icon icon="token-icon-arrow-left" className="h-4 w-4" />
           Zpět na objednávky
@@ -202,7 +203,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                         <p className="text-orders-fg-secondary text-orders-sm">
                           Celkem
                         </p>
-                        <p className="font-bold text-lg text-orders-fg-primary">
+                        <p className="font-semibold text-md text-orders-fg-primary">
                           {formatPrice(item.total, order.currency_code)}
                         </p>
                       </div>

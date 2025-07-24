@@ -12,6 +12,7 @@ import { truncateProductTitle } from '@/lib/order-utils'
 import { formatPrice } from '@/utils/price-utils'
 import { ErrorText } from '@ui/atoms/error-text'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 interface ProductDetailProps {
@@ -131,6 +132,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
                 href: `/products/${product.handle}`,
               },
             ]}
+            linkComponent={Link}
           />
         </div>
 

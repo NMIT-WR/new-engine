@@ -10,6 +10,7 @@ import { getProducts } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
+import Link from 'next/link'
 import { Suspense, useEffect } from 'react'
 
 const SORT_OPTIONS = [
@@ -124,6 +125,7 @@ function ProductsPageContent() {
             { label: 'Domů', href: '/' },
             { label: 'Produkty', href: '/products' },
           ]}
+          linkComponent={Link}
         />
         <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
           Všechny produkty
