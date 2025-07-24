@@ -1,5 +1,6 @@
 import { Icon } from '@ui/atoms/icon'
 import { LinkButton } from '@ui/atoms/link-button'
+import Link from 'next/link'
 
 export function OrdersEmpty() {
   return (
@@ -14,7 +15,13 @@ export function OrdersEmpty() {
       <p className="mb-md text-orders-fg-secondary text-orders-md">
         Zatím jste nevytvořili žádnou objednávku
       </p>
-      <LinkButton variant="primary" theme="solid" href="/products" size="sm">
+      <LinkButton
+        as={Link}
+        variant="primary"
+        theme="solid"
+        href="/products"
+        size="sm"
+      >
         Začít nakupovat
       </LinkButton>
     </div>

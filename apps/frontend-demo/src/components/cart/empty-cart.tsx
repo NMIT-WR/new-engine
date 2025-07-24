@@ -1,5 +1,6 @@
 import { Icon } from '@ui/atoms/icon'
 import { LinkButton } from '@ui/atoms/link-button'
+import Link from 'next/link'
 
 export function EmptyCart() {
   return (
@@ -19,6 +20,7 @@ export function EmptyCart() {
         href="/products"
         size="lg"
         icon="icon-[mdi--shopping-outline]"
+        as={Link}
       >
         Začít Nakupovat
       </LinkButton>

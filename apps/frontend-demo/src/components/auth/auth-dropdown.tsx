@@ -7,12 +7,10 @@ import { LinkButton } from '@ui/atoms/link-button'
 import { FormInput } from '@ui/molecules/form-input'
 import { Popover } from '@ui/molecules/popover'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { type FormEvent, useState } from 'react'
 
 export function AuthDropdown() {
   const { user, logout } = useAuth()
-  const router = useRouter()
 
   const signOut = async () => {
     await logout()
@@ -75,7 +73,10 @@ export function AuthDropdown() {
       id="user-menu"
       trigger={
         <span className="flex h-full items-center gap-2 rounded-md px-2 py-1 text-sm text-tertiary hover:bg-surface">
-          <Icon icon="icon-[mdi--account-circle]" className='text-header-icon-size' />
+          <Icon
+            icon="icon-[mdi--account-circle]"
+            className="text-header-icon-size"
+          />
           <span className="hidden truncate xl:inline">
             {user.email.split('@')[0]}
           </span>
@@ -188,6 +189,7 @@ function QuickLoginForm() {
         <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">
           <span className="text-auth-dropdown-signup-text">Jste tu noví?</span>
           <LinkButton
+            as={Link}
             href="/auth/register"
             variant="tertiary"
             theme="borderless"

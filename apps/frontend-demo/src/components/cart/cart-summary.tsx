@@ -65,6 +65,7 @@ export function CartSummary({
           variant="tertiary"
           theme="borderless"
           size="sm"
+          as={Link}
         >
           Pokračovat v nakupování
         </LinkButton>

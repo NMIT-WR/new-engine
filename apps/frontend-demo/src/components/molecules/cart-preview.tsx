@@ -32,7 +32,13 @@ export function CartPreview() {
             Košík je prázdný
           </p>
 
-          <LinkButton href="/products" variant="primary" size="sm" block>
+          <LinkButton
+            as={Link}
+            href="/products"
+            variant="primary"
+            size="sm"
+            block
+          >
             Prohlédnout Produkty
           </LinkButton>
         </div>

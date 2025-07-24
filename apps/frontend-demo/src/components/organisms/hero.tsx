@@ -1,6 +1,7 @@
 'use client'
 import { Image } from '@ui/atoms/image'
 import { LinkButton } from '@ui/atoms/link-button'
+import Link from 'next/link'
 
 interface HeroProps {
   title: string
@@ -25,7 +26,6 @@ export function Hero({
   primaryAction,
   secondaryAction,
 }: HeroProps) {
-
   return (
     <section className="relative h-hero-height overflow-hidden">
       {/* Background Image */}
@@ -51,14 +51,15 @@ export function Hero({
               </p>
             )}
             {(primaryAction || secondaryAction) && (
-              <div className="flex flex-col md:flex-row w-fit gap-hero-button-gap">
+              <div className="flex w-fit flex-col gap-hero-button-gap md:flex-row">
                 {primaryAction && (
                   <LinkButton
                     variant="primary"
                     size="lg"
                     theme="solid"
+                    as={Link}
                     href="/products"
-                    className="py-xs h-fit lg:px-hero-button-x lg:py-hero-button-y"
+                    className="h-fit py-xs lg:px-hero-button-x lg:py-hero-button-y"
                   >
                     {primaryAction.label}
                   </LinkButton>
@@ -68,8 +69,9 @@ export function Hero({
                     variant="primary"
                     size="lg"
                     theme="borderless"
+                    as={Link}
                     href="/products"
-                    className='py-xs outline-2 border-white lg:px-hero-button-x lg:py-hero-button-y text-white'
+                    className="border-white py-xs text-white outline-2 lg:px-hero-button-x lg:py-hero-button-y"
                   >
                     {secondaryAction.label}
                   </LinkButton>
