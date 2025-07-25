@@ -23,6 +23,8 @@
   --color-tree-fg-hover: var(--color-fg-reverse);
   --color-tree-fg-selected: var(--color-fg-reverse);
 
+  --font-weight-tree-selected: var(--font-weight-normal);
+
   /* Icons */
   --color-tree-icon: current;
   --color-tree-icon-hover: var(--color-fg-primary);
