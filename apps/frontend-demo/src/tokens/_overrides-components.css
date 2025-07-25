@@ -139,6 +139,13 @@
   /* === STEPS === */
   --color-steps-content-bg: var(--color-base);
 
+  /* === TREE VIEW === */
+  --color-tree-node-selected: transparent;
+  --color-tree-fg-selected: var(--color-tree-fg);
+  --color-tree-node-hover: transparent;
+  --color-tree-fg-hover: var(--color-tree-fg);
+  --font-weight-tree-selected: var(--font-weight-semibold);
+
   /* === TYPOGRAPHY === */
   /* Add base text size explicitly */
   --text-base: 1rem; /* 16px */
