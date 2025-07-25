@@ -1,17 +1,17 @@
 'use client'
 
+import { useRegions } from '@/hooks/use-region'
+import { cacheConfig } from '@/lib/cache-config'
+import { queryKeys } from '@/lib/query-keys'
 import { categoryTree } from '@/lib/static-data/categories'
-import type { Product } from '@/types/product'
+import data from '@/lib/static-data/categories'
+import { getProducts } from '@/services/product-service'
+import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@ui/atoms/button'
 import { Dialog } from '@ui/molecules/dialog'
-import { TreeView } from '@ui/molecules/tree-view'
 import { useState } from 'react'
+import { CategoryFilter } from '../category-filter'
 import { FilterSection } from '../molecules/filter-section'
-import { useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '@/lib/query-keys'
-import { getProducts } from '@/services/product-service'
-import { cacheConfig } from '@/lib/cache-config'
-import { useRegions } from '@/hooks/use-region'
 
 export interface FilterState {
   categories: Set<string>
@@ -31,9 +31,16 @@ export function ProductFilters({
   onFiltersChange,
   hideCategories = false,
 }: ProductFiltersProps) {
-  const {selectedRegion} = useRegions()
+  const { selectedRegion } = useRegions()
+  const [categoryIds, setCategoryIds] = useState<string[]>([])
+
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
+
+  const handleCategoryChange = (newCategoryIds: string[]) => {
+    setCategoryIds(newCategoryIds)
+    updateFilters({ categories: new Set(newCategoryIds) })
+  }
 
   // Prefetch products with specific filters
   const prefetchFilteredProducts = (newFilters: Partial<FilterState>) => {
@@ -41,32 +48,36 @@ export function ProductFilters({
       categories: newFilters.categories || filters.categories,
       sizes: newFilters.sizes || filters.sizes,
     }
-    
+
     const productFilters = {
       categories: Array.from(updatedFilters.categories),
       sizes: Array.from(updatedFilters.sizes),
     }
-    
-    const queryKey = queryKeys.products.list({ 
-      page: 1, 
-      limit: 12, 
-      filters: productFilters 
+
+    const queryKey = queryKeys.products.list({
+      page: 1,
+      limit: 12,
+      filters: productFilters,
+      category: productFilters.categories,
+      region_id: selectedRegion?.id,
     })
-    
+
     // Check if data is already in cache and fresh
     const cachedData = queryClient.getQueryData(queryKey)
     const queryState = queryClient.getQueryState(queryKey)
-    
+
     // Only prefetch if data is not in cache or is stale
-    if (!cachedData || (queryState && queryState.isInvalidated)) {
+    if (!cachedData || queryState?.isInvalidated) {
       queryClient.prefetchQuery({
         queryKey,
-        queryFn: () => getProducts({ 
-          limit: 12, 
-          offset: 0, 
-          filters: productFilters,
-          region_id: selectedRegion?.id
-        }),
+        queryFn: () =>
+          getProducts({
+            limit: 12,
+            offset: 0,
+            filters: productFilters,
+            category: productFilters.categories,
+            region_id: selectedRegion?.id,
+          }),
         ...cacheConfig.semiStatic, // Use consistent cache config
       })
     }
@@ -86,20 +97,14 @@ export function ProductFilters({
     })
   }
 
-  const hasActiveFilters =
-    filters.categories.size > 0 ||
-    filters.sizes.size > 0
+  const hasActiveFilters = filters.categories.size > 0 || filters.sizes.size > 0
 
   // Count active filters for mobile button
-  const activeFilterCount =
-    filters.categories.size +
-    filters.sizes.size
+  const activeFilterCount = filters.categories.size + filters.sizes.size
 
   const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
 
   const renderCategories = () => {
-    const selectedIds = Array.from(filters.categories) as string[]
-
     return (
       <FilterSection
         title="Kategorie"
@@ -111,76 +116,15 @@ export function ProductFilters({
       >
         {categoryTree.length > 0 && (
           <>
-            <div className="text-xs text-gray-500 mb-2">
+            <div className="mb-2 text-gray-500 text-xs">
               Tip: Filtry se aplikují pouze na koncové podkategorie
             </div>
-            <TreeView
-              id="category-tree"
-              data={categoryTree as any}
+            <CategoryFilter
+              categories={categoryTree}
+              leafCategories={data.leafCategories}
+              leafParents={data.leafParents}
+              onSelectionChange={handleCategoryChange}
               selectionMode="single"
-              selectedValue={selectedIds}
-              defaultExpandedValue={[]}
-              expandOnClick={true}
-              showIndentGuides={true}
-              showNodeIcons={false}
-              onFocusChange={(details) => {
-                // Prefetch on focus/hover of category items
-                if (details.focusedValue) {
-                  const hasChildren = (nodeId: string): boolean => {
-                    const findNode = (nodes: any[]): any => {
-                      for (const node of nodes) {
-                        if (node.id === nodeId) return node
-                        if (node.children) {
-                          const found = findNode(node.children)
-                          if (found) return found
-                        }
-                      }
-                      return null
-                    }
-                    const node = findNode(categoryTree)
-                    return node && node.children && node.children.length > 0
-                  }
-                  
-                  if (!hasChildren(String(details.focusedValue))) {
-                    prefetchFilteredProducts({ 
-                      categories: new Set([String(details.focusedValue)]) 
-                    })
-                  }
-                }
-              }}
-              onSelectionChange={(details) => {
-                // Helper function to check if a node has children
-                const hasChildren = (nodeId: string): boolean => {
-                  const findNode = (nodes: any[]): any => {
-                    for (const node of nodes) {
-                      if (node.id === nodeId) return node
-                      if (node.children) {
-                        const found = findNode(node.children)
-                        if (found) return found
-                      }
-                    }
-                    return null
-                  }
-                  const node = findNode(categoryTree)
-                  return node && node.children && node.children.length > 0
-                }
-
-                const selectedValue = details.selectedValue?.[0]
-                const currentSelection = Array.from(filters.categories)[0]
-                
-                if (!selectedValue || selectedValue === undefined || details.selectedValue.length === 0) {
-                  updateFilters({ categories: new Set() })
-                  return
-                }
-                
-                if (!hasChildren(String(selectedValue))) {
-                  if (currentSelection === String(selectedValue)) {
-                    updateFilters({ categories: new Set() })
-                  } else {
-                    updateFilters({ categories: new Set([String(selectedValue)]) })
-                  }
-                }
-              }}
               className="max-h-96 overflow-auto"
             />
           </>
@@ -250,7 +194,7 @@ export function ProductFilters({
 
       {/* Categories Filter */}
       {!hideCategories && renderCategories()}
-      
+
       {/* Sizes Filter */}
       {renderSizes()}
     </>
@@ -263,7 +207,7 @@ export function ProductFilters({
         theme="outlined"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="flex items-center md:hidden bg-surface"
+        className="flex items-center bg-surface md:hidden"
         icon="icon-[mdi--filter-variant]"
       >
         Filtry
@@ -287,9 +231,7 @@ export function ProductFilters({
         >
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b p-4">
-              <h2 className="font-semibold text-lg">
-                Filtry
-              </h2>
+              <h2 className="font-semibold text-lg">Filtry</h2>
               <Button
                 theme="borderless"
                 size="sm"
@@ -298,10 +240,8 @@ export function ProductFilters({
                 aria-label="Zavřít filtry"
               />
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
-              {filterContent}
-            </div>
-            <div className="border-t p-4 flex gap-2">
+            <div className="flex-1 overflow-y-auto p-4">{filterContent}</div>
+            <div className="flex gap-2 border-t p-4">
               <Button
                 theme="outlined"
                 size="sm"

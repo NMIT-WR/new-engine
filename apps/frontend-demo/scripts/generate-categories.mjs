@@ -1,6 +1,6 @@
 /**
- * Script to generate static category data at build time
- * Run with: node scripts/generate-categories.mjs
+ * Script to generate static category data at build time - V2 with leaf extraction
+ * Run with: node scripts/generate-categories-v2.mjs
  */
 
 import fs from 'fs'
@@ -106,8 +106,63 @@ function buildCategoryTree(categories) {
   })
 }
 
+// New function to extract leaf categories and their direct parents
+function extractLeafsAndParents(categoryTree, allCategoriesMap) {
+  const leafCategories = []
+  const leafParentsMap = new Map() // Use Map to avoid duplicates
+
+  // Recursive function to traverse the tree
+  function traverse(node, parentInfo = null) {
+    const isLeaf = node.children.length === 0
+
+    if (isLeaf) {
+      // Add to leaf categories
+      const categoryData = allCategoriesMap[node.id]
+      leafCategories.push({
+        id: node.id,
+        name: node.name,
+        handle: node.handle,
+        parent_category_id: categoryData?.parent_category_id,
+      })
+
+      // Mark parent as leaf parent (if it exists)
+      if (parentInfo && !leafParentsMap.has(parentInfo.id)) {
+        leafParentsMap.set(parentInfo.id, {
+          id: parentInfo.id,
+          name: parentInfo.name,
+          handle: parentInfo.handle,
+          children: parentInfo.childrenIds,
+        })
+      }
+    } else {
+      // Not a leaf, traverse children
+      const childrenIds = node.children.map((child) => child.id)
+      const currentNodeInfo = {
+        id: node.id,
+        name: node.name,
+        handle: node.handle,
+        childrenIds: childrenIds,
+      }
+
+      node.children.forEach((child) => {
+        traverse(child, currentNodeInfo)
+      })
+    }
+  }
+
+  // Start traversal from all root nodes
+  categoryTree.forEach((rootNode) => {
+    traverse(rootNode)
+  })
+
+  return {
+    leafCategories,
+    leafParents: Array.from(leafParentsMap.values()),
+  }
+}
+
 async function generateCategories() {
-  console.log('🔄 Generating static category data...')
+  console.log('🔄 Generating static category data V2...')
 
   try {
     // Fetch categories from API
@@ -148,11 +203,19 @@ async function generateCategories() {
     // Build tree structure
     const categoryTree = buildCategoryTree(allCategories)
 
+    // Extract leafs and their direct parents
+    const { leafCategories, leafParents } = extractLeafsAndParents(
+      categoryTree,
+      categoryMap
+    )
+
     const dataToSave = {
       allCategories,
       categoryTree,
       rootCategories,
       categoryMap,
+      leafCategories,
+      leafParents,
       generatedAt: new Date().toISOString(),
     }
 
@@ -162,11 +225,11 @@ async function generateCategories() {
       fs.mkdirSync(dataDir, { recursive: true })
     }
 
-    // Write JSON to public directory
+    // Write JSON to public directory - TEST VERSION
     const outputPath = path.join(dataDir, 'categories.json')
     fs.writeFileSync(outputPath, JSON.stringify(dataToSave, null, 2))
 
-    // Generate TypeScript module
+    // Generate TypeScript module - TEST VERSION
     const tsOutputPath = path.join(
       __dirname,
       '../src/lib/static-data/categories.ts'
@@ -179,32 +242,50 @@ async function generateCategories() {
 
     const tsContent = `// Auto-generated file - DO NOT EDIT
 // Generated at: ${new Date().toISOString()}
-// Run 'pnpm generate:categories' to regenerate
+// Run 'pnpm generate:categories-v2' to regenerate
 
 import type { Category, CategoryTreeNode } from '@/lib/server/categories'
+
+export interface LeafCategory {
+  id: string
+  name: string
+  handle: string
+  parent_category_id: string | null
+}
+
+export interface LeafParent {
+  id: string
+  name: string
+  handle: string
+  children: string[] // Array of child category IDs
+}
 
 export interface StaticCategoryData {
   allCategories: Category[]
   categoryTree: CategoryTreeNode[]
   rootCategories: Category[]
   categoryMap: Record<string, Category>
+  leafCategories: LeafCategory[]
+  leafParents: LeafParent[]
   generatedAt: string
 }
 
 const data: StaticCategoryData = ${JSON.stringify(dataToSave, null, 2)}
 
 export default data
-export const { allCategories, categoryTree, rootCategories, categoryMap } = data
+export const { allCategories, categoryTree, rootCategories, categoryMap, leafCategories, leafParents } = data
 `
 
     fs.writeFileSync(tsOutputPath, tsContent)
 
-    console.log('✅ Category data generated successfully!')
+    console.log('✅ Category data V2 generated successfully!')
     console.log(`📁 JSON saved to: ${outputPath}`)
     console.log(`📁 TypeScript module saved to: ${tsOutputPath}`)
     console.log(`📊 Stats:`)
     console.log(`   - Total categories: ${allCategories.length}`)
     console.log(`   - Root categories: ${rootCategories.length}`)
+    console.log(`   - Leaf categories: ${leafCategories.length}`)
+    console.log(`   - Leaf parents: ${leafParents.length}`)
     console.log(
       `   - File size: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`
     )
