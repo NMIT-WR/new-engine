@@ -13,7 +13,6 @@ interface CategoryFilterProps {
 
   // Callbacks
   onSelectionChange: (categoryIds: string[]) => void
-  onCategoryHover?: (categoryIds: string[]) => void
 
   // UI Options
   selectionMode?: 'single' | 'multiple'
@@ -28,12 +27,11 @@ interface CategoryFilterProps {
   className?: string
 }
 
-export function CategoryFilter({
+export function CategoryTreeFilter({
   categories,
   leafCategories,
   leafParents,
   onSelectionChange,
-  onCategoryHover,
   selectionMode = 'multiple',
   label,
   className,
@@ -128,4 +126,4 @@ export function CategoryFilter({
   )
 }
 
-CategoryFilter.displayName = 'CategoryFilter'
+CategoryTreeFilter.displayName = 'CategoryTreeFilter'

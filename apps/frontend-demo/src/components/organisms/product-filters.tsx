@@ -10,7 +10,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@ui/atoms/button'
 import { Dialog } from '@ui/molecules/dialog'
 import { useState } from 'react'
-import { CategoryFilter } from '../category-filter'
+import { CategoryTreeFilter } from '../category-tree-filter'
 import { FilterSection } from '../molecules/filter-section'
 
 export interface FilterState {
@@ -119,7 +119,7 @@ export function ProductFilters({
             <div className="mb-2 text-gray-500 text-xs">
               Tip: Filtry se aplikují pouze na koncové podkategorie
             </div>
-            <CategoryFilter
+            <CategoryTreeFilter
               categories={categoryTree}
               leafCategories={data.leafCategories}
               leafParents={data.leafParents}
