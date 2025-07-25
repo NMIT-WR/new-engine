@@ -58,6 +58,7 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
         search: undefined,
       },
       sort: 'newest',
+      category: [],
     })
   }, [prefetchProducts])
 

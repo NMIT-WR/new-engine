@@ -93,6 +93,7 @@ function ProductsPageContent() {
             filters: productFilters,
             sort: urlFilters.sortBy,
             region_id: selectedRegion?.id,
+            category: productFilters.categories,
           }),
           queryFn: () =>
             getProducts({
@@ -101,6 +102,7 @@ function ProductsPageContent() {
               filters: productFilters,
               sort: urlFilters.sortBy,
               region_id: selectedRegion?.id,
+              category: productFilters.categories,
             }),
         })
       })
