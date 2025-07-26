@@ -31,12 +31,12 @@
     "setInitialPublishableKey": "bash -c \"medusa exec ./src/scripts/output-publishable-key.ts | grep -o '<PK_TOKEN>.*</PK_TOKEN>' | sed 's/<PK_TOKEN>//g;s/<\\/PK_TOKEN>//g' | tr -d '\\n\\r' | zsc setSecretEnv CHANNEL_PUBLISHABLE_KEY\""
   },
   "dependencies": {
-    "@medusajs/admin-sdk": "^2.8.7",
-    "@medusajs/cli": "^2.8.7",
-    "@medusajs/dashboard": "^2.8.7",
-    "@medusajs/event-bus-redis": "^2.8.7",
-    "@medusajs/framework": "^2.8.7",
-    "@medusajs/medusa": "^2.8.7",
+    "@medusajs/admin-sdk": "^2.8.8",
+    "@medusajs/cli": "^2.8.8",
+    "@medusajs/dashboard": "^2.8.8",
+    "@medusajs/event-bus-redis": "^2.8.8",
+    "@medusajs/framework": "^2.8.8",
+    "@medusajs/medusa": "^2.8.8",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
@@ -53,7 +53,7 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "^2.8.7",
+    "@medusajs/test-utils": "^2.8.8",
     "@mikro-orm/cli": "6.4.3",
     "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.38",
