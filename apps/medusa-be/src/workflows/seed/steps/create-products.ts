@@ -26,6 +26,7 @@ export type CreateProductsStepInput = {
         title: string
         sku: string
         ean?: string
+        material?: string
         options?: {
             [key: string]: string
         }
@@ -34,6 +35,15 @@ export type CreateProductsStepInput = {
                 url: string
             }[]
             thumbnail?: string
+            attributes?: {
+                name: string
+                value?: string
+            }[]
+            user_code?: string
+        }
+        quantities?: {
+            quantity?: number
+            supplier_quantity?: number
         }
         prices?: {
             amount: number
@@ -116,6 +126,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                     title: inputVariant.title,
                     sku: inputVariant.sku,
                     ean: inputVariant.ean,
+                    material: inputVariant.material,
                     options: inputVariant.options,
                     prices: inputVariant.prices?.map(p => ({
                         amount: p.amount,
@@ -165,6 +176,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 title: v.title,
                 sku: v.sku,
                 ean: v.ean,
+                material: v.material,
                 options: v.options,
                 prices: v.prices?.map(p => ({
                     amount: p.amount,
