@@ -2,6 +2,7 @@ import type {MedusaRequest, MedusaResponse,} from "@medusajs/framework/http"
 import seedN1Workflow, {SeedN1WorkflowInput} from "../../workflows/seed/workflows/seed-n1";
 import {DATABASE_MODULE} from "../../modules/database";
 import {sql} from "drizzle-orm";
+import DatabaseModuleService from "../../modules/database/service";
 
 export async function GET(
     req: MedusaRequest,
@@ -139,7 +140,7 @@ export async function GET(
         },
     }
 
-    const dbService = req.scope.resolve(DATABASE_MODULE)
+    const dbService: DatabaseModuleService = req.scope.resolve(DATABASE_MODULE)
     const resultCategories = await dbService.sqlRaw<any>(
         sql`select cl.title,
                                cl.description,
