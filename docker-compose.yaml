@@ -37,11 +37,10 @@ services:
       dockerfile: docker/development/medusa-fe/Dockerfile
     volumes:
       - .:/var/www
-    command: pnpm --filter medusa-demo dev
+    command: pnpm --filter frontend-demo dev
 #    command: ["tail" ,"-f"]
     ports:
-      - "8000:8000"
-      - "8080:8080"
+      - "8000:3000"
     networks:
       - internal
     depends_on:
