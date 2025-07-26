@@ -135,14 +135,30 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
         const createProductsResult = Steps.createProductsStep(input.products)
 
         // create inventory levels
-
-
-        // link stock locations to fulfillment provider
         const createInventoryLevelsInput: Steps.CreateInventoryLevelsStepInput = transform({
-            createStockLocationResult
-        }, (data) => ({
-            stockLocations: data.createStockLocationResult.result,
-        }))
+            createStockLocationResult, input
+        }, (data) => {
+
+            const inventoryItems: Steps.CreateInventoryLevelsStepInput["inventoryItems"] = [];
+            data.input.products.map(
+                (p) => {
+                    p.variants?.map(
+                        v => {
+                            if (v.quantities?.quantity !== undefined) {
+                                inventoryItems.push({
+                                    sku: v.sku,
+                                    quantity: v.quantities?.quantity,
+                                })
+                            }
+                        }
+                    )
+                })
+
+            return {
+                stockLocations: data.createStockLocationResult.result,
+                inventoryItems: inventoryItems ?? [],
+            }
+        })
 
         const createInventoryLevelsResult = Steps.createInventoryLevelsStep(createInventoryLevelsInput)
 
