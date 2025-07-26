@@ -70,6 +70,18 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
     enabled: enabled !== undefined ? enabled : !!region_id,
     ...cacheConfig.semiStatic,
   })
+  console.log(
+    'Products key:',
+    queryKeys.products.list({
+      page,
+      limit,
+      filters,
+      sort,
+      region_id,
+      q,
+      category: derivedCategory,
+    })
+  )
 
   const totalCount = data?.count || 0
   const totalPages = Math.ceil(totalCount / limit)

@@ -111,7 +111,7 @@ export const getProducts = async (
   // Enhanced logging for debugging
   const caller = new Error().stack?.split('\n')[2]?.trim() || 'Unknown'
   const page = Math.floor(offset / limit) + 1
-  console.log(
+  /* console.log(
     `[ProductService] Fetching products:
     - Page: ${page} (offset: ${offset}, limit: ${limit})
     - Sort: ${sort || 'default'}
@@ -119,7 +119,7 @@ export const getProducts = async (
     - Category: ${category || 'all'}
     - Region: ${region_id || 'none'}
     - Called from: ${caller}`
-  )
+  ) */
 
   try {
     const response = await sdk.store.product.list(queryParams)
@@ -129,7 +129,7 @@ export const getProducts = async (
       return { products: [], count: 0, limit, offset }
     }
 
-    console.log(`[ProductService] Fetched ${response.products.length} products for page ${page}`)
+    /* console.log(`[ProductService] Fetched ${response.products.length} products for page ${page}`) */
 
     const products = response.products.map((p) => transformProduct(p))
 
@@ -196,7 +196,7 @@ export async function getProduct(
     throw new Error('Product not found')
   }
 
-  console.log('[ProductService-Product] Fetched product:', response.products[0])
+  // console.log('[ProductService-Product] Fetched product:', response.products[0])
 
   return transformProduct(response.products[0], true)
 }

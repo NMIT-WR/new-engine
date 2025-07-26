@@ -1,9 +1,11 @@
 'use client'
 
+import { useCategoryPrefetch } from '@/hooks/use-category-prefetch'
 import type { CategoryTreeNode } from '@/lib/server/categories'
 import type { LeafCategory, LeafParent } from '@/lib/static-data/categories'
+import { getDirectChildren } from '@/utils/category-tree-helpers'
 import { type TreeNode, TreeView } from '@ui/molecules/tree-view'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 interface CategoryFilterProps {
   // Data
@@ -37,6 +39,8 @@ export function CategoryTreeFilter({
   className,
 }: CategoryFilterProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [expandedNodes, setExpandedNodes] = useState<string[]>([])
+  const { prefetchForCategory } = useCategoryPrefetch()
 
   // Create Sets for quick lookup
   const leafCategoryIds = useMemo(
@@ -111,6 +115,60 @@ export function CategoryTreeFilter({
     }
   }
 
+  // Handle prefetching when categories are expanded
+  const handlePrefetchCategories = useCallback(
+    (nodeId: string, isExpanded: boolean) => {
+      if (!isExpanded) return
+
+      // Get direct children of the expanded node
+      const children = getDirectChildren(nodeId, categories)
+
+      if (children.length > 0) {
+        console.log(
+          `📂 Expanding category, prefetching ${children.length} children`
+        )
+      }
+
+      children.forEach((child) => {
+        // Use the prefetchForCategory function which handles leaf/leafParent logic
+        prefetchForCategory(
+          child.id,
+          leafCategoryIds,
+          leafParentIds,
+          leafParents
+        )
+      })
+    },
+    [
+      categories,
+      leafCategoryIds,
+      leafParentIds,
+      leafParents,
+      prefetchForCategory,
+    ]
+  )
+
+  // Handle expanded change events from TreeView
+  const handleExpandedChange = useCallback(
+    (details: any) => {
+      const newExpandedNodes = details.expandedValue || []
+      
+      // Find which node was newly expanded
+      const newlyExpanded = newExpandedNodes.filter(
+        (nodeId: string) => !expandedNodes.includes(nodeId)
+      )
+      
+      // Prefetch for each newly expanded node
+      newlyExpanded.forEach((nodeId: string) => {
+        handlePrefetchCategories(nodeId, true)
+      })
+      
+      // Update state
+      setExpandedNodes(newExpandedNodes)
+    },
+    [expandedNodes, handlePrefetchCategories]
+  )
+
   return (
     <TreeView
       id="category-filter-v2"
@@ -120,6 +178,7 @@ export function CategoryTreeFilter({
       selectedValue={selectedCategories}
       showNodeIcons={false}
       onSelectionChange={handleSelectionChange}
+      onExpandedChange={handleExpandedChange}
       expandOnClick={true}
       className={className}
     />
