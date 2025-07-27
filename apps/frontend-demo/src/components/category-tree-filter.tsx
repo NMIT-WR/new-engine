@@ -84,7 +84,7 @@ export function CategoryTreeFilter({
         // It's a leaf parent - add all its children
         const parent = leafParents.find((p) => p.id === catId)
         if (parent) {
-          allCategoryIds.push(...parent.children)
+          allCategoryIds.push(...parent.leafs)
         }
       }
     })
@@ -152,17 +152,17 @@ export function CategoryTreeFilter({
   const handleExpandedChange = useCallback(
     (details: any) => {
       const newExpandedNodes = details.expandedValue || []
-      
+
       // Find which node was newly expanded
       const newlyExpanded = newExpandedNodes.filter(
         (nodeId: string) => !expandedNodes.includes(nodeId)
       )
-      
+
       // Prefetch for each newly expanded node
       newlyExpanded.forEach((nodeId: string) => {
         handlePrefetchCategories(nodeId, true)
       })
-      
+
       // Update state
       setExpandedNodes(newExpandedNodes)
     },

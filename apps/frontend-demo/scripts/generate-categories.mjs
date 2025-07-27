@@ -1,6 +1,6 @@
 /**
- * Script to generate static category data at build time - V2 with leaf extraction
- * Run with: node scripts/generate-categories-v2.mjs
+ * Script to generate static category data at build time - V2 with deep leaf extraction
+ * Run with: node scripts/generate-categories-2.mjs
  */
 
 import fs from 'fs'
@@ -106,17 +106,17 @@ function buildCategoryTree(categories) {
   })
 }
 
-// New function to extract leaf categories and their direct parents
+// New function to extract leaf categories and their parents with ALL nested leafs
 function extractLeafsAndParents(categoryTree, allCategoriesMap) {
   const leafCategories = []
-  const leafParentsMap = new Map() // Use Map to avoid duplicates
-
-  // Recursive function to traverse the tree
-  function traverse(node, parentInfo = null) {
-    const isLeaf = node.children.length === 0
-
-    if (isLeaf) {
-      // Add to leaf categories
+  const leafParentsMap = new Map()
+  
+  // First, identify all leaf nodes
+  const allLeafIds = new Set()
+  
+  function identifyLeafs(node) {
+    if (node.children.length === 0) {
+      allLeafIds.add(node.id)
       const categoryData = allCategoriesMap[node.id]
       leafCategories.push({
         id: node.id,
@@ -124,36 +124,54 @@ function extractLeafsAndParents(categoryTree, allCategoriesMap) {
         handle: node.handle,
         parent_category_id: categoryData?.parent_category_id,
       })
-
-      // Mark parent as leaf parent (if it exists)
-      if (parentInfo && !leafParentsMap.has(parentInfo.id)) {
-        leafParentsMap.set(parentInfo.id, {
-          id: parentInfo.id,
-          name: parentInfo.name,
-          handle: parentInfo.handle,
-          children: parentInfo.childrenIds,
-        })
-      }
     } else {
-      // Not a leaf, traverse children
-      const childrenIds = node.children.map((child) => child.id)
-      const currentNodeInfo = {
+      node.children.forEach(child => identifyLeafs(child))
+    }
+  }
+  
+  // Identify all leafs first
+  categoryTree.forEach(rootNode => identifyLeafs(rootNode))
+  
+  // Now find all ancestors of leafs and collect their nested leafs
+  function collectAllNestedLeafs(node) {
+    const nestedLeafs = []
+    
+    function traverse(n) {
+      if (n.children.length === 0) {
+        nestedLeafs.push(n.id)
+      } else {
+        n.children.forEach(child => traverse(child))
+      }
+    }
+    
+    traverse(node)
+    return nestedLeafs
+  }
+  
+  // Check each node if it has at least one direct child that is a leaf
+  function checkForLeafParents(node) {
+    // Check if any direct child is a leaf
+    const hasDirectLeafChild = node.children.some(child => allLeafIds.has(child.id))
+    
+    // If this node has at least one direct leaf child
+    if (hasDirectLeafChild && !allLeafIds.has(node.id)) {
+      const allNestedLeafs = collectAllNestedLeafs(node)
+      
+      leafParentsMap.set(node.id, {
         id: node.id,
         name: node.name,
         handle: node.handle,
-        childrenIds: childrenIds,
-      }
-
-      node.children.forEach((child) => {
-        traverse(child, currentNodeInfo)
+        children: node.children.map(child => child.id), // Keep original direct children
+        leafs: allNestedLeafs // Add all nested leaf IDs
       })
     }
+    
+    // Check all children recursively
+    node.children.forEach(child => checkForLeafParents(child))
   }
-
-  // Start traversal from all root nodes
-  categoryTree.forEach((rootNode) => {
-    traverse(rootNode)
-  })
+  
+  // Check all nodes starting from root
+  categoryTree.forEach(rootNode => checkForLeafParents(rootNode))
 
   return {
     leafCategories,
@@ -203,7 +221,7 @@ async function generateCategories() {
     // Build tree structure
     const categoryTree = buildCategoryTree(allCategories)
 
-    // Extract leafs and their direct parents
+    // Extract leafs and their parents with all nested leafs
     const { leafCategories, leafParents } = extractLeafsAndParents(
       categoryTree,
       categoryMap
@@ -225,11 +243,11 @@ async function generateCategories() {
       fs.mkdirSync(dataDir, { recursive: true })
     }
 
-    // Write JSON to public directory - TEST VERSION
+    // Write JSON to public directory
     const outputPath = path.join(dataDir, 'categories.json')
     fs.writeFileSync(outputPath, JSON.stringify(dataToSave, null, 2))
 
-    // Generate TypeScript module - TEST VERSION
+    // Generate TypeScript module
     const tsOutputPath = path.join(
       __dirname,
       '../src/lib/static-data/categories.ts'
@@ -242,7 +260,7 @@ async function generateCategories() {
 
     const tsContent = `// Auto-generated file - DO NOT EDIT
 // Generated at: ${new Date().toISOString()}
-// Run 'pnpm generate:categories-v2' to regenerate
+// Run 'node scripts/generate-categories-2.mjs' to regenerate
 
 import type { Category, CategoryTreeNode } from '@/lib/server/categories'
 
@@ -257,7 +275,8 @@ export interface LeafParent {
   id: string
   name: string
   handle: string
-  children: string[] // Array of child category IDs
+  children: string[] // Array of direct child category IDs
+  leafs: string[] // Array of ALL nested leaf category IDs
 }
 
 export interface StaticCategoryData {
@@ -286,8 +305,15 @@ export const { allCategories, categoryTree, rootCategories, categoryMap, leafCat
     console.log(`   - Root categories: ${rootCategories.length}`)
     console.log(`   - Leaf categories: ${leafCategories.length}`)
     console.log(`   - Leaf parents: ${leafParents.length}`)
+    
+    // Log some examples of leaf parents with their nested leafs
+    console.log('\n📋 Example leaf parents with nested leafs:')
+    leafParents.slice(0, 3).forEach(parent => {
+      console.log(`   - ${parent.name}: ${parent.leafs.length} leafs`)
+    })
+    
     console.log(
-      `   - File size: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`
+      `\n   - File size: ${(fs.statSync(outputPath).size / 1024).toFixed(2)} KB`
     )
   } catch (error) {
     console.error('❌ Error generating categories:', error)
