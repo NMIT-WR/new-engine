@@ -5,7 +5,7 @@ import { buildMedusaQuery } from '@/utils/server-filters'
 export interface ProductFilters {
   categories?: string[]
   sizes?: string[]
-  search?: string
+  // search removed - use 'q' parameter directly
 }
 
 export interface ProductListParams {
@@ -83,12 +83,16 @@ export const getProducts = async (
     region_id,
   } = params
 
+  // Use either category parameter OR filters.categories, not both
+  // Priority: explicit category param > filters.categories
+  const categoryIds = category || filters?.categories
+
   // Build base query
   const baseQuery: Record<string, any> = {
     limit,
     offset,
     q,
-    category_id: category,
+    category_id: categoryIds,
     fields: fields,
     ...(region_id && { region_id }),
   }
