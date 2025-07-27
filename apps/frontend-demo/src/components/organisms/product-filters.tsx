@@ -124,8 +124,6 @@ export function ProductFilters({
               leafCategories={data.leafCategories}
               leafParents={data.leafParents}
               onSelectionChange={handleCategoryChange}
-              selectionMode="single"
-              className="max-h-96 overflow-auto"
             />
           </>
         )}
@@ -265,6 +263,7 @@ export function ProductFilters({
           </div>
         </Dialog>
       </div>
+      <Button onClick={() => console.log(categoryIds)}>Log</Button>
     </div>
   )
 }

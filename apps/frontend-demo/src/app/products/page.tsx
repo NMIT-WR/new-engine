@@ -8,6 +8,7 @@ import { useUrlFilters } from '@/hooks/use-url-filters'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'
+import { Button } from '@ui/atoms/button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
 import Link from 'next/link'
@@ -24,6 +25,23 @@ function ProductsPageContent() {
   const pageSize = 12
   const queryClient = useQueryClient()
 
+  const cache = queryClient
+    .getQueryCache()
+    .getAll()
+    .map((q) => {
+      return {
+        queryKey: q.queryKey,
+        params: q.queryKey[3],
+        status: q.state.status,
+        // @ts-ignore
+        count: q.state.data?.count || 0,
+        // @ts-ignore
+        productsLength: q.state.data?.products?.length || 0,
+        // @ts-ignore
+        categories: q.queryKey[3]?.filters?.categories || [],
+      }
+    })
+
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
@@ -31,7 +49,6 @@ function ProductsPageContent() {
   const productFilters = {
     categories: Array.from(urlFilters.filters.categories) as string[],
     sizes: Array.from(urlFilters.filters.sizes) as string[],
-    search: urlFilters.searchQuery || undefined,
   }
 
   const {
@@ -47,6 +64,7 @@ function ProductsPageContent() {
     limit: pageSize,
     filters: productFilters,
     sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+    q: urlFilters.searchQuery || undefined,
     region_id: selectedRegion?.id,
   })
 
@@ -91,18 +109,22 @@ function ProductsPageContent() {
             page,
             limit: pageSize,
             filters: productFilters,
-            sort: urlFilters.sortBy,
+            sort:
+              urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+            q: urlFilters.searchQuery || undefined,
             region_id: selectedRegion?.id,
-            category: productFilters.categories,
           }),
           queryFn: () =>
             getProducts({
               limit: pageSize,
               offset,
               filters: productFilters,
-              sort: urlFilters.sortBy,
+              sort:
+                urlFilters.sortBy === 'relevance'
+                  ? undefined
+                  : urlFilters.sortBy,
+              q: urlFilters.searchQuery || undefined,
               region_id: selectedRegion?.id,
-              category: productFilters.categories,
             }),
         })
       })
@@ -191,6 +213,7 @@ function ProductsPageContent() {
           )}
         </main>
       </div>
+      <Button onClick={() => console.log(cache)}>Debug</Button>
     </div>
   )
 }
