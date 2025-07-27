@@ -25,22 +25,30 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
       const queryKey = queryKeys.products.list({
         page: 1,
         limit: 12,
-        category: categoryIds,
+        filters: { categories: categoryIds, sizes: [] },
         region_id: selectedRegion.id,
+        sort: 'newest',
       })
+
+      // console.log('Prefetch key:', queryKey)
 
       const cachedData = queryClient.getQueryData(queryKey)
       const queryState = queryClient.getQueryState(queryKey)
 
       // Only prefetch if data is not in cache or is stale
       if (!cachedData || queryState?.isInvalidated) {
-        console.log('🔄 Prefetching:', categoryIds.length === 1 ? categoryIds[0] : `${categoryIds.length} categories`)
-        
+        /*console.log(
+          '🔄 Prefetching:',
+          categoryIds.length === 1
+            ? categoryIds[0]
+            : `${categoryIds.length} categories`
+        )*/
+
         queryClient.prefetchQuery({
           queryKey,
           queryFn: () =>
             getProducts({
-              category: categoryIds,
+              filters: { categories: categoryIds, sizes: [] },
               limit: 12,
               offset: 0,
               region_id: selectedRegion.id,
@@ -48,7 +56,12 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
           ...cacheConfig[cacheStrategy],
         })
       } else {
-        console.log('✓ Cached:', categoryIds.length === 1 ? categoryIds[0] : `${categoryIds.length} categories`)
+        /*console.log(
+          '✓ Cached:',
+          categoryIds.length === 1
+            ? categoryIds[0]
+            : `${categoryIds.length} categories`
+        )*/
       }
     },
     [queryClient, selectedRegion?.id, enabled, cacheStrategy]
