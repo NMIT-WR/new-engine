@@ -58,7 +58,7 @@ export function ProductFilters({
       page: 1,
       limit: 12,
       filters: productFilters,
-      category: productFilters.categories,
+      sort: 'newest', // Add default sort to match products page
       region_id: selectedRegion?.id,
     })
 
@@ -75,7 +75,7 @@ export function ProductFilters({
             limit: 12,
             offset: 0,
             filters: productFilters,
-            category: productFilters.categories,
+            sort: 'newest',
             region_id: selectedRegion?.id,
           }),
         ...cacheConfig.semiStatic, // Use consistent cache config

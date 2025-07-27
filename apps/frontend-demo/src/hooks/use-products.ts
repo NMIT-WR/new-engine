@@ -43,9 +43,6 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
   } = params
   const offset = (page - 1) * limit
 
-  // Derive category from filters if not explicitly provided
-  const derivedCategory = category || filters?.categories
-
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.products.list({
       page,
@@ -54,7 +51,7 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
       sort,
       region_id,
       q,
-      category: derivedCategory,
+      category,
     }),
     queryFn: () =>
       getProducts({
@@ -64,13 +61,13 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
         sort,
         fields,
         q,
-        category: derivedCategory,
+        category,
         region_id,
       }),
     enabled: enabled !== undefined ? enabled : !!region_id,
     ...cacheConfig.semiStatic,
   })
-  console.log(
+  /*console.log(
     'Products key:',
     queryKeys.products.list({
       page,
@@ -79,9 +76,9 @@ export function useProducts(params: UseProductsParams = {}): UseProductsReturn {
       sort,
       region_id,
       q,
-      category: derivedCategory,
+      category,
     })
-  )
+  )*/
 
   const totalCount = data?.count || 0
   const totalPages = Math.ceil(totalCount / limit)

@@ -55,10 +55,8 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
       filters: {
         categories: [],
         sizes: [],
-        search: undefined,
       },
       sort: 'newest',
-      category: [],
     })
   }, [prefetchProducts])
 
@@ -69,6 +67,7 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
         category: categoryHandle,
         limit: DEFAULT_LIMIT,
         offset: 0,
+        sort: 'newest', // Add default sort
       })
     },
     [prefetchProducts]
