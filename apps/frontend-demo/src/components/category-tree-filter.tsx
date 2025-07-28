@@ -82,66 +82,48 @@ export function CategoryTreeFilter({
     (details: { expandedValue: string[] }) => {
       const newExpandedNodes = details.expandedValue || []
 
-      // Find which node was newly expanded
+      // Find which nodes were newly expanded
       const newlyExpanded = newExpandedNodes.filter(
         (nodeId: string) => !expandedNodes.includes(nodeId)
       )
 
-      // Prefetch for each newly expanded node
-      newlyExpanded.forEach((nodeId: string) => {
-        // Check if the expanded node is a leafParent
-        const leafParent = leafParents.find((p) => p.id === nodeId)
+      // Process each newly expanded node
+      for (const nodeId of newlyExpanded) {
+        // 1. LEAF CATEGORY - nothing to prefecth
+        if (leafCategoryIds.has(nodeId)) {
+          continue
+        }
 
-        if (leafParent) {
-          // Immediately prefetch all leafs for this category
-          prefetchCategoryProducts(leafParent.leafs)
+        // 2. LEAF PARENT CATEGORY - prefetch all sub tree
+        if (leafParentIds.has(nodeId)) {
+          const leafParent = leafParents.find((p) => p.id === nodeId)
+          if (leafParent) {
+            prefetchCategoryProducts(leafParent.leafs)
+          }
+          continue
+        }
 
-          // With small delay, prefetch direct children that are also leafParents or leafs
-          setTimeout(() => {
-            leafParent.children.forEach((childId) => {
-              // Only prefetch if child is a leaf or leafParent
-              const leafIds = getLeafIdsForCategory(
-                childId,
-                leafCategoryIds,
-                leafParentIds,
-                leafParents
-              )
-              if (leafIds.length > 0) {
-                prefetchCategoryProducts(leafIds)
-              }
-            })
-          }, 100)
-        } else {
-          // Not a leafParent - need to find direct children from category tree
-          const expandedNode = findNodeById(categories, nodeId)
-          if (expandedNode?.children) {
-            // Get direct children that are leafParents or leafs
-            const childrenToPrefetch = expandedNode.children.filter((child) =>
-              isSelectableCategory(child.id, leafCategoryIds, leafParentIds)
+        // 3. Standard category (non-selectable) - prefetch selectable children
+        const expandedNode = findNodeById(categories, nodeId)
+        if (expandedNode?.children) {
+          const selectableChildren = expandedNode.children.filter((child) =>
+            isSelectableCategory(child.id, leafCategoryIds, leafParentIds)
+          )
+
+          const allLeafIds = selectableChildren.flatMap((child) =>
+            getLeafIdsForCategory(
+              child.id,
+              leafCategoryIds,
+              leafParentIds,
+              leafParents
             )
+          )
 
-            if (childrenToPrefetch.length > 0) {
-              // Prefetch each child with slight delays
-              childrenToPrefetch.forEach((child, index) => {
-                setTimeout(
-                  () => {
-                    const leafIds = getLeafIdsForCategory(
-                      child.id,
-                      leafCategoryIds,
-                      leafParentIds,
-                      leafParents
-                    )
-                    if (leafIds.length > 0) {
-                      prefetchCategoryProducts(leafIds)
-                    }
-                  },
-                  100 * (index + 1)
-                )
-              })
-            }
+          if (allLeafIds.length > 0) {
+            prefetchCategoryProducts(allLeafIds)
           }
         }
-      })
+      }
 
       // Update state
       setExpandedNodes(newExpandedNodes)
