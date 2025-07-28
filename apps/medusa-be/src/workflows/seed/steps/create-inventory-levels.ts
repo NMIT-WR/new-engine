@@ -5,6 +5,10 @@ import {createInventoryLevelsWorkflow, updateInventoryLevelsWorkflow} from "@med
 
 export type CreateInventoryLevelsStepInput = {
     stockLocations: StockLocationDTO[]
+    inventoryItems: {
+        sku: string,
+        quantity: number
+    }[]
 }
 
 const CreateInventoryLevelsStepId = 'create-inventory-levels-seed-step'
@@ -21,15 +25,26 @@ export const createInventoryLevelsStep = createStep(CreateInventoryLevelsStepId,
 
     const {data: inventoryItems} = await query.graph({
         entity: "inventory_item",
-        fields: ["id"],
+        fields: ["id", 'sku'],
+    })
+
+    const inventoryItemsMap = input.inventoryItems.map(ii => {
+        return {
+            id: inventoryItems.find(i => i.sku === ii.sku)?.id,
+            sku: ii.sku,
+            quantity: ii.quantity,
+        }
     })
 
     const inventoryLevels: CreateInventoryLevelInput[] = []
     for (const stockLocation of input.stockLocations) {
-        for (const inventoryItem of inventoryItems) {
+        for (const inventoryItem of inventoryItemsMap) {
+            if (inventoryItem.id === undefined) {
+                throw new Error(`Inventory item with sku ${inventoryItem.sku} not found.`)
+            }
             const inventoryLevel = {
                 location_id: stockLocation.id,
-                stocked_quantity: 1000000,
+                stocked_quantity: inventoryItem.quantity,
                 inventory_item_id: inventoryItem.id,
             }
             inventoryLevels.push(inventoryLevel)
@@ -46,11 +61,11 @@ export const createInventoryLevelsStep = createStep(CreateInventoryLevelsStepId,
     ))
     const updateInventoryLevels = existingInventoryLevels.map(eil => {
         const inputInventoryLevel = inventoryLevels.find(il => eil.inventory_item_id === il.inventory_item_id && eil.location_id === il.location_id)
-        if (inputInventoryLevel) {
+        if (inputInventoryLevel !== undefined) {
             return {
                 location_id: eil.location_id,
                 inventory_item_id: eil.inventory_item_id,
-                stocked_quantity: 1000000,
+                stocked_quantity: inputInventoryLevel.stocked_quantity,
             }
         }
 

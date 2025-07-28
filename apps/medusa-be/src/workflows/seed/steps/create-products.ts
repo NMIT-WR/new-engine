@@ -26,8 +26,24 @@ export type CreateProductsStepInput = {
         title: string
         sku: string
         ean?: string
+        material?: string
         options?: {
             [key: string]: string
+        }
+        metadata?: {
+            images?: {
+                url: string
+            }[]
+            thumbnail?: string
+            attributes?: {
+                name: string
+                value?: string
+            }[]
+            user_code?: string
+        }
+        quantities?: {
+            quantity?: number
+            supplier_quantity?: number
         }
         prices?: {
             amount: number
@@ -107,14 +123,18 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             variants: inputProduct.variants?.map(inputVariant => {
                 const existingVariant = existingProduct.variants.find(v => v.sku === inputVariant.sku)
                 return existingVariant ? {
-                        title: inputVariant.title,
-                        sku: inputVariant.sku,
-                        ean: inputVariant.ean,
-                        options: inputVariant.options,
-                        prices: inputVariant.prices?.map(p => ({
-                            amount: p.amount,
-                            currency_code: p.currency_code,
-                    })), id: existingVariant.id} : inputVariant
+                    title: inputVariant.title,
+                    sku: inputVariant.sku,
+                    ean: inputVariant.ean,
+                    material: inputVariant.material,
+                    options: inputVariant.options,
+                    prices: inputVariant.prices?.map(p => ({
+                        amount: p.amount,
+                        currency_code: p.currency_code,
+                    })),
+                    metadata: inputVariant.metadata,
+                    id: existingVariant.id
+                } : inputVariant
             }),
             sales_channels: existingSalesChannels.filter((sc) => {
                 if (sc.name === inputProduct.salesChannelNames.find(t => t === sc.name)) {
@@ -156,11 +176,13 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 title: v.title,
                 sku: v.sku,
                 ean: v.ean,
+                material: v.material,
                 options: v.options,
                 prices: v.prices?.map(p => ({
                     amount: p.amount,
                     currency_code: p.currency_code,
-                }))
+                })),
+                metadata: v.metadata,
             })),
             sales_channels: existingSalesChannels.filter((sc) => {
                 if (sc.name === p.salesChannelNames.find(t => t === sc.name)) {
