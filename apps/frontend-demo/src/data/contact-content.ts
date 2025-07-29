@@ -70,7 +70,7 @@ export const contactContent: ContactContent = {
       firstName: 'Jméno',
       lastName: 'Příjmení',
       email: 'E-mailová adresa',
-      phone: 'Telefonní číslo (nepovinné)',
+      phone: 'Telefonní číslo',
       subject: 'Předmět',
       message: 'Zpráva',
       submit: 'Odeslat zprávu',

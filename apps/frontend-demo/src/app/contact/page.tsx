@@ -81,6 +81,7 @@ export default function ContactPage() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       updateField('phone', e.target.value)
                     }
+                    required
                   />
                   <div className="space-y-contact-field-gap md:col-span-2">
                     <Select
