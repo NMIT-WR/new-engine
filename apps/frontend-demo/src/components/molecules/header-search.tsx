@@ -79,7 +79,6 @@ export function HeaderSearch() {
 
   const handleSelect = (value: string | string[]) => {
     const selectedValues = Array.isArray(value) ? value : [value]
-    console.log('Selected values:', selectedValues)
 
     if (selectedValues.length > 0 && selectedValues[0]) {
       const selectedValue = selectedValues[0]
