@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Steps } from '../../src/molecules/steps'
+import { Select } from '../../src/molecules/select'
+import { Button } from '../../src/atoms/button'
 
 const meta: Meta<typeof Steps> = {
   title: 'Molecules/Steps',
@@ -117,8 +119,62 @@ export const ResponsiveOrientation: Story = {
             currentStep={currentStep}
             orientation="horizontal"
             onStepChange={setCurrentStep}
+            completeText={completeText}
           />
         </div>
+      </div>
+    )
+  },
+}
+
+// Example with custom content
+const stepsWithCustomContent = [
+  {
+    value: 0,
+    title: 'Account',
+    content: (
+      <div className="p-4 rounded-lg">
+        <h3 className="text-lg font-semibold mb-2">Create your account</h3>
+        <p>This is custom content for the account step.</p>
+        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+          Custom Action
+        </button>
+      </div>
+    ),
+  },
+  {
+    value: 1,
+    title: 'Profile',
+    description: 'Complete your profile',
+    // No custom content, will use default rendering
+  },
+  {
+    value: 2,
+    title: 'Settings',
+    content: (
+      <div className="p-4 border border-gray-200 rounded">
+        <h3 className="font-semibold">Custom Settings Form</h3>
+        <label className="block mt-2">
+          <span className="text-gray-700">Preference</span>
+          <Select label="options" options={[{label: "first", value:"first"}, {label: "second", value: "second"}]} size='xs' />
+        </label>
+      </div>
+    ),
+  },
+]
+
+export const WithCustomContent: Story = {
+  render: () => {
+    const [currentStep, setCurrentStep] = useState(0)
+
+    return (
+      <div className="w-[700px]">
+        <Steps
+          items={stepsWithCustomContent}
+          currentStep={currentStep}
+          onStepChange={setCurrentStep}
+          completeText="All steps completed!"
+        />
       </div>
     )
   },
