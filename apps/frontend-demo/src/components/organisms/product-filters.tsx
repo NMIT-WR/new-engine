@@ -263,7 +263,6 @@ export function ProductFilters({
           </div>
         </Dialog>
       </div>
-      <Button onClick={() => console.log(categoryIds)}>Log</Button>
     </div>
   )
 }

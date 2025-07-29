@@ -17,7 +17,7 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
   const cacheStrategy = options?.cacheStrategy ?? 'semiStatic'
 
   const prefetchCategoryProducts = useCallback(
-    (categoryIds: string[]) => {
+    async (categoryIds: string[]) => {
       if (!enabled || !selectedRegion?.id || categoryIds.length === 0) return
 
       // Check if data is already in cache
@@ -29,14 +29,14 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
         sort: 'newest',
       })
 
-
       const cachedData = queryClient.getQueryData(queryKey)
       const queryState = queryClient.getQueryState(queryKey)
 
       // Only prefetch if data is not in cache or is stale
       if (!cachedData || queryState?.isInvalidated) {
+      //  console.log(`[Prefetch] Executing prefetch for ${categoryIds.length} categories`)
 
-        queryClient.prefetchQuery({
+        await queryClient.prefetchQuery({
           queryKey,
           queryFn: () =>
             getProducts({
@@ -48,7 +48,9 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
             }),
           ...cacheConfig[cacheStrategy],
         })
-      }
+      }/* else {
+        console.log(`[Prefetch] Skipping - already in cache for ${categoryIds.length} categories`)
+      }*/
     },
     [queryClient, selectedRegion?.id, enabled, cacheStrategy]
   )

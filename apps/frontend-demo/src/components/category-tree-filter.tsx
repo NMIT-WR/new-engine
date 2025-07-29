@@ -1,5 +1,6 @@
 'use client'
 import { useCategoryPrefetch } from '@/hooks/use-category-prefetch'
+import { useRegions } from '@/hooks/use-region'
 import type { CategoryTreeNode } from '@/lib/server/categories'
 import type { LeafCategory, LeafParent } from '@/lib/static-data/categories'
 import {
@@ -25,6 +26,7 @@ export function CategoryTreeFilter({
   onSelectionChange,
   label,
 }: CategoryFilterProps) {
+  const {selectedRegion} = useRegions()
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [expandedNodes, setExpandedNodes] = useState<string[]>([])
   const { prefetchCategoryProducts } = useCategoryPrefetch()
@@ -77,6 +79,8 @@ export function CategoryTreeFilter({
     }
   }
 
+
+
   // Handle expanded change events from TreeView
   const handleExpandedChange = useCallback(
     (details: { expandedValue: string[] }) => {
@@ -94,33 +98,49 @@ export function CategoryTreeFilter({
           continue
         }
 
-        // 2. LEAF PARENT CATEGORY - prefetch all sub tree
+        // 2. LEAF PARENT CATEGORY - prefetch direct children only
         if (leafParentIds.has(nodeId)) {
-          const leafParent = leafParents.find((p) => p.id === nodeId)
-          if (leafParent) {
-            prefetchCategoryProducts(leafParent.leafs)
+          const expandedParentLeaf = leafParents.find((p) => p.id === nodeId)
+          if (!expandedParentLeaf) continue
+
+          //console.log(`[Prefetch] Expanding parentLeaf: ${expandedParentLeaf.name}`)
+
+          // Process each direct child using leafParents.children
+          for (const childId of expandedParentLeaf.children || []) {
+            if (leafCategoryIds.has(childId)) {
+              // Direct leaf child - prefetch individually
+            //  console.log(`[Prefetch] - Direct leaf child`)
+              void prefetchCategoryProducts([childId])
+            } 
+            else if (leafParentIds.has(childId)) {
+              // Direct parentLeaf child - prefetch its group of leafs
+              const childParentLeaf = leafParents.find((p) => p.id === childId)
+              if (childParentLeaf) {
+               // console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
+                // Only prefetch the group - individual leafs will be prefetched when user expands this child
+                void prefetchCategoryProducts(childParentLeaf.leafs)
+              }
+            }
           }
+
           continue
         }
 
         // 3. Standard category (non-selectable) - prefetch selectable children
         const expandedNode = findNodeById(categories, nodeId)
         if (expandedNode?.children) {
-          const selectableChildren = expandedNode.children.filter((child) =>
-            isSelectableCategory(child.id, leafCategoryIds, leafParentIds)
-          )
+         // console.log(`[Prefetch] Expanding standard category: ${expandedNode.name}`)
 
-          const allLeafIds = selectableChildren.flatMap((child) =>
-            getLeafIdsForCategory(
-              child.id,
-              leafCategoryIds,
-              leafParentIds,
-              leafParents
-            )
-          )
-
-          if (allLeafIds.length > 0) {
-            prefetchCategoryProducts(allLeafIds)
+          // Process each direct child
+          for (const child of expandedNode.children) {
+            if (leafParentIds.has(child.id)) {
+              // Child is a parentLeaf - prefetch its leafs
+              const childParentLeaf = leafParents.find((p) => p.id === child.id)
+              if (childParentLeaf) {
+              //  console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
+                void prefetchCategoryProducts(childParentLeaf.leafs)
+              }
+            }
           }
         }
       }

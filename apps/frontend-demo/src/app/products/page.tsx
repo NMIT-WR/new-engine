@@ -213,7 +213,6 @@ function ProductsPageContent() {
           )}
         </main>
       </div>
-      <Button onClick={() => console.log(cache)}>Debug</Button>
     </div>
   )
 }
