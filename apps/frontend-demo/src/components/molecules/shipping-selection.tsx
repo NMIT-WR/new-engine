@@ -35,15 +35,15 @@ const ShippingMethodDetail = ({
         />
       )}
       <div className="flex-1">
-        <h3 className="font-semibold text-fg-primary text-sm">{method.name}</h3>
-        <p className="mt-0.5 text-fg-secondary text-xs sm:text-sm">
+        <h3 className="font-semibold hidden text-fg-primary text-sm xs:block">{method.name}</h3>
+        <p className="mt-0.5 hidden text-fg-secondary text-xs xs:block sm:text-sm">
           {detailInfo?.description}
         </p>
-        <p className="font-medium text-fg-secondary text-xs">
+        <p className="font-medium hidden text-fg-secondary text-xs xs:block">
           {detailInfo?.deliveryDate || detailInfo?.delivery}
         </p>
       </div>
-      <span className="ml-auto font-bold text-fg-primary sm:text-lg">
+      <span className="ml-auto text-sm font-bold text-fg-primary sm:text-lg">
         {formattedPrice}
       </span>
       <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-border bg-base transition-all duration-200 sm:h-5 sm:w-5">

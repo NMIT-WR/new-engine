@@ -3,6 +3,7 @@
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/lib/format-price'
 import { orderHelpers } from '@/stores/order-store'
+import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import Image from 'next/image'
 
@@ -56,7 +57,7 @@ export function OrderPreview({
               )}
               <div className="flex flex-col gap-0.5 sm:gap-1">
                 <div className="font-medium text-fg-primary text-xs sm:text-sm">
-                  {cartItem.title}
+                  {cartItem.title} ({cartItem.variant_title})
                 </div>
                 {cartItem.variant && (
                   <div className="text-fg-secondary text-xs">
