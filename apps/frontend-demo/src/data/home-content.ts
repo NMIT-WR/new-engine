@@ -156,26 +156,72 @@ export const alternativeBannerContent: BannerContent[] = [
 ]
 
 const categoryHandles = {
-  "panske" : ['kratke-rukavy', 'na-zip', 'street', 'svetry'],
-  "damske" : ['pres-hlavu-category-140','svetry-category-144', 'street-category-147', 'kratasy-category-149', 'saty-a-sukne'],
-  "detske" : ['kratke-rukavy-category-268', 'street-category-274', 'boty-category-282'],
-  "cyklo": ['dlouhy-rukav', 'xc-dh-volne', 'xc-dh-volne-category-43', 'dlouhe'],
-  "moto": ['bundy-category-81', 'kalhoty-category-82', 'mx-offroad', 'otevrene'],
-  "snowboard": ['snowboardy', 'vazani', 'prilby-category-107'],
+  panske: ['kratke-rukavy', 'na-zip', 'street', 'svetry'],
+  damske: [
+    'pres-hlavu-category-140',
+    'svetry-category-144',
+    'street-category-147',
+    'kratasy-category-149',
+    'saty-a-sukne',
+  ],
+  detske: [
+    'kratke-rukavy-category-268',
+    'street-category-274',
+    'boty-category-282',
+  ],
+  cyklo: ['dlouhy-rukav', 'xc-dh-volne', 'xc-dh-volne-category-43', 'dlouhe'],
+  moto: ['bundy-category-81', 'kalhoty-category-82', 'mx-offroad', 'otevrene'],
+  snowboard: ['snowboardy', 'vazani', 'prilby-category-107'],
 }
 
 type CategoryKey = keyof typeof categoryHandles
-const categoryConfig: { key: CategoryKey; name: string; image: string }[] = [
-  { key: 'panske', name: 'Pánské', image: 'cat-men.webp' },
-  { key: 'damske', name: 'Dámské', image: 'cat-women.webp' },
-  { key: 'detske', name: 'Dětské', image: 'cat-kids.webp' },
-  { key: 'cyklo', name: 'Cyklo', image: 'cat-cyclo.webp' },
-  { key: 'moto', name: 'Moto', image: 'cat-moto.webp' },
-  { key: 'snowboard', name: 'Snowboard', image: 'cat-ski.webp' },
+const categoryConfig: {
+  key: CategoryKey
+  name: string
+  image: string
+  description: string
+}[] = [
+  {
+    key: 'panske',
+    name: 'Pánské',
+    image: 'cat-men.webp',
+    description: 'Od formálního po sportovní - vše pro pány',
+  },
+  {
+    key: 'damske',
+    name: 'Dámské',
+    image: 'cat-women.webp',
+    description: 'Elegance a trendy pro každou příležitost',
+  },
+  {
+    key: 'detske',
+    name: 'Dětské',
+    image: 'cat-kids.webp',
+    description: 'Pohodlné a odolné pro každodenní radosti',
+  },
+  {
+    key: 'cyklo',
+    name: 'Cyklo',
+    image: 'cat-cyclo.webp',
+    description: 'Vybavení pro vášnivé cyklisty',
+  },
+  {
+    key: 'moto',
+    name: 'Moto',
+    image: 'cat-moto.webp',
+    description: 'Bezpečnost a styl pro motorkáře',
+  },
+  {
+    key: 'snowboard',
+    name: 'Snowboard',
+    image: 'cat-ski.webp',
+    description: 'Pro ty, co milují adrenalin na sněhu',
+  },
 ]
 
-export const homeCategories: HomeCategory[] = categoryConfig.map(cat => ({
+export const homeCategories: HomeCategory[] = categoryConfig.map((cat) => ({
   name: cat.name,
   imageUrl: `/assets/cat-images/${cat.image}`,
   leaves: getCategoryIdsByHandles(categoryHandles[cat.key]),
+  description: cat.description,
 }))

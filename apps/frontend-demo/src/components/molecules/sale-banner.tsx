@@ -24,7 +24,7 @@ export function SaleBanner({
             <Image
               src={backgroundImage}
               alt="Sale banner"
-              className="h-full w-full object-cover opacity-banner-image-opacity"
+              className="h-full w-full object-cover opacity-banner-image-opacity brightness-60"
             />
           </div>
           <div className="relative flex flex-col items-center gap-banner-content-gap px-banner-content-x py-banner-content-y text-center text-banner-text md:px-banner-content-x-md md:py-banner-content-y-md">

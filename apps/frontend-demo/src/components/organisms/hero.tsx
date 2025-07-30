@@ -64,18 +64,6 @@ export function Hero({
                     {primaryAction.label}
                   </LinkButton>
                 )}
-                {secondaryAction && (
-                  <LinkButton
-                    variant="primary"
-                    size="lg"
-                    theme="borderless"
-                    as={Link}
-                    href="/products"
-                    className="border-white py-xs text-white outline-2 lg:px-hero-button-x lg:py-hero-button-y"
-                  >
-                    {secondaryAction.label}
-                  </LinkButton>
-                )}
               </div>
             )}
           </div>

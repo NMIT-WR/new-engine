@@ -60,6 +60,7 @@ export interface HomeCategory {
   name: string
   leaves: string[]
   imageUrl: string
+  description: string
 }
 
 export interface ProductVariant {

@@ -28,7 +28,7 @@
   /* === SALE BANNER EFFECTS === */
   --radius-banner-radius: var(--radius-2xl);
   --radius-banner-button-radius: var(--radius-md);
-  --opacity-banner-image-opacity: 0.7; /* Increased for better contrast */
+  --opacity-banner-image-opacity: 1; /* Increased for better contrast */
 
   /* Responsive overrides
   @media (min-width: 768px) {

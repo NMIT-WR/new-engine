@@ -75,6 +75,7 @@ export default function Home() {
           name: cat.name,
           imageUrl: cat.imageUrl,
           leaves: cat.leaves,
+          description: cat.description,
         }))}
       />
 

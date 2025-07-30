@@ -1,4 +1,4 @@
-import type { Category, HomeCategory } from '@/types/product'
+import type { HomeCategory } from '@/types/product'
 import { Image } from '@ui/atoms/image'
 import Link from 'next/link'
 
@@ -29,11 +29,11 @@ export function CategoryGrid({
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="absolute bottom-0 left-0 p-category-card-padding">
-          <h3 className="font-semibold text-category-item-text text-category-item-title-size">
+          <h3 className="font-semibold text-category-item-text text-xl">
             {category.name}
           </h3>
           <p className="text-category-item-count text-category-item-count-size">
-            Prohlédnout produkty
+            {category.description}
           </p>
         </div>
       </>
