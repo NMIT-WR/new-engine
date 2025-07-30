@@ -31,10 +31,10 @@
   --spacing-product-info-stock-gap: var(--spacing-xs);
 
   /* === PRODUCT INFO TYPOGRAPHY === */
-  --text-product-info-title: var(--text-3xl);
+  --text-product-info-title-size: var(--text-xl);
   --font-weight-product-info-title: var(--font-bold);
   --text-product-info-rating-text: var(--text-sm);
-  --text-product-info-price: var(--text-2xl);
+  --text-product-info-price-size: var(--text-lg);
   --font-weight-product-info-price: var(--font-bold);
   --text-product-info-original-price: var(--text-lg);
   --text-product-info-description: var(--text-base);

@@ -12,15 +12,16 @@
   --container-test: 15rem;
   --container-2xs: 10rem; /* 160px */
   --container-xs: 20rem; /* 320px */
-  --container-sm: 40rem; /* 640px */
-  --container-md: 48rem; /* 768px */
+  --container-sm: 30rem; /* 480px */
+  --container-md: 40rem; /* 768px */
   --container-lg: 64rem; /* 1024px */
   --container-xl: 80rem; /* 1280px */
   --container-2xl: 96rem; /* 1536px */
   --container-full: 100%; /* Full width */
 
+  --spacing-container-sm: var(--container-sm);
   --spacing-layout-sm: 15rem;
-  --spacing-layout-md: 40rem;
+  --spacing-layout-md: var(--container-md);
   --spacing-layout-lg: 64rem;
   --spacing-layout-min: var(--container-xs);
   --spacing-layout-max: var(--container-xl);

@@ -83,6 +83,7 @@ export interface ProductPrice {
   id: string
   currency_code: string
   calculated_amount?: number // Amount in dollars/euros
+  calculated_amount_with_tax?: number
   amount: number // Amount in cents
   calculated_price?: string // Formatted price
   original_price?: string // Formatted original price
@@ -94,4 +95,3 @@ export interface ProductOption {
   title: string
   values: string[]
 }
-

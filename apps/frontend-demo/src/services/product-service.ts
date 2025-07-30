@@ -62,7 +62,7 @@ const DETAIL_FIELDS = [
   '+variants.inventory_quantity',
   'variants.prices.amount',
   'variants.prices.currency_code',
-  'variants.prices.calculated_price',
+  'variants.calculated_price',
   'variants.options',
 ].join(',')
 
@@ -187,13 +187,15 @@ const transformProduct = (product: any, withVariants?: boolean): Product => {
 
 export async function getProduct(
   handle: string,
-  region_id?: string
+  region_id?: string,
+  country_code?: string
 ): Promise<Product> {
   const response = await sdk.store.product.list({
     handle,
     fields: DETAIL_FIELDS, // Use full fields for detail views
     limit: 1,
     region_id,
+    country_code: country_code ?? 'cz',
   })
 
   if (!response.products?.length) {

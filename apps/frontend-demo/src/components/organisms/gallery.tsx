@@ -4,24 +4,18 @@ import { Button } from '@ui/atoms/button'
 import { Image as ImageComponent } from '@ui/atoms/image'
 import { Carousel } from '@ui/molecules/carousel'
 import type { CarouselSlide } from '@ui/molecules/carousel'
+import { tv } from '@ui/utils'
 import Image from 'next/image'
 import { useState } from 'react'
-import { tv } from 'tailwind-variants'
-
-interface GalleryProps {
-  images: CarouselSlide[]
-  aspectRatio?: 'square' | 'portrait' | 'landscape' | 'wide'
-  orientation?: 'vertical' | 'horizontal'
-  className?: string
-}
+import type { VariantProps } from 'tailwind-variants'
 
 const galleryStyles = tv({
   slots: {
     root: '',
-    mainCarousel: 'flex h-fit relative w-full',
+    mainCarousel: 'flex h-fit relative',
     container: 'flex-shrink-0',
     scrollArea: 'scrollbar-thin max-h-[60svh]',
-    list: 'flex gap-gallery-list',
+    list: 'flex gap-gallery-sm',
     trigger: [
       'relative flex-shrink-0',
       'aspect-square',
@@ -36,11 +30,11 @@ const galleryStyles = tv({
   variants: {
     orientation: {
       horizontal: {
-        root: 'flex flex-col gap-gallery-root w-full',
+        root: 'flex flex-col',
         mainCarousel: 'order-1',
         container: 'order-2',
         scrollArea: 'w-full overflow-x-auto overflow-y-hidden',
-        list: 'flex-row py-gallery-list',
+        list: 'flex-row py-gallery-sm',
       },
       vertical: {
         root: 'grid grid-cols-5 gap-gallery-root w-full',
@@ -56,10 +50,22 @@ const galleryStyles = tv({
   },
 })
 
+interface GalleryProps extends VariantProps<typeof galleryStyles> {
+  images: CarouselSlide[]
+  aspectRatio?: 'square' | 'portrait' | 'landscape' | 'wide'
+  size?: 'sm' | 'md' | 'lg' | 'full'
+  className?: string
+  thumbnailSize?: number
+  carouselSize?: number
+}
+
 export function Gallery({
   images,
   aspectRatio = 'portrait',
-  orientation = 'vertical',
+  orientation,
+  size = 'full',
+  thumbnailSize = 60,
+  carouselSize = 200,
   className,
 }: GalleryProps) {
   const [currentPage, setCurrentPage] = useState(0)
@@ -95,11 +101,10 @@ export function Gallery({
                   as={Image}
                   src={image.src || ''}
                   alt={image.alt || `Obrázek produktu ${index + 1}`}
-                  width={100}
-                  height={100}
+                  width={thumbnailSize}
+                  height={thumbnailSize}
                   objectFit="cover"
-                  quality={20}
-                  //className={image()}
+                  quality={40}
                 />
               </Button>
             ))}
@@ -110,13 +115,16 @@ export function Gallery({
       {/* Main Carousel */}
       <div className={mainCarousel()}>
         <Carousel
+          imageAs={Image}
           slides={images}
           page={currentPage}
           slideCount={images.length}
           aspectRatio={aspectRatio}
           loop
           onPageChange={handlePageChange}
-          size="full"
+          size={size}
+          width={carouselSize}
+          height={carouselSize}
         />
       </div>
     </div>

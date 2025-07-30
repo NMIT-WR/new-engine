@@ -1,7 +1,6 @@
 'use client'
 
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { Gallery } from '@/components/organisms/gallery'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { ProductInfo } from '@/components/organisms/product-info'
@@ -84,21 +83,21 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   // Get price for selected variant and region
   // Find the price that matches the current currency
   let variantPrice = null
-  if (selectedVariant?.prices && selectedRegion?.currency_code) {
-    variantPrice = selectedVariant.prices.find(
-      (p) => p.currency_code === selectedRegion.currency_code
-    )
-    // If not found, use the first available price
-    if (!variantPrice && selectedVariant.prices.length > 0) {
-      variantPrice = selectedVariant.prices[0]
-    }
+  if (selectedVariant?.calculated_price && selectedRegion?.currency_code) {
+    variantPrice = selectedVariant.calculated_price
   }
 
   // Prices from Medusa are already in dollars/euros, NOT cents
   const price =
-    variantPrice?.amount &&
-    formatPrice(variantPrice.amount, selectedRegion?.currency_code)
+    variantPrice?.calculated_amount &&
+    formatPrice(variantPrice.calculated_amount, selectedRegion?.currency_code)
 
+  const priceWithTax =
+    variantPrice?.calculated_amount_with_tax &&
+    formatPrice(
+      variantPrice.calculated_amount_with_tax,
+      selectedRegion?.currency_code
+    )
   // Get badges for the product
   const badges = []
   if (product.metadata?.isNew) {
@@ -137,10 +136,16 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 gap-product-detail-content-gap lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-product-detail-content-gap lg:grid-cols-[auto_1fr]">
           {/* Image Gallery */}
-          <div className="aspect-square md:max-h-[60svh]">
-            <Gallery images={galleryImages} aspectRatio="portrait" />
+          <div className="aspect-square w-full max-w-container-sm">
+            <Gallery
+              images={galleryImages}
+              aspectRatio="square"
+              orientation="horizontal"
+              thumbnailSize={50}
+              carouselSize={400}
+            />
           </div>
 
           {/* Info Section */}
@@ -149,6 +154,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
             selectedVariant={selectedVariant}
             badges={badges}
             price={price || 'Cena není k dispozici'}
+            priceWithTax={priceWithTax}
             onVariantChange={setSelectedVariant}
           />
         </div>
@@ -157,21 +163,16 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         <ProductTabs product={product} />
 
         {/* Related Products */}
-        <div className="mt-product-detail-related-margin">
-          <div className="mb-4 flex flex-col">
-            <h2 className="font-bold text-featured-title text-featured-title-size">
-              Mohlo by se vám líbit
-            </h2>
-            <p className="text-featured-subtitle">
-              Koukněte na podobné produkty
-            </p>
-          </div>
-          {isLoadingRelated ? (
-            <ProductGridSkeleton numberOfItems={4} />
-          ) : (
+        {filteredRelatedProducts.length > 0 && (
+          <div className="mt-product-detail-related-margin">
+            <div className="mb-4 flex flex-col">
+              <h2 className="font-bold text-featured-title text-featured-title-size">
+                Mohlo by se vám líbit
+              </h2>
+            </div>
             <ProductGrid products={filteredRelatedProducts} />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
