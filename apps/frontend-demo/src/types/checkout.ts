@@ -55,18 +55,6 @@ export interface Country {
   [key: string]: unknown
 }
 
-export interface ShippingSelectionProps {
-  selected: string
-  onSelect: (method: string) => void
-  shippingMethods: ReducedShippingMethod[] | undefined
-  isLoading: boolean
-}
-
-export interface PaymentSelectionProps {
-  selected: string
-  onSelect: (method: string) => void
-}
-
 export interface AddressFormProps {
   onComplete: (data: CheckoutAddressData) => void | Promise<void>
   sameData?: boolean

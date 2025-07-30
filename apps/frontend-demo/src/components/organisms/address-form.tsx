@@ -12,6 +12,8 @@ import {
 import type { AddressData, AddressFormProps } from '@/types/checkout'
 import { Button } from '@ui/atoms/button'
 import { ErrorText } from '@ui/atoms/error-text'
+import { Link } from '@ui/atoms/link'
+import { LinkButton } from '@ui/atoms/link-button'
 import { FormCheckboxRaw as FormCheckbox } from '@ui/molecules/form-checkbox'
 import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
 import { Select } from '@ui/molecules/select'
@@ -99,37 +101,17 @@ export function AddressForm({
     }
   }
 
-  const setTestInfo = () => {
-    const data = {
-      firstName: 'Jan',
-      lastName: 'Novák',
-      email: 'jann@test.cz',
-      phone: '777 666 555',
-      street: 'Hlavní',
-      city: 'Praha',
-      postalCode: '100 00',
-      country: 'cz',
-      company: 'Test',
-    }
-    setShippingAddress(data)
-  }
-
   return (
     <form onSubmit={handleSubmit} className="relative flex flex-col">
-      <Button
-        size="sm"
-        className="absolute top-0 right-0 z-1"
-        onClick={setTestInfo}
-      >
-        Vyplnit
-      </Button>
       <div className="flex flex-col gap-4 sm:gap-5">
-        <h3 className="mb-1 font-semibold text-fg-primary sm:mb-2 sm:text-lg">
-          Doručovací adresa
-        </h3>
-        <p className="mb-3 text-fg-secondary text-xs sm:mb-4 sm:text-sm">
-          Pole označená <span className="text-red-500">*</span> jsou povinná
-        </p>
+        <div>
+          <h3 className="mb-1 font-semibold text-fg-primary sm:mb-2 sm:text-lg">
+            Doručovací adresa
+          </h3>
+          <p className="mb-3 text-fg-secondary text-xs sm:mb-4 sm:text-sm">
+            Pole označená <span className="text-red-500">*</span> jsou povinná
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <FormInput
@@ -434,14 +416,20 @@ export function AddressForm({
           </div>
         </div>
       )}
-      <Button
-        type="submit"
-        isLoading={isLoading}
-        disabled={isLoading}
-        className="w-full sm:w-auto"
-      >
-        Pokračovat
-      </Button>
+      <div className="flex w-full justify-between">
+        <LinkButton variant="primary" size="sm" as={Link} href="/cart">
+          Zpět do košíku
+        </LinkButton>
+        <Button
+          type="submit"
+          size="sm"
+          isLoading={isLoading}
+          disabled={isLoading}
+          //className="w-full sm:w-auto"
+        >
+          Pokračovat
+        </Button>
+      </div>
     </form>
   )
 }

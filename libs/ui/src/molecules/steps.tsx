@@ -45,10 +45,10 @@ const stepsVariants = tv({
       'grid place-items-center',
       'h-steps-indicator rounded-full aspect-square',
       'bg-steps-indicator-bg data-[complete]:bg-steps-indicator-complete',
-      'data-[current]:bg-steps-indicator-complete data-[current]:ring-2',
+      'data-[current]:bg-steps-indicator-current data-[current]:ring-2',
       'data-[current]:ring-steps-ring data-[current]:ring-offset-2',
       'data-[current]:ring-offset-steps-list-bg data-[current]:outline-none',
-      'data-[current]:text-steps-fg-active data-[complete]:text-steps-fg-active',
+      'data-[current]:text-steps-fg-current data-[complete]:text-steps-fg-active',
     ],
     separator: [
       'bg-steps-separator-bg',
@@ -56,7 +56,7 @@ const stepsVariants = tv({
       'data-[orientation=horizontal]:h-steps-separator data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-1',
       'data-[orientation=vertical]:w-steps-separator data-[orientation=vertical]:h-full',
     ],
-    progress: ['absolute top-0 left-0 h-full  transition-all duration-300'],
+    progress: ['absolute top-0 left-0 h-full transition-all duration-300'],
     containerButtons: [
       'flex gap-2 h-fit',
       'data-[orientation=vertical]:col-start-2',

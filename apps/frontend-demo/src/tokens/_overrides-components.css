@@ -37,6 +37,7 @@
     var(--color-btn-danger) /
     var(--opacity-ring)
   );
+  --color-btn-text-secondary: var(--color-fg-dark);
 
   /* === INPUT === */
   /* Different padding for small inputs */
@@ -138,6 +139,9 @@
 
   /* === STEPS === */
   --color-steps-content-bg: var(--color-base);
+  --color-steps-fg-current: white;
+  --color-steps-indicator-current: var(--color-secondary);
+  --padding-content: var(--spacing-200) 0;
 
   /* === TREE VIEW === */
   --color-tree-node-selected: transparent;

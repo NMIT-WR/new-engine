@@ -2,11 +2,18 @@ import Image from 'next/image'
 import '../../tokens/app-components/molecules/_shipping-selection.css'
 import { SHIPPING_METHODS } from '@/lib/checkout-data'
 import { formatPrice } from '@/lib/format-price'
-import type {
-  ReducedShippingMethod,
-  ShippingSelectionProps,
-} from '@/types/checkout'
+import type { ReducedShippingMethod } from '@/types/checkout'
 import { Button } from '@ui/atoms/button'
+import { useToast } from '@ui/molecules/toast'
+
+interface ShippingSelectionProps {
+  selected: string
+  onSelect: (method: string) => void
+  currentStep: number
+  setCurrentStep: (step: number) => void
+  shippingMethods: ReducedShippingMethod[] | undefined
+  isLoading: boolean
+}
 
 const ShippingMethodDetail = ({
   method,
@@ -31,19 +38,21 @@ const ShippingMethodDetail = ({
           alt={detailInfo.name}
           width={100}
           height={50}
-          className="h-[30px] w-[60px] object-contain sm:h-[40px] sm:w-[80px] lg:h-[50px] lg:w-[100px]"
+          className={`${detailInfo.id === 'balikovna' && 'balikovna-dark'} h-[30px] w-[60px] object-contain sm:h-[40px] sm:w-[80px] lg:h-[50px] lg:w-[100px]`}
         />
       )}
       <div className="flex-1">
-        <h3 className="font-semibold hidden text-fg-primary text-sm xs:block">{method.name}</h3>
-        <p className="mt-0.5 hidden text-fg-secondary text-xs xs:block sm:text-sm">
+        <h3 className="xs:block hidden font-semibold text-fg-primary text-sm">
+          {method.name}
+        </h3>
+        <p className="mt-0.5 xs:block hidden text-fg-secondary text-xs sm:text-sm">
           {detailInfo?.description}
         </p>
-        <p className="font-medium hidden text-fg-secondary text-xs xs:block">
+        <p className="xs:block hidden font-medium text-fg-secondary text-xs">
           {detailInfo?.deliveryDate || detailInfo?.delivery}
         </p>
       </div>
-      <span className="ml-auto text-sm font-bold text-fg-primary sm:text-lg">
+      <span className="ml-auto font-bold text-fg-primary text-sm sm:text-lg">
         {formattedPrice}
       </span>
       <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-border bg-base transition-all duration-200 sm:h-5 sm:w-5">
@@ -59,11 +68,26 @@ const ShippingMethodDetail = ({
 export function ShippingSelection({
   selected,
   onSelect,
+  currentStep,
+  setCurrentStep,
   shippingMethods,
   isLoading,
 }: ShippingSelectionProps) {
+  const toast = useToast()
+  const handleProgress = () => {
+    if (selected) {
+      setCurrentStep(currentStep + 1)
+    } else {
+      toast.create({
+        type: 'error',
+        title: 'Není vybrán dopravce',
+        description: 'Je potřeba zvolit jeden způsob dopravy',
+      })
+    }
+  }
+
   return (
-    <div className="w-full p-2 sm:p-4">
+    <div className="w-full space-y-250 py-2 sm:py-4">
       <div
         className="grid grid-cols-1 gap-3 sm:gap-4"
         role="radiogroup"
@@ -81,6 +105,14 @@ export function ShippingSelection({
             <ShippingMethodDetail method={method} selected={selected} />
           </Button>
         ))}
+      </div>
+      <div className="flex w-full justify-between">
+        <Button size="sm" onClick={() => setCurrentStep(currentStep - 1)}>
+          Zpět
+        </Button>
+        <Button size="sm" onClick={handleProgress}>
+          Pokračovat
+        </Button>
       </div>
     </div>
   )

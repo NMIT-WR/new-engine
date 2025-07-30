@@ -60,7 +60,7 @@ export function OrderSummary({
       <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
         <div className="rounded-lg bg-surface p-4 sm:p-6">
           <div className="mb-4 text-center sm:mb-6">
-            <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-success sm:mb-4 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+            <div className="no-print mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-success sm:mb-4 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
               <Icon icon="token-icon-check" className="text-white sm:text-lg" />
             </div>
             <h2 className="mb-4 font-bold text-lg sm:mb-6 sm:text-xl">

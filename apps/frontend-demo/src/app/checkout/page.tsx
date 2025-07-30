@@ -122,12 +122,12 @@ export default function CheckoutPage() {
           selected={selectedShipping}
           shippingMethods={shippingMethods}
           isLoading={isLoadingShipping}
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
           onSelect={async (method) => {
             setSelectedShipping(method)
-
             try {
               await addShippingMethod(method)
-              setCurrentStep(2)
             } catch (error) {
               // Error already handled in hook
             }
@@ -146,6 +146,8 @@ export default function CheckoutPage() {
             setSelectedPayment(method)
             setCurrentStep(3)
           }}
+          setCurrentStep={setCurrentStep}
+          currentStep={currentStep}
         />
       ),
     },

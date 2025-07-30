@@ -3,7 +3,6 @@
 import { useCart } from '@/hooks/use-cart'
 import { formatPrice } from '@/lib/format-price'
 import { orderHelpers } from '@/stores/order-store'
-import { Button } from '@ui/atoms/button'
 import { Icon } from '@ui/atoms/icon'
 import Image from 'next/image'
 
@@ -110,22 +109,22 @@ export function OrderPreview({
           </div>
         )}
 
-        <div className="mt-2 flex items-center justify-between border-gray-200 border-t-2 py-2 pt-3 font-semibold text-fg-primary text-sm sm:py-3 sm:pt-4 dark:border-gray-700">
+        <div className="mt-2 flex items-center justify-between border-gray-200 border-t-2 py-2 pt-3 font-semibold text-fg-primary text-md sm:py-3 sm:pt-4 dark:border-gray-700">
           <span>Celkem</span>
           <span>{formatPrice(finalTotal)}</span>
         </div>
       </div>
 
-      <div className="mt-3 flex flex-col gap-1.5 border-gray-200 border-t pt-3 sm:mt-4 sm:gap-2 sm:pt-4 dark:border-gray-700">
-        <div className="flex items-center gap-2 text-fg-secondary text-xs sm:text-sm">
+      <div className="mt-3 flex flex-col gap-1.5 border-gray-200 border-t pt-3 text-success sm:mt-4 sm:gap-2 sm:pt-4 dark:border-gray-700">
+        <div className="flex items-center gap-2 text-xs sm:text-sm">
           <Icon icon="token-icon-lock" className="text-sm" />
           <span>Zabezpečená platba</span>
         </div>
-        <div className="flex items-center gap-2 text-fg-secondary text-xs sm:text-sm">
+        <div className="flex items-center gap-2 text-xs sm:text-sm">
           <Icon icon="token-icon-check-decagram" className="text-sm" />
           <span>100% garance kvality</span>
         </div>
-        <div className="flex items-center gap-2 text-fg-secondary text-xs sm:text-sm">
+        <div className="flex items-center gap-2 text-xs sm:text-sm">
           <Icon icon="token-icon-back" className="text-sm" />
           <span>30denní garance vrácení peněz</span>
         </div>

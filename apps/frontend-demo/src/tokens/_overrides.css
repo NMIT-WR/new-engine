@@ -98,8 +98,8 @@
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
   --color-secondary: light-dark(
-    var(--color-indigo-600),
-    var(--color-indigo-400)
+    var(--color-indigo-800),
+    var(--color-indigo-600)
   );
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
@@ -149,10 +149,7 @@
   --color-accent-active: var(--color-secondary-active);
 
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
-  --color-success: light-dark(
-    var(--color-emerald-500),
-    var(--color-emerald-300)
-  );
+  --color-success: light-dark(var(--color-green-600), var(--color-green-300));
   --color-success-hover: oklch(
     from var(--color-success) calc(l + var(--state-hover)) c h
   );
@@ -174,7 +171,7 @@
   );
 
   /* It is usually used to express objective and neutral information in the context with the above semantics */
-  --color-info: light-dark(var(--color-teal-500), var(--color-cyan-300));
+  --color-info: light-dark(var(--color-teal-600), var(--color-cyan-300));
   --color-info-hover: oklch(
     from var(--color-info) calc(l + var(--state-hover)) c h
   );
