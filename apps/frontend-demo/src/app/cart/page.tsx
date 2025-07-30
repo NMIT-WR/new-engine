@@ -43,11 +43,23 @@ export default function CartPage() {
           />
         </div>
 
-        <h1 className="mb-cart-title-margin font-cart-title text-cart-title">
-          Nákupní košík
-        </h1>
+        <div className="mb-400 flex items-center justify-between gap-400">
+          <h1 className="font-cart-title text-cart-title-size">
+            Nákupní košík
+          </h1>
+          {/* Clear cart button */}
+          <Button
+            variant="tertiary"
+            theme="borderless"
+            size="sm"
+            onClick={clearCart}
+            icon="token-icon-remove-all"
+          >
+            Vyprázdnit košík
+          </Button>
+        </div>
 
-        {isLoading ? (
+        {isLoading || !cart ? (
           <div className="space-y-4">
             <SkeletonLoader variant="box" className="h-32 w-full" />
             <SkeletonLoader variant="box" className="h-32 w-full" />
@@ -84,7 +96,7 @@ export default function CartPage() {
                         {/* Product Details */}
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
-                            <div>
+                            <div className="flex items-end gap-300 text-cart-item-title-size">
                               <Link
                                 href={getProductPath(item.product_handle || '')}
                               >
@@ -108,7 +120,7 @@ export default function CartPage() {
                                 updateQuantity(item.id, value)
                               }
                               size="sm"
-                              className="py-0"
+                              className="h-fit w-24 py-0"
                             />
                             <Button
                               variant="tertiary"
@@ -125,19 +137,6 @@ export default function CartPage() {
                     </div>
                   )
                 })}
-              </div>
-
-              {/* Clear cart button */}
-              <div className="mt-4">
-                <Button
-                  variant="tertiary"
-                  theme="borderless"
-                  size="sm"
-                  onClick={clearCart}
-                  icon="token-icon-remove-all"
-                >
-                  Vyprázdnit košík
-                </Button>
               </div>
             </div>
 

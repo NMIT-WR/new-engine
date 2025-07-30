@@ -43,32 +43,24 @@ export function CartSummary({
 
         <div className="my-cart-summary-divider border-cart-summary-divider border-t" />
 
-        <div className="flex justify-between text-cart-summary-text">
+        <div className="flex justify-between font-semibold text-cart-summary-text text-md">
           <span>Celkem</span>
           <span>{formatPrice(total, currencyCode)}</span>
         </div>
-
-        <LinkButton
-          href="/checkout"
-          className="mt-cart-checkout-margin w-full"
-          size="md"
-          icon="token-icon-lock"
-          as={Link}
-          prefetch={true}
-        >
-          Přejít k platbě
-        </LinkButton>
-
-        <LinkButton
-          href="/products"
-          className="mt-4 w-full"
-          variant="tertiary"
-          theme="borderless"
-          size="sm"
-          as={Link}
-        >
-          Pokračovat v nakupování
-        </LinkButton>
+        <div className="mt-300 flex justify-between">
+          <LinkButton href="/products" size="md" as={Link}>
+            Zpět k nákupu
+          </LinkButton>
+          <LinkButton
+            href="/checkout"
+            size="md"
+            //icon="token-icon-lock"
+            as={Link}
+            prefetch={true}
+          >
+            Pokračovat
+          </LinkButton>
+        </div>
       </div>
     </div>
   )
