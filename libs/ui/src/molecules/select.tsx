@@ -125,6 +125,7 @@ export function Select({
   onValueChange,
   onOpenChange,
   onHighlightChange,
+  onSelect,
   className,
   id: providedId,
 }: SelectProps) {
@@ -155,6 +156,7 @@ export function Select({
     onValueChange,
     onOpenChange,
     onHighlightChange,
+    onSelect,
   })
 
   const api = select.connect(service as select.Service, normalizeProps)
@@ -202,9 +204,12 @@ export function Select({
           >
             <span
               className={valueSlot()}
-              data-placeholder={api.valueAsString === ''}
+              data-placeholder={api.value.length === 0}
             >
-              {api.valueAsString || placeholder}
+              {api.value.length > 0
+                ? // Find option as selected value and render same label
+                  options.find((option) => option.value === api.value[0])?.label
+                : placeholder}
             </span>
           </Button>
           {clearIcon && (
