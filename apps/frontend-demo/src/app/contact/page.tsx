@@ -6,6 +6,7 @@ import { Icon, type IconType } from '@ui/atoms/icon'
 import { FormInput } from '@ui/molecules/form-input'
 import { FormTextarea } from '@ui/molecules/form-textarea'
 import { Select } from '@ui/molecules/select'
+import Image from 'next/image'
 
 export default function ContactPage() {
   const { hero, form, info, hours, help } = contactContent
@@ -14,15 +15,46 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-contact-hero-bg py-contact-hero-y">
-        <div className="mx-auto max-w-container-max px-container-x">
+      <section className="relative flex h-about-hero-height items-center bg-center bg-cover md:h-about-hero-height-md">
+        <Image
+          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72"
+          alt="Naše kancelář"
+          className="-z-1 brightness-75"
+          fill
+          objectFit="cover"
+        />
+        <div className="inset-0 mx-auto max-w-container-max px-container-x text-white">
           <div className="text-center">
-            <h1 className="mb-contact-hero-title-bottom font-contact-hero-title text-contact-hero-fg text-contact-hero-title-size">
+            <h1 className="mb-contact-hero-title-bottom font-contact-hero-title text-contact-hero-title-size text-white">
               {hero.title}
             </h1>
-            <p className="mx-auto max-w-contact-hero-subtitle-max text-contact-hero-subtitle-fg text-contact-hero-subtitle-size">
+            <p className="mx-auto max-w-contact-hero-subtitle-max text-contact-hero-subtitle-size text-white">
               {hero.subtitle}
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Map Section */}
+      <section className="bg-gray-50 py-12">
+        <div className="mx-auto max-w-container-max px-container-x">
+          <div className="mb-8 text-center">
+            <h2 className="mb-3 font-semibold text-2xl text-fg-primary">
+              Kde nás najdete
+            </h2>
+            <p className="mx-auto text-fg-secondary">
+              Naše kancelář se nachází v centru města. Těšíme se na vaši
+              návštěvu!
+            </p>
+          </div>
+          <div className="relative mx-auto h-[562px] w-[1000px] overflow-hidden rounded-lg shadow-lg">
+            <Image
+              src="/assets/map2.webp"
+              alt="Mapa s umístěním naší kanceláře"
+              fill
+              className="object-cover"
+              //sizes="(max-width: 768px) 100vw, 1200px"
+            />
           </div>
         </div>
       </section>
@@ -35,7 +67,7 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <form
                 onSubmit={handleSubmit}
-                className="rounded-contact-form bg-contact-form-bg p-contact-form-padding shadow-contact-form"
+                className="grid rounded-contact-form bg-fill-base/20 p-contact-form-padding shadow-contact-form"
               >
                 <h2 className="mb-contact-form-title-bottom font-contact-form-title text-contact-form-title-fg text-contact-form-title-size">
                   {form.title}
@@ -111,7 +143,8 @@ export default function ContactPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="mt-6 w-full"
+                  className="mt-6 place-self-end"
+                  size="sm"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Odesílám...' : form.labels.submit}
