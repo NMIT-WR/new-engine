@@ -3,7 +3,7 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { regionStore, setSelectedRegionId } from '@/stores/region-store'
-import { StoreRegion } from '@medusajs/types'
+import type { StoreRegion } from '@medusajs/types'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
 import { useCallback, useEffect } from 'react'
@@ -31,7 +31,7 @@ export function useRegions() {
 
   // Initialize selected region from regions list or default to USD
   useEffect(() => {
-    if( regions.length === 0 || selectedRegionId) return
+    if (regions.length === 0 || selectedRegionId) return
 
     if (regions.length > 0 && !selectedRegionId) {
       // Default to USD region if no stored preference
@@ -48,14 +48,17 @@ export function useRegions() {
 
   const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 
-  const setSelectedRegion = useCallback((region: StoreRegion) => {
-    if (region?.id && region.id !== selectedRegionId) {
-      setSelectedRegionId(region.id)
-      // Invalidate queries that depend on region
-      queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
-    }
-  }, [selectedRegionId, queryClient])
+  const setSelectedRegion = useCallback(
+    (region: StoreRegion) => {
+      if (region?.id && region.id !== selectedRegionId) {
+        setSelectedRegionId(region.id)
+        // Invalidate queries that depend on region
+        queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
+        queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
+      }
+    },
+    [selectedRegionId, queryClient]
+  )
 
   return {
     regions,

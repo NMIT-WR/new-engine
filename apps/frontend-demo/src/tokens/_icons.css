@@ -101,3 +101,29 @@
 @utility token-icon-global {
   @apply icon-[mdi--world-wide-web];
 }
+
+@utility token-icon-sun {
+  @apply icon-[ic--outline-wb-sunny];
+}
+
+@utility token-icon-moon {
+  @apply icon-[mdi--moon-and-stars];
+}
+
+/* === FLAGS FOR REGIONS === */
+
+@utility token-icon-cz {
+  @apply icon-[twemoji--flag-czechia];
+}
+
+@utility token-icon-sk {
+  @apply icon-[twemoji--flag-slovakia];
+}
+
+@utility token-icon-eu {
+  @apply icon-[twemoji--flag-european-union];
+}
+
+@utility token-icon-usa {
+  @apply icon-[twemoji--flag-united-states];
+}
