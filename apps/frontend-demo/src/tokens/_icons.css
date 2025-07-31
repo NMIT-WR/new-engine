@@ -75,3 +75,29 @@
 @utility token-icon-location {
   @apply icon-[mdi--map-marker];
 }
+
+/* === ABOUT PAGE === */
+
+@utility token-icon-earth {
+  @apply icon-[mdi--earth];
+}
+
+@utility token-icon-check-circle {
+  @apply icon-[mdi--check-circle-outline];
+}
+
+@utility token-icon-present {
+  @apply icon-[mdi--present-outline];
+}
+
+@utility token-icon-light {
+  @apply icon-[mdi--lightning-bolt-outline];
+}
+
+@utility token-icon-group {
+  @apply icon-[mdi--account-group-outline];
+}
+
+@utility token-icon-global {
+  @apply icon-[mdi--world-wide-web];
+}

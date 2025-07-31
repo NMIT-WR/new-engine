@@ -1,3 +1,5 @@
+import type { IconType } from '@ui/atoms/icon'
+
 export interface TeamMember {
   name: string
   role: string
@@ -7,7 +9,7 @@ export interface TeamMember {
 export interface CompanyValue {
   title: string
   description: string
-  icon: string // SVG path data
+  icon: IconType // SVG path data
 }
 
 export interface CompanyStat {
@@ -59,7 +61,7 @@ export const aboutContent: AboutContent = {
       'Naše cesta byla poznamenána inovacemi, spoluprací a neochvějným závazkem k našim hodnotám. Dnes jsme hrdí, že sloužíme tisícům zákazníků po celém světě, kteří sdílejí naši vizi udržitelnější a stylovější budoucnosti.',
     ],
     image:
-      'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     imageAlt: 'Naše dílna',
   },
   stats: [
@@ -72,40 +74,36 @@ export const aboutContent: AboutContent = {
     title: 'Za čím si stojíme',
     items: [
       {
-        title: 'Udržitelnost na prvním místě',
-        description:
-          'Každé rozhodnutí, které děláme, zvažuje jeho dopad na životní prostředí. Od materiálů po balení, udržitelnost nás vede cestou.',
-        icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+        title: 'Udržitelnost',
+        description: 'Každé rozhodnutí děláme s ohledem na planetu',
+        icon: 'token-icon-earth',
       },
       {
         title: 'Nekompromisní kvalita',
         description:
-          'Věříme ve vytváření kousků, které vydrží. Každý kus je vytvořen s důrazem na detail a postaven tak, aby obstál ve zkoušce času.',
-        icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+          'Pečlivě vybíráme materiály pro maximální životnost produktů',
+        icon: 'token-icon-check-circle',
       },
       {
         title: 'Spravedlivý obchod',
-        description:
-          'Zajišťujeme spravedlivé mzdy a bezpečné pracovní podmínky pro všechny naše partnery, podporujeme dlouhodobé vztahy založené na respektu.',
-        icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7',
+        description: 'Transparentní dodavatelský řetězec od vlákna po výrobek',
+        icon: 'token-icon-present',
       },
       {
         title: 'Inovace',
-        description:
-          'Neustále zkoumáme nové materiály a techniky, abychom posunuli hranice udržitelné módy.',
-        icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+        description: 'Experimentujeme s materiály šetrnými k přírodě i lidem',
+        icon: 'token-icon-light',
       },
       {
         title: 'Komunita',
         description:
-          'Móda je lepší společně. Vybudovali jsme komunitu, která sdílí nápady, hodnoty a lásku k uvědomělému životu.',
-        icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+          'Vybudovali jsme komunitu lidí se zápalem, která sdílí své nápady',
+        icon: 'token-icon-group',
       },
       {
         title: 'Globální dopad',
-        description:
-          'Naše vize přesahuje módu. Jsme odhodláni mít pozitivní dopad na komunity po celém světě.',
-        icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
+        description: 'Z českého ateliéru jsme přerostli do zahraničních trhů',
+        icon: 'token-icon-global',
       },
     ],
   },

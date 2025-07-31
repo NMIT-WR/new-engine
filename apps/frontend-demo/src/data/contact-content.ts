@@ -93,14 +93,14 @@ export const contactContent: ContactContent = {
       {
         type: 'phone',
         label: 'Zavolejte nám na:',
-        value: '+1 (234) 567-890',
-        link: 'tel:+1234567890',
+        value: '+420 731 472 822',
+        link: 'tel:+420731472822',
         icon: 'token-icon-phone',
       },
       {
         type: 'address',
         label: 'Navštivte naši kancelář:',
-        value: '123 Fashion Street\nNew York, NY 10001\nUnited States',
+        value: 'Hlavní 123, Praha 100 50',
         icon: 'token-icon-location',
       },
     ],
@@ -112,7 +112,7 @@ export const contactContent: ContactContent = {
       { day: 'Sobota', hours: '10:00 - 16:00' },
       { day: 'Neděle', hours: 'Zavřeno' },
     ],
-    timezone: 'Všechny časy jsou ve východním čase (ET)',
+    timezone: 'Všechny časy jsou ve středoevropském čase (SEČ)',
   },
   help: {
     title: 'Rychlá pomoc',
