@@ -50,8 +50,7 @@ export const aboutContent: AboutContent = {
   hero: {
     title: 'Náš příběh',
     subtitle: 'Vytváříme nadčasovou módu s účelem a vášní od roku 2020',
-    backgroundImage:
-      'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1920&h=800&fit=crop',
+    backgroundImage: '/assets/hero/about.webp',
   },
   story: {
     title: 'Od vize ke skutečnosti',

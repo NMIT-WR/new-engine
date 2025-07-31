@@ -7,6 +7,7 @@ import { FormInput } from '@ui/molecules/form-input'
 import { FormTextarea } from '@ui/molecules/form-textarea'
 import { Select } from '@ui/molecules/select'
 import Image from 'next/image'
+import contactImage from '/assets/hero/contact.webp'
 
 export default function ContactPage() {
   const { hero, form, info, hours, help } = contactContent
@@ -17,11 +18,13 @@ export default function ContactPage() {
       {/* Hero Section */}
       <section className="relative flex h-about-hero-height items-center bg-center bg-cover md:h-about-hero-height-md">
         <Image
-          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72"
+          src={contactImage}
           alt="Naše kancelář"
           className="-z-1 brightness-75"
           fill
           objectFit="cover"
+          priority={true}
+          placeholder="blur"
         />
         <div className="inset-0 mx-auto max-w-container-max px-container-x text-white">
           <div className="text-center">

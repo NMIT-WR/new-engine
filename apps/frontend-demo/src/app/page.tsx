@@ -10,6 +10,7 @@ import { useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { getCategoryIdByHandle } from '@/utils/category-helpers'
 import { useEffect } from 'react'
+import homeImage from '/assets/hero/home.webp'
 
 export default function Home() {
   const { prefetchDefaultProducts } = usePrefetchProducts()
@@ -45,7 +46,7 @@ export default function Home() {
       <Hero
         title={hero.title}
         subtitle={hero.subtitle}
-        backgroundImage={hero.backgroundImage}
+        backgroundImage={homeImage}
         primaryAction={hero.primaryAction}
         secondaryAction={hero.secondaryAction}
       />

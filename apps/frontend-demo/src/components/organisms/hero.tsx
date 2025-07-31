@@ -1,12 +1,12 @@
 'use client'
-import { Image } from '@ui/atoms/image'
 import { LinkButton } from '@ui/atoms/link-button'
+import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 
 interface HeroProps {
   title: string
   subtitle?: string
-  backgroundImage: string
+  backgroundImage: string | StaticImageData
   primaryAction?: {
     label: string
     onClick?: () => void
@@ -34,6 +34,9 @@ export function Hero({
           src={backgroundImage}
           alt="Pozadí hero sekce"
           className="h-full w-full object-cover"
+          fill
+          priority
+          placeholder="blur"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
       </div>

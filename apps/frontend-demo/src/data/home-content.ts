@@ -45,8 +45,7 @@ export const homeContent: HomeContent = {
   hero: {
     title: 'Nová kolekce',
     subtitle: 'Objevte nejnovější módní trendy',
-    backgroundImage:
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop',
+    backgroundImage: '/assets/hero/home.webp',
     primaryAction: {
       label: 'Nakupovat',
       href: '/products',

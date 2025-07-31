@@ -3,6 +3,7 @@ import StatsSection from '@/components/stats-section'
 import { aboutContent } from '@/data/about-content'
 import { Icon } from '@ui/atoms/icon'
 import Image from 'next/image'
+import aboutImage from '/assets/hero/about.webp'
 
 export default function AboutPage() {
   const { hero, story, stats, values, team } = aboutContent
@@ -11,7 +12,7 @@ export default function AboutPage() {
     <>
       {/* Hero Section with Background Image */}
       <section className="relative flex h-about-hero-height items-center bg-center bg-cover md:h-about-hero-height-md">
-        <Image src={hero.backgroundImage} alt="some" fill priority />
+        <Image src={aboutImage} alt="some" fill priority placeholder="blur" />
 
         <div className="absolute inset-0 bg-about-hero-overlay" />
         <div className="relative mx-auto max-w-container-max px-about-container-x text-center text-white md:px-about-container-x-md lg:px-about-container-x-lg">
