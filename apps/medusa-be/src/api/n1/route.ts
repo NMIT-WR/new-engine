@@ -262,6 +262,22 @@ where pl.rewrite_title not like ''
     from cte_product_attributes_base AS cpab
     where cpab.attribute not in ('Materiál')
     group by id
+), cte_product_producer AS (
+   SELECT
+       p.id AS productId,
+       pr.title,
+       JSON_OBJECT(
+        'title', pr.title,
+        'attributes', JSON_ARRAY(
+            JSON_OBJECT(
+                'name', 'sizing_info',
+                'value', pl.sizing_info
+            )
+        )
+       ) AS producer
+   FROM cte_products_base p
+   JOIN producer pr ON p.id_producer = pr.id
+   JOIN producer_lang pl ON pl.id_producer = pr.id AND pl.id_lang IN (select id from lang where abbreviation = 'cz')
             ), cte_product_prices AS (
                 SELECT
                     p.id as productId,
@@ -392,7 +408,8 @@ GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite
                 'option_values', voa.option_values
                 )
                 ) AS options,
-                vc.categories
+    vc.categories,
+    cppr.producer
             FROM cte_products bp
                 JOIN product_lang pl
             ON pl.id_product = bp.id
@@ -408,6 +425,7 @@ GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite
                 LEFT JOIN cte_product_images_grouped cpig ON cpig.id_product_group = bp.id_product_group
                 LEFT JOIN cte_product_images cbppi ON cbppi.id_product = bp.id AND cbppi.image_num = 1
                 LEFT JOIN cte_variants_grouped cv ON cv.id = bp.id
+                LEFT JOIN cte_product_producer cppr ON cppr.productId = bp.id
             GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description, voa.option_values
                 )
         `

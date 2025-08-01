@@ -7,7 +7,8 @@ export function toCreateProductsStepInput(products: any): Steps.CreateProductsSt
             images: JSON.parse(raw.images),
             variants: JSON.parse(raw.variants),
             options: JSON.parse(raw.options),
-            categories: JSON.parse(raw.categories)
+            categories: JSON.parse(raw.categories),
+            producer: JSON.parse(raw.producer),
         }
 
         const options = i.options.map((o: any) => {
@@ -46,6 +47,7 @@ export function toCreateProductsStepInput(products: any): Steps.CreateProductsSt
             thumbnail: i.thumbnail,
             images: i.images,
             options: options.length === 0 ? undefined : options,
+            producer: i.producer,
             variants: variants.length === 0 ? undefined : variants,
             salesChannelNames: ['Default Sales Channel'],
         }

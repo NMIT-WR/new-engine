@@ -2,8 +2,9 @@ import {ProductDTO} from "@medusajs/framework/types";
 import {ContainerRegistrationKeys, Modules, ProductStatus} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createProductsWorkflow, updateProductsWorkflow} from "@medusajs/medusa/core-flows";
+import {PRODUCER_MODULE} from "../../../modules/producer";
 
-export type CreateProductsStepInput = {
+type ProductInput = {
     title: string
     categories: {
         name?: string
@@ -21,7 +22,14 @@ export type CreateProductsStepInput = {
     options?: {
         title: string
         values: string[]
-    }[]
+    }[],
+    producer?: {
+        title: string,
+        attributes?: {
+            name: string,
+            value: string
+        }[]
+    }
     variants?: {
         title: string
         sku: string
@@ -51,18 +59,47 @@ export type CreateProductsStepInput = {
         }[]
     }[]
     salesChannelNames: string[]
-}[]
+}
+
+export type CreateProductsStepInput = ProductInput[]
 
 const CreateProductsStepId = 'create-products-seed-step'
+
+function processProductProducer(inputProduct: ProductInput, producers: Map<string, { attributes: Map<string, string>; products: string[] }>) {
+    if (inputProduct.producer?.title) {
+        if (!producers.has(inputProduct.producer.title)) {
+            producers.set(inputProduct.producer.title, {products: [], attributes: new Map()})
+        }
+
+        const producer = producers.get(inputProduct.producer.title)
+
+        if (!producer) {
+            throw new Error(`Producer "${inputProduct.producer.title}" not found`)
+        }
+
+        producer.products.push(inputProduct.handle)
+
+        for (const attribute of inputProduct.producer.attributes ?? []) {
+            if (!producer.attributes.has(attribute.name)) {
+                producer.attributes.set(attribute.name, attribute.value)
+            }
+        }
+    }
+}
+
 export const createProductsStep = createStep(CreateProductsStepId, async (
     input: CreateProductsStepInput,
     {container}
 ) => {
     const result: ProductDTO[] = []
+    const link = container.resolve(ContainerRegistrationKeys.LINK)
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
     const productService = container.resolve(Modules.PRODUCT)
     const fulfillmentService = container.resolve(Modules.FULFILLMENT)
     const salesChannelService = container.resolve(Modules.SALES_CHANNEL)
+    const producerService = container.resolve(PRODUCER_MODULE)
+
+    const producers = new Map<string, {attributes: Map<string, string>, products: string[]}>()
 
     const existingCategories = await productService.listProductCategories({
         handle: input.reduce((acc: string[], i) => {
@@ -97,6 +134,8 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
         if (!inputProduct) {
             return null
         }
+
+        processProductProducer(inputProduct, producers);
 
         return {
             id: existingProduct.id,
@@ -149,48 +188,53 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
     if (missingProducts.length !== 0) {
         logger.info("Creating missing products...")
 
-        const createProducts = missingProducts.map(p => ({
-            title: p.title,
-            category_ids:
-                p.categories?.map((inputCat) => {
-                    const existingCategory = existingCategories.find((cat) => cat.handle === inputCat.handle)
-                    if (!existingCategory) {
-                        throw new Error(`Category "${inputCat.handle}" not found`)
+        const createProducts = missingProducts.map(p => {
+
+            processProductProducer(p, producers);
+
+            return {
+                title: p.title,
+                category_ids:
+                    p.categories?.map((inputCat) => {
+                        const existingCategory = existingCategories.find((cat) => cat.handle === inputCat.handle)
+                        if (!existingCategory) {
+                            throw new Error(`Category "${inputCat.handle}" not found`)
+                        }
+                        return existingCategory.id
+                    }),
+                description: p.description,
+                handle: p.handle,
+                weight: p.weight,
+                status: p.status || ProductStatus.PUBLISHED,
+                shipping_profile_id: existingShippingProfiles.map(sp => {
+                    if (sp.name === p.shippingProfileName) {
+                        return sp.id
                     }
-                    return existingCategory.id
-                }),
-            description: p.description,
-            handle: p.handle,
-            weight: p.weight,
-            status: p.status || ProductStatus.PUBLISHED,
-            shipping_profile_id: existingShippingProfiles.map(sp => {
-                if (sp.name === p.shippingProfileName) {
-                    return sp.id
-                }
-                throw new Error(`Shipping profile '${sp.name}' not found`)
-            })[0],
-            thumbnail: p.thumbnail,
-            images: p.images ?? [],
-            options: p.options,
-            variants: p.variants?.map(v => ({
-                title: v.title,
-                sku: v.sku,
-                ean: v.ean,
-                material: v.material,
-                options: v.options,
-                prices: v.prices?.map(p => ({
-                    amount: p.amount,
-                    currency_code: p.currency_code,
+                    throw new Error(`Shipping profile '${sp.name}' not found`)
+                })[0],
+                thumbnail: p.thumbnail,
+                images: p.images ?? [],
+                options: p.options,
+                variants: p.variants?.map(v => ({
+                    title: v.title,
+                    sku: v.sku,
+                    ean: v.ean,
+                    material: v.material,
+                    options: v.options,
+                    prices: v.prices?.map(p => ({
+                        amount: p.amount,
+                        currency_code: p.currency_code,
+                    })),
+                    metadata: v.metadata,
                 })),
-                metadata: v.metadata,
-            })),
-            sales_channels: existingSalesChannels.filter((sc) => {
-                if (sc.name === p.salesChannelNames.find(t => t === sc.name)) {
-                    return sc
-                }
-                throw new Error(`Sales channel '${sc.name}' not found`)
-            })
-        }))
+                sales_channels: existingSalesChannels.filter((sc) => {
+                    if (sc.name === p.salesChannelNames.find(t => t === sc.name)) {
+                        return sc
+                    }
+                    throw new Error(`Sales channel '${sc.name}' not found`)
+                })
+            }
+        })
 
         const createResult = await createProductsWorkflow(container).run({
             input: {
@@ -220,6 +264,32 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 result.push(resultElement)
             }
         }
+    }
+
+    // add producer info
+    for (const [key, value] of producers.entries()) {
+        const attributes = [...value.attributes.entries()].map(([name, value]) => ({
+            name,
+            value,
+        }))
+
+        const producer = await producerService.upsertProducer({
+            name: key,
+            attributes
+        })
+
+        const products = await productService.listProducts({handle: {$in: value.products}})
+
+        const links = products.map(p => ({
+            [Modules.PRODUCT]: {
+                product_id: p.id,
+            },
+            [PRODUCER_MODULE]: {
+                producer_id: producer.id,
+            },
+        }))
+
+        await link.create(links)
     }
 
     return new StepResponse({
