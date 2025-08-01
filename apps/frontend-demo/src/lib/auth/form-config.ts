@@ -36,7 +36,7 @@ export const authFormFields = {
     placeholder: AUTH_FORM_CONFIG.PASSWORD_PLACEHOLDER,
     required: true,
     autoComplete: 'new-password',
-    extraText: AUTH_FORM_CONFIG.PASSWORD_HELP_TEXT,
+    //extraText: AUTH_FORM_CONFIG.PASSWORD_HELP_TEXT,
     ...props,
   }),
 

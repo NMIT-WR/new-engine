@@ -133,24 +133,28 @@ export function RegisterForm() {
           }
         />
 
-        <FormInput
-          {...withLoading(
-            authFormFields.newPassword({
-              value: password,
-              onChange: (e) => {
-                setPassword(e.target.value)
-                clearErrors()
-              },
-            }),
-            isFormLoading
-          )}
-          validateStatus={getFieldError('password') ? 'error' : 'default'}
-          helpText={
-            getFieldError('password') && (
-              <ErrorText>{getFieldError('password')}</ErrorText>
-            )
-          }
-        />
+        <div>
+          <FormInput
+            {...withLoading(
+              authFormFields.newPassword({
+                value: password,
+                onChange: (e) => {
+                  setPassword(e.target.value)
+                  clearErrors()
+                },
+                placeholder: 'Zadejte heslo',
+              }),
+              isFormLoading
+            )}
+            validateStatus={getFieldError('password') ? 'error' : 'default'}
+            helpText={
+              getFieldError('password') && (
+                <ErrorText>{getFieldError('password')}</ErrorText>
+              )
+            }
+          />
+          <PasswordRequirements password={password} />
+        </div>
 
         <FormInput
           {...withLoading(
@@ -160,6 +164,7 @@ export function RegisterForm() {
                 setConfirmPassword(e.target.value)
                 clearErrors()
               },
+              placeholder: 'Znovu zadejte heslo',
             }),
             isFormLoading
           )}
@@ -196,8 +201,6 @@ export function RegisterForm() {
         >
           {isFormLoading ? 'Vytváření účtu...' : 'Vytvořit účet'}
         </Button>
-
-        <PasswordRequirements password={password} />
       </form>
     </AuthFormWrapper>
   )
