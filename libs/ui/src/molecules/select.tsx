@@ -13,6 +13,7 @@ export interface SelectOption {
   label: ReactNode
   value: string
   disabled?: boolean
+  displayValue?: string // Plain text representation for accessibility/forms
   [key: string]: unknown
 }
 
@@ -134,7 +135,7 @@ export function Select({
 
   const collection = select.collection({
     items: options,
-    itemToString: (item) => item.label?.toString() || '',
+    itemToString: (item) => item.displayValue || item.value,
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
   })
@@ -183,7 +184,7 @@ export function Select({
             value={option.value}
             disabled={option.disabled}
           >
-            {option.label}
+            {option.displayValue || option.value}
           </option>
         ))}
       </select>
