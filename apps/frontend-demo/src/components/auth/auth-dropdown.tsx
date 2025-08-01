@@ -22,15 +22,12 @@ export function AuthDropdown() {
       <Popover
         id="auth-dropdown"
         trigger={
-          <Icon
-            className="text-header-icon-size text-tertiary"
-            icon="token-icon-account"
-          />
+          <span className="text-nowrap text-white text-xs">Přihlásit se</span>
         }
         placement="bottom-end"
         size="sm"
         contentClassName="z-50"
-        triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
+        triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0 rounded-sm bg-tertiary hover:bg-tertiary/60 mr-150"
       >
         <QuickLoginForm />
       </Popover>

@@ -41,10 +41,6 @@ export function RegionSelector({ className }: { className?: string }) {
     displayValue: region.currency_code.toUpperCase(),
     //label: `${currencyFlags[region.currency_code.toUpperCase()] || '🌍'} ${region.currency_code.toUpperCase()}`,
   }))
-
-  const handleSelect = () => {
-    console.log(regions)
-  }
   return (
     <Select
       options={options}
@@ -54,7 +50,6 @@ export function RegionSelector({ className }: { className?: string }) {
       clearIcon={false}
       placeholder="Region"
       className={className}
-      onSelect={handleSelect}
     />
   )
 }

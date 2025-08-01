@@ -128,6 +128,7 @@
   --spacing-popover-sm: var(--spacing-sm);
   --spacing-popover-md: var(--spacing-md);
   --spacing-popover-lg: var(--spacing-lg);
+  /* --shadow-popover: var(--shadow-2xl); */
 
   /* === RANGE SLIDER === */
   /* Additional text styling */
