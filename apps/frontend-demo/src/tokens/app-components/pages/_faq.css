@@ -1,0 +1,9 @@
+@theme static {
+  --spacing-faq-primary: var(--spacing-900);
+  --spacing-faq-icon: var(--spacing-250);
+  --spacing-icon-align: var(--spacing-100); /* mt-50 - 24x použití */
+  --spacing-title-bottom: var(--spacing-150); /* mb-150 - 20x použití */
+  --spacing-card-padding: var(--spacing-300); /* p-300 - 16x použití */
+  --spacing-content-sections: var(--spacing-300); /* space-y-300 - 6x použití */
+  --spacing-faq-feature: var(--spacing-250); /* p-250 - 6x použití */
+}

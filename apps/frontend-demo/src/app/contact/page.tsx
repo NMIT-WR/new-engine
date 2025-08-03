@@ -3,6 +3,7 @@ import { contactContent } from '@/data/contact-content'
 import { useContactForm } from '@/hooks/use-contact-form'
 import { Button } from '@ui/atoms/button'
 import { Icon, type IconType } from '@ui/atoms/icon'
+import { LinkButton } from '@ui/atoms/link-button'
 import { FormInput } from '@ui/molecules/form-input'
 import { FormTextarea } from '@ui/molecules/form-textarea'
 import { Select } from '@ui/molecules/select'
@@ -38,32 +39,8 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="bg-gray-50 py-12">
-        <div className="mx-auto max-w-container-max px-container-x">
-          <div className="mb-8 text-center">
-            <h2 className="mb-3 font-semibold text-2xl text-fg-primary">
-              Kde nás najdete
-            </h2>
-            <p className="mx-auto text-fg-secondary">
-              Naše kancelář se nachází v centru města. Těšíme se na vaši
-              návštěvu!
-            </p>
-          </div>
-          <div className="relative mx-auto h-[562px] w-[1000px] overflow-hidden rounded-lg shadow-lg">
-            <Image
-              src="/assets/map2.webp"
-              alt="Mapa s umístěním naší kanceláře"
-              fill
-              className="object-cover"
-              //sizes="(max-width: 768px) 100vw, 1200px"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* Contact Content */}
-      <section className="py-contact-content-y">
+      <section id="contact-form" className="py-contact-content-y">
         <div className="mx-auto max-w-container-max px-container-x">
           <div className="grid grid-cols-1 gap-contact-grid-gap lg:grid-cols-3">
             {/* Contact Form */}
@@ -192,46 +169,23 @@ export default function ContactPage() {
                 ))}
               </div>
 
-              {/* Business Hours */}
-              <div className="rounded-contact-info border border-contact-info-border bg-contact-info-bg p-contact-info-padding">
-                <h3 className="mb-contact-hours-title-bottom font-contact-hours-title text-contact-hours-title-fg text-contact-hours-title-size">
-                  {hours.title}
-                </h3>
-                <div className="space-y-contact-hours-gap">
-                  {hours.schedule.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between text-contact-hours-size"
-                    >
-                      <span className="text-contact-hours-day-fg">
-                        {item.day}
-                      </span>
-                      <span className="text-contact-hours-time-fg">
-                        {item.hours}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-4 text-contact-info-text-fg text-contact-info-text-size">
-                  {hours.timezone}
-                </p>
-              </div>
-
               {/* FAQ Link */}
               <div className="rounded-contact-info border border-contact-info-border bg-contact-info-bg p-contact-info-padding">
                 <h3 className="mb-contact-info-title-bottom font-contact-info-title text-contact-info-title-fg text-contact-info-title-size">
                   {help.title}
                 </h3>
                 <p className="text-contact-info-text-fg text-contact-info-text-size">
-                  {help.description}{' '}
-                  <a
-                    href={help.linkHref}
-                    className="text-contact-info-link-fg transition-colors hover:text-contact-info-link-fg-hover"
-                  >
-                    {help.linkText}
-                  </a>{' '}
-                  pro okamžitou pomoc s častými dotazy.
+                  Hledáte rychlé odpovědi? Podívejte se na naše často kladené
+                  otázky pro okamžitou pomoc.
                 </p>
+                <LinkButton
+                  href="/faq"
+                  size="sm"
+                  theme="borderless"
+                  className="px-0 py-0 hover:bg-transparent"
+                >
+                  <span className="underline">Často kladené dotazy</span>
+                </LinkButton>
               </div>
             </div>
           </div>

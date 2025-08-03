@@ -3,17 +3,15 @@
 @theme {
   /* === ACCORDION === */
   /* Different from UI library */
-  --color-accordion-border: var(--color-overlay);
-  --color-accordion-hover: --alpha(var(--color-overlay) / 0.05);
-  --color-accordion-title-bg: var(--color-surface);
+  --color-accordion: --alpha(var(--color-surface) / 20%);
+  --color-accordion-border: var(--color-highlight);
+  /* --color-accordion-title-bg: --alpha(var(--color-white) / 0.05); */
   --color-accordion-subtitle-fg: var(--color-fg-secondary);
-  --color-accordion-title-hover: var(--color-surface-hover);
+  --color-accordion-title-hover: --alpha(var(--color-surface-hover) / 0.5);
   --color-accordion-content-bg: --alpha(var(--color-primary) / 0.02);
   --color-accordion-content-fg: var(--color-fg-secondary);
-  --spacing-accordion-title: var(--spacing-md);
-  --spacing-accordion-content: var(--spacing-md);
   --text-accordion-content: var(--text-sm);
-  --border-width-accordion: 0 0 0 0;
+  --border-width-accordion: 1px;
 
   /* === BUTTON === */
   /* Change from --alpha-ring to --opacity-ring for all focus rings */

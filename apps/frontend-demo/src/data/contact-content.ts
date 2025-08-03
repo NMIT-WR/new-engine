@@ -97,12 +97,6 @@ export const contactContent: ContactContent = {
         link: 'tel:+420731472822',
         icon: 'token-icon-phone',
       },
-      {
-        type: 'address',
-        label: 'Navštivte naši kancelář:',
-        value: 'Hlavní 123, Praha 100 50',
-        icon: 'token-icon-location',
-      },
     ],
   },
   hours: {
