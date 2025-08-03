@@ -20,7 +20,7 @@ const footerSections: NavSection[] = [
     title: 'Zákaznický servis',
     links: [
       { href: '/shipping', label: 'Informace o dopravě' },
-      { href: '/returns', label: 'Vrácení' },
+      { href: '/returns', label: 'Reklamace' },
       { href: '/faq', label: 'Časté dotazy' },
       { href: '/support', label: 'Podpora' },
     ],
@@ -85,7 +85,12 @@ export function Footer() {
                   size="sm"
                   className="w-full border-footer-input-border bg-footer-input-bg text-footer-input-fg placeholder:text-footer-input-placeholder hover:bg-footer-input-bg-hover focus-visible:bg-footer-input-bg-focus sm:max-w-footer-input"
                 />
-                <Button variant="primary" size="sm" type="submit">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  type="submit"
+                  className="text-nowrap"
+                >
                   Přihlásit se
                 </Button>
               </div>
@@ -96,7 +101,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-footer-bottom-bar border-footer-border border-t pt-footer-bottom-bar text-center">
           <p className="text-footer-copyright text-footer-fg">
-            &copy; 2024 Demo obchodu. Všechna práva vyhrazena.
+            &copy; 2025 Demo obchodu. Všechna práva vyhrazena.
           </p>
         </div>
       </div>
