@@ -3,6 +3,7 @@ import {ContainerRegistrationKeys, Modules, ProductStatus} from "@medusajs/frame
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createProductsWorkflow, updateProductsWorkflow} from "@medusajs/medusa/core-flows";
 import {PRODUCER_MODULE} from "../../../modules/producer";
+import ProducerModuleService from "../../../modules/producer/service";
 
 type ProductInput = {
     title: string
@@ -97,7 +98,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
     const productService = container.resolve(Modules.PRODUCT)
     const fulfillmentService = container.resolve(Modules.FULFILLMENT)
     const salesChannelService = container.resolve(Modules.SALES_CHANNEL)
-    const producerService = container.resolve(PRODUCER_MODULE)
+    const producerService: ProducerModuleService = container.resolve(PRODUCER_MODULE)
 
     const producers = new Map<string, {attributes: Map<string, string>, products: string[]}>()
 
