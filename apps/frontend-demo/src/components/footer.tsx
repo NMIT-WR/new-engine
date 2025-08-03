@@ -3,7 +3,8 @@ import type { NavSection } from '@/types/navigation'
 import { handleFormSubmit } from '@/utils/form-utils'
 import { Button } from '@ui/atoms/button'
 import { Input } from '@ui/atoms/input'
-import { Link } from '@ui/atoms/link'
+import Link from 'next/link'
+import type { FormEvent } from 'react'
 
 const footerSections: NavSection[] = [
   {
@@ -27,7 +28,7 @@ const footerSections: NavSection[] = [
 ]
 
 export function Footer() {
-  const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNewsletterSubmit = (e: FormEvent<HTMLFormElement>) => {
     handleFormSubmit(e, () => {
       // Handle newsletter submission
     })
@@ -39,7 +40,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-footer-section md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h3 className="mb-footer-heading font-semibold text-footer-heading text-footer-heading">
+            <h3 className="mb-footer-heading font-semibold text-footer-heading">
               Demo obchodu
             </h3>
             <p className="mb-footer-description text-footer-body">
@@ -50,7 +51,7 @@ export function Footer() {
           {/* Footer Sections */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h4 className="mb-footer-heading font-semibold text-footer-heading text-footer-heading">
+              <h4 className="mb-footer-heading font-semibold text-footer-heading">
                 {section.title}
               </h4>
               <ul className="space-y-footer-list text-footer-body">
@@ -70,7 +71,7 @@ export function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="mb-footer-heading font-semibold text-footer-heading text-footer-heading">
+            <h4 className="mb-footer-heading font-semibold text-footer-heading">
               Odběr novinek
             </h4>
             <p className="mb-footer-description text-footer-body">
