@@ -1,9 +1,12 @@
 import type { IconType } from '@ui/atoms/icon'
+import type { StaticImageData } from 'next/image'
+import pavelImg from '/assets/team/pavel.jpg'
+import petrImg from '/assets/team/petr.jpg'
 
 export interface TeamMember {
   name: string
   role: string
-  image: string
+  image: string | StaticImageData
 }
 
 export interface CompanyValue {
@@ -55,9 +58,9 @@ export const aboutContent: AboutContent = {
   story: {
     title: 'Od vize ke skutečnosti',
     paragraphs: [
-      'Co začalo jako sen o revoluci v udržitelné módě, vyrostlo v hnutí. Založeni v roce 2020, začali jsme s jednoduchou vírou: že styl a udržitelnost by měly jít ruku v ruce.',
-      'Každý kousek v naší kolekci vypráví příběh - od pečlivě vybraných ekologicky šetrných materiálů po zkušené řemeslníky, kteří každý design přivádějí k životu. Nevytváříme jen oblečení; budujeme komunitu uvědomělých spotřebitelů, kteří věří v sílu promyšlené módy.',
-      'Naše cesta byla poznamenána inovacemi, spoluprací a neochvějným závazkem k našim hodnotám. Dnes jsme hrdí, že sloužíme tisícům zákazníků po celém světě, kteří sdílejí naši vizi udržitelnější a stylovější budoucnosti.',
+      'V roce 2024 jsme převzali otěže a vdechli nový život do dlouholeté tradice vývoje špičkových e-commerce řešení, které se píše již od roku 2008.',
+      'Její základy položil Antonín Růšal, který tehdy začal s průkopnickými projekty v oblasti online aukčních portálů a e-shopů. Postupem času se zaměření společnosti výhradně soustředilo na komplexní e-shopová řešení, stavěná na robustním jádru schopném zvládat i ty nejnáročnější požadavky, jako jsou systémy se stovkami milionů individuálních cen. Díky této bohaté historii a neustálému vývoji, který zohledňuje ty nejmodernější technologie, vám dnes můžeme nabídnout řešení, které není jen produktem, ale výsledkem dekád zkušeností a inovací.',
+      'Naše vize je jasná: posunout hranice možného a poskytnout e-shopům s ročním obratem nad 50 milionů korun nástroje, které jim umožní růst a excelovat. Přestože jdeme kupředu s novým elánem a brandem, hluboce si vážíme patnáctileté historie, která stojí za našimi technologiemi.',
     ],
     image:
       'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -110,28 +113,14 @@ export const aboutContent: AboutContent = {
     title: 'Poznejte náš tým',
     members: [
       {
-        name: 'Sára Johnsonová',
-        role: 'Zakladatelka a kreativní ředitelka',
-        image:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+        name: 'Petr Glaser',
+        role: 'Founder',
+        image: petrImg,
       },
       {
-        name: 'Michael Chen',
-        role: 'Vedoucí udržitelnosti',
-        image:
-          'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop',
-      },
-      {
-        name: 'Emily Rodriguezová',
-        role: 'Vedoucí designu',
-        image:
-          'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop',
-      },
-      {
-        name: 'David Kim',
-        role: 'Provozní ředitel',
-        image:
-          'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=400&fit=crop',
+        name: 'Pavel Koudelka',
+        role: 'Co-Founder',
+        image: pavelImg,
       },
     ],
   },

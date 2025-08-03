@@ -1,36 +1,36 @@
-export default function StatsSection() {
+export function StatsSection() {
   const stats = [
     {
-      value: '50K+',
-      label: 'Spokojených zákazníků',
-      description: 'Od roku 2015 budujeme důvěru',
-      year: '2015',
+      value: '15+',
+      label: 'let zkušeností',
+      description: 'Od roku 2008 budujeme úspěšné e-shopy',
+      year: '2008',
       milestone: 'První zákazník',
+      color: 'primary',
+    },
+    {
+      value: '200+',
+      label: 'realizovaných projektů',
+      description: 'Úspěšně dokončených e-commerce řešení',
+      year: '2015',
+      milestone: 'První velký projekt',
       color: 'secondary',
     },
     {
-      value: '100%',
-      label: 'Udržitelné materiály',
-      description: 'Kompletní přechod na ekologii',
-      year: '2018',
-      milestone: 'Green certification',
+      value: '85%',
+      label: 'dlouhodobých klientů',
+      description: 'Vysoká míra spokojenosti a opakovaných zakázek',
+      year: '2020',
+      milestone: 'Expansion program',
       color: 'success',
     },
     {
-      value: '25+',
-      label: 'Partnerských řemeslníků',
-      description: 'Síť kvalitních dodavatelů',
-      year: '2020',
-      milestone: 'Expansion program',
-      color: 'tertiary',
-    },
-    {
-      value: '4.9★',
-      label: 'Hodnocení zákazníků',
-      description: 'Neustálé zlepšování kvality',
+      value: '40%',
+      label: 'nárůst prodejů',
+      description: 'Průměrné zvýšení tržeb prvním roce',
       year: '2024',
-      milestone: 'Quality excellence',
-      color: 'warning',
+      milestone: 'Optimization excellence',
+      color: 'info',
     },
   ]
 
@@ -40,11 +40,8 @@ export default function StatsSection() {
         {/* Header */}
         <div className="mb-[4rem] text-center">
           <h2 className="mb-[1rem] font-semibold text-[2.5rem] text-fg-primary leading-tight">
-            Naše cesta k úspěchu
+            Naše výsledky
           </h2>
-          <p className="mx-auto max-w-[40rem] text-[1.125rem] text-fg-secondary">
-            Timeline našich nejvýznamnějších milníků a dosažených výsledků
-          </p>
         </div>
 
         {/* Timeline */}
@@ -53,21 +50,16 @@ export default function StatsSection() {
           <div className="grid grid-cols-1 gap-[2rem] md:grid-cols-2 lg:grid-cols-4 lg:gap-[1rem]">
             {stats.map((stat, index) => {
               const colorClasses = {
+                primary: { bg: 'bg-primary', text: 'text-primary' },
                 secondary: { bg: 'bg-secondary', text: 'text-secondary' },
                 success: { bg: 'bg-success', text: 'text-success' },
-                tertiary: { bg: 'bg-tertiary', text: 'text-tertiary' },
-                warning: { bg: 'bg-warning', text: 'text-warning' },
+                info: { bg: 'bg-info', text: 'text-info' },
               }
               const colors =
                 colorClasses[stat.color as keyof typeof colorClasses]
 
               return (
                 <div key={index} className="relative">
-                  {/* Timeline dot (desktop) */}
-                  <div
-                    className={`-translate-x-1/2 relative top-[8.5rem] left-1/2 z-10 hidden h-[1rem] w-[1rem] transform rounded-full border-[0.25rem] border-base xl:block ${colors.bg}`}
-                  />
-
                   {/* Main content */}
                   <div className="relative flex h-[20rem] flex-col justify-between overflow-hidden rounded-[1rem] border border-border-subtle bg-fill-base/50 p-[2rem] text-center shadow-sm md:h-[22rem] lg:h-[20rem]">
                     {/* Top section */}
@@ -98,7 +90,7 @@ export default function StatsSection() {
                       </p>
                     </div>
 
-                    {/* Bottom accent line - from StatsVariant3 */}
+                    {/* Bottom accent line */}
                     <div
                       className={`-bottom-1 absolute right-0 left-0 h-[0.5rem] rounded-b-[1rem] ${colors.bg} opacity-20`}
                     />

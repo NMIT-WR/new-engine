@@ -1,5 +1,5 @@
 'use client'
-import StatsSection from '@/components/stats-section'
+import { StatsSection } from '@/components/stats-section'
 import { aboutContent } from '@/data/about-content'
 import { Icon } from '@ui/atoms/icon'
 import Image from 'next/image'
@@ -55,7 +55,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
       <StatsSection />
 
       {/* Values Section */}
@@ -89,20 +88,19 @@ export default function AboutPage() {
           <h2 className="mb-about-section-title-bottom text-center font-about-section-title text-about-section-title-fg text-about-section-title-size">
             {team.title}
           </h2>
-          <div className="grid grid-cols-1 gap-about-team-gap sm:grid-cols-2 lg:grid-cols-4">
+          <div className="place-self-center-safe grid grid-cols-1 gap-about-team-gap sm:grid-cols-2">
             {team.members.map((member, index) => (
               <div
                 key={index}
-                className="group flex flex-col gap-200 text-center"
+                className="group flex w-fit flex-col gap-200 text-center"
               >
-                <div className="relative overflow-hidden rounded-about-image-radius">
+                <div className="relative overflow-hidden rounded-sm shadow-md">
                   <Image
                     src={member.image}
                     alt={member.name}
                     width={200}
                     height={200}
                     className="w-full"
-                    //className="h-about-team-image w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
                 <article>
