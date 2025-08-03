@@ -6,6 +6,7 @@ import { Icon, type IconType } from '@ui/atoms/icon'
 import { Popover } from '@ui/molecules/popover'
 import Link from 'next/link'
 import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
+import { Logo } from './atoms/logo'
 import { AuthDropdown } from './auth/auth-dropdown'
 import { CartPreview } from './molecules/cart-preview'
 import { HeaderSearch } from './molecules/header-search'
@@ -47,14 +48,8 @@ export function Header({
         <div className="flex h-header-height-lg items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center">
-            <Link
-              href={logo.href || '/'}
-              className="flex items-center gap-header-logo-gap font-header-logo"
-            >
-              {logo.icon && <Icon icon={logo.icon} size="lg" />}
-              {logo.text && (
-                <span className="font-medium text-md">{logo.text}</span>
-              )}
+            <Link href={'/'}>
+              <Logo size="sm" />
             </Link>
 
             {/* Navigation */}

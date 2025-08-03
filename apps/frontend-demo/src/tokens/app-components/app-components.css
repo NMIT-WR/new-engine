@@ -1,5 +1,6 @@
 @import "./atoms/_color-select.css";
 @import "./atoms/_skeleton-loader.css";
+@import "./atoms/_logo.css";
 
 @import "./molecules/_auth-dropdown.css";
 @import "./molecules/_cart-preview.css";
