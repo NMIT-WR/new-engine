@@ -160,12 +160,14 @@ export async function GET(
         `)
 
     const productSql = sql`
-            WITH cte_products_base AS (
+            WITH RECURSIVE cte_products_base AS (
                 SELECT
                     p.*,
                     ROW_NUMBER() over (PARTITION BY IF(p.EAN = '', p.id, p.EAN) ORDER BY p.id) AS ean_duplicate_number
                 FROM product p
+    LEFT JOIN category_product cp on cp.id_product = p.id
                 WHERE p.deleted = 0
+    AND cp.id_category IN (select cac.category_id from cte_allowed_categories cac)
 ), cte_products_baseline AS (
                 SELECT
                     p.*
@@ -238,7 +240,7 @@ select p.id,
        pl.rewrite_title as handle,
        ppl.title as attribute,
        ppvl.title as value
-from cte_products_base p
+from cte_products p
     join product_lang pl on p.id = pl.id_product and pl.id_lang in (select id from lang where abbreviation = 'cz')
     left join product_product_parameter ppp ON ppp.id_product = p.id
     left join product_parameter_lang ppl on ppl.id_product_parameter = ppp.id_product_parameter and ppl.id_lang in (select id from lang where abbreviation = 'cz')
@@ -275,7 +277,7 @@ where pl.rewrite_title not like ''
             )
         )
        ) AS producer
-   FROM cte_products_base p
+   FROM cte_products p
    JOIN producer pr ON p.id_producer = pr.id
    JOIN producer_lang pl ON pl.id_producer = pr.id AND pl.id_lang IN (select id from lang where abbreviation = 'cz')
             ), cte_product_prices AS (
@@ -391,6 +393,43 @@ GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite
         JSON_ARRAYAGG(cv.variants) as variants
     FROM cte_variants cv
     GROUP by cv.id
+), cte_category_path AS (
+    SELECT
+        id AS category_id,
+        id_parent,
+        id AS current_id,
+        0 as depth
+    FROM category
+
+    UNION ALL
+
+    SELECT
+        cp.category_id,
+        c.id_parent,
+        c.id AS current_id,
+        cp.depth + 1
+    FROM cte_category_path cp
+    JOIN category c ON cp.id_parent = c.id
+), cte_category_base AS (
+SELECT
+    c.category_id,
+    c.depth,
+    c.current_id AS root_id,
+    clRoot.title as root_title,
+    cl.title as title
+FROM cte_category_path c
+left join category_lang clRoot on clRoot.id_category = c.current_id and clRoot.id_lang in (select id from lang where abbreviation = 'cz')
+left join category_lang cl on cl.id_category = c.category_id and cl.id_lang in (select id from lang where abbreviation = 'cz')
+WHERE id_parent IS NULL
+), cte_category_whitelist AS (
+SELECT
+    *
+FROM cte_category_base
+   where
+title like 'Oblečení' and root_title in ('Oblečení','Dětské','Dámské','Pánské')
+), cte_allowed_categories AS (
+    select * from cte_category_base
+    where root_id in (select category_id from cte_category_whitelist)
                 ), cte_result AS (
 
             SELECT
@@ -426,6 +465,7 @@ GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite
                 LEFT JOIN cte_product_images cbppi ON cbppi.id_product = bp.id AND cbppi.image_num = 1
                 LEFT JOIN cte_variants_grouped cv ON cv.id = bp.id
                 LEFT JOIN cte_product_producer cppr ON cppr.productId = bp.id
+WHERE cpig.images IS NOT NULL
             GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description, voa.option_values
                 )
         `
