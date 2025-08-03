@@ -106,14 +106,7 @@ export function ProductFilters({
 
   const renderCategories = () => {
     return (
-      <FilterSection
-        title="Kategorie"
-        onClear={
-          filters.categories.size > 0
-            ? () => updateFilters({ categories: new Set() })
-            : undefined
-        }
-      >
+      <FilterSection title="Kategorie">
         {categoryTree.length > 0 && (
           <>
             <div className="mb-2 text-gray-500 text-xs">

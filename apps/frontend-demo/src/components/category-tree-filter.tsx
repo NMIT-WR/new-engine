@@ -1,6 +1,6 @@
 'use client'
+import { useAccordionTree } from '@/hooks/use-accordion-tree'
 import { useCategoryPrefetch } from '@/hooks/use-category-prefetch'
-import { useRegions } from '@/hooks/use-region'
 import type { CategoryTreeNode } from '@/lib/server/categories'
 import type { LeafCategory, LeafParent } from '@/lib/static-data/categories'
 import {
@@ -26,9 +26,9 @@ export function CategoryTreeFilter({
   onSelectionChange,
   label,
 }: CategoryFilterProps) {
-  const {selectedRegion} = useRegions()
   const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [expandedNodes, setExpandedNodes] = useState<string[]>([])
+  const { expandedNodes, handleAccordionExpansion } =
+    useAccordionTree(categories)
   const { prefetchCategoryProducts } = useCategoryPrefetch()
   // Create Sets for quick lookup
   const leafCategoryIds = useMemo(
@@ -79,15 +79,13 @@ export function CategoryTreeFilter({
     }
   }
 
-
-
   // Handle expanded change events from TreeView
   const handleExpandedChange = useCallback(
     (details: { expandedValue: string[] }) => {
-      const newExpandedNodes = details.expandedValue || []
+      const finalExpanded = handleAccordionExpansion(details)
 
       // Find which nodes were newly expanded
-      const newlyExpanded = newExpandedNodes.filter(
+      const newlyExpanded = finalExpanded.filter(
         (nodeId: string) => !expandedNodes.includes(nodeId)
       )
 
@@ -109,14 +107,13 @@ export function CategoryTreeFilter({
           for (const childId of expandedParentLeaf.children || []) {
             if (leafCategoryIds.has(childId)) {
               // Direct leaf child - prefetch individually
-            //  console.log(`[Prefetch] - Direct leaf child`)
+              //  console.log(`[Prefetch] - Direct leaf child`)
               void prefetchCategoryProducts([childId])
-            } 
-            else if (leafParentIds.has(childId)) {
+            } else if (leafParentIds.has(childId)) {
               // Direct parentLeaf child - prefetch its group of leafs
               const childParentLeaf = leafParents.find((p) => p.id === childId)
               if (childParentLeaf) {
-               // console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
+                // console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
                 // Only prefetch the group - individual leafs will be prefetched when user expands this child
                 void prefetchCategoryProducts(childParentLeaf.leafs)
               }
@@ -129,7 +126,7 @@ export function CategoryTreeFilter({
         // 3. Standard category (non-selectable) - prefetch selectable children
         const expandedNode = findNodeById(categories, nodeId)
         if (expandedNode?.children) {
-         // console.log(`[Prefetch] Expanding standard category: ${expandedNode.name}`)
+          // console.log(`[Prefetch] Expanding standard category: ${expandedNode.name}`)
 
           // Process each direct child
           for (const child of expandedNode.children) {
@@ -137,7 +134,7 @@ export function CategoryTreeFilter({
               // Child is a parentLeaf - prefetch its leafs
               const childParentLeaf = leafParents.find((p) => p.id === child.id)
               if (childParentLeaf) {
-              //  console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
+                //  console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
                 void prefetchCategoryProducts(childParentLeaf.leafs)
               }
             }
@@ -146,10 +143,11 @@ export function CategoryTreeFilter({
       }
 
       // Update state
-      setExpandedNodes(newExpandedNodes)
+      //setExpandedNodes(newExpandedNodes)
     },
     [
       expandedNodes,
+      handleAccordionExpansion,
       leafParents,
       leafCategoryIds,
       leafParentIds,
@@ -165,10 +163,12 @@ export function CategoryTreeFilter({
       label={label}
       selectionMode="single"
       selectedValue={selectedCategory ? [selectedCategory] : []}
+      expandedValue={expandedNodes}
       showNodeIcons={false}
       onSelectionChange={handleSelectionChange}
       onExpandedChange={handleExpandedChange}
       expandOnClick={true}
+      showIndentGuides={false}
     />
   )
 }
