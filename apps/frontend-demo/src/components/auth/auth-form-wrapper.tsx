@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import * as React from 'react'
 
 interface AuthFormWrapperProps {
   title: string
   subtitle: string
-  children: ReactNode
+  children: React.ReactNode
   footerText: string
   footerLinkText: string
   footerLinkHref: string
@@ -19,7 +19,7 @@ export function AuthFormWrapper({
   footerLinkHref,
 }: AuthFormWrapperProps) {
   return (
-    <div className="rounded-auth-card bg-auth-card-bg p-auth-card-padding shadow-auth-card">
+    <div className="rounded-auth-card w-full bg-auth-card-bg p-auth-card-sm md:p-auth-card-md shadow-auth-card">
       <div className="mb-auth-header-margin text-center">
         <h1 className="mb-auth-title-margin font-auth-title text-auth-title-size">
           {title}

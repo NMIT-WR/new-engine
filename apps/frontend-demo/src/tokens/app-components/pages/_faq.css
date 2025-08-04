@@ -1,0 +1,15 @@
+:root {
+  @media (width < 48rem) {
+    --spacing-faq-primary: var(--spacing-200);
+  }
+}
+
+@theme static {
+  --spacing-faq-primary: var(--spacing-800);
+  --spacing-faq-icon: var(--spacing-250);
+  --spacing-icon-align: var(--spacing-100);
+  --spacing-title-bottom: var(--spacing-150);
+  --spacing-card-padding: var(--spacing-300);
+  --spacing-content-sections: var(--spacing-300);
+  --spacing-faq-feature: var(--spacing-250);
+}

@@ -7,13 +7,17 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "build:static": "next build",
+    "build:no-types": "cross-env SKIP_TYPE_CHECK=1 next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "check:unused": "node scripts/check-unused-exports.js"
+    "check:unused": "node scripts/check-unused-exports.js",
+    "generate:categories": "node scripts/generate-categories.mjs",
+    "prebuild": "pnpm generate:categories"
   },
   "dependencies": {
     "@medusajs/js-sdk": "2.6.1",
     "@medusajs/types": "^2.8.4",
+    "@react-email/components": "^0.3.2",
     "@tanstack/react-query": "^5.76.1",
     "@tanstack/react-store": "^0.7.1",
     "@zag-js/carousel": "^1.14.0",
@@ -23,6 +27,7 @@
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "resend": "^4.7.0",
     "tailwind-merge": "^3.3.0",
     "tailwind-variants": "^1.0.0",
     "ui": "workspace:*"
@@ -37,6 +42,7 @@
     "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.21",
     "chokidar": "^4.0.3",
+    "dotenv": "^16.6.0",
     "postcss": "^8.5.3",
     "puppeteer": "^24.9.0",
     "tailwindcss": "^4.1.7",

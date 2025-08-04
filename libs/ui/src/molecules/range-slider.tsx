@@ -118,6 +118,7 @@ export interface RangeSliderProps
   showMarkers?: boolean
   markerCount?: number
   showValueText?: boolean
+  formatRangeText?: (values: number[]) => string
   formatValue?: (value: number) => string
   className?: string
   onChange?: (values: number[]) => void
@@ -147,6 +148,7 @@ export function RangeSlider({
   showMarkers = false,
   markerCount = 5,
   showValueText = false,
+  formatRangeText,
   formatValue = (val: number) => val.toString(),
   className,
   onChange,
@@ -203,8 +205,14 @@ export function RangeSlider({
           </Label>
           {showValueText && (
             <output className={valueSlot()} {...api.getValueTextProps()}>
-              <b>{api.value.join(' - ')}</b>
-            </output>
+              <b>
+                {formatRangeText
+                  ? formatRangeText(api.value || defaultValue)
+                  : api.value && api.value.length === 2 && api.value[0] !== undefined && api.value[1] !== undefined
+                    ? `${formatValue(api.value[0])} - ${formatValue(api.value[1])}`
+                    : ''
+                }
+              </b>            </output>
           )}
         </div>
       )}
@@ -245,7 +253,7 @@ export function RangeSlider({
                       className={markerText()}
                       data-orientation={orientation}
                     >
-                      {formatValue(markerValue)}
+                      {markerValue}
                     </span>
                   </div>
                 )

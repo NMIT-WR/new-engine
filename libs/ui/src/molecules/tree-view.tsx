@@ -33,7 +33,9 @@ const treeVariants = tv({
     ],
     branchControl: [],
     branchText: ['flex-1 text-tree-size'],
-    branchIndicator: ['data-[state=open]:token-icon-tree-indicator-open'],
+    branchIndicator: [
+      'data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-120',
+    ],
     branchContent: ['relative', 'data-[state=closed]:hidden'],
     branchIndentGuide: [
       'absolute top-0 bottom-0 left-1',
@@ -62,9 +64,9 @@ const treeVariants = tv({
       class: [
         'flex items-center gap-tree-icon p-tree-node',
         'cursor-pointer rounded-tree-node',
-        'hover:bg-tree-node-hover hover:text-tree-fg-hover',
+        'hover:bg-tree-node-hover hover:text-tree-fg-hover hover:font-tree-selected',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-focus',
-        'data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected',
+        'data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected data-[selected]:font-tree-selected',
         'data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent',
       ],
     },
@@ -99,32 +101,50 @@ function TreeNode({
     nodeIcon,
   } = treeVariants()
 
+  const handleToggle = (id: string) => {
+    if (nodeState.expanded) {
+      api.collapse([id])
+    } else {
+      api.expand([id])
+    }
+  }
+
   if (nodeState.isBranch) {
     return (
       <div className={branch()} {...api.getBranchProps(nodeProps)}>
-        <div
-          className={branchControl()}
-          {...api.getBranchControlProps(nodeProps)}
-        >
-          {showNodeIcons && (
-            <Icon
-              icon={
-                node.icons?.branch ||
-                (nodeState.expanded
-                  ? 'token-icon-tree-node-open'
-                  : 'token-icon-tree-node')
-              }
-              className={nodeIcon()}
-              data-state={nodeState.expanded ? 'open' : 'closed'}
-            />
-          )}
-          <span className={branchText()} {...api.getBranchTextProps(nodeProps)}>
-            {node.name}
-          </span>
+        <div className="flex items-center">
+          <div
+            className={branchControl()}
+            {...api.getBranchControlProps(nodeProps)}
+          >
+            {showNodeIcons && (
+              <Icon
+                icon={
+                  node.icons?.branch ||
+                  (nodeState.expanded
+                    ? 'token-icon-tree-node-open'
+                    : 'token-icon-tree-node')
+                }
+                className={nodeIcon()}
+                data-state={nodeState.expanded ? 'open' : 'closed'}
+              />
+            )}
+            <span
+              className={branchText()}
+              {...api.getBranchTextProps(nodeProps)}
+            >
+              {node.name}
+            </span>
+          </div>
           <Icon
             icon="token-icon-tree-indicator"
             className={branchIndicator()}
             {...api.getBranchIndicatorProps(nodeProps)}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              handleToggle(node.id)
+            }}
           />
         </div>
         <div

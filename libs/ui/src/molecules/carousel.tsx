@@ -63,7 +63,6 @@ const carouselVariants = tv({
       ],
     },
   ],
-
   variants: {
     objectFit: {
       cover: {
@@ -160,18 +159,18 @@ interface CarouselProps<T extends ElementType = typeof Image>
   imageAs?: CarouselImageComponent<T>
   autoplayTrigger?: boolean
   showControl?: boolean
+  width?: number
+  height?: number
 }
 
 export function Carousel<T extends ElementType = typeof Image>({
   /* Data */
   slides,
   id,
-
   /* Tailwind variants */
   size,
   objectFit,
   aspectRatio,
-
   /* Zag.js carousel config */
   orientation = 'horizontal',
   slideCount = slides.length,
@@ -189,6 +188,8 @@ export function Carousel<T extends ElementType = typeof Image>({
   showControl = true,
   className,
   imageAs,
+  width,
+  height,
   onPageChange,
   ...props
 }: CarouselProps<T>) {
@@ -248,6 +249,8 @@ export function Carousel<T extends ElementType = typeof Image>({
                   as={imageAs === Image ? undefined : imageAs}
                   src={slide.src || ''}
                   alt={slide.alt || ''}
+                  width={width}
+                  height={height}
                   {...slide.imageProps}
                 />
               )}

@@ -1,12 +1,12 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { Button } from 'ui/src/atoms/button'
-import { Image } from 'ui/src/atoms/image'
+import { LinkButton } from '@ui/atoms/link-button'
+import Image, { type StaticImageData } from 'next/image'
+import Link from 'next/link'
 
 interface HeroProps {
   title: string
   subtitle?: string
-  backgroundImage: string
+  backgroundImage: string | StaticImageData
   primaryAction?: {
     label: string
     onClick?: () => void
@@ -26,32 +26,17 @@ export function Hero({
   primaryAction,
   secondaryAction,
 }: HeroProps) {
-  const router = useRouter()
-
-  const handlePrimaryAction = () => {
-    if (primaryAction?.onClick) {
-      primaryAction.onClick()
-    } else if (primaryAction?.href) {
-      router.push(primaryAction.href)
-    }
-  }
-
-  const handleSecondaryAction = () => {
-    if (secondaryAction?.onClick) {
-      secondaryAction.onClick()
-    } else if (secondaryAction?.href) {
-      router.push(secondaryAction.href)
-    }
-  }
-
   return (
     <section className="relative h-hero-height overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
           src={backgroundImage}
-          alt="Hero background"
+          alt="Pozadí hero sekce"
           className="h-full w-full object-cover"
+          fill
+          priority
+          placeholder="blur"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
       </div>
@@ -69,28 +54,18 @@ export function Hero({
               </p>
             )}
             {(primaryAction || secondaryAction) && (
-              <div className="flex w-fit gap-hero-button-gap">
+              <div className="flex w-fit flex-col gap-hero-button-gap md:flex-row">
                 {primaryAction && (
-                  <Button
+                  <LinkButton
                     variant="primary"
                     size="lg"
                     theme="solid"
-                    onClick={handlePrimaryAction}
-                    className="px-hero-button-x py-hero-button-y"
+                    as={Link}
+                    href="/products"
+                    className="h-fit py-xs lg:px-hero-button-x lg:py-hero-button-y"
                   >
                     {primaryAction.label}
-                  </Button>
-                )}
-                {secondaryAction && (
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    theme="outlined"
-                    onClick={handleSecondaryAction}
-                    className={`border-white px-hero-button-x py-hero-button-y text-white`}
-                  >
-                    {secondaryAction.label}
-                  </Button>
+                  </LinkButton>
                 )}
               </div>
             )}

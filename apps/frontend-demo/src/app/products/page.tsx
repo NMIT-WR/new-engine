@@ -1,82 +1,226 @@
 'use client'
-
+import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
-import { mockProducts } from '@/data/mock-products'
-import { useProductListing } from '@/hooks/use-product-listing'
-import type { SortOption } from '@/utils/product-filters'
-import { Breadcrumb } from 'ui/src/molecules/breadcrumb'
-import { Select } from 'ui/src/molecules/select'
+import { useProducts } from '@/hooks/use-products'
+import { useRegions } from '@/hooks/use-region'
+import { useUrlFilters } from '@/hooks/use-url-filters'
+import { queryKeys } from '@/lib/query-keys'
+import { getProducts } from '@/services/product-service'
+import { useQueryClient } from '@tanstack/react-query'
+import { Button } from '@ui/atoms/button'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Select } from '@ui/molecules/select'
+import Link from 'next/link'
+import { Suspense, useEffect } from 'react'
 
-export default function ProductsPage() {
+const SORT_OPTIONS = [
+  { value: 'newest', label: 'Nejnovější' },
+  { value: 'name-asc', label: 'Název: A-Z' },
+  { value: 'name-desc', label: 'Název: Z-A' },
+]
+
+function ProductsPageContent() {
+  const { selectedRegion } = useRegions()
+  const pageSize = 12
+  const queryClient = useQueryClient()
+
+  const cache = queryClient
+    .getQueryCache()
+    .getAll()
+    .map((q) => {
+      return {
+        queryKey: q.queryKey,
+        params: q.queryKey[3],
+        status: q.state.status,
+        // @ts-ignore
+        count: q.state.data?.count || 0,
+        // @ts-ignore
+        productsLength: q.state.data?.products?.length || 0,
+        // @ts-ignore
+        categories: q.queryKey[3]?.filters?.categories || [],
+      }
+    })
+
+  // Use URL state for filters, sorting and pagination
+  const urlFilters = useUrlFilters()
+
+  // Convert filter state to ProductFilters format
+  const productFilters = {
+    categories: Array.from(urlFilters.filters.categories) as string[],
+    sizes: Array.from(urlFilters.filters.sizes) as string[],
+  }
+
   const {
-    sortBy,
-    setSortBy,
-    filters,
-    setFilters,
-    sortedProducts,
-    productCount,
-    sortOptions,
-  } = useProductListing(mockProducts)
+    products,
+    isLoading,
+    totalCount,
+    currentPage,
+    totalPages,
+    hasNextPage,
+    hasPrevPage,
+  } = useProducts({
+    page: urlFilters.page,
+    limit: pageSize,
+    filters: productFilters,
+    sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+    q: urlFilters.searchQuery || undefined,
+    region_id: selectedRegion?.id,
+  })
+
+  // Prefetch strategic pages when we have products
+  useEffect(() => {
+    if (products.length > 0) {
+      const pagesToPrefetch = []
+
+      // Always prefetch first page (if not current)
+      if (currentPage !== 1) {
+        pagesToPrefetch.push(1)
+      }
+
+      // Prefetch previous pages
+      if (hasPrevPage) {
+        pagesToPrefetch.push(currentPage - 1)
+        // Also prefetch page -2 if it exists
+        if (currentPage - 2 >= 1) {
+          pagesToPrefetch.push(currentPage - 2)
+        }
+      }
+
+      // Prefetch next pages
+      if (hasNextPage) {
+        pagesToPrefetch.push(currentPage + 1)
+        // Also prefetch page +2 if it exists
+        if (currentPage + 2 <= totalPages) {
+          pagesToPrefetch.push(currentPage + 2)
+        }
+      }
+
+      // Prefetch last page (if known and not current)
+      if (totalPages > 1 && currentPage !== totalPages) {
+        pagesToPrefetch.push(totalPages)
+      }
+
+      // Execute all prefetches
+      pagesToPrefetch.forEach((page) => {
+        const offset = (page - 1) * pageSize
+        queryClient.prefetchQuery({
+          queryKey: queryKeys.products.list({
+            page,
+            limit: pageSize,
+            filters: productFilters,
+            sort:
+              urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+            q: urlFilters.searchQuery || undefined,
+            region_id: selectedRegion?.id,
+          }),
+          queryFn: () =>
+            getProducts({
+              limit: pageSize,
+              offset,
+              filters: productFilters,
+              sort:
+                urlFilters.sortBy === 'relevance'
+                  ? undefined
+                  : urlFilters.sortBy,
+              q: urlFilters.searchQuery || undefined,
+              region_id: selectedRegion?.id,
+            }),
+        })
+      })
+    }
+  }, [
+    currentPage,
+    hasNextPage,
+    hasPrevPage,
+    products.length,
+    queryClient,
+    pageSize,
+    urlFilters.sortBy,
+    totalPages,
+    selectedRegion?.id,
+  ])
 
   return (
-    <div className="min-h-screen bg-product-listing-bg">
-      <div className="mx-auto max-w-product-listing-max-w px-product-listing-container-x py-product-listing-container-y lg:px-product-listing-container-x-lg lg:py-product-listing-container-y-lg">
-        {/* Header */}
-        <div className="mb-product-listing-header-margin">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/' },
-              { label: 'Products', href: '/products' },
-            ]}
-          />
-          <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
-            All Products
-          </h1>
-        </div>
-
-        {/* Mobile Filters */}
-        <ProductFilters
-          className="md:hidden"
-          filters={filters}
-          onFiltersChange={setFilters}
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-product-listing-header-margin">
+        <Breadcrumb
+          items={[
+            { label: 'Domů', href: '/' },
+            { label: 'Produkty', href: '/products' },
+          ]}
+          linkComponent={Link}
         />
+        <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
+          Všechny produkty
+        </h1>
+      </div>
 
-        {/* Layout */}
-        <div className="gap-product-listing-layout-gap md:flex">
-          {/* Desktop Sidebar Filters */}
-          <aside className="hidden w-product-listing-sidebar-width flex-shrink-0 md:block">
-            <ProductFilters filters={filters} onFiltersChange={setFilters} />
-          </aside>
+      {/* Mobile Filter Button - Sticky */}
+      <div className="sticky top-16 z-40 mb-4 sm:static lg:hidden">
+        <ProductFilters
+          filters={urlFilters.filters}
+          onFiltersChange={urlFilters.setFilters}
+        />
+      </div>
 
-          {/* Main Content */}
-          <main className="flex-1">
-            {/* Controls */}
-            <div className="mb-product-listing-controls-margin flex flex-col items-start justify-between gap-product-listing-controls-gap sm:flex-row sm:items-center">
-              <p className="text-product-listing-results">
-                Showing {sortedProducts.length} products
-              </p>
-              <div className="flex items-center gap-product-listing-sort-gap">
-                <span className="text-product-listing-sort-label text-sm">
-                  Sort by:
-                </span>
-                <Select
-                  value={[sortBy]}
-                  options={sortOptions}
-                  placeholder="Select sorting"
-                  clearIcon={false}
-                  onValueChange={(details) =>
-                    setSortBy((details.value[0] as SortOption) || 'newest')
-                  }
-                />
-              </div>
+      <div className="flex gap-8">
+        {/* Filters Sidebar */}
+        <aside className="hidden w-64 flex-shrink-0 lg:block">
+          <ProductFilters
+            filters={urlFilters.filters}
+            onFiltersChange={urlFilters.setFilters}
+          />
+        </aside>
+
+        {/* Products Grid */}
+        <main className="w-full flex-1">
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-gray-600 text-sm dark:text-gray-400">
+              Zobrazeno {products.length} z {totalCount} produktů
+            </p>
+            <Select
+              value={[urlFilters.sortBy || 'newest']}
+              options={SORT_OPTIONS.map((opt) => ({
+                value: opt.value,
+                label: opt.label,
+              }))}
+              clearIcon={false}
+              placeholder="Vybrat řazení"
+              onValueChange={(details) => {
+                const value = details.value[0]
+                if (value) urlFilters.setSortBy(value as any)
+              }}
+              size="sm"
+              className="max-w-64"
+            />
+          </div>
+
+          {isLoading ? (
+            <ProductGridSkeleton numberOfItems={12} />
+          ) : products.length > 0 ? (
+            <ProductGrid
+              products={products}
+              totalCount={totalCount}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              onPageChange={urlFilters.setPage}
+            />
+          ) : (
+            <div className="py-12 text-center">
+              <p className="text-gray-500">Žádné produkty nenalezeny</p>
             </div>
-
-            {/* Product Grid with Pagination */}
-            <ProductGrid products={sortedProducts} pageSize={9} />
-          </main>
-        </div>
+          )}
+        </main>
       </div>
     </div>
+  )
+}
+
+export default function ProductsPageClient() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton numberOfItems={12} />}>
+      <ProductsPageContent />
+    </Suspense>
   )
 }

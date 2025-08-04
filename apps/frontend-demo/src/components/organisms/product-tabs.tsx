@@ -1,11 +1,11 @@
 'use client'
 
 import type { Product } from '@/types/product'
-import { Badge } from 'ui/src/atoms/badge'
-import { Button } from 'ui/src/atoms/button'
-import { Rating } from 'ui/src/atoms/rating'
-import { type TabItem, Tabs } from 'ui/src/atoms/tabs'
-import { Accordion } from 'ui/src/molecules/accordion'
+import { Badge } from '@ui/atoms/badge'
+import { Button } from '@ui/atoms/button'
+import { Rating } from '@ui/atoms/rating'
+import { type TabItem, Tabs } from '@ui/atoms/tabs'
+import { Accordion } from '@ui/molecules/accordion'
 
 interface ProductTabsProps {
   product: Product
@@ -15,19 +15,18 @@ export function ProductTabs({ product }: ProductTabsProps) {
   const mockReviews = [
     {
       id: '1',
-      author: 'Sarah M.',
+      author: 'Sára M.',
       rating: 5,
-      date: '2 weeks ago',
-      comment:
-        'Absolutely love this! The quality is amazing and it fits perfectly.',
+      date: 'před 2 týdny',
+      comment: 'Naprosto skvělé! Kvalita je úzasná a dokonale to sedí.',
       verified: true,
     },
     {
       id: '2',
-      author: 'John D.',
+      author: 'Jan D.',
       rating: 4,
-      date: '1 month ago',
-      comment: 'Great product, exactly as described. Would recommend.',
+      date: 'před měsícem',
+      comment: 'Skvělý produkt, přesně podle popisu. Doporučuji.',
       verified: true,
     },
   ]
@@ -35,17 +34,17 @@ export function ProductTabs({ product }: ProductTabsProps) {
   const tabs: TabItem[] = [
     {
       value: 'description',
-      label: 'Description',
+      label: 'Popis',
       content: (
         <div className="space-y-product-tabs-content-gap">
           <p className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed">
             {product.description ||
-              'Experience premium quality and modern design with this exceptional product. Crafted with attention to detail and built to last.'}
+              'Zažijte prvotřídní kvalitu a moderní design s tímto výjimečným produktem. Vyrobeno s důrazem na detail a vydrží roky.'}
           </p>
           {product.features && product.features.length > 0 && (
             <div>
               <h4 className="font-product-tabs-heading text-product-tabs-heading-fg text-product-tabs-heading-size">
-                Key Features
+                Klíčové vlastnosti
               </h4>
               <ul className="space-y-product-tabs-features-gap pl-5">
                 {product.features.map((feature, idx) => (
@@ -64,13 +63,13 @@ export function ProductTabs({ product }: ProductTabsProps) {
     },
     {
       value: 'details',
-      label: 'Product Details',
+      label: 'Detaily produktu',
       content: (
         <div className="space-y-product-tabs-section-gap">
           {product.specifications && product.specifications.length > 0 && (
             <div className="space-y-product-tabs-content-gap">
               <h4 className="font-product-tabs-heading text-product-tabs-heading-fg text-product-tabs-heading-size">
-                Specifications
+                Specifikace
               </h4>
               <dl className="space-y-product-tabs-spec-gap">
                 {product.specifications.map((spec, idx) => (
@@ -91,41 +90,43 @@ export function ProductTabs({ product }: ProductTabsProps) {
           )}
           <div className="mt-product-tabs-accordion-margin">
             <Accordion
+              shadow="none"
               items={[
                 {
                   id: 'shipping',
                   value: 'shipping',
-                  title: 'Shipping & Returns',
+                  title: 'Doprava a vracení',
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
-                      <p>• Free shipping on orders over €50</p>
-                      <p>• Express delivery available (1-2 business days)</p>
-                      <p>• 30-day return policy</p>
-                      <p>• Returns accepted in original condition with tags</p>
+                      <p>• Doprava zdarma při objednávce nad 1250 Kč</p>
+                      <p>• Možnost expresní dopravy (1-2 pracovní dny)</p>
+                      <p>• 30denní lhůta pro vrácení</p>
+                      <p>• Vrácení je možné v originálním stavu s visčkami</p>
                     </div>
                   ),
                 },
                 {
                   id: 'sizing',
                   value: 'sizing',
-                  title: 'Size Guide',
+                  title: 'Tabulka velikostí',
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
                       <p>
-                        Our products are true to size. If you're between sizes,
-                        we recommend sizing up for a comfortable fit.
+                        Naše produkty odpovídají standardním velikostem. Pokud
+                        jste mezi dvěma velikostmi, doporučujeme zvolit větší
+                        pro pohodlné nošení.
                       </p>
                       <table className="w-full text-product-tabs-review-meta">
                         <thead>
                           <tr className="border-product-tabs-spec-border border-b">
                             <th className="py-product-tabs-table-cell-y text-left">
-                              Size
+                              Velikost
                             </th>
                             <th className="py-product-tabs-table-cell-y">
-                              Chest (cm)
+                              Hrudník (cm)
                             </th>
                             <th className="py-product-tabs-table-cell-y">
-                              Length (cm)
+                              Délka (cm)
                             </th>
                           </tr>
                         </thead>
@@ -159,14 +160,14 @@ export function ProductTabs({ product }: ProductTabsProps) {
                 {
                   id: 'care',
                   value: 'care',
-                  title: 'Care Instructions',
+                  title: 'Péče o produkt',
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
-                      <p>• Machine wash cold with like colors</p>
-                      <p>• Do not bleach</p>
-                      <p>• Tumble dry low</p>
-                      <p>• Cool iron if needed</p>
-                      <p>• Do not dry clean</p>
+                      <p>• Prát v pračce na 30°C s podobnými barvami</p>
+                      <p>• Nebělit</p>
+                      <p>• Sušit v sušičce na nízkou teplotu</p>
+                      <p>• Žehlit na nízkou teplotu podle potřeby</p>
+                      <p>• Nečistit chemicky</p>
                     </div>
                   ),
                 },
@@ -178,7 +179,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
     },
     {
       value: 'reviews',
-      label: 'Reviews',
+      label: 'Recenze',
       content: (
         <div className="space-y-product-tabs-section-gap">
           {mockReviews.length > 0 ? (
@@ -190,7 +191,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   </span>
                   <Rating value={4.5} />
                   <span className="text-product-tabs-content-muted text-product-tabs-review-meta">
-                    Based on {mockReviews.length} reviews
+                    Na základě {mockReviews.length} recenzí
                   </span>
                 </div>
               </div>
@@ -205,7 +206,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{review.author}</span>
                           {review.verified && (
-                            <Badge variant="success">Verified</Badge>
+                            <Badge variant="success">Ověřeno</Badge>
                           )}
                         </div>
                         <Rating value={review.rating} size="sm" />
@@ -221,15 +222,15 @@ export function ProductTabs({ product }: ProductTabsProps) {
                 ))}
               </div>
               <div className="flex justify-center">
-                <Button variant="secondary">Load More Reviews</Button>
+                <Button variant="secondary">Načíst další recenze</Button>
               </div>
             </>
           ) : (
             <div className="rounded-product-tabs-review-bg bg-product-tabs-review-bg py-product-tabs-review-card text-center">
               <p className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed">
-                No reviews yet. Be the first to review this product!
+                Zatím žádné recenze. Buďte první, kdo tento produkt ohodnotí!
               </p>
-              <Button className="mt-4">Write a Review</Button>
+              <Button className="mt-4">Napsat recenzi</Button>
             </div>
           )}
         </div>

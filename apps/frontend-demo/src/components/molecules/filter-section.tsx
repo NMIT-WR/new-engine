@@ -1,11 +1,12 @@
-import { type ReactNode, useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
+import { Button } from '@ui/atoms/button'
+import * as React from 'react'
+import { useState } from 'react'
 
 export interface FilterSectionProps<T = any> {
   title: string
   items?: T[]
-  renderItem?: (item: T, index: number) => ReactNode
-  children?: ReactNode
+  renderItem?: (item: T, index: number) => React.ReactNode
+  children?: React.ReactNode
   defaultItemsShown?: number
   onClear?: () => void
   className?: string
@@ -44,7 +45,7 @@ export function FilterSection<T>({
             size="sm"
             onClick={onClear}
           >
-            Clear
+            Vymazat
           </Button>
         )}
       </div>
@@ -62,8 +63,8 @@ export function FilterSection<T>({
             onClick={() => setShowAll(!showAll)}
           >
             {showAll
-              ? 'Show less'
-              : `Show ${items!.length - defaultItemsShown!} more`}
+              ? 'Zobrazit méně'
+              : `Zobrazit dalších ${items!.length - defaultItemsShown!}`}
           </Button>
         </div>
       )}

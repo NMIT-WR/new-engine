@@ -51,6 +51,30 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     - Define component-specific CSS variables. **Primarily, these variables SHOULD reference variables from `_semantic.css`** (e.g., `--color-component-xyz-bg: var(--color-primary);`).
     - Adhere strictly to "CSS Token Guidelines" and "CSS Token Naming Convention" (see sections below).
     - If unsure about Tailwind CSS features or `tailwind-variants` usage, use **MCP Quillopy/Context7** to research their documentation.
+
+**EXAMPLE**
+
+### Token Definition Rules
+
+**IMPORTANT**: All component tokens must be defined in `@theme static` blocks:
+
+```css
+/*If you need to specify different values for breakpoints*/
+:root {
+
+    @media (min-width: 768px) {
+        --color-button-bg: var(--color-secondary);
+        --spacing-button-sm: var(--spacing-2xs);
+    }
+}
+/* libs/ui/src/tokens/components/_component-name.css */
+@theme static {
+  /* Category-Component-Property-State pattern */
+  --color-button-bg: var(--color-primary);
+  --color-button-bg-hover: oklch(from var(--color-button-bg) calc(l + var(--state-hover)) c h);
+  --spacing-button-sm: var(--spacing-xs);
+}
+```
 5. **Integrate CSS**:
     
     - Import the new `_component-name.css` into the main component token stylesheet (e.g., `apps/frontend-demo/src/tokens/components.css`).
@@ -85,23 +109,6 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
 4. **Testing & Validation**: Follow step 6 from "Workflow: Creating a New Component".
 
 ## 4. Styling, Theming & Component Development Details
-
-### 4.1. Core Styling Approach
-        
-        
-        ```TypeScript
-        // Example:
-        import { tv } from 'tailwind-variants'; // or relevant project path
-        
-        const buttonStyles = tv({
-          slots: {
-            root: 'font-semibold focus:outline-none bg-btn-primary-bg', // Use Tailwind classes or CSS vars
-            span: 'text-btn-size',
-          },
-        });
-        // Usage: <button className={root()}><span className={span()}>{children}</span></button>
-        ```
-        
 
 ### 4.2. Design Tokens & Theming
 
@@ -154,71 +161,52 @@ _(Use this when a component is specific to `frontend-demo` and will NOT be added
     - Multiple sizes: use size directly as a modifier (e.g., `--text-pc-name-sm`, NOT `--text-pc-name-size-sm`).
 - **Common Abbreviations**: `btn` (button), `pc` (product-card), `nav` (navigation), `acc` (accordion), `cb` (checkbox).
 - **Examples**:
-    
-  
-    
-    ```  CSS
-    /* Colors with purpose, referencing semantic globals where possible */
-    --color-btn-primary-bg: var(--color-primary); /* Default purpose is background */
-    --color-btn-primary-fg: var(--color-fg-primary);
-    --color-btn-primary-bg-hover: var(--color-primary);
-    --color-pc-stock-fg: var(--color-success);
-    
-    /* Spacing */
-    --spacing-pc-padding: var(--spacing-md);
-    --spacing-btn-sm: var(--spacing-xs); /* Spacing for a small button */
-    
-    /* Typography */
-    --text-hero-title-size: var(--text-md);
-    --font-weight-hero-title: var(--font-bold);
-    --text-pc-name-sm: var(--text-sm); /* Name text size for small product card variant */
-    ```
+`libs/ui/src/tokens/components/atoms/_button.css`
+`libs/ui/src/tokens/components/molecules/_combobox.css`
+
+### Token Usage in Components
+
+```typescript
+// ✅ CORRECT - Use Tailwind classes that reference your tokens
+'bg-button-bg'         // Uses --color-button-bg
+'text-button-fg'       // Uses --color-button-fg
+'p-button-sm'          // Uses --spacing-button-sm
+
+// ❌ WRONG - Never use arbitrary values
+'bg-[var(--color-button-bg)]'
+'p-[var(--spacing-button-sm)]'
+```
     
 
 ### 4.5. CSS File Organization (`apps/frontend-demo`)
-
-- **Location**: `apps/frontend-demo/src/tokens/components/`
-    - `atoms/_component-name.css`
-    - `molecules/_component-name.css`
-    - `organisms/_component-name.css`
-- **Import**: Always add new component CSS file imports to `apps/frontend-demo/src/tokens/components.css` (or the main CSS entry point for component tokens).
+- **Location**: `apps/frontend-demo/src/tokens/app-components/`
+    folders: "atoms", "molecules", "organisms", "templates", "pages"
+- **Import**: Always add new component CSS file imports to `apps/frontend-demo/src/tokens/app-components.css` (or the main CSS entry point for component tokens).
 
 ## 5. Core Commands (Contextual Execution)
-
 - **Build `frontend-demo` (for Netlify)**:
-    
     ```bash
     # (Run from apps/frontend-demo)
     pnpm build:static
     ```
-    
 - **Testing `frontend-demo`**:
-    
     ```bash
     # (Run from apps/frontend-demo)
     node scripts/test-login.js # Example, adapt to actual test scripts
     node scripts/capture-ui-screenshots.js
     ```
-    
 - **Code Quality (Monorepo Root)**:
-    
-   
-    
     ``` Bash
     # (Run from monorepo root)
     bunx biome check --write .
     ```
-    
 - **TypeScript Check `frontend-demo`**:
-    
     ```bash
     # (Run from apps/frontend-demo)
     bunx tsc --noEmit
     ```
-    
 
 ## 6. MCP-Enhanced Workflows (General)
-
 _(This section is for general guidance on how MCP tools can be leveraged, specific usage is detailed in workflows above)_
 
 - Use **MCP Quillopy** and **Context7** for:
@@ -230,40 +218,24 @@ _(This section is for general guidance on how MCP tools can be leveraged, specif
     "Help me write a Puppeteer script to test the complete login flow."
     "Generate a script to capture screenshots of all pages in mobile/tablet/desktop."
     ```
-    
-
 ## 7. Do's and Don'ts
-
 ### DO:
-
-✅ Check existing components first in @libs/ui and apps/frontend-demo/src/components.
-
+✅ Check existing components first in @app-components.md.
 ✅ Follow Atomic Design.
-
 ✅ Use design tokens for ALL styling.
-
 ✅ If component has more variants style it via tv() and CSS variables, referencing semantics(_semantic.css).
-
 ✅ Use MCP Quillopy/Context7 to research documentation (Zag.js, Tailwind, etc.)
-
 ✅ Use tv() with slots for component styles.
-
 ✅ Ensure CSS variables primarily reference _semantic.css variables.
 
 ### DON'T:
-
 ❌ Create duplicate components.
-
 ❌ Hardcode colors or spacing directly in JSX/TSX (use tokens/tv()).
-
 ❌ Edit package.json manually (use pnpm add).
-
 ❌ Forget mobile viewport testing.
-
 ❌ Use variants in tv() unless absolutely critical and discussed.
 
 ## 8. Repository Etiquette
-
 ### Git Workflow
 
 - Branch naming: `feat/`, `fix/`, `chore/`, `docs/`

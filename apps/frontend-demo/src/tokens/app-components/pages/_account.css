@@ -8,9 +8,11 @@
   --color-account-label-fg: var(--color-fg-tertiary);
   --color-account-value-fg: var(--color-fg-primary);
   --color-account-id-fg: var(--color-fg-secondary);
+  --color-account-link-fg: var(--color-link);
 
   /* Account Page Spacing */
   --spacing-account-page-py: var(--spacing-xl);
+  --spacing-accont-lg: 10rem;
   --spacing-account-container-max-w: var(--container-lg);
   --spacing-account-container-px: var(--spacing-md);
   --spacing-account-title-mb: var(--spacing-lg);

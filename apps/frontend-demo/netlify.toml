@@ -1,14 +1,16 @@
 [build]
+  base = "apps/frontend-demo"
   command = "pnpm build"
-  publish = "out"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
 
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[functions]
+  included_files = ["!node_modules/@swc/**", "!node_modules/@rspack/**"]
 
 [[headers]]
   for = "/*"
@@ -16,3 +18,4 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
+    Cache-Control = "public, max-age=60, s-maxage=60, stale-while-revalidate=300"

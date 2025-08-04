@@ -7,6 +7,7 @@
 
   /* Card spacing */
   --spacing-pc-row-layout: var(--spacing-sm);
+  --spacing-pc-max: 100%; /* temporary value */
   /* --spacing-pc-col-layout: var(--spacing-3xs);*/
   --spacing-pc-box: var(--spacing-2xs);
   --spacing-pc-padding: var(--spacing-2xs);

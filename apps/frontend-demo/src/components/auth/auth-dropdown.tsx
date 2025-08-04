@@ -1,40 +1,33 @@
 'use client'
 import { useAuth } from '@/hooks/use-auth'
-import {
-  AUTH_MESSAGES,
-  authFormFields,
-  getAuthErrorMessage,
-  withLoading,
-} from '@/lib/auth'
-import { useRouter } from 'next/navigation'
+import { authFormFields, getAuthErrorMessage, withLoading } from '@/lib/auth'
+import { Button } from '@ui/atoms/button'
+import { Icon } from '@ui/atoms/icon'
+import { LinkButton } from '@ui/atoms/link-button'
+import { FormInput } from '@ui/molecules/form-input'
+import { Popover } from '@ui/molecules/popover'
+import Link from 'next/link'
 import { type FormEvent, useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
-import { FormInput } from 'ui/src/molecules/form-input'
-import { Menu } from 'ui/src/molecules/menu'
-import { Popover } from 'ui/src/molecules/popover'
 
 export function AuthDropdown() {
-  const { user, logout, showSuccess } = useAuth()
-  const router = useRouter()
+  const { user, logout } = useAuth()
 
   const signOut = async () => {
     await logout()
-    showSuccess(
-      AUTH_MESSAGES.LOGOUT_SUCCESS.title,
-      AUTH_MESSAGES.LOGOUT_SUCCESS.description
-    )
+    // Toast is already shown in use-auth hook
   }
 
   if (!user) {
     return (
       <Popover
+        id="auth-dropdown"
         trigger={
-          <Icon className="text-tertiary" icon="icon-[mdi--account-outline]" />
+          <span className="text-nowrap text-white text-xs">Přihlásit se</span>
         }
-        triggerClassName="rounded-header-action p-header-action-padding hover:bg-header-action-bg-hover"
         placement="bottom-end"
         size="sm"
+        contentClassName="z-50"
+        triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0 rounded-sm bg-tertiary hover:bg-tertiary/60 mr-150"
       >
         <QuickLoginForm />
       </Popover>
@@ -43,77 +36,80 @@ export function AuthDropdown() {
 
   const menuItems = [
     {
+      id: 'menu-profile',
       type: 'action' as const,
       value: 'profile',
-      label: 'My Profile',
+      label: 'Můj profil',
+      href: '/account/profile',
       icon: 'icon-[mdi--account-outline]' as const,
     },
     {
+      id: 'menu-orders',
       type: 'action' as const,
       value: 'orders',
-      label: 'My Orders',
+      label: 'Moje objednávky',
+      href: '/account/orders',
       icon: 'icon-[mdi--package-variant-closed]' as const,
     },
     {
       type: 'separator' as const,
-      id: 'sep-1',
+      id: 'menu-separator-1',
     },
     {
-      type: 'action' as const,
-      value: 'settings',
-      label: 'Settings',
-      icon: 'icon-[mdi--cog-outline]' as const,
-    },
-    {
+      id: 'menu-logout',
       type: 'action' as const,
       value: 'logout',
-      label: 'Sign Out',
+      label: 'Odhlásit se',
+      href: '/',
       icon: 'icon-[mdi--logout]' as const,
     },
   ]
 
-  const handleSelect = (value: string) => {
-    switch (value) {
-      case 'logout':
-        signOut()
-        break
-      case 'profile':
-        router.push('/account/profile')
-        break
-      case 'orders':
-        router.push('/account/orders')
-        break
-      case 'settings':
-        router.push('/account/settings')
-        break
-      default:
-        break
-    }
-  }
-
   return (
-    <Menu
+    <Popover
       id="user-menu"
-      items={menuItems}
-      // @ts-ignore
-      onSelect={({ value }) => handleSelect(value)}
-      customTrigger={
-        <Button
-          variant="tertiary"
-          theme="borderless"
-          size="sm"
-          icon="icon-[mdi--account-circle]"
-        >
-          <span className="hidden xl:inline">{user.email}</span>
-        </Button>
+      trigger={
+        <span className="flex h-full items-center gap-2 rounded-md px-2 py-1 text-sm text-tertiary hover:bg-surface">
+          <Icon
+            icon="icon-[mdi--account-circle]"
+            className="text-header-icon-size"
+          />
+          <span className="hidden truncate xl:inline">
+            {user.email.split('@')[0]}
+          </span>
+        </span>
       }
-    />
+      contentClassName="z-50"
+      triggerClassName="hover:bg-transparent active:bg-transparent data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
+    >
+      <ul className="space-y-1">
+        {menuItems.map((item) => (
+          <li key={item.id}>
+            {item.type === 'action' ? (
+              <LinkButton
+                theme="borderless"
+                size="sm"
+                as={Link}
+                prefetch={true}
+                href={item.href ?? ''}
+                onClick={item.value === 'logout' ? signOut : undefined}
+                className="w-full justify-start"
+                icon={item.icon}
+              >
+                {item.label}
+              </LinkButton>
+            ) : (
+              <div className="h-px w-full bg-highlight" />
+            )}
+          </li>
+        ))}
+      </ul>
+    </Popover>
   )
 }
 
 function QuickLoginForm() {
-  const router = useRouter()
-  const { login, isFormLoading, setFormLoading, showSuccess } = useAuth()
+  const { login, isFormLoading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -121,18 +117,12 @@ function QuickLoginForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setFormLoading(true)
 
     try {
       await login(email, password)
-      showSuccess(
-        AUTH_MESSAGES.LOGIN_SUCCESS.title,
-        AUTH_MESSAGES.LOGIN_SUCCESS.description
-      )
+      // Toast is already shown in use-auth hook
     } catch (err: unknown) {
       setError(getAuthErrorMessage(err))
-    } finally {
-      setFormLoading(false)
     }
   }
 
@@ -143,10 +133,10 @@ function QuickLoginForm() {
     >
       <div className="space-y-auth-dropdown-header-gap">
         <h3 className="font-auth-dropdown-title text-auth-dropdown-title text-auth-dropdown-title-size">
-          Sign In
+          Přihlásit se
         </h3>
         <p className="text-auth-dropdown-subtitle text-auth-dropdown-subtitle-size">
-          Enter your credentials to continue
+          Zadejte své přihlašovací údaje
         </p>
       </div>
 
@@ -190,21 +180,21 @@ function QuickLoginForm() {
           className="w-full"
           disabled={isFormLoading}
         >
-          {isFormLoading ? 'Signing in...' : 'Sign In'}
+          {isFormLoading ? 'Přihlašování...' : 'Přihlásit se'}
         </Button>
 
         <div className="flex items-center gap-auth-dropdown-signup-gap text-auth-dropdown-signup-size">
-          <span className="text-auth-dropdown-signup-text">New here?</span>
-          <Button
-            type="button"
+          <span className="text-auth-dropdown-signup-text">Jste tu noví?</span>
+          <LinkButton
+            as={Link}
+            href="/auth/register"
             variant="tertiary"
             theme="borderless"
             size="sm"
-            onClick={() => router.push('/auth/register')}
             className="h-auto p-0 font-normal text-auth-dropdown-signup-link hover:text-auth-dropdown-signup-link-hover"
           >
-            Create account
-          </Button>
+            Vytvořit účet
+          </LinkButton>
         </div>
       </div>
     </form>

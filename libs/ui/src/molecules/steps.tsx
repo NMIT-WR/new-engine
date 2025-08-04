@@ -45,10 +45,10 @@ const stepsVariants = tv({
       'grid place-items-center',
       'h-steps-indicator rounded-full aspect-square',
       'bg-steps-indicator-bg data-[complete]:bg-steps-indicator-complete',
-      'data-[current]:bg-steps-indicator-complete data-[current]:ring-2',
+      'data-[current]:bg-steps-indicator-current data-[current]:ring-2',
       'data-[current]:ring-steps-ring data-[current]:ring-offset-2',
       'data-[current]:ring-offset-steps-list-bg data-[current]:outline-none',
-      'data-[current]:text-steps-fg-active data-[complete]:text-steps-fg-active',
+      'data-[current]:text-steps-fg-current data-[complete]:text-steps-fg-active',
     ],
     separator: [
       'bg-steps-separator-bg',
@@ -56,7 +56,7 @@ const stepsVariants = tv({
       'data-[orientation=horizontal]:h-steps-separator data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-1',
       'data-[orientation=vertical]:w-steps-separator data-[orientation=vertical]:h-full',
     ],
-    progress: ['absolute top-0 left-0 h-full  transition-all duration-300'],
+    progress: ['absolute top-0 left-0 h-full transition-all duration-300'],
     containerButtons: [
       'flex gap-2 h-fit',
       'data-[orientation=vertical]:col-start-2',
@@ -72,6 +72,7 @@ export type StepItem = {
   value: number
   title: ReactNode
   description?: ReactNode
+  content?: ReactNode
   icon?: ReactNode
 }
 
@@ -86,6 +87,7 @@ export interface StepsProps extends VariantProps<typeof stepsVariants> {
   onStepChange?: (step: number) => void
   onStepComplete?: () => void
   className?: string
+  showControls?: boolean
 }
 
 export function Steps({
@@ -94,6 +96,7 @@ export function Steps({
   currentStep = 0,
   orientation = 'horizontal',
   linear = false,
+  showControls = true,
   completeText,
   onStepChange,
   onStepComplete,
@@ -155,13 +158,15 @@ export function Steps({
       {items.map((step, index) => (
         <div
           className={content()}
-          key={index}
+          key={`step-content-${index}`}
           {...api.getContentProps({ index })}
         >
-          <article className="h-fit">
-            <h3>{step.title}</h3>
-            {step.description && <p>{step.description}</p>}
-          </article>
+          {step.content || (
+            <article className="h-fit">
+              <h3>{step.title}</h3>
+              {step.description && <p>{step.description}</p>}
+            </article>
+          )}
         </div>
       ))}
       <div
@@ -171,24 +176,26 @@ export function Steps({
         {completeText}
       </div>
 
-      <div className={containerButtons()} data-orientation={orientation}>
-        <Button
-          theme="solid"
-          size="sm"
-          className={stepButton()}
-          {...api.getPrevTriggerProps()}
-        >
-          Back
-        </Button>
-        <Button
-          size="sm"
-          theme="solid"
-          className={stepButton()}
-          {...api.getNextTriggerProps()}
-        >
-          Next
-        </Button>
-      </div>
+      {showControls && (
+        <div className={containerButtons()} data-orientation={orientation}>
+          <Button
+            theme="solid"
+            size="sm"
+            className={stepButton()}
+            {...api.getPrevTriggerProps()}
+          >
+            Back
+          </Button>
+          <Button
+            size="sm"
+            theme="solid"
+            className={stepButton()}
+            {...api.getNextTriggerProps()}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

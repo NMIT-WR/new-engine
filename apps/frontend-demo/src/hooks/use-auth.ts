@@ -1,13 +1,14 @@
 'use client'
 
+import { AUTH_MESSAGES } from '@/lib/auth/constants'
+import { queryKeys } from '@/lib/query-keys'
 import { authHelpers, authStore } from '@/stores/auth-store'
-import { useStore } from '@tanstack/react-store'
+import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useStore } from '@tanstack/react-store'
+import { useToast } from '@ui/molecules/toast'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
-import { useToast } from 'ui/src/molecules/toast'
-import { queryKeys } from '@/lib/query-keys'
-import type { HttpTypes } from '@medusajs/types'
 
 export function useAuth() {
   const authState = useStore(authStore)
@@ -21,12 +22,11 @@ export function useAuth() {
     queryFn: authHelpers.fetchUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false,
-    enabled: !authState.isInitialized,
   })
 
   // Update store when query data changes
   useEffect(() => {
-    if (currentUser !== undefined && !authState.isInitialized) {
+    if (currentUser !== undefined) {
       authStore.setState((state) => ({
         ...state,
         user: currentUser,
@@ -34,7 +34,7 @@ export function useAuth() {
         isLoading: false,
       }))
     }
-  }, [currentUser, authState.isInitialized])
+  }, [currentUser])
 
   // Login mutation
   const loginMutation = useMutation({
@@ -54,21 +54,20 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
+
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
         router.push('/')
       }
-      
+
       toast.create({
-        title: 'Welcome back!',
-        description: 'You have successfully logged in.',
+        ...AUTH_MESSAGES.LOGIN_SUCCESS,
         type: 'success',
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Login failed',
+        ...AUTH_MESSAGES.LOGIN_ERROR,
         description: error.message,
         type: 'error',
       })
@@ -93,21 +92,20 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
+
       // Only redirect if not on test page
       if (!window.location.pathname.includes('/test-auth')) {
         router.push('/')
       }
-      
+
       toast.create({
-        title: 'Account created!',
-        description: 'Welcome to our store.',
+        ...AUTH_MESSAGES.REGISTER_SUCCESS,
         type: 'success',
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Registration failed',
+        ...AUTH_MESSAGES.REGISTER_ERROR,
         description: error.message,
         type: 'error',
       })
@@ -121,10 +119,9 @@ export function useAuth() {
       // Invalidate all queries since user context changed
       queryClient.invalidateQueries()
       router.push('/')
-      
+
       toast.create({
-        title: 'Logged out',
-        description: 'You have been successfully logged out.',
+        ...AUTH_MESSAGES.LOGOUT_SUCCESS,
         type: 'success',
       })
     },
@@ -138,44 +135,20 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate auth queries to refetch updated user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
-      
+
       toast.create({
-        title: 'Profile updated',
-        description: 'Your profile has been successfully updated.',
+        ...AUTH_MESSAGES.UPDATE_SUCCESS,
         type: 'success',
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Update failed',
+        ...AUTH_MESSAGES.UPDATE_ERROR,
         description: error.message,
         type: 'error',
       })
     },
   })
-
-  // Form helpers with toast notifications
-  const showError = useCallback(
-    (title: string, description: string) => {
-      toast.create({
-        title,
-        description,
-        type: 'error',
-      })
-    },
-    [toast]
-  )
-
-  const showSuccess = useCallback(
-    (title: string, description: string) => {
-      toast.create({
-        title,
-        description,
-        type: 'success',
-      })
-    },
-    [toast]
-  )
 
   // Get field error
   const getFieldError = useCallback(
@@ -185,41 +158,35 @@ export function useAuth() {
     [authState.validationErrors]
   )
 
-  // Password strength checker
-  const usePasswordStrength = useCallback((password: string) => {
-    const requirements = {
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /[0-9]/.test(password),
-    }
-
-    const strength = Object.values(requirements).filter(Boolean).length
-    const isValid = strength === 4
-
-    return {
-      requirements,
-      strength,
-      isValid,
-    }
-  }, [])
-
   return {
     // Auth state
     user: authState.user,
-    isLoading: authState.isLoading || loginMutation.isPending || registerMutation.isPending,
+    isLoading:
+      authState.isLoading ||
+      loginMutation.isPending ||
+      registerMutation.isPending ||
+      updateProfileMutation.isPending,
     isInitialized: authState.isInitialized,
     error: authState.error,
 
     // Auth actions with mutations
-    login: (email: string, password: string, firstName?: string, lastName?: string) => 
-      loginMutation.mutate({ email, password, firstName, lastName }),
-    register: (email: string, password: string, firstName?: string, lastName?: string) => 
-      registerMutation.mutate({ email, password, firstName, lastName }),
+    login: (
+      email: string,
+      password: string,
+      firstName?: string,
+      lastName?: string
+    ) => loginMutation.mutate({ email, password, firstName, lastName }),
+    register: (
+      email: string,
+      password: string,
+      firstName?: string,
+      lastName?: string
+    ) => registerMutation.mutate({ email, password, firstName, lastName }),
     logout: () => logoutMutation.mutate(),
-    updateProfile: (data: Partial<HttpTypes.StoreCustomer>) => 
+    updateProfile: (data: Partial<HttpTypes.StoreCustomer>) =>
       updateProfileMutation.mutate(data),
-    refetch: () => queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() }),
+    refetch: () =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() }),
 
     // Mutation states
     loginMutation,
@@ -228,7 +195,7 @@ export function useAuth() {
     updateProfileMutation,
 
     // Form state
-    isFormLoading: authState.isFormLoading || loginMutation.isPending || registerMutation.isPending,
+    isFormLoading: loginMutation.isPending || registerMutation.isPending,
     validationErrors: authState.validationErrors,
 
     // Form actions
@@ -236,14 +203,6 @@ export function useAuth() {
     setValidationErrors: authHelpers.setValidationErrors,
     clearErrors: authHelpers.clearErrors,
     clearFieldError: authHelpers.clearFieldError,
-    setFormLoading: authHelpers.setFormLoading,
     getFieldError,
-
-    // Toast notifications
-    showError,
-    showSuccess,
-
-    // Password validation
-    usePasswordStrength,
   }
 }

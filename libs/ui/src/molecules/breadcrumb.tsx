@@ -89,6 +89,7 @@ function BreadcrumbItem({
   separator = 'token-icon-breadcrumb-separator',
   isCurrentPage,
   lastItem,
+  linkComponent,
 }: {
   label: string
   href?: string
@@ -96,6 +97,7 @@ function BreadcrumbItem({
   separator?: IconType
   lastItem: boolean
   isCurrentPage?: boolean
+  linkComponent?: React.ElementType
 }) {
   const {
     item,
@@ -111,7 +113,7 @@ function BreadcrumbItem({
           {label}
         </span>
       ) : (
-        <Link href={href || '#'} className={link()}>
+        <Link as={linkComponent} href={href || '#'} className={link()}>
           {label}
         </Link>
       )}
@@ -145,6 +147,7 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   maxItems?: number
   className?: string
   'aria-label'?: string
+  linkComponent?: React.ElementType
 }
 
 // === COMPONENT ===
@@ -154,6 +157,7 @@ export function Breadcrumb({
   size = 'md',
   className,
   'aria-label': ariaLabel = 'breadcrumb',
+  linkComponent,
   ...props
 }: BreadcrumbProps) {
   const { root, list } = breadcrumbsVariants({ size })
@@ -181,6 +185,7 @@ export function Breadcrumb({
                 icon={item.icon}
                 separator={item.separator}
                 lastItem={index === displayItems.length - 1}
+                linkComponent={linkComponent}
                 isCurrentPage={
                   item.isCurrent || index === displayItems.length - 1
                 }

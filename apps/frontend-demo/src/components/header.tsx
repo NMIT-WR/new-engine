@@ -1,18 +1,19 @@
 'use client'
 import { useCart } from '@/hooks/use-cart'
+import { Badge } from '@ui/atoms/badge'
+import { Button } from '@ui/atoms/button'
+import { Icon, type IconType } from '@ui/atoms/icon'
+import { Popover } from '@ui/molecules/popover'
 import Link from 'next/link'
 import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
-import { Badge } from 'ui/src/atoms/badge'
-import { Button } from 'ui/src/atoms/button'
-import { Icon, type IconType } from 'ui/src/atoms/icon'
-import { Popover } from 'ui/src/molecules/popover'
+import { Logo } from './atoms/logo'
 import { AuthDropdown } from './auth/auth-dropdown'
 import { CartPreview } from './molecules/cart-preview'
+import { HeaderSearch } from './molecules/header-search'
 import { type NavItem, Navigation } from './molecules/navigation'
 import { MobileMenu } from './organisms/mobile-menu'
 import { RegionSelector } from './region-selector'
 import { ThemeToggle } from './theme-toggle'
-import { LinkButton } from 'ui/src/atoms/link-button'
 
 interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
   logo?: {
@@ -34,23 +35,21 @@ export function Header({
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { itemCount } = useCart()
+  const { cart } = useCart()
+  const itemCount =
+    cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
 
   return (
     <header
-      className={`bg-header-bg shadow-header-default ${className}`}
+      className={`sticky top-0 z-10 bg-header-bg shadow-header-default ${className}`}
       {...props}
     >
       <div className="mx-auto max-w-header-max-w px-header-container-x lg:px-header-container-x-lg">
-        <div className="flex h-header-height items-center justify-between lg:h-header-height-lg">
+        <div className="flex h-header-height-lg items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center">
-            <Link
-              href={logo.href || '/'}
-              className="flex items-center gap-header-logo-gap font-header-logo text-header-logo text-header-text lg:text-header-logo-lg"
-            >
-              {logo.icon && <Icon icon={logo.icon} size="lg" />}
-              {logo.text && <span className="lg:text-md">{logo.text}</span>}
+            <Link href={'/'}>
+              <Logo size="sm" />
             </Link>
 
             {/* Navigation */}
@@ -65,7 +64,6 @@ export function Header({
           <div className="flex items-center gap-header-actions-gap lg:gap-header-actions-gap-lg">
             {/* Desktop utilities */}
             <div className="hidden items-center gap-2 lg:flex">
-              <RegionSelector />
               <ThemeToggle />
             </div>
 
@@ -74,24 +72,16 @@ export function Header({
 
             {/* Core actions - all sizes */}
             <div className="flex items-center">
-              {/* Search button */}
-              <LinkButton
-                href="/search"
-                variant="tertiary"
-                theme="borderless"
-                size="current"
-                icon="token-icon-search"
-                className="font-bold text-md p-2 hover:bg-transparent"
-                aria-label="Search"
-              />
-   
-
+              <HeaderSearch />
               {/* Cart button */}
               <Popover
-              id='cart-popover'
+                id="popover-header"
                 trigger={
                   <div className="relative flex items-center">
-                    <Icon className="text-tertiary" icon="token-icon-cart" />
+                    <Icon
+                      className="text-header-icon-size text-tertiary"
+                      icon="token-icon-cart"
+                    />
                     {itemCount > 0 && (
                       <Badge
                         variant="danger"
@@ -103,13 +93,15 @@ export function Header({
                   </div>
                 }
                 placement="bottom-end"
-                triggerClassName="rounded-header-action p-header-action-padding text-header-action-fg transition-colors hover:bg-header-action-bg-hover hover:text-header-action-fg-hover"
+                contentClassName="z-50"
+                triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
               >
                 <CartPreview />
               </Popover>
 
               {/* User/Auth section */}
               <AuthDropdown />
+              <RegionSelector className="hidden lg:flex" />
 
               {/* Custom actions */}
               {actions}
@@ -119,8 +111,8 @@ export function Header({
                 <Button
                   theme="borderless"
                   size="sm"
-                  icon="icon-[mdi--menu]"
-                  className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus:outline-none focus:ring-header-mobile-menu-color focus:ring-header-mobile-menu-width focus:ring-inset lg:hidden"
+                  icon="token-icon-menu"
+                  className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-icon-size text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus:outline-none focus:ring-header-mobile-menu-color focus:ring-header-mobile-menu-width focus:ring-inset lg:hidden"
                   onClick={() => setIsMobileMenuOpen(true)}
                 />
               )}

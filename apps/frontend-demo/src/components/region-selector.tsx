@@ -1,25 +1,20 @@
 'use client'
+import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useRegions } from '@/hooks/use-region'
-import { Select } from 'ui/src/molecules/select'
+import { Icon, type IconType } from '@ui/atoms/icon'
+import { Select } from '@ui/molecules/select'
 
-const currencyFlags: Record<string, string> = {
-  EUR: '🇪🇺',
-  USD: '🇺🇸',
-  GBP: '🇬🇧',
-  SEK: '🇸🇪',
-  DKK: '🇩🇰',
-  NOK: '🇳🇴',
-  PLN: '🇵🇱',
-  CZK: '🇨🇿',
+const currencyToIcon: Record<string, IconType> = {
+  CZK: 'token-icon-cz',
+  EUR: 'token-icon-eu',
+  USD: 'token-icon-usa',
 }
 
-export function RegionSelector() {
+export function RegionSelector({ className }: { className?: string }) {
   const { regions, selectedRegion, setSelectedRegion, isLoading } = useRegions()
 
   if (isLoading || !regions.length) {
-    return (
-      <div className="h-8 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-    )
+    return <SkeletonLoader variant="box" className="hidden h-8 w-28 lg:block" />
   }
 
   const handleChange = (details: { value: string[] }) => {
@@ -32,18 +27,29 @@ export function RegionSelector() {
 
   const options = regions.map((region) => ({
     value: region.id,
-    label: `${currencyFlags[region.currency_code.toUpperCase()] || '🌍'} ${region.currency_code.toUpperCase()}`,
+    label: (
+      <span className="flex items-center gap-100">
+        <Icon
+          icon={
+            currencyToIcon[region.currency_code.toUpperCase()] ||
+            'token-icon-globe'
+          }
+        />
+        {region.currency_code.toUpperCase()}
+      </span>
+    ),
+    displayValue: region.currency_code.toUpperCase(),
+    //label: `${currencyFlags[region.currency_code.toUpperCase()] || '🌍'} ${region.currency_code.toUpperCase()}`,
   }))
-
   return (
     <Select
       options={options}
       value={selectedRegion ? [selectedRegion.id] : []}
       onValueChange={handleChange}
       size="xs"
-      className="w-28"
       clearIcon={false}
       placeholder="Region"
+      className={className}
     />
   )
 }

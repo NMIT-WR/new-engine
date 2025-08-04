@@ -3,18 +3,16 @@
 import { useAuth } from '@/hooks/use-auth'
 import {
   AUTH_ERRORS,
-  AUTH_MESSAGES,
   authFormFields,
-  getAuthErrorMessage,
   validateEmail,
   withLoading,
 } from '@/lib/auth'
+import { Button } from '@ui/atoms/button'
+import { ErrorText } from '@ui/atoms/error-text'
+import { Checkbox } from '@ui/molecules/checkbox'
+import { FormInput } from '@ui/molecules/form-input'
 import Link from 'next/link'
 import { type FormEvent, useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { ErrorText } from 'ui/src/atoms/error-text'
-import { Checkbox } from 'ui/src/molecules/checkbox'
-import { FormInput } from 'ui/src/molecules/form-input'
 import { AuthFormWrapper } from './auth-form-wrapper'
 
 export function LoginForm() {
@@ -24,15 +22,14 @@ export function LoginForm() {
 
   const {
     login,
+    loginMutation,
     error,
-    isFormLoading,
-    setFormLoading,
     getFieldError,
     setFieldError,
     clearErrors,
-    showError,
-    showSuccess,
   } = useAuth()
+
+  const isFormLoading = loginMutation.isPending
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -41,7 +38,6 @@ export function LoginForm() {
     // Client-side validation
     if (!validateEmail(email)) {
       setFieldError('email', AUTH_ERRORS.INVALID_EMAIL)
-      showError('Invalid Email', AUTH_ERRORS.INVALID_EMAIL)
       return
     }
     if (password.length < 1) {
@@ -49,34 +45,16 @@ export function LoginForm() {
       return
     }
 
-    setFormLoading(true)
-
-    try {
-      await login(email, password)
-      showSuccess(
-        AUTH_MESSAGES.LOGIN_SUCCESS.title,
-        AUTH_MESSAGES.LOGIN_SUCCESS.description
-      )
-    } catch (error: unknown) {
-      const errorMessage = getAuthErrorMessage(error)
-
-      // Set field-specific error if it's an email error
-      if (error instanceof Error && error.message.includes('Invalid email')) {
-        setFieldError('email', errorMessage)
-      }
-
-      showError('Sign in failed', errorMessage)
-    } finally {
-      setFormLoading(false)
-    }
+    // The mutation handles loading state and success/error toasts
+    login(email, password)
   }
 
   return (
     <AuthFormWrapper
-      title="Welcome Back"
-      subtitle="Sign in to your account to continue"
-      footerText="Don't have an account?"
-      footerLinkText="Sign up"
+      title="Vítejte zpět"
+      subtitle="Přihlaste se ke svému účtu a pokračujte"
+      footerText="Nemáte účet?"
+      footerLinkText="Zaregistrovat se"
       footerLinkHref="/auth/register"
     >
       <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
@@ -121,7 +99,7 @@ export function LoginForm() {
         <div className="flex items-center justify-between">
           <Checkbox
             id="rememberMe"
-            labelText="Remember me"
+            labelText="Zapamatovat si mě"
             checked={rememberMe}
             onCheckedChange={(details) =>
               setRememberMe(details.checked === true)
@@ -133,7 +111,7 @@ export function LoginForm() {
             href="/auth/forgot-password"
             className="text-auth-link hover:text-auth-link-hover"
           >
-            Forgot password?
+            Zapoměli jste heslo?
           </Link>
         </div>
 
@@ -149,7 +127,7 @@ export function LoginForm() {
           size="lg"
           disabled={isFormLoading}
         >
-          {isFormLoading ? 'Signing In...' : 'Sign In'}
+          {isFormLoading ? 'Přihlašování...' : 'Přihlásit se'}
         </Button>
       </form>
     </AuthFormWrapper>

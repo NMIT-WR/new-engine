@@ -12,16 +12,16 @@ const accordionVariants = tv({
       'flex flex-col w-full',
       'bg-accordion border-accordion-border rounded-accordion',
       'border-(length:--border-width-accordion)',
-      'overflow-hidden',
+      //'overflow-hidden',
       'transition-all duration-200',
     ],
     item: [
       'border-b-(length:--border-width-accordion) border-accordion-border',
     ],
     title: [
-      'flex items-center justify-between w-full cursor-pointer px-accordion-title py-accordion-title',
+      'flex items-center justify-between w-full cursor-pointer',
       'rounded-none',
-      'text-accordion-title-size font-accordion-title',
+      'font-accordion-title',
       'text-accordion-title-fg bg-accordion-title-bg',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accordion-ring focus-visible:ring-offset-0',
       'focus-visible:bg-accordion-hover',
@@ -29,13 +29,46 @@ const accordionVariants = tv({
       'hover:bg-accordion-title-hover',
       'data-[disabled=true]:cursor-not-allowed',
     ],
-    subtitle: ['text-accordion-subtitle-size text-accordion-subtitle-fg'],
+    subtitle: ['text-accordion-subtitle-fg'],
     content: [
-      'p-accordion-content',
-      'text-accordion-content text-accordion-content-fg bg-accordion-content-bg',
-      'overflow-hidden',
+      'text-accordion-content-fg bg-accordion-content-bg',
+      //'overflow-hidden',
     ],
     icon: ['data-[state=expanded]:rotate-180'],
+  },
+  variants: {
+    shadow: {
+      sm: {
+        root: 'shadow-accordion-root-sm',
+        content: 'shadow-accordion-content-sm',
+      },
+      md: {
+        root: 'shadow-accordion-root-md',
+        content: 'shadow-accordion-content-md',
+      },
+      none: '',
+    },
+    size: {
+      sm: {
+        title: 'text-accordion-title-sm py-accordion-primary-sm',
+        content: 'text-accordion-content-sm p-accordion-secondary-sm',
+        subtitle: 'text-accordion-subtitle-sm',
+      },
+      md: {
+        title: 'text-accordion-content-md py-accordion-primary-md',
+        content: 'text-accordion-content-md p-accordion-secondary-md',
+        subtitle: 'text-accordion-subtitle-md',
+      },
+      lg: {
+        title: 'text-accordion-title-lg py-accordion-primary-lg',
+        content: 'text-accordion-content-lg p-accordion-secondary-lg',
+        subtitle: 'text-accordion-subtitle-lg',
+      },
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    shadow: 'none',
   },
 })
 
@@ -69,6 +102,8 @@ export function Accordion({
   multiple = false,
   dir = 'ltr',
   onChange,
+  size,
+  shadow,
 }: AccordionProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -88,7 +123,10 @@ export function Accordion({
 
   const api = accordion.connect(service, normalizeProps)
 
-  const { root, item, title, content, icon, subtitle } = accordionVariants()
+  const { root, item, title, content, icon, subtitle } = accordionVariants({
+    size,
+    shadow,
+  })
 
   return (
     <div className={root()} {...api.getRootProps()}>

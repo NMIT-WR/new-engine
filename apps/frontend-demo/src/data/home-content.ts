@@ -1,3 +1,6 @@
+import type { HomeCategory } from '@/types/product'
+import { getCategoryIdsByHandles } from '@/utils/category-helpers'
+
 export interface HeroContent {
   title: string
   subtitle: string
@@ -40,40 +43,39 @@ export interface HomeContent {
 
 export const homeContent: HomeContent = {
   hero: {
-    title: 'New Collection',
-    subtitle: 'Discover the latest trends in fashion',
-    backgroundImage:
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop',
+    title: 'Nová kolekce',
+    subtitle: 'Objevte nejnovější módní trendy',
+    backgroundImage: '/assets/hero/home.webp',
     primaryAction: {
-      label: 'Shop Now',
+      label: 'Nakupovat',
       href: '/products',
     },
     secondaryAction: {
-      label: 'View Collection',
+      label: 'Zobrazit kolekci',
       href: '/products',
     },
   },
   trending: {
-    title: 'Trending Now',
-    subtitle: 'Check out the most popular items',
-    linkText: 'View all products',
+    title: 'Aktuální trendy',
+    subtitle: 'Podívejte se na nejpopulárnější položky',
+    linkText: 'Zobrazit všechny produkty',
     linkHref: '/products',
   },
   categories: {
-    title: 'Shop by Category',
-    subtitle: "Find what you're looking for",
+    title: 'Nakupovat podle kategorie',
+    subtitle: 'Najděte, co hledáte',
   },
   saleBanner: {
-    title: 'End of Season Sale',
-    subtitle: 'Up to 50% off on selected items',
+    title: 'Sezónní výprodej',
+    subtitle: 'Až 50% sleva na vybrané položky',
     backgroundImage:
       'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&h=600&fit=crop',
-    linkText: 'Shop Sale',
-    linkHref: '/sale',
+    linkText: 'Nakupovat ve výprodeji',
+    linkHref: '/products?onSale=true',
   },
   newArrivals: {
-    title: 'New Arrivals',
-    subtitle: 'Fresh styles just dropped',
+    title: 'Nové přírůstky',
+    subtitle: 'Čerstvé styly právě dorazily',
     linkHref: '/products',
   },
 }
@@ -81,44 +83,44 @@ export const homeContent: HomeContent = {
 // Alternative hero content for different campaigns/seasons
 export const alternativeHeroContent: HeroContent[] = [
   {
-    title: 'Summer Collection',
-    subtitle: 'Beat the heat with our light & breezy styles',
+    title: 'Letní kolekce',
+    subtitle: 'Překonejte horko s našimi lehkými a vzdušnými styly',
     backgroundImage:
       'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1920&h=1080&fit=crop',
     primaryAction: {
-      label: 'Shop Summer',
+      label: 'Nakupovat letní',
       href: '/products?season=summer',
     },
     secondaryAction: {
-      label: 'View Lookbook',
+      label: 'Zobrazit lookbook',
       href: '/inspiration',
     },
   },
   {
-    title: 'Sustainable Fashion',
-    subtitle: 'Eco-friendly materials, timeless design',
+    title: 'Udržitelná móda',
+    subtitle: 'Ekologické materiály, nadčasový design',
     backgroundImage:
       'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop',
     primaryAction: {
-      label: 'Shop Sustainable',
+      label: 'Nakupovat udržitelně',
       href: '/products?collection=sustainable',
     },
     secondaryAction: {
-      label: 'Learn More',
+      label: 'Zjistit více',
       href: '/about',
     },
   },
   {
-    title: 'Holiday Specials',
-    subtitle: 'Find the perfect gift for everyone on your list',
+    title: 'Svateční nabídky',
+    subtitle: 'Najděte dokonalý dárek pro všechny na vašem seznamu',
     backgroundImage:
       'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=1920&h=1080&fit=crop',
     primaryAction: {
-      label: 'Shop Gifts',
+      label: 'Nakupovat dárky',
       href: '/products?collection=gifts',
     },
     secondaryAction: {
-      label: 'Gift Guide',
+      label: 'Průvodce dárky',
       href: '/inspiration',
     },
   },
@@ -127,27 +129,107 @@ export const alternativeHeroContent: HeroContent[] = [
 // Alternative banner content for different promotions
 export const alternativeBannerContent: BannerContent[] = [
   {
-    title: 'Free Shipping Weekend',
-    subtitle: 'No minimum purchase required',
+    title: 'Víkend s dopravou zdarma',
+    subtitle: 'Bez minimální objednávky',
     backgroundImage:
       'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&h=600&fit=crop',
     linkText: 'Shop Now',
     linkHref: '/products',
   },
   {
-    title: 'New Member Exclusive',
-    subtitle: 'Get 20% off your first order',
+    title: 'Exkluzivně pro nové členy',
+    subtitle: 'Získejte 20% slevu na první objednávku',
     backgroundImage:
       'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920&h=600&fit=crop',
-    linkText: 'Sign Up',
+    linkText: 'Registrovat se',
     linkHref: '/auth/register',
   },
   {
-    title: 'Flash Sale',
-    subtitle: 'Today only - Extra 30% off sale items',
+    title: 'Bleskový výprodej',
+    subtitle: 'Pouze dnes - Extra 30% sleva na výprodejové položky',
     backgroundImage:
       'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1920&h=600&fit=crop',
-    linkText: 'Shop Flash Sale',
+    linkText: 'Nakupovat v blesckovém výprodeji',
     linkHref: '/sale',
   },
 ]
+
+const categoryHandles = {
+  panske: ['kratke-rukavy', 'na-zip', 'street', 'svetry'],
+  damske: [
+    'pres-hlavu-category-140',
+    'svetry-category-144',
+    'street-category-147',
+    'kratasy-category-149',
+    'saty-a-sukne',
+  ],
+  detske: [
+    'kratke-rukavy-category-268',
+    'street-category-274',
+    'boty-category-282',
+  ],
+  cyklo: [
+    'ostatni-category-400',
+    'ponozky-category-394',
+    'dlouhe-category-391',
+    'dlouhe',
+  ],
+  moto: ['bundy-category-81', 'kalhoty-category-82', 'mx-offroad', 'otevrene'],
+  snowboard: [
+    'kulichy-category-124',
+    'rukavice-category-123',
+    'bundy-category-121',
+  ],
+}
+
+type CategoryKey = keyof typeof categoryHandles
+const categoryConfig: {
+  key: CategoryKey
+  name: string
+  image: string
+  description: string
+}[] = [
+  {
+    key: 'panske',
+    name: 'Pánské',
+    image: 'cat-men.webp',
+    description: 'Od formálního po sportovní - vše pro pány',
+  },
+  {
+    key: 'damske',
+    name: 'Dámské',
+    image: 'cat-women.webp',
+    description: 'Elegance a trendy pro každou příležitost',
+  },
+  {
+    key: 'detske',
+    name: 'Dětské',
+    image: 'cat-kids.webp',
+    description: 'Pohodlné a odolné pro každodenní radosti',
+  },
+  {
+    key: 'cyklo',
+    name: 'Cyklo',
+    image: 'cat-cyclo.webp',
+    description: 'Vybavení pro vášnivé cyklisty',
+  },
+  {
+    key: 'moto',
+    name: 'Moto',
+    image: 'cat-moto.webp',
+    description: 'Bezpečnost a styl pro motorkáře',
+  },
+  {
+    key: 'snowboard',
+    name: 'Snowboard',
+    image: 'cat-ski.webp',
+    description: 'Pro ty, co milují adrenalin na sněhu',
+  },
+]
+
+export const homeCategories: HomeCategory[] = categoryConfig.map((cat) => ({
+  name: cat.name,
+  imageUrl: `/assets/cat-images/${cat.image}`,
+  leaves: getCategoryIdsByHandles(categoryHandles[cat.key]),
+  description: cat.description,
+}))

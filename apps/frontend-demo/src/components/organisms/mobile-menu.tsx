@@ -1,9 +1,9 @@
 'use client'
+import { Badge } from '@ui/atoms/badge'
+import { Button } from '@ui/atoms/button'
+import { Icon } from '@ui/atoms/icon'
+import { Link } from '@ui/atoms/link'
 import { useEffect, useState } from 'react'
-import { Badge } from 'ui/src/atoms/badge'
-import { Button } from 'ui/src/atoms/button'
-import { Icon } from 'ui/src/atoms/icon'
-import { Link } from 'ui/src/atoms/link'
 import type { NavItem } from '../molecules/navigation'
 import { RegionSelector } from '../region-selector'
 import { ThemeToggle } from '../theme-toggle'
@@ -51,7 +51,7 @@ export function MobileMenu({
       <div className="fixed top-0 right-0 h-full w-full max-w-mobile-menu-panel-max-w bg-mobile-menu-panel-bg shadow-mobile-menu-panel transition-mobile-menu-panel">
         <div className="flex items-center justify-between border-mobile-menu-border border-b p-mobile-menu-header-padding">
           <h2 className="font-mobile-menu-title-weight text-mobile-menu-text text-mobile-menu-title-size">
-            Menu
+            Nabídka
           </h2>
           <Button
             theme="borderless"
@@ -74,8 +74,8 @@ export function MobileMenu({
                     <Icon
                       icon={
                         expandedItems.includes(item.title)
-                          ? 'icon-[mdi--chevron-up]'
-                          : 'icon-[mdi--chevron-down]'
+                          ? 'token-icon-chevron-up'
+                          : 'token-icon-chevron-down'
                       }
                       size="sm"
                     />
@@ -121,11 +121,11 @@ export function MobileMenu({
               <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">
                 Region
               </span>
-              <RegionSelector />
+              <RegionSelector className="z-50 max-w-4xl" />
             </div>
             <div className="flex items-center justify-between px-mobile-menu-item-x">
               <span className="text-mobile-menu-submenu-size text-mobile-menu-text-secondary">
-                Theme
+                Téma
               </span>
               <ThemeToggle />
             </div>

@@ -1,7 +1,6 @@
 import * as combobox from '@zag-js/combobox'
-import { createFilter } from '@zag-js/i18n-utils'
-import { Portal, mergeProps, normalizeProps, useMachine } from '@zag-js/react'
-import { useId, useState } from 'react'
+import { Portal, normalizeProps, useMachine } from '@zag-js/react'
+import { useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { ErrorText } from '../atoms/error-text'
@@ -49,7 +48,7 @@ const comboboxVariants = tv({
       'flex flex-col overflow-clip',
       'rounded-combobox shadow-md',
       'bg-combobox-content-bg',
-      'border border-combobox-border',
+      'border border-combobox-border z-(--z-combobox-content)',
     ],
     item: [
       'flex items-center px-combobox-item-lg py-combobox-item',
@@ -102,6 +101,7 @@ export interface ComboboxProps<T = unknown>
   items: ComboboxItem<T>[]
   value?: string | string[]
   defaultValue?: string | string[]
+  inputValue?: string
   multiple?: boolean
   validationState?: 'normal' | 'error' | 'success' | 'warning'
   error?: string
@@ -111,6 +111,8 @@ export interface ComboboxProps<T = unknown>
   selectionBehavior?: 'replace' | 'clear' | 'preserve'
   closeOnSelect?: boolean
   allowCustomValue?: boolean
+  loopFocus?: boolean
+  autoFocus?: boolean
   triggerIcon?: string
   clearIcon?: string
   onChange?: (value: string | string[]) => void
@@ -131,6 +133,7 @@ export function Combobox<T = unknown>({
   items = [],
   value,
   defaultValue,
+  inputValue,
   multiple = false,
   validationState = 'normal',
   error,
@@ -139,6 +142,8 @@ export function Combobox<T = unknown>({
   selectionBehavior = 'replace',
   closeOnSelect = false,
   allowCustomValue = false,
+  loopFocus = true,
+  autoFocus = false,
   inputBehavior = 'autocomplete',
   onChange,
   onInputValueChange,
@@ -147,12 +152,8 @@ export function Combobox<T = unknown>({
   const generatedId = useId()
   const uniqueId = id || generatedId
 
-  const [filteredItems, setFilteredItems] = useState(items)
-
-  const i18nFilter = createFilter({ sensitivity: 'base' })
-
   const collection = combobox.collection({
-    items: filteredItems,
+    items: items,
     itemToString: (item) => item.label,
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
@@ -167,7 +168,9 @@ export function Combobox<T = unknown>({
     closeOnSelect,
     selectionBehavior,
     allowCustomValue,
+    autoFocus,
     inputBehavior,
+    loopFocus,
     ids: {
       label: `${uniqueId}-label`,
       input: `${uniqueId}-input`,
@@ -176,20 +179,11 @@ export function Combobox<T = unknown>({
     value: value as string[] | undefined,
     defaultValue: defaultValue as string[] | undefined,
     multiple,
+    inputValue,
     onValueChange: ({ value: selectedValue }) => {
       onChange?.(selectedValue)
     },
     onInputValueChange: ({ inputValue }) => {
-      let newFilteredItems: typeof items
-      if (inputValue) {
-        const filtered = items.filter((item) =>
-          i18nFilter.contains(item.label, inputValue)
-        )
-        newFilteredItems = filtered.length > 0 ? filtered : items
-      } else {
-        newFilteredItems = items
-      }
-      setFilteredItems(newFilteredItems)
       onInputValueChange?.(inputValue)
     },
     onOpenChange: ({ open }) => {
@@ -214,12 +208,6 @@ export function Combobox<T = unknown>({
     item: itemSlot,
     helper: helperSlot,
   } = comboboxVariants()
-
-  const customTriggerProps = mergeProps(api.getTriggerProps(), {
-    onClick: () => {
-      setFilteredItems(items)
-    },
-  })
 
   return (
     <div className={root()}>
@@ -254,7 +242,7 @@ export function Combobox<T = unknown>({
         )}
 
         <Button
-          {...customTriggerProps}
+          {...api.getTriggerProps()}
           theme="borderless"
           size={size}
           className={trigger()}
@@ -265,9 +253,9 @@ export function Combobox<T = unknown>({
 
       <Portal>
         <div {...api.getPositionerProps()} className={positioner()}>
-          {api.open && filteredItems.length > 0 && (
+          {api.open && items.length > 0 && (
             <ul {...api.getContentProps()} className={content()}>
-              {filteredItems.map((item) => (
+              {items.map((item) => (
                 <li
                   key={item.value}
                   {...api.getItemProps({ item })}
@@ -278,7 +266,7 @@ export function Combobox<T = unknown>({
               ))}
             </ul>
           )}
-          {api.open && api.inputValue && filteredItems.length === 0 && (
+          {api.open && api.inputValue && items.length === 0 && (
             <div className={content()}>
               No results found for "{api.inputValue}"
             </div>

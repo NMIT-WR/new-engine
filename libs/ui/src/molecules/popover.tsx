@@ -22,7 +22,6 @@ const popoverVariants = tv({
       'rounded-popover',
       'border',
       'border-popover-border',
-      'shadow-popover',
       'outline-none',
     ],
     arrow: ['relative'],
@@ -34,6 +33,11 @@ const popoverVariants = tv({
     ],
   },
   variants: {
+    shadow: {
+      true: {
+        content: 'shadow-popover',
+      },
+    },
     size: {
       sm: {
         content: 'p-popover-sm text-sm',
@@ -51,6 +55,7 @@ const popoverVariants = tv({
   },
   defaultVariants: {
     size: 'md',
+    shadow: true,
   },
 })
 

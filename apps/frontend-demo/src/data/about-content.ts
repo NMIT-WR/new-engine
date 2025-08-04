@@ -1,13 +1,18 @@
+import type { IconType } from '@ui/atoms/icon'
+import type { StaticImageData } from 'next/image'
+import pavelImg from '/assets/team/pavel.jpg'
+import petrImg from '/assets/team/petr.jpg'
+
 export interface TeamMember {
   name: string
   role: string
-  image: string
+  image: string | StaticImageData
 }
 
 export interface CompanyValue {
   title: string
   description: string
-  icon: string // SVG path data
+  icon: IconType // SVG path data
 }
 
 export interface CompanyStat {
@@ -46,103 +51,84 @@ export interface AboutContent {
 
 export const aboutContent: AboutContent = {
   hero: {
-    title: 'Our Story',
-    subtitle: 'Crafting timeless fashion with purpose and passion since 2020',
-    backgroundImage:
-      'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1920&h=800&fit=crop',
+    title: 'Náš příběh',
+    subtitle: 'Vytváříme nadčasovou módu s účelem a vášní od roku 2020',
+    backgroundImage: '/assets/hero/about.webp',
   },
   story: {
-    title: 'From Vision to Reality',
+    title: 'Od vize ke skutečnosti',
     paragraphs: [
-      'What started as a dream to revolutionize sustainable fashion has grown into a movement. Founded in 2020, we began with a simple belief: that style and sustainability should go hand in hand.',
-      "Every piece in our collection tells a story - from the carefully selected eco-friendly materials to the skilled artisans who bring each design to life. We're not just creating clothes; we're building a community of conscious consumers who believe in the power of thoughtful fashion.",
-      "Our journey has been marked by innovation, collaboration, and an unwavering commitment to our values. Today, we're proud to serve thousands of customers worldwide who share our vision for a more sustainable and stylish future.",
+      'V roce 2024 jsme převzali otěže a vdechli nový život do dlouholeté tradice vývoje špičkových e-commerce řešení, které se píše již od roku 2008.',
+      'Její základy položil Antonín Růšal, který tehdy začal s průkopnickými projekty v oblasti online aukčních portálů a e-shopů. Postupem času se zaměření společnosti výhradně soustředilo na komplexní e-shopová řešení, stavěná na robustním jádru schopném zvládat i ty nejnáročnější požadavky, jako jsou systémy se stovkami milionů individuálních cen. Díky této bohaté historii a neustálému vývoji, který zohledňuje ty nejmodernější technologie, vám dnes můžeme nabídnout řešení, které není jen produktem, ale výsledkem dekád zkušeností a inovací.',
+      'Naše vize je jasná: posunout hranice možného a poskytnout e-shopům s ročním obratem nad 50 milionů korun nástroje, které jim umožní růst a excelovat. Přestože jdeme kupředu s novým elánem a brandem, hluboce si vážíme patnáctileté historie, která stojí za našimi technologiemi.',
     ],
     image:
-      'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&h=600&fit=crop',
-    imageAlt: 'Our workshop',
+      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    imageAlt: 'Naše dílna',
   },
   stats: [
-    { value: '50K+', label: 'Happy Customers' },
-    { value: '100%', label: 'Sustainable Materials' },
-    { value: '25+', label: 'Partner Artisans' },
-    { value: '4.9★', label: 'Customer Rating' },
+    { value: '50K+', label: 'Spokojených zákazníků' },
+    { value: '100%', label: 'Udržitelné materiály' },
+    { value: '25+', label: 'Partnerských řemeslníků' },
+    { value: '4.9★', label: 'Hodnocení zákazníků' },
   ],
   values: {
-    title: 'What We Stand For',
+    title: 'Za čím si stojíme',
     items: [
       {
-        title: 'Sustainability First',
-        description:
-          'Every decision we make considers its environmental impact. From materials to packaging, sustainability guides our way.',
-        icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+        title: 'Udržitelnost',
+        description: 'Každé rozhodnutí děláme s ohledem na planetu',
+        icon: 'token-icon-earth',
       },
       {
-        title: 'Uncompromising Quality',
+        title: 'Nekompromisní kvalita',
         description:
-          'We believe in creating pieces that last. Each item is crafted with attention to detail and built to withstand the test of time.',
-        icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+          'Pečlivě vybíráme materiály pro maximální životnost produktů',
+        icon: 'token-icon-check-circle',
       },
       {
-        title: 'Fair Trade',
-        description:
-          'We ensure fair wages and safe working conditions for all our partners, fostering long-term relationships built on respect.',
-        icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7',
+        title: 'Spravedlivý obchod',
+        description: 'Transparentní dodavatelský řetězec od vlákna po výrobek',
+        icon: 'token-icon-present',
       },
       {
-        title: 'Innovation',
-        description:
-          'We continuously explore new materials and techniques to push the boundaries of sustainable fashion.',
-        icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+        title: 'Inovace',
+        description: 'Experimentujeme s materiály šetrnými k přírodě i lidem',
+        icon: 'token-icon-light',
       },
       {
-        title: 'Community',
+        title: 'Komunita',
         description:
-          "Fashion is better together. We've built a community that shares ideas, values, and a love for conscious living.",
-        icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+          'Vybudovali jsme komunitu lidí se zápalem, která sdílí své nápady',
+        icon: 'token-icon-group',
       },
       {
-        title: 'Global Impact',
-        description:
-          "Our vision extends beyond fashion. We're committed to making a positive impact on communities worldwide.",
-        icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
+        title: 'Globální dopad',
+        description: 'Z českého ateliéru jsme přerostli do zahraničních trhů',
+        icon: 'token-icon-global',
       },
     ],
   },
   team: {
-    title: 'Meet Our Team',
+    title: 'Poznejte náš tým',
     members: [
       {
-        name: 'Sarah Johnson',
-        role: 'Founder & Creative Director',
-        image:
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+        name: 'Petr Glaser',
+        role: 'Founder',
+        image: petrImg,
       },
       {
-        name: 'Michael Chen',
-        role: 'Head of Sustainability',
-        image:
-          'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop',
-      },
-      {
-        name: 'Emily Rodriguez',
-        role: 'Design Lead',
-        image:
-          'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop',
-      },
-      {
-        name: 'David Kim',
-        role: 'Operations Director',
-        image:
-          'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=400&fit=crop',
+        name: 'Pavel Koudelka',
+        role: 'Co-Founder',
+        image: pavelImg,
       },
     ],
   },
   cta: {
-    title: 'Join Our Journey',
+    title: 'Připojte se k naší cestě',
     description:
-      "We're more than a brand - we're a movement towards conscious fashion. Every purchase you make supports our mission to create a more sustainable and stylish world.",
-    buttonText: 'Shop Our Collection',
+      'Jsme víc než značka - jsme hnutí směrem k uvědomělé módě. Každý váš nákup podporuje naši misi vytvořit udržitelnější a stylovější svět.',
+    buttonText: 'Nakupovat naši kolekci',
     buttonLink: '/products',
   },
 }

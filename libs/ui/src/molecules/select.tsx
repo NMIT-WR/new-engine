@@ -13,17 +13,14 @@ export interface SelectOption {
   label: ReactNode
   value: string
   disabled?: boolean
+  displayValue?: string // Plain text representation for accessibility/forms
   [key: string]: unknown
 }
 
 // === COMPONENT VARIANTS ===
 const selectVariants = tv({
   slots: {
-    root: [
-      'relative bg-select-root-bg',
-      'flex flex-col gap-select-root',
-      'w-full',
-    ],
+    root: ['relative', 'flex flex-col gap-select-root', 'w-full'],
     control: ['flex relative items-center justify-between', 'w-full'],
     positioner: ['w-(--reference-width)', 'isolate z-(--z-index)'],
     trigger: [
@@ -49,7 +46,7 @@ const selectVariants = tv({
       'bg-select-content-bg border border-select-content-border',
       'rounded-select shadow-select-content-shadow max-h-fit',
       'h-[calc(var(--available-height)-var(--spacing-lg))]',
-      'overflow-auto',
+      'overflow-auto z-50',
     ],
     item: [
       'flex items-center justify-between',
@@ -129,6 +126,7 @@ export function Select({
   onValueChange,
   onOpenChange,
   onHighlightChange,
+  onSelect,
   className,
   id: providedId,
 }: SelectProps) {
@@ -137,7 +135,7 @@ export function Select({
 
   const collection = select.collection({
     items: options,
-    itemToString: (item) => item.label?.toString() || '',
+    itemToString: (item) => item.displayValue || item.value,
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
   })
@@ -159,6 +157,7 @@ export function Select({
     onValueChange,
     onOpenChange,
     onHighlightChange,
+    onSelect,
   })
 
   const api = select.connect(service as select.Service, normalizeProps)
@@ -185,7 +184,7 @@ export function Select({
             value={option.value}
             disabled={option.disabled}
           >
-            {option.label}
+            {option.displayValue || option.value}
           </option>
         ))}
       </select>
@@ -206,9 +205,12 @@ export function Select({
           >
             <span
               className={valueSlot()}
-              data-placeholder={api.valueAsString === ''}
+              data-placeholder={api.value.length === 0}
             >
-              {api.valueAsString || placeholder}
+              {api.value.length > 0
+                ? // Find option as selected value and render same label
+                  options.find((option) => option.value === api.value[0])?.label
+                : placeholder}
             </span>
           </Button>
           {clearIcon && (

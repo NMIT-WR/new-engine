@@ -1,28 +1,27 @@
-import { useAuth } from '@/hooks/use-auth'
+import { validatePassword } from '@/lib/auth/validation'
 
 interface PasswordRequirementsProps {
   password: string
 }
 
 export function PasswordRequirements({ password }: PasswordRequirementsProps) {
-  const { usePasswordStrength } = useAuth()
-  const { requirements } = usePasswordStrength(password)
+  const { requirements } = validatePassword(password)
 
   return (
-    <div className="space-y-1 text-gray-500 text-xs">
-      <p className="font-semibold">Password requirements:</p>
-      <ul className="list-inside list-disc space-y-0.5">
-        <li className={requirements.length ? 'text-green-600' : ''}>
-          At least 8 characters
+    <div className="space-y-1 pl-100 text-fg-primary text-xs">
+      <p className="font-semibold">Požadavky na heslo:</p>
+      <ul className="list-inside list-disc space-y-0.5 text-fg-secondary">
+        <li className={requirements.length ? 'text-success' : ''}>
+          Alespoň 8 znaků
         </li>
-        <li className={requirements.uppercase ? 'text-green-600' : ''}>
-          One uppercase letter
+        <li className={requirements.uppercase ? 'text-success' : ''}>
+          Jedno velké písmeno
         </li>
-        <li className={requirements.lowercase ? 'text-green-600' : ''}>
-          One lowercase letter
+        <li className={requirements.lowercase ? 'text-success' : ''}>
+          Jedno malé písmeno
         </li>
-        <li className={requirements.number ? 'text-green-600' : ''}>
-          One number
+        <li className={requirements.number ? 'text-success' : ''}>
+          Jedno číslo
         </li>
       </ul>
     </div>

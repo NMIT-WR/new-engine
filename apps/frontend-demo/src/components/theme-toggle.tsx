@@ -1,8 +1,8 @@
 'use client'
 
 import { useTheme } from '@/hooks/use-theme'
-import { Icon } from 'ui/src/atoms/icon'
-import { Switch } from 'ui/src/molecules/switch'
+import { Icon } from '@ui/atoms/icon'
+import { Switch } from '@ui/molecules/switch'
 
 export function ThemeToggle() {
   const { theme, toggleTheme, mounted } = useTheme()
@@ -15,13 +15,13 @@ export function ThemeToggle() {
       <div className="flex items-center gap-theme-toggle-gap">
         <div className="flex items-center gap-theme-toggle-icon-gap">
           <Icon
-            icon="icon-[mdi--white-balance-sunny]"
+            icon="token-icon-sun"
             className="text-theme-toggle-icon-size text-theme-toggle-sun-inactive transition-colors data-[active]:text-theme-toggle-sun-active"
             data-active
           />
           <div className="w-theme-toggle-width" />
           <Icon
-            icon="icon-[mdi--moon-and-stars]"
+            icon="token-icon-moon"
             className="text-theme-toggle-icon-size text-theme-toggle-moon-inactive transition-colors data-[active]:text-theme-toggle-moon-active"
           />
         </div>
@@ -33,7 +33,7 @@ export function ThemeToggle() {
     <div className="flex items-center gap-theme-toggle-gap">
       <div className="flex items-center gap-theme-toggle-icon-gap">
         <Icon
-          icon="icon-[mdi--white-balance-sunny]"
+          icon="token-icon-sun"
           className="text-theme-toggle-icon-size text-theme-toggle-sun-inactive transition-colors data-[active]:text-theme-toggle-sun-active"
           data-active={isDark ? undefined : ''}
         />
@@ -42,10 +42,10 @@ export function ThemeToggle() {
           onCheckedChange={toggleTheme}
           className="w-theme-toggle-width"
         >
-          <span className="sr-only">Toggle dark mode</span>
+          <span className="sr-only">Přepnout tmavý režim</span>
         </Switch>
         <Icon
-          icon="icon-[mdi--moon-and-stars]"
+          icon="token-icon-moon"
           className="text-theme-toggle-icon-size text-theme-toggle-moon-inactive transition-colors data-[active]:text-theme-toggle-moon-active"
           data-active={isDark ? '' : undefined}
         />

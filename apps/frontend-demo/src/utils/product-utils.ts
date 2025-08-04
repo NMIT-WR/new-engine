@@ -1,86 +1,75 @@
-import {
-  getProductBadges,
-  getProductPrice,
-  getProductStock,
-} from '@/data/mock-products'
+import type { StockStatus } from '@/lib/inventory'
 import type { Product } from '@/types/product'
-import type { BadgeProps } from 'ui/src/atoms/badge'
+import type { BadgeProps } from '@ui/atoms/badge'
 
 /**
  * Convert stock status to display text
  */
-export function getStockStatusText(status: string): string {
+export function getStockStatusText(status: StockStatus): string {
   switch (status) {
     case 'in-stock':
-      return 'In Stock'
+      return 'Skladem'
     case 'low-stock':
-      return 'Low Stock'
+      return 'Malé množství'
     case 'out-of-stock':
-      return 'Out of Stock'
-    default:
-      return 'Unknown'
+      return 'Vyprodáno'
   }
-}
-
-/**
- * Ensure badges array has at least one item (for layout consistency)
- */
-export function ensureBadgesPlaceholder(badges: BadgeProps[]): BadgeProps[] {
-  return badges.length > 0
-    ? badges
-    : [
-        {
-          variant: 'success' as const,
-          children: '\u00A0',
-          className: 'invisible',
-        },
-      ]
 }
 
 /**
  * Extract all common product display data
  */
-export interface ProductDisplayData {
-  price: ReturnType<typeof getProductPrice>
+interface ProductDisplayData {
   badges: BadgeProps[]
   displayBadges: BadgeProps[]
-  stockStatus: ReturnType<typeof getProductStock>
-  stockText: string
 }
 
-export function extractProductData(product: Product): ProductDisplayData {
-  // For API products, use the first price from the first variant
-  // (API already returns prices for the selected region)
-  const firstVariant = product.variants?.[0]
-  const price = firstVariant?.prices?.[0] || getProductPrice(product)
-  
-  const badges = getProductBadges(product)
-  const stockStatus = getProductStock(product)
+export function extractProductData(
+  product: Product,
+  currencyCode?: string
+): ProductDisplayData {
+  // For API products, find the price that matches the current currency
+  const primaryVariant = product.primaryVariant
 
-  return {
-    price,
-    badges,
-    displayBadges: ensureBadgesPlaceholder(badges),
-    stockStatus,
-    stockText: getStockStatusText(stockStatus),
+  // Generate badges based on product data
+  const badges: BadgeProps[] = []
+
+  // New badge - check if product was created recently (within 7 days)
+  if (product.created_at) {
+    const createdDate = new Date(product.created_at)
+    const daysSinceCreated =
+      (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
+    if (daysSinceCreated <= 10) {
+      badges.push({ variant: 'success' as const, children: 'Nové' })
+    }
   }
-}
 
-/**
- * Get related products (excluding current product)
- */
-export function getRelatedProducts(
-  currentProduct: Product,
-  allProducts: Product[],
-  limit = 4
-): Product[] {
-  return allProducts.filter((p) => p.id !== currentProduct.id).slice(0, limit)
+  if (primaryVariant) {
+    if (!primaryVariant.manage_inventory) {
+      badges.push({ variant: 'success' as const, children: 'Skladem' })
+    } else if (typeof primaryVariant.inventory_quantity === 'number') {
+      if (primaryVariant.inventory_quantity > 0) {
+        badges.push({ variant: 'success' as const, children: 'Skladem' })
+      }
+    } else if (primaryVariant.allow_backorder) {
+      badges.push({ variant: 'warning' as const, children: 'Na objednávku' })
+    } else {
+      badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
+    }
+  }
+  if (!primaryVariant) {
+    badges.push({ variant: 'danger' as const, children: 'Vyprodáno' })
+  }
+  return {
+    badges,
+    displayBadges: badges,
+  }
 }
 
 /**
  * Format price display with currency
  */
-export function formatPrice(price: number, currency = '€'): string {
+export function formatPrice(price: number, currency = 'Kč'): string {
   return `${currency}${price.toFixed(2)}`
 }
 

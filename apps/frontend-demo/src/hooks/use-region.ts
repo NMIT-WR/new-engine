@@ -3,14 +3,23 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { regionStore, setSelectedRegionId } from '@/stores/region-store'
+import type { StoreRegion } from '@medusajs/types'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
-import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export function useRegions() {
-  const selectedRegionId = useStore(regionStore, (state) => state.selectedRegionId)
+  const queryClient = useQueryClient()
+  const selectedRegionId = useStore(
+    regionStore,
+    (state) => state.selectedRegionId
+  )
 
-  const { data: regions = [], isLoading, error } = useQuery({
+  const {
+    data: regions = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: queryKeys.regions(),
     queryFn: async () => {
       const response = await sdk.store.region.list()
@@ -20,28 +29,36 @@ export function useRegions() {
     gcTime: 24 * 60 * 60 * 1000, // Cache for 24 hours
   })
 
-  // Initialize selected region from store/localStorage or default
+  // Initialize selected region from regions list or default to USD
   useEffect(() => {
+    if (regions.length === 0 || selectedRegionId) return
+
     if (regions.length > 0 && !selectedRegionId) {
-      // Default to EUR region if no stored preference
+      // Default to USD region if no stored preference
       const defaultRegion =
+        regions.find((r) => r.currency_code === 'czk') ||
         regions.find((r) => r.currency_code === 'eur') ||
-        regions.find((r) => r.currency_code === 'usd') ||
         regions[0]
-      
+
       if (defaultRegion) {
         setSelectedRegionId(defaultRegion.id)
       }
     }
-  }, [regions, selectedRegionId])
+  }, [regions])
 
   const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 
-  const setSelectedRegion = (region: any) => {
-    if (region?.id) {
-      setSelectedRegionId(region.id)
-    }
-  }
+  const setSelectedRegion = useCallback(
+    (region: StoreRegion) => {
+      if (region?.id && region.id !== selectedRegionId) {
+        setSelectedRegionId(region.id)
+        // Invalidate queries that depend on region
+        queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
+        queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
+      }
+    },
+    [selectedRegionId, queryClient]
+  )
 
   return {
     regions,
@@ -51,10 +68,4 @@ export function useRegions() {
     error:
       error instanceof Error ? error.message : error ? String(error) : null,
   }
-}
-
-// Hook to get current region (with localStorage persistence)
-export function useCurrentRegion() {
-  const { selectedRegion, isLoading, error } = useRegions()
-  return { region: selectedRegion, isLoading, error }
 }

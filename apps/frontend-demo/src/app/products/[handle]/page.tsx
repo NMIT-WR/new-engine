@@ -1,10 +1,12 @@
-import { mockProducts } from '@/data/mock-products'
 import ProductDetail from './product-detail'
 
+// Enable ISR with 60 second revalidation
+export const revalidate = 60
+
+// Don't pre-generate any products at build time
+// They will be generated on-demand
 export async function generateStaticParams() {
-  return mockProducts.map((product) => ({
-    handle: product.handle,
-  }))
+  return []
 }
 
 export default async function ProductDetailPage({
@@ -14,12 +16,5 @@ export default async function ProductDetailPage({
 }) {
   const resolvedParams = await params
 
-  // Find product by handle (in real app, this would be an API call)
-  const product = mockProducts.find((p) => p.handle === resolvedParams.handle)
-
-  if (!product) {
-    return <div>Product not found</div>
-  }
-
-  return <ProductDetail product={product} />
+  return <ProductDetail handle={resolvedParams.handle} />
 }

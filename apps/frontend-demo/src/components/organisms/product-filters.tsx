@@ -1,21 +1,22 @@
 'use client'
 
-import { type FilterConfig, activeFilterConfig } from '@/data/filter-config'
-import { mockProducts } from '@/data/mock-products'
-import { getColorHex } from '@/utils/color-map'
-import {
-  type FilterState,
-  calculateProductCounts,
-  getColorsWithCounts,
-  getSizesWithCounts,
-} from '@/utils/product-filters'
+import { useRegions } from '@/hooks/use-region'
+import { cacheConfig } from '@/lib/cache-config'
+import { queryKeys } from '@/lib/query-keys'
+import { categoryTree } from '@/lib/static-data/categories'
+import data from '@/lib/static-data/categories'
+import { getProducts } from '@/services/product-service'
+import { useQueryClient } from '@tanstack/react-query'
+import { Button } from '@ui/atoms/button'
+import { Dialog } from '@ui/molecules/dialog'
 import { useState } from 'react'
-import { Button } from 'ui/src/atoms/button'
-import { Checkbox } from 'ui/src/molecules/checkbox'
-import { Dialog } from 'ui/src/molecules/dialog'
-import { RangeSlider } from 'ui/src/molecules/range-slider'
-import { ColorSelect } from '../atoms/color-select'
+import { CategoryTreeFilter } from '../category-tree-filter'
 import { FilterSection } from '../molecules/filter-section'
+
+export interface FilterState {
+  categories: Set<string>
+  sizes: Set<string>
+}
 
 interface ProductFiltersProps {
   className?: string
@@ -30,8 +31,57 @@ export function ProductFilters({
   onFiltersChange,
   hideCategories = false,
 }: ProductFiltersProps) {
+  const { selectedRegion } = useRegions()
+  const [categoryIds, setCategoryIds] = useState<string[]>([])
+
   const [isOpen, setIsOpen] = useState(false)
-  const filterConfig = activeFilterConfig // Use active configuration
+  const queryClient = useQueryClient()
+
+  const handleCategoryChange = (newCategoryIds: string[]) => {
+    setCategoryIds(newCategoryIds)
+    updateFilters({ categories: new Set(newCategoryIds) })
+  }
+
+  // Prefetch products with specific filters
+  const prefetchFilteredProducts = (newFilters: Partial<FilterState>) => {
+    const updatedFilters = {
+      categories: newFilters.categories || filters.categories,
+      sizes: newFilters.sizes || filters.sizes,
+    }
+
+    const productFilters = {
+      categories: Array.from(updatedFilters.categories),
+      sizes: Array.from(updatedFilters.sizes),
+    }
+
+    const queryKey = queryKeys.products.list({
+      page: 1,
+      limit: 12,
+      filters: productFilters,
+      sort: 'newest', // Add default sort to match products page
+      region_id: selectedRegion?.id,
+    })
+
+    // Check if data is already in cache and fresh
+    const cachedData = queryClient.getQueryData(queryKey)
+    const queryState = queryClient.getQueryState(queryKey)
+
+    // Only prefetch if data is not in cache or is stale
+    if (!cachedData || queryState?.isInvalidated) {
+      queryClient.prefetchQuery({
+        queryKey,
+        queryFn: () =>
+          getProducts({
+            limit: 12,
+            offset: 0,
+            filters: productFilters,
+            sort: 'newest',
+            region_id: selectedRegion?.id,
+          }),
+        ...cacheConfig.semiStatic, // Use consistent cache config
+      })
+    }
+  }
 
   const updateFilters = (updates: Partial<FilterState>) => {
     onFiltersChange({
@@ -42,200 +92,80 @@ export function ProductFilters({
 
   const clearAllFilters = () => {
     onFiltersChange({
-      priceRange: [0, 300],
       categories: new Set(),
       sizes: new Set(),
-      colors: new Set(),
     })
   }
 
-  const hasActiveFilters =
-    filters.categories.size > 0 ||
-    filters.sizes.size > 0 ||
-    filters.colors.size > 0 ||
-    filters.priceRange[0] > 0 ||
-    filters.priceRange[1] < 300
+  const hasActiveFilters = filters.categories.size > 0 || filters.sizes.size > 0
 
-  // Get product counts using utility functions
-  const productCounts = calculateProductCounts(mockProducts)
-  const sizesWithCounts = getSizesWithCounts(mockProducts)
-  const colorsWithCounts = getColorsWithCounts(mockProducts)
+  // Count active filters for mobile button
+  const activeFilterCount = filters.categories.size + filters.sizes.size
 
-  // Get color hex values from products
-  const colorHexMap = new Map<string, string>()
-  mockProducts.forEach((product) => {
-    product.variants?.forEach((variant) => {
-      const color = variant.options?.color
-      if (color && variant.colorHex) {
-        colorHexMap.set(color.toLowerCase(), variant.colorHex)
-      }
-    })
-  })
+  const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
 
-  // Render filter based on config
-  const renderFilter = (config: FilterConfig) => {
-    switch (config.type) {
-      case 'checkbox':
-        return (
-          <FilterSection
-            key={config.id}
-            title={config.title}
-            items={productCounts.categoryCounts}
-            defaultItemsShown={config.defaultItemsShown}
-            onClear={
-              config.showClearButton
-                ? () => updateFilters({ categories: new Set() })
-                : undefined
-            }
-            className="space-y-product-filters-item-gap"
-            renderItem={(category) => {
-              const isDisabled = category.count === 0
-              return (
-                <Checkbox
-                  key={category.handle}
-                  id={`category-${category.handle}`}
-                  name="categories"
-                  value={category.handle}
-                  labelText={`${category.name} (${category.count})`}
-                  checked={filters.categories.has(category.handle)}
-                  disabled={isDisabled}
-                  onCheckedChange={(details) => {
-                    const { checked } = details
-                    const newCategories = new Set(filters.categories)
-                    if (checked === true) {
-                      newCategories.add(category.handle)
-                    } else {
-                      newCategories.delete(category.handle)
-                    }
-                    updateFilters({ categories: newCategories })
-                  }}
-                />
-              )
-            }}
-          />
-        )
-
-      case 'range':
-        return (
-          <FilterSection key={config.id} title={config.title}>
-            <RangeSlider
-              value={filters.priceRange}
-              onChange={(value) =>
-                updateFilters({ priceRange: value as [number, number] })
-              }
-              min={config.range?.min || 0}
-              max={config.range?.max || 300}
-              step={config.range?.step || 10}
-              minStepsBetweenThumbs={0}
-              formatValue={(value) =>
-                `${config.range?.prefix || ''}${value}${config.range?.suffix || ''}`
-              }
-            />
-            <div className="mt-product-filters-range-margin flex justify-between">
-              <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-                {config.range?.prefix}
-                {filters.priceRange[0]}
-              </span>
-              <span className="text-product-filters-range-label text-sm">
-                to
-              </span>
-              <span className="font-product-filters-range-value text-product-filters-range-value text-sm">
-                {config.range?.prefix}
-                {filters.priceRange[1]}
-              </span>
+  const renderCategories = () => {
+    return (
+      <FilterSection title="Kategorie">
+        {categoryTree.length > 0 && (
+          <>
+            <div className="mb-2 text-gray-500 text-xs">
+              Tip: Filtry se aplikují pouze na koncové podkategorie
             </div>
-          </FilterSection>
-        )
+            <CategoryTreeFilter
+              categories={categoryTree}
+              leafCategories={data.leafCategories}
+              leafParents={data.leafParents}
+              onSelectionChange={handleCategoryChange}
+            />
+          </>
+        )}
+      </FilterSection>
+    )
+  }
 
-      case 'size':
-        return (
-          <FilterSection
-            key={config.id}
-            title={config.title}
-            items={sizesWithCounts}
-            defaultItemsShown={config.defaultItemsShown}
-            onClear={
-              config.showClearButton
-                ? () => updateFilters({ sizes: new Set() })
-                : undefined
-            }
-            className="flex flex-wrap gap-2"
-            renderItem={({ size, count }) => {
-              const isSelected = filters.sizes.has(size)
-              const isDisabled = count === 0
-
-              return (
-                <Button
-                  key={size}
-                  theme={isSelected ? 'solid' : 'borderless'}
-                  disabled={isDisabled}
-                  onClick={() => {
-                    const newSizes = new Set(filters.sizes)
-                    if (isSelected) {
-                      newSizes.delete(size)
-                    } else {
-                      newSizes.add(size)
-                    }
-                    updateFilters({ sizes: newSizes })
-                  }}
-                  size="sm"
-                  className="rounded-sm border"
-                >
-                  {size}
-                </Button>
-              )
-            }}
-          />
-        )
-
-      case 'color':
-        return (
-          <FilterSection
-            key={config.id}
-            title={config.title}
-            items={colorsWithCounts}
-            defaultItemsShown={config.defaultItemsShown}
-            onClear={
-              config.showClearButton
-                ? () => updateFilters({ colors: new Set() })
-                : undefined
-            }
-            className="grid grid-cols-4 lg:grid-cols-5 gap-2"
-            renderItem={({ color, count }) => {
-              const isSelected = filters.colors.has(color)
-              const isDisabled = count === 0
-              // First try to get color from product variants, then fall back to color map
-              const colorHex =
-                colorHexMap.get(color.toLowerCase()) || getColorHex(color)
-
-              return (
-                <ColorSelect
-                  key={color}
-                  selected={isSelected}
-                  disabled={isDisabled}
-                  color={colorHex}
-                  colorName={color}
-                  size="md"
-                  onClick={() => {
-                    if (!isDisabled) {
-                      const newColors = new Set(filters.colors)
-                      if (isSelected) {
-                        newColors.delete(color)
-                      } else {
-                        newColors.add(color)
-                      }
-                      updateFilters({ colors: newColors })
-                    }
-                  }}
-                />
-              )
-            }}
-          />
-        )
-
-      default:
-        return null
-    }
+  const renderSizes = () => {
+    return (
+      <FilterSection
+        title="Velikost"
+        onClear={
+          filters.sizes.size > 0
+            ? () => updateFilters({ sizes: new Set() })
+            : undefined
+        }
+      >
+        <div className="flex flex-wrap gap-2">
+          {SIZES.map((size) => {
+            const isSelected = filters.sizes.has(size)
+            return (
+              <Button
+                key={size}
+                theme={isSelected ? 'solid' : 'borderless'}
+                onClick={() => {
+                  const newSizes = new Set<string>()
+                  // If clicking on already selected size, deselect it
+                  // Otherwise, select only this size
+                  if (!isSelected) {
+                    newSizes.add(size)
+                  }
+                  updateFilters({ sizes: newSizes })
+                }}
+                onMouseEnter={() => {
+                  // Prefetch products with this size filter
+                  if (!isSelected) {
+                    prefetchFilteredProducts({ sizes: new Set([size]) })
+                  }
+                }}
+                size="sm"
+                className="rounded-sm border"
+              >
+                {size}
+              </Button>
+            )
+          })}
+        </div>
+      </FilterSection>
+    )
   }
 
   const filterContent = (
@@ -248,15 +178,16 @@ export function ProductFilters({
             onClick={clearAllFilters}
             className="cursor-pointer text-primary text-sm hover:underline"
           >
-            Clear all filters
+            Vymazat všechny filtry
           </Button>
         </div>
       )}
 
-      {/* Render filters based on configuration */}
-      {filterConfig
-        .filter((config) => !(hideCategories && config.id === 'categories'))
-        .map(renderFilter)}
+      {/* Categories Filter */}
+      {!hideCategories && renderCategories()}
+
+      {/* Sizes Filter */}
+      {renderSizes()}
     </>
   )
 
@@ -264,45 +195,46 @@ export function ProductFilters({
     <div className={`w-full ${className || ''}`}>
       {/* Mobile Filter Button */}
       <Button
-        variant="secondary"
+        theme="outlined"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="mb-product-filters-mobile-btn-margin flex items-center gap-product-filters-mobile-btn-gap md:hidden"
+        className="flex items-center bg-surface md:hidden"
         icon="icon-[mdi--filter-variant]"
       >
-        Filters
+        Filtry
+        {activeFilterCount > 0 && (
+          <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-white text-xs">
+            {activeFilterCount}
+          </span>
+        )}
       </Button>
 
       {/* Desktop Filters */}
       <div className="hidden md:block">{filterContent}</div>
 
       {/* Mobile Filter Dialog */}
-      <div className="md:hidden">
+      <div className="hidden">
         <Dialog
           open={isOpen}
           onOpenChange={({ open }) => setIsOpen(open)}
-          title="Filters"
-          description="Refine your product search"
+          title="Filtry"
+          description="Upřesněte hledání produktů"
         >
-          <div className="p-product-filters-dialog-padding">
-            <div className="mb-product-filters-dialog-header-margin flex items-center justify-between">
-              <h2 className="font-product-filters-dialog-title text-product-filters-dialog-title">
-                Filters
-              </h2>
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b p-4">
+              <h2 className="font-semibold text-lg">Filtry</h2>
               <Button
-                variant="tertiary"
                 theme="borderless"
                 size="sm"
                 onClick={() => setIsOpen(false)}
                 icon="icon-[mdi--close]"
-              >
-                Close
-              </Button>
+                aria-label="Zavřít filtry"
+              />
             </div>
-            {filterContent}
-            <div className="mt-product-filters-actions-margin flex gap-product-filters-actions-gap">
+            <div className="flex-1 overflow-y-auto p-4">{filterContent}</div>
+            <div className="flex gap-2 border-t p-4">
               <Button
-                variant="secondary"
+                theme="outlined"
                 size="sm"
                 className="flex-1"
                 onClick={() => {
@@ -310,15 +242,15 @@ export function ProductFilters({
                   setIsOpen(false)
                 }}
               >
-                Clear All
+                Vymazat vše
               </Button>
               <Button
-                variant="primary"
+                theme="solid"
                 size="sm"
                 className="flex-1"
                 onClick={() => setIsOpen(false)}
               >
-                Apply Filters
+                Použít filtry
               </Button>
             </div>
           </div>

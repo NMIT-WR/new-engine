@@ -68,7 +68,8 @@
   --color-about-stats-bg: var(--color-surface);
   --spacing-about-stats-padding: var(--spacing-2xl);
   --spacing-about-stats-gap: var(--spacing-3xl);
-  --text-about-stat-number-size: var(--text-4xl);
+  --text-about-sm: var(--text-xl);
+  --text-about-md: var(--text-4xl);
   --font-weight-about-stat-number: var(--font-weight-bold);
   --color-about-stat-number-fg: var(--color-primary);
   --text-about-stat-label-size: var(--text-sm);

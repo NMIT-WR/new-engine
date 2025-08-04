@@ -12,7 +12,7 @@ const productCard = tv({
   slots: {
     base: [
       'rounded-pc p-pc-padding',
-      'border-(length:--border-pc-width) border-pc-border bg-pc shadow-sm',
+      'border-(length:--border-pc-width) border-pc-border bg-pc max-w-pc-max shadow-sm',
     ],
     imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
     nameSlot:

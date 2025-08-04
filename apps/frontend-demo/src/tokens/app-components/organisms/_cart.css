@@ -48,9 +48,9 @@
   --spacing-cart-continue-margin: var(--spacing-sm);
 
   /* === CART TYPOGRAPHY === */
-  --text-cart-title-size: var(--text-3xl);
+  --text-cart-title-size: var(--text-xl);
   --font-cart-title-weight: var(--font-weight-bold);
-  --text-cart-item-title-size: var(--text-base);
+  --text-cart-item-title-size: var(--text-md);
   --font-cart-item-title-weight: var(--font-weight-medium);
   --text-cart-item-price-size: var(--text-base);
   --font-cart-item-price-weight: var(--font-weight-semibold);

@@ -1,11 +1,27 @@
 /* Import base UI library styles */
 @import "../../../../libs/ui/src/tokens/index.css";
+@import "./_typography.css";
+@import "./_overrides.css";
+@import "./_layout.css";
+@import "./_overrides-components.css";
+@import "./app-components/app-components.css";
+@import "./_icons.css";
+@import "./_print.css";
 
+@media (prefers-color-scheme: dark) {
+  .reverse {
+    color-scheme: light;
+  }
+}
+
+.dark {
+  .dark-white {
+    filter: brightness(200);
+  }
+  .balikovna-dark {
+    filter: brightness(2.5);
+  }
+}
 /* Tell Tailwind where to look for classes in both UI library and local components */
 @source "../../../../libs/ui/src/**/*.{js,ts,jsx,tsx}";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
-
-@import "./_typography.css";
-@import "./_overrides.css";
-@import "./_overrides-components.css";
-@import "./app-components/app-components.css";
