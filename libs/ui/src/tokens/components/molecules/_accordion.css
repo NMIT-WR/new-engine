@@ -56,6 +56,12 @@
   /* === BORDER & RADIUS === */
   --border-width-accordion: var(--border-width-sm);
   --radius-accordion: var(--radius-sm);
+
+  /* === SHADOWS === */
+  --shadow-accordion-root-sm: var(--shadow-primary);
+  --shadow-accordion-root-md: var(--shadow-xl);
+  --shadow-accordion-content-sm: var(--shadow-sm);
+  --shadow-accordion-content-md: var(--shadow-primary);
 }
 
 /* Semantic tokens for accordion icons */

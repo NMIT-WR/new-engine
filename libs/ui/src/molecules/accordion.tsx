@@ -13,7 +13,6 @@ const accordionVariants = tv({
       'bg-accordion border-accordion-border rounded-accordion',
       'border-(length:--border-width-accordion)',
       //'overflow-hidden',
-      'shadow-2xl',
       'transition-all duration-200',
     ],
     item: [
@@ -33,12 +32,22 @@ const accordionVariants = tv({
     subtitle: ['text-accordion-subtitle-fg'],
     content: [
       'text-accordion-content-fg bg-accordion-content-bg',
-      'shadow-primary',
       //'overflow-hidden',
     ],
     icon: ['data-[state=expanded]:rotate-180'],
   },
   variants: {
+    shadow: {
+      sm: {
+        root: 'shadow-accordion-root-sm',
+        content: 'shadow-accordion-content-sm',
+      },
+      md: {
+        root: 'shadow-accordion-root-md',
+        content: 'shadow-accordion-content-md',
+      },
+      none: '',
+    },
     size: {
       sm: {
         title: 'text-accordion-title-sm py-accordion-primary-sm',
@@ -59,6 +68,7 @@ const accordionVariants = tv({
   },
   defaultVariants: {
     size: 'md',
+    shadow: 'none',
   },
 })
 
@@ -93,6 +103,7 @@ export function Accordion({
   dir = 'ltr',
   onChange,
   size,
+  shadow,
 }: AccordionProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -114,6 +125,7 @@ export function Accordion({
 
   const { root, item, title, content, icon, subtitle } = accordionVariants({
     size,
+    shadow,
   })
 
   return (
