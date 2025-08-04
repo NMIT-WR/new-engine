@@ -725,7 +725,7 @@ const faqData: AccordionItem[] = [
 
 export default function FAQ() {
   return (
-    <div className="min-h-screen bg-base py-700">
+    <div className="min-h-screen py-700">
       <div className="mx-auto max-w-layout-max px-400">
         {/* Header Section */}
         <div className="mb-800 text-center">
@@ -742,13 +742,18 @@ export default function FAQ() {
         </div>
 
         {/* FAQ Accordion */}
-        <div className="overflow-hidden rounded-lg border border-stroke-primary bg-surface shadow-sm">
-          <Accordion items={faqData} collapsible={true} multiple={true} />
+        <div className="rounded-lg border border-stroke-primary">
+          <Accordion
+            shadow="sm"
+            items={faqData}
+            collapsible={true}
+            multiple={true}
+          />
         </div>
 
         {/* Contact CTA */}
-        <div className="mt-800 text-center">
-          <div className="rounded-lg border border-stroke-primary bg-surface p-600">
+        <div className="mt-800 text-center ">
+          <div className="rounded-lg border border-stroke-primary bg-surface p-600 shadow-primary">
             <div className="mb-400 flex items-center justify-center">
               <Icon
                 icon="icon-[ic--outline-message]"

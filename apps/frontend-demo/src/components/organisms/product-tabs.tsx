@@ -18,8 +18,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
       author: 'Sára M.',
       rating: 5,
       date: 'před 2 týdny',
-      comment:
-        'Naprosto skvělé! Kvalita je úzasná a dokonale to sedí.',
+      comment: 'Naprosto skvělé! Kvalita je úzasná a dokonale to sedí.',
       verified: true,
     },
     {
@@ -91,6 +90,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
           )}
           <div className="mt-product-tabs-accordion-margin">
             <Accordion
+              shadow="none"
               items={[
                 {
                   id: 'shipping',
@@ -112,8 +112,9 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
                       <p>
-                        Naše produkty odpovídají standardním velikostem. Pokud jste mezi
-                        dvěma velikostmi, doporučujeme zvolit větší pro pohodlné nošení.
+                        Naše produkty odpovídají standardním velikostem. Pokud
+                        jste mezi dvěma velikostmi, doporučujeme zvolit větší
+                        pro pohodlné nošení.
                       </p>
                       <table className="w-full text-product-tabs-review-meta">
                         <thead>
