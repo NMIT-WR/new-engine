@@ -168,9 +168,18 @@ const categoryHandles = {
     'street-category-274',
     'boty-category-282',
   ],
-  cyklo: ['dlouhy-rukav', 'xc-dh-volne', 'xc-dh-volne-category-43', 'dlouhe'],
+  cyklo: [
+    'ostatni-category-400',
+    'ponozky-category-394',
+    'dlouhe-category-391',
+    'dlouhe',
+  ],
   moto: ['bundy-category-81', 'kalhoty-category-82', 'mx-offroad', 'otevrene'],
-  snowboard: ['snowboardy', 'vazani', 'prilby-category-107'],
+  snowboard: [
+    'kulichy-category-124',
+    'rukavice-category-123',
+    'bundy-category-121',
+  ],
 }
 
 type CategoryKey = keyof typeof categoryHandles
