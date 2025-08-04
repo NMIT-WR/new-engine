@@ -1,11 +1,10 @@
-import type { ExecArgs } from '@medusajs/framework/types'
+import type { ExecArgs, ProductDTO, StockLocationDTO } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
 import { updateInventoryLevelsWorkflow } from '@medusajs/medusa/core-flows'
 
 export default async function updateInventory({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const productService = container.resolve(Modules.PRODUCT)
-  const inventoryService = container.resolve(Modules.INVENTORY)
   const stockLocationService = container.resolve(Modules.STOCK_LOCATION)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
 
@@ -25,20 +24,20 @@ export default async function updateInventory({ container }: ExecArgs) {
       return
     }
 
-    const product = products[0]
+    const product = products[0] as ProductDTO
     logger.info(`Found product: ${product.title} (${product.id})`)
 
     // Get stock location
     const stockLocations = await stockLocationService.listStockLocations({
       name: 'European Warehouse',
-    })
+    }, {take: 1})
 
     if (!stockLocations || stockLocations.length === 0) {
       logger.error('Stock location "European Warehouse" not found')
       return
     }
 
-    const stockLocation = stockLocations[0]
+    const stockLocation = stockLocations[0] as StockLocationDTO
     logger.info(`Using stock location: ${stockLocation.name} (${stockLocation.id})`)
 
     // Get inventory items for all variants
@@ -84,6 +83,8 @@ export default async function updateInventory({ container }: ExecArgs) {
         
         updates.push({
           id: level.id,
+          inventory_item_id: level.inventory_item_id,
+          location_id: level.location_id,
           stocked_quantity: newQuantity,
         })
         
@@ -93,9 +94,9 @@ export default async function updateInventory({ container }: ExecArgs) {
 
     if (updates.length > 0) {
       // Execute the inventory update workflow
-      const { result } = await updateInventoryLevelsWorkflow(container).run({
+      await updateInventoryLevelsWorkflow(container).run({
         input: {
-          updates,
+          updates
         },
       })
 
@@ -105,7 +106,7 @@ export default async function updateInventory({ container }: ExecArgs) {
       logger.warn('No inventory levels to update')
     }
 
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error updating inventory:', error)
     throw error
   }
