@@ -85,7 +85,6 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(frontend-demo)
         - pnpm i
-        - node_modules/.bin/nx run frontend-demo:generate:categories
         - node_modules/.bin/nx run frontend-demo:build --skip-nx-cache --verbose
         - rm -rf apps/frontend-demo/node_modules
         - pnpm --filter=frontend-demo --prod deploy frontend-demo-temp-deploy
@@ -108,7 +107,7 @@ zerops:
       base: nodejs@22
       start: npm run start:fe
       ports:
-        - port: 8000
+        - port: 3000
           httpSupport: true
       envVariables:
         RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
