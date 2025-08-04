@@ -194,6 +194,9 @@ export async function GET(
                             Size: "S",
                             Color: "Black",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -215,6 +218,9 @@ export async function GET(
                         options: {
                             Size: "S",
                             Color: "White",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -238,6 +244,9 @@ export async function GET(
                             Size: "M",
                             Color: "Black",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -259,6 +268,9 @@ export async function GET(
                         options: {
                             Size: "M",
                             Color: "White",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -282,6 +294,9 @@ export async function GET(
                             Size: "L",
                             Color: "Black",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -303,6 +318,9 @@ export async function GET(
                         options: {
                             Size: "L",
                             Color: "White",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -326,6 +344,9 @@ export async function GET(
                             Size: "XL",
                             Color: "Black",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -347,6 +368,9 @@ export async function GET(
                         options: {
                             Size: "XL",
                             Color: "White",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -395,6 +419,9 @@ export async function GET(
                         options: {
                             Size: "S",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -415,6 +442,9 @@ export async function GET(
                         sku: "SWEATSHIRT-M",
                         options: {
                             Size: "M",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -437,6 +467,9 @@ export async function GET(
                         options: {
                             Size: "L",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -457,6 +490,9 @@ export async function GET(
                         sku: "SWEATSHIRT-XL",
                         options: {
                             Size: "XL",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -505,6 +541,9 @@ export async function GET(
                         options: {
                             Size: "S",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -525,6 +564,9 @@ export async function GET(
                         sku: "SWEATPANTS-M",
                         options: {
                             Size: "M",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -547,6 +589,9 @@ export async function GET(
                         options: {
                             Size: "L",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -567,6 +612,9 @@ export async function GET(
                         sku: "SWEATPANTS-XL",
                         options: {
                             Size: "XL",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -615,6 +663,9 @@ export async function GET(
                         options: {
                             Size: "S",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -635,6 +686,9 @@ export async function GET(
                         sku: "SHORTS-M",
                         options: {
                             Size: "M",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
@@ -657,6 +711,9 @@ export async function GET(
                         options: {
                             Size: "L",
                         },
+                        quantities: {
+                            quantity: 100
+                        },
                         prices: [
                             {
                                 amount: 10,
@@ -677,6 +734,9 @@ export async function GET(
                         sku: "SHORTS-XL",
                         options: {
                             Size: "XL",
+                        },
+                        quantities: {
+                            quantity: 100
                         },
                         prices: [
                             {
