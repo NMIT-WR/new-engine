@@ -48,20 +48,23 @@ services:
       cpu: 1
     priority: 90
 
-  - hostname: nextstore
+  - hostname: demo
     type: nodejs@22
     buildFromGit: https://github.com/NMIT-WR/new-engine
     enableSubdomainAccess: true
     envSecrets:
       REVALIDATE_SECRET: <@generateRandomString(<16>)>
+      RESEND_API_KEY: ${RESEND_API_KEY}
     verticalAutoscaling:
       minRam: 0.5
+      cpu: 1
+    priority: 80
 
-  - hostname: storedemo
-    type: nodejs@22
-    buildFromGit: https://github.com/NMIT-WR/new-engine
-    enableSubdomainAccess: true
-    envSecrets:
-      REVALIDATE_SECRET: <@generateRandomString(<16>)>
-    verticalAutoscaling:
-      minRam: 0.5
+#  - hostname: nextstore
+#    type: nodejs@22
+#    buildFromGit: https://github.com/NMIT-WR/new-engine
+#    enableSubdomainAccess: true
+#    envSecrets:
+#      REVALIDATE_SECRET: <@generateRandomString(<16>)>
+#    verticalAutoscaling:
+#      minRam: 0.5
