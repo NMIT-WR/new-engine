@@ -105,7 +105,7 @@ zerops:
       cache: node_modules
     run:
       base: nodejs@22
-      start: npm run start:demo
+      start: npm run start:fe-demo
       ports:
         - port: 3000
           httpSupport: true
