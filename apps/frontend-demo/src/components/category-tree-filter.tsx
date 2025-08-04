@@ -29,7 +29,8 @@ export function CategoryTreeFilter({
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const { expandedNodes, handleAccordionExpansion } =
     useAccordionTree(categories)
-  const { prefetchCategoryProducts } = useCategoryPrefetch()
+  const { delayedPrefetch, cancelAllPrefetches, prefetchCategoryProducts } =
+    useCategoryPrefetch()
   // Create Sets for quick lookup
   const leafCategoryIds = useMemo(
     () => new Set(leafCategories.map((cat) => cat.id)),
@@ -66,6 +67,9 @@ export function CategoryTreeFilter({
     const selectedCategoryId = details.selectedValue?.[0]
 
     if (selectedCategoryId) {
+      // Cancel all pending prefetches since user made a selection
+      // cancelAllPrefetches()
+
       setSelectedCategory(selectedCategoryId)
 
       // Get leaf IDs and notify parent
@@ -102,20 +106,18 @@ export function CategoryTreeFilter({
           if (!expandedParentLeaf) continue
 
           //console.log(`[Prefetch] Expanding parentLeaf: ${expandedParentLeaf.name}`)
-
-          // Process each direct child using leafParents.children
           for (const childId of expandedParentLeaf.children || []) {
             if (leafCategoryIds.has(childId)) {
-              // Direct leaf child - prefetch individually
-              //  console.log(`[Prefetch] - Direct leaf child`)
-              void prefetchCategoryProducts([childId])
+              // Direct leaf child - prefetch individually with delay
+              delayedPrefetch([childId], 800, `leaf_${childId}`)
             } else if (leafParentIds.has(childId)) {
-              // Direct parentLeaf child - prefetch its group of leafs
+              // Direct parentLeaf child - prefetch limited children, not all leafs
               const childParentLeaf = leafParents.find((p) => p.id === childId)
               if (childParentLeaf) {
-                // console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
-                // Only prefetch the group - individual leafs will be prefetched when user expands this child
-                void prefetchCategoryProducts(childParentLeaf.leafs)
+                const children = childParentLeaf.children
+                if (children.length > 0) {
+                  delayedPrefetch(children, 800, `parent_leaf_${childId}`)
+                }
               }
             }
           }
@@ -131,19 +133,18 @@ export function CategoryTreeFilter({
           // Process each direct child
           for (const child of expandedNode.children) {
             if (leafParentIds.has(child.id)) {
-              // Child is a parentLeaf - prefetch its leafs
+              // Child is a parentLeaf - prefetch limited children instead of all leafs
               const childParentLeaf = leafParents.find((p) => p.id === child.id)
               if (childParentLeaf) {
-                //  console.log(`[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`)
+                /*console.log(
+                  `[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`
+                )*/
                 void prefetchCategoryProducts(childParentLeaf.leafs)
               }
             }
           }
         }
       }
-
-      // Update state
-      //setExpandedNodes(newExpandedNodes)
     },
     [
       expandedNodes,
@@ -152,7 +153,7 @@ export function CategoryTreeFilter({
       leafCategoryIds,
       leafParentIds,
       categories,
-      prefetchCategoryProducts,
+      delayedPrefetch,
     ]
   )
 
