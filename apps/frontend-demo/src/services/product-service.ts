@@ -32,6 +32,7 @@ const LIST_FIELDS = [
   'title',
   'handle',
   'thumbnail',
+  'variants.title',
   '*variants.calculated_price',
   'variants.inventory_quantity',
   'variants.manage_inventory',
@@ -135,7 +136,7 @@ export const getProducts = async (
 
     /* console.log(`[ProductService] Fetched ${response.products.length} products for page ${page}`) */
 
-    const products = response.products.map((p) => transformProduct(p))
+    const products = response.products.map((p) => transformProduct(p, true))
 
     return {
       products,

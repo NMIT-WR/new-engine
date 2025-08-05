@@ -197,7 +197,11 @@ export function DemoProductCard({
               <Button
                 size="sm"
                 className={cartButton()}
-                onClick={onCartClick}
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  onCartClick?.()
+                }}
                 icon="token-icon-cart"
               >
                 {cartButtonText}
