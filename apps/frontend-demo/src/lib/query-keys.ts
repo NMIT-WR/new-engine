@@ -18,6 +18,16 @@ export const queryKeys = {
       category?: string | string[]
       region_id?: string
     }) => [...queryKeys.products.lists(), params || {}] as const,
+    infinite: (params?: {
+      page?: number
+      pageRange?: string
+      limit?: number
+      filters?: any
+      sort?: string
+      q?: string
+      category?: string | string[]
+      region_id?: string
+    }) => [...queryKeys.products.all(), 'infinite', params || {}] as const,
     detail: (handle: string, region_id?: string) =>
       [...queryKeys.products.all(), 'detail', handle, region_id] as const,
   },
@@ -57,7 +67,7 @@ export const queryKeys = {
 
   // Fulfillment queries
   fulfillment: {
-    cartOptions: (cartId: string) => 
+    cartOptions: (cartId: string) =>
       [...queryKeys.all, 'fulfillment', 'cart-options', cartId] as const,
   },
 

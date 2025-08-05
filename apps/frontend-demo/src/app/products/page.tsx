@@ -2,6 +2,7 @@
 import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
+import { useInfiniteProducts } from '@/hooks/use-infinite-products'
 import { useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { useUrlFilters } from '@/hooks/use-url-filters'
@@ -12,7 +13,7 @@ import { Button } from '@ui/atoms/button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
 import Link from 'next/link'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
@@ -24,6 +25,7 @@ function ProductsPageContent() {
   const { selectedRegion } = useRegions()
   const pageSize = 12
   const queryClient = useQueryClient()
+  const previousPageRef = useRef(1)
 
   const cache = queryClient
     .getQueryCache()
@@ -51,10 +53,29 @@ function ProductsPageContent() {
     sizes: Array.from(urlFilters.filters.sizes) as string[],
   }
 
+  // Use infinite products for load more functionality
   const {
-    products,
-    isLoading,
-    totalCount,
+    products: infiniteProducts,
+    isLoading: infiniteLoading,
+    totalCount: infiniteTotalCount,
+    hasNextPage: infiniteHasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    refetch: refetchInfinite,
+  } = useInfiniteProducts({
+    pageRange: urlFilters.pageRange,
+    limit: pageSize,
+    filters: productFilters,
+    sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+    q: urlFilters.searchQuery || undefined,
+    region_id: selectedRegion?.id,
+  })
+
+  // Fallback to regular products hook for pagination compatibility
+  const {
+    products: regularProducts,
+    isLoading: regularLoading,
+    totalCount: regularTotalCount,
     currentPage,
     totalPages,
     hasNextPage,
@@ -67,6 +88,24 @@ function ProductsPageContent() {
     q: urlFilters.searchQuery || undefined,
     region_id: selectedRegion?.id,
   })
+
+  // Detect page range change and reset infinite query when switching between single/range modes
+  useEffect(() => {
+    const currentPageStart = urlFilters.pageRange.start
+    if (currentPageStart !== previousPageRef.current) {
+      refetchInfinite()
+      previousPageRef.current = currentPageStart
+    }
+  }, [urlFilters.pageRange.start, refetchInfinite])
+
+  // Use infinite products if we have a range or loaded additional pages
+  const shouldUseInfiniteData = urlFilters.pageRange.isRange || 
+    (urlFilters.pageRange.start === 1 && infiniteProducts.length > pageSize)
+  const products = shouldUseInfiniteData ? infiniteProducts : regularProducts
+  const isLoading = shouldUseInfiniteData ? infiniteLoading : regularLoading
+  const totalCount = shouldUseInfiniteData
+    ? infiniteTotalCount
+    : regularTotalCount
 
   // Prefetch strategic pages when we have products
   useEffect(() => {
@@ -199,13 +238,33 @@ function ProductsPageContent() {
           {isLoading ? (
             <ProductGridSkeleton numberOfItems={12} />
           ) : products.length > 0 ? (
-            <ProductGrid
-              products={products}
-              totalCount={totalCount}
-              currentPage={currentPage}
-              pageSize={pageSize}
-              onPageChange={urlFilters.setPage}
-            />
+            <div>
+              <ProductGrid
+                products={products}
+                totalCount={totalCount}
+                currentPage={currentPage}
+                pageSize={pageSize}
+                onPageChange={urlFilters.setPage}
+              />
+
+              {/* Load More Button */}
+              {infiniteHasNextPage && (
+                <div className="mt-8 flex justify-center">
+                  <Button
+                    onClick={() => {
+                      urlFilters.extendPageRange()
+                    }}
+                    disabled={isFetchingNextPage}
+                    variant="secondary"
+                    size="lg"
+                  >
+                    {isFetchingNextPage
+                      ? `Načítání dalších ${pageSize}...`
+                      : `Načíst dalších ${pageSize} produktů`}
+                  </Button>
+                </div>
+              )}
+            </div>
           ) : (
             <div className="py-12 text-center">
               <p className="text-gray-500">Žádné produkty nenalezeny</p>

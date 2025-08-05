@@ -13,12 +13,37 @@ import { useCallback, useMemo } from 'react'
 
 type ExtendedSortOption = SortOption | 'relevance'
 
+export interface PageRange {
+  start: number
+  end: number
+  isRange: boolean
+}
+
 export function useUrlFilters() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // Parse page from URL
-  const page = Number.parseInt(searchParams.get('page') || '1', 10)
+  // Parse page from URL (supports both single page and range syntax)
+  const pageRange: PageRange = useMemo(() => {
+    const pageParam = searchParams.get('page') || '1'
+    
+    if (pageParam.includes('-')) {
+      const [start, end] = pageParam.split('-').map(p => Number.parseInt(p, 10))
+      if (!Number.isNaN(start) && !Number.isNaN(end) && start <= end) {
+        return { start, end, isRange: true }
+      }
+    }
+    
+    const singlePage = Number.parseInt(pageParam, 10)
+    return { 
+      start: Number.isNaN(singlePage) ? 1 : singlePage, 
+      end: Number.isNaN(singlePage) ? 1 : singlePage, 
+      isRange: false 
+    }
+  }, [searchParams])
+
+  // Legacy single page for backward compatibility
+  const page = pageRange.start
 
   // Parse search query from URL
   const searchQuery = searchParams.get('q') || ''
@@ -79,7 +104,7 @@ export function useUrlFilters() {
     [searchParams, router]
   )
 
-  // Page state
+  // Page state - supports both single page and range
   const setPage = useCallback(
     (newPage: number) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -92,6 +117,28 @@ export function useUrlFilters() {
     },
     [searchParams, router]
   )
+
+  // Set infinite page range (e.g., 1-3 for pages 1,2,3)
+  const setPageRange = useCallback(
+    (startPage: number, endPage: number) => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (startPage === 1 && endPage === 1) {
+        params.delete('page')
+      } else if (startPage === endPage) {
+        params.set('page', startPage.toString())
+      } else {
+        params.set('page', `${startPage}-${endPage}`)
+      }
+      router.push(`?${params.toString()}`)
+    },
+    [searchParams, router]
+  )
+
+  // Extend current page range by one page (for "load more" functionality)
+  const extendPageRange = useCallback(() => {
+    const newEndPage = pageRange.end + 1
+    setPageRange(pageRange.start, newEndPage)
+  }, [pageRange.start, pageRange.end, setPageRange])
 
   // Update search query in URL
   const setSearchQuery = useCallback(
@@ -116,6 +163,9 @@ export function useUrlFilters() {
     setSortBy,
     page,
     setPage,
+    pageRange,
+    setPageRange,
+    extendPageRange,
     searchQuery,
     setSearchQuery,
   }
