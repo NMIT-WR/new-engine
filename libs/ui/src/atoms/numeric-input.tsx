@@ -2,15 +2,14 @@ import * as numberInput from '@zag-js/number-input'
 import { normalizeProps, useMachine } from '@zag-js/react'
 import { type InputHTMLAttributes, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import { Input } from '../atoms/input'
-import { Label } from '../atoms/label'
 import { tv } from '../utils'
+import { Button } from './button'
+import { Input } from './input'
 
 const numericInput = tv({
   slots: {
-    root: ['flex flex-col relative'],
-    inputContainer: [
+    root: ['flex relative'],
+    container: [
       'flex relative border-(length:--border-width-ni)',
       'border-ni-border rounded-ni overflow-hidden items-center',
       'data-[invalid]:bg-ni-invalid-bg',
@@ -29,26 +28,22 @@ const numericInput = tv({
       'cursor-pointer  focus:ring-increment-btn-ring',
     ],
     scrubber: 'absolute inset-0 cursor-ew-resize',
-    label: '',
   },
   variants: {
     size: {
       sm: {
-        root: 'gap-ni-root-sm text-ni-sm',
+        root: 'text-ni-sm',
         trigger: 'text-ni-sm',
-        label: 'text-ni-sm',
         input: 'text-ni-sm',
       },
       md: {
-        root: 'gap-ni-root-md text-ni-md',
+        root: 'text-ni-md',
         trigger: 'text-ni-md',
-        label: 'text-ni-md',
         input: 'text-ni-md',
       },
       lg: {
-        root: 'gap-ni-root-lg text-ni-lg',
+        root: 'text-ni-lg',
         trigger: 'text-ni-lg',
-        label: 'text-ni-lg',
         input: 'text-ni-lg',
       },
     },
@@ -87,7 +82,6 @@ export interface NumericInputProps
   clampValueOnBlur?: boolean
   spinOnPress?: boolean
   formatOptions?: Intl.NumberFormatOptions
-  labelText?: string
   invalid?: boolean
 }
 
@@ -109,14 +103,14 @@ export function NumericInput({
   spinOnPress = true,
   dir = 'ltr',
   formatOptions,
-  labelText,
   name,
   className,
   invalid,
+  id: providedId,
   ...props
 }: NumericInputProps) {
   const generatedId = useId()
-  const id = props.id || generatedId
+  const id = providedId || generatedId
 
   const stringValue = value !== undefined ? String(value) : undefined
   const stringDefaultValue =
@@ -148,15 +142,8 @@ export function NumericInput({
 
   const api = numberInput.connect(service, normalizeProps)
 
-  const {
-    root,
-    inputContainer,
-    input,
-    triggerContainer,
-    trigger,
-    label,
-    scrubber,
-  } = numericInput()
+  const { root, container, input, triggerContainer, trigger, scrubber } =
+    numericInput({ size, hideControls })
 
   const reducedProps = {
     ...props,
@@ -165,32 +152,27 @@ export function NumericInput({
 
   return (
     <div className={root({ className })} {...api.getRootProps()}>
-      {labelText && (
-        <Label className={label({ size })} {...api.getLabelProps()}>
-          {labelText}
-        </Label>
-      )}
-      <div className={inputContainer()} {...api.getControlProps()}>
+      <div
+        className={container()}
+        {...api.getControlProps()}
+        data-invalid={invalid || undefined}
+      >
         {allowScrubbing && (
           <div className={scrubber()} {...api.getScrubberProps()} />
         )}
-        <Input
-          className={input({ size })}
-          {...api.getInputProps()}
-          {...reducedProps}
-        />
-        <div className={triggerContainer({ hideControls })}>
+        <Input className={input()} {...api.getInputProps()} {...reducedProps} />
+        <div className={triggerContainer()}>
           <Button
             size="sm"
             theme="borderless"
-            className={trigger({ size })}
+            className={trigger()}
             {...api.getIncrementTriggerProps()}
             icon="token-icon-ni-increment"
           />
           <Button
             size="sm"
             theme="borderless"
-            className={trigger({ size })}
+            className={trigger()}
             {...api.getDecrementTriggerProps()}
             icon="token-icon-ni-decrement"
           />
