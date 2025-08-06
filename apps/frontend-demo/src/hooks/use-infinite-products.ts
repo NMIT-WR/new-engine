@@ -58,7 +58,7 @@ export function useInfiniteProducts(
     refetch,
   } = useInfiniteQuery({
     queryKey: queryKeys.products.infinite({
-      pageRange: `${pageRange.start}-${pageRange.end}`,
+      pageRangeStart: pageRange.start, // Use only start to keep key stable when extending
       limit,
       filters,
       sort,

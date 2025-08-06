@@ -137,8 +137,13 @@ export function useUrlFilters() {
   // Extend current page range by one page (for "load more" functionality)
   const extendPageRange = useCallback(() => {
     const newEndPage = pageRange.end + 1
-    setPageRange(pageRange.start, newEndPage)
-  }, [pageRange.start, pageRange.end, setPageRange])
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', `${pageRange.start}-${newEndPage}`)
+    
+    // Use replace instead of push to avoid adding to history
+    // scroll: false prevents resetting scroll position
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }, [pageRange.start, pageRange.end, searchParams, router])
 
   // Update search query in URL
   const setSearchQuery = useCallback(

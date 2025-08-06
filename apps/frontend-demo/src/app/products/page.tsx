@@ -72,6 +72,7 @@ function ProductsPageContent() {
   })
 
   // Fallback to regular products hook for pagination compatibility
+  // Only enable when NOT in range mode to avoid duplicate queries
   const {
     products: regularProducts,
     isLoading: regularLoading,
@@ -87,6 +88,7 @@ function ProductsPageContent() {
     sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
     q: urlFilters.searchQuery || undefined,
     region_id: selectedRegion?.id,
+    enabled: !urlFilters.pageRange.isRange, // Disable when in range mode
   })
 
   // Detect page range change and reset infinite query when switching between single/range modes
@@ -113,6 +115,18 @@ function ProductsPageContent() {
     ? urlFilters.pageRange.end
     : regularCurrentPage
 
+  // Calculate pagination values based on active data source
+  const calculatedTotalPages = Math.ceil(totalCount / pageSize)
+  const effectiveTotalPages = shouldUseInfiniteData
+    ? calculatedTotalPages
+    : totalPages
+  const effectiveHasNextPage = shouldUseInfiniteData
+    ? infiniteHasNextPage
+    : hasNextPage
+  const effectiveHasPrevPage = shouldUseInfiniteData
+    ? urlFilters.pageRange.start > 1
+    : hasPrevPage
+
   // Prefetch strategic pages when we have products
   useEffect(() => {
     if (products.length > 0) {
@@ -124,7 +138,7 @@ function ProductsPageContent() {
       }
 
       // Prefetch previous pages
-      if (hasPrevPage) {
+      if (effectiveHasPrevPage) {
         pagesToPrefetch.push(currentPage - 1)
         // Also prefetch page -2 if it exists
         if (currentPage - 2 >= 1) {
@@ -133,17 +147,17 @@ function ProductsPageContent() {
       }
 
       // Prefetch next pages
-      if (hasNextPage) {
+      if (effectiveHasNextPage) {
         pagesToPrefetch.push(currentPage + 1)
         // Also prefetch page +2 if it exists
-        if (currentPage + 2 <= totalPages) {
+        if (currentPage + 2 <= effectiveTotalPages) {
           pagesToPrefetch.push(currentPage + 2)
         }
       }
 
       // Prefetch last page (if known and not current)
-      if (totalPages > 1 && currentPage !== totalPages) {
-        pagesToPrefetch.push(totalPages)
+      if (effectiveTotalPages > 1 && currentPage !== effectiveTotalPages) {
+        pagesToPrefetch.push(effectiveTotalPages)
       }
 
       // Execute all prefetches
@@ -176,14 +190,15 @@ function ProductsPageContent() {
     }
   }, [
     currentPage,
-    hasNextPage,
-    hasPrevPage,
+    effectiveHasNextPage,
+    effectiveHasPrevPage,
     products.length,
     queryClient,
     pageSize,
     urlFilters.sortBy,
-    totalPages,
+    effectiveTotalPages,
     selectedRegion?.id,
+    urlFilters.searchQuery,
   ])
 
   return (
@@ -257,12 +272,15 @@ function ProductsPageContent() {
               {infiniteHasNextPage && (
                 <div className="mt-8 flex justify-center">
                   <Button
-                    onClick={() => {
+                    onClick={async () => {
+                      // First fetch the next page data
+                      await fetchNextPage()
+                      // Then update URL without navigation
                       urlFilters.extendPageRange()
                     }}
                     disabled={isFetchingNextPage}
-                    variant="secondary"
-                    size="lg"
+                    variant="primary"
+                    size="sm"
                   >
                     {isFetchingNextPage
                       ? `Načítání dalších ${pageSize}...`
