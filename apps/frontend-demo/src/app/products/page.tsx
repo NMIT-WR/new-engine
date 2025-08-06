@@ -76,7 +76,7 @@ function ProductsPageContent() {
     products: regularProducts,
     isLoading: regularLoading,
     totalCount: regularTotalCount,
-    currentPage,
+    currentPage: regularCurrentPage,
     totalPages,
     hasNextPage,
     hasPrevPage,
@@ -99,13 +99,19 @@ function ProductsPageContent() {
   }, [urlFilters.pageRange.start, refetchInfinite])
 
   // Use infinite products if we have a range or loaded additional pages
-  const shouldUseInfiniteData = urlFilters.pageRange.isRange || 
+  const shouldUseInfiniteData =
+    urlFilters.pageRange.isRange ||
     (urlFilters.pageRange.start === 1 && infiniteProducts.length > pageSize)
   const products = shouldUseInfiniteData ? infiniteProducts : regularProducts
   const isLoading = shouldUseInfiniteData ? infiniteLoading : regularLoading
   const totalCount = shouldUseInfiniteData
     ? infiniteTotalCount
     : regularTotalCount
+
+  // Fix: Use the end of the range for current page when using infinite data
+  const currentPage = shouldUseInfiniteData
+    ? urlFilters.pageRange.end
+    : regularCurrentPage
 
   // Prefetch strategic pages when we have products
   useEffect(() => {
@@ -272,6 +278,7 @@ function ProductsPageContent() {
           )}
         </main>
       </div>
+      <Button onClick={() => console.log(products)}>Check</Button>
     </div>
   )
 }
