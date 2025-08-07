@@ -22,6 +22,7 @@ export interface Product {
   // Computed properties from transformProduct
   inStock?: boolean
   price?: any
+  priceWithTax?: number
   primaryVariant?: ProductVariant
 }
 
