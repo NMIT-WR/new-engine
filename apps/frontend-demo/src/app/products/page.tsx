@@ -8,7 +8,6 @@ import { useUrlFilters } from '@/hooks/use-url-filters'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'
-import { Button } from '@ui/atoms/button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
 import Link from 'next/link'
@@ -166,7 +165,7 @@ function ProductsPageContent() {
 
       <div className="flex gap-8">
         {/* Filters Sidebar */}
-        <aside className="hidden w-64 flex-shrink-0 lg:block">
+        <aside className="sticky top-20 hidden h-fit w-64 flex-shrink-0 lg:block">
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
