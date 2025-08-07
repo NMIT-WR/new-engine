@@ -100,7 +100,7 @@ export const getProducts = async (
   // Add sorting
   if (sort) {
     const sortMap: Record<string, string> = {
-      newest: '-created_at',
+      newest: 'id',
       'price-asc': 'variants.prices.amount',
       'price-desc': '-variants.prices.amount',
       'name-asc': 'title',
