@@ -1,4 +1,5 @@
 'use client'
+import { SafeHtmlContent } from '@/components/safe-html-content'
 import { useCart } from '@/hooks/use-cart'
 import type { Product, ProductVariant } from '@/types/product'
 import { sortVariantsBySize } from '@/utils/variant-utils'
@@ -78,9 +79,10 @@ export function ProductInfo({
       )}
 
       {/* Description */}
-      <p className="mb-product-info-description-margin text-product-info-description">
-        {product.description}
-      </p>
+      <SafeHtmlContent
+        content={product.description}
+        className="mb-product-info-description-margin text-product-info-description"
+      />
 
       {/* Variant Selectors */}
       {productVariants.length > 1 && (
