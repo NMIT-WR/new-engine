@@ -21,6 +21,7 @@ export const queryKeys = {
     infinite: (params?: {
       page?: number
       pageRange?: string
+      pageRangeStart?: number
       limit?: number
       filters?: any
       sort?: string

@@ -3,12 +3,10 @@ import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleto
 import { ProductFilters } from '@/components/organisms/product-filters'
 import { ProductGrid } from '@/components/organisms/product-grid'
 import { useInfiniteProducts } from '@/hooks/use-infinite-products'
+import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
 import { useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { useUrlFilters } from '@/hooks/use-url-filters'
-import { queryKeys } from '@/lib/query-keys'
-import { getProducts } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@ui/atoms/button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
@@ -24,25 +22,7 @@ const SORT_OPTIONS = [
 function ProductsPageContent() {
   const { selectedRegion } = useRegions()
   const pageSize = 12
-  const queryClient = useQueryClient()
   const previousPageRef = useRef(1)
-
-  const cache = queryClient
-    .getQueryCache()
-    .getAll()
-    .map((q) => {
-      return {
-        queryKey: q.queryKey,
-        params: q.queryKey[3],
-        status: q.state.status,
-        // @ts-ignore
-        count: q.state.data?.count || 0,
-        // @ts-ignore
-        productsLength: q.state.data?.products?.length || 0,
-        // @ts-ignore
-        categories: q.queryKey[3]?.filters?.categories || [],
-      }
-    })
 
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
@@ -127,79 +107,19 @@ function ProductsPageContent() {
     ? urlFilters.pageRange.start > 1
     : hasPrevPage
 
-  // Prefetch strategic pages when we have products
-  useEffect(() => {
-    if (products.length > 0) {
-      const pagesToPrefetch = []
-
-      // Always prefetch first page (if not current)
-      if (currentPage !== 1) {
-        pagesToPrefetch.push(1)
-      }
-
-      // Prefetch previous pages
-      if (effectiveHasPrevPage) {
-        pagesToPrefetch.push(currentPage - 1)
-        // Also prefetch page -2 if it exists
-        if (currentPage - 2 >= 1) {
-          pagesToPrefetch.push(currentPage - 2)
-        }
-      }
-
-      // Prefetch next pages
-      if (effectiveHasNextPage) {
-        pagesToPrefetch.push(currentPage + 1)
-        // Also prefetch page +2 if it exists
-        if (currentPage + 2 <= effectiveTotalPages) {
-          pagesToPrefetch.push(currentPage + 2)
-        }
-      }
-
-      // Prefetch last page (if known and not current)
-      if (effectiveTotalPages > 1 && currentPage !== effectiveTotalPages) {
-        pagesToPrefetch.push(effectiveTotalPages)
-      }
-
-      // Execute all prefetches
-      pagesToPrefetch.forEach((page) => {
-        const offset = (page - 1) * pageSize
-        queryClient.prefetchQuery({
-          queryKey: queryKeys.products.list({
-            page,
-            limit: pageSize,
-            filters: productFilters,
-            sort:
-              urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
-            q: urlFilters.searchQuery || undefined,
-            region_id: selectedRegion?.id,
-          }),
-          queryFn: () =>
-            getProducts({
-              limit: pageSize,
-              offset,
-              filters: productFilters,
-              sort:
-                urlFilters.sortBy === 'relevance'
-                  ? undefined
-                  : urlFilters.sortBy,
-              q: urlFilters.searchQuery || undefined,
-              region_id: selectedRegion?.id,
-            }),
-        })
-      })
-    }
-  }, [
+  // Use prefetch hook for page prefetching
+  usePrefetchPages({
     currentPage,
-    effectiveHasNextPage,
-    effectiveHasPrevPage,
-    products.length,
-    queryClient,
+    hasNextPage: effectiveHasNextPage,
+    hasPrevPage: effectiveHasPrevPage,
+    productsLength: products.length,
     pageSize,
-    urlFilters.sortBy,
-    effectiveTotalPages,
-    selectedRegion?.id,
-    urlFilters.searchQuery,
-  ])
+    sortBy: urlFilters.sortBy,
+    totalPages: effectiveTotalPages,
+    regionId: selectedRegion?.id,
+    searchQuery: urlFilters.searchQuery,
+    filters: productFilters,
+  })
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -269,7 +189,7 @@ function ProductsPageContent() {
               />
 
               {/* Load More Button */}
-              {infiniteHasNextPage && (
+              {
                 <div className="mt-8 flex justify-center">
                   <Button
                     onClick={async () => {
@@ -278,7 +198,7 @@ function ProductsPageContent() {
                       // Then update URL without navigation
                       urlFilters.extendPageRange()
                     }}
-                    disabled={isFetchingNextPage}
+                    disabled={!infiniteHasNextPage || isFetchingNextPage}
                     variant="primary"
                     size="sm"
                   >
@@ -287,7 +207,7 @@ function ProductsPageContent() {
                       : `Načíst dalších ${pageSize} produktů`}
                   </Button>
                 </div>
-              )}
+              }
             </div>
           ) : (
             <div className="py-12 text-center">
@@ -296,7 +216,6 @@ function ProductsPageContent() {
           )}
         </main>
       </div>
-      <Button onClick={() => console.log(products)}>Check</Button>
     </div>
   )
 }
