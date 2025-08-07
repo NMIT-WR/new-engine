@@ -11,7 +11,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Nejnovější' },
@@ -19,7 +19,7 @@ const SORT_OPTIONS = [
   { value: 'name-desc', label: 'Název: Z-A' },
 ]
 
-export default function ProductsPage() {
+function ProductsContent() {
   const { selectedRegion } = useRegions()
   const pageSize = 12
   const queryClient = useQueryClient()
@@ -195,5 +195,13 @@ export default function ProductsPage() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductGridSkeleton numberOfItems={12} />}>
+      <ProductsContent />
+    </Suspense>
   )
 }
