@@ -88,21 +88,21 @@ export default function AboutPage() {
           <h2 className="mb-about-section-title-bottom text-center font-about-section-title text-about-section-title-fg text-about-section-title-size">
             {team.title}
           </h2>
-          <div className="place-self-center-safe grid grid-cols-1 gap-about-team-gap sm:grid-cols-2">
+          <div className="grid grid-cols-1 place-items-center gap-about-team-gap sm:flex sm:justify-center">
             {team.members.map((member, index) => (
               <div
                 key={index}
                 className="group flex w-fit flex-col gap-200 text-center"
               >
-                <div className="relative overflow-hidden rounded-sm shadow-md">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    width={200}
-                    height={200}
-                    className="w-full"
-                  />
-                </div>
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={200}
+                  height={200}
+                  className="shadow-primary"
+                  // className="w-full"
+                />
+
                 <article>
                   <h3 className="font-about-team-name text-about-team-name-fg text-about-team-name-size">
                     {member.name}

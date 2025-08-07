@@ -21,7 +21,7 @@ export default function ContactPage() {
         <Image
           src={contactImage}
           alt="Naše kancelář"
-          className="-z-1 brightness-75"
+          className="-z-1 brightness-60"
           fill
           objectFit="cover"
           priority={true}
