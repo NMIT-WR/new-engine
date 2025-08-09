@@ -8,7 +8,7 @@ import {
   getLeafIdsForCategory,
   isSelectableCategory,
 } from '@/utils/category-tree-helpers'
-import { type TreeNode, TreeView } from '@ui/molecules/tree-view'
+import { type TreeNode, TreeView } from '@new-engine/ui/molecules/tree-view'
 import { useCallback, useMemo, useState } from 'react'
 
 interface CategoryFilterProps {

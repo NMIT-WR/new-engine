@@ -1,5 +1,5 @@
-import { Button } from '@ui/atoms/button'
-import * as React from 'react'
+import { Button } from '@new-engine/ui/atoms/button'
+import type * as React from 'react'
 import { useState } from 'react'
 
 export interface FilterSectionProps<T = any> {

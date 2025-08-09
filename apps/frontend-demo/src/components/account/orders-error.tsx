@@ -1,4 +1,4 @@
-import { Button } from '@ui/atoms/button'
+import { Button } from '@new-engine/ui/atoms/button'
 
 export function OrdersError() {
   return (

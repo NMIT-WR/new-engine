@@ -1,13 +1,13 @@
 'use client'
 
-import { Button } from '@ui/atoms/button'
-import { ErrorText } from '@ui/atoms/error-text'
-import { Dialog } from '@ui/molecules/dialog'
-import { FormInputRaw as FormInput } from '@ui/molecules/form-input'
+import { Button } from '@new-engine/ui/atoms/button'
+import { ErrorText } from '@new-engine/ui/atoms/error-text'
+import { Dialog } from '@new-engine/ui/molecules/dialog'
+import { FormInputRaw as FormInput } from '@new-engine/ui/molecules/form-input'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import '../../tokens/app-components/molecules/_credit-card-dialog.css'
-import { Icon } from '@ui/atoms/icon'
+import { Icon } from '@new-engine/ui/atoms/icon'
 
 interface CreditCardDialogProps {
   open: boolean
@@ -25,8 +25,7 @@ interface CardData {
 
 // Luhn algorithm for card validation
 function cardCheck(cardNumber: string): boolean {
- 
-  const numberWithoutWhitespace = cardNumber.replaceAll(" ", "").length
+  const numberWithoutWhitespace = cardNumber.replaceAll(' ', '').length
   return numberWithoutWhitespace === 16
 }
 
@@ -171,7 +170,7 @@ export function CreditCardDialog({
       customTrigger
     >
       <div className="flex flex-col gap-cc-dialog-root">
-        <div className="flex gap-cc-dialog-logos items-center mb-cc-dialog-logos-margin">
+        <div className="mb-cc-dialog-logos-margin flex items-center gap-cc-dialog-logos">
           <Image
             src="/assets/visa.webp"
             alt="Visa"
@@ -188,7 +187,10 @@ export function CreditCardDialog({
           />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-cc-dialog-form">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-cc-dialog-form"
+        >
           <div className="relative">
             <FormInput
               id="card-number"
@@ -245,14 +247,11 @@ export function CreditCardDialog({
                 validateStatus={errors.cvv ? 'error' : 'default'}
                 helpText={errors.cvv && <ErrorText>{errors.cvv}</ErrorText>}
               />
-              <div
-                className="absolute right-cc-dialog-tooltip-right top-cc-dialog-tooltip-top text-cc-dialog-tooltip-fg cursor-help"
-              >
-              </div>
+              <div className="absolute top-cc-dialog-tooltip-top right-cc-dialog-tooltip-right cursor-help text-cc-dialog-tooltip-fg"></div>
             </div>
           </div>
 
-          <div className="flex items-center gap-cc-dialog-security-gap text-cc-dialog-security-fg text-cc-dialog-security-size mt-cc-dialog-security-margin">
+          <div className="mt-cc-dialog-security-margin flex items-center gap-cc-dialog-security-gap text-cc-dialog-security-fg text-cc-dialog-security-size">
             <Icon icon="token-icon-lock" />
             <span>Vaše platební údaje jsou bezpečně šifrovány</span>
           </div>

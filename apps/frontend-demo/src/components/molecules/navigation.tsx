@@ -1,6 +1,6 @@
 'use client'
-import { Icon, type IconType } from '@ui/atoms/icon'
-import { Popover } from '@ui/molecules/popover'
+import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
+import { Popover } from '@new-engine/ui/molecules/popover'
 import Link from 'next/link'
 import type { ComponentPropsWithoutRef } from 'react'
 
