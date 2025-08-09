@@ -1,9 +1,9 @@
 'use client'
 import { useSearchProducts } from '@/hooks/use-search-products'
-import { Product } from '@/types/product'
-import { Icon } from '@ui/atoms/icon'
-import { Combobox, type ComboboxItem } from '@ui/molecules/combobox'
-import { Popover } from '@ui/molecules/popover'
+import type { Product } from '@/types/product'
+import { Icon } from '@new-engine/ui/atoms/icon'
+import { Combobox, type ComboboxItem } from '@new-engine/ui/molecules/combobox'
+import { Popover } from '@new-engine/ui/molecules/popover'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -52,13 +52,11 @@ export function HeaderSearch() {
   )
 
   // Create combobox items
-  const searchItems: ComboboxItem<Product>[] = searchResults.map(
-    (product) => ({
-      value: product.handle || product.id,
-      label: product.title || 'Untitled Product',
-      data: product,
-    })
-  )
+  const searchItems: ComboboxItem<Product>[] = searchResults.map((product) => ({
+    value: product.handle || product.id,
+    label: product.title || 'Untitled Product',
+    data: product,
+  }))
 
   // Add "View all results" option if there's a search query
   if (searchQuery && searchResults.length > 0) {
@@ -120,7 +118,7 @@ export function HeaderSearch() {
           }
         }}
       >
-         <Combobox
+        <Combobox
           placeholder="Hledat produkty..."
           items={comboboxItems}
           value={selectedValue}
@@ -131,7 +129,7 @@ export function HeaderSearch() {
           closeOnSelect
           clearable={false}
           size="sm"
-        /> 
+        />
       </form>
     </Popover>
   )

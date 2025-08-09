@@ -1,5 +1,5 @@
-import { Icon } from '@ui/atoms/icon'
-import { LinkButton } from '@ui/atoms/link-button'
+import { Icon } from '@new-engine/ui/atoms/icon'
+import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import Link from 'next/link'
 
 export function OrdersEmpty() {

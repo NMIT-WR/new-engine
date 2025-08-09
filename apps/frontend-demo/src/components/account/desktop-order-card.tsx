@@ -5,8 +5,8 @@ import {
   truncateProductTitle,
 } from '@/lib/order-utils'
 import type { StoreOrder } from '@medusajs/types'
-import { Badge } from '@ui/atoms/badge'
-import { LinkButton } from '@ui/atoms/link-button'
+import { Badge } from '@new-engine/ui/atoms/badge'
+import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import Image from 'next/image'
 import Link from 'next/link'
 

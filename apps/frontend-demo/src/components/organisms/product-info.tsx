@@ -2,12 +2,12 @@
 import { useCart } from '@/hooks/use-cart'
 import type { Product, ProductVariant } from '@/types/product'
 import { sortVariantsBySize } from '@/utils/variant-utils'
-import { Badge, type BadgeProps } from '@ui/atoms/badge'
-import { Button } from '@ui/atoms/button'
-import { Label } from '@ui/atoms/label'
-import { Rating } from '@ui/atoms/rating'
-import { NumericInput } from '@ui/molecules/numeric-input'
-import { useToast } from '@ui/molecules/toast'
+import { Badge, type BadgeProps } from '@new-engine/ui/atoms/badge'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Label } from '@new-engine/ui/atoms/label'
+import { Rating } from '@new-engine/ui/atoms/rating'
+import { NumericInput } from '@new-engine/ui/molecules/numeric-input'
+import { useToast } from '@new-engine/ui/molecules/toast'
 import { useState } from 'react'
 
 interface ProductInfoProps {

@@ -1,5 +1,5 @@
 import { formatPrice } from '@/lib/format-price'
-import { Icon } from '@ui/atoms/icon'
+import { Icon } from '@new-engine/ui/atoms/icon'
 
 interface OrdersSummaryProps {
   totalAmount: number

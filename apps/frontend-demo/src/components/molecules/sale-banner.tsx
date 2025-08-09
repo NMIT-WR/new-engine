@@ -1,4 +1,4 @@
-import { Image } from '@ui/atoms/image'
+import { Image } from '@new-engine/ui/atoms/image'
 import Link from 'next/link'
 
 interface SaleBannerProps {

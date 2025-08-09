@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import '../../tokens/app-components/molecules/_payment-selection.css'
 import { PAYMENT_METHODS } from '@/lib/checkout-data'
-import { Button } from '@ui/atoms/button'
-import { Icon } from '@ui/atoms/icon'
-import { useToast } from '@ui/molecules/toast'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Icon } from '@new-engine/ui/atoms/icon'
+import { useToast } from '@new-engine/ui/molecules/toast'
 
 interface PaymentSelectionProps {
   selected: string

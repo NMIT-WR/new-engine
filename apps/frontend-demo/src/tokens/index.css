@@ -1,5 +1,6 @@
-/* Import base UI library styles */
-@import "../../../../libs/ui/src/tokens/index.css";
+/* Import Tailwind CSS first */
+@import "tailwindcss";
+@import "@new-engine/ui/src/tokens/tokens-only.css";
 @import "./_typography.css";
 @import "./_overrides.css";
 @import "./_layout.css";
@@ -7,6 +8,10 @@
 @import "./app-components/app-components.css";
 @import "./_icons.css";
 @import "./_print.css";
+
+@plugin 'tailwindcss-animate';
+
+/* Import UI library tokens (without Tailwind) */
 
 @media (prefers-color-scheme: dark) {
   .reverse {
@@ -23,5 +28,5 @@
   }
 }
 /* Tell Tailwind where to look for classes in both UI library and local components */
-@source "../../../../libs/ui/src/**/*.{js,ts,jsx,tsx}";
+@source "../../node_modules/@new-engine/ui/dist/**/*.js";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";

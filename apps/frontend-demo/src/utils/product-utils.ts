@@ -1,6 +1,6 @@
 import type { StockStatus } from '@/lib/inventory'
 import type { Product } from '@/types/product'
-import type { BadgeProps } from '@ui/atoms/badge'
+import type { BadgeProps } from '@new-engine/ui/atoms/badge'
 
 /**
  * Convert stock status to display text

@@ -5,9 +5,9 @@ import type {
   PaymentMethod,
   ReducedShippingMethod,
 } from '@/types/checkout'
-import { Button } from '@ui/atoms/button'
-import { Icon } from '@ui/atoms/icon'
-import { LinkButton } from '@ui/atoms/link-button'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Icon } from '@new-engine/ui/atoms/icon'
+import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import Link from 'next/link'
 
 interface OrderSummaryProps {

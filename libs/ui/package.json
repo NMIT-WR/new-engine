@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "@new-engine/ui",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -7,7 +7,27 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./tokens/*": "./src/tokens/*"
+    "./tokens": {
+      "import": "./src/tokens/tokens-only.css"
+    },
+    "./tokens-with-tailwind": {
+      "import": "./src/tokens/index.css"
+    },
+    "./tokens/*": {
+      "import": "./src/tokens/*.css"
+    },
+    "./atoms/*": {
+      "types": "./dist/atoms/*.d.ts",
+      "import": "./dist/atoms/*.js"
+    },
+    "./molecules/*": {
+      "types": "./dist/molecules/*.d.ts",
+      "import": "./dist/molecules/*.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    }
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

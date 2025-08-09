@@ -1,7 +1,7 @@
 'use client'
 import { StatsSection } from '@/components/stats-section'
 import { aboutContent } from '@/data/about-content'
-import { Icon } from '@ui/atoms/icon'
+import { Icon } from '@new-engine/ui/atoms/icon'
 import Image from 'next/image'
 import aboutImage from '/assets/hero/about.webp'
 

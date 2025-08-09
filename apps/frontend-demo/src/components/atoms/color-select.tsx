@@ -1,7 +1,7 @@
+import { Button } from '@new-engine/ui/atoms/button'
+import { tv } from '@new-engine/ui/utils'
 import type { ButtonHTMLAttributes } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { Button } from '@ui/atoms/button'
-import { tv } from '@ui/utils'
 
 const colorSelectVariants = tv({
   slots: {
@@ -16,7 +16,7 @@ const colorSelectVariants = tv({
     color: [
       'absolute rounded-color-selector-inner',
       'w-full h-full',
-      "data-[selected=true]:brightness-150",
+      'data-[selected=true]:brightness-150',
     ],
     icon: [
       'absolute flex items-center justify-center',

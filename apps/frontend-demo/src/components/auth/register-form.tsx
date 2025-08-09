@@ -8,10 +8,10 @@ import {
   validatePassword,
   withLoading,
 } from '@/lib/auth'
-import { Button } from '@ui/atoms/button'
-import { ErrorText } from '@ui/atoms/error-text'
-import { Checkbox } from '@ui/molecules/checkbox'
-import { FormInput } from '@ui/molecules/form-input'
+import { Button } from '@new-engine/ui/atoms/button'
+import { ErrorText } from '@new-engine/ui/atoms/error-text'
+import { Checkbox } from '@new-engine/ui/molecules/checkbox'
+import { FormInput } from '@new-engine/ui/molecules/form-input'
 import { type FormEvent, useState } from 'react'
 import { AuthFormWrapper } from './auth-form-wrapper'
 import { PasswordRequirements } from './password-requirements'

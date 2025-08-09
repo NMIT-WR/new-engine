@@ -1,7 +1,7 @@
 'use client'
 
+import { Toaster } from '@new-engine/ui/molecules/toast'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Toaster } from '@ui/molecules/toast'
 import { ThemeProvider } from 'next-themes'
 import type { PropsWithChildren } from 'react'
 import { useState } from 'react'
@@ -31,7 +31,7 @@ function makeQueryClient() {
   })
 }
 
-let browserQueryClient: QueryClient | undefined = undefined
+let browserQueryClient: QueryClient | undefined
 
 function getQueryClient() {
   if (typeof window === 'undefined') {
@@ -44,11 +44,9 @@ function getQueryClient() {
   }
 }
 
-export function Providers({
-  children,
-}: PropsWithChildren) {
+export function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => getQueryClient())
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
