@@ -6,8 +6,8 @@ import { Button } from '../atoms/button'
 
 const dialogVariants = tv({
   slots: {
-    backdrop: ['fixed inset-0 z-50 bg-dialog-backdrop-bg'],
-    positioner: ['fixed inset-0 z-50 flex items-center justify-center'],
+    backdrop: ['fixed inset-0 z-10 bg-dialog-backdrop-bg'],
+    positioner: ['fixed inset-0 z-20 flex items-center justify-center'],
     content: [
       'relative flex flex-col p-dialog-content gap-dialog-content',
       'bg-dialog-content-bg text-dialog-content-fg',

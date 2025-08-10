@@ -33,6 +33,7 @@ const LIST_FIELDS = [
   'title',
   'handle',
   'thumbnail',
+  'variants.title',
   '*variants.calculated_price',
   'variants.inventory_quantity',
   'variants.manage_inventory',
