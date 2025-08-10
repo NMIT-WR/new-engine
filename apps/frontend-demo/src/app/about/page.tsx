@@ -100,7 +100,6 @@ export default function AboutPage() {
                   width={200}
                   height={200}
                   className="shadow-primary"
-                  // className="w-full"
                 />
 
                 <article>
