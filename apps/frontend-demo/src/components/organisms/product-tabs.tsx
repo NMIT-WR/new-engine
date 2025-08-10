@@ -1,5 +1,6 @@
 'use client'
 
+import { SafeHtmlContent } from '@/components/safe-html-content'
 import type { Product } from '@/types/product'
 import { Badge } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
@@ -37,10 +38,13 @@ export function ProductTabs({ product }: ProductTabsProps) {
       label: 'Popis',
       content: (
         <div className="space-y-product-tabs-content-gap">
-          <p className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed">
-            {product.description ||
-              'Zažijte prvotřídní kvalitu a moderní design s tímto výjimečným produktem. Vyrobeno s důrazem na detail a vydrží roky.'}
-          </p>
+          <SafeHtmlContent
+            content={
+              product.description ||
+              'Zažijte prvotřídní kvalitu a moderní design s tímto výjimečným produktem. Vyrobeno s důrazem na detail a vydrží roky.'
+            }
+            className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed"
+          />
           {product.features && product.features.length > 0 && (
             <div>
               <h4 className="font-product-tabs-heading text-product-tabs-heading-fg text-product-tabs-heading-size">
