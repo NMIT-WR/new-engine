@@ -17,6 +17,7 @@ export interface ProductListParams {
   sort?: string
   q?: string
   region_id?: string
+  country_code?: string
 }
 
 export interface ProductListResponse {
@@ -82,6 +83,7 @@ export const getProducts = async (
     sort,
     q,
     region_id,
+    country_code,
   } = params
 
   // Use either category parameter OR filters.categories, not both
@@ -96,6 +98,7 @@ export const getProducts = async (
     category_id: categoryIds,
     fields: fields,
     ...(region_id && { region_id }),
+    country_code: country_code ?? 'cz',
   }
 
   // Add sorting
@@ -113,19 +116,6 @@ export const getProducts = async (
   // Build query with server-side filters
   const queryParams = buildMedusaQuery(filters, baseQuery)
 
-  // Enhanced logging for debugging
-  const caller = new Error().stack?.split('\n')[2]?.trim() || 'Unknown'
-  const page = Math.floor(offset / limit) + 1
-  /* console.log(
-    `[ProductService] Fetching products:
-    - Page: ${page} (offset: ${offset}, limit: ${limit})
-    - Sort: ${sort || 'default'}
-    - Filters: ${JSON.stringify(filters || {})}
-    - Category: ${category || 'all'}
-    - Region: ${region_id || 'none'}
-    - Called from: ${caller}`
-  ) */
-
   try {
     const response = await sdk.store.product.list(queryParams)
 
@@ -134,9 +124,7 @@ export const getProducts = async (
       return { products: [], count: 0, limit, offset }
     }
 
-    /* console.log(`[ProductService] Fetched ${response.products.length} products for page ${page}`) */
-
-    const products = response.products.map((p) => transformProduct(p, true))
+    const products = response.products.map((p) => transformProduct(p))
 
     return {
       products,
@@ -163,6 +151,8 @@ const transformProduct = (product: any, withVariants?: boolean): Product => {
 
   // Get price from primary variant
   const price = primaryVariant?.calculated_price?.calculated_amount
+  const priceWithTax =
+    primaryVariant?.calculated_price?.calculated_amount_with_tax
 
   // Since Store API doesn't provide real inventory data, we can't determine stock status
   // We'll default to true and let the detailed product page handle variant-specific availability
@@ -182,6 +172,7 @@ const transformProduct = (product: any, withVariants?: boolean): Product => {
     images: reducedImages || product.images,
     inStock,
     price,
+    priceWithTax,
     primaryVariant,
   } as Product
 }
@@ -202,8 +193,6 @@ export async function getProduct(
   if (!response.products?.length) {
     throw new Error('Product not found')
   }
-
-  // console.log('[ProductService-Product] Fetched product:', response.products[0])
 
   return transformProduct(response.products[0], true)
 }

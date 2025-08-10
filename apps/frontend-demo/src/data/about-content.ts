@@ -52,7 +52,7 @@ export interface AboutContent {
 export const aboutContent: AboutContent = {
   hero: {
     title: 'Náš příběh',
-    subtitle: 'Vytváříme nadčasovou módu s účelem a vášní od roku 2020',
+    subtitle: 'Vytváříme nadčasové eshopy s účelem a vášní od roku 2008',
     backgroundImage: '/assets/hero/about.webp',
   },
   story: {

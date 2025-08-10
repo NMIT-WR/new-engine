@@ -68,8 +68,11 @@ export function ProductGrid({
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
           const formattedPrice =
-            product.price &&
-            formatPrice(product.price, selectedRegion?.currency_code)
+            product &&
+            formatPrice(
+              product.priceWithTax ?? 0,
+              selectedRegion?.currency_code
+            )
 
           return (
             <div key={product.id} className="relative">
