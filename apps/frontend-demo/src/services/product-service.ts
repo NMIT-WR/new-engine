@@ -104,7 +104,7 @@ export const getProducts = async (
   // Add sorting
   if (sort) {
     const sortMap: Record<string, string> = {
-      newest: '-created_at',
+      newest: 'id',
       'price-asc': 'variants.prices.amount',
       'price-desc': '-variants.prices.amount',
       'name-asc': 'title',
@@ -124,7 +124,7 @@ export const getProducts = async (
       return { products: [], count: 0, limit, offset }
     }
 
-    const products = response.products.map((p) => transformProduct(p))
+    const products = response.products.map((p) => transformProduct(p, true))
 
     return {
       products,

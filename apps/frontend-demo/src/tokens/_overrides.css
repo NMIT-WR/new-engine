@@ -149,7 +149,7 @@
   --color-accent-active: var(--color-secondary-active);
 
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
-  --color-success: light-dark(var(--color-green-600), var(--color-green-300));
+  --color-success: light-dark(var(--color-green-600), var(--color-green-500));
   --color-success-hover: oklch(
     from var(--color-success) calc(l + var(--state-hover)) c h
   );
