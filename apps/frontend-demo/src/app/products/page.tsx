@@ -10,6 +10,8 @@ import { getProducts } from '@/services/product-service'
 import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import { Select } from '@new-engine/ui/molecules/select'
 import { useQueryClient } from '@tanstack/react-query'
+import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { Select } from '@ui/molecules/select'
 import Link from 'next/link'
 import { Suspense, useEffect } from 'react'
 
@@ -19,28 +21,10 @@ const SORT_OPTIONS = [
   { value: 'name-desc', label: 'Název: Z-A' },
 ]
 
-function ProductsPageContent() {
+function ProductsContent() {
   const { selectedRegion } = useRegions()
   const pageSize = 12
   const queryClient = useQueryClient()
-
-  const cache = queryClient
-    .getQueryCache()
-    .getAll()
-    .map((q) => {
-      return {
-        queryKey: q.queryKey,
-        params: q.queryKey[3],
-        status: q.state.status,
-        // @ts-ignore
-        count: q.state.data?.count || 0,
-        // @ts-ignore
-        productsLength: q.state.data?.products?.length || 0,
-        // @ts-ignore
-        categories: q.queryKey[3]?.filters?.categories || [],
-      }
-    })
-
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
@@ -101,7 +85,7 @@ function ProductsPageContent() {
       }
 
       // Execute all prefetches
-      pagesToPrefetch.forEach((page) => {
+      for (const page of pagesToPrefetch) {
         const offset = (page - 1) * pageSize
         queryClient.prefetchQuery({
           queryKey: queryKeys.products.list({
@@ -126,7 +110,7 @@ function ProductsPageContent() {
               region_id: selectedRegion?.id,
             }),
         })
-      })
+      }
     }
   }, [
     currentPage,
@@ -165,7 +149,7 @@ function ProductsPageContent() {
 
       <div className="flex gap-8">
         {/* Filters Sidebar */}
-        <aside className="hidden w-64 flex-shrink-0 lg:block">
+        <aside className="sticky top-20 hidden h-fit w-64 flex-shrink-0 lg:block">
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
@@ -216,10 +200,10 @@ function ProductsPageContent() {
   )
 }
 
-export default function ProductsPageClient() {
+export default function ProductsPage() {
   return (
     <Suspense fallback={<ProductGridSkeleton numberOfItems={12} />}>
-      <ProductsPageContent />
+      <ProductsContent />
     </Suspense>
   )
 }

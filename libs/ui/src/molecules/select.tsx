@@ -30,7 +30,7 @@ const selectVariants = tv({
       'border border-select-trigger-border rounded-select',
       'text-select-trigger text-left',
       'hover:bg-select-trigger-hover',
-      'focus:outline-none focus:ring-2 focus:ring-select-trigger-focus focus:ring-offset-2',
+      'focus:outline-none',
       'data-[disabled]:cursor-not-allowed',
       'data-[invalid]:border-select-danger data-[invalid]:ring-select-danger',
     ],

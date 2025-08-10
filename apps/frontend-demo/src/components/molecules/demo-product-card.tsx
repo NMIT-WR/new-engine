@@ -1,8 +1,8 @@
-import { Badge, type BadgeProps } from '@new-engine/ui/atoms/badge'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Rating, type RatingProps } from '@new-engine/ui/atoms/rating'
-import { NumericInput } from '@new-engine/ui/molecules/numeric-input'
-import { slugify, tv } from '@new-engine/ui/utils'
+import { Badge, type BadgeProps } from '@ui/atoms/badge'
+import { Button } from '@ui/atoms/button'
+import { NumericInput } from '@ui/atoms/numeric-input'
+import { Rating, type RatingProps } from '@ui/atoms/rating'
+import { slugify, tv } from '@ui/utils'
 import Image from 'next/image'
 import { type HTMLAttributes, type ReactNode, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
@@ -197,7 +197,11 @@ export function DemoProductCard({
               <Button
                 size="sm"
                 className={cartButton()}
-                onClick={onCartClick}
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  onCartClick?.()
+                }}
                 icon="token-icon-cart"
               >
                 {cartButtonText}
