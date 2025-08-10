@@ -1,5 +1,5 @@
-import { tv } from '@ui/utils'
-import * as React from 'react'
+import { tv } from '@new-engine/ui/utils'
+import type * as React from 'react'
 import type { VariantProps } from 'tailwind-variants'
 
 export const skeletonVariants = tv({

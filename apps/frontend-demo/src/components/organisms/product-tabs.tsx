@@ -2,11 +2,11 @@
 
 import { SafeHtmlContent } from '@/components/safe-html-content'
 import type { Product } from '@/types/product'
-import { Badge } from '@ui/atoms/badge'
-import { Button } from '@ui/atoms/button'
-import { Rating } from '@ui/atoms/rating'
-import { type TabItem, Tabs } from '@ui/atoms/tabs'
-import { Accordion } from '@ui/molecules/accordion'
+import { Badge } from '@new-engine/ui/atoms/badge'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Rating } from '@new-engine/ui/atoms/rating'
+import { type TabItem, Tabs } from '@new-engine/ui/atoms/tabs'
+import { Accordion } from '@new-engine/ui/molecules/accordion'
 
 interface ProductTabsProps {
   product: Product

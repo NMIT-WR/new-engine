@@ -7,7 +7,7 @@ import { useRegions } from '@/hooks/use-region'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/price-utils'
 import { extractProductData } from '@/utils/product-utils'
-import { Pagination } from '@ui/molecules/pagination'
+import { Pagination } from '@new-engine/ui/molecules/pagination'
 import Link from 'next/link'
 import { useState } from 'react'
 

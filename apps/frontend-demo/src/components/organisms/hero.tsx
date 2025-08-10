@@ -1,5 +1,5 @@
 'use client'
-import { LinkButton } from '@ui/atoms/link-button'
+import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import Image, { type StaticImageData } from 'next/image'
 import Link from 'next/link'
 
