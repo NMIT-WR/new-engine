@@ -147,7 +147,7 @@ function ProductsContent() {
 
       <div className="flex gap-8">
         {/* Filters Sidebar */}
-        <aside className="hidden w-64 flex-shrink-0 lg:block">
+        <aside className="sticky top-20 hidden h-fit w-64 flex-shrink-0 lg:block">
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
