@@ -1,4 +1,4 @@
-import type { IconType } from '@ui/atoms/icon'
+import type { IconType } from '@new-engine/ui/atoms/icon'
 import type { StaticImageData } from 'next/image'
 import pavelImg from '/assets/team/pavel.jpg'
 import petrImg from '/assets/team/petr.jpg'
@@ -52,7 +52,7 @@ export interface AboutContent {
 export const aboutContent: AboutContent = {
   hero: {
     title: 'Náš příběh',
-    subtitle: 'Vytváříme nadčasovou módu s účelem a vášní od roku 2020',
+    subtitle: 'Vytváříme nadčasové eshopy s účelem a vášní od roku 2008',
     backgroundImage: '/assets/hero/about.webp',
   },
   story: {

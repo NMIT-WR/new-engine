@@ -1,5 +1,5 @@
-import { 
-  ExecArgs,
+import { ExecArgs } from '@medusajs/framework/types'
+import {
   Modules,
 } from '@medusajs/framework/utils'
 
@@ -74,7 +74,7 @@ export default async function linkProductsToCategories({ container }: ExecArgs) 
   logger.info(`Found ${categories.length} categories`)
   
   // Get all products
-  const products = await productService.listProducts({
+  const products = await productService.listProducts({},{
     relations: ['categories'],
   })
   
@@ -93,7 +93,7 @@ export default async function linkProductsToCategories({ container }: ExecArgs) 
     
     const categoryIds = categoryHandles
       .map(handle => categoryMap[handle])
-      .filter(Boolean)
+      .filter(id => typeof id === 'string')
     
     if (categoryIds.length === 0) {
       logger.warn(`No category IDs found for handles: ${categoryHandles.join(', ')}`)
@@ -112,12 +112,12 @@ export default async function linkProductsToCategories({ container }: ExecArgs) 
     try {
       // Update product with categories
       await productService.updateProducts(product.id, {
-        categories: [...existingCategoryIds, ...newCategoryIds].map(id => ({ id })),
+        category_ids: [...existingCategoryIds, ...newCategoryIds],
       })
       
       linkedCount++
       logger.info(`Linked product ${product.handle} to ${newCategoryIds.length} new categories`)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(`Failed to link product ${product.handle}:`, error)
     }
   }
@@ -127,7 +127,7 @@ export default async function linkProductsToCategories({ container }: ExecArgs) 
   // Update category product counts
   for (const category of categories) {
     const productsInCategory = await productService.listProducts({
-      category_id: [category.id],
+      categories: {id: category.id},
     })
     
     const count = productsInCategory.length

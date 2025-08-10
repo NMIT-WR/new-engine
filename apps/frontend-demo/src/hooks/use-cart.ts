@@ -6,8 +6,8 @@ import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import type { HttpTypes } from '@medusajs/types'
+import { useToast } from '@new-engine/ui/molecules/toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 
 export type Cart = HttpTypes.StoreCart | undefined

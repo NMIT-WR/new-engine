@@ -1,8 +1,8 @@
 'use client'
 
 import { useAuth } from '@/hooks/use-auth'
-import { Button } from '@ui/atoms/button'
-import { Icon } from '@ui/atoms/icon'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Icon } from '@new-engine/ui/atoms/icon'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'

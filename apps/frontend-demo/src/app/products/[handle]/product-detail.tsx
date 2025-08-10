@@ -9,8 +9,8 @@ import { useProduct, useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { truncateProductTitle } from '@/lib/order-utils'
 import { formatPrice } from '@/utils/price-utils'
-import { ErrorText } from '@ui/atoms/error-text'
-import { Breadcrumb } from '@ui/molecules/breadcrumb'
+import { ErrorText } from '@new-engine/ui/atoms/error-text'
+import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -24,7 +24,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
   )
-  const titleQuery = product?.title.split(' ').slice(0, 3).join(' ') || ''
+  const titleQuery = product?.title.split(' ').slice(0, 2).join(' ') || ''
   // Update selected variant when product loads or changes
   useEffect(() => {
     if (product?.variants?.[0]) {

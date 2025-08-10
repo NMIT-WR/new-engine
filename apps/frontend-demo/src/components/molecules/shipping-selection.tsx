@@ -3,8 +3,8 @@ import '../../tokens/app-components/molecules/_shipping-selection.css'
 import { SHIPPING_METHODS } from '@/lib/checkout-data'
 import { formatPrice } from '@/lib/format-price'
 import type { ReducedShippingMethod } from '@/types/checkout'
-import { Button } from '@ui/atoms/button'
-import { useToast } from '@ui/molecules/toast'
+import { Button } from '@new-engine/ui/atoms/button'
+import { useToast } from '@new-engine/ui/molecules/toast'
 
 interface ShippingSelectionProps {
   selected: string

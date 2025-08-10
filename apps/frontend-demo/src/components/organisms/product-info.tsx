@@ -1,12 +1,13 @@
 'use client'
+import { SafeHtmlContent } from '@/components/safe-html-content'
 import { useCart } from '@/hooks/use-cart'
 import type { Product, ProductVariant } from '@/types/product'
 import { sortVariantsBySize } from '@/utils/variant-utils'
 import { Badge, type BadgeProps } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
 import { Label } from '@ui/atoms/label'
+import { NumericInput } from '@ui/atoms/numeric-input'
 import { Rating } from '@ui/atoms/rating'
-import { NumericInput } from '@ui/molecules/numeric-input'
 import { useToast } from '@ui/molecules/toast'
 import { useState } from 'react'
 
@@ -42,9 +43,6 @@ export function ProductInfo({
       })
       return
     }
-
-    // Add to cart with variant info
-    // The success toast is handled by the cart hook
     addItem(selectedVariant.id, validQuantity)
   }
 
@@ -78,9 +76,10 @@ export function ProductInfo({
       )}
 
       {/* Description */}
-      <p className="mb-product-info-description-margin text-product-info-description">
-        {product.description}
-      </p>
+      <SafeHtmlContent
+        content={product.description}
+        className="mb-product-info-description-margin text-product-info-description"
+      />
 
       {/* Variant Selectors */}
       {productVariants.length > 1 && (

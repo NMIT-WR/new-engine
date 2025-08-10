@@ -7,9 +7,9 @@ import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
 import { useProducts } from '@/hooks/use-products'
 import { useRegions } from '@/hooks/use-region'
 import { useUrlFilters } from '@/hooks/use-url-filters'
-import { Button } from '@ui/atoms/button'
-import { Breadcrumb } from '@ui/molecules/breadcrumb'
-import { Select } from '@ui/molecules/select'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
+import { Select } from '@new-engine/ui/molecules/select'
 import Link from 'next/link'
 import { Suspense, useEffect, useRef } from 'react'
 
@@ -19,7 +19,7 @@ const SORT_OPTIONS = [
   { value: 'name-desc', label: 'Název: Z-A' },
 ]
 
-function ProductsPageContent() {
+function ProductsContent() {
   const { selectedRegion } = useRegions()
   const pageSize = 12
   const previousPageRef = useRef(1)
@@ -146,7 +146,7 @@ function ProductsPageContent() {
 
       <div className="flex gap-8">
         {/* Filters Sidebar */}
-        <aside className="hidden w-64 flex-shrink-0 lg:block">
+        <aside className="sticky top-20 hidden h-fit w-64 flex-shrink-0 lg:block">
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
@@ -220,10 +220,10 @@ function ProductsPageContent() {
   )
 }
 
-export default function ProductsPageClient() {
+export default function ProductsPage() {
   return (
     <Suspense fallback={<ProductGridSkeleton numberOfItems={12} />}>
-      <ProductsPageContent />
+      <ProductsContent />
     </Suspense>
   )
 }

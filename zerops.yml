@@ -38,9 +38,9 @@ zerops:
         DATABASE_TYPE: postgres
         NODE_ENV: production
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        STORE_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
-        ADMIN_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
-        AUTH_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+        STORE_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://demo-13d1-3000.prg1.zerops.app,https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+        ADMIN_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://demo-13d1-3000.prg1.zerops.app,https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+        AUTH_CORS: ${NEXT_STORE_URL},${NEXT_STORE_DEMO_URL},${ANALOG_STORE_URL},https://demo-13d1-3000.prg1.zerops.app,https://wr-demo.netlify.app,http://localhost:5173,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
         DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?ssl_mode=disable
         MINIO_BUCKET: ${storage_bucketName}
         MINIO_ENDPOINT: ${storage_apiUrl}
@@ -70,30 +70,25 @@ zerops:
          port: 9000
          path: /health
 
-  - setup: nextstore
+  - setup: demo
     build:
       base: nodejs@22
       envVariables:
-        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
-        NEXT_PUBLIC_SEARCH_API_KEY: ${RUNTIME_NEXT_PUBLIC_SEARCH_API_KEY}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${RUNTIME_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
-        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
-        NEXT_PUBLIC_DEFAULT_REGION: ${RUNTIME_NEXT_PUBLIC_DEFAULT_REGION}
-        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
-        NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
-        OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
+        RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
+        CONTACT_EMAIL: ${CONTACT_EMAIL}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
         NX_DAEMON: false
       buildCommands:
         # Remove everything in apps except medusa-be via regex
         - |
           shopt -s extglob
-          rm -rf apps/!(medusa-fe)
+          rm -rf apps/!(frontend-demo)
         - pnpm i
-        - node_modules/.bin/nx run medusa-fe:build --skip-nx-cache --verbose
-        - rm -rf apps/medusa-fe/node_modules
-        - pnpm --filter=medusa-fe --prod deploy medusa-fe-temp-deploy
-        - mv medusa-fe-temp-deploy/node_modules apps/medusa-fe/
+        - node_modules/.bin/nx run frontend-demo:build --skip-nx-cache --verbose
+        - rm -rf apps/frontend-demo/node_modules
+        - pnpm --filter=frontend-demo --prod deploy frontend-demo-temp-deploy
+        - mv frontend-demo-temp-deploy/node_modules apps/frontend-demo/
       deployFiles:
         - .nx
         - nx.json
@@ -101,86 +96,136 @@ zerops:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - node_modules
-        - apps/medusa-fe/package.json
-        - apps/medusa-fe/.next
-        - apps/medusa-fe/next.config.js
-        - apps/medusa-fe/node_modules
-        - apps/medusa-fe/public
-        - apps/medusa-fe/check-env-variables.js
+        - apps/frontend-demo/scripts
+        - apps/frontend-demo/package.json
+        - apps/frontend-demo/.next
+        - apps/frontend-demo/next.config.js
+        - apps/frontend-demo/node_modules
+        - apps/frontend-demo/public
       cache: node_modules
     run:
       base: nodejs@22
-      start: npm run start:fe
+      start: npm run start:fe-demo
       ports:
-        - port: 8001
+        - port: 3000
           httpSupport: true
       envVariables:
-        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
-        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
-        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
-        NEXT_PUBLIC_DEFAULT_REGION: de
-        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
-        NEXT_PUBLIC_INDEX_NAME: products
-        NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
+        RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
+        CONTACT_EMAIL: ${CONTACT_EMAIL}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
         NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
         CI: true
-  - setup: storedemo
-    build:
-      base: nodejs@22
-      envVariables:
-        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
-        NEXT_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
-        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
-        NEXT_PUBLIC_SEARCH_API_KEY: ${RUNTIME_NEXT_PUBLIC_SEARCH_API_KEY}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${RUNTIME_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
-        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_DEMO_URL}
-        NEXT_PUBLIC_DEFAULT_REGION: ${RUNTIME_NEXT_PUBLIC_DEFAULT_REGION}
-        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
-        NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
-        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
-        NX_DAEMON: false
-      buildCommands:
-        # Remove everything in apps except medusa-be via regex
-        - |
-          shopt -s extglob
-          rm -rf apps/!(medusa-demo)
-        - pnpm i
-        - node_modules/.bin/nx run medusa-demo:build --skip-nx-cache --verbose
-        - rm -rf apps/medusa-demo/node_modules
-        - pnpm --filter=medusa-demo --prod deploy medusa-demo-temp-deploy
-        - mv medusa-demo-temp-deploy/node_modules apps/medusa-demo/
-      deployFiles:
-        - .nx
-        - nx.json
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - node_modules
-        - apps/medusa-demo/package.json
-        - apps/medusa-demo/.next
-        - apps/medusa-demo/next.config.js
-        - apps/medusa-demo/node_modules
-        - apps/medusa-demo/public
-        - apps/medusa-demo/check-env-variables.js
-      cache: node_modules
-    run:
-      base: nodejs@22
-      start: npm run start:demo
-      ports:
-        - port: 8000
-          httpSupport: true
-      envVariables:
-        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
-        NEXT_PUBLIC_STRIPE_KEY: pk_test_placeholder
-        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
-        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_DEMO_URL}
-        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
-        NEXT_PUBLIC_DEFAULT_REGION: de
-        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
-        NEXT_PUBLIC_INDEX_NAME: products
-        NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
-        CI: true
+#  - setup: nextstore
+#    build:
+#      base: nodejs@22
+#      envVariables:
+#        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+#        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
+#        NEXT_PUBLIC_SEARCH_API_KEY: ${RUNTIME_NEXT_PUBLIC_SEARCH_API_KEY}
+#        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${RUNTIME_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+#        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
+#        NEXT_PUBLIC_DEFAULT_REGION: ${RUNTIME_NEXT_PUBLIC_DEFAULT_REGION}
+#        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
+#        NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
+#        OBJECT_STORAGE_API_URL: ${RUNTIME_OBJECT_STORAGE_API_URL}
+#        NX_DAEMON: false
+#      buildCommands:
+#        # Remove everything in apps except medusa-be via regex
+#        - |
+#          shopt -s extglob
+#          rm -rf apps/!(medusa-fe)
+#        - pnpm i
+#        - node_modules/.bin/nx run medusa-fe:build --skip-nx-cache --verbose
+#        - rm -rf apps/medusa-fe/node_modules
+#        - pnpm --filter=medusa-fe --prod deploy medusa-fe-temp-deploy
+#        - mv medusa-fe-temp-deploy/node_modules apps/medusa-fe/
+#      deployFiles:
+#        - .nx
+#        - nx.json
+#        - package.json
+#        - pnpm-lock.yaml
+#        - pnpm-workspace.yaml
+#        - node_modules
+#        - apps/medusa-fe/package.json
+#        - apps/medusa-fe/.next
+#        - apps/medusa-fe/next.config.js
+#        - apps/medusa-fe/node_modules
+#        - apps/medusa-fe/public
+#        - apps/medusa-fe/check-env-variables.js
+#      cache: node_modules
+#    run:
+#      base: nodejs@22
+#      start: npm run start:fe
+#      ports:
+#        - port: 8001
+#          httpSupport: true
+#      envVariables:
+#        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+#        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
+#        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_URL}
+#        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
+#        NEXT_PUBLIC_DEFAULT_REGION: de
+#        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
+#        NEXT_PUBLIC_INDEX_NAME: products
+#        NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
+#        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
+#        CI: true
+#  - setup: storedemo
+#    build:
+#      base: nodejs@22
+#      envVariables:
+#        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+#        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
+#        NEXT_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
+#        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
+#        NEXT_PUBLIC_SEARCH_API_KEY: ${RUNTIME_NEXT_PUBLIC_SEARCH_API_KEY}
+#        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${RUNTIME_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+#        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_DEMO_URL}
+#        NEXT_PUBLIC_DEFAULT_REGION: ${RUNTIME_NEXT_PUBLIC_DEFAULT_REGION}
+#        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${RUNTIME_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
+#        NEXT_PUBLIC_INDEX_NAME: ${RUNTIME_NEXT_PUBLIC_INDEX_NAME}
+#        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
+#        NX_DAEMON: false
+#      buildCommands:
+#        # Remove everything in apps except medusa-be via regex
+#        - |
+#          shopt -s extglob
+#          rm -rf apps/!(medusa-demo)
+#        - pnpm i
+#        - node_modules/.bin/nx run medusa-demo:build --skip-nx-cache --verbose
+#        - rm -rf apps/medusa-demo/node_modules
+#        - pnpm --filter=medusa-demo --prod deploy medusa-demo-temp-deploy
+#        - mv medusa-demo-temp-deploy/node_modules apps/medusa-demo/
+#      deployFiles:
+#        - .nx
+#        - nx.json
+#        - package.json
+#        - pnpm-lock.yaml
+#        - pnpm-workspace.yaml
+#        - node_modules
+#        - apps/medusa-demo/package.json
+#        - apps/medusa-demo/.next
+#        - apps/medusa-demo/next.config.js
+#        - apps/medusa-demo/node_modules
+#        - apps/medusa-demo/public
+#        - apps/medusa-demo/check-env-variables.js
+#      cache: node_modules
+#    run:
+#      base: nodejs@22
+#      start: npm run start:demo
+#      ports:
+#        - port: 8000
+#          httpSupport: true
+#      envVariables:
+#        MEDUSA_BACKEND_URL: ${MEDUSA_INSTANCE_URL}
+#        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
+#        NEXT_PUBLIC_STRIPE_KEY: pk_test_placeholder
+#        OBJECT_STORAGE_API_URL: ${storage_apiUrl}
+#        NEXT_PUBLIC_BASE_URL: ${NEXT_STORE_DEMO_URL}
+#        NEXT_PUBLIC_SEARCH_ENDPOINT: ${SEARCH_URL}
+#        NEXT_PUBLIC_DEFAULT_REGION: de
+#        NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: true
+#        NEXT_PUBLIC_INDEX_NAME: products
+#        NEXT_PUBLIC_SEARCH_API_KEY: ${search_defaultSearchKey}
+#        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
+#        CI: true

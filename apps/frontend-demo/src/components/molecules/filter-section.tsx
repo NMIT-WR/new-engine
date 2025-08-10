@@ -1,12 +1,12 @@
 import { Button } from '@ui/atoms/button'
-import * as React from 'react'
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 
 export interface FilterSectionProps<T = any> {
   title: string
   items?: T[]
-  renderItem?: (item: T, index: number) => React.ReactNode
-  children?: React.ReactNode
+  renderItem?: (item: T, index: number) => ReactNode
+  children?: ReactNode
   defaultItemsShown?: number
   onClear?: () => void
   className?: string
@@ -51,7 +51,7 @@ export function FilterSection<T>({
       </div>
       <div className={className || ''}>
         {hasItems
-          ? visibleItems.map((item, index) => renderItem!(item, index))
+          ? visibleItems.map((item, index) => renderItem(item, index))
           : children}
       </div>
       {hasMore && (
@@ -64,7 +64,7 @@ export function FilterSection<T>({
           >
             {showAll
               ? 'Zobrazit méně'
-              : `Zobrazit dalších ${items!.length - defaultItemsShown!}`}
+              : `Zobrazit dalších ${items.length - defaultItemsShown}`}
           </Button>
         </div>
       )}
