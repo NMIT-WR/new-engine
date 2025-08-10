@@ -4,7 +4,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/src/index.d.ts",
       "import": "./dist/index.js"
     },
     "./tokens": {
@@ -17,15 +17,15 @@
       "import": "./src/tokens/*.css"
     },
     "./atoms/*": {
-      "types": "./dist/atoms/*.d.ts",
+      "types": "./dist/src/atoms/*.d.ts",
       "import": "./dist/atoms/*.js"
     },
     "./molecules/*": {
-      "types": "./dist/molecules/*.d.ts",
+      "types": "./dist/src/molecules/*.d.ts",
       "import": "./dist/molecules/*.js"
     },
     "./utils": {
-      "types": "./dist/utils.d.ts",
+      "types": "./dist/src/utils.d.ts",
       "import": "./dist/utils.js"
     }
   },
