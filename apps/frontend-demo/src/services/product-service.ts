@@ -124,7 +124,7 @@ export const getProducts = async (
       return { products: [], count: 0, limit, offset }
     }
 
-    const products = response.products.map((p) => transformProduct(p))
+    const products = response.products.map((p) => transformProduct(p, true))
 
     return {
       products,
