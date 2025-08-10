@@ -42,9 +42,6 @@ export function ProductInfo({
       })
       return
     }
-
-    // Add to cart with variant info
-    // The success toast is handled by the cart hook
     addItem(selectedVariant.id, validQuantity)
   }
 

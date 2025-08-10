@@ -8,7 +8,6 @@ import { useUrlFilters } from '@/hooks/use-url-filters'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'
-import { Button } from '@ui/atoms/button'
 import { Breadcrumb } from '@ui/molecules/breadcrumb'
 import { Select } from '@ui/molecules/select'
 import Link from 'next/link'
@@ -20,28 +19,10 @@ const SORT_OPTIONS = [
   { value: 'name-desc', label: 'Název: Z-A' },
 ]
 
-function ProductsPageContent() {
+function ProductsContent() {
   const { selectedRegion } = useRegions()
   const pageSize = 12
   const queryClient = useQueryClient()
-
-  const cache = queryClient
-    .getQueryCache()
-    .getAll()
-    .map((q) => {
-      return {
-        queryKey: q.queryKey,
-        params: q.queryKey[3],
-        status: q.state.status,
-        // @ts-ignore
-        count: q.state.data?.count || 0,
-        // @ts-ignore
-        productsLength: q.state.data?.products?.length || 0,
-        // @ts-ignore
-        categories: q.queryKey[3]?.filters?.categories || [],
-      }
-    })
-
   // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
@@ -102,7 +83,7 @@ function ProductsPageContent() {
       }
 
       // Execute all prefetches
-      pagesToPrefetch.forEach((page) => {
+      for (const page of pagesToPrefetch) {
         const offset = (page - 1) * pageSize
         queryClient.prefetchQuery({
           queryKey: queryKeys.products.list({
@@ -127,7 +108,7 @@ function ProductsPageContent() {
               region_id: selectedRegion?.id,
             }),
         })
-      })
+      }
     }
   }, [
     currentPage,
@@ -217,10 +198,10 @@ function ProductsPageContent() {
   )
 }
 
-export default function ProductsPageClient() {
+export default function ProductsPage() {
   return (
     <Suspense fallback={<ProductGridSkeleton numberOfItems={12} />}>
-      <ProductsPageContent />
+      <ProductsContent />
     </Suspense>
   )
 }
