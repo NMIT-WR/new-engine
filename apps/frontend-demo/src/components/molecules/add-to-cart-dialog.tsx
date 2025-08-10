@@ -25,14 +25,11 @@ export function AddToCartDialog({
 
   const variants = product.variants || []
 
-  // Prepare options for variant selection
   const variantOptions = variants.map((variant) => {
-    // Build display name from variant options
     const variantName = variant.options
       ? Object.values(variant.options).join(' / ')
       : variant.title
 
-    // Get price for display
     const price = variant.calculated_price
       ? formatPrice(
           variant.calculated_price.calculated_amount || 0,
@@ -53,7 +50,6 @@ export function AddToCartDialog({
 
     addItem(selectedVariantId)
 
-    // Close dialog after successful add (will be handled by mutation success)
     if (!addItemMutation.isPending) {
       onOpenChange({ open: false })
     }
