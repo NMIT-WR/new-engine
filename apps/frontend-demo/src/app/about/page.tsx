@@ -2,6 +2,7 @@
 import { StatsSection } from '@/components/stats-section'
 import { aboutContent } from '@/data/about-content'
 import { Icon } from '@new-engine/ui/atoms/icon'
+import { slugify } from '@new-engine/ui/utils'
 import Image from 'next/image'
 import aboutImage from '/assets/hero/about.webp'
 
@@ -33,9 +34,9 @@ export default function AboutPage() {
               <h2 className="font-about-grid-title text-about-grid-title-fg text-about-grid-title-size">
                 {story.title}
               </h2>
-              {story.paragraphs.map((paragraph, index) => (
+              {story.paragraphs.map((paragraph) => (
                 <p
-                  key={index}
+                  key={slugify(paragraph.slice(0, 50))}
                   className="text-about-grid-text-fg text-about-grid-text-size leading-relaxed"
                 >
                   {paragraph}
@@ -64,9 +65,9 @@ export default function AboutPage() {
             {values.title}
           </h2>
           <div className="grid grid-cols-1 gap-about-values-gap sm:grid-cols-2 lg:grid-cols-3">
-            {values.items.map((value, index) => (
+            {values.items.map((value) => (
               <div
-                key={index}
+                key={value.title}
                 className="rounded-about-value border border-about-value-border bg-about-value-bg p-about-value-padding text-center transition-shadow hover:shadow-about-value-hover"
               >
                 <Icon icon={value.icon} className="text-3xl text-info" />
@@ -89,9 +90,9 @@ export default function AboutPage() {
             {team.title}
           </h2>
           <div className="grid grid-cols-1 place-items-center gap-about-team-gap sm:flex sm:justify-center">
-            {team.members.map((member, index) => (
+            {team.members.map((member) => (
               <div
-                key={index}
+                key={member.name}
                 className="group flex w-fit flex-col gap-200 text-center"
               >
                 <Image

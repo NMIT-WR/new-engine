@@ -208,11 +208,14 @@ export function RangeSlider({
               <b>
                 {formatRangeText
                   ? formatRangeText(api.value || defaultValue)
-                  : api.value && api.value.length === 2 && api.value[0] !== undefined && api.value[1] !== undefined
+                  : api.value &&
+                      api.value.length === 2 &&
+                      api.value[0] !== undefined &&
+                      api.value[1] !== undefined
                     ? `${formatValue(api.value[0])} - ${formatValue(api.value[1])}`
-                    : ''
-                }
-              </b>            </output>
+                    : ''}
+              </b>{' '}
+            </output>
           )}
         </div>
       )}
@@ -235,7 +238,7 @@ export function RangeSlider({
                   min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
-                    key={index}
+                    key={`marker-${markerValue}`}
                     className={marker()}
                     {...api.getMarkerProps({ value: markerValue })}
                   >
