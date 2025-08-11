@@ -99,7 +99,6 @@ export default function CheckoutPage() {
     {
       value: 0,
       title: 'Adresa',
-      description: 'Vyplňte doručovací údaje',
       content: (
         <AddressForm
           onComplete={async (data) => {
@@ -116,7 +115,6 @@ export default function CheckoutPage() {
     {
       value: 1,
       title: 'Doprava',
-      description: 'Vyberte způsob doručení',
       content: (
         <ShippingSelection
           selected={selectedShipping}
@@ -138,7 +136,6 @@ export default function CheckoutPage() {
     {
       value: 2,
       title: 'Platba',
-      description: 'Vyberte způsob platby',
       content: (
         <PaymentSelection
           selected={selectedPayment}
@@ -154,7 +151,6 @@ export default function CheckoutPage() {
     {
       value: 3,
       title: 'Souhrn',
-      description: 'Zkontrolujte objednávku',
       content: (
         <OrderSummary
           addressData={addressData || undefined}

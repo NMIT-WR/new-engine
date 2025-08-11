@@ -36,22 +36,22 @@ const basicSteps = [
   {
     value: 0,
     title: 'Account',
-    description: 'Create your account',
+    content: <p>Create your account</p>,
   },
   {
     value: 1,
     title: 'Profile',
-    description: 'Complete your profile',
+    content: <p>Complete your profile</p>,
   },
   {
     value: 2,
     title: 'Settings',
-    description: 'Configure settings',
+    content: <p>Configure settings</p>,
   },
   {
     value: 3,
     title: 'Review',
-    description: 'Review and confirm',
+    content: <p>Review and confirm</p>,
   },
 ]
 
@@ -145,8 +145,7 @@ const stepsWithCustomContent = [
   {
     value: 1,
     title: 'Profile',
-    description: 'Complete your profile',
-    // No custom content, will use default rendering
+    content: <p>Complete your profile information to continue</p>,
   },
   {
     value: 2,

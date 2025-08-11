@@ -32,9 +32,9 @@ function NavigationItem({ item }: { item: NavItem }) {
           triggerClassName=""
         >
           <nav className="flex min-w-[200px] flex-col gap-nav-submenu">
-            {item.children.map((child, index) => (
+            {item.children.map((child) => (
               <Link
-                key={index}
+                key={child.title}
                 href={child.href || '#'}
                 className="px-nav-submenu-padding hover:bg-nav-submenu-item-hover"
                 prefetch={child.prefetch}
