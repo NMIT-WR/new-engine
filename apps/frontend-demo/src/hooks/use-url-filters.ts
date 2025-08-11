@@ -5,8 +5,8 @@ const DEFAULT_FILTER_STATE = {
   categories: new Set<string>(),
   sizes: new Set<string>(),
 }
-import type { SortOption } from '@/utils/product-filters'
 import type { FilterState } from '@/components/organisms/product-filters'
+import type { SortOption } from '@/utils/product-filters'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
@@ -26,19 +26,21 @@ export function useUrlFilters() {
   // Parse page from URL (supports both single page and range syntax)
   const pageRange: PageRange = useMemo(() => {
     const pageParam = searchParams.get('page') || '1'
-    
+
     if (pageParam.includes('-')) {
-      const [start, end] = pageParam.split('-').map(p => Number.parseInt(p, 10))
+      const [start, end] = pageParam
+        .split('-')
+        .map((p) => Number.parseInt(p, 10))
       if (!Number.isNaN(start) && !Number.isNaN(end) && start <= end) {
         return { start, end, isRange: true }
       }
     }
-    
+
     const singlePage = Number.parseInt(pageParam, 10)
-    return { 
-      start: Number.isNaN(singlePage) ? 1 : singlePage, 
-      end: Number.isNaN(singlePage) ? 1 : singlePage, 
-      isRange: false 
+    return {
+      start: Number.isNaN(singlePage) ? 1 : singlePage,
+      end: Number.isNaN(singlePage) ? 1 : singlePage,
+      isRange: false,
     }
   }, [searchParams])
 
@@ -113,7 +115,7 @@ export function useUrlFilters() {
       } else {
         params.delete('page')
       }
-      router.push(`?${params.toString()}`, { scroll: false })
+      router.push(`?${params.toString()}`)
     },
     [searchParams, router]
   )
@@ -139,7 +141,7 @@ export function useUrlFilters() {
     const newEndPage = pageRange.end + 1
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', `${pageRange.start}-${newEndPage}`)
-    
+
     // Use replace instead of push to avoid adding to history
     // scroll: false prevents resetting scroll position
     router.replace(`?${params.toString()}`, { scroll: false })
