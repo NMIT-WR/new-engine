@@ -77,7 +77,7 @@ export function Header({
               <Popover
                 id="popover-header"
                 trigger={
-                  <div className="relative flex items-center">
+                  <div className="relative mr-100 flex items-center">
                     <Icon
                       className="text-header-icon-size text-tertiary"
                       icon="token-icon-cart"

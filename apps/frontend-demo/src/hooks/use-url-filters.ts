@@ -85,7 +85,7 @@ export function useUrlFilters() {
       // Reset to page 1 when filters change
       params.delete('page')
 
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false })
     },
     [searchParams, router]
   )
@@ -99,7 +99,7 @@ export function useUrlFilters() {
       params.set('sort', sort)
       // Reset to page 1 when sort changes
       params.delete('page')
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false })
     },
     [searchParams, router]
   )
@@ -113,7 +113,7 @@ export function useUrlFilters() {
       } else {
         params.delete('page')
       }
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false })
     },
     [searchParams, router]
   )
@@ -129,7 +129,7 @@ export function useUrlFilters() {
       } else {
         params.set('page', `${startPage}-${endPage}`)
       }
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false })
     },
     [searchParams, router]
   )
@@ -156,7 +156,7 @@ export function useUrlFilters() {
       }
       // Reset to first page when searching
       params.set('page', '1')
-      router.push(`?${params.toString()}`)
+      router.push(`?${params.toString()}`, { scroll: false })
     },
     [searchParams, router]
   )
