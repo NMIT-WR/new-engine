@@ -3,7 +3,7 @@
   /* Base input colors */
   --color-input: var(--color-fill-base);
   --color-input-border: var(--color-stroke-primary);
-  --color-input-text: var(--color-fg-primary);
+  --color-input-fg: var(--color-fg-primary);
   --color-input-disabled: var(--color-disabled-bg);
 
   /* Validation states - primary colors */
@@ -63,29 +63,29 @@
   );
 
   /* Text colors */
-  --color-input-text-disabled: --alpha(
-    var(--color-input-text) /
+  --color-input-fg-disabled: --alpha(
+    var(--color-input-fg) /
     var(--opacity-disabled)
   );
   --color-input-placeholder: --alpha(
-    var(--color-input-text) /
+    var(--color-input-fg) /
     var(--opacity-placeholder)
   );
 
   --color-input-placeholder-disabled: --alpha(
-    var(--color-input-text) /
+    var(--color-input-fg) /
     var(--opacity-disabled-placeholder)
   );
 
   /* Label colors */
-  --color-label-text: var(--color-input-text);
-  --color-label-disabled: var(--color-input-text-disabled);
+  --color-label-fg: var(--color-input-fg);
+  --color-label-disabled: var(--color-input-fg-disabled);
   --color-label-required: var(--color-input-danger);
   --margin-label: var(--spacing-100);
 
   /* Error/Helper/Extra colors */
-  --color-error-text: var(--color-danger);
-  --color-helper-text: var(--color-input-text);
+  --color-error-fg: var(--color-danger);
+  --color-helper-fg: var(--color-input-fg);
 
   /* Focus ring colors - using consistent opacity */
   --color-input-ring: --alpha(var(--color-primary) / var(--opacity-ring));
@@ -133,5 +133,5 @@
   --text-helper-sm: var(--text-input-sm);
   --text-helper-md: var(--text-input-md);
   --text-helper-lg: var(--text-input-lg);
-  --color-helper-text: var(--color-fg-secondary);
+  --color-helper-fg: var(--color-fg-secondary);
 }

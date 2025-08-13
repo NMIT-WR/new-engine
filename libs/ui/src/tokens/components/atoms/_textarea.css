@@ -3,7 +3,7 @@
   /* Primary variables mapped from semantic tokens */
   --color-textarea: var(--color-fill-base);
   --color-textarea-border: var(--color-stroke-primary);
-  --color-textarea-text: var(--color-fg-primary);
+  --color-textarea-fg: var(--color-fg-primary);
   --color-textarea-placeholder: --alpha(
     var(--color-fg-primary) /
     var(--opacity-placeholder)
@@ -58,7 +58,7 @@
   --color-textarea-borderless: --alpha(var(--color-textarea) / 50%);
 
   /* Text states */
-  --color-textarea-text-disabled: var(--color-disabled-text);
+  --color-textarea-fg-disabled: var(--color-disabled-fg);
 
   /* Focus rings */
   --color-textarea-ring: --alpha(var(--color-primary) / var(--opacity-ring));

@@ -3,7 +3,7 @@ import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 
 const labelVariants = tv({
-  base: ['block', 'text-label-text', 'font-label'],
+  base: ['block', 'text-label-fg', 'font-label'],
   variants: {
     size: {
       sm: 'text-label-sm',

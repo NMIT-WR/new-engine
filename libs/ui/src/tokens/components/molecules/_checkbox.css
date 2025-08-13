@@ -16,7 +16,7 @@
   --color-checkbox-border-error: var(--color-checkbox-error);
 
   --spacing-checkbox: var(--spacing-200);
-  --color-icon-text: var(--color-fg-dark);
+  --color-icon-fg: var(--color-fg-dark);
   --text-checkbox-icon-md: var(--text-xs);
   --radius-checkbox: var(--radius-sm);
 

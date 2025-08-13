@@ -288,7 +288,7 @@
   /*Disabled state - Disabled
   It is used to fill all kinds of forbidden elements in the interface, such as background, text, stroke, fill, etc*/
   --color-disabled-bg: --alpha(var(--color-base-reverse) / 10%);
-  --color-disabled-text: --alpha(
+  --color-disabled-fg: --alpha(
     var(--color-fg-primary) /
     var(--opacity-disabled)
   );
