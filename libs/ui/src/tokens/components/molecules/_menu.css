@@ -1,7 +1,7 @@
 @theme static {
   /* ===== MENU CONTENT PANEL ===== */
   --color-menu-content-bg: var(--color-surface);
-  --color-menu-content-border: var(--color-stroke-primary);
+  --color-menu-content-border: var(--color-border-primary);
   --radius-menu: var(--radius-sm);
   --shadow-menu-content-shadow: var(--shadow-lg);
 
@@ -21,7 +21,7 @@
   --color-menu-item-icon-fg: var(--color-fg-secondary);
 
   /* ===== MENU SEPARATOR ===== */
-  --color-menu-separator-bg: var(--color-stroke-primary);
+  --color-menu-separator-bg: var(--color-border-primary);
   --height-menu-separator: 1px;
   --margin-menu-separator: var(--spacing-200);
 

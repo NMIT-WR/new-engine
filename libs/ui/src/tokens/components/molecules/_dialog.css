@@ -16,7 +16,7 @@
   /* ===== DIALOG CONTENT PANEL ===== */
   --color-dialog-content-bg: var(--color-dialog-bg);
   --color-dialog-content-fg: var(--color-dialog-fg);
-  --color-dialog-content-border: var(--color-stroke-primary);
+  --color-dialog-content-border: var(--color-border-primary);
   --radius-dialog-content: var(--radius-sm);
   --shadow-dialog-content: var(--shadow-xl);
 

@@ -2,7 +2,7 @@
   /* === BASE TOKEN MAPPING === */
   /* Primary variables mapped from semantic tokens */
   --color-textarea: var(--color-fill-base);
-  --color-textarea-border: var(--color-stroke-primary);
+  --color-textarea-border: var(--color-border-primary);
   --color-textarea-fg: var(--color-fg-primary);
   --color-textarea-placeholder: --alpha(
     var(--color-fg-primary) /

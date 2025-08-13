@@ -3,7 +3,7 @@
   --color-slider-track: var(--color-fill-base);
   --color-slider-range: var(--color-primary);
   --color-slider-thumb: var(--color-base-light);
-  --color-slider-border: var(--color-stroke-primary);
+  --color-slider-border: var(--color-border-primary);
   --color-slider-error: var(--color-danger);
 
   --opacity-slider-disabled: var(--opacity-disabled);

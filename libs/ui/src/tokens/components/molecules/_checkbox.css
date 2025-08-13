@@ -3,7 +3,7 @@
   --color-checkbox: var(--color-fill-active);
   --color-checkbox-error: var(--color-danger);
   --color-checkbox-checked: var(--color-success);
-  --color-checkbox-border: var(--color-stroke-primary);
+  --color-checkbox-border: var(--color-border-primary);
   --opacity-checkbox-disabled: var(--opacity-disabled);
 
   --color-checkbox-indeterminate: var(--color-primary);

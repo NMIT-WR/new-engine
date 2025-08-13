@@ -2,7 +2,7 @@
   /* BASE TOKENS - direct mapping from semantic tokens */
   /* Base input colors */
   --color-input: var(--color-fill-base);
-  --color-input-border: var(--color-stroke-primary);
+  --color-input-border: var(--color-border-primary);
   --color-input-fg: var(--color-fg-primary);
   --color-input-disabled: var(--color-disabled-bg);
 

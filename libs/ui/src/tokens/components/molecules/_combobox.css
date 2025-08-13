@@ -2,7 +2,7 @@
   --z-combobox-content: 20;
   /* ===== CONTROL (Input Container) ===== */
   --color-combobox: var(--color-fill-base);
-  --color-combobox-border: var(--color-stroke-primary);
+  --color-combobox-border: var(--color-border-primary);
   --color-combobox-hover: oklch(
     from var(--color-combobox) calc(l + var(--state-hover)) c h
   );

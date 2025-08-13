@@ -1,7 +1,7 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-select-bg: var(--color-base);
-  --color-select-border: var(--color-stroke-primary);
+  --color-select-border: var(--color-border-primary);
   --color-select-fg: var(--color-fg-primary);
   --color-select-placeholder: --alpha(
     var(--color-fg-secondary) /
@@ -32,7 +32,7 @@
 
   /* === DROPDOWN CONTENT === */
   --color-select-content-bg: var(--color-surface);
-  --color-select-content-border: var(--color-stroke-primary);
+  --color-select-content-border: var(--color-border-primary);
   --color-select-content-shadow: var(--shadow-md);
 
   /* === OPTION ITEM === */

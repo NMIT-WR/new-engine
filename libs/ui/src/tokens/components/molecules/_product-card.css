@@ -1,7 +1,7 @@
 @theme static {
   --color-pc: var(--color-surface);
 
-  --border-pc-border: var(--color-stroke-primary);
+  --border-pc-border: var(--color-border-primary);
   --border-pc-width: var(--border-width-sm);
   --radius-pc: var(--radius-md);
 

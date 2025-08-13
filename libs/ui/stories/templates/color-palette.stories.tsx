@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import '../../src/tokens/_colors.css'
 import '../../src/tokens/_semantic.css'
 
@@ -39,14 +39,17 @@ function ColorSwatch({
   color, 
   variant, 
   state,
-  showLabel = true 
+  showLabel = true,
+  copyMode = 'variable'
 }: { 
   color: string
   variant: string
   state: string
   showLabel?: boolean
+  copyMode?: 'variable' | 'oklch'
 }) {
   const [copied, setCopied] = useState(false)
+  const swatchRef = useRef<HTMLDivElement>(null)
   
   const baseColorVar = `--color-${color}${variant}`
   
@@ -64,7 +67,18 @@ function ColorSwatch({
     : baseColorVar
   
   const handleCopy = () => {
-    navigator.clipboard.writeText(colorVar)
+    let textToCopy: string
+    
+    if (copyMode === 'oklch' && swatchRef.current) {
+      // Get oklch value from computed styles
+      const oklch = window.getComputedStyle(swatchRef.current).backgroundColor
+      textToCopy = oklch
+    } else {
+      // Copy variable name
+      textToCopy = colorVar
+    }
+    
+    navigator.clipboard.writeText(textToCopy)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -75,14 +89,18 @@ function ColorSwatch({
       onClick={handleCopy}
     >
       <div 
-        className="relative w-20 h-20 rounded-lg shadow-md transition-transform group-hover:scale-110 border border-stroke-primary"
+        ref={swatchRef}
+        className="relative w-20 h-20 rounded-lg shadow-md transition-transform group-hover:scale-110 border border--border-primary"
         style={{ 
           backgroundColor: computedColor,
         }}
       >
         {copied && (
-          <div className="absolute inset-0 flex items-center justify-center bg-base-reverse/75 text-fg-reverse text-xs rounded-lg">
-            Copied!
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-base-reverse/75 text-fg-reverse text-xs rounded-lg">
+            <div>Copied!</div>
+            <div className="text-[10px] opacity-75">
+              {copyMode === 'oklch' ? 'OKLCH' : 'VAR'}
+            </div>
           </div>
         )}
       </div>
@@ -97,7 +115,10 @@ function ColorSwatch({
             </div>
           )}
           <div className="text-xs font-mono text-fg-secondary-light mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            {colorVar}
+            {copyMode === 'oklch' && swatchRef.current 
+              ? window.getComputedStyle(swatchRef.current).backgroundColor
+              : colorVar
+            }
           </div>
         </div>
       )}
@@ -105,7 +126,7 @@ function ColorSwatch({
   )
 }
 
-function ColorGroup({ color }: { color: string }) {
+function ColorGroup({ color, copyMode }: { color: string; copyMode: 'variable' | 'oklch' }) {
   return (
     <div className="bg-surface rounded-xl shadow-lg p-6">
       <h3 className="text-lg font-semibold mb-4 capitalize text-fg-primary">
@@ -125,6 +146,7 @@ function ColorGroup({ color }: { color: string }) {
                   color={color}
                   variant={suffix}
                   state={state}
+                  copyMode={copyMode}
                 />
               ))}
             </div>
@@ -138,6 +160,7 @@ function ColorGroup({ color }: { color: string }) {
 function ColorPaletteGrid() {
   const [filter, setFilter] = useState<string>('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [copyMode, setCopyMode] = useState<'variable' | 'oklch'>('oklch')
   
   const filteredColors = filter === 'all' 
     ? semanticColors 
@@ -152,7 +175,7 @@ function ColorPaletteGrid() {
             Color Palette
           </h1>
           <p className="text-fg-secondary">
-            Click any color swatch to copy its CSS variable name
+            Click any color swatch to copy its {copyMode === 'variable' ? 'CSS variable name' : 'OKLCH value'}
           </p>
         </div>
         
@@ -181,10 +204,34 @@ function ColorPaletteGrid() {
             </button>
           </div>
           
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-fg-secondary">Copy format:</span>
+            <button
+              onClick={() => setCopyMode('variable')}
+              className={`px-3 py-2 rounded-lg transition-colors ${
+                copyMode === 'variable'
+                  ? 'bg-primary text-fg-reverse'
+                  : 'bg-fill-base hover:bg-fill-hover text-fg-primary'
+              }`}
+            >
+              CSS Variable
+            </button>
+            <button
+              onClick={() => setCopyMode('oklch')}
+              className={`px-3 py-2 rounded-lg transition-colors ${
+                copyMode === 'oklch'
+                  ? 'bg-primary text-fg-reverse'
+                  : 'bg-fill-base hover:bg-fill-hover text-fg-primary'
+              }`}
+            >
+              OKLCH Value
+            </button>
+          </div>
+          
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-4 py-2 rounded-lg bg-surface border border-stroke-primary text-fg-primary"
+            className="px-4 py-2 rounded-lg bg-surface border border--border-primary text-fg-primary"
           >
             <option value="all">All Colors</option>
             {semanticColors.map(color => (
@@ -202,7 +249,7 @@ function ColorPaletteGrid() {
             : 'space-y-6'
         }>
           {filteredColors.map(color => (
-            <ColorGroup key={color} color={color} />
+            <ColorGroup key={color} color={color} copyMode={copyMode} />
           ))}
         </div>
         
@@ -266,18 +313,48 @@ export const Default: Story = {
 
 // Compact view for all colors at once
 function CompactColorGrid() {
+  const [copyMode, setCopyMode] = useState<'variable' | 'oklch'>('variable')
+  
   return (
     <div className="min-h-screen bg-base p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-fg-primary mb-8">
-          Color Palette - Compact View
-        </h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-fg-primary mb-2">
+            Color Palette - Compact View
+          </h1>
+          <p className="text-fg-secondary mb-4">
+            Click any color swatch to copy its {copyMode === 'variable' ? 'CSS variable name' : 'OKLCH value'}
+          </p>
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-fg-secondary">Copy format:</span>
+            <button
+              onClick={() => setCopyMode('variable')}
+              className={`px-3 py-2 rounded-lg transition-colors ${
+                copyMode === 'variable'
+                  ? 'bg-primary text-fg-reverse'
+                  : 'bg-fill-base hover:bg-fill-hover text-fg-primary'
+              }`}
+            >
+              CSS Variable
+            </button>
+            <button
+              onClick={() => setCopyMode('oklch')}
+              className={`px-3 py-2 rounded-lg transition-colors ${
+                copyMode === 'oklch'
+                  ? 'bg-primary text-fg-reverse'
+                  : 'bg-fill-base hover:bg-fill-hover text-fg-primary'
+              }`}
+            >
+              OKLCH Value
+            </button>
+          </div>
+        </div>
         
         <div className="bg-surface rounded-xl shadow-lg p-6">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-stroke-primary">
+                <tr className="border-b border--border-primary">
                   <th className="text-left py-3 px-4 text-sm font-medium text-fg-secondary">
                     Color
                   </th>
@@ -287,7 +364,7 @@ function CompactColorGrid() {
                     </th>
                   ))}
                 </tr>
-                <tr className="border-b border-stroke-primary">
+                <tr className="border-b border--border-primary">
                   <th></th>
                   {colorVariants.map(({ label }) => (
                     <React.Fragment key={label}>
@@ -302,7 +379,7 @@ function CompactColorGrid() {
               </thead>
               <tbody>
                 {semanticColors.map(color => (
-                  <tr key={color} className="border-b border-stroke-primary/50">
+                  <tr key={color} className="border-b border--border-primary/50">
                     <td className="py-4 px-4 font-medium capitalize text-fg-primary">
                       {color}
                     </td>
@@ -315,6 +392,7 @@ function CompactColorGrid() {
                               variant={suffix}
                               state={state}
                               showLabel={false}
+                              copyMode={copyMode}
                             />
                           </td>
                         ))}

@@ -3,7 +3,7 @@
   /* === BASE TOKEN MAPPING === */
   --color-tree-bg: transparent;
   --color-tree-fg: var(--color-fg-primary);
-  --color-tree-border: var(--color-stroke-primary);
+  --color-tree-border: var(--color-border-primary);
 
   /* Tree root */
   --color-tree-root-bg: transparent;

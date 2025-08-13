@@ -6,7 +6,7 @@
   --color-ni-invalid-border: var(--color-danger);
   --color-ni-invalid-bg: --alpha(var(--color-danger) / 10%);
 
-  --color-ni-border: var(--color-stroke-primary);
+  --color-ni-border: var(--color-border-primary);
   --border-width-ni: var(--border-width-input);
 
   --gap-ni-root-sm: var(--spacing-150);

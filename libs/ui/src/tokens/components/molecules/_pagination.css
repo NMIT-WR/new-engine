@@ -20,7 +20,7 @@
   );
 
   /* Border colors */
-  --color-pagination-border: var(--color-stroke-primary);
+  --color-pagination-border: var(--color-border-primary);
   --color-pagination-border-active: var(--color-primary);
   --color-pagination-border-hover: --alpha(
     var(--color-pagination-border-active) /
