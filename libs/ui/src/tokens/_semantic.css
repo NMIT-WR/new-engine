@@ -8,7 +8,9 @@
 :root {
   --state-hover: -0.08;
   --state-active: -0.12;
-  --state-disabled-chroma: 0.05;
+  --state-disabled-chroma: 0.01;
+  --state-light-variant: 0.2; /* Always make colors lighter for -light variant */
+  --state-light-chroma: 0.6; /* Reduce saturation for softer, pastel colors */
   --opacity-ring: 80%;
   --opacity-disabled: 60%;
   --opacity-placeholder: 60%;
@@ -78,7 +80,10 @@
   --color-primary-disabled: oklch(
     from var(--color-primary) l var(--state-disabled-chroma) h
   );
-  --color-primary-light: light-dark(var(--color-blue-300), var(--color-sky-200));
+  --color-primary-light: oklch(
+    from var(--color-primary) clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
+  );
   --color-primary-light-hover: oklch(
     from var(--color-primary-light) calc(l + var(--state-hover)) c h
   );
@@ -97,9 +102,10 @@
   --color-secondary-disabled: oklch(
     from var(--color-secondary) l var(--state-disabled-chroma) h
   );
-  --color-secondary-light: light-dark(
-    var(--color-orange-300),
-    var(--color-amber-200)
+  --color-secondary-light: oklch(
+    from var(--color-secondary)
+      clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
   );
   --color-secondary-light-hover: oklch(
     from var(--color-secondary-light) calc(l + var(--state-hover)) c h
@@ -119,9 +125,9 @@
   --color-tertiary-disabled: oklch(
     from var(--color-tertiary) l var(--state-disabled-chroma) h
   );
-  --color-tertiary-light: light-dark(
-    var(--color-pink-300),
-    var(--color-rose-200)
+  --color-tertiary-light: oklch(
+    from var(--color-tertiary) clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
   );
   --color-tertiary-light-hover: oklch(
     from var(--color-tertiary-light) calc(l + var(--state-hover)) c h
@@ -144,9 +150,9 @@
   --color-success-disabled: oklch(
     from var(--color-success) l var(--state-disabled-chroma) h
   );
-  --color-success-light: light-dark(
-    var(--color-emerald-100),
-    var(--color-emerald-100)
+  --color-success-light: oklch(
+    from var(--color-success) clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
   );
   --color-success-light-hover: oklch(
     from var(--color-success-light) calc(l + var(--state-hover)) c h
@@ -166,7 +172,10 @@
   --color-info-disabled: oklch(
     from var(--color-info) l var(--state-disabled-chroma) h
   );
-  --color-info-light: light-dark(var(--color-teal-300), var(--color-cyan-200));
+  --color-info-light: oklch(
+    from var(--color-info) clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
+  );
   --color-info-light-hover: oklch(
     from var(--color-info-light) calc(l + var(--state-hover)) c h
   );
@@ -185,9 +194,9 @@
   --color-warning-disabled: oklch(
     from var(--color-warning) l var(--state-disabled-chroma) h
   );
-  --color-warning-light: light-dark(
-    var(--color-yellow-300),
-    var(--color-yellow-200)
+  --color-warning-light: oklch(
+    from var(--color-warning) clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
   );
   --color-warning-light-hover: oklch(
     from var(--color-warning-light) calc(l + var(--state-hover)) c h
@@ -207,7 +216,10 @@
   --color-danger-disabled: oklch(
     from var(--color-danger) l var(--state-disabled-chroma) h
   );
-  --color-danger-light: light-dark(var(--color-red-300), var(--color-red-200));
+  --color-danger-light: oklch(
+    from var(--color-danger) clamp(0, calc(l + var(--state-light-variant)), 1)
+      calc(c * var(--state-light-chroma)) h
+  );
   --color-danger-light-hover: oklch(
     from var(--color-danger-light) calc(l + var(--state-hover)) c h
   );
