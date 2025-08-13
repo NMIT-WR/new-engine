@@ -17,7 +17,7 @@ const checkboxVariants = tv({
       'bg-checkbox data-[state=checked]:bg-checkbox-checked border-checkbox',
       /* center icon, grid and place items do not work e.g. flex */
       'after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2',
-      'data-[state=checked]:after:token-icon-checkbox text-icon-text data-[state=checked]:text-checkbox-icon-md',
+      'data-[state=checked]:after:token-icon-checkbox text-icon-fg data-[state=checked]:text-checkbox-icon-md',
       'data-[disabled]:opacity-checkbox-disabled data-[disabled]:cursor-not-allowed data-[disabled]:grayscale',
       'transition-all duration-200',
       'data-[focus]:outline-none data-[focus]:ring-2 data-[focus]:ring-checkbox-ring data-[focus]:ring-offset-checkbox-offset data-[focus]:ring-offset-2',
@@ -25,7 +25,7 @@ const checkboxVariants = tv({
       'data-[invalid]:border-checkbox-border-error',
       'data-[state=indeterminate]:bg-checkbox-indeterminate',
       'data-[state=indeterminate]:after:w-indeterminate data-[state=indeterminate]:after:h-indeterminate',
-      'data-[state=indeterminate]:after:bg-icon-text',
+      'data-[state=indeterminate]:after:bg-icon-fg',
     ],
   },
 })

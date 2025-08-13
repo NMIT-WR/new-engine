@@ -9,9 +9,9 @@
   );
 
   /* Spacing */
-  --spacing-rating-sm: var(--spacing-3xs);
-  --spacing-rating-md: var(--spacing-2xs);
-  --spacing-rating-lg: var(--spacing-xs);
+  --spacing-rating-sm: var(--spacing-100);
+  --spacing-rating-md: var(--spacing-150);
+  --spacing-rating-lg: var(--spacing-200);
 
   /*Size*/
   --text-rating-sm: var(--text-icon-sm);

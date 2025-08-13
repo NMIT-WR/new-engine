@@ -20,7 +20,6 @@
   --spacing-900: clamp(6.1875rem, 5.9484rem + 1.1957vw, 6.875rem);
   --spacing-950: clamp(6.75rem, 6.4891rem + 1.3043vw, 7.5rem);
 
-
   /* Legacy aliases for backward compatibility */
   --spacing-3xs: var(--spacing-100); /* 4px */
   --spacing-2xs: var(--spacing-150); /* 8px */

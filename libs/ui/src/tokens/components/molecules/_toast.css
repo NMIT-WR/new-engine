@@ -52,9 +52,9 @@
   /* === FOCUS RING === */
 
   /* === SPACING === */
-  --padding-toast-root: var(--spacing-sm);
-  --gap-toast-content: var(--spacing-xs);
-  --spacing-toast-description-gap: var(--spacing-3xs);
+  --padding-toast-root: var(--spacing-250);
+  --gap-toast-content: var(--spacing-200);
+  --spacing-toast-description-gap: var(--spacing-100);
 
   /* === TYPOGRAPHY === */
   --font-weight-toast-title: var(--font-weight-medium);

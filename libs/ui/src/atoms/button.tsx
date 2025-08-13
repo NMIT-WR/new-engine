@@ -11,7 +11,7 @@ export const buttonVariants = tv({
     'transition-all duration-200',
     'focus:outline-none',
     'focus-visible:ring-3 focus-visible:ring-offset-2',
-    'disabled:text-btn-text-disabled disabled:pointer-events-none',
+    'disabled:text-btn-fg-disabled disabled:pointer-events-none',
   ],
   variants: {
     variant: {
@@ -49,7 +49,7 @@ export const buttonVariants = tv({
         'bg-btn-primary',
         'hover:bg-btn-primary-hover',
         'active:bg-btn-primary-active',
-        'text-btn-text-primary',
+        'text-btn-fg-primary',
       ],
     },
     {
@@ -59,7 +59,7 @@ export const buttonVariants = tv({
         'bg-btn-secondary',
         'hover:bg-btn-secondary-hover',
         'active:bg-btn-secondary-active',
-        'text-btn-text-secondary',
+        'text-btn-fg-secondary',
       ],
     },
     {
@@ -69,7 +69,7 @@ export const buttonVariants = tv({
         'bg-btn-tertiary',
         'hover:bg-btn-tertiary-hover',
         'active:bg-btn-tertiary-active',
-        'text-btn-text-tertiary',
+        'text-btn-fg-tertiary',
       ],
     },
     {
@@ -79,7 +79,7 @@ export const buttonVariants = tv({
         'bg-btn-warning',
         'hover:bg-btn-warning-hover',
         'active:bg-btn-warning-active',
-        'text-btn-text-warning',
+        'text-btn-fg-warning',
       ],
     },
     {
@@ -89,7 +89,7 @@ export const buttonVariants = tv({
         'bg-btn-danger',
         'hover:bg-btn-danger-hover',
         'active:bg-btn-danger-active',
-        'text-btn-text-danger',
+        'text-btn-fg-danger',
       ],
     },
     {
@@ -99,7 +99,7 @@ export const buttonVariants = tv({
         'bg-btn-primary-light',
         'hover:bg-btn-primary-light-hover',
         'active:bg-btn-primary-light-active',
-        'text-btn-text-primary-light',
+        'text-btn-fg-primary-light',
       ],
     },
     {
@@ -109,7 +109,7 @@ export const buttonVariants = tv({
         'bg-btn-secondary-light',
         'hover:bg-btn-secondary-light-hover',
         'active:bg-btn-secondary-light-active',
-        'text-btn-text-secondary-light',
+        'text-btn-fg-secondary-light',
       ],
     },
     {
@@ -119,7 +119,7 @@ export const buttonVariants = tv({
         'bg-btn-tertiary-light',
         'hover:bg-btn-tertiary-light-hover',
         'active:bg-btn-tertiary-light-active',
-        'text-btn-text-tertiary-light',
+        'text-btn-fg-tertiary-light',
       ],
     },
     {
@@ -129,7 +129,7 @@ export const buttonVariants = tv({
         'bg-btn-warning-light',
         'hover:bg-btn-warning-light-hover',
         'active:bg-btn-warning-light-active',
-        'text-btn-text-warning-light',
+        'text-btn-fg-warning-light',
       ],
     },
     {
@@ -139,7 +139,7 @@ export const buttonVariants = tv({
         'bg-btn-danger-light',
         'hover:bg-btn-danger-light-hover',
         'active:bg-btn-danger-light-active',
-        'text-btn-text-danger-light',
+        'text-btn-fg-danger-light',
       ],
     },
     {
@@ -149,7 +149,7 @@ export const buttonVariants = tv({
         'border-btn-border-primary',
         'hover:bg-btn-outlined-primary-hover',
         'active:bg-btn-outlined-primary-active',
-        'text-btn-text-outlined-primary',
+        'text-btn-fg-outlined-primary',
       ],
     },
     {
@@ -159,7 +159,7 @@ export const buttonVariants = tv({
         'border-btn-border-secondary',
         'hover:bg-btn-outlined-secondary-hover',
         'active:bg-btn-outlined-secondary-active',
-        'text-btn-text-outlined-secondary',
+        'text-btn-fg-outlined-secondary',
       ],
     },
     {
@@ -169,7 +169,7 @@ export const buttonVariants = tv({
         'border-btn-border-tertiary',
         'hover:bg-btn-outlined-tertiary-hover',
         'active:bg-btn-outlined-tertiary-active',
-        'text-btn-text-outlined-tertiary',
+        'text-btn-fg-outlined-tertiary',
       ],
     },
     {
@@ -179,7 +179,7 @@ export const buttonVariants = tv({
         'border-btn-border-warning',
         'hover:bg-btn-outlined-warning-hover',
         'active:bg-btn-outlined-warning-active',
-        'text-btn-text-outlined-warning',
+        'text-btn-fg-outlined-warning',
       ],
     },
     {
@@ -189,33 +189,33 @@ export const buttonVariants = tv({
         'border-btn-border-danger',
         'hover:bg-btn-outlined-danger-hover',
         'active:bg-btn-outlined-danger-active',
-        'text-btn-text-outlined-danger',
+        'text-btn-fg-outlined-danger',
       ],
     },
     {
       variant: 'primary',
       theme: 'borderless',
-      className: ['text-btn-text-primary-borderless'],
+      className: ['text-btn-fg-primary-borderless'],
     },
     {
       variant: 'secondary',
       theme: 'borderless',
-      className: ['text-btn-text-secondary-borderless'],
+      className: ['text-btn-fg-secondary-borderless'],
     },
     {
       variant: 'tertiary',
       theme: 'borderless',
-      className: ['text-btn-text-tertiary-borderless'],
+      className: ['text-btn-fg-tertiary-borderless'],
     },
     {
       variant: 'warning',
       theme: 'borderless',
-      className: ['text-btn-text-warning-borderless'],
+      className: ['text-btn-fg-warning-borderless'],
     },
     {
       variant: 'danger',
       theme: 'borderless',
-      className: ['text-btn-text-danger-borderless'],
+      className: ['text-btn-fg-danger-borderless'],
     },
     {
       theme: 'outlined',

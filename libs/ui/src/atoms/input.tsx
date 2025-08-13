@@ -6,7 +6,7 @@ const inputVariants = tv({
   base: [
     'block w-full',
     'bg-input',
-    'text-input-text',
+    'text-input-fg',
     'placeholder:text-input-placeholder',
     'border border-input-border',
     'rounded-input',
@@ -58,7 +58,7 @@ const inputVariants = tv({
       true: [
         'bg-input-disabled',
         'border-input-border-disabled',
-        'text-input-text-disabled',
+        'text-input-fg-disabled',
         'placeholder:text-input-placeholder-disabled',
       ],
     },
