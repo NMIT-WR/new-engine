@@ -1,5 +1,5 @@
 @theme static {
-  --arrow-size: var(--spacing-2xs);
+  --arrow-size: var(--spacing-150);
 
   /* Background & Text Colors */
   --color-popover-bg: var(--color-overlay);
@@ -9,19 +9,19 @@
   --arrow-background: var(--color-popover-bg);
 
   /* Spacing */
-  --spacing-popover-sm: var(--spacing-xs);
-  --spacing-popover-md: var(--spacing-sm);
-  --spacing-popover-lg: var(--spacing-md);
+  --spacing-popover-sm: var(--spacing-200);
+  --spacing-popover-md: var(--spacing-250);
+  --spacing-popover-lg: var(--spacing-350);
 
   /* Trigger */
-  --padding-popover-trigger: var(--spacing-3xs) var(--spacing-2xs);
+  --padding-popover-trigger: var(--spacing-100) var(--spacing-150);
 
   /* Title */
   --text-popover-title-sm: var(--text-md);
   --text-popover-title-md: var(--text-lg);
   --text-popover-title-lg: var(--text-xl);
   --font-weight-popover-title: var(--font-weight-semibold);
-  --spacing-popover-title-mb: var(--spacing-2xs);
+  --spacing-popover-title-mb: var(--spacing-150);
 
   /*description*/
   --text-popover-description: var(--text-sm);

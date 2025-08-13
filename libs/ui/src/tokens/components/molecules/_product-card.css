@@ -6,11 +6,11 @@
   --radius-pc: var(--radius-md);
 
   /* Card spacing */
-  --spacing-pc-row-layout: var(--spacing-sm);
+  --spacing-pc-row-layout: var(--spacing-250);
   --spacing-pc-max: 100%; /* temporary value */
-  /* --spacing-pc-col-layout: var(--spacing-3xs);*/
-  --spacing-pc-box: var(--spacing-2xs);
-  --spacing-pc-padding: var(--spacing-2xs);
+  /* --spacing-pc-col-layout: var(--spacing-100);*/
+  --spacing-pc-box: var(--spacing-150);
+  --spacing-pc-padding: var(--spacing-150);
 
   --color-pc-name-fg: var(--color-fg-primary);
   --text-pc-name-size: var(--text-md);
@@ -93,5 +93,5 @@
 }
 
 @utility gap-pc-col-layout {
-  gap: var(--spacing-3xs);
+  gap: var(--spacing-100);
 }

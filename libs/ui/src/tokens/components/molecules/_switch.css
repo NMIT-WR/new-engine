@@ -44,10 +44,10 @@
   );
 
   /* === SPACING === */
-  --spacing-root: var(--spacing-sm);
-  --spacing-control-padding: var(--spacing-3xs);
-  --spacing-track-width: var(--spacing-xl);
-  --spacing-track-height: var(--spacing-md);
+  --spacing-root: var(--spacing-250);
+  --spacing-control-padding: var(--spacing-100);
+  --spacing-track-width: var(--spacing-600);
+  --spacing-track-height: var(--spacing-350);
   /* Padding inside the control container */
   --spacing-control-padding: 0.125rem;
 

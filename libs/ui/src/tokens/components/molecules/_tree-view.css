@@ -17,7 +17,7 @@
   --color-tree-node-hover: var(--color-primary-hover);
   --color-tree-node-selected: var(--color-primary-active);
   --color-tree-node-focus: var(--color-ring-primary);
-  --padding-tree-node: var(--spacing-3xs);
+  --padding-tree-node: var(--spacing-100);
 
   /* Text colors */
   --color-tree-fg-hover: var(--color-fg-reverse);
@@ -30,8 +30,8 @@
   --color-tree-icon-hover: var(--color-fg-primary);
 
   /* === SPACING & SIZING === */
-  --tree-indent-per-level: var(--spacing-3xs);
-  --spacing-tree-icon: var(--spacing-2xs);
+  --tree-indent-per-level: var(--spacing-100);
+  --spacing-tree-icon: var(--spacing-150);
 
   /* Size variants */
   --text-tree-size: var(--text-sm);

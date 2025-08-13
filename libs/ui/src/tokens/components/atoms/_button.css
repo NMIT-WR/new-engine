@@ -200,14 +200,14 @@
 
   /* === PADDING === */
 
-  --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
-  --padding-btn-md: var(--spacing-xs) var(--spacing-md);
-  --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
+  --padding-btn-sm: var(--spacing-150) var(--spacing-250);
+  --padding-btn-md: var(--spacing-200) var(--spacing-350);
+  --padding-btn-lg: var(--spacing-250) var(--spacing-450);
 
   /* Spacing between icon and text */
-  --spacing-btn-sm: var(--spacing-2xs);
-  --spacing-btn-md: var(--spacing-xs);
-  --spacing-btn-lg: var(--spacing-sm);
+  --spacing-btn-sm: var(--spacing-150);
+  --spacing-btn-md: var(--spacing-200);
+  --spacing-btn-lg: var(--spacing-250);
 
   /* === TYPOGRAPHY === */
   /* Text sizes */

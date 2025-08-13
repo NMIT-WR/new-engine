@@ -35,7 +35,7 @@
   --color-pagination-ring: --alpha(var(--color-primary) / var(--opacity-ring));
 
   /* Spacing */
-  --spacing-pagination: var(--spacing-xs);
+  --spacing-pagination: var(--spacing-200);
   --spacing-pagination-list: var(--spacing-pagination);
 
   /* height */

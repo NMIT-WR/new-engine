@@ -11,14 +11,14 @@
 
   /* === CONTROL COLORS === */
   --color-carousel-control-bg: var(--color-overlay);
-  --padding-carousel-control: var(--spacing-3xs);
-  --gap-carousel-control: var(--spacing-xs);
+  --padding-carousel-control: var(--spacing-100);
+  --gap-carousel-control: var(--spacing-200);
 
   /* === INDICATOR === */
-  --gap-carousel-indicator: var(--spacing-3xs);
+  --gap-carousel-indicator: var(--spacing-100);
   --color-carousel-indicator-active: var(--color-primary);
   --aspect-carousel-indicator: var(--aspect-ratio-square);
-  --width-carousel-indicator: var(--spacing-xs);
+  --width-carousel-indicator: var(--spacing-200);
 
   /* === FOCUS STATES === */
   --color-carousel-focus-ring: --alpha(

@@ -76,9 +76,9 @@
   );
 
   /* Spacing */
-  --spacing-textarea-sm: var(--spacing-3xs);
-  --spacing-textarea-md: var(--spacing-2xs);
-  --spacing-textarea-lg: var(--spacing-xs);
+  --spacing-textarea-sm: var(--spacing-100);
+  --spacing-textarea-md: var(--spacing-150);
+  --spacing-textarea-lg: var(--spacing-200);
 
   /* Typography */
   --text-textarea-sm: var(--text-sm);

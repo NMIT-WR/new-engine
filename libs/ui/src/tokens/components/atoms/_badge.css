@@ -1,8 +1,8 @@
 @import "../../_semantic.css";
 
 @theme static {
-  --padding-badge-x: var(--spacing-3xs);
-  --padding-badge-y: var(--spacing-3xs);
+  --padding-badge-x: var(--spacing-100);
+  --padding-badge-y: var(--spacing-100);
 
   --text-badge-size: var(--text-xs);
 
