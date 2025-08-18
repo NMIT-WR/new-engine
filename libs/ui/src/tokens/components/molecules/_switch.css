@@ -23,7 +23,7 @@
   /* === DISABLED STATES === */
   --color-switch-disabled: var(--color-disabled-bg);
   --color-switch-thumb-disabled: --alpha(
-    var(--color-disabled-text) /
+    var(--color-disabled-fg) /
     var(--opacity-disabled)
   );
   --color-switch-border-disabled: var(--color-disabled-border);
@@ -35,7 +35,7 @@
 
   /* === TEXT COLORS === */
   --color-switch-label: var(--color-fg-primary);
-  --color-switch-label-disabled: var(--color-disabled-text);
+  --color-switch-label-disabled: var(--color-disabled-fg);
 
   /* === FOCUS RING === */
   --color-switch-ring: --alpha(

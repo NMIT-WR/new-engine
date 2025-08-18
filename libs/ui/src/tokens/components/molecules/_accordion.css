@@ -11,7 +11,7 @@
   /* === TEXT COLORS === */
   --color-accordion-fg: var(--color-fg-primary);
   --color-accordion-fg-disabled: --alpha(
-    var(--color-disabled-text) /
+    var(--color-disabled-fg) /
     var(--opacity-disabled)
   );
 

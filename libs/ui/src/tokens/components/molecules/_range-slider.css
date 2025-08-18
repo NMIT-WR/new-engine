@@ -25,7 +25,7 @@
 
   /* === DISABLED STATES === */
   --color-slider-track-disabled: var(--color-disabled-bg);
-  --color-slider-range-disabled: var(--color-disabled-text);
+  --color-slider-range-disabled: var(--color-disabled-fg);
   /* we must avoid transparent paint, otherwise the range would be visible */
   --color-slider-thumb-disabled: var(--color-highlight);
   --color-slider-border-disabled: var(--color-disabled-border);

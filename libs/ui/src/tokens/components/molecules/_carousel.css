@@ -7,7 +7,7 @@
   /* === TRIGGER COMMON === */
   --padding-carousel-trigger: 0 0;
   --color-carousel-trigger-bg: var(--color-highlight);
-  --color-carousel-trigger-text: var(--color-fg-dark);
+  --color-carousel-trigger-fg: var(--color-fg-dark);
 
   /* === CONTROL COLORS === */
   --color-carousel-control-bg: var(--color-overlay);

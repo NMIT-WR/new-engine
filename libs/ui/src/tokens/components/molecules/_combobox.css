@@ -18,7 +18,7 @@
 
   /* Disabled states */
   --color-combobox-disabled: var(--color-disabled-bg);
-  --color-combobox-fg-disabled: var(--color-disabled-text);
+  --color-combobox-fg-disabled: var(--color-disabled-fg);
   --color-combobox-border-disabled: var(--color-disabled-border);
 
   /* Validation states */
