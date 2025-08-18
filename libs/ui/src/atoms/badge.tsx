@@ -5,37 +5,37 @@ import { tv } from '../utils'
 const badgeVariants = tv({
   base: [
     'inline-flex items-center justify-center',
-    'px-badge-x py-badge-y',
-    'rounded-badge border-badge',
+    'p-badge',
+    'rounded-badge border-badge-border',
     'text-badge-size',
     'border-(length:--border-width-badge-dynamic)',
   ],
   variants: {
     variant: {
       primary: [
-        'bg-badge-primary-bg text-badge-primary-fg border-badge-border-primary',
+        'bg-badge-bg-primary text-badge-fg-primary border-badge-border-primary',
       ],
       secondary: [
-        'bg-badge-secondary-bg text-badge-secondary-fg border-badge-border-secondary',
+        'bg-badge-bg-secondary text-badge-fg-secondary border-badge-border-secondary',
       ],
       tertiary: [
-        'bg-badge-tertiary-bg text-badge-tertiary-fg border-badge-border-tertiary',
+        'bg-badge-bg-tertiary text-badge-fg-tertiary border-badge-border-tertiary',
       ],
       discount: [
-        'bg-badge-discount-bg text-badge-discount-fg border-badge-border-discount',
+        'bg-badge-bg-discount text-badge-fg-discount border-badge-border-discount',
       ],
-      info: ['bg-badge-info-bg text-badge-info-fg border-badge-border-info'],
+      info: ['bg-badge-bg-info text-badge-fg-info border-badge-border-info'],
       success: [
-        'bg-badge-success-bg text-badge-success-fg border-badge-border-success',
+        'bg-badge-bg-success text-badge-fg-success border-badge-border-success',
       ],
       warning: [
-        'bg-badge-warning-bg text-badge-warning-fg border-badge-border-warning',
+        'bg-badge-bg-warning text-badge-fg-warning border-badge-border-warning',
       ],
       danger: [
-        'bg-badge-danger-bg text-badge-danger-fg border-badge-border-danger',
+        'bg-badge-bg-danger text-badge-fg-danger border-badge-border-danger',
       ],
       outline: [
-        'bg-badge-outline-bg text-badge-outline-fg border-badge-border-outline',
+        'bg-badge-bg-outline text-badge-fg-outline border-badge-border-outline',
       ],
       dynamic: [],
     },
