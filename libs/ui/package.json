@@ -39,7 +39,10 @@
     "storybook": "storybook dev",
     "lint:tailwind": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js",
     "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix",
-    "check:unused-tokens": "node scripts/check-unused-tokens.js"
+    "check:unused-tokens": "node scripts/check-unused-tokens.js",
+    "validate:tokens": "node scripts/validate-token-usage.js && node scripts/validate-token-definitions.js",
+    "validate:token-usage": "node scripts/validate-token-usage.js",
+    "validate:token-definitions": "node scripts/validate-token-definitions.js"
   },
   "dependencies": {
     "@zag-js/accordion": "^1.15.0",
