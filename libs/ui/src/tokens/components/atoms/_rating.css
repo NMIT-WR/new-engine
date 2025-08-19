@@ -1,25 +1,29 @@
 @theme static {
-  /* Base tokens */
-  --color-rating: var(--color-highlight);
-  --color-rating-active: var(--color-warning);
+  /* === BASE COLORS === */
+  --color-rating-fg: var(--color-highlight);
+  --color-rating-fg-active: var(--color-warning);
 
-  --color-rating-disabled: --alpha(
-    var(--color-rating-active) /
+  /* === DISABLED STATES === */
+  --color-rating-fg-disabled: --alpha(
+    var(--color-rating-fg-active) /
     var(--opacity-disabled)
   );
 
-  /* Spacing */
+  /* === SPACING === */
   --spacing-rating-sm: var(--spacing-100);
   --spacing-rating-md: var(--spacing-150);
   --spacing-rating-lg: var(--spacing-200);
 
-  /*Size*/
+  /* === TYPOGRAPHY === */
   --text-rating-sm: var(--text-icon-sm);
   --text-rating-md: var(--text-icon-md);
   --text-rating-lg: var(--text-icon-lg);
 
-  /* Focus ring */
-  --color-rating-ring: --alpha(var(--color-rating-active) / var(--opacity-ring));
+  /* === FOCUS RINGS === */
+  --color-rating-ring: --alpha(
+    var(--color-rating-fg-active) /
+    var(--opacity-ring)
+  );
 }
 
 /* Semantic tokens for rating icons */

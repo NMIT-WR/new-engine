@@ -12,12 +12,12 @@ const rating = tv({
     item: [
       'cursor-pointer transition-colors duration-200',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-rating-ring',
-      'text-rating',
+      'text-rating-fg',
       // States
-      'data-[checked]:text-rating-active',
-      'data-[highlighted]:text-rating-active',
+      'data-[checked]:text-rating-fg-active',
+      'data-[highlighted]:text-rating-fg-active',
       'data-[disabled]:cursor-not-allowed',
-      'data-[disabled]:data-[highlighted]:text-rating-disabled',
+      'data-[disabled]:data-[highlighted]:text-rating-fg-disabled',
       'token-icon-rating',
       'data-[half]:token-icon-rating-half',
     ],
