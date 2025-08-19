@@ -36,7 +36,6 @@ export const buttonVariants = tv({
       md: 'p-button-md text-button-md rounded-button-md gap-button-md',
       lg: 'p-button-lg text-button-lg rounded-button-lg gap-button-lg',
     },
-
     block: {
       true: 'w-full',
     },

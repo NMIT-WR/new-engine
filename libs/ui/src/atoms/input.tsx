@@ -5,15 +5,12 @@ import { tv } from '../utils'
 const inputVariants = tv({
   base: [
     'block w-full',
-    'bg-input',
+    'bg-input-bg',
     'text-input-fg',
     'placeholder:text-input-placeholder',
     'border border-input-border',
     'rounded-input',
-    'transition-all duration-200',
-    'hover:bg-input-hover hover:border-input-border-hover',
-    'focus:outline-none focus:bg-input-focus focus:border-input-border-focus',
-    'focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-input-ring',
+    'transition-all duration-200 focus:outline-none',
     'disabled:pointer-events-none',
   ],
   variants: {
@@ -46,17 +43,20 @@ const inputVariants = tv({
         'placeholder:text-input-placeholder-warning',
       ],
     },
-    withButtonInside: {
-      false: '',
-      right: 'pr-with-button',
-      left: 'pl-with-button',
+    context: {
+      nested: 'border-none bg-transparent',
+      standalone: [
+        'hover:bg-input-bg-hover hover:border-input-border-hover',
+        'focus:bg-input-bg-focus focus:border-input-border-focus',
+        'focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-input-ring',
+      ],
     },
     hideSearchClear: {
       true: '[&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden',
     },
     disabled: {
       true: [
-        'bg-input-disabled',
+        'bg-input-bg-disabled',
         'border-input-border-disabled',
         'text-input-fg-disabled',
         'placeholder:text-input-placeholder-disabled',
@@ -67,7 +67,7 @@ const inputVariants = tv({
     size: 'md',
     variant: 'default',
     hideSearchClear: true,
-    withIconInside: false,
+    context: 'standalone',
   },
 })
 
@@ -80,9 +80,9 @@ export interface InputProps
 export function Input({
   size,
   variant,
+  context,
   disabled,
   ref,
-  withButtonInside,
   className,
   ...props
 }: InputProps) {
@@ -91,8 +91,8 @@ export function Input({
       className={inputVariants({
         size,
         variant,
+        context,
         disabled,
-        withButtonInside,
         className,
       })}
       disabled={disabled}

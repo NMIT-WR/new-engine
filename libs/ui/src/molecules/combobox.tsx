@@ -29,7 +29,6 @@ const comboboxVariants = tv({
       'w-full relative border-none bg-transparent',
       'focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-combobox-input-bg-hover',
       'focus:bg-combobox-input-bg-focused',
-      'py-input-md px-input-md',
       'placeholder:text-combobox-placeholder',
       'data-[disabled]:text-combobox-fg-disabled',
       'data-[disabled]:bg-combobox-disabled',
