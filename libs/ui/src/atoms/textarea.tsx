@@ -5,16 +5,16 @@ import { tv } from '../utils'
 const textareaVariants = tv({
   base: [
     'block w-full',
-    'bg-textarea',
+    'bg-textarea-bg',
     'text-textarea-fg',
     'placeholder:text-textarea-placeholder',
-    'border-(length:--textarea-border-width) border-textarea-border',
+    'border-(length:--border-textarea-width) border-textarea-border',
     'rounded-textarea',
     'transition-all duration-200',
-    'hover:bg-textarea-hover hover:border-textarea-border-hover',
-    'focus:outline-none focus:bg-textarea-focus focus:border-textarea-border-focus',
+    'hover:bg-textarea-bg-hover hover:border-textarea-border-hover',
+    'focus:outline-none focus:bg-textarea-bg-focus focus:border-textarea-border-focus',
     'focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-textarea-ring',
-    'disabled:pointer-events-none disabled:bg-textarea-disabled disabled:border-textarea-border-disabled disabled:text-textarea-fg-disabled',
+    'disabled:pointer-events-none disabled:bg-textarea-bg-disabled disabled:border-textarea-border-disabled disabled:text-textarea-fg-disabled',
   ],
   variants: {
     variant: {
@@ -40,7 +40,7 @@ const textareaVariants = tv({
       ],
       borderless: [
         'border-transparent',
-        'bg-textarea-borderless',
+        'bg-textarea-bg-borderless',
         'hover:bg-fill-hover',
         'focus:bg-fill-active',
       ],
@@ -57,7 +57,7 @@ const textareaVariants = tv({
       both: 'resize',
     },
     readonly: {
-      true: 'bg-textarea-disabled cursor-default pointer-events-none opacity-90 text-textarea-fg-disabled border-textarea-border-disabled',
+      true: 'bg-textarea-bg-disabled cursor-default pointer-events-none opacity-90 text-textarea-fg-disabled border-textarea-border-disabled',
     },
   },
   defaultVariants: {
