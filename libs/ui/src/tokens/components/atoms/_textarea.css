@@ -1,4 +1,5 @@
 @theme static {
+  --opacity-borderless: 60%;
   /* === BASE COLOR MAPPING === */
   --color-textarea-base: var(--color-fill-base);
   --color-textarea-accent: var(--color-primary);
@@ -9,10 +10,10 @@
   /* === DERIVED COLORS === */
   /* Background colors - using reference layer */
   --color-textarea-bg: var(--color-textarea-base);
-  --color-textarea-bg-success: var(--color-textarea-success);
-  --color-textarea-bg-warning: var(--color-textarea-warning);
-  --color-textarea-bg-danger: var(--color-textarea-danger);
-  --color-textarea-bg-borderless: --alpha(var(--color-textarea-base) / 80%);
+  --color-textarea-bg-borderless: --alpha(
+    var(--color-textarea-base) /
+    var(--opacity-borderless)
+  );
 
   /* Foreground colors */
   --color-textarea-fg: var(--color-fg-primary);
@@ -66,15 +67,9 @@
   );
 
   /* Borderless variant */
-  --color-textarea-bg-borderless-hover: oklch(
-    from var(--color-textarea-bg-borderless)
-      calc(l - var(--surface-increment) * 2) c h
-  );
+  --color-textarea-bg-borderless-hover: var(--color-textarea-base);
 
-  --color-textarea-bg-borderless-focus: oklch(
-    from var(--color-textarea-bg-borderless)
-      calc(l - var(--surface-increment) * 2) c h
-  );
+  --color-textarea-bg-borderless-focus: var(--color-textarea-base);
 
   /* === DISABLED STATES === */
   --color-textarea-bg-disabled: var(--color-disabled-bg);

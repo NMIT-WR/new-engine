@@ -46,20 +46,6 @@ export const ValidationStates: Story = {
   ),
 }
 
-/**
- * Demonstrates additional visual and functional modifiers.
- */
-export const VisualModifiers: Story = {
-  render: () => (
-    <VariantContainer>
-      <VariantGroup title="Shadow Variants">
-        <Textarea shadow="none" placeholder="No shadow (default)" />
-        <Textarea shadow="sm" placeholder="Small shadow" />
-        <Textarea shadow="md" placeholder="Medium shadow" />
-      </VariantGroup>
-    </VariantContainer>
-  ),
-}
 
 /**
  * Comprehensive overview of all key variants.
@@ -78,6 +64,7 @@ export const AllVariants: Story = {
         <Textarea resize="x" placeholder="Horizontal resize" />
         <Textarea resize="none" placeholder="No resize" />
         <Textarea resize="both" placeholder="Resize both" />
+        <Textarea resize="auto" placeholder="Auto-sizing - grows with content" />
       </VariantGroup>
 
       <VariantGroup title="Validation States">
@@ -93,6 +80,27 @@ export const AllVariants: Story = {
         <Textarea disabled placeholder="Disabled textarea" />
         <Textarea readonly placeholder="Readonly textarea" />
       </VariantGroup>
+    </VariantContainer>
+  ),
+}
+
+/**
+ * Demonstrates auto-sizing textarea that grows with content.
+ */
+export const AutoSizing: Story = {
+  render: () => (
+    <VariantContainer>
+      <VariantGroup title="Auto-sizing Textareas">
+        <div className="w-80">
+          <Textarea 
+            resize="auto"
+            size="sm"
+            defaultValue="This auto-sizing textarea starts with content. Try adding more lines - it will grow automatically!"
+          />
+        </div>
+
+      </VariantGroup>
+
     </VariantContainer>
   ),
 }
