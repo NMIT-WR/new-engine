@@ -11,7 +11,7 @@
   --color-button-tertiary: var(--color-tertiary);
   --color-button-warning: var(--color-warning);
   --color-button-danger: var(--color-danger);
-  --color-button-borderless: var(--color-base);
+  --color-button-borderless: transparent;
 
   /* === DERIVED COLORS === */
   /* Background colors - using reference layer */
