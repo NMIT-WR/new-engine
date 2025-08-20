@@ -5,8 +5,17 @@
   --radius-lg: 12px;
   --radius-full: 9999px;
 
-  --shadow-primary: 0 1px 3px -1px rgba(0, 0, 0, 0.16), 0 2px 6px -1px
-    rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+  --color-shadow-1: light-dark(rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 1));
+  --color-shadow-2: light-dark(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 1));
+  --color-shadow-3: light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 1));
+
+  --offset-shadow-1: 0px 1px 3px 0px;
+  --offset-shadow-2: 0px 5px 6px 0px;
+  --offset-shadow-3: 1px 1px 20px 0px;
+
+  --shadow-primary: var(--offset-shadow-1) var(--color-shadow-1),
+    var(--offset-shadow-2) var(--color-shadow-2), var(--offset-shadow-3)
+    var(--color-shadow-3);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
