@@ -70,6 +70,44 @@ export const Multiple: Story = {
   ),
 }
 
+export const ShadowVariants: Story = {
+  render: () => (
+    <div className="w-96 space-y-8">
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Shadow: none (default)</h3>
+        <Accordion items={accordionItems} shadow="none" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Shadow: sm</h3>
+        <Accordion items={accordionItems} shadow="sm" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Shadow: md</h3>
+        <Accordion items={accordionItems} shadow="md" />
+      </div>
+    </div>
+  ),
+}
+
+export const SizeVariants: Story = {
+  render: () => (
+    <div className="w-96 space-y-8">
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Size: sm</h3>
+        <Accordion items={accordionItems} size="sm" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Size: md (default)</h3>
+        <Accordion items={accordionItems} size="md" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Size: lg</h3>
+        <Accordion items={accordionItems} size="lg" />
+      </div>
+    </div>
+  ),
+}
+
 export const ControlledAccordion: Story = {
   render: () => {
     const [activeItems, setActiveItems] = useState<string[]>(['item-1'])
