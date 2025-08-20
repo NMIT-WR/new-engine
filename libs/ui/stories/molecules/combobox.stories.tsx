@@ -106,6 +106,34 @@ export const MultipleSelection: Story = {
   },
 }
 
+export const Sizes: Story = {
+  render: () => (
+    <VariantContainer>
+      <Combobox
+        label="Small Size"
+        placeholder="Select country"
+        items={countries}
+        helper="Small combobox variant"
+        size="sm"
+      />
+      <Combobox
+        label="Medium Size"
+        placeholder="Select country"
+        items={countries}
+        helper="Medium combobox variant (default)"
+        size="md"
+      />
+      <Combobox
+        label="Large Size"
+        placeholder="Select country"
+        items={countries}
+        helper="Large combobox variant"
+        size="lg"
+      />
+    </VariantContainer>
+  ),
+}
+
 export const ComplexStory: Story = {
   render: () => {
     const [selectedCountryValue, setSelectedCountryValue] = useState<
