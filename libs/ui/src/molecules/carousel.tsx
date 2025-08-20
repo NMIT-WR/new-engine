@@ -27,7 +27,7 @@ const carouselVariants = tv({
     root: ['relative overflow-hidden', 'rounded-carousel'],
     control: [
       'flex absolute bottom-0 left-1/2 -translate-x-1/2',
-      'gap-carousel-control p-carousel-control',
+      'gap-carousel-control-gap p-carousel-control',
       'bg-carousel-control-bg',
       'rounded-carousel',
     ],
@@ -44,14 +44,16 @@ const carouselVariants = tv({
     prevTrigger: [],
     nextTrigger: [],
     indicatorGroup: [
-      'flex justify-center w-full items-center gap-carousel-indicator',
+      'flex justify-center w-full items-center gap-carousel-indicator-gap',
     ],
     indicator: [
       'aspect-carousel-indicator w-carousel-indicator',
       'data-[current]:bg-carousel-indicator-active',
     ],
     autoplayIcon: ['icon-[mdi--play]', 'data-[pressed=true]:icon-[mdi--pause]'],
-    autoplayTrigger: ['absolute top-1 right-1 z-10'],
+    autoplayTrigger: [
+      'absolute top-carousel-trigger-top right-carousel-trigger-right z-50',
+    ],
     spacer: ['flex-1'],
   },
   compoundSlots: [
