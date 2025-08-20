@@ -5,22 +5,19 @@ import { Link } from '../atoms/link'
 // === VARIANTS ===
 const breadcrumbsVariants = tv({
   slots: {
-    root: [
-      'inline-flex flex-wrap items-center p-breadcrumb',
-      'bg-breadcrumb-bg',
-    ],
+    root: ['inline-flex flex-wrap items-center', 'bg-breadcrumb-bg'],
     list: ['flex items-center', 'break-words', 'list-none'],
     item: [
       'inline-flex items-center',
       'text-breadcrumb-item-fg',
-      'hover:text-breadcrumb-link-hover',
-      'data-[current=true]:text-breadcrumb-current-fg',
+      'hover:text-breadcrumb-fg-hover',
+      'data-[current=true]:text-breadcrumb-fg-current',
       'h-full',
     ],
     link: [
       'no-underline',
       'cursor-pointer',
-      'hover:text-breadcrumb-link-hover',
+      'hover:text-breadcrumb-fg-hover',
       'focus:outline-none focus:ring-2 focus:ring-breadcrumb-link-ring focus:ring-offset-2',
     ],
     currentLink: ['cursor-default'],
@@ -46,21 +43,21 @@ const breadcrumbsVariants = tv({
   variants: {
     size: {
       sm: {
-        root: 'text-breadcrumb-sm',
+        root: 'text-breadcrumb-sm p-breadcrumb-sm',
         list: 'gap-breadcrumb-sm',
         item: 'gap-breadcrumb-sm',
         separator: 'gap-breadcrumb-sm',
         ellipsis: 'text-breadcrumb-sm',
       },
       md: {
-        root: 'text-breadcrumb-md',
+        root: 'text-breadcrumb-md p-breadcrumb-md',
         list: 'gap-breadcrumb-md',
         item: 'gap-breadcrumb-md',
         separator: 'gap-breadcrumb-md',
         ellipsis: 'text-breadcrumb-md',
       },
       lg: {
-        root: 'text-breadcrumb-lg',
+        root: 'text-breadcrumb-lg p-breadcrumb-lg',
         list: 'gap-breadcrumb-lg',
         item: 'gap-breadcrumb-lg',
         separator: 'gap-breadcrumb-lg',
