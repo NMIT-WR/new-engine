@@ -7,7 +7,7 @@
   /* === BASE TOKEN MAPPING === */
   --color-switch-bg: var(--color-overlay);
   --color-switch-checked: var(--color-success);
-  --color-switch-border: var(--color-stroke-primary);
+  --color-switch-border: var(--color-border-primary);
   --color-switch-thumb: var(--color-base-light);
 
   /* === STATE VARIATIONS === */
@@ -23,7 +23,7 @@
   /* === DISABLED STATES === */
   --color-switch-disabled: var(--color-disabled-bg);
   --color-switch-thumb-disabled: --alpha(
-    var(--color-disabled-text) /
+    var(--color-disabled-fg) /
     var(--opacity-disabled)
   );
   --color-switch-border-disabled: var(--color-disabled-border);
@@ -35,7 +35,7 @@
 
   /* === TEXT COLORS === */
   --color-switch-label: var(--color-fg-primary);
-  --color-switch-label-disabled: var(--color-disabled-text);
+  --color-switch-label-disabled: var(--color-disabled-fg);
 
   /* === FOCUS RING === */
   --color-switch-ring: --alpha(
@@ -44,10 +44,10 @@
   );
 
   /* === SPACING === */
-  --spacing-root: var(--spacing-sm);
-  --spacing-control-padding: var(--spacing-3xs);
-  --spacing-track-width: var(--spacing-xl);
-  --spacing-track-height: var(--spacing-md);
+  --spacing-root: var(--spacing-250);
+  --spacing-control-padding: var(--spacing-100);
+  --spacing-track-width: var(--spacing-600);
+  --spacing-track-height: var(--spacing-350);
   /* Padding inside the control container */
   --spacing-control-padding: 0.125rem;
 

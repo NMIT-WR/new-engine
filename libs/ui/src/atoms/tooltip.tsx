@@ -5,7 +5,7 @@ import { type VariantProps, tv } from 'tailwind-variants'
 
 const tooltipVariants = tv({
   slots: {
-    trigger: ['inline-flex py-0 px-0'],
+    trigger: ['inline-flex'],
     content: [
       '[--arrow-size:var(--tooltip-arrow-size)]',
       '[--arrow-background:var(--tooltip-arrow-background)]',

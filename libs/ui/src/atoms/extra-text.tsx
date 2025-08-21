@@ -3,7 +3,7 @@ import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 
 const extraTextVariants = tv({
-  base: ['text-helper-text'],
+  base: ['text-helper-fg'],
   variants: {
     size: {
       sm: 'text-helper-sm',

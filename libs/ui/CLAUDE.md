@@ -8,15 +8,9 @@ This is a React 19 + Tailwind v4 UI library using atomic design principles. We e
 - **tailwind-variants** for component styling
 - **Zag.js** for complex interactive components
 
-**IMPORTANT**: Never mention or use `tailwind.config`, `forwardRef`, or `useCallback`.
+**CRITICAL**: Never mention or use `tailwind.config`, `forwardRef`, or `useCallback`.
 
-## Required Tools
-
-**YOU MUST** use these tools when implementing components:
-- **MCP Quillopy**: For studying Tailwind v4, tailwind-variants, and React 19 documentation
-- **Context7**: For researching Zag.js patterns and component implementations
-
-## File Structure
+## Architecture Overview
 
 ```
 libs/ui/src/
@@ -24,112 +18,209 @@ libs/ui/src/
 ├── molecules/      # Composite components (Dialog, Combobox, Toast)
 ├── organisms/      # Complex sections (rarely used in this library)
 ├── tokens/         # Design tokens
-│   └── components/ # Component-specific tokens (_button.css, _combobox.css)
+│   ├── components/
+│   │   ├── atoms/  # Atomic component tokens
+│   │   └── molecules/ # Molecular component tokens
+│   └── _semantic.css # Base semantic tokens
 └── utils/          # Shared utilities (tv setup)
 ```
 
-## CSS Token System
+## Component Development Workflow
 
-### Token Definition Rules
+### Creating New Component (Required Process)
 
-**IMPORTANT**: All component tokens must be defined in `@theme static` blocks:
+1. **Research Phase**:
+   - **Context7**: Study Zag.js component documentation for interactive components
+   - **MCP Quillopy**: Research tailwind-variants patterns and Tailwind v4 features
+
+2. **File Creation**:
+   - Component: `libs/ui/src/[atoms|molecules]/component-name.tsx`
+   - Tokens: `libs/ui/src/tokens/components/[atoms|molecules]/_component-name.css`
+   - Story: `libs/ui/stories/component-name.stories.tsx`
+
+3. **Token Definition** (follow rules below)
+
+4. **Component Implementation** using tv() pattern
+
+5. **Story Creation** covering all variants and states
+
+## Token System Rules (MANDATORY)
+
+### Token File Structure
+
+**ALL component token files MUST follow this exact structure:**
 
 ```css
-/* libs/ui/src/tokens/components/_component-name.css */
+/* Only for opacity values or calculations */
+:root {
+  --opacity-component-specific: 50%;
+}
+
 @theme static {
-  /* Category-Component-Property-State pattern */
-  --color-button-bg: var(--color-primary);
-  --color-button-bg-hover: oklch(from var(--color-button-bg) calc(l + var(--state-hover)) c h);
-  --spacing-button-sm: var(--spacing-xs);
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-component-primary: var(--color-primary);
+  --color-component-secondary: var(--color-secondary);
+  --color-component-base: var(--color-surface);
+  
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-component-bg: var(--color-component-base);
+  --color-component-bg-primary: var(--color-component-primary);
+  
+  /* Foreground colors */
+  --color-component-fg: var(--color-fg-primary);
+  --color-component-fg-primary: var(--color-fg-reverse);
+  
+  /* Border colors */
+  --color-component-border: var(--color-border-primary);
+  --color-component-border-primary: var(--color-component-primary);
+  
+  /* === STATE VARIATIONS === */
+  --color-component-bg-hover: oklch(from var(--color-component-bg) calc(l + var(--state-hover)) c h);
+  --color-component-bg-primary-hover: oklch(from var(--color-component-bg-primary) calc(l + var(--state-hover)) c h);
+  
+  /* === COMPONENT VARIANTS === */
+  /* Light, outlined, borderless variants as needed */
+  
+  /* === VALIDATION STATES === */
+  --color-component-bg-danger: var(--color-danger);
+  --color-component-bg-success: var(--color-success);
+  
+  /* === DISABLED STATES === */
+  --color-component-bg-disabled: var(--color-disabled-bg);
+  
+  /* === SPACING === */
+  --spacing-component-padding: var(--spacing-250);
+  --spacing-component-gap: var(--spacing-200);
+  
+  /* === TYPOGRAPHY === */
+  --text-component-sm: var(--text-sm);
+  --text-component-md: var(--text-md);
+  
+  /* === BORDERS & RADIUS === */
+  --border-width-component: var(--border-width-sm);
+  --radius-component: var(--radius-md);
+  
+  /* === FOCUS RINGS === */
+  --color-component-ring-primary: --alpha(var(--color-component-primary) / var(--opacity-ring));
 }
 ```
 
-### Allowed Token Prefixes
+### Naming Convention Authority
 
-**YOU MUST** use these prefixes for design tokens:
+**Mandatory Pattern**: `--[prefix]-[component]-[part?]-[property]-[state?]`
 
-- `--color-`: All color values
-- `--text-`: Font sizes (must map to Tailwind text sizes)
-- `--font-weight-`: Font weights (100-900 or semantic)
-- `--border-`: Border width, style, color
-- `--opacity-`: Transparency values (0-100%)
-- `--spacing-`: Padding, margin, gap, AND width/height values that need max/min variants
-- `--width-`: Width values (only when you don't need max/min variants)
-- `--height-`: Height values (only when you don't need max/min variants)
-- `--gap-`: Flex/grid gaps
-- `--padding-`: Padding values
-- `--margin-`: Margin values
+**Required Prefixes**:
+- `--color-`: ALL colors (never without suffix)
+- `--spacing-`: Spacing including width/height needing max/min variants
+- `--text-`: Font sizes only
+- `--border-`: Border properties
 - `--radius-`: Border radius
 - `--shadow-`: Box shadows
+- `--opacity-`: Transparency values
 
-**IMPORTANT**: Use `--spacing-` prefix for any width/height values that need `max-w`/`min-w`/`max-h`/`min-h` utilities!
+**Required Color Suffixes**:
+- `-bg`: Background colors (MANDATORY - never `--color-button`)
+- `-fg`: Foreground/text colors (never `-text`)
+- `-border`: Border colors
+- `-hover`: Hover states
+- `-active`: Active states
+- `-disabled`: Disabled states
 
-### Forbidden Patterns
+**Component Naming Rules**:
+```css
+/* ✅ CORRECT - Consistent with semantic tokens */
+--color-button-bg-primary     /* Matches --color-bg-primary pattern */
+--color-accordion-fg-title    /* Matches --color-fg-primary pattern */
+--color-product-card-bg       /* Base background */
 
-- ❌ `--grid-cols-product-grid-base` (too specific)
-- ❌ `--layout-*` (use specific properties like `--spacing-` or `--width-`)
-- ❌ `--component-specific-anything` (aim for generic, reusable token names)
+/* ❌ FORBIDDEN */
+--color-btn-primary           /* Use 'button' not 'btn' */
+--color-pc-bg                 /* Use 'product-card' not 'pc' */
+--color-button                /* Missing -bg suffix */
+--color-button-text           /* Use -fg not -text */
+--color-button-primary-bg     /* Wrong order - should be -bg-primary */
+```
+
+### Two-Layer Token Strategy
+
+**ALWAYS** implement reference layer for theming:
+
+```css
+/* === BASE COLOR MAPPING === */
+/* Reference layer - allows easy theming */
+--color-component-primary: var(--color-primary);
+--color-component-secondary: var(--color-secondary);
+
+/* === DERIVED COLORS === */  
+/* Actual usage tokens */
+--color-component-bg-primary: var(--color-component-primary);
+--color-component-fg-primary: var(--color-fg-reverse);
+```
+
+**Benefits**: One-line component theme changes, consistent theming patterns.
 
 ### Token Usage in Components
 
 ```typescript
 // ✅ CORRECT - Use Tailwind classes that reference your tokens
-'bg-button-bg'         // Uses --color-button-bg
-'text-button-fg'       // Uses --color-button-fg
-'p-button-sm'          // Uses --spacing-button-sm
+'bg-button-bg-primary'     // Uses --color-button-bg-primary
+'text-button-fg-primary'   // Uses --color-button-fg-primary
+'p-button-sm'             // Uses --spacing-button-sm
 
 // ❌ WRONG - Never use arbitrary values
-'bg-[var(--color-button-bg)]'
+'bg-[var(--color-button-bg-primary)]'
 'p-[var(--spacing-button-sm)]'
 ```
 
-## Component Development Workflow
+## Component Implementation Patterns
 
-### 1. Creating New Component
+### Basic Component Structure
 
-1. **Research with MCP Quillopy/Context7**:
-   - For Zag.js components: Study the specific component documentation
-   - For styling: Research tailwind-variants patterns
+```typescript
+import { tv } from '../utils'
 
-2. **Create Files**:
-   - Component: `libs/ui/src/[atoms|molecules]/component-name.tsx`
-   - Tokens: `libs/ui/src/tokens/components/_component-name.css`
-   - Story: `libs/ui/stories/component-name.stories.tsx`
+const componentVariants = tv({
+  slots: {
+    root: ['flex', 'bg-component-bg', 'data-[state=open]:bg-component-bg-open'],
+    content: ['text-component-fg', 'p-component-padding']
+  },
+  variants: {
+    variant: {
+      primary: { 
+        root: 'bg-component-bg-primary', 
+        content: 'text-component-fg-primary' 
+      },
+      secondary: { 
+        root: 'bg-component-bg-secondary', 
+        content: 'text-component-fg-secondary' 
+      }
+    },
+    size: {
+      sm: { root: 'p-component-sm', content: 'text-component-sm' },
+      md: { root: 'p-component-md', content: 'text-component-md' }
+    }
+  },
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md'
+  }
+})
 
-3. **Define Tokens** (follow prefix rules above)
+export function Component({ variant, size, ref, ...props }) {
+  const { root, content } = componentVariants({ variant, size })
+  return (
+    <div ref={ref} className={root()} {...props}>
+      <div className={content()}>Content</div>
+    </div>
+  )
+}
+```
 
-4. **Implement Component**:
-   ```typescript
-   import { tv } from '../utils'
-   
-   const componentVariants = tv({
-     slots: {
-       root: ['flex', 'bg-component-bg', 'data-[state=open]:bg-component-bg-open'],
-       content: ['text-component-fg', 'p-component']
-     },
-     variants: {
-       size: {
-         sm: { root: 'p-component-sm', content: 'text-component-sm' },
-         md: { root: 'p-component-md', content: 'text-component-md' }
-       }
-     }
-   })
-   
-   export function Component({ size = 'md', ref, ...props }) {
-     const { root, content } = componentVariants({ size })
-     return (
-       <div ref={ref} className={root()} {...props}>
-         <div className={content()}>Content</div>
-       </div>
-     )
-   }
-   ```
+### Zag.js Interactive Components
 
-5. **Create Comprehensive Stories** covering all variants and states
-
-## Zag.js Integration Pattern
-
-**IMPORTANT**: Always use MCP Quillopy/Context7 to study Zag.js documentation for the specific component.
+**REQUIRED**: Use Context7 to study specific Zag.js component documentation.
 
 ```typescript
 import * as component from '@zag-js/component-name'
@@ -153,40 +244,138 @@ export function Component(props: ComponentProps) {
 }
 ```
 
-## State-Based Styling
+### State-Based Styling
 
 Use data attributes for dynamic styling:
 
 ```typescript
 // State attributes from Zag.js or custom
 'data-[state=open]:rotate-180'
-'data-[highlighted]:bg-item-hover'
+'data-[highlighted]:bg-component-bg-hover'
 'data-[disabled]:opacity-disabled'
-'data-[validation=error]:border-danger'
+'data-[validation=error]:border-component-border-danger'
 ```
 
-## Common Pitfalls to Avoid
+## Required Tools Integration
 
-1. **Token Usage**:
-   - ❌ Using arbitrary values: `bg-[#ff0000]`
-   - ✅ Using token-based classes: `bg-button-danger`
+**YOU MUST use these tools**:
+- **Context7**: For researching Zag.js patterns and component implementations
+- **MCP Quillopy**: For studying Tailwind v4, tailwind-variants, and React 19 documentation
 
-2. **React 19 Patterns**:
-   - ❌ `forwardRef<HTMLDivElement, Props>((props, ref) => ...)`
-   - ✅ `function Component({ ref, ...props }: Props & { ref?: Ref<HTMLDivElement> })`
+**When to use each**:
+- Creating interactive components → Context7 first
+- Styling questions → MCP Quillopy
+- Complex state management → Context7 for Zag.js patterns
 
-3. **Tailwind v4**:
-   - ❌ Mentioning `tailwind.config.js`
-   - ✅ Using `@theme static` blocks
+## Development Commands
 
-## Validation Checklist
+```bash
+# Component development
+bunx nx run ui:storybook    # Start Storybook for component preview
+bunx nx run ui:build        # Build UI library
+
+# Token validation
+pnpm validate:tokens        # Validate token naming and structure
+pnpm check:unused-tokens    # Find unused token definitions
+```
+
+## Quality Standards
+
+### Component Validation Checklist
 
 Before considering a component complete:
 
-- [ ] Token file follows all prefix rules
-- [ ] Component uses `tv()` with token-based classes
-- [ ] No arbitrary values in styling
-- [ ] Story file covers all variants and states
-- [ ] Used MCP Quillopy/Context7 for documentation research
-- [ ] No React 18 patterns (forwardRef, useCallback)
-- [ ] Data attributes used for state-based styling
+- [ ] **Token file structure**: Follows mandatory section order
+- [ ] **Token naming**: All colors have explicit suffixes (-bg, -fg)
+- [ ] **Reference layer**: Implemented for all themeable properties
+- [ ] **Component implementation**: Uses tv() with token-based classes
+- [ ] **No arbitrary values**: All styling uses semantic tokens
+- [ ] **Story coverage**: All variants and states documented
+- [ ] **Tool usage**: Used Context7/MCP Quillopy for research
+- [ ] **React 19 patterns**: No forwardRef, ref as prop
+- [ ] **State styling**: Data attributes for dynamic states
+- [ ] **No forbidden patterns**: No tailwind.config mentions
+
+### Common Pitfalls to Avoid
+
+1. **Token Naming Errors**:
+   - ❌ `--color-button` (missing -bg suffix)
+   - ❌ `--color-btn-primary` (use 'button' not 'btn')
+   - ❌ `--color-button-text` (use -fg not -text)
+   - ✅ `--color-button-bg-primary`
+
+2. **React 19 Violations**:
+   - ❌ `forwardRef<HTMLDivElement, Props>((props, ref) => ...)`
+   - ❌ `useCallback(() => {}, [])`
+   - ✅ `function Component({ ref, ...props }: Props & { ref?: Ref<HTMLDivElement> })`
+
+3. **Tailwind v4 Violations**:
+   - ❌ Mentioning `tailwind.config.js`
+   - ❌ Using arbitrary values `bg-[#ff0000]`
+   - ✅ Using `@theme static` blocks and token classes
+
+4. **Architecture Violations**:
+   - ❌ Direct semantic token usage: `bg-primary`
+   - ❌ Missing reference layer
+   - ✅ Component-specific tokens: `bg-button-bg-primary`
+
+## Storybook Integration
+
+```typescript
+// component-name.stories.tsx
+export default {
+  title: 'Atoms/ComponentName',
+  component: Component,
+  parameters: {
+    docs: { description: { component: 'Component description...' } }
+  }
+}
+
+// Cover ALL variants and states
+export const AllVariants: Story = {
+  render: () => (
+    <div className="grid gap-4">
+      <Component variant="primary" size="sm" />
+      <Component variant="secondary" size="md" />
+      <Component variant="primary" size="lg" disabled />
+    </div>
+  )
+}
+```
+
+## File Organization Rules
+
+### Component Files
+- **Atoms**: `src/atoms/component-name.tsx`
+- **Molecules**: `src/molecules/component-name.tsx`
+- **Stories**: `stories/component-name.stories.tsx`
+
+### Token Files
+- **Atoms**: `src/tokens/components/atoms/_component-name.css`
+- **Molecules**: `src/tokens/components/molecules/_component-name.css`
+
+### Naming Conventions
+- **Files**: kebab-case (`component-name.tsx`)
+- **Components**: PascalCase (`ComponentName`)
+- **Tokens**: kebab-case (`--color-component-name-bg`)
+
+## Do Not Section
+
+**NEVER**:
+- Mention `tailwind.config.js` or `tailwind.config.ts`
+- Use `forwardRef` or `useCallback` (React 19 doesn't need them)
+- Use arbitrary values in styling (`bg-[#ff0000]`)
+- Create tokens without proper prefixes
+- Skip the reference layer in token architecture
+- Use abbreviations in component names (`btn`, `pc`, etc.)
+- Create components without comprehensive stories
+- Implement interactive components without studying Zag.js docs via Context7
+
+**ALWAYS**:
+- Use `@theme static` blocks for token definitions
+- Implement two-layer token strategy (reference + derived)
+- Use data attributes for state-based styling
+- Research with Context7 for Zag.js components
+- Research with MCP Quillopy for Tailwind v4 features
+- Follow the mandatory token file structure
+- Create comprehensive Storybook stories

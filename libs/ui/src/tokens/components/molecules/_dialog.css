@@ -16,13 +16,13 @@
   /* ===== DIALOG CONTENT PANEL ===== */
   --color-dialog-content-bg: var(--color-dialog-bg);
   --color-dialog-content-fg: var(--color-dialog-fg);
-  --color-dialog-content-border: var(--color-stroke-primary);
+  --color-dialog-content-border: var(--color-border-primary);
   --radius-dialog-content: var(--radius-sm);
   --shadow-dialog-content: var(--shadow-xl);
 
-  --gap-dialog-content: var(--spacing-sm);
+  --gap-dialog-content: var(--spacing-250);
   --height-dialog-content: 80svh;
-  --padding-dialog-content: var(--spacing-lg);
+  --padding-dialog-content: var(--spacing-450);
 
   /* ===== DIALOG TITLE ===== */
   --text-dialog-title-size: var(--text-xl);
@@ -36,7 +36,7 @@
   /* ===== DIALOG CLOSE TRIGGER (Button) ===== */
   --color-dialog-close-trigger-fg: var(--color-dialog-fg);
   --radius-dialog-close-trigger: var(--radius-full);
-  --spacing-dialog-close-trigger-padding: var(--spacing-2xs);
+  --spacing-dialog-close-trigger-padding: var(--spacing-150);
 
   /* ===== FOCUS RING (General for focusable elements within dialog) ===== */
   --color-dialog-ring: --alpha(var(--color-primary) / var(--opacity-ring));

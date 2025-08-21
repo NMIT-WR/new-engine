@@ -59,7 +59,7 @@ const carouselVariants = tv({
       slots: ['autoplayTrigger', 'indicator', 'prevTrigger', 'nextTrigger'],
       class: [
         'p-carousel-trigger bg-carousel-trigger-bg',
-        'focus:outline-none text-carousel-trigger-text focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2',
+        'focus:outline-none text-carousel-trigger-fg focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2',
       ],
     },
   ],

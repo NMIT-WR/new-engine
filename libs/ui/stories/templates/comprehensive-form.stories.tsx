@@ -8,7 +8,7 @@ import { Textarea } from '../../src/atoms/textarea'
 import { Combobox } from '../../src/molecules/combobox'
 import { FormCheckbox } from '../../src/molecules/form-checkbox'
 import { FormInput } from '../../src/molecules/form-input'
-import { NumericInput } from '../../src/molecules/numeric-input'
+import { NumericInput } from '../../src/atoms/numeric-input'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
 
