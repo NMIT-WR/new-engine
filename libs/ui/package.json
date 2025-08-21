@@ -31,7 +31,10 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "src/tokens"],
+  "files": [
+    "dist",
+    "src/tokens"
+  ],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
@@ -51,6 +54,7 @@
     "@zag-js/combobox": "^1.15.0",
     "@zag-js/dialog": "^1.15.0",
     "@zag-js/i18n-utils": "^1.15.0",
+    "@zag-js/menu": "^1.15.0",
     "@zag-js/number-input": "^1.15.0",
     "@zag-js/pagination": "^1.15.0",
     "@zag-js/popover": "^1.15.0",
@@ -59,7 +63,6 @@
     "@zag-js/select": "^1.15.0",
     "@zag-js/slider": "^1.15.0",
     "@zag-js/steps": "^1.15.0",
-    "@zag-js/menu": "^1.15.0",
     "@zag-js/switch": "^1.15.0",
     "@zag-js/tabs": "^1.15.0",
     "@zag-js/toast": "^1.15.0",
@@ -90,6 +93,7 @@
     "eslint": "^9.0.0",
     "eslint-plugin-tailwindcss": "npm:@hyoban/eslint-plugin-tailwindcss@4.0.0-alpha.12",
     "glob": "^11.0.2",
+    "next": "^15.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "storybook": "^8.6.12",
