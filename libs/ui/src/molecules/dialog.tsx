@@ -48,8 +48,6 @@ const dialogVariants = tv({
   },
 })
 
-const isModal = dialogVariants.defaultVariants.behavior === 'modal'
-
 export interface DialogProps extends VariantProps<typeof dialogVariants> {
   open?: boolean
   onOpenChange?: (details: { open: boolean }) => void
@@ -78,11 +76,12 @@ export function Dialog({
   initialFocusEl,
   finalFocusEl,
   role = 'dialog',
+  behavior = 'modal',
   closeOnEscape = true,
-  closeOnInteractOutside = isModal && true,
-  preventScroll = isModal && true,
-  trapFocus = isModal && true,
-  modal = isModal && true,
+  closeOnInteractOutside = behavior === 'modal' && true,
+  preventScroll = behavior === 'modal' && true,
+  trapFocus = behavior === 'modal' && true,
+  modal = behavior === 'modal' && true,
   customTrigger = false,
   triggerText = 'Open',
   title,
@@ -119,7 +118,7 @@ export function Dialog({
     description: descriptionSlot,
     closeTrigger,
     actions: actionsSlot,
-  } = dialogVariants()
+  } = dialogVariants({ behavior })
 
   return (
     <>
