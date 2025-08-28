@@ -1,0 +1,37 @@
+@theme static {
+  /* === DERIVED COLORS === */
+  --color-color-selector-accent: var(--color-primary);
+  --color-color-selector-border: var(--color-highlight);
+  --color-color-selector-border-hover: var(--color-color-selector-accent);
+  --color-color-selector-selected: var(--color-color-selector-accent);
+  --color-color-selector-check: var(--color-white);
+  --color-color-selector-ring: var(--color-ring-primary);
+
+  /* === SPACING === */
+  --spacing-color-selector-sm: var(--spacing-250);
+  --spacing-color-selector-md: var(--spacing-350);
+  --spacing-color-selector-lg: var(--spacing-450);
+
+  /* === TYPOGRAPHY === */
+  --text-color-selector-sm: var(--text-xs);
+  --text-color-selector-md: var(--text-sm);
+  --text-color-selector-lg: var(--text-md);
+  --spacing-color-selector-size: 50%;
+
+  /* === BORDERS & RADIUS === */
+  --radius-color-selector-full: var(--radius-full);
+  --radius-color-selector-sm: var(--radius-sm);
+  --radius-color-selector-md: var(--radius-md);
+  --radius-color-selector-lg: var(--radius-2xl);
+
+  /* === SHADOWS === */
+  --shadow-color-selector: var(--shadow-sm);
+}
+
+@utility token-icon-color-selector-selected {
+  @apply token-icon-check-bold;
+}
+
+@utility selector-disabled {
+  @apply grayscale-75;
+}
