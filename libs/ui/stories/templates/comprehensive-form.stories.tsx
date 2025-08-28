@@ -11,6 +11,7 @@ import { FormInput } from '../../src/molecules/form-input'
 import { NumericInput } from '../../src/atoms/numeric-input'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
+import {RangeSlider} from '../../src/molecules/range-slider'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',
