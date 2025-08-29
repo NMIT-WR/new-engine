@@ -1,6 +1,11 @@
 import * as pagination from '@zag-js/pagination'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type ElementType, type HTMLAttributes, useId } from 'react'
+import {
+  type ElementType,
+  type HTMLAttributes,
+  type ReactElement,
+  useId,
+} from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Icon } from '../atoms/icon'
 import { LinkButton } from '../atoms/link-button'
@@ -88,7 +93,7 @@ export interface PaginationProps
   showPrevNext?: boolean
   onPageChange?: (page: number) => void
   dir?: 'ltr' | 'rtl'
-  linkAs?: ElementType
+  linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }
 
 export function Pagination({
