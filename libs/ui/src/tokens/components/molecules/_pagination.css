@@ -4,52 +4,65 @@
 
 @theme static {
   /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
   --color-pagination: var(--color-surface);
-  --color-pagination-active: var(--color-primary);
-  --color-pagination-hover: oklch(
-    from var(--color-pagination-active) calc(l + var(--state-hover)) c h
-  );
+  --color-pagination-accent: var(--color-primary);
 
-  /* Text colors */
-  --color-pagination-fg: var(--color-fg-primary);
-  --color-pagination-fg-active: var(--color-pagination-fg);
-  --color-pagination-outlined-fg-active: var(--color-pagination-active);
-  --color-pagination-fg-disabled: --alpha(
-    var(--color-pagination-fg) /
-    var(--opacity-disabled)
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-pagination-bg: var(--color-pagination);
+  --color-pagination-bg-active: var(--color-pagination-accent);
+  --color-pagination-bg-hover: oklch(
+    from var(--color-pagination-accent) calc(l + var(--state-hover)) c h
   );
+  --color-pagination-neutral-bg: transparent;
+
+  /* Foreground colors */
+  --color-pagination-fg: var(--color-fg-primary);
+  --color-pagination-filled-fg-active: var(--color-fg-dark);
+  --color-pagination-outlined-fg-active: var(--color-pagination-accent);
+  --color-pagination-minimal-fg-active: var(--color-pagination-accent);
 
   /* Border colors */
   --color-pagination-border: var(--color-border-primary);
-  --color-pagination-border-active: var(--color-primary);
+  --color-pagination-border-active: var(--color-pagination-accent);
   --color-pagination-border-hover: --alpha(
     var(--color-pagination-border-active) /
     var(--opacity-pagination-hover)
+  );
+
+  /* === DISABLED STATES === */
+  --color-pagination-bg-disabled: var(--color-disabled-bg);
+  --color-pagination-fg-disabled: --alpha(
+    var(--color-pagination-fg) /
+    var(--opacity-disabled)
   );
   --color-pagination-border-disabled: --alpha(
     var(--color-pagination-border) /
     var(--opacity-disabled)
   );
 
-  /* Focus ring */
-  --color-pagination-ring: --alpha(var(--color-primary) / var(--opacity-ring));
-
-  /* Spacing */
+  /* === SPACING === */
   --spacing-pagination: var(--spacing-200);
   --spacing-pagination-list: var(--spacing-pagination);
+  --height-pagination-sm: 2em;
+  --height-pagination-md: 2.5em;
+  --height-pagination-lg: 3em;
 
-  /* height */
-  /* set relative height*/
-  --height-pagination: 2.5em;
+  /* === TYPOGRAPHY === */
+  --text-pagination-sm: var(--text-xs);
+  --text-pagination-md: var(--text-sm);
+  --text-pagination-lg: var(--text-md);
 
-  /* Typography */
-  --text-pagination-size: var(--text-sm);
-
-  /* Border radius */
+  /* === BORDERS & RADIUS === */
   --radius-pagination: var(--radius-sm);
-
-  /* Border width */
   --border-pagination-width: var(--border-width-sm);
+
+  /* === FOCUS RINGS === */
+  --color-pagination-ring: --alpha(
+    var(--color-pagination-accent) /
+    var(--opacity-ring)
+  );
 }
 
 @utility token-icon-pagination-prev {
