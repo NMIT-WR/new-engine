@@ -11,6 +11,7 @@
   --state-disabled-chroma: 0.01;
   --state-light-variant: 0.1; /* Always make colors lighter for -light variant */
   --state-light-chroma: 0.6; /* Reduce saturation for softer, pastel colors */
+  --state-secondary-text: 0.15;
   --state-border: 15%;
   --max-lightness: 0.97;
   --opacity-ring: 80%;
@@ -26,6 +27,7 @@
 :is(.dark, .always-dark) {
   --state-hover: 0.08;
   --state-active: 0.12;
+  --state-secondary-text: -0.15;
   --surface-increment: -0.05;
 }
 
@@ -34,6 +36,7 @@
   :root:not(.light):not(.always-light) {
     --state-hover: 0.08;
     --state-active: 0.12;
+    --state-secondary-text: -0.15;
     --surface-increment: -0.05;
   }
 }
@@ -42,12 +45,14 @@
 :is(.light, .always-light) .reverse {
   --state-hover: 0.08;
   --state-active: 0.12;
+  --state-secondary-text: -0.15;
   --surface-increment: -0.05;
 }
 
 :is(.dark, .always-dark) .reverse {
   --state-hover: -0.08;
   --state-active: -0.12;
+  --state-secondary-text: 0.15;
   --surface-increment: 0.05;
 }
 
@@ -56,6 +61,7 @@
   .reverse:not(.dark):not(.always-dark):not(.light):not(.always-light) {
     --state-hover: 0.08;
     --state-active: 0.12;
+    --state-secondary-text: -0.15;
     --surface-increment: -0.05;
   }
 }
@@ -64,6 +70,7 @@
   .reverse:not(.dark):not(.always-dark):not(.light):not(.always-light) {
     --state-hover: -0.08;
     --state-active: -0.12;
+    --state-secondary-text: 0.15;
     --surface-increment: 0.05;
   }
 }
@@ -240,14 +247,9 @@
   --color-fg-light: var(--color-slate-800); /* Light mode */
   --color-fg-dark: var(--color-white); /* Dark mode */
   --color-fg-primary: light-dark(var(--color-fg-light), var(--color-fg-dark));
-  --color-fg-primary-light: --alpha(
-    var(--color-fg-primary) /
-    var(--opacity-text-secondary)
-  );
-  --color-fg-secondary: light-dark(var(--color-gray-900), var(--color-gray-200));
-  --color-fg-secondary-light: --alpha(
-    var(--color-fg-secondary) /
-    var(--opacity-text-secondary)
+
+  --color-fg-secondary: oklch(
+    from var(--color-fg-primary) calc(l + var(--state-secondary-text)) c h
   );
   --color-fg-reverse: light-dark(var(--color-fg-dark), var(--color-fg-light));
 
