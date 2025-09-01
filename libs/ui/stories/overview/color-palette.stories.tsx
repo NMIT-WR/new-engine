@@ -4,7 +4,7 @@ import '../../src/tokens/_semantic.css'
 import { ColorSelect } from '../../src/atoms/color-select'
 
 const meta: Meta = {
-  title: 'Templates/Color Palette',
+  title: 'Overview/Color Palette',
   parameters: {
     layout: 'fullscreen',
   },
