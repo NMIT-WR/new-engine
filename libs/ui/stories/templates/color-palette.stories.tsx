@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
-import { Select } from '../../src/molecules/select'
 import '../../src/tokens/_colors.css'
 import '../../src/tokens/_semantic.css'
 import { ColorSelect } from '../../src/atoms/color-select'
@@ -38,45 +36,14 @@ const stateVariants = [
 ] as const
 
 
-function ColorPaletteGrid() {
-  const [filter, setFilter] = useState<string>('all')
-  const filteredColors = filter === 'all' 
-    ? semanticColors 
-    : semanticColors.filter(c => c === filter)
-    
 
-  return (
+export const Default: Story = {
+  render: () => (
     <div className="min-h-screen bg-base p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-fg-primary mb-2">
-            Color Palette
-          </h1>
-        </div>
-        
-        {/* Controls */}
-        <div className="flex flex-wrap gap-4 mb-8">                    
-          <div className="w-48">
-            <Select
-              defaultValue={['all']}
-              clearIcon={false}
-              value={[filter]}
-              onValueChange={(details) => setFilter(details.value[0])}
-              options={[
-                { label: 'All Colors', value: 'all' },
-                ...semanticColors.map((color: string) => ({
-                  label: color.charAt(0).toUpperCase() + color.slice(1),
-                  value: color,
-                }))
-              ]}
-              size="md"
-            />
-          </div>
-        </div>
         
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          {filteredColors.map(color => (
+          {semanticColors.map(color => (
             <div className="bg-surface rounded-xl shadow-lg p-6">
             <h3 className="text-lg font-semibold mb-4 capitalize text-fg-primary">
               {color}
@@ -132,9 +99,5 @@ function ColorPaletteGrid() {
         </div>        
       </div>
     </div>
-  )
-}
-
-export const Default: Story = {
-  render: () => <ColorPaletteGrid />,
+  ),
 }
