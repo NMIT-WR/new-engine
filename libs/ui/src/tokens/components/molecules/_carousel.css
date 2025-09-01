@@ -17,7 +17,7 @@
   /* === INDICATOR === */
   --gap-carousel-indicator: var(--spacing-100);
   --color-carousel-indicator-active: var(--color-primary);
-  --aspect-carousel-indicator: var(--aspect-ratio-square);
+  --aspect-carousel-indicator: var(--aspect-square);
   --width-carousel-indicator: var(--spacing-200);
 
   /* === FOCUS STATES === */

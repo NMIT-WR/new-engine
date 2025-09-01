@@ -49,7 +49,7 @@
   --color-btn-wishlist-fg: var(--color-btn-text);
 
   /* === PRODUCT CARD IMAGE === */
-  --aspect-pc-image: var(--aspect-ratio-square);
+  --aspect-pc-image: var(--aspect-square);
   --radius-pc-image: var(--radius-pc);
 }
 

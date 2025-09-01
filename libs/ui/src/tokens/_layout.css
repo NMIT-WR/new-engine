@@ -1,0 +1,33 @@
+@theme static {
+  /* === BREAKPOINTS === */
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  /* === RESPONSIVE CONTAINER WIDTHS === */
+  /* Main layout containers - responsive max-widths */
+  --spacing-container-3xs: 20rem;
+  --spacing-container-2xs: 24rem; /* Small screens */
+  --spacing-container-xs: 28rem; /* Small screens */
+  --spacing-container-sm: 32rem; /* Medium screens */
+  --spacing-container-md: 36rem; /* Large screens */
+  --spacing-container-lg: 42rem; /* Extra large screens */
+  --spacing-container-xl: 48rem; /* 2X large screens */
+  --spacing-container-2xl: 56rem; /* Ultra wide screens */
+  --spacing-container-3xl: 64rem; /* Ultra wide screens */
+  --spacing-container-4xl: 72rem;
+  --spacing-container-max: 80rem;
+  --spacing-container-prose: 65ch; /* Optimal reading width */
+
+  /* === ASPECT RATIOS === */
+  --aspect-square: 1;
+  --aspect-video: 16 / 9;
+  --aspect-portrait: 3 / 4;
+  --aspect-landscape: 4 / 3;
+  --aspect-wide: 21 / 9;
+  --aspect-card: 3 / 2;
+  --aspect-golden: 1.618;
+}

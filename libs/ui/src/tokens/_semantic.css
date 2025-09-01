@@ -334,10 +334,4 @@
 
   /* Focus ring */
   --color-ring-primary: --alpha(var(--color-primary) / var(--opacity-ring));
-
-  /* Aspect ratio */
-  --aspect-ratio-square: 1 / 1;
-  --aspect-ratio-portrait: 3 / 4;
-  --aspect-ratio-landscape: 4 / 3;
-  --aspect-ratio-16-9: 16 / 9;
 }
