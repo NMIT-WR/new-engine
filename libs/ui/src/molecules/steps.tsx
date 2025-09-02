@@ -3,7 +3,7 @@ import * as steps from '@zag-js/steps'
 import { type ReactNode, useId } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
-import { tv } from '../utils'
+import { slugify, tv } from '../utils'
 
 const stepsVariants = tv({
   slots: {
@@ -70,8 +70,7 @@ const stepsVariants = tv({
 
 export type StepItem = {
   value: number
-  title: ReactNode
-  description?: ReactNode
+  title: string
   content?: ReactNode
   icon?: ReactNode
 }
@@ -136,7 +135,7 @@ export function Steps({
     <div className={root()} {...api.getRootProps()}>
       <div className={list()} {...api.getListProps()}>
         {items.map((step, index) => (
-          <div className={item()} key={index} {...api.getItemProps({ index })}>
+          <div className={item()} key={slugify(step.title)} {...api.getItemProps({ index })}>
             <button className={trigger()} {...api.getTriggerProps({ index })}>
               <span
                 className={indicator()}
@@ -158,15 +157,13 @@ export function Steps({
       {items.map((step, index) => (
         <div
           className={content()}
-          key={`step-content-${index}`}
+          key={`content-${slugify(step.title)}`}
           {...api.getContentProps({ index })}
         >
-          {step.content || (
-            <article className="h-fit">
-              <h3>{step.title}</h3>
-              {step.description && <p>{step.description}</p>}
-            </article>
-          )}
+          <article className="h-fit">
+            <h3>{step.title}</h3>
+            {step.content}
+          </article>
         </div>
       ))}
       <div
