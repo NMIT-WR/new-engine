@@ -1,56 +1,54 @@
 @theme static {
-  --color-pc: var(--color-surface);
+  /* === BASE COLORS === */
+  --color-product-card-bg: var(--color-surface);
+  --color-product-card-name-fg: var(--color-fg-primary);
+  --color-product-card-stock-fg: var(--color-success);
+  --color-product-card-price-fg: var(--color-fg-primary);
+  --color-product-card-border: var(--color-border-primary);
 
-  --border-pc-border: var(--color-border-primary);
-  --border-pc-width: var(--border-width-sm);
-  --radius-pc: var(--radius-md);
-
-  /* Card spacing */
-  --spacing-pc-row-layout: var(--spacing-250);
-  --spacing-pc-max: 100%; /* temporary value */
-  /* --spacing-pc-col-layout: var(--spacing-100);*/
-  --spacing-pc-box: var(--spacing-150);
-  --spacing-pc-padding: var(--spacing-150);
-
-  --color-pc-name-fg: var(--color-fg-primary);
-  --text-pc-name-size: var(--text-md);
-
-  --leading-pc-name: var(--line-height-snug);
-
-  --color-pc-stock-fg: var(--color-success);
-  --text-pc-stock-size: var(--text-sm);
-
-  --color-pc-price-fg: var(--color-fg-primary);
-  --text-pc-price-size: var(--text-lg);
-
-  /* === PRODUCT CARD BUTTONS ===*/
-  /*Add to cart button*/
-  --color-btn-cart: var(--color-btn-primary);
-  --color-btn-cart-hover: oklch(
-    from var(--color-btn-cart) calc(l + var(--state-hover)) c h
+  /* === STATE VARIATIONS === */
+  /* Add to cart button */
+  --color-button-cart-bg: var(--color-button-primary);
+  --color-button-cart-bg-hover: oklch(
+    from var(--color-button-cart-bg) calc(l + var(--state-hover)) c h
   );
-
-  --color-btn-cart-fg: var(--color-btn-text);
+  --color-button-cart-fg: var(--color-button-fg);
 
   /* Detail button */
-  --color-btn-detail: var(--color-btn-secondary);
-  --color-btn-detail-hover: oklch(
-    from var(--color-btn-detail) calc(l + var(--state-hover)) c h
+  --color-button-detail-bg: var(--color-button-secondary);
+  --color-button-detail-bg-hover: oklch(
+    from var(--color-button-detail-bg) calc(l + var(--state-hover)) c h
   );
+  --color-button-detail-fg: var(--color-button-fg);
 
-  --color-btn-detail-fg: var(--color-btn-text);
-
-  /* wishlist button */
-  --color-btn-wishlist: var(--color-btn-tertiary);
-  --color-btn-wishlist-hover: oklch(
-    from var(--color-btn-wishlist) calc(l + var(--state-hover)) c h
+  /* Wishlist button */
+  --color-button-wishlist-bg: var(--color-button-tertiary);
+  --color-button-wishlist-bg-hover: oklch(
+    from var(--color-button-wishlist-bg) calc(l + var(--state-hover)) c h
   );
+  --color-button-wishlist-fg: var(--color-button-fg);
 
-  --color-btn-wishlist-fg: var(--color-btn-text);
+  /* === SPACING === */
+  --spacing-product-card-padding: var(--spacing-150);
+  --spacing-product-card-row-layout: var(--spacing-250);
+  --spacing-product-card-col-layout: var(--spacing-100);
+  --spacing-product-card-box: var(--spacing-150);
+  --spacing-product-card-max: 100%;
+  --spacing-product-card-buttons: var(--spacing-150);
 
-  /* === PRODUCT CARD IMAGE === */
-  --aspect-pc-image: var(--aspect-square);
-  --radius-pc-image: var(--radius-pc);
+  /* === TYPOGRAPHY === */
+  --text-product-card-name-size: var(--text-md);
+  --text-product-card-stock-size: var(--text-sm);
+  --text-product-card-price-size: var(--text-lg);
+  --leading-product-card-name: var(--line-height-snug);
+
+  /* === BORDERS & RADIUS === */
+  --border-product-card-width: var(--border-width-sm);
+  --radius-product-card: var(--radius-md);
+  --radius-product-card-image: var(--radius-product-card);
+
+  /* === ASPECT RATIOS === */
+  --aspect-product-card-image: var(--aspect-square);
 }
 
 /* === ORDERS IN LAYOUT === */
@@ -69,7 +67,7 @@
 
 @utility order-badges {
   order: 3;
-  min-height: 2rem; /* Ensure consistent space even when empty */
+  min-height: var(--spacing-400); /* Ensure consistent space even when empty */
 }
 
 @utility order-stock {
@@ -85,13 +83,21 @@
 }
 
 /* === UTILITIES === */
-@utility line-clamp-pc-name {
+@utility line-clamp-product-card-name {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
-@utility gap-pc-col-layout {
-  gap: var(--spacing-100);
+@utility token-icon-cart-button {
+  @apply token-icon-cart;
+}
+
+@utility token-icon-detail-button {
+  @apply token-icon-eye;
+}
+
+@utility token-icon-wishlist-button {
+  @apply token-icon-heart;
 }

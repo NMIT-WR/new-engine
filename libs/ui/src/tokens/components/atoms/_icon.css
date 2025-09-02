@@ -109,8 +109,17 @@
   @apply icon-[mdi--check];
 }
 
+/* product card icons */
 @utility token-icon-cart {
   @apply icon-[mdi--cart-outline];
+}
+
+@utility token-icon-eye {
+  @apply icon-[mdi--eye];
+}
+
+@utility token-icon-heart {
+  @apply icon-[mdi--heart];
 }
 
 @utility token-icon-search {
