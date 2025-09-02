@@ -5,7 +5,7 @@ import type { VariantProps } from 'tailwind-variants'
 import { ErrorText } from '../atoms/error-text'
 import { ExtraText } from '../atoms/extra-text'
 import { Label } from '../atoms/label'
-import { tv } from '../utils'
+import { slugify, tv } from '../utils'
 
 const rangeSliderVariants = tv({
   slots: {
@@ -208,11 +208,14 @@ export function RangeSlider({
               <b>
                 {formatRangeText
                   ? formatRangeText(api.value || defaultValue)
-                  : api.value && api.value.length === 2 && api.value[0] !== undefined && api.value[1] !== undefined
+                  : api.value &&
+                      api.value.length === 2 &&
+                      api.value[0] !== undefined &&
+                      api.value[1] !== undefined
                     ? `${formatValue(api.value[0])} - ${formatValue(api.value[1])}`
-                    : ''
-                }
-              </b>            </output>
+                    : ''}
+              </b>{' '}
+            </output>
           )}
         </div>
       )}
@@ -235,7 +238,7 @@ export function RangeSlider({
                   min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
-                    key={index}
+                    key={slugify(`marker-${markerValue}`)}
                     className={marker()}
                     {...api.getMarkerProps({ value: markerValue })}
                   >
