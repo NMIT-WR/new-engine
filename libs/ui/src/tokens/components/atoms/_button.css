@@ -109,34 +109,35 @@
 
   /* Light variant states */
   --color-button-bg-primary-light-hover: oklch(
-    from var(--color-button-primary-light) calc(l + var(--state-hover)) c h
+    from var(--color-button-bg-primary-light) calc(l + var(--state-hover)) c h
   );
   --color-button-bg-primary-light-active: oklch(
-    from var(--color-button-primary-light) calc(l + var(--state-active)) c h
+    from var(--color-button-bg-primary-light) calc(l + var(--state-active)) c h
   );
   --color-button-bg-secondary-light-hover: oklch(
-    from var(--color-button-secondary-light) calc(l + var(--state-hover)) c h
+    from var(--color-button-bg-secondary-light) calc(l + var(--state-hover)) c h
   );
   --color-button-bg-secondary-light-active: oklch(
-    from var(--color-button-secondary-light) calc(l + var(--state-active)) c h
+    from var(--color-button-bg-secondary-light) calc(l + var(--state-active)) c
+      h
   );
   --color-button-bg-tertiary-light-hover: oklch(
-    from var(--color-button-tertiary-light) calc(l + var(--state-hover)) c h
+    from var(--color-button-bg-tertiary-light) calc(l + var(--state-hover)) c h
   );
   --color-button-bg-tertiary-light-active: oklch(
-    from var(--color-button-tertiary-light) calc(l + var(--state-active)) c h
+    from var(--color-button-bg-tertiary-light) calc(l + var(--state-active)) c h
   );
   --color-button-bg-warning-light-hover: oklch(
-    from var(--color-button-warning-light) calc(l + var(--state-hover)) c h
+    from var(--color-button-bg-warning-light) calc(l + var(--state-hover)) c h
   );
   --color-button-bg-warning-light-active: oklch(
-    from var(--color-button-warning-light) calc(l + var(--state-active)) c h
+    from var(--color-button-bg-warning-light) calc(l + var(--state-active)) c h
   );
   --color-button-bg-danger-light-hover: oklch(
-    from var(--color-button-danger-light) calc(l + var(--state-hover)) c h
+    from var(--color-button-bg-danger-light) calc(l + var(--state-hover)) c h
   );
   --color-button-bg-danger-light-active: oklch(
-    from var(--color-button-danger-light) calc(l + var(--state-active)) c h
+    from var(--color-button-bg-danger-light) calc(l + var(--state-active)) c h
   );
 
   /* Outlined variants */
