@@ -11,7 +11,7 @@ import { FormInput } from '../../src/molecules/form-input'
 import { NumericInput } from '../../src/atoms/numeric-input'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
-import {RangeSlider} from '../../src/molecules/range-slider'
+import {Slider} from '../../src/molecules/slider'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',
@@ -236,8 +236,8 @@ export const AllFormInputs: Story = {
 
           <VariantGroup title="Range Input" fullWidth>
             <div className="w-full">
-              <RangeSlider
-                label="Range Slider"
+              <Slider
+                label="Slider"
                 size={size}
                 min={0}
                 max={100}
