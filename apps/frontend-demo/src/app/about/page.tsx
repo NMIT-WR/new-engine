@@ -7,7 +7,7 @@ import Image from 'next/image'
 import aboutImage from '/assets/hero/about.webp'
 
 export default function AboutPage() {
-  const { hero, story, stats, values, team } = aboutContent
+  const { hero, story, values, team } = aboutContent
 
   return (
     <>
@@ -67,7 +67,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 gap-about-values-gap sm:grid-cols-2 lg:grid-cols-3">
             {values.items.map((value) => (
               <div
-                key={value.title}
+                key={slugify(value.title)}
                 className="rounded-about-value border border-about-value-border bg-about-value-bg p-about-value-padding text-center transition-shadow hover:shadow-about-value-hover"
               >
                 <Icon icon={value.icon} className="text-3xl text-info" />
@@ -92,7 +92,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 place-items-center gap-about-team-gap sm:flex sm:justify-center">
             {team.members.map((member) => (
               <div
-                key={member.name}
+                key={slugify(member.name)}
                 className="group flex w-fit flex-col gap-200 text-center"
               >
                 <Image

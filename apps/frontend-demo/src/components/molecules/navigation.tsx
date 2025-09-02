@@ -1,6 +1,7 @@
 'use client'
 import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
 import { Popover } from '@new-engine/ui/molecules/popover'
+import { slugify } from '@new-engine/ui/utils'
 import Link from 'next/link'
 import type { ComponentPropsWithoutRef } from 'react'
 
@@ -34,7 +35,7 @@ function NavigationItem({ item }: { item: NavItem }) {
           <nav className="flex min-w-[200px] flex-col gap-nav-submenu">
             {item.children.map((child) => (
               <Link
-                key={child.title}
+                key={slugify(child.title)}
                 href={child.href || '#'}
                 className="px-nav-submenu-padding hover:bg-nav-submenu-item-hover"
                 prefetch={child.prefetch}
