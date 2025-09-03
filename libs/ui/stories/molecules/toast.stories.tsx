@@ -86,6 +86,7 @@ export const Default: Story = {
           variant="secondary"
           onClick={() => {
             toaster.update(idRef.current, {
+              id: "update-toast",
               title: 'Updated Title',
               description: 'Updated Description',
             })

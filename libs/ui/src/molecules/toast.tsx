@@ -34,19 +34,19 @@ const toastVariants = tv({
       'data-[type=warning]:text-toast-warning-icon data-[type=warning]:token-icon-toast-warning',
     ],
     title: [
-      'font-toast-title text-toast-title-size text-toast-title-fg',
+      'font-toast-title text-toast-title-size text-toast-fg',
       'data-[type=error]:text-toast-error-title',
       'data-[type=success]:text-toast-success-title',
       'data-[type=info]:text-toast-info-title',
       'data-[type=warning]:text-toast-warning-title',
     ],
     description: [
-      'text-toast-description-size text-toast-description-fg mt-toast-description-gap',
+      'text-toast-description-size text-toast-fg mt-toast-description-gap',
     ],
     closeButton: [
       'grid place-items-center flex-shrink-0 ml-auto py-0 px-0',
       'cursor-pointer',
-      'text-toast-close hover:text-toast-close-hover',
+      'text-toast-close-fg hover:text-toast-close-fg-hover',
     ],
   },
 })
