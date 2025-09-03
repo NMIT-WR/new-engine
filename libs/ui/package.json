@@ -39,8 +39,10 @@
     "storybook": "storybook dev",
     "lint:tailwind": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js",
     "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix",
-    "check:unused-tokens": "node scripts/check-unused-tokens.js"
+    "check:unused-tokens": "node scripts/check-unused-tokens.js",
+    "prepare": "pnpm build"
   },
+
   "dependencies": {
     "@zag-js/accordion": "^1.15.0",
     "@zag-js/carousel": "^1.15.0",
