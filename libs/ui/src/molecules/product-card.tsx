@@ -1,4 +1,10 @@
-import { type HTMLAttributes, type ReactNode, useId } from 'react'
+import {
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type HTMLAttributes,
+  type ReactNode,
+  useId,
+} from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Badge, type BadgeProps } from '../atoms/badge'
 import { Button } from '../atoms/button'
@@ -11,28 +17,30 @@ import { slugify, tv } from '../utils'
 const productCard = tv({
   slots: {
     base: [
-      'rounded-pc p-pc-padding',
-      'border-(length:--border-pc-width) border-pc-border bg-pc max-w-pc-max shadow-sm',
+      'rounded-product-card p-product-card-padding',
+      'border-(length:--border-product-card-width) border-product-card-border bg-product-card-bg max-w-product-card-max shadow-sm',
     ],
-    imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
+    imageSlot:
+      'object-cover aspect-product-card-image h-full rounded-product-card-image',
     nameSlot:
-      'text-pc-name-fg text-pc-name-size  leading-pc-name line-clamp-pc-name',
-    priceSlot: 'text-pc-price-fg text-pc-price-size',
-    stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size ',
-    badgesSlot: 'flex flex-wrap gap-pc-box',
+      'text-product-card-name-fg text-product-card-name-size line-clamp-product-card-name',
+    priceSlot: 'text-product-card-price-fg text-product-card-price-size',
+    stockStatusSlot: 'text-product-card-stock-fg text-product-card-stock-size ',
+    badgesSlot: 'flex flex-wrap gap-product-card-box',
     ratingSlot: 'flex items-center',
-    buttonsSlot: 'flex flex-wrap w-fit',
-    cartButton: 'bg-btn-cart hover:bg-btn-cart-hover text-btn-cart-fg w-max',
+    buttonsSlot: 'flex flex-wrap gap-product-card-buttons',
+    cartButton:
+      'bg-button-cart-bg hover:bg-button-cart-bg-hover text-button-cart-fg w-max',
     detailButton:
-      'bg-btn-detail hover:bg-btn-detail-hover text-btn-detail-fg w-max',
+      'bg-button-detail-bg hover:bg-button-detail-bg-hover text-button-detail-fg w-max',
     wishlistButton:
-      'bg-btn-wishlist hover:bg-btn-wishlist-hover text-btn-wishlist-fg w-max',
+      'bg-button-wishlist-bg hover:bg-button-wishlist-bg-hover text-button-wishlist-fg w-max',
   },
   variants: {
     // variant for layout of the card
     layout: {
       column: {
-        base: ['grid grid-cols-1 gap-pc-col-layout'],
+        base: ['grid grid-cols-1 gap-product-card-col-layout'],
         imageSlot: 'w-full order-image',
         nameSlot: 'order-name',
         priceSlot: 'order-price',
@@ -42,17 +50,17 @@ const productCard = tv({
         buttonsSlot: 'order-buttons',
       },
       row: {
-        base: 'grid grid-cols-[auto_1fr] gap-x-pc-row-layout',
+        base: 'grid grid-cols-[auto_1fr] gap-x-product-card-row-layout',
         imageSlot: 'row-span-6',
       },
     },
     // variant for layout of the buttons
     buttonLayout: {
       horizontal: {
-        buttonsSlot: 'justify-center gap-2',
+        buttonsSlot: 'justify-start',
       },
       vertical: {
-        buttonsSlot: 'flex-col gap-2',
+        buttonsSlot: 'flex-col w-full',
       },
     },
   },
@@ -73,16 +81,17 @@ const productCard = tv({
   ],
   defaultVariants: {
     layout: 'column',
-    buttonLayout: 'horizontal',
+    buttonLayout: 'vertical',
   },
 })
 
 type ProductCardVariants = VariantProps<typeof productCard>
 
-export interface ProductCardProps
+// Core ProductCard props
+export interface ProductCardCoreProps<T extends ElementType = typeof Image>
   extends ProductCardVariants,
-    HTMLAttributes<HTMLDivElement> {
-  imageUrl: string
+    Omit<HTMLAttributes<HTMLDivElement>, 'width' | 'height'> {
+  imageSrc?: string
   name: string
   price: string
   stockStatus: string
@@ -100,31 +109,58 @@ export interface ProductCardProps
   wishlistButtonText?: string
   numericInput?: boolean
   customButtons?: ReactNode
+  imageAs?: T
 }
 
-export function ProductCard({
-  imageUrl,
-  name,
-  price,
-  stockStatus,
-  badges = [],
-  hasCartButton,
-  hasDetailButton,
-  hasWishlistButton,
-  cartButtonText = 'Add to cart',
-  detailButtonText = 'Detail',
-  wishlistButtonText = 'Wishlist',
-  onCartClick,
-  onDetailClick,
-  onWishlistClick,
-  numericInput,
-  rating,
-  className,
-  layout,
-  buttonLayout,
-  customButtons,
-  ...props
-}: ProductCardProps) {
+// Combine core props with image component props
+export type ProductCardProps<T extends ElementType = typeof Image> =
+  ProductCardCoreProps<T> & Partial<ComponentPropsWithoutRef<T>>
+
+export function ProductCard<T extends ElementType = typeof Image>(
+  props: ProductCardProps<T>
+) {
+  // List of known ProductCard props to separate from image props
+  const {
+    // Core ProductCard props
+    imageSrc,
+    name,
+    price,
+    stockStatus,
+    badges = [],
+    rating,
+    hasCartButton,
+    hasDetailButton,
+    hasWishlistButton,
+    onCartClick,
+    onDetailClick,
+    onWishlistClick,
+    cartButtonText = 'Add to cart',
+    detailButtonText = 'Detail',
+    wishlistButtonText = 'Wishlist',
+    numericInput,
+    customButtons,
+    className,
+    layout,
+    buttonLayout,
+    imageAs,
+    // HTML div props
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+    style,
+    id,
+    // Everything else goes to image
+    ...imageProps
+  } = props
+
+  // Reconstruct div props
+  const divProps = {
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+    style,
+    id,
+  }
   const productCardId = useId()
 
   const {
@@ -141,10 +177,20 @@ export function ProductCard({
     wishlistButton,
   } = productCard({ layout, buttonLayout })
 
+  const ImageComponent = (imageAs || Image) as ElementType
+
+  // Merge image props with defaults
+  const finalImageProps = {
+    ...imageProps, // Image component props first
+    src: imageProps.src || imageSrc, // Allow override
+    alt: imageProps.alt || name, // Allow override
+    className: imageSlot({ layout }), // Our className last
+  }
+
   return (
-    <div className={base({ className, layout })} {...props}>
+    <div className={base({ className, layout })} {...divProps}>
       {/* Image always rendered first for semantics, position controlled by CSS */}
-      <Image src={imageUrl} alt={name} className={imageSlot({ layout })} />
+      <ImageComponent {...finalImageProps} />
 
       {/* Elements with grid positioning based on layout */}
       <h3 className={nameSlot({ layout })}>{name}</h3>
@@ -180,13 +226,13 @@ export function ProductCard({
         customButtons) && (
         <div className={buttonsSlot({ buttonLayout })}>
           {hasCartButton && (
-            <div className="flex gap-pc-box">
+            <div className="flex gap-product-card-box">
               {numericInput && <NumericInput />}
               <Button
                 size="sm"
                 className={cartButton()}
                 onClick={onCartClick}
-                icon="token-icon-cart"
+                icon="token-icon-cart-button"
               >
                 {cartButtonText}
               </Button>
@@ -197,7 +243,7 @@ export function ProductCard({
               size="sm"
               className={detailButton()}
               onClick={onDetailClick}
-              icon="token-icon-eye"
+              icon="token-icon-detail-button"
             >
               {detailButtonText}
             </Button>
@@ -207,7 +253,7 @@ export function ProductCard({
               size="sm"
               className={wishlistButton()}
               onClick={onWishlistClick}
-              icon="token-icon-heart"
+              icon="token-icon-wishlist-button"
             >
               {wishlistButtonText}
             </Button>
