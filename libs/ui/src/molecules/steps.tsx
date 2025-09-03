@@ -26,44 +26,47 @@ const stepsVariants = tv({
       'data-[orientation=vertical]:flex-col data-[orientation=vertical]:h-full',
     ],
     trigger: [
-      'relative gap-trigger flex cursor-pointer',
+      'relative gap-trigger flex cursor-pointer group',
       'items-center justify-center',
       'transition-all duration-200',
-      'focus-visible:outline-none focus-visible:ring-2',
-      'focus-visible:ring-steps-ring focus-visible:ring-offset-2 focus-visible:ring-offset-steps-list-bg',
+      'focus-visible:outline-none',
       'data-[orientation=horizontal]:flex-row',
       'data-[orientation=vertical]:flex-col',
     ],
     content: [
       'grid p-content bg-steps-content-bg',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-steps-ring',
-      'focus-visible:ring-offset-2 focus-visible:ring-offset-steps-list-bg',
       'data-[orientation=horizontal]:w-full',
       'data-[orientation=vertical]:flex-1',
     ],
     indicator: [
       'grid place-items-center',
       'h-steps-indicator rounded-full aspect-square',
-      'bg-steps-indicator-bg data-[complete]:bg-steps-indicator-complete',
-      'data-[current]:bg-steps-indicator-current data-[current]:ring-2',
+      'bg-steps-indicator-bg data-[complete]:bg-steps-indicator-bg-complete',
+      'group-focus-visible:ring-2',
+      'group-focus-visible:ring-steps-ring',
+      'group-hover:bg-steps-indicator-bg-hover',
+      'group-hover:text-steps-fg-active',
+      'transition-all duration-200 ease-out',
+      'data-[current]:bg-steps-indicator-bg-current data-[current]:ring-2',
       'data-[current]:ring-steps-ring data-[current]:ring-offset-2',
       'data-[current]:ring-offset-steps-list-bg data-[current]:outline-none',
       'data-[current]:text-steps-fg-current data-[complete]:text-steps-fg-active',
     ],
     separator: [
       'bg-steps-separator-bg',
-      'data-[complete]:bg-steps-separator-complete',
+      'data-[complete]:bg-steps-separator-bg-complete',
       'data-[orientation=horizontal]:h-steps-separator data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-1',
       'data-[orientation=vertical]:w-steps-separator data-[orientation=vertical]:h-full',
     ],
-    progress: ['absolute top-0 left-0 h-full transition-all duration-300'],
+    progress: ['absolute top-0 left-0 h-full transition-all duration-200'],
     containerButtons: [
       'flex gap-2 h-fit',
       'data-[orientation=vertical]:col-start-2',
     ],
     stepButton: [
       'rounded-none p-steps-btn',
-      'focus-visible:ring-2 focus-visible:ring-steps-ring focus-visible:ring-offset-2 focus-visible:ring-offset-steps-list-bg',
+      'focus-visible:ring-2 focus-visible:ring-steps-ring focus-visible:ring-offset-2 focus-visible:ring-offset-steps-ring',
     ],
   },
 })
@@ -135,7 +138,11 @@ export function Steps({
     <div className={root()} {...api.getRootProps()}>
       <div className={list()} {...api.getListProps()}>
         {items.map((step, index) => (
-          <div className={item()} key={slugify(step.title)} {...api.getItemProps({ index })}>
+          <div
+            className={item()}
+            key={slugify(step.title)}
+            {...api.getItemProps({ index })}
+          >
             <button className={trigger()} {...api.getTriggerProps({ index })}>
               <span
                 className={indicator()}
