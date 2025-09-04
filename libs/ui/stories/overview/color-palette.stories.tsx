@@ -15,7 +15,7 @@ type Story = StoryObj
 
 const semanticColors = [
   'primary',
-  'secondary', 
+  'secondary',
   'tertiary',
   'info',
   'success',
@@ -35,68 +35,70 @@ const stateVariants = [
   { state: 'disabled', label: 'Disabled' },
 ] as const
 
-
-
 export const Default: Story = {
   render: () => (
     <div className="min-h-screen bg-base p-8">
-      <div className="max-w-7xl mx-auto">
-        
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          {semanticColors.map(color => (
-            <div className="bg-surface rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold mb-4 capitalize text-fg-primary">
-              {color}
-            </h3>
-      
-      <div className="space-y-6">
-        {colorVariants.map(({ suffix, label }) => (
-          <div key={suffix}>
-            <h4 className="text-sm font-medium text-fg-secondary mb-3">
-              {label}
-            </h4>
-            <div className="grid grid-cols-4 gap-4">
-              {stateVariants.map(({ state, label: stateLabel }) => {
-                const baseColorVar = `--color-${color}${suffix}`
-                const computedColor = state === 'disabled' 
-                  ? `var(--color-${color}${suffix}-disabled)`
-                  : state !== ''
-                  ? `oklch(from var(${baseColorVar}) calc(l + var(--state-${state})) c h)`
-                  : `var(${baseColorVar})`
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {semanticColors.map((color) => (
+            <div className="rounded-xl bg-surface p-6 shadow-lg">
+              <h3 className="mb-4 font-semibold text-fg-primary text-lg capitalize">
+                {color}
+              </h3>
 
-                const colorTokenName = state === 'disabled' 
-                  ? `--color-${color}${suffix}-disabled`
-                  : state !== ''
-                  ? `--color-${color}${suffix}-${state}`
-                  : `--color-${color}${suffix}`
+              <div className="space-y-6">
+                {colorVariants.map(({ suffix, label }) => (
+                  <div key={suffix}>
+                    <h4 className="mb-3 font-medium text-fg-secondary text-sm">
+                      {label}
+                    </h4>
+                    <div className="grid grid-cols-4 gap-4">
+                      {stateVariants.map(({ state, label: stateLabel }) => {
+                        const baseColorVar = `--color-${color}${suffix}`
+                        const computedColor =
+                          state === 'disabled'
+                            ? `var(--color-${color}${suffix}-disabled)`
+                            : state !== ''
+                              ? `oklch(from var(${baseColorVar}) calc(l + var(--state-${state})) c h)`
+                              : `var(${baseColorVar})`
 
-                return (
-                  <div key={state} className="flex flex-col items-center gap-2 min-w-0">
-                    <div className='h-16 w-16 flex-shrink-0'>
-                      <ColorSelect
-                        color={computedColor}
-                        size='full'
-                        radius='md'
-                      />
-                    </div>
-                    <div className="text-center w-full">
-                      <div className="text-xs font-medium text-fg-primary truncate">
-                        {state || 'Default'}
-                      </div>
-                      <div className="text-xs font-mono text-fg-secondary mt-1 break-all leading-tight">
-                        {colorTokenName}
-                      </div>
+                        const colorTokenName =
+                          state === 'disabled'
+                            ? `--color-${color}${suffix}-disabled`
+                            : state !== ''
+                              ? `--color-${color}${suffix}-${state}`
+                              : `--color-${color}${suffix}`
+
+                        return (
+                          <div
+                            key={state}
+                            className="flex min-w-0 flex-col items-center gap-2"
+                          >
+                            <div className="h-16 w-16 flex-shrink-0">
+                              <ColorSelect
+                                color={computedColor}
+                                size="full"
+                                radius="md"
+                              />
+                            </div>
+                            <div className="w-full text-center">
+                              <div className="truncate font-medium text-fg-primary text-xs">
+                                {state || 'Default'}
+                              </div>
+                              <div className="mt-1 break-all font-mono text-fg-secondary text-xs leading-tight">
+                                {colorTokenName}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
           ))}
-        </div>        
+        </div>
       </div>
     </div>
   ),

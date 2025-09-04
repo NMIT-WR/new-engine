@@ -4,14 +4,14 @@ import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { ErrorText } from '../../src/atoms/error-text'
 import { ExtraText } from '../../src/atoms/extra-text'
 import { Label } from '../../src/atoms/label'
+import { NumericInput } from '../../src/atoms/numeric-input'
 import { Textarea } from '../../src/atoms/textarea'
 import { Combobox } from '../../src/molecules/combobox'
 import { FormCheckbox } from '../../src/molecules/form-checkbox'
 import { FormInput } from '../../src/molecules/form-input'
-import { NumericInput } from '../../src/atoms/numeric-input'
+import { RangeSlider } from '../../src/molecules/range-slider'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
-import {RangeSlider} from '../../src/molecules/range-slider'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',

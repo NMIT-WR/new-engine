@@ -168,9 +168,7 @@ export const RichContent: Story = {
           View and edit your profile settings
         </div>
         <div className="mt-3 flex gap-2">
-          <button className="rounded bg-primary px-2 py-1 text-xs">
-            Edit
-          </button>
+          <button className="rounded bg-primary px-2 py-1 text-xs">Edit</button>
           <button className="rounded bg-secondary px-2 py-1 text-xs">
             View
           </button>

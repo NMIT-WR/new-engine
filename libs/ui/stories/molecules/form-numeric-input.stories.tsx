@@ -80,12 +80,37 @@ export const Basic: Story = {
     return (
       <VariantContainer>
         <div className="grid gap-4">
-          <FormNumericInput id="size-sm" label="Size sm" size="sm" hideControls={false} {...baseArgs} />
-          <FormNumericInput id="size-md" label="Size md" size="md" hideControls={false} {...baseArgs} />
-          <FormNumericInput id="size-lg" label="Size lg" size="lg" hideControls={false} {...baseArgs} />
+          <FormNumericInput
+            id="size-sm"
+            label="Size sm"
+            size="sm"
+            hideControls={false}
+            {...baseArgs}
+          />
+          <FormNumericInput
+            id="size-md"
+            label="Size md"
+            size="md"
+            hideControls={false}
+            {...baseArgs}
+          />
+          <FormNumericInput
+            id="size-lg"
+            label="Size lg"
+            size="lg"
+            hideControls={false}
+            {...baseArgs}
+          />
         </div>
         <div className="grid gap-4">
-          <FormNumericInput id="disabled" size="sm" label="Disabled" disabled hideControls={false} {...baseArgs} />
+          <FormNumericInput
+            id="disabled"
+            size="sm"
+            label="Disabled"
+            disabled
+            hideControls={false}
+            {...baseArgs}
+          />
           <FormNumericInput
             id="invalid-demo"
             size="sm"
@@ -95,7 +120,11 @@ export const Basic: Story = {
             onChange={(value) => setCurrentValue(value)}
             hideControls={false}
             validateStatus={currentValue === 10 ? 'error' : 'default'}
-            helpText={currentValue === 10 ? 'Value cannot be 10' : 'Enter a value other than 10'}
+            helpText={
+              currentValue === 10
+                ? 'Value cannot be 10'
+                : 'Enter a value other than 10'
+            }
           />
         </div>
       </VariantContainer>
@@ -116,11 +145,11 @@ export const WithDefaultValues: Story = {
           hideControls={false}
           helpText="Value must be between 10 and 20"
         />
-        <FormNumericInput 
+        <FormNumericInput
           id="custom-step"
-          label="Custom Step (5)" 
-          defaultValue={25} 
-          step={5} 
+          label="Custom Step (5)"
+          defaultValue={25}
+          step={5}
           hideControls={false}
           helpText="Increments by 5"
         />
@@ -244,12 +273,12 @@ export const FormExample: Story = {
   render: () => {
     const [quantity, setQuantity] = useState(1)
     const [price, setPrice] = useState(29.99)
-    
+
     return (
       <VariantContainer>
-        <form className="space-y-4 w-[20rem]">
-          <h3 className="text-lg font-semibold mb-4">Order Form</h3>
-          
+        <form className="w-[20rem] space-y-4">
+          <h3 className="mb-4 font-semibold text-lg">Order Form</h3>
+
           <FormNumericInput
             id="order-quantity"
             label="Quantity"
@@ -261,7 +290,7 @@ export const FormExample: Story = {
             hideControls={false}
             helpText="Minimum order quantity is 1"
           />
-          
+
           <FormNumericInput
             id="unit-price"
             label="Unit Price"
@@ -277,12 +306,13 @@ export const FormExample: Story = {
             }}
             helpText="Price per unit in USD"
           />
-          
-          <div className="pt-4 border-t">
-            <p className="text-sm text-gray-600">
-              Total: {new Intl.NumberFormat('en-US', {
+
+          <div className="border-t pt-4">
+            <p className="text-gray-600 text-sm">
+              Total:{' '}
+              {new Intl.NumberFormat('en-US', {
                 style: 'currency',
-                currency: 'USD'
+                currency: 'USD',
               }).format(quantity * price)}
             </p>
           </div>
