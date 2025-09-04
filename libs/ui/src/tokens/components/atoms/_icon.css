@@ -22,6 +22,14 @@
   @apply icon-[mdi-light--alert];
 }
 
+@utility token-icon-check {
+  @apply icon-[mdi--check];
+}
+
+@utility token-icon-check-bold {
+  @apply icon-[mdi--check-bold];
+}
+
 @utility token-icon-info {
   @apply icon-[mdi-light--information];
 }
