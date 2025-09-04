@@ -53,11 +53,7 @@
 
   /* === ASPECT RATIO === */
   /* Additional section for aspect ratios */
-  --aspect-carousel-square: 1 / 1;
-  --aspect-carousel-landscape: 16 / 9;
-  --aspect-carousel-portrait: 3 / 4;
-  --aspect-carousel-wide: 21 / 9;
-  --aspect-carousel-indicator: var(--aspect-ratio-square);
+  --aspect-carousel-indicator: var(--aspect-square);
 }
 
 @utility token-icon-carousel-prev {

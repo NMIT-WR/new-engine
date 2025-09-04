@@ -83,16 +83,16 @@ const carouselVariants = tv({
 
     aspectRatio: {
       square: {
-        slide: 'aspect-carousel-square',
+        slide: 'aspect-square',
       },
       landscape: {
-        slide: 'aspect-carousel-landscape',
+        slide: 'aspect-video',
       },
       portrait: {
-        slide: 'aspect-carousel-portrait',
+        slide: 'aspect-portrait',
       },
       wide: {
-        slide: 'aspect-carousel-wide',
+        slide: 'aspect-wide',
       },
       none: {
         slide: '', //  custom content
