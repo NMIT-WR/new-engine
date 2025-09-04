@@ -230,6 +230,7 @@ export const AsideMenu: Story = {
     label: 'File System',
     showIndentGuides: false,
     showNodeIcons: false,
+    selectionMode: 'single',
   },
 }
 
@@ -336,15 +337,6 @@ export const CustomIcons: Story = {
         defaultExpandedValue={['frontend', 'backend', 'react', 'api']}
       />
     )
-  },
-}
-
-export const WithoutClickExpand: Story = {
-  args: {
-    data: fileSystemData,
-    label: 'Manual Expand Only Arrow keys',
-    expandOnClick: false,
-    defaultExpandedValue: ['documents'],
   },
 }
 
