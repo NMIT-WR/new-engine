@@ -10,7 +10,6 @@
   --text-4xl: clamp(2.7994rem, 2.4462rem + 1.7658vw, 3.8147rem); /* 44.79px - 61.04px */
 
   /* === TEXT WEIGHT === */
-  --font-weight-light: 100;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
