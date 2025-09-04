@@ -19,15 +19,4 @@
   --spacing-850: clamp(5.625rem, 5.4076rem + 1.087vw, 6.25rem);
   --spacing-900: clamp(6.1875rem, 5.9484rem + 1.1957vw, 6.875rem);
   --spacing-950: clamp(6.75rem, 6.4891rem + 1.3043vw, 7.5rem);
-
-  /* Legacy aliases for backward compatibility */
-  --spacing-3xs: var(--spacing-100); /* 4px */
-  --spacing-2xs: var(--spacing-150); /* 8px */
-  --spacing-xs: var(--spacing-200); /* 12px */
-  --spacing-sm: var(--spacing-250); /* 16px */
-  --spacing-md: var(--spacing-350); /* 24px */
-  --spacing-lg: var(--spacing-450); /* 32px */
-  --spacing-xl: var(--spacing-600); /* 48px */
-  --spacing-2xl: var(--spacing-750); /* 64px */
-  --spacing-3xl: var(--spacing-950); /* 96px */
 }
