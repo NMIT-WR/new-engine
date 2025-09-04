@@ -1,6 +1,14 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
+import type { VariantProps } from 'tailwind-variants'
+import { tv } from '../utils'
 
-export interface BaseLinkProps {
+const linkVariants = tv({
+  base: [],
+  variants: {},
+  defaultVariants: {},
+})
+
+export interface BaseLinkProps extends VariantProps<typeof linkVariants> {
   children: ReactNode
   external?: boolean
   className?: string
@@ -30,7 +38,11 @@ export function Link<T extends ElementType = 'a'>({
     external && !as ? { target: '_blank', rel: 'noopener noreferrer' } : {}
 
   return (
-    <Component {...externalProps} {...props}>
+    <Component
+      className={linkVariants({ className })}
+      {...externalProps}
+      {...props}
+    >
       {children}
     </Component>
   )
