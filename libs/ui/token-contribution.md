@@ -1,3 +1,41 @@
+## 🚀 QUICK REFERENCE
+
+### Essential Rules
+1. **All colors need suffixes**: `-bg`, `-fg`, `-border` (never just `--color-button`)
+2. **Two-layer strategy**: Reference layer → Derived tokens
+3. **No abbreviations**: `button` not `btn`, `product-card` not `pc`
+4. **Follow the pattern**: `--[prefix]-[component]-[part?]-[property]-[state?]`
+
+### Validation
+```bash
+pnpm validate:tokens        # Check token naming compliance
+pnpm check:unused-tokens    # Find unused tokens
+```
+
+### Real Example (Button)
+```css
+/* Optional: only if needed */
+:root {
+  --opacity-outlined-hover: 16%;
+}
+
+@theme static {
+  /* Reference layer first */
+  --color-button-primary: var(--color-primary);
+  --color-button-secondary: var(--color-secondary);
+  
+  /* Then derived tokens */
+  --color-button-bg-primary: var(--color-button-primary);
+  --color-button-fg-primary: var(--color-fg-reverse);
+  
+  /* Spacing - separate single and composite */
+  --spacing-button-sm: var(--spacing-150);
+  --padding-button-sm: var(--spacing-150) var(--spacing-250);
+}
+```
+
+---
+
 🎯 BASIC PRINCIPLES
 
 1. Predictability Over Brevity
@@ -67,11 +105,11 @@ Component Naming Rules
 
 /* === COMPONENT TOKEN FILE STRUCTURE === */
 
-/* 1. LOCAL VARIABLES */
-/* Only for opacity values or complex calculations */
+/* 1. LOCAL VARIABLES (OPTIONAL) */
+/* Only when needed for opacity values or complex calculations */
 :root {
-    --opacity-component-specific: 50%;
-    --custom-calculation: calc(var(--spacing-base) * 2);
+    --opacity-outlined-hover: 16%;
+    --opacity-outlined-active: 12%;
 }
 
 /* 2. THEME TOKENS */
@@ -140,19 +178,22 @@ Derived Colors
 
 /* === DERIVED COLORS === */
 /* Background colors - using reference layer */
---color-component-bg: var(--color-component-base);
---color-component-bg-primary: var(--color-component-primary);
---color-component-bg-secondary: var(--color-component-secondary);
+--color-button-bg-primary: var(--color-button-primary);
+--color-button-bg-secondary: var(--color-button-secondary);
+--color-button-bg-danger: var(--color-button-danger);
 
-/* Foreground colors */
---color-component-fg: var(--color-fg-primary);
---color-component-fg-primary: var(--color-fg-reverse);
---color-component-fg-secondary: var(--color-fg-reverse);
+/* Foreground colors - can have shared base */
+--color-button-fg: var(--color-fg-reverse);  /* Shared base */
+--color-button-fg-primary: var(--color-button-fg);
+--color-button-fg-secondary: var(--color-button-fg);
+--color-button-fg-danger: var(--color-button-fg);
 
 /* Border colors */
---color-component-border: var(--color-border-primary);
---color-component-border-primary: var(--color-component-primary);
---color-component-border-secondary: var(--color-component-secondary);
+--color-button-border-primary: var(--color-button-primary);
+--color-button-border-secondary: var(--color-button-secondary);
+
+/* Aliases for special cases */
+--color-badge-bg-discount: var(--color-badge-danger); /* Alias */
 
 State Calculations
 
@@ -171,18 +212,21 @@ State Calculations
 ---
 📏 SPACING & SIZING TOKENS
 
-Spacing Naming
+Spacing Patterns
 
 /* === SPACING === */
-/* Use semantic spacing tokens */
---spacing-component-padding: var(--spacing-250);           /* Generic padding */
---spacing-component-padding-sm: var(--spacing-200);        /* Small variant */
---spacing-component-padding-lg: var(--spacing-350);        /* Large variant */
---spacing-component-gap: var(--spacing-200);               /* Gap between elements */
---spacing-component-margin: var(--spacing-150);            /* External margin */
+/* Single spacing values for uniform padding */
+--spacing-button-sm: var(--spacing-150);           /* Small size */
+--spacing-button-md: var(--spacing-200);           /* Medium size */
+--spacing-button-lg: var(--spacing-250);           /* Large size */
 
-/* Composite spacing (multiple values) */
---spacing-component-padding-composite: var(--spacing-200) var(--spacing-350);
+/* Composite padding (vertical horizontal) */
+--padding-button-sm: var(--spacing-150) var(--spacing-250);
+--padding-button-md: var(--spacing-200) var(--spacing-350);
+--padding-button-lg: var(--spacing-250) var(--spacing-450);
+
+/* Simple composite for badges */
+--padding-badge: var(--spacing-100) var(--spacing-100);
 
 Typography Tokens
 
@@ -218,6 +262,40 @@ Component Variants
 --color-component-fg-borderless: var(--color-fg-primary);
 --color-component-border-borderless: transparent;
 --color-component-bg-borderless-hover: var(--color-fill-hover);
+
+---
+🔧 COMPONENT INTEGRATION
+
+Using Tokens in Components
+
+```typescript
+// With tailwind-variants (tv) - Real button example
+const buttonVariants = tv({
+  base: 'transition-colors font-medium',
+  variants: {
+    variant: {
+      primary: 'bg-button-bg-primary text-button-fg-primary hover:bg-button-bg-primary-hover',
+      secondary: 'bg-button-bg-secondary text-button-fg-secondary hover:bg-button-bg-secondary-hover',
+      outlined: 'bg-transparent border-button-border-primary text-button-fg-outlined-primary'
+    },
+    size: {
+      sm: 'p-button-sm text-button-sm rounded-button-sm',
+      md: 'p-button-md text-button-md rounded-button-md',
+      lg: 'p-button-lg text-button-lg rounded-button-lg'
+    }
+  }
+})
+```
+
+State-Based Styling
+
+```typescript
+// Use data attributes for dynamic states
+'data-[state=open]:bg-button-bg-open'
+'data-[highlighted]:bg-button-bg-hover'
+'data-[disabled]:opacity-button-disabled'
+'data-[validation=error]:border-button-border-danger'
+```
 
 ---
 🚨 VALIDATION RULES

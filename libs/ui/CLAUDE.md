@@ -44,134 +44,28 @@ libs/ui/src/
 
 5. **Story Creation** covering all variants and states
 
-## Token System Rules (MANDATORY)
+## Token System Rules
 
-### Token File Structure
+See comprehensive token documentation in [`token-contribution.md`](./token-contribution.md)
 
-**ALL component token files MUST follow this exact structure:**
+### Key Points:
+- **Two-layer token strategy**: Reference layer → Derived tokens
+- **Strict naming conventions**: `--[prefix]-[component]-[part?]-[property]-[state?]`
+- **Required suffixes**: All colors must have `-bg`, `-fg`, or `-border`
+- **No abbreviations**: Use full names (`button` not `btn`)
+- **Validation tools**: Run `pnpm validate:tokens` to check compliance
 
-```css
-/* Only for opacity values or calculations */
-:root {
-  --opacity-component-specific: 50%;
-}
-
-@theme static {
-  /* === BASE COLOR MAPPING === */
-  /* Reference layer - single source of truth for theming */
-  --color-component-primary: var(--color-primary);
-  --color-component-secondary: var(--color-secondary);
-  --color-component-base: var(--color-surface);
-  
-  /* === DERIVED COLORS === */
-  /* Background colors - using reference layer */
-  --color-component-bg: var(--color-component-base);
-  --color-component-bg-primary: var(--color-component-primary);
-  
-  /* Foreground colors */
-  --color-component-fg: var(--color-fg-primary);
-  --color-component-fg-primary: var(--color-fg-reverse);
-  
-  /* Border colors */
-  --color-component-border: var(--color-border-primary);
-  --color-component-border-primary: var(--color-component-primary);
-  
-  /* === STATE VARIATIONS === */
-  --color-component-bg-hover: oklch(from var(--color-component-bg) calc(l + var(--state-hover)) c h);
-  --color-component-bg-primary-hover: oklch(from var(--color-component-bg-primary) calc(l + var(--state-hover)) c h);
-  
-  /* === COMPONENT VARIANTS === */
-  /* Light, outlined, borderless variants as needed */
-  
-  /* === VALIDATION STATES === */
-  --color-component-bg-danger: var(--color-danger);
-  --color-component-bg-success: var(--color-success);
-  
-  /* === DISABLED STATES === */
-  --color-component-bg-disabled: var(--color-disabled-bg);
-  
-  /* === SPACING === */
-  --spacing-component-padding: var(--spacing-250);
-  --spacing-component-gap: var(--spacing-200);
-  
-  /* === TYPOGRAPHY === */
-  --text-component-sm: var(--text-sm);
-  --text-component-md: var(--text-md);
-  
-  /* === BORDERS & RADIUS === */
-  --border-width-component: var(--border-width-sm);
-  --radius-component: var(--radius-md);
-  
-  /* === FOCUS RINGS === */
-  --color-component-ring-primary: --alpha(var(--color-component-primary) / var(--opacity-ring));
-}
-```
-
-### Naming Convention Authority
-
-**Mandatory Pattern**: `--[prefix]-[component]-[part?]-[property]-[state?]`
-
-**Required Prefixes**:
-- `--color-`: ALL colors (never without suffix)
-- `--spacing-`: Spacing including width/height needing max/min variants
-- `--text-`: Font sizes only
-- `--border-`: Border properties
-- `--radius-`: Border radius
-- `--shadow-`: Box shadows
-- `--opacity-`: Transparency values
-
-**Required Color Suffixes**:
-- `-bg`: Background colors (MANDATORY - never `--color-button`)
-- `-fg`: Foreground/text colors (never `-text`)
-- `-border`: Border colors
-- `-hover`: Hover states
-- `-active`: Active states
-- `-disabled`: Disabled states
-
-**Component Naming Rules**:
-```css
-/* ✅ CORRECT - Consistent with semantic tokens */
---color-button-bg-primary     /* Matches --color-bg-primary pattern */
---color-accordion-fg-title    /* Matches --color-fg-primary pattern */
---color-product-card-bg       /* Base background */
-
-/* ❌ FORBIDDEN */
---color-btn-primary           /* Use 'button' not 'btn' */
---color-pc-bg                 /* Use 'product-card' not 'pc' */
---color-button                /* Missing -bg suffix */
---color-button-text           /* Use -fg not -text */
---color-button-primary-bg     /* Wrong order - should be -bg-primary */
-```
-
-### Two-Layer Token Strategy
-
-**ALWAYS** implement reference layer for theming:
-
-```css
-/* === BASE COLOR MAPPING === */
-/* Reference layer - allows easy theming */
---color-component-primary: var(--color-primary);
---color-component-secondary: var(--color-secondary);
-
-/* === DERIVED COLORS === */  
-/* Actual usage tokens */
---color-component-bg-primary: var(--color-component-primary);
---color-component-fg-primary: var(--color-fg-reverse);
-```
-
-**Benefits**: One-line component theme changes, consistent theming patterns.
-
-### Token Usage in Components
+### Quick Token Usage in Components:
 
 ```typescript
 // ✅ CORRECT - Use Tailwind classes that reference your tokens
 'bg-button-bg-primary'     // Uses --color-button-bg-primary
 'text-button-fg-primary'   // Uses --color-button-fg-primary
-'p-button-sm'             // Uses --spacing-button-sm
+'p-button-padding'         // Uses --spacing-button-padding
 
 // ❌ WRONG - Never use arbitrary values
-'bg-[var(--color-button-bg-primary)]'
-'p-[var(--spacing-button-sm)]'
+'bg-[var(--color-button-bg-primary)]'  // Don't use arbitrary values
+'p-[1rem]'                             // Use token classes instead
 ```
 
 ## Component Implementation Patterns
