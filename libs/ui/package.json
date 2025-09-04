@@ -31,10 +31,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "src/tokens"
-  ],
+  "files": ["dist", "src/tokens"],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
@@ -42,6 +39,7 @@
     "storybook": "storybook dev",
     "lint:tailwind": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js",
     "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix",
+    "prepare": "pnpm build",
     "check:unused-tokens": "node scripts/check-unused-tokens.js",
     "validate:tokens": "node scripts/validate-token-usage.js && node scripts/validate-token-definitions.js",
     "validate:token-usage": "node scripts/validate-token-usage.js",
