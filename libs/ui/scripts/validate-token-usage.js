@@ -7,7 +7,9 @@
  * Follows Tailwind v4 theme variable namespace rules for precise mapping.
  */
 
-import fs from 'fs'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { globSync } from 'glob'
 
 // Tailwind v4 namespace to utility prefix mappings
@@ -117,9 +119,7 @@ function extractTailwindClasses(content, filePath) {
   const classes = new Set()
 
   // Match className props (string values)
-  const classNameMatches = content.matchAll(
-    /className\s*=\s*["'`]([^"'`]+)["'`]/g
-  )
+  const classNameMatches = content.matchAll(/className\s*=\s*["']([^"']+)["']/g)
   for (const match of classNameMatches) {
     const classString = match[1]
     classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
@@ -202,24 +202,25 @@ function extractTailwindClasses(content, filePath) {
  * Map Tailwind utility class to possible CSS custom properties
  */
 function mapClassToPossibleTokens(className) {
-  // Remove state modifiers (hover:, focus:, data-[...]:, etc.)
-  const baseClass = className
-    .replace(/^[^:]*:/, '')
-    .replace(/^data-\[[^\]]+\]:/, '')
+  // Remove chained state/data prefixes (hover:, focus:, sm:, data-[...]:, etc.)
+  let baseClass = className
+  while (/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i.test(baseClass)) {
+    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, '')
+  }
 
   // Parse utility class: prefix-value (non-greedy matching)
   // Match known prefixes first, then everything else as value
   const knownPrefixes = Object.values(NAMESPACE_MAPPINGS).flat()
   let prefix = null
   let value = null
-
+  // Normalize negative utilities (-m-*, -mt-*, etc.)
+  const normalized = baseClass.startsWith('-') ? baseClass.slice(1) : baseClass
   // Try to match against known prefixes (longest first to handle cases like 'ring-offset')
   const sortedPrefixes = knownPrefixes.sort((a, b) => b.length - a.length)
-
   for (const knownPrefix of sortedPrefixes) {
-    if (baseClass.startsWith(`${knownPrefix}-`)) {
+    if (normalized.startsWith(`${knownPrefix}-`)) {
       prefix = knownPrefix
-      value = baseClass.slice(knownPrefix.length + 1) // +1 for the dash
+      value = normalized.slice(knownPrefix.length + 1) // +1 for the dash
       break
     }
   }
@@ -290,10 +291,11 @@ function mapClassToPossibleTokens(className) {
  */
 function loadDefinedTokens() {
   const tokens = new Set()
-  const tokenFiles = globSync('src/tokens/**/*.css')
+  const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
+  const tokenFiles = globSync('src/tokens/**/*.css', { cwd: ROOT })
 
   for (const file of tokenFiles) {
-    const content = fs.readFileSync(file, 'utf8')
+    const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
 
     // Match CSS custom properties
     const tokenMatches = content.matchAll(/--([a-z][a-z0-9-]*)\s*:/g)
@@ -309,11 +311,11 @@ function loadDefinedTokens() {
  * Check if a class should be ignored
  */
 function shouldIgnoreClass(className) {
-  // Remove state modifiers for checking
-  const baseClass = className
-    .replace(/^[^:]*:/, '')
-    .replace(/^data-\[[^\]]+\]:/, '')
-
+  // Remove chained state/data prefixes for checking
+  let baseClass = className
+  while (/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i.test(baseClass)) {
+    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, '')
+  }
   return IGNORE_PATTERNS.some((pattern) => pattern.test(baseClass))
 }
 

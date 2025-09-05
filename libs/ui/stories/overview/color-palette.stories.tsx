@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import '../../src/tokens/_colors.css'
 import '../../src/tokens/_semantic.css'
-import { ColorSelect } from '../../src/atoms/color-select'
+import { ColorSelect } from '../../../../apps/frontend-demo/src/components/atoms/color-select'
 
 const meta: Meta = {
   title: 'Overview/Color Palette',
@@ -41,7 +41,7 @@ export const Default: Story = {
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {semanticColors.map((color) => (
-            <div className="rounded-xl bg-surface p-6 shadow-lg">
+            <div key={color} className="rounded-xl bg-surface p-6 shadow-lg">
               <h3 className="mb-4 font-semibold text-fg-primary text-lg capitalize">
                 {color}
               </h3>

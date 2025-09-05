@@ -25,7 +25,7 @@ const numericInput = tv({
       'flex flex-col h-fit justify-center bg-ni-trigger-container',
     trigger: [
       'px-ni-trigger-x py-ni-trigger-y',
-      'cursor-pointer  focus:ring-increment-btn-ring',
+      'cursor-pointer focus:ring-increment-btn-ring',
     ],
     scrubber: 'absolute inset-0 cursor-ew-resize',
   },

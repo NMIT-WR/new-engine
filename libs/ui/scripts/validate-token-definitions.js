@@ -7,7 +7,7 @@
  * Analyzes dependency graphs and reference chains to determine actual usage.
  */
 
-import fs from 'fs'
+import fs from 'node:fs'
 import { globSync } from 'glob'
 
 // Configuration for validation
@@ -20,7 +20,7 @@ const CONFIG = {
     /^--color-warning$/,
     /^--color-success$/,
     /^--color-info$/,
-    /^--spacing-(xs|sm|md|lg|xl)$/,
+    /^--spacing-\d{2,3}$/,
     /^--text-(xs|sm|md|lg|xl)$/,
     /^--radius-(sm|md|lg)$/,
     // Base system tokens

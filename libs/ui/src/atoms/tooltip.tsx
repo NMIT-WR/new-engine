@@ -106,14 +106,18 @@ export function Tooltip({
   })
 
   const api = tooltip.connect(service as tooltip.Service, normalizeProps)
-  const { positioner, content: contentSlot } = tooltipVariants({
+  const {
+    trigger,
+    positioner,
+    content: contentSlot,
+  } = tooltipVariants({
     size,
     className,
   })
 
   return (
     <>
-      <span {...api.getTriggerProps()} ref={ref}>
+      <span {...api.getTriggerProps()} ref={ref} className={trigger()}>
         {children}
       </span>
       <Portal>

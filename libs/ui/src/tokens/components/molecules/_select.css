@@ -14,7 +14,7 @@
   --color-select-root-bg: var(--color-select-bg);
   --gap-select-root: var(--spacing-150);
 
-  /* === LABEL === 
+  /* === LABEL ===
   --color-label: var(--color-fg-primary);*/
 
   /* === TRIGGER === */
@@ -22,7 +22,7 @@
   --color-select-trigger-border: var(--color-select-border);
   --color-select-trigger-hover: var(--color-fill-hover);
   --color-select-trigger-focus: var(--color-primary);
-  --padding-select-trigger: var(--spacing-100);
+  --padding-select-trigger: var(--spacing-200);
 
   /* === CLEAR TRIGGER === */
   --color-select-clear-trigger-fg: var(--color-select-fg);
@@ -45,9 +45,6 @@
 
   /* === INDICATOR === */
   --color-select-indicator: var(--color-primary);
-
-  /* === PADDING === */
-  --padding-select-trigger: var(--spacing-200);
 
   /* === TYPOGRAPHY === */
   --text-select-trigger: var(--text-md);
