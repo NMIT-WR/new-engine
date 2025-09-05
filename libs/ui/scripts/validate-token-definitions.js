@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
 /**
- * Token Definition Validation Script
+ * Token Definition Validation Script (optimized)
  *
- * Identifies unused tokens with smart exception handling.
- * Analyzes dependency graphs and reference chains to determine actual usage.
+ * - Single-pass indexing of token CSS files
+ * - Single-pass scanning of component files
+ * - Dependency closure via forward BFS
+ * - Optional --profile timings
  */
 
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { globSync } from 'glob'
 
 // Configuration for validation
@@ -29,11 +32,7 @@ const CONFIG = {
   ],
 
   // Patterns to ignore completely
-  ignorePatterns: [
-    /^--tw-/, // Tailwind internal variables
-    /_test$/,
-    /_debug$/,
-  ],
+  ignorePatterns: [/^--tw-/, /_test$/, /_debug$/],
 
   // File patterns to exclude from usage scanning
   excludeFiles: [
@@ -42,111 +41,48 @@ const CONFIG = {
     '**/*.spec.tsx',
     '**/node_modules/**',
   ],
+
+  // Token CSS glob
+  tokenCssGlob: 'src/tokens/components/**/*.css',
 }
 
-/**
- * Parse CSS tokens from a file
- */
-function parseTokensFromFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8')
-  const tokens = new Map()
-
-  // Match CSS custom properties with their values
-  const tokenRegex = /--([\w-]+)\s*:\s*([^;]+);/g
-  let match
-
-  while ((match = tokenRegex.exec(content)) !== null) {
-    const [fullMatch, name, value] = match
-    const tokenName = `--${name}`
-
-    tokens.set(tokenName, {
-      value: value.trim(),
-      file: filePath,
-      line: content.substring(0, match.index).split('\n').length,
-    })
+// Simple stopwatch profiling
+function profiled(enabled) {
+  const marks = new Map()
+  return {
+    mark(label) {
+      if (!enabled) return
+      marks.set(label, performance.now())
+    },
+    end(label) {
+      if (!enabled) return 0
+      const start = marks.get(label) ?? performance.now()
+      const delta = performance.now() - start
+      marks.set(label, performance.now())
+      return delta
+    },
   }
-
-  return tokens
 }
 
-/**
- * Load all defined tokens from CSS files
- */
-function loadAllTokens() {
-  const allTokens = new Map()
-  const tokenFiles = globSync('src/tokens/components/**/*.css')
-
-  for (const file of tokenFiles) {
-    const tokens = parseTokensFromFile(file)
-    for (const [name, data] of tokens) {
-      allTokens.set(name, data)
-    }
-  }
-
-  return allTokens
+function isWhitelisted(tokenName) {
+  return CONFIG.whitelistPatterns.some((p) => p.test(tokenName))
 }
 
-/**
- * Extract token references from CSS value
- */
-function extractTokenReferences(value) {
-  const references = new Set()
-
-  // Match var() functions
-  const varMatches = value.matchAll(/var\(\s*(--[\w-]+)/g)
-  for (const match of varMatches) {
-    references.add(match[1])
-  }
-
-  // Match oklch() from function references
-  const oklchMatches = value.matchAll(/oklch\([^)]*var\(\s*(--[\w-]+)/g)
-  for (const match of oklchMatches) {
-    references.add(match[1])
-  }
-
-  return references
+function shouldIgnoreToken(tokenName) {
+  return CONFIG.ignorePatterns.some((p) => p.test(tokenName))
 }
 
-/**
- * Build dependency graph of token references
- */
-function buildTokenDependencyGraph(allTokens) {
-  const dependencyGraph = new Map()
-  const reverseDependencyGraph = new Map()
-
-  for (const [tokenName, tokenData] of allTokens) {
-    const references = extractTokenReferences(tokenData.value)
-    dependencyGraph.set(tokenName, references)
-
-    // Build reverse dependencies
-    for (const ref of references) {
-      if (!reverseDependencyGraph.has(ref)) {
-        reverseDependencyGraph.set(ref, new Set())
-      }
-      reverseDependencyGraph.get(ref).add(tokenName)
-    }
-  }
-
-  return { dependencyGraph, reverseDependencyGraph }
-}
-
-/**
- * Map CSS token to possible Tailwind utility classes
- */
+// Map CSS token to possible Tailwind utility classes
 function tokenToUtilityClasses(tokenName) {
   const classes = new Set()
-
-  // Simplified token parsing
-  const tokenParts = tokenName.slice(2).split('-') // Remove '--' and split
+  const tokenParts = tokenName.slice(2).split('-')
   if (tokenParts.length < 2) return classes
 
   const primaryNamespace = tokenParts[0]
   const subNamespace = tokenParts.length > 2 ? tokenParts[1] : null
   const key = tokenParts.slice(subNamespace ? 2 : 1).join('-')
 
-  // Complete namespace to utility prefix mappings per Tailwind v4 docs
   const mappings = {
-    // Color namespace - most extensive
     color: [
       'bg',
       'text',
@@ -163,10 +99,7 @@ function tokenToUtilityClasses(tokenName) {
       'fill',
       'stroke',
     ],
-
-    // Spacing namespace - very extensive (general spacing)
     spacing: [
-      // Padding
       'p',
       'px',
       'py',
@@ -176,7 +109,6 @@ function tokenToUtilityClasses(tokenName) {
       'pl',
       'ps',
       'pe',
-      // Margin (including negative variants)
       'm',
       'mx',
       'my',
@@ -195,14 +127,12 @@ function tokenToUtilityClasses(tokenName) {
       '-ml',
       '-ms',
       '-me',
-      // Width & Height
       'w',
       'h',
       'min-w',
       'min-h',
       'max-w',
       'max-h',
-      // Position
       'inset',
       'inset-x',
       'inset-y',
@@ -221,15 +151,12 @@ function tokenToUtilityClasses(tokenName) {
       '-left',
       '-start',
       '-end',
-      // Layout
       'gap',
       'gap-x',
       'gap-y',
       'space-x',
       'space-y',
     ],
-
-    // Specific spacing namespaces (more specific than general spacing)
     padding: ['p', 'px', 'py', 'pt', 'pr', 'pb', 'pl', 'ps', 'pe'],
     margin: [
       'm',
@@ -252,51 +179,32 @@ function tokenToUtilityClasses(tokenName) {
       '-me',
     ],
     gap: ['gap'],
-
-    // Width namespace (when not using spacing)
     width: ['w', 'min-w', 'max-w'],
-
-    // Height namespace (when not using spacing)
     height: ['h', 'min-h', 'max-h'],
-
-    // Typography
-    text: ['text'], // Font size
-    font: ['font'], // Font family
-    tracking: ['tracking'], // Letter spacing
-    leading: ['leading'], // Line height
-
-    // Border & Effects
+    text: ['text'],
+    font: ['font'],
+    tracking: ['tracking'],
+    leading: ['leading'],
     radius: ['rounded'],
     shadow: ['shadow'],
     'inset-shadow': ['inset-shadow'],
     'drop-shadow': ['drop-shadow'],
     blur: ['blur'],
     perspective: ['perspective'],
-
-    // Layout
     aspect: ['aspect'],
-
-    // Animation
     ease: ['ease'],
     animate: ['animate'],
-
-    // Other
     opacity: ['opacity'],
     border: ['border'],
-
-    // Special cases that don't map to utilities directly
-    z: [], // z-index values, handled differently
-    arrow: [], // Custom properties for arrows, not utilities
-    tree: [], // Custom component-specific properties
-    textarea: [], // Custom component properties
-    tooltip: [], // Custom component properties
+    z: [],
+    arrow: [],
+    tree: [],
+    textarea: [],
+    tooltip: [],
   }
 
-  // Simplified namespace and key handling
   let namespace = primaryNamespace
   let tokenKey = key
-
-  // Handle special font-weight case
   if (primaryNamespace === 'font' && subNamespace === 'weight') {
     namespace = 'font-weight'
   } else if (subNamespace && mappings[`${primaryNamespace}-${subNamespace}`]) {
@@ -305,7 +213,6 @@ function tokenToUtilityClasses(tokenName) {
     tokenKey = `${subNamespace}-${key}`
   }
 
-  // Skip custom properties that don't map to utilities
   const customPropertyPrefixes = [
     'arrow',
     'tree',
@@ -317,297 +224,269 @@ function tokenToUtilityClasses(tokenName) {
     'spacing-translate',
     'spacing-menu-submenu',
   ]
-
-  if (
-    customPropertyPrefixes.some((prefix) => tokenName.includes(`--${prefix}`))
-  ) {
+  if (customPropertyPrefixes.some((prefix) => tokenName.includes(`--${prefix}`))) {
     return classes
   }
 
   const prefixes = mappings[namespace] || mappings[primaryNamespace] || []
-
   for (const prefix of prefixes) {
     if (namespace === 'font-weight') {
-      // Special case: --font-weight-bold → font-bold (strip "weight")
       classes.add(`font-${tokenKey}`)
     } else {
       classes.add(`${prefix}-${tokenKey}`)
     }
   }
-
   return classes
 }
 
-/**
- * Search for token usage in component files (cached version)
- */
-function findTokenUsageInComponentsCache(tokenName, componentFilesCache) {
-  const usage = new Set()
-  const possibleClasses = tokenToUtilityClasses(tokenName)
+// Build indices from token CSS files in a single pass
+async function buildTokenIndices() {
+  const files = globSync(CONFIG.tokenCssGlob)
+  const defs = new Map() // token -> { value, file, line }
+  const dependencyGraph = new Map() // token -> Set<token>
+  const cssUsage = new Map() // token -> Set<location>
 
-  if (possibleClasses.size === 0) return usage
-
-  for (const [file, content] of componentFilesCache) {
-    // Check for direct var() usage
-    if (content.includes(`var(${tokenName})`)) {
-      usage.add(`${file} (direct var() reference)`)
-    }
-
-    // Check for utility class usage (simplified patterns)
-    for (const className of possibleClasses) {
-      const escapedClass = className.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-      // Simplified patterns - covers most cases
-      const patterns = [
-        // Matches: 'class', hover:class, data-[...]:class, sm:class
-        new RegExp(
-          `\\b(?:[a-z-]+:|data-\\[[^\\]]+\\]:|(?:sm|md|lg|xl|2xl):)?${escapedClass}\\b`
-        ),
-        // Matches inside quotes with optional spacing
-        new RegExp(`['"\`][^'"\`]*\\s${escapedClass}\\s[^'"\`]*['"\`]`),
-      ]
-
-      for (const pattern of patterns) {
-        const match = content.search(pattern)
-        if (match !== -1) {
-          // Efficient line number calculation
-          const lineNumber = content.substring(0, match).split('\n').length
-          usage.add(`${file}:${lineNumber} (class: ${className})`)
-          break
-        }
-      }
-    }
-  }
-
-  return usage
-}
-
-/**
- * Search for token usage in CSS files (var() references)
- */
-function findTokenUsageInCSS(tokenName, allTokens) {
-  const usage = new Set()
-
-  // Check usage in other tokens (reuse already loaded token data)
-  for (const [otherTokenName, tokenData] of allTokens) {
-    if (otherTokenName === tokenName) continue
-
-    if (tokenData.value.includes(`var(${tokenName})`)) {
-      usage.add(
-        `${tokenData.file}:${tokenData.line} (referenced by ${otherTokenName})`
-      )
-    }
-  }
-
-  // Check usage directly in CSS properties using already loaded files
-  const processedFiles = new Set()
-
-  for (const [, tokenData] of allTokens) {
-    const file = tokenData.file
-    if (processedFiles.has(file)) continue
-
-    processedFiles.add(file)
-
-    try {
-      const content = fs.readFileSync(file, 'utf8')
+  await Promise.all(
+    files.map(async (file) => {
+      if (!existsSync(file)) return
+      const content = await fs.readFile(file, 'utf8')
       const lines = content.split('\n')
 
-      lines.forEach((line, index) => {
-        // Skip custom property definitions
-        if (line.trim().startsWith(`${tokenName}:`)) return
+      // 1) Parse token definitions and dependency edges
+      const tokenRegex = /--([\w-]+)\s*:\s*([^;]+);/g
+      let m
+      while ((m = tokenRegex.exec(content)) !== null) {
+        const name = `--${m[1]}`
+        const value = m[2].trim()
+        const line = content.substring(0, m.index).split('\n').length
+        defs.set(name, { value, file, line })
 
-        // Look for var() usage in CSS properties
-        if (
-          line.includes(`var(${tokenName})`) &&
-          !line.includes(`${tokenName}:`)
-        ) {
-          usage.add(`${file}:${index + 1} (CSS property)`)
+        // Extract dependencies from value
+        const deps = new Set()
+        for (const vm of value.matchAll(/var\(\s*(--[\w-]+)/g)) {
+          deps.add(vm[1])
         }
-      })
-    } catch (error) {
-      // Skip files that can't be read
-    }
+        for (const om of value.matchAll(/oklch\([^)]*var\(\s*(--[\w-]+)/g)) {
+          deps.add(om[1])
+        }
+        dependencyGraph.set(name, deps)
+      }
+
+      // 2) Index var() usage on non-definition lines as direct CSS usage
+      const defLine = new Set()
+      for (const [token, data] of defs) {
+        if (data.file === file) defLine.add(data.line)
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        const lineNo = i + 1
+        if (defLine.has(lineNo)) continue
+        const line = lines[i]
+        if (!line.includes('var(')) continue
+        for (const vm of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
+          const t = vm[1]
+          if (!cssUsage.has(t)) cssUsage.set(t, new Set())
+          cssUsage.get(t).add(`${file}:${lineNo} (CSS property)`) // direct usage
+        }
+      }
+    })
+  )
+
+  // Ensure every token key exists in maps
+  for (const token of defs.keys()) {
+    if (!dependencyGraph.has(token)) dependencyGraph.set(token, new Set())
+    if (!cssUsage.has(token)) cssUsage.set(token, new Set())
   }
 
-  return usage
+  return { defs, dependencyGraph, cssUsage }
 }
 
-/**
- * Check if token should be whitelisted
- */
-function isWhitelisted(tokenName) {
-  return CONFIG.whitelistPatterns.some((pattern) => pattern.test(tokenName))
-}
+// Build component indices in a single pass
+async function buildComponentIndices(classToTokens, knownTokens) {
+  const files = globSync('src/**/*.{ts,tsx}', { ignore: CONFIG.excludeFiles })
+  const componentVarUsage = new Map() // token -> Set<location>
+  const classUsageTokens = new Set() // tokens used via classes
 
-/**
- * Check if token should be ignored
- */
-function shouldIgnoreToken(tokenName) {
-  return CONFIG.ignorePatterns.some((pattern) => pattern.test(tokenName))
-}
-
-/**
- * Find all tokens that depend on a given token (recursive)
- */
-function findDependentTokens(
-  tokenName,
-  reverseDependencyGraph,
-  visited = new Set()
-) {
-  if (visited.has(tokenName)) return new Set()
-
-  visited.add(tokenName)
-  const dependents = new Set()
-
-  const directDependents = reverseDependencyGraph.get(tokenName) || new Set()
-  for (const dependent of directDependents) {
-    dependents.add(dependent)
-    const transitiveDependents = findDependentTokens(
-      dependent,
-      reverseDependencyGraph,
-      visited
-    )
-    for (const transitive of transitiveDependents) {
-      dependents.add(transitive)
-    }
+  const normalizeClass = (raw) => {
+    // Strip variant prefixes like sm:, hover:, data-[...]: etc.
+    if (!raw) return ''
+    const parts = String(raw).split(':')
+    const core = parts[parts.length - 1]
+    return core
   }
 
-  return dependents
+  await Promise.all(
+    files.map(async (file) => {
+      if (!existsSync(file)) return
+      try {
+        const content = await fs.readFile(file, 'utf8')
+
+        // 1) Direct var(--token) usage in TSX
+        for (const m of content.matchAll(/var\(\s*(--[\w-]+)/g)) {
+          const t = m[1]
+          if (!componentVarUsage.has(t)) componentVarUsage.set(t, new Set())
+          const lineNo = content.substring(0, m.index).split('\n').length
+          componentVarUsage
+            .get(t)
+            .add(`${file}:${lineNo} (component var() reference)`) 
+        }
+
+        // 1b) Arbitrary utilities referencing tokens directly, e.g. border-(length:--token)
+        for (const m of content.matchAll(/--[a-z0-9-]+/gi)) {
+          const t = m[0]
+          if (knownTokens.has(t)) {
+            classUsageTokens.add(t)
+          }
+        }
+
+        // 2) Class-based usage: scan whole file for class-like tokens
+        // Capture words with at least one hyphen, optionally with variant prefixes like sm:, hover:, data-[...]:
+        const classLike = /(^|[^A-Za-z0-9_-])([A-Za-z0-9_-]+(?::[A-Za-z0-9_\[\]-]+)*-[A-Za-z0-9_\[\]-]+)/g
+        for (const m of content.matchAll(classLike)) {
+          const raw = m[2]
+          const cls = normalizeClass(raw)
+          if (!cls) continue
+          const tokens = classToTokens.get(cls)
+          if (!tokens) continue
+          for (const t of tokens) classUsageTokens.add(t)
+        }
+      } catch {
+        // ignore unreadable files
+      }
+    })
+  )
+
+  return { componentVarUsage, classUsageTokens }
 }
 
-/**
- * Main validation function
- */
-function validateTokenDefinitions() {
+function computeClassMaps(tokens) {
+  const tokenToClasses = new Map()
+  const classToTokens = new Map()
+  for (const token of tokens) {
+    const classes = tokenToUtilityClasses(token)
+    tokenToClasses.set(token, classes)
+    for (const c of classes) {
+      if (!classToTokens.has(c)) classToTokens.set(c, new Set())
+      classToTokens.get(c).add(token)
+    }
+  }
+  return { tokenToClasses, classToTokens }
+}
+
+function propagateUsage(initialUsed, dependencyGraph) {
+  const used = new Set(initialUsed)
+  const queue = [...initialUsed]
+  while (queue.length) {
+    const cur = queue.shift()
+    const deps = dependencyGraph.get(cur)
+    if (!deps) continue
+    for (const d of deps) {
+      if (!used.has(d)) {
+        used.add(d)
+        queue.push(d)
+      }
+    }
+  }
+  return used
+}
+
+async function validateTokenDefinitions({ profile = false } = {}) {
+  const p = profiled(profile)
+  p.mark('total')
   console.log('🔍 Analyzing token definitions and usage...')
 
-  const allTokens = loadAllTokens()
-  console.log(`📋 Found ${allTokens.size} total tokens\n`)
+  // 1) Token indices
+  p.mark('tokens')
+  const { defs, dependencyGraph, cssUsage } = await buildTokenIndices()
+  const allTokens = Array.from(defs.keys())
+  if (profile) console.log(`⏱️  tokens: ${p.end('tokens').toFixed(1)}ms`)
+  console.log(`📋 Found ${allTokens.length} total tokens\n`)
 
-  const { dependencyGraph, reverseDependencyGraph } =
-    buildTokenDependencyGraph(allTokens)
+  // 2) Class maps from tokens
+  p.mark('classmaps')
+  const { classToTokens } = computeClassMaps(allTokens)
+  if (profile)
+    console.log(`⏱️  class maps: ${p.end('classmaps').toFixed(1)}ms`)
 
-  // Cache component files content for reuse
-  const componentFilesCache = new Map()
-  const componentFiles = globSync('src/**/*.{ts,tsx}', {
-    ignore: CONFIG.excludeFiles,
-  })
+  // 3) Component indices
+  p.mark('components')
+  const { componentVarUsage, classUsageTokens } = await buildComponentIndices(
+    classToTokens,
+    new Set(allTokens)
+  )
+  if (profile)
+    console.log(`⏱️  components: ${p.end('components').toFixed(1)}ms`)
 
-  for (const file of componentFiles) {
-    try {
-      componentFilesCache.set(file, fs.readFileSync(file, 'utf8'))
-    } catch (error) {
-      console.warn(`⚠️  Could not read ${file}: ${error.message}`)
-    }
+  // 4) Seed used set
+  const usedDirect = new Set()
+  for (const t of allTokens) {
+    if (isWhitelisted(t)) usedDirect.add(t)
   }
+  // Direct CSS var() usage (outside token defs)
+  for (const [t, locs] of cssUsage) {
+    if (locs.size > 0) usedDirect.add(t)
+  }
+  // Component var() usage
+  for (const [t, locs] of componentVarUsage) {
+    if (locs.size > 0) usedDirect.add(t)
+  }
+  // Class usage
+  for (const t of classUsageTokens) usedDirect.add(t)
 
+  // 5) Propagate through dependencies (forward)
+  p.mark('closure')
+  const usedTokens = propagateUsage(usedDirect, dependencyGraph)
+  if (profile) console.log(`⏱️  closure: ${p.end('closure').toFixed(1)}ms`)
+
+  // 6) Classify
   const unusedTokens = []
-  const usedTokens = new Set()
-  let checkedCount = 0
-
-  for (const [tokenName, tokenData] of allTokens) {
-    checkedCount++
-
-    if (shouldIgnoreToken(tokenName)) {
-      continue
-    }
-
-    if (isWhitelisted(tokenName)) {
-      usedTokens.add(tokenName)
-      continue
-    }
-
-    // Check component usage with cached content
-    const componentUsage = findTokenUsageInComponentsCache(
-      tokenName,
-      componentFilesCache
-    )
-
-    // Check CSS usage
-    const cssUsage = findTokenUsageInCSS(tokenName, allTokens)
-
-    const totalUsage = new Set([...componentUsage, ...cssUsage])
-
-    if (totalUsage.size > 0) {
-      usedTokens.add(tokenName)
-    } else {
-      // Check if any dependent tokens are used
-      const dependents = findDependentTokens(tokenName, reverseDependencyGraph)
-      const usedDependents = Array.from(dependents).filter((dep) =>
-        usedTokens.has(dep)
-      )
-
-      if (usedDependents.length > 0) {
-        usedTokens.add(tokenName)
-      } else {
-        unusedTokens.push({
-          name: tokenName,
-          file: tokenData.file,
-          line: tokenData.line,
-          value: tokenData.value,
-        })
-      }
+  for (const t of allTokens) {
+    if (shouldIgnoreToken(t)) continue
+    if (!usedTokens.has(t)) {
+      const d = defs.get(t)
+      unusedTokens.push({ name: t, file: d.file, line: d.line, value: d.value })
     }
   }
 
   // Report results
   console.log(`\n📊 Validation Summary:`)
-  console.log(`   Total tokens: ${allTokens.size}`)
-  console.log(`   Used tokens: ${usedTokens.size}`)
+  console.log(`   Total tokens: ${allTokens.length}`)
+  console.log(`   Used tokens: ${allTokens.length - unusedTokens.length}`)
   console.log(`   Unused tokens: ${unusedTokens.length}`)
 
   if (unusedTokens.length === 0) {
     console.log('\n✅ All tokens are being used!')
+    if (profile) console.log(`⏱️  total: ${p.end('total').toFixed(1)}ms`)
     return true
-  } else {
-    console.log(
-      `\n⚠️  Found ${unusedTokens.length} potentially unused tokens:\n`
-    )
-
-    // Group by file
-    const tokensByFile = new Map()
-    for (const token of unusedTokens) {
-      if (!tokensByFile.has(token.file)) {
-        tokensByFile.set(token.file, [])
-      }
-      tokensByFile.get(token.file).push(token)
-    }
-
-    for (const [file, tokens] of tokensByFile) {
-      console.log(`📄 ${file}:`)
-      for (const token of tokens) {
-        console.log(`  Line ${token.line}: ${token.name} = ${token.value}`)
-      }
-      console.log()
-    }
-
-    console.log(
-      '💡 Note: These tokens might be used in ways not detected by this script.'
-    )
-    console.log(
-      '   Consider:\n   - Dynamic class generation\n   - External usage\n   - Future planned usage\n'
-    )
-
-    return false
   }
+
+  console.log(`\n⚠️  Found ${unusedTokens.length} potentially unused tokens:\n`)
+  const byFile = new Map()
+  for (const tok of unusedTokens) {
+    if (!byFile.has(tok.file)) byFile.set(tok.file, [])
+    byFile.get(tok.file).push(tok)
+  }
+  for (const [file, list] of byFile) {
+    console.log(`📄 ${file}:`)
+    for (const t of list) console.log(`  Line ${t.line}: ${t.name} = ${t.value}`)
+    console.log()
+  }
+  console.log(
+    '💡 Note: Tokens might be used dynamically or externally and not detected.'
+  )
+  if (profile) console.log(`⏱️  total: ${p.end('total').toFixed(1)}ms`)
+  return false
 }
 
-/**
- * Run validation
- */
 if (import.meta.url === `file://${process.argv[1]}`) {
-  try {
-    const success = validateTokenDefinitions()
-    process.exit(success ? 0 : 1)
-  } catch (error) {
-    console.error('💥 Validation failed:', error.message)
-    console.error(error.stack)
-    process.exit(1)
-  }
+  const profile = process.argv.includes('--profile')
+  validateTokenDefinitions({ profile })
+    .then((ok) => process.exit(ok ? 0 : 1))
+    .catch((err) => {
+      console.error('💥 Validation failed:', err?.message || err)
+      if (err?.stack) console.error(err.stack)
+      process.exit(1)
+    })
 }
 
-export {
-  validateTokenDefinitions,
-  buildTokenDependencyGraph,
-  findTokenUsageInComponentsCache,
-}
+export { validateTokenDefinitions }
