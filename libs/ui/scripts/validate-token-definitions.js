@@ -223,6 +223,8 @@ function tokenToUtilityClasses(tokenName) {
       '-end',
       // Layout
       'gap',
+      'gap-x',
+      'gap-y',
       'space-x',
       'space-y',
     ],
@@ -313,7 +315,6 @@ function tokenToUtilityClasses(tokenName) {
     'opacity-bg',
     'opacity-borderless',
     'spacing-translate',
-    'spacing-pc',
     'spacing-menu-submenu',
   ]
 
