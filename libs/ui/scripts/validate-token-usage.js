@@ -22,6 +22,7 @@ const NAMESPACE_MAPPINGS = {
     'stroke',
     'outline',
     'ring',
+    'ring-offset',
     'shadow',
     'accent',
     'caret',
@@ -35,6 +36,8 @@ const NAMESPACE_MAPPINGS = {
     'pr',
     'pb',
     'pl',
+    'ps',
+    'pe',
     'm',
     'mx',
     'my',
@@ -42,7 +45,13 @@ const NAMESPACE_MAPPINGS = {
     'mr',
     'mb',
     'ml',
+    'ms',
+    'me',
     'gap',
+    'gap-x',
+    'gap-y',
+    'space-x',
+    'space-y',
     'w',
     'h',
     'max-w',
@@ -54,12 +63,14 @@ const NAMESPACE_MAPPINGS = {
     'bottom',
     'left',
     'inset',
+    'inset-x',
+    'inset-y',
   ],
   text: ['text'],
   'font-weight': ['font'],
   font: ['font'],
   radius: ['rounded'],
-  shadow: ['shadow', 'drop-shadow'],
+  shadow: ['shadow', 'drop-shadow', 'inset-shadow'],
   blur: ['blur'],
   opacity: ['opacity'],
   border: ['border'],
@@ -67,12 +78,6 @@ const NAMESPACE_MAPPINGS = {
 
 // Standard Tailwind utilities to ignore (not custom tokens)
 const IGNORE_PATTERNS = [
-  // CSS variables in parentheses - these use CSS variables directly, not design tokens
-  /^[a-z-]+\([^)]*--[^)]+\)$/,
-
-  // Square bracket notation with CSS variables - ignore these as they use CSS vars directly
-  /^[a-z-]+\[var\(--[^)]+\)\]$/,
-
   // Standard positioning values
   /^(top|right|bottom|left|inset)-(0|px|0\.5|1|1\.5|2|2\.5|3|3\.5|4|5|6|7|8|9|10|11|12|14|16|20|24|28|32|36|40|44|48|52|56|60|64|72|80|96|auto|full|screen|min|max|fit|end)$/,
 
@@ -123,6 +128,22 @@ const IGNORE_PATTERNS = [
   // Misc utilities
   /^(sr-only|not-sr-only|pointer-events|select|resize|appearance|cursor|outline|ring)-.+$/,
 ]
+
+// Precompute prefix helpers for mapping
+const KNOWN_PREFIXES = Object.values(NAMESPACE_MAPPINGS)
+  .flat()
+  .slice()
+  .sort((a, b) => b.length - a.length)
+const PREFIX_TO_NAMESPACES = (() => {
+  const map = new Map()
+  for (const [ns, prefixes] of Object.entries(NAMESPACE_MAPPINGS)) {
+    for (const p of prefixes) {
+      if (!map.has(p)) map.set(p, [])
+      map.get(p).push(ns)
+    }
+  }
+  return map
+})()
 
 /**
  * Extract Tailwind classes from TypeScript/JSX content
@@ -222,14 +243,12 @@ function mapClassToPossibleTokens(className) {
 
   // Parse utility class: prefix-value (non-greedy matching)
   // Match known prefixes first, then everything else as value
-  const knownPrefixes = Object.values(NAMESPACE_MAPPINGS).flat()
   let prefix = null
   let value = null
   // Normalize negative utilities (-m-*, -mt-*, etc.)
   const normalized = baseClass.startsWith('-') ? baseClass.slice(1) : baseClass
   // Try to match against known prefixes (longest first to handle cases like 'ring-offset')
-  const sortedPrefixes = knownPrefixes.sort((a, b) => b.length - a.length)
-  for (const knownPrefix of sortedPrefixes) {
+  for (const knownPrefix of KNOWN_PREFIXES) {
     if (normalized.startsWith(`${knownPrefix}-`)) {
       prefix = knownPrefix
       value = normalized.slice(knownPrefix.length + 1) // +1 for the dash
@@ -242,20 +261,19 @@ function mapClassToPossibleTokens(className) {
   const possibleTokens = []
 
   // Find which namespaces this prefix could belong to
-  for (const [namespace, prefixes] of Object.entries(NAMESPACE_MAPPINGS)) {
-    if (prefixes.includes(prefix)) {
-      // Special handling for font-weight
-      if (namespace === 'font-weight') {
-        possibleTokens.push(`--font-weight-${value}`)
-      } else {
-        possibleTokens.push(`--${namespace}-${value}`)
-      }
+  const namespaces = PREFIX_TO_NAMESPACES.get(prefix) || []
+  for (const namespace of namespaces) {
+    if (namespace === 'font-weight') {
+      possibleTokens.push(`--font-weight-${value}`)
+    } else {
+      possibleTokens.push(`--${namespace}-${value}`)
     }
   }
 
   // Add specific namespace alternatives for spacing-related utilities
   if (['p', 'px', 'py', 'pt', 'pr', 'pb', 'pl', 'ps', 'pe'].includes(prefix)) {
     possibleTokens.push(`--padding-${value}`)
+    possibleTokens.push(`--spacing-${value}`)
   }
 
   if (
@@ -281,10 +299,12 @@ function mapClassToPossibleTokens(className) {
     ].includes(prefix)
   ) {
     possibleTokens.push(`--margin-${value}`)
+    possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['gap'].includes(prefix)) {
+  if (['gap', 'gap-x', 'gap-y'].includes(prefix)) {
     possibleTokens.push(`--gap-${value}`)
+    possibleTokens.push(`--spacing-${value}`)
   }
 
   if (['w', 'min-w', 'max-w'].includes(prefix)) {
@@ -293,6 +313,20 @@ function mapClassToPossibleTokens(className) {
 
   if (['h', 'min-h', 'max-h'].includes(prefix)) {
     possibleTokens.push(`--height-${value}`)
+  }
+
+  if (['space-x', 'space-y'].includes(prefix)) {
+    possibleTokens.push(`--space-${value}`)
+    possibleTokens.push(`--spacing-${value}`)
+  }
+
+  if (
+    ['inset', 'inset-x', 'inset-y', 'top', 'right', 'bottom', 'left'].includes(
+      prefix
+    )
+  ) {
+    possibleTokens.push(`--inset-${value}`)
+    possibleTokens.push(`--spacing-${value}`)
   }
 
   return possibleTokens
@@ -308,11 +342,20 @@ function loadDefinedTokens() {
 
   for (const file of tokenFiles) {
     const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
-
-    // Match CSS custom properties
+    // Match CSS custom properties defined in tokens
     const tokenMatches = content.matchAll(/--([a-z][a-z0-9-]*)\s*:/g)
     for (const match of tokenMatches) {
       tokens.add(`--${match[1]}`)
+    }
+  }
+
+  // Also treat inline style custom properties in components as defined
+  const componentFiles = globSync('src/**/*.{ts,tsx}', { cwd: ROOT, ignore: ['**/*.stories.tsx','**/*.test.tsx','**/*.spec.tsx'] })
+  for (const file of componentFiles) {
+    const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    // style={{ '--var': value }} or object entries '--var': value
+    for (const m of content.matchAll(/["'](--[a-z][a-z0-9-]*)["']\s*:/gi)) {
+      tokens.add(m[1])
     }
   }
 
@@ -329,6 +372,24 @@ function shouldIgnoreClass(className) {
     baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, '')
   }
   return IGNORE_PATTERNS.some((pattern) => pattern.test(baseClass))
+}
+
+// Extract tokens referenced directly inside arbitrary utility syntax
+function extractTokensFromArbitraryUtility(className) {
+  const tokens = new Set()
+  // var(--token)
+  for (const m of className.matchAll(/var\(\s*(--[a-z][a-z0-9-]*)/gi)) {
+    tokens.add(m[1])
+  }
+  // key:(--token) or key=--token forms inside parentheses/brackets
+  for (const m of className.matchAll(/[:=]\s*(--[a-z][a-z0-9-]*)/gi)) {
+    tokens.add(m[1])
+  }
+  // Bare --token immediately after an opening parenthesis. Avoid matching icon names like mdi--play in brackets.
+  for (const m of className.matchAll(/\((--[a-z][a-z0-9-]*)/gi)) {
+    tokens.add(m[1])
+  }
+  return Array.from(tokens)
 }
 
 /**
@@ -353,8 +414,40 @@ function validateTokenUsage() {
     const fileErrors = []
 
     for (const className of classes) {
+      // 1) Arbitrary utilities with direct token references
+      const arbitraryTokens = extractTokensFromArbitraryUtility(className)
+      if (arbitraryTokens.length > 0) {
+        // Allow some external CSS vars not governed by design tokens
+        const externalAllow = new Set([
+          // Keep truly external/runtime-provided vars here; we now require
+          // --reference-width and --z-index to exist somewhere, per request.
+          '--available-height',
+          '--height',
+          '--border-width-badge-dynamic',
+        ])
+        const tokensNeedingCheck = arbitraryTokens.filter(
+          (t) => !externalAllow.has(t)
+        )
+
+        const anyDefined = tokensNeedingCheck.some((t) => definedTokens.has(t))
+        if (!anyDefined && tokensNeedingCheck.length > 0) {
+          fileErrors.push({
+            className,
+            expectedTokens: tokensNeedingCheck,
+            line:
+              content
+                .split('\n')
+                .findIndex((line) => line.includes(className)) + 1,
+          })
+        }
+        // If tokens are all external or any defined, consider it valid and continue
+        if (tokensNeedingCheck.length === 0 || anyDefined) continue
+      }
+
+      // 2) Ignore standard classes
       if (shouldIgnoreClass(className)) continue
 
+      // 3) Map to possible tokens via namespace rules
       const possibleTokens = mapClassToPossibleTokens(className)
       if (possibleTokens.length === 0) continue
 
