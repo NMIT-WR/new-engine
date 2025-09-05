@@ -55,7 +55,7 @@ const treeVariants = tv({
       class: [
         'relative',
         // get --depth from zag-js api
-        'ml-[calc(var(--depth)*theme(tree-indent-per-level))]',
+        'ml-[calc(var(--depth)*var(--tree-indent-per-level))]',
         'data-[depth=1]:ml-0',
       ],
     },
