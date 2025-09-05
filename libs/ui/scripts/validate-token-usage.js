@@ -8,7 +8,7 @@
  */
 
 import fs from 'fs'
-import { glob } from 'glob'
+import { globSync } from 'glob'
 
 // Tailwind v4 namespace to utility prefix mappings
 const NAMESPACE_MAPPINGS = {
@@ -290,7 +290,7 @@ function mapClassToPossibleTokens(className) {
  */
 function loadDefinedTokens() {
   const tokens = new Set()
-  const tokenFiles = glob.sync('src/tokens/**/*.css')
+  const tokenFiles = globSync('src/tokens/**/*.css')
 
   for (const file of tokenFiles) {
     const content = fs.readFileSync(file, 'utf8')
@@ -326,7 +326,7 @@ function validateTokenUsage() {
   const definedTokens = loadDefinedTokens()
   console.log(`📋 Found ${definedTokens.size} defined tokens`)
 
-  const componentFiles = glob.sync('src/**/*.{ts,tsx}', {
+  const componentFiles = globSync('src/**/*.{ts,tsx}', {
     ignore: ['**/*.stories.tsx', '**/*.test.tsx', '**/*.spec.tsx'],
   })
 

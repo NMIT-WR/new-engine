@@ -8,7 +8,7 @@
  */
 
 import fs from 'fs'
-import { glob } from 'glob'
+import { globSync } from 'glob'
 
 // Configuration for validation
 const CONFIG = {
@@ -74,7 +74,7 @@ function parseTokensFromFile(filePath) {
  */
 function loadAllTokens() {
   const allTokens = new Map()
-  const tokenFiles = glob.sync('src/tokens/components/**/*.css')
+  const tokenFiles = globSync('src/tokens/components/**/*.css')
 
   for (const file of tokenFiles) {
     const tokens = parseTokensFromFile(file)
@@ -488,7 +488,7 @@ function validateTokenDefinitions() {
 
   // Cache component files content for reuse
   const componentFilesCache = new Map()
-  const componentFiles = glob.sync('src/**/*.{ts,tsx}', {
+  const componentFiles = globSync('src/**/*.{ts,tsx}', {
     ignore: CONFIG.excludeFiles,
   })
 

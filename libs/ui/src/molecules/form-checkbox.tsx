@@ -29,7 +29,7 @@ export function FormCheckboxRaw({
   const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
-    <div className="flex gap-2xs">
+    <div className="flex gap-150">
       <div className="mt-2 flex items-start">
         <Checkbox id={id} required={required} disabled={disabled} {...props} />
       </div>
