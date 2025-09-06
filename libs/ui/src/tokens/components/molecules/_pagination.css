@@ -12,6 +12,7 @@
 
   /* Text colors */
   --color-pagination-fg: var(--color-fg-primary);
+  --color-pagination-fg-hover: var(--color-pagination-fg);
   --color-pagination-fg-active: var(--color-pagination-fg);
   --color-pagination-outlined-fg-active: var(--color-pagination-active);
   --color-pagination-fg-disabled: --alpha(
@@ -20,7 +21,7 @@
   );
 
   /* Border colors */
-  --color-pagination-border: var(--color-stroke-primary);
+  --color-pagination-border: var(--color-border-primary);
   --color-pagination-border-active: var(--color-primary);
   --color-pagination-border-hover: --alpha(
     var(--color-pagination-border-active) /
@@ -35,7 +36,7 @@
   --color-pagination-ring: --alpha(var(--color-primary) / var(--opacity-ring));
 
   /* Spacing */
-  --spacing-pagination: var(--spacing-xs);
+  --spacing-pagination: var(--spacing-200);
   --spacing-pagination-list: var(--spacing-pagination);
 
   /* height */

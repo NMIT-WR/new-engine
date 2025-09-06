@@ -14,7 +14,7 @@
   --color-header-mobile-menu-hover: var(--color-fill-hover);
   --color-header-mobile-menu-text: var(--color-fg-secondary);
   --color-header-mobile-menu-text-hover: var(--color-fg-primary);
-  --color-header-divider: var(--color-stroke-secondary);
+  --color-header-divider: var(--color-border-secondary);
 
   /* === HEADER SPACING === */
   --spacing-header-container-x: var(--spacing-xs);

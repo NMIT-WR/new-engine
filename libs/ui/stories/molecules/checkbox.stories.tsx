@@ -218,7 +218,9 @@ export const IndeterminateTest: Story = {
               <Checkbox
                 id={`item-${item.id}`}
                 checked={item.checked}
-                onCheckedChange={(checked) => handleChildChange(item.id, checked)}
+                onCheckedChange={(checked) =>
+                  handleChildChange(item.id, checked)
+                }
               />
               <label htmlFor={`item-${item.id}`}>{item.name}</label>
             </div>

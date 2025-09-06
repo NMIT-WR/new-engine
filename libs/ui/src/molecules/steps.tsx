@@ -135,7 +135,11 @@ export function Steps({
     <div className={root()} {...api.getRootProps()}>
       <div className={list()} {...api.getListProps()}>
         {items.map((step, index) => (
-          <div className={item()} key={slugify(step.title)} {...api.getItemProps({ index })}>
+          <div
+            className={item()}
+            key={slugify(step.title)}
+            {...api.getItemProps({ index })}
+          >
             <button className={trigger()} {...api.getTriggerProps({ index })}>
               <span
                 className={indicator()}

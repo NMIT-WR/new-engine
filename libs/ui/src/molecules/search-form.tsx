@@ -43,7 +43,7 @@ const buttonVariants = tv({
   base: [
     'absolute',
     'justify-self-end place-self-center',
-    'h-full rounded-none px-xs py-xs',
+    'h-full rounded-none p-200',
   ],
 })
 

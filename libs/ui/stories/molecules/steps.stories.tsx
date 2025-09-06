@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Steps } from '../../src/molecules/steps'
 import { Select } from '../../src/molecules/select'
-import { Button } from '../../src/atoms/button'
+import { Steps } from '../../src/molecules/steps'
 
 const meta: Meta<typeof Steps> = {
   title: 'Molecules/Steps',
@@ -133,10 +132,10 @@ const stepsWithCustomContent = [
     value: 0,
     title: 'Account',
     content: (
-      <div className="p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2">Create your account</h3>
+      <div className="rounded-lg p-4">
+        <h3 className="mb-2 font-semibold text-lg">Create your account</h3>
         <p>This is custom content for the account step.</p>
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+        <button className="mt-4 rounded bg-blue-500 px-4 py-2 text-white">
           Custom Action
         </button>
       </div>
@@ -151,11 +150,18 @@ const stepsWithCustomContent = [
     value: 2,
     title: 'Settings',
     content: (
-      <div className="p-4 border border-gray-200 rounded">
+      <div className="rounded border border-gray-200 p-4">
         <h3 className="font-semibold">Custom Settings Form</h3>
-        <label className="block mt-2">
+        <label className="mt-2 block">
           <span className="text-gray-700">Preference</span>
-          <Select label="options" options={[{label: "first", value:"first"}, {label: "second", value: "second"}]} size='xs' />
+          <Select
+            label="options"
+            options={[
+              { label: 'first', value: 'first' },
+              { label: 'second', value: 'second' },
+            ]}
+            size="xs"
+          />
         </label>
       </div>
     ),

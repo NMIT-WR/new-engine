@@ -26,14 +26,14 @@
 
   /* === PADDING === */
   /* Trigger padding */
-  --padding-tabs-trigger-sm: var(--spacing-3xs) var(--spacing-2xs);
-  --padding-tabs-trigger-md: var(--spacing-2xs) var(--spacing-xs);
-  --padding-tabs-trigger-lg: var(--spacing-xs) var(--spacing-sm);
+  --padding-tabs-trigger-sm: var(--spacing-100) var(--spacing-150);
+  --padding-tabs-trigger-md: var(--spacing-150) var(--spacing-200);
+  --padding-tabs-trigger-lg: var(--spacing-200) var(--spacing-250);
 
   /* Content padding */
-  --spacing-tabs-content-sm: var(--spacing-xs);
-  --spacing-tabs-content-md: var(--spacing-sm);
-  --spacing-tabs-content-lg: var(--spacing-md);
+  --spacing-tabs-content-sm: var(--spacing-200);
+  --spacing-tabs-content-md: var(--spacing-250);
+  --spacing-tabs-content-lg: var(--spacing-350);
   --spacing-tabs-content: var(--spacing-tabs-content-md);
 
   /* === TYPOGRAPHY === */

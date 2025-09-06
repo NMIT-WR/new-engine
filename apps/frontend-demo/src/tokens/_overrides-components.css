@@ -15,27 +15,27 @@
 
   /* === BUTTON === */
   /* Change from --alpha-ring to --opacity-ring for all focus rings */
-  --color-btn-ring-primary: --alpha(
-    var(--color-btn-primary) /
+  --color-button-ring-primary: --alpha(
+    var(--color-button-primary) /
     var(--opacity-ring)
   );
-  --color-btn-ring-secondary: --alpha(
-    var(--color-btn-secondary) /
+  --color-button-ring-secondary: --alpha(
+    var(--color-button-secondary) /
     var(--opacity-ring)
   );
-  --color-btn-ring-tertiary: --alpha(
-    var(--color-btn-tertiary) /
+  --color-button-ring-tertiary: --alpha(
+    var(--color-button-tertiary) /
     var(--opacity-ring)
   );
-  --color-btn-ring-warning: --alpha(
-    var(--color-btn-warning) /
+  --color-button-ring-warning: --alpha(
+    var(--color-button-warning) /
     var(--opacity-ring)
   );
-  --color-btn-ring-danger: --alpha(
-    var(--color-btn-danger) /
+  --color-button-ring-danger: --alpha(
+    var(--color-button-danger) /
     var(--opacity-ring)
   );
-  --color-btn-text-secondary: var(--color-fg-dark);
+  --color-button-text-secondary: var(--color-fg-dark);
 
   /* === INPUT === */
   /* Different padding for small inputs */

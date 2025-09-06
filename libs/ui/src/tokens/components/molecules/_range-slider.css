@@ -3,7 +3,7 @@
   --color-slider-track: var(--color-fill-base);
   --color-slider-range: var(--color-primary);
   --color-slider-thumb: var(--color-base-light);
-  --color-slider-border: var(--color-stroke-primary);
+  --color-slider-border: var(--color-border-primary);
   --color-slider-error: var(--color-danger);
 
   --opacity-slider-disabled: var(--opacity-disabled);
@@ -25,7 +25,7 @@
 
   /* === DISABLED STATES === */
   --color-slider-track-disabled: var(--color-disabled-bg);
-  --color-slider-range-disabled: var(--color-disabled-text);
+  --color-slider-range-disabled: var(--color-disabled-fg);
   /* we must avoid transparent paint, otherwise the range would be visible */
   --color-slider-thumb-disabled: var(--color-highlight);
   --color-slider-border-disabled: var(--color-disabled-border);
@@ -39,20 +39,20 @@
   --color-slider-ring: --alpha(var(--color-primary) / var(--opacity-ring));
 
   /* === SIZING === */
-  --spacing-slider-thumb-sm: var(--spacing-xs);
-  --spacing-slider-thumb-md: var(--spacing-sm);
-  --spacing-slider-thumb-lg: var(--spacing-md);
+  --spacing-slider-thumb-sm: var(--spacing-200);
+  --spacing-slider-thumb-md: var(--spacing-250);
+  --spacing-slider-thumb-lg: var(--spacing-350);
 
-  --width-slider-track-sm: var(--spacing-3xs);
-  --width-slider-track-md: var(--spacing-2xs);
-  --width-slider-track-lg: var(--spacing-xs);
+  --width-slider-track-sm: var(--spacing-100);
+  --width-slider-track-md: var(--spacing-150);
+  --width-slider-track-lg: var(--spacing-200);
 
-  --height-slider-track-sm: var(--spacing-3xs);
-  --height-slider-track-md: var(--spacing-2xs);
-  --height-slider-track-lg: var(--spacing-xs);
+  --height-slider-track-sm: var(--spacing-100);
+  --height-slider-track-md: var(--spacing-150);
+  --height-slider-track-lg: var(--spacing-200);
 
   /* === SPACING === */
-  --spacing-slider-root: var(--spacing-xs);
+  --spacing-slider-root: var(--spacing-200);
 
   /* === TYPOGRAPHY === */
   --text-slider-value-size: var(--text-sm);

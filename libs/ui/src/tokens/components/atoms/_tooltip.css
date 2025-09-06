@@ -3,9 +3,9 @@
   --color-tooltip-bg: var(--color-overlay);
 
   /* === SIZING & SPACING === */
-  --padding-tooltip-sm: var(--spacing-2xs) var(--spacing-xs);
-  --padding-tooltip-md: var(--spacing-xs) var(--spacing-sm);
-  --padding-tooltip-lg: var(--spacing-sm) var(--spacing-md);
+  --padding-tooltip-sm: var(--spacing-150) var(--spacing-200);
+  --padding-tooltip-md: var(--spacing-200) var(--spacing-250);
+  --padding-tooltip-lg: var(--spacing-250) var(--spacing-350);
 
   --text-tooltip-sm: var(--text-xs);
   --text-tooltip-md: var(--text-sm);
@@ -15,6 +15,6 @@
   --shadow-tooltip: var(--shadow-md);
 
   /* Required for Zag.js */
-  --tooltip-arrow-size: var(--spacing-2xs);
+  --tooltip-arrow-size: var(--spacing-150);
   --tooltip-arrow-background: var(--color-tooltip-bg);
 }

@@ -22,11 +22,11 @@ const productCard = tv({
     badgesSlot: 'flex flex-wrap gap-pc-box',
     ratingSlot: 'flex items-center',
     buttonsSlot: 'flex flex-wrap w-fit',
-    cartButton: 'bg-btn-cart hover:bg-btn-cart-hover text-btn-cart-fg w-max',
+    cartButton: 'bg-button-cart hover:bg-button-cart-hover text-button-cart-fg w-max',
     detailButton:
-      'bg-btn-detail hover:bg-btn-detail-hover text-btn-detail-fg w-max',
+      'bg-button-detail hover:bg-button-detail-hover text-button-detail-fg w-max',
     wishlistButton:
-      'bg-btn-wishlist hover:bg-btn-wishlist-hover text-btn-wishlist-fg w-max',
+      'bg-button-wishlist hover:bg-button-wishlist-hover text-button-wishlist-fg w-max',
   },
   variants: {
     // variant for layout of the card

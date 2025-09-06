@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Popover } from '../../src/molecules/popover'
 import { Button } from '../../src/atoms/button'
+import { Icon } from '../../src/atoms/icon'
 import { Input } from '../../src/atoms/input'
 import { Label } from '../../src/atoms/label'
-import { Icon } from '../../src/atoms/icon'
+import { Popover } from '../../src/molecules/popover'
 
 const meta = {
   title: 'Molecules/Popover',
@@ -81,7 +81,7 @@ export const DifferentSizes: Story = {
           <p className="text-xs">Small content</p>
         </div>
       </Popover>
-      
+
       <Popover
         trigger="Medium"
         size="md"
@@ -92,7 +92,7 @@ export const DifferentSizes: Story = {
           <p>Medium content</p>
         </div>
       </Popover>
-      
+
       <Popover
         trigger="Large"
         size="lg"
@@ -119,7 +119,7 @@ export const DifferentPlacements: Story = {
       <Popover trigger="Top End" placement="top-end">
         <div className="w-32">Top End</div>
       </Popover>
-      
+
       <Popover trigger="Left" placement="left">
         <div className="w-32">Left</div>
       </Popover>
@@ -131,7 +131,7 @@ export const DifferentPlacements: Story = {
       <Popover trigger="Right" placement="right">
         <div className="w-32">Right</div>
       </Popover>
-      
+
       <Popover trigger="Bottom Start" placement="bottom-start">
         <div className="w-32">Bottom Start</div>
       </Popover>
@@ -148,7 +148,7 @@ export const DifferentPlacements: Story = {
 export const Controlled: Story = {
   render: () => {
     const [open, setOpen] = useState(false)
-    
+
     return (
       <div className="flex flex-col items-center gap-4">
         <div className="flex gap-2">
@@ -159,7 +159,7 @@ export const Controlled: Story = {
             Close Popover
           </Button>
         </div>
-        
+
         <Popover
           trigger="Controlled Popover"
           open={open}
@@ -169,9 +169,9 @@ export const Controlled: Story = {
         >
           <div className="mt-4">
             <p>The popover is {open ? 'open' : 'closed'}.</p>
-            <Button 
-              onClick={() => setOpen(false)} 
-              size="sm" 
+            <Button
+              onClick={() => setOpen(false)}
+              size="sm"
               variant="secondary"
               className="mt-2"
             >
@@ -192,14 +192,27 @@ export const WithForm: Story = {
       <form className="mt-4 space-y-4">
         <div>
           <Label htmlFor="name">Name</Label>
-          <Input size='sm' className='px-2 py-2' id="name" placeholder="Enter your name" />
+          <Input
+            size="sm"
+            className="px-2 py-2"
+            id="name"
+            placeholder="Enter your name"
+          />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input size='sm' className='px-2 py-2' id="email" type="email" placeholder="Enter your email" />
+          <Input
+            size="sm"
+            className="px-2 py-2"
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+          />
         </div>
         <div className="flex gap-2">
-          <Button type="submit" size="sm">Save</Button>
+          <Button type="submit" size="sm">
+            Save
+          </Button>
         </div>
       </form>
     ),
@@ -222,11 +235,11 @@ export const CustomTrigger: Story = {
           <p>This popover uses a custom trigger with an icon.</p>
         </div>
       </Popover>
-      
+
       <Popover
         trigger={
-          <div className="p-2 border-2 border-dashed border-border rounded-lg">
-            <p className="text-sm text-muted">Click this custom area</p>
+          <div className="rounded-lg border-2 border-border border-dashed p-2">
+            <p className="text-muted text-sm">Click this custom area</p>
           </div>
         }
         triggerClassName="hover:border-primary focus:border-primary"
@@ -256,13 +269,16 @@ export const Modal: Story = {
     trigger: 'Open Modal Popover',
     modal: true,
     title: 'Modal Popover',
-    description: 'This popover acts as a modal - it traps focus and blocks interactions outside.',
+    description:
+      'This popover acts as a modal - it traps focus and blocks interactions outside.',
     showCloseButton: true,
     closeOnInteractOutside: false,
     children: (
       <div className="mt-4">
         <p>Try clicking outside - it won't close!</p>
-        <p className="mt-2 text-sm text-muted">Press Escape or use the close button to dismiss.</p>
+        <p className="mt-2 text-muted text-sm">
+          Press Escape or use the close button to dismiss.
+        </p>
       </div>
     ),
   },
@@ -272,18 +288,18 @@ export const AsyncContent: Story = {
   render: () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<string | null>(null)
-    
+
     const loadData = async () => {
       setLoading(true)
       setData(null)
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
       setData('Data loaded successfully!')
       setLoading(false)
     }
-    
+
     return (
       <Popover
         trigger="Load Async Content"
@@ -293,15 +309,24 @@ export const AsyncContent: Story = {
           }
         }}
       >
-        <div className="w-64 min-h-[100px] flex items-center justify-center">
+        <div className="flex min-h-[100px] w-64 items-center justify-center">
           {loading ? (
             <div className="flex items-center gap-2">
-              <Icon icon="token-icon-spinner" size="sm" className="animate-spin" />
+              <Icon
+                icon="token-icon-spinner"
+                size="sm"
+                className="animate-spin"
+              />
               <span>Loading...</span>
             </div>
           ) : data ? (
             <div className="text-center">
-              <Icon icon="token-icon-check" size="lg" color="success" className="mx-auto mb-2" />
+              <Icon
+                icon="token-icon-check"
+                size="lg"
+                color="success"
+                className="mx-auto mb-2"
+              />
               <p>{data}</p>
             </div>
           ) : (
@@ -315,14 +340,10 @@ export const AsyncContent: Story = {
 
 export const NestedPopovers: Story = {
   render: () => (
-    <Popover
-      trigger="Level 1"
-      title="First Level"
-      placement="bottom"
-    >
+    <Popover trigger="Level 1" title="First Level" placement="bottom">
       <div className="mt-4 space-y-4">
         <p>This is the first level popover.</p>
-        
+
         <Popover
           trigger="Open Level 2"
           title="Second Level"
@@ -331,7 +352,7 @@ export const NestedPopovers: Story = {
         >
           <div className="mt-4 space-y-4">
             <p className="text-sm">This is nested inside the first popover.</p>
-            
+
             <Popover
               trigger="Open Level 3"
               title="Third Level"
@@ -355,20 +376,20 @@ export const LongContent: Story = {
     title: 'Detailed Information',
     showCloseButton: true,
     children: (
-      <div className="mt-4 max-h-96 overflow-y-auto space-y-4">
+      <div className="mt-4 max-h-96 space-y-4 overflow-y-auto">
         <p>This popover contains a lot of content that might need scrolling.</p>
-        
+
         {Array.from({ length: 10 }, (_, i) => (
-          <div key={i} className="p-3 bg-muted rounded">
+          <div key={i} className="rounded bg-muted p-3">
             <h4 className="font-semibold">Section {i + 1}</h4>
-            <p className="text-sm mt-1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <p className="mt-1 text-sm">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
           </div>
         ))}
-        
-        <p className="text-sm text-muted">End of content</p>
+
+        <p className="text-muted text-sm">End of content</p>
       </div>
     ),
   },
@@ -381,7 +402,7 @@ export const NonPortalled: Story = {
     children: (
       <div className="w-64">
         <p>This popover is rendered in place, not in a portal.</p>
-        <p className="text-sm text-muted mt-2">
+        <p className="mt-2 text-muted text-sm">
           Useful when you need the popover to be clipped by a parent container.
         </p>
       </div>

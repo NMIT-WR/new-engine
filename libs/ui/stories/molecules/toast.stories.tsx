@@ -288,19 +288,19 @@ export const PauseResumeExample: Story = {
 
             {toastId && (
               <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    if (isPaused) {
-                      toaster.resume(toastId)
-                    } else {
-                      toaster.pause(toastId)
-                    }
-                    setIsPaused(!isPaused)
-                  }}
-                >
-                  {isPaused ? 'Resume Timer' : 'Pause Timer'}
-                </Button>
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  if (isPaused) {
+                    toaster.resume(toastId)
+                  } else {
+                    toaster.pause(toastId)
+                  }
+                  setIsPaused(!isPaused)
+                }}
+              >
+                {isPaused ? 'Resume Timer' : 'Pause Timer'}
+              </Button>
             )}
           </div>
 

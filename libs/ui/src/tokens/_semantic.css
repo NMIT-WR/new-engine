@@ -8,7 +8,12 @@
 :root {
   --state-hover: -0.08;
   --state-active: -0.12;
-  --state-disabled-chroma: 0.05;
+  --state-disabled-chroma: 0.01;
+  --state-light-variant: 0.1; /* Always make colors lighter for -light variant */
+  --state-light-chroma: 0.6; /* Reduce saturation for softer, pastel colors */
+  --state-secondary-text: 0.15;
+  --state-border: 15%;
+  --max-lightness: 0.97;
   --opacity-ring: 80%;
   --opacity-disabled: 60%;
   --opacity-placeholder: 60%;
@@ -22,6 +27,7 @@
 :is(.dark, .always-dark) {
   --state-hover: 0.08;
   --state-active: 0.12;
+  --state-secondary-text: -0.15;
   --surface-increment: -0.05;
 }
 
@@ -30,6 +36,7 @@
   :root:not(.light):not(.always-light) {
     --state-hover: 0.08;
     --state-active: 0.12;
+    --state-secondary-text: -0.15;
     --surface-increment: -0.05;
   }
 }
@@ -38,12 +45,14 @@
 :is(.light, .always-light) .reverse {
   --state-hover: 0.08;
   --state-active: 0.12;
+  --state-secondary-text: -0.15;
   --surface-increment: -0.05;
 }
 
 :is(.dark, .always-dark) .reverse {
   --state-hover: -0.08;
   --state-active: -0.12;
+  --state-secondary-text: 0.15;
   --surface-increment: 0.05;
 }
 
@@ -52,6 +61,7 @@
   .reverse:not(.dark):not(.always-dark):not(.light):not(.always-light) {
     --state-hover: 0.08;
     --state-active: 0.12;
+    --state-secondary-text: -0.15;
     --surface-increment: -0.05;
   }
 }
@@ -60,6 +70,7 @@
   .reverse:not(.dark):not(.always-dark):not(.light):not(.always-light) {
     --state-hover: -0.08;
     --state-active: -0.12;
+    --state-secondary-text: 0.15;
     --surface-increment: 0.05;
   }
 }
@@ -78,12 +89,19 @@
   --color-primary-disabled: oklch(
     from var(--color-primary) l var(--state-disabled-chroma) h
   );
-  --color-primary-light: light-dark(var(--color-blue-300), var(--color-sky-200));
+  --color-primary-light: oklch(
+    from var(--color-primary)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
+  );
   --color-primary-light-hover: oklch(
     from var(--color-primary-light) calc(l + var(--state-hover)) c h
   );
   --color-primary-light-active: oklch(
     from var(--color-primary-light) calc(l + var(--state-active)) c h
+  );
+  --color-primary-light-disabled: oklch(
+    from var(--color-primary-light) l var(--state-disabled-chroma) h
   );
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
@@ -97,15 +115,19 @@
   --color-secondary-disabled: oklch(
     from var(--color-secondary) l var(--state-disabled-chroma) h
   );
-  --color-secondary-light: light-dark(
-    var(--color-orange-300),
-    var(--color-amber-200)
+  --color-secondary-light: oklch(
+    from var(--color-secondary)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
   );
   --color-secondary-light-hover: oklch(
     from var(--color-secondary-light) calc(l + var(--state-hover)) c h
   );
   --color-secondary-light-active: oklch(
     from var(--color-secondary-light) calc(l + var(--state-active)) c h
+  );
+  --color-secondary-light-disabled: oklch(
+    from var(--color-secondary-light) l var(--state-disabled-chroma) h
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
@@ -119,15 +141,19 @@
   --color-tertiary-disabled: oklch(
     from var(--color-tertiary) l var(--state-disabled-chroma) h
   );
-  --color-tertiary-light: light-dark(
-    var(--color-pink-300),
-    var(--color-rose-200)
+  --color-tertiary-light: oklch(
+    from var(--color-tertiary)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
   );
   --color-tertiary-light-hover: oklch(
     from var(--color-tertiary-light) calc(l + var(--state-hover)) c h
   );
   --color-tertiary-light-active: oklch(
     from var(--color-tertiary-light) calc(l + var(--state-active)) c h
+  );
+  --color-tertiary-light-disabled: oklch(
+    from var(--color-tertiary-light) l var(--state-disabled-chroma) h
   );
 
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
@@ -144,15 +170,19 @@
   --color-success-disabled: oklch(
     from var(--color-success) l var(--state-disabled-chroma) h
   );
-  --color-success-light: light-dark(
-    var(--color-emerald-100),
-    var(--color-emerald-100)
+  --color-success-light: oklch(
+    from var(--color-success)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
   );
   --color-success-light-hover: oklch(
     from var(--color-success-light) calc(l + var(--state-hover)) c h
   );
   --color-success-light-active: oklch(
     from var(--color-success-light) calc(l + var(--state-active)) c h
+  );
+  --color-success-light-disabled: oklch(
+    from var(--color-success-light) l var(--state-disabled-chroma) h
   );
 
   /* It is usually used to express objective and neutral information in the context with the above semantics */
@@ -166,12 +196,19 @@
   --color-info-disabled: oklch(
     from var(--color-info) l var(--state-disabled-chroma) h
   );
-  --color-info-light: light-dark(var(--color-teal-300), var(--color-cyan-200));
+  --color-info-light: oklch(
+    from var(--color-info)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
+  );
   --color-info-light-hover: oklch(
     from var(--color-info-light) calc(l + var(--state-hover)) c h
   );
   --color-info-light-active: oklch(
     from var(--color-info-light) calc(l + var(--state-active)) c h
+  );
+  --color-info-light-disabled: oklch(
+    from var(--color-info-light) l var(--state-disabled-chroma) h
   );
 
   /* It is usually used to express warning and unsafe state, and is used in scenarios with the above semantics */
@@ -185,15 +222,19 @@
   --color-warning-disabled: oklch(
     from var(--color-warning) l var(--state-disabled-chroma) h
   );
-  --color-warning-light: light-dark(
-    var(--color-yellow-300),
-    var(--color-yellow-200)
+  --color-warning-light: oklch(
+    from var(--color-warning)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
   );
   --color-warning-light-hover: oklch(
     from var(--color-warning-light) calc(l + var(--state-hover)) c h
   );
   --color-warning-light-active: oklch(
     from var(--color-warning-light) calc(l + var(--state-active)) c h
+  );
+  --color-warning-light-disabled: oklch(
+    from var(--color-warning-light) l var(--state-disabled-chroma) h
   );
 
   /* It is usually used to express the dangerous state, and is used in the scene with the above semantics */
@@ -207,12 +248,19 @@
   --color-danger-disabled: oklch(
     from var(--color-danger) l var(--state-disabled-chroma) h
   );
-  --color-danger-light: light-dark(var(--color-red-300), var(--color-red-200));
+  --color-danger-light: oklch(
+    from var(--color-danger)
+      min(var(--max-lightness), calc(l + var(--state-light-variant)))
+      calc(c * var(--state-light-chroma)) h
+  );
   --color-danger-light-hover: oklch(
     from var(--color-danger-light) calc(l + var(--state-hover)) c h
   );
   --color-danger-light-active: oklch(
     from var(--color-danger-light) calc(l + var(--state-active)) c h
+  );
+  --color-danger-light-disabled: oklch(
+    from var(--color-danger-light) l var(--state-disabled-chroma) h
   );
 
   /* Text colors and Icon colors*/
@@ -220,14 +268,9 @@
   --color-fg-light: var(--color-slate-800); /* Light mode */
   --color-fg-dark: var(--color-white); /* Dark mode */
   --color-fg-primary: light-dark(var(--color-fg-light), var(--color-fg-dark));
-  --color-fg-primary-light: --alpha(
-    var(--color-fg-primary) /
-    var(--opacity-text-secondary)
-  );
-  --color-fg-secondary: light-dark(var(--color-gray-900), var(--color-gray-200));
-  --color-fg-secondary-light: --alpha(
-    var(--color-fg-secondary) /
-    var(--opacity-text-secondary)
+
+  --color-fg-secondary: oklch(
+    from var(--color-fg-primary) calc(l + var(--state-secondary-text)) c h
   );
   --color-fg-reverse: light-dark(var(--color-fg-dark), var(--color-fg-light));
 
@@ -254,8 +297,14 @@
   );
 
   /* Borders */
-  --color-stroke-primary: var(--color-gray-300);
-  --color-stroke-secondary: var(--color-gray-600);
+  --color-border-primary: --alpha(
+    var(--color-base-reverse) /
+    var(--state-border)
+  );
+  --color-border-secondary: --alpha(
+    var(--color-base-reverse) /
+    calc(var(--state-border) * 1.5)
+  );
   --border-width-none: 0px;
   --border-width-sm: 1px;
   --border-width-md: 2px;
@@ -288,12 +337,12 @@
   /*Disabled state - Disabled
   It is used to fill all kinds of forbidden elements in the interface, such as background, text, stroke, fill, etc*/
   --color-disabled-bg: --alpha(var(--color-base-reverse) / 10%);
-  --color-disabled-text: --alpha(
+  --color-disabled-fg: --alpha(
     var(--color-fg-primary) /
     var(--opacity-disabled)
   );
   --color-disabled-border: --alpha(
-    var(--color-stroke-primary) /
+    var(--color-border-primary) /
     var(--opacity-disabled)
   );
   --color-disabled-fill: --alpha(
@@ -306,10 +355,4 @@
 
   /* Focus ring */
   --color-ring-primary: --alpha(var(--color-primary) / var(--opacity-ring));
-
-  /* Aspect ratio */
-  --aspect-ratio-square: 1 / 1;
-  --aspect-ratio-portrait: 3 / 4;
-  --aspect-ratio-landscape: 4 / 3;
-  --aspect-ratio-16-9: 16 / 9;
 }

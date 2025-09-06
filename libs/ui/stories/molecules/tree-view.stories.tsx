@@ -457,8 +457,7 @@ export const TypeaheadDebugDemo: Story = {
       { id: 'beta', name: 'Beta' },
       { id: 'gamma', name: 'Gamma' },
     ]
-    const handleKeyDown = (_e: React.KeyboardEvent<HTMLDivElement>) => {
-    }
+    const handleKeyDown = (_e: React.KeyboardEvent<HTMLDivElement>) => {}
 
     return (
       <div className="space-y-4">

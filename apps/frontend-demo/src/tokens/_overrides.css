@@ -279,8 +279,8 @@
   );
 
   /* Borders */
-  --color-stroke-primary: var(--color-slate-200);
-  --color-stroke-secondary: var(--color-slate-400);
+  --color-border-primary: var(--color-slate-200);
+  --color-border-secondary-alt: var(--color-slate-400);
   --color-border: light-dark(var(--color-slate-200), var(--color-slate-800));
   --color-border-neutral: light-dark(
     var(--color-slate-300),
@@ -331,7 +331,7 @@
     var(--opacity-disabled)
   );
   --color-disabled-border: --alpha(
-    var(--color-stroke-primary) /
+    var(--color-border-primary) /
     var(--opacity-disabled)
   );
   --color-disabled-fill: --alpha(
