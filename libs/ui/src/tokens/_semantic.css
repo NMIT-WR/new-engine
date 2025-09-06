@@ -100,6 +100,9 @@
   --color-primary-light-active: oklch(
     from var(--color-primary-light) calc(l + var(--state-active)) c h
   );
+  --color-primary-light-disabled: oklch(
+    from var(--color-primary-light) l var(--state-disabled-chroma) h
+  );
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
   --color-secondary: light-dark(var(--color-orange-500), var(--color-amber-400));
@@ -123,6 +126,9 @@
   --color-secondary-light-active: oklch(
     from var(--color-secondary-light) calc(l + var(--state-active)) c h
   );
+  --color-secondary-light-disabled: oklch(
+    from var(--color-secondary-light) l var(--state-disabled-chroma) h
+  );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
   --color-tertiary: light-dark(var(--color-pink-500), var(--color-rose-400));
@@ -145,6 +151,9 @@
   );
   --color-tertiary-light-active: oklch(
     from var(--color-tertiary-light) calc(l + var(--state-active)) c h
+  );
+  --color-tertiary-light-disabled: oklch(
+    from var(--color-tertiary-light) l var(--state-disabled-chroma) h
   );
 
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
@@ -172,6 +181,9 @@
   --color-success-light-active: oklch(
     from var(--color-success-light) calc(l + var(--state-active)) c h
   );
+  --color-success-light-disabled: oklch(
+    from var(--color-success-light) l var(--state-disabled-chroma) h
+  );
 
   /* It is usually used to express objective and neutral information in the context with the above semantics */
   --color-info: light-dark(var(--color-teal-500), var(--color-cyan-300));
@@ -194,6 +206,9 @@
   );
   --color-info-light-active: oklch(
     from var(--color-info-light) calc(l + var(--state-active)) c h
+  );
+  --color-info-light-disabled: oklch(
+    from var(--color-info-light) l var(--state-disabled-chroma) h
   );
 
   /* It is usually used to express warning and unsafe state, and is used in scenarios with the above semantics */
@@ -218,6 +233,9 @@
   --color-warning-light-active: oklch(
     from var(--color-warning-light) calc(l + var(--state-active)) c h
   );
+  --color-warning-light-disabled: oklch(
+    from var(--color-warning-light) l var(--state-disabled-chroma) h
+  );
 
   /* It is usually used to express the dangerous state, and is used in the scene with the above semantics */
   --color-danger: light-dark(var(--color-red-500), var(--color-red-400));
@@ -240,6 +258,9 @@
   );
   --color-danger-light-active: oklch(
     from var(--color-danger-light) calc(l + var(--state-active)) c h
+  );
+  --color-danger-light-disabled: oklch(
+    from var(--color-danger-light) l var(--state-disabled-chroma) h
   );
 
   /* Text colors and Icon colors*/
