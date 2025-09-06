@@ -91,7 +91,7 @@ const menuVariants = tv({
     itemText: ['flex-grow'],
     itemIcon: ['text-menu-item-icon-size text-menu-item-icon-fg'],
     submenuIndicator: [
-      'ml-menu-submenu-indicator text-menu-submenu-indicator-fg',
+      'ms-menu-submenu-indicator text-menu-submenu-indicator-fg',
     ],
   },
   variants: {
@@ -433,10 +433,10 @@ export function Menu({
       ) : (
         <Button {...api.getTriggerProps()} className={trigger()}>
           {triggerText}
-          {triggerIcon && <Icon icon={triggerIcon} className="ml-1" />}
+          {triggerIcon && <Icon icon={triggerIcon} className="ms-1" />}
           {!triggerIcon && (
             <span {...api.getIndicatorProps()}>
-              <Icon icon="token-icon-menu-trigger" className="ml-1" />
+              <Icon icon="token-icon-menu-trigger" className="ms-1" />
             </span>
           )}
         </Button>

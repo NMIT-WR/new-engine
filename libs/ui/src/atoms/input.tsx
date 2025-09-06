@@ -48,8 +48,8 @@ const inputVariants = tv({
     },
     withButtonInside: {
       false: '',
-      right: 'pr-with-button',
-      left: 'pl-with-button',
+      right: 'pe-with-button',
+      left: 'ps-with-button',
     },
     hideSearchClear: {
       true: '[&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden',
