@@ -17,7 +17,7 @@ export default [
     settings: {
       tailwindcss: {
         // For TailwindCSS v4 - point to CSS config file
-        config: 'D:\\Work\\new-engine\\libs\\ui\\src\\tokens\\index.css',
+        config: '/Users/satan/work/new-engine/libs/ui/src/tokens/index.css',
       },
     },
     plugins: {

@@ -126,6 +126,7 @@ interface SubmenuItemProps {
   closeOnSelect?: boolean
 }
 
+// ! TODO: Fix menu.machine typing, it should work without 'as any'
 function SubmenuItem({
   item,
   parentApi,
@@ -141,14 +142,11 @@ function SubmenuItem({
     onSelect,
   })
 
-  const submenuApi = menu.connect(
-    submenuService as menu.Service,
-    normalizeProps
-  )
+  const submenuApi = menu.connect(submenuService as any, normalizeProps)
 
   useEffect(() => {
     // Setup parent-child relationship
-    parentApi.setChild(submenuService as menu.Service)
+    parentApi.setChild(submenuService as any)
     submenuApi.setParent(parentService)
   }, [parentApi, submenuApi, submenuService, parentService])
 
@@ -176,7 +174,7 @@ function SubmenuItem({
           key={menuItem.value}
           item={menuItem}
           parentApi={submenuApi}
-          parentService={submenuService as menu.Service}
+          parentService={submenuService as any}
           size={size}
           onCheckedChange={onCheckedChange}
           onSelect={onSelect}
@@ -346,7 +344,7 @@ export function Menu({
     'aria-label': ariaLabel,
   })
 
-  const api = menu.connect(service as menu.Service, normalizeProps)
+  const api = menu.connect(service as any, normalizeProps)
 
   const {
     trigger,
@@ -372,7 +370,7 @@ export function Menu({
           key={item.value}
           item={item}
           parentApi={api}
-          parentService={service as menu.Service}
+          parentService={service as any}
           size={size}
           onCheckedChange={onCheckedChange}
           onSelect={onSelect}
