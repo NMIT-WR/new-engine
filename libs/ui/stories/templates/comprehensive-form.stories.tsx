@@ -9,9 +9,9 @@ import { Textarea } from '../../src/atoms/textarea'
 import { Combobox } from '../../src/molecules/combobox'
 import { FormCheckbox } from '../../src/molecules/form-checkbox'
 import { FormInput } from '../../src/molecules/form-input'
-import { RangeSlider } from '../../src/molecules/range-slider'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
+import {Slider} from '../../src/molecules/slider'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',
@@ -236,8 +236,8 @@ export const AllFormInputs: Story = {
 
           <VariantGroup title="Range Input" fullWidth>
             <div className="w-full">
-              <RangeSlider
-                label="Range Slider"
+              <Slider
+                label="Slider"
                 size={size}
                 min={0}
                 max={100}
