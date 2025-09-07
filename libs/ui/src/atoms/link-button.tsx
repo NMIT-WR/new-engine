@@ -2,7 +2,9 @@ import type {
   ComponentPropsWithoutRef,
   ElementType,
   MouseEvent,
+  ReactElement,
   ReactNode,
+  Ref,
 } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
@@ -32,10 +34,11 @@ export type LinkButtonProps<T extends ElementType = 'a'> = VariantProps<
   children?: ReactNode
   disabled?: boolean
   uppercase?: boolean
-  as?: T
+  as?: T | ReactElement<HTMLAnchorElement>
+  ref?: Ref<HTMLAnchorElement>
 } & Omit<
     ComponentPropsWithoutRef<T>,
-    'as' | keyof VariantProps<typeof linkButton>
+    'as' | 'ref' | keyof VariantProps<typeof linkButton>
   >
 
 export function LinkButton<T extends ElementType = 'a'>({
@@ -56,7 +59,7 @@ export function LinkButton<T extends ElementType = 'a'>({
 }: LinkButtonProps<T>) {
   return (
     <Link
-      as={as as any}
+      as={as as ElementType}
       className={linkButton({
         variant,
         theme,
