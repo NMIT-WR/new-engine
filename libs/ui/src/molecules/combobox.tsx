@@ -1,6 +1,6 @@
 import * as combobox from '@zag-js/combobox'
 import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { ErrorText } from '../atoms/error-text'
@@ -21,9 +21,9 @@ const comboboxVariants = tv({
       'hover:bg-combobox-bg-hover hover:border-combobox-border-hover',
       'data-[focus]:bg-combobox-bg-focus data-[focus]:border-combobox-border-focus',
       'data-[disabled]:bg-combobox-bg-disabled data-[disabled]:border-combobox-border-disabled',
-      'data-[validation=error]:border-combobox-danger data-[validation=error]:focus-within:ring-combobox-ring-danger',
-      'data-[validation=success]:border-combobox-success data-[validation=success]:focus-within:ring-combobox-ring-success',
-      'data-[validation=warning]:border-combobox-warning data-[validation=warning]:focus-within:ring-combobox-ring-warning',
+      'data-[validation=error]:border-combobox-danger-fg data-[validation=error]:focus-within:ring-combobox-ring-danger',
+      'data-[validation=success]:border-combobox-success-fg data-[validation=success]:focus-within:ring-combobox-ring-success',
+      'data-[validation=warning]:border-combobox-warning-fg data-[validation=warning]:focus-within:ring-combobox-ring-warning',
     ],
     input: [
       'w-full relative border-none bg-combobox-input-bg',
@@ -58,8 +58,8 @@ const comboboxVariants = tv({
       'data-[disabled]:text-combobox-fg-disabled data-[disabled]:cursor-not-allowed',
     ],
     helper: [
-      'data-[validation=success]:text-combobox-success',
-      'data-[validation=warning]:text-combobox-warning',
+      'data-[validation=success]:text-combobox-success-fg',
+      'data-[validation=warning]:text-combobox-warning-fg',
     ],
     multiple: [],
   },
@@ -177,6 +177,9 @@ export function Combobox<T = unknown>({
   const uniqueId = id || generatedId
 
   const [options, setOptions] = useState(items)
+  useEffect(() => {
+    setOptions(items)
+  }, [items])
   const collection = combobox.collection({
     items: options,
     itemToString: (item) => item.label,

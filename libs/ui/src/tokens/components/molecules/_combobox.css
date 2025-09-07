@@ -2,10 +2,9 @@
   /* === BASE COLOR MAPPING === */
   /* Reference layer - single source of truth for theming */
   --color-combobox: var(--color-surface);
-  --color-combobox-success: var(--color-success);
-  --color-combobox-warning: var(--color-warning);
-  --color-combobox-danger: var(--color-danger);
-  --color-combobox-accent: var(--color-primary);
+  --color-combobox-success-fg: var(--color-success);
+  --color-combobox-warning-fg: var(--color-warning);
+  --color-combobox-danger-fg: var(--color-danger);
 
   /* === DERIVED COLORS === */
   /* Background colors - using reference layer */
