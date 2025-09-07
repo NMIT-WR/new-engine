@@ -103,7 +103,6 @@
 
   /* === FOCUS RINGS === */
   /* Focus ring colors and styles */
-  --color-combobox-ring: --alpha(var(--color-primary) / var(--opacity-ring));
   --color-combobox-ring-danger: --alpha(
     var(--color-combobox-danger) /
     var(--opacity-ring)
