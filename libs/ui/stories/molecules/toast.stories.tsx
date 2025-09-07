@@ -18,80 +18,48 @@ const meta: Meta = {
       </>
     ),
   ],
+  argTypes: {
+    type: {
+      control: { type: 'inline-radio' },
+      options: ['info', 'success', 'warning', 'error', 'loading'],
+      description: 'The type of the toast, which determines its styling',
+    },
+    duration: {
+      control: { type: 'number' },
+      description:
+        'Default duration in Storybook is Infinity. Set to a number (ms) to auto-close',
+    },
+    title: {
+      control: { type: 'text' },
+      description: 'The title text of the toast',
+    },
+    description: {
+      control: { type: 'text' },
+      description: 'The description text of the toast',
+    },
+  },
 }
 
 export default meta
 type Story = StoryObj
 
 export const Default: Story = {
-  render: () => {
+  args: {
+    title: 'Success!',
+    description: 'Your action was completed successfully.',
+    type: 'success',
+    duration: Infinity,
+  },
+  render: (args) => {
     const toaster = useToast()
-    const idRef = useRef<string>(null)
-
     return (
       <VariantContainer>
         <Button
-          variant="primary"
           onClick={() => {
-            idRef.current = toaster.create({
-              title: 'Success!',
-              description: 'Your action was completed successfully.',
-              type: 'success',
-            })
+            toaster.create(args)
           }}
         >
-          Show Success Toast
-        </Button>
-
-        <Button
-          variant="danger"
-          onClick={() => {
-            toaster.create({
-              title: 'Error',
-              description: 'Something went wrong. Please try again.',
-              type: 'error',
-              duration: 5000,
-            })
-          }}
-        >
-          Show Error Toast
-        </Button>
-
-        <Button
-          variant="primary"
-          onClick={() => {
-            toaster.create({
-              title: 'About Version',
-              description: 'System version: 19.0.4',
-              type: 'info',
-            })
-          }}
-        >
-          Info Toast
-        </Button>
-
-        <Button
-          variant="warning"
-          onClick={() => {
-            toaster.create({
-              title: 'Warning',
-              description: 'Your subscription ends soon.',
-              type: 'warning',
-            })
-          }}
-        >
-          Warning Toast
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            toaster.update(idRef.current, {
-              title: 'Updated Title',
-              description: 'Updated Description',
-            })
-          }}
-        >
-          Update Toast
+          Show Toast
         </Button>
       </VariantContainer>
     )
