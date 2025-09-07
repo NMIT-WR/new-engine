@@ -1,28 +1,36 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-tabs-bg: var(--color-surface);
+  --color-tabs-fg: var(--color-fg-secondary);
+  --color-tabs-active: var(--color-primary);
+  --color-tabs-fg-primary: var(--color-fg-primary);
+  --color-tabs-fg-secondary: var(--color-fg-reverse);
 
   /* === LIST COMPONENT === */
-  --color-tabs-list-bg: var(--color-overlay);
+  --color-tabs-list-bg: oklch(
+    from var(--color-tabs-bg) calc(l - var(--surface-increment)) c h
+  );
 
   /* === TRIGGER COMPONENT === */
-  --color-tabs-trigger-fg: var(--color-fg-secondary);
-  --color-tabs-trigger-solid-fg: var(--color-fg-primary);
-  --color-tabs-trigger-selected: var(--color-primary);
-  --color-tabs-trigger-selected-bg: var(--color-primary-light);
+  --color-tabs-trigger-fg: var(--color-tabs-fg);
+  --color-tabs-trigger-solid-fg: var(--color-tabs-fg-secondary);
+  --color-tabs-trigger-selected: var(--color-tabs-active);
+  --color-tabs-trigger-selected-bg: var(--color-tabs-active);
 
-  --color-tabs-trigger-hover: var(--color-highlight);
+  --color-tabs-trigger-hover: oklch(
+    from var(--color-tabs-bg) calc(l - var(--surface-increment) * 2) c h
+  );
 
   /* === INDICATOR === */
-  --color-tabs-indicator: var(--color-primary);
+  --color-tabs-indicator: var(--color-tabs-active);
   --width-tabs-indicator: 1px;
   --height-tabs-indicator: 1px;
 
   /* === CONTENT === */
-  --color-tabs-content-fg: var(--color-fg-primary);
+  --color-tabs-content-fg: var(--color-tabs-fg-primary);
 
   /* === FOCUS RING === */
-  --color-tabs-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  --color-tabs-ring: --alpha(var(--color-tabs-active) / var(--opacity-ring));
 
   /* === PADDING === */
   /* Trigger padding */
@@ -34,7 +42,6 @@
   --spacing-tabs-content-sm: var(--spacing-200);
   --spacing-tabs-content-md: var(--spacing-250);
   --spacing-tabs-content-lg: var(--spacing-350);
-  --spacing-tabs-content: var(--spacing-tabs-content-md);
 
   /* === TYPOGRAPHY === */
   --text-tabs-trigger-sm: var(--text-sm);

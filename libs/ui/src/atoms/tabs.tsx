@@ -36,7 +36,6 @@ const tabsVariants = tv({
       'data-[orientation=vertical]:right-0 data-[orientation=vertical]:h-[var(--height)]',
     ],
     content: [
-      'p-tabs-content',
       'text-tabs-content-fg',
       'outline-none',
       'focus-visible:ring-2 focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
