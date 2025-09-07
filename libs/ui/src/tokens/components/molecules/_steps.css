@@ -2,7 +2,6 @@
   /* === BASE TOKEN MAPPING === */
   --color-steps: var(--color-base);
   --color-steps-active: var(--color-primary);
-  --color-steps-ring: --alpha(var(--color-primary) / var(--opacity-ring));
   --color-steps-accent: var(--color-surface);
   --color-steps-fg: var(--color-fg-primary);
   --color-steps-fg-active: var(--color-fg-reverse);
@@ -10,38 +9,43 @@
 
   /* === ROOT === */
   --color-steps-root-bg: var(--color-steps);
-  --gap-root: var(--spacing-250);
 
   /* === LIST === */
   --color-steps-list-bg: var(--color-steps);
-  --gap-list: var(--spacing-200);
 
   /* === ITEM === */
   --color-steps-item-bg: transparent;
-  --gap-item: var(--spacing-150);
 
-  /* === TRIGGERS === */
-
+  /* === TRIGGER === */
   --gap-trigger: var(--spacing-150);
 
   /* === CONTENT === */
   --color-steps-content-bg: var(--color-steps-accent);
-  --padding-content: var(--spacing-250);
 
   /* === INDICATOR === */
   --color-steps-indicator-bg: var(--color-steps-accent);
-  --color-steps-indicator-complete: var(--color-steps-active);
-  --color-steps-indicator-current: var(--color-steps-active);
-  --height-steps-indicator: var(--spacing-350);
+  --color-steps-indicator-bg-hover: var(--color-steps-active);
+  --color-steps-indicator-bg-complete: var(--color-steps-active);
+  --color-steps-indicator-bg-current: var(--color-steps-active);
 
   /* === SEPARATOR === */
   --color-steps-separator-bg: var(--color-steps-accent);
-  --color-steps-separator-complete: var(--color-steps-active);
+  --color-steps-separator-bg-complete: var(--color-steps-active);
+
+  /* === SPACING === */
+  --gap-root: var(--spacing-250);
+  --gap-list: var(--spacing-200);
+  --gap-item: var(--spacing-150);
+  --padding-content: var(--spacing-250);
+  --height-steps-indicator: var(--spacing-350);
+  --padding-steps-btn: var(--spacing-100) var(--spacing-200);
+
+  /* === SIZES === */
   --height-steps-separator: 2px;
   --width-steps-separator: 2px;
 
-  /* === BUTTON STEPS === */
-  --padding-steps-btn: var(--spacing-100) var(--spacing-200);
+  /* === FOCUS RINGS === */
+  --color-steps-ring: --alpha(var(--color-steps-active) / var(--opacity-ring));
 }
 
 /* Semantic tokens for steps icons */

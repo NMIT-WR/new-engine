@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Select } from '../../src/molecules/select'
 import { Steps } from '../../src/molecules/steps'
 
@@ -12,7 +12,7 @@ const meta: Meta<typeof Steps> = {
   tags: ['autodocs'],
   argTypes: {
     orientation: {
-      control: 'radio',
+      control: 'inline-radio',
       options: ['horizontal', 'vertical'],
       description: 'Steps orientation',
     },
@@ -20,9 +20,9 @@ const meta: Meta<typeof Steps> = {
       control: 'boolean',
       description: 'Enforce linear progression',
     },
-    showProgress: {
-      control: 'boolean',
-      description: 'Show progress indicator',
+    currentStep: {
+      control: 'number',
+      description: 'Current active step (0-indexed). If currentStep === steps.length finished screen shown',
     },
   },
 }
@@ -54,27 +54,30 @@ const basicSteps = [
   },
 ]
 
-const completeText = 'Steps Complete - Thank you for filling out the form!'
+const completeText = 'Steps Complete - Thank you for filling out the form! You can now proceed, because you have finished.'
 
 export const Default: Story = {
-  render: () => {
-    const [currentStep, setCurrentStep] = useState(0)
+  render: (args) => {
+    const [currentStep, setCurrentStep] = useState(args.currentStep)
+    useEffect(() => {
+      setCurrentStep(args.currentStep)
+    }, [args.currentStep])
 
     return (
       <div className="w-[600px] space-y-8">
         <Steps
-          items={basicSteps}
+          {...args}
           currentStep={currentStep}
           onStepChange={setCurrentStep}
-          onStepComplete={() => undefined}
-          completeText={completeText}
+          onStepComplete={() => alert("Finished!")}
         />
       </div>
     )
   },
   args: {
     items: basicSteps,
-    currentStep: 1,
+    completeText,
+    orientation: 'horizontal',
   },
 }
 
