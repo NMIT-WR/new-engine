@@ -49,6 +49,7 @@ export const Basic: Story = {
         <p>This is a basic popover with some content inside.</p>
       </div>
     ),
+    shadow: false,
     placement: 'bottom',
     size: 'md',
   },
@@ -64,83 +65,100 @@ export const WithTitleAndDescription: Story = {
         <p>Additional content can go here.</p>
       </div>
     ),
-    showCloseButton: true,
   },
 }
 
-export const DifferentSizes: Story = {
+export const Variants: Story = {
   render: () => (
-    <div className="flex gap-4">
-      <Popover
-        trigger="Small"
-        size="sm"
-        title="Small Popover"
-        description="This is a small popover"
-      >
-        <div className="mt-2">
-          <p className="text-xs">Small content</p>
+    <div className="space-y-8">
+      {/* Sizes */}
+      <div>
+        <h3 className="text-sm font-semibold mb-4">Sizes</h3>
+        <div className="flex gap-4">
+          <Popover
+            trigger="Small"
+            size="sm"
+            title="Small"
+            description="Compact size"
+          >
+            <p className="text-xs">Small content area</p>
+          </Popover>
+          
+          <Popover
+            trigger="Medium"
+            size="md"
+            title="Medium"
+            description="Default size"
+          >
+            <p>Standard content area</p>
+          </Popover>
+          
+          <Popover
+            trigger="Large"
+            size="lg"
+            title="Large"
+            description="Spacious size"
+          >
+            <p className="text-lg">Large content area</p>
+          </Popover>
         </div>
-      </Popover>
-
-      <Popover
-        trigger="Medium"
-        size="md"
-        title="Medium Popover"
-        description="This is a medium popover"
-      >
-        <div className="mt-2">
-          <p>Medium content</p>
-        </div>
-      </Popover>
-
-      <Popover
-        trigger="Large"
-        size="lg"
-        title="Large Popover"
-        description="This is a large popover"
-      >
-        <div className="mt-2">
-          <p>Large content</p>
-        </div>
-      </Popover>
-    </div>
-  ),
-}
-
-export const DifferentPlacements: Story = {
-  render: () => (
-    <div className="grid grid-cols-3 gap-8 p-20">
-      <Popover trigger="Top Start" placement="top-start">
-        <div className="w-32">Top Start</div>
-      </Popover>
-      <Popover trigger="Top" placement="top">
-        <div className="w-32">Top</div>
-      </Popover>
-      <Popover trigger="Top End" placement="top-end">
-        <div className="w-32">Top End</div>
-      </Popover>
-
-      <Popover trigger="Left" placement="left">
-        <div className="w-32">Left</div>
-      </Popover>
-      <div className="flex justify-center">
-        <Popover trigger="Center" placement="bottom">
-          <div className="w-32">Center (Bottom)</div>
-        </Popover>
       </div>
-      <Popover trigger="Right" placement="right">
-        <div className="w-32">Right</div>
-      </Popover>
 
-      <Popover trigger="Bottom Start" placement="bottom-start">
-        <div className="w-32">Bottom Start</div>
-      </Popover>
-      <Popover trigger="Bottom" placement="bottom">
-        <div className="w-32">Bottom</div>
-      </Popover>
-      <Popover trigger="Bottom End" placement="bottom-end">
-        <div className="w-32">Bottom End</div>
-      </Popover>
+      {/* Border & Shadow Combinations */}
+      <div>
+        <h3 className="text-sm font-semibold mb-4">Visual Styles</h3>
+        <div className="flex gap-4">
+          <Popover
+            trigger="Default"
+            border={true}
+            shadow={true}
+            title="Default Style"
+          >
+            <p>Border + Shadow (default)</p>
+          </Popover>
+          
+          <Popover
+            trigger="border-only"
+            border={true}
+            shadow={false}
+            title="Flat Style"
+          >
+            <p>Border only, no shadow</p>
+          </Popover>
+          
+          <Popover
+            trigger="shadow-only"
+            border={false}
+            shadow={true}
+            title="Elevated Style"
+          >
+            <p>Shadow only, no border</p>
+          </Popover>
+          
+          <Popover
+            trigger="Minimal"
+            border={false}
+            shadow={false}
+            title="Minimal Style"
+          >
+            <p>No border, no shadow</p>
+          </Popover>
+        </div>
+      </div>
+
+      {/* Arrow Variations */}
+      <div>
+        <h3 className="text-sm font-semibold mb-4">Arrow Options</h3>
+        <div className="flex gap-4">
+          <Popover
+            trigger="No Arrow"
+            showArrow={false}
+            title="Clean Look"
+          >
+            <p>No arrow indicator</p>
+          </Popover>
+        </div>
+      </div>
     </div>
   ),
 }
@@ -252,26 +270,13 @@ export const CustomTrigger: Story = {
   ),
 }
 
-export const WithoutArrow: Story = {
-  args: {
-    trigger: 'No Arrow',
-    showArrow: false,
-    children: (
-      <div className="w-64">
-        <p>This popover doesn't have an arrow pointing to the trigger.</p>
-      </div>
-    ),
-  },
-}
 
 export const Modal: Story = {
   args: {
     trigger: 'Open Modal Popover',
     modal: true,
     title: 'Modal Popover',
-    description:
-      'This popover acts as a modal - it traps focus and blocks interactions outside.',
-    showCloseButton: true,
+    description: 'This popover acts as a modal - it traps focus and blocks interactions outside.',
     closeOnInteractOutside: false,
     children: (
       <div className="mt-4">
@@ -338,6 +343,154 @@ export const AsyncContent: Story = {
   },
 }
 
+export const PositioningBehaviors: Story = {
+  render: () => (
+    <div className="grid gap-8 p-8">
+        <Popover
+          trigger="Flip Demo"
+          flip={true}
+          placement="left"
+          title="Auto Flip"
+          description="Flips to opposite side when no space"
+        >
+          <p>This popover starts on top but will flip to bottom if there's no space above.</p>
+        </Popover>
+
+        <Popover
+          trigger="Slide Demo"
+          slide={true}
+          placement="bottom"
+          title="Slide Enabled"
+          description="Slides along axis to stay visible"
+        >
+          <p>This popover slides smoothly along the trigger edge to maximize visibility.</p>
+        </Popover>
+    </div>
+  ),
+}
+
+export const SameWidthDemo: Story = {
+  render: () => (
+    <div className="flex gap-8 items-start">
+      <Popover
+        trigger="Medium Length Trigger"
+        sameWidth={true}
+        title="Same Width"
+      >
+        <p className="text-sm">This popover exactly matches the trigger button width.</p>
+      </Popover>
+      
+      <Popover
+        trigger="Very Long Trigger Button Text Here"
+        sameWidth={true}
+        title="Same Width"
+      >
+        <p className="text-sm">Wide as trigger!</p>
+      </Popover>
+    </div>
+  ),
+}
+
+export const EdgePositioning: Story = {
+  render: () => (
+    <div className="relative w-full h-[600px] border border-dashed border-border">
+      <div className="absolute top-2 left-2">
+        <Popover
+          trigger="Top Left"
+          placement="bottom-start"
+        >
+          <div className="w-64">
+            <p>Opens at screen corner with smart positioning.</p>
+          </div>
+        </Popover>
+      </div>
+      
+      <div className="absolute top-2 right-2">
+        <Popover
+          trigger="Top Right"
+          placement="bottom-end"
+          flip={true}
+          fitViewport={true}
+        >
+          <div className="w-64">
+            <p>Adjusts to avoid viewport overflow.</p>
+          </div>
+        </Popover>
+      </div>
+      
+      <div className="absolute bottom-2 left-2">
+        <Popover
+          trigger="Bottom Left"
+          placement="top-start"
+          flip={true}
+          fitViewport={true}
+        >
+          <div className="w-64">
+            <p>Flips upward when at bottom.</p>
+          </div>
+        </Popover>
+      </div>
+      
+      <div className="absolute bottom-2 right-2">
+        <Popover
+          trigger="Bottom Right"
+          placement="top-end"
+          flip={true}
+          fitViewport={true}
+        >
+          <div className="w-64">
+            <p>Smart positioning at corner.</p>
+          </div>
+        </Popover>
+      </div>
+      
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <Popover
+          trigger="Center"
+          placement="bottom"
+        >
+          <div className="w-64">
+            <p>Center positioned with default behavior.</p>
+          </div>
+        </Popover>
+      </div>
+    </div>
+  ),
+}
+
+export const OverflowPaddingDemo: Story = {
+  render: () => (
+    <div className="flex gap-8">
+      <Popover
+        trigger="Default Padding (8px)"
+        overflowPadding={8}
+        placement="bottom"
+        title="Standard Gap"
+      >
+        <p>8px minimum gap from viewport edges.</p>
+      </Popover>
+      
+      <Popover
+        trigger="Large Padding (24px)"
+        overflowPadding={24}
+        placement="bottom"
+        title="Large Gap"
+      >
+        <p>24px minimum gap from viewport edges.</p>
+      </Popover>
+      
+      <Popover
+        trigger="No Padding (0px)"
+        overflowPadding={0}
+        placement="bottom"
+        title="No Gap"
+      >
+        <p>Can touch viewport edges.</p>
+      </Popover>
+    </div>
+  ),
+}
+
 export const NestedPopovers: Story = {
   render: () => (
     <Popover trigger="Level 1" title="First Level" placement="bottom">
@@ -368,44 +521,4 @@ export const NestedPopovers: Story = {
       </div>
     </Popover>
   ),
-}
-
-export const LongContent: Story = {
-  args: {
-    trigger: 'View Details',
-    title: 'Detailed Information',
-    showCloseButton: true,
-    children: (
-      <div className="mt-4 max-h-96 space-y-4 overflow-y-auto">
-        <p>This popover contains a lot of content that might need scrolling.</p>
-
-        {Array.from({ length: 10 }, (_, i) => (
-          <div key={i} className="rounded bg-muted p-3">
-            <h4 className="font-semibold">Section {i + 1}</h4>
-            <p className="mt-1 text-sm">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-          </div>
-        ))}
-
-        <p className="text-muted text-sm">End of content</p>
-      </div>
-    ),
-  },
-}
-
-export const NonPortalled: Story = {
-  args: {
-    trigger: 'Non-Portalled',
-    portalled: false,
-    children: (
-      <div className="w-64">
-        <p>This popover is rendered in place, not in a portal.</p>
-        <p className="mt-2 text-muted text-sm">
-          Useful when you need the popover to be clipped by a parent container.
-        </p>
-      </div>
-    ),
-  },
 }
