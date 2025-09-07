@@ -3,7 +3,7 @@
   --color-tree-bg: transparent;
   --color-tree-fg: var(--color-fg-primary);
   --color-tree-border: var(--color-border-primary);
-  --color-tree-icon: current;
+  --color-tree-icon: currentColor;
   --color-tree-icon-hover: var(--color-fg-primary);
 
   /* === STATE VARIATIONS === */

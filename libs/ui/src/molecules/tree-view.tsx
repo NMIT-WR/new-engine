@@ -48,7 +48,9 @@ const treeVariants = tv({
       'w-tree-indent bg-tree-indent-bg',
       'opacity-tree-indent',
     ],
-    leaf: [],
+    leaf: [
+      'data-[selected]:bg-tree-node-bg-selected data-[selected]:text-tree-fg-selected',
+    ],
     nodeIcon: ['text-tree-icon hover:text-tree-icon-hover'],
   },
   compoundSlots: [
