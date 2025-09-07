@@ -9,13 +9,10 @@ import { tv } from '../utils'
 
 const switchVariants = tv({
   slots: {
-    root: [
-      'inline-flex items-center gap-switch-root',
-      'cursor-pointer',
-      'data-[disabled]:cursor-not-allowed',
-    ],
+    root: ['cursor-pointer', 'data-[disabled]:cursor-not-allowed'],
     control: [
-      'relative inline-flex shrink-0 items-center justify-start p-switch-control',
+      'me-switch-root p-switch-control',
+      'relative inline-flex shrink-0 items-center justify-start',
       'bg-switch-bg hover:bg-switch-bg-hover',
       'w-switch-track-width h-switch-track-height',
       'rounded-switch',
@@ -105,7 +102,7 @@ export function Switch({
 
   return (
     <div className={className}>
-      <Label className={root()} {...api.getRootProps()}>
+      <Label className={root()} required={required} {...api.getRootProps()}>
         <input className={hiddenInput()} {...api.getHiddenInputProps()} />
         <span className={control()} {...api.getControlProps()}>
           <span className={thumb()} {...api.getThumbProps()} />

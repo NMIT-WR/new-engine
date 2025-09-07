@@ -40,7 +40,7 @@
   --color-switch-ring-invalid: var(--color-switch-invalid);
 
   /* === SPACING === */
-  --spacing-switch-root: var(--spacing-250);
+  --spacing-switch-root: var(--spacing-200);
   --spacing-switch-control: var(--spacing-50);
   --spacing-switch-track-width: var(--spacing-600);
   --spacing-switch-track-height: var(--spacing-350);
