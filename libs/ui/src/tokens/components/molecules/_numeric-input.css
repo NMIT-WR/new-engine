@@ -6,12 +6,12 @@
   --color-ni-invalid-border: var(--color-danger);
   --color-ni-invalid-bg: --alpha(var(--color-danger) / 10%);
 
-  --color-ni-border: var(--color-stroke-primary);
+  --color-ni-border: var(--color-border-primary);
   --border-width-ni: var(--border-width-input);
 
-  --gap-ni-root-sm: var(--spacing-2xs);
-  --gap-ni-root-md: var(--spacing-xs);
-  --gap-ni-root-lg: var(--spacing-sm);
+  --gap-ni-root-sm: var(--spacing-150);
+  --gap-ni-root-md: var(--spacing-200);
+  --gap-ni-root-lg: var(--spacing-250);
 
   /* ==== TYPOGRAPHY ==== */
   --text-ni-sm: var(--text-sm);
@@ -22,12 +22,12 @@
   --color-ni-input-bg: transparent;
   --color-ni-input-bg-hover: transparent;
   --color-ni-input-bg-active: transparent;
-  --padding-ni-input: 0 0 0 var(--spacing-2xs);
+  --padding-ni-input: 0 0 0 var(--spacing-150);
 
   /* === TRIGGER === */
   --color-ni-trigger-container: var(--color-surface);
-  --padding-ni-trigger-x: var(--spacing-2xs);
-  --padding-ni-trigger-y: var(--spacing-3xs);
+  --padding-ni-trigger-x: var(--spacing-150);
+  --padding-ni-trigger-y: var(--spacing-100);
 
   /* === INCREMENT BUTTON === */
 

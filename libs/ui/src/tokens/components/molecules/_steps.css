@@ -10,29 +10,29 @@
 
   /* === ROOT === */
   --color-steps-root-bg: var(--color-steps);
-  --gap-root: var(--spacing-sm);
+  --gap-root: var(--spacing-250);
 
   /* === LIST === */
   --color-steps-list-bg: var(--color-steps);
-  --gap-list: var(--spacing-xs);
+  --gap-list: var(--spacing-200);
 
   /* === ITEM === */
   --color-steps-item-bg: transparent;
-  --gap-item: var(--spacing-2xs);
+  --gap-item: var(--spacing-150);
 
   /* === TRIGGERS === */
 
-  --gap-trigger: var(--spacing-2xs);
+  --gap-trigger: var(--spacing-150);
 
   /* === CONTENT === */
   --color-steps-content-bg: var(--color-steps-accent);
-  --padding-content: var(--spacing-sm);
+  --padding-content: var(--spacing-250);
 
   /* === INDICATOR === */
   --color-steps-indicator-bg: var(--color-steps-accent);
   --color-steps-indicator-complete: var(--color-steps-active);
   --color-steps-indicator-current: var(--color-steps-active);
-  --height-steps-indicator: var(--spacing-md);
+  --height-steps-indicator: var(--spacing-350);
 
   /* === SEPARATOR === */
   --color-steps-separator-bg: var(--color-steps-accent);
@@ -41,7 +41,7 @@
   --width-steps-separator: 2px;
 
   /* === BUTTON STEPS === */
-  --padding-steps-btn: var(--spacing-3xs) var(--spacing-xs);
+  --padding-steps-btn: var(--spacing-100) var(--spacing-200);
 }
 
 /* Semantic tokens for steps icons */

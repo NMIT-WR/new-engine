@@ -1,10 +1,10 @@
 @theme static {
   /* === CART PREVIEW COLORS === */
-  --color-cart-preview-item-border: var(--color-stroke-secondary);
+  --color-cart-preview-item-border: var(--color-border-secondary);
   --color-cart-preview-item-image-bg: var(--color-fill);
   --color-cart-preview-fg: var(--color-fg-primary);
   --color-cart-preview-fg-secondary: var(--color-fg-secondary);
-  --color-cart-preview-footer-border: var(--color-stroke-secondary);
+  --color-cart-preview-footer-border: var(--color-border-secondary);
 
   /* === SPACING === */
   --spacing-cart-preview: var(--spacing-xs);

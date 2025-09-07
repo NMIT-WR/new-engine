@@ -6,7 +6,7 @@ const inputVariants = tv({
   base: [
     'block w-full',
     'bg-input',
-    'text-input-text',
+    'text-input-fg',
     'placeholder:text-input-placeholder',
     'border border-input-border',
     'rounded-input',
@@ -48,8 +48,8 @@ const inputVariants = tv({
     },
     withButtonInside: {
       false: '',
-      right: 'pr-with-button',
-      left: 'pl-with-button',
+      right: 'pe-with-button',
+      left: 'ps-with-button',
     },
     hideSearchClear: {
       true: '[&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden',
@@ -58,7 +58,7 @@ const inputVariants = tv({
       true: [
         'bg-input-disabled',
         'border-input-border-disabled',
-        'text-input-text-disabled',
+        'text-input-fg-disabled',
         'placeholder:text-input-placeholder-disabled',
       ],
     },

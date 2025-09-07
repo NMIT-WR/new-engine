@@ -4,7 +4,7 @@ import { tv } from '../utils'
 import { Icon } from './icon'
 
 const errorVariants = tv({
-  base: ['text-error-text', 'flex items-center gap-1'],
+  base: ['text-error-fg', 'flex items-center gap-1'],
   variants: {
     size: {
       sm: 'text-error-sm',

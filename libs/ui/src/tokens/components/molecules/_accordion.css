@@ -1,7 +1,7 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-accordion: var(--color-surface);
-  --color-accordion-border: var(--color-stroke-primary);
+  --color-accordion-border: var(--color-border-primary);
 
   /* === STATE VARIATIONS === */
   --color-accordion-hover: oklch(
@@ -11,7 +11,7 @@
   /* === TEXT COLORS === */
   --color-accordion-fg: var(--color-fg-primary);
   --color-accordion-fg-disabled: --alpha(
-    var(--color-disabled-text) /
+    var(--color-disabled-fg) /
     var(--opacity-disabled)
   );
 
@@ -59,7 +59,7 @@
 
   /* === SHADOWS === */
   --shadow-accordion-root-sm: var(--shadow-primary);
-  --shadow-accordion-root-md: var(--shadow-xl);
+  --shadow-accordion-root-md: var(--shadow-md);
   --shadow-accordion-content-sm: var(--shadow-sm);
   --shadow-accordion-content-md: var(--shadow-primary);
 }

@@ -20,7 +20,12 @@ export interface SelectOption {
 // === COMPONENT VARIANTS ===
 const selectVariants = tv({
   slots: {
-    root: ['relative', 'flex flex-col gap-select-root', 'w-full'],
+    root: [
+      'relative',
+      'flex flex-col gap-select-root',
+      'w-full',
+      'bg-select-root-bg',
+    ],
     control: ['flex relative items-center justify-between', 'w-full'],
     positioner: ['w-(--reference-width)', 'isolate z-(--z-index)'],
     trigger: [
@@ -30,6 +35,7 @@ const selectVariants = tv({
       'border border-select-trigger-border rounded-select',
       'text-select-trigger text-left',
       'hover:bg-select-trigger-hover',
+      'focus:bg-select-trigger-focus',
       'focus:outline-none',
       'data-[disabled]:cursor-not-allowed',
       'data-[invalid]:border-select-danger data-[invalid]:ring-select-danger',
@@ -45,7 +51,7 @@ const selectVariants = tv({
     content: [
       'bg-select-content-bg border border-select-content-border',
       'rounded-select shadow-select-content-shadow max-h-fit',
-      'h-[calc(var(--available-height)-var(--spacing-lg))]',
+      'h-[calc(var(--available-height)-var(--spacing-450))]',
       'overflow-auto z-50',
     ],
     item: [

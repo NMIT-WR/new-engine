@@ -1,234 +1,234 @@
-@import "../../_semantic.css";
-
 :root {
-  --opacity-borderless-hover: 8%;
-  --opacity-borderless-active: 12%;
   --opacity-outlined-hover: 16%;
   --opacity-outlined-active: 12%;
 }
 
 @theme static {
   /* === BASE COLOR MAPPING === */
-  /* Single source of truth */
-  --color-btn-primary: var(--color-primary);
-  --color-btn-secondary: var(--color-secondary);
-  --color-btn-tertiary: var(--color-tertiary);
-  --color-btn-warning: var(--color-warning);
-  --color-btn-danger: var(--color-danger);
+  /* Reference layer - single source of truth for theming */
+  --color-button-primary: var(--color-primary);
+  --color-button-secondary: var(--color-secondary);
+  --color-button-tertiary: var(--color-tertiary);
+  --color-button-warning: var(--color-warning);
+  --color-button-danger: var(--color-danger);
+  --color-button-borderless: transparent;
+
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-button-bg-primary: var(--color-button-primary);
+  --color-button-bg-secondary: var(--color-button-secondary);
+  --color-button-bg-tertiary: var(--color-button-tertiary);
+  --color-button-bg-warning: var(--color-button-warning);
+  --color-button-bg-danger: var(--color-button-danger);
+
+  /* Foreground colors */
+  --color-button-fg: var(--color-fg-reverse);
+  --color-button-fg-light: var(--color-fg-reverse);
+  --color-button-fg-outlined: var(--color-fg-primary);
+  --color-button-fg-primary: var(--color-button-fg);
+  --color-button-fg-secondary: var(--color-button-fg);
+  --color-button-fg-tertiary: var(--color-button-fg);
+  --color-button-fg-warning: var(--color-button-fg);
+  --color-button-fg-danger: var(--color-button-fg);
+  --color-button-fg-primary-light: var(--color-button-fg-light);
+  --color-button-fg-secondary-light: var(--color-button-fg-light);
+  --color-button-fg-tertiary-light: var(--color-button-fg-light);
+  --color-button-fg-warning-light: var(--color-button-fg-light);
+  --color-button-fg-danger-light: var(--color-button-fg-light);
+  --color-button-fg-outlined-primary: var(--color-button-fg-outlined);
+  --color-button-fg-outlined-secondary: var(--color-button-fg-outlined);
+  --color-button-fg-outlined-tertiary: var(--color-button-fg-outlined);
+  --color-button-fg-outlined-warning: var(--color-button-fg-outlined);
+  --color-button-fg-outlined-danger: var(--color-button-fg-outlined);
+  --color-button-fg-primary-borderless: var(--color-button-primary);
+  --color-button-fg-secondary-borderless: var(--color-button-secondary);
+  --color-button-fg-tertiary-borderless: var(--color-button-tertiary);
+  --color-button-fg-warning-borderless: var(--color-button-warning);
+  --color-button-fg-danger-borderless: var(--color-button-danger);
+
+  /* Border colors */
+  --color-button-border-primary: var(--color-button-primary);
+  --color-button-border-secondary: var(--color-button-secondary);
+  --color-button-border-tertiary: var(--color-button-tertiary);
+  --color-button-border-warning: var(--color-button-warning);
+  --color-button-border-danger: var(--color-button-danger);
 
   /* === STATE VARIATIONS === */
-  /* Primary */
-  --color-btn-primary-hover: oklch(
-    from var(--color-btn-primary) calc(l + var(--state-hover)) c h
+  /* Primary states */
+  --color-button-bg-primary-hover: oklch(
+    from var(--color-button-primary) calc(l + var(--state-hover)) c h
   );
-  --color-btn-primary-active: oklch(
-    from var(--color-btn-primary) calc(l + var(--state-active)) c h
-  );
-
-  /* Secondary */
-  --color-btn-secondary-hover: oklch(
-    from var(--color-btn-secondary) calc(l + var(--state-hover)) c h
-  );
-  --color-btn-secondary-active: oklch(
-    from var(--color-btn-secondary) calc(l + var(--state-active)) c h
+  --color-button-bg-primary-active: oklch(
+    from var(--color-button-primary) calc(l + var(--state-active)) c h
   );
 
-  /* Tertiary */
-  --color-btn-tertiary-hover: oklch(
-    from var(--color-btn-tertiary) calc(l + var(--state-hover)) c h
+  /* Secondary states */
+  --color-button-bg-secondary-hover: oklch(
+    from var(--color-button-secondary) calc(l + var(--state-hover)) c h
   );
-  --color-btn-tertiary-active: oklch(
-    from var(--color-btn-tertiary) calc(l + var(--state-active)) c h
-  );
-
-  /* Warning */
-  --color-btn-warning-hover: oklch(
-    from var(--color-btn-warning) calc(l + var(--state-hover)) c h
-  );
-  --color-btn-warning-active: oklch(
-    from var(--color-btn-warning) calc(l + var(--state-active)) c h
+  --color-button-bg-secondary-active: oklch(
+    from var(--color-button-secondary) calc(l + var(--state-active)) c h
   );
 
-  /* Danger */
-  --color-btn-danger-hover: oklch(
-    from var(--color-btn-danger) calc(l + var(--state-hover)) c h
+  /* Tertiary states */
+  --color-button-bg-tertiary-hover: oklch(
+    from var(--color-button-tertiary) calc(l + var(--state-hover)) c h
   );
-  --color-btn-danger-active: oklch(
-    from var(--color-btn-danger) calc(l + var(--state-active)) c h
-  );
-
-  /* === LIGHT VARIANTS === */
-  --color-btn-primary-light: var(--color-primary-light);
-  --color-btn-secondary-light: var(--color-secondary-light);
-  --color-btn-tertiary-light: var(--color-tertiary-light);
-  --color-btn-warning-light: var(--color-warning-light);
-  --color-btn-danger-light: var(--color-danger-light);
-
-  --color-btn-primary-light-hover: oklch(
-    from var(--color-btn-primary-light) calc(l + var(--state-hover)) c h
-  );
-  --color-btn-primary-light-active: oklch(
-    from var(--color-btn-primary-light) calc(l + var(--state-active)) c h
+  --color-button-bg-tertiary-active: oklch(
+    from var(--color-button-tertiary) calc(l + var(--state-active)) c h
   );
 
-  --color-btn-secondary-light-hover: oklch(
-    from var(--color-btn-secondary-light) calc(l + var(--state-hover)) c h
+  /* Warning states */
+  --color-button-bg-warning-hover: oklch(
+    from var(--color-button-warning) calc(l + var(--state-hover)) c h
   );
-  --color-btn-secondary-light-active: oklch(
-    from var(--color-btn-secondary-light) calc(l + var(--state-active)) c h
-  );
-
-  --color-btn-tertiary-light-hover: oklch(
-    from var(--color-btn-tertiary-light) calc(l + var(--state-hover)) c h
-  );
-  --color-btn-tertiary-light-active: oklch(
-    from var(--color-btn-tertiary-light) calc(l + var(--state-active)) c h
+  --color-button-bg-warning-active: oklch(
+    from var(--color-button-warning) calc(l + var(--state-active)) c h
   );
 
-  --color-btn-warning-light-hover: oklch(
-    from var(--color-btn-warning-light) calc(l + var(--state-hover)) c h
+  /* Danger states */
+  --color-button-bg-danger-hover: oklch(
+    from var(--color-button-danger) calc(l + var(--state-hover)) c h
   );
-  --color-btn-warning-light-active: oklch(
-    from var(--color-btn-warning-light) calc(l + var(--state-active)) c h
-  );
-
-  --color-btn-danger-light-hover: oklch(
-    from var(--color-btn-danger-light) calc(l + var(--state-hover)) c h
-  );
-  --color-btn-danger-light-active: oklch(
-    from var(--color-btn-danger-light) calc(l + var(--state-active)) c h
+  --color-button-bg-danger-active: oklch(
+    from var(--color-button-danger) calc(l + var(--state-active)) c h
   );
 
-  /* === BORDERLESS THEME === */
-  --color-btn-borderless-hover: var(--color-fill-hover);
-  --color-btn-borderless-active: var(--color-fill-active);
+  /* Borderless states */
+  --color-button-bg-borderless: var(--color-button-borderless);
+  --color-button-bg-borderless-hover: var(--color-fill-hover);
+  --color-button-bg-borderless-active: var(--color-fill-active);
 
-  /* === OUTLINED THEME === */
-  --color-btn-outlined-primary-hover: --alpha(
-    var(--color-btn-primary) /
+  /* === COMPONENT VARIANTS === */
+  /* Light variants */
+  --color-button-bg-primary-light: var(--color-primary-light);
+  --color-button-bg-secondary-light: var(--color-secondary-light);
+  --color-button-bg-tertiary-light: var(--color-tertiary-light);
+  --color-button-bg-warning-light: var(--color-warning-light);
+  --color-button-bg-danger-light: var(--color-danger-light);
+
+  /* Light variant states */
+  --color-button-bg-primary-light-hover: oklch(
+    from var(--color-button-bg-primary-light) calc(l + var(--state-hover)) c h
+  );
+  --color-button-bg-primary-light-active: oklch(
+    from var(--color-button-bg-primary-light) calc(l + var(--state-active)) c h
+  );
+  --color-button-bg-secondary-light-hover: oklch(
+    from var(--color-button-bg-secondary-light) calc(l + var(--state-hover)) c h
+  );
+  --color-button-bg-secondary-light-active: oklch(
+    from var(--color-button-bg-secondary-light) calc(l + var(--state-active)) c
+      h
+  );
+  --color-button-bg-tertiary-light-hover: oklch(
+    from var(--color-button-bg-tertiary-light) calc(l + var(--state-hover)) c h
+  );
+  --color-button-bg-tertiary-light-active: oklch(
+    from var(--color-button-bg-tertiary-light) calc(l + var(--state-active)) c h
+  );
+  --color-button-bg-warning-light-hover: oklch(
+    from var(--color-button-bg-warning-light) calc(l + var(--state-hover)) c h
+  );
+  --color-button-bg-warning-light-active: oklch(
+    from var(--color-button-bg-warning-light) calc(l + var(--state-active)) c h
+  );
+  --color-button-bg-danger-light-hover: oklch(
+    from var(--color-button-bg-danger-light) calc(l + var(--state-hover)) c h
+  );
+  --color-button-bg-danger-light-active: oklch(
+    from var(--color-button-bg-danger-light) calc(l + var(--state-active)) c h
+  );
+
+  /* Outlined variants */
+  --color-button-bg-outlined-primary-hover: --alpha(
+    var(--color-button-primary) /
     var(--opacity-outlined-hover)
   );
-  --color-btn-outlined-primary-active: --alpha(
-    var(--color-btn-primary) /
+  --color-button-bg-outlined-primary-active: --alpha(
+    var(--color-button-primary) /
     var(--opacity-outlined-active)
   );
-  --color-btn-outlined-secondary-hover: --alpha(
-    var(--color-btn-secondary) /
+  --color-button-bg-outlined-secondary-hover: --alpha(
+    var(--color-button-secondary) /
     var(--opacity-outlined-hover)
   );
-  --color-btn-outlined-secondary-active: --alpha(
-    var(--color-btn-secondary) /
+  --color-button-bg-outlined-secondary-active: --alpha(
+    var(--color-button-secondary) /
     var(--opacity-outlined-active)
   );
-  --color-btn-outlined-tertiary-hover: --alpha(
-    var(--color-btn-tertiary) /
+  --color-button-bg-outlined-tertiary-hover: --alpha(
+    var(--color-button-tertiary) /
     var(--opacity-outlined-hover)
   );
-  --color-btn-outlined-tertiary-active: --alpha(
-    var(--color-btn-tertiary) /
+  --color-button-bg-outlined-tertiary-active: --alpha(
+    var(--color-button-tertiary) /
     var(--opacity-outlined-active)
   );
-  --color-btn-outlined-warning-hover: --alpha(
-    var(--color-btn-warning) /
+  --color-button-bg-outlined-warning-hover: --alpha(
+    var(--color-button-warning) /
     var(--opacity-outlined-hover)
   );
-  --color-btn-outlined-warning-active: --alpha(
-    var(--color-btn-warning) /
+  --color-button-bg-outlined-warning-active: --alpha(
+    var(--color-button-warning) /
     var(--opacity-outlined-active)
   );
-  --color-btn-outlined-danger-hover: --alpha(
-    var(--color-btn-danger) /
+  --color-button-bg-outlined-danger-hover: --alpha(
+    var(--color-button-danger) /
     var(--opacity-outlined-hover)
   );
-  --color-btn-outlined-danger-active: --alpha(
-    var(--color-btn-danger) /
+  --color-button-bg-outlined-danger-active: --alpha(
+    var(--color-button-danger) /
     var(--opacity-outlined-active)
   );
 
-  /* === UNIFIED DISABLED STATES === */
-  --color-btn-disabled: var(--color-disabled-bg);
-  --color-btn-text-disabled: var(--color-disabled-text);
-  --color-btn-border-disabled: var(--color-disabled-border);
+  /* === DISABLED STATES === */
+  --color-button-bg-disabled: var(--color-disabled-bg);
+  --color-button-fg-disabled: var(--color-disabled-fg);
+  --color-button-border-disabled: var(--color-disabled-border);
 
-  /* === TEXT COLORS === */
-  --color-btn-text: var(--color-fg-reverse);
+  /* === SPACING === */
+  --spacing-button-sm: var(--spacing-150);
+  --spacing-button-md: var(--spacing-200);
+  --spacing-button-lg: var(--spacing-250);
 
-  --color-btn-text-outlined: var(--color-fg-primary);
-
-  --color-btn-text-primary: var(--color-btn-text);
-  --color-btn-text-secondary: var(--color-btn-text);
-  --color-btn-text-tertiary: var(--color-btn-text);
-  --color-btn-text-warning: var(--color-btn-text);
-  --color-btn-text-danger: var(--color-btn-text);
-
-  --color-btn-text-primary-light: var(--color-btn-text-light);
-  --color-btn-text-secondary-light: var(--color-btn-text-light);
-  --color-btn-text-tertiary-light: var(--color-btn-text-light);
-  --color-btn-text-warning-light: var(--color-btn-text-light);
-  --color-btn-text-danger-light: var(--color-btn-text-light);
-
-  --color-btn-text-outlined-primary: var(--color-btn-text-outlined);
-  --color-btn-text-outlined-secondary: var(--color-btn-text-outlined);
-  --color-btn-text-outlined-tertiary: var(--color-btn-text-outlined);
-  --color-btn-text-outlined-warning: var(--color-btn-text-outlined);
-  --color-btn-text-outlined-danger: var(--color-btn-text-outlined);
-
-  --color-btn-text-primary-borderless: var(--color-btn-primary);
-  --color-btn-text-secondary-borderless: var(--color-btn-secondary);
-  --color-btn-text-tertiary-borderless: var(--color-btn-tertiary);
-  --color-btn-text-warning-borderless: var(--color-btn-warning);
-  --color-btn-text-danger-borderless: var(--color-btn-danger);
-
-  /* === FOCUS RINGS === */
-  --color-btn-ring-primary: --alpha(
-    var(--color-btn-primary) /
-    var(--alpha-ring)
-  );
-  --color-btn-ring-secondary: --alpha(
-    var(--color-btn-secondary) /
-    var(--alpha-ring)
-  );
-  --color-btn-ring-tertiary: --alpha(
-    var(--color-btn-tertiary) /
-    var(--alpha-ring)
-  );
-  --color-btn-ring-warning: --alpha(
-    var(--color-btn-warning) /
-    var(--alpha-ring)
-  );
-  --color-btn-ring-danger: --alpha(var(--color-btn-danger) / var(--alpha-ring));
-
-  /* === PADDING === */
-
-  --padding-btn-sm: var(--spacing-2xs) var(--spacing-sm);
-  --padding-btn-md: var(--spacing-xs) var(--spacing-md);
-  --padding-btn-lg: var(--spacing-sm) var(--spacing-lg);
-
-  /* Spacing between icon and text */
-  --spacing-btn-sm: var(--spacing-2xs);
-  --spacing-btn-md: var(--spacing-xs);
-  --spacing-btn-lg: var(--spacing-sm);
+  --padding-button-sm: var(--spacing-150) var(--spacing-250);
+  --padding-button-md: var(--spacing-200) var(--spacing-350);
+  --padding-button-lg: var(--spacing-250) var(--spacing-450);
 
   /* === TYPOGRAPHY === */
-  /* Text sizes */
-  --text-btn-sm: var(--text-sm);
-  --text-btn-md: var(--text-md);
-  --text-btn-lg: var(--text-lg);
+  --text-button-sm: var(--text-sm);
+  --text-button-md: var(--text-md);
+  --text-button-lg: var(--text-lg);
 
-  /* === RADIUS === */
-  --radius-btn-sm: var(--radius-sm);
-  --radius-btn-md: var(--radius-md);
-  --radius-btn-lg: var(--radius-lg);
+  /* === BORDERS & RADIUS === */
+  --radius-button-sm: var(--radius-sm);
+  --radius-button-md: var(--radius-md);
+  --radius-button-lg: var(--radius-lg);
 
-  /* ===== Border colors ===== */
-  --color-btn-border-primary: var(--color-btn-primary);
-  --color-btn-border-secondary: var(--color-btn-secondary);
-  --color-btn-border-tertiary: var(--color-btn-tertiary);
-  --color-btn-border-warning: var(--color-btn-warning);
-  --color-btn-border-danger: var(--color-btn-danger);
+  --border-button-width-sm: var(--border-width-sm);
+  --border-button-width-md: var(--border-width-md);
+  --border-button-width-lg: var(--border-width-lg);
 
-  /* Border width */
-  --border-btn-width-sm: var(--border-width-sm);
-  --border-btn-width-md: var(--border-width-md);
-  --border-btn-width-lg: var(--border-width-lg);
+  /* === FOCUS RINGS === */
+  --color-button-ring-primary: --alpha(
+    var(--color-button-primary) /
+    var(--opacity-ring)
+  );
+  --color-button-ring-secondary: --alpha(
+    var(--color-button-secondary) /
+    var(--opacity-ring)
+  );
+  --color-button-ring-tertiary: --alpha(
+    var(--color-button-tertiary) /
+    var(--opacity-ring)
+  );
+  --color-button-ring-warning: --alpha(
+    var(--color-button-warning) /
+    var(--opacity-ring)
+  );
+  --color-button-ring-danger: --alpha(
+    var(--color-button-danger) /
+    var(--opacity-ring)
+  );
 }

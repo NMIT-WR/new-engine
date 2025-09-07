@@ -20,7 +20,7 @@ const dialogVariants = tv({
     description: ['text-dialog-description-size text-dialog-description-fg'],
     trigger: [],
     closeTrigger: [
-      'absolute top-sm right-sm',
+      'absolute top-250 right-250',
       'flex items-center justify-center',
       'p-dialog-close-trigger-padding rounded-dialog-close-trigger',
       'text-dialog-close-trigger-fg',

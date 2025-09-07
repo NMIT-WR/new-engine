@@ -1,55 +1,60 @@
-@import "../../_semantic.css";
-
 @theme static {
-  --padding-badge-x: var(--spacing-3xs);
-  --padding-badge-y: var(--spacing-3xs);
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-badge-primary: var(--color-primary);
+  --color-badge-secondary: var(--color-secondary);
+  --color-badge-tertiary: var(--color-tertiary);
+  --color-badge-info: var(--color-info);
+  --color-badge-success: var(--color-success);
+  --color-badge-warning: var(--color-warning);
+  --color-badge-danger: var(--color-danger);
 
-  --text-badge-size: var(--text-xs);
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-badge-bg-primary: var(--color-badge-primary);
+  --color-badge-bg-secondary: var(--color-badge-secondary);
+  --color-badge-bg-tertiary: var(--color-badge-tertiary);
+  --color-badge-bg-info: var(--color-badge-info);
+  --color-badge-bg-success: var(--color-badge-success);
+  --color-badge-bg-warning: var(--color-badge-warning);
+  --color-badge-bg-danger: var(--color-badge-danger);
+  --color-badge-bg-discount: var(--color-badge-danger); /* Alias for discount */
 
-  --radius-badge: var(--radius-sm);
-  --border-width-badge: var(--border-width-sm);
+  /* Foreground colors */
+  --color-badge-fg: var(--color-fg-reverse);
+  --color-badge-fg-primary: var(--color-badge-fg);
+  --color-badge-fg-secondary: var(--color-badge-fg);
+  --color-badge-fg-tertiary: var(--color-badge-fg);
+  --color-badge-fg-info: var(--color-badge-fg);
+  --color-badge-fg-success: var(--color-badge-fg);
+  --color-badge-fg-warning: var(--color-badge-fg);
+  --color-badge-fg-danger: var(--color-badge-fg);
+  --color-badge-fg-discount: var(--color-fg-dark); /* Keep original for discount */
 
-  /* Primary variant */
-  --color-badge-primary-bg: var(--color-primary);
-  --color-badge-primary-fg: var(--color-fg-reverse);
+  /* Border colors */
+  --color-badge-border: var(--color-border-primary);
   --color-badge-border-primary: transparent;
-
-  /* Secondary variant */
-  --color-badge-secondary-bg: var(--color-secondary);
-  --color-badge-secondary-fg: var(--color-fg-reverse);
   --color-badge-border-secondary: transparent;
-
-  /* Tertiary variant */
-  --color-badge-tertiary-bg: var(--color-tertiary);
-  --color-badge-tertiary-fg: var(--color-fg-reverse);
   --color-badge-border-tertiary: transparent;
-
-  --color-badge-discount-bg: var(--color-danger);
-  --color-badge-discount-fg: var(--color-fg-dark);
+  --color-badge-border-info: transparent;
+  --color-badge-border-success: transparent;
+  --color-badge-border-warning: transparent;
+  --color-badge-border-danger: transparent;
   --color-badge-border-discount: transparent;
 
-  /* Info variant */
-  --color-badge-info-bg: var(--color-info);
-  --color-badge-info-fg: var(--color-fg-reverse);
-  --color-badge-border-info: transparent;
-
-  /* Success variant */
-  --color-badge-success-bg: var(--color-success);
-  --color-badge-success-fg: var(--color-fg-reverse);
-  --color-badge-border-success: transparent;
-
-  /* Warning variant */
-  --color-badge-warning-bg: var(--color-warning);
-  --color-badge-warning-fg: var(--color-fg-reverse);
-  --color-badge-border-warning: transparent;
-
-  /* Danger variant */
-  --color-badge-danger-bg: var(--color-danger);
-  --color-badge-danger-fg: var(--color-fg-reverse);
-  --color-badge-border-danger: transparent;
-
+  /* === COMPONENT VARIANTS === */
   /* Outline variant */
-  --color-badge-outline-bg: transparent;
-  --color-badge-outline-fg: var(--color-fg-secondary);
-  --color-badge-border-outline: var(--color-border-neutral);
+  --color-badge-bg-outline: transparent;
+  --color-badge-fg-outline: var(--color-fg-secondary);
+  --color-badge-border-outline: var(--color-badge-border);
+
+  /* === SPACING === */
+  --padding-badge: var(--spacing-100) var(--spacing-100);
+
+  /* === TYPOGRAPHY === */
+  --text-badge-size: var(--text-xs);
+
+  /* === BORDERS & RADIUS === */
+  --radius-badge: var(--radius-sm);
+  --border-width-badge: var(--border-width-sm);
 }

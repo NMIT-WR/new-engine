@@ -55,7 +55,7 @@ const accordionVariants = tv({
         subtitle: 'text-accordion-subtitle-sm',
       },
       md: {
-        title: 'text-accordion-content-md py-accordion-primary-md',
+        title: 'text-accordion-title-md py-accordion-primary-md',
         content: 'text-accordion-content-md p-accordion-secondary-md',
         subtitle: 'text-accordion-subtitle-md',
       },

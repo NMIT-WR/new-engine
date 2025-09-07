@@ -17,12 +17,12 @@
   --text-breadcrumb-lg: var(--text-md);
 
   /* Gap between items */
-  --gap-breadcrumb-sm: var(--spacing-3xs);
-  --gap-breadcrumb-md: var(--spacing-2xs);
-  --gap-breadcrumb-lg: var(--spacing-xs);
+  --gap-breadcrumb-sm: var(--spacing-100);
+  --gap-breadcrumb-md: var(--spacing-150);
+  --gap-breadcrumb-lg: var(--spacing-200);
 
   /* Padding */
-  --spacing-breadcrumb: var(--spacing-2xs);
+  --spacing-breadcrumb: var(--spacing-150);
 
   /* Focus ring */
   --color-breadcrumb-link-ring: var(--color-primary);

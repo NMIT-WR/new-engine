@@ -5,7 +5,7 @@ import { type VariantProps, tv } from 'tailwind-variants'
 
 const tooltipVariants = tv({
   slots: {
-    trigger: ['inline-flex py-0 px-0'],
+    trigger: ['inline-flex'],
     content: [
       '[--arrow-size:var(--tooltip-arrow-size)]',
       '[--arrow-background:var(--tooltip-arrow-background)]',
@@ -106,14 +106,18 @@ export function Tooltip({
   })
 
   const api = tooltip.connect(service as tooltip.Service, normalizeProps)
-  const { positioner, content: contentSlot } = tooltipVariants({
+  const {
+    trigger,
+    positioner,
+    content: contentSlot,
+  } = tooltipVariants({
     size,
     className,
   })
 
   return (
     <>
-      <span {...api.getTriggerProps()} ref={ref}>
+      <span {...api.getTriggerProps()} ref={ref} className={trigger()}>
         {children}
       </span>
       <Portal>

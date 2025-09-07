@@ -65,8 +65,7 @@ const menuVariants = tv({
       'bg-menu-content-bg border border-menu-content-border',
       'rounded-menu shadow-menu-content-shadow',
       'p-menu-content',
-      '',
-      ' overflow-auto',
+      'overflow-auto',
       'focus:outline-none',
       'data-[state=open]:animate-in',
       'data-[state=closed]:animate-out',
@@ -92,7 +91,7 @@ const menuVariants = tv({
     itemText: ['flex-grow'],
     itemIcon: ['text-menu-item-icon-size text-menu-item-icon-fg'],
     submenuIndicator: [
-      'ml-menu-submenu-indicator text-menu-submenu-indicator-fg',
+      'ms-menu-submenu-indicator text-menu-submenu-indicator-fg',
     ],
   },
   variants: {
@@ -127,6 +126,7 @@ interface SubmenuItemProps {
   closeOnSelect?: boolean
 }
 
+// ! TODO: Fix menu.machine typing, it should work without 'as any'
 function SubmenuItem({
   item,
   parentApi,
@@ -142,14 +142,11 @@ function SubmenuItem({
     onSelect,
   })
 
-  const submenuApi = menu.connect(
-    submenuService as menu.Service,
-    normalizeProps
-  )
+  const submenuApi = menu.connect(submenuService as any, normalizeProps)
 
   useEffect(() => {
     // Setup parent-child relationship
-    parentApi.setChild(submenuService as menu.Service)
+    parentApi.setChild(submenuService as any)
     submenuApi.setParent(parentService)
   }, [parentApi, submenuApi, submenuService, parentService])
 
@@ -177,7 +174,7 @@ function SubmenuItem({
           key={menuItem.value}
           item={menuItem}
           parentApi={submenuApi}
-          parentService={submenuService as menu.Service}
+          parentService={submenuService as any}
           size={size}
           onCheckedChange={onCheckedChange}
           onSelect={onSelect}
@@ -347,7 +344,7 @@ export function Menu({
     'aria-label': ariaLabel,
   })
 
-  const api = menu.connect(service as menu.Service, normalizeProps)
+  const api = menu.connect(service as any, normalizeProps)
 
   const {
     trigger,
@@ -373,7 +370,7 @@ export function Menu({
           key={item.value}
           item={item}
           parentApi={api}
-          parentService={service as menu.Service}
+          parentService={service as any}
           size={size}
           onCheckedChange={onCheckedChange}
           onSelect={onSelect}
@@ -436,10 +433,10 @@ export function Menu({
       ) : (
         <Button {...api.getTriggerProps()} className={trigger()}>
           {triggerText}
-          {triggerIcon && <Icon icon={triggerIcon} className="ml-1" />}
+          {triggerIcon && <Icon icon={triggerIcon} className="ms-1" />}
           {!triggerIcon && (
             <span {...api.getIndicatorProps()}>
-              <Icon icon="token-icon-menu-trigger" className="ml-1" />
+              <Icon icon="token-icon-menu-trigger" className="ms-1" />
             </span>
           )}
         </Button>

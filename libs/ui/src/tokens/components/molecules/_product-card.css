@@ -1,16 +1,16 @@
 @theme static {
   --color-pc: var(--color-surface);
 
-  --border-pc-border: var(--color-stroke-primary);
+  --border-pc-border: var(--color-border-primary);
   --border-pc-width: var(--border-width-sm);
   --radius-pc: var(--radius-md);
 
   /* Card spacing */
-  --spacing-pc-row-layout: var(--spacing-sm);
+  --spacing-pc-row-layout: var(--spacing-250);
   --spacing-pc-max: 100%; /* temporary value */
-  /* --spacing-pc-col-layout: var(--spacing-3xs);*/
-  --spacing-pc-box: var(--spacing-2xs);
-  --spacing-pc-padding: var(--spacing-2xs);
+  /* --spacing-pc-col-layout: var(--spacing-100);*/
+  --spacing-pc-box: var(--spacing-150);
+  --spacing-pc-padding: var(--spacing-150);
 
   --color-pc-name-fg: var(--color-fg-primary);
   --text-pc-name-size: var(--text-md);
@@ -25,31 +25,31 @@
 
   /* === PRODUCT CARD BUTTONS ===*/
   /*Add to cart button*/
-  --color-btn-cart: var(--color-btn-primary);
-  --color-btn-cart-hover: oklch(
-    from var(--color-btn-cart) calc(l + var(--state-hover)) c h
+  --color-button-cart: var(--color-button-primary);
+  --color-button-cart-hover: oklch(
+    from var(--color-button-cart) calc(l + var(--state-hover)) c h
   );
 
-  --color-btn-cart-fg: var(--color-btn-text);
+  --color-button-cart-fg: var(--color-button-fg);
 
   /* Detail button */
-  --color-btn-detail: var(--color-btn-secondary);
-  --color-btn-detail-hover: oklch(
-    from var(--color-btn-detail) calc(l + var(--state-hover)) c h
+  --color-button-detail: var(--color-button-secondary);
+  --color-button-detail-hover: oklch(
+    from var(--color-button-detail) calc(l + var(--state-hover)) c h
   );
 
-  --color-btn-detail-fg: var(--color-btn-text);
+  --color-button-detail-fg: var(--color-button-fg);
 
   /* wishlist button */
-  --color-btn-wishlist: var(--color-btn-tertiary);
-  --color-btn-wishlist-hover: oklch(
-    from var(--color-btn-wishlist) calc(l + var(--state-hover)) c h
+  --color-button-wishlist: var(--color-button-tertiary);
+  --color-button-wishlist-hover: oklch(
+    from var(--color-button-wishlist) calc(l + var(--state-hover)) c h
   );
 
-  --color-btn-wishlist-fg: var(--color-btn-text);
+  --color-button-wishlist-fg: var(--color-button-fg);
 
   /* === PRODUCT CARD IMAGE === */
-  --aspect-pc-image: var(--aspect-ratio-square);
+  --aspect-pc-image: var(--aspect-square);
   --radius-pc-image: var(--radius-pc);
 }
 
@@ -93,5 +93,5 @@
 }
 
 @utility gap-pc-col-layout {
-  gap: var(--spacing-3xs);
+  gap: var(--spacing-100);
 }
