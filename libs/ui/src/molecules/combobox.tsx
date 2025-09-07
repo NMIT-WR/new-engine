@@ -1,6 +1,6 @@
 import * as combobox from '@zag-js/combobox'
 import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import { useId } from 'react'
+import { useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { ErrorText } from '../atoms/error-text'
@@ -129,6 +129,7 @@ export interface ComboboxProps<T = unknown>
   validationState?: 'normal' | 'error' | 'success' | 'warning'
   error?: string
   helper?: string
+  noResultsMessage?: string
   clearable?: boolean
   selectionBehavior?: 'replace' | 'clear' | 'preserve'
   closeOnSelect?: boolean
@@ -160,6 +161,7 @@ export function Combobox<T = unknown>({
   validationState = 'normal',
   error,
   helper,
+  noResultsMessage = 'No results found for "{inputValue}"',
   clearable = true,
   selectionBehavior = 'replace',
   closeOnSelect = false,
@@ -174,8 +176,9 @@ export function Combobox<T = unknown>({
   const generatedId = useId()
   const uniqueId = id || generatedId
 
+  const [options, setOptions] = useState(items)
   const collection = combobox.collection({
-    items: items,
+    items: options,
     itemToString: (item) => item.label,
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
@@ -206,9 +209,14 @@ export function Combobox<T = unknown>({
       onChange?.(selectedValue)
     },
     onInputValueChange: ({ inputValue }) => {
+      const filtered = items.filter((item) =>
+        item.label.toLowerCase().includes(inputValue.toLowerCase())
+      )
+      setOptions(filtered)
       onInputValueChange?.(inputValue)
     },
     onOpenChange: ({ open }) => {
+      setOptions(items)
       onOpenChange?.(open)
     },
   })
@@ -234,7 +242,12 @@ export function Combobox<T = unknown>({
   return (
     <div className={root()}>
       {label && (
-        <Label className={labelStyles()} size={size} {...api.getLabelProps()}>
+        <Label
+          className={labelStyles()}
+          size={size}
+          required={required}
+          {...api.getLabelProps()}
+        >
           {label}
         </Label>
       )}
@@ -275,9 +288,9 @@ export function Combobox<T = unknown>({
 
       <Portal>
         <div {...api.getPositionerProps()} className={positioner()}>
-          {api.open && items.length > 0 && (
+          {api.open && options.length > 0 && (
             <ul {...api.getContentProps()} className={content()}>
-              {items.map((item) => (
+              {options.map((item) => (
                 <li
                   key={item.value}
                   {...api.getItemProps({ item })}
@@ -288,9 +301,9 @@ export function Combobox<T = unknown>({
               ))}
             </ul>
           )}
-          {api.open && api.inputValue && items.length === 0 && (
+          {api.open && api.inputValue && options.length === 0 && (
             <div className={content()}>
-              No results found for "{api.inputValue}"
+              {noResultsMessage.replace('{inputValue}', api.inputValue)}
             </div>
           )}
         </div>
