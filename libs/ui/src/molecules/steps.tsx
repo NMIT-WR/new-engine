@@ -59,7 +59,6 @@ const stepsVariants = tv({
       'data-[orientation=horizontal]:h-steps-separator data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-1',
       'data-[orientation=vertical]:w-steps-separator data-[orientation=vertical]:h-full',
     ],
-    progress: ['absolute top-0 left-0 h-full transition-all duration-200'],
     containerButtons: [
       'flex gap-2 h-fit',
       'data-[orientation=vertical]:col-start-2',
@@ -84,7 +83,6 @@ export interface StepsProps extends VariantProps<typeof stepsVariants> {
   currentStep?: number
   orientation?: 'horizontal' | 'vertical'
   linear?: boolean
-  showProgress?: boolean
   completeText?: ReactNode
   onStepChange?: (step: number) => void
   onStepComplete?: () => void
