@@ -1,31 +1,38 @@
 @theme static {
-  /* Base colors */
-  --color-breadcrumb-bg: var(--color-surface);
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-breadcrumb: var(--color-surface);
+  --color-breadcrumb-accent: var(--color-primary);
+
+  /* === DERIVED COLORS === */
+  /* Background colors */
+  --color-breadcrumb-bg: var(--color-breadcrumb);
+
+  /* Foreground colors */
   --color-breadcrumb-fg: var(--color-fg-primary);
   --color-breadcrumb-fg-secondary: var(--color-fg-secondary);
-  --color-breadcrumb-link-hover: var(--color-primary);
-  --color-breadcrumb-current-fg: var(--color-primary);
+  --color-breadcrumb-fg-current: var(--color-breadcrumb-accent);
 
-  /* Slot Colors */
+  /* Slot-specific colors */
   --color-breadcrumb-item-fg: var(--color-breadcrumb-fg);
   --color-breadcrumb-separator-fg: var(--color-breadcrumb-fg-secondary);
   --color-breadcrumb-ellipsis-fg: var(--color-breadcrumb-fg-secondary);
 
-  /* Sizes */
+  /* === STATE VARIATIONS === */
+  --color-breadcrumb-fg-hover: var(--color-breadcrumb-accent);
+
+  /* === SPACING === */
+  --spacing-breadcrumb-sm: var(--spacing-100);
+  --spacing-breadcrumb-md: var(--spacing-150);
+  --spacing-breadcrumb-lg: var(--spacing-200);
+
+  /* === TYPOGRAPHY === */
   --text-breadcrumb-sm: var(--text-xs);
   --text-breadcrumb-md: var(--text-sm);
   --text-breadcrumb-lg: var(--text-md);
 
-  /* Gap between items */
-  --gap-breadcrumb-sm: var(--spacing-100);
-  --gap-breadcrumb-md: var(--spacing-150);
-  --gap-breadcrumb-lg: var(--spacing-200);
-
-  /* Padding */
-  --spacing-breadcrumb: var(--spacing-150);
-
-  /* Focus ring */
-  --color-breadcrumb-link-ring: var(--color-primary);
+  /* === FOCUS RINGS === */
+  --color-breadcrumb-link-ring: var(--color-breadcrumb-accent);
 }
 
 @utility token-icon-breadcrumb-separator {
