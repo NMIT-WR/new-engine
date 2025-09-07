@@ -3,43 +3,60 @@
 }
 
 @theme static {
-  --color-dialog-bg: var(--color-surface);
-  --color-dialog-fg: var(--color-fg-primary);
-  --border-width-dialog: var(--border-width-sm);
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-dialog: var(--color-surface);
+  --color-dialog-accent: var(--color-primary);
 
-  /* ===== DIALOG BACKDROP (Overlay) ===== */
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-dialog-bg: var(--color-dialog);
+  --color-dialog-fg: var(--color-fg-primary);
   --color-dialog-backdrop-bg: --alpha(
     var(--color-fg-primary) /
     var(--opacity-backdrop)
-  ); /* Semi-transparent black */
+  );
 
-  /* ===== DIALOG CONTENT PANEL ===== */
+  /* Content colors */
   --color-dialog-content-bg: var(--color-dialog-bg);
   --color-dialog-content-fg: var(--color-dialog-fg);
   --color-dialog-content-border: var(--color-border-primary);
-  --radius-dialog-content: var(--radius-sm);
-  --shadow-dialog-content: var(--shadow-xl);
 
-  --gap-dialog-content: var(--spacing-250);
-  --height-dialog-content: 80svh;
-  --padding-dialog-content: var(--spacing-450);
-
-  /* ===== DIALOG TITLE ===== */
-  --text-dialog-title-size: var(--text-xl);
-  --font-dialog-title: var(--font-weight-semibold);
+  /* Foreground colors */
   --color-dialog-title-fg: var(--color-dialog-fg);
-
-  /* ===== DIALOG DESCRIPTION ===== */
-  --text-dialog-description-size: var(--text-md);
   --color-dialog-description-fg: var(--color-dialog-fg);
-
-  /* ===== DIALOG CLOSE TRIGGER (Button) ===== */
   --color-dialog-close-trigger-fg: var(--color-dialog-fg);
-  --radius-dialog-close-trigger: var(--radius-full);
-  --spacing-dialog-close-trigger-padding: var(--spacing-150);
 
-  /* ===== FOCUS RING (General for focusable elements within dialog) ===== */
-  --color-dialog-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  /* === SPACING === */
+  --padding-dialog-content: var(--spacing-450);
+  --gap-dialog-content: var(--spacing-250);
+  --padding-dialog-actions: var(--spacing-150);
+  --gap-dialog-actions: var(--spacing-100);
+  --spacing-dialog-close-trigger-padding: var(--spacing-150);
+  --spacing-dialog-close-trigger-offset: var(--spacing-250);
+
+  /* === TYPOGRAPHY === */
+  --text-dialog-title-size: var(--text-xl);
+  --text-dialog-description-size: var(--text-md);
+  --font-weight-dialog-title: var(--font-weight-semibold);
+
+  /* === BORDERS & RADIUS === */
+  --border-width-dialog: var(--border-width-sm);
+  --radius-dialog-content: var(--radius-sm);
+  --radius-dialog-close-trigger: var(--radius-full);
+
+  /* === SHADOWS === */
+  --shadow-dialog-content: var(--shadow-primary);
+
+  /* === DIMENSIONS === */
+  --height-dialog-content: 80svh;
+
+  /* === Z-INDEX === */
+  --z-dialog-backdrop: 10;
+  --z-dialog-positioner: 20;
+
+  /* === FOCUS RINGS === */
+  --color-dialog-ring: --alpha(var(--color-dialog-accent) / var(--opacity-ring));
   --color-dialog-ring-offset: var(--color-dialog-bg);
 }
 
