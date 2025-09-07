@@ -10,8 +10,6 @@
   /* === DERIVED COLORS === */
   /* Background colors - using reference layer */
   --color-combobox-bg: var(--color-combobox);
-  --color-combobox-bg-hover: var(--color-combobox-hover);
-  --color-combobox-bg-focus: var(--color-combobox-focus);
 
   /* Foreground colors */
   --color-combobox-fg: var(--color-fg-primary);
