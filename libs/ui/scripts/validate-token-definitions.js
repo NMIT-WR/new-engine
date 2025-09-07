@@ -9,9 +9,14 @@
  * - Optional --profile timings
  */
 
-import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { performance } from 'node:perf_hooks'
+import { fileURLToPath } from 'node:url'
 import { globSync } from 'glob'
+
+const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
 
 // Configuration for validation
 const CONFIG = {
@@ -224,7 +229,9 @@ function tokenToUtilityClasses(tokenName) {
     'spacing-translate',
     'spacing-menu-submenu',
   ]
-  if (customPropertyPrefixes.some((prefix) => tokenName.includes(`--${prefix}`))) {
+  if (
+    customPropertyPrefixes.some((prefix) => tokenName.includes(`--${prefix}`))
+  ) {
     return classes
   }
 
@@ -248,46 +255,51 @@ async function buildTokenIndices() {
 
   await Promise.all(
     files.map(async (file) => {
-      if (!existsSync(file)) return
-      const content = await fs.readFile(file, 'utf8')
-      const lines = content.split('\n')
+      const abs = path.join(ROOT, file)
+      if (!existsSync(abs)) return
+      try {
+        const content = await fs.readFile(abs, 'utf8')
+        const lines = content.split('\n')
 
-      // 1) Parse token definitions and dependency edges
-      const tokenRegex = /--([\w-]+)\s*:\s*([^;]+);/g
-      let m
-      while ((m = tokenRegex.exec(content)) !== null) {
-        const name = `--${m[1]}`
-        const value = m[2].trim()
-        const line = content.substring(0, m.index).split('\n').length
-        defs.set(name, { value, file, line })
+        // 1) Parse token definitions and dependency edges
+        const tokenRegex = /--([\w-]+)\s*:\s*([^;]+);/g
+        let m
+        while ((m = tokenRegex.exec(content)) !== null) {
+          const name = `--${m[1]}`
+          const value = m[2].trim()
+          const line = content.substring(0, m.index).split('\n').length
+          defs.set(name, { value, file, line })
 
-        // Extract dependencies from value
-        const deps = new Set()
-        for (const vm of value.matchAll(/var\(\s*(--[\w-]+)/g)) {
-          deps.add(vm[1])
+          // Extract dependencies from value
+          const deps = new Set()
+          for (const vm of value.matchAll(/var\(\s*(--[\w-]+)/g)) {
+            deps.add(vm[1])
+          }
+          for (const om of value.matchAll(/oklch\([^)]*var\(\s*(--[\w-]+)/g)) {
+            deps.add(om[1])
+          }
+          dependencyGraph.set(name, deps)
         }
-        for (const om of value.matchAll(/oklch\([^)]*var\(\s*(--[\w-]+)/g)) {
-          deps.add(om[1])
-        }
-        dependencyGraph.set(name, deps)
-      }
 
-      // 2) Index var() usage on non-definition lines as direct CSS usage
-      const defLine = new Set()
-      for (const [token, data] of defs) {
-        if (data.file === file) defLine.add(data.line)
-      }
-
-      for (let i = 0; i < lines.length; i++) {
-        const lineNo = i + 1
-        if (defLine.has(lineNo)) continue
-        const line = lines[i]
-        if (!line.includes('var(')) continue
-        for (const vm of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
-          const t = vm[1]
-          if (!cssUsage.has(t)) cssUsage.set(t, new Set())
-          cssUsage.get(t).add(`${file}:${lineNo} (CSS property)`) // direct usage
+        // 2) Index var() usage on non-definition lines as direct CSS usage
+        const defLine = new Set()
+        for (const [token, data] of defs) {
+          if (data.file === file) defLine.add(data.line)
         }
+
+        for (let i = 0; i < lines.length; i++) {
+          const lineNo = i + 1
+          if (defLine.has(lineNo)) continue
+          const line = lines[i]
+          if (!line.includes('var(')) continue
+          for (const vm of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
+            const t = vm[1]
+            if (!cssUsage.has(t)) cssUsage.set(t, new Set())
+            cssUsage.get(t).add(`${file}:${lineNo} (CSS property)`) // direct usage
+          }
+        }
+      } catch (err) {
+        console.error(`💥 Failed to process ${file}:`, err?.message || err)
       }
     })
   )
@@ -303,7 +315,10 @@ async function buildTokenIndices() {
 
 // Build component indices in a single pass
 async function buildComponentIndices(classToTokens, knownTokens) {
-  const files = globSync('src/**/*.{ts,tsx}', { ignore: CONFIG.excludeFiles })
+  const files = globSync('src/**/*.{ts,tsx}', {
+    cwd: ROOT,
+    ignore: CONFIG.excludeFiles,
+  })
   const componentVarUsage = new Map() // token -> Set<location>
   const classUsageTokens = new Set() // tokens used via classes
 
@@ -328,7 +343,7 @@ async function buildComponentIndices(classToTokens, knownTokens) {
           const lineNo = content.substring(0, m.index).split('\n').length
           componentVarUsage
             .get(t)
-            .add(`${file}:${lineNo} (component var() reference)`) 
+            .add(`${file}:${lineNo} (component var() reference)`)
         }
 
         // 1b) Arbitrary utilities referencing tokens directly, e.g. border-(length:--token)
@@ -341,7 +356,8 @@ async function buildComponentIndices(classToTokens, knownTokens) {
 
         // 2) Class-based usage: scan whole file for class-like tokens
         // Capture words with at least one hyphen, optionally with variant prefixes like sm:, hover:, data-[...]:
-        const classLike = /(^|[^A-Za-z0-9_-])([A-Za-z0-9_-]+(?::[A-Za-z0-9_\[\]-]+)*-[A-Za-z0-9_\[\]-]+)/g
+        const classLike =
+          /(^|[^A-Za-z0-9_-])([A-Za-z0-9_-]+(?::[A-Za-z0-9_[\]-]+)*-[A-Za-z0-9_[\]-]+)/g
         for (const m of content.matchAll(classLike)) {
           const raw = m[2]
           const cls = normalizeClass(raw)
@@ -405,8 +421,7 @@ async function validateTokenDefinitions({ profile = false } = {}) {
   // 2) Class maps from tokens
   p.mark('classmaps')
   const { classToTokens } = computeClassMaps(allTokens)
-  if (profile)
-    console.log(`⏱️  class maps: ${p.end('classmaps').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  class maps: ${p.end('classmaps').toFixed(1)}ms`)
 
   // 3) Component indices
   p.mark('components')
@@ -414,8 +429,7 @@ async function validateTokenDefinitions({ profile = false } = {}) {
     classToTokens,
     new Set(allTokens)
   )
-  if (profile)
-    console.log(`⏱️  components: ${p.end('components').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  components: ${p.end('components').toFixed(1)}ms`)
 
   // 4) Seed used set
   const usedDirect = new Set()
@@ -468,7 +482,8 @@ async function validateTokenDefinitions({ profile = false } = {}) {
   }
   for (const [file, list] of byFile) {
     console.log(`📄 ${file}:`)
-    for (const t of list) console.log(`  Line ${t.line}: ${t.name} = ${t.value}`)
+    for (const t of list)
+      console.log(`  Line ${t.line}: ${t.name} = ${t.value}`)
     console.log()
   }
   console.log(

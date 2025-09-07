@@ -1,5 +1,12 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import tsParser from '@typescript-eslint/parser'
 import tailwind from 'eslint-plugin-tailwindcss'
+
+const tokensCssAbsolutePath = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'src/tokens/index.css'
+)
 
 export default [
   {
@@ -17,7 +24,7 @@ export default [
     settings: {
       tailwindcss: {
         // For TailwindCSS v4 - point to CSS config file
-        config: '/Users/satan/work/new-engine/libs/ui/src/tokens/index.css',
+        config: tokensCssAbsolutePath,
       },
     },
     plugins: {

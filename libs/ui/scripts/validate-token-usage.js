@@ -9,8 +9,10 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { globSync } from 'glob'
+
+const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
 
 // Tailwind v4 namespace to utility prefix mappings
 const NAMESPACE_MAPPINGS = {
@@ -148,7 +150,7 @@ const PREFIX_TO_NAMESPACES = (() => {
 /**
  * Extract Tailwind classes from TypeScript/JSX content
  */
-function extractTailwindClasses(content, filePath) {
+function extractTailwindClasses(content) {
   const classes = new Set()
 
   // Match className props (string values)
@@ -337,7 +339,6 @@ function mapClassToPossibleTokens(className) {
  */
 function loadDefinedTokens() {
   const tokens = new Set()
-  const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
   const tokenFiles = globSync('src/tokens/**/*.css', { cwd: ROOT })
 
   for (const file of tokenFiles) {
@@ -350,7 +351,10 @@ function loadDefinedTokens() {
   }
 
   // Also treat inline style custom properties in components as defined
-  const componentFiles = globSync('src/**/*.{ts,tsx}', { cwd: ROOT, ignore: ['**/*.stories.tsx','**/*.test.tsx','**/*.spec.tsx'] })
+  const componentFiles = globSync('src/**/*.{ts,tsx}', {
+    cwd: ROOT,
+    ignore: ['**/*.stories.tsx', '**/*.test.tsx', '**/*.spec.tsx'],
+  })
   for (const file of componentFiles) {
     const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
     // style={{ '--var': value }} or object entries '--var': value
@@ -402,6 +406,7 @@ function validateTokenUsage() {
   console.log(`📋 Found ${definedTokens.size} defined tokens`)
 
   const componentFiles = globSync('src/**/*.{ts,tsx}', {
+    cwd: ROOT,
     ignore: ['**/*.stories.tsx', '**/*.test.tsx', '**/*.spec.tsx'],
   })
 
@@ -409,7 +414,7 @@ function validateTokenUsage() {
   const errorsByFile = new Map()
 
   for (const file of componentFiles) {
-    const content = fs.readFileSync(file, 'utf8')
+    const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
     const classes = extractTailwindClasses(content, file)
     const fileErrors = []
 
@@ -479,28 +484,30 @@ function validateTokenUsage() {
       '✅ All component classes have corresponding token definitions!'
     )
     return true
-  } else {
-    console.log(`❌ Found ${totalErrors} missing token definitions:\n`)
-
-    for (const [file, errors] of errorsByFile) {
-      console.log(`📄 ${file}:`)
-      for (const error of errors) {
-        const tokenList = error.expectedTokens.join(' OR ')
-        console.log(
-          `  Line ${error.line}: ${error.className} → Missing token: ${tokenList}`
-        )
-      }
-      console.log()
-    }
-
-    return false
   }
+  console.log(`❌ Found ${totalErrors} missing token definitions:\n`)
+
+  for (const [file, errors] of errorsByFile) {
+    console.log(`📄 ${file}:`)
+    for (const error of errors) {
+      const tokenList = error.expectedTokens.join(' OR ')
+      console.log(
+        `  Line ${error.line}: ${error.className} → Missing token: ${tokenList}`
+      )
+    }
+    console.log()
+  }
+
+  return false
 }
 
 /**
  * Run validation
  */
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (
+  process.argv[1] &&
+  pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url
+) {
   try {
     const success = validateTokenUsage()
     process.exit(success ? 0 : 1)
