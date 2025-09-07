@@ -534,7 +534,7 @@ export const Autoplay: Story = {
     slides: contentSlides,
     autoplay: true,
     loop: true,
-    showAutoplayButton: true,
+    autoplayTrigger: true,
     size: 'md',
   },
   parameters: {
