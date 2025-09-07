@@ -10,30 +10,29 @@ const accordionVariants = tv({
   slots: {
     root: [
       'flex flex-col w-full',
-      'bg-accordion border-accordion-border rounded-accordion',
+      'bg-accordion-bg border-accordion-border rounded-accordion',
       'border-(length:--border-width-accordion)',
-      //'overflow-hidden',
       'transition-all duration-200',
     ],
     item: [
       'border-b-(length:--border-width-accordion) border-accordion-border',
     ],
-    title: [
-      'flex items-center justify-between w-full cursor-pointer',
+    title: 'grid place-items-start',
+    titleTrigger: [
+      'flex items-center relative justify-between w-full cursor-pointer',
       'rounded-none',
       'font-accordion-title',
       'text-accordion-title-fg bg-accordion-title-bg',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accordion-ring focus-visible:ring-offset-0',
-      'focus-visible:bg-accordion-hover',
+      'focus-visible:bg-accordion-bg-hover',
       'data-[disabled]:text-accordion-fg-disabled',
-      'hover:bg-accordion-title-hover',
+      'hover:bg-accordion-title-bg-hover',
+      // reset button padding
+      'px-0 py-0 pr-accordion-icon',
       'data-[disabled=true]:cursor-not-allowed',
     ],
     subtitle: ['text-accordion-subtitle-fg'],
-    content: [
-      'text-accordion-content-fg bg-accordion-content-bg',
-      //'overflow-hidden',
-    ],
+    content: ['text-accordion-content-fg bg-accordion-content-bg'],
     icon: ['data-[state=expanded]:rotate-180'],
   },
   variants: {
@@ -50,18 +49,18 @@ const accordionVariants = tv({
     },
     size: {
       sm: {
-        title: 'text-accordion-title-sm py-accordion-primary-sm',
-        content: 'text-accordion-content-sm p-accordion-secondary-sm',
+        title: 'text-accordion-title-sm p-accordion-title-sm',
+        content: 'text-accordion-content-sm px-accordion-content-sm',
         subtitle: 'text-accordion-subtitle-sm',
       },
       md: {
-        title: 'text-accordion-title-md py-accordion-primary-md',
-        content: 'text-accordion-content-md p-accordion-secondary-md',
+        title: 'text-accordion-title-md p-accordion-title-md',
+        content: 'text-accordion-content-md p-accordion-content-md',
         subtitle: 'text-accordion-subtitle-md',
       },
       lg: {
-        title: 'text-accordion-title-lg py-accordion-primary-lg',
-        content: 'text-accordion-content-lg p-accordion-secondary-lg',
+        title: 'text-accordion-title-lg p-accordion-title-lg',
+        content: 'text-accordion-content-lg p-accordion-content-lg',
         subtitle: 'text-accordion-subtitle-lg',
       },
     },
@@ -123,10 +122,11 @@ export function Accordion({
 
   const api = accordion.connect(service, normalizeProps)
 
-  const { root, item, title, content, icon, subtitle } = accordionVariants({
-    size,
-    shadow,
-  })
+  const { root, item, title, titleTrigger, content, icon, subtitle } =
+    accordionVariants({
+      size,
+      shadow,
+    })
 
   return (
     <div className={root()} {...api.getRootProps()}>
@@ -141,14 +141,14 @@ export function Accordion({
           <header>
             <Button
               theme="borderless"
-              className={title()}
+              className={titleTrigger()}
               {...api.getItemTriggerProps({
                 value: accordionItem.value,
                 disabled: accordionItem.disabled,
               })}
               data-disabled={accordionItem.disabled}
             >
-              <div className="grid place-items-start">
+              <div className={title()}>
                 <h3>{accordionItem.title}</h3>
                 {accordionItem.subtitle && (
                   <h4 className={subtitle()}>{accordionItem.subtitle}</h4>

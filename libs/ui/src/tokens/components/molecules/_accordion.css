@@ -1,67 +1,85 @@
 @theme static {
-  /* === BASE TOKEN MAPPING === */
-  --color-accordion: var(--color-surface);
+  /* === BASE COLOR MAPPING === */
+  --color-accordion-base: var(--color-surface);
   --color-accordion-border: var(--color-border-primary);
+  --color-accordion-accent: var(--color-primary);
 
-  /* === STATE VARIATIONS === */
-  --color-accordion-hover: oklch(
-    from var(--color-accordion) calc(l + var(--state-hover)) c h
-  );
+  /* === DERIVED COLORS === */
+  /* Background colors */
+  --color-accordion-bg: var(--color-accordion-base);
+  --color-accordion-title-bg: var(--color-accordion-bg);
+  --color-accordion-content-bg: var(--color-accordion-bg);
 
-  /* === TEXT COLORS === */
+  /* Foreground colors */
   --color-accordion-fg: var(--color-fg-primary);
-  --color-accordion-fg-disabled: --alpha(
-    var(--color-disabled-fg) /
-    var(--opacity-disabled)
-  );
-
-  /* === TITLE COMPONENT === */
-  --color-accordion-title-bg: var(--color-accordion);
   --color-accordion-title-fg: var(--color-accordion-fg);
   --color-accordion-subtitle-fg: --alpha(
     var(--color-accordion-fg) /
     var(--opacity-text-secondary)
   );
-  --color-accordion-title-hover: var(--color-accordion-hover);
-
-  /* === CONTENT COMPONENT === */
-  --color-accordion-content-bg: var(--color-accordion);
   --color-accordion-content-fg: var(--color-accordion-fg);
 
-  /* === FOCUS RING === */
-  --color-accordion-ring: --alpha(var(--color-primary) / var(--opacity-ring));
+  /* === STATE VARIATIONS === */
+  --color-accordion-bg-hover: oklch(
+    from var(--color-accordion-bg) calc(l + var(--state-hover)) c h
+  );
+  --color-accordion-title-bg-hover: var(--color-accordion-bg-hover);
+
+  /* === COMPONENT VARIANTS === */
+  /* Component variants will be added here when needed */
+
+  /* === VALIDATION STATES === */
+  /* Validation states will be added here when needed */
+
+  /* === DISABLED STATES === */
+  --color-accordion-fg-disabled: --alpha(
+    var(--color-disabled-fg) /
+    var(--opacity-disabled)
+  );
 
   /* === SPACING === */
-  --spacing-accordion-primary-lg: var(--spacing-300);
-  --spacing-accordion-secondary-lg: var(--spacing-300);
-  --spacing-accordion-primary-md: var(--spacing-200);
-  --spacing-accordion-secondary-md: var(--spacing-200);
-  --spacing-accordion-primary-sm: var(--spacing-100);
-  --spacing-accordion-secondary-sm: var(--spacing-100);
+  --padding-accordion-title-sm: var(--spacing-100) var(--spacing-150);
+  --padding-accordion-title-md: var(--spacing-150) var(--spacing-200);
+  --padding-accordion-title-lg: var(--spacing-200) var(--spacing-250);
 
-  /* === TYPOGRAPHY DEFAULT === */
+  --padding-accordion-content-sm: var(--spacing-100) var(--spacing-100);
+  --padding-accordion-content-md: var(--spacing-150) var(--spacing-200);
+  --padding-accordion-content-lg: var(--spacing-200) var(--spacing-300);
+
+  --padding-accordion-icon: var(--spacing-200);
+
+  /* === TYPOGRAPHY === */
+  /* Font weights */
   --font-weight-accordion-title: var(--font-weight-medium);
-  --text-accordion-title-md: var(--text-lg);
+
+  /* Default sizes */
+  --text-accordion-title-md: var(--text-md);
   --text-accordion-content-md: var(--text-md);
   --text-accordion-subtitle-md: var(--text-sm);
 
-  /* === TYPOGRAPHY SIZE VARIANTS === */
-  --text-accordion-title-lg: var(--text-xl);
+  /* Size variants */
+  --text-accordion-title-lg: var(--text-lg);
   --text-accordion-content-lg: var(--text-lg);
   --text-accordion-subtitle-lg: var(--text-md);
-  --text-accordion-title-sm: var(--text-md);
+  --text-accordion-title-sm: var(--text-sm);
   --text-accordion-content-sm: var(--text-sm);
   --text-accordion-subtitle-sm: var(--text-xs);
 
-  /* === BORDER & RADIUS === */
+  /* === BORDERS & RADIUS === */
   --border-width-accordion: var(--border-width-sm);
   --radius-accordion: var(--radius-sm);
 
   /* === SHADOWS === */
   --shadow-accordion-root-sm: var(--shadow-primary);
-  --shadow-accordion-root-md: var(--shadow-md);
+  --shadow-accordion-root-md: var(--shadow-xl);
   --shadow-accordion-content-sm: var(--shadow-sm);
   --shadow-accordion-content-md: var(--shadow-primary);
+
+  /* === FOCUS RINGS === */
+  --color-accordion-ring: --alpha(
+    var(--color-accordion-accent) /
+    var(--opacity-ring)
+  );
 }
 
 /* Semantic tokens for accordion icons */
