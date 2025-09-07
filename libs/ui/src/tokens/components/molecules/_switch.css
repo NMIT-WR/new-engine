@@ -1,74 +1,63 @@
 :root {
   /* The red colour will be less noticeable. */
-  --opacity-invalid: 80%;
+  --opacity-switch-invalid: 80%;
 }
 
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-switch-bg: var(--color-overlay);
-  --color-switch-checked: var(--color-success);
+  --color-switch-success: var(--color-success);
+  --color-switch-invalid: --alpha(
+    var(--color-danger) /
+    var(--opacity-switch-invalid)
+  );
   --color-switch-border: var(--color-border-primary);
-  --color-switch-thumb: var(--color-base-light);
+  --color-switch-thumb-bg: var(--color-base-light);
+  --color-switch-label-fg: var(--color-fg-primary);
+  --color-switch-label-fg-disabled: var(--color-disabled-fg);
+
+  /* Backgrounds colors */
+  --color-switch-bg-checked: var(--color-switch-success);
 
   /* === STATE VARIATIONS === */
-  --color-switch-hover: oklch(
+  --color-switch-bg-hover: oklch(
     from var(--color-switch-bg) calc(l + var(--state-hover)) c h
   );
-
-  /* === CHECKED STATE VARIATIONS === */
-  --color-switch-checked-hover: oklch(
-    from var(--color-switch-checked) calc(l + var(--state-hover)) c h
+  --color-switch-bg-checked-hover: oklch(
+    from var(--color-switch-success) calc(l + var(--state-hover)) c h
   );
 
   /* === DISABLED STATES === */
-  --color-switch-disabled: var(--color-disabled-bg);
-  --color-switch-thumb-disabled: --alpha(
-    var(--color-disabled-fg) /
+  --color-switch-bg-disabled: var(--color-disabled-bg);
+  --color-switch-thumb-bg-disabled: --alpha(
+    var(--color-switch-thumb-bg) /
     var(--opacity-disabled)
   );
   --color-switch-border-disabled: var(--color-disabled-border);
 
   /* === INVALID STATES === */
-  --color-switch-invalid: --alpha(var(--color-danger) / var(--opacity-invalid));
-
+  --color-switch-bg-invalid: var(--color-switch-invalid);
   --color-switch-ring-invalid: var(--color-switch-invalid);
 
-  /* === TEXT COLORS === */
-  --color-switch-label: var(--color-fg-primary);
-  --color-switch-label-disabled: var(--color-disabled-fg);
-
-  /* === FOCUS RING === */
-  --color-switch-ring: --alpha(
-    var(--color-switch-checked) /
-    var(--opacity-ring)
-  );
-
   /* === SPACING === */
-  --spacing-root: var(--spacing-250);
-  --spacing-control-padding: var(--spacing-100);
-  --spacing-track-width: var(--spacing-600);
-  --spacing-track-height: var(--spacing-350);
-  /* Padding inside the control container */
-  --spacing-control-padding: 0.125rem;
-
-  /* 
-   * Calculate the height of the thumb by subtracting the padding from both sides
-   */
-  --spacing-thumb-height: calc(
-    var(--spacing-track-height) -
-    (var(--spacing-control-padding) * 2)
+  --spacing-switch-root: var(--spacing-250);
+  --spacing-switch-control: var(--spacing-50);
+  --spacing-switch-track-width: var(--spacing-600);
+  --spacing-switch-track-height: var(--spacing-350);
+  --spacing-switch-thumb-height: calc(
+    var(--spacing-switch-track-height) -
+    (var(--spacing-switch-control) * 2)
+  );
+  --spacing-switch-translate-track: calc(
+    var(--spacing-switch-track-width) -
+    var(--spacing-switch-track-height) -
+    var(--spacing-switch-control)
   );
 
-  /* 
-   * Calculate the exact distance: track - thumb - padding
-   */
-  --spacing-translate-track: calc(
-    var(--spacing-track-width) -
-    var(--spacing-track-height) -
-    var(--spacing-control-padding)
-  );
-
-  /* === BORDER === */
+  /* === BORDERS & RADIUS === */
   --border-width-switch: var(--border-width-sm);
   --radius-switch: var(--radius-full);
+
+  /* === FOCUS RINGS === */
+  --color-switch-ring: var(--color-switch-success);
 }
