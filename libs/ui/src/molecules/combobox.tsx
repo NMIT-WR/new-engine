@@ -1,6 +1,6 @@
 import * as combobox from '@zag-js/combobox'
 import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import { useId } from 'react'
+import { useEffect, useId, useState } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
 import { ErrorText } from '../atoms/error-text'
@@ -12,32 +12,31 @@ import { tv } from '../utils'
 
 const comboboxVariants = tv({
   slots: {
-    root: ['flex flex-col relative w-full gap-combobox-root'],
-    label: ['block text-label-md font-label mb-1'],
+    root: ['flex flex-col relative w-full'],
+    label: ['block text-label-md font-label'],
     control: [
       'flex items-center w-full relative',
-      'bg-combobox border-(length:--border-width-combobox) border-combobox-border rounded-combobox',
+      'bg-combobox-bg border-(length:--border-width-combobox) border-combobox-border rounded-combobox',
       'transition-colors duration-200 ease-in-out',
-      'data-[highlighted]:bg-combobox-hover data-[highlighted]:border-combobox-border-hover',
-      'data-[focus]:bg-combobox-focus data-[focus]:border-combobox-border-focus',
-      'data-[disabled]:bg-combobox-disabled data-[disabled]:border-combobox-border-disabled',
-      'data-[validation=error]:border-combobox-danger data-[validation=error]:focus-within:ring-combobox-ring-danger',
-      'data-[validation=success]:border-combobox-success data-[validation=success]:focus-within:ring-combobox-ring-success',
-      'data-[validation=warning]:border-combobox-warning data-[validation=warning]:focus-within:ring-combobox-ring-warning',
+      'hover:bg-combobox-bg-hover hover:border-combobox-border-hover',
+      'data-[focus]:bg-combobox-bg-focus data-[focus]:border-combobox-border-focus',
+      'data-[disabled]:bg-combobox-bg-disabled data-[disabled]:border-combobox-border-disabled',
+      'data-[validation=error]:border-combobox-danger-fg data-[validation=error]:focus-within:ring-combobox-ring-danger',
+      'data-[validation=success]:border-combobox-success-fg data-[validation=success]:focus-within:ring-combobox-ring-success',
+      'data-[validation=warning]:border-combobox-warning-fg data-[validation=warning]:focus-within:ring-combobox-ring-warning',
     ],
     input: [
-      'w-full relative border-none bg-transparent',
+      'w-full relative border-none bg-combobox-input-bg',
       'focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-combobox-input-bg-hover',
       'focus:bg-combobox-input-bg-focused',
-      'py-input-md px-input-md',
       'placeholder:text-combobox-placeholder',
       'data-[disabled]:text-combobox-fg-disabled',
-      'data-[disabled]:bg-combobox-disabled',
+      'data-[disabled]:bg-combobox-bg-disabled',
     ],
-    clearTrigger: ['absolute right-combobox-trigger-right'],
+    clearTrigger: ['absolute right-combobox-clear-right'],
     trigger: [
       'flex items-center justify-center',
-      'px-0',
+      'p-combobox-trigger',
       'transition-transform duration-200',
       'data-[state=open]:rotate-180',
     ],
@@ -51,17 +50,16 @@ const comboboxVariants = tv({
       'border border-combobox-border z-(--z-combobox-content)',
     ],
     item: [
-      'flex items-center px-combobox-item-lg py-combobox-item',
-      'first:pt-combobox-item-lg last:pb-combobox-item-lg',
+      'flex items-center',
       'text-combobox-item-fg',
       'cursor-pointer',
-      'data-[highlighted]:bg-combobox-item-hover',
-      'data-[state=checked]:bg-combobox-item-selected',
+      'data-[highlighted]:bg-combobox-item-bg-hover',
+      'data-[state=checked]:bg-combobox-item-bg-selected',
       'data-[disabled]:text-combobox-fg-disabled data-[disabled]:cursor-not-allowed',
     ],
     helper: [
-      'data-[validation=success]:text-combobox-success',
-      'data-[validation=warning]:text-combobox-warning',
+      'data-[validation=success]:text-combobox-success-fg',
+      'data-[validation=warning]:text-combobox-warning-fg',
     ],
     multiple: [],
   },
@@ -79,6 +77,31 @@ const comboboxVariants = tv({
       ],
     },
   ],
+  variants: {
+    size: {
+      sm: {
+        root: 'gap-combobox-root-sm',
+        item: 'p-combobox-item-sm',
+        input: 'py-combobox-input-sm',
+        content: 'text-combobox-content-sm',
+      },
+      md: {
+        root: 'gap-combobox-root-md',
+        item: 'p-combobox-item-md',
+        input: 'py-combobox-input-md',
+        content: 'text-combobox-content-md',
+      },
+      lg: {
+        root: 'gap-combobox-root-lg',
+        item: 'p-combobox-item-lg',
+        input: 'py-combobox-input-lg',
+        content: 'text-combobox-content-lg',
+      },
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
 })
 
 export type ComboboxItem<T = unknown> = {
@@ -106,7 +129,7 @@ export interface ComboboxProps<T = unknown>
   validationState?: 'normal' | 'error' | 'success' | 'warning'
   error?: string
   helper?: string
-  size?: 'sm' | 'md' | 'lg'
+  noResultsMessage?: string
   clearable?: boolean
   selectionBehavior?: 'replace' | 'clear' | 'preserve'
   closeOnSelect?: boolean
@@ -138,6 +161,7 @@ export function Combobox<T = unknown>({
   validationState = 'normal',
   error,
   helper,
+  noResultsMessage = 'No results found for "{inputValue}"',
   clearable = true,
   selectionBehavior = 'replace',
   closeOnSelect = false,
@@ -152,8 +176,12 @@ export function Combobox<T = unknown>({
   const generatedId = useId()
   const uniqueId = id || generatedId
 
+  const [options, setOptions] = useState(items)
+  useEffect(() => {
+    setOptions(items)
+  }, [items])
   const collection = combobox.collection({
-    items: items,
+    items: options,
     itemToString: (item) => item.label,
     itemToValue: (item) => item.value,
     isItemDisabled: (item) => !!item.disabled,
@@ -184,9 +212,14 @@ export function Combobox<T = unknown>({
       onChange?.(selectedValue)
     },
     onInputValueChange: ({ inputValue }) => {
+      const filtered = items.filter((item) =>
+        item.label.toLowerCase().includes(inputValue.toLowerCase())
+      )
+      setOptions(filtered)
       onInputValueChange?.(inputValue)
     },
     onOpenChange: ({ open }) => {
+      setOptions(items)
       onOpenChange?.(open)
     },
   })
@@ -207,12 +240,17 @@ export function Combobox<T = unknown>({
     clearTrigger,
     item: itemSlot,
     helper: helperSlot,
-  } = comboboxVariants()
+  } = comboboxVariants({ size })
 
   return (
     <div className={root()}>
       {label && (
-        <Label className={labelStyles()} size={size} {...api.getLabelProps()}>
+        <Label
+          className={labelStyles()}
+          size={size}
+          required={required}
+          {...api.getLabelProps()}
+        >
           {label}
         </Label>
       )}
@@ -253,9 +291,9 @@ export function Combobox<T = unknown>({
 
       <Portal>
         <div {...api.getPositionerProps()} className={positioner()}>
-          {api.open && items.length > 0 && (
+          {api.open && options.length > 0 && (
             <ul {...api.getContentProps()} className={content()}>
-              {items.map((item) => (
+              {options.map((item) => (
                 <li
                   key={item.value}
                   {...api.getItemProps({ item })}
@@ -266,9 +304,9 @@ export function Combobox<T = unknown>({
               ))}
             </ul>
           )}
-          {api.open && api.inputValue && items.length === 0 && (
+          {api.open && api.inputValue && options.length === 0 && (
             <div className={content()}>
-              No results found for "{api.inputValue}"
+              {noResultsMessage.replace('{inputValue}', api.inputValue)}
             </div>
           )}
         </div>
