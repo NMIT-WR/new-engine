@@ -102,6 +102,7 @@ interface ColorSelectProps {
   radius?: 'sm' | 'md' | 'lg' | 'full'
   disabled?: boolean
   onColorClick?: (color: string) => void
+  selectionMode?: 'single' | 'multiple'
 }
 
 export const ColorSelect = ({
@@ -111,6 +112,7 @@ export const ColorSelect = ({
   radius = 'full',
   disabled,
   onColorClick,
+  selectionMode = 'single',
 }: ColorSelectProps) => {
   const {
     group,
@@ -123,16 +125,20 @@ export const ColorSelect = ({
     countText,
   } = colorSelectVariants({ layout, size, radius, disabled })
   return (
-    <div className={group()}>
+    <div
+      className={group()}
+      role={selectionMode === 'single' ? 'radiogroup' : 'group'}
+    >
       {colors.map((colorItem) => (
         <div className={cell()} key={colorItem.id || colorItem.color}>
           <Button
             theme="borderless"
-            className={atom()}
+            className={`${atom()} ${colorItem.disabled ? 'select-disabled' : ''}`}
             disabled={colorItem.disabled || disabled}
             onClick={() => onColorClick?.(colorItem.color)}
-            aria-label={`Select color ${colorItem.color}`}
-            aria-checked={colorItem.selected}
+            role={selectionMode === 'single' ? 'radio' : 'checkbox'}
+            aria-label={`Select color ${colorItem.label ?? colorItem.color}`}
+            aria-checked={!!colorItem.selected}
             data-selected={colorItem.selected || false}
           >
             <span
@@ -147,12 +153,12 @@ export const ColorSelect = ({
               data-selected={colorItem.selected || false}
             />
           </Button>
-          {(colorItem.label || colorItem.count) && (
+          {(colorItem.label != null || colorItem.count != null) && (
             <div className={labelContainer()}>
               {colorItem.label && (
                 <span className={labelText()}>{colorItem.label}</span>
               )}
-              {colorItem.count && (
+              {colorItem.count != null && (
                 <span className={countText()}>({colorItem.count})</span>
               )}
             </div>
