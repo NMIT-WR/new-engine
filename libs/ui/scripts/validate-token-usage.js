@@ -147,6 +147,8 @@ const PREFIX_TO_NAMESPACES = (() => {
   return map
 })()
 
+const CLASS_STRING_REGEX = /\S+/g
+
 /**
  * Extract Tailwind classes from TypeScript/JSX content
  */
@@ -157,7 +159,9 @@ function extractTailwindClasses(content) {
   const classNameMatches = content.matchAll(/className\s*=\s*["']([^"']+)["']/g)
   for (const match of classNameMatches) {
     const classString = match[1]
-    classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
+    for (const cls of classString.match(CLASS_STRING_REGEX) || []) {
+      classes.add(cls.trim())
+    }
   }
 
   // Match className arrays: className: ['class1', 'class2'] or className={['class1', 'class2']}
@@ -170,7 +174,9 @@ function extractTailwindClasses(content) {
     const stringMatches = arrayContent.matchAll(/['"`]([^'"`]+)['"`]/g)
     for (const stringMatch of stringMatches) {
       const classString = stringMatch[1]
-      classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
+      for (const cls of classString.match(CLASS_STRING_REGEX) || []) {
+        classes.add(cls.trim())
+      }
     }
   }
 
@@ -180,9 +186,11 @@ function extractTailwindClasses(content) {
     const classString = match[1]
     // Extract static classes, ignore interpolations
     const staticParts = classString.split(/\$\{[^}]+\}/)
-    staticParts.forEach((part) => {
-      part.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
-    })
+    for (const part of staticParts) {
+      for (const cls of part.match(CLASS_STRING_REGEX) || []) {
+        classes.add(cls.trim())
+      }
+    }
   }
 
   // Match tailwind-variants tv() configurations
@@ -194,7 +202,9 @@ function extractTailwindClasses(content) {
     const slotMatches = tvConfig.matchAll(/\[\s*['"`]([^'"`]+)['"`]/g)
     for (const slotMatch of slotMatches) {
       const classString = slotMatch[1]
-      classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
+      for (const cls of classString.match(CLASS_STRING_REGEX) || []) {
+        classes.add(cls.trim())
+      }
     }
 
     // Extract from variant values
@@ -203,7 +213,9 @@ function extractTailwindClasses(content) {
     )
     for (const variantMatch of variantMatches) {
       const classString = variantMatch[1]
-      classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
+      for (const cls of classString.match(CLASS_STRING_REGEX) || []) {
+        classes.add(cls.trim())
+      }
     }
   }
 
@@ -214,7 +226,9 @@ function extractTailwindClasses(content) {
     const stringMatches = args.matchAll(/['"`]([^'"`]+)['"`]/g)
     for (const stringMatch of stringMatches) {
       const classString = stringMatch[1]
-      classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
+      for (const cls of classString.match(CLASS_STRING_REGEX) || []) {
+        classes.add(cls.trim())
+      }
     }
   }
 
@@ -226,7 +240,9 @@ function extractTailwindClasses(content) {
     const classString = match[1]
     // Only extract if it looks like CSS classes
     if (/^[a-z-\s:[\]()]+$/i.test(classString)) {
-      classString.split(/\s+/).forEach((cls) => cls && classes.add(cls.trim()))
+      for (const cls of classString.match(CLASS_STRING_REGEX) || []) {
+        classes.add(cls.trim())
+      }
     }
   }
 
