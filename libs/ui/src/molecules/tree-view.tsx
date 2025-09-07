@@ -25,28 +25,31 @@ const treeVariants = tv({
     label: ['text-tree-label-fg font-tree-label'],
     tree: [
       'outline-none bg-tree-bg',
-
-      'focus-visible:ring-2 focus-visible:ring-tree-node-focus focus-visible:ring-offset-2',
+      'focus-visible:ring-2 focus-visible:ring-tree-node-ring focus-visible:ring-offset-2',
     ],
     branch: [
       'data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none',
     ],
-    branchControl: [],
+    branchTrigger: [
+      'flex items-center justify-between',
+      'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
+      'cursor-pointer rounded-tree-node',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-ring',
+      'data-[selected]:bg-tree-node-bg-selected data-[selected]:text-tree-fg-selected data-[selected]:font-tree-selected',
+    ],
+    branchControl: ['flex-1'],
     branchText: ['flex-1 text-tree-size'],
     branchIndicator: [
-      'data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-120',
+      'data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-125',
     ],
     branchContent: ['relative', 'data-[state=closed]:hidden'],
     branchIndentGuide: [
-      'absolute top-0 bottom-0 left-1',
-      'w-tree-indent bg-tree-indent',
+      'absolute top-0 bottom-0 start-1',
+      'w-tree-indent bg-tree-indent-bg',
       'opacity-tree-indent',
     ],
     leaf: [],
-    nodeIcon: [
-      //"flex-shrink-0",
-      'text-tree-icon hover:text-tree-icon-hover',
-    ],
+    nodeIcon: ['text-tree-icon hover:text-tree-icon-hover'],
   },
   compoundSlots: [
     {
@@ -63,11 +66,9 @@ const treeVariants = tv({
       slots: ['branchControl', 'leaf'],
       class: [
         'flex items-center gap-tree-icon p-tree-node',
-        'cursor-pointer rounded-tree-node',
-        'hover:bg-tree-node-hover hover:text-tree-fg-hover hover:font-tree-selected',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-focus',
-        'data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected data-[selected]:font-tree-selected',
-        'data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent',
+        'cursor-pointer',
+        //   'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
+        'data-[disabled]:cursor-not-allowed',
       ],
     },
   ],
@@ -99,6 +100,7 @@ function TreeNode({
     branchIndentGuide,
     leaf,
     nodeIcon,
+    branchTrigger,
   } = treeVariants()
 
   const handleToggle = (id: string) => {
@@ -112,7 +114,7 @@ function TreeNode({
   if (nodeState.isBranch) {
     return (
       <div className={branch()} {...api.getBranchProps(nodeProps)}>
-        <div className="flex items-center">
+        <div className={branchTrigger()}>
           <div
             className={branchControl()}
             {...api.getBranchControlProps(nodeProps)}
