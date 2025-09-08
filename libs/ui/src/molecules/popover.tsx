@@ -11,24 +11,19 @@ const popoverVariants = tv({
       'p-popover-trigger',
       'disabled:pointer-events-none',
       'disabled:opacity-disabled',
-      'data-[state=open]:ring-2',
-      'data-[state=open]:ring-offset-2',
-      'data-[state=open]:ring-popover',
     ],
-    positioner: ['absolute', 'z-50'],
+    positioner: ['absolute'],
     content: [
       'bg-popover-bg',
       'text-popover-fg',
       'rounded-popover',
-      'border',
-      'border-popover-border',
       'outline-none',
+      'z-50',
     ],
-    arrow: ['relative'],
+    arrow: '',
     title: ['font-popover-title', 'leading-none', 'mb-popover-title-mb'],
     description: [
-      'text-popover-description',
-      'text-popover-description',
+      'text-popover-description-fg text-popover-description-size',
       'leading-normal',
     ],
   },
@@ -36,6 +31,12 @@ const popoverVariants = tv({
     shadow: {
       true: {
         content: 'shadow-popover',
+      },
+    },
+    border: {
+      true: {
+        content: 'border border-popover-border',
+        arrow: 'border-popover-border border-t border-l',
       },
     },
     size: {
@@ -70,12 +71,10 @@ export interface PopoverProps
   flip?: popover.PositioningOptions['flip']
   slide?: popover.PositioningOptions['slide']
   sameWidth?: popover.PositioningOptions['sameWidth']
-  fitViewport?: popover.PositioningOptions['fitViewport']
-  all?: popover.PositioningOptions
+  overflowPadding?: popover.PositioningOptions['overflowPadding']
   showArrow?: boolean
   title?: ReactNode
   description?: ReactNode
-  showCloseButton?: boolean
   triggerRef?: Ref<HTMLButtonElement>
   contentRef?: Ref<HTMLDivElement>
   triggerClassName?: string
@@ -91,6 +90,10 @@ export function Popover({
   placement = 'bottom',
   offset = { mainAxis: 8, crossAxis: 0 },
   gutter = 8,
+  sameWidth = false,
+  slide = true,
+  flip = true,
+  overflowPadding = 8,
   modal = false,
   closeOnInteractOutside = true,
   closeOnEscape = true,
@@ -105,6 +108,9 @@ export function Popover({
   triggerClassName,
   contentClassName,
   size = 'md',
+  shadow = true,
+  border = true,
+  onPointerDownOutside,
 }: PopoverProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -118,6 +124,10 @@ export function Popover({
       placement,
       offset,
       gutter,
+      sameWidth,
+      slide,
+      flip,
+      overflowPadding,
     },
     // Behavior
     modal,
@@ -127,6 +137,7 @@ export function Popover({
     portalled,
     // Callbacks
     onOpenChange,
+    onPointerDownOutside,
   })
 
   const api = popover.connect(service as popover.Service, normalizeProps)
@@ -138,7 +149,7 @@ export function Popover({
     arrow,
     title: titleStyles,
     description: descriptionStyles,
-  } = popoverVariants({ size })
+  } = popoverVariants({ size, shadow, border })
 
   const renderContent = () => (
     <div {...api.getPositionerProps()} className={positioner()}>
@@ -150,8 +161,8 @@ export function Popover({
         data-state={api.open ? 'open' : 'closed'}
       >
         {showArrow && (
-          <div {...api.getArrowProps()} className={arrow()}>
-            <div {...api.getArrowTipProps()} />
+          <div {...api.getArrowProps()}>
+            <div {...api.getArrowTipProps()} className={arrow()} />
           </div>
         )}
 
