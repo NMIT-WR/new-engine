@@ -43,11 +43,6 @@ const meta: Meta<typeof Dialog> = {
       control: { type: 'boolean' },
       description: 'Whether to trap focus inside dialog',
     },
-    modal: {
-      control: { type: 'boolean' },
-      description:
-        'Whether dialog is modal (blocks interaction with background)',
-    },
     hideCloseButton: {
       control: { type: 'boolean' },
       description: 'Whether to hide the close button',
@@ -130,7 +125,6 @@ export const AllVariants: Story = {
             open={modalOpen}
             onOpenChange={({ open }) => setModalOpen(open)}
             customTrigger
-            modal={true}
             title="Modal Dialog"
             description="This is a modal dialog that blocks interaction with background content."
             actions={

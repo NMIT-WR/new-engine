@@ -57,7 +57,6 @@ export interface DialogProps extends VariantProps<typeof dialogVariants> {
   closeOnInteractOutside?: boolean
   preventScroll?: boolean
   trapFocus?: boolean
-  modal?: boolean
   role?: 'dialog' | 'alertdialog'
   id?: string
   customTrigger?: boolean
@@ -81,7 +80,6 @@ export function Dialog({
   closeOnInteractOutside = behavior === 'modal' && true,
   preventScroll = behavior === 'modal' && true,
   trapFocus = behavior === 'modal' && true,
-  modal = behavior === 'modal' && true,
   customTrigger = false,
   triggerText = 'Open',
   title,
@@ -97,7 +95,6 @@ export function Dialog({
     id: uniqueId,
     onOpenChange,
     role,
-    modal,
     closeOnEscape,
     closeOnInteractOutside,
     preventScroll,
