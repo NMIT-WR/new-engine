@@ -6,8 +6,10 @@ import { Button } from '../atoms/button'
 
 const dialogVariants = tv({
   slots: {
-    backdrop: ['fixed inset-0 z-10 bg-dialog-backdrop-bg'],
-    positioner: ['fixed inset-0 z-20 flex items-center justify-center'],
+    backdrop: ['fixed inset-0 z-(--z-dialog-backdrop)'],
+    positioner: [
+      'fixed inset-0 z-(--z-dialog-positioner) flex items-center justify-center',
+    ],
     content: [
       'relative flex flex-col p-dialog-content gap-dialog-content',
       'bg-dialog-content-bg text-dialog-content-fg',
@@ -20,12 +22,29 @@ const dialogVariants = tv({
     description: ['text-dialog-description-size text-dialog-description-fg'],
     trigger: [],
     closeTrigger: [
-      'absolute top-250 right-250',
+      'absolute top-dialog-close-trigger-offset right-dialog-close-trigger-offset',
       'flex items-center justify-center',
       'p-dialog-close-trigger-padding rounded-dialog-close-trigger',
       'text-dialog-close-trigger-fg',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dialog-ring focus-visible:ring-offset-dialog-ring-offset',
     ],
+    actions:
+      'mt-auto flex shrink-0 justify-end gap-dialog-actions pt-dialog-actions',
+  },
+  variants: {
+    behavior: {
+      modal: {
+        backdrop: 'bg-dialog-backdrop-bg',
+      },
+      modeless: {
+        backdrop: 'bg-transparent',
+        positioner: 'pointer-events-none',
+        content: 'pointer-events-auto',
+      },
+    },
+  },
+  defaultVariants: {
+    behavior: 'modal',
   },
 })
 
@@ -38,9 +57,7 @@ export interface DialogProps extends VariantProps<typeof dialogVariants> {
   closeOnInteractOutside?: boolean
   preventScroll?: boolean
   trapFocus?: boolean
-  modal?: boolean
   role?: 'dialog' | 'alertdialog'
-
   id?: string
   customTrigger?: boolean
   triggerText?: string
@@ -58,11 +75,11 @@ export function Dialog({
   initialFocusEl,
   finalFocusEl,
   role = 'dialog',
+  behavior = 'modal',
   closeOnEscape = true,
-  closeOnInteractOutside = true,
-  preventScroll = true,
-  trapFocus = true,
-  modal = true,
+  closeOnInteractOutside = behavior === 'modal' && true,
+  preventScroll = behavior === 'modal' && true,
+  trapFocus = behavior === 'modal' && true,
   customTrigger = false,
   triggerText = 'Open',
   title,
@@ -76,10 +93,8 @@ export function Dialog({
 
   const service = useMachine(dialog.machine, {
     id: uniqueId,
-
     onOpenChange,
     role,
-    modal,
     closeOnEscape,
     closeOnInteractOutside,
     preventScroll,
@@ -99,7 +114,8 @@ export function Dialog({
     title: titleSlot,
     description: descriptionSlot,
     closeTrigger,
-  } = dialogVariants()
+    actions: actionsSlot,
+  } = dialogVariants({ behavior })
 
   return (
     <>
@@ -142,11 +158,7 @@ export function Dialog({
               )}
               <div className="flex-grow overflow-y-auto">{children}</div>
 
-              {actions && (
-                <div className="mt-auto flex shrink-0 justify-end gap-2 pt-4">
-                  {actions}
-                </div>
-              )}
+              {actions && <div className={actionsSlot()}>{actions}</div>}
             </div>
           </div>
         </Portal>
