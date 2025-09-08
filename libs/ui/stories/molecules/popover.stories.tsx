@@ -15,7 +15,7 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     placement: {
-      control: 'select',
+      control: 'inline-radio',
       options: [
         'top',
         'bottom',
@@ -32,7 +32,7 @@ const meta = {
       ],
     },
     size: {
-      control: 'select',
+      control: 'inline-radio',
       options: ['sm', 'md', 'lg'],
     },
   },
@@ -43,6 +43,7 @@ type Story = StoryObj<typeof meta>
 
 export const Basic: Story = {
   args: {
+    id: 'basic-popover',
     trigger: 'Click me',
     children: (
       <div className="w-64">
@@ -57,6 +58,7 @@ export const Basic: Story = {
 
 export const WithTitleAndDescription: Story = {
   args: {
+    id: 'title-description-popover',
     trigger: 'Open popover',
     title: 'Popover Title',
     description: 'This is a helpful description that provides more context.',
@@ -76,6 +78,7 @@ export const Variants: Story = {
         <h3 className="text-sm font-semibold mb-4">Sizes</h3>
         <div className="flex gap-4">
           <Popover
+            id="small-popover"
             trigger="Small"
             size="sm"
             title="Small"
@@ -83,8 +86,9 @@ export const Variants: Story = {
           >
             <p className="text-xs">Small content area</p>
           </Popover>
-          
+
           <Popover
+            id="medium-popover"
             trigger="Medium"
             size="md"
             title="Medium"
@@ -92,8 +96,9 @@ export const Variants: Story = {
           >
             <p>Standard content area</p>
           </Popover>
-          
+
           <Popover
+            id="large-popover"
             trigger="Large"
             size="lg"
             title="Large"
@@ -109,6 +114,7 @@ export const Variants: Story = {
         <h3 className="text-sm font-semibold mb-4">Visual Styles</h3>
         <div className="flex gap-4">
           <Popover
+            id="border-shadow-popover"
             trigger="Default"
             border={true}
             shadow={true}
@@ -116,8 +122,9 @@ export const Variants: Story = {
           >
             <p>Border + Shadow (default)</p>
           </Popover>
-          
+
           <Popover
+            id="border-only-popover"
             trigger="border-only"
             border={true}
             shadow={false}
@@ -125,8 +132,9 @@ export const Variants: Story = {
           >
             <p>Border only, no shadow</p>
           </Popover>
-          
+
           <Popover
+            id="shadow-only-popover"
             trigger="shadow-only"
             border={false}
             shadow={true}
@@ -134,8 +142,9 @@ export const Variants: Story = {
           >
             <p>Shadow only, no border</p>
           </Popover>
-          
+
           <Popover
+            id="minimal-popover"
             trigger="Minimal"
             border={false}
             shadow={false}
@@ -151,6 +160,7 @@ export const Variants: Story = {
         <h3 className="text-sm font-semibold mb-4">Arrow Options</h3>
         <div className="flex gap-4">
           <Popover
+            id="no-arrow-popover"
             trigger="No Arrow"
             showArrow={false}
             title="Clean Look"
@@ -179,6 +189,7 @@ export const Controlled: Story = {
         </div>
 
         <Popover
+          id="controlled-popover"
           trigger="Controlled Popover"
           open={open}
           onOpenChange={setOpen}
@@ -204,6 +215,7 @@ export const Controlled: Story = {
 
 export const WithForm: Story = {
   args: {
+    id: 'form-popover',
     trigger: 'Edit Profile',
     title: 'Edit Profile',
     children: (
@@ -241,6 +253,7 @@ export const CustomTrigger: Story = {
   render: () => (
     <div className="flex gap-4">
       <Popover
+        id="custom-trigger-popover"
         trigger={
           <div className="flex items-center gap-2">
             <Icon icon="token-icon-info" size="sm" />
@@ -255,6 +268,7 @@ export const CustomTrigger: Story = {
       </Popover>
 
       <Popover
+        id="custom-area-trigger-popover"
         trigger={
           <div className="rounded-lg border-2 border-border border-dashed p-2">
             <p className="text-muted text-sm">Click this custom area</p>
@@ -273,6 +287,7 @@ export const CustomTrigger: Story = {
 
 export const Modal: Story = {
   args: {
+    id: 'modal-popover',
     trigger: 'Open Modal Popover',
     modal: true,
     title: 'Modal Popover',
@@ -307,6 +322,7 @@ export const AsyncContent: Story = {
 
     return (
       <Popover
+        id="async-popover"
         trigger="Load Async Content"
         onOpenChange={(open) => {
           if (open) {
@@ -347,6 +363,7 @@ export const PositioningBehaviors: Story = {
   render: () => (
     <div className="grid gap-8 p-8">
         <Popover
+          id="flip-demo-popover"
           trigger="Flip Demo"
           flip={true}
           placement="left"
@@ -357,6 +374,7 @@ export const PositioningBehaviors: Story = {
         </Popover>
 
         <Popover
+          id="slide-demo-popover"
           trigger="Slide Demo"
           slide={true}
           placement="bottom"
@@ -373,14 +391,16 @@ export const SameWidthDemo: Story = {
   render: () => (
     <div className="flex gap-8 items-start">
       <Popover
+        id="short-trigger-popover"
         trigger="Medium Length Trigger"
         sameWidth={true}
         title="Same Width"
       >
         <p className="text-sm">This popover exactly matches the trigger button width.</p>
       </Popover>
-      
+
       <Popover
+        id="long-trigger-popover"
         trigger="Very Long Trigger Button Text Here"
         sameWidth={true}
         title="Same Width"
@@ -396,6 +416,7 @@ export const EdgePositioning: Story = {
     <div className="relative w-full h-[600px] border border-dashed border-border">
       <div className="absolute top-2 left-2">
         <Popover
+          id="smart-popover"
           trigger="Top Left"
           placement="bottom-start"
         >
@@ -404,48 +425,49 @@ export const EdgePositioning: Story = {
           </div>
         </Popover>
       </div>
-      
+
       <div className="absolute top-2 right-2">
         <Popover
+          id="adjust-popover"
           trigger="Top Right"
           placement="bottom-end"
           flip={true}
-          fitViewport={true}
         >
           <div className="w-64">
             <p>Adjusts to avoid viewport overflow.</p>
           </div>
         </Popover>
       </div>
-      
+
       <div className="absolute bottom-2 left-2">
         <Popover
+          id="flip-popover"
           trigger="Bottom Left"
           placement="top-start"
           flip={true}
-          fitViewport={true}
         >
           <div className="w-64">
             <p>Flips upward when at bottom.</p>
           </div>
         </Popover>
       </div>
-      
+
       <div className="absolute bottom-2 right-2">
         <Popover
+          id="corner-popover"
           trigger="Bottom Right"
           placement="top-end"
           flip={true}
-          fitViewport={true}
         >
           <div className="w-64">
             <p>Smart positioning at corner.</p>
           </div>
         </Popover>
       </div>
-      
+
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <Popover
+          id="center-popover"
           trigger="Center"
           placement="bottom"
         >
@@ -462,6 +484,7 @@ export const OverflowPaddingDemo: Story = {
   render: () => (
     <div className="flex gap-8">
       <Popover
+        id="8px-padding-popover"
         trigger="Default Padding (8px)"
         overflowPadding={8}
         placement="bottom"
@@ -469,8 +492,9 @@ export const OverflowPaddingDemo: Story = {
       >
         <p>8px minimum gap from viewport edges.</p>
       </Popover>
-      
+
       <Popover
+        id="24px-padding-popover"
         trigger="Large Padding (24px)"
         overflowPadding={24}
         placement="bottom"
@@ -478,8 +502,9 @@ export const OverflowPaddingDemo: Story = {
       >
         <p>24px minimum gap from viewport edges.</p>
       </Popover>
-      
+
       <Popover
+        id="0px-padding-popover"
         trigger="No Padding (0px)"
         overflowPadding={0}
         placement="bottom"
@@ -493,11 +518,12 @@ export const OverflowPaddingDemo: Story = {
 
 export const NestedPopovers: Story = {
   render: () => (
-    <Popover trigger="Level 1" title="First Level" placement="bottom">
+    <Popover id="level1-popover" trigger="Level 1" title="First Level" placement="bottom">
       <div className="mt-4 space-y-4">
         <p>This is the first level popover.</p>
 
         <Popover
+          id="level2-popover"
           trigger="Open Level 2"
           title="Second Level"
           placement="right"
@@ -507,6 +533,7 @@ export const NestedPopovers: Story = {
             <p className="text-sm">This is nested inside the first popover.</p>
 
             <Popover
+              id="level3-popover"
               trigger="Open Level 3"
               title="Third Level"
               placement="right"
