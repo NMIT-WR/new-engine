@@ -88,6 +88,29 @@ const meta: Meta<typeof Slider> = {
       description:
         'Error message displayed below the slider (takes precedence over helper text).',
     },
+    error: {
+      control: 'boolean',
+      description: 'Whether the slider is in an error state.',
+    },
+    origin: {
+      control: 'radio',
+      options: ['start', 'center', 'end'],
+      description: 'Origin point for the slider range.',
+    },
+    thumbAlignment: {
+      control: 'radio',
+      options: ['center', 'contain'],
+      description: 'Alignment of slider thumbs relative to the track.',
+    },
+    dir: {
+      control: 'radio',
+      options: ['ltr', 'rtl'],
+      description: 'Text direction of the slider.',
+    },
+    formatRangeText: {
+      control: false,
+      description: 'Function to format the range text display.',
+    },
     onChange: {
       action: 'changed',
       description: 'Callback when the value changes.',

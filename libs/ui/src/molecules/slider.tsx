@@ -201,7 +201,7 @@ export function Slider({
   })
 
   return (
-    <div className={root()} {...api.getRootProps()}>
+    <div className={root({ className })} {...api.getRootProps()}>
       {(label || showValueText) && (
         <div className={header()}>
           <Label className={labelSlot()} {...api.getLabelProps()}>
@@ -226,7 +226,7 @@ export function Slider({
 
       <div className={control()} {...api.getControlProps()}>
         <div
-          className={track({ size })}
+          className={track()}
           {...api.getTrackProps()}
           data-invalid={error}
         >
@@ -238,8 +238,7 @@ export function Slider({
           {showMarkers && (
             <div {...api.getMarkerGroupProps()} className={markerGroup()}>
               {Array.from({ length: markerCount }).map((_, index) => {
-                const markerValue =
-                  min + ((max - min) / (markerCount - 1)) * index
+                const markerValue = markerCount === 1 ? min : min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
                     key={slugify(`marker-${markerValue}`)}
@@ -271,7 +270,7 @@ export function Slider({
         {api.value.map((_, index) => (
           <div
             key={index}
-            className={thumb({ size })}
+            className={thumb()}
             {...api.getThumbProps({ index })}
           >
             <input {...api.getHiddenInputProps({ index })} />
