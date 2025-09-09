@@ -1,3 +1,4 @@
+import type { ElementType, ReactElement } from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
 import { Icon, type IconType } from '../atoms/icon'
 import { Link } from '../atoms/link'
@@ -86,7 +87,7 @@ function BreadcrumbItem({
   separator = 'token-icon-breadcrumb-separator',
   isCurrentPage,
   lastItem,
-  linkComponent,
+  linkAs,
 }: {
   label: string
   href?: string
@@ -94,7 +95,7 @@ function BreadcrumbItem({
   separator?: IconType
   lastItem: boolean
   isCurrentPage?: boolean
-  linkComponent?: React.ElementType
+  linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }) {
   const {
     item,
@@ -110,7 +111,7 @@ function BreadcrumbItem({
           {label}
         </span>
       ) : (
-        <Link as={linkComponent} href={href || '#'} className={link()}>
+        <Link as={linkAs as ElementType} href={href || '#'} className={link()}>
           {label}
         </Link>
       )}
@@ -144,7 +145,7 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   maxItems?: number
   className?: string
   'aria-label'?: string
-  linkComponent?: React.ElementType
+  linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }
 
 // === COMPONENT ===
@@ -154,7 +155,7 @@ export function Breadcrumb({
   size = 'md',
   className,
   'aria-label': ariaLabel = 'breadcrumb',
-  linkComponent,
+  linkAs,
   ...props
 }: BreadcrumbProps) {
   const { root, list } = breadcrumbsVariants({ size })
@@ -182,7 +183,7 @@ export function Breadcrumb({
                 icon={item.icon}
                 separator={item.separator}
                 lastItem={index === displayItems.length - 1}
-                linkComponent={linkComponent}
+                linkAs={linkAs}
                 isCurrentPage={
                   item.isCurrent || index === displayItems.length - 1
                 }
