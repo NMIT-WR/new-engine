@@ -149,6 +149,9 @@ export function ProductCard<T extends ElementType = typeof Image>(
     onMouseLeave,
     style,
     id,
+    tabIndex,
+    role,
+    'aria-label': ariaLabel,
     // Everything else goes to image
     ...imageProps
   } = props
@@ -160,6 +163,9 @@ export function ProductCard<T extends ElementType = typeof Image>(
     onMouseLeave,
     style,
     id,
+    tabIndex,
+    role,
+    'aria-label': ariaLabel,
   }
   const productCardId = useId()
 
@@ -184,13 +190,13 @@ export function ProductCard<T extends ElementType = typeof Image>(
     ...imageProps, // Image component props first
     src: imageProps.src || imageSrc, // Allow override
     alt: imageProps.alt || name, // Allow override
-    className: imageSlot({ layout }), // Our className last
+    className: imageSlot({ layout, className: imageProps.className }), // Our className last
   }
 
   return (
     <div className={base({ className, layout })} {...divProps}>
       {/* Image always rendered first for semantics, position controlled by CSS */}
-      <ImageComponent {...finalImageProps} />
+      {finalImageProps.src && <ImageComponent {...finalImageProps} />}
 
       {/* Elements with grid positioning based on layout */}
       <h3 className={nameSlot({ layout })}>{name}</h3>

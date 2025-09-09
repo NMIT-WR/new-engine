@@ -26,9 +26,6 @@
   @apply icon-[mdi-light--information];
 }
 
-@utility token-icon-cart {
-  @apply icon-[mdi-light--cart];
-}
 
 @utility token-icon-close {
   @apply icon-[mdi--close];
@@ -51,9 +48,6 @@
   @apply token-icon-info;
 }
 
-@utility token-icon-cart-primary {
-  @apply token-icon-cart;
-}
 
 /* Navigation icons */
 @utility token-icon-chevron-down {
@@ -110,8 +104,9 @@
 }
 
 /* product card icons */
+
 @utility token-icon-cart {
-  @apply icon-[mdi--cart-outline];
+  @apply icon-[mdi-light--cart];
 }
 
 @utility token-icon-eye {

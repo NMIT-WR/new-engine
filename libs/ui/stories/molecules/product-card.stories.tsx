@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
 import { ProductCard } from '../../src/molecules/product-card'
