@@ -59,6 +59,7 @@ export function LinkButton<T extends ElementType = 'a'>({
 }: LinkButtonProps<T>) {
   return (
     <Link
+      ref={ref}
       as={as as ElementType}
       className={linkButton({
         variant,

@@ -35,7 +35,7 @@ export function Link<T extends ElementType = 'a'>({
   const Component = (as || 'a') as ElementType
 
   const externalProps =
-    external && !as ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+    external && (!as || as === 'a') ? { target: '_blank', rel: 'noopener noreferrer' } : {}
 
   return (
     <Component

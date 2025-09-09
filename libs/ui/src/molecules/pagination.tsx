@@ -141,7 +141,7 @@ export function Pagination({
   })
 
   return (
-    <nav className={base()} {...api.getRootProps()} {...props}>
+    <nav className={base({ className })} {...api.getRootProps()} {...props}>
       <ul className={list()} aria-label="Pagination">
         {showPrevNext && (
           <li className={item()}>
