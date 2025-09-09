@@ -34,6 +34,10 @@ module.exports = defineConfig({
     },
     plugins: [
         {
+            resolve: "@medusajs/draft-order",
+            options: {},
+        },
+        {
             resolve: '@rokmohar/medusa-plugin-meilisearch',
             options: {
                 config: {
@@ -42,6 +46,9 @@ module.exports = defineConfig({
                 },
                 settings: {
                     products: {
+                        type: 'products',
+                        enabled: true,
+                        fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail'],
                         indexSettings: {
                             searchableAttributes: ['title', 'description', 'variant_sku'],
                             displayedAttributes: [
@@ -52,6 +59,22 @@ module.exports = defineConfig({
                                 'thumbnail',
                                 'handle',
                             ],
+                            filterableAttributes: ['id', 'handle', 'title'],
+                        },
+                        primaryKey: 'id',
+                    },
+                    categories: {
+                        type: 'categories',
+                        enabled: true,
+                        fields: ['id', 'description', 'handle'],
+                        indexSettings: {
+                            searchableAttributes: ['description'],
+                            displayedAttributes: [
+                                'id',
+                                'description',
+                                'handle',
+                            ],
+                            filterableAttributes: ['id', 'handle', 'description'],
                         },
                         primaryKey: 'id',
                     },

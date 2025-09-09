@@ -11,6 +11,8 @@ install:
 install-fix-lock:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
     docker run -v .:/var/www pnpm-env pnpm install --fix-lockfile
+update-medusa:
+	docker exec wr_medusa_be pnpm --filter medusa-be update @medusajs*
 update:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
     docker run -v .:/var/www pnpm-env pnpm update --latest
