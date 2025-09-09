@@ -17,7 +17,7 @@
   --color-tabs-trigger-selected: var(--color-tabs-active);
   --color-tabs-trigger-selected-bg: var(--color-tabs-active);
 
-  --color-tabs-trigger-hover: oklch(
+  --color-tabs-trigger-bg-hover: oklch(
     from var(--color-tabs-bg) calc(l - var(--surface-increment) * 2) c h
   );
 

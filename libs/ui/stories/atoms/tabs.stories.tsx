@@ -70,7 +70,7 @@ const baseItems = [
     label: 'Tab Two',
     content: (
       <div>
-        <h3 className="mb-2 font-semibold text-md">Tab Two Content</h3>
+        <h3 className="mb-2 font-semibold text-lg">Tab Two Content</h3>
         <p>
           Second tab content goes here. You can put forms, images, or any
           components.
@@ -83,7 +83,7 @@ const baseItems = [
     label: 'Tab Three',
     content: (
       <div>
-        <h3 className="mb-2 font-semibold text-md">Tab Three Content</h3>
+        <h3 className="mb-2 font-semibold text-lg">Tab Three Content</h3>
         <p>The third tab can have completely different content structure.</p>
       </div>
     ),
@@ -93,7 +93,7 @@ const baseItems = [
     label: 'Disabled Tab',
     content: (
       <div>
-        <h3 className="mb-2 font-semibold text-md">Disabled Tab</h3>
+        <h3 className="mb-2 font-semibold text-lg">Disabled Tab</h3>
         <p>This content should not be visible as the tab is disabled.</p>
       </div>
     ),
@@ -113,15 +113,15 @@ export const Variants: Story = {
   render: () => (
     <VariantContainer orientation="vertical">
       <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Default</h3>
+        <h3 className="mb-2 font-semibold text-lg">Default</h3>
         <Tabs items={baseItems} variant="default" />
       </div>
       <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Solid</h3>
+        <h3 className="mb-2 font-semibold text-lg">Solid</h3>
         <Tabs items={baseItems} variant="solid" />
       </div>
       <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Line</h3>
+        <h3 className="mb-2 font-semibold text-lg">Line</h3>
         <Tabs items={baseItems} variant="line" />
       </div>
     </VariantContainer>
@@ -132,7 +132,7 @@ export const Sizes: Story = {
   render: () => (
     <VariantContainer orientation="vertical">
       <div className="w-fit max-w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Small</h3>
+        <h3 className="mb-2 font-semibold text-lg">Small</h3>
         <Tabs items={baseItems} size="sm" />
       </div>
       <div className="w-fit max-w-[600px]">
@@ -140,7 +140,7 @@ export const Sizes: Story = {
         <Tabs items={baseItems} size="md" />
       </div>
       <div className="w-fit max-w-[800px]">
-        <h3 className="mb-2 font-semibold text-xl">Large</h3>
+        <h3 className="mb-2 font-semibold text-lg">Large</h3>
         <Tabs items={baseItems} size="lg" />
       </div>
     </VariantContainer>

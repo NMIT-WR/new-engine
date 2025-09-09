@@ -25,7 +25,7 @@ const tabsVariants = tv({
       'text-tabs-trigger-fg',
       'rounded-tabs-trigger',
       'cursor-pointer transition-all duration-200',
-      'hover:bg-tabs-trigger-hover',
+      'hover:bg-tabs-trigger-bg-hover',
       'focus-visible:outline-none focus-visible:ring-2',
       'focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
       'data-[selected]:text-tabs-trigger-selected',
