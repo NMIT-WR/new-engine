@@ -17,26 +17,26 @@
   --color-carousel-trigger-fg: var(--color-fg-dark);
 
   /* Indicator colors */
-  --color-carousel-indicator-active: var(--color-carousel-accent);
+  --color-carousel-indicator-bg-active: var(--color-carousel-accent);
 
   /* === SPACING === */
   /* Root spacing */
-  --spacing-carousel-root-sm: 10rem;
-  --spacing-carousel-root-md: 20rem;
-  --spacing-carousel-root-lg: 40rem;
+  --spacing-carousel-root-sm: var(--container-3xs);
+  --spacing-carousel-root-md: var(--container-sm);
+  --spacing-carousel-root-lg: var(--container-lg);
 
   --spacing-carousel-trigger-top: var(--spacing-100);
   --spacing-carousel-trigger-right: var(--spacing-100);
 
   /* Control spacing */
   --padding-carousel-control: var(--spacing-100);
-  --gap-carousel-control-gap: var(--spacing-200);
+  --gap-carousel-control: var(--spacing-200);
 
   /* Trigger spacing */
   --padding-carousel-trigger: 0 0;
 
   /* Indicator spacing */
-  --gap-carousel-indicator-gap: var(--spacing-100);
+  --gap-carousel-indicator: var(--spacing-100);
   --width-carousel-indicator: var(--spacing-200);
 
   /* === BORDERS & RADIUS === */

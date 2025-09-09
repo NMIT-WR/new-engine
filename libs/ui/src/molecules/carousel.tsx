@@ -23,11 +23,11 @@ type CarouselImageComponent<T extends ElementType = typeof Image> =
 
 const carouselVariants = tv({
   slots: {
-    wrapper: ['relative'],
+    wrapper: ['relative w-fit'],
     root: ['relative overflow-hidden', 'rounded-carousel'],
     control: [
       'flex absolute bottom-0 left-1/2 -translate-x-1/2',
-      'gap-carousel-control-gap p-carousel-control',
+      'gap-carousel-control p-carousel-control',
       'bg-carousel-control-bg',
       'rounded-carousel',
     ],
@@ -44,11 +44,11 @@ const carouselVariants = tv({
     prevTrigger: [],
     nextTrigger: [],
     indicatorGroup: [
-      'flex justify-center w-full items-center gap-carousel-indicator-gap',
+      'flex justify-center w-full items-center gap-carousel-indicator',
     ],
     indicator: [
       'aspect-carousel-indicator w-carousel-indicator',
-      'data-[current]:bg-carousel-indicator-active',
+      'data-[current]:bg-carousel-indicator-bg-active',
     ],
     autoplayIcon: ['icon-[mdi--play]', 'data-[pressed=true]:icon-[mdi--pause]'],
     autoplayTrigger: [
@@ -242,7 +242,7 @@ export function Carousel<T extends ElementType = typeof Image>({
         <div className={slideGroup()} {...api.getItemGroupProps()}>
           {slides.map((slide, index) => (
             <div
-              key={index}
+              key={slide.id}
               className={slideSlot()}
               {...api.getItemProps({ index })}
             >
