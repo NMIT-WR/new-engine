@@ -195,8 +195,9 @@ export function Carousel<T extends ElementType = typeof Image>({
   onPageChange,
   ...props
 }: CarouselProps<T>) {
+  const fallbackId = useId()
   const service = useMachine(carousel.machine, {
-    id: useId(),
+    id: id ?? fallbackId,
     slideCount,
     autoplay,
     orientation,
