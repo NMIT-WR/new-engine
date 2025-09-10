@@ -248,7 +248,7 @@ export const SelectionModes: Story = {
         />
       </div>
       <div>
-        <h3 className="mb-4 font-medium text-sm">Multiple Selection</h3>
+        <h3 className="mb-4 font-medium text-sm">Multiple Selection (ctrl + click)</h3>
         <TreeView
           id=""
           data={organizationData}
@@ -471,6 +471,147 @@ export const TypeaheadDebugDemo: Story = {
 }
 
 // Test story pro ověření správného chování expand/collapse a selection
+export const SelectionBehaviorTest: Story = {
+  render: () => {
+    const [selectedNodes, setSelectedNodes] = useState<Record<string, string[]>>({
+      all: [],
+      leafOnly: [],
+      custom: []
+    })
+
+    const testData: TreeNode[] = [
+      {
+        id: 'folder1',
+        name: 'Folder 1 (Branch)',
+        children: [
+          { id: 'file1', name: 'File 1.txt (Leaf)' },
+          { id: 'file2', name: 'File 2.txt (Leaf)' },
+          {
+            id: 'subfolder1',
+            name: 'Subfolder (Branch)',
+            children: [
+              { id: 'file3', name: 'File 3.txt (Leaf)' },
+            ]
+          }
+        ]
+      },
+      {
+        id: 'folder2',
+        name: 'Folder 2 (Branch)',
+        children: [
+          { id: 'file4', name: 'File 4.txt (Leaf)' },
+        ]
+      }
+    ]
+
+    const customData: TreeNode[] = [
+      {
+        id: 'selectable-folder',
+        name: '✅ Selectable Folder',
+        selectable: true,
+        children: [
+          { id: 'selectable-file', name: '✅ Selectable File', selectable: true },
+          { id: 'non-selectable-file', name: '❌ Non-selectable File', selectable: false },
+        ]
+      },
+      {
+        id: 'non-selectable-folder',
+        name: '❌ Non-selectable Folder',
+        selectable: false,
+        children: [
+          { id: 'file5', name: '✅ File (default selectable)', selectable: undefined },
+        ]
+      }
+    ]
+
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">Selection Behavior Modes:</h3>
+          <p className="text-sm text-gray-600">
+            Click on folders and files to see how different selection behaviors work.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {/* All Mode */}
+          <div>
+            <h4 className="mb-2 font-medium text-sm">All (Default)</h4>
+            <p className="mb-2 text-xs text-gray-500">Both branches and leaves can be selected</p>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-all"
+                data={testData}
+                selectionMode="multiple"
+                selectionBehavior="all"
+                selectedValue={selectedNodes.all}
+                onSelectionChange={(details) => {
+                  setSelectedNodes(prev => ({ ...prev, all: details.selectedValue }))
+                }}
+                defaultExpandedValue={['folder1']}
+              />
+            </div>
+            <div className="mt-2 text-xs">
+              Selected: {selectedNodes.all.join(', ') || 'None'}
+            </div>
+          </div>
+
+          {/* Leaf Only Mode */}
+          <div>
+            <h4 className="mb-2 font-medium text-sm">Leaf Only</h4>
+            <p className="mb-2 text-xs text-gray-500">Only files (leaves) can be selected</p>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-leaf-only"
+                data={testData}
+                selectionMode="multiple"
+                selectionBehavior="leaf-only"
+                selectedValue={selectedNodes.leafOnly}
+                onSelectionChange={(details) => {
+                  setSelectedNodes(prev => ({ ...prev, leafOnly: details.selectedValue }))
+                }}
+                defaultExpandedValue={['folder1']}
+              />
+            </div>
+            <div className="mt-2 text-xs">
+              Selected: {selectedNodes.leafOnly.join(', ') || 'None'}
+            </div>
+          </div>
+
+          {/* Custom Mode */}
+          <div>
+            <h4 className="mb-2 font-medium text-sm">Custom</h4>
+            <p className="mb-2 text-xs text-gray-500">Per-node selectable property</p>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-custom"
+                data={customData}
+                selectionMode="multiple"
+                selectionBehavior="custom"
+                selectedValue={selectedNodes.custom}
+                onSelectionChange={(details) => {
+                  setSelectedNodes(prev => ({ ...prev, custom: details.selectedValue }))
+                }}
+                defaultExpandedValue={['selectable-folder', 'non-selectable-folder']}
+              />
+            </div>
+            <div className="mt-2 text-xs">
+              Selected: {selectedNodes.custom.join(', ') || 'None'}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates different selection behaviors: all (default), leaf-only, and custom per-node control.',
+      },
+    },
+  },
+}
+
 export const ExpandVsSelectionTest: Story = {
   render: () => {
     const [logs, setLogs] = useState<string[]>([])

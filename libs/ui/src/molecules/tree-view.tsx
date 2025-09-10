@@ -15,6 +15,7 @@ export interface TreeNode {
   }
   disabled?: boolean
   selected?: boolean
+  selectable?: boolean // For 'custom' selection behavior
   [key: string]: unknown
 }
 
@@ -113,6 +114,7 @@ interface TreeNodeProps extends tree.NodeProps {
   api: tree.Api
   showIndentGuides?: boolean
   showNodeIcons?: boolean
+  selectionBehavior?: 'all' | 'leaf-only' | 'custom'
 }
 
 function TreeNode({
@@ -121,9 +123,24 @@ function TreeNode({
   api,
   showIndentGuides = true,
   showNodeIcons = true,
+  selectionBehavior = 'all',
 }: TreeNodeProps) {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
+
+  // Determine if this node can be selected based on selectionBehavior
+  const isSelectable = (() => {
+    switch (selectionBehavior) {
+      case 'all':
+        return true
+      case 'leaf-only':
+        return !nodeState.isBranch
+      case 'custom':
+        return node.selectable !== false // Default to true if not specified
+      default:
+        return true
+    }
+  })()
 
   const {
     branch,
@@ -146,13 +163,26 @@ function TreeNode({
   }
 
   if (nodeState.isBranch) {
+    // Get the base props
+    const baseControlProps = api.getBranchControlProps(nodeProps)
+
+    // Override onClick if not selectable
+    const branchControlProps = isSelectable
+      ? baseControlProps
+      : {
+          ...baseControlProps,
+          onClick: (event: MouseEvent) => {
+            // Only handle expand/collapse, not selection
+            if (nodeState.disabled || nodeState.loading) return
+            event.stopPropagation()
+            handleToggle(node.id)
+          },
+        }
+
     return (
       <div className={branch()} {...api.getBranchProps(nodeProps)}>
         <div className={branchTrigger()}>
-          <div
-            className={branchControl()}
-            {...api.getBranchControlProps(nodeProps)}
-          >
+          <div className={branchControl()} {...branchControlProps}>
             {showNodeIcons && (
               <Icon
                 icon={
@@ -201,6 +231,7 @@ function TreeNode({
               api={api}
               showIndentGuides={showIndentGuides}
               showNodeIcons={showNodeIcons}
+              selectionBehavior={selectionBehavior}
             />
           ))}
         </div>
@@ -208,8 +239,16 @@ function TreeNode({
     )
   }
 
+  // For leaf nodes, conditionally apply selection props
+  const leafProps = isSelectable
+    ? api.getItemProps(nodeProps)
+    : {
+        ...api.getItemProps(nodeProps),
+        onClick: undefined, // Remove selection click handler if not selectable
+      }
+
   return (
-    <div className={leaf()} {...api.getItemProps(nodeProps)}>
+    <div className={leaf()} {...leafProps}>
       {showNodeIcons && (
         <Icon
           icon={node.icons?.leaf || 'token-icon-tree-item'}
@@ -230,6 +269,7 @@ interface TreeProps extends VariantProps<typeof treeVariants>, tree.Props {
   label?: string
   showIndentGuides?: boolean
   showNodeIcons?: boolean
+  selectionBehavior?: 'all' | 'leaf-only' | 'custom'
 }
 
 export function TreeView({
@@ -237,6 +277,7 @@ export function TreeView({
   label,
   showIndentGuides = true,
   showNodeIcons = true,
+  selectionBehavior = 'all',
 
   dir = 'ltr',
   selectionMode = 'single',
@@ -305,6 +346,7 @@ export function TreeView({
             api={api}
             showIndentGuides={showIndentGuides}
             showNodeIcons={showNodeIcons}
+            selectionBehavior={selectionBehavior}
           />
         ))}
       </div>
