@@ -47,8 +47,10 @@ const badgeVariants = tv({
 
 type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>['variant']>
 
-type BaseBadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, 'color'> & {
-  className?: string
+type BaseBadgeProps = Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  'color' | 'children'
+> & {
   children: string
 }
 
