@@ -20,7 +20,7 @@
   --container-4xl: 56rem;
   --container-5xl: 64rem;
   --container-6xl: 72rem;
-  --container-max: 80rem;
+  --container-max-w: 80rem;
   --container-prose: 65ch;
 
   /* === ASPECT RATIOS === */
