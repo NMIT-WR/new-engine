@@ -7,7 +7,7 @@ import { ExtraText } from '../atoms/extra-text'
 import { Label } from '../atoms/label'
 import { slugify, tv } from '../utils'
 
-const rangeSliderVariants = tv({
+const sliderVariants = tv({
   slots: {
     root: [
       'flex flex-col w-full gap-slider-root',
@@ -22,32 +22,32 @@ const rangeSliderVariants = tv({
       'data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1',
     ],
     track: [
-      'rounded-slider-track bg-slider-track flex-1',
+      'rounded-slider-track bg-slider-track-bg flex-1',
       'data-[orientation=horizontal]:w-full',
       'data-[orientation=vertical]:h-full ',
-      'data-[disabled]:bg-slider-track-disabled',
+      'data-[disabled]:bg-slider-bg-disabled',
       'border-(length:--border-width-slider) border-slider-border',
       'data-[disabled]:border-slider-border-disabled',
       'transition-colors duration-200',
-      'hover:bg-slider-track-hover',
+      'hover:bg-slider-track-bg-hover',
       'data-[invalid=true]:border-slider-border-error',
     ],
     range: [
-      'bg-slider-range rounded-slider-track h-full',
+      'bg-slider-range-bg rounded-slider-track h-full',
       'data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full',
-      'data-[disabled]:bg-slider-range-disabled',
-      'hover:bg-slider-range-hover',
-      'data-[invalid=true]:bg-slider-range-error',
+      'data-[disabled]:bg-slider-bg-disabled',
+      'hover:bg-slider-range-bg-hover',
+      'data-[invalid=true]:bg-slider-range-bg-error',
     ],
     thumb: [
       'flex items-center justify-center',
-      'rounded-slider-thumb bg-slider-thumb',
+      'rounded-slider-thumb bg-slider-thumb-bg',
       'focus:outline-none',
       'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slider-ring',
-      'data-[disabled]:bg-slider-thumb-disabled',
+      'data-[disabled]:bg-slider-thumb-bg-disabled',
       'border-(length:--border-width-slider) border-slider-border',
       'data-[disabled]:border-slider-border-disabled',
-      'hover:bg-slider-thumb-hover',
+      'hover:bg-slider-thumb-bg-hover',
       'cursor-grab data-[dragging]:cursor-grabbing data-[disabled]:cursor-not-allowed',
       'transition-colors duration-200',
       'shadow-slider-thumb',
@@ -60,13 +60,14 @@ const rangeSliderVariants = tv({
       'data-[orientation=vertical]:flex-row',
     ],
     markerLine: [
-      'w-slider-marker h-full bg-slider-marker',
-      'data-[orientation=vertical]:h-slider-marker-vertical data-[orientation=vertical]:w-full',
+      'w-slider-marker h-full bg-slider-marker-bg',
+      'data-[orientation=vertical]:h-slider-marker data-[orientation=vertical]:w-full',
     ],
     markerText: [
       'absolute top-full',
       'data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full',
       'data-[orientation=vertical]:h-full',
+      'data-[orientation=vertical]:p-marker-text',
     ],
     footer: ['flex flex-col'],
   },
@@ -92,13 +93,14 @@ const rangeSliderVariants = tv({
       },
     },
   },
+  defaultVariants: {
+    size: 'md',
+  },
 })
 
-export interface RangeSliderProps
-  extends VariantProps<typeof rangeSliderVariants> {
+export interface SliderProps extends VariantProps<typeof sliderVariants> {
   id?: string
   name?: string
-  size?: 'sm' | 'md' | 'lg'
   label?: string
   helperText?: string
   error?: boolean
@@ -125,7 +127,7 @@ export interface RangeSliderProps
   onChangeEnd?: (values: number[]) => void
 }
 
-export function RangeSlider({
+export function Slider({
   id,
   name,
   label,
@@ -153,7 +155,7 @@ export function RangeSlider({
   className,
   onChange,
   onChangeEnd,
-}: RangeSliderProps) {
+}: SliderProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
 
@@ -192,12 +194,13 @@ export function RangeSlider({
     markerLine,
     markerText,
     footer,
-  } = rangeSliderVariants({
+  } = sliderVariants({
     className,
+    size,
   })
 
   return (
-    <div className={root()} {...api.getRootProps()}>
+    <div className={root({ className })} {...api.getRootProps()}>
       {(label || showValueText) && (
         <div className={header()}>
           <Label className={labelSlot()} {...api.getLabelProps()}>
@@ -221,11 +224,7 @@ export function RangeSlider({
       )}
 
       <div className={control()} {...api.getControlProps()}>
-        <div
-          className={track({ size })}
-          {...api.getTrackProps()}
-          data-invalid={error}
-        >
+        <div className={track()} {...api.getTrackProps()} data-invalid={error}>
           <div
             className={range()}
             {...api.getRangeProps()}
@@ -235,7 +234,9 @@ export function RangeSlider({
             <div {...api.getMarkerGroupProps()} className={markerGroup()}>
               {Array.from({ length: markerCount }).map((_, index) => {
                 const markerValue =
-                  min + ((max - min) / (markerCount - 1)) * index
+                  markerCount === 1
+                    ? min
+                    : min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
                     key={slugify(`marker-${markerValue}`)}
@@ -267,7 +268,7 @@ export function RangeSlider({
         {api.value.map((_, index) => (
           <div
             key={index}
-            className={thumb({ size })}
+            className={thumb()}
             {...api.getThumbProps({ index })}
           >
             <input {...api.getHiddenInputProps({ index })} />
