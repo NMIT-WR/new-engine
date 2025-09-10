@@ -77,8 +77,8 @@ export const AllVariants: Story = {
 
       <VariantGroup title="Interactivity">
         <Textarea placeholder="Normal state" />
-        <Textarea disabled placeholder="Disabled textarea" />
-        <Textarea readonly placeholder="Readonly textarea" />
+        <Textarea disabled value="Disabled textarea" />
+        <Textarea readonly value="Readonly textarea" />
       </VariantGroup>
     </VariantContainer>
   ),
@@ -92,7 +92,7 @@ export const AutoSizing: Story = {
     <VariantContainer>
       <VariantGroup title="Auto-sizing Textareas">
         <div className="w-80">
-          <Textarea 
+          <Textarea
             resize="auto"
             size="sm"
             defaultValue="This auto-sizing textarea starts with content. Try adding more lines - it will grow automatically!"
@@ -115,9 +115,7 @@ export const UseCaseCombinations: Story = {
         {/* Use Case 1: Product description for admins */}
         <Textarea
           size="lg"
-          lineHeight="relaxed"
           resize="y"
-          scrollbar="thin"
           placeholder="Product description - admin interface"
         />
 
@@ -137,7 +135,6 @@ export const UseCaseCombinations: Story = {
 
         {/* Use Case 4: Product reviews with submission status */}
         <Textarea
-          shadow="sm"
           variant="success"
           placeholder="Successfully submitted product review"
         />
@@ -145,9 +142,7 @@ export const UseCaseCombinations: Story = {
         {/* Use Case 5: Compact notepad */}
         <Textarea
           size="sm"
-          lineHeight="compact"
           resize="both"
-          shadow="md"
           placeholder="Compact notepad with resizing"
         />
       </VariantGroup>
