@@ -101,7 +101,6 @@ const sliderVariants = tv({
 export interface SliderProps extends VariantProps<typeof sliderVariants> {
   id?: string
   name?: string
-  size?: 'sm' | 'md' | 'lg'
   label?: string
   helperText?: string
   error?: boolean
