@@ -46,20 +46,6 @@ export const ValidationStates: Story = {
   ),
 }
 
-/**
- * Demonstrates additional visual and functional modifiers.
- */
-export const VisualModifiers: Story = {
-  render: () => (
-    <VariantContainer>
-      <VariantGroup title="Shadow Variants">
-        <Textarea shadow="none" placeholder="No shadow (default)" />
-        <Textarea shadow="sm" placeholder="Small shadow" />
-        <Textarea shadow="md" placeholder="Medium shadow" />
-      </VariantGroup>
-    </VariantContainer>
-  ),
-}
 
 /**
  * Comprehensive overview of all key variants.
@@ -78,6 +64,7 @@ export const AllVariants: Story = {
         <Textarea resize="x" placeholder="Horizontal resize" />
         <Textarea resize="none" placeholder="No resize" />
         <Textarea resize="both" placeholder="Resize both" />
+        <Textarea resize="auto" placeholder="Auto-sizing - grows with content" />
       </VariantGroup>
 
       <VariantGroup title="Validation States">
@@ -90,9 +77,30 @@ export const AllVariants: Story = {
 
       <VariantGroup title="Interactivity">
         <Textarea placeholder="Normal state" />
-        <Textarea disabled placeholder="Disabled textarea" />
-        <Textarea readonly placeholder="Readonly textarea" />
+        <Textarea disabled value="Disabled textarea" />
+        <Textarea readonly value="Readonly textarea" />
       </VariantGroup>
+    </VariantContainer>
+  ),
+}
+
+/**
+ * Demonstrates auto-sizing textarea that grows with content.
+ */
+export const AutoSizing: Story = {
+  render: () => (
+    <VariantContainer>
+      <VariantGroup title="Auto-sizing Textareas">
+        <div className="w-80">
+          <Textarea
+            resize="auto"
+            size="sm"
+            defaultValue="This auto-sizing textarea starts with content. Try adding more lines - it will grow automatically!"
+          />
+        </div>
+
+      </VariantGroup>
+
     </VariantContainer>
   ),
 }
@@ -107,9 +115,7 @@ export const UseCaseCombinations: Story = {
         {/* Use Case 1: Product description for admins */}
         <Textarea
           size="lg"
-          lineHeight="relaxed"
           resize="y"
-          scrollbar="thin"
           placeholder="Product description - admin interface"
         />
 
@@ -129,7 +135,6 @@ export const UseCaseCombinations: Story = {
 
         {/* Use Case 4: Product reviews with submission status */}
         <Textarea
-          shadow="sm"
           variant="success"
           placeholder="Successfully submitted product review"
         />
@@ -137,9 +142,7 @@ export const UseCaseCombinations: Story = {
         {/* Use Case 5: Compact notepad */}
         <Textarea
           size="sm"
-          lineHeight="compact"
           resize="both"
-          shadow="md"
           placeholder="Compact notepad with resizing"
         />
       </VariantGroup>
