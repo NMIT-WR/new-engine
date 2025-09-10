@@ -225,11 +225,7 @@ export function Slider({
       )}
 
       <div className={control()} {...api.getControlProps()}>
-        <div
-          className={track()}
-          {...api.getTrackProps()}
-          data-invalid={error}
-        >
+        <div className={track()} {...api.getTrackProps()} data-invalid={error}>
           <div
             className={range()}
             {...api.getRangeProps()}
@@ -238,7 +234,10 @@ export function Slider({
           {showMarkers && (
             <div {...api.getMarkerGroupProps()} className={markerGroup()}>
               {Array.from({ length: markerCount }).map((_, index) => {
-                const markerValue = markerCount === 1 ? min : min + ((max - min) / (markerCount - 1)) * index
+                const markerValue =
+                  markerCount === 1
+                    ? min
+                    : min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
                     key={slugify(`marker-${markerValue}`)}

@@ -220,7 +220,6 @@ export const VerticalOrientation: Story = {
             orientation="vertical"
             size="md"
             label="Brightness (Medium)"
-            defaultValue={[30, 70]}
             showMarkers
             markerCount={5}
             value={values}
@@ -382,7 +381,7 @@ export const ThumbAlignment: Story = {
 export const MinStepsBetweenThumbs: Story = {
   render: () => {
     const [values, setValues] = useState<number[]>([30, 70])
-    
+
     return (
       <VariantContainer>
         <div className="grid w-full min-w-xs gap-600">
@@ -516,7 +515,7 @@ export const AllVariants: Story = {
           />
         </div>
       </VariantGroup>
-      
+
       <VariantGroup title="States">
         <div className="w-full min-w-xs">
           <Slider
@@ -551,7 +550,7 @@ export const AllVariants: Story = {
           />
         </div>
       </VariantGroup>
-      
+
       <VariantGroup title="Features">
         <div className="w-full min-w-xs">
           <Slider
@@ -579,7 +578,7 @@ export const AllVariants: Story = {
           />
         </div>
       </VariantGroup>
-      
+
       <VariantGroup title="Thumb Variations">
         <div className="w-full min-w-xs">
           <Slider
