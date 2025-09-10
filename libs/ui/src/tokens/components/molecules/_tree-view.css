@@ -1,16 +1,16 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
-  --color-tree-bg: transparent;
+  --color-tree-bg: var(--color-base);
   --color-tree-fg: var(--color-fg-primary);
   --color-tree-border: var(--color-border-primary);
-  --color-tree-icon: currentColor;
   --color-tree-icon-hover: var(--color-fg-primary);
+  --color-tree-accent: var(--color-primary);
 
   /* === STATE VARIATIONS === */
   --color-tree-node-bg-hover: var(--color-primary-hover);
-  --color-tree-node-bg-selected: var(--color-primary-active);
+  --color-tree-node-bg-selected: transparent;
   --color-tree-fg-hover: var(--color-fg-reverse);
-  --color-tree-fg-selected: var(--color-fg-reverse);
+  --color-tree-fg-selected: var(--color-tree-accent);
 
   /* === ROOT === */
   --color-tree-root-bg: transparent;
@@ -34,14 +34,21 @@
   --padding-tree-node: var(--spacing-100);
 
   /* === TYPOGRAPHY === */
-  --text-tree-size: var(--text-sm);
-  --text-tree-icon: var(--text-icon-sm);
+  /* Tree text size */
+  --text-tree-sm: var(--text-sm);
+  --text-tree-md: var(--text-md);
+  --text-tree-lg: var(--text-lg);
+
+  /* Node icon size */
+  --text-tree-icon-sm: var(--text-icon-sm);
+  --text-tree-icon-md: var(--text-icon-md);
+  --text-tree-icon-lg: var(--text-icon-lg);
+
+  /* Tree font weight */
   --font-weight-tree-label: var(--font-weight-medium);
-  --font-weight-tree-selected: var(--font-weight-normal);
 
   /* === BORDERS & RADIUS === */
-  --radius-tree-node: var(--radius-sm);
-
+  --radius-tree: 0;
   /* === OPACITY === */
   --opacity-tree-indent: 100%;
 }

@@ -21,7 +21,7 @@ export interface TreeNode {
 // === COMPONENT VARIANTS ===
 const treeVariants = tv({
   slots: {
-    root: 'relative bg-tree-root-bg',
+    root: 'relative bg-tree-root-bg rounded-tree',
     label: ['text-tree-label-fg font-tree-label'],
     tree: [
       'outline-none bg-tree-bg',
@@ -31,15 +31,16 @@ const treeVariants = tv({
       'data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none',
     ],
     branchTrigger: [
-      'flex items-center justify-between',
-      'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
-      'cursor-pointer rounded-tree-node',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-ring',
-      'data-[selected]:bg-tree-node-bg-selected data-[selected]:text-tree-fg-selected data-[selected]:font-tree-selected',
+      'group flex items-center justify-between',
+      'hover:bg-tree-node-bg-hover',
+      'cursor-pointer',
+      //'has-[[data-selected]]:bg-tree-node-bg-selected',
+      'has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-tree-node-ring',
     ],
     branchControl: ['flex-1'],
-    branchText: ['flex-1 text-tree-size'],
+    branchText: ['flex-1'],
     branchIndicator: [
+      'group-hover:text-tree-fg-hover',
       'data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-125',
     ],
     branchContent: ['relative', 'data-[state=closed]:hidden'],
@@ -49,9 +50,12 @@ const treeVariants = tv({
       'opacity-tree-indent',
     ],
     leaf: [
-      'data-[selected]:bg-tree-node-bg-selected data-[selected]:text-tree-fg-selected',
+      'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
+      'data-[selected]:hover:bg-tree-node-bg-hover',
+      'data-[selected]:hover:text-tree-fg-hover',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-ring',
     ],
-    nodeIcon: ['text-tree-icon hover:text-tree-icon-hover'],
+    nodeIcon: ['hover:text-tree-icon-hover'],
   },
   compoundSlots: [
     {
@@ -69,11 +73,39 @@ const treeVariants = tv({
       class: [
         'flex items-center gap-tree-icon p-tree-node',
         'cursor-pointer',
-        //   'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
         'data-[disabled]:cursor-not-allowed',
+        'data-[selected]:text-tree-fg-selected',
+        'group-hover:text-tree-fg-hover',
+        'data-[selected]:group-hover:text-tree-fg-hover',
+        'focus-visible:outline-none',
       ],
     },
   ],
+  variants: {
+    size: {
+      sm: {
+        nodeIcon: 'text-tree-icon-sm',
+        branchText: 'text-tree-sm',
+        branchIndicator: 'text-tree-sm',
+        label: 'text-tree-sm',
+      },
+      md: {
+        nodeIcon: 'text-tree-icon-md',
+        branchText: 'text-tree-md',
+        branchIndicator: 'text-lg',
+        label: 'text-tree-md',
+      },
+      lg: {
+        nodeIcon: 'text-tree-icon-lg',
+        branchText: 'text-tree-lg',
+        branchIndicator: 'text-tree-lg',
+        label: 'text-tree-lg',
+      },
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
 })
 
 // === TREE NODE COMPONENT ===
@@ -184,7 +216,9 @@ function TreeNode({
           className={nodeIcon()}
         />
       )}
-      <span className={branchText()}>{node.name}</span>
+      <span className={branchText()} {...api.getBranchTextProps(nodeProps)}>
+        {node.name}
+      </span>
     </div>
   )
 }
