@@ -9,15 +9,18 @@ const rating = tv({
   slots: {
     root: ['grid items-center'],
     control: ['flex'],
+    itemWrapper: [
+      'flex items-center',
+      'has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-1 has-[:focus-visible]:ring-rating-ring',
+    ],
     item: [
       'cursor-pointer transition-colors duration-200',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-rating-ring',
-      'text-rating',
+      'text-rating-fg',
       // States
-      'data-[checked]:text-rating-active',
-      'data-[highlighted]:text-rating-active',
+      'data-[checked]:text-rating-fg-active',
+      'data-[highlighted]:text-rating-fg-active',
       'data-[disabled]:cursor-not-allowed',
-      'data-[disabled]:data-[highlighted]:text-rating-disabled',
+      'data-[disabled]:data-[highlighted]:text-rating-fg-disabled',
       'token-icon-rating',
       'data-[half]:token-icon-rating-half',
     ],
@@ -110,7 +113,7 @@ export function Rating({
 
   const api = ratingGroup.connect(service, normalizeProps)
 
-  const { root, control, item } = rating({
+  const { root, control, itemWrapper, item } = rating({
     size,
     isInteractive: !readOnly && !disabled,
   })
@@ -121,11 +124,9 @@ export function Rating({
       <input {...api.getHiddenInputProps()} />
       <div className={control()} {...api.getControlProps()}>
         {api.items.map((index) => (
-          <span
-            key={index}
-            className={item()}
-            {...api.getItemProps({ index })}
-          />
+          <div key={index} className={itemWrapper()}>
+            <span className={item()} {...api.getItemProps({ index })} />
+          </div>
         ))}
       </div>
     </div>
