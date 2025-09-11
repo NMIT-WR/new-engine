@@ -44,6 +44,10 @@
   --text-tree-icon-md: var(--text-icon-md);
   --text-tree-icon-lg: var(--text-icon-lg);
 
+  --text-tree-indicator-sm: var(--text-icon-md);
+  --text-tree-indicator-md: var(--text-icon-lg);
+  --text-tree-indicator-lg: var(--text-icon-xl);
+
   /* Tree font weight */
   --font-weight-tree-label: var(--font-weight-medium);
 

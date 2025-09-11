@@ -35,7 +35,6 @@ const treeVariants = tv({
       'group flex items-center justify-between',
       'hover:bg-tree-node-bg-hover',
       'cursor-pointer',
-      //'has-[[data-selected]]:bg-tree-node-bg-selected',
       'has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-tree-node-ring',
     ],
     branchControl: ['flex-1'],
@@ -87,19 +86,19 @@ const treeVariants = tv({
       sm: {
         nodeIcon: 'text-tree-icon-sm',
         branchText: 'text-tree-sm',
-        branchIndicator: 'text-tree-sm',
+        branchIndicator: 'text-tree-indicator-sm',
         label: 'text-tree-sm',
       },
       md: {
         nodeIcon: 'text-tree-icon-md',
         branchText: 'text-tree-md',
-        branchIndicator: 'text-lg',
+        branchIndicator: 'text-tree-indicator-md',
         label: 'text-tree-md',
       },
       lg: {
         nodeIcon: 'text-tree-icon-lg',
         branchText: 'text-tree-lg',
-        branchIndicator: 'text-tree-lg',
+        branchIndicator: 'text-tree-indicator-lg',
         label: 'text-tree-lg',
       },
     },
@@ -108,6 +107,68 @@ const treeVariants = tv({
     size: 'md',
   },
 })
+
+// === HELPER FUNCTIONS ===
+
+// Type definitions from Zag.js API
+type ItemProps = ReturnType<tree.Api['getItemProps']>
+type BranchControlProps = ReturnType<tree.Api['getBranchControlProps']>
+type NonSelectableProps = {
+  onClick?: (e: MouseEvent) => void
+  onKeyDown: (e: KeyboardEvent) => void
+  'aria-selected': undefined
+  'data-disabled': true
+}
+
+/**
+ * Creates props for non-selectable nodes that should only allow navigation
+ * but not selection. Optionally allows Enter key for expand/collapse on branches.
+ */
+function createNonSelectableProps(
+  baseProps: ItemProps | BranchControlProps,
+  nodeState: tree.NodeState,
+  options?: {
+    allowEnterForToggle?: boolean
+    onToggle?: () => void
+  }
+): (ItemProps | BranchControlProps) & NonSelectableProps {
+  return {
+    ...baseProps,
+    onClick: options?.onToggle
+      ? (e: MouseEvent) => {
+          e.stopPropagation()
+          if (!nodeState.disabled && !nodeState.loading) {
+            options.onToggle?.()
+          }
+        }
+      : undefined,
+    onKeyDown: (e: KeyboardEvent) => {
+      const key = e.key
+      // Block selection keys (Enter/Space/Spacebar)
+      if (key === 'Enter' || key === ' ' || key === 'Spacebar') {
+        e.preventDefault()
+        e.stopPropagation()
+
+        // Optionally allow Enter to toggle expand/collapse
+        if (
+          key === 'Enter' &&
+          options?.allowEnterForToggle &&
+          options?.onToggle &&
+          !nodeState.disabled &&
+          !nodeState.loading
+        ) {
+          options.onToggle()
+        }
+        return false
+      }
+      // Allow navigation keys to pass through
+      baseProps.onKeyDown?.(e)
+      return
+    },
+    'aria-selected': undefined,
+    'data-disabled': true,
+  } as (ItemProps | BranchControlProps) & NonSelectableProps
+}
 
 // === TREE NODE COMPONENT ===
 interface TreeNodeProps extends tree.NodeProps {
@@ -166,18 +227,13 @@ function TreeNode({
     // Get the base props
     const baseControlProps = api.getBranchControlProps(nodeProps)
 
-    // Override onClick if not selectable
+    // Use helper function for non-selectable branches
     const branchControlProps = isSelectable
       ? baseControlProps
-      : {
-          ...baseControlProps,
-          onClick: (event: MouseEvent) => {
-            // Only handle expand/collapse, not selection
-            if (nodeState.disabled || nodeState.loading) return
-            event.stopPropagation()
-            handleToggle(node.id)
-          },
-        }
+      : createNonSelectableProps(baseControlProps, nodeState, {
+          allowEnterForToggle: true,
+          onToggle: () => handleToggle(node.id),
+        })
 
     return (
       <div className={branch()} {...api.getBranchProps(nodeProps)}>
@@ -240,12 +296,10 @@ function TreeNode({
   }
 
   // For leaf nodes, conditionally apply selection props
+  const baseItemProps = api.getItemProps(nodeProps)
   const leafProps = isSelectable
-    ? api.getItemProps(nodeProps)
-    : {
-        ...api.getItemProps(nodeProps),
-        onClick: undefined, // Remove selection click handler if not selectable
-      }
+    ? baseItemProps
+    : createNonSelectableProps(baseItemProps, nodeState)
 
   return (
     <div className={leaf()} {...leafProps}>
