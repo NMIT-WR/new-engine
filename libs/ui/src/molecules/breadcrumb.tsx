@@ -1,3 +1,4 @@
+import type { ElementType, ReactElement } from 'react'
 import { type VariantProps, tv } from 'tailwind-variants'
 import { Icon, type IconType } from '../atoms/icon'
 import { Link } from '../atoms/link'
@@ -5,22 +6,19 @@ import { Link } from '../atoms/link'
 // === VARIANTS ===
 const breadcrumbsVariants = tv({
   slots: {
-    root: [
-      'inline-flex flex-wrap items-center p-breadcrumb',
-      'bg-breadcrumb-bg',
-    ],
+    root: ['inline-flex flex-wrap items-center', 'bg-breadcrumb-bg'],
     list: ['flex items-center', 'break-words', 'list-none'],
     item: [
       'inline-flex items-center',
       'text-breadcrumb-item-fg',
-      'hover:text-breadcrumb-link-hover',
-      'data-[current=true]:text-breadcrumb-current-fg',
+      'hover:text-breadcrumb-fg-hover',
+      'data-[current=true]:text-breadcrumb-fg-current',
       'h-full',
     ],
     link: [
       'no-underline',
       'cursor-pointer',
-      'hover:text-breadcrumb-link-hover',
+      'hover:text-breadcrumb-fg-hover',
       'focus:outline-none focus:ring-2 focus:ring-breadcrumb-link-ring focus:ring-offset-2',
     ],
     currentLink: ['cursor-default'],
@@ -46,21 +44,21 @@ const breadcrumbsVariants = tv({
   variants: {
     size: {
       sm: {
-        root: 'text-breadcrumb-sm',
+        root: 'text-breadcrumb-sm p-breadcrumb-sm',
         list: 'gap-breadcrumb-sm',
         item: 'gap-breadcrumb-sm',
         separator: 'gap-breadcrumb-sm',
         ellipsis: 'text-breadcrumb-sm',
       },
       md: {
-        root: 'text-breadcrumb-md',
+        root: 'text-breadcrumb-md p-breadcrumb-md',
         list: 'gap-breadcrumb-md',
         item: 'gap-breadcrumb-md',
         separator: 'gap-breadcrumb-md',
         ellipsis: 'text-breadcrumb-md',
       },
       lg: {
-        root: 'text-breadcrumb-lg',
+        root: 'text-breadcrumb-lg p-breadcrumb-lg',
         list: 'gap-breadcrumb-lg',
         item: 'gap-breadcrumb-lg',
         separator: 'gap-breadcrumb-lg',
@@ -89,7 +87,7 @@ function BreadcrumbItem({
   separator = 'token-icon-breadcrumb-separator',
   isCurrentPage,
   lastItem,
-  linkComponent,
+  linkAs,
 }: {
   label: string
   href?: string
@@ -97,7 +95,7 @@ function BreadcrumbItem({
   separator?: IconType
   lastItem: boolean
   isCurrentPage?: boolean
-  linkComponent?: React.ElementType
+  linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }) {
   const {
     item,
@@ -113,7 +111,7 @@ function BreadcrumbItem({
           {label}
         </span>
       ) : (
-        <Link as={linkComponent} href={href || '#'} className={link()}>
+        <Link as={linkAs as ElementType} href={href || '#'} className={link()}>
           {label}
         </Link>
       )}
@@ -147,7 +145,7 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   maxItems?: number
   className?: string
   'aria-label'?: string
-  linkComponent?: React.ElementType
+  linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }
 
 // === COMPONENT ===
@@ -157,7 +155,7 @@ export function Breadcrumb({
   size = 'md',
   className,
   'aria-label': ariaLabel = 'breadcrumb',
-  linkComponent,
+  linkAs,
   ...props
 }: BreadcrumbProps) {
   const { root, list } = breadcrumbsVariants({ size })
@@ -185,7 +183,7 @@ export function Breadcrumb({
                 icon={item.icon}
                 separator={item.separator}
                 lastItem={index === displayItems.length - 1}
-                linkComponent={linkComponent}
+                linkAs={linkAs}
                 isCurrentPage={
                   item.isCurrent || index === displayItems.length - 1
                 }
