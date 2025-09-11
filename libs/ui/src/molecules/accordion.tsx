@@ -103,6 +103,7 @@ export function Accordion({
   onChange,
   size,
   shadow,
+  disabled = false,
 }: AccordionProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -115,6 +116,7 @@ export function Accordion({
     multiple,
     dir,
     orientation: 'vertical',
+    disabled,
     onValueChange: ({ value }) => {
       onChange?.(value)
     },
