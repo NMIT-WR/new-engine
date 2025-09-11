@@ -1,41 +1,59 @@
 @theme static {
-  /* === ROOT === */
-  --spacing-carousel-root-sm: 10rem;
-  --spacing-carousel-root-md: 20rem;
-  --spacing-carousel-root-lg: 40rem;
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-carousel: var(--color-surface);
+  --color-carousel-accent: var(--color-primary);
 
-  /* === TRIGGER COMMON === */
-  --padding-carousel-trigger: 0 0;
-  --color-carousel-trigger-bg: var(--color-highlight);
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-carousel-trigger-bg: oklch(
+    from var(--color-carousel) calc(l - var(--surface-increment) * 4) c h
+  );
+  --color-carousel-control-bg: oklch(
+    from var(--color-carousel) calc(l - var(--surface-increment) * 2) c h
+  );
+
+  /* Foreground colors */
   --color-carousel-trigger-fg: var(--color-fg-dark);
 
-  /* === CONTROL COLORS === */
-  --color-carousel-control-bg: var(--color-overlay);
+  /* Indicator colors */
+  --color-carousel-indicator-bg-active: var(--color-carousel-accent);
+
+  /* === SPACING === */
+  /* Root spacing */
+  --spacing-carousel-root-sm: var(--container-3xs);
+  --spacing-carousel-root-md: var(--container-sm);
+  --spacing-carousel-root-lg: var(--container-lg);
+
+  --spacing-carousel-trigger-top: var(--spacing-100);
+  --spacing-carousel-trigger-right: var(--spacing-100);
+
+  /* Control spacing */
   --padding-carousel-control: var(--spacing-100);
   --gap-carousel-control: var(--spacing-200);
 
-  /* === INDICATOR === */
+  /* Trigger spacing */
+  --padding-carousel-trigger: 0 0;
+
+  /* Indicator spacing */
   --gap-carousel-indicator: var(--spacing-100);
-  --color-carousel-indicator-active: var(--color-primary);
-  --aspect-carousel-indicator: var(--aspect-square);
   --width-carousel-indicator: var(--spacing-200);
 
-  /* === FOCUS STATES === */
+  /* === BORDERS & RADIUS === */
+  --radius-carousel: var(--radius-sm);
+
+  /* === SHADOWS === */
+  /* No shadows defined for carousel */
+
+  /* === FOCUS RINGS === */
   --color-carousel-focus-ring: --alpha(
-    var(--color-primary) /
+    var(--color-carousel-accent) /
     var(--opacity-ring)
   );
 
-  /* === SPACING === */
-
   /* === ASPECT RATIO === */
-  --aspect-carousel-square: 1 / 1;
-  --aspect-carousel-landscape: 16 / 9;
-  --aspect-carousel-portrait: 3 / 4;
-  --aspect-carousel-wide: 21 / 9;
-
-  /* === BORDER RADIUS === */
-  --radius-carousel: var(--radius-sm);
+  /* Additional section for aspect ratios */
+  --aspect-carousel-indicator: var(--aspect-square);
 }
 
 @utility token-icon-carousel-prev {

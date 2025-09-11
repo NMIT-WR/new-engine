@@ -23,7 +23,7 @@ type CarouselImageComponent<T extends ElementType = typeof Image> =
 
 const carouselVariants = tv({
   slots: {
-    wrapper: ['relative'],
+    wrapper: ['relative w-fit'],
     root: ['relative overflow-hidden', 'rounded-carousel'],
     control: [
       'flex absolute bottom-0 left-1/2 -translate-x-1/2',
@@ -48,10 +48,12 @@ const carouselVariants = tv({
     ],
     indicator: [
       'aspect-carousel-indicator w-carousel-indicator',
-      'data-[current]:bg-carousel-indicator-active',
+      'data-[current]:bg-carousel-indicator-bg-active',
     ],
     autoplayIcon: ['icon-[mdi--play]', 'data-[pressed=true]:icon-[mdi--pause]'],
-    autoplayTrigger: ['absolute top-1 right-1 z-10'],
+    autoplayTrigger: [
+      'absolute top-carousel-trigger-top right-carousel-trigger-right z-50',
+    ],
     spacer: ['flex-1'],
   },
   compoundSlots: [
@@ -81,16 +83,16 @@ const carouselVariants = tv({
 
     aspectRatio: {
       square: {
-        slide: 'aspect-carousel-square',
+        slide: 'aspect-square',
       },
       landscape: {
-        slide: 'aspect-carousel-landscape',
+        slide: 'aspect-video',
       },
       portrait: {
-        slide: 'aspect-carousel-portrait',
+        slide: 'aspect-portrait',
       },
       wide: {
-        slide: 'aspect-carousel-wide',
+        slide: 'aspect-wide',
       },
       none: {
         slide: '', //  custom content
@@ -193,8 +195,9 @@ export function Carousel<T extends ElementType = typeof Image>({
   onPageChange,
   ...props
 }: CarouselProps<T>) {
+  const fallbackId = useId()
   const service = useMachine(carousel.machine, {
-    id: useId(),
+    id: id ?? fallbackId,
     slideCount,
     autoplay,
     orientation,
@@ -240,7 +243,7 @@ export function Carousel<T extends ElementType = typeof Image>({
         <div className={slideGroup()} {...api.getItemGroupProps()}>
           {slides.map((slide, index) => (
             <div
-              key={index}
+              key={slide.id}
               className={slideSlot()}
               {...api.getItemProps({ index })}
             >
