@@ -28,7 +28,7 @@ const tabsVariants = tv({
       'hover:bg-tabs-trigger-bg-hover',
       'focus-visible:outline-none focus-visible:ring-2',
       'focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
-      'data-[selected]:text-tabs-trigger-selected',
+      'data-[selected]:text-tabs-trigger-fg-selected',
     ],
     indicator: [
       'h-tabs-indicator w-tabs-indicator bg-tabs-indicator rounded-tabs-indicator',
@@ -48,7 +48,7 @@ const tabsVariants = tv({
       },
       solid: {
         trigger:
-          'data-[selected]:bg-tabs-trigger-selected-bg data-[selected]:text-tabs-trigger-solid-fg',
+          'data-[selected]:bg-tabs-trigger-bg-selected data-[selected]:text-tabs-trigger-solid-fg',
         indicator: 'hidden',
       },
       default: {

@@ -14,8 +14,8 @@
   /* === TRIGGER COMPONENT === */
   --color-tabs-trigger-fg: var(--color-tabs-fg);
   --color-tabs-trigger-solid-fg: var(--color-tabs-fg-secondary);
-  --color-tabs-trigger-selected: var(--color-tabs-active);
-  --color-tabs-trigger-selected-bg: var(--color-tabs-active);
+  --color-tabs-trigger-fg-selected: var(--color-tabs-active);
+  --color-tabs-trigger-bg-selected: var(--color-tabs-active);
 
   --color-tabs-trigger-bg-hover: oklch(
     from var(--color-tabs-bg) calc(l - var(--surface-increment) * 2) c h
