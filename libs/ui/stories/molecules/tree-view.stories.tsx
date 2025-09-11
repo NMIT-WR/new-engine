@@ -230,6 +230,7 @@ export const AsideMenu: Story = {
     label: 'File System',
     showIndentGuides: false,
     showNodeIcons: false,
+    selectionMode: 'single',
   },
 }
 
@@ -247,7 +248,7 @@ export const SelectionModes: Story = {
         />
       </div>
       <div>
-        <h3 className="mb-4 font-medium text-sm">Multiple Selection</h3>
+        <h3 className="mb-4 font-medium text-sm">Multiple Selection (ctrl + click)</h3>
         <TreeView
           id=""
           data={organizationData}
@@ -336,15 +337,6 @@ export const CustomIcons: Story = {
         defaultExpandedValue={['frontend', 'backend', 'react', 'api']}
       />
     )
-  },
-}
-
-export const WithoutClickExpand: Story = {
-  args: {
-    data: fileSystemData,
-    label: 'Manual Expand Only Arrow keys',
-    expandOnClick: false,
-    defaultExpandedValue: ['documents'],
   },
 }
 
@@ -475,5 +467,265 @@ export const TypeaheadDebugDemo: Story = {
         </div>
       </div>
     )
+  },
+}
+
+// Test story pro ověření správného chování expand/collapse a selection
+export const SelectionBehaviorTest: Story = {
+  render: () => {
+    const [selectedNodes, setSelectedNodes] = useState<Record<string, string[]>>({
+      all: [],
+      leafOnly: [],
+      custom: []
+    })
+
+    const testData: TreeNode[] = [
+      {
+        id: 'folder1',
+        name: 'Folder 1 (Branch)',
+        children: [
+          { id: 'file1', name: 'File 1.txt (Leaf)' },
+          { id: 'file2', name: 'File 2.txt (Leaf)' },
+          {
+            id: 'subfolder1',
+            name: 'Subfolder (Branch)',
+            children: [
+              { id: 'file3', name: 'File 3.txt (Leaf)' },
+            ]
+          }
+        ]
+      },
+      {
+        id: 'folder2',
+        name: 'Folder 2 (Branch)',
+        children: [
+          { id: 'file4', name: 'File 4.txt (Leaf)' },
+        ]
+      }
+    ]
+
+    const customData: TreeNode[] = [
+      {
+        id: 'selectable-folder',
+        name: '✅ Selectable Folder',
+        selectable: true,
+        children: [
+          { id: 'selectable-file', name: '✅ Selectable File', selectable: true },
+          { id: 'non-selectable-file', name: '❌ Non-selectable File', selectable: false },
+        ]
+      },
+      {
+        id: 'non-selectable-folder',
+        name: '❌ Non-selectable Folder',
+        selectable: false,
+        children: [
+          { id: 'file5', name: '✅ File (default selectable)', selectable: undefined },
+        ]
+      }
+    ]
+
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">Selection Behavior Modes:</h3>
+          <p className="text-sm text-gray-600">
+            Click on folders and files to see how different selection behaviors work.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {/* All Mode */}
+          <div>
+            <h4 className="mb-2 font-medium text-sm">All (Default)</h4>
+            <p className="mb-2 text-xs text-gray-500">Both branches and leaves can be selected</p>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-all"
+                data={testData}
+                selectionMode="multiple"
+                selectionBehavior="all"
+                selectedValue={selectedNodes.all}
+                onSelectionChange={(details) => {
+                  setSelectedNodes(prev => ({ ...prev, all: details.selectedValue }))
+                }}
+                defaultExpandedValue={['folder1']}
+              />
+            </div>
+            <div className="mt-2 text-xs">
+              Selected: {selectedNodes.all.join(', ') || 'None'}
+            </div>
+          </div>
+
+          {/* Leaf Only Mode */}
+          <div>
+            <h4 className="mb-2 font-medium text-sm">Leaf Only</h4>
+            <p className="mb-2 text-xs text-gray-500">Only files (leaves) can be selected</p>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-leaf-only"
+                data={testData}
+                selectionMode="multiple"
+                selectionBehavior="leaf-only"
+                selectedValue={selectedNodes.leafOnly}
+                onSelectionChange={(details) => {
+                  setSelectedNodes(prev => ({ ...prev, leafOnly: details.selectedValue }))
+                }}
+                defaultExpandedValue={['folder1']}
+              />
+            </div>
+            <div className="mt-2 text-xs">
+              Selected: {selectedNodes.leafOnly.join(', ') || 'None'}
+            </div>
+          </div>
+
+          {/* Custom Mode */}
+          <div>
+            <h4 className="mb-2 font-medium text-sm">Custom</h4>
+            <p className="mb-2 text-xs text-gray-500">Per-node selectable property</p>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-custom"
+                data={customData}
+                selectionMode="multiple"
+                selectionBehavior="custom"
+                selectedValue={selectedNodes.custom}
+                onSelectionChange={(details) => {
+                  setSelectedNodes(prev => ({ ...prev, custom: details.selectedValue }))
+                }}
+                defaultExpandedValue={['selectable-folder', 'non-selectable-folder']}
+              />
+            </div>
+            <div className="mt-2 text-xs">
+              Selected: {selectedNodes.custom.join(', ') || 'None'}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates different selection behaviors: all (default), leaf-only, and custom per-node control.',
+      },
+    },
+  },
+}
+
+export const ExpandVsSelectionTest: Story = {
+  render: () => {
+    const [logs, setLogs] = useState<string[]>([])
+    
+    const addLog = (message: string) => {
+      const timestamp = new Date().toLocaleTimeString('cs-CZ', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        fractional: 3 
+      })
+      setLogs(prev => [`[${timestamp}] ${message}`, ...prev].slice(0, 10))
+    }
+
+    const testData: TreeNode[] = [
+      {
+        id: 'folder1',
+        name: 'Folder 1 (klikni na chevron nebo na název)',
+        children: [
+          { id: 'file1', name: 'File 1.txt' },
+          { id: 'file2', name: 'File 2.txt' },
+          {
+            id: 'subfolder1',
+            name: 'Subfolder 1',
+            children: [
+              { id: 'file3', name: 'File 3.txt' },
+            ]
+          }
+        ]
+      },
+      {
+        id: 'folder2',
+        name: 'Folder 2',
+        children: [
+          { id: 'file4', name: 'File 4.txt' },
+          { id: 'file5', name: 'File 5.txt' },
+        ]
+      }
+    ]
+
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">Test instrukce:</h3>
+          <ul className="text-sm space-y-1">
+            <li>• Klikni na <strong>chevron (šipku)</strong> → mělo by se POUZE expandovat/collapsovat</li>
+            <li>• Klikni na <strong>název složky/souboru</strong> → mělo by se vybrat (+ expandovat pokud expandOnClick=true)</li>
+            <li>• Zkus klávesy: Space/Enter na vybraném prvku</li>
+          </ul>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <h4 className="mb-2 font-medium text-sm">expandOnClick = false</h4>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-expand-false"
+                data={testData}
+                selectionMode="single"
+                expandOnClick={false}
+                onExpandedChange={(details) => {
+                  addLog(`🔽 EXPANDED: ${details.expandedValue.join(', ') || 'none'}`)
+                }}
+                onSelectionChange={(details) => {
+                  addLog(`✅ SELECTED: ${details.selectedValue.join(', ') || 'none'}`)
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <h4 className="mb-2 font-medium text-sm">expandOnClick = true (default)</h4>
+            <div className="border rounded-lg p-4">
+              <TreeView
+                id="test-expand-true"
+                data={testData}
+                selectionMode="single"
+                expandOnClick={true}
+                onExpandedChange={(details) => {
+                  addLog(`🔽 EXPANDED: ${details.expandedValue.join(', ') || 'none'}`)
+                }}
+                onSelectionChange={(details) => {
+                  addLog(`✅ SELECTED: ${details.selectedValue.join(', ') || 'none'}`)
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="font-medium text-sm">Event Log (posledních 10):</h4>
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 h-48 overflow-y-auto font-mono text-xs">
+            {logs.length === 0 ? (
+              <div className="text-gray-400">Čekám na interakci...</div>
+            ) : (
+              logs.map((log, index) => (
+                <div 
+                  key={index} 
+                  className={log.includes('SELECTED') ? 'text-green-600' : 'text-blue-600'}
+                >
+                  {log}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Test story pro ověření správného oddělení expand/collapse a selection logiky. Chevron by měl pouze expandovat, klik na node by měl vybírat.',
+      },
+    },
   },
 }

@@ -1,52 +1,60 @@
 @theme static {
-  --opacity-tree-disabled: 60%;
   /* === BASE TOKEN MAPPING === */
-  --color-tree-bg: transparent;
+  --color-tree-bg: var(--color-base);
   --color-tree-fg: var(--color-fg-primary);
   --color-tree-border: var(--color-border-primary);
+  --color-tree-icon-hover: var(--color-fg-primary);
+  --color-tree-accent: var(--color-primary);
 
-  /* Tree root */
+  /* === STATE VARIATIONS === */
+  --color-tree-node-bg-hover: var(--color-primary-hover);
+  --color-tree-node-bg-selected: transparent;
+  --color-tree-fg-hover: var(--color-fg-reverse);
+  --color-tree-fg-selected: var(--color-tree-accent);
+
+  /* === ROOT === */
   --color-tree-root-bg: transparent;
 
-  /* Tree label */
+  /* === LABEL === */
   --color-tree-label-fg: var(--color-tree-fg);
-  --font-weight-tree-label: var(--font-weight-medium);
 
-  /* Node states - common styles for branch and leaf */
-
-  --color-tree-node-hover: var(--color-primary-hover);
-  --color-tree-node-selected: var(--color-primary-active);
-  --color-tree-node-focus: var(--color-ring-primary);
-  --padding-tree-node: var(--spacing-100);
-
-  /* Text colors */
-  --color-tree-fg-hover: var(--color-fg-reverse);
-  --color-tree-fg-selected: var(--color-fg-reverse);
-
-  --font-weight-tree-selected: var(--font-weight-normal);
-
-  /* Icons */
-  --color-tree-icon: current;
-  --color-tree-icon-hover: var(--color-fg-primary);
-
-  /* === SPACING & SIZING === */
-  --tree-indent-per-level: var(--spacing-100);
-  --spacing-tree-icon: var(--spacing-150);
-
-  /* Size variants */
-  --text-tree-size: var(--text-sm);
-
-  --text-tree-icon: var(--text-icon-sm);
-
-  /* === BORDERS & RADIUS === */
-  --radius-tree-node: var(--radius-sm);
+  /* === NODE === */
+  --color-tree-node-ring: var(--color-ring-primary);
 
   /* === INDENT GUIDE === */
-  --color-tree-indent: var(--color-tree-border);
-  --opacity-tree-indent: 100%;
+  --color-tree-indent-bg: var(--color-tree-border);
   --width-tree-indent: 1px;
 
-  /* === TRANSITIONS === */
+  /* === DISABLED STATES === */
+  --opacity-tree-disabled: 60%;
+
+  /* === SPACING === */
+  --tree-indent-per-level: var(--spacing-100);
+  --spacing-tree-icon: var(--spacing-150);
+  --padding-tree-node: var(--spacing-100);
+
+  /* === TYPOGRAPHY === */
+  /* Tree text size */
+  --text-tree-sm: var(--text-sm);
+  --text-tree-md: var(--text-md);
+  --text-tree-lg: var(--text-lg);
+
+  /* Node icon size */
+  --text-tree-icon-sm: var(--text-icon-sm);
+  --text-tree-icon-md: var(--text-icon-md);
+  --text-tree-icon-lg: var(--text-icon-lg);
+
+  --text-tree-indicator-sm: var(--text-icon-md);
+  --text-tree-indicator-md: var(--text-icon-lg);
+  --text-tree-indicator-lg: var(--text-icon-xl);
+
+  /* Tree font weight */
+  --font-weight-tree-label: var(--font-weight-medium);
+
+  /* === BORDERS & RADIUS === */
+  --radius-tree: 0;
+  /* === OPACITY === */
+  --opacity-tree-indent: 100%;
 }
 
 /* Tree Icons - using semantic tokens */

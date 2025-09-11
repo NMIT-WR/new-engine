@@ -15,38 +15,47 @@ export interface TreeNode {
   }
   disabled?: boolean
   selected?: boolean
+  selectable?: boolean // For 'custom' selection behavior
   [key: string]: unknown
 }
 
 // === COMPONENT VARIANTS ===
 const treeVariants = tv({
   slots: {
-    root: 'relative bg-tree-root-bg',
+    root: 'relative bg-tree-root-bg rounded-tree',
     label: ['text-tree-label-fg font-tree-label'],
     tree: [
       'outline-none bg-tree-bg',
-
-      'focus-visible:ring-2 focus-visible:ring-tree-node-focus focus-visible:ring-offset-2',
+      'focus-visible:ring-2 focus-visible:ring-tree-node-ring focus-visible:ring-offset-2',
     ],
     branch: [
       'data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none',
     ],
-    branchControl: [],
-    branchText: ['flex-1 text-tree-size'],
+    branchTrigger: [
+      'group flex items-center justify-between',
+      'hover:bg-tree-node-bg-hover',
+      'cursor-pointer',
+      'has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-tree-node-ring',
+    ],
+    branchControl: ['flex-1'],
+    branchText: ['flex-1'],
     branchIndicator: [
-      'data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-120',
+      'group-hover:text-tree-fg-hover',
+      'data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-125',
     ],
     branchContent: ['relative', 'data-[state=closed]:hidden'],
     branchIndentGuide: [
-      'absolute top-0 bottom-0 left-1',
-      'w-tree-indent bg-tree-indent',
+      'absolute top-0 bottom-0 start-1',
+      'w-tree-indent bg-tree-indent-bg',
       'opacity-tree-indent',
     ],
-    leaf: [],
-    nodeIcon: [
-      //"flex-shrink-0",
-      'text-tree-icon hover:text-tree-icon-hover',
+    leaf: [
+      'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
+      'data-[selected]:hover:bg-tree-node-bg-hover',
+      'data-[selected]:hover:text-tree-fg-hover',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-ring',
     ],
+    nodeIcon: ['hover:text-tree-icon-hover'],
   },
   compoundSlots: [
     {
@@ -63,21 +72,110 @@ const treeVariants = tv({
       slots: ['branchControl', 'leaf'],
       class: [
         'flex items-center gap-tree-icon p-tree-node',
-        'cursor-pointer rounded-tree-node',
-        'hover:bg-tree-node-hover hover:text-tree-fg-hover hover:font-tree-selected',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-focus',
-        'data-[selected]:bg-tree-node-selected data-[selected]:text-tree-fg-selected data-[selected]:font-tree-selected',
-        'data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent',
+        'cursor-pointer',
+        'data-[disabled]:cursor-not-allowed',
+        'data-[selected]:text-tree-fg-selected',
+        'group-hover:text-tree-fg-hover',
+        'data-[selected]:group-hover:text-tree-fg-hover',
+        'focus-visible:outline-none',
       ],
     },
   ],
+  variants: {
+    size: {
+      sm: {
+        nodeIcon: 'text-tree-icon-sm',
+        branchText: 'text-tree-sm',
+        branchIndicator: 'text-tree-indicator-sm',
+        label: 'text-tree-sm',
+      },
+      md: {
+        nodeIcon: 'text-tree-icon-md',
+        branchText: 'text-tree-md',
+        branchIndicator: 'text-tree-indicator-md',
+        label: 'text-tree-md',
+      },
+      lg: {
+        nodeIcon: 'text-tree-icon-lg',
+        branchText: 'text-tree-lg',
+        branchIndicator: 'text-tree-indicator-lg',
+        label: 'text-tree-lg',
+      },
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
 })
+
+// === HELPER FUNCTIONS ===
+
+// Type definitions from Zag.js API
+type ItemProps = ReturnType<tree.Api['getItemProps']>
+type BranchControlProps = ReturnType<tree.Api['getBranchControlProps']>
+type NonSelectableProps = {
+  onClick?: (e: MouseEvent) => void
+  onKeyDown: (e: KeyboardEvent) => void
+  'aria-selected': undefined
+  'data-disabled': true
+}
+
+/**
+ * Creates props for non-selectable nodes that should only allow navigation
+ * but not selection. Optionally allows Enter key for expand/collapse on branches.
+ */
+function createNonSelectableProps(
+  baseProps: ItemProps | BranchControlProps,
+  nodeState: tree.NodeState,
+  options?: {
+    allowEnterForToggle?: boolean
+    onToggle?: () => void
+  }
+): (ItemProps | BranchControlProps) & NonSelectableProps {
+  return {
+    ...baseProps,
+    onClick: options?.onToggle
+      ? (e: MouseEvent) => {
+          e.stopPropagation()
+          if (!nodeState.disabled && !nodeState.loading) {
+            options.onToggle?.()
+          }
+        }
+      : undefined,
+    onKeyDown: (e: KeyboardEvent) => {
+      const key = e.key
+      // Block selection keys (Enter/Space/Spacebar)
+      if (key === 'Enter' || key === ' ' || key === 'Spacebar') {
+        e.preventDefault()
+        e.stopPropagation()
+
+        // Optionally allow Enter to toggle expand/collapse
+        if (
+          key === 'Enter' &&
+          options?.allowEnterForToggle &&
+          options?.onToggle &&
+          !nodeState.disabled &&
+          !nodeState.loading
+        ) {
+          options.onToggle()
+        }
+        return false
+      }
+      // Allow navigation keys to pass through
+      baseProps.onKeyDown?.(e)
+      return
+    },
+    'aria-selected': undefined,
+    'data-disabled': true,
+  } as (ItemProps | BranchControlProps) & NonSelectableProps
+}
 
 // === TREE NODE COMPONENT ===
 interface TreeNodeProps extends tree.NodeProps {
   api: tree.Api
   showIndentGuides?: boolean
   showNodeIcons?: boolean
+  selectionBehavior?: 'all' | 'leaf-only' | 'custom'
 }
 
 function TreeNode({
@@ -86,9 +184,24 @@ function TreeNode({
   api,
   showIndentGuides = true,
   showNodeIcons = true,
+  selectionBehavior = 'all',
 }: TreeNodeProps) {
   const nodeProps = { indexPath, node }
   const nodeState = api.getNodeState(nodeProps)
+
+  // Determine if this node can be selected based on selectionBehavior
+  const isSelectable = (() => {
+    switch (selectionBehavior) {
+      case 'all':
+        return true
+      case 'leaf-only':
+        return !nodeState.isBranch
+      case 'custom':
+        return node.selectable !== false // Default to true if not specified
+      default:
+        return true
+    }
+  })()
 
   const {
     branch,
@@ -99,6 +212,7 @@ function TreeNode({
     branchIndentGuide,
     leaf,
     nodeIcon,
+    branchTrigger,
   } = treeVariants()
 
   const handleToggle = (id: string) => {
@@ -110,13 +224,21 @@ function TreeNode({
   }
 
   if (nodeState.isBranch) {
+    // Get the base props
+    const baseControlProps = api.getBranchControlProps(nodeProps)
+
+    // Use helper function for non-selectable branches
+    const branchControlProps = isSelectable
+      ? baseControlProps
+      : createNonSelectableProps(baseControlProps, nodeState, {
+          allowEnterForToggle: true,
+          onToggle: () => handleToggle(node.id),
+        })
+
     return (
       <div className={branch()} {...api.getBranchProps(nodeProps)}>
-        <div className="flex items-center">
-          <div
-            className={branchControl()}
-            {...api.getBranchControlProps(nodeProps)}
-          >
+        <div className={branchTrigger()}>
+          <div className={branchControl()} {...branchControlProps}>
             {showNodeIcons && (
               <Icon
                 icon={
@@ -165,6 +287,7 @@ function TreeNode({
               api={api}
               showIndentGuides={showIndentGuides}
               showNodeIcons={showNodeIcons}
+              selectionBehavior={selectionBehavior}
             />
           ))}
         </div>
@@ -172,15 +295,23 @@ function TreeNode({
     )
   }
 
+  // For leaf nodes, conditionally apply selection props
+  const baseItemProps = api.getItemProps(nodeProps)
+  const leafProps = isSelectable
+    ? baseItemProps
+    : createNonSelectableProps(baseItemProps, nodeState)
+
   return (
-    <div className={leaf()} {...api.getItemProps(nodeProps)}>
+    <div className={leaf()} {...leafProps}>
       {showNodeIcons && (
         <Icon
           icon={node.icons?.leaf || 'token-icon-tree-item'}
           className={nodeIcon()}
         />
       )}
-      <span className={branchText()}>{node.name}</span>
+      <span className={branchText()} {...api.getBranchTextProps(nodeProps)}>
+        {node.name}
+      </span>
     </div>
   )
 }
@@ -192,6 +323,7 @@ interface TreeProps extends VariantProps<typeof treeVariants>, tree.Props {
   label?: string
   showIndentGuides?: boolean
   showNodeIcons?: boolean
+  selectionBehavior?: 'all' | 'leaf-only' | 'custom'
 }
 
 export function TreeView({
@@ -199,6 +331,7 @@ export function TreeView({
   label,
   showIndentGuides = true,
   showNodeIcons = true,
+  selectionBehavior = 'all',
 
   dir = 'ltr',
   selectionMode = 'single',
@@ -267,6 +400,7 @@ export function TreeView({
             api={api}
             showIndentGuides={showIndentGuides}
             showNodeIcons={showNodeIcons}
+            selectionBehavior={selectionBehavior}
           />
         ))}
       </div>
