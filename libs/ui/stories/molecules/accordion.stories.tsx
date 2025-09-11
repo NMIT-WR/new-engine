@@ -36,6 +36,11 @@ const meta: Meta<typeof Accordion> = {
   },
   tags: ['autodocs'],
   argTypes: {
+    size: {
+      control: { type: 'inline-radio' },
+      options: ['sm', 'md', 'lg'],
+      description: 'Sets the size of the accordion items',
+    },
     multiple: {
       control: 'boolean',
       description: 'Allows expanding multiple items simultaneously',
@@ -55,17 +60,55 @@ export default meta
 type Story = StoryObj<typeof Accordion>
 
 export const Default: Story = {
-  render: () => (
-    <div className="w-96">
-      <Accordion items={accordionItems} collapsible={true} multiple={false} />
-    </div>
-  ),
+  args: {
+    items: accordionItems,
+    collapsible: true,
+    multiple: false,
+  },
 }
 
 export const Multiple: Story = {
   render: () => (
     <div className="w-96">
       <Accordion items={accordionItems} collapsible={true} multiple={true} />
+    </div>
+  ),
+}
+
+export const ShadowVariants: Story = {
+  render: () => (
+    <div className="w-96 space-y-8">
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Shadow: none (default)</h3>
+        <Accordion items={accordionItems} shadow="none" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Shadow: sm</h3>
+        <Accordion items={accordionItems} shadow="sm" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Shadow: md</h3>
+        <Accordion items={accordionItems} shadow="md" />
+      </div>
+    </div>
+  ),
+}
+
+export const SizeVariants: Story = {
+  render: () => (
+    <div className="w-96 space-y-8">
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Size: sm</h3>
+        <Accordion items={accordionItems} size="sm" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Size: md (default)</h3>
+        <Accordion items={accordionItems} size="md" />
+      </div>
+      <div>
+        <h3 className="mb-2 text-sm font-medium">Size: lg</h3>
+        <Accordion items={accordionItems} size="lg" />
+      </div>
     </div>
   ),
 }
