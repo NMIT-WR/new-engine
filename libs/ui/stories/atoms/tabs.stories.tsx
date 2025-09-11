@@ -102,26 +102,25 @@ const baseItems = [
 ]
 
 export const Default: Story = {
-  render: () => (
-    <div className="w-[600px]">
-      <Tabs items={baseItems} defaultValue="tab1" />
-    </div>
-  ),
+  args: {
+    items: baseItems,
+    variant: 'default',
+  }
 }
 
 export const Variants: Story = {
   render: () => (
-    <VariantContainer orientation="vertical">
+    <VariantContainer>
       <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Default</h3>
+        <h3 className="mb-2 font-semibold text-lg">Default</h3>
         <Tabs items={baseItems} variant="default" />
       </div>
       <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Solid</h3>
+        <h3 className="mb-2 font-semibold text-lg">Solid</h3>
         <Tabs items={baseItems} variant="solid" />
       </div>
       <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Line</h3>
+        <h3 className="mb-2 font-semibold text-lg">Line</h3>
         <Tabs items={baseItems} variant="line" />
       </div>
     </VariantContainer>
@@ -130,17 +129,17 @@ export const Variants: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <VariantContainer orientation="vertical">
-      <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Small</h3>
+    <VariantContainer>
+      <div className="w-fit max-w-[600px]">
+        <h3 className="mb-2 font-semibold text-lg">Small</h3>
         <Tabs items={baseItems} size="sm" />
       </div>
-      <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Medium (Default)</h3>
+      <div className="w-fit max-w-[600px]">
+        <h3 className="mb-2 font-semibold text-lg">Medium (Default)</h3>
         <Tabs items={baseItems} size="md" />
       </div>
-      <div className="w-[600px]">
-        <h3 className="mb-2 font-semibold text-md">Large</h3>
+      <div className="w-fit max-w-[800px]">
+        <h3 className="mb-2 font-semibold text-lg">Large</h3>
         <Tabs items={baseItems} size="lg" />
       </div>
     </VariantContainer>
