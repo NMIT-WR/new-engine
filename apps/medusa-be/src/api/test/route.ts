@@ -1,7 +1,7 @@
 import type {MedusaRequest, MedusaResponse,} from "@medusajs/framework/http"
 import {ContainerRegistrationKeys} from "@medusajs/framework/utils"
-import {syncMeilisearchCategoriesWorkflow} from "../../workflows/meilisearch/workflows/sync-categories";
 import {ProductProducerLink} from "../../links/product-producer";
+import {syncMeilisearchProducersWorkflow} from "../../workflows/meilisearch/workflows/sync-producers";
 
 export async function GET(
     req: MedusaRequest,
@@ -13,7 +13,7 @@ export async function GET(
 
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
-    await syncMeilisearchCategoriesWorkflow(req.scope).run({input: {
+    await syncMeilisearchProducersWorkflow(req.scope).run({input: {
         filters: {}
         }})
 

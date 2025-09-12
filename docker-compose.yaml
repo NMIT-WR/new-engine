@@ -73,7 +73,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
   medusa-meilisearch:
-    image: getmeili/meilisearch:v1.12
+    image: getmeili/meilisearch:v1.20
     container_name: wr_medusa_meilisearch
     ports:
       - "7700:7700"
@@ -90,7 +90,7 @@ services:
       MEILI_MASTER_KEY: ${DC_MEILI_MASTER_KEY}
       MEILI_NO_ANALYTICS: true
   medusa-db:
-    image: postgres:17.2-alpine
+    image: postgres:17.6-alpine
     restart: unless-stopped
     command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     ports:

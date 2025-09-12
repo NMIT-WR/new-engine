@@ -78,6 +78,21 @@ module.exports = defineConfig({
                         },
                         primaryKey: 'id',
                     },
+                    producers: {
+                        type: 'producers',
+                        enabled: true,
+                        fields: ['id', 'title'],
+                        indexSettings: {
+                            searchableAttributes: ['title'],
+                            displayedAttributes: [
+                                'id',
+                                'title',
+                                'handle',
+                            ],
+                            filterableAttributes: ['id', 'title'],
+                        },
+                        primaryKey: 'id',
+                    },
                 },
             },
         },
