@@ -1,2 +1,2 @@
 export const MEILISEARCH = 'meilisearch'
-export const CATEGORIES = 'categories'
+export const PRODUCERS = 'producers'

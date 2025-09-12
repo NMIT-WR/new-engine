@@ -17,7 +17,7 @@ services:
     priority: 100
 
   - hostname: search
-    type: meilisearch@1.10
+    type: meilisearch@1.20
     mode: NON_HA
     enableSubdomainAccess: true
     priority: 100

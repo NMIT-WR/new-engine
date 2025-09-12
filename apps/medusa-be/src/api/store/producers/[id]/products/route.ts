@@ -13,7 +13,7 @@ export async function GET(
     res: MedusaResponse
 ) {
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-    const { data: productIds } = await query.graph({
+    const {data: productIds} = await query.graph({
         entity: ProductProducerLink.entryPoint,
         filters: {
             'producer_id': req.params.id ?? '-1',
@@ -21,7 +21,7 @@ export async function GET(
         fields: ['product_id'],
     })
 
-    const { data: products } = await query.graph({
+    const {data: products} = await query.graph({
         entity: 'product',
         filters: {
             id: {

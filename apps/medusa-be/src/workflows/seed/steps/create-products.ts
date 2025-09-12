@@ -67,6 +67,7 @@ export type CreateProductsStepInput = ProductInput[]
 const CreateProductsStepId = 'create-products-seed-step'
 
 function processProductProducer(inputProduct: ProductInput, producers: Map<string, { attributes: Map<string, string>; products: string[] }>) {
+    const handle = ''
     if (inputProduct.producer?.title) {
         if (!producers.has(inputProduct.producer.title)) {
             producers.set(inputProduct.producer.title, {products: [], attributes: new Map()})

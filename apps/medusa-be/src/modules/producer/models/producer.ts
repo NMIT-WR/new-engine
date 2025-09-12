@@ -4,6 +4,7 @@ import ProducerAttribute from "./producer-attribute";
 const Producer = model.define("producer", {
     id: model.id().primaryKey(),
     title: model.text(),
+    handle: model.text().unique(),
     attributes: model.hasMany(() => ProducerAttribute, {
         mappedBy: "producer"
     })
