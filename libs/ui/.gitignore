@@ -12,3 +12,4 @@ node-compile-cache
 .vscode/*
 !.vscode/extensions.json
 .idea
+.vercel
