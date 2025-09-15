@@ -21,6 +21,7 @@
     "test:integration:modules": "cross-env TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "test:unit": "cross-env TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "migrate": "medusa db:migrate",
+    "migrate:generate-only": "medusa db:generate",
     "syncLinks": "medusa db:sync-links",
     "createInitialSuperadmin": "medusa user -e \"$SUPERADMIN_EMAIL\" -p \"$SUPERADMIN_PASSWORD\"",
     "seedInitialData": "medusa exec ./src/scripts/seed.ts",
@@ -31,13 +32,14 @@
     "setInitialPublishableKey": "bash -c \"medusa exec ./src/scripts/output-publishable-key.ts | grep -o '<PK_TOKEN>.*</PK_TOKEN>' | sed 's/<PK_TOKEN>//g;s/<\\/PK_TOKEN>//g' | tr -d '\\n\\r' | zsc setSecretEnv CHANNEL_PUBLISHABLE_KEY\""
   },
   "dependencies": {
-    "@medusajs/admin-sdk": "^2.10.1",
-    "@medusajs/cli": "^2.10.1",
-    "@medusajs/dashboard": "^2.10.1",
-    "@medusajs/draft-order": "^2.10.1",
-    "@medusajs/event-bus-redis": "^2.10.1",
-    "@medusajs/framework": "^2.10.1",
-    "@medusajs/medusa": "^2.10.1",
+    "@medusajs/admin-sdk": "^2.10.2",
+    "@medusajs/cli": "^2.10.2",
+    "@medusajs/dashboard": "^2.10.2",
+    "@medusajs/draft-order": "^2.10.2",
+    "@medusajs/event-bus-redis": "^2.10.2",
+    "@medusajs/framework": "^2.10.2",
+    "@medusajs/index": "^2.10.2",
+    "@medusajs/medusa": "^2.10.2",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
@@ -55,7 +57,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "^2.10.1",
+    "@medusajs/test-utils": "^2.10.2",
     "@mikro-orm/cli": "6.4.3",
     "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.38",

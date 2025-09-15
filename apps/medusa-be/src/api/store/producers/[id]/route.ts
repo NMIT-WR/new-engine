@@ -13,10 +13,10 @@ export async function GET(
 ) {
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
     console.log({query: req.queryConfig})
-    const { data: producers } = await query.graph({
+    const {data: producers} = await query.graph({
         entity: 'producer',
         filters: {
-          id: req.params.id ?? '-1',
+            id: req.params.id ?? '-1',
         },
         ...req.queryConfig,
     })

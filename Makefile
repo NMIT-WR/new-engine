@@ -31,6 +31,8 @@ medusa-create-user:
 	docker exec wr_medusa_be pnpm --filter medusa-be exec medusa user -e $(EMAIL) -p $(PASSWORD)
 medusa-migrate:
 	docker exec wr_medusa_be pnpm --filter medusa-be run migrate
+medusa-generate-migration:
+	docker exec wr_medusa_be pnpm --filter medusa-be run migrate:generate-only ${MODULE}
 medusa-minio-init:
 	docker exec wr_medusa_minio mc config host add local http://localhost:9004 minioadmin minioadmin --api S3v4 --lookup auto && \
 	docker exec wr_medusa_minio mc admin accesskey create --access-key minioadminkey --secret-key minioadminkey local && \

@@ -17,17 +17,19 @@ export async function GET(
         filters: {}
         }})
 
-    const { data: product } = await query.graph({
-        entity: ProductProducerLink.entryPoint,
+    const { data: product } = await query.index({
+        entity: 'product',
         // entity: 'product',
         // fields: ["title", "handle", "producer.title", "producer.attributes.value", "producer.attributes.attributeType.name"],
-        fields: ["id", "producer.title", "producer.attributes.value", "producer.attributes.attributeType.name", 'product.handle'],
+        fields: ["id", "producer.title", "producer.attributes.value", "producer.attributes.attributeType.name", 'handle'],
         pagination: {
             take: 10,
             skip: 0,
         },
         filters: {
-            producer_id: '01K1RA7DXJ400EKAFFJHX1S9M9'
+            producer: {
+                handle: 'sidi'
+            }
         }
     })
 
