@@ -7,5 +7,8 @@ export const ProductProducerLink = defineLink(
         linkable: ProductModule.linkable.product,
         isList: true,
     },
-    ProducerModule.linkable.producer,
+    {
+        linkable: ProducerModule.linkable.producer,
+        filterable: ['id', 'title', 'handle'],
+    }
 )

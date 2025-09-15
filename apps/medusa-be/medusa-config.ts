@@ -9,6 +9,9 @@ const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || ''
 const VITE_HMR_PORT = process.env.VITE_HMR_PORT || ''
 
 module.exports = defineConfig({
+    featureFlags: {
+        "index_engine": true,
+    },
     admin: {
         // backendUrl: BACKEND_URL,
         vite: (inlineConfig) => {
@@ -81,15 +84,15 @@ module.exports = defineConfig({
                     producers: {
                         type: 'producers',
                         enabled: true,
-                        fields: ['id', 'title'],
+                        fields: ['id', 'title', 'handle'],
                         indexSettings: {
-                            searchableAttributes: ['title'],
+                            searchableAttributes: ['title', 'handle'],
                             displayedAttributes: [
                                 'id',
                                 'title',
                                 'handle',
                             ],
-                            filterableAttributes: ['id', 'title'],
+                            filterableAttributes: ['id', 'title', 'handle'],
                         },
                         primaryKey: 'id',
                     },
@@ -147,6 +150,9 @@ module.exports = defineConfig({
                     },
                 ],
             },
+        },
+        {
+            resolve: "@medusajs/index",
         },
         {
             resolve: './src/modules/data-layer',

@@ -49,7 +49,7 @@ export const syncMeilisearchProducersStep = createStep(
 
         const transformedProducers = producers.map(producer => ({
             ...producer,
-            handle: '/store/producers/' + producer.id + '/products'
+            handle: '/store/producers/' + producer.handle + '/products'
         }))
 
         await Promise.all(producerIndexes.map((index) => meilisearchService.addDocuments(index, transformedProducers)))

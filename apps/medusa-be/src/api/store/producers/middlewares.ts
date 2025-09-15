@@ -10,8 +10,8 @@ export const storeProducersRoutesMiddlewares: MiddlewareRoute[] = [
         methods: ['GET'],
         matcher: '/store/producers',
         middlewares: [validateAndTransformQuery(StoreProducersSchema, {
-            defaults: ['id', 'title'],
-            allowed: ['id', 'title'],
+            defaults: ['id', 'title', 'handle'],
+            allowed: ['id', 'title', 'handle'],
             isList: true,
         })],
     },
@@ -19,8 +19,8 @@ export const storeProducersRoutesMiddlewares: MiddlewareRoute[] = [
         methods: ['GET'],
         matcher: '/store/producers/:id',
         middlewares: [validateAndTransformQuery(StoreProducersDetailSchema, {
-            defaults: ['id', 'title', 'attributes.attributeType.name', 'attributes.value'],
-            allowed: ['id', 'title', 'attributes.attributeType.name', 'attributes.value'],
+            defaults: ['id', 'title', 'handle', 'attributes.attributeType.name', 'attributes.value'],
+            allowed: ['id', 'title', 'handle', 'attributes.attributeType.name', 'attributes.value'],
             isList: false,
         })],
     },
