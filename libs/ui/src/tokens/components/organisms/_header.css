@@ -187,4 +187,6 @@
   /* Submenu effects */
   --shadow-header-submenu: var(--shadow-lg);
   --radius-header-submenu: var(--radius-md);
+
+  --breakpoint-header-mobile: 48rem;
 }
