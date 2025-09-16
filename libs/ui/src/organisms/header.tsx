@@ -22,7 +22,7 @@ const headerVariants = tv({
       'w-header-brand',
       'shrink-0',
     ],
-    nav: ['md:flex items-center hidden', 'w-header-nav', 'flex-1'],
+    nav: ['header-mobile:flex items-center hidden', 'w-header-nav', 'flex-1'],
     submenu: ['flex flex-col gap-header-submenu'],
     submenuTrigger: ['font-medium px-0'],
     navItem: [
@@ -39,11 +39,11 @@ const headerVariants = tv({
       'text-header-actions-fg',
       'w-header-actions',
       'shrink-0',
-      'hidden md:flex',
+      'hidden header-mobile:flex',
     ],
     hamburger: [
       'flex',
-      'md:hidden items-center justify-center',
+      'header-mobile:hidden items-center justify-center',
       'w-16 h-16',
       'p-header-hamburger',
       'rounded-md',
