@@ -13,6 +13,7 @@ const headerVariants = tv({
       'flex items-center',
       'transition-header',
       'max-w-header-max',
+      'relative',
     ],
     brand: [
       'flex items-center',
@@ -22,8 +23,13 @@ const headerVariants = tv({
       'w-header-brand',
       'shrink-0',
     ],
-    nav: ['header-mobile:flex items-center hidden', 'w-header-nav', 'flex-1'],
-    submenu: ['flex flex-col gap-header-submenu'],
+    nav: [
+      'header-desktop:flex-row header-desktop:items-center flex flex-col',
+      'w-header-nav flex-1',
+      'max-header-desktop:data-[open=false]:hidden max-header-desktop:absolute max-header-desktop:top-full max-header-desktop:z-50',
+      'max-header-desktop:bg-header-bg',
+    ],
+    submenu: ['flex-col gap-header-submenu hidden header-desktop:flex'],
     submenuTrigger: ['font-medium px-0'],
     navItem: [
       'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover px-0 py-0',
@@ -39,11 +45,11 @@ const headerVariants = tv({
       'text-header-actions-fg',
       'w-header-actions',
       'shrink-0',
-      'hidden header-mobile:flex',
+      'hidden header-desktop:flex',
     ],
     hamburger: [
       'flex',
-      'header-mobile:hidden items-center justify-center',
+      'header-desktop:hidden items-center justify-center',
       'w-16 h-16',
       'p-header-hamburger',
       'rounded-md',
@@ -75,6 +81,14 @@ const headerVariants = tv({
         root: ['bg-header-bg-blur', 'backdrop-header-blur'],
       },
     },
+    mobileMenuPosition: {
+      right: {
+        nav: ['right-0'],
+      },
+      left: {
+        nav: ['left-0'],
+      },
+    },
     size: {
       sm: {
         root: 'h-header-sm gap-header-section-sm',
@@ -102,6 +116,7 @@ const headerVariants = tv({
   defaultVariants: {
     variant: 'solid',
     size: 'md',
+    mobileMenuPosition: 'right',
   },
 })
 
@@ -110,7 +125,7 @@ interface HeaderContextValue {
   size?: 'sm' | 'md' | 'lg'
   isMobileMenuOpen?: boolean
   setIsMobileMenuOpen?: (open: boolean) => void
-  closeMobileMenu?: () => void
+  toggleMobileMenu?: () => void
 }
 
 const HeaderContext = createContext<HeaderContextValue>({})
@@ -182,7 +197,7 @@ export function Header({
     size,
   })
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false)
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
   return (
     <HeaderContext.Provider
@@ -190,7 +205,7 @@ export function Header({
         size,
         isMobileMenuOpen,
         setIsMobileMenuOpen,
-        closeMobileMenu,
+        toggleMobileMenu,
       }}
     >
       <header
@@ -203,10 +218,10 @@ export function Header({
         {children}
         <Button
           theme="borderless"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={toggleMobileMenu}
           className={hamburger()}
           aria-label="Toggle mobile menu"
-          icon="icon-[mdi--menu]"
+          icon={isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'}
         />
       </header>
     </HeaderContext.Provider>
@@ -244,7 +259,12 @@ Header.Nav = function HeaderNav({
   const { nav } = headerVariants({ size })
 
   return (
-    <nav ref={ref} className={nav({ className })} {...props}>
+    <nav
+      ref={ref}
+      className={nav({ className })}
+      data-open={context.isMobileMenuOpen}
+      {...props}
+    >
       {children}
     </nav>
   )
@@ -285,24 +305,58 @@ Header.Submenu = function HeaderSubmenu({
   const context = useContext(HeaderContext)
   const size = context.size ?? 'md'
   const { submenu, submenuTrigger, navItem } = headerVariants({ size })
+  const [isExpanded, setIsExpanded] = useState(false)
   const id = useId()
 
   return (
-    <Popover
-      id={id}
-      trigger={
-        <span className={submenuTrigger()}>
-          {trigger}
-          <Icon icon="icon-[mdi--chevron-down]" />
-        </span>
-      }
-      contentClassName={submenu()}
-      triggerClassName={navItem()}
-      placement={placement}
-      size={size}
-    >
-      {children}
-    </Popover>
+    <>
+      {/* Desktop - Popover */}
+      <div className="header-desktop:block hidden">
+        <Popover
+          id={id}
+          trigger={
+            <span className={submenuTrigger()}>
+              {trigger}
+              <Icon icon="icon-[mdi--chevron-down]" />
+            </span>
+          }
+          contentClassName={submenu()}
+          triggerClassName={navItem()}
+          placement={placement}
+          size={size}
+        >
+          {children}
+        </Popover>
+      </div>
+
+      {/* Mobile - Custom Accordion */}
+      <div className="header-desktop:hidden w-full">
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={submenuTrigger()}
+          aria-expanded={isExpanded}
+          aria-controls={`submenu-${id}`}
+        >
+          <span>{trigger}</span>
+          <Icon
+            icon="icon-[mdi--chevron-down]"
+            className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+          />
+        </button>
+
+        {/* Submenu content with animation */}
+        <div
+          id={`submenu-${id}`}
+          className={`overflow-hidden transition-all duration-300 ${
+            isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+          data-expanded={isExpanded}
+        >
+          <div>{children}</div>
+        </div>
+      </div>
+    </>
   )
 }
 
