@@ -1,3 +1,10 @@
+:root {
+  @media (width < 48rem) {
+    --spacing-header-nav-sm: var(--spacing-50);
+    --spacing-header-nav-md: var(--spacing-100);
+    --spacing-header-nav-lg: var(--spacing-150);
+  }
+}
 @theme static {
   /* === REFERENCE LAYER === */
   /* These tokens reference semantic tokens from _semantic.css */
@@ -188,5 +195,5 @@
   --shadow-header-submenu: var(--shadow-lg);
   --radius-header-submenu: var(--radius-md);
 
-  --breakpoint-header-mobile: 48rem;
+  --breakpoint-header-desktop: 48rem;
 }
