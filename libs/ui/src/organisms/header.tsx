@@ -29,16 +29,12 @@ const headerVariants = tv({
       'max-header-desktop:data-[open=false]:hidden max-header-desktop:absolute max-header-desktop:top-full max-header-desktop:z-50',
       'max-header-desktop:bg-header-bg',
     ],
-    submenu: ['flex-col gap-header-submenu hidden header-desktop:flex'],
-    submenuTrigger: ['font-medium px-0'],
+    submenu: ['flex-col gap-header-submenu hidden header-desktop:flex **:px-0'],
+    submenuTrigger: [''],
     navItem: [
-      'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover px-0 py-0',
-      'rounded-header-nav-item',
-      'transition-header-nav',
-      'hover:text-header-nav-fg-hover',
+      'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover',
       'data-[active=true]:text-header-nav-fg-active',
       'data-[active=true]:font-header-nav-active',
-      'font-medium',
     ],
     actions: [
       'items-center',
@@ -62,10 +58,10 @@ const headerVariants = tv({
   },
   compoundSlots: [
     {
-      slots: ['submenu', 'navItem'],
+      slots: ['submenuTrigger', 'navItem'],
       class: [
-        'justify-start font-header-nav text-header-nav-fg',
-        'text-header-nav-item-size cursor-pointer',
+        'justify-start font-header-nav text-header-nav-fg hover:text-header-nav-fg-hover',
+        'cursor-pointer',
       ],
     },
   ],
@@ -95,6 +91,7 @@ const headerVariants = tv({
         nav: 'gap-header-nav-sm text-header-nav-sm',
         brand: 'text-header-brand-sm',
         navItem: 'p-header-nav-item-sm text-header-nav-item-sm',
+        submenuTrigger: 'p-header-nav-item-sm text-header-nav-item-sm',
         actions: 'gap-header-actions-sm text-header-actions-sm',
       },
       md: {
@@ -102,6 +99,7 @@ const headerVariants = tv({
         nav: 'gap-header-nav-md text-header-nav-md',
         brand: 'text-header-brand-md',
         navItem: 'p-header-nav-item-md text-header-nav-item-md',
+        submenuTrigger: 'p-header-nav-item-md text-header-nav-item-md',
         actions: 'gap-header-actions-md text-header-actions-md',
       },
       lg: {
@@ -109,6 +107,7 @@ const headerVariants = tv({
         nav: 'gap-header-nav-lg text-header-nav-lg',
         brand: 'text-header-brand-lg',
         navItem: 'p-header-nav-item-lg text-header-nav-item-lg',
+        submenuTrigger: 'p-header-nav-item-lg text-header-nav-item-lg',
         actions: 'gap-header-actions-lg text-header-actions-lg',
       },
     },
@@ -330,7 +329,7 @@ Header.Submenu = function HeaderSubmenu({
       </div>
 
       {/* Mobile - Custom Accordion */}
-      <div className="header-desktop:hidden w-full">
+      <div className="header-desktop:hidden">
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
