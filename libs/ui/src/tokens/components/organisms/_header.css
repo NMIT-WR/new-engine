@@ -10,7 +10,6 @@
   /* These tokens reference semantic tokens from _semantic.css */
   --color-header: var(--color-surface);
   --color-header-accent: var(--color-primary);
-  --color-header-surface: var(--color-highlight);
 
   /* === DERIVED COLORS === */
   /* Background colors */
@@ -29,7 +28,6 @@
   /* === ITEMS === */
   --color-header-nav-item-bg: transparent;
   --color-header-nav-item-bg-hover: transparent;
-  --color-header-nav-item-bg-active: var(--color-surface);
   --text-header-nav-item-sm: var(--text-sm);
   --text-header-nav-item-md: var(--text-md);
   --text-header-nav-item-lg: var(--text-lg);
@@ -48,8 +46,6 @@
   --color-header-actions-fg: var(--color-header-fg);
 
   /* Border colors */
-  --color-header-border: var(--color-border-primary);
-  --color-header-border-transparent: transparent;
 
   /* === SIZE === */
   /* Height tokens */
@@ -65,16 +61,14 @@
 
   /* === SPACING === */
   /* Container padding */
-  --spacing-header-padding-x: var(--spacing-400);
-  --spacing-header-padding-y: var(--spacing-0);
   --padding-header: var(--spacing-400) var(--spacing-400);
 
   /* Section spacing */
   --padding-header-brand: var(--spacing-0);
 
-  --padding-header-nav-item-sm: var(--spacing-100);
-  --padding-header-nav-item-md: var(--spacing-200);
-  --padding-header-nav-item-lg: var(--spacing-300);
+  --padding-header-nav-item-sm: 0 var(--spacing-100);
+  --padding-header-nav-item-md: 0 var(--spacing-200);
+  --padding-header-nav-item-lg: 0 var(--spacing-300);
 
   --spacing-header-nav-sm: var(--spacing-200);
   --spacing-header-nav-md: var(--spacing-300);
@@ -88,9 +82,6 @@
   --spacing-header-section-sm: var(--spacing-400);
   --spacing-header-section-md: var(--spacing-600);
   --spacing-header-section-lg: var(--spacing-800);
-
-  /* Mobile spacing */
-  --spacing-header-mobile-padding-x: var(--spacing-300);
 
   /* === TYPOGRAPHY === */
   --text-header-brand-sm: var(--text-md);
@@ -110,90 +101,11 @@
   --font-weight-header-nav: var(--font-weight-medium);
   --font-weight-header-nav-active: var(--font-weight-semibold);
 
-  /* === BORDERS & RADIUS === */
-  --radius-header: var(--radius-none);
-  --radius-header-nav-item: var(--radius-sm);
-  --border-header-width: 1px;
-
-  /* === SHADOWS === */
-  --shadow-header: var(--shadow-none);
-  --shadow-header-sticky: var(--shadow-md);
-  --shadow-header-elevated: var(--shadow-lg);
-
-  /* === EFFECTS === */
-  /* Backdrop filter for blur effect */
-  --backdrop-header-blur: blur(12px);
-  --backdrop-header-none: none;
-
-  /* === TRANSITIONS === */
-  --transition-header: all 0.2s ease;
-  --transition-header-nav: color 0.15s ease, background-color 0.15s ease;
-
   /* === Z-INDEX === */
-  --z-header: 1000;
-  --z-header-sticky: 1010;
-  --z-header-mobile-menu: 1020;
-
-  /* === MOBILE MENU === */
-  /* Mobile menu drawer dimensions */
-  --width-header-mobile-menu: 280px;
-  --height-header-mobile-menu: 100vh;
-  --height-header-mobile-menu-max: 100dvh; /* Dynamic viewport height for mobile */
-
-  /* Mobile menu colors */
-  --color-header-mobile-menu-bg: var(--color-surface);
-  --color-header-mobile-menu-border: var(--color-border-primary);
-  --color-header-mobile-menu-overlay-bg: color-mix(
-    in srgb,
-    var(--color-surface-inverse) 40%,
-    transparent
-  );
-
-  /* Mobile menu item colors */
-  --color-header-mobile-menu-item-bg: transparent;
-  --color-header-mobile-menu-item-bg-hover: var(--color-highlight);
-  --color-header-mobile-menu-item-bg-active: var(--color-primary-subtle);
-  --color-header-mobile-menu-item-fg: var(--color-fg-primary);
-  --color-header-mobile-menu-item-fg-active: var(--color-primary);
-  --color-header-mobile-menu-item-border: var(--color-border-secondary);
-
   /* Mobile menu hamburger colors */
   --color-header-hamburger-fg: var(--color-fg-primary);
-  --color-header-hamburger-bg: transparent;
   --color-header-hamburger-bg-hover: var(--color-highlight);
 
-  /* Mobile menu spacing */
-  --padding-header-mobile-menu: var(--spacing-400);
-  --padding-header-mobile-menu-item: var(--spacing-300) var(--spacing-400);
-  --spacing-header-mobile-menu-item: var(--spacing-200);
-
-  /* Mobile menu hamburger button */
-  --size-header-hamburger: 2.5rem;
-  --size-header-hamburger-icon: 1.25rem;
+  /* hamburger button */
   --padding-header-hamburger: var(--spacing-200);
-
-  /* Mobile menu animations */
-  --transition-header-mobile-menu: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-header-mobile-menu-overlay: opacity 0.2s ease-in-out;
-
-  /* Mobile menu shadows */
-  --shadow-header-mobile-menu: var(--shadow-2xl);
-
-  /* Hide-on-scroll behavior */
-  --transition-header-hide-scroll: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transform-header-hidden: translateY(-100%);
-  --transform-header-visible: translateY(0);
-
-  /* Submenu colors */
-  --color-header-submenu-bg: var(--color-surface);
-  --color-header-submenu-border: var(--color-border-primary);
-  /* Submenu spacing */
-  --padding-header-submenu: var(--spacing-100);
-  --padding-header-submenu-item: var(--spacing-200) var(--spacing-400);
-
-  /* Submenu effects */
-  --shadow-header-submenu: var(--shadow-lg);
-  --radius-header-submenu: var(--radius-md);
-
-  --breakpoint-header-desktop: 48rem;
 }

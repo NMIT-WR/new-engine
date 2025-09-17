@@ -192,7 +192,7 @@ export const WithNestedSubmenu: Story = {
       <Header.Nav>
         <Header.NavItem href="/">Home</Header.NavItem>
 
-        <Header.Submenu trigger="Shop">
+        <Header.Submenu trigger="Shop" >
             <Header.NavItem href="/shop/new-arrivals">
               New Arrivals
             </Header.NavItem>
