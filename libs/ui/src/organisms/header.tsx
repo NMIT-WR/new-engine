@@ -29,12 +29,21 @@ const headerVariants = tv({
       'max-header-desktop:data-[open=false]:hidden max-header-desktop:absolute max-header-desktop:top-full max-header-desktop:z-50',
       'max-header-desktop:bg-header-bg',
     ],
-    submenu: ['flex-col gap-header-submenu hidden header-desktop:flex **:px-0'],
+    submenu: [
+      'flex-col gap-header-submenu hidden header-desktop:flex **:px-header-submenu-item',
+    ],
+    mobileSubmenu: [
+      'overflow-hidden transition-all duration-header max-h-0 opacity-0',
+      'data-[expanded=true]:max-h-header-mobile-submenu data-[expanded=true]:opacity-100',
+    ],
     submenuTrigger: [''],
+    submenuTriggerIcon:
+      'transition-transform duration-header data-[expanded=true]:rotate-180',
     navItem: [
       'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover',
       'data-[active=true]:text-header-nav-fg-active',
       'data-[active=true]:font-header-nav-active',
+      'min-w-max',
     ],
     actions: [
       'items-center',
@@ -46,14 +55,14 @@ const headerVariants = tv({
     hamburger: [
       'flex',
       'header-desktop:hidden items-center justify-center',
-      'w-16 h-16',
+      'size-header-hamburger',
       'p-header-hamburger',
       'rounded-md',
       'text-header-hamburger-fg',
       'hover:bg-header-hamburger-bg-hover',
-      'transition-colors duration-200',
+      'transition-colors duration-header',
       'cursor-pointer',
-      'focus:outline-none focus:ring-2 focus:ring-primary/20',
+      'focus:outline-none focus:ring-2 focus:ring-header-hamburger-ring',
     ],
   },
   compoundSlots: [
@@ -68,13 +77,13 @@ const headerVariants = tv({
   variants: {
     variant: {
       solid: {
-        root: ['bg-header-bg', 'backdrop-filter-header-none'],
+        root: ['bg-header-bg'],
       },
       transparent: {
-        root: ['bg-header-bg-transparent', 'backdrop-filter-header-none'],
+        root: ['bg-header-bg-transparent'],
       },
       blur: {
-        root: ['bg-header-bg-blur', 'backdrop-header-blur'],
+        root: ['bg-header-bg-blur'],
       },
     },
     mobileMenuPosition: {
@@ -303,7 +312,15 @@ Header.Submenu = function HeaderSubmenu({
 }: HeaderSubmenuProps) {
   const context = useContext(HeaderContext)
   const size = context.size ?? 'md'
-  const { submenu, submenuTrigger, navItem } = headerVariants({ size })
+  const {
+    submenu,
+    submenuTrigger,
+    submenuTriggerIcon,
+    navItem,
+    mobileSubmenu,
+  } = headerVariants({
+    size,
+  })
   const [isExpanded, setIsExpanded] = useState(false)
   const id = useId()
 
@@ -340,16 +357,15 @@ Header.Submenu = function HeaderSubmenu({
           <span>{trigger}</span>
           <Icon
             icon="icon-[mdi--chevron-down]"
-            className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            className={submenuTriggerIcon()}
+            data-expanded={isExpanded}
           />
         </button>
 
         {/* Submenu content with animation */}
         <div
           id={`submenu-${id}`}
-          className={`overflow-hidden transition-all duration-300 ${
-            isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-          }`}
+          className={mobileSubmenu()}
           data-expanded={isExpanded}
         >
           <div>{children}</div>
