@@ -34,6 +34,8 @@
 
   /* === SUBMENU === */
   --spacing-header-submenu: var(--spacing-200);
+  --padding-header-submenu-item: 0;
+  --spacing-header-mobile-submenu: var(--container-sm);
 
   /* === ACTIONS === */
 
@@ -108,7 +110,14 @@
 
   /* hamburger button */
   --padding-header-hamburger: var(--spacing-200);
+  --size-header-hamburger: 4rem;
+  --color-header-hamburger-ring: --alpha(
+    --color-header-accent /
+    var(--opacity-ring)
+  );
 
   /* breakpoint */
   --breakpoint-header-desktop: 48rem;
+
+  --duration-header: 300ms;
 }
