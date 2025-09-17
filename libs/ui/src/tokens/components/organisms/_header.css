@@ -108,4 +108,7 @@
 
   /* hamburger button */
   --padding-header-hamburger: var(--spacing-200);
+
+  /* breakpoint */
+  --breakpoint-header-desktop: 48rem;
 }
