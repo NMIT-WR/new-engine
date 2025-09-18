@@ -1,0 +1,9 @@
+@theme static {
+  /* CAROUSEL */
+  --color-carousel: transparent;
+  --color-carousel-indicator-bg-active: var(--color-yellow-400);
+  --color-carousel-trigger-bg: var(--color-red-400);
+  --width-carousel-indicator: 40px;
+  --aspect-carousel-indicator: 1;
+  --spacing-carousel-root-md: 100%;
+}
