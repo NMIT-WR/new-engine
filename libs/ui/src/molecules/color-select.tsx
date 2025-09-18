@@ -1,6 +1,6 @@
-import { Button } from '@new-engine/ui/atoms/button'
-import { tv } from '@new-engine/ui/utils'
+import { Button } from '../atoms/button'
 import { Icon } from '../atoms/icon'
+import { tv } from '../utils'
 
 const colorSelectVariants = tv({
   slots: {
@@ -61,6 +61,8 @@ const colorSelectVariants = tv({
         icon: 'text-color-select-lg',
       },
       full: {
+        group: 'h-full',
+        cell: 'h-full',
         atom: 'h-full',
         icon: 'w-color-select-icon h-color-select-icon',
       },
