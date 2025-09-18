@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "@new-engine/ui/src/tokens/tokens-only.css";
+@import "./_n1-layout.css";
+@import "./_n1shop-overrides.css";
+@import "./_n1-components.css";
+
+@plugin 'tailwindcss-animate';
+
+@source "../../node_modules/@new-engine/ui/dist/**/*.js";
+@source "../**/*.{js,ts,jsx,tsx,mdx}";

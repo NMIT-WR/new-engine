@@ -1,0 +1,326 @@
+/* ============================================
+   N1 Shop Design System - Extracted Token Values
+   Based on analysis of n1shop.cz
+   ============================================ */
+
+@theme static {
+  /* ============================================
+     TYPOGRAPHY TOKENS
+     ============================================ */
+
+  /* Font Families */
+  --font-family-n1-base: system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-family-n1-heading: var(--font-family-n1-base);
+  --font-family-n1-mono: "SF Mono", "Monaco", "Inconsolata", "Fira Code",
+    monospace;
+
+  /* Font Sizes - Exact N1 Shop Scale */
+  --font-size-n1-2xs: 0.625rem; /* 10px - tiny labels */
+  --font-size-n1-xs: 0.75rem; /* 12px - small text, badges */
+  --font-size-n1-sm: 0.875rem; /* 14px - secondary text */
+  --font-size-n1-base: 1rem; /* 16px - body text */
+  --font-size-n1-lg: 1.125rem; /* 18px - emphasized body */
+  --font-size-n1-xl: 1.25rem; /* 20px - small headings */
+  --font-size-n1-2xl: 1.5rem; /* 24px - h4 */
+  --font-size-n1-3xl: 1.875rem; /* 30px - h3 */
+  --font-size-n1-4xl: 2.25rem; /* 36px - h2 */
+  --font-size-n1-5xl: 3rem; /* 48px - h1 */
+  --font-size-n1-6xl: 3.75rem; /* 60px - hero */
+
+  /* Product-Specific Typography */
+  --font-size-n1-product-title: 0.875rem; /* 14px - product cards */
+  --font-size-n1-product-price: 1.125rem; /* 18px - price display */
+  --font-size-n1-product-old-price: 0.75rem; /* 12px - crossed out price */
+  --font-size-n1-product-badge: 0.625rem; /* 10px - sale badges */
+
+  /* Font Weights */
+  --font-weight-n1-thin: 100;
+  --font-weight-n1-light: 300;
+  --font-weight-n1-normal: 400;
+  --font-weight-n1-medium: 500;
+  --font-weight-n1-semibold: 600;
+  --font-weight-n1-bold: 700;
+  --font-weight-n1-extrabold: 800;
+  --font-weight-n1-black: 900;
+
+  /* Line Heights - N1 Shop Values */
+  --line-height-n1-none: 1;
+  --line-height-n1-tight: 1.2; /* Headings */
+  --line-height-n1-snug: 1.375; /* Subheadings */
+  --line-height-n1-normal: 1.5; /* Body text */
+  --line-height-n1-relaxed: 1.625; /* Readable paragraphs */
+  --line-height-n1-loose: 1.75; /* Spacious text */
+
+  /* Letter Spacing */
+  --letter-spacing-n1-tighter: -0.05em; /* Tight headings */
+  --letter-spacing-n1-tight: -0.025em; /* Subtle tightening */
+  --letter-spacing-n1-normal: 0; /* Default */
+  --letter-spacing-n1-wide: 0.025em; /* Subtle spacing */
+  --letter-spacing-n1-wider: 0.05em; /* Buttons, labels */
+  --letter-spacing-n1-widest: 0.1em; /* All caps text */
+
+  /* ============================================
+     SPACING TOKENS - Exact N1 Shop Measurements
+     ============================================ */
+
+  /* Base Spacing Scale */
+  --spacing-n1-0: 0;
+  --spacing-n1-px: 1px;
+  --spacing-n1-0_5: 0.125rem; /* 2px */
+  --spacing-n1-1: 0.25rem; /* 4px - tight spacing */
+  --spacing-n1-1_5: 0.375rem; /* 6px */
+  --spacing-n1-2: 0.5rem; /* 8px - small gaps */
+  --spacing-n1-2_5: 0.625rem; /* 10px */
+  --spacing-n1-3: 0.75rem; /* 12px - common padding */
+  --spacing-n1-3_5: 0.875rem; /* 14px */
+  --spacing-n1-4: 1rem; /* 16px - standard padding */
+  --spacing-n1-5: 1.25rem; /* 20px - medium gaps */
+  --spacing-n1-6: 1.5rem; /* 24px - section padding */
+  --spacing-n1-7: 1.75rem; /* 28px */
+  --spacing-n1-8: 2rem; /* 32px - large padding */
+  --spacing-n1-9: 2.25rem; /* 36px */
+  --spacing-n1-10: 2.5rem; /* 40px - section gaps */
+  --spacing-n1-11: 2.75rem; /* 44px */
+  --spacing-n1-12: 3rem; /* 48px - major sections */
+  --spacing-n1-14: 3.5rem; /* 56px */
+  --spacing-n1-16: 4rem; /* 64px - hero padding */
+  --spacing-n1-20: 5rem; /* 80px */
+  --spacing-n1-24: 6rem; /* 96px */
+  --spacing-n1-28: 7rem; /* 112px */
+  --spacing-n1-32: 8rem; /* 128px */
+
+  /* Component-Specific Spacing */
+  --spacing-n1-button-x-sm: 0.75rem; /* 12px */
+  --spacing-n1-button-y-sm: 0.375rem; /* 6px */
+  --spacing-n1-button-x: 1rem; /* 16px */
+  --spacing-n1-button-y: 0.5rem; /* 8px */
+  --spacing-n1-button-x-lg: 1.5rem; /* 24px */
+  --spacing-n1-button-y-lg: 0.75rem; /* 12px */
+
+  --spacing-n1-card-padding: 1rem; /* 16px */
+  --spacing-n1-card-gap: 0.75rem; /* 12px */
+
+  --spacing-n1-input-x: 0.75rem; /* 12px */
+  --spacing-n1-input-y: 0.5rem; /* 8px */
+
+  --spacing-n1-grid-gap: 1.25rem; /* 20px - product grid */
+  --spacing-n1-section-y: 2.5rem; /* 40px - between sections */
+
+  /* ============================================
+     COLOR TOKENS - N1 Shop EXACT Brand Colors
+     Extracted via Puppeteer - VERIFIED
+     ============================================ */
+
+  /* Primary Brand Colors - VERIFIED */
+  --color-n1-yellow: #ffe710; /* Primary Yellow/Lime - logo and accents */
+  --color-n1-yellow-hover: #ffdd00; /* Deeper yellow on hover */
+  --color-n1-yellow-active: #ffc700; /* Active state yellow */
+  --color-n1-yellow-light: #fff455; /* Light yellow variant */
+  --color-n1-yellow-dark: #e6ce00; /* Dark yellow variant */
+
+  /* Secondary Colors - VERIFIED */
+  --color-n1-dark: #141414; /* Dark gray/black - main dark color */
+  --color-n1-dark-hover: #2a2a2a; /* Lighter on hover */
+  --color-n1-dark-active: #000000; /* Pure black on active */
+
+  /* Accent Colors - VERIFIED */
+  --color-n1-blue: #3498db; /* Blue for CTAs and badges */
+  --color-n1-blue-hover: #2980b9; /* Darker blue on hover */
+  --color-n1-blue-active: #21618c; /* Active state */
+
+  /* Neutral Colors - VERIFIED */
+  --color-n1-white: #ffffff;
+  --color-n1-black: #000000;
+  --color-n1-gray-50: #fafafa;
+  --color-n1-gray-100: #f6f6f6; /* Secondary surfaces - VERIFIED */
+  --color-n1-gray-200: #eeeeee;
+  --color-n1-gray-300: #e0e0e0;
+  --color-n1-gray-400: #bdbdbd;
+  --color-n1-gray-500: #777777; /* Muted text - VERIFIED */
+  --color-n1-gray-600: #555555; /* Button background - VERIFIED */
+  --color-n1-gray-700: #444444; /* Body text - VERIFIED */
+  --color-n1-gray-800: #333333;
+  --color-n1-gray-900: #141414; /* Dark gray - VERIFIED */
+
+  /* Text Colors - VERIFIED */
+  --color-n1-text-primary: #000000; /* Main headings - VERIFIED */
+  --color-n1-text-secondary: #444444; /* Body text - VERIFIED */
+  --color-n1-text-muted: #777777; /* Muted/secondary text - VERIFIED */
+  --color-n1-text-inverse: #ffffff; /* Text on dark backgrounds - VERIFIED */
+
+  /* Background Colors - VERIFIED */
+  --color-n1-bg-primary: #ffffff; /* Main page background */
+  --color-n1-bg-secondary: #f6f6f6; /* Secondary surfaces */
+  --color-n1-bg-tertiary: #fafafa;
+  --color-n1-bg-hover: #eeeeee; /* Hover states */
+  --color-n1-bg-button: #555555; /* "DO KOŠÍKU" button - VERIFIED */
+  --color-n1-bg-button-secondary: #f6f6f6; /* Secondary buttons - VERIFIED */
+
+  /* Semantic Colors - VERIFIED */
+  --color-n1-success: #008000; /* Green - in stock - VERIFIED */
+  --color-n1-success-light: #e8f5e9;
+  --color-n1-success-dark: #006600;
+
+  --color-n1-warning: #ffa500; /* Orange - warnings */
+  --color-n1-warning-light: #fff3e0;
+  --color-n1-warning-dark: #e65100;
+
+  --color-n1-error: #e74c3c; /* Red - sale/errors - VERIFIED */
+  --color-n1-error-light: #ffebee;
+  --color-n1-error-dark: #c0392b;
+
+  --color-n1-info: #3498db; /* Blue - same as accent - VERIFIED */
+  --color-n1-info-light: #e3f2fd;
+  --color-n1-info-dark: #21618c;
+
+  /* Product-Specific Colors - VERIFIED */
+  --color-n1-sale-badge: #e74c3c; /* "Akce" sale badge */
+  --color-n1-new-badge: #3498db; /* "Novinka" new badge */
+  --color-n1-clearance-badge: #ffa500; /* "Výprodej" clearance */
+  --color-n1-variant-badge: #777777; /* "Více variant" */
+  --color-n1-discount-text: #e74c3c; /* Sale price red */
+  --color-n1-old-price: #777777; /* Strike-through price */
+  --color-n1-regular-price: #444444; /* Regular price */
+
+  /* Stock Status Colors - VERIFIED */
+  --color-n1-stock-in: #008000; /* "Skladem" - green */
+  --color-n1-stock-low: #ffa500; /* "Poslední kus" - orange */
+  --color-n1-stock-out: #e74c3c; /* "Není skladem" - red */
+
+  /* Border Colors - VERIFIED */
+  --color-n1-border: #444444; /* Product card borders - VERIFIED */
+  --color-n1-border-subtle: #dddddd; /* Subtle dividers */
+  --color-n1-border-hover: #222222; /* Border on hover */
+  --color-n1-border-active: #141414; /* Search bar border - VERIFIED */
+  --color-n1-border-focus: #ffe710; /* Focus state - yellow */
+
+  /* Navigation Colors - VERIFIED */
+  --color-n1-nav-bg: rgba(20, 20, 20, 0.9); /* Dark overlay */
+  --color-n1-nav-text: #ffffff; /* White nav text */
+  --color-n1-nav-hover: #ffe710; /* Yellow on hover */
+
+  /* ============================================
+     BORDER RADIUS - N1 Shop Style
+     ============================================ */
+
+  --radius-n1-none: 0;
+  --radius-n1-sm: 0.125rem; /* 2px - subtle rounding */
+  --radius-n1-base: 0.25rem; /* 4px - default buttons, inputs */
+  --radius-n1-md: 0.375rem; /* 6px - cards */
+  --radius-n1-lg: 0.5rem; /* 8px - modals */
+  --radius-n1-xl: 0.75rem; /* 12px - large cards */
+  --radius-n1-2xl: 1rem; /* 16px - hero sections */
+  --radius-n1-3xl: 1.5rem; /* 24px */
+  --radius-n1-full: 9999px; /* Pills, circles */
+
+  /* Component-Specific Radius */
+  --radius-n1-button: 0.25rem; /* 4px */
+  --radius-n1-input: 0.25rem; /* 4px */
+  --radius-n1-card: 0.375rem; /* 6px */
+  --radius-n1-modal: 0.5rem; /* 8px */
+  --radius-n1-badge: 0.125rem; /* 2px */
+
+  /* ============================================
+     SHADOWS - N1 Shop Effects
+     ============================================ */
+
+  --shadow-n1-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-n1-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0
+    rgba(0, 0, 0, 0.06);
+  --shadow-n1-base: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --shadow-n1-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px
+    rgba(0, 0, 0, 0.06);
+  --shadow-n1-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px
+    rgba(0, 0, 0, 0.05);
+  --shadow-n1-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px
+    rgba(0, 0, 0, 0.04);
+  --shadow-n1-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Component-Specific Shadows */
+  --shadow-n1-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-n1-card-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-n1-modal: 0 0 25px 0 rgba(0, 0, 0, 0.3);
+  --shadow-n1-dropdown: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-n1-button-hover: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* ============================================
+     TRANSITIONS - N1 Shop Animations
+     ============================================ */
+
+  --transition-n1-fast: 150ms;
+  --transition-n1-base: 200ms;
+  --transition-n1-slow: 300ms;
+  --transition-n1-slower: 500ms;
+
+  --transition-n1-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-n1-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --transition-n1-easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --transition-n1-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ============================================
+     LAYOUT DIMENSIONS - N1 Shop Specific
+     ============================================ */
+
+  /* Container Widths */
+  --width-n1-xs: 20rem; /* 320px */
+  --width-n1-sm: 24rem; /* 384px */
+  --width-n1-md: 28rem; /* 448px */
+  --width-n1-lg: 32rem; /* 512px */
+  --width-n1-xl: 36rem; /* 576px */
+  --width-n1-2xl: 42rem; /* 672px */
+  --width-n1-3xl: 48rem; /* 768px */
+  --width-n1-4xl: 56rem; /* 896px */
+  --width-n1-5xl: 64rem; /* 1024px */
+  --width-n1-6xl: 72rem; /* 1152px */
+  --width-n1-7xl: 80rem; /* 1280px - main container */
+  --width-n1-full: 100%;
+
+  /* Component Heights */
+  --height-n1-header: 60px;
+  --height-n1-header-mobile: 56px;
+  --height-n1-nav: 48px;
+  --height-n1-button-sm: 32px;
+  --height-n1-button: 40px;
+  --height-n1-button-lg: 48px;
+  --height-n1-input-sm: 32px;
+  --height-n1-input: 40px;
+  --height-n1-input-lg: 48px;
+
+  /* Grid Configuration */
+  --grid-n1-columns: 12;
+  --grid-n1-gap-sm: 0.75rem; /* 12px */
+  --grid-n1-gap: 1.25rem; /* 20px */
+  --grid-n1-gap-lg: 1.5rem; /* 24px */
+
+  /* Product Grid Specific */
+  --grid-n1-product-cols-mobile: 2;
+  --grid-n1-product-cols-tablet: 3;
+  --grid-n1-product-cols-desktop: 4;
+  --grid-n1-product-cols-wide: 5;
+
+  /* ============================================
+     Z-INDEX SCALE
+     ============================================ */
+
+  --z-n1-base: 1;
+  --z-n1-dropdown: 1000;
+  --z-n1-sticky: 1020;
+  --z-n1-fixed: 1030;
+  --z-n1-backdrop: 1040;
+  --z-n1-modal: 1050;
+  --z-n1-popover: 1060;
+  --z-n1-tooltip: 1070;
+  --z-n1-notification: 1080;
+
+  /* ============================================
+     BREAKPOINTS - N1 Shop Responsive Design
+     ============================================ */
+
+  --screen-n1-xs: 375px; /* Mobile small */
+  --screen-n1-sm: 640px; /* Mobile large */
+  --screen-n1-md: 768px; /* Tablet */
+  --screen-n1-lg: 1024px; /* Desktop */
+  --screen-n1-xl: 1280px; /* Desktop large */
+  --screen-n1-2xl: 1536px; /* Wide screen */
+}
