@@ -17,6 +17,9 @@
   --color-carousel-trigger-fg: var(--color-fg-dark);
 
   /* Indicator colors */
+  --color-carousel-indicator-bg: oklch(
+    from var(--color-carousel) calc(l - var(--surface-increment) * 4) c h
+  );
   --color-carousel-indicator-bg-active: var(--color-carousel-accent);
 
   /* === SPACING === */
@@ -41,6 +44,7 @@
 
   /* === BORDERS & RADIUS === */
   --radius-carousel: var(--radius-sm);
+  --radius-carousel-indicator: 50%;
 
   /* === SHADOWS === */
   /* No shadows defined for carousel */
