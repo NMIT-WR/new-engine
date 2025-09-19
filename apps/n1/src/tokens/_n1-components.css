@@ -2,8 +2,13 @@
   /* CAROUSEL */
   --color-carousel: transparent;
   --color-carousel-indicator-bg-active: var(--color-yellow-400);
-  --color-carousel-trigger-bg: var(--color-red-400);
-  --width-carousel-indicator: 40px;
+  --color-carousel-trigger-bg: transparent;
+  --color-carousel-trigger-bg-hover: transparent;
+  --color-carousel-trigger-fg-hover: var(--color-fg-primary);
+  --color-carousel-indicator-border: var(--color-surface);
+  --color-carousel-indicator-border-active: transparent;
+  --text-carousel-trigger-size: 3rem;
+  --width-carousel-indicator: 2rem;
   --aspect-carousel-indicator: 1;
   --spacing-carousel-root-md: 100%;
 }
