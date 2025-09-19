@@ -44,15 +44,16 @@ const carouselVariants = tv({
       'flex items-center justify-center',
       'overflow-hidden',
     ],
-    prevTrigger: ['bg-carousel-trigger-bg'],
-    nextTrigger: ['bg-carousel-trigger-bg'],
+    prevTrigger: '',
+    nextTrigger: '',
     indicatorGroup: [
       'flex justify-center w-full items-center gap-carousel-indicator',
     ],
     indicator: [
       'aspect-carousel-indicator bg-carousel-indicator-bg w-carousel-indicator',
       'data-[current]:bg-carousel-indicator-bg-active',
-      'rounded-carousel-indicator',
+      'data-[current]:border-carousel-indicator-border-active',
+      'rounded-carousel-indicator border border-carousel-indicator-border',
     ],
     autoplayIcon: ['icon-[mdi--play]', 'data-[pressed=true]:icon-[mdi--pause]'],
     autoplayTrigger: [
@@ -67,6 +68,13 @@ const carouselVariants = tv({
       class: [
         'p-carousel-trigger',
         'focus:outline-none text-carousel-trigger-fg focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2',
+      ],
+    },
+    {
+      slots: ['prevTrigger', 'nextTrigger'],
+      class: [
+        'bg-carousel-trigger-bg hover:bg-carousel-trigger-bg-hover text-carousel-trigger-size',
+        'hover:text-carousel-trigger-fg-hover',
       ],
     },
   ],
