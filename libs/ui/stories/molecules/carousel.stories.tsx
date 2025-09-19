@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Carousel, type CarouselSlide } from '../../src/molecules/carousel'
+import { Button } from '../../src/atoms/button'
+import { Select } from '../../src/molecules/select'
 
 // Sample images using src approach (simpler)
 const sampleImages: CarouselSlide[] = [
@@ -8,52 +10,41 @@ const sampleImages: CarouselSlide[] = [
     id: 'slide-1',
     src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
     alt: 'Beautiful landscape',
-    // imageProps: { width: 250, height: 250 },
   },
   {
     id: 'slide-2',
     src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
     alt: 'City skyline',
-    // imageProps: { width: 250, height: 250 },
   },
   {
     id: 'slide-3',
     src: 'https://images.unsplash.com/photo-1747258294931-79af146bd74c?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     alt: 'Ocean view',
-    // imageProps: { width: 250, height: 250 },
   },
-
   {
     id: 'coffee',
     src: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600',
     alt: 'Coffee',
-    //  imageProps: { width: 250, height: 250 },
   },
   {
     id: 'architecture',
     src: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600',
     alt: 'Architecture',
-    // imageProps: { width: 250, height: 250 },
   },
-
   {
     id: 'city-panorama',
     src: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1200',
     alt: 'City panorama',
-    //  imageProps: { width: 400, height: 150 },
   },
   {
     id: 'beach-wide',
     src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200',
     alt: 'Beach panorama',
-    // imageProps: { width: 400, height: 150 },
   },
-
   {
     id: 'skyscraper',
     src: 'https://images.unsplash.com/photo-1494145904049-0dca59b4bbad?w=400',
     alt: 'Skyscraper',
-    //  imageProps: { width: 150, height: 400 },
   },
 ]
 
@@ -67,11 +58,11 @@ const mixedSlides: CarouselSlide[] = [
   {
     id: 'content-1',
     content: (
-      <div className="flex h-full flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8 text-center">
-        <h3 className="mb-4 font-bold text-2xl text-blue-900">
+      <div className="flex h-full flex-col items-center justify-center bg-surface-secondary p-lg text-center">
+        <h3 className="mb-md font-bold text-xl text-fg-primary">
           Custom Content
         </h3>
-        <p className="text-blue-700">
+        <p className="text-fg-secondary">
           This slide has custom JSX content instead of an image
         </p>
       </div>
@@ -89,9 +80,9 @@ const contentSlides: CarouselSlide[] = [
   {
     id: 'content-1',
     content: (
-      <div className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8 text-center">
-        <h3 className="mb-4 font-bold text-2xl text-blue-900">Welcome</h3>
-        <p className="text-blue-700">
+      <div className="flex flex-col items-center justify-center bg-surface-accent p-lg text-center">
+        <h3 className="mb-md font-bold text-xl text-fg-primary">Welcome</h3>
+        <p className="text-fg-secondary">
           This is the first slide with custom content
         </p>
       </div>
@@ -100,18 +91,18 @@ const contentSlides: CarouselSlide[] = [
   {
     id: 'content-2',
     content: (
-      <div className="flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8 text-center">
-        <h3 className="mb-4 font-bold text-2xl text-green-900">Features</h3>
-        <p className="text-green-700">Explore the amazing features we offer</p>
+      <div className="flex flex-col items-center justify-center bg-surface-success p-lg text-center">
+        <h3 className="mb-md font-bold text-xl text-fg-primary">Features</h3>
+        <p className="text-fg-secondary">Explore the amazing features we offer</p>
       </div>
     ),
   },
   {
     id: 'content-3',
     content: (
-      <div className="flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-8 text-center">
-        <h3 className="mb-4 font-bold text-2xl text-purple-900">Get Started</h3>
-        <p className="text-purple-700">Ready to begin your journey?</p>
+      <div className="flex flex-col items-center justify-center bg-surface-info p-lg text-center">
+        <h3 className="mb-md font-bold text-xl text-fg-primary">Get Started</h3>
+        <p className="text-fg-secondary">Ready to begin your journey?</p>
       </div>
     ),
   },
@@ -125,9 +116,10 @@ const meta: Meta<typeof Carousel> = {
     docs: {
       description: {
         component: `
-A flexible carousel component built with Zag.js that supports multiple orientations, autoplay, and customizable controls.
+A flexible carousel component using compound component pattern, built with Zag.js that supports multiple orientations, autoplay, and customizable controls.
 
 ## Features
+- Compound component pattern for flexibility
 - Horizontal and vertical orientation
 - Autoplay with pause/play controls
 - Loop functionality
@@ -137,6 +129,49 @@ A flexible carousel component built with Zag.js that supports multiple orientati
 - Touch/mouse drag support
 - Customizable indicators
 - Accessibility support
+
+## Usage Examples
+
+### Basic Usage
+\`\`\`tsx
+<Carousel.Root slideCount={slides.length}>
+  <Carousel.Items slides={slides} />
+  <Carousel.Control>
+    <Carousel.Previous />
+    <Carousel.Indicators />
+    <Carousel.Next />
+  </Carousel.Control>
+</Carousel.Root>
+\`\`\`
+
+### With Autoplay
+\`\`\`tsx
+<Carousel.Root slideCount={slides.length} autoplay>
+  <Carousel.Autoplay />
+  <Carousel.Items slides={slides} />
+  <Carousel.Control>
+    <Carousel.Previous />
+    <Carousel.Indicators />
+    <Carousel.Next />
+  </Carousel.Control>
+</Carousel.Root>
+\`\`\`
+
+### Custom Indicators
+\`\`\`tsx
+<Carousel.Root slideCount={slides.length}>
+  <Carousel.Items slides={slides} />
+  <Carousel.Control>
+    <Carousel.Previous />
+    <Carousel.Indicators>
+      {slides.map((_, index) => (
+        <Carousel.Indicator key={index} index={index} />
+      ))}
+    </Carousel.Indicators>
+    <Carousel.Next />
+  </Carousel.Control>
+</Carousel.Root>
+\`\`\`
         `,
       },
     },
@@ -144,71 +179,177 @@ A flexible carousel component built with Zag.js that supports multiple orientati
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <div className="flex ">
+      <div className="flex">
         <Story />
       </div>
     ),
   ],
-  argTypes: {
-    orientation: {
-      control: { type: 'select' },
-      options: ['horizontal', 'vertical'],
-      description: 'Carousel orientation',
-    },
-    size: {
-      control: { type: 'select' },
-      options: ['sm', 'md', 'lg'],
-      description: 'Size of the carousel',
-    },
-    loop: {
-      control: { type: 'boolean' },
-      description: 'Enable looping of slides',
-    },
-    autoplay: {
-      control: { type: 'boolean' },
-      description: 'Enable autoplay',
-    },
-    allowMouseDrag: {
-      control: { type: 'boolean' },
-      description: 'Allow dragging with mouse',
-    },
-    slidesPerPage: {
-      control: { type: 'number', min: 1, max: 5 },
-      description: 'Number of slides to show at once',
-    },
-    slidesPerMove: {
-      control: { type: 'number', min: 1, max: 5 },
-      description: 'Number of slides to move at once',
-    },
-  },
 }
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-// Basic carousel with simple image sources
+// Basic carousel with compound components
 export const Default: Story = {
-  args: {
-    slides: sampleImages,
-    orientation: 'horizontal',
-    loop: true,
-    allowMouseDrag: true,
-    autoplay: false,
-  },
+  render: () => (
+    <Carousel.Root slideCount={sampleImages.length} loop>
+      <Carousel.Slides slides={sampleImages} />
+      <Carousel.Control>
+        <Carousel.Previous />
+        <Carousel.Indicators />
+        <Carousel.Next />
+      </Carousel.Control>
+    </Carousel.Root>
+  ),
 }
 
-// Mixed content approach - images and custom JSX
-export const MixedContent: Story = {
-  args: {
-    slides: mixedSlides,
-    size: 'md',
-    loop: true,
-  },
+// Custom control layout
+export const CustomControlLayout: Story = {
+  render: () => (
+    <Carousel.Root slideCount={sampleImages.length} size='md' loop>
+      <Carousel.Slides slides={sampleImages} />
+      {/* Custom control with different arrangement */}
+      <div className="flex justify-between w-full items-center">
+        <Carousel.Previous />
+        <Carousel.Indicators />
+        <Carousel.Next />
+      </div>
+    </Carousel.Root>
+  ),
   parameters: {
     docs: {
       description: {
-        story:
-          'Demonstrates the hybrid approach with both image sources and custom JSX content in the same carousel.',
+        story: 'Demonstrates custom control layouts outside the default Control wrapper.',
+      },
+    },
+  },
+}
+
+// Minimal controls
+export const MinimalControls: Story = {
+  render: () => (
+    <Carousel.Root slideCount={sampleImages.length} loop className='relative'>
+      <Carousel.Slides slides={sampleImages} />
+      {/* Perfectly centered navigation arrows using CSS-only solution */}
+      <Carousel.Previous className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-1/2 bg-transparent text-xl hover:bg-transparent hover:text-primary"/>
+      <Carousel.Next className="absolute top-1/2 right-0 -translate-y-1/2 -translate-x-1/2 bg-transparent text-xl hover:bg-transparent hover:text-primary"/>
+    </Carousel.Root>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Carousel with only navigation arrows, no indicators.',
+      },
+    },
+  },
+}
+
+// Multiple slides per page
+export const MultipleSlides: Story = {
+  render: () => (
+    <Carousel.Root
+      slideCount={sampleImages.length}
+      slidesPerPage={2}
+      slidesPerMove={2}
+      loop
+      size="lg"
+      className='gap-x-0'
+    >
+      <Carousel.Slides slides={sampleImages} />
+      <Carousel.Control>
+        <Carousel.Previous />
+        <Carousel.Indicators />
+        <Carousel.Next />
+      </Carousel.Control>
+    </Carousel.Root>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Carousel showing multiple slides at once with custom spacing.',
+      },
+    },
+  },
+}
+
+// Custom Indicators with compound pattern
+export const CustomIndicators: Story = {
+  render: () => (
+    <Carousel.Root slideCount={sampleImages.length} loop>
+      <Carousel.Slides slides={sampleImages} />
+      <Carousel.Control>
+        <Carousel.Previous />
+        <Carousel.Indicators>
+          {sampleImages.map((_, index) => (
+            <Carousel.Indicator
+              key={index}
+              index={index}
+              className="rounded-sm border border-reverse"
+            />
+          ))}
+        </Carousel.Indicators>
+        <Carousel.Next />
+      </Carousel.Control>
+    </Carousel.Root>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates custom indicator styling with elongated active indicator.',
+      },
+    },
+  },
+}
+
+// Numbered Indicators
+export const NumberedIndicators: Story = {
+  render: () => (
+    <div className="space-y-md">
+      <Carousel.Root slideCount={sampleImages.length} loop className='overflow-auto'>
+        <Carousel.Slides slides={sampleImages} />
+        <div className="flex justify-center h-8 bg-surface items-center gap-200">
+          <Carousel.Previous />
+          <div className="flex gap-50">
+            {sampleImages.map((_, index) => (
+              <Carousel.Indicator
+                key={index}
+                index={index}
+                className="bg-transparent focus:ring-0 focus:ring-offset-0 text-fg-primary hover:bg-transparent hover:text-primary data-[current]:bg-transparent data-[current]:text-primary text-sm font-medium"
+              >
+                {index + 1}
+              </Carousel.Indicator>
+            ))}
+          </div>
+          <Carousel.Next />
+        </div>
+      </Carousel.Root>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Carousel with numbered indicators showing slide position.',
+      },
+    },
+  },
+}
+
+// Mixed content with images and custom JSX
+export const MixedContent: Story = {
+  render: () => (
+    <Carousel.Root slideCount={mixedSlides.length} size="md" loop>
+      <Carousel.Slides slides={mixedSlides} />
+      <Carousel.Control>
+        <Carousel.Previous />
+        <Carousel.Indicators />
+        <Carousel.Next />
+      </Carousel.Control>
+    </Carousel.Root>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the hybrid approach with both image sources and custom JSX content in the same carousel.',
       },
     },
   },
@@ -217,20 +358,41 @@ export const MixedContent: Story = {
 // Different sizes
 export const Sizes: Story = {
   render: () => (
-    <div className="space-y-8">
+    <div className="space-y-lg">
       <div>
-        <h3 className="mb-4 font-medium text-lg">Small</h3>
-        <Carousel slides={sampleImages.slice(0, 3)} slideCount={3} size="sm" />
+        <h3 className="mb-md font-medium text-lg text-fg-primary">Small</h3>
+        <Carousel.Root slideCount={3} size="sm">
+          <Carousel.Slides slides={sampleImages.slice(0, 3)} />
+          <Carousel.Control>
+            <Carousel.Previous />
+            <Carousel.Indicators />
+            <Carousel.Next />
+          </Carousel.Control>
+        </Carousel.Root>
       </div>
 
       <div>
-        <h3 className="mb-4 font-medium text-lg">Medium (Default)</h3>
-        <Carousel slides={sampleImages.slice(0, 3)} slideCount={3} size="md" />
+        <h3 className="mb-md font-medium text-lg text-fg-primary">Medium (Default)</h3>
+        <Carousel.Root slideCount={3} size="md">
+          <Carousel.Slides slides={sampleImages.slice(0, 3)} />
+          <Carousel.Control>
+            <Carousel.Previous />
+            <Carousel.Indicators />
+            <Carousel.Next />
+          </Carousel.Control>
+        </Carousel.Root>
       </div>
 
       <div>
-        <h3 className="mb-4 font-medium text-lg">Large</h3>
-        <Carousel slides={sampleImages.slice(0, 3)} slideCount={3} size="lg" />
+        <h3 className="mb-md font-medium text-lg text-fg-primary">Large</h3>
+        <Carousel.Root slideCount={3} size="lg">
+          <Carousel.Slides slides={sampleImages.slice(0, 3)} />
+          <Carousel.Control>
+            <Carousel.Previous />
+            <Carousel.Indicators />
+            <Carousel.Next />
+          </Carousel.Control>
+        </Carousel.Root>
       </div>
     </div>
   ),
@@ -243,6 +405,7 @@ export const Sizes: Story = {
   },
 }
 
+// Object Fit Demo
 export const ObjectFitDemo: Story = {
   render: () => {
     const testImage = {
@@ -251,81 +414,82 @@ export const ObjectFitDemo: Story = {
       alt: 'Portrait for object-fit testing',
     }
 
-    const size = 'md'
-    const slideCount = 1
-
     return (
-      <div className="space-y-8">
+      <div className="space-y-lg">
         <div className="text-center">
-          <h3 className="mb-2 font-semibold text-lg">Object Fit Variants</h3>
-          <p className="text-gray-600 text-sm">
+          <h3 className="mb-sm font-semibold text-lg text-fg-primary">Object Fit Variants</h3>
+          <p className="text-fg-secondary text-sm">
             Portrait image (400×600) in square containers
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-lg">
           {/* Cover */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Cover</h4>
-            <p className="mb-4 text-gray-500 text-xs">
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Cover</h4>
+            <p className="mb-md text-fg-muted text-xs">
               Image covers entire container, may crop
             </p>
-            <Carousel
-              slides={[testImage]}
+            <Carousel.Root
+              slideCount={1}
               objectFit="cover"
               aspectRatio="square"
-              size={size}
+              size="md"
               loop={false}
-              slideCount={slideCount}
-            />
+            >
+              <Carousel.Slides slides={[testImage]} />
+            </Carousel.Root>
           </div>
 
           {/* Contain */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Contain</h4>
-            <p className="mb-4 text-gray-500 text-xs">
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Contain</h4>
+            <p className="mb-md text-fg-muted text-xs">
               Entire image visible, may have empty space
             </p>
-            <Carousel
-              slides={[testImage]}
+            <Carousel.Root
+              slideCount={1}
               objectFit="contain"
               aspectRatio="square"
-              size={size}
+              size="md"
               loop={false}
-              slideCount={slideCount}
-            />
+            >
+              <Carousel.Slides slides={[testImage]} />
+            </Carousel.Root>
           </div>
 
           {/* Fill */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Fill</h4>
-            <p className="mb-4 text-gray-500 text-xs">
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Fill</h4>
+            <p className="mb-md text-fg-muted text-xs">
               Image stretches to fill, may distort
             </p>
-            <Carousel
-              slides={[testImage]}
+            <Carousel.Root
+              slideCount={1}
               objectFit="fill"
               aspectRatio="square"
-              size={size}
+              size="md"
               loop={false}
-              slideCount={slideCount}
-            />
+            >
+              <Carousel.Slides slides={[testImage]} />
+            </Carousel.Root>
           </div>
 
           {/* None */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">None</h4>
-            <p className="mb-4 text-gray-500 text-xs">
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">None</h4>
+            <p className="mb-md text-fg-muted text-xs">
               Natural size, no fitting applied
             </p>
-            <Carousel
-              slides={[testImage]}
+            <Carousel.Root
+              slideCount={1}
               objectFit="none"
               aspectRatio="square"
-              size={size}
+              size="md"
               loop={false}
-              slideCount={slideCount}
-            />
+            >
+              <Carousel.Slides slides={[testImage]} />
+            </Carousel.Root>
           </div>
         </div>
       </div>
@@ -333,6 +497,7 @@ export const ObjectFitDemo: Story = {
   },
 }
 
+// Aspect Ratio Demo
 export const AspectRatioDemo: Story = {
   render: () => {
     const landscapeImage = {
@@ -342,78 +507,83 @@ export const AspectRatioDemo: Story = {
     }
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-lg">
         <div className="text-center">
-          <h3 className="mb-2 font-semibold text-lg">Aspect Ratio Variants</h3>
-          <p className="text-gray-600 text-sm">
+          <h3 className="mb-sm font-semibold text-lg text-fg-primary">Aspect Ratio Variants</h3>
+          <p className="text-fg-secondary text-sm">
             Same landscape image in different aspect ratios
           </p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-md">
           {/* Square */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Square (1:1)</h4>
-            <Carousel
-              slides={[landscapeImage]}
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Square (1:1)</h4>
+            <Carousel.Root
               slideCount={1}
               aspectRatio="square"
               objectFit="cover"
               size="md"
               loop={false}
-            />
+            >
+              <Carousel.Slides slides={[landscapeImage]} />
+            </Carousel.Root>
           </div>
 
           {/* Landscape */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Landscape (16:9)</h4>
-            <Carousel
-              slides={[landscapeImage]}
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Landscape (16:9)</h4>
+            <Carousel.Root
               slideCount={1}
               aspectRatio="landscape"
               objectFit="cover"
               size="md"
               loop={false}
-            />
+            >
+              <Carousel.Slides slides={[landscapeImage]} />
+            </Carousel.Root>
           </div>
 
           {/* Portrait */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Portrait (3:4)</h4>
-            <Carousel
-              slides={[landscapeImage]}
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Portrait (3:4)</h4>
+            <Carousel.Root
               slideCount={1}
               aspectRatio="portrait"
               objectFit="cover"
               size="md"
               loop={false}
-            />
+            >
+              <Carousel.Slides slides={[landscapeImage]} />
+            </Carousel.Root>
           </div>
 
           {/* Wide */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">Wide (21:9)</h4>
-            <Carousel
-              slides={[landscapeImage]}
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">Wide (21:9)</h4>
+            <Carousel.Root
               slideCount={1}
               aspectRatio="wide"
               objectFit="cover"
               size="md"
               loop={false}
-            />
+            >
+              <Carousel.Slides slides={[landscapeImage]} />
+            </Carousel.Root>
           </div>
 
           {/* None */}
           <div>
-            <h4 className="mb-2 font-medium text-sm">None (natural height)</h4>
-            <Carousel
-              slides={[landscapeImage]}
+            <h4 className="mb-sm font-medium text-sm text-fg-primary">None (natural height)</h4>
+            <Carousel.Root
+              slideCount={1}
               aspectRatio="none"
               objectFit="contain"
               size="md"
               loop={false}
-              slideCount={1}
-            />
+            >
+              <Carousel.Slides slides={[landscapeImage]} />
+            </Carousel.Root>
           </div>
         </div>
       </div>
@@ -421,6 +591,7 @@ export const AspectRatioDemo: Story = {
   },
 }
 
+// Interactive Combined Demo
 export const CombinedDemo: Story = {
   render: () => {
     const [objectFit, setObjectFit] = useState<
@@ -450,93 +621,122 @@ export const CombinedDemo: Story = {
     ]
 
     return (
-      <div className="space-y-6">
-        <div className="flex gap-4">
-          <div>
-            <label className="mb-2 block font-medium text-sm">Object Fit</label>
-            <select
-              value={objectFit}
-              onChange={(e) => setObjectFit(e.target.value as any)}
-              className="rounded border px-3 py-2"
-            >
-              <option value="cover">Cover</option>
-              <option value="contain">Contain</option>
-              <option value="fill">Fill</option>
-              <option value="none">None</option>
-            </select>
-          </div>
+      <div className="space-y-md">
+        <div className="flex gap-md">
+          <Select
+            label="Object Fit"
+            value={[objectFit]}
+            onValueChange={(details) => setObjectFit(details.value[0] as any)}
+            options={[
+              { value: 'cover', label: 'Cover' },
+              { value: 'contain', label: 'Contain' },
+              { value: 'fill', label: 'Fill' },
+              { value: 'none', label: 'None' },
+            ]}
+            size="sm"
+            clearIcon={false}
+          />
 
-          <div>
-            <label className="mb-2 block font-medium text-sm">
-              Aspect Ratio
-            </label>
-            <select
-              value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value as any)}
-              className="rounded border px-3 py-2"
-            >
-              <option value="square">Square</option>
-              <option value="landscape">Landscape</option>
-              <option value="portrait">Portrait</option>
-              <option value="wide">Wide</option>
-              <option value="none">None</option>
-            </select>
-          </div>
-          <div>
-            <label className="mb-2 block font-medium text-sm">Size</label>
-            <select
-              value={size}
-              onChange={(e) => setSize(e.target.value as any)}
-              className="rounded border px-3 py-2"
-            >
-              <option value="sm">sm</option>
-              <option value="md">md</option>
-              <option value="lg">lg</option>
-              <option value="full">full</option>
-            </select>
-          </div>
+          <Select
+            label="Aspect Ratio"
+            value={[aspectRatio]}
+            onValueChange={(details) => setAspectRatio(details.value[0] as any)}
+            options={[
+              { value: 'square', label: 'Square' },
+              { value: 'landscape', label: 'Landscape' },
+              { value: 'portrait', label: 'Portrait' },
+              { value: 'wide', label: 'Wide' },
+              { value: 'none', label: 'None' },
+            ]}
+            size="sm"
+            clearIcon={false}
+          />
+
+          <Select
+            label="Size"
+            value={[size]}
+            onValueChange={(details) => setSize(details.value[0] as any)}
+            options={[
+              { value: 'sm', label: 'Small' },
+              { value: 'md', label: 'Medium' },
+              { value: 'lg', label: 'Large' },
+              { value: 'full', label: 'Full' },
+            ]}
+            size="sm"
+            clearIcon={false}
+          />
         </div>
 
-        <Carousel
-          slides={testImages}
+        <Carousel.Root
+          slideCount={testImages.length}
           objectFit={objectFit}
           aspectRatio={aspectRatio}
           size={size}
-          slideCount={3}
-        />
+        >
+          <Carousel.Slides slides={testImages} />
+          <Carousel.Control>
+            <Carousel.Previous />
+            <Carousel.Indicators />
+            <Carousel.Next />
+          </Carousel.Control>
+        </Carousel.Root>
 
-        <div className="text-gray-500 text-xs">
+        <div className="text-fg-muted text-xs">
           Try different combinations to see how images adapt
         </div>
       </div>
     )
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive demo allowing you to test different combinations of object-fit, aspect-ratio, and size options.',
+      },
+    },
   },
 }
 
 // Vertical orientation
 export const Vertical: Story = {
   render: () => (
-    <div className="">
-      <Carousel
+    <div className="h-96">
+      <Carousel.Root
         orientation="vertical"
-        slides={sampleImages.slice(0, 4)}
+        slideCount={4}
         size="md"
         loop
-        slideCount={4}
-      />
+      >
+        <Carousel.Slides slides={sampleImages.slice(0, 4)} />
+        <Carousel.Control>
+          <Carousel.Previous />
+          <Carousel.Indicators />
+          <Carousel.Next />
+        </Carousel.Control>
+      </Carousel.Root>
     </div>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Carousel in vertical orientation mode.',
+      },
+    },
+  },
 }
 
-// With autoplay
+// With Autoplay
 export const Autoplay: Story = {
-  args: {
-    slides: contentSlides,
-    autoplay: true,
-    loop: true,
-    autoplayTrigger: true,
-    size: 'md',
-  },
+  render: () => (
+    <Carousel.Root slideCount={contentSlides.length} autoplay loop>
+      <Carousel.Autoplay />
+      <Carousel.Slides slides={contentSlides} />
+      <Carousel.Control>
+        <Carousel.Previous />
+        <Carousel.Indicators />
+        <Carousel.Next />
+      </Carousel.Control>
+    </Carousel.Root>
+  ),
   parameters: {
     docs: {
       description: {
@@ -546,34 +746,24 @@ export const Autoplay: Story = {
   },
 }
 
-// Multiple slides per page
-export const MultipleSlides: Story = {
-  args: {
-    slides: sampleImages,
-    slidesPerPage: 2,
-    slidesPerMove: 2,
-    loop: true,
-    size: 'lg',
-    spacing: '16px',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Carousel showing multiple slides at once with custom spacing.',
-      },
-    },
-  },
-}
-
-// With spacing
+// With Spacing
 export const WithSpacing: Story = {
-  args: {
-    slides: sampleImages,
-    slidesPerPage: 3,
-    /*spacing: "16px",*/
-    size: 'lg',
-    loop: true,
-  },
+  render: () => (
+    <Carousel.Root
+      slideCount={sampleImages.length}
+      slidesPerPage={3}
+      spacing="16px"
+      size="lg"
+      loop
+    >
+      <Carousel.Slides slides={sampleImages} />
+      <Carousel.Control>
+        <Carousel.Previous />
+        <Carousel.Indicators />
+        <Carousel.Next />
+      </Carousel.Control>
+    </Carousel.Root>
+  ),
   parameters: {
     docs: {
       description: {
