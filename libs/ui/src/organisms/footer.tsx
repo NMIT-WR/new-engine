@@ -13,15 +13,14 @@ const footerVariants = tv({
     root: 'flex w-full bg-footer-bg items-center justify-center rounded-footer',
     container: 'w-full max-w-footer-max bg-footer-container-bg',
     section: 'bg-footer-section-bg',
-    list: 'flex flex-col bg-footer-list-bg list-none p-0 m-0 gap-footer-list-gap',
+    list: 'flex flex-col bg-footer-list-bg list-none gap-footer-list-gap',
     bottom:
-      'flex w-full items-center bg-footer-bottom-bg justify-between border-t-(--border-width-footer) border-footer-divider-border pt-footer-bottom',
+      'flex w-full items-center bg-footer-bottom-bg justify-between border-t-(--border-width-footer) pt-footer-bottom',
     title:
       'font-footer-title text-footer-title-fg hover:text-footer-title-fg-hover transition-footer-title',
     link: 'font-footer-link text-footer-link-fg hover:text-footer-link-fg-hover transition-footer-link',
     text: 'text-footer-text-fg',
-    divider:
-      'w-full h-footer-divider bg-footer-divider-border border-0 my-footer-divider',
+    divider: 'flex w-full h-footer-divider border-0 bg-footer-divider-bg',
   },
   variants: {
     direction: {
@@ -95,6 +94,7 @@ const footerVariants = tv({
 interface FooterContextValue {
   size?: 'sm' | 'md' | 'lg'
   sectionFlow?: 'col' | 'row'
+  layout?: 'col' | 'row'
 }
 
 const FooterContext = createContext<FooterContextValue>({})
@@ -103,56 +103,37 @@ interface FooterProps
   extends HTMLAttributes<HTMLElement>,
     VariantProps<typeof footerVariants> {
   children: ReactNode
-  className?: string
 }
 
-interface FooterContainerProps
-  extends HTMLAttributes<HTMLElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterContainerProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
 }
 
-interface FooterSectionProps
-  extends HTMLAttributes<HTMLElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterSectionProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
 }
 
-interface FooterTitleProps
-  extends HTMLAttributes<HTMLElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterTitleProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
 }
 
-interface FooterLinkProps
-  extends HTMLAttributes<HTMLAnchorElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterLinkProps extends HTMLAttributes<HTMLAnchorElement> {
   children: ReactNode
   href: string
   external?: boolean
 }
 
-interface FooterTextProps
-  extends HTMLAttributes<HTMLElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterTextProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
 }
 
-interface FooterListProps
-  extends HTMLAttributes<HTMLUListElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterListProps extends HTMLAttributes<HTMLUListElement> {
   children: ReactNode
 }
 
-interface FooterDividerProps
-  extends HTMLAttributes<HTMLHRElement>,
-    VariantProps<typeof footerVariants> {
-  className?: string
-}
+interface FooterDividerProps extends HTMLAttributes<HTMLHRElement> {}
 
-interface FooterBottomProps
-  extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof footerVariants> {
+interface FooterBottomProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
 }
 
@@ -160,13 +141,15 @@ export function Footer({
   children,
   size,
   sectionFlow,
+  direction,
+  layout,
   className,
 }: FooterProps) {
-  const { root } = footerVariants({ size, className })
+  const { root } = footerVariants({ size, direction })
 
   return (
-    <FooterContext.Provider value={{ size, sectionFlow }}>
-      <footer className={root()}>{children}</footer>
+    <FooterContext.Provider value={{ size, sectionFlow, layout }}>
+      <footer className={root({ className })}>{children}</footer>
     </FooterContext.Provider>
   )
 }
@@ -175,9 +158,9 @@ Footer.Container = function FooterContainer({
   children,
   className,
 }: FooterContainerProps) {
-  const { size } = useContext(FooterContext)
-  const { container } = footerVariants({ size, className })
-  return <div className={container()}>{children}</div>
+  const { size, layout } = useContext(FooterContext)
+  const { container } = footerVariants({ size, layout })
+  return <div className={container({ className })}>{children}</div>
 }
 
 Footer.Section = function FooterSection({
@@ -188,15 +171,14 @@ Footer.Section = function FooterSection({
   const { section } = footerVariants({
     size,
     sectionFlow,
-    className,
   })
-  return <div className={section()}>{children}</div>
+  return <div className={section({ className })}>{children}</div>
 }
 
 Footer.Title = function FooterTitle({ children, className }: FooterTitleProps) {
   const { size } = useContext(FooterContext)
-  const { title } = footerVariants({ size, className })
-  return <h3 className={title()}>{children}</h3>
+  const { title } = footerVariants({ size })
+  return <h3 className={title({ className })}>{children}</h3>
 }
 
 Footer.Link = function FooterLink({
@@ -207,11 +189,11 @@ Footer.Link = function FooterLink({
   ...props
 }: FooterLinkProps) {
   const { size } = useContext(FooterContext)
-  const { link } = footerVariants({ size, className })
+  const { link } = footerVariants({ size })
   return (
     <Link
       href={href}
-      className={link()}
+      className={link({ className })}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
       {...props}
@@ -223,8 +205,8 @@ Footer.Link = function FooterLink({
 
 Footer.Text = function FooterText({ children, className }: FooterTextProps) {
   const { size } = useContext(FooterContext)
-  const { text } = footerVariants({ size, className })
-  return <p className={text()}>{children}</p>
+  const { text } = footerVariants({ size })
+  return <p className={text({ className })}>{children}</p>
 }
 
 Footer.List = function FooterList({
@@ -233,9 +215,9 @@ Footer.List = function FooterList({
   ...props
 }: FooterListProps) {
   const { size } = useContext(FooterContext)
-  const { list } = footerVariants({ size, className })
+  const { list } = footerVariants({ size })
   return (
-    <ul className={list()} {...props}>
+    <ul className={list({ className })} {...props}>
       {children}
     </ul>
   )
@@ -246,8 +228,8 @@ Footer.Divider = function FooterDivider({
   ...props
 }: FooterDividerProps) {
   const { size } = useContext(FooterContext)
-  const { divider } = footerVariants({ size, className })
-  return <hr className={divider()} {...props} />
+  const { divider } = footerVariants({ size })
+  return <hr className={divider({ className })} {...props} />
 }
 
 Footer.Bottom = function FooterBottom({
@@ -256,9 +238,9 @@ Footer.Bottom = function FooterBottom({
   ...props
 }: FooterBottomProps) {
   const { size } = useContext(FooterContext)
-  const { bottom } = footerVariants({ size, className })
+  const { bottom } = footerVariants({ size })
   return (
-    <div className={bottom()} {...props}>
+    <div className={bottom({ className })} {...props}>
       {children}
     </div>
   )

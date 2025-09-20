@@ -22,7 +22,7 @@
   --color-footer-text-fg: var(--color-fg-muted);
 
   /* Divider & Bottom */
-  --color-footer-divider-border: var(--color-footer-border);
+  --color-footer-divider-bg: var(--color-fg-reverse);
 
   /* === TYPOGRAPHY === */
   --text-footer-title-sm: var(--text-md);
@@ -80,8 +80,8 @@
 
   /* === BORDERS & EFFECTS === */
   --border-width-footer: var(--border-width-md);
-  --color-footer-border: var(--color-border);
-  --height-footer-divider: 1px;
+  --color-footer-border: var(--color-red-600);
+  --height-footer-divider: 2px;
 
   --radius-footer: 0;
 
