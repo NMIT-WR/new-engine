@@ -1,3 +1,60 @@
 @theme static {
+  --footer-cols: repeat(auto-fit, minmax(22%, 1fr));
+
+  /* === COLORS === */
   --color-footer: var(--color-surface);
+
+  /* Background */
+  --color-footer-bg: var(--color-footer);
+  --color-footer-container-bg: var(--color-footer);
+  --color-footer-section-bg: var(--color-footer);
+
+  /* Foreground */
+  --color-footer-fg-primary: var(--color-fg-primary);
+  --color-footer-fg-secondary: var(--color-fg-secondary);
+
+  --color-footer-title-fg: var(--color-fg-primary);
+  --color-footer-link-fg: var(--color-fg-secondary);
+
+  /* === TYPOGRAPHY === */
+  --text-footer-title-sm: var(--text-md);
+  --text-footer-title-md: var(--text-lg);
+  --text-footer-title-lg: var(--text-xl);
+
+  --text-footer-link-sm: var(--text-sm);
+  --text-footer-link-md: var(--text-md);
+  --text-footer-link-lg: var(--text-lg);
+
+  --font-weight-footer-title: var(--font-weight-semibold);
+  --font-weight-footer-link: var(--font-weight-normal);
+
+  /* === SIZES === */
+  --container-footer-sm: var(--container-sm);
+  --container-footer-md: var(--container-md);
+  --container-footer-max: var(--container-max-w);
+
+  /* === SPACING === */
+  --padding-footer: var(--spacing-200);
+
+  --padding-footer-root-sm: var(--spacing-100);
+  --padding-footer-root-md: var(--spacing-200);
+  --padding-footer-root-lg: var(--spacing-300);
+
+  --spacing-footer-container-sm: var(--spacing-300);
+  --spacing-footer-container-md: var(--spacing-400);
+  --spacing-footer-container-lg: var(--spacing-500);
+
+  --spacing-footer-section-sm: var(--spacing-50);
+  --spacing-footer-section-md: var(--spacing-100);
+  --spacing-footer-section-lg: var(--spacing-200);
+
+  /* === BORDERS & EFFECTS === */
+  --border-width-footer: var(--border-width-sm);
+  --color-footer-border: var(--color-border);
+
+  --radius-footer: var(--radius-md);
+
+  --breakpoint-footer-sm: 640px;
+  --breakpoint-footer-md: 768px;
+  --breakpoint-footer-lg: 1024px;
 }
