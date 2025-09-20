@@ -85,6 +85,13 @@ export const Sizes: Story = {
               <Footer.Link href="/api">API Status</Footer.Link>
               <Footer.Text>© 2024 Acme Inc.</Footer.Text>
             </Footer.Section>
+            <Footer.Section>
+              <Footer.Title>Legal</Footer.Title>
+              <Footer.Link href="/privacy">Privacy Policy</Footer.Link>
+              <Footer.Link href="/terms">Terms of Service</Footer.Link>
+              <Footer.Link href="/cookies">Cookie Policy</Footer.Link>
+              <Footer.Link href="/gdpr">GDPR</Footer.Link>
+            </Footer.Section>
           </Footer.Container>
         </Footer>
       </div>
@@ -113,6 +120,13 @@ export const Sizes: Story = {
               <Footer.Link href="/api">API Status</Footer.Link>
               <Footer.Text>© 2024 Acme Inc.</Footer.Text>
             </Footer.Section>
+            <Footer.Section>
+              <Footer.Title>Legal</Footer.Title>
+              <Footer.Link href="/privacy">Privacy Policy</Footer.Link>
+              <Footer.Link href="/terms">Terms of Service</Footer.Link>
+              <Footer.Link href="/cookies">Cookie Policy</Footer.Link>
+              <Footer.Link href="/gdpr">GDPR</Footer.Link>
+            </Footer.Section>
           </Footer.Container>
         </Footer>
       </div>
@@ -140,6 +154,13 @@ export const Sizes: Story = {
               <Footer.Link href="/support">Support</Footer.Link>
               <Footer.Link href="/api">API Status</Footer.Link>
               <Footer.Text>© 2024 Acme Inc.</Footer.Text>
+            </Footer.Section>
+            <Footer.Section>
+              <Footer.Title>Legal</Footer.Title>
+              <Footer.Link href="/privacy">Privacy Policy</Footer.Link>
+              <Footer.Link href="/terms">Terms of Service</Footer.Link>
+              <Footer.Link href="/cookies">Cookie Policy</Footer.Link>
+              <Footer.Link href="/gdpr">GDPR</Footer.Link>
             </Footer.Section>
           </Footer.Container>
         </Footer>

@@ -8,13 +8,21 @@
   --color-footer-bg: var(--color-footer);
   --color-footer-container-bg: var(--color-footer);
   --color-footer-section-bg: var(--color-footer);
+  --color-footer-list-bg: var(--color-footer);
+  --color-footer-bottom-bg: var(--color-footer);
 
   /* Foreground */
   --color-footer-fg-primary: var(--color-fg-primary);
   --color-footer-fg-secondary: var(--color-fg-secondary);
 
-  --color-footer-title-fg: var(--color-fg-primary);
-  --color-footer-link-fg: var(--color-fg-secondary);
+  --color-footer-title-fg: var(--color-footer-fg-primary);
+  --color-footer-title-fg-hover: var(--color-primary);
+  --color-footer-link-fg: var(--color-footer-fg-secondary);
+  --color-footer-link-fg-hover: var(--color-primary);
+  --color-footer-text-fg: var(--color-fg-muted);
+
+  /* Divider & Bottom */
+  --color-footer-divider-border: var(--color-footer-border);
 
   /* === TYPOGRAPHY === */
   --text-footer-title-sm: var(--text-md);
@@ -25,6 +33,10 @@
   --text-footer-link-md: var(--text-md);
   --text-footer-link-lg: var(--text-lg);
 
+  --text-footer-text-sm: var(--text-xs);
+  --text-footer-text-md: var(--text-sm);
+  --text-footer-text-lg: var(--text-md);
+
   --font-weight-footer-title: var(--font-weight-semibold);
   --font-weight-footer-link: var(--font-weight-normal);
 
@@ -34,27 +46,45 @@
   --container-footer-max: var(--container-max-w);
 
   /* === SPACING === */
-  --padding-footer: var(--spacing-200);
-
+  /* Root padding */
   --padding-footer-root-sm: var(--spacing-100);
   --padding-footer-root-md: var(--spacing-200);
   --padding-footer-root-lg: var(--spacing-300);
 
+  /* Container spacing */
   --spacing-footer-container-sm: var(--spacing-300);
   --spacing-footer-container-md: var(--spacing-400);
   --spacing-footer-container-lg: var(--spacing-500);
 
+  /* Section spacing */
   --spacing-footer-section-sm: var(--spacing-50);
   --spacing-footer-section-md: var(--spacing-100);
-  --spacing-footer-section-lg: var(--spacing-200);
+  --spacing-footer-section-lg: var(--spacing-150);
+
+  /* List spacing */
+  --spacing-footer-list-gap: var(--spacing-100);
+  --spacing-footer-list-gap-sm: var(--spacing-50);
+  --spacing-footer-list-gap-md: var(--spacing-100);
+  --spacing-footer-list-gap-lg: var(--spacing-150);
+
+  /* Bottom padding */
+  --padding-footer-bottom: var(--spacing-300);
+  --padding-footer-bottom-sm: var(--spacing-200);
+  --padding-footer-bottom-md: var(--spacing-300);
+  --padding-footer-bottom-lg: var(--spacing-400);
+
+  /* Divider margins */
+  --margin-footer-divider-sm: var(--spacing-200);
+  --margin-footer-divider-md: var(--spacing-300);
+  --margin-footer-divider-lg: var(--spacing-400);
 
   /* === BORDERS & EFFECTS === */
-  --border-width-footer: var(--border-width-sm);
+  --border-width-footer: var(--border-width-md);
   --color-footer-border: var(--color-border);
+  --height-footer-divider: 1px;
 
-  --radius-footer: var(--radius-md);
+  --radius-footer: 0;
 
-  --breakpoint-footer-sm: 640px;
-  --breakpoint-footer-md: 768px;
-  --breakpoint-footer-lg: 1024px;
+  /* === BREAKPOINTS === */
+  --breakpoint-footer-mobile: 768px;
 }
