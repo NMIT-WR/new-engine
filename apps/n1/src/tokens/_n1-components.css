@@ -1,4 +1,5 @@
 @theme static {
+  /* === MOLECULES === */
   /* CAROUSEL */
   --color-carousel: transparent;
   --color-carousel-indicator-bg-active: var(--color-yellow-400);
@@ -11,4 +12,10 @@
   --width-carousel-indicator: 2rem;
   --aspect-carousel-indicator: 1;
   --spacing-carousel-root-md: 100%;
+
+  /* === ORGANISMS === */
+  /* FOOTER */
+  --color-footer: var(--color-overlay);
+  --color-footer-fg-primary: var(--color-fg-dark);
+  --color-footer-fg-secondary: --alpha(var(--color-fg-dark) / 70%);
 }
