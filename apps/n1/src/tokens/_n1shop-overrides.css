@@ -157,7 +157,7 @@
   --color-base-dark: var(--color-gray-950);
   --color-base: var(--color-white); /* Main page background */
   --color-surface: #f6f6f6; /* Card backgrounds */
-  --color-overlay: rgba(0, 0, 0, 0.5); /* Modal overlay */
+  --color-overlay: #2f2f2f; /* Modal overlay */
   --color-float: var(--color-white); /* Floating elements */
   --color-highlight: var(--color-yellow-300); /* Highlight background */
   --color-base-reverse: var(--color-gray-950);
