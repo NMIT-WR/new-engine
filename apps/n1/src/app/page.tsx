@@ -1,39 +1,40 @@
+'use client'
 import { FeatureBlock } from '@/components/atoms/feature-block'
 import { HeroCarousel } from '@/components/hero-carousel'
+import { ProductGrid } from '@/components/molecules/product-grid'
 import { TopProduct } from '@/components/top-product'
-import { featureBlocks, topCategory } from '@/data/home'
+import { featureBlocks, featuredProducts, topCategory } from '@/data/home'
 import { heroCarouselSlides } from '@/data/home'
 
 export default function Home() {
   return (
     <div className="grid min-h-screen justify-center">
-      <header>
-        <h1>Nový Engine</h1>
-      </header>
       <main>
         <section className="w-full">
           <HeroCarousel slides={heroCarouselSlides} />
         </section>
-        <section className="mx-auto flex w-max-w justify-around py-section">
+
+        <section className="mx-auto grid max-w-max-w grid-cols-2 px-section py-section md:grid-cols-[repeat(auto-fit,minmax(25%,1fr))]">
           {featureBlocks.map((block, index) => (
             <FeatureBlock key={index} {...block} />
           ))}
         </section>
 
         <section className="bg-surface py-section">
-          <div className="mx-auto flex w-max-w flex-col gap-section">
+          <div className="mx-auto flex w-full max-w-max-w flex-col gap-section px-section">
             <h2 className="text-center font-bold text-xl">TOP kategorie</h2>
-            <div className="flex justify-around gap-800">
+            <div className="grid grid-cols-3 place-items-center gap-300 md:grid-cols-4">
               {topCategory.map((category, index) => (
                 <TopProduct key={index} {...category} />
               ))}
             </div>
           </div>
         </section>
+
+        <section>
+          <ProductGrid products={featuredProducts} />
+        </section>
       </main>
-      <footer>
-        <h2>Footer</h2>
-      </footer>
     </div>
   )
 }
