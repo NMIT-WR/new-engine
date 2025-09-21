@@ -1,6 +1,7 @@
 import { carouselImages } from '@/assets/carousel'
 import { icons } from '@/assets/icons'
 import { topCategoryImages } from '@/assets/top-category'
+import type { Product } from '@/types/product'
 import type { CarouselSlide } from '@new-engine/ui/molecules/carousel'
 
 export const featureBlocks = [
@@ -46,4 +47,55 @@ export const topCategory = [
   { src: topCategoryImages.bicularImg, label: 'Purevue pro čistý obraz' },
   { src: topCategoryImages.electroImg, label: 'Nabídka elektrokol' },
   { src: topCategoryImages.tretryImg, label: 'Flat podrážky jsou v kurzu' },
+]
+
+export const featuredProducts: Product[] = [
+  {
+    id: 'product-1',
+    title: 'Pánská kšiltovka Fox Level Up Strapback Hat',
+    price: '1 099 Kč',
+    imageSrc: '/products/product1.jpg',
+  },
+  {
+    id: 'product-2',
+    title: 'Pánské Road tretry Northwave Veloce Extreme',
+    price: '9 999 Kč',
+    imageSrc: '/products/product2.jpg',
+  },
+  {
+    id: 'product-3',
+    title: 'Pánské triko Fox Big F Ss Prem Tee',
+    price: '999 Kč',
+    imageSrc: '/products/product3.jpg',
+  },
+  {
+    id: 'product-4',
+    title: 'Sedlo Selle Italia Flite Boost Superflow TM L3',
+    price: '3 999 Kč',
+    imageSrc: '/products/product4.jpg',
+  },
+  {
+    id: 'product-5',
+    title: 'Silniční kolo Cervélo R5 Ultegra DI2 Permafrost',
+    price: '172 499 Kč',
+    imageSrc: '/products/product5.jpg',
+  },
+  {
+    id: 'product-6',
+    title: 'Silniční kolo Cervélo S5 Force AXS Five Black',
+    price: '199 999 Kč',
+    imageSrc: '/products/product6.jpg',
+  },
+  {
+    id: 'product-7',
+    title: 'Trail kolo Santa Cruz Tallboy 5 C 29 24 LG MELON GX1 AXS',
+    price: '134 999 Kč',
+    imageSrc: '/products/product7.jpg',
+  },
+  {
+    id: 'product-8',
+    title: 'Zapletená kola Reserve Wheels RSV 30 SL 29" | DT 350 110 XD 6b',
+    price: '44 999 Kč',
+    imageSrc: '/products/product8.jpg',
+  },
 ]
