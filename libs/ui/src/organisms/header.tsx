@@ -1,27 +1,20 @@
-import { createContext, useContext, useId, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import type { HTMLAttributes, ReactNode, Ref } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { Button } from '../atoms/button'
-import { Icon } from '../atoms/icon'
-import { Popover } from '../molecules/popover'
 import { tv } from '../utils'
 
 const headerVariants = tv({
   slots: {
     root: [
-      'w-full justify-between p-header',
+      'w-full justify-between',
       'flex items-center',
       'transition-header',
       'max-w-header-max',
       'relative',
     ],
-    brand: [
-      'flex items-center',
-      'p-header-brand',
-      'font-header-brand',
-      'text-header-brand-fg',
-      'w-header-brand',
-      'shrink-0',
+    container: [
+      'bg-white/40 w-full flex gap-400 justify-between p-header-container',
     ],
     nav: [
       'header-desktop:flex-row header-desktop:items-center flex flex-col',
@@ -29,16 +22,6 @@ const headerVariants = tv({
       'max-header-desktop:data-[open=false]:hidden max-header-desktop:absolute max-header-desktop:top-full max-header-desktop:z-50',
       'max-header-desktop:bg-header-bg',
     ],
-    submenu: [
-      'flex-col gap-header-submenu hidden header-desktop:flex **:px-header-submenu-item',
-    ],
-    mobileSubmenu: [
-      'overflow-hidden transition-all duration-header max-h-0 opacity-0',
-      'data-[expanded=true]:max-h-header-mobile-submenu data-[expanded=true]:opacity-100',
-    ],
-    submenuTrigger: [''],
-    submenuTriggerIcon:
-      'transition-transform duration-header data-[expanded=true]:rotate-180',
     navItem: [
       'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover',
       'data-[active=true]:text-header-nav-fg-active',
@@ -67,7 +50,7 @@ const headerVariants = tv({
   },
   compoundSlots: [
     {
-      slots: ['submenuTrigger', 'navItem'],
+      slots: ['navItem'],
       class: [
         'justify-start font-header-nav text-header-nav-fg hover:text-header-nav-fg-hover',
         'cursor-pointer',
@@ -75,6 +58,14 @@ const headerVariants = tv({
     },
   ],
   variants: {
+    direction: {
+      vertical: {
+        root: ['flex-col'],
+      },
+      horizontal: {
+        root: ['flex-row'],
+      },
+    },
     variant: {
       solid: {
         root: ['bg-header-bg'],
@@ -96,27 +87,21 @@ const headerVariants = tv({
     },
     size: {
       sm: {
-        root: 'h-header-sm gap-header-section-sm',
+        root: '-header-sm gap-header-section-sm',
         nav: 'gap-header-nav-sm text-header-nav-sm',
-        brand: 'text-header-brand-sm',
         navItem: 'p-header-nav-item-sm text-header-nav-item-sm',
-        submenuTrigger: 'p-header-nav-item-sm text-header-nav-item-sm',
         actions: 'gap-header-actions-sm text-header-actions-sm',
       },
       md: {
-        root: 'h-header-md gap-header-section-md',
+        root: '-header-md gap-header-secion-md',
         nav: 'gap-header-nav-md text-header-nav-md',
-        brand: 'text-header-brand-md',
         navItem: 'p-header-nav-item-md text-header-nav-item-md',
-        submenuTrigger: 'p-header-nav-item-md text-header-nav-item-md',
         actions: 'gap-header-actions-md text-header-actions-md',
       },
       lg: {
-        root: 'h-header-lg gap-header-section-lg',
+        root: '-header-lg gap-header-section-lg',
         nav: 'gap-header-nav-lg text-header-nav-lg',
-        brand: 'text-header-brand-lg',
         navItem: 'p-header-nav-item-lg text-header-nav-item-lg',
-        submenuTrigger: 'p-header-nav-item-lg text-header-nav-item-lg',
         actions: 'gap-header-actions-lg text-header-actions-lg',
       },
     },
@@ -125,6 +110,7 @@ const headerVariants = tv({
     variant: 'solid',
     size: 'md',
     mobileMenuPosition: 'right',
+    direction: 'horizontal',
   },
 })
 
@@ -144,21 +130,11 @@ export interface HeaderProps
     VariantProps<typeof headerVariants> {
   children: ReactNode
   ref?: Ref<HTMLElement>
-
-  /** Enable hide-on-scroll behavior */
-  hideOnScroll?: boolean
-
-  /** Hide-on-scroll configuration */
-  hideOnScrollConfig?: {
-    threshold?: number
-    topOffset?: number
-  }
 }
 
-interface HeaderBrandProps extends HTMLAttributes<HTMLDivElement> {
+interface HeaderContainerProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
-  ref?: Ref<HTMLDivElement>
-  size?: 'sm' | 'md' | 'lg'
+  ref?: Ref<HTMLElement>
 }
 
 interface HeaderNavProps extends HTMLAttributes<HTMLElement> {
@@ -169,7 +145,6 @@ interface HeaderNavProps extends HTMLAttributes<HTMLElement> {
 
 interface HeaderNavItemProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean
-  submenu?: boolean
   children: ReactNode
   ref?: Ref<HTMLDivElement>
   size?: 'sm' | 'md' | 'lg'
@@ -181,21 +156,13 @@ interface HeaderActionsProps extends HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg'
 }
 
-interface HeaderSubmenuProps extends HTMLAttributes<HTMLDivElement> {
-  trigger: string
-  children: ReactNode
-  placement?: 'top' | 'bottom' | 'left' | 'right' | 'right-start'
-  ref?: Ref<HTMLDivElement>
-}
-
 export function Header({
   variant,
   size = 'md',
+  direction = 'horizontal',
   className,
   children,
   ref,
-  hideOnScroll = false,
-  hideOnScrollConfig,
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -203,6 +170,7 @@ export function Header({
   const { root, hamburger } = headerVariants({
     variant,
     size,
+    direction,
   })
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -236,21 +204,17 @@ export function Header({
   )
 }
 
-Header.Brand = function HeaderBrand({
+Header.Container = function HeaderContainer({
   className,
   children,
   ref,
-  size: overrideSize,
   ...props
-}: HeaderBrandProps) {
-  const context = useContext(HeaderContext)
-  const size = overrideSize ?? context.size ?? 'md'
-  const { brand } = headerVariants({ size })
-
+}: HeaderContainerProps) {
+  const { container } = headerVariants()
   return (
-    <div ref={ref} className={brand({ className })} {...props}>
+    <section ref={ref} className={container({ className })} {...props}>
       {children}
-    </div>
+    </section>
   )
 }
 
@@ -281,7 +245,6 @@ Header.Nav = function HeaderNav({
 // Header.NavItem - Individual navigation item
 Header.NavItem = function HeaderNavItem({
   active = false,
-  submenu = false,
   className,
   children,
   ref,
@@ -297,81 +260,10 @@ Header.NavItem = function HeaderNavItem({
       ref={ref}
       className={navItem({ className })}
       data-active={active || undefined}
-      data-submenu={submenu || undefined}
       {...props}
     >
       {children}
     </div>
-  )
-}
-
-Header.Submenu = function HeaderSubmenu({
-  trigger,
-  children,
-  placement = 'bottom',
-}: HeaderSubmenuProps) {
-  const context = useContext(HeaderContext)
-  const size = context.size ?? 'md'
-  const {
-    submenu,
-    submenuTrigger,
-    submenuTriggerIcon,
-    navItem,
-    mobileSubmenu,
-  } = headerVariants({
-    size,
-  })
-  const [isExpanded, setIsExpanded] = useState(false)
-  const id = useId()
-
-  return (
-    <>
-      {/* Desktop - Popover */}
-      <div className="header-desktop:block hidden">
-        <Popover
-          id={id}
-          trigger={
-            <span className={submenuTrigger()}>
-              {trigger}
-              <Icon icon="icon-[mdi--chevron-down]" />
-            </span>
-          }
-          contentClassName={submenu()}
-          triggerClassName={navItem()}
-          placement={placement}
-          size={size}
-        >
-          {children}
-        </Popover>
-      </div>
-
-      {/* Mobile - Custom Accordion */}
-      <div className="header-desktop:hidden">
-        <button
-          type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={submenuTrigger()}
-          aria-expanded={isExpanded}
-          aria-controls={`submenu-${id}`}
-        >
-          <span>{trigger}</span>
-          <Icon
-            icon="icon-[mdi--chevron-down]"
-            className={submenuTriggerIcon()}
-            data-expanded={isExpanded}
-          />
-        </button>
-
-        {/* Submenu content with animation */}
-        <div
-          id={`submenu-${id}`}
-          className={mobileSubmenu()}
-          data-expanded={isExpanded}
-        >
-          <div>{children}</div>
-        </div>
-      </div>
-    </>
   )
 }
 
