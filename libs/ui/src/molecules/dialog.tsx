@@ -163,6 +163,7 @@ export interface DialogProps extends VariantProps<typeof dialogVariants> {
   actions?: ReactNode
   hideCloseButton?: boolean
   className?: string
+  modal?: boolean
 }
 
 export function Dialog({
@@ -176,9 +177,9 @@ export function Dialog({
   size = 'md',
   behavior = 'modal',
   closeOnEscape = true,
-  closeOnInteractOutside = behavior === 'modal' && true,
-  preventScroll = behavior === 'modal' && true,
-  trapFocus = behavior === 'modal' && true,
+  closeOnInteractOutside = true,
+  preventScroll = true,
+  trapFocus = true,
   customTrigger = false,
   triggerText = 'Open',
   title,
@@ -187,6 +188,7 @@ export function Dialog({
   hideCloseButton = false,
   actions,
   className,
+  modal = true,
 }: DialogProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -201,6 +203,7 @@ export function Dialog({
     trapFocus,
     initialFocusEl,
     finalFocusEl,
+    modal,
     ...(open !== undefined && { open }),
   })
 

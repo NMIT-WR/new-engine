@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
+import { Input } from '../../src/atoms/input'
+import { Label } from '../../src/atoms/label'
+import { Link } from '../../src/atoms/link'
 import { Dialog } from '../../src/molecules/dialog'
 
 const meta: Meta<typeof Dialog> = {
@@ -73,26 +76,18 @@ export const Default: Story = {
     description:
       'Make changes to your profile here. Click save when you are done.',
     children: (
-      <div className="space-y-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <label htmlFor="name" className="text-right font-medium text-sm">
+      <div className="space-y-200">
+        <div className="flex flex-col">
+          <Label htmlFor="name" size="sm">
             Name
-          </label>
-          <input
-            id="name"
-            defaultValue="John Doe"
-            className="col-span-3 rounded-md border border-gray-300 px-3 py-2"
-          />
+          </Label>
+          <Input size="sm" id="name" defaultValue="John Doe" />
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <label htmlFor="username" className="text-right font-medium text-sm">
+        <div className="flex flex-col">
+          <Label htmlFor="username" size="sm">
             Username
-          </label>
-          <input
-            id="username"
-            defaultValue="@johndoe"
-            className="col-span-3 rounded-md border border-gray-300 px-3 py-2"
-          />
+          </Label>
+          <Input size="sm" id="username" defaultValue="@johndoe" />
         </div>
       </div>
     ),
@@ -302,23 +297,23 @@ export const RichContent: Story = {
     title: 'Product Information',
     description: 'Complete details about the selected product.',
     children: (
-      <div className="space-y-6">
-        <div className="flex gap-4">
-          <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-gray-200">
-            <span className="text-gray-500 text-sm">Image</span>
+      <div className="space-y-300">
+        <div className="flex gap-200">
+          <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-surface">
+            <span className="text-secondary text-sm">Image</span>
           </div>
           <div className="flex-1">
             <h3 className="font-semibold text-lg">Premium Headphones</h3>
-            <p className="text-gray-600">
+            <p className="text-secondary">
               High-quality wireless headphones with noise cancellation
             </p>
-            <p className="mt-2 font-bold text-2xl text-green-600">$299.99</p>
+            <p className="mt-100 font-bold text-2xl text-success">$299.99</p>
           </div>
         </div>
 
         <div className="border-t pt-4">
-          <h4 className="mb-2 font-semibold">Features</h4>
-          <ul className="list-inside list-disc space-y-1 text-gray-600 text-sm">
+          <h4 className="mb-100 font-semibold">Features</h4>
+          <ul className="list-inside list-disc space-y-50 text-secondary text-sm">
             <li>Active noise cancellation</li>
             <li>30-hour battery life</li>
             <li>Premium leather ear cups</li>
@@ -327,13 +322,13 @@ export const RichContent: Story = {
         </div>
 
         <div className="border-t pt-4">
-          <h4 className="mb-2 font-semibold">Reviews</h4>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-yellow-500">★★★★★</span>
+          <h4 className="mb-100 font-semibold">Reviews</h4>
+          <div className="space-y-100">
+            <div className="flex items-center gap-50">
+              <span className="text-warning">★★★★★</span>
               <span className="text-sm">4.8 out of 5 stars</span>
             </div>
-            <p className="text-gray-600 text-sm">Based on 2,847 reviews</p>
+            <p className="text-secondary text-sm">Based on 2,847 reviews</p>
           </div>
         </div>
       </div>
@@ -362,7 +357,7 @@ export const Minimal: Story = {
 export const BehaviorTests: Story = {
   render: () => {
     return (
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-200">
         <Dialog
           triggerText="No Escape Close"
           title="Escape Disabled"
@@ -448,7 +443,7 @@ export const DrawerRight: Story = {
           <div className="space-y-100">
             <p>Right drawer content.</p>
             <p>Great for settings panels or additional information.</p>
-            <div className="rounded bg-gray-100 p-150">
+            <div className="rounded bg-base-reverse p-150">
               <p className="text-fg-reverse text-sm">Example content block</p>
             </div>
           </div>
@@ -657,29 +652,29 @@ export const MobileMenuDrawer: Story = {
           size="sm"
           hideCloseButton={false}
         >
-          <nav className="flex flex-col gap-2">
-            <a href="#" className="px-200 py-100">
+          <nav className="flex flex-col gap-100">
+            <Link href="#" className="px-200 py-100">
               Home
-            </a>
-            <a href="#" className="px-200 py-100">
+            </Link>
+            <Link href="#" className="px-200 py-100">
               Products
-            </a>
-            <a href="#" className="px-200 py-100">
+            </Link>
+            <Link href="#" className="px-200 py-100">
               Services
-            </a>
-            <a href="#" className="px-200 py-100">
+            </Link>
+            <Link href="#" className="px-200 py-100">
               About
-            </a>
-            <a href="#" className="px-200 py-100">
+            </Link>
+            <Link href="#" className="px-200 py-100">
               Contact
-            </a>
-            <hr className="my-2" />
-            <a href="#" className="px-200 py-100">
+            </Link>
+            <hr className="my-100" />
+            <Link href="#" className="px-200 py-100">
               Settings
-            </a>
-            <a href="#" className="px-200 py-100">
+            </Link>
+            <Link href="#" className="px-200 py-100">
               Sign Out
-            </a>
+            </Link>
           </nav>
         </Dialog>
       </>
