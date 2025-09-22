@@ -3,20 +3,20 @@ import {
   type ElementType,
   type HTMLAttributes,
   type ReactNode,
-  useId,
+  type RefObject,
+  createContext,
+  useContext,
 } from 'react'
 import type { VariantProps } from 'tailwind-variants'
-import { Badge, type BadgeProps } from '../atoms/badge'
 import { Button } from '../atoms/button'
+import type { IconType } from '../atoms/icon'
 import { Image } from '../atoms/image'
-import { NumericInput } from '../atoms/numeric-input'
 import { Rating, type RatingProps } from '../atoms/rating'
-import { slugify, tv } from '../utils'
+import { tv } from '../utils'
 
-//object-cover aspect-product-card-image
-const productCard = tv({
+const productCardVariants = tv({
   slots: {
-    base: [
+    root: [
       'rounded-product-card p-product-card-padding',
       'border-(length:--border-product-card-width) border-product-card-border bg-product-card-bg max-w-product-card-max shadow-sm',
     ],
@@ -25,248 +25,278 @@ const productCard = tv({
     nameSlot:
       'text-product-card-name-fg text-product-card-name-size line-clamp-product-card-name',
     priceSlot: 'text-product-card-price-fg text-product-card-price-size',
-    stockStatusSlot: 'text-product-card-stock-fg text-product-card-stock-size ',
+    stockStatusSlot: [
+      'text-product-card-stock-size',
+      'data-[stock=in-stock]:text-product-card-stock-fg-in-stock',
+      'data-[stock=limited-stock]:text-product-card-stock-fg-limited-stock',
+      'data-[stock=out-of-stock]:text-product-card-stock-fg-out-of-stock',
+    ],
     badgesSlot: 'flex flex-wrap gap-product-card-box',
     ratingSlot: 'flex items-center',
-    buttonsSlot: 'flex flex-wrap gap-product-card-buttons',
-    cartButton:
-      'bg-button-cart-bg hover:bg-button-cart-bg-hover text-button-cart-fg w-max',
-    detailButton:
-      'bg-button-detail-bg hover:bg-button-detail-bg-hover text-button-detail-fg w-max',
-    wishlistButton:
-      'bg-button-wishlist-bg hover:bg-button-wishlist-bg-hover text-button-wishlist-fg w-max',
+    actionsSlot: 'flex flex-wrap gap-product-card-buttons',
+    button: '',
   },
   variants: {
-    // variant for layout of the card
+    buttonVariant: {
+      cart: {
+        button:
+          'bg-button-cart-bg hover:bg-button-cart-bg-hover text-button-cart-fg w-max',
+      },
+      detail: {
+        button:
+          'bg-button-detail-bg hover:bg-button-detail-bg-hover text-button-detail-fg w-max',
+      },
+      wishlist: {
+        button:
+          'bg-button-wishlist-bg hover:bg-button-wishlist-bg-hover text-button-wishlist-fg w-max',
+      },
+      custom: {},
+    },
     layout: {
       column: {
-        base: ['grid grid-cols-1 gap-product-card-col-layout'],
-        imageSlot: 'w-full order-image',
-        nameSlot: 'order-name',
-        priceSlot: 'order-price',
-        stockStatusSlot: 'order-stock',
-        badgesSlot: 'order-badges',
-        ratingSlot: 'order-ratings',
-        buttonsSlot: 'order-buttons',
+        root: ['grid grid-cols-1 gap-product-card-col-layout'],
       },
       row: {
-        base: 'grid grid-cols-[auto_1fr] gap-x-product-card-row-layout',
-        imageSlot: 'row-span-6',
-      },
-    },
-    // variant for layout of the buttons
-    buttonLayout: {
-      horizontal: {
-        buttonsSlot: 'justify-start',
-      },
-      vertical: {
-        buttonsSlot: 'flex-col w-full',
+        root: 'grid grid-cols-[auto_1fr] gap-x-product-card-row-layout',
       },
     },
   },
-  /* Define compound styles for slots */
-  compoundSlots: [
-    {
-      layout: 'row',
-      slots: [
-        'nameSlot',
-        'priceSlot',
-        'stockStatusSlot',
-        'badgesSlot',
-        'ratingSlot',
-        'buttonsSlot',
-      ],
-      class: ['col-start-2'],
-    },
-  ],
   defaultVariants: {
     layout: 'column',
-    buttonLayout: 'vertical',
+    buttonVariant: 'cart',
   },
 })
 
-type ProductCardVariants = VariantProps<typeof productCard>
-
-// Core ProductCard props
-export interface ProductCardCoreProps<T extends ElementType = typeof Image>
-  extends ProductCardVariants,
-    Omit<HTMLAttributes<HTMLDivElement>, 'width' | 'height'> {
-  imageSrc?: string
-  name: string
-  price: string
-  stockStatus: string
-  badges?: BadgeProps[]
-  rating?: RatingProps
-  // Set prepared button options
-  hasCartButton?: boolean
-  hasDetailButton?: boolean
-  hasWishlistButton?: boolean
-  onCartClick?: () => void
-  onDetailClick?: () => void
-  onWishlistClick?: () => void
-  cartButtonText?: string
-  detailButtonText?: string
-  wishlistButtonText?: string
-  numericInput?: boolean
-  customButtons?: ReactNode
-  imageAs?: T
+// === CONTEXT ===
+interface ProductCardContextValue {
+  layout?: 'column' | 'row'
 }
 
-// Combine core props with image component props
-export type ProductCardProps<T extends ElementType = typeof Image> =
-  ProductCardCoreProps<T> & Partial<ComponentPropsWithoutRef<T>>
+const ProductCardContext = createContext<ProductCardContextValue>({})
 
-export function ProductCard<T extends ElementType = typeof Image>(
-  props: ProductCardProps<T>
-) {
-  // List of known ProductCard props to separate from image props
-  const {
-    // Core ProductCard props
-    imageSrc,
-    name,
-    price,
-    stockStatus,
-    badges = [],
-    rating,
-    hasCartButton,
-    hasDetailButton,
-    hasWishlistButton,
-    onCartClick,
-    onDetailClick,
-    onWishlistClick,
-    cartButtonText = 'Add to cart',
-    detailButtonText = 'Detail',
-    wishlistButtonText = 'Wishlist',
-    numericInput,
-    customButtons,
-    className,
-    layout,
-    buttonLayout,
-    imageAs,
-    // HTML div props
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    style,
-    id,
-    tabIndex,
-    role,
-    'aria-label': ariaLabel,
-    // Everything else goes to image
-    ...imageProps
-  } = props
+// === TYPE DEFINITIONS ===
+export interface ProductCardProps
+  extends HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof productCardVariants> {
+  children: ReactNode
+  ref?: RefObject<HTMLDivElement>
+}
 
-  // Reconstruct div props
-  const divProps = {
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    style,
-    id,
-    tabIndex,
-    role,
-    'aria-label': ariaLabel,
-  }
-  const productCardId = useId()
+type ProductCardImageProps<T extends ElementType = typeof Image> = {
+  as?: T
+  ref?: RefObject<HTMLElement>
+  className?: string
+} & Partial<ComponentPropsWithoutRef<T>>
 
-  const {
-    base,
-    imageSlot,
-    nameSlot,
-    priceSlot,
-    badgesSlot,
-    ratingSlot,
-    buttonsSlot,
-    stockStatusSlot,
-    cartButton,
-    detailButton,
-    wishlistButton,
-  } = productCard({ layout, buttonLayout })
+interface ProductCardNameProps extends HTMLAttributes<HTMLHeadingElement> {
+  children: ReactNode
+  ref?: RefObject<HTMLHeadingElement>
+}
 
-  const ImageComponent = (imageAs || Image) as ElementType
+interface ProductCardPriceProps extends HTMLAttributes<HTMLParagraphElement> {
+  children: ReactNode
+  ref?: RefObject<HTMLParagraphElement>
+}
 
-  // Merge image props with defaults
-  const finalImageProps = {
-    ...imageProps, // Image component props first
-    src: imageProps.src || imageSrc, // Allow override
-    alt: imageProps.alt || name, // Allow override
-    className: imageSlot({ layout, className: imageProps.className }), // Our className last
-  }
+interface ProductCardStockProps extends HTMLAttributes<HTMLParagraphElement> {
+  children: ReactNode
+  status?: 'in-stock' | 'limited-stock' | 'out-of-stock'
+  ref?: RefObject<HTMLParagraphElement>
+}
+
+interface ProductCardBadgesProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
+  ref?: RefObject<HTMLDivElement>
+}
+
+interface ProductCardRatingProps extends HTMLAttributes<HTMLDivElement> {
+  children?: ReactNode
+  ref?: RefObject<HTMLDivElement>
+  rating?: RatingProps
+}
+
+interface ProductCardActionsProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
+  ref?: RefObject<HTMLDivElement>
+}
+
+interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
+  children?: ReactNode
+  onClick?: () => void
+  buttonVariant?: 'cart' | 'detail' | 'wishlist' | 'custom'
+  icon?: IconType
+  ref?: RefObject<HTMLButtonElement>
+}
+
+// === ROOT COMPONENT ===
+export function ProductCard({
+  children,
+  layout = 'column',
+  className,
+  ref,
+  ...props
+}: ProductCardProps) {
+  const { root } = productCardVariants({ layout })
 
   return (
-    <div className={base({ className, layout })} {...divProps}>
-      {/* Image always rendered first for semantics, position controlled by CSS */}
-      {finalImageProps.src && <ImageComponent {...finalImageProps} />}
+    <ProductCardContext.Provider value={{ layout }}>
+      <div ref={ref} className={root({ className })} {...props}>
+        {children}
+      </div>
+    </ProductCardContext.Provider>
+  )
+}
 
-      {/* Elements with grid positioning based on layout */}
-      <h3 className={nameSlot({ layout })}>{name}</h3>
+// === SUB-COMPONENTS ===
 
-      {rating && (
-        <div className={ratingSlot({ layout })}>
-          <Rating {...rating} />
-        </div>
-      )}
+// ProductCard.Image
+ProductCard.Image = function ProductCardImage<
+  T extends ElementType = typeof Image,
+>({ as, className, ref, ...props }: ProductCardImageProps<T>) {
+  const context = useContext(ProductCardContext)
+  const { imageSlot } = productCardVariants({ layout: context.layout })
+  const ImageComponent = (as || Image) as ElementType
 
-      {badges.length > 0 && (
-        <div className={badgesSlot({ layout })}>
-          {badges.map((badge) => (
-            <Badge
-              key={`${productCardId}-${slugify(badge.children)}-${
-                badge.variant
-              }`}
-              {...badge}
-            >
-              {badge.children}
-            </Badge>
-          ))}
-        </div>
-      )}
+  return (
+    <ImageComponent ref={ref} className={imageSlot({ className })} {...props} />
+  )
+}
 
-      <p className={stockStatusSlot({ layout })}>{stockStatus}</p>
+// ProductCard.Name
+ProductCard.Name = function ProductCardName({
+  children,
+  className,
+  ref,
+  ...props
+}: ProductCardNameProps) {
+  const context = useContext(ProductCardContext)
+  const { nameSlot } = productCardVariants({ layout: context.layout })
 
-      <p className={priceSlot({ layout })}>{price}</p>
+  return (
+    <h3 ref={ref} className={nameSlot({ className })} {...props}>
+      {children}
+    </h3>
+  )
+}
 
-      {(hasCartButton ||
-        hasDetailButton ||
-        hasWishlistButton ||
-        customButtons) && (
-        <div className={buttonsSlot({ buttonLayout })}>
-          {hasCartButton && (
-            <div className="flex gap-product-card-box">
-              {numericInput && <NumericInput />}
-              <Button
-                size="sm"
-                className={cartButton()}
-                onClick={onCartClick}
-                icon="token-icon-cart-button"
-              >
-                {cartButtonText}
-              </Button>
-            </div>
-          )}
-          {hasDetailButton && (
-            <Button
-              size="sm"
-              className={detailButton()}
-              onClick={onDetailClick}
-              icon="token-icon-detail-button"
-            >
-              {detailButtonText}
-            </Button>
-          )}
-          {hasWishlistButton && (
-            <Button
-              size="sm"
-              className={wishlistButton()}
-              onClick={onWishlistClick}
-              icon="token-icon-wishlist-button"
-            >
-              {wishlistButtonText}
-            </Button>
-          )}
-          {customButtons}
-        </div>
-      )}
+// ProductCard.Price
+ProductCard.Price = function ProductCardPrice({
+  children,
+  className,
+  ref,
+  ...props
+}: ProductCardPriceProps) {
+  const context = useContext(ProductCardContext)
+  const { priceSlot } = productCardVariants({ layout: context.layout })
+
+  return (
+    <p ref={ref} className={priceSlot({ className })} {...props}>
+      {children}
+    </p>
+  )
+}
+
+// ProductCard.Stock
+ProductCard.Stock = function ProductCardStock({
+  children,
+  className,
+  ref,
+  status = 'in-stock',
+  ...props
+}: ProductCardStockProps) {
+  const context = useContext(ProductCardContext)
+  const { stockStatusSlot } = productCardVariants({
+    layout: context.layout,
+  })
+
+  return (
+    <p
+      ref={ref}
+      data-stock={status}
+      className={stockStatusSlot({ className })}
+      {...props}
+    >
+      {children}
+    </p>
+  )
+}
+
+// ProductCard.Badges
+ProductCard.Badges = function ProductCardBadges({
+  children,
+  className,
+  ref,
+  ...props
+}: ProductCardBadgesProps) {
+  const context = useContext(ProductCardContext)
+  const { badgesSlot } = productCardVariants({ layout: context.layout })
+
+  return (
+    <div ref={ref} className={badgesSlot({ className })} {...props}>
+      {children}
     </div>
+  )
+}
+
+// ProductCard.Rating
+ProductCard.Rating = function ProductCardRating({
+  children,
+  className,
+  rating,
+  ref,
+  ...props
+}: ProductCardRatingProps) {
+  const context = useContext(ProductCardContext)
+  const { ratingSlot } = productCardVariants({ layout: context.layout })
+
+  return (
+    <div ref={ref} className={ratingSlot({ className })} {...props}>
+      {rating ? <Rating {...rating} /> : children}
+    </div>
+  )
+}
+
+// ProductCard.Actions
+ProductCard.Actions = function ProductCardActions({
+  children,
+  className,
+  ref,
+  ...props
+}: ProductCardActionsProps) {
+  const context = useContext(ProductCardContext)
+  const { actionsSlot } = productCardVariants({
+    layout: context.layout,
+  })
+
+  return (
+    <div ref={ref} className={actionsSlot({ className })} {...props}>
+      {children}
+    </div>
+  )
+}
+
+// ProductCard.Button
+ProductCard.Button = function ProductCardButton({
+  children,
+  onClick,
+  icon,
+  className,
+  buttonVariant,
+  ref,
+  ...props
+}: ProductCardButtonProps) {
+  const { button } = productCardVariants({ buttonVariant })
+
+  return (
+    <Button
+      ref={ref}
+      size="sm"
+      className={button({ className })}
+      onClick={onClick}
+      icon={icon}
+      {...props}
+    >
+      {children}
+    </Button>
   )
 }
