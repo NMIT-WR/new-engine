@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Header } from '../../src/organisms/header'
 import { Button } from '../../src/atoms/button'
-import { Icon } from '../../src/atoms/icon'
+import { Icon, type IconType } from '../../src/atoms/icon'
+import { Image } from '../../src/atoms/image'
+import { Link } from '../../src/atoms/link'
+import { SearchForm } from '../../src/molecules/search-form'
+import { Header } from '../../src/organisms/header'
 
 const meta: Meta<typeof Header> = {
   title: 'Organisms/Header',
@@ -18,7 +21,6 @@ type Story = StoryObj<typeof Header>
 export const Default: Story = {
   render: () => (
     <Header>
-      <Header.Brand>My Brand</Header.Brand>
       <Header.Nav>
         <Header.NavItem href="/">Home</Header.NavItem>
         <Header.NavItem href="/products">Products</Header.NavItem>
@@ -32,50 +34,29 @@ export const Default: Story = {
         <Button theme="borderless" variant="primary" size="sm">
           <Icon icon="icon-[lucide--shopping-cart]" />
         </Button>
-        <Button variant="primary" size="sm">Sign In</Button>
+        <Button variant="primary" size="sm">
+          Sign In
+        </Button>
       </Header.Actions>
     </Header>
   ),
 }
 
-export const Transparent: Story = {
-  render: () => (
-    <div className="min-h-screen bg-surface-secondary">
-      <Header variant="transparent">
-        <Header.Brand>My Brand</Header.Brand>
-        <Header.Nav>
-          <Header.NavItem href="/">Home</Header.NavItem>
-          <Header.NavItem href="/products">Products</Header.NavItem>
-          <Header.NavItem href="/about">About</Header.NavItem>
-        </Header.Nav>
-        <Header.Actions>
-          <Button theme="borderless" variant="primary" size="sm">
-            <Icon icon="icon-[lucide--user]" />
-          </Button>
-        </Header.Actions>
-      </Header>
-      <div className="p-lg">
-        <h1 className="text-2xl font-bold text-fg-primary">Page Content</h1>
-        <p className="text-fg-secondary mt-md">This header has a transparent background.</p>
-      </div>
-    </div>
-  ),
-}
-
-
-
 export const WithActiveState: Story = {
   render: () => (
     <Header>
-      <Header.Brand>Navigation States</Header.Brand>
       <Header.Nav>
-        <Header.NavItem href="/" active>Home</Header.NavItem>
+        <Header.NavItem href="/" active>
+          Home
+        </Header.NavItem>
         <Header.NavItem href="/products">Products</Header.NavItem>
         <Header.NavItem href="/about">About</Header.NavItem>
         <Header.NavItem href="/contact">Contact</Header.NavItem>
       </Header.Nav>
       <Header.Actions>
-        <Button variant="primary" size="sm">Sign In</Button>
+        <Button variant="primary" size="sm">
+          Sign In
+        </Button>
       </Header.Actions>
     </Header>
   ),
@@ -87,7 +68,6 @@ export const Sizes: Story = {
       <div>
         <p className="mb-sm text-fg-muted">Small</p>
         <Header size="sm">
-          <Header.Brand>Small Header</Header.Brand>
           <Header.Nav>
             <Header.NavItem href="/">Home</Header.NavItem>
             <Header.NavItem href="/products">Products</Header.NavItem>
@@ -103,7 +83,6 @@ export const Sizes: Story = {
       <div>
         <p className="mb-sm text-fg-muted">Medium (Default)</p>
         <Header size="md">
-          <Header.Brand>Medium Header</Header.Brand>
           <Header.Nav>
             <Header.NavItem href="/">Home</Header.NavItem>
             <Header.NavItem href="/products">Products</Header.NavItem>
@@ -119,7 +98,6 @@ export const Sizes: Story = {
       <div>
         <p className="mb-sm text-fg-muted">Large</p>
         <Header size="lg">
-          <Header.Brand>Large Header</Header.Brand>
           <Header.Nav>
             <Header.NavItem href="/">Home</Header.NavItem>
             <Header.NavItem href="/products">Products</Header.NavItem>
@@ -135,10 +113,10 @@ export const Sizes: Story = {
   ),
 }
 
+/*
 export const WithSubmenu: Story = {
   render: () => (
     <Header>
-      <Header.Brand>My Shop</Header.Brand>
       <Header.Nav>
         <Header.NavItem href="/">Home</Header.NavItem>
 
@@ -164,9 +142,7 @@ export const WithSubmenu: Story = {
           <Header.NavItem href="/services/returns">
             Returns & Exchanges
           </Header.NavItem>
-          <Header.NavItem href="/services/warranty">
-            Warranty
-          </Header.NavItem>
+          <Header.NavItem href="/services/warranty">Warranty</Header.NavItem>
         </Header.Submenu>
 
         <Header.NavItem href="/about">About</Header.NavItem>
@@ -179,7 +155,9 @@ export const WithSubmenu: Story = {
         <Button theme="borderless" variant="primary" size="sm">
           <Icon icon="icon-[lucide--shopping-cart]" />
         </Button>
-        <Button variant="primary" size="sm">Sign In</Button>
+        <Button variant="primary" size="sm">
+          Sign In
+        </Button>
       </Header.Actions>
     </Header>
   ),
@@ -188,72 +166,174 @@ export const WithSubmenu: Story = {
 export const WithNestedSubmenu: Story = {
   render: () => (
     <Header>
-      <Header.Brand>Tech Store</Header.Brand>
       <Header.Nav>
         <Header.NavItem href="/">Home</Header.NavItem>
 
-        <Header.Submenu trigger="Shop" >
-            <Header.NavItem href="/shop/new-arrivals">
-              New Arrivals
+        <Header.Submenu trigger="Shop">
+          <Header.NavItem href="/shop/new-arrivals">
+            New Arrivals
+          </Header.NavItem>
+          <Header.NavItem href="/shop/best-sellers">
+            Best Sellers
+          </Header.NavItem>
+          <Header.Submenu trigger="Categories" placement="right-start">
+            <Header.NavItem href="/shop/categories/laptops">
+              Laptops & Computers
             </Header.NavItem>
-            <Header.NavItem href="/shop/best-sellers">
-              Best Sellers
+            <Header.NavItem href="/shop/categories/phones">
+              Phones & Tablets
             </Header.NavItem>
-            <Header.Submenu trigger="Categories" placement="right-start">
-              <Header.NavItem href="/shop/categories/laptops">
-                Laptops & Computers
+            <Header.Submenu trigger="Accessories" placement="right-start">
+              <Header.NavItem href="/shop/accessories/cases">
+                Cases & Covers
               </Header.NavItem>
-              <Header.NavItem href="/shop/categories/phones">
-                Phones & Tablets
+              <Header.NavItem href="/shop/accessories/chargers">
+                Chargers & Cables
               </Header.NavItem>
-              <Header.Submenu trigger="Accessories" placement="right-start">
-                  <Header.NavItem href="/shop/accessories/cases">
-                    Cases & Covers
-                  </Header.NavItem>
-                  <Header.NavItem href="/shop/accessories/chargers">
-                    Chargers & Cables
-                  </Header.NavItem>
-                  <Header.NavItem href="/shop/accessories/headphones">
-                    Headphones
-                  </Header.NavItem>
-              </Header.Submenu>
-              <Header.NavItem href="/shop/categories/gaming">
-                Gaming
+              <Header.NavItem href="/shop/accessories/headphones">
+                Headphones
               </Header.NavItem>
             </Header.Submenu>
-            <Header.NavItem href="/shop/deals">
-              Special Deals
+            <Header.NavItem href="/shop/categories/gaming">
+              Gaming
             </Header.NavItem>
-            <Header.NavItem href="/shop/clearance">
-              Clearance
-            </Header.NavItem>
+          </Header.Submenu>
+          <Header.NavItem href="/shop/deals">Special Deals</Header.NavItem>
+          <Header.NavItem href="/shop/clearance">Clearance</Header.NavItem>
         </Header.Submenu>
 
         <Header.Submenu trigger="Support">
-            <Header.NavItem href="/support/contact">
-              Contact Support
+          <Header.NavItem href="/support/contact">
+            Contact Support
+          </Header.NavItem>
+          <Header.NavItem href="/support/faq">FAQ</Header.NavItem>
+          <Header.Submenu trigger="Resources" placement="right-start">
+            <Header.NavItem href="/resources/guides">
+              User Guides
             </Header.NavItem>
-            <Header.NavItem href="/support/faq">
-              FAQ
+            <Header.NavItem href="/resources/videos">
+              Video Tutorials
             </Header.NavItem>
-            <Header.Submenu trigger="Resources" placement="right-start">
-              <Header.NavItem href="/resources/guides">
-                User Guides
-              </Header.NavItem>
-              <Header.NavItem href="/resources/videos">
-                Video Tutorials
-              </Header.NavItem>
-              <Header.NavItem href="/resources/downloads">
-                Downloads
-              </Header.NavItem>
-            </Header.Submenu>
+            <Header.NavItem href="/resources/downloads">
+              Downloads
+            </Header.NavItem>
+          </Header.Submenu>
         </Header.Submenu>
 
         <Header.NavItem href="/about">About</Header.NavItem>
       </Header.Nav>
       <Header.Actions>
-        <Button variant="primary" size="sm">Account</Button>
+        <Button variant="primary" size="sm">
+          Account
+        </Button>
       </Header.Actions>
     </Header>
   ),
+}
+*/
+
+export const N1Header: Story = {
+  render: () => {
+    const links = [
+      {
+        href: '/novinky',
+        label: 'Novinky',
+      },
+      {
+        href: '/pansky',
+        label: 'Pánské',
+      },
+      {
+        href: '/damsky',
+        label: 'Dámské',
+      },
+      {
+        href: '/detske',
+        label: 'Dětské',
+      },
+      {
+        href: '/oblecemo',
+        label: 'Oblečení',
+      },
+      {
+        href: '/cyklo',
+        label: 'Cyklo',
+      },
+      {
+        href: '/moto',
+        label: 'Moto',
+      },
+      {
+        href: '/snb-skate',
+        label: 'Snb-Skate',
+      },
+      {
+        href: '/ski',
+        label: 'Ski',
+      },
+      {
+        href: '/vyprodej',
+        label: 'Výprodej',
+      },
+    ]
+
+    const buttonIcons = [
+      'icon-[mdi--heart]',
+      'icon-[mdi--shopping-cart]',
+      'icon-[mdi--account]',
+    ]
+
+    return (
+      <Header direction="vertical" className="h-fit max-h-96 bg-red-200">
+        <Header.Container className="bg-gray-700">
+          <div className="flex gap-200">
+            <span>office@n1shop.cz</span>
+            <span>Obchodní podmínky</span>
+            <span>Novinky</span>
+            <span>Kontakty</span>
+          </div>
+          <div className="flex gap-200">
+            <Icon icon="icon-[cif--cz]" />
+            <Icon icon="icon-[cif--gb]" />
+          </div>
+        </Header.Container>
+        <Header.Container className="bg-gray-950">
+          <div className="gap-400">
+            <Image
+              src="https://www.n1shop.cz/data/upload/images/assets/logo-1.png"
+              alt="N1 Shop Logo"
+              width={200}
+              height={100}
+            />
+            <SearchForm buttonIcon size="sm" />
+          </div>
+          <Header.Actions>
+            {buttonIcons.map((icon) => (
+              <Button
+                key={icon}
+                theme="borderless"
+                variant="primary"
+                icon={icon as IconType}
+                size="sm"
+                className="px-0 text-2xl hover:bg-transparent"
+              />
+            ))}
+          </Header.Actions>
+        </Header.Container>
+
+        <Header.Container className="border-gray-400 border-t bg-gray-950">
+          <Header.Nav className="gap-x-0 px-0">
+            {links.map((link) => (
+              <Header.NavItem
+                key={link.href}
+                className="p-200 hover:bg-yellow-400 hover:text-black"
+              >
+                <Link href={link.href}>{link.label}</Link>
+              </Header.NavItem>
+            ))}
+          </Header.Nav>
+        </Header.Container>
+      </Header>
+    )
+  },
 }

@@ -68,6 +68,8 @@
   /* Section spacing */
   --padding-header-brand: var(--spacing-0);
 
+  --padding-header-container: var(--spacing-100) var(--spacing-200);
+
   --padding-header-nav-item-sm: 0 var(--spacing-100);
   --padding-header-nav-item-md: 0 var(--spacing-200);
   --padding-header-nav-item-lg: 0 var(--spacing-300);
