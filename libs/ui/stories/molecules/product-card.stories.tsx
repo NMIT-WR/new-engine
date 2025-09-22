@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
+import { Badge } from '../../src/atoms/badge'
 import { Button } from '../../src/atoms/button'
+import { NumericInput } from '../../src/atoms/numeric-input'
+import { Rating } from '../../src/atoms/rating'
 import { ProductCard } from '../../src/molecules/product-card'
 
 // Sample product images for different scenarios
@@ -9,7 +12,8 @@ const productImages = {
   tshirt: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
   shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
   watch: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
-  headphones: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+  headphones:
+    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
   camera: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400',
   backpack: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400',
 }
@@ -21,496 +25,456 @@ const meta: Meta<typeof ProductCard> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'ProductCard provides a flexible e-commerce product display component with support for images, pricing, stock status, badges, ratings, and multiple action buttons in various layouts.',
+        component:
+          'A flexible e-commerce product display component using compound component pattern. Supports custom composition with images, pricing, badges, ratings, and actions.',
       },
     },
   },
   tags: ['autodocs'],
-  args: {
-    imageSrc: productImages.tshirt,
-    name: 'Premium Cotton T-Shirt',
-    price: '999 Kč',
-    stockStatus: 'Skladem více než 10 ks',
-    badges: [
-      { children: 'Novinka', variant: 'info' },
-      { children: 'M', variant: 'outline' },
-    ],
-    hasCartButton: true,
-    cartButtonText: 'DO KOŠÍKU',
-    onCartClick: fn(),
-  },
   argTypes: {
-    // Image props
-    imageSrc: { 
-      control: 'text',
-      description: 'URL of the product image',
-    },
-    // Core product info
-    name: { 
-      control: 'text',
-      description: 'Product name/title',
-    },
-    price: { 
-      control: 'text',
-      description: 'Product price with currency',
-    },
-    stockStatus: { 
-      control: 'text',
-      description: 'Stock availability text',
-    },
-    // Layout variants
     layout: {
       control: { type: 'select' },
       options: ['column', 'row'],
       description: 'Card layout orientation',
     },
-    buttonLayout: {
-      control: { type: 'select' },
-      options: ['horizontal', 'vertical'],
-      description: 'Button arrangement within the card',
-    },
-    // Badges
-    badges: { 
-      control: 'object',
-      description: 'Array of badge objects with variant and text',
-    },
-    // Rating
-    rating: {
-      control: 'object',
-      description: 'Rating component props',
-    },
-    // Button controls
-    hasCartButton: { 
-      control: 'boolean',
-      description: 'Show add to cart button',
-    },
-    hasDetailButton: { 
-      control: 'boolean',
-      description: 'Show product detail button',
-    },
-    hasWishlistButton: { 
-      control: 'boolean',
-      description: 'Show wishlist button',
-    },
-    cartButtonText: { 
-      control: 'text',
-      description: 'Text for cart button',
-    },
-    detailButtonText: { 
-      control: 'text',
-      description: 'Text for detail button',
-    },
-    wishlistButtonText: { 
-      control: 'text',
-      description: 'Text for wishlist button',
-    },
-    numericInput: {
-      control: 'boolean',
-      description: 'Show quantity input with cart button',
-    },
-    // Event handlers
-    onCartClick: { action: 'cart-clicked' },
-    onDetailClick: { action: 'detail-clicked' },
-    onWishlistClick: { action: 'wishlist-clicked' },
   },
 }
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof ProductCard>
 
+// Basic usage with minimal configuration
 export const Default: Story = {
-  args: {},
+  render: () => (
+    <ProductCard>
+      <ProductCard.Image
+        src={productImages.tshirt}
+        alt="Premium Cotton T-Shirt"
+      />
+      <ProductCard.Name>Premium Cotton T-Shirt</ProductCard.Name>
+      <ProductCard.Price>$29.99</ProductCard.Price>
+      <ProductCard.Actions>
+        <ProductCard.Button buttonVariant="cart" icon="token-icon-cart-button">
+          Add to Cart
+        </ProductCard.Button>
+      </ProductCard.Actions>
+    </ProductCard>
+  ),
 }
 
-export const AllVariants: Story = {
+// Showcase all button variants
+export const AllButtonVariants: Story = {
+  name: 'Button Variants',
   render: () => (
     <VariantContainer>
-      <VariantGroup title="Layout Variants">
-        <ProductCard
-          imageSrc={productImages.tshirt}
-          name="Column Layout Product"
-          price="1 299 Kč"
-          stockStatus="Skladem 5 ks"
-          layout="column"
-          badges={[{ children: 'Novinka', variant: 'success' }]}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc={productImages.shoes}
-          name="Row Layout Product with Longer Name for Testing"
-          price="2 499 Kč"
-          stockStatus="Skladem více než 10 ks"
-          layout="row"
-          badges={[{ children: 'Sleva', variant: 'danger' }]}
-          hasCartButton
-        />
+      <VariantGroup title="Cart Button">
+        <ProductCard>
+          <ProductCard.Image src={productImages.shoes} alt="Running Shoes" />
+          <ProductCard.Name>Running Shoes</ProductCard.Name>
+          <ProductCard.Price>$89.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="cart"
+              icon="token-icon-cart-button"
+              onClick={fn()}
+            >
+              Add to Cart
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
 
-      <VariantGroup title="Button Configurations" fullWidth>
-        <ProductCard
-          imageSrc={productImages.watch}
-          name="All Buttons Horizontal"
-          price="4 999 Kč"
-          stockStatus="Skladem 3 ks"
-          buttonLayout="horizontal"
-          hasCartButton
-          hasDetailButton
-          hasWishlistButton
-          badges={[{ children: 'Premium', variant: 'warning' }]}
-        />
-        <ProductCard
-          imageSrc={productImages.headphones}
-          name="All Buttons Vertical"
-          price="3 499 Kč"
-          stockStatus="Skladem 7 ks"
-          buttonLayout="vertical"
-          hasCartButton
-          hasDetailButton
-          hasWishlistButton
-          badges={[{ children: 'Bestseller', variant: 'info' }]}
-        />
-        <ProductCard
-          imageSrc={productImages.camera}
-          name="With Numeric Input"
-          price="12 999 Kč"
-          stockStatus="Skladem 2 ks"
-          hasCartButton
-          numericInput
-          badges={[{ children: 'Limited', variant: 'outline' }]}
-        />
+      <VariantGroup title="Detail Button">
+        <ProductCard>
+          <ProductCard.Image src={productImages.watch} alt="Luxury Watch" />
+          <ProductCard.Name>Luxury Watch</ProductCard.Name>
+          <ProductCard.Price>$499.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="detail"
+              icon="token-icon-detail-button"
+              onClick={fn()}
+            >
+              View Details
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
 
-      <VariantGroup title="Badge Variations">
-        <ProductCard
-          imageSrc={productImages.backpack}
-          name="Multiple Badges"
-          price="1 799 Kč"
-          stockStatus="Skladem více než 20 ks"
-          badges={[
-            { children: 'Novinka', variant: 'info' },
-            { children: '-25%', variant: 'danger' },
-            { children: 'Eco', variant: 'success' },
-            { children: 'XL', variant: 'outline' },
-          ]}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc={productImages.tshirt}
-          name="Dynamic Badge"
-          price="899 Kč"
-          stockStatus="Skladem 15 ks"
-          badges={[
-            {
-              children: 'Custom',
-              variant: 'dynamic',
-              bgColor: '#7c3aed',
-              fgColor: '#ffffff',
-              borderColor: '#6d28d9',
-            },
-          ]}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc={productImages.shoes}
-          name="No Badges"
-          price="2 199 Kč"
-          stockStatus="Skladem 8 ks"
-          badges={[]}
-          hasCartButton
-        />
+      <VariantGroup title="Wishlist Button">
+        <ProductCard>
+          <ProductCard.Image src={productImages.headphones} alt="Headphones" />
+          <ProductCard.Name>Wireless Headphones</ProductCard.Name>
+          <ProductCard.Price>$199.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="wishlist"
+              icon="token-icon-wishlist-button"
+              onClick={fn()}
+            >
+              Save to Wishlist
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
 
-      <VariantGroup title="With Ratings">
-        <ProductCard
-          imageSrc={productImages.watch}
-          name="High Rating Product"
-          price="5 999 Kč"
-          stockStatus="Skladem 4 ks"
-          rating={{ value: 4.5, count: 5 }}
-          badges={[{ children: 'Top Rated', variant: 'success' }]}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc={productImages.headphones}
-          name="Low Rating Product"
-          price="1 499 Kč"
-          stockStatus="Skladem více než 50 ks"
-          rating={{ value: 2.5, count: 5 }}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc={productImages.camera}
-          name="New Product No Reviews"
-          price="8 999 Kč"
-          stockStatus="Předobjednávka"
-          rating={{ value: 0, count: 5, readOnly: true }}
-          badges={[{ children: 'Coming Soon', variant: 'info' }]}
-          hasCartButton
-        />
+      <VariantGroup title="Custom Button">
+        <ProductCard>
+          <ProductCard.Image src={productImages.camera} alt="Camera" />
+          <ProductCard.Name>Professional Camera</ProductCard.Name>
+          <ProductCard.Price>$1,299.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="custom"
+              icon="token-icon-share"
+              onClick={fn()}
+              className="bg-accent text-accent-fg hover:bg-accent-hover"
+            >
+              Share Product
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
     </VariantContainer>
   ),
 }
 
-export const LayoutComparison: Story = {
+// Column vs Row layouts
+export const LayoutVariants: Story = {
   render: () => (
     <VariantContainer>
-      <VariantGroup title="Column Layout (Default)" fullWidth>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {Object.entries(productImages).slice(0, 3).map(([key, src], i) => (
-            <ProductCard
-              key={key}
-              imageSrc={src}
-              name={`Product ${i + 1}`}
-              price={`${1000 + i * 500} Kč`}
-              stockStatus="Skladem"
-              layout="column"
-              hasCartButton
-              badges={i === 0 ? [{ children: 'New', variant: 'info' }] : []}
-              rating={i === 1 ? { value: 4, count: 5, readOnly: true } : undefined}
-            />
-          ))}
-        </div>
+      <VariantGroup title="Column Layout (Default)">
+        <ProductCard layout="column">
+          <ProductCard.Image src={productImages.tshirt} alt="T-Shirt" />
+          <ProductCard.Name>Cotton T-Shirt</ProductCard.Name>
+          <Rating value={4} />
+          <ProductCard.Stock>In Stock</ProductCard.Stock>
+          <ProductCard.Price>$24.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="cart"
+              icon="token-icon-cart-button"
+            >
+              Add to Cart
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
 
-      <VariantGroup title="Row Layout (List View)" fullWidth>
-        <div className="w-full max-w-[50rem] space-y-4">
-          {Object.entries(productImages).slice(3, 6).map(([key, src], i) => (
-            <ProductCard
-              key={key}
-              imageSrc={src}
-              name={`Product with longer description text ${i + 4}`}
-              price={`${2000 + i * 750} Kč`}
-              stockStatus={`Skladem ${10 - i} ks`}
-              layout="row"
-              hasCartButton
-              hasDetailButton
-              badges={[{ children: `Size ${i + 1}`, variant: 'outline' }]}
-              rating={{ value: 3.5 + i * 0.5, count: 5, readOnly: true }}
-            />
-          ))}
-        </div>
+      <VariantGroup title="Row Layout">
+        <ProductCard layout="row" className="w-lg">
+          <ProductCard.Image
+            src={productImages.shoes}
+            alt="Shoes"
+            className="row-span-6"
+          />
+          <ProductCard.Name>Running Shoes</ProductCard.Name>
+          <Rating value={5} />
+          <ProductCard.Stock>Limited Stock</ProductCard.Stock>
+          <ProductCard.Price>$89.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="cart"
+              icon="token-icon-cart-button"
+            >
+              Add to Cart
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
     </VariantContainer>
   ),
 }
 
-export const EdgeCases: Story = {
+// Custom composition example
+export const CustomComposition: Story = {
   render: () => (
-    <VariantContainer>
-      <VariantGroup title="Content Edge Cases">
-        <ProductCard
-          imageSrc={productImages.tshirt}
-          name="Very Long Product Name That Should Be Truncated After Multiple Lines To Maintain Card Layout Consistency"
-          price="999 999 999 Kč"
-          stockStatus="Extremely long stock status message that explains everything about availability"
-          badges={[
-            { children: 'VeryLongBadgeText', variant: 'info' },
-            { children: 'AnotherLongBadge', variant: 'success' },
-          ]}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc=""
-          name="Product Without Image"
-          price="1 Kč"
-          stockStatus="?"
-          badges={[]}
-          hasCartButton
-        />
-        <ProductCard
-          imageSrc={productImages.camera}
-          name="M"
-          price="1"
-          stockStatus="1"
-          badges={[{ children: '1', variant: 'outline' }]}
-          hasCartButton
-          cartButtonText="+"
-        />
-      </VariantGroup>
+    <ProductCard>
+      <ProductCard.Image src={productImages.camera} alt="DSLR Camera" />
 
-      <VariantGroup title="Layout Edge Cases" fullWidth>
-        <div className="w-48">
-          <ProductCard
-            imageSrc={productImages.watch}
-            name="Narrow Container Test"
-            price="999 Kč"
-            stockStatus="Limited width"
-            layout="column"
-            hasCartButton
-            hasDetailButton
-          />
-        </div>
-        <div className="w-full max-w-container-xl">
-          <ProductCard
-            imageSrc={productImages.backpack}
-            name="Wide Container Row Layout Test"
-            price="1 599 Kč"
-            stockStatus="Wide layout test"
-            layout="row"
-            hasCartButton
-            hasDetailButton
-            hasWishlistButton
-            badges={[
-              { children: 'Wide', variant: 'info' },
-              { children: 'Layout', variant: 'success' },
-              { children: 'Test', variant: 'warning' },
-            ]}
-            rating={{ value: 4, count: 5, readOnly: true }}
-          />
-        </div>
-      </VariantGroup>
+      {/* Custom badge placement */}
+      <div className="mb-100 flex gap-100">
+        <Badge variant="info">-30%</Badge>
+        <Badge variant="success">Free Shipping</Badge>
+      </div>
 
-      <VariantGroup title="Many Badges Overflow">
-        <ProductCard
-          imageSrc={productImages.shoes}
-          name="Product with Many Badges"
-          price="2 999 Kč"
-          stockStatus="Testing badge overflow"
-          badges={[
-            { children: 'New', variant: 'info' },
-            { children: '-50%', variant: 'danger' },
-            { children: 'Eco', variant: 'success' },
-            { children: 'Premium', variant: 'warning' },
-            { children: 'XS', variant: 'outline' },
-            { children: 'S', variant: 'outline' },
-            { children: 'M', variant: 'outline' },
-            { children: 'L', variant: 'outline' },
-            { children: 'XL', variant: 'outline' },
-            { children: 'XXL', variant: 'outline' },
-            { children: 'Limited', variant: 'info' },
-            { children: 'Exclusive', variant: 'success' },
-          ]}
-          hasCartButton
-        />
-      </VariantGroup>
-    </VariantContainer>
+      <ProductCard.Name>Professional DSLR Camera</ProductCard.Name>
+
+      {/* Custom price display with original price */}
+      <div className="flex items-baseline gap-100">
+        <span className="text-100 text-fg-primary line-through">$1,899</span>
+        <ProductCard.Price>$1,329</ProductCard.Price>
+      </div>
+
+      {/* Custom rating with review count */}
+      <div className="flex items-center gap-100">
+        <Rating value={4.8} />
+        <span className="text-100 text-fg-muted">(245 reviews)</span>
+      </div>
+
+      <ProductCard.Stock>Only 3 left in stock</ProductCard.Stock>
+
+      {/* Custom actions layout */}
+      <ProductCard.Actions>
+        <div className="flex w-full gap-200">
+          <ProductCard.Button
+            buttonVariant="cart"
+            icon="token-icon-cart-button"
+            className="flex-1"
+          >
+            Buy Now
+          </ProductCard.Button>
+          <ProductCard.Button
+            buttonVariant="detail"
+            icon="token-icon-detail-button"
+          >
+            Details
+          </ProductCard.Button>
+        </div>
+      </ProductCard.Actions>
+    </ProductCard>
   ),
 }
 
-export const RealWorldEcommerce: Story = {
+// With quantity input
+export const WithQuantityInput: Story = {
   render: () => (
-    <VariantContainer>
-      <VariantGroup title="Sale Section" fullWidth>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ProductCard
-            imageSrc={productImages.tshirt}
-            name="Summer Collection T-Shirt"
-            price="799 Kč"
-            stockStatus="Skladem více než 20 ks"
-            badges={[
-              { children: '-30%', variant: 'danger' },
-              { children: 'Summer Sale', variant: 'warning' },
-            ]}
-            rating={{ value: 4.2, count: 5, readOnly: true }}
-            hasCartButton
-            hasWishlistButton
-          />
-          <ProductCard
-            imageSrc={productImages.shoes}
-            name="Running Shoes Pro Max"
-            price="3 999 Kč"
-            stockStatus="Posledních 5 ks"
-            badges={[
-              { children: '-15%', variant: 'danger' },
-              { children: 'Bestseller', variant: 'success' },
-            ]}
-            rating={{ value: 4.8, count: 5, readOnly: true }}
-            hasCartButton
-            hasWishlistButton
-          />
-          <ProductCard
-            imageSrc={productImages.backpack}
-            name="Urban Backpack 25L"
-            price="1 299 Kč"
-            stockStatus="Skladem"
-            badges={[
-              { children: '-40%', variant: 'danger' },
-              { children: 'Last Chance', variant: 'warning' },
-            ]}
-            rating={{ value: 3.9, count: 5, readOnly: true }}
-            hasCartButton
-            hasWishlistButton
-          />
-        </div>
-      </VariantGroup>
-
-      <VariantGroup title="New Arrivals" fullWidth>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ProductCard
-            imageSrc={productImages.headphones}
-            name="Wireless ANC Headphones"
-            price="4 499 Kč"
-            stockStatus="Novinka - skladem"
-            badges={[
-              { children: 'New', variant: 'info' },
-              { children: 'Premium', variant: 'success' },
-            ]}
-            hasCartButton
-            hasDetailButton
-          />
-          <ProductCard
-            imageSrc={productImages.camera}
-            name="Professional Camera 4K"
-            price="24 999 Kč"
-            stockStatus="Předobjednávka"
-            badges={[
-              { children: 'Coming Soon', variant: 'info' },
-              { children: 'Pro', variant: 'outline' },
-            ]}
-            hasDetailButton
-            hasWishlistButton
-            cartButtonText="Notify Me"
-          />
-          <ProductCard
-            imageSrc={productImages.watch}
-            name="Smart Watch Series 7"
-            price="8 999 Kč"
-            stockStatus="Skladem 3 ks"
-            badges={[
-              { children: 'New', variant: 'info' },
-              { children: 'Smart', variant: 'success' },
-            ]}
-            hasCartButton
-            hasDetailButton
-            hasWishlistButton
-          />
-        </div>
-      </VariantGroup>
-    </VariantContainer>
+    <ProductCard className="max-w-sm">
+      <div>
+        <ProductCard.Image
+          src={productImages.watch}
+          alt="Luxury Watch"
+          className="h-auto w-full"
+        />
+        <ProductCard.Name>Swiss Luxury Watch</ProductCard.Name>
+        <ProductCard.Price>$2,499</ProductCard.Price>
+        <ProductCard.Stock status="limited-stock">
+          Limited Edition - 5 Available
+        </ProductCard.Stock>
+      </div>
+      <ProductCard.Actions>
+        <NumericInput defaultValue={1} hideControls={false} />
+        <ProductCard.Button
+          buttonVariant="cart"
+          icon="token-icon-cart-button"
+          onClick={fn()}
+          className="flex-1"
+        >
+          Add to Cart
+        </ProductCard.Button>
+        <ProductCard.Button
+          buttonVariant="wishlist"
+          icon="token-icon-wishlist-button"
+          onClick={fn()}
+          className="w-full"
+        >
+          Save for Later
+        </ProductCard.Button>
+      </ProductCard.Actions>
+    </ProductCard>
   ),
 }
 
-export const CustomButtons: Story = {
+// Minimal card - only essential elements
+export const MinimalCard: Story = {
+  render: () => (
+    <ProductCard>
+      <ProductCard.Name className="text-center">
+        Travel Backpack
+      </ProductCard.Name>
+      <ProductCard.Image src={productImages.backpack} alt="Travel Backpack" />
+      <ProductCard.Price>$79.99</ProductCard.Price>
+    </ProductCard>
+  ),
+}
+
+// Complex card with everything
+export const ComplexCard: Story = {
+  render: () => (
+    <ProductCard className="w-md">
+      {/* Image with overlay badge */}
+      <div className="relative">
+        <ProductCard.Image src={productImages.camera} alt="Camera Kit" />
+        <Badge variant="error" className="absolute top-100 right-100">
+          HOT DEAL
+        </Badge>
+      </div>
+
+      {/* Multiple badge types */}
+      <ProductCard.Badges>
+        <Badge variant="info">New Arrival</Badge>
+        <Badge variant="success">Eco-Friendly</Badge>
+        <Badge variant="warning">Limited Stock</Badge>
+      </ProductCard.Badges>
+
+      <ProductCard.Name>
+        Professional Camera Kit with Accessories
+      </ProductCard.Name>
+
+      {/* Rating with reviews */}
+      <div className="mb-100 flex items-center gap-100">
+        <ProductCard.Rating rating={{ value: 4.9 }} />
+        <span className="text-50 text-fg-muted">(512 reviews)</span>
+      </div>
+
+      {/* Price with savings */}
+      <div className="mb-200 flex flex-col gap-100">
+        <div className="flex items-baseline gap-100">
+          <span className="text-fg-muted line-through">$3,499</span>
+          <ProductCard.Price>$2,449</ProductCard.Price>
+          <Badge variant="error" size="sm">
+            Save $1,050
+          </Badge>
+        </div>
+        <span className="text-50 text-success-fg">Free shipping included</span>
+      </div>
+
+      <ProductCard.Stock>Only 2 units left - Order soon!</ProductCard.Stock>
+
+      {/* Complex actions */}
+      <ProductCard.Actions>
+        <div className="mb-100 flex items-center gap-100">
+          <NumericInput />
+          <ProductCard.Button
+            buttonVariant="cart"
+            icon="token-icon-cart-button"
+            onClick={fn()}
+            className="flex-1"
+          >
+            Add to Cart
+          </ProductCard.Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-100">
+          <ProductCard.Button
+            buttonVariant="detail"
+            icon="token-icon-detail-button"
+            onClick={fn()}
+          >
+            Quick View
+          </ProductCard.Button>
+          <ProductCard.Button
+            buttonVariant="wishlist"
+            icon="token-icon-wishlist-button"
+            onClick={fn()}
+          >
+            Wishlist
+          </ProductCard.Button>
+        </div>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mt-100 w-full"
+          onClick={fn()}
+        >
+          Compare with similar items
+        </Button>
+      </ProductCard.Actions>
+
+      {/* Additional info */}
+      <div className="border-border-primary border-t pt-100">
+        <span className="text-50 text-fg-muted">
+          ✓ 2-year warranty • ✓ 30-day returns • ✓ Expert support
+        </span>
+      </div>
+    </ProductCard>
+  ),
+}
+
+// Multiple action layouts
+export const ActionLayouts: Story = {
+  name: 'Action Button Layouts',
   render: () => (
     <VariantContainer>
-      <VariantGroup title="Custom Button Integration">
-        <ProductCard
-          imageSrc={productImages.camera}
-          name="Product with Custom Actions"
-          price="15 999 Kč"
-          stockStatus="Skladem"
-          badges={[{ children: 'Customizable', variant: 'info' }]}
-          customButtons={
+      <VariantGroup title="Horizontal Actions">
+        <ProductCard>
+          <ProductCard.Image src={productImages.shoes} alt="Shoes" />
+          <ProductCard.Name>Running Shoes</ProductCard.Name>
+          <ProductCard.Price>$89.99</ProductCard.Price>
+          <ProductCard.Actions>
             <div className="flex gap-100">
-              <Button size="sm" variant="secondary">Compare</Button>
-              <Button size="sm" theme='light' variant="warning" >Quick View</Button>
-              <Button size="sm" variant="danger">Share</Button>
+              <ProductCard.Button
+                buttonVariant="cart"
+                icon="token-icon-cart-button"
+              >
+                Cart
+              </ProductCard.Button>
+              <ProductCard.Button
+                buttonVariant="detail"
+                icon="token-icon-detail-button"
+              >
+                View
+              </ProductCard.Button>
+              <ProductCard.Button
+                buttonVariant="wishlist"
+                icon="token-icon-wishlist-button"
+              >
+                Save
+              </ProductCard.Button>
             </div>
-          }
-        />
-        <ProductCard
-          imageSrc={productImages.watch}
-          name="Mixed Standard and Custom"
-          price="6 999 Kč"
-          stockStatus="Skladem"
-          hasCartButton
-          customButtons={
-            <Button size="sm" variant="primary" className="w-full">Configure</Button>
-          }
-        />
+          </ProductCard.Actions>
+        </ProductCard>
+      </VariantGroup>
+
+      <VariantGroup title="Vertical Actions">
+        <ProductCard>
+          <ProductCard.Image src={productImages.headphones} alt="Headphones" />
+          <ProductCard.Name>Wireless Headphones</ProductCard.Name>
+          <ProductCard.Price>$199.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <div className="flex flex-col gap-100">
+              <ProductCard.Button
+                buttonVariant="cart"
+                icon="token-icon-cart-button"
+                className="w-full"
+              >
+                Add to Cart
+              </ProductCard.Button>
+              <ProductCard.Button
+                buttonVariant="detail"
+                icon="token-icon-detail-button"
+                className="w-full"
+              >
+                View Details
+              </ProductCard.Button>
+            </div>
+          </ProductCard.Actions>
+        </ProductCard>
+      </VariantGroup>
+
+      <VariantGroup title="Mixed Layout">
+        <ProductCard>
+          <ProductCard.Image src={productImages.watch} alt="Watch" />
+          <ProductCard.Name>Luxury Watch</ProductCard.Name>
+          <ProductCard.Price>$999.99</ProductCard.Price>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="cart"
+              icon="token-icon-cart-button"
+              className="mb-100 w-full"
+            >
+              Add to Cart
+            </ProductCard.Button>
+            <div className="flex gap-100">
+              <ProductCard.Button
+                buttonVariant="detail"
+                icon="token-icon-detail-button"
+                className="flex-1"
+              >
+                Details
+              </ProductCard.Button>
+              <ProductCard.Button
+                buttonVariant="wishlist"
+                icon="token-icon-wishlist-button"
+                className="flex-1"
+              >
+                Wishlist
+              </ProductCard.Button>
+            </div>
+          </ProductCard.Actions>
+        </ProductCard>
       </VariantGroup>
     </VariantContainer>
   ),
 }
-
