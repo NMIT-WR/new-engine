@@ -9,15 +9,24 @@
   --color-carousel-trigger-bg: oklch(
     from var(--color-carousel) calc(l - var(--surface-increment) * 4) c h
   );
+  --color-carousel-trigger-bg-hover: oklch(
+    from var(--color-carousel) calc(l - var(--surface-increment) * 8) c h
+  );
   --color-carousel-control-bg: oklch(
     from var(--color-carousel) calc(l - var(--surface-increment) * 2) c h
   );
 
   /* Foreground colors */
   --color-carousel-trigger-fg: var(--color-fg-dark);
+  --color-carousel-trigger-fg-hover: var(--color-fg-dark);
 
   /* Indicator colors */
+  --color-carousel-indicator-bg: oklch(
+    from var(--color-carousel) calc(l - var(--surface-increment) * 4) c h
+  );
   --color-carousel-indicator-bg-active: var(--color-carousel-accent);
+  --color-carousel-indicator-border: transparent;
+  --color-carousel-indicator-border-active: transparent;
 
   /* === SPACING === */
   /* Root spacing */
@@ -41,9 +50,10 @@
 
   /* === BORDERS & RADIUS === */
   --radius-carousel: var(--radius-sm);
+  --radius-carousel-indicator: 50%;
 
-  /* === SHADOWS === */
-  /* No shadows defined for carousel */
+  /* === TYPOGRAPHY === */
+  --text-carousel-trigger-size: var(--text-md);
 
   /* === FOCUS RINGS === */
   --color-carousel-focus-ring: --alpha(
