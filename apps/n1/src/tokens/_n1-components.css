@@ -1,4 +1,13 @@
 @theme static {
+  /* === ATOMS === */
+  /* BADGE */
+  --text-badge-size: var(--text-sm);
+  --font-weight-badge: var(--font-weight-medium);
+
+  /* BUTTON */
+  --color-button-cart-bg: oklch(0.4495 0 0);
+  --text-button-sm: var(--text-md);
+
   /* === MOLECULES === */
   /* CAROUSEL */
   --color-carousel: transparent;
@@ -12,6 +21,17 @@
   --width-carousel-indicator: 2rem;
   --aspect-carousel-indicator: 1;
   --spacing-carousel-root-md: 100%;
+
+  /* PRODUCT CARD */
+  --color-product-card-bg: var(--color-base);
+  --color-product-card-border: transparent;
+  --text-product-card-stock-size: var(--text-md);
+  --text-product-card-price-size: var(--text-md);
+  --text-product-card-name-size: var(--text-md);
+  --font-weight-product-card-stock: var(--font-weight-bold);
+  --font-weight-product-card-price: var(--font-weight-bold);
+  --font-weight-product-card-name: var(--font-weight-bold);
+  --spacing-product-card-col-layout: var(--spacing-200);
 
   /* === ORGANISMS === */
   /* FOOTER */
