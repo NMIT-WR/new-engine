@@ -7,6 +7,7 @@ export interface Product {
   badges?: BadgeProps[]
   imageSrc: string
   stockStatus?: string
+  stockValue?: string
 }
 
 export interface ProductSectionData {
