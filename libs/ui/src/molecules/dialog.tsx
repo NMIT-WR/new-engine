@@ -6,8 +6,8 @@ import { Button } from '../atoms/button'
 
 const dialogVariants = tv({
   slots: {
-    backdrop: ['fixed inset-0 z-(--z-dialog-backdrop)'],
-    positioner: ['fixed inset-0 z-(--z-dialog-positioner) flex'],
+    backdrop: ['inset-0 z-(--z-dialog-backdrop)'],
+    positioner: ['inset-0 z-(--z-dialog-positioner) flex'],
     content: [
       'relative flex flex-col p-dialog-content gap-dialog-content',
       'bg-dialog-content-bg text-dialog-content-fg',
@@ -51,6 +51,20 @@ const dialogVariants = tv({
       bottom: {
         positioner: 'items-end justify-stretch',
         content: 'w-full rounded-dialog-bottom border-b-0',
+      },
+    },
+    position: {
+      fixed: {
+        backdrop: 'fixed',
+        positioner: 'fixed',
+      },
+      absolute: {
+        backdrop: 'absolute',
+        positioner: 'absolute',
+      },
+      sticky: {
+        backdrop: 'sticky',
+        positioner: 'sticky',
       },
     },
     size: {
@@ -141,6 +155,7 @@ const dialogVariants = tv({
     placement: 'center',
     behavior: 'modal',
     size: 'md',
+    position: 'fixed',
   },
 })
 
@@ -174,6 +189,7 @@ export function Dialog({
   finalFocusEl,
   role = 'dialog',
   placement = 'center',
+  position = 'fixed',
   size = 'md',
   behavior = 'modal',
   closeOnEscape = true,
@@ -218,7 +234,7 @@ export function Dialog({
     description: descriptionSlot,
     closeTrigger,
     actions: actionsSlot,
-  } = dialogVariants({ placement, size, behavior })
+  } = dialogVariants({ placement, size, behavior, position })
 
   return (
     <>
