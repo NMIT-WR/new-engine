@@ -1,4 +1,4 @@
-import {RegionDTO, WorkflowTypes} from "@medusajs/framework/types"
+import {IRegionModuleService, Logger, RegionDTO, WorkflowTypes} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createRegionsWorkflow, updateRegionsWorkflow} from "@medusajs/medusa/core-flows"
@@ -15,10 +15,10 @@ export const createRegionsStep = createStep(CreateRegionsStepId, async (
     input: CreateRegionsStepInput,
     {container}
 ) => {
-    const result: RegionDTO[] = []
+    const result: Array<RegionDTO|WorkflowTypes.RegionWorkflow.UpdateRegionsWorkflowOutput> = []
 
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const regionService = container.resolve(Modules.REGION)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const regionService = container.resolve<IRegionModuleService>(Modules.REGION)
 
     const regionNames = input.map(i => i.name)
 
@@ -27,18 +27,18 @@ export const createRegionsStep = createStep(CreateRegionsStepId, async (
     })
 
     const missingRegions = input.filter(i => !existingRegions.find(j => j.name === i.name))
-    const updateRegions = input.map(inputRegion => {
+    const updateRegions = input.flatMap(inputRegion => {
         const existingRegion = existingRegions.find(existing => existing.name === inputRegion.name)
         if (existingRegion) {
-            return {
+            return [{
                 ...existingRegion,
                 currency_code: inputRegion.currencyCode,
                 countries: inputRegion.countries,
                 payment_providers: inputRegion.paymentProviders
-            }
+            }]
         }
-        return null
-    }).filter((region): region is NonNullable<typeof region> => region !== null)
+        return []
+    })
 
     if (missingRegions.length !== 0) {
         logger.info("Creating missing region data...")
@@ -71,7 +71,6 @@ export const createRegionsStep = createStep(CreateRegionsStepId, async (
             },
         }))
 
-        let result: WorkflowTypes.RegionWorkflow.UpdateRegionsWorkflowOutput[] = []
         for (const regionToUpdate of toUpdate) {
             const {result: updateResult} = await updateRegionsWorkflow(container).run({
                 input: regionToUpdate,

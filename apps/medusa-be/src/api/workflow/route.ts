@@ -46,7 +46,6 @@ export async function GET(
                 },
             ],
         },
-        fulfillmentProviderId: undefined,
         defaultShippingProfile: {
             name: 'Default Shipping Profile',
         },
@@ -65,6 +64,7 @@ export async function GET(
         shippingOptions: [
             {
                 name: 'Standard Shipping',
+                providerId: 'manual_manual',
                 type: {
                     label: "Standard",
                     description: "Ship in 2-3 days.",
@@ -99,6 +99,7 @@ export async function GET(
             },
             {
                 name: 'Express Shipping',
+                providerId: 'manual_manual',
                 type: {
                     label: "Express",
                     description: "Ship in 24 hours.",

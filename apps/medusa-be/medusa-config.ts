@@ -6,20 +6,20 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379'
 const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST || ''
 const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || ''
-const VITE_HMR_PORT = process.env.VITE_HMR_PORT || ''
 
 module.exports = defineConfig({
     featureFlags: {
         "index_engine": true,
+        "caching": true,
     },
     admin: {
         // backendUrl: BACKEND_URL,
-        vite: (inlineConfig) => {
-            if (VITE_HMR_PORT !== '') {
-                inlineConfig.server.hmr.port = VITE_HMR_PORT
-            }
-            return inlineConfig
-        },
+        vite: () => ({
+            server: {
+                allowedHosts: process.env.MEDUSA_BACKEND_URL,
+                hmr: false,
+            },
+        }),
     },
     projectConfig: {
         // databaseLogging: [
@@ -99,16 +99,21 @@ module.exports = defineConfig({
                 },
             },
         },
-        {
-            resolve: 'medusa-variant-images',
-            options: {},
-        },
     ],
     modules: [
         {
-            resolve: '@medusajs/medusa/cache-redis',
+            resolve: "@medusajs/medusa/caching",
             options: {
-                redisUrl: process.env.CACHE_REDIS_URL,
+                providers: [
+                    {
+                        resolve: "@medusajs/caching-redis",
+                        id: "caching-redis",
+                        is_default: true,
+                        options: {
+                            redisUrl: process.env.CACHE_REDIS_URL,
+                        },
+                    },
+                ],
             },
         },
         {
@@ -159,6 +164,38 @@ module.exports = defineConfig({
         },
         {
             resolve: './src/modules/database',
+        },
+        {
+            resolve: "@medusajs/medusa/fulfillment",
+            options: {
+                providers: [
+                    {
+                        resolve: "./src/modules/ppl",
+                        id: "ppl",
+                        options: {
+                            client_id: process.env.PPL_CLIENT_ID,
+                            client_secret: process.env.PPL_CLIENT_SECRET,
+                            environment: process.env.PPL_ENVIRONMENT || "testing",
+                            default_label_format: "Png",
+                            // COD bank details (choose one method):
+                            // Method 1: Czech bank account
+                            cod_bank_account: process.env.PPL_COD_BANK_ACCOUNT,
+                            cod_bank_code: process.env.PPL_COD_BANK_CODE,
+                            // Method 2: IBAN (international) - uncomment if using IBAN
+                            // cod_iban: process.env.PPL_COD_IBAN,
+                            // cod_swift: process.env.PPL_COD_SWIFT,
+                            // Fallback sender address (used when PPL customer has no address configured)
+                            sender_name: process.env.COMPANY_ADDRESS_NAME,
+                            sender_street: process.env.COMPANY_ADDRESS_STREET,
+                            sender_city: process.env.COMPANY_ADDRESS_CITY,
+                            sender_zip_code: process.env.COMPANY_ADDRESS_ZIP_CODE,
+                            sender_country: process.env.COMPANY_ADDRESS_COUNTRY,
+                            sender_phone: process.env.COMPANY_ADDRESS_PHONE,
+                            sender_email: process.env.COMPANY_ADDRESS_EMAIL,
+                        },
+                    },
+                ],
+            },
         },
     ],
 })

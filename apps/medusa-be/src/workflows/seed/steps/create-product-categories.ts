@@ -1,4 +1,4 @@
-import {ProductCategoryDTO} from "@medusajs/framework/types"
+import {IProductModuleService, Logger, ProductCategoryDTO} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createProductCategoriesWorkflow, updateProductCategoriesWorkflow} from "@medusajs/medusa/core-flows"
@@ -19,8 +19,8 @@ export const createProductCategoriesStep = createStep(CreateProductCategoriesSte
     const productCategoriesCreateResult: ProductCategoryDTO[] = []
     const productCategoriesUpdateResult: ProductCategoryDTO[] = []
 
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const productService = container.resolve(Modules.PRODUCT)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const productService = container.resolve<IProductModuleService>(Modules.PRODUCT)
 
     const existingProductCategories = await productService.listProductCategories({
         name: input.map(i => i.name),
@@ -29,23 +29,23 @@ export const createProductCategoriesStep = createStep(CreateProductCategoriesSte
     })
 
     const missingProductCategories = input.filter(i => !existingProductCategories.find(j => (i.handle === undefined && i.name === j.name) || i.handle === j.handle))
-    const updateProductCategories = existingProductCategories.map(existingProductCategory => {
+    const updateProductCategories = existingProductCategories.flatMap(existingProductCategory => {
         const inputProductCategories = input.find(
             productCategory => (productCategory.handle === undefined && productCategory.name === existingProductCategory.name)
                 || (productCategory.handle === existingProductCategory.handle)
         )
         if (!inputProductCategories) {
-            return null
+            return []
         }
 
-        return {
+        return [{
             id: existingProductCategory.id,
             name: inputProductCategories.name,
             is_active: inputProductCategories.isActive,
             description: inputProductCategories.description,
             handle: inputProductCategories.handle,
-        }
-    }).filter(category => category !== null)
+        }]
+    })
 
     if (missingProductCategories.length !== 0) {
         logger.info("Creating product categories...")

@@ -46,7 +46,7 @@ export default async function seedImages({ container }: ExecArgs) {
                 const buffer = await readFile(filePath)
                 const filename = path.basename(filePath)
                 const mimeType =
-                  mime.lookup(filePath) || 'application/octet-stream'
+                  mime.getType(filePath) || 'application/octet-stream'
 
                 logger.info(`Successfully read file: ${filename} (${mimeType})`)
                 return {
@@ -79,7 +79,8 @@ export default async function seedImages({ container }: ExecArgs) {
           )
 
           if (validFiles.length === 0) {
-            throw new Error(
+            throw new MedusaError(
+              MedusaError.Types.INVALID_DATA,
               `No valid files processed for product ${productName}`
             )
           }

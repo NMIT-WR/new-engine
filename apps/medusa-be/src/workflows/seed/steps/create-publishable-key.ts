@@ -1,5 +1,6 @@
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
+import {IApiKeyModuleService, Logger } from "@medusajs/framework/types"
 import {createApiKeysWorkflow} from "@medusajs/medusa/core-flows"
 
 export type CreatePublishableKeyStepInput = {
@@ -11,8 +12,8 @@ export const createPublishableKeyStep = createStep(createPublishableKeyStepId, a
     input: CreatePublishableKeyStepInput,
     {container}
 ) => {
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const apiKeyService = container.resolve(Modules.API_KEY)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const apiKeyService = container.resolve<IApiKeyModuleService>(Modules.API_KEY)
 
     const existingKey = await apiKeyService.listApiKeys({
         title: input.title,

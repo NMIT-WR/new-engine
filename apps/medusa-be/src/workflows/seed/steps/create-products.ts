@@ -1,9 +1,10 @@
-import {ProductDTO} from "@medusajs/framework/types";
+import {IFulfillmentModuleService, IProductModuleService, ISalesChannelModuleService, Logger, ProductDTO} from "@medusajs/framework/types";
 import {ContainerRegistrationKeys, Modules, ProductStatus} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
-import {createProductsWorkflow, updateProductsWorkflow} from "@medusajs/medusa/core-flows";
+import {batchVariantImagesWorkflow, BatchVariantImagesWorkflowInput, createProductsWorkflow, updateProductsWorkflow} from "@medusajs/medusa/core-flows";
 import {PRODUCER_MODULE} from "../../../modules/producer";
 import ProducerModuleService from "../../../modules/producer/service";
+import { Link } from "@medusajs/framework/modules-sdk";
 
 type ProductInput = {
     title: string
@@ -39,11 +40,11 @@ type ProductInput = {
         options?: {
             [key: string]: string
         }
+        images?: {
+            url: string
+        }[]
+        thumbnail?: string
         metadata?: {
-            images?: {
-                url: string
-            }[]
-            thumbnail?: string
             attributes?: {
                 name: string
                 value?: string
@@ -62,45 +63,129 @@ type ProductInput = {
     salesChannelNames: string[]
 }
 
+type ProductVariantImagesInput = {
+    images?: string[]
+}
+
 export type CreateProductsStepInput = ProductInput[]
 
 const CreateProductsStepId = 'create-products-seed-step'
 
-function processProductProducer(inputProduct: ProductInput, producers: Map<string, { attributes: Map<string, string>; products: string[] }>) {
-    const handle = ''
-    if (inputProduct.producer?.title) {
-        if (!producers.has(inputProduct.producer.title)) {
-            producers.set(inputProduct.producer.title, {products: [], attributes: new Map()})
-        }
+function processProductProducerInput(inputProduct: ProductInput, producers: Map<string, { attributes: Map<string, string>; products: string[] }>) {
+    if (!inputProduct.producer?.title) {
+        return
+    }
 
-        const producer = producers.get(inputProduct.producer.title)
+    if (!producers.has(inputProduct.producer.title)) {
+        producers.set(inputProduct.producer.title, {products: [], attributes: new Map()})
+    }
 
-        if (!producer) {
-            throw new Error(`Producer "${inputProduct.producer.title}" not found`)
-        }
+    const producer = producers.get(inputProduct.producer.title)
 
-        producer.products.push(inputProduct.handle)
+    if (!producer) {
+        throw new Error(`Producer "${inputProduct.producer.title}" not found`)
+    }
 
-        for (const attribute of inputProduct.producer.attributes ?? []) {
-            if (!producer.attributes.has(attribute.name)) {
-                producer.attributes.set(attribute.name, attribute.value)
-            }
+    producer.products.push(inputProduct.handle)
+
+    for (const attribute of inputProduct.producer.attributes ?? []) {
+        if (!producer.attributes.has(attribute.name)) {
+            producer.attributes.set(attribute.name, attribute.value)
         }
     }
+
+}
+
+function processProductVariantImagesInput(inputProduct: ProductInput, productVariantImages: Map<string, Map<string, ProductVariantImagesInput>>) {
+    if (inputProduct.variants?.length === 0) {
+        return
+    }
+
+    if (!productVariantImages.has(inputProduct.handle)) {
+        productVariantImages.set(inputProduct.handle, new Map())
+    }
+
+    const variantImages = productVariantImages.get(inputProduct.handle)
+
+    if (!variantImages) {
+        throw new Error(`Product "${inputProduct.handle}" not found`)
+    }
+
+    for (const variant of inputProduct.variants ?? []) {
+        if (!variant.images?.length) {
+            continue
+        }
+
+        if (!variantImages.has(variant.sku)) {
+            variantImages.set(variant.sku, {
+                images: variant.images.map(i => i.url),
+            })
+        }
+    }
+}
+
+function prepareVariantImagesWorkflowInput(product: ProductDTO, productVariantImages: Map<string, Map<string, ProductVariantImagesInput>>): BatchVariantImagesWorkflowInput[] | undefined {
+    if (product.variants?.length === 0) {
+        return
+    }
+
+    const variantImages = productVariantImages.get(product.handle)
+    if (!variantImages) {
+        throw new Error(`Product "${product.handle}" not found when processing variant images`)
+    }
+
+    const result: BatchVariantImagesWorkflowInput[] = []
+
+    for (const variant of product.variants) {
+        if (!variant.sku) {
+            throw new Error(`Variant SKU is empty for product "${product.handle}"`)
+        }
+
+        const variantImage = variantImages.get(variant.sku)
+
+        if (!variantImage) {
+            // if no images are specified for variant, use base images from the product entity
+            const toAdd = product.images?.map(image => {
+                return product.images.find(v => v.url === image.url)?.id ?? null
+            }).filter(v => v !== null)
+
+            const toRemove = variant.images.filter(img => !toAdd.includes(img.id)).map(img => img.id)
+
+            result.push({
+                variant_id: variant.id,
+                add: toAdd,
+                remove: toRemove,
+            })
+            continue
+        }
+
+        const toAdd = (variantImage.images ?? []).map(image => {
+            return product.images.find(v => v.url === image)?.id ?? null
+        }).filter(v => v !== null)
+        const toRemove = variant.images.filter(img => !toAdd.includes(img.id)).map(img => img.id)
+
+        result.push({
+            variant_id: variant.id,
+            add: toAdd,
+            remove: toRemove,
+        })
+    }
+    return result
 }
 
 export const createProductsStep = createStep(CreateProductsStepId, async (
     input: CreateProductsStepInput,
     {container}
 ) => {
-    const result: ProductDTO[] = []
-    const link = container.resolve(ContainerRegistrationKeys.LINK)
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const productService = container.resolve(Modules.PRODUCT)
-    const fulfillmentService = container.resolve(Modules.FULFILLMENT)
-    const salesChannelService = container.resolve(Modules.SALES_CHANNEL)
-    const producerService: ProducerModuleService = container.resolve(PRODUCER_MODULE)
+    const result: string[] = []
+    const link = container.resolve<Link>(ContainerRegistrationKeys.LINK)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const productService = container.resolve<IProductModuleService>(Modules.PRODUCT)
+    const fulfillmentService = container.resolve<IFulfillmentModuleService>(Modules.FULFILLMENT)
+    const salesChannelService = container.resolve<ISalesChannelModuleService>(Modules.SALES_CHANNEL)
+    const producerService = container.resolve<ProducerModuleService>(PRODUCER_MODULE)
 
+    const productVariantImages = new Map<string, Map<string, ProductVariantImagesInput>>()
     const producers = new Map<string, {attributes: Map<string, string>, products: string[]}>()
 
     const existingCategories = await productService.listProductCategories({
@@ -130,16 +215,17 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
     })
 
     const missingProducts = input.filter(i => !existingProducts.find(j => j.handle === i.handle))
-    const updateProducts = existingProducts.map(existingProduct => {
+    const updateProducts = existingProducts.flatMap(existingProduct => {
         const inputProduct = input.find(product => product.handle === existingProduct.handle)
 
         if (!inputProduct) {
-            return null
+            return []
         }
 
-        processProductProducer(inputProduct, producers);
+        processProductProducerInput(inputProduct, producers);
+        processProductVariantImagesInput(inputProduct, productVariantImages)
 
-        return {
+        return [{
             id: existingProduct.id,
             title: inputProduct.title,
             categories: inputProduct.categories?.map((inputCat) => {
@@ -173,6 +259,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                         amount: p.amount,
                         currency_code: p.currency_code,
                     })),
+                    thumbnail: inputVariant.thumbnail,
                     metadata: inputVariant.metadata,
                     id: existingVariant.id
                 } : inputVariant
@@ -183,16 +270,16 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 }
                 throw new Error(`Sales channel '${sc.name}' not found`)
             })
-        }
-
-    }).filter(product => product !== null)
+        }]
+    })
 
     if (missingProducts.length !== 0) {
         logger.info("Creating missing products...")
 
         const createProducts = missingProducts.map(p => {
 
-            processProductProducer(p, producers);
+            processProductProducerInput(p, producers);
+            processProductVariantImagesInput(p, productVariantImages)
 
             return {
                 title: p.title,
@@ -223,6 +310,7 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                     ean: v.ean,
                     material: v.material,
                     options: v.options,
+                    thumbnail: v.thumbnail,
                     prices: v.prices?.map(p => ({
                         amount: p.amount,
                         currency_code: p.currency_code,
@@ -244,13 +332,35 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             }
         })
 
-        for (const resultElement of createResult.result) {
-            result.push(resultElement)
+        const productIds = createResult.result.map(r => r.id)
+        const products = await productService.listProducts({id: {$in: productIds}}, {select: [
+                'id',
+                'handle',
+                'variants.sku',
+                'variants.images.id',
+                'variants.images.url',
+            ], relations: ['variants', 'variants.images']})
+
+        logger.info("Creating product variant images...")
+
+        for (const product of products) {
+            const variantImageInputs = prepareVariantImagesWorkflowInput(product, productVariantImages)
+            if (variantImageInputs !== undefined) {
+                for (const variantImageInput of variantImageInputs) {
+                    await batchVariantImagesWorkflow(container).run({
+                        input: variantImageInput,
+                    })
+                }
+            }
+
+            result.push(product.id)
         }
     }
 
     if (updateProducts.length !== 0) {
         logger.info("Updating existing products...")
+
+        const updatedIds: string[] = []
 
         for (const updateProduct of updateProducts) {
             const updateResult = await updateProductsWorkflow(container).run({
@@ -262,9 +372,33 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
                 }
             })
 
-            for (const resultElement of updateResult.result) {
-                result.push(resultElement)
+            updateResult.result.forEach(updated => {
+                updatedIds.push(updated.id)
+            })
+        }
+
+        const products = await productService.listProducts({id: {$in: updatedIds}}, {select: [
+                'id',
+                'handle',
+                'variants.sku',
+                'variants.images.id',
+                'variants.images.url',
+            ], relations: ['variants', 'variants.images']})
+
+        logger.info("Updating product variant images...")
+
+        for (const product of products) {
+            const variantImageInputs = prepareVariantImagesWorkflowInput(product, productVariantImages)
+            if (variantImageInputs !== undefined) {
+
+                for (const variantImageInput of variantImageInputs) {
+
+                    await batchVariantImagesWorkflow(container).run({
+                        input: variantImageInput,
+                    })
+                }
             }
+            result.push(product.id)
         }
     }
 
@@ -280,7 +414,9 @@ export const createProductsStep = createStep(CreateProductsStepId, async (
             attributes
         })
 
-        const products = await productService.listProducts({handle: {$in: value.products}})
+        const products = await productService.listProducts({handle: {$in: value.products}}, {
+            select: ['id']
+        })
 
         const links = products.map(p => ({
             [Modules.PRODUCT]: {

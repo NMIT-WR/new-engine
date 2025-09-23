@@ -10,7 +10,6 @@ export type SeedDatabaseWorkflowInput = {
     regions: Steps.CreateRegionsStepInput
     taxRegions: Steps.CreateTaxRegionsStepInput
     stockLocations: Steps.CreateStockLocationStepInput,
-    fulfillmentProviderId?: string,
     defaultShippingProfile: Steps.CreateDefaultShippingProfileStepInput,
     fulfillmentSets: Steps.CreateFulfillmentSetStepInput,
     shippingOptions: Steps.CreateShippingOptionsStepSeedInput,
@@ -50,12 +49,14 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
         // create stock locations
         const createStockLocationResult = Steps.createStockLocationSeedStep(input.stockLocations)
 
-        // link stock locations to fulfillment provider
+        // link stock locations to fulfillment providers (derived from shipping options)
         const linkStockLocationsFulfillmentProviderInput: Steps.LinkStockLocationFulfillmentProviderStepInput = transform({
             createStockLocationResult, input
         }, (data) => ({
             stockLocations: data.createStockLocationResult.result,
-            fulfillmentProviderId: data.input.fulfillmentProviderId
+            fulfillmentProviderIds: [...new Set(
+                data.input.shippingOptions.map(opt => opt.providerId || 'manual_manual')
+            )]
         }))
 
         const linkStockLocationsFulfillmentProviderResult = Steps.linkStockLocationFulfillmentProviderSeedStep(linkStockLocationsFulfillmentProviderInput)
@@ -86,7 +87,7 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
             }, (data) =>
                 data.input.shippingOptions.map(option => ({
                     name: option.name,
-                    providerId: data.input.fulfillmentProviderId || 'manual_manual',
+                    providerId: option.providerId || 'manual_manual',
                     serviceZoneId: data.createFulfillmentSetsResult.result[0]?.service_zones[0]?.id as string,
                     shippingProfileId: data.createDefaultShippingProfileResult.result[0]?.id as string,
                     regions: data.createRegionsResult.result.map(region => ({
@@ -96,6 +97,7 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
                     type: option.type,
                     prices: option.prices,
                     rules: option.rules,
+                    data: option.data,
                 }))
         )
 

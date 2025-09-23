@@ -49,7 +49,6 @@ export async function GET(
                 },
             ],
         },
-        fulfillmentProviderId: undefined,
         defaultShippingProfile: {
             name: 'Default Shipping Profile',
         },
@@ -66,8 +65,10 @@ export async function GET(
             ],
         },
         shippingOptions: [
+            // Manual fulfillment options
             {
                 name: 'Standard Shipping',
+                providerId: 'manual_manual',
                 type: {
                     label: "Standard",
                     description: "Ship in 2-3 days.",
@@ -102,6 +103,7 @@ export async function GET(
             },
             {
                 name: 'Express Shipping',
+                providerId: 'manual_manual',
                 type: {
                     label: "Express",
                     description: "Ship in 24 hours.",
@@ -133,7 +135,168 @@ export async function GET(
                         operator: "eq",
                     },
                 ],
-            }
+            },
+            // PPL fulfillment options
+            {
+                name: 'PPL Parcel Smart',
+                providerId: 'ppl_ppl',
+                type: {
+                    label: "PPL Pickup Point",
+                    description: "Deliver to nearest ParcelShop/ParcelBox",
+                    code: "ppl-parcel-smart",
+                },
+                data: {
+                    product_type: "SMAR",
+                    requires_access_point: true,
+                    supports_cod: false,
+                },
+                prices: [
+                    {
+                        currencyCode: "czk",
+                        amount: 79,
+                    },
+                    {
+                        currencyCode: "eur",
+                        amount: 4,
+                    },
+                    {
+                        currencyCode: "usd",
+                        amount: 4,
+                    },
+                ],
+                rules: [
+                    {
+                        attribute: "enabled_in_store",
+                        value: "true",
+                        operator: "eq",
+                    },
+                    {
+                        attribute: "is_return",
+                        value: "false",
+                        operator: "eq",
+                    },
+                ],
+            },
+            {
+                name: 'PPL Parcel Smart + COD',
+                providerId: 'ppl_ppl',
+                type: {
+                    label: "PPL Pickup Point + Cash on Delivery",
+                    description: "Deliver to ParcelShop/ParcelBox, pay on pickup",
+                    code: "ppl-parcel-smart-cod",
+                },
+                data: {
+                    product_type: "SMAD",
+                    requires_access_point: true,
+                    supports_cod: true,
+                },
+                prices: [
+                    {
+                        currencyCode: "czk",
+                        amount: 99,
+                    },
+                    {
+                        currencyCode: "eur",
+                        amount: 5,
+                    },
+                    {
+                        currencyCode: "usd",
+                        amount: 5,
+                    },
+                ],
+                rules: [
+                    {
+                        attribute: "enabled_in_store",
+                        value: "true",
+                        operator: "eq",
+                    },
+                    {
+                        attribute: "is_return",
+                        value: "false",
+                        operator: "eq",
+                    },
+                ],
+            },
+            {
+                name: 'PPL Private',
+                providerId: 'ppl_ppl',
+                type: {
+                    label: "PPL Home Delivery",
+                    description: "Deliver to your address",
+                    code: "ppl-private",
+                },
+                data: {
+                    product_type: "PRIV",
+                    requires_access_point: false,
+                    supports_cod: false,
+                },
+                prices: [
+                    {
+                        currencyCode: "czk",
+                        amount: 99,
+                    },
+                    {
+                        currencyCode: "eur",
+                        amount: 5,
+                    },
+                    {
+                        currencyCode: "usd",
+                        amount: 5,
+                    },
+                ],
+                rules: [
+                    {
+                        attribute: "enabled_in_store",
+                        value: "true",
+                        operator: "eq",
+                    },
+                    {
+                        attribute: "is_return",
+                        value: "false",
+                        operator: "eq",
+                    },
+                ],
+            },
+            {
+                name: 'PPL Private + COD',
+                providerId: 'ppl_ppl',
+                type: {
+                    label: "PPL Home Delivery + Cash on Delivery",
+                    description: "Deliver to your address, pay on delivery",
+                    code: "ppl-private-cod",
+                },
+                data: {
+                    product_type: "PRID",
+                    requires_access_point: false,
+                    supports_cod: true,
+                },
+                prices: [
+                    {
+                        currencyCode: "czk",
+                        amount: 119,
+                    },
+                    {
+                        currencyCode: "eur",
+                        amount: 6,
+                    },
+                    {
+                        currencyCode: "usd",
+                        amount: 6,
+                    },
+                ],
+                rules: [
+                    {
+                        attribute: "enabled_in_store",
+                        value: "true",
+                        operator: "eq",
+                    },
+                    {
+                        attribute: "is_return",
+                        value: "false",
+                        operator: "eq",
+                    },
+                ],
+            },
         ],
         publishableKey: {
             title: 'Webshop'
@@ -332,6 +495,7 @@ where pl.rewrite_title not like ''
             from image i
                 join product p on p.id = i.id_product
             where p.deleted = 0
+            group by i.url
                 ), cte_product_images_grouped AS (
             select
                 cpi.id_product_group,
@@ -351,9 +515,9 @@ where pl.rewrite_title not like ''
       'material', COALESCE(cpmv.value, cpmbp.value),
       'options', JSON_OBJECT('Variant', TRIM(v.variant_name_unique)),
       'prices', COALESCE(cpp.prices, cpbp.prices),
+      'images', JSON_ARRAYAGG(JSON_OBJECT('url',CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',COALESCE(cbppiv.url,cbppivbp.url)))),
+      'thumbnail', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',COALESCE(cbppivt.url,cbppivtbp.url)),
       'metadata', JSON_OBJECT(
-              'images', JSON_ARRAYAGG(JSON_OBJECT('url',CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cbppiv.url))),
-              'thumbnail', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cbppivt.url),
               'attributes', COALESCE(cpav.attributes, cpabp.attributes),
               'user_code', COALESCE(v.user_code, bp.user_code)
           ),
@@ -386,6 +550,8 @@ LEFT JOIN cte_product_prices_agg cpbp ON cpbp.productId = bp.id
 LEFT JOIN cte_product_prices_agg cpp ON cpp.productId = v.id
 LEFT JOIN cte_product_images cbppiv ON cbppiv.id_product = v.id
 LEFT JOIN cte_product_images cbppivt ON cbppivt.id_product = v.id AND cbppivt.image_num = 1
+LEFT JOIN cte_product_images cbppivbp ON cbppivbp.id_product = bp.id
+LEFT JOIN cte_product_images cbppivtbp ON cbppivtbp.id_product = bp.id AND cbppivtbp.image_num = 1
 GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite_title, CONCAT(pl.rewrite_title,v.id))
 ), cte_variants_grouped AS (
     SELECT

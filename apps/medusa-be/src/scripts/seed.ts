@@ -420,7 +420,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 const buffer = await readFile(filePath)
                 const filename = path.basename(filePath)
                 const mimeType =
-                  mime.lookup(filePath) || 'application/octet-stream'
+                  mime.getType(filePath) || 'application/octet-stream'
 
                 logger.info(`Successfully read file: ${filename} (${mimeType})`)
                 return {

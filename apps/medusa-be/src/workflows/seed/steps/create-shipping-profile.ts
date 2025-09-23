@@ -1,3 +1,4 @@
+import { IFulfillmentModuleService, Logger } from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createShippingProfilesWorkflow, updateShippingProfilesWorkflow} from "@medusajs/medusa/core-flows"
@@ -11,8 +12,8 @@ export const createDefaultShippingProfileStep = createStep(CreateDefaultShipping
     input: CreateDefaultShippingProfileStepInput,
     {container}
 ) => {
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const fulfillmentModuleService = container.resolve(Modules.FULFILLMENT)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const fulfillmentModuleService = container.resolve<IFulfillmentModuleService>(Modules.FULFILLMENT)
 
     const shippingProfiles = await fulfillmentModuleService.listShippingProfiles({
         type: 'default',

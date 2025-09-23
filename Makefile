@@ -4,21 +4,25 @@ export CFLAGS
 # Global commands
 corepack-update:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/var/www pnpm-env corepack up
+	docker run -v .:/var/www pnpm-env corepack up
 install:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/var/www pnpm-env pnpm install --frozen-lockfile
+	docker run -v .:/var/www pnpm-env pnpm install --frozen-lockfile
 install-fix-lock:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/var/www pnpm-env pnpm install --fix-lockfile
+	docker run -v .:/var/www pnpm-env pnpm install --fix-lockfile
 update-medusa:
-	docker exec wr_medusa_be pnpm --filter medusa-be update @medusajs*
+	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
+	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update @medusajs*
 update:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -v .:/var/www pnpm-env pnpm update --latest
+	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update --latest
+test:
+	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
+	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be add react-dom@^18.3.1
 npkill:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-    docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
+	docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
 dev:
 	docker compose -f docker-compose.yaml -p new-engine up --force-recreate -d --build
 down:

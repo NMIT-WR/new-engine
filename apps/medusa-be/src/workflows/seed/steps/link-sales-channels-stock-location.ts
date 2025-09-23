@@ -1,4 +1,4 @@
-import {SalesChannelDTO, StockLocationDTO} from "@medusajs/framework/types"
+import {Logger, SalesChannelDTO, StockLocationDTO} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {linkSalesChannelsToStockLocationWorkflow} from "@medusajs/medusa/core-flows"
@@ -13,7 +13,7 @@ export const linkSalesChannelsStockLocationStep = createStep(LinkSalesChannelsSt
     input: LinkSalesChannelsStockLocationStepInput,
     {container}
 ) => {
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
 
     logger.info("Linking sales channels to stock location...")
 

@@ -1,4 +1,4 @@
-import { ApiKeyDTO, SalesChannelDTO } from "@medusajs/framework/types"
+import { ApiKeyDTO, Logger, SalesChannelDTO } from "@medusajs/framework/types"
 import {ContainerRegistrationKeys} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import { linkSalesChannelsToApiKeyWorkflow } from "@medusajs/medusa/core-flows"
@@ -14,7 +14,7 @@ export const linkSalesChannelsApiKeyStep = createStep(LinkSalesChannelsApiKeySte
     {container}
 ) => {
     const result: unknown[] = []
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     logger.info("Linking sales channels to API key...")
 
     for (const salesChannel of input.salesChannels) {

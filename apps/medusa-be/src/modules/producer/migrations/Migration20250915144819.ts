@@ -1,5 +1,5 @@
 import { kebabCase } from "@medusajs/framework/utils";
-import {Migration} from '@mikro-orm/migrations';
+import {Migration} from "@medusajs/framework/mikro-orm/migrations";
 
 export class Migration20250915144819 extends Migration {
 

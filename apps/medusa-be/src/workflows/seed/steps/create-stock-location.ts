@@ -1,7 +1,7 @@
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createStockLocationsWorkflow, updateStockLocationsWorkflow} from "@medusajs/medusa/core-flows"
-import {StockLocationDTO} from "@medusajs/framework/types"
+import {Logger, IStockLocationService, StockLocationDTO} from "@medusajs/framework/types"
 
 export type CreateStockLocationStepInput = {
     locations: {
@@ -21,8 +21,8 @@ export const createStockLocationSeedStep = createStep(CreateStockLocationStepId,
 ) => {
     const result: StockLocationDTO[] = []
 
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const stockLocationService = container.resolve(Modules.STOCK_LOCATION)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const stockLocationService = container.resolve<IStockLocationService>(Modules.STOCK_LOCATION)
 
     const existingStockLocations = await stockLocationService.listStockLocations({
         name: {
@@ -31,16 +31,16 @@ export const createStockLocationSeedStep = createStep(CreateStockLocationStepId,
     })
 
     const missingStockLocations = input.locations.filter(i => !existingStockLocations.find(j => j.name === i.name))
-    const updateStockLocations = existingStockLocations.map(existingLocation => {
+    const updateStockLocations = existingStockLocations.flatMap(existingLocation => {
         const inputLocation = input.locations.find(loc => loc.name === existingLocation.name)
         if (inputLocation) {
-            return {
+            return [{
                 ...existingLocation,
                 address: inputLocation.address
-            }
+            }]
         }
-        return null
-    }).filter(location => location !== null)
+        return []
+    })
 
 
     if (missingStockLocations.length !== 0) {

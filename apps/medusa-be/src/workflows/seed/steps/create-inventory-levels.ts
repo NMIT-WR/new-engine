@@ -1,4 +1,4 @@
-import {CreateInventoryLevelInput, InventoryLevelDTO, StockLocationDTO} from "@medusajs/framework/types"
+import {CreateInventoryLevelInput, IInventoryService, InventoryLevelDTO, Logger, Query, StockLocationDTO} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createInventoryLevelsWorkflow, updateInventoryLevelsWorkflow} from "@medusajs/medusa/core-flows"
@@ -17,9 +17,9 @@ export const createInventoryLevelsStep = createStep(CreateInventoryLevelsStepId,
     {container}
 ) => {
     const result: InventoryLevelDTO[] = []
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const query = container.resolve(ContainerRegistrationKeys.QUERY)
-    const inventoryLevelService = container.resolve(Modules.INVENTORY)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const query = container.resolve<Query>(ContainerRegistrationKeys.QUERY)
+    const inventoryLevelService = container.resolve<IInventoryService>(Modules.INVENTORY)
 
     logger.info("Creating inventory levels...")
 
@@ -59,18 +59,18 @@ export const createInventoryLevelsStep = createStep(CreateInventoryLevelsStepId,
     const missingInventoryLevels = inventoryLevels.filter(il => !existingInventoryLevels.find(
         eil => eil.inventory_item_id === il.inventory_item_id && eil.location_id === il.location_id
     ))
-    const updateInventoryLevels = existingInventoryLevels.map(eil => {
+    const updateInventoryLevels = existingInventoryLevels.flatMap(eil => {
         const inputInventoryLevel = inventoryLevels.find(il => eil.inventory_item_id === il.inventory_item_id && eil.location_id === il.location_id)
         if (inputInventoryLevel !== undefined) {
-            return {
+            return [{
                 location_id: eil.location_id,
                 inventory_item_id: eil.inventory_item_id,
                 stocked_quantity: inputInventoryLevel.stocked_quantity,
-            }
+            }]
         }
 
-        return null
-    }).filter(il => il !== null)
+        return []
+    })
 
 
     if (missingInventoryLevels.length !== 0) {

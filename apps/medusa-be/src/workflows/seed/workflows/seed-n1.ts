@@ -14,7 +14,6 @@ export type SeedN1WorkflowInput = {
     regions: Steps.CreateRegionsStepInput
     taxRegions: Steps.CreateTaxRegionsStepInput
     stockLocations: Steps.CreateStockLocationStepInput,
-    fulfillmentProviderId?: string,
     defaultShippingProfile: Steps.CreateDefaultShippingProfileStepInput,
     fulfillmentSets: Steps.CreateFulfillmentSetStepInput,
     shippingOptions: Steps.CreateShippingOptionsStepSeedInput,
@@ -52,12 +51,14 @@ const seedN1Workflow = createWorkflow(
         // create stock locations
         const createStockLocationResult = Steps.createStockLocationSeedStep(input.stockLocations)
 
-        // link stock locations to fulfillment provider
+        // link stock locations to fulfillment providers (derived from shipping options)
         const linkStockLocationsFulfillmentProviderInput: Steps.LinkStockLocationFulfillmentProviderStepInput = transform({
             createStockLocationResult, input
         }, (data) => ({
             stockLocations: data.createStockLocationResult.result,
-            fulfillmentProviderId: data.input.fulfillmentProviderId
+            fulfillmentProviderIds: [...new Set(
+                data.input.shippingOptions.map(opt => opt.providerId || 'manual_manual')
+            )]
         }))
 
         Steps.linkStockLocationFulfillmentProviderSeedStep(linkStockLocationsFulfillmentProviderInput)
@@ -88,7 +89,7 @@ const seedN1Workflow = createWorkflow(
             }, (data) =>
                 data.input.shippingOptions.map(option => ({
                     name: option.name,
-                    providerId: data.input.fulfillmentProviderId || 'manual_manual',
+                    providerId: option.providerId || 'manual_manual',
                     serviceZoneId: data.createFulfillmentSetsResult.result[0]?.service_zones[0]?.id as string,
                     shippingProfileId: data.createDefaultShippingProfileResult.result[0]?.id as string,
                     regions: data.createRegionsResult.result.map(region => ({
@@ -98,6 +99,7 @@ const seedN1Workflow = createWorkflow(
                     type: option.type,
                     prices: option.prices,
                     rules: option.rules,
+                    data: option.data,
                 }))
         )
 
@@ -140,7 +142,7 @@ const seedN1Workflow = createWorkflow(
             return toCreateProductsStepInput(data.input.products)
         })
 
-        Steps.createProductsStep(createProductsStepInput)
+        const createProductsStepResult = Steps.createProductsStep(createProductsStepInput)
 
         // create inventory levels
         const createInventoryLevelsInput: Steps.CreateInventoryLevelsStepInput = transform({
@@ -170,9 +172,9 @@ const seedN1Workflow = createWorkflow(
 
         Steps.createInventoryLevelsStep(createInventoryLevelsInput)
 
-
         return new WorkflowResponse({
             publishableKey: createPublishableKeyResult.result,
+            products: createProductsStepResult.result,
             result: 'N1 seed done'
         })
     }

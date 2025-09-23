@@ -1,4 +1,5 @@
-import {FulfillmentSetDTO, StockLocationDTO} from "@medusajs/framework/types"
+import { Link } from "@medusajs/framework/modules-sdk"
+import {FulfillmentSetDTO, Logger, StockLocationDTO} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 
@@ -12,8 +13,8 @@ export const linkStockLocationFulfillmentSetStep = createStep(LinkStockLocationF
     input: LinkStockLocationFulfillmentSetStepInput,
     {container}
 ) => {
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const link = container.resolve(ContainerRegistrationKeys.LINK)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const link = container.resolve<Link>(ContainerRegistrationKeys.LINK)
 
     let result: unknown[] = []
 

@@ -27,9 +27,9 @@ export function toCreateProductsStepInput(products: any): Steps.CreateProductsSt
                 collection: v.collection ?? undefined,
                 options: v.options?.Variant === null ? {"Variant": 'Default'} : v.options,
                 prices: v.prices,
+                images: (v.images ?? []).filter((im: { url?: string }) => im?.url !== null),
+                thumbnail: v.thumbnail ?? undefined,
                 metadata: {
-                    images: (v.metadata?.images ?? []).filter((im: { url?: string }) => im?.url !== null),
-                    thumbnail: v.metadata?.thumbnail ?? undefined,
                     attributes: v.metadata?.attributes ?? undefined,
                     user_code: v.metadata?.user_code ?? undefined,
                 },

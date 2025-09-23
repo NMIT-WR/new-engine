@@ -1,4 +1,4 @@
-import {TaxRegionDTO} from "@medusajs/framework/types"
+import {Logger, ITaxModuleService, TaxRegionDTO} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createTaxRegionsWorkflow, updateTaxRegionsWorkflow} from "@medusajs/medusa/core-flows"
@@ -15,8 +15,8 @@ export const createTaxRegionsStep = createStep(CreateTaxRegionsStepId, async (
 ) => {
     const result: TaxRegionDTO[] = []
 
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const taxService = container.resolve(Modules.TAX)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const taxService = container.resolve<ITaxModuleService>(Modules.TAX)
 
     const existingTaxRegions = await taxService.listTaxRegions({
         country_code: {$in: input.countries},

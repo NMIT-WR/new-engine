@@ -1,7 +1,7 @@
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createSalesChannelsWorkflow} from "@medusajs/medusa/core-flows"
-import {SalesChannelDTO} from "@medusajs/framework/types"
+import {ISalesChannelModuleService, Logger, SalesChannelDTO} from "@medusajs/framework/types"
 
 export type CreateSalesChannelsStepInput = {
     name: string,
@@ -15,8 +15,8 @@ export const createSalesChannelsStep = createStep(CreateSalesChannelsStepId, asy
 ) => {
     const result: Array<SalesChannelDTO & {isDefault: boolean}> = []
 
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const salesChannelModuleService = container.resolve<ISalesChannelModuleService>(Modules.SALES_CHANNEL)
 
     const salesChannels = input.map(i => i.name) || ["Default Sales Channel"]
 

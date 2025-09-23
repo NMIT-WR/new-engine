@@ -1,4 +1,4 @@
-import {StoreDTO} from "@medusajs/framework/types"
+import {IStoreModuleService, Logger, StoreDTO} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {updateStoresWorkflow} from "@medusajs/medusa/core-flows"
@@ -18,8 +18,8 @@ export const updateStoreCurrenciesStep = createStep(UpdateStoreCurrenciesStepId,
     input: UpdateStoreCurrenciesStepInput,
     {container}
 ) => {
-    const storeModuleService = container.resolve(Modules.STORE)
-    const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+    const storeModuleService = container.resolve<IStoreModuleService>(Modules.STORE)
 
     logger.info("Updating store currencies data...")
 
