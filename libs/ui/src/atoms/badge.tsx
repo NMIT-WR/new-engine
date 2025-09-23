@@ -7,7 +7,7 @@ const badgeVariants = tv({
     'inline-flex items-center justify-center',
     'p-badge',
     'rounded-badge border-badge-border',
-    'text-badge-size',
+    'text-badge-size font-badge',
     'border-(length:--border-width-badge-dynamic)',
   ],
   variants: {
