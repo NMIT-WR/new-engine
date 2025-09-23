@@ -62,6 +62,40 @@ export const Default: Story = {
   ),
 }
 
+
+export const Badges: Story = {
+  render: () => {
+    const badges: { variant: 'new' | 'limited' | 'sale' | 'default'; label: string } = [
+      { variant: 'new', label: 'New' },
+      { variant: 'limited', label: 'Limited Stock' },
+      { variant: 'sale', label: 'Sale' },
+      { variant: 'default', label: 'Eco friendly' },
+    ]
+    return (
+    <ProductCard>
+      <ProductCard.Image
+        src={productImages.tshirt}
+        alt="Premium Cotton T-Shirt"
+      />
+      <ProductCard.Name>Premium Cotton T-Shirt</ProductCard.Name>
+      <ProductCard.Badges>
+        {badges.map((badge) => (
+          <ProductCard.Badge key={badge.variant} variant={badge.variant}>
+            {badge.label}
+          </ProductCard.Badge>
+        ))}
+      </ProductCard.Badges>
+      <ProductCard.Price>$29.99</ProductCard.Price>
+      <ProductCard.Actions>
+        <ProductCard.Button buttonVariant="cart" icon="token-icon-cart-button">
+          Add to Cart
+        </ProductCard.Button>
+      </ProductCard.Actions>
+    </ProductCard>
+    )
+  },
+}
+
 // Showcase all button variants
 export const AllButtonVariants: Story = {
   name: 'Button Variants',

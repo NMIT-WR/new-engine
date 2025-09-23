@@ -11,6 +11,12 @@
   --color-product-card-stock-fg-out-of-stock: var(--color-danger);
 
   /* === STATE VARIATIONS === */
+  /* Badge */
+  --color-product-card-badge-new: var(--color-success);
+  --color-product-card-badge-default: var(--color-info);
+  --color-product-card-badge-limited: var(--color-warning);
+  --color-product-card-badge-sale: var(--color-danger);
+
   /* Add to cart button */
   --color-button-cart-bg: var(--color-button-primary);
   --color-button-cart-bg-hover: oklch(
@@ -45,6 +51,10 @@
   --text-product-card-stock-size: var(--text-sm);
   --text-product-card-price-size: var(--text-lg);
   --leading-product-card-name: var(--line-height-snug);
+
+  --font-weight-product-card-name: var(--font-weight-medium);
+  --font-weight-product-card-price: var(--font-weight-medium);
+  --font-weight-product-card-stock: var(--font-weight-medium);
 
   /* === BORDERS & RADIUS === */
   --border-product-card-width: var(--border-width-sm);
