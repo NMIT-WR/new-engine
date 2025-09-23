@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import '../../src/tokens/_colors.css'
 import '../../src/tokens/_semantic.css'
-import { ColorSelect } from '../../../../apps/frontend-demo/src/components/atoms/color-select'
+import {ColorSelect} from '../../src/molecules/color-select'
 
 const meta: Meta = {
   title: 'Overview/Color Palette',
@@ -76,9 +76,10 @@ export const Default: Story = {
                           >
                             <div className="h-16 w-16 flex-shrink-0">
                               <ColorSelect
-                                color={computedColor}
+                                colors={[{ color: computedColor }]}
                                 size="full"
                                 radius="md"
+                                layout="list"
                               />
                             </div>
                             <div className="w-full text-center">
