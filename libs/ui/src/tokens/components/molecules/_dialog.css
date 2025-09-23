@@ -40,16 +40,26 @@
   --text-dialog-description-size: var(--text-md);
   --font-weight-dialog-title: var(--font-weight-semibold);
 
+  /* === SIZES === */
+  --container-dialog-xs: var(--container-xs);
+  --container-dialog-sm: var(--container-sm);
+  --container-dialog-md: var(--container-md);
+  --container-dialog-lg: var(--container-lg);
+  --container-dialog-xl: var(--container-xl);
+  --container-dialog-center-h-max: 80svh;
+  --container-dialog-center-w-max: var(--container-2xl);
+
   /* === BORDERS & RADIUS === */
   --border-width-dialog: var(--border-width-sm);
-  --radius-dialog-content: var(--radius-sm);
+  --radius-dialog-center: var(--radius-sm);
+  --radius-dialog-left: 0 0 0 0;
+  --radius-dialog-right: 0 0 0 0;
+  --radius-dialog-top: 0 0 0 0;
+  --radius-dialog-bottom: 0 0 0 0;
   --radius-dialog-close-trigger: var(--radius-full);
 
   /* === SHADOWS === */
   --shadow-dialog-content: var(--shadow-primary);
-
-  /* === DIMENSIONS === */
-  --height-dialog-content: 80svh;
 
   /* === Z-INDEX === */
   --z-dialog-backdrop: 10;

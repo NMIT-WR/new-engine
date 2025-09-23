@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
+import { Input } from '../../src/atoms/input'
+import { Label } from '../../src/atoms/label'
+import { Link } from '../../src/atoms/link'
 import { Dialog } from '../../src/molecules/dialog'
 
 const meta: Meta<typeof Dialog> = {
@@ -73,26 +76,18 @@ export const Default: Story = {
     description:
       'Make changes to your profile here. Click save when you are done.',
     children: (
-      <div className="space-y-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <label htmlFor="name" className="text-right font-medium text-sm">
+      <div className="space-y-200">
+        <div className="flex flex-col">
+          <Label htmlFor="name" size="sm">
             Name
-          </label>
-          <input
-            id="name"
-            defaultValue="John Doe"
-            className="col-span-3 rounded-md border border-gray-300 px-3 py-2"
-          />
+          </Label>
+          <Input size="sm" id="name" defaultValue="John Doe" />
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <label htmlFor="username" className="text-right font-medium text-sm">
+        <div className="flex flex-col">
+          <Label htmlFor="username" size="sm">
             Username
-          </label>
-          <input
-            id="username"
-            defaultValue="@johndoe"
-            className="col-span-3 rounded-md border border-gray-300 px-3 py-2"
-          />
+          </Label>
+          <Input size="sm" id="username" defaultValue="@johndoe" />
         </div>
       </div>
     ),
@@ -118,7 +113,11 @@ export const AllVariants: Story = {
     return (
       <VariantContainer>
         <VariantGroup title="Dialog Behaviors">
-          <Button onClick={() => setModalOpen(true)} variant="primary" size="sm">
+          <Button
+            onClick={() => setModalOpen(true)}
+            variant="primary"
+            size="sm"
+          >
             Modal Dialog
           </Button>
           <Dialog
@@ -129,7 +128,11 @@ export const AllVariants: Story = {
             description="This is a modal dialog that blocks interaction with background content."
             actions={
               <>
-                <Button variant="secondary" theme="outlined" onClick={() => setModalOpen(false)}>
+                <Button
+                  variant="secondary"
+                  theme="outlined"
+                  onClick={() => setModalOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button variant="primary" onClick={() => setModalOpen(false)}>
@@ -141,7 +144,11 @@ export const AllVariants: Story = {
             <p>Modal dialogs prevent interaction with the page behind them.</p>
           </Dialog>
 
-          <Button onClick={() => setModelessOpen(true)} variant="secondary" size="sm">
+          <Button
+            onClick={() => setModelessOpen(true)}
+            variant="secondary"
+            size="sm"
+          >
             Modeless Dialog
           </Button>
           <Dialog
@@ -185,7 +192,11 @@ export const AllVariants: Story = {
             closeOnInteractOutside={false}
             actions={
               <>
-                <Button variant="secondary" theme="outlined" onClick={() => setAlertOpen(false)}>
+                <Button
+                  variant="secondary"
+                  theme="outlined"
+                  onClick={() => setAlertOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button variant="danger" onClick={() => setAlertOpen(false)}>
@@ -194,7 +205,9 @@ export const AllVariants: Story = {
               </>
             }
           >
-            <p className="text-danger">This will permanently delete your data.</p>
+            <p className="text-danger">
+              This will permanently delete your data.
+            </p>
           </Dialog>
         </VariantGroup>
 
@@ -208,7 +221,11 @@ export const AllVariants: Story = {
             <p>You can close this dialog using the X button in the corner.</p>
           </Dialog>
 
-          <Button onClick={() => setNoCloseOpen(true)} variant="primary" size="sm">
+          <Button
+            onClick={() => setNoCloseOpen(true)}
+            variant="primary"
+            size="sm"
+          >
             No Close Button
           </Button>
           <Dialog
@@ -229,10 +246,7 @@ export const AllVariants: Story = {
         </VariantGroup>
 
         <VariantGroup title="Content Variations">
-          <Dialog
-            triggerText="Title Only"
-            title="Dialog Title Only"
-          >
+          <Dialog triggerText="Title Only" title="Dialog Title Only">
             <p>Dialog with only a title, no description.</p>
           </Dialog>
 
@@ -241,18 +255,18 @@ export const AllVariants: Story = {
             title="Dialog with Description"
             description="This dialog includes both a title and a description for additional context."
           >
-            <p>The description provides more context about the dialog's purpose.</p>
+            <p>
+              The description provides more context about the dialog's purpose.
+            </p>
           </Dialog>
 
-          <Dialog
-            triggerText="Content Only"
-          >
+          <Dialog triggerText="Content Only">
             <p>This dialog has no title or description, just content.</p>
           </Dialog>
         </VariantGroup>
       </VariantContainer>
     )
-  }
+  },
 }
 
 // Alert dialog for destructive actions
@@ -276,8 +290,6 @@ export const AlertDialog: Story = {
   },
 }
 
-
-
 // Dialog with rich content
 export const RichContent: Story = {
   args: {
@@ -285,23 +297,23 @@ export const RichContent: Story = {
     title: 'Product Information',
     description: 'Complete details about the selected product.',
     children: (
-      <div className="space-y-6">
-        <div className="flex gap-4">
-          <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-gray-200">
-            <span className="text-gray-500 text-sm">Image</span>
+      <div className="space-y-300">
+        <div className="flex gap-200">
+          <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-surface">
+            <span className="text-secondary text-sm">Image</span>
           </div>
           <div className="flex-1">
             <h3 className="font-semibold text-lg">Premium Headphones</h3>
-            <p className="text-gray-600">
+            <p className="text-secondary">
               High-quality wireless headphones with noise cancellation
             </p>
-            <p className="mt-2 font-bold text-2xl text-green-600">$299.99</p>
+            <p className="mt-100 font-bold text-2xl text-success">$299.99</p>
           </div>
         </div>
 
         <div className="border-t pt-4">
-          <h4 className="mb-2 font-semibold">Features</h4>
-          <ul className="list-inside list-disc space-y-1 text-gray-600 text-sm">
+          <h4 className="mb-100 font-semibold">Features</h4>
+          <ul className="list-inside list-disc space-y-50 text-secondary text-sm">
             <li>Active noise cancellation</li>
             <li>30-hour battery life</li>
             <li>Premium leather ear cups</li>
@@ -310,13 +322,13 @@ export const RichContent: Story = {
         </div>
 
         <div className="border-t pt-4">
-          <h4 className="mb-2 font-semibold">Reviews</h4>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-yellow-500">★★★★★</span>
+          <h4 className="mb-100 font-semibold">Reviews</h4>
+          <div className="space-y-100">
+            <div className="flex items-center gap-50">
+              <span className="text-warning">★★★★★</span>
               <span className="text-sm">4.8 out of 5 stars</span>
             </div>
-            <p className="text-gray-600 text-sm">Based on 2,847 reviews</p>
+            <p className="text-secondary text-sm">Based on 2,847 reviews</p>
           </div>
         </div>
       </div>
@@ -341,12 +353,11 @@ export const Minimal: Story = {
   },
 }
 
-
 // Test different behaviors
 export const BehaviorTests: Story = {
   render: () => {
     return (
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-200">
         <Dialog
           triggerText="No Escape Close"
           title="Escape Disabled"
@@ -371,6 +382,302 @@ export const BehaviorTests: Story = {
           children={<p>Body scroll is still enabled!</p>}
         />
       </div>
+    )
+  },
+}
+
+// Drawer - Left placement
+export const DrawerLeft: Story = {
+  render: () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="primary">
+          Open Left Drawer
+        </Button>
+        <Dialog
+          open={open}
+          onOpenChange={({ open }) => setOpen(open)}
+          customTrigger
+          placement="left"
+          size="md"
+          title="Left Drawer"
+          description="This is a drawer sliding in from the left side"
+          actions={
+            <Button variant="primary" onClick={() => setOpen(false)}>
+              Close
+            </Button>
+          }
+        >
+          <div className="space-y-200">
+            <p>Drawer content goes here.</p>
+            <p>It slides in from the left edge of the screen.</p>
+            <p>Perfect for navigation menus or filters.</p>
+          </div>
+        </Dialog>
+      </>
+    )
+  },
+}
+
+// Drawer - Right placement
+export const DrawerRight: Story = {
+  render: () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="primary">
+          Open Right Drawer
+        </Button>
+        <Dialog
+          open={open}
+          onOpenChange={({ open }) => setOpen(open)}
+          customTrigger
+          placement="right"
+          size="md"
+          title="Right Drawer"
+          description="This drawer slides in from the right"
+        >
+          <div className="space-y-100">
+            <p>Right drawer content.</p>
+            <p>Great for settings panels or additional information.</p>
+            <div className="rounded bg-base-reverse p-150">
+              <p className="text-fg-reverse text-sm">Example content block</p>
+            </div>
+          </div>
+        </Dialog>
+      </>
+    )
+  },
+}
+
+// Drawer - Top placement
+export const DrawerTop: Story = {
+  render: () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="primary">
+          Open Top Drawer
+        </Button>
+        <Dialog
+          open={open}
+          onOpenChange={({ open }) => setOpen(open)}
+          customTrigger
+          placement="top"
+          size="sm"
+          title="Notification Panel"
+          hideCloseButton={false}
+        >
+          <div className="space-y-100">
+            <div className="flex items-center gap-150 rounded p-100">
+              <span>📧</span>
+              <div>
+                <p className="font-medium">New message</p>
+                <p className="text-fg-secondary text-sm">
+                  You have 3 unread messages
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-150 rounded p-100">
+              <span>✅</span>
+              <div>
+                <p className="font-medium">Task completed</p>
+                <p className="text-fg-secondary text-sm">
+                  Your deployment is ready
+                </p>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </>
+    )
+  },
+}
+
+// Drawer - Bottom placement
+export const DrawerBottom: Story = {
+  render: () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="primary">
+          Open Bottom Drawer
+        </Button>
+        <Dialog
+          open={open}
+          onOpenChange={({ open }) => setOpen(open)}
+          customTrigger
+          placement="bottom"
+          size="md"
+          title="Actions"
+        >
+          <div className="grid grid-cols-2 gap-200">
+            <Button variant="secondary" theme="outlined">
+              Cancel
+            </Button>
+            <Button variant="primary">Confirm</Button>
+          </div>
+        </Dialog>
+      </>
+    )
+  },
+}
+
+// Drawer sizes showcase
+export const DrawerSizes: Story = {
+  render: () => {
+    const [leftXs, setLeftXs] = useState(false)
+    const [leftSm, setLeftSm] = useState(false)
+    const [leftMd, setLeftMd] = useState(false)
+    const [leftLg, setLeftLg] = useState(false)
+    const [leftXl, setLeftXl] = useState(false)
+    const [leftFull, setLeftFull] = useState(false)
+
+    return (
+      <VariantContainer>
+        <VariantGroup title="Left Drawer Sizes">
+          <Button onClick={() => setLeftXs(true)} variant="primary" size="sm">
+            XS (20rem)
+          </Button>
+          <Dialog
+            open={leftXs}
+            onOpenChange={({ open }) => setLeftXs(open)}
+            customTrigger
+            placement="left"
+            size="xs"
+            title="Extra Small Drawer"
+          >
+            <p>This drawer is 20rem wide</p>
+          </Dialog>
+
+          <Button onClick={() => setLeftSm(true)} variant="primary" size="sm">
+            SM (24rem)
+          </Button>
+          <Dialog
+            open={leftSm}
+            onOpenChange={({ open }) => setLeftSm(open)}
+            customTrigger
+            placement="left"
+            size="sm"
+            title="Small Drawer"
+          >
+            <p>This drawer is 24rem wide</p>
+          </Dialog>
+
+          <Button onClick={() => setLeftMd(true)} variant="primary" size="sm">
+            MD (32rem)
+          </Button>
+          <Dialog
+            open={leftMd}
+            onOpenChange={({ open }) => setLeftMd(open)}
+            customTrigger
+            placement="left"
+            size="md"
+            title="Medium Drawer"
+          >
+            <p>This drawer is 32rem wide</p>
+          </Dialog>
+
+          <Button onClick={() => setLeftLg(true)} variant="primary" size="sm">
+            LG (40rem)
+          </Button>
+          <Dialog
+            open={leftLg}
+            onOpenChange={({ open }) => setLeftLg(open)}
+            customTrigger
+            placement="left"
+            size="lg"
+            title="Large Drawer"
+          >
+            <p>This drawer is 40rem wide</p>
+          </Dialog>
+
+          <Button onClick={() => setLeftXl(true)} variant="primary" size="sm">
+            XL (48rem)
+          </Button>
+          <Dialog
+            open={leftXl}
+            onOpenChange={({ open }) => setLeftXl(open)}
+            customTrigger
+            placement="left"
+            size="xl"
+            title="Extra Large Drawer"
+          >
+            <p>This drawer is 48rem wide</p>
+          </Dialog>
+
+          <Button onClick={() => setLeftFull(true)} variant="primary" size="sm">
+            Full Width
+          </Button>
+          <Dialog
+            open={leftFull}
+            onOpenChange={({ open }) => setLeftFull(open)}
+            customTrigger
+            placement="left"
+            size="full"
+            title="Full Width Drawer"
+          >
+            <p>This drawer takes the full screen width</p>
+          </Dialog>
+        </VariantGroup>
+      </VariantContainer>
+    )
+  },
+}
+
+// Mobile menu example
+export const MobileMenuDrawer: Story = {
+  render: () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+      <>
+        <Button
+          onClick={() => setOpen(true)}
+          variant="primary"
+          icon="icon-[mdi--menu]"
+        >
+          Open Mobile Menu
+        </Button>
+        <Dialog
+          open={open}
+          onOpenChange={({ open }) => setOpen(open)}
+          customTrigger
+          placement="left"
+          size="sm"
+          hideCloseButton={false}
+        >
+          <nav className="flex flex-col gap-100">
+            <Link href="#" className="px-200 py-100">
+              Home
+            </Link>
+            <Link href="#" className="px-200 py-100">
+              Products
+            </Link>
+            <Link href="#" className="px-200 py-100">
+              Services
+            </Link>
+            <Link href="#" className="px-200 py-100">
+              About
+            </Link>
+            <Link href="#" className="px-200 py-100">
+              Contact
+            </Link>
+            <hr className="my-100" />
+            <Link href="#" className="px-200 py-100">
+              Settings
+            </Link>
+            <Link href="#" className="px-200 py-100">
+              Sign Out
+            </Link>
+          </nav>
+        </Dialog>
+      </>
     )
   },
 }
