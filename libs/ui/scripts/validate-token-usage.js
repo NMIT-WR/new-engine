@@ -30,6 +30,7 @@ const NAMESPACE_MAPPINGS = {
     'caret',
     'decoration',
   ],
+  container: ['w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'],
   spacing: [
     'p',
     'px',

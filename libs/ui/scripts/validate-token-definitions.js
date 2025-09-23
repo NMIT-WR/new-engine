@@ -104,6 +104,7 @@ function tokenToUtilityClasses(tokenName) {
       'fill',
       'stroke',
     ],
+    container: ['w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'],
     spacing: [
       'p',
       'px',
