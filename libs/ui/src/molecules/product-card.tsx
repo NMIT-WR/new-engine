@@ -8,6 +8,7 @@ import {
   useContext,
 } from 'react'
 import type { VariantProps } from 'tailwind-variants'
+import { Badge } from '../atoms/badge'
 import { Button } from '../atoms/button'
 import type { IconType } from '../atoms/icon'
 import { Image } from '../atoms/image'
@@ -23,10 +24,11 @@ const productCardVariants = tv({
     imageSlot:
       'object-cover aspect-product-card-image h-full rounded-product-card-image',
     nameSlot:
-      'text-product-card-name-fg text-product-card-name-size line-clamp-product-card-name',
-    priceSlot: 'text-product-card-price-fg text-product-card-price-size',
+      'text-product-card-name-fg font-product-card-name text-product-card-name-size line-clamp-product-card-name',
+    priceSlot:
+      'text-product-card-price-fg font-product-card-price text-product-card-price-size',
     stockStatusSlot: [
-      'text-product-card-stock-size',
+      'text-product-card-stock-size font-product-card-stock',
       'data-[stock=in-stock]:text-product-card-stock-fg-in-stock',
       'data-[stock=limited-stock]:text-product-card-stock-fg-limited-stock',
       'data-[stock=out-of-stock]:text-product-card-stock-fg-out-of-stock',
@@ -34,6 +36,12 @@ const productCardVariants = tv({
     badgesSlot: 'flex flex-wrap gap-product-card-box',
     ratingSlot: 'flex items-center',
     actionsSlot: 'flex flex-wrap gap-product-card-buttons',
+    badge: [
+      'data-[variant=new]:bg-product-card-badge-new',
+      'data-[variant=default]:bg-product-card-badge-default',
+      'data-[variant=limited]:bg-product-card-badge-limited',
+      'data-[variant=sale]:bg-product-card-badge-sale',
+    ],
     button: '',
   },
   variants: {
@@ -126,6 +134,11 @@ interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
   buttonVariant?: 'cart' | 'detail' | 'wishlist' | 'custom'
   icon?: IconType
   ref?: RefObject<HTMLButtonElement>
+}
+
+interface ProductCardBadgeProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: 'new' | 'default' | 'limited' | 'sale'
+  children: string
 }
 
 // === ROOT COMPONENT ===
@@ -298,5 +311,20 @@ ProductCard.Button = function ProductCardButton({
     >
       {children}
     </Button>
+  )
+}
+
+ProductCard.Badge = function ProductCardBadge({
+  children,
+  className,
+  variant = 'default',
+  ...props
+}: ProductCardBadgeProps) {
+  const { badge } = productCardVariants()
+
+  return (
+    <Badge className={badge({ className })} data-variant={variant} {...props}>
+      {children}
+    </Badge>
   )
 }
