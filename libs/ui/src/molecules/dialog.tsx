@@ -66,6 +66,10 @@ const dialogVariants = tv({
         backdrop: 'sticky',
         positioner: 'sticky',
       },
+      relative: {
+        backdrop: 'relative',
+        positioner: 'relative',
+      },
     },
     size: {
       xs: {},
@@ -179,6 +183,7 @@ export interface DialogProps extends VariantProps<typeof dialogVariants> {
   hideCloseButton?: boolean
   className?: string
   modal?: boolean
+  portal?: boolean
 }
 
 export function Dialog({
@@ -205,6 +210,7 @@ export function Dialog({
   actions,
   className,
   modal = true,
+  portal = true,
 }: DialogProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -236,6 +242,38 @@ export function Dialog({
     actions: actionsSlot,
   } = dialogVariants({ placement, size, behavior, position })
 
+  const dialogContent = () => {
+    return (
+      <>
+        <div className={backdrop()} {...api.getBackdropProps()} />
+        <div className={positioner()} {...api.getPositionerProps()}>
+          <div className={content({ className })} {...api.getContentProps()}>
+            {!hideCloseButton && (
+              <Button
+                theme="borderless"
+                className={closeTrigger()}
+                {...api.getCloseTriggerProps()}
+                icon="token-icon-dialog-close"
+              />
+            )}
+            {title && (
+              <h2 className={titleSlot()} {...api.getTitleProps()}>
+                {title}
+              </h2>
+            )}
+            {description && (
+              <div className={descriptionSlot()} {...api.getDescriptionProps()}>
+                {description}
+              </div>
+            )}
+            {children}
+            {actions && <div className={actionsSlot()}>{actions}</div>}
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       {!customTrigger && (
@@ -249,39 +287,8 @@ export function Dialog({
         </Button>
       )}
 
-      {api.open && (
-        <Portal>
-          <div className={backdrop()} {...api.getBackdropProps()} />
-          <div className={positioner()} {...api.getPositionerProps()}>
-            <div className={content({ className })} {...api.getContentProps()}>
-              {!hideCloseButton && (
-                <Button
-                  theme="borderless"
-                  className={closeTrigger()}
-                  {...api.getCloseTriggerProps()}
-                  icon="token-icon-dialog-close"
-                />
-              )}
-              {title && (
-                <h2 className={titleSlot()} {...api.getTitleProps()}>
-                  {title}
-                </h2>
-              )}
-              {description && (
-                <div
-                  className={descriptionSlot()}
-                  {...api.getDescriptionProps()}
-                >
-                  {description}
-                </div>
-              )}
-              <div className="flex-grow overflow-y-auto">{children}</div>
-
-              {actions && <div className={actionsSlot()}>{actions}</div>}
-            </div>
-          </div>
-        </Portal>
-      )}
+      {api.open &&
+        (portal ? <Portal>{dialogContent()}</Portal> : dialogContent())}
     </>
   )
 }
