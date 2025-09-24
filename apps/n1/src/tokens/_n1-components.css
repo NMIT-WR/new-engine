@@ -5,7 +5,7 @@
   --font-weight-badge: var(--font-weight-medium);
 
   /* BUTTON */
-  --color-button-cart-bg: oklch(0.4495 0 0);
+  --color-button-primary: oklch(0.4495 0 0);
   --text-button-sm: var(--text-md);
 
   /* === MOLECULES === */
@@ -25,6 +25,11 @@
   /* PRODUCT CARD */
   --color-product-card-bg: var(--color-base);
   --color-product-card-border: transparent;
+  --color-product-card-badge-new-bg: var(--color-info);
+  --color-product-card-badge-sale-bg: var(--color-warning);
+  --color-product-card-badge-limited-bg: var(--color-danger);
+  --color-product-card-badge-sale-fg: var(--color-fg-primary);
+
   --text-product-card-stock-size: var(--text-md);
   --text-product-card-price-size: var(--text-md);
   --text-product-card-name-size: var(--text-md);
@@ -35,7 +40,10 @@
 
   /* === ORGANISMS === */
   /* FOOTER */
-  --color-footer: var(--color-overlay);
+  --color-footer: var(--color-highlight);
   --color-footer-fg-primary: var(--color-fg-dark);
   --color-footer-fg-secondary: --alpha(var(--color-fg-dark) / 70%);
+  --footer-cols: repeat(24, 1fr);
+
+  /* === HEADER === */
 }
