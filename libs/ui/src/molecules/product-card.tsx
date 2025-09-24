@@ -37,10 +37,11 @@ const productCardVariants = tv({
     ratingSlot: 'flex items-center',
     actionsSlot: 'flex flex-wrap gap-product-card-buttons',
     badge: [
-      'data-[variant=new]:bg-product-card-badge-new',
-      'data-[variant=default]:bg-product-card-badge-default',
-      'data-[variant=limited]:bg-product-card-badge-limited',
-      'data-[variant=sale]:bg-product-card-badge-sale',
+      'data-[variant=new]:bg-product-card-badge-new-bg data-[variant=new]:text-product-card-badge-new-fg',
+      'data-[variant=info]:bg-product-card-badge-info-bg data-[variant=info]:text-product-card-badge-info-fg',
+      'data-[variant=default]:bg-product-card-badge-default-bg data-[variant=default]:text-product-card-badge-default-fg',
+      'data-[variant=limited]:bg-product-card-badge-limited-bg data-[variant=limited]:text-product-card-badge-limited-fg',
+      'data-[variant=sale]:bg-product-card-badge-sale-bg data-[variant=sale]:text-product-card-badge-sale-fg',
     ],
     button: '',
   },
@@ -137,7 +138,7 @@ interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 interface ProductCardBadgeProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'new' | 'default' | 'limited' | 'sale'
+  variant?: 'new' | 'default' | 'limited' | 'sale' | 'info'
   children: string
 }
 
