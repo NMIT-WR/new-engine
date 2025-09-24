@@ -28,6 +28,10 @@
       "types": "./dist/src/molecules/*.d.ts",
       "import": "./dist/molecules/*.js"
     },
+    "./organisms/*": {
+      "types": "./dist/src/organisms/*.d.ts",
+      "import": "./dist/organisms/*.js"
+    },
     "./utils": {
       "types": "./dist/src/utils.d.ts",
       "import": "./dist/utils.js"
