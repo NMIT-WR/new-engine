@@ -1,145 +1,58 @@
 'use client'
 import { footerImgs } from '@/assets/footer'
-import { Button } from '@new-engine/ui/atoms/button'
+import { type SubmenuCategory, links, submenuItems } from '@/data/header'
 import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
+import { Link } from '@new-engine/ui/atoms/link'
+import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import { Dialog } from '@new-engine/ui/molecules/dialog'
 import { SearchForm } from '@new-engine/ui/molecules/search-form'
 import { Header } from '@new-engine/ui/organisms/header'
 import Image from 'next/image'
+import NextLink from 'next/link'
 import { useState } from 'react'
 
 export const N1Header = () => {
-  type SubmenuCategory = {
-    name: string
-    href: string
-    items: string[]
-  }
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState<SubmenuCategory | null>(
     null
   )
 
-  const links = [
+  const headerActionButtons = [
+    {
+      icon: 'icon-[mdi--heart-outline]',
+      href: '/oblibene',
+    },
+    {
+      icon: 'icon-[mdi--account-outline]',
+      href: '/profil',
+    },
+    {
+      icon: 'icon-[mdi--shopping-cart-outline]',
+      children: 'Košík',
+      href: '/kosik',
+    },
+  ]
+
+  const topHeaderLinks = [
+    {
+      href: '/obchodni-podminky',
+      label: 'Obchodní podmínky',
+    },
     {
       href: '/novinky',
       label: 'Novinky',
     },
     {
-      href: '/pansky',
-      label: 'Pánské',
+      href: '/kontakty',
+      label: 'Kontakty',
     },
-    {
-      href: '/damsky',
-      label: 'Dámské',
-    },
-    {
-      href: '/detske',
-      label: 'Dětské',
-    },
-    {
-      href: '/oblecemo',
-      label: 'Oblečení',
-    },
-    {
-      href: '/cyklo',
-      label: 'Cyklo',
-    },
-    {
-      href: '/moto',
-      label: 'Moto',
-    },
-    {
-      href: '/snb-skate',
-      label: 'Snb-Skate',
-    },
-    {
-      href: '/ski',
-      label: 'Ski',
-    },
-    {
-      href: '/vyprodej',
-      label: 'Výprodej',
-    },
-  ]
-
-  const submenuItems = [
-    {
-      name: 'Pánské',
-      href: '/panske',
-      items: ['Oblečení', 'Cyklo', 'Moto', 'Snb-Skate', 'Ski'],
-    },
-    {
-      name: 'Dámské',
-      href: '/damske',
-      items: ['Oblečení', 'Cyklo', 'Moto', 'Snb-Skate', 'Ski'],
-    },
-    {
-      name: 'Dětské',
-      href: '/detske',
-      items: ['Oblečení', 'Cyklo', 'Moto', 'Snb-Skate', 'Ski'],
-    },
-    {
-      name: 'Oblečení',
-      href: '/obleceni',
-      items: [
-        'Bundy',
-        'Mikiny',
-        'Svetry',
-        'Košile',
-        'Trika a tílka',
-        'Kalhoty',
-        'Kraťasy',
-        'Plavky',
-        'Brýle',
-        'Šaty a Sukně',
-        'Doplňky',
-      ],
-    },
-    {
-      name: 'Cyklo',
-      href: '/cyklo',
-      items: [
-        'Kola',
-        'Elektrokola',
-        'Oblečení',
-        'Přilby',
-        'Chrániče',
-        'Sedla',
-        'Zapletená kola',
-      ],
-    },
-    {
-      name: 'Moto',
-      href: '/moto',
-      items: ['Přilby', 'Boty', 'Oblečení', 'Chrániče', 'Brýle', 'Doplňky'],
-    },
-    {
-      name: 'Snb-Skate',
-      href: '/snb-skate',
-      items: ['Skateboarding', 'Snowboarding', 'Brusle'],
-    },
-    {
-      name: 'Ski',
-      href: '/ski',
-      items: ['Oblečení', 'Doplňky'],
-    },
-  ]
-
-  const buttonIcons = [
-    'icon-[mdi--heart]',
-    'icon-[mdi--shopping-cart]',
-    'icon-[mdi--account]',
   ]
 
   const handleOpenSubmenu = (categoryName: string) => {
-    if (drawerOpen) {
-      setDrawerOpen(false)
-      return
-    }
-
     const category = submenuItems.find((item) => item.name === categoryName)
 
     if (!category) {
+      setDrawerOpen(false)
       return
     }
 
@@ -149,75 +62,122 @@ export const N1Header = () => {
 
   return (
     <Header direction="vertical" className="z-50 h-fit max-h-96">
-      <Header.Container className="bg-gray-700">
-        <div className="flex gap-200">
-          <span>office@n1shop.cz</span>
-          <span>Obchodní podmínky</span>
-          <span>Novinky</span>
-          <span>Kontakty</span>
+      <Header.Container className="items-center bg-highlight px-400 py-150">
+        <div className="flex items-center gap-200 font-normal text-[12.6px] text-fg-reverse">
+          <Link as={NextLink} href="mailto:office@n1shop.cz">
+            <Icon icon="icon-[mdi--email-outline]" className="mr-200" />
+            <span className="hover:text-primary hover:underline">
+              office@n1shop.cz
+            </span>
+          </Link>
+          <span className="h-1.5 w-1.5 bg-secondary" />
+          {topHeaderLinks.map((link) => (
+            <Link
+              key={link.href}
+              as={NextLink}
+              href={link.href}
+              className="hover:text-primary hover:underline"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
         <div className="flex gap-200">
           <Icon icon="icon-[cif--cz]" />
           <Icon icon="icon-[cif--gb]" />
         </div>
       </Header.Container>
-      <Header.Container className="bg-gray-950">
-        <div className="flex gap-950">
+      <Header.Container className="z-40 bg-gray-950 px-500 py-300">
+        <div className="flex h-full items-center gap-750">
           <Image
             src={footerImgs.footerLogo}
             alt="N1 Shop Logo"
-            width={200}
-            height={100}
+            width={250}
+            height={2500}
           />
-          <SearchForm buttonIcon size="sm" />
+          <SearchForm buttonIcon size="sm" className="w-[40vw]" />
         </div>
         <Header.Actions>
-          {buttonIcons.map((icon) => (
-            <Button
-              key={icon}
+          {headerActionButtons.map((button) => (
+            <LinkButton
+              key={button.href}
               theme="borderless"
               variant="primary"
-              icon={icon as IconType}
-              size="sm"
-              className="px-0 py-0 text-2xl hover:bg-transparent"
-            />
+              size="current"
+              href={button.href}
+              className="gap-x-300 px-0 py-0 text-2xl text-fg-reverse hover:bg-transparent hover:text-primary"
+            >
+              {<Icon icon={button.icon as IconType} />}
+              {button.children && (
+                <span className="font-bold text-md">{button.children}</span>
+              )}
+            </LinkButton>
           ))}
         </Header.Actions>
       </Header.Container>
 
-      <Header.Container className="border-gray-400 border-t bg-gray-950">
-        <Header.Nav className="gap-x-0 px-0 py-0">
-          {links.map((link) => (
-            <Header.NavItem
-              key={link.href}
-              onClick={() => handleOpenSubmenu(link.label)}
-              className="p-200 hover:bg-yellow-400 hover:text-black"
-            >
-              {link.label}
-            </Header.NavItem>
-          ))}
-        </Header.Nav>
-      </Header.Container>
-      <Dialog
-        open={drawerOpen}
-        //onOpenChange={({ open }) => setDrawerOpen(open)}
-        customTrigger
-        placement="top"
-        size="xs"
-        hideCloseButton
-        behavior="modeless"
-        className="top-[9rem]"
-        modal={false}
-      >
-        <div className="grid grid-cols-6 items-center justify-center gap-200 p-200">
-          <h2>{activeCategory?.name}</h2>
-          {activeCategory?.items.map((item) => (
-            <Header.NavItem className="text-sm" key={item}>
-              {item}
-            </Header.NavItem>
-          ))}
-        </div>
-      </Dialog>
+      <div className="w-full" onMouseLeave={() => setDrawerOpen(false)}>
+        <Header.Container className="w-full border-highlight border-t-[1px] bg-gray-950 py-0">
+          <Header.Nav className="z-30 gap-x-0 px-0 py-0">
+            {links.map((link) => (
+              <Header.NavItem
+                key={link.href}
+                onMouseEnter={() => handleOpenSubmenu(link.label)}
+                className="group px-300 py-300 hover:bg-yellow-400"
+              >
+                <Link
+                  as={NextLink}
+                  href={link.href}
+                  className="font-bold text-fg-reverse group-hover:text-black"
+                >
+                  {link.label}
+                </Link>
+              </Header.NavItem>
+            ))}
+          </Header.Nav>
+        </Header.Container>
+
+        {drawerOpen && (
+          <Dialog
+            open={drawerOpen}
+            customTrigger
+            placement="top"
+            position="absolute"
+            size="xs"
+            hideCloseButton
+            behavior="modeless"
+            className="top-full grid grid-rows-[1fr] starting:grid-rows-[0fr] bg-white shadow-none transition-all duration-500 ease-out"
+            modal={false}
+            trapFocus={false}
+            preventScroll={false}
+            closeOnInteractOutside={true}
+            portal={false}
+          >
+            <div className="overflow-hidden">
+              <div className="grid grid-cols-6 items-center justify-center gap-200">
+                {activeCategory?.items.map((item) => (
+                  <Header.NavItem className="text-sm" key={item.name}>
+                    <div className="grid place-items-center border border-transparent hover:border-border-primary">
+                      <div className="flex flex-col items-center">
+                        {item.image && (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            width={200}
+                            height={200}
+                            className="aspect-square w-full object-contain"
+                          />
+                        )}
+                        <h3 className="font-bold text-md">{item.name}</h3>
+                      </div>
+                    </div>
+                  </Header.NavItem>
+                ))}
+              </div>
+            </div>
+          </Dialog>
+        )}
+      </div>
     </Header>
   )
 }
