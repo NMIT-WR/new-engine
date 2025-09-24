@@ -6,12 +6,12 @@ interface TopProductProps {
 }
 export function TopProduct({ src, label }: TopProductProps) {
   return (
-    <div className="grid h-full w-full cursor-pointer place-items-center items-start duration-500 hover:scale-110 hover:shadow-xl">
+    <div className="grid h-full cursor-pointer place-items-center items-start px-0 duration-500 hover:scale-105 hover:shadow-xl">
       <Image
         src={src}
         alt={label}
         width={200}
-        className="flex w-[clamp(150px,100%,250px)]"
+        className="flex w-[clamp(150px,100%,260px)]"
       />
       <p className="text-center font-bold">{label}</p>
     </div>
