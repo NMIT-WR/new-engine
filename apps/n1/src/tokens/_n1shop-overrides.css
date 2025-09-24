@@ -116,7 +116,7 @@
   --color-success-light-disabled: #e8f5e9;
 
   /* Warning - Orange for "Poslední kus" */
-  --color-warning: var(--color-orange-500); /* #FFA500 - VERIFIED */
+  --color-warning: #ffdd27; /* #FFA500 - VERIFIED */
   --color-warning-hover: #ff8c00;
   --color-warning-active: #ff6347;
   --color-warning-disabled: #ffd54f;
@@ -136,7 +136,7 @@
   --color-danger-light-disabled: #ffebee;
 
   /* Info - Blue, same as tertiary for consistency */
-  --color-info: var(--color-blue-400); /* #3498DB */
+  --color-info: #4d9ada; /* #3498DB */
   --color-info-hover: var(--color-blue-500);
   --color-info-active: var(--color-blue-600);
   --color-info-disabled: var(--color-blue-300);
@@ -157,14 +157,14 @@
   --color-base-dark: var(--color-gray-950);
   --color-base: var(--color-white); /* Main page background */
   --color-surface: #f6f6f6; /* Card backgrounds */
-  --color-overlay: #2f2f2f; /* Modal overlay */
+  --color-overlay: #adadad;
+  --color-highlight: #2f2f2f; /* Modal overlay */
   --color-float: var(--color-white); /* Floating elements */
-  --color-highlight: var(--color-yellow-300); /* Highlight background */
   --color-base-reverse: var(--color-gray-950);
 
   /* Borders */
   --color-border-primary: var(--color-gray-700); /* #444444 - VERIFIED */
-  --color-border-secondary: var(--color-gray-300); /* Subtle dividers */
+  --color-border-secondary: #e4e4e4; /* Subtle dividers */
   --border-width-none: 0px;
   --border-width-sm: 1px;
   --border-width-md: 2px;
@@ -197,7 +197,7 @@
 
   /* Use exact N1 Shop font sizes */
   --text-xs: 0.625rem; /* 10px - badges */
-  --text-sm: 12px; /* 12px - small text, old prices */
+  --text-sm: 12.6px; /* 12px - small text, old prices */
   --text-md: 14px; /* 16px - body text */
   --text-lg: 1.125rem; /* 18px - prices */
   --text-xl: 21px; /* 24px - h4 */
