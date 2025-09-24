@@ -19,7 +19,7 @@
   --color-footer-title-fg-hover: var(--color-primary);
   --color-footer-link-fg: var(--color-footer-fg-secondary);
   --color-footer-link-fg-hover: var(--color-primary);
-  --color-footer-text-fg: var(--color-fg-muted);
+  --color-footer-text-fg: var(--color-footer-fg-secondary);
 
   /* Divider & Bottom */
   --color-footer-divider-bg: var(--color-fg-reverse);
