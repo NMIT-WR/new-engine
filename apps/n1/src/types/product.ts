@@ -1,13 +1,15 @@
-import type { BadgeProps } from '@new-engine/ui/atoms/badge'
-
 export interface Product {
   id: string
   title: string
   price: string
-  badges?: BadgeProps[]
+  badges?: {
+    variant: 'new' | 'limited' | 'info' | 'sale' | 'default'
+    text: string
+  }[]
   imageSrc: string
   stockStatus?: string
   stockValue?: string
+  variants?: string[]
 }
 
 export interface ProductSectionData {
