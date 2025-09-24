@@ -8,14 +8,14 @@ import Link from 'next/link'
 export function N1Footer() {
   return (
     <Footer className="relative px-0 py-0" direction="vertical">
-      <Footer.Container className="max-w-full p-400">
+      <Footer.Container className="max-w-full gap-x-800 p-400">
         {/* Company Info Section */}
-        <Footer.Section>
+        <Footer.Section className="col-span-6">
           <Image
             src={footerImgs.footerLogo}
             alt="N1 Shop Logo"
-            width={200}
-            height={200}
+            width={400}
+            height={400}
             className="mb-200 w-auto"
           />
           <div className="flex flex-col gap-200">
@@ -23,7 +23,7 @@ export function N1Footer() {
               <Icon
                 icon="icon-[mdi--map-marker]"
                 size="sm"
-                className="mt-100 mr-200"
+                className="mt-100 mr-200 text-lg text-white"
               />
               <div>
                 <Footer.Text>N Distribution s. r. o.</Footer.Text>
@@ -36,7 +36,7 @@ export function N1Footer() {
               <Icon
                 icon="icon-[mdi--phone]"
                 size="sm"
-                className="mr-200 inline-block"
+                className="mr-200 inline-block text-lg"
               />
               +420 244 402 795
             </Footer.Text>
@@ -44,7 +44,7 @@ export function N1Footer() {
               <Icon
                 icon="icon-[mdi--email]"
                 size="sm"
-                className="mr-200 inline-block"
+                className="mr-200 inline-block text-lg"
               />
               office@ndistribution.cz
             </Footer.Link>
@@ -52,7 +52,7 @@ export function N1Footer() {
               <Icon
                 icon="icon-[mdi--clock]"
                 size="sm"
-                className="mr-200 inline-block"
+                className="mr-200 inline-block text-lg"
               />
               Po, Út, St, Čt, Pá: 8:00 - 17:00
             </Footer.Text>
@@ -60,7 +60,7 @@ export function N1Footer() {
         </Footer.Section>
 
         {/* Business Terms Section */}
-        <Footer.Section>
+        <Footer.Section className="col-span-4 w-fit">
           <Footer.Title>Obchodní podmínky</Footer.Title>
           <Footer.List>
             <Footer.Link href="/zasady-ochrany">
@@ -75,12 +75,12 @@ export function N1Footer() {
         </Footer.Section>
 
         {/* Cookies Section */}
-        <Footer.Section>
+        <Footer.Section className="col-span-4">
           <Footer.Title>Opětovné vyvolání cookies</Footer.Title>
         </Footer.Section>
 
         {/* News Section */}
-        <Footer.Section>
+        <Footer.Section className="col-span-4">
           <Footer.Title>Novinky</Footer.Title>
         </Footer.Section>
       </Footer.Container>
