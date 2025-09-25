@@ -1,7 +1,7 @@
-import bestSellerImg from './bestseller.jpg'
-import bicularImg from './bicular.jpg'
-import electroImg from './electro.jpg'
-import tretryImg from './tretry.jpg'
+import bestSellerImg from './bestseller.webp'
+import bicularImg from './bicular.webp'
+import electroImg from './electro.webp'
+import tretryImg from './tretry.webp'
 
 export const topCategoryImages = {
   bestSellerImg,
