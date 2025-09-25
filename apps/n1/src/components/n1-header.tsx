@@ -137,46 +137,45 @@ export const N1Header = () => {
           </Header.Nav>
         </Header.Container>
 
-        {drawerOpen && (
-          <Dialog
-            open={drawerOpen}
-            customTrigger
-            placement="top"
-            position="absolute"
-            size="xs"
-            hideCloseButton
-            behavior="modeless"
-            className="top-full grid grid-rows-[1fr] starting:grid-rows-[0fr] bg-white shadow-none transition-all duration-500 ease-out"
-            modal={false}
-            trapFocus={false}
-            preventScroll={false}
-            closeOnInteractOutside={true}
-            portal={false}
-          >
-            <div className="overflow-hidden">
-              <div className="grid grid-cols-6 items-center justify-center gap-200">
-                {activeCategory?.items.map((item) => (
-                  <Header.NavItem className="text-sm" key={item.name}>
-                    <div className="grid place-items-center border border-transparent hover:border-border-primary">
-                      <div className="flex flex-col items-center">
-                        {item.image && (
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={200}
-                            height={200}
-                            className="aspect-square w-full object-contain"
-                          />
-                        )}
-                        <h3 className="font-bold text-md">{item.name}</h3>
-                      </div>
+        <Dialog
+          open={drawerOpen}
+          customTrigger
+          placement="top"
+          position="absolute"
+          size="xs"
+          hideCloseButton
+          behavior="modeless"
+          className="top-full grid grid-rows-[1fr] starting:grid-rows-[0fr] bg-white shadow-none transition-all duration-500 ease-out"
+          modal={false}
+          trapFocus={false}
+          preventScroll={false}
+          closeOnInteractOutside={true}
+          portal={false}
+        >
+          <div className="overflow-hidden">
+            <div className="grid grid-cols-6 gap-200">
+              {activeCategory?.items.map((item) => (
+                <Header.NavItem className="text-sm" key={item.name}>
+                  <div className="grid h-full items-center justify-center border border-transparent hover:border-border-primary">
+                    <div className="flex flex-col items-center gap-200">
+                      {item.image && (
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={100}
+                          height={100}
+                          quality={50}
+                          className="h-[100px] w-full object-contain"
+                        />
+                      )}
+                      <h3 className="font-bold text-md">{item.name}</h3>
                     </div>
-                  </Header.NavItem>
-                ))}
-              </div>
+                  </div>
+                </Header.NavItem>
+              ))}
             </div>
-          </Dialog>
-        )}
+          </div>
+        </Dialog>
       </div>
     </Header>
   )
