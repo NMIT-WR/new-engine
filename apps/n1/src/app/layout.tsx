@@ -3,6 +3,7 @@ import { Open_Sans } from 'next/font/google'
 import '../tokens/index.css'
 import { N1Footer } from '@/components/n1-footer'
 import { N1Header } from '@/components/n1-header'
+import type { ReactNode } from 'react'
 
 const openSans = Open_Sans({
   variable: '--font-open-sans',
@@ -19,14 +20,16 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: ReactNode
 }>) {
   return (
     <html lang="en">
       <body className={`${openSans.variable} antialiased`}>
-        <N1Header />
-        {children}
-        <N1Footer />
+        <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
+          <N1Header />
+          {children}
+          <N1Footer />
+        </div>
       </body>
     </html>
   )
