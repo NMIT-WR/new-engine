@@ -4,9 +4,9 @@ import { Accordion } from '../../src/molecules/accordion'
 import { Button } from '../../src/atoms/button'
 import { Badge } from '../../src/atoms/badge'
 
-const meta: Meta<typeof Accordion.Root> = {
+const meta: Meta<typeof Accordion> = {
   title: 'Molecules/Accordion',
-  component: Accordion.Root,
+  component: Accordion,
   parameters: {
     layout: 'centered',
   },
@@ -38,12 +38,12 @@ const meta: Meta<typeof Accordion.Root> = {
 }
 
 export default meta
-type Story = StoryObj<typeof Accordion.Root>
+type Story = StoryObj<typeof Accordion>
 
 export const Default: Story = {
   render: () => (
     <div className="w-md">
-      <Accordion.Root collapsible multiple={false}>
+      <Accordion collapsible multiple={false}>
         <Accordion.Item value="item-1">
           <Accordion.Header>
             <Accordion.Title>
@@ -81,7 +81,7 @@ export const Default: Story = {
             page.
           </Accordion.Content>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion>
     </div>
   ),
 }
@@ -89,7 +89,7 @@ export const Default: Story = {
 export const Multiple: Story = {
   render: () => (
     <div className="w-md">
-      <Accordion.Root collapsible multiple>
+      <Accordion collapsible multiple>
         <Accordion.Item value="item-1">
           <Accordion.Header>
             <Accordion.Title>
@@ -122,7 +122,7 @@ export const Multiple: Story = {
             Accordion is useful for organizing lengthy or complex content.
           </Accordion.Content>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion>
     </div>
   ),
 }
@@ -132,7 +132,7 @@ export const ShadowVariants: Story = {
     <div className="w-md flex flex-col gap-300">
       <div>
         <h3 className="mb-150 text-sm font-medium">Shadow: none (default)</h3>
-        <Accordion.Root shadow="none">
+        <Accordion shadow="none">
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>Item with no shadow</Accordion.Title>
@@ -140,12 +140,12 @@ export const ShadowVariants: Story = {
             </Accordion.Header>
             <Accordion.Content>Content for no shadow variant</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
 
       <div>
         <h3 className="mb-150 text-sm font-medium">Shadow: sm</h3>
-        <Accordion.Root shadow="sm">
+        <Accordion shadow="sm">
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>Item with small shadow</Accordion.Title>
@@ -153,12 +153,12 @@ export const ShadowVariants: Story = {
             </Accordion.Header>
             <Accordion.Content>Content for small shadow variant</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
 
       <div>
         <h3 className="mb-150 text-sm font-medium">Shadow: md</h3>
-        <Accordion.Root shadow="md">
+        <Accordion shadow="md">
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>Item with medium shadow</Accordion.Title>
@@ -166,7 +166,7 @@ export const ShadowVariants: Story = {
             </Accordion.Header>
             <Accordion.Content>Content for medium shadow variant</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
     </div>
   ),
@@ -177,7 +177,7 @@ export const SizeVariants: Story = {
     <div className="w-md flex flex-col gap-300">
       <div>
         <h3 className="mb-150 text-sm font-medium">Size: sm</h3>
-        <Accordion.Root size="sm">
+        <Accordion size="sm">
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>
@@ -188,12 +188,12 @@ export const SizeVariants: Story = {
             </Accordion.Header>
             <Accordion.Content>Small size content text</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
 
       <div>
         <h3 className="mb-150 text-sm font-medium">Size: md (default)</h3>
-        <Accordion.Root size="md">
+        <Accordion size="md">
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>
@@ -204,12 +204,12 @@ export const SizeVariants: Story = {
             </Accordion.Header>
             <Accordion.Content>Medium size content text</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
 
       <div>
         <h3 className="mb-150 text-sm font-medium">Size: lg</h3>
-        <Accordion.Root size="lg">
+        <Accordion size="lg">
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>
@@ -220,7 +220,7 @@ export const SizeVariants: Story = {
             </Accordion.Header>
             <Accordion.Content>Large size content text</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
     </div>
   ),
@@ -230,7 +230,7 @@ export const CustomContent: Story = {
   name: 'Custom Content (Compound Pattern Benefit)',
   render: () => (
     <div className="w-lg">
-      <Accordion.Root collapsible multiple>
+      <Accordion collapsible multiple>
         <Accordion.Item value="custom-1">
           <Accordion.Header>
             <div className="flex items-center gap-200 flex-1">
@@ -253,9 +253,9 @@ export const CustomContent: Story = {
 
         <Accordion.Item value="custom-2">
           <Accordion.Header>
-            <div className="flex flex-col flex-1">
-              <Accordion.Title>Product Features</Accordion.Title>
-              <Accordion.Subtitle>Click to explore all features</Accordion.Subtitle>
+            <div className="flex flex-col p-200">
+              <Accordion.Title className='px-0 py-0'>Product Features</Accordion.Title>
+              <Accordion.Subtitle className='text-left'>Click to explore all features</Accordion.Subtitle>
             </div>
             <div className="flex items-center gap-100">
               <Badge variant="tertiary">
@@ -297,7 +297,7 @@ export const CustomContent: Story = {
             </div>
           </Accordion.Content>
         </Accordion.Item>
-      </Accordion.Root>
+      </Accordion>
     </div>
   ),
 }
@@ -360,7 +360,7 @@ export const ControlledAccordion: Story = {
           </div>
         </div>
 
-        <Accordion.Root
+        <Accordion
           value={activeItems}
           onChange={setActiveItems}
           multiple
@@ -395,7 +395,7 @@ export const ControlledAccordion: Story = {
               This item is disabled and cannot be expanded.
             </Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
     )
   },
@@ -414,7 +414,7 @@ export const ConditionalRendering: Story = {
           </Button>
         </div>
 
-        <Accordion.Root collapsible multiple>
+        <Accordion collapsible multiple>
           <Accordion.Item value="item-1">
             <Accordion.Header>
               <Accordion.Title>Always Visible Item</Accordion.Title>
@@ -455,7 +455,7 @@ export const ConditionalRendering: Story = {
             </Accordion.Header>
             <Accordion.Content>This item is also always visible.</Accordion.Content>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion>
       </div>
     )
   },
