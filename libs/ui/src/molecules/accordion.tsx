@@ -45,6 +45,7 @@ const accordionVariants = tv({
         item: 'border-b-(length:--border-width-accordion) border-accordion-border',
       },
       borderless: {},
+      child: {},
     },
     shadow: {
       sm: {
@@ -75,6 +76,15 @@ const accordionVariants = tv({
       },
     },
   },
+  compoundVariants: [
+    {
+      variant: 'child',
+      size: ['sm', 'md', 'lg'],
+      className: {
+        content: 'py-0 bg-inherit text-inherit',
+      },
+    },
+  ],
   defaultVariants: {
     size: 'md',
     shadow: 'none',
@@ -88,7 +98,7 @@ interface AccordionContextValue {
   size?: 'sm' | 'md' | 'lg'
   shadow?: 'sm' | 'md' | 'none'
   styles: ReturnType<typeof accordionVariants>
-  variant?: 'default' | 'borderless'
+  variant?: 'default' | 'borderless' | 'child'
 }
 
 const AccordionContext = createContext<AccordionContextValue | null>(null)
@@ -105,7 +115,7 @@ function useAccordionContext() {
 interface AccordionItemContextValue {
   value: string
   disabled?: boolean
-  variant?: 'default' | 'borderless'
+  variant?: 'default' | 'borderless' | 'child'
 }
 
 const AccordionItemContext = createContext<AccordionItemContextValue | null>(
@@ -123,7 +133,7 @@ function useAccordionItemContext() {
 }
 
 // Root component
-export interface AccordionRootProps
+interface AccordionProps
   extends VariantProps<typeof accordionVariants>,
     Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
   id?: string
@@ -137,7 +147,7 @@ export interface AccordionRootProps
   ref?: RefObject<HTMLDivElement>
 }
 
-function AccordionRoot({
+export function Accordion({
   id,
   defaultValue,
   value,
@@ -153,7 +163,7 @@ function AccordionRoot({
   className,
   variant,
   ...props
-}: AccordionRootProps) {
+}: AccordionProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
 
@@ -189,13 +199,13 @@ function AccordionRoot({
 }
 
 // Item component
-export interface AccordionItemProps extends ComponentPropsWithoutRef<'div'> {
+interface AccordionItemProps extends ComponentPropsWithoutRef<'div'> {
   value: string
   disabled?: boolean
   ref?: RefObject<HTMLDivElement>
 }
 
-function AccordionItem({
+Accordion.Item = function AccordionItem({
   value,
   disabled,
   children,
@@ -220,12 +230,11 @@ function AccordionItem({
 }
 
 // Header component (trigger wrapper)
-export interface AccordionHeaderProps
-  extends ComponentPropsWithoutRef<'header'> {
+interface AccordionHeaderProps extends ComponentPropsWithoutRef<'header'> {
   ref?: RefObject<HTMLElement>
 }
 
-function AccordionHeader({
+Accordion.Header = function AccordionHeader({
   children,
   ref,
   className,
@@ -249,11 +258,11 @@ function AccordionHeader({
 }
 
 // Content component
-export interface AccordionContentProps extends ComponentPropsWithoutRef<'div'> {
+interface AccordionContentProps extends ComponentPropsWithoutRef<'div'> {
   ref?: RefObject<HTMLDivElement>
 }
 
-function AccordionContent({
+Accordion.Content = function AccordionContent({
   children,
   ref,
   className,
@@ -276,13 +285,12 @@ function AccordionContent({
 }
 
 // Indicator component (for expand/collapse icon)
-export interface AccordionIndicatorProps
-  extends ComponentPropsWithoutRef<'span'> {
+interface AccordionIndicatorProps extends ComponentPropsWithoutRef<'span'> {
   icon?: string
   ref?: RefObject<HTMLSpanElement>
 }
 
-function AccordionIndicator({
+Accordion.Indicator = function AccordionIndicator({
   icon = 'token-icon-accordion-chevron',
   ref,
   className,
@@ -305,11 +313,11 @@ function AccordionIndicator({
 }
 
 // Title component (optional structured title)
-export interface AccordionTitleProps extends ComponentPropsWithoutRef<'h3'> {
+interface AccordionTitleProps extends ComponentPropsWithoutRef<'h3'> {
   ref?: RefObject<HTMLHeadingElement>
 }
 
-function AccordionTitle({
+Accordion.Title = function AccordionTitle({
   children,
   ref,
   className,
@@ -327,11 +335,11 @@ function AccordionTitle({
 }
 
 // Subtitle component (optional structured subtitle)
-export interface AccordionSubtitleProps extends ComponentPropsWithoutRef<'h4'> {
+interface AccordionSubtitleProps extends ComponentPropsWithoutRef<'h4'> {
   ref?: RefObject<HTMLHeadingElement>
 }
 
-function AccordionSubtitle({
+Accordion.Subtitle = function AccordionSubtitle({
   children,
   ref,
   className,
@@ -344,15 +352,4 @@ function AccordionSubtitle({
       {children}
     </h4>
   )
-}
-
-// Export compound component
-export const Accordion = {
-  Root: AccordionRoot,
-  Item: AccordionItem,
-  Header: AccordionHeader,
-  Content: AccordionContent,
-  Indicator: AccordionIndicator,
-  Title: AccordionTitle,
-  Subtitle: AccordionSubtitle,
 }
