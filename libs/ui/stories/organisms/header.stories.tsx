@@ -7,6 +7,7 @@ import { Dialog } from '../../src/molecules/dialog'
 import { Popover } from '../../src/molecules/popover'
 import { SearchForm } from '../../src/molecules/search-form'
 import { Header } from '../../src/organisms/header'
+import { Accordion } from '../../src/molecules/accordion'
 
 const meta: Meta<typeof Header> = {
   title: 'Organisms/Header',
@@ -153,6 +154,97 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
+}
+
+export const NavSubmenu: Story = {
+  render: () => {
+    return (
+      <Header>
+        <Header.Hamburger />
+        <Header.Desktop>
+          <Header.Nav>
+            <Header.NavItem href="/">Home</Header.NavItem>
+            <Popover
+              trigger={
+                <Header.NavItem href="/products/electronics">
+                <span>Electronics</span>
+                <Icon icon="icon-[mdi--chevron-down]" />
+              </Header.NavItem>
+            }
+            placement="bottom"
+            size="sm"
+            triggerClassName="text-fg-primary hover:bg-transparent"
+          >
+            <Header.NavItem href="/products/electronics">
+              Electronics
+            </Header.NavItem>
+            <Header.NavItem href="/products/clothing">
+              Clothing & Fashion
+            </Header.NavItem>
+            <Header.NavItem href="/products/home-garden">
+              Home & Garden
+            </Header.NavItem>
+            <Header.NavItem href="/products/sports">
+              Sports & Outdoors
+            </Header.NavItem>
+          </Popover>
+          <Header.NavItem href="/about">About</Header.NavItem>
+          <Header.NavItem href="/contact">Contact</Header.NavItem>
+          </Header.Nav>
+        </Header.Desktop>
+        <Header.Actions>
+          <Button variant="primary" size="sm">
+            Sign In
+          </Button>
+        </Header.Actions>
+        <Header.Mobile position='left'>
+          <Accordion.Root variant='borderless'>
+            <Accordion.Item value="home">
+              <Header.NavItem href="/">Home</Header.NavItem>
+            </Accordion.Item>
+            <Accordion.Item value="electronics">
+              <Accordion.Header>
+                <Header.NavItem href="/products/electronics">
+                  Electronics
+                </Header.NavItem>
+                <Accordion.Indicator />
+              </Accordion.Header>
+              <Accordion.Content className='px-0'>
+                  <Header.NavItem href="/products/clothing">
+                    Clothing
+                  </Header.NavItem>
+                  <Header.NavItem href="/products/home-garden">
+                    Garden
+                  </Header.NavItem>
+                  <Header.NavItem href="/products/sports">
+                    Sports
+                  </Header.NavItem>
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item value="about">
+              <Header.NavItem href="/about">About</Header.NavItem>
+            </Accordion.Item>
+            <Accordion.Item value="contact">
+              <Header.NavItem href="/contact">Contact</Header.NavItem>
+            </Accordion.Item>
+            {/*<Header.NavItem href="/products/electronics">
+              Electronics
+            </Header.NavItem>
+            <Header.NavItem href="/products/clothing">
+              Clothing & Fashion
+            </Header.NavItem>
+            <Header.NavItem href="/products/home-garden">
+              Home & Garden
+            </Header.NavItem>
+            <Header.NavItem href="/products/sports">
+              Sports & Outdoors
+            </Header.NavItem>*/}
+            
+          </Accordion.Root>
+        </Header.Mobile>
+      </Header>
+    )
+  }
 }
 
 export const WithPopoverSubmenu: Story = {
