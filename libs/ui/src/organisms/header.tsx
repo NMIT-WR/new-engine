@@ -6,20 +6,20 @@ import { tv } from '../utils'
 
 const headerVariants = tv({
   slots: {
-    root: [
-      'w-full justify-between',
-      'flex items-center',
-      'transition-header',
-      'max-w-header-max',
-      'relative',
+    root: ['w-full', 'grid grid-flow-col', 'max-w-header-max', 'relative'],
+    desktop: 'flex max-header-desktop:hidden',
+    mobile: [
+      'data-[open=false]:hidden header-desktop:hidden *:flex *:flex-col absolute top-full data-[position=left]:left-0 data-[position=right]:right-0',
     ],
     container: [
-      'bg-white/40 w-full flex gap-400 justify-between p-header-container',
+      'flex gap-header-container',
+      'data-[position=start]:justify-self-start-safe',
+      'data-[position=center]:justify-self-center-safe',
+      'data-[position=end]:justify-self-end-safe',
     ],
     nav: [
-      'header-desktop:flex-row header-desktop:items-center flex flex-col',
+      'flex-row header-desktop:items-center flex',
       'w-header-nav flex-1',
-      'max-header-desktop:data-[open=false]:hidden max-header-desktop:absolute max-header-desktop:top-full max-header-desktop:z-50',
       'max-header-desktop:bg-header-bg',
     ],
     navItem: [
@@ -33,15 +33,16 @@ const headerVariants = tv({
       'text-header-actions-fg',
       'w-header-actions',
       'shrink-0',
-      'hidden header-desktop:flex',
+      'flex',
     ],
     hamburger: [
       'flex',
-      'header-desktop:hidden items-center justify-center',
-      'size-header-hamburger',
+      'header-desktop:hidden',
+      'h-full',
       'p-header-hamburger',
-      'rounded-md',
-      'text-header-hamburger-fg',
+      'rounded-hamburger',
+      'text-header-hamburger-fg hover:text-header-hamburger-fg-hover',
+      'bg-header-hamburger-bg active:bg-header-hamburger-bg-active',
       'hover:bg-header-hamburger-bg-hover',
       'transition-colors duration-header',
       'cursor-pointer',
@@ -77,29 +78,21 @@ const headerVariants = tv({
         root: ['bg-header-bg-blur'],
       },
     },
-    mobileMenuPosition: {
-      right: {
-        nav: ['right-0'],
-      },
-      left: {
-        nav: ['left-0'],
-      },
-    },
     size: {
       sm: {
-        root: '-header-sm gap-header-section-sm',
+        root: 'gap-header-section-sm',
         nav: 'gap-header-nav-sm text-header-nav-sm',
         navItem: 'p-header-nav-item-sm text-header-nav-item-sm',
         actions: 'gap-header-actions-sm text-header-actions-sm',
       },
       md: {
-        root: '-header-md gap-header-secion-md',
+        root: 'gap-header-secion-md',
         nav: 'gap-header-nav-md text-header-nav-md',
         navItem: 'p-header-nav-item-md text-header-nav-item-md',
         actions: 'gap-header-actions-md text-header-actions-md',
       },
       lg: {
-        root: '-header-lg gap-header-section-lg',
+        root: 'gap-header-section-lg',
         nav: 'gap-header-nav-lg text-header-nav-lg',
         navItem: 'p-header-nav-item-lg text-header-nav-item-lg',
         actions: 'gap-header-actions-lg text-header-actions-lg',
@@ -109,7 +102,6 @@ const headerVariants = tv({
   defaultVariants: {
     variant: 'solid',
     size: 'md',
-    mobileMenuPosition: 'right',
     direction: 'horizontal',
   },
 })
@@ -117,12 +109,16 @@ const headerVariants = tv({
 // === CONTEXT ===
 interface HeaderContextValue {
   size?: 'sm' | 'md' | 'lg'
-  isMobileMenuOpen?: boolean
-  setIsMobileMenuOpen?: (open: boolean) => void
-  toggleMobileMenu?: () => void
+  isMobileMenuOpen: boolean
+  setIsMobileMenuOpen: (open: boolean) => void
+  toggleMobileMenu: () => void
 }
 
-const HeaderContext = createContext<HeaderContextValue>({})
+const HeaderContext = createContext<HeaderContextValue>({
+  isMobileMenuOpen: false,
+  setIsMobileMenuOpen: () => {},
+  toggleMobileMenu: () => {},
+})
 
 // === TYPE DEFINITIONS ===
 export interface HeaderProps
@@ -135,6 +131,7 @@ export interface HeaderProps
 interface HeaderContainerProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
   ref?: Ref<HTMLElement>
+  position?: 'start' | 'center' | 'end'
 }
 
 interface HeaderNavProps extends HTMLAttributes<HTMLElement> {
@@ -156,6 +153,12 @@ interface HeaderActionsProps extends HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg'
 }
 
+interface HeaderMobileProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
+  ref?: Ref<HTMLDivElement>
+  position?: 'left' | 'right'
+}
+
 export function Header({
   variant,
   size = 'md',
@@ -166,14 +169,12 @@ export function Header({
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  const { root, hamburger } = headerVariants({
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const { root } = headerVariants({
     variant,
     size,
     direction,
   })
-
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
 
   return (
     <HeaderContext.Provider
@@ -192,15 +193,44 @@ export function Header({
         {...props}
       >
         {children}
-        <Button
-          theme="borderless"
-          onClick={toggleMobileMenu}
-          className={hamburger()}
-          aria-label="Toggle mobile menu"
-          icon={isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'}
-        />
       </header>
     </HeaderContext.Provider>
+  )
+}
+
+Header.Desktop = function HeaderDesktop({
+  className,
+  children,
+  ref,
+  ...props
+}: HeaderContainerProps) {
+  const { desktop } = headerVariants()
+  return (
+    <section ref={ref} className={desktop({ className })} {...props}>
+      {children}
+    </section>
+  )
+}
+
+Header.Mobile = function HeaderMobile({
+  className,
+  children,
+  ref,
+  position = 'right',
+  ...props
+}: HeaderMobileProps) {
+  const { isMobileMenuOpen } = useContext(HeaderContext)
+  const { mobile } = headerVariants()
+  return (
+    <section
+      ref={ref}
+      className={mobile({ className })}
+      data-open={isMobileMenuOpen}
+      data-position={position}
+      {...props}
+    >
+      {children}
+    </section>
   )
 }
 
@@ -208,11 +238,17 @@ Header.Container = function HeaderContainer({
   className,
   children,
   ref,
+  position,
   ...props
 }: HeaderContainerProps) {
   const { container } = headerVariants()
   return (
-    <section ref={ref} className={container({ className })} {...props}>
+    <section
+      ref={ref}
+      className={container({ className })}
+      data-position={position}
+      {...props}
+    >
       {children}
     </section>
   )
@@ -226,17 +262,12 @@ Header.Nav = function HeaderNav({
   size: overrideSize,
   ...props
 }: HeaderNavProps) {
-  const context = useContext(HeaderContext)
-  const size = overrideSize ?? context.size ?? 'md'
+  const { size: contextSize } = useContext(HeaderContext)
+  const size = overrideSize ?? contextSize ?? 'md'
   const { nav } = headerVariants({ size })
 
   return (
-    <nav
-      ref={ref}
-      className={nav({ className })}
-      data-open={context.isMobileMenuOpen}
-      {...props}
-    >
+    <nav ref={ref} className={nav({ className })} {...props}>
       {children}
     </nav>
   )
@@ -283,5 +314,20 @@ Header.Actions = function HeaderActions({
     <div ref={ref} className={actions({ className })} {...props}>
       {children}
     </div>
+  )
+}
+
+Header.Hamburger = function HeaderHamburger() {
+  const { toggleMobileMenu, isMobileMenuOpen } = useContext(HeaderContext)
+  const { hamburger } = headerVariants()
+
+  return (
+    <Button
+      theme="borderless"
+      onClick={toggleMobileMenu}
+      className={hamburger()}
+      aria-label="Toggle mobile menu"
+      icon={isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'}
+    />
   )
 }

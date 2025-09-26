@@ -22,14 +22,15 @@ type Story = StoryObj<typeof Header>
 
 export const Default: Story = {
   render: () => (
-    <Header>
-      <Header.Nav>
+    <Header mobileMenuPosition="left">
+      <Header.Hamburger />
+      <Header.Nav persist>
         <Header.NavItem href="/">Home</Header.NavItem>
         <Header.NavItem href="/products">Products</Header.NavItem>
         <Header.NavItem href="/about">About</Header.NavItem>
         <Header.NavItem href="/contact">Contact</Header.NavItem>
       </Header.Nav>
-      <Header.Actions>
+      <Header.Actions persist>
         <Button theme="borderless" variant="primary" size="sm">
           <Icon icon="icon-[lucide--search]" />
         </Button>
@@ -47,6 +48,7 @@ export const Default: Story = {
 export const WithActiveState: Story = {
   render: () => (
     <Header>
+      <Header.Hamburger />
       <Header.Nav>
         <Header.NavItem href="/" active>
           Home
@@ -64,12 +66,49 @@ export const WithActiveState: Story = {
   ),
 }
 
+export const PersistActionsBox: Story = {
+  render: () => (
+    <Header>
+
+      <Header.Desktop>
+        <Header.Nav>
+          <Header.NavItem href="/" active>
+            Home
+          </Header.NavItem>
+          <Header.NavItem href="/products">Products</Header.NavItem>
+          <Header.NavItem href="/about">About</Header.NavItem>
+          <Header.NavItem href="/contact">Contact</Header.NavItem>
+        </Header.Nav>
+      </Header.Desktop>
+      <Header.Mobile>
+        <Header.Nav>
+          <Header.NavItem href="/" active>
+            Home
+          </Header.NavItem>
+          <Header.NavItem href="/products">Products</Header.NavItem>
+          <Header.NavItem href="/about">About</Header.NavItem>
+          <Header.NavItem href="/contact">Contact</Header.NavItem>
+        </Header.Nav>
+      </Header.Mobile>
+      <Header.Container position='end'>
+      <Header.Hamburger />
+      <Header.Actions>
+        <Button variant="primary" size="sm">
+          Sign In
+        </Button>
+      </Header.Actions>
+      </Header.Container>
+    </Header>
+  ),
+}
+
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-col gap-300">
       <div>
         <p className="mb-100 text-fg-muted">Small</p>
         <Header size="sm">
+          <Header.Hamburger />
           <Header.Nav>
             <Header.NavItem href="/">Home</Header.NavItem>
             <Header.NavItem href="/products">Products</Header.NavItem>
@@ -85,6 +124,7 @@ export const Sizes: Story = {
       <div>
         <p className="mb-100 text-fg-muted">Medium (Default)</p>
         <Header size="md">
+          <Header.Hamburger />
           <Header.Nav>
             <Header.NavItem href="/">Home</Header.NavItem>
             <Header.NavItem href="/products">Products</Header.NavItem>
@@ -118,6 +158,7 @@ export const Sizes: Story = {
 export const WithPopoverSubmenu: Story = {
   render: () => (
     <Header>
+      <Header.Hamburger />
       <Header.Nav>
         <Header.NavItem href="/">Home</Header.NavItem>
         <Popover
@@ -183,6 +224,7 @@ export const WithPopoverSubmenu: Story = {
 export const WithNestedPopoverSubmenu: Story = {
   render: () => (
     <Header>
+      <Header.Hamburger />
       <Header.Nav>
         <Header.NavItem href="/">Home</Header.NavItem>
 
@@ -337,6 +379,7 @@ export const HeaderWithDrawerSubmenu: Story = {
 
     return (
       <Header className="z-50">
+        <Header.Hamburger />
         <Header.Nav>
           <Header.NavItem href="/novinky">Novinky</Header.NavItem>
           <Header.NavItem href="/panske">Pánské</Header.NavItem>
