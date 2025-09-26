@@ -5,6 +5,7 @@
     --spacing-header-nav-lg: var(--spacing-150);
   }
 }
+
 @theme static {
   /* === REFERENCE LAYER === */
   /* These tokens reference semantic tokens from _semantic.css */
@@ -69,6 +70,7 @@
   --padding-header-brand: var(--spacing-0);
 
   --padding-header-container: var(--spacing-100) var(--spacing-200);
+  --spacing-header-container: var(--spacing-100);
 
   --padding-header-nav-item-sm: 0 var(--spacing-100);
   --padding-header-nav-item-md: 0 var(--spacing-200);
@@ -107,16 +109,20 @@
 
   /* === Z-INDEX === */
   /* Mobile menu hamburger colors */
+  --color-header-hamburger-bg: transparent;
+  --color-header-hamburger-bg-hover: transparent;
+  --color-header-hamburger-bg-active: transparent;
   --color-header-hamburger-fg: var(--color-fg-primary);
-  --color-header-hamburger-bg-hover: var(--color-highlight);
+  --color-header-hamburger-fg-hover: var(--color-fg-secondary);
 
   /* hamburger button */
-  --padding-header-hamburger: var(--spacing-200);
+  --margin-header-hamburger: 0;
   --size-header-hamburger: 4rem;
   --color-header-hamburger-ring: --alpha(
     --color-header-accent /
     var(--opacity-ring)
   );
+  --raidus-hamburger: 0;
 
   /* breakpoint */
   --breakpoint-header-desktop: 48rem;
