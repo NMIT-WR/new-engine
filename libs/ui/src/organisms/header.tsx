@@ -6,7 +6,12 @@ import { tv } from '../utils'
 
 const headerVariants = tv({
   slots: {
-    root: ['w-full', 'grid grid-flow-col', 'max-w-header-max', 'relative'],
+    root: [
+      'w-full',
+      'grid grid-flow-col justify-between',
+      'max-w-header-max',
+      'relative',
+    ],
     desktop: 'flex max-header-desktop:hidden',
     mobile: [
       'data-[open=false]:hidden header-desktop:hidden *:flex *:flex-col absolute top-full data-[position=left]:left-0 data-[position=right]:right-0',
