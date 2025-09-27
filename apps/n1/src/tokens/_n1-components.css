@@ -43,7 +43,7 @@
   --color-footer: var(--color-highlight);
   --color-footer-fg-primary: var(--color-fg-dark);
   --color-footer-fg-secondary: --alpha(var(--color-fg-dark) / 70%);
-  --footer-cols: repeat(24, 1fr);
+  --footer-cols: repeat(auto-fill, minmax(250px, 1fr));
 
   /* === HEADER === */
 }
