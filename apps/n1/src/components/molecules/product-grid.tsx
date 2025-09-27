@@ -6,11 +6,11 @@ import { Fragment } from 'react'
 
 export const ProductGrid = ({ products }: { products: Product[] }) => {
   return (
-    <div className="mx-auto grid max-w-max-w grid-cols-4 gap-200">
+    <div className="mx-auto grid max-w-max-w grid-cols-2 gap-200 md:grid-cols-3 lg:grid-cols-4">
       {products.map((product, index) => (
         <Fragment key={product.title}>
           {index !== 0 && index % 4 === 0 && index + 1 !== products.length && (
-            <div className="col-span-4 h-[1px] bg-border-secondary" />
+            <div className="col-span-full h-[1px] bg-border-secondary" />
           )}
           <ProductCard
             key={product.title}
