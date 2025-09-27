@@ -10,7 +10,7 @@ export function N1Footer() {
     <Footer className="relative px-0 py-0" direction="vertical">
       <Footer.Container className="max-w-full gap-x-800 p-400">
         {/* Company Info Section */}
-        <Footer.Section className="col-span-6">
+        <Footer.Section className="in-w-[400px]">
           <Image
             src={footerImgs.footerLogo}
             alt="N1 Shop Logo"
@@ -60,7 +60,7 @@ export function N1Footer() {
         </Footer.Section>
 
         {/* Business Terms Section */}
-        <Footer.Section className="col-span-4 w-fit">
+        <Footer.Section className="">
           <Footer.Title>Obchodní podmínky</Footer.Title>
           <Footer.List>
             <Footer.Link href="/zasady-ochrany">
@@ -75,12 +75,12 @@ export function N1Footer() {
         </Footer.Section>
 
         {/* Cookies Section */}
-        <Footer.Section className="col-span-4">
+        <Footer.Section className="">
           <Footer.Title>Opětovné vyvolání cookies</Footer.Title>
         </Footer.Section>
 
         {/* News Section */}
-        <Footer.Section className="col-span-4">
+        <Footer.Section className="">
           <Footer.Title>Novinky</Footer.Title>
         </Footer.Section>
       </Footer.Container>
