@@ -246,6 +246,7 @@ Accordion.Header = function AccordionHeader({
   return (
     <header ref={ref} className={className} {...props}>
       <Button
+        type="button"
         theme="borderless"
         className={styles.titleTrigger()}
         {...api.getItemTriggerProps({ value, disabled })}
@@ -253,7 +254,6 @@ Accordion.Header = function AccordionHeader({
       >
         {children}
       </Button>
-    </header>
   )
 }
 
