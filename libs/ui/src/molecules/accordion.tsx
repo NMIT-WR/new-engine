@@ -254,6 +254,7 @@ Accordion.Header = function AccordionHeader({
       >
         {children}
       </Button>
+    </header>
   )
 }
 
