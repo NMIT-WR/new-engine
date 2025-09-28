@@ -466,13 +466,12 @@ TreeView.BranchContent = function TreeViewBranchContent({
   ...props
 }: TreeViewBranchContentProps) {
   const { api, styles } = useTreeViewContext()
-  const { nodeProps, nodeState } = useTreeViewNodeContext()
+  const { nodeProps } = useTreeViewNodeContext()
 
   return (
     <div
       className={styles.branchContent({ className })}
       {...api.getBranchContentProps(nodeProps)}
-      data-state={nodeState.expanded ? 'open' : 'closed'}
       {...props}
     >
       {children}
@@ -577,16 +576,10 @@ TreeView.ItemText = function TreeViewItemText({
 // === NODE ICON COMPONENT ===
 interface TreeViewNodeIconProps extends ComponentPropsWithoutRef<'span'> {
   icon?: IconType
-  branchIcon?: IconType
-  branchOpenIcon?: IconType
-  leafIcon?: IconType
 }
 
 TreeView.NodeIcon = function TreeViewNodeIcon({
   icon,
-  branchIcon,
-  branchOpenIcon,
-  leafIcon,
   className,
   ...props
 }: TreeViewNodeIconProps) {
@@ -594,22 +587,14 @@ TreeView.NodeIcon = function TreeViewNodeIcon({
   const { node, nodeState } = useTreeViewNodeContext()
 
   // Determine which icon to show
-  const iconToShow = (() => {
-    if (icon) return icon
-
-    if (nodeState.isBranch) {
-      if (node.icons?.branch) return node.icons.branch
-      if (nodeState.expanded && branchOpenIcon) return branchOpenIcon
-      if (branchIcon) return branchIcon
-      return nodeState.expanded
-        ? 'token-icon-tree-node-open'
-        : 'token-icon-tree-node'
-    }
-
-    if (node.icons?.leaf) return node.icons.leaf
-    if (leafIcon) return leafIcon
-    return 'token-icon-tree-item'
-  })()
+  const iconToShow =
+    icon ||
+    (nodeState.isBranch
+      ? node.icons?.branch ||
+        (nodeState.expanded
+          ? 'token-icon-tree-node-open'
+          : 'token-icon-tree-node')
+      : node.icons?.leaf || 'token-icon-tree-item')
 
   return (
     <span

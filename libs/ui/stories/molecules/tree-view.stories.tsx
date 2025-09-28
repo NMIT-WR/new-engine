@@ -461,3 +461,194 @@ export const DefaultExpanded: Story = {
       </TreeView>
   ),
 }
+
+// Single vs Multiple selection modes
+export const SelectionModes: Story = {
+  render: () => {
+    const SelectionModesExample = () => {
+      const [singleSelected, setSingleSelected] = useState<string[]>(['button.tsx'])
+      const [multiSelected, setMultiSelected] = useState<string[]>(['button.tsx', 'dialog.tsx', 'helpers.ts'])
+
+      return (
+        <div className="flex gap-300">
+          <div className="flex-1">
+            <TreeView
+              data={fileSystemData}
+              selectionMode="single"
+              selectedValue={singleSelected}
+              onSelectionChange={(details) => setSingleSelected(details.selectedValue)}
+              defaultExpandedValue={['src', 'components', 'atoms']}
+              className='w-full'
+            >
+              <TreeView.Label>Single Selection</TreeView.Label>
+              <TreeView.Tree>
+                {fileSystemData.map((node, index) => (
+                  <TreeView.Node key={node.id} node={node} indexPath={[index]} />
+                ))}
+              </TreeView.Tree>
+            </TreeView>
+            <div className="mt-100 p-100 bg-overlay rounded-md">
+              <p className="text-xs font-semibold mb-50">Selected:</p>
+              <p className="text-xs text-fg-secondary">
+                {singleSelected.join(', ') || 'None'}
+              </p>
+              <p className="text-xs text-fg-secondary mt-50">
+                Click any item to select it
+              </p>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <TreeView
+              data={fileSystemData}
+              selectionMode="multiple"
+              selectedValue={multiSelected}
+              onSelectionChange={(details) => setMultiSelected(details.selectedValue)}
+              defaultExpandedValue={['src', 'components', 'molecules']}
+              className='w-full'
+            >
+              <TreeView.Label>Multiple Selection</TreeView.Label>
+              <TreeView.Tree>
+                {fileSystemData.map((node, index) => (
+                  <TreeView.Node key={node.id} node={node} indexPath={[index]} />
+                ))}
+              </TreeView.Tree>
+            </TreeView>
+            <div className="mt-100 p-100 bg-overlay rounded-md">
+              <p className="text-xs font-semibold mb-50">Selected ({multiSelected.length}):</p>
+              <p className="text-xs text-fg-secondary">
+                {multiSelected.join(', ') || 'None'}
+              </p>
+              <p className="text-xs text-fg-secondary mt-50">
+                Use Ctrl+Click (Cmd+Click on Mac) to select multiple items
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    return <SelectionModesExample />
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the difference between single and multiple selection modes. In single mode, only one item can be selected at a time. In multiple mode, use Ctrl+Click (Cmd+Click on Mac) to select multiple items.',
+      },
+    },
+  },
+}
+
+// Interactive test showing expand vs selection behavior
+export const ExpandVsSelectionTest: Story = {
+  render: () => {
+    const InteractiveTest = () => {
+      const [logs, setLogs] = useState<string[]>([])
+
+      const addLog = (message: string) => {
+        const timestamp = new Date().toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          fractionalSecondDigits: 3
+        })
+        setLogs(prev => [`[${timestamp}] ${message}`, ...prev].slice(0, 15))
+      }
+
+      return (
+        <div className="space-y-200">
+          <div className="p-100 bg-overlay rounded-md">
+            <h4 className="text-sm font-semibold mb-50">Test Instructions:</h4>
+            <ul className="text-xs space-y-50 text-fg-secondary">
+              <li>• Click the <strong>chevron arrow</strong> → should ONLY expand/collapse</li>
+              <li>• Click the <strong>folder/file name</strong> → should select (and expand if expandOnClick=true)</li>
+              <li>• Try keyboard: Arrow keys to navigate, Space/Enter to select</li>
+            </ul>
+          </div>
+
+          <div className="flex gap-300">
+            <div className="flex-1">
+              <TreeView
+                data={fileSystemData}
+                selectionMode="single"
+                expandOnClick={false}
+                onExpandedChange={(details) => {
+                  addLog(`🔽 EXPANDED: ${details.expandedValue.join(', ') || 'none'}`)
+                }}
+                onSelectionChange={(details) => {
+                  addLog(`✅ SELECTED: ${details.selectedValue.join(', ') || 'none'}`)
+                }}
+                className='w-full'
+              >
+                <TreeView.Label>expandOnClick = false</TreeView.Label>
+                <TreeView.Tree>
+                  {fileSystemData.map((node, index) => (
+                    <TreeView.Node key={node.id} node={node} indexPath={[index]} />
+                  ))}
+                </TreeView.Tree>
+              </TreeView>
+            </div>
+
+            <div className="flex-1">
+              <TreeView
+                data={fileSystemData}
+                selectionMode="single"
+                expandOnClick={true}
+                onExpandedChange={(details) => {
+                  addLog(`🔽 EXPANDED: ${details.expandedValue.join(', ') || 'none'}`)
+                }}
+                onSelectionChange={(details) => {
+                  addLog(`✅ SELECTED: ${details.selectedValue.join(', ') || 'none'}`)
+                }}
+                className='w-full'
+              >
+                <TreeView.Label>expandOnClick = true (default)</TreeView.Label>
+                <TreeView.Tree>
+                  {fileSystemData.map((node, index) => (
+                    <TreeView.Node key={node.id} node={node} indexPath={[index]} />
+                  ))}
+                </TreeView.Tree>
+              </TreeView>
+            </div>
+          </div>
+
+          <div className="p-100 bg-overlay rounded-md">
+            <div className="flex items-center justify-between mb-50">
+              <h4 className="text-sm font-semibold">Event Log (last 15 events)</h4>
+              <Button
+                size="sm"
+                onClick={() => setLogs([])}
+              >
+                Clear
+              </Button>
+            </div>
+            <div className="bg-surface rounded-sm p-100 h-48 overflow-y-auto font-mono text-xs">
+              {logs.length === 0 ? (
+                <div className="text-fg-secondary">Waiting for interaction...</div>
+              ) : (
+                logs.map((log, index) => (
+                  <div
+                    key={index}
+                    className={log.includes('SELECTED') ? 'text-success' : 'text-info'}
+                  >
+                    {log}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    return <InteractiveTest />
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive test to understand the difference between expand/collapse and selection. The chevron arrow should only expand/collapse branches, while clicking on the node text should select it. When expandOnClick is true, clicking on a branch node will also expand it.',
+      },
+    },
+  },
+}
