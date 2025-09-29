@@ -119,7 +119,7 @@ interface HeaderContextValue {
   toggleMobileMenu: () => void
 }
 
-const HeaderContext = createContext<HeaderContextValue>({
+export const HeaderContext = createContext<HeaderContextValue>({
   isMobileMenuOpen: false,
   setIsMobileMenuOpen: () => {},
   toggleMobileMenu: () => {},
@@ -322,7 +322,9 @@ Header.Actions = function HeaderActions({
   )
 }
 
-Header.Hamburger = function HeaderHamburger() {
+Header.Hamburger = function HeaderHamburger({
+  className,
+}: { className?: string }) {
   const { toggleMobileMenu, isMobileMenuOpen } = useContext(HeaderContext)
   const { hamburger } = headerVariants()
 
@@ -330,7 +332,7 @@ Header.Hamburger = function HeaderHamburger() {
     <Button
       theme="borderless"
       onClick={toggleMobileMenu}
-      className={hamburger()}
+      className={hamburger({ className })}
       aria-label="Toggle mobile menu"
       icon={isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'}
     />

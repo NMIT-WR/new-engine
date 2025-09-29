@@ -156,7 +156,7 @@ export const Sizes: Story = {
   ),
 }
 
-export const NavSubmenu: Story = {
+export const NavWithMobileSubmenu: Story = {
   render: () => {
     return (
       <Header>
@@ -198,7 +198,7 @@ export const NavSubmenu: Story = {
           </Button>
         </Header.Actions>
         <Header.Mobile position='left'>
-          <Accordion.Root variant='borderless'>
+          <Accordion variant='child'>
             <Accordion.Item value="home">
               <Header.NavItem href="/">Home</Header.NavItem>
             </Accordion.Item>
@@ -227,20 +227,7 @@ export const NavSubmenu: Story = {
             <Accordion.Item value="contact">
               <Header.NavItem href="/contact">Contact</Header.NavItem>
             </Accordion.Item>
-            {/*<Header.NavItem href="/products/electronics">
-              Electronics
-            </Header.NavItem>
-            <Header.NavItem href="/products/clothing">
-              Clothing & Fashion
-            </Header.NavItem>
-            <Header.NavItem href="/products/home-garden">
-              Home & Garden
-            </Header.NavItem>
-            <Header.NavItem href="/products/sports">
-              Sports & Outdoors
-            </Header.NavItem>*/}
-            
-          </Accordion.Root>
+          </Accordion>
         </Header.Mobile>
       </Header>
     )
@@ -482,10 +469,7 @@ export const HeaderWithDrawerSubmenu: Story = {
           </Header.NavItem>
           <Header.NavItem href="/obleceni">Oblečení</Header.NavItem>
           <Header.NavItem href="/cyklo">Cyklo</Header.NavItem>
-          <Header.NavItem href="/moto">Moto</Header.NavItem>
-          <Header.NavItem href="/snb-skate">Snb-Skate</Header.NavItem>
-          <Header.NavItem href="/ski">Ski</Header.NavItem>
-          <Header.NavItem href="/vyprodej">Výprodej</Header.NavItem>
+
         </Header.Nav>
         <Header.Actions>
           <Button theme="borderless" variant="primary" size="sm">
@@ -668,8 +652,8 @@ export const N1Header: Story = {
 
     return (
       <div className='min-h-[150rem]'>
-      <Header direction="vertical" className="z-50 h-fit max-h-96">
-        <Header.Container className="bg-gray-700">
+      <Header direction="vertical" className="z-50 flex h-fit max-h-96">
+        <Header.Container className="bg-gray-700 justify-between items-center">
           <div className="flex gap-200">
             <span>office@n1shop.cz</span>
             <span>Obchodní podmínky</span>
@@ -681,7 +665,7 @@ export const N1Header: Story = {
             <Icon icon="icon-[cif--gb]" />
           </div>
         </Header.Container>
-        <Header.Container className="bg-gray-950">
+        <Header.Container className="bg-gray-950 justify-between p-200">
           <div className="flex gap-950">
             <Image
               src="https://www.n1shop.cz/data/upload/images/assets/logo-1.png"
