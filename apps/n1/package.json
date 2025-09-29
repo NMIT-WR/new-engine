@@ -10,7 +10,11 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@medusajs/js-sdk": "^2.10.3",
+    "@medusajs/types": "^2.10.3",
     "@new-engine/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-store": "^0.7.1",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -19,12 +23,12 @@
     "@biomejs/biome": "2.2.0",
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss-animate": "^1.0.7",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "postcss-import": "^16.1.1",
     "tailwindcss": "^4",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5"
   },
   "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
