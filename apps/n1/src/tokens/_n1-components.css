@@ -9,6 +9,13 @@
   --text-button-sm: var(--text-md);
 
   /* === MOLECULES === */
+
+  /* BREADCRUMB */
+  --color-breadcrumb-bg: transparent;
+
+  --color-breadcrumb-fg-current: var(--color-fg-secondary);
+  --color-breadcrumb-fg-hover: var(--color-fg-primary);
+
   /* CAROUSEL */
   --color-carousel: transparent;
   --color-carousel-indicator-bg-active: var(--color-yellow-400);
@@ -38,12 +45,28 @@
   --font-weight-product-card-name: var(--font-weight-bold);
   --spacing-product-card-col-layout: var(--spacing-200);
 
+  /* TREE-VIEW */
+  --color-tree-root-bg: var(--color-surface);
+  --color-tree-bg: var(--color-surface);
+  --color-tree-node-bg-hover: var(--color-surface);
+  --color-tree-fg-hover: var(--color-fg-primary);
+
   /* === ORGANISMS === */
   /* FOOTER */
   --color-footer: var(--color-highlight);
   --color-footer-fg-primary: var(--color-fg-dark);
   --color-footer-fg-secondary: --alpha(var(--color-fg-dark) / 70%);
   --footer-cols: repeat(auto-fill, minmax(250px, 1fr));
+  --breakpoint-header-desktop: 52rem;
 
   /* === HEADER === */
+}
+
+/* === TREE-VIEW UTILITIES === */
+@utility token-icon-tree-indicator {
+  @apply icon-[mdi--plus];
+}
+
+@utility token-icon-tree-indicator-open {
+  @apply icon-[mdi--minus];
 }
