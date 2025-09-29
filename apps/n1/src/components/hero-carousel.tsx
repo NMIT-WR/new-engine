@@ -1,5 +1,6 @@
 'use client'
 import { Carousel, type CarouselSlide } from '@new-engine/ui/molecules/carousel'
+import NextImage from 'next/image'
 
 interface HeroCarouselProps {
   slides: CarouselSlide[]
@@ -12,7 +13,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
       className="h-full w-full"
       autoplay
     >
-      <Carousel.Slides slides={slides} />
+      <Carousel.Slides slides={slides} imageAs={NextImage} />
       <Carousel.Control>
         <Carousel.Indicators />
       </Carousel.Control>

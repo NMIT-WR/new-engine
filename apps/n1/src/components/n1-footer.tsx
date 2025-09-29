@@ -104,6 +104,7 @@ export function N1Footer() {
             alt="Web Revolution"
             width={32}
             height={32}
+            className="h-auto"
           />
         </div>
       </Footer.Bottom>
