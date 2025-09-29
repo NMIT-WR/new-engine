@@ -3,6 +3,7 @@ import { Open_Sans } from 'next/font/google'
 import '../tokens/index.css'
 import { N1Header } from '@/components/header/n1-header'
 import { N1Footer } from '@/components/n1-footer'
+import { Providers } from '@/components/provider'
 import type { ReactNode } from 'react'
 
 const openSans = Open_Sans({
@@ -25,11 +26,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.variable} antialiased`}>
-        <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
-          <N1Header />
-          {children}
-          <N1Footer />
-        </div>
+        <Providers>
+          <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
+            <N1Header />
+            {children}
+            <N1Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   )
