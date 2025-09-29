@@ -6,9 +6,9 @@ import { Fragment } from 'react'
 
 export const ProductGrid = ({ products }: { products: Product[] }) => {
   return (
-    <div className="mx-auto grid max-w-max-w grid-cols-2 gap-200 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid w-full grid-cols-2 gap-200 md:grid-cols-3 lg:grid-cols-4">
       {products.map((product, index) => (
-        <Fragment key={product.title}>
+        <Fragment key={product.id}>
           {index !== 0 && index % 4 === 0 && index + 1 !== products.length && (
             <div className="col-span-full h-[1px] bg-border-secondary" />
           )}
@@ -23,8 +23,9 @@ export const ProductGrid = ({ products }: { products: Product[] }) => {
               as={Image}
               width={250}
               height={250}
+              alt={product.title}
               src={product.imageSrc}
-              className="aspect-square"
+              className="aspect-square w-auto"
             />
             <div className="flex flex-col items-center gap-200">
               <ProductCard.Badges>
