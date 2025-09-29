@@ -79,6 +79,7 @@ export const N1Header = () => {
             alt="N1 Shop Logo"
             width={250}
             height={250}
+            className="h-auto w-auto"
           />
           <SearchForm
             buttonIcon
