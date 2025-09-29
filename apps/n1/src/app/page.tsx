@@ -30,7 +30,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="my-28">
+      <section className="mx-auto my-28 max-w-max-w">
         <h2 className="relative mx-auto mb-section flex max-w-max-w items-center justify-center font-bold text-xl">
           <span className="relative z-10 bg-base px-400 text-fg-primary">
             Vybíráme pro vás
