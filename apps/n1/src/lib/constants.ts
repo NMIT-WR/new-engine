@@ -15,6 +15,8 @@ export const CATEGORIES_LEAFS_IDS = ROOT_CATEGORIES.map((cat) => {
   }
 })
 
+export const VALID_CATEGORY_ROUTES = ROOT_CATEGORIES.map((cat) => cat.handle)
+
 export const CATEGORY_MAP: Record<string, string[]> = {
   panske: CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'panske')?.children || [],
   damske: CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'damske')?.children || [],
