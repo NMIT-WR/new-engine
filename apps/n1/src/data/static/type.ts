@@ -4,6 +4,7 @@ export interface Category {
   handle: string
   description?: string
   parent_category_id?: string | null
+  root_category_id?: string | null
 }
 
 export interface CategoryTreeNode {
