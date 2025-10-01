@@ -35,13 +35,13 @@ export const DesktopSubmenu = () => {
                 onMouseEnter={() => handleOpenSubmenu(link.label)}
                 className="group px-300 py-300 hover:bg-yellow-400"
               >
-                <Link
-                  as={NextLink}
+                <NextLink
                   href={link.href}
+                  prefetch={true}
                   className="font-bold text-fg-reverse group-hover:text-black"
                 >
                   {link.label}
-                </Link>
+                </NextLink>
               </Header.NavItem>
             ))}
           </Header.Nav>
@@ -75,7 +75,8 @@ export const DesktopSubmenu = () => {
                           width={100}
                           height={100}
                           quality={50}
-                          className="h-[100px] w-full object-contain"
+                          placeholder='blur'
+                          className="h-[100px] w-[100px] object-contain"
                         />
                       )}
                       <h3 className="font-bold text-md">{item.name}</h3>
