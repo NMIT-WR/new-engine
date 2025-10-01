@@ -4,24 +4,13 @@ import { N1Aside } from '@/components/n1-aside'
 import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import './layout.css'
 import { ProductGrid } from '@/components/molecules/product-grid'
-import { categoryTree } from '@/data/static/categories-sketch'
+import { categoryTree } from '@/data/static/categories'
 import { useProducts } from '@/hooks/use-products'
-import { CATEGORY_MAP } from '@/lib/constants'
+import { CATEGORY_MAP, VALID_CATEGORY_ROUTES } from '@/lib/constants'
 import type { IconType } from '@new-engine/ui/atoms/icon'
 import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import NextLink from 'next/link'
 import { useParams } from 'next/navigation'
-
-const VALID_CATEGORIES = [
-  'panske',
-  'damske',
-  'detske',
-  'obleceni-category-347',
-  'cyklo-category-378',
-  'moto-category-424',
-  'snb-skate-category-448',
-  'ski-category-466',
-]
 
 export default function ProductPage() {
   const params = useParams()
@@ -41,7 +30,7 @@ export default function ProductPage() {
           : p.variants?.map((v) => v.title).filter((v) => v !== null),
     })) || []
 
-  if (!VALID_CATEGORIES.includes(category)) {
+  if (!VALID_CATEGORY_ROUTES.includes(category)) {
     return <div>Category not found</div>
   }
 
@@ -49,7 +38,7 @@ export default function ProductPage() {
 
   const breadcrumbItems: { label: string; href: string; icon?: IconType }[] = [
     { label: 'Home', href: '/', icon: 'icon-[mdi--home]' },
-    { label: rootCategory?.name || category, href: `/${category}` },
+    { label: rootCategory?.handle || category, href: `/${category}` },
   ]
 
   return (
@@ -59,11 +48,11 @@ export default function ProductPage() {
       </header>
       <N1Aside
         categories={rootCategory?.children || []}
-        label={rootCategory?.name}
+        label={rootCategory?.handle}
       />
       <main className="px-300">
         <header className="space-y-300">
-          <Heading as="h1">{rootCategory?.name}</Heading>
+          <Heading as="h1">{rootCategory?.handle}</Heading>
           <div className="grid grid-cols-4 gap-100">
             {rootCategory?.children?.map((child) => (
               <LinkButton
