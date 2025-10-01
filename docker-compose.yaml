@@ -98,6 +98,8 @@ services:
       STORE_CORS: ${DC_STORE_CORS}
       ADMIN_CORS: ${DC_ADMIN_CORS}
       AUTH_CORS: ${DC_AUTH_CORS}
+      SENTRY_NAME: ${DC_SENTRY_NAME}
+      SENTRY_DSN: ${DC_SENTRY_DSN}
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:
