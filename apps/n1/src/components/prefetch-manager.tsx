@@ -1,17 +1,20 @@
 'use client'
 import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
+import { useRegion } from '@/hooks/use-region'
 import { CATEGORY_MAP } from '@/lib/constants'
-import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
-const PREFETCH_DELAY = 500
+const PREFETCH_DELAY = 200
 
 export function PrefetchManager() {
   const { prefetchCategoryProducts } = usePrefetchProducts()
-  const pathname = usePathname()
+  const { regionId } = useRegion()
+  const hasPrefetched = useRef(false)
 
   useEffect(() => {
-    if (pathname !== '/') return
+    if (!regionId) return // Wait for region to load
+    if (hasPrefetched.current) return
+    hasPrefetched.current = true
 
     const timer = setTimeout(() => {
       for (const categoryId of Object.values(CATEGORY_MAP)) {
@@ -20,7 +23,7 @@ export function PrefetchManager() {
     }, PREFETCH_DELAY)
 
     return () => clearTimeout(timer)
-  }, [pathname, prefetchCategoryProducts])
+  }, [regionId, prefetchCategoryProducts])
 
   return null
 }
