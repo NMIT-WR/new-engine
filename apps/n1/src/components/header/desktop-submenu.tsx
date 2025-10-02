@@ -1,5 +1,4 @@
 import { type SubmenuCategory, links, submenuItems } from '@/data/header'
-import { Link } from '@new-engine/ui/atoms/link'
 import { Dialog } from '@new-engine/ui/molecules/dialog'
 import { Header } from '@new-engine/ui/organisms/header'
 import Image from 'next/image'
@@ -30,19 +29,19 @@ export const DesktopSubmenu = () => {
         <Header.Container className="w-full border-highlight border-t-[1px] bg-gray-950 py-0">
           <Header.Nav className="z-30 gap-x-0 px-0 py-0">
             {links.map((link) => (
-              <Header.NavItem
+              <NextLink
                 key={link.href}
-                onMouseEnter={() => handleOpenSubmenu(link.label)}
+                href={link.href}
+                prefetch={true}
                 className="group px-300 py-300 hover:bg-yellow-400"
               >
-                <NextLink
-                  href={link.href}
-                  prefetch={true}
+                <Header.NavItem
+                  onMouseEnter={() => handleOpenSubmenu(link.label)}
                   className="font-bold text-fg-reverse group-hover:text-black"
                 >
                   {link.label}
-                </NextLink>
-              </Header.NavItem>
+                </Header.NavItem>
+              </NextLink>
             ))}
           </Header.Nav>
         </Header.Container>
@@ -75,7 +74,7 @@ export const DesktopSubmenu = () => {
                           width={100}
                           height={100}
                           quality={50}
-                          placeholder='blur'
+                          placeholder="blur"
                           className="h-[100px] w-[100px] object-contain"
                         />
                       )}
