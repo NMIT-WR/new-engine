@@ -5,12 +5,12 @@ import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import './layout.css'
 import { Banner } from '@/components/atoms/banner'
 import { ProductGrid } from '@/components/molecules/product-grid'
-import { categoryTree } from '@/data/static/categories'
+import { allCategories, categoryTree } from '@/data/static/categories'
 import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
 import { useProducts } from '@/hooks/use-products'
 import { useRegion } from '@/hooks/use-region'
 import {
-  CATEGORY_MAP,
+  CATEGORY_MAP_EXTENDED,
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
 } from '@/lib/constants'
@@ -25,7 +25,18 @@ export default function ProductPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const category = params.category as string
+  const categoryIds = CATEGORY_MAP_EXTENDED[category]
   const { regionId, countryCode } = useRegion()
+
+  const currentCategory = allCategories.find((cat) => cat.handle === category)
+  const rootCategory =
+    allCategories.find((cat) => cat.id === currentCategory?.root_category_id) ??
+    currentCategory
+
+  console.log('=== CATEGORY PAGE DEBUG ===')
+  console.log('category:', category)
+  console.log('categoryIds:', categoryIds)
+  console.log('info:', rootCategory)
 
   // Get current page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1
@@ -39,7 +50,7 @@ export default function ProductPage() {
     hasNextPage,
     hasPrevPage,
   } = useProducts({
-    category_id: CATEGORY_MAP[category],
+    category_id: CATEGORY_MAP_EXTENDED[category],
     page: currentPage,
     limit: PRODUCT_LIMIT,
   })
@@ -51,7 +62,7 @@ export default function ProductPage() {
     hasPrevPage,
     totalPages,
     pageSize: PRODUCT_LIMIT,
-    category_id: CATEGORY_MAP[category],
+    category_id: CATEGORY_MAP_EXTENDED[category],
     regionId,
     countryCode,
   })
@@ -68,7 +79,9 @@ export default function ProductPage() {
     return <div>Category not found</div>
   }
 
-  const rootCategory = categoryTree.find((cat) => cat.handle === category)
+  const rootCategoryTree = categoryTree.find(
+    (cat) => cat.id === rootCategory?.id
+  )
 
   const breadcrumbItems: { label: string; href: string; icon?: IconType }[] = [
     { label: 'Home', href: '/', icon: 'icon-[mdi--home]' },
@@ -81,14 +94,16 @@ export default function ProductPage() {
         <Breadcrumb linkAs={NextLink} items={breadcrumbItems} size="lg" />
       </header>
       <N1Aside
-        categories={rootCategory?.children || []}
+        categories={rootCategoryTree?.children || []}
         label={rootCategory?.handle}
       />
       <main className="px-300">
         <header className="space-y-300">
-          <Heading as="h1">{rootCategory?.handle}</Heading>
+          <Heading as="h1" onClick={() => console.log(CATEGORY_MAP_EXTENDED)}>
+            {currentCategory?.handle}
+          </Heading>
           <div className="grid grid-cols-4 gap-100">
-            {rootCategory?.children?.map((child) => (
+            {rootCategoryTree?.children?.map((child) => (
               <LinkButton
                 key={child.id}
                 href={child.name}

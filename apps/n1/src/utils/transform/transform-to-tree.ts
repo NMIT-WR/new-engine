@@ -5,6 +5,7 @@ export const transformToTree = (nodes: CategoryTreeNode[]): TreeNode[] => {
   return nodes.map((node) => ({
     id: node.id,
     name: node.name,
+    handle: node.handle,
     children: node.children ? transformToTree(node.children) : [],
   }))
 }
