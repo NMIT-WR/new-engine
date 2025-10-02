@@ -10,6 +10,7 @@ import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
 import { useProducts } from '@/hooks/use-products'
 import { useRegion } from '@/hooks/use-region'
 import {
+  CATEGORY_MAP_2,
   CATEGORY_MAP_EXTENDED,
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
@@ -32,11 +33,13 @@ export default function ProductPage() {
   const rootCategory =
     allCategories.find((cat) => cat.id === currentCategory?.root_category_id) ??
     currentCategory
-
+  /*
   console.log('=== CATEGORY PAGE DEBUG ===')
   console.log('category:', category)
   console.log('categoryIds:', categoryIds)
   console.log('info:', rootCategory)
+  console.log('CATEGORY_MAP_EXTENDED[ski]:', CATEGORY_MAP_EXTENDED)
+  console.log('CATEGORY_MAP_2[ski]:', CATEGORY_MAP_2)*/
 
   // Get current page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1
@@ -50,7 +53,7 @@ export default function ProductPage() {
     hasNextPage,
     hasPrevPage,
   } = useProducts({
-    category_id: CATEGORY_MAP_EXTENDED[category],
+    category_id: CATEGORY_MAP_2[category],
     page: currentPage,
     limit: PRODUCT_LIMIT,
   })
@@ -62,7 +65,7 @@ export default function ProductPage() {
     hasPrevPage,
     totalPages,
     pageSize: PRODUCT_LIMIT,
-    category_id: CATEGORY_MAP_EXTENDED[category],
+    category_id: CATEGORY_MAP_2[category],
     regionId,
     countryCode,
   })
