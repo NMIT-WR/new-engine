@@ -4,6 +4,8 @@ import { CATEGORY_MAP } from '@/lib/constants'
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
+const PREFETCH_DELAY = 500
+
 export function PrefetchManager() {
   const { prefetchCategoryProducts } = usePrefetchProducts()
   const pathname = usePathname()
@@ -15,7 +17,7 @@ export function PrefetchManager() {
       for (const categoryId of Object.values(CATEGORY_MAP)) {
         prefetchCategoryProducts(categoryId)
       }
-    }, 500)
+    }, PREFETCH_DELAY)
 
     return () => clearTimeout(timer)
   }, [pathname, prefetchCategoryProducts])
