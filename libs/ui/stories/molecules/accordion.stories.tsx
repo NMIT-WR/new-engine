@@ -22,6 +22,11 @@ const meta: Meta<typeof Accordion> = {
       options: ['none', 'sm', 'md'],
       description: 'Sets the shadow of the accordion',
     },
+    variant: {
+    control: { type: 'inline-radio' },
+    options: ['default', 'borderless', 'child'],
+    description: 'Sets the visual variant of the accordion',
+  },
     multiple: {
       control: 'boolean',
       description: 'Allows expanding multiple items simultaneously',
@@ -302,6 +307,42 @@ export const CustomContent: Story = {
   ),
 }
 
+ export const BorderlessVariant: Story = {
+    render: () => (
+      <div className="w-md flex flex-col gap-300">
+        <div>
+          <h3 className="mb-150 text-sm font-medium">Variant: default</h3>
+          <Accordion variant="default">
+            <Accordion.Item value="item-1">
+              <Accordion.Header>
+                <Accordion.Title>Default Accordion</Accordion.Title>
+                <Accordion.Indicator />
+              </Accordion.Header>
+              <Accordion.Content>
+                Default accordion with borders and standard styling.
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion>
+        </div>
+
+        <div>
+          <h3 className="mb-150 text-sm font-medium">Variant: borderless</h3>
+          <Accordion variant="borderless">
+            <Accordion.Item value="item-1">
+              <Accordion.Header>
+                <Accordion.Title>Borderless Accordion</Accordion.Title>
+                <Accordion.Indicator />
+              </Accordion.Header>
+              <Accordion.Content>
+                Borderless accordion for a cleaner, minimalist look.
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion>
+        </div>
+      </div>
+    ),
+  }
+
 export const ControlledAccordion: Story = {
   render: () => {
     const [activeItems, setActiveItems] = useState<string[]>(['item-1'])
@@ -316,12 +357,12 @@ export const ControlledAccordion: Story = {
               size="sm"
               variant="secondary"
               onClick={() => {
-                const isActive = activeItems.includes('item-1')
-                if (isActive) {
-                  setActiveItems(activeItems.filter((i) => i !== 'item-1'))
-                } else {
-                  setActiveItems([...activeItems, 'item-1'])
-                }
+                setActiveItems(prev => {
+                  const isActive = prev.includes('item-1')
+                  return isActive
+                    ? prev.filter((i) => i !== 'item-1')
+                    : [...prev, 'item-1']
+                })
               }}
             >
               Toggle Item 1
@@ -330,12 +371,12 @@ export const ControlledAccordion: Story = {
               size="sm"
               variant="secondary"
               onClick={() => {
-                const isActive = activeItems.includes('item-2')
-                if (isActive) {
-                  setActiveItems(activeItems.filter((i) => i !== 'item-2'))
-                } else {
-                  setActiveItems([...activeItems, 'item-2'])
-                }
+                setActiveItems(prev => {
+                  const isActive = prev.includes('item-2')
+                  return isActive
+                    ? prev.filter((i) => i !== 'item-2')
+                    : [...prev, 'item-2']
+                })
               }}
             >
               Toggle Item 2
@@ -344,12 +385,12 @@ export const ControlledAccordion: Story = {
               size="sm"
               variant="secondary"
               onClick={() => {
-                const isActive = activeItems.includes('item-3')
-                if (isActive) {
-                  setActiveItems(activeItems.filter((i) => i !== 'item-3'))
-                } else {
-                  setActiveItems([...activeItems, 'item-3'])
-                }
+                setActiveItems(prev => {
+                  const isActive = prev.includes('item-3')
+                  return isActive
+                    ? prev.filter((i) => i !== 'item-3')
+                    : [...prev, 'item-3']
+                })
               }}
             >
               Toggle Item 3
