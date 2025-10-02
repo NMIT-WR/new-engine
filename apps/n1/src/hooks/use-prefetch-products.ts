@@ -1,5 +1,5 @@
 import { cacheConfig } from '@/lib/cache-config'
-import { PRODUCT_FIELDS, PRODUCT_LIMIT } from '@/lib/constants'
+import { buildPrefetchParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'
@@ -15,42 +15,37 @@ export function usePrefetchProducts() {
     async (categoryId: string[]) => {
       if (!regionId) return
 
-      const queryKey = queryKeys.products.list({
+      const queryParams = buildPrefetchParams({
         category_id: categoryId,
         region_id: regionId,
         country_code: countryCode,
-        limit: PRODUCT_LIMIT,
-        fields: PRODUCT_FIELDS,
       })
 
-      // Kontrola cache
+      const queryKey = queryKeys.products.list(queryParams)
       const cached = queryClient.getQueryData(queryKey)
+
       if (!cached) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`[Prefetch] Category ${categoryId[0]} (page 1)`)
+        }
         await queryClient.prefetchQuery({
           queryKey,
-          queryFn: () =>
-            getProducts({
-              category_id: categoryId,
-              region_id: regionId,
-              country_code: countryCode,
-            }),
+          queryFn: () => getProducts(queryParams),
           ...cacheConfig.semiStatic,
         })
+      } else if (process.env.NODE_ENV === 'development') {
+        console.log(`[Cache hit] Category ${categoryId[0]}`)
       }
     },
     [queryClient, regionId, countryCode]
   )
 
-  // Prefetch s delay pro hover
   const delayedPrefetch = useCallback(
     (categoryId: string[], delay = 800) => {
       const id = categoryId.join('-')
-
-      // Cancel existing timeout
       const existing = timeoutsRef.current.get(id)
       if (existing) clearTimeout(existing)
 
-      // Create new timeout
       const timeoutId = setTimeout(() => {
         prefetchCategoryProducts(categoryId)
         timeoutsRef.current.delete(id)
@@ -62,7 +57,6 @@ export function usePrefetchProducts() {
     [prefetchCategoryProducts]
   )
 
-  // Cancel prefetch
   const cancelPrefetch = useCallback((prefetchId: string) => {
     const timeout = timeoutsRef.current.get(prefetchId)
     if (timeout) {
