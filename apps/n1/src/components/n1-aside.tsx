@@ -1,6 +1,5 @@
 'use client'
 import type { CategoryTreeNode } from '@/data/static/type'
-import { CATEGORY_MAP_EXTENDED } from '@/lib/constants'
 import { transformToTree } from '@/utils/transform/transform-to-tree'
 import { TreeView } from '@new-engine/ui/molecules/tree-view'
 import { useRouter } from 'next/navigation'
@@ -20,7 +19,10 @@ export function N1Aside({ categories, label }: N1AsideProps) {
   const handleSelect = (details: any) => {
     if (details.focusedValue) {
       // Find handle in treeData (recursively search through children)
-      const findNodeHandle = (nodes: typeof treeData, id: string): string | null => {
+      const findNodeHandle = (
+        nodes: typeof treeData,
+        id: string
+      ): string | null => {
         for (const node of nodes) {
           if (node.id === id) return node.handle as string
           if (node.children) {
