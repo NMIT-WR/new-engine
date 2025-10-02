@@ -314,8 +314,8 @@ Accordion.Indicator = function AccordionIndicator({
 }
 
 // Title component (optional structured title)
-interface AccordionTitleProps extends ComponentPropsWithoutRef<'h3'> {
-  ref?: RefObject<HTMLHeadingElement>
+interface AccordionTitleProps extends ComponentPropsWithoutRef<'span'> {
+  ref?: RefObject<HTMLSpanElement>
 }
 
 Accordion.Title = function AccordionTitle({
@@ -328,16 +328,16 @@ Accordion.Title = function AccordionTitle({
 
   return (
     <div className={styles.title({ className })}>
-      <h3 ref={ref} {...props}>
+      <span ref={ref} {...props}>
         {children}
-      </h3>
+      </span>
     </div>
   )
 }
 
 // Subtitle component (optional structured subtitle)
-interface AccordionSubtitleProps extends ComponentPropsWithoutRef<'h4'> {
-  ref?: RefObject<HTMLHeadingElement>
+interface AccordionSubtitleProps extends ComponentPropsWithoutRef<'span'> {
+  ref?: RefObject<HTMLSpanElement>
 }
 
 Accordion.Subtitle = function AccordionSubtitle({
@@ -349,8 +349,8 @@ Accordion.Subtitle = function AccordionSubtitle({
   const { styles } = useAccordionContext()
 
   return (
-    <h4 ref={ref} className={styles.subtitle({ className })} {...props}>
+    <span ref={ref} className={styles.subtitle({ className })} {...props}>
       {children}
-    </h4>
+    </span>
   )
 }
