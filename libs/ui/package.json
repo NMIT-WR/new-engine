@@ -7,6 +7,10 @@
       "types": "./dist/src/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./types": {
+      "types": "./dist/src/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
     "./tokens": {
       "import": "./src/tokens/tokens-only.css"
     },
@@ -31,7 +35,10 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "src/tokens"],
+  "files": [
+    "dist",
+    "src/tokens"
+  ],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
