@@ -12,8 +12,19 @@ const meta: Meta<typeof TreeView> = {
     layout: 'centered',
     docs: {
       description: {
-        component:
-          'A compound tree view component built with Zag.js. Provides flexible composition for creating file explorers, navigation menus, and hierarchical data displays.',
+        component: `A compound tree view component built with Zag.js. Provides flexible composition for creating file explorers, navigation menus, and hierarchical data displays.
+
+## Keyboard Navigation
+
+TreeView is fully keyboard accessible following WAI-ARIA tree pattern:
+
+- **↑↓** - Navigate items up/down
+- **←→** - Collapse/Expand branches
+- **Space** or **Enter** - Select item
+- **Ctrl+A** (Cmd+A on Mac) - Select all items (multiple mode)
+- **Home/End** - Jump to first/last item
+- **Shift+Click** - Range selection (multiple mode)
+- **Ctrl+Click** (Cmd+Click on Mac) - Individual multi-select (multiple mode)`,
       },
     },
   },
@@ -143,6 +154,13 @@ export const Default: Story = {
         </TreeView.Tree>
       </TreeView>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Basic TreeView with all visual features enabled: icons, indent guides, and multiple selection. Use TreeView.Node helper for quick setup.',
+      },
+    },
+  },
 }
 
 // Full compound pattern with custom composition
@@ -203,6 +221,13 @@ export const CustomComposition: Story = {
         </TreeView.Tree>
       </TreeView>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Full compound pattern example showing how to customize node rendering. This adds Badges for child counts and file types, demonstrating the flexibility of the compound component pattern.',
+      },
+    },
+  },
 }
 
 // Without indent guides and icons
@@ -222,6 +247,13 @@ export const Minimal: Story = {
         </TreeView.Tree>
       </TreeView>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Minimal TreeView without icons or indent guides, ideal for navigation menus or simple hierarchical lists.',
+      },
+    },
+  },
 }
 
 // Different sizes
@@ -254,6 +286,13 @@ export const Sizes: Story = {
         </TreeView>
     </div>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'TreeView supports three size variants: sm, md, and lg. Choose the appropriate size based on your UI density requirements.',
+      },
+    },
+  },
 }
 
 // Selection behaviors
@@ -301,6 +340,13 @@ export const SelectionBehaviors: Story = {
         </TreeView>
     </div>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'TreeView supports three selectionBehavior modes: "all" (both branches and leaves selectable), "leaf-only" (only leaf nodes selectable, branches just expand/collapse), and "custom" (individual nodes control selectability via selectable property).',
+      },
+    },
+  },
 }
 
 // Controlled state
@@ -388,6 +434,13 @@ export const Controlled: Story = {
 
     return <ControlledExample />
   },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates controlled TreeView state with external controls. Use expandedValue/selectedValue props with callbacks to manage state externally, enabling integration with forms or other UI controls.',
+      },
+    },
+  },
 }
 
 // Advanced custom styling
@@ -440,6 +493,13 @@ export const CustomStyling: Story = {
         </TreeView.Tree>
       </TreeView>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Advanced styling example showing how to apply custom Tailwind classes to TreeView components for theming. Use className props on any sub-component to customize appearance.',
+      },
+    },
+  },
 }
 
 // With default expanded items
@@ -460,6 +520,13 @@ export const DefaultExpanded: Story = {
         </TreeView.Tree>
       </TreeView>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows how to use defaultExpandedValue and defaultSelectedValue props to set initial tree state without managing state yourself. Useful for uncontrolled components.',
+      },
+    },
+  },
 }
 
 // Single vs Multiple selection modes
