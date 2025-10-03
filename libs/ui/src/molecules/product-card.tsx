@@ -49,24 +49,26 @@ const productCardVariants = tv({
     buttonVariant: {
       cart: {
         button:
-          'bg-button-cart-bg hover:bg-button-cart-bg-hover text-button-cart-fg w-max',
+          'bg-product-card-button-cart-bg hover:bg-product-card-button-cart-bg-hover text-product-card-button-cart-fg w-max',
       },
       detail: {
         button:
-          'bg-button-detail-bg hover:bg-button-detail-bg-hover text-button-detail-fg w-max',
+          'bg-product-card-button-detail-bg hover:bg-product-card-button-detail-bg-hover text-product-card-button-detail-fg w-max',
       },
       wishlist: {
         button:
-          'bg-button-wishlist-bg hover:bg-button-wishlist-bg-hover text-button-wishlist-fg w-max',
+          'bg-product-card-button-wishlist-bg hover:bg-product-card-button-wishlist-bg-hover text-product-card-button-wishlist-fg w-max',
       },
       custom: {},
     },
     layout: {
       column: {
-        root: ['grid grid-cols-1 gap-product-card-col-layout'],
+        root: [
+          'grid grid-cols-(--product-card-layout-column-grid) gap-product-card-col-layout',
+        ],
       },
       row: {
-        root: 'grid grid-cols-[auto_1fr] gap-x-product-card-row-layout',
+        root: 'grid grid-cols-(--product-card-layout-row-grid) gap-x-product-card-row-layout',
       },
     },
   },

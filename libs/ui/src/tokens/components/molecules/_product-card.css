@@ -1,4 +1,6 @@
 @theme static {
+  --product-card-layout-row-grid: auto 1fr;
+  --product-card-layout-column-grid: 1fr;
   /* === BASE COLORS === */
   --color-product-card-bg: var(--color-surface);
   --color-product-card-name-fg: var(--color-fg-primary);
@@ -27,25 +29,28 @@
   --color-product-card-badge-sale-fg: var(--color-product-card-badge-fg);
 
   /* Add to cart button */
-  --color-button-cart-bg: var(--color-button-primary);
-  --color-button-cart-bg-hover: oklch(
-    from var(--color-button-cart-bg) calc(l + var(--state-hover)) c h
+  --color-product-card-button-cart-bg: var(--color-button-primary);
+  --color-product-card-button-cart-bg-hover: oklch(
+    from var(--color-product-card-button-cart-bg) calc(l + var(--state-hover)) c
+      h
   );
-  --color-button-cart-fg: var(--color-button-fg);
+  --color-product-card-button-cart-fg: var(--color-button-fg);
 
   /* Detail button */
-  --color-button-detail-bg: var(--color-button-secondary);
-  --color-button-detail-bg-hover: oklch(
-    from var(--color-button-detail-bg) calc(l + var(--state-hover)) c h
+  --color-product-card-button-detail-bg: var(--color-button-secondary);
+  --color-product-card-button-detail-bg-hover: oklch(
+    from var(--color-product-card-button-detail-bg) calc(l + var(--state-hover))
+      c h
   );
-  --color-button-detail-fg: var(--color-button-fg);
+  --color-product-card-button-detail-fg: var(--color-button-fg);
 
   /* Wishlist button */
-  --color-button-wishlist-bg: var(--color-button-tertiary);
-  --color-button-wishlist-bg-hover: oklch(
-    from var(--color-button-wishlist-bg) calc(l + var(--state-hover)) c h
+  --color-product-card-button-wishlist-bg: var(--color-button-tertiary);
+  --color-product-card-button-wishlist-bg-hover: oklch(
+    from var(--color-product-card-button-wishlist-bg)
+      calc(l + var(--state-hover)) c h
   );
-  --color-button-wishlist-fg: var(--color-button-fg);
+  --color-product-card-button-wishlist-fg: var(--color-button-fg);
 
   /* === SPACING === */
   --spacing-product-card-padding: var(--spacing-150);
