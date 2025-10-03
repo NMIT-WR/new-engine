@@ -65,7 +65,7 @@ export const Default: Story = {
 
 export const Badges: Story = {
   render: () => {
-    const badges: { variant: 'new' | 'limited' | 'sale' | 'default'; label: string } = [
+    const badges: { variant: 'new' | 'limited' | 'sale' | 'default'; label: string }[] = [
       { variant: 'new', label: 'New' },
       { variant: 'limited', label: 'Limited Stock' },
       { variant: 'sale', label: 'Sale' },
@@ -94,6 +94,65 @@ export const Badges: Story = {
     </ProductCard>
     )
   },
+}
+
+// Showcase all stock states
+export const StockStates: Story = {
+  name: 'Stock Status Variants',
+  render: () => (
+    <VariantContainer>
+      <VariantGroup title="In Stock">
+        <ProductCard>
+          <ProductCard.Image src={productImages.tshirt} alt="T-Shirt" />
+          <ProductCard.Name>Cotton T-Shirt</ProductCard.Name>
+          <ProductCard.Price>$24.99</ProductCard.Price>
+          <ProductCard.Stock status="in-stock">In Stock</ProductCard.Stock>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="cart"
+              icon="token-icon-cart-button"
+            >
+              Add to Cart
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
+      </VariantGroup>
+
+      <VariantGroup title="Limited Stock">
+        <ProductCard>
+          <ProductCard.Image src={productImages.shoes} alt="Running Shoes" />
+          <ProductCard.Name>Running Shoes</ProductCard.Name>
+          <ProductCard.Price>$89.99</ProductCard.Price>
+          <ProductCard.Stock status="limited-stock">Only 3 left in stock</ProductCard.Stock>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="cart"
+              icon="token-icon-cart-button"
+            >
+              Add to Cart
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
+      </VariantGroup>
+
+      <VariantGroup title="Out of Stock">
+        <ProductCard>
+          <ProductCard.Image src={productImages.watch} alt="Luxury Watch" />
+          <ProductCard.Name>Luxury Watch</ProductCard.Name>
+          <ProductCard.Price>$499.99</ProductCard.Price>
+          <ProductCard.Stock status="out-of-stock">Out of Stock - Notify When Available</ProductCard.Stock>
+          <ProductCard.Actions>
+            <ProductCard.Button
+              buttonVariant="detail"
+              icon="token-icon-detail-button"
+            >
+              Notify Me
+            </ProductCard.Button>
+          </ProductCard.Actions>
+        </ProductCard>
+      </VariantGroup>
+    </VariantContainer>
+  ),
 }
 
 // Showcase all button variants
@@ -182,7 +241,7 @@ export const LayoutVariants: Story = {
           <ProductCard.Image src={productImages.tshirt} alt="T-Shirt" />
           <ProductCard.Name>Cotton T-Shirt</ProductCard.Name>
           <Rating value={4} />
-          <ProductCard.Stock>In Stock</ProductCard.Stock>
+          <ProductCard.Stock status="in-stock">In Stock</ProductCard.Stock>
           <ProductCard.Price>$24.99</ProductCard.Price>
           <ProductCard.Actions>
             <ProductCard.Button
@@ -204,7 +263,7 @@ export const LayoutVariants: Story = {
           />
           <ProductCard.Name>Running Shoes</ProductCard.Name>
           <Rating value={5} />
-          <ProductCard.Stock>Limited Stock</ProductCard.Stock>
+          <ProductCard.Stock status="limited-stock">Limited Stock</ProductCard.Stock>
           <ProductCard.Price>$89.99</ProductCard.Price>
           <ProductCard.Actions>
             <ProductCard.Button
@@ -246,7 +305,7 @@ export const CustomComposition: Story = {
         <span className="text-100 text-fg-muted">(245 reviews)</span>
       </div>
 
-      <ProductCard.Stock>Only 3 left in stock</ProductCard.Stock>
+      <ProductCard.Stock status="limited-stock">Only 3 left in stock</ProductCard.Stock>
 
       {/* Custom actions layout */}
       <ProductCard.Actions>
@@ -328,8 +387,8 @@ export const ComplexCard: Story = {
     <ProductCard className="w-md">
       {/* Image with overlay badge */}
       <div className="relative">
-        <ProductCard.Image src={productImages.camera} alt="Camera Kit" />
-        <Badge variant="error" className="absolute top-100 right-100">
+        <ProductCard.Image src={productImages.camera} alt="Camera Kit" className='w-full'/>
+        <Badge variant="danger" className="absolute top-100 right-100">
           HOT DEAL
         </Badge>
       </div>
@@ -363,7 +422,7 @@ export const ComplexCard: Story = {
         <span className="text-50 text-success-fg">Free shipping included</span>
       </div>
 
-      <ProductCard.Stock>Only 2 units left - Order soon!</ProductCard.Stock>
+      <ProductCard.Stock status="limited-stock">Only 2 units left - Order soon!</ProductCard.Stock>
 
       {/* Complex actions */}
       <ProductCard.Actions>
