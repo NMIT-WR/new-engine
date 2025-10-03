@@ -2,13 +2,15 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import * as tree from '@zag-js/tree-view'
 import {
   type ComponentPropsWithoutRef,
+  type MouseEvent,
   type ReactNode,
   createContext,
   useContext,
   useId,
 } from 'react'
-import { type VariantProps, tv } from 'tailwind-variants'
+import type { VariantProps } from 'tailwind-variants'
 import { Icon, type IconType } from '../atoms/icon'
+import { tv } from '../utils'
 
 // === COLLECTION TYPES ===
 export interface TreeNode {
@@ -118,7 +120,6 @@ const treeViewVariants = tv({
 })
 
 // === CONTEXTS ===
-
 // Main context for sharing tree state
 interface TreeViewContextValue {
   api: tree.Api
@@ -372,7 +373,7 @@ TreeView.BranchControl = function TreeViewBranchControl({
     ? controlProps
     : {
         ...controlProps,
-        onClick: (e: MouseEvent) => {
+        onClick: (e: MouseEvent<HTMLDivElement>) => {
           e.preventDefault()
           e.stopPropagation()
           // Allow toggle on click for non-selectable branches
@@ -530,7 +531,7 @@ TreeView.Item = function TreeViewItem({
     ? itemProps
     : {
         ...itemProps,
-        onClick: (e: MouseEvent) => {
+        onClick: (e: MouseEvent<HTMLDivElement>) => {
           e.preventDefault()
           e.stopPropagation()
         },
