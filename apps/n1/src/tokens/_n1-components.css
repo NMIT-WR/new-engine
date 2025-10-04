@@ -39,9 +39,9 @@
   --color-product-card-badge-limited-bg: var(--color-danger);
   --color-product-card-badge-sale-fg: var(--color-fg-primary);
 
-  --text-product-card-stock-size: var(--text-md);
-  --text-product-card-price-size: var(--text-md);
-  --text-product-card-name-size: var(--text-md);
+  --text-product-card-stock-size: var(--text-lg);
+  --text-product-card-price-size: var(--text-2xl);
+  --text-product-card-name-size: var(--text-lg);
   --font-weight-product-card-stock: var(--font-weight-bold);
   --font-weight-product-card-price: var(--font-weight-bold);
   --font-weight-product-card-name: var(--font-weight-bold);
