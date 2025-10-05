@@ -23,7 +23,7 @@ export function Heading({
 
   return (
     <Component
-      className={`${size} relative font-bold after:absolute after:bottom-0 after:left-0 after:h-1 after:w-24 after:bg-primary`}
+      className={`${size} relative font-bold capitalize after:absolute after:bottom-0 after:left-0 after:h-1 after:w-24 after:bg-primary`}
       {...props}
     >
       {children}
