@@ -1,7 +1,6 @@
 import {
   allCategories,
   leafCategories,
-  leafParents,
   rootCategories,
 } from '@/data/static/categories'
 
@@ -21,12 +20,6 @@ export const CATEGORIES_LEAFS_IDS = ROOT_CATEGORIES.map((cat) => {
     children,
   }
 })
-
-export const VALID_CATEGORY_ROUTES_2 = [
-  ...ROOT_CATEGORIES.map((cat) => cat.handle),
-  ...leafParents.map((parent) => parent.handle),
-  ...leafCategories.map((leaf) => leaf.handle),
-]
 
 // Alternative: All category handles from allCategories
 export const VALID_CATEGORY_ROUTES = allCategories.map((cat) => cat.handle)
@@ -55,24 +48,6 @@ export const CATEGORY_MAP: Record<string, string[]> = {
       ?.children || [],
 }
 
-// Extended category map including all categories (root, parent, and leaf)
-export const CATEGORY_MAP_EXTENDED: Record<string, string[]> =
-  Object.fromEntries([
-    // Root categories (all leaf IDs in root category)
-    ...rootCategories.map((root) => [
-      root.handle,
-      leafCategories
-        .filter((leaf) => leaf.root_category_id === root.id)
-        .map((leaf) => leaf.id),
-    ]),
-
-    // Parent categories (leafs array from leafParents)
-    ...leafParents.map((parent) => [parent.handle, parent.leafs]),
-
-    // Leaf categories (no children - return own ID as array)
-    ...leafCategories.map((leaf) => [leaf.handle, [leaf.id]]),
-  ])
-
 // Helper: recursively find all leaf category IDs under a given category
 const findAllLeafIds = (categoryId: string): string[] => {
   // Find all direct children of this category (from ALL categories)
@@ -91,7 +66,7 @@ const findAllLeafIds = (categoryId: string): string[] => {
 }
 
 // Alternative implementation using allCategories (includes ALL categories)
-export const CATEGORY_MAP_2: Record<string, string[]> = Object.fromEntries(
+export const ALL_CATEGORIES_MAP: Record<string, string[]> = Object.fromEntries(
   allCategories.map((cat) => [cat.handle, findAllLeafIds(cat.id)])
 )
 
