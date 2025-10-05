@@ -5,13 +5,17 @@ import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import './layout.css'
 import { Banner } from '@/components/atoms/banner'
 import { ProductGrid } from '@/components/molecules/product-grid'
-import { allCategories, categoryTree } from '@/data/static/categories'
+import {
+  allCategories,
+  categoryMap,
+  categoryTree,
+} from '@/data/static/categories'
+import { usePrefetchCategoryChildren } from '@/hooks/use-prefetch-category-children'
 import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
 import { useProducts } from '@/hooks/use-products'
 import { useRegion } from '@/hooks/use-region'
 import {
-  CATEGORY_MAP_2,
-  CATEGORY_MAP_EXTENDED,
+  ALL_CATEGORIES_MAP,
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
 } from '@/lib/constants'
@@ -26,20 +30,15 @@ export default function ProductPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const category = params.category as string
-  const categoryIds = CATEGORY_MAP_EXTENDED[category]
   const { regionId, countryCode } = useRegion()
 
   const currentCategory = allCategories.find((cat) => cat.handle === category)
+  const currentCategoryChildren = allCategories.filter(
+    (cat) => cat.parent_category_id === currentCategory?.id
+  )
   const rootCategory =
     allCategories.find((cat) => cat.id === currentCategory?.root_category_id) ??
     currentCategory
-  /*
-  console.log('=== CATEGORY PAGE DEBUG ===')
-  console.log('category:', category)
-  console.log('categoryIds:', categoryIds)
-  console.log('info:', rootCategory)
-  console.log('CATEGORY_MAP_EXTENDED[ski]:', CATEGORY_MAP_EXTENDED)
-  console.log('CATEGORY_MAP_2[ski]:', CATEGORY_MAP_2)*/
 
   // Get current page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1
@@ -53,7 +52,7 @@ export default function ProductPage() {
     hasNextPage,
     hasPrevPage,
   } = useProducts({
-    category_id: CATEGORY_MAP_2[category],
+    category_id: ALL_CATEGORIES_MAP[category],
     page: currentPage,
     limit: PRODUCT_LIMIT,
   })
@@ -65,9 +64,14 @@ export default function ProductPage() {
     hasPrevPage,
     totalPages,
     pageSize: PRODUCT_LIMIT,
-    category_id: CATEGORY_MAP_2[category],
+    category_id: ALL_CATEGORIES_MAP[category],
     regionId,
     countryCode,
+  })
+
+  // Prefetch category children progressively
+  usePrefetchCategoryChildren({
+    categoryHandle: category,
   })
 
   const products = rawProducts.map(transformProduct)
@@ -98,18 +102,18 @@ export default function ProductPage() {
       </header>
       <N1Aside
         categories={rootCategoryTree?.children || []}
+        categoryMap={categoryMap}
         label={rootCategory?.handle}
+        currentCategory={currentCategory}
       />
       <main className="px-300">
         <header className="space-y-300">
-          <Heading as="h1" onClick={() => console.log(CATEGORY_MAP_EXTENDED)}>
-            {currentCategory?.handle}
-          </Heading>
+          <Heading as="h1">{currentCategory?.handle}</Heading>
           <div className="grid grid-cols-4 gap-100">
-            {rootCategoryTree?.children?.map((child) => (
+            {currentCategoryChildren?.map((child) => (
               <LinkButton
                 key={child.id}
-                href={child.name}
+                href={child.handle}
                 className="border border-overlay bg-surface py-200 text-fg-primary hover:bg-base"
               >
                 {child.name}
