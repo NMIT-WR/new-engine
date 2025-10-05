@@ -1,4 +1,5 @@
 import { type SubmenuCategory, links, submenuItems } from '@/data/header'
+import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
 import { Dialog } from '@new-engine/ui/molecules/dialog'
 import { Header } from '@new-engine/ui/organisms/header'
 import Image from 'next/image'
@@ -6,6 +7,7 @@ import NextLink from 'next/link'
 import { useState } from 'react'
 
 export const DesktopSubmenu = () => {
+  const { prefetchCategoryProducts } = usePrefetchProducts()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   const [activeCategory, setActiveCategory] = useState<SubmenuCategory | null>(
@@ -64,24 +66,35 @@ export const DesktopSubmenu = () => {
           <div className="overflow-hidden">
             <div className="grid grid-cols-6 gap-200">
               {activeCategory?.items.map((item) => (
-                <Header.NavItem className="text-sm" key={item.name}>
-                  <div className="grid h-full items-center justify-center border border-transparent hover:border-border-primary">
-                    <div className="flex flex-col items-center gap-200">
-                      {item.image && (
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          width={100}
-                          height={100}
-                          quality={50}
-                          placeholder="blur"
-                          className="h-[100px] w-[100px] object-contain"
-                        />
-                      )}
-                      <h3 className="font-bold text-md">{item.name}</h3>
+                <NextLink
+                  key={item.name}
+                  href={item.href}
+                  onMouseEnter={() => {
+                    // Immediate prefetch on hover
+                    if (item.categoryIds && item.categoryIds.length > 0) {
+                      prefetchCategoryProducts(item.categoryIds)
+                    }
+                  }}
+                >
+                  <Header.NavItem className="text-sm">
+                    <div className="grid h-full items-center justify-center border border-transparent hover:border-border-primary">
+                      <div className="flex flex-col items-center gap-200">
+                        {item.image && (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            width={100}
+                            height={100}
+                            quality={50}
+                            placeholder="blur"
+                            className="h-[100px] w-[100px] object-contain"
+                          />
+                        )}
+                        <h3 className="font-bold text-md">{item.name}</h3>
+                      </div>
                     </div>
-                  </div>
-                </Header.NavItem>
+                  </Header.NavItem>
+                </NextLink>
               ))}
             </div>
           </div>

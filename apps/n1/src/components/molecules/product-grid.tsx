@@ -89,12 +89,18 @@ export const ProductGrid = memo(
                 <div className="flex w-full items-center justify-evenly">
                   <ProductCard.Price>{product.price}</ProductCard.Price>
                   <ProductCard.Actions>
-                    <ProductCard.Button
-                      buttonVariant="cart"
-                      icon="icon-[mdi--cart-outline]"
-                    >
-                      <span className="font-bold uppercase">Do košíku</span>
-                    </ProductCard.Button>
+                    {product?.variants && product.variants?.length > 1 ? (
+                      <ProductCard.Button buttonVariant="detail">
+                        <span className="font-bold uppercase">Detail</span>
+                      </ProductCard.Button>
+                    ) : (
+                      <ProductCard.Button
+                        buttonVariant="cart"
+                        icon="icon-[mdi--cart-outline]"
+                      >
+                        <span className="font-bold uppercase">Do košíku</span>
+                      </ProductCard.Button>
+                    )}
                   </ProductCard.Actions>
                 </div>
               </ProductCard>
