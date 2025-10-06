@@ -2,11 +2,20 @@ import { sdk } from '@/lib/medusa-client'
 import type { ProductQueryParams } from '@/lib/product-query-params'
 import type { StoreProduct } from '@medusajs/types'
 
+const DETAILED_INFO = '*variants,*variants.prices,*variants.options,*variants.inventory_items, *variants.inventory_quantity'
+
 export interface ProductListResponse {
   products: StoreProduct[]
   count: number
   limit: number
   offset: number
+}
+
+export interface ProductDetailParams {
+  handle: string
+  region_id?: string
+  country_code?: string
+  fields?: string
 }
 
 export async function getProducts(
@@ -36,5 +45,31 @@ export async function getProducts(
     }
     const message = err instanceof Error ? err.message : 'Unknown error'
     throw new Error(`Failed to fetch products: ${message}`)
+  }
+}
+
+export async function getProductByHandle(
+  params: ProductDetailParams
+): Promise<StoreProduct | null> {
+  const { handle, region_id, country_code } = params
+
+  try {
+    const response = await sdk.store.product.list({
+      handle,
+      limit: 1,
+      fields: DETAILED_INFO,
+      country_code,
+      region_id,
+    })
+
+    console.log("product by handle", response.products)
+
+    return response.products?.[0] || null
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[ProductService] Failed to fetch product by handle:', err)
+    }
+    const message = err instanceof Error ? err.message : 'Unknown error'
+    throw new Error(`Failed to fetch product: ${message}`)
   }
 }
