@@ -29,10 +29,10 @@ export default function ProductPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const category = params.category as string
+  const handle = params.handle as string
   const { regionId, countryCode } = useRegion()
 
-  const currentCategory = allCategories.find((cat) => cat.handle === category)
+  const currentCategory = allCategories.find((cat) => cat.handle === handle)
   const currentCategoryChildren = allCategories.filter(
     (cat) => cat.parent_category_id === currentCategory?.id
   )
@@ -52,7 +52,7 @@ export default function ProductPage() {
     hasNextPage,
     hasPrevPage,
   } = useProducts({
-    category_id: ALL_CATEGORIES_MAP[category],
+    category_id: ALL_CATEGORIES_MAP[handle],
     page: currentPage,
     limit: PRODUCT_LIMIT,
   })
@@ -64,14 +64,14 @@ export default function ProductPage() {
     hasPrevPage,
     totalPages,
     pageSize: PRODUCT_LIMIT,
-    category_id: ALL_CATEGORIES_MAP[category],
+    category_id: ALL_CATEGORIES_MAP[handle],
     regionId,
     countryCode,
   })
 
   // Prefetch category children progressively
   usePrefetchCategoryChildren({
-    categoryHandle: category,
+    categoryHandle: handle,
   })
 
   const products = rawProducts.map(transformProduct)
@@ -79,10 +79,10 @@ export default function ProductPage() {
   const handlePageChange = (page: number) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     newSearchParams.set('page', page.toString())
-    router.push(`/${category}?${newSearchParams.toString()}`, { scroll: true })
+    router.push(`/kategorie/${handle}?${newSearchParams.toString()}`, { scroll: true })
   }
 
-  if (!VALID_CATEGORY_ROUTES.includes(category)) {
+  if (!VALID_CATEGORY_ROUTES.includes(handle)) {
     return <div>Category not found</div>
   }
 
@@ -92,7 +92,7 @@ export default function ProductPage() {
 
   const breadcrumbItems: { label: string; href: string; icon?: IconType }[] = [
     { label: 'Home', href: '/', icon: 'icon-[mdi--home]' },
-    { label: rootCategory?.handle || category, href: `/${category}` },
+    { label: rootCategory?.handle || handle, href: `/kategorie/${handle}` },
   ]
 
   return (
@@ -113,7 +113,7 @@ export default function ProductPage() {
             {currentCategoryChildren?.map((child) => (
               <LinkButton
                 key={child.id}
-                href={child.handle}
+                href={`/kategorie/${child.handle}`}
                 className="border border-overlay bg-surface py-200 text-fg-primary hover:bg-base"
               >
                 {child.name}
