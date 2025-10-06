@@ -72,7 +72,7 @@ export const links = [
     label: 'Novinky',
   },
   ...rootCategories.map((category) => ({
-    href: `/${category.handle}`,
+    href: `/kategorie/${category.handle}`,
     label: category.name,
   })),
   {
@@ -90,10 +90,10 @@ export const submenuItems: SubmenuCategory[] = rootCategories.map((rootCat) => {
 
   return {
     name: rootCat.name,
-    href: `/${rootCat.handle}`,
+    href: `/kategorie/${rootCat.handle}`,
     items: directChildren.map((child) => ({
       name: child.name,
-      href: `/${child.handle}`,
+      href: `/kategorie/${child.handle}`,
       image: getImageForCategory(rootCat.handle, child.handle),
       categoryIds: ALL_CATEGORIES_MAP[child.handle] || [],
     })),
