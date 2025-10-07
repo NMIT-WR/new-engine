@@ -13,8 +13,16 @@ const tooltipVariants = tv({
       'rounded-tooltip shadow-tooltip',
     ],
     positioner: ['relative'],
+    arrow: '',
   },
   variants: {
+    variant: {
+      default: {},
+      outline: {
+        content: 'border border-tooltip-border',
+        arrow: 'border-t border-s border-tooltip-border',
+      },
+    },
     size: {
       sm: {
         content: 'text-tooltip-sm p-tooltip-sm',
@@ -29,6 +37,7 @@ const tooltipVariants = tv({
   },
   defaultVariants: {
     size: 'md',
+    variant: 'default',
   },
 })
 
@@ -48,6 +57,7 @@ export function Tooltip({
   className,
   ref,
   size,
+  variant,
 
   id: MRAId,
   dir = 'ltr',
@@ -110,9 +120,10 @@ export function Tooltip({
     trigger,
     positioner,
     content: contentSlot,
+    arrow,
   } = tooltipVariants({
+    variant,
     size,
-    className,
   })
 
   return (
@@ -123,9 +134,13 @@ export function Tooltip({
       <Portal>
         {api.open && (
           <div {...api.getPositionerProps()} className={positioner()}>
-            <div {...api.getContentProps()} className={contentSlot()} {...rest}>
+            <div
+              {...api.getContentProps()}
+              className={contentSlot({ className })}
+              {...rest}
+            >
               <div {...api.getArrowProps()}>
-                <div {...api.getArrowTipProps()} />
+                <div {...api.getArrowTipProps()} className={arrow()} />
               </div>
               {content}
             </div>
