@@ -1,4 +1,4 @@
-import { PRODUCT_FIELDS, PRODUCT_LIMIT } from './constants'
+import { PRODUCT_LIMIT, PRODUCT_LIST_FIELDS } from './constants'
 
 /**
  * Product query parameters (no `page` - only `offset` for cache consistency)
@@ -25,7 +25,7 @@ export function buildProductQueryParams(
   const { page = 1, limit = PRODUCT_LIMIT, ...rest } = params
 
   return {
-    fields: PRODUCT_FIELDS,
+    fields: PRODUCT_LIST_FIELDS,
     country_code: 'cz', // default, can be overridden
     ...rest,
     limit,
