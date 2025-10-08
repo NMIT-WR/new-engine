@@ -34,7 +34,10 @@ export function FormNumericInput({
   const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
-    <div className="flex flex-col gap-150">
+    <div
+      className="flex flex-col gap-numeric-input-root-md data-[size=lg]:gap-numeric-input-root-lg data-[size=sm]:gap-numeric-input-root-sm"
+      data-size={size}
+    >
       <Label htmlFor={id} size={size} required={required} disabled={disabled}>
         {label}
       </Label>

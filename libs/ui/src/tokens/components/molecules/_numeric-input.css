@@ -1,7 +1,15 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
-
+  --color-numeric-input-bg: var(--color-surface);
+  --color-numeric-input-hover: oklch(
+    from var(--color-numeric-input-bg) calc(l + var(--state-hover)) c h
+  );
+  --color-numeric-input-focus: oklch(
+    from var(--color-numeric-input-bg) calc(l + var(--state-hover)) c h
+  );
   --color-numeric-input-border: var(--color-input-border);
+  --color-numeric-input-border-focus: var(--color-input-border-focus);
+  --color-numeric-input-fg: var(--color-input-fg);
 
   --color-numeric-input-invalid-border: var(--color-danger);
   --color-numeric-input-invalid-bg: --alpha(var(--color-danger) / 10%);
@@ -19,13 +27,18 @@
 
   /* === INPUT === */
   --color-numeric-input-input-bg: transparent;
-  --color-numeric-input-input-bg-hover: transparent;
-  --color-numeric-input-input-bg-active: transparent;
+  --color-numeric-input-input-bg-hover: var(--color-numeric-input-hover);
+  --color-numeric-input-input-bg-focus: var(--color-numeric-input-focus);
   --padding-numeric-input-input: 0 0 0 var(--spacing-150);
 
   /* === TRIGGER === */
-  --color-numeric-input-trigger-container: var(--color-surface);
-  --color-numeric-input-bg: var(--color-surface);
+  --color-numeric-input-trigger-container: var(--color-numeric-input-bg);
+  --color-numeric-input-trigger-bg: var(--color-numeric-input-bg);
+  --color-numeric-input-trigger-bg-hover: oklch(
+    from var(--color-numeric-input-trigger-bg) calc(l + var(--state-hover)) c h
+  );
+  --color-numeric-input-trigger-fg: var(--color-numeric-input-fg);
+  --color-numeric-input-trigger-fg-hover: var(--color-primary);
   --padding-numeric-input-trigger-x: var(--spacing-150);
   --padding-numeric-input-trigger-y: var(--spacing-100);
 
