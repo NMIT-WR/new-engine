@@ -91,7 +91,10 @@ function useNumericInputContext() {
 }
 
 // Root component
-export type NumericInputProps = numberInput.Props &
+export type NumericInputProps = Omit<
+  numberInput.Props,
+  'value' | 'defaultValue'
+> &
   ComponentPropsWithoutRef<'div'> & {
     size?: 'sm' | 'md' | 'lg'
     value?: number
