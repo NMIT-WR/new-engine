@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Open_Sans } from 'next/font/google'
 import '../tokens/index.css'
+import './global.css'
 import { N1Header } from '@/components/header/n1-header'
 import { N1Footer } from '@/components/n1-footer'
 import { Providers } from '@/components/provider'

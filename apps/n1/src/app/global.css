@@ -1,0 +1,10 @@
+@import "../tokens/index.css";
+/* Green triangle for buttons in product page detail */
+.button-decoration {
+  background-color: var(--color-success);
+  position: absolute;
+  inset: 0 0 auto auto;
+  height: 0.5rem;
+  width: 0.5rem;
+  clip-path: polygon(0 0, 100% 100%, 100% 0);
+}
