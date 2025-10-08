@@ -1,8 +1,7 @@
+import { PRODUCT_DETAILED_FIELDS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import type { ProductQueryParams } from '@/lib/product-query-params'
 import type { StoreProduct } from '@medusajs/types'
-
-const DETAILED_INFO = '*variants,*variants.prices,*variants.options,*variants.inventory_items, *variants.inventory_quantity'
 
 export interface ProductListResponse {
   products: StoreProduct[]
@@ -57,12 +56,10 @@ export async function getProductByHandle(
     const response = await sdk.store.product.list({
       handle,
       limit: 1,
-      fields: DETAILED_INFO,
+      fields: PRODUCT_DETAILED_FIELDS,
       country_code,
       region_id,
     })
-
-    console.log("product by handle", response.products)
 
     return response.products?.[0] || null
   } catch (err) {
