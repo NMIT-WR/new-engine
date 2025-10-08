@@ -70,5 +70,19 @@ export const ALL_CATEGORIES_MAP: Record<string, string[]> = Object.fromEntries(
   allCategories.map((cat) => [cat.handle, findAllLeafIds(cat.id)])
 )
 
-export const PRODUCT_FIELDS = '*variants.calculated_price' as const
+export const PRODUCT_DETAILED_FIELDS =
+  'id,title,subtitle,description,handle,thumbnail,' +
+  'producer.title,producer.attributes.value,producer.attributes.attributeType.name,' +
+  'variants.id,variants.title,variants.sku,variants.ean,variants.upc,' +
+  'variants.material,variants.allow_backorder,variants.manage_inventory,' +
+  'variants.metadata,variants.inventory_quantity,' +
+  'variants.inventory_quantity,' +
+  'variants.calculated_price'
+
+export const PRODUCT_LIST_FIELDS =
+  'id,title,handle,thumbnail,' +
+  'variants.id,variants.title,' +
+  'variants.calculated_price.calculated_amount_with_tax,' +
+  'variants.calculated_price.currency_code'
+
 export const PRODUCT_LIMIT = 24 as const
