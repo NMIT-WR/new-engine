@@ -66,7 +66,7 @@ export function usePrefetchCategoryChildren({
       }
 
       // PHASE 2: Siblings - wait for completion
-      if (currentCategory.parent_category_id) {
+      /*if (currentCategory.parent_category_id) {
         const siblings = allCategories.filter(
           (cat) =>
             cat.parent_category_id === currentCategory.parent_category_id &&
@@ -94,12 +94,12 @@ export function usePrefetchCategoryChildren({
             console.log('[Prefetch Children] Phase 2 complete')
           }
         }
-      }
+      }*/
 
       // PHASE 3: Nested leafs - chunked lazy loading (5 at a time)
       const allLeafIds = ALL_CATEGORIES_MAP[categoryHandle]
 
-      if (allLeafIds?.length) {
+     /* if (allLeafIds?.length) {
         const leafCategories = allCategories.filter((cat) =>
           allLeafIds.includes(cat.id)
         )
@@ -141,7 +141,7 @@ export function usePrefetchCategoryChildren({
             console.log('[Prefetch Children] Phase 3 complete')
           }
         }
-      }
+      }*/
     })()
 
     return () => {
