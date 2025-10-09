@@ -8,7 +8,20 @@
 
   /* BUTTON */
   --color-button-primary: oklch(0.4495 0 0);
+  --color-button-tertiary: #f6f6f6;
+  --color-button-fg-tertiary: var(--color-fg-primary);
   --text-button-sm: var(--text-md);
+  --color-button-border-secondary-selected: var(--color-border-tertiary);
+
+  /* NUMERIC INPUT */
+  --color-numeric-input-border: var(--color-border-secondary);
+  --color-numeric-input-border-focus: var(--color-fg-primary);
+  --color-numeric-input-trigger-bg: var(--color-gray-300);
+  --color-numeric-input-trigger-fg-hover: var(--color-fg-primary);
+
+  /* TOOLTIP */
+  --color-tooltip-bg: var(--color-base);
+  --color-tooltip-border: var(--color-border-secondary);
 
   /* === MOLECULES === */
 
@@ -30,6 +43,7 @@
   --width-carousel-indicator: 2rem;
   --aspect-carousel-indicator: 1;
   --spacing-carousel-root-md: 100%;
+  --color-carousel-control-bg: var(--color-red-300);
 
   /* PRODUCT CARD */
   --color-product-card-bg: var(--color-base);
@@ -40,7 +54,7 @@
   --color-product-card-badge-sale-fg: var(--color-fg-primary);
 
   --text-product-card-stock-size: var(--text-lg);
-  --text-product-card-price-size: var(--text-2xl);
+  --text-product-card-price-size: var(--text-xl);
   --text-product-card-name-size: var(--text-lg);
   --font-weight-product-card-stock: var(--font-weight-bold);
   --font-weight-product-card-price: var(--font-weight-bold);
