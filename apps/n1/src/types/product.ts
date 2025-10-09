@@ -10,6 +10,7 @@ export interface Product {
   title: string
   handle: string
   price?: string
+  withoutTax?: string
   badges?: {
     variant: 'new' | 'limited' | 'info' | 'sale' | 'default'
     text: string
