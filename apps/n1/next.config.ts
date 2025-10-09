@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
         hostname: 'pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev',
       },
     ],
-    qualities: [50, 60, 75, 90],
+    qualities: [40, 50, 60, 75, 90],
   },
 }
 
