@@ -38,7 +38,7 @@ export function N1Aside({
     if (details.focusedValue) {
       const node = findNodeById(treeData, details.focusedValue)
       if (node) {
-        router.push(`/${node.handle}`)
+        router.push(`/kategorie/${node.handle}`)
       }
     }
   }
