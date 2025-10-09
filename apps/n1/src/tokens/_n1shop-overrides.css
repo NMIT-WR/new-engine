@@ -1,3 +1,7 @@
+@import "./_n1-layout.css";
+@import "./_n1-icons.css";
+@import "./_n1-components.css";
+
 /* ============================================
    N1SHOP.CZ DESIGN SYSTEM OVERRIDES
    Using exact semantic token names from libs/ui/src/tokens
@@ -21,7 +25,7 @@
   --color-gray-50: #fafafa;
   --color-gray-100: #f6f6f6; /* Secondary surfaces - VERIFIED */
   --color-gray-200: #eeeeee;
-  --color-gray-300: #e0e0e0;
+  --color-gray-300: #e8e8e8;
   --color-gray-400: #bdbdbd;
   --color-gray-500: #777777; /* Muted text - VERIFIED */
   --color-gray-600: #555555; /* Button background - VERIFIED */
@@ -165,6 +169,7 @@
   /* Borders */
   --color-border-primary: var(--color-gray-700); /* #444444 - VERIFIED */
   --color-border-secondary: #e4e4e4; /* Subtle dividers */
+  --color-border-tertiary: #000;
   --border-width-none: 0px;
   --border-width-sm: 1px;
   --border-width-md: 2px;
@@ -200,10 +205,41 @@
   --text-sm: 12.6px; /* 12px - small text, old prices */
   --text-md: 14px; /* 16px - body text */
   --text-lg: 1.125rem; /* 18px - prices */
-  --text-xl: 21px; /* 24px - h4 */
+  --text-xl: 1.5rem; /* 24px - h4 */
   --text-2xl: 1.875rem; /* 30px - h3 */
   --text-3xl: 2.25rem; /* 36px - h2 */
   --text-4xl: 3rem; /* 48px - h1 */
+
+  /* PREPERED UTOPIA TEXT
+  * Step -3: 8.428px → 9.8326px 
+  --text--3: clamp(0.5267rem, 0.4908rem + 0.1596vw, 0.6145rem);
+  * Step -2: 9.4815px → 11.0617px 
+  --text--2: clamp(0.5926rem, 0.5522rem + 0.1796vw, 0.6914rem);
+  * Step -1: 10.6667px → 12.4444px 
+  --text--1: clamp(0.6667rem, 0.6212rem + 0.202vw, 0.7778rem);
+  * Step 0: 12px → 14px 
+  --text-0: clamp(0.75rem, 0.6989rem + 0.2273vw, 0.875rem);
+  * Step 1: 13.5px → 15.75px 
+  --text-1: clamp(0.8438rem, 0.7862rem + 0.2557vw, 0.9844rem);
+  * Step 2: 15.1875px → 17.7188px 
+  --text-2: clamp(0.9492rem, 0.8845rem + 0.2876vw, 1.1074rem);
+  * Step 3: 17.0859px → 19.9336px 
+  --text-3: clamp(1.0679rem, 0.9951rem + 0.3236vw, 1.2458rem);
+  * Step 4: 19.2217px → 22.4253px 
+  --text-4: clamp(1.2014rem, 1.1194rem + 0.364vw, 1.4016rem);
+  * Step 5: 21.6244px → 25.2285px 
+  --text-5: clamp(1.3515rem, 1.2594rem + 0.4096vw, 1.5768rem);
+  * Step 6: 24.3274px → 28.382px 
+  --text-6: clamp(1.5205rem, 1.4168rem + 0.4607vw, 1.7739rem);
+  * Step 7: 27.3684px → 31.9298px 
+  --text-7: clamp(1.7105rem, 1.5939rem + 0.5183vw, 1.9956rem);
+  * Step 8: 30.7894px → 35.921px 
+  --text-8: clamp(1.9243rem, 1.7931rem + 0.5831vw, 2.2451rem);
+  * Step 9: 34.6381px → 40.4111px 
+  --text-9: clamp(2.1649rem, 2.0173rem + 0.656vw, 2.5257rem);
+  * Step 10: 38.9679px → 45.4625px 
+  --text-10: clamp(2.4355rem, 2.2694rem + 0.738vw, 2.8414rem);
+  */
 
   /* Font weights */
   --font-weight-normal: 400;
