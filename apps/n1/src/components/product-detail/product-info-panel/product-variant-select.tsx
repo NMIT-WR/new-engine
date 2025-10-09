@@ -1,5 +1,5 @@
 import type { ProductDetail, ProductVariantDetail } from '@/types/product'
-import { LinkButtonWithTooltip } from '../molecules/link-button-with-tooltip'
+import { LinkButtonWithTooltip } from '../../molecules/link-button-with-tooltip'
 import { TooltipContent } from './tooltip-content'
 
 interface ProductVariantSelectProps {
