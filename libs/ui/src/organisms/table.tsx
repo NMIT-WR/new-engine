@@ -14,16 +14,20 @@ const tableVariants = tv({
       'bg-table-bg text-table-fg',
       'border-spacing-0',
     ],
-    caption: ['text-table-caption-fg', 'text-start'],
+    caption: ['text-table-caption-fg', 'text-start font-table-caption'],
     header: ['bg-table-header-bg', 'text-table-header-fg font-table-header'],
     body: '',
     footer: ['bg-table-footer-bg', 'text-table-footer-fg font-table-footer'],
     row: [
       'border-b-(length:--border-width-table) border-table-border',
+      'data-[selected=true]:bg-table-row-bg-selected',
       'transition-colors duration-200',
     ],
-    columnHeader: ['text-start', 'font-table-header'],
-    cell: ['text-start'],
+    columnHeader: [
+      'text-start data-[numeric=true]:text-end',
+      'font-table-header',
+    ],
+    cell: ['text-start data-[numeric=true]:text-end'],
   },
   variants: {
     variant: {
@@ -34,11 +38,13 @@ const tableVariants = tv({
       outline: {
         root: 'border-(length:--border-width-table) border-table-border rounded-table shadow-table-outline',
       },
-      interactive: {
-        row: 'hover:bg-table-row-bg-hover cursor-pointer',
-      },
       striped: {
         row: 'odd:bg-table-row-striped-bg-primary even:bg-table-row-striped-bg-secondary',
+      },
+    },
+    interactive: {
+      true: {
+        row: 'hover:bg-table-row-bg-hover cursor-pointer',
       },
     },
     size: {
@@ -63,19 +69,51 @@ const tableVariants = tv({
         header: 'sticky top-0 z-10',
       },
     },
+    stickyFirstColumn: {
+      true: {
+        columnHeader: [
+          'first:sticky first:start-0 first:z-20',
+          'bg-table-header-bg',
+        ],
+        cell: ['first:sticky first:start-0 first:z-10'],
+      },
+    },
+    showColumnBorder: {
+      true: {
+        columnHeader:
+          '&:not(:last-of-type) border-r-(length:--border-width-table) border-table-border',
+        cell: '&:not(:last-of-type) border-r-(length:--border-width-table) border-table-border',
+      },
+    },
+    captionPlacement: {
+      top: {
+        caption: 'caption-top',
+      },
+      bottom: {
+        caption: 'caption-bottom',
+      },
+    },
   },
   defaultVariants: {
     variant: 'line',
     size: 'md',
+    interactive: false,
     stickyHeader: false,
+    stickyFirstColumn: false,
+    showColumnBorder: false,
+    captionPlacement: 'top',
   },
 })
 
 // Context for sharing state between sub-components
 interface TableContextValue {
-  variant?: 'line' | 'outline' | 'interactive' | 'striped'
+  variant?: 'line' | 'outline' | 'striped'
   size?: 'sm' | 'md' | 'lg'
+  interactive?: boolean
   stickyHeader?: boolean
+  stickyFirstColumn?: boolean
+  showColumnBorder?: boolean
+  captionPlacement?: 'top' | 'bottom'
   styles: ReturnType<typeof tableVariants>
 }
 
@@ -99,16 +137,39 @@ interface TableProps
 export function Table({
   variant,
   size,
+  interactive,
   stickyHeader,
+  stickyFirstColumn,
+  showColumnBorder,
+  captionPlacement,
   children,
   ref,
   className,
   ...props
 }: TableProps) {
-  const styles = tableVariants({ variant, size, stickyHeader })
+  const styles = tableVariants({
+    variant,
+    size,
+    interactive,
+    stickyHeader,
+    stickyFirstColumn,
+    showColumnBorder,
+    captionPlacement,
+  })
 
   return (
-    <TableContext.Provider value={{ variant, size, stickyHeader, styles }}>
+    <TableContext.Provider
+      value={{
+        variant,
+        size,
+        interactive,
+        stickyHeader,
+        stickyFirstColumn,
+        showColumnBorder,
+        captionPlacement,
+        styles,
+      }}
+    >
       <table ref={ref} className={styles.root({ className })} {...props}>
         {children}
       </table>
@@ -199,18 +260,25 @@ Table.Footer = function TableFooter({
 // Row component
 interface TableRowProps extends ComponentPropsWithoutRef<'tr'> {
   ref?: RefObject<HTMLTableRowElement>
+  selected?: boolean
 }
 
 Table.Row = function TableRow({
   children,
   ref,
   className,
+  selected,
   ...props
 }: TableRowProps) {
   const { styles } = useTableContext()
 
   return (
-    <tr ref={ref} className={styles.row({ className })} {...props}>
+    <tr
+      ref={ref}
+      className={styles.row({ className })}
+      data-selected={selected}
+      {...props}
+    >
       {children}
     </tr>
   )
@@ -234,8 +302,9 @@ Table.ColumnHeader = function TableColumnHeader({
   return (
     <th
       ref={ref}
+      scope="col"
       className={styles.columnHeader({ className })}
-      style={numeric ? { textAlign: 'end' } : undefined}
+      data-numeric={numeric}
       {...props}
     >
       {children}
@@ -256,13 +325,13 @@ Table.Cell = function TableCell({
   numeric,
   ...props
 }: TableCellProps) {
-  const { styles } = useTableContext()
+  const { styles, stickyFirstColumn } = useTableContext()
 
   return (
     <td
       ref={ref}
-      className={styles.cell({ className })}
-      style={numeric ? { textAlign: 'end' } : undefined}
+      className={styles.cell({ className, stickyFirstColumn })}
+      data-numeric={numeric}
       {...props}
     >
       {children}

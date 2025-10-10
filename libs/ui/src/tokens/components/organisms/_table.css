@@ -42,6 +42,7 @@
   /* Font weights */
   --font-weight-table-header: var(--font-weight-semibold);
   --font-weight-table-footer: var(--font-weight-medium);
+  --font-weight-table-caption: var(--font-weight-normal);
 
   /* Text sizes for table content */
   --text-table-sm: var(--text-sm);
