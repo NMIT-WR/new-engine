@@ -9,11 +9,7 @@ import { tv } from '../utils'
 
 const tableVariants = tv({
   slots: {
-    root: [
-      'w-full border-collapse',
-      'bg-table-bg text-table-fg',
-      'border-spacing-0',
-    ],
+    root: ['w-full border-collapse', 'bg-table-bg text-table-fg'],
     caption: ['text-table-caption-fg', 'text-start font-table-caption'],
     header: ['bg-table-header-bg', 'text-table-header-fg font-table-header'],
     body: '',
