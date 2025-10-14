@@ -2,7 +2,7 @@ import * as accordion from '@zag-js/accordion'
 import { normalizeProps, useMachine } from '@zag-js/react'
 import {
   type ComponentPropsWithoutRef,
-  type RefObject,
+  type Ref,
   createContext,
   useContext,
   useId,
@@ -144,7 +144,7 @@ interface AccordionProps
   disabled?: boolean
   dir?: 'ltr' | 'rtl'
   onChange?: (value: string[]) => void
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 export function Accordion({
@@ -202,7 +202,7 @@ export function Accordion({
 interface AccordionItemProps extends ComponentPropsWithoutRef<'div'> {
   value: string
   disabled?: boolean
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 Accordion.Item = function AccordionItem({
@@ -231,7 +231,7 @@ Accordion.Item = function AccordionItem({
 
 // Header component (trigger wrapper)
 interface AccordionHeaderProps extends ComponentPropsWithoutRef<'header'> {
-  ref?: RefObject<HTMLElement>
+  ref?: Ref<HTMLElement>
 }
 
 Accordion.Header = function AccordionHeader({
@@ -260,7 +260,7 @@ Accordion.Header = function AccordionHeader({
 
 // Content component
 interface AccordionContentProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 Accordion.Content = function AccordionContent({
@@ -288,7 +288,7 @@ Accordion.Content = function AccordionContent({
 // Indicator component (for expand/collapse icon)
 interface AccordionIndicatorProps extends ComponentPropsWithoutRef<'span'> {
   icon?: string
-  ref?: RefObject<HTMLSpanElement>
+  ref?: Ref<HTMLSpanElement>
 }
 
 Accordion.Indicator = function AccordionIndicator({
@@ -315,7 +315,7 @@ Accordion.Indicator = function AccordionIndicator({
 
 // Title component (optional structured title)
 interface AccordionTitleProps extends ComponentPropsWithoutRef<'span'> {
-  ref?: RefObject<HTMLSpanElement>
+  ref?: Ref<HTMLSpanElement>
 }
 
 Accordion.Title = function AccordionTitle({
@@ -337,7 +337,7 @@ Accordion.Title = function AccordionTitle({
 
 // Subtitle component (optional structured subtitle)
 interface AccordionSubtitleProps extends ComponentPropsWithoutRef<'span'> {
-  ref?: RefObject<HTMLSpanElement>
+  ref?: Ref<HTMLSpanElement>
 }
 
 Accordion.Subtitle = function AccordionSubtitle({
