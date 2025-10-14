@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Badge } from '../../src/atoms/badge'
 import { Button } from '../../src/atoms/button'
 import { TreeView, type TreeNode } from '../../src/molecules/tree-view'
-import React from 'react'
 
 const meta: Meta<typeof TreeView> = {
   title: 'Molecules/TreeView',
@@ -170,7 +169,7 @@ export const CustomComposition: Story = {
         <TreeView.Label>Project Structure</TreeView.Label>
         <TreeView.Tree>
           {fileSystemData.map((node, index) => {
-            const RenderNode = ({ node, indexPath }: any) => (
+            const RenderNode = ({ node, indexPath }: { node: TreeNode; indexPath: number[] }) => () => (
               <TreeView.NodeProvider node={node} indexPath={indexPath}>
                 {node.children ? (
                   <TreeView.Branch>
@@ -452,7 +451,7 @@ export const CustomStyling: Story = {
         </h2>
         <TreeView.Tree className="bg-white/50 dark:bg-black/20 backdrop-blur-sm">
           {fileSystemData.map((node, index) => {
-            const CustomNode = ({ node, indexPath }: any) => (
+            const CustomNode = ({ node, indexPath }: { node: TreeNode; indexPath: number[] }) => () => (
               <TreeView.NodeProvider node={node} indexPath={indexPath}>
                 {node.children ? (
                   <TreeView.Branch>
