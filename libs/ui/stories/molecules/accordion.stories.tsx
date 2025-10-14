@@ -238,12 +238,12 @@ export const CustomContent: Story = {
       <Accordion collapsible multiple>
         <Accordion.Item value="custom-1">
           <Accordion.Header>
-            <div className="flex items-center gap-200 flex-1">
+            <span className="inline-flex items-center gap-200 flex-1">
               <Badge variant="primary">
                 NEW
               </Badge>
               <Accordion.Title>Custom Header with Badge</Accordion.Title>
-            </div>
+            </span>
             <Accordion.Indicator />
           </Accordion.Header>
           <Accordion.Content>
@@ -258,16 +258,16 @@ export const CustomContent: Story = {
 
         <Accordion.Item value="custom-2">
           <Accordion.Header>
-            <div className="flex flex-col p-200">
+            <span className="inline-flex flex-col p-200">
               <Accordion.Title className='px-0 py-0'>Product Features</Accordion.Title>
               <Accordion.Subtitle className='text-left'>Click to explore all features</Accordion.Subtitle>
-            </div>
-            <div className="flex items-center gap-100">
+            </span>
+            <span className="inline-flex items-center gap-100">
               <Badge variant="tertiary">
                 5 items
               </Badge>
               <Accordion.Indicator />
-            </div>
+            </span>
           </Accordion.Header>
           <Accordion.Content>
             <ul className="list-disc pl-200">

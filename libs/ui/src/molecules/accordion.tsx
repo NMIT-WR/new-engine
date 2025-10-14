@@ -189,8 +189,8 @@ export function Accordion({
       <div
         ref={ref}
         className={styles.root({ className })}
-        {...api.getRootProps()}
         {...props}
+        {...api.getRootProps()}
       >
         {children}
       </div>
@@ -219,9 +219,9 @@ Accordion.Item = function AccordionItem({
     <AccordionItemContext.Provider value={{ value, disabled, variant }}>
       <div
         ref={ref}
+        {...props}
         {...api.getItemProps({ value })}
         className={styles.item({ className })}
-        {...props}
       >
         {children}
       </div>
@@ -276,9 +276,9 @@ Accordion.Content = function AccordionContent({
     <div
       ref={ref}
       className={styles.content({ className })}
+      {...props}
       {...api.getItemContentProps({ value })}
       data-state={api.value.includes(value) ? 'expanded' : 'collapsed'}
-      {...props}
     >
       {children}
     </div>
@@ -287,7 +287,7 @@ Accordion.Content = function AccordionContent({
 
 // Indicator component (for expand/collapse icon)
 interface AccordionIndicatorProps extends ComponentPropsWithoutRef<'span'> {
-  icon?: string
+  icon?: IconType
   ref?: Ref<HTMLSpanElement>
 }
 
@@ -306,7 +306,7 @@ Accordion.Indicator = function AccordionIndicator({
     <span ref={ref} className={className} {...props}>
       <Icon
         className={styles.icon()}
-        icon={icon as IconType}
+        icon={icon}
         data-state={isExpanded ? 'expanded' : 'collapsed'}
       />
     </span>
@@ -327,11 +327,9 @@ Accordion.Title = function AccordionTitle({
   const { styles } = useAccordionContext()
 
   return (
-    <div className={styles.title({ className })}>
-      <span ref={ref} {...props}>
-        {children}
-      </span>
-    </div>
+    <span className={styles.title({ className })} ref={ref} {...props}>
+      {children}
+    </span>
   )
 }
 
