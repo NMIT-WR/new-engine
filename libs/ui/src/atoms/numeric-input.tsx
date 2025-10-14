@@ -36,7 +36,7 @@ const numericInputVariants = tv({
       'data-[invalid]:focus:border-input-border-danger-focus duration-0',
     ],
     triggerContainer: [
-      'flex flex-col h-fit justify-center bg-numeric-input-trigger-container',
+      'flex flex-col h-fit justify-center bg-numeric-input-trigger-container-bg',
     ],
     trigger: [
       'px-numeric-input-trigger-x py-numeric-input-trigger-y',

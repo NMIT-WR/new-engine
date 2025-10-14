@@ -48,7 +48,7 @@ export const WithLabel: Story = {
     const [value, setValue] = useState(42)
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-with-label">Quantity</Label>
         <NumericInput
           id="numeric-with-label"
@@ -74,8 +74,8 @@ export const WithLabel: Story = {
 export const AllSizes: Story = {
   render: () => {
     return (
-      <div className="flex flex-col gap-lg">
-        <div className="w-md flex flex-col gap-xs">
+      <div className="flex flex-col gap-300">
+        <div className="w-md flex flex-col gap-50">
           <Label htmlFor="numeric-sm" size="sm">
             Small (sm)
           </Label>
@@ -90,7 +90,7 @@ export const AllSizes: Story = {
           </NumericInput>
         </div>
 
-        <div className="w-md flex flex-col gap-xs">
+        <div className="w-md flex flex-col gap-50">
           <Label htmlFor="numeric-md" size="md">
             Medium (md)
           </Label>
@@ -105,7 +105,7 @@ export const AllSizes: Story = {
           </NumericInput>
         </div>
 
-        <div className="w-md flex flex-col gap-xs">
+        <div className="w-md flex flex-col gap-50">
           <Label htmlFor="numeric-lg" size="lg">
             Large (lg)
           </Label>
@@ -130,7 +130,7 @@ export const WithoutControls: Story = {
     const [value, setValue] = useState(50)
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-no-controls">
           Use arrow keys or mouse wheel
         </Label>
@@ -146,7 +146,7 @@ export const WithoutControls: Story = {
             <NumericInput.Input />
           </NumericInput.Control>
         </NumericInput>
-        <p className="text-fg-muted text-sm mt-xs">
+        <p className="text-fg-muted text-sm mt-50">
           Current value: {value}
         </p>
       </div>
@@ -160,7 +160,7 @@ export const WithScrubber: Story = {
     const [value, setValue] = useState(50)
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-scrubber">
           Drag left/right to change value
         </Label>
@@ -181,7 +181,7 @@ export const WithScrubber: Story = {
             </NumericInput.TriggerContainer>
           </NumericInput.Control>
         </NumericInput>
-        <p className="text-fg-muted text-sm mt-xs">
+        <p className="text-fg-muted text-sm mt-50">
           Current value: {value}
         </p>
       </div>
@@ -195,7 +195,7 @@ export const MinMax: Story = {
     const [value, setValue] = useState(5)
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-minmax">
           Range: 0-10 (clamped on blur)
         </Label>
@@ -216,7 +216,7 @@ export const MinMax: Story = {
             </NumericInput.TriggerContainer>
           </NumericInput.Control>
         </NumericInput>
-        <p className="text-fg-muted text-sm mt-xs">
+        <p className="text-fg-muted text-sm mt-50">
           Try typing a value outside the range and blur the input
         </p>
       </div>
@@ -231,7 +231,7 @@ export const InvalidState: Story = {
     const isInvalid = value < 0 || value > 100
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-invalid">Valid range: 0-100</Label>
         <NumericInput
           id="numeric-invalid"
@@ -251,7 +251,7 @@ export const InvalidState: Story = {
           </NumericInput.Control>
         </NumericInput>
         {isInvalid && (
-          <p className="text-fg-danger text-sm mt-xs">
+          <p className="text-fg-danger text-sm mt-50">
             Value must be between 0 and 100
           </p>
         )}
@@ -266,7 +266,7 @@ export const WithPrecision: Story = {
     const [value, setValue] = useState(3.14)
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-precision">
           Pi approximation (2 decimals)
         </Label>
@@ -287,7 +287,7 @@ export const WithPrecision: Story = {
             </NumericInput.TriggerContainer>
           </NumericInput.Control>
         </NumericInput>
-        <p className="text-fg-muted text-sm mt-xs">
+        <p className="text-fg-muted text-sm mt-50">
           Current value: {value}
         </p>
       </div>
@@ -301,7 +301,7 @@ export const CustomLayoutHorizontal: Story = {
     const [value, setValue] = useState(50)
 
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-custom-h">Custom Layout</Label>
         <NumericInput
           id="numeric-custom-h"
@@ -310,7 +310,7 @@ export const CustomLayoutHorizontal: Story = {
           min={0}
           max={100}
         >
-          <div className="flex gap-xs">
+          <div className="flex gap-50">
             <NumericInput.DecrementTrigger className='bg-overlay' icon='icon-[mdi--minus]'/>
             <NumericInput.Control className="flex-1">
               <NumericInput.Input />
@@ -328,7 +328,7 @@ export const CustomLayoutHorizontal: Story = {
 export const Disabled: Story = {
   render: () => {
     return (
-      <div className="w-md flex flex-col gap-xs">
+      <div className="w-md flex flex-col gap-50">
         <Label htmlFor="numeric-disabled">Disabled Input</Label>
         <NumericInput id="numeric-disabled" defaultValue={42} disabled>
           <NumericInput.Control>
@@ -353,9 +353,9 @@ export const CustomButtonProps: Story = {
     const [value4, setValue4] = useState(40)
 
     return (
-      <div className="flex flex-col gap-lg">
+      <div className="flex flex-col gap-300">
         {/* Variant customization */}
-        <div className="w-md flex flex-col gap-xs">
+        <div className="w-md flex flex-col gap-50">
           <Label htmlFor="numeric-variant">Different Variants</Label>
           <NumericInput
             id="numeric-variant"
@@ -375,7 +375,7 @@ export const CustomButtonProps: Story = {
         </div>
 
         {/* Size customization */}
-        <div className="w-md flex flex-col gap-xs">
+        <div className="w-md flex flex-col gap-50">
           <Label htmlFor="numeric-size">Different Themes</Label>
           <NumericInput
             id="numeric-size"
@@ -407,8 +407,8 @@ export const InteractiveDemo: Story = {
     const [step] = useState(5)
 
     return (
-      <div className="flex flex-col gap-md w-lg">
-        <div className="flex flex-col gap-xs">
+      <div className="flex flex-col gap-200 w-lg">
+        <div className="flex flex-col gap-50">
           <Label htmlFor="numeric-interactive">
             Interactive Numeric Input
           </Label>
@@ -432,9 +432,9 @@ export const InteractiveDemo: Story = {
           </NumericInput>
         </div>
 
-        <div className="bg-surface-secondary p-md rounded-md">
-          <h3 className="text-fg-primary font-semibold mb-sm">Info</h3>
-          <ul className="text-fg-muted text-sm space-y-xs">
+        <div className="bg-surface-secondary p-200 rounded-md">
+          <h3 className="text-fg-primary font-semibold mb-100">Info</h3>
+          <ul className="text-fg-muted text-sm space-y-50">
             <li>
               Current value: <strong>{value}</strong>
             </li>
@@ -443,7 +443,7 @@ export const InteractiveDemo: Story = {
             </li>
             <li>Step: {step}</li>
             <li>Features:</li>
-            <ul className="ml-md space-y-xs">
+            <ul className="ml-200 space-y-50">
               <li>✓ Arrow keys (↑/↓)</li>
               <li>✓ Button controls</li>
               <li>✓ Keyboard shortcuts (Home/End, Page Up/Down)</li>

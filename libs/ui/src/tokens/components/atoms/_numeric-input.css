@@ -30,7 +30,7 @@
   --padding-numeric-input-input: 0 0 0 var(--spacing-150);
 
   /* === TRIGGER === */
-  --color-numeric-input-trigger-container: var(--color-numeric-input-bg);
+  --color-numeric-input-trigger-container-bg: var(--color-numeric-input-bg);
   --color-numeric-input-trigger-bg: var(--color-numeric-input-bg);
   --color-numeric-input-trigger-bg-hover: oklch(
     from var(--color-numeric-input-trigger-bg) calc(l + var(--state-hover)) c h
