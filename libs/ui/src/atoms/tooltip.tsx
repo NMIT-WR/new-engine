@@ -81,7 +81,6 @@ export function Tooltip({
   boundary,
   listeners,
   strategy,
-  ...rest
 }: TooltipProps) {
   const generatedId = useId()
   const id = MRAId || generatedId
@@ -137,7 +136,6 @@ export function Tooltip({
             <div
               {...api.getContentProps()}
               className={contentSlot({ className })}
-              {...rest}
             >
               <div {...api.getArrowProps()}>
                 <div {...api.getArrowTipProps()} className={arrow()} />
