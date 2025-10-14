@@ -4,7 +4,6 @@ import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Badge } from '../../src/atoms/badge'
 import { Button } from '../../src/atoms/button'
 import { NumericInput } from '../../src/atoms/numeric-input'
-import { Rating } from '../../src/atoms/rating'
 import { ProductCard } from '../../src/molecules/product-card'
 
 // Sample product images for different scenarios
@@ -240,7 +239,7 @@ export const LayoutVariants: Story = {
         <ProductCard layout="column">
           <ProductCard.Image src={productImages.tshirt} alt="T-Shirt" />
           <ProductCard.Name>Cotton T-Shirt</ProductCard.Name>
-          <Rating value={4} />
+          <ProductCard.Rating rating={{value: 4}} />
           <ProductCard.Stock status="in-stock">In Stock</ProductCard.Stock>
           <ProductCard.Price>$24.99</ProductCard.Price>
           <ProductCard.Actions>
@@ -262,7 +261,7 @@ export const LayoutVariants: Story = {
             className="row-span-6"
           />
           <ProductCard.Name>Running Shoes</ProductCard.Name>
-          <Rating value={5} />
+          <ProductCard.Rating rating={{value: 5}} />
           <ProductCard.Stock status="limited-stock">Limited Stock</ProductCard.Stock>
           <ProductCard.Price>$89.99</ProductCard.Price>
           <ProductCard.Actions>
@@ -301,7 +300,7 @@ export const CustomComposition: Story = {
 
       {/* Custom rating with review count */}
       <div className="flex items-center gap-100">
-        <Rating value={4.8} />
+        <ProductCard.Rating rating={{value: 4.5}} />
         <span className="text-100 text-fg-muted">(245 reviews)</span>
       </div>
 
@@ -387,7 +386,7 @@ export const ComplexCard: Story = {
     <ProductCard className="w-md">
       {/* Image with overlay badge */}
       <div className="relative">
-        <ProductCard.Image src={productImages.camera} alt="Camera Kit" className='w-full'/>
+        <ProductCard.Image src={productImages.camera} alt="Camera Kit" className="w-full"/>
         <Badge variant="danger" className="absolute top-100 right-100">
           HOT DEAL
         </Badge>
