@@ -3,7 +3,6 @@
 @import "./atoms/_icon.css";
 @import "./atoms/_input.css";
 @import "./atoms/_rating.css";
-@import "./atoms/_tabs.css";
 @import "./atoms/_textarea.css";
 @import "./atoms/_tooltip.css";
 
@@ -18,6 +17,7 @@
 @import "./molecules/_pagination.css";
 @import "./molecules/_popover.css";
 @import "./molecules/_menu.css";
+@import "./molecules/_tabs.css";
 @import "./molecules/_product-card.css";
 @import "./molecules/_slider.css";
 @import "./molecules/_search-form.css";
