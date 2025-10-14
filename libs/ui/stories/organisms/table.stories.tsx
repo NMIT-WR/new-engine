@@ -532,7 +532,7 @@ export const WithStickyColumn: Story = {
         <Table.Body>
           {sampleProducts.map((product) => (
             <Table.Row key={product.id}>
-              <Table.Cell className="sticky left-0 z-10 bg-table-bg">
+              <Table.Cell>
                 {product.name}
               </Table.Cell>
               <Table.Cell>{product.category}</Table.Cell>

@@ -62,7 +62,7 @@ const tableVariants = tv({
     },
     stickyHeader: {
       true: {
-        header: 'sticky top-0 z-10',
+        columnHeader: 'sticky top-0 z-10 bg-table-header-bg',
       },
     },
     stickyFirstColumn: {
@@ -71,14 +71,14 @@ const tableVariants = tv({
           'first:sticky first:start-0 first:z-20',
           'bg-table-header-bg',
         ],
-        cell: ['first:sticky first:start-0 first:z-10'],
+        cell: ['first:sticky first:start-0 first:z-10', 'bg-table-bg'],
       },
     },
     showColumnBorder: {
       true: {
         columnHeader:
-          '&:not(:last-of-type) border-r-(length:--border-width-table) border-table-border',
-        cell: '&:not(:last-of-type) border-r-(length:--border-width-table) border-table-border',
+          'border-r-(length:--border-width-table) border-table-border',
+        cell: 'border-r-(length:--border-width-table) border-table-border',
       },
     },
     captionPlacement: {
