@@ -76,6 +76,7 @@ interface NumericInputContextValue {
   size?: 'sm' | 'md' | 'lg'
   styles: ReturnType<typeof numericInputVariants>
   invalid?: boolean
+  describedBy?: string
 }
 
 const NumericInputContext = createContext<NumericInputContextValue | null>(null)
@@ -95,13 +96,14 @@ export type NumericInputProps = Omit<
   numberInput.Props,
   'value' | 'defaultValue'
 > &
-  ComponentPropsWithoutRef<'div'> & {
+  Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'children'> & {
     size?: 'sm' | 'md' | 'lg'
     value?: number
     defaultValue?: number
     onChange?: (value: number) => void
     precision?: number
     children?: ReactNode
+    describedBy?: string
     ref?: RefObject<HTMLDivElement>
   }
 
@@ -118,6 +120,7 @@ export function NumericInput({
   defaultValue,
   onChange,
   dir = 'ltr',
+  describedBy,
   min,
   max,
   step = 1,
@@ -172,12 +175,14 @@ export function NumericInput({
   const styles = numericInputVariants({ size })
 
   return (
-    <NumericInputContext.Provider value={{ api, size, styles, invalid }}>
+    <NumericInputContext.Provider
+      value={{ api, size, styles, invalid, describedBy }}
+    >
       <div
         ref={ref}
         className={styles.root({ className })}
-        {...api.getRootProps()}
         {...props}
+        {...api.getRootProps()}
       >
         {children}
       </div>
@@ -202,9 +207,9 @@ NumericInput.Control = function NumericInputControl({
     <div
       ref={ref}
       className={styles.container({ className })}
+      {...props}
       {...api.getControlProps()}
       data-invalid={invalid || undefined}
-      {...props}
     >
       {children}
     </div>
@@ -222,7 +227,10 @@ NumericInput.Input = function NumericInputInput({
   className,
   ...props
 }: NumericInputInputProps) {
-  const { api, styles } = useNumericInputContext()
+  const { api, styles, describedBy } = useNumericInputContext()
+  const ariaDescribedBy =
+    [props['aria-describedby'], describedBy].filter(Boolean).join(' ') ||
+    undefined
 
   return (
     <Input
@@ -230,6 +238,7 @@ NumericInput.Input = function NumericInputInput({
       {...props}
       {...api.getInputProps()}
       className={styles.input({ className })}
+      aria-describedby={ariaDescribedBy}
     />
   )
 }
@@ -290,8 +299,8 @@ NumericInput.IncrementTrigger = function NumericInputIncrementTrigger({
       isLoading={isLoading}
       loadingText={loadingText}
       className={styles.trigger({ className })}
-      {...api.getIncrementTriggerProps()}
       {...props}
+      {...api.getIncrementTriggerProps()}
     >
       {children}
     </Button>
@@ -354,8 +363,8 @@ NumericInput.DecrementTrigger = function NumericInputDecrementTrigger({
       isLoading={isLoading}
       loadingText={loadingText}
       className={styles.trigger({ className })}
-      {...api.getDecrementTriggerProps()}
       {...props}
+      {...api.getDecrementTriggerProps()}
     >
       {children}
     </Button>
@@ -378,8 +387,8 @@ NumericInput.Scrubber = function NumericInputScrubber({
     <div
       ref={ref}
       className={styles.scrubber({ className })}
-      {...api.getScrubberProps()}
       {...props}
+      {...api.getScrubberProps()}
     />
   )
 }
