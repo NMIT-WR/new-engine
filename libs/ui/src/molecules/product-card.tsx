@@ -1,9 +1,10 @@
 import {
+  type ComponentPropsWithRef,
   type ComponentPropsWithoutRef,
   type ElementType,
   type HTMLAttributes,
   type ReactNode,
-  type RefObject,
+  type Ref,
   createContext,
   useContext,
 } from 'react'
@@ -90,45 +91,45 @@ export interface ProductCardProps
   extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof productCardVariants> {
   children: ReactNode
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 type ProductCardImageProps<T extends ElementType = typeof Image> = {
   as?: T
-  ref?: RefObject<HTMLElement>
+  ref?: ComponentPropsWithRef<T>['ref']
   className?: string
 } & Partial<ComponentPropsWithoutRef<T>>
 
 interface ProductCardNameProps extends HTMLAttributes<HTMLHeadingElement> {
   children: ReactNode
-  ref?: RefObject<HTMLHeadingElement>
+  ref?: Ref<HTMLHeadingElement>
 }
 
 interface ProductCardPriceProps extends HTMLAttributes<HTMLParagraphElement> {
   children: ReactNode
-  ref?: RefObject<HTMLParagraphElement>
+  ref?: Ref<HTMLParagraphElement>
 }
 
 interface ProductCardStockProps extends HTMLAttributes<HTMLParagraphElement> {
   children: ReactNode
   status?: 'in-stock' | 'limited-stock' | 'out-of-stock'
-  ref?: RefObject<HTMLParagraphElement>
+  ref?: Ref<HTMLParagraphElement>
 }
 
 interface ProductCardBadgesProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 interface ProductCardRatingProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
   rating?: RatingProps
 }
 
 interface ProductCardActionsProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
@@ -136,7 +137,7 @@ interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
   onClick?: () => void
   buttonVariant?: 'cart' | 'detail' | 'wishlist' | 'custom'
   icon?: IconType
-  ref?: RefObject<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
 }
 
 interface ProductCardBadgeProps extends HTMLAttributes<HTMLDivElement> {
@@ -164,8 +165,6 @@ export function ProductCard({
 }
 
 // === SUB-COMPONENTS ===
-
-// ProductCard.Image
 ProductCard.Image = function ProductCardImage<
   T extends ElementType = typeof Image,
 >({ as, className, ref, ...props }: ProductCardImageProps<T>) {
@@ -178,7 +177,6 @@ ProductCard.Image = function ProductCardImage<
   )
 }
 
-// ProductCard.Name
 ProductCard.Name = function ProductCardName({
   children,
   className,
@@ -195,7 +193,6 @@ ProductCard.Name = function ProductCardName({
   )
 }
 
-// ProductCard.Price
 ProductCard.Price = function ProductCardPrice({
   children,
   className,
@@ -212,7 +209,6 @@ ProductCard.Price = function ProductCardPrice({
   )
 }
 
-// ProductCard.Stock
 ProductCard.Stock = function ProductCardStock({
   children,
   className,
@@ -237,7 +233,6 @@ ProductCard.Stock = function ProductCardStock({
   )
 }
 
-// ProductCard.Badges
 ProductCard.Badges = function ProductCardBadges({
   children,
   className,
@@ -254,7 +249,6 @@ ProductCard.Badges = function ProductCardBadges({
   )
 }
 
-// ProductCard.Rating
 ProductCard.Rating = function ProductCardRating({
   children,
   className,
@@ -272,7 +266,6 @@ ProductCard.Rating = function ProductCardRating({
   )
 }
 
-// ProductCard.Actions
 ProductCard.Actions = function ProductCardActions({
   children,
   className,
@@ -291,7 +284,6 @@ ProductCard.Actions = function ProductCardActions({
   )
 }
 
-// ProductCard.Button
 ProductCard.Button = function ProductCardButton({
   children,
   onClick,
