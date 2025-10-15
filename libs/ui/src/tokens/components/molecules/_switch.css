@@ -14,7 +14,7 @@
   --color-switch-border: var(--color-border-primary);
   --color-switch-thumb-bg: var(--color-base-light);
   --color-switch-label-fg: var(--color-fg-primary);
-  --color-switch-label-fg-disabled: var(--color-disabled-fg);
+  --color-switch-label-fg-disabled: var(--color-fg-disabled);
 
   /* Backgrounds colors */
   --color-switch-bg-checked: var(--color-switch-success);
@@ -29,9 +29,9 @@
 
   /* === DISABLED STATES === */
   /* Using unified disabled tokens for consistency across all components */
-  --color-switch-bg-disabled: var(--color-disabled-bg);
-  --color-switch-thumb-bg-disabled: var(--color-disabled-fg);
-  --color-switch-border-disabled: var(--color-disabled-border);
+  --color-switch-bg-disabled: var(--color-bg-disabled);
+  --color-switch-thumb-bg-disabled: var(--color-fg-disabled);
+  --color-switch-border-disabled: var(--color-border-disabled);
 
   /* === INVALID STATES === */
   --color-switch-bg-invalid: var(--color-switch-invalid);

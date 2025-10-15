@@ -7,9 +7,9 @@
 
   /* === DISABLED STATE === */
   /* Using unified disabled tokens for consistency across all components */
-  --color-checkbox-bg-disabled: var(--color-disabled-bg);
-  --color-checkbox-fg-disabled: var(--color-disabled-fg);
-  --color-checkbox-border-disabled: var(--color-disabled-border);
+  --color-checkbox-bg-disabled: var(--color-bg-disabled);
+  --color-checkbox-fg-disabled: var(--color-fg-disabled);
+  --color-checkbox-border-disabled: var(--color-border-disabled);
 
   --color-checkbox-indeterminate: var(--color-primary);
 

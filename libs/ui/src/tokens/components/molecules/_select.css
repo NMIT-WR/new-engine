@@ -51,9 +51,9 @@
   );
 
   /* === DISABLED STATES === */
-  --color-select-bg-disabled: var(--color-disabled-bg);
-  --color-select-fg-disabled: var(--color-disabled-fg);
-  --color-select-border-disabled: var(--color-disabled-border);
+  --color-select-bg-disabled: var(--color-bg-disabled);
+  --color-select-fg-disabled: var(--color-fg-disabled);
+  --color-select-border-disabled: var(--color-border-disabled);
 
   /* === SPACING === */
   --spacing-content: var(--spacing-450);

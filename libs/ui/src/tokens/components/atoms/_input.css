@@ -4,7 +4,7 @@
   --color-input: var(--color-fill-base);
   --color-input-border: var(--color-border-primary);
   --color-input-fg: var(--color-fg-primary);
-  --color-input-disabled: var(--color-disabled-bg);
+  --color-input-disabled: var(--color-bg-disabled);
 
   /* Validation states - primary colors */
   --color-input-danger: var(--color-danger);
@@ -24,7 +24,7 @@
     from var(--color-input-border) calc(l + var(--state-hover)) c h
   );
   --color-input-border-focus: var(--color-primary);
-  --color-input-border-disabled: var(--color-disabled-border);
+  --color-input-border-disabled: var(--color-border-disabled);
 
   /* Error state - hover/focus */
   --color-input-border-danger: var(--color-input-danger);
@@ -48,7 +48,7 @@
   --color-input-border-warning-focus: var(--color-input-warning);
 
   /* Text colors */
-  --color-input-fg-disabled: var(--color-disabled-fg);
+  --color-input-fg-disabled: var(--color-fg-disabled);
   --color-input-placeholder: var(--color-fg-placeholder);
 
   /* Label colors */
