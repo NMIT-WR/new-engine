@@ -24,10 +24,7 @@
     from var(--color-input-border) calc(l + var(--state-hover)) c h
   );
   --color-input-border-focus: var(--color-primary);
-  --color-input-border-disabled: --alpha(
-    var(--color-input-border) /
-    var(--opacity-disabled)
-  );
+  --color-input-border-disabled: var(--color-disabled-border);
 
   /* Error state - hover/focus */
   --color-input-border-danger: var(--color-input-danger);
@@ -35,10 +32,6 @@
     from var(--color-input-danger) calc(l + var(--state-hover)) c h
   );
   --color-input-border-danger-focus: var(--color-input-danger);
-  --color-input-placeholder-danger: --alpha(
-    var(--color-input-danger) /
-    var(--opacity-disabled)
-  );
 
   /* Success state - hover/focus */
   --color-input-border-success: var(--color-input-success);
@@ -46,10 +39,6 @@
     from var(--color-input-success) calc(l + var(--state-hover)) c h
   );
   --color-input-border-success-focus: var(--color-input-success);
-  --color-input-placeholder-success: --alpha(
-    var(--color-input-success) /
-    var(--opacity-disabled)
-  );
 
   /* Warning state - hover/focus */
   --color-input-border-warning: var(--color-input-warning);
@@ -57,25 +46,10 @@
     from var(--color-input-warning) calc(l + var(--state-hover)) c h
   );
   --color-input-border-warning-focus: var(--color-input-warning);
-  --color-input-placeholder-warning: --alpha(
-    var(--color-input-warning) /
-    var(--opacity-disabled)
-  );
 
   /* Text colors */
-  --color-input-fg-disabled: --alpha(
-    var(--color-input-fg) /
-    var(--opacity-disabled)
-  );
-  --color-input-placeholder: --alpha(
-    var(--color-input-fg) /
-    var(--opacity-placeholder)
-  );
-
-  --color-input-placeholder-disabled: --alpha(
-    var(--color-input-fg) /
-    var(--opacity-disabled-placeholder)
-  );
+  --color-input-fg-disabled: var(--color-disabled-fg);
+  --color-input-placeholder: var(--color-fg-placeholder);
 
   /* Label colors */
   --color-label-fg: var(--color-input-fg);
