@@ -9,7 +9,11 @@ import { tv } from '../utils'
 
 const switchVariants = tv({
   slots: {
-    root: ['cursor-pointer', 'data-[disabled]:cursor-not-allowed'],
+    root: [
+      'cursor-pointer',
+      'data-[disabled]:cursor-not-allowed',
+      'flex items-center',
+    ],
     control: [
       'me-switch-root p-switch-control',
       'relative inline-flex shrink-0 items-center justify-start',
@@ -23,6 +27,7 @@ const switchVariants = tv({
       'data-[state=checked]:hover:bg-switch-bg-checked-hover',
       'data-[disabled]:bg-switch-bg-disabled',
       'data-[disabled]:border-switch-border-disabled',
+      'data-[disabled]:data-[state=checked]:bg-switch-bg-disabled',
       'data-[focus]:outline-none',
       'data-[focus]:ring',
       'data-[focus]:ring-switch-ring',

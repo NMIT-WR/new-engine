@@ -28,11 +28,9 @@
   );
 
   /* === DISABLED STATES === */
+  /* Using unified disabled tokens for consistency across all components */
   --color-switch-bg-disabled: var(--color-disabled-bg);
-  --color-switch-thumb-bg-disabled: --alpha(
-    var(--color-switch-thumb-bg) /
-    var(--opacity-disabled)
-  );
+  --color-switch-thumb-bg-disabled: var(--color-disabled-fg);
   --color-switch-border-disabled: var(--color-disabled-border);
 
   /* === INVALID STATES === */
