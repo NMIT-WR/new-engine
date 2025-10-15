@@ -344,25 +344,16 @@
     calc(var(--fill-increment) * 3)
   );
 
-  /*Disabled state - Disabled
-  Unified disabled state tokens used across ALL components for consistency.
-  Uses semantic color-based approach for better contrast and accessibility.
-
-  Design principle: Disabled state should be immediately recognizable as "not interactive"
-  regardless of component type (button, input, checkbox, etc.).
-
-  All components MUST use these tokens for disabled states to ensure visual consistency.*/
-
   /* Semantic color-based disabled tokens (preferred approach) */
-  --color-disabled-bg: light-dark(var(--color-gray-100), var(--color-gray-800));
-  --color-disabled-fg: light-dark(var(--color-gray-500), var(--color-gray-500));
-  --color-disabled-border: light-dark(
+  --color-bg-disabled: light-dark(var(--color-gray-100), var(--color-gray-800));
+  --color-fg-disabled: light-dark(var(--color-gray-500), var(--color-gray-500));
+  --color-border-disabled: light-dark(
     var(--color-gray-300),
     var(--color-gray-700)
   );
 
   /* Disabled fill for form controls and interactive elements */
-  --color-disabled-fill: light-dark(var(--color-gray-50), var(--color-gray-850));
+  --color-fill-disabled: light-dark(var(--color-gray-50), var(--color-gray-850));
 
   /* Spacing */
   --spacing: 0.25rem;

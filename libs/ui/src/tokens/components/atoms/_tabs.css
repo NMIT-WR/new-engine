@@ -58,5 +58,5 @@
   --radius-tabs-indicator: 0;
 
   /* === DISABLED STATE === */
-  --color-tabs-fg-disabled: var(--color-disabled-fg);
+  --color-tabs-fg-disabled: var(--color-fg-disabled);
 }

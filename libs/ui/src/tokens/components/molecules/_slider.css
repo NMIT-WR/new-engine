@@ -36,10 +36,10 @@
   --color-slider-border-error: var(--color-slider-error);
 
   /* === DISABLED STATES === */
-  --color-slider-bg-disabled: var(--color-disabled-bg);
-  --color-slider-thumb-bg-disabled: var(--color-disabled-fg);
-  --color-slider-range-bg-disabled: var(--color-disabled-fg);
-  --color-slider-border-disabled: var(--color-disabled-border);
+  --color-slider-bg-disabled: var(--color-bg-disabled);
+  --color-slider-thumb-bg-disabled: var(--color-fg-disabled);
+  --color-slider-range-bg-disabled: var(--color-fg-disabled);
+  --color-slider-border-disabled: var(--color-border-disabled);
 
   /* === SPACING === */
   --spacing-slider-root: var(--spacing-200);

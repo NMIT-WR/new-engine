@@ -32,7 +32,7 @@
   /* Validation states will be added here when needed */
 
   /* === DISABLED STATES === */
-  --color-accordion-fg-disabled: var(--color-disabled-fg);
+  --color-accordion-fg-disabled: var(--color-fg-disabled);
 
   /* === SPACING === */
   --padding-accordion-title-sm: var(--spacing-100) var(--spacing-150);

@@ -183,9 +183,9 @@
   );
 
   /* === DISABLED STATES === */
-  --color-button-bg-disabled: var(--color-disabled-bg);
-  --color-button-fg-disabled: var(--color-disabled-fg);
-  --color-button-border-disabled: var(--color-disabled-border);
+  --color-button-bg-disabled: var(--color-bg-disabled);
+  --color-button-fg-disabled: var(--color-fg-disabled);
+  --color-button-border-disabled: var(--color-border-disabled);
 
   /* === SPACING === */
   --spacing-button-sm: var(--spacing-150);
