@@ -15,7 +15,6 @@
   --color-slider-track-bg: var(--color-slider-base);
   --color-slider-marker-bg: var(--color-slider-accent);
   --color-slider-thumb-bg: var(--color-base-light);
-  --color-slider-bg-disabled: var(--color-disabled-bg);
 
   /* Border colors */
   --color-slider-border: var(--color-border-primary);
@@ -37,8 +36,9 @@
   --color-slider-border-error: var(--color-slider-error);
 
   /* === DISABLED STATES === */
-  /* we must avoid transparent paint, otherwise the range would be visible */
-  --color-slider-thumb-bg-disabled: var(--color-slider-accent);
+  --color-slider-bg-disabled: var(--color-disabled-bg);
+  --color-slider-thumb-bg-disabled: var(--color-disabled-fg);
+  --color-slider-range-bg-disabled: var(--color-disabled-fg);
   --color-slider-border-disabled: var(--color-disabled-border);
 
   /* === SPACING === */
@@ -69,7 +69,4 @@
 
   /* === FOCUS RINGS === */
   --color-slider-ring: var(--color-ring);
-
-  /* === OPACITY === */
-  --opacity-slider-disabled: var(--opacity-disabled);
 }

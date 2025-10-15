@@ -35,7 +35,7 @@ const sliderVariants = tv({
     range: [
       'bg-slider-range-bg rounded-slider-track h-full',
       'data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full',
-      'data-[disabled]:bg-slider-bg-disabled',
+      'data-[disabled]:bg-slider-range-bg-disabled',
       'hover:bg-slider-range-bg-hover',
       'data-[invalid=true]:bg-slider-range-bg-error',
     ],
