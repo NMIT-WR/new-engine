@@ -4,10 +4,7 @@
   --color-rating-fg-active: var(--color-warning);
 
   /* === DISABLED STATES === */
-  --color-rating-fg-disabled: --alpha(
-    var(--color-rating-fg-active) /
-    var(--opacity-disabled)
-  );
+  --color-rating-fg-disabled: var(--color-disabled-fg);
 
   /* === SPACING === */
   --spacing-rating-sm: var(--spacing-100);
