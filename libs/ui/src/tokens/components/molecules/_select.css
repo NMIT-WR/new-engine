@@ -51,7 +51,9 @@
   );
 
   /* === DISABLED STATES === */
-  --opacity-select-disabled: var(--opacity-disabled);
+  --color-select-bg-disabled: var(--color-disabled-bg);
+  --color-select-fg-disabled: var(--color-disabled-fg);
+  --color-select-border-disabled: var(--color-disabled-border);
 
   /* === SPACING === */
   --spacing-content: var(--spacing-450);
