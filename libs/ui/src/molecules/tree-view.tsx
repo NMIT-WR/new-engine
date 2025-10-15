@@ -37,7 +37,7 @@ const treeViewVariants = tv({
       'focus-visible:ring-2 focus-visible:ring-tree-node-ring focus-visible:ring-offset-2',
     ],
     branch: [
-      'data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none',
+      'data-[disabled]:text-tree-fg-disabled data-[disabled]:pointer-events-none',
     ],
     branchTrigger: [
       'group flex items-center justify-between',
