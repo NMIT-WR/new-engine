@@ -458,7 +458,7 @@ export const FormHelper: Story = {
   ),
 }
 
-export const NavigationTooltips: Story = {
+export const OutlineVariant: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Navigation Bar">
@@ -470,7 +470,7 @@ export const NavigationTooltips: Story = {
             { icon: 'icon-[mdi--settings]', label: 'Settings' },
             { icon: 'icon-[mdi--help-circle]', label: 'Help & Support' },
           ].map(({ icon, label }) => (
-            <Tooltip key={label} content={label} placement="bottom">
+            <Tooltip key={label} content={label} placement="bottom" variant="outline">
               <button className="rounded p-2 transition-colors">
                 <Icon icon={icon as IconType} />
               </button>
