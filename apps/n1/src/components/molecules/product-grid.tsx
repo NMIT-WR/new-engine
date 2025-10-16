@@ -28,15 +28,15 @@ export const ProductGrid = memo(
 
     if (products.length === 0) {
       return (
-        <div className="py-8 text-center">
-          <p className="text-gray-500">Žádné produkty nenalezeny</p>
+        <div className="py-300 text-center">
+          <p className="text-fg-secondary">Žádné produkty nenalezeny</p>
         </div>
       )
     }
 
     return (
       <div className="w-full">
-        <div className="grid w-full grid-cols-2 gap-200 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid w-full grid-cols-2 gap-200 md:grid-cols-4">
           {products.map((product, index) => (
             <Fragment key={product.id}>
               {index !== 0 &&
@@ -92,7 +92,7 @@ export const ProductGrid = memo(
                   <ProductCard.Stock status="in-stock">
                     {product.stockValue}
                   </ProductCard.Stock>
-                  <div className="flex w-full items-center justify-evenly">
+                  <div className="flex w-full flex-col items-center justify-evenly xl:flex-row">
                     <ProductCard.Price>{product.price}</ProductCard.Price>
                     <ProductCard.Actions>
                       {product?.variants && product.variants?.length > 1 ? (
