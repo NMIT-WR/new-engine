@@ -9,8 +9,6 @@
       "**/migrations/**/*",
       "**/.next/**/*",
       "check-env-variables.js",
-      "apps/medusa-fe/**/*",
-      "apps/medusa-demo/**/*",
       "apps/medusa-be/**/*",
       "libs/data-layer/**/*",
       "*.stories.tsx",
