@@ -16,9 +16,9 @@
     "@new-engine/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-store": "^0.7.1",
-    "next": "15.5.3",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "next": "16.0.0-canary.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
     "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
@@ -26,13 +26,14 @@
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.1",
+    "babel-plugin-react-compiler": "^1.0.0",
     "dotenv": "^16.4.7",
     "postcss-import": "^16.1.1",
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
   "main": "index.js",
