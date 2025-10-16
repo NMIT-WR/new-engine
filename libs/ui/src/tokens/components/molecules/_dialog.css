@@ -66,8 +66,7 @@
   --z-dialog-positioner: 20;
 
   /* === FOCUS RINGS === */
-  --color-dialog-ring: --alpha(var(--color-dialog-accent) / var(--opacity-ring));
-  --color-dialog-ring-offset: var(--color-dialog-bg);
+  --color-dialog-ring: var(--color-ring);
 }
 
 /* Semantic tokens for dialog icons */
