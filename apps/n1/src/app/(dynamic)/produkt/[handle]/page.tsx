@@ -3,11 +3,17 @@
 import { Heading } from '@/components/heading'
 import { Gallery } from '@/components/organisms/gallery'
 import { ProductInfoPanel } from '@/components/product-detail/product-info-panel'
+import { ProductSizes } from '@/components/product-detail/product-sizes'
+import { ProductTable } from '@/components/product-detail/product-table'
 import { ProductTabs } from '@/components/product-detail/product-tabs'
 import { useProduct } from '@/hooks/use-product'
+import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
+import { buildProductBreadcrumbs } from '@/utils/helpers/build-breadcrumb'
 import { selectVariant } from '@/utils/select-variant'
 import { transformProductDetail } from '@/utils/transform/transform-product'
 import { Button } from '@new-engine/ui/atoms/button'
+import { Link } from '@new-engine/ui/atoms/link'
+import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import { useParams, useSearchParams } from 'next/navigation'
 
 export default function ProductPage() {
@@ -50,12 +56,49 @@ export default function ProductPage() {
     )
   }
 
+  const breadcrumbPath = buildProductBreadcrumbs(
+    rawProduct.categories?.[0].id,
+    CATEGORY_MAP_BY_ID,
+    rawProduct.title,
+    rawProduct.handle
+  )
+
+  const productTableRows = [
+    {
+      key: 'kód produktu',
+      value: detail.type_id,
+    },
+    {
+      key: 'hmotnost',
+      value: detail.weight,
+    },
+    {
+      key: 'materiál',
+      value: detail.material,
+    },
+    {
+      key: 'distibutor',
+      value: detail.producer?.title,
+    },
+  ]
+  const tabsData = [
+    <ProductTable key="table" rows={productTableRows} />,
+    <ProductSizes key="sizes" attributes={detail.producer?.attributes} />,
+  ]
+
   return (
     <div className="container mx-auto p-4">
       {/* PRODUCT DETAIL COMPONENT */}
       <div className="grid gap-8 md:grid-cols-2">
         <header className="col-span-2 space-y-4">
+          <Breadcrumb
+            items={breadcrumbPath}
+            linkAs={Link}
+            size="md"
+            className="mb-4"
+          />
           <Heading as="h1">{title}</Heading>
+
           <Button
             variant="secondary"
             onClick={() => {
@@ -66,7 +109,7 @@ export default function ProductPage() {
             Check product
           </Button>
         </header>
-        <div className="aspect-square max-w-md">
+        <div className="mx-auto aspect-square max-w-md">
           {detail.images && (
             <Gallery
               images={detail.images}
@@ -86,10 +129,7 @@ export default function ProductPage() {
         />
       </div>
       {/* PRODUCT TABS */}
-      <ProductTabs />
-      <div>
-        <p>{detail.description}</p>
-      </div>
+      <ProductTabs description={detail.description} content={tabsData} />
       {/* RELEATED PRODUCTS */}
     </div>
   )
