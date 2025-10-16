@@ -23,3 +23,7 @@
 @utility token-icon-numeric-input-decrement {
   @apply icon-[mdi--minus];
 }
+
+@utility token-icon-external-link {
+  @apply icon-[mdi--external-link];
+}
