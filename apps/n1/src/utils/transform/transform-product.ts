@@ -38,7 +38,6 @@ const removeDuplicatedImageUrl = (images: ProductImage[]) => {
 export const transformProductDetail = (
   product: StoreProductExtended
 ): ProductDetail => {
-  // Images logika - stejná jako v V1
   const variantMetadata = product.variants?.[0]
     ?.metadata as ProductVariantDetail['metadata']
   const variantImages = variantMetadata?.images
