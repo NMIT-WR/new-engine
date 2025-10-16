@@ -1,5 +1,11 @@
 @import "./app-components/index.css";
 
+:root {
+  @media (width < 1240px) {
+    --text-product-card-price-size: var(--text-lg);
+  }
+}
+
 @theme static {
   /* === ATOMS === */
   /* BADGE */
@@ -43,7 +49,11 @@
   --width-carousel-indicator: 2rem;
   --aspect-carousel-indicator: 1;
   --spacing-carousel-root-md: 100%;
-  --color-carousel-control-bg: var(--color-red-300);
+  /*--color-carousel-control-bg: var(--color-red-300);*/
+
+  /* PAGINATION */
+  --color-pagination-filled-fg-active: var(--color-fg-primary);
+  --color-pagination-border: var(--color-border-secondary);
 
   /* PRODUCT CARD */
   --color-product-card-bg: var(--color-base);
@@ -60,6 +70,12 @@
   --font-weight-product-card-price: var(--font-weight-bold);
   --font-weight-product-card-name: var(--font-weight-bold);
   --spacing-product-card-col-layout: var(--spacing-200);
+
+  /* TABS */
+  --color-tabs-bg: var(--color-base);
+  --color-tabs-active: var(--color-fg-primary);
+  --color-tabs-border: var(--color-border-secondary);
+  /*--color-tabs-indicator-bg: var(--color-black);*/
 
   /* TREE-VIEW */
   --color-tree-root-bg: var(--color-surface);
