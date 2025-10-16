@@ -59,10 +59,7 @@
   --border-pagination-width: var(--border-width-sm);
 
   /* === FOCUS RINGS === */
-  --color-pagination-ring: --alpha(
-    var(--color-pagination-accent) /
-    var(--opacity-ring)
-  );
+  --color-pagination-ring: var(--color-ring);
 }
 
 @utility token-icon-pagination-prev {

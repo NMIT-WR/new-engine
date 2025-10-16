@@ -88,21 +88,6 @@
   --border-textarea-width: 1px;
   --radius-textarea: var(--radius-md);
 
-  /* === FOCUS RINGS === */
-  --color-textarea-ring: --alpha(
-    var(--color-textarea-accent) /
-    var(--opacity-ring)
-  );
-  --color-textarea-ring-success: --alpha(
-    var(--color-textarea-success) /
-    var(--opacity-ring)
-  );
-  --color-textarea-ring-warning: --alpha(
-    var(--color-textarea-warning) /
-    var(--opacity-ring)
-  );
-  --color-textarea-ring-danger: --alpha(
-    var(--color-textarea-danger) /
-    var(--opacity-ring)
-  );
+  /* === FOCUS RING === */
+  --color-textarea-ring: var(--color-ring);
 }

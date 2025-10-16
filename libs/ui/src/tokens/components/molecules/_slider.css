@@ -68,10 +68,7 @@
   --shadow-slider-thumb: var(--shadow-sm);
 
   /* === FOCUS RINGS === */
-  --color-slider-ring: --alpha(
-    var(--color-slider-primary) /
-    var(--opacity-ring)
-  );
+  --color-slider-ring: var(--color-ring);
 
   /* === OPACITY === */
   --opacity-slider-disabled: var(--opacity-disabled);
