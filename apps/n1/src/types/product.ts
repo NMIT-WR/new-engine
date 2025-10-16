@@ -27,6 +27,16 @@ export interface ProductImage {
   src: string
 }
 
+export interface ProductParameters {
+  product_code: Product['id']
+  product_ean: Product['title']
+  weight: Product['title']
+  material: Product['title']
+  distributor: Product['title']
+  gender: Product['title']
+  size: Product['title']
+}
+
 // Product option value
 export interface ProductOptionValue {
   id: string
