@@ -21,6 +21,10 @@ export const CATEGORIES_LEAFS_IDS = ROOT_CATEGORIES.map((cat) => {
   }
 })
 
+export const CATEGORY_MAP_BY_ID = Object.fromEntries(
+  allCategories.map((cat) => [cat.id, cat])
+)
+
 // Alternative: All category handles from allCategories
 export const VALID_CATEGORY_ROUTES = allCategories.map((cat) => cat.handle)
 
@@ -71,13 +75,13 @@ export const ALL_CATEGORIES_MAP: Record<string, string[]> = Object.fromEntries(
 )
 
 export const PRODUCT_DETAILED_FIELDS =
-  'id,title,subtitle,description,handle,thumbnail,' +
+  'id,title,subtitle,description,handle,thumbnail,images.id,images.url,' +
   'producer.title,producer.attributes.value,producer.attributes.attributeType.name,' +
   'variants.id,variants.title,variants.sku,variants.ean,variants.upc,' +
   'variants.material,variants.allow_backorder,variants.manage_inventory,' +
-  'variants.metadata,variants.inventory_quantity,' +
   'variants.inventory_quantity,' +
-  'variants.calculated_price'
+  'variants.calculated_price,' +
+  'categories.id,categories.parent_category_id'
 
 export const PRODUCT_LIST_FIELDS =
   'id,title,handle,thumbnail,' +
