@@ -10,10 +10,15 @@ const numericInput = tv({
   slots: {
     root: ['flex relative'],
     container: [
-      'flex relative border-(length:--border-width-ni)',
-      'border-ni-border rounded-ni overflow-hidden items-center',
-      'data-[invalid]:bg-ni-invalid-bg',
-      'data-[invalid]:border-ni-invalid-border',
+      'group flex relative border-(length:--border-width-numeric-input)',
+      'border-numeric-input-border rounded-numeric-input overflow-hidden items-center',
+      'data-[invalid]:bg-numeric-input-invalid-bg',
+      'data-[invalid]:border-numeric-input-invalid-border',
+      'text-numeric-input-fg',
+      'has-[input:hover]:bg-numeric-input-input-bg-hover',
+      'has-[input:focus]:bg-numeric-input-input-bg-focus',
+      'focus-within:ring',
+      'focus-within:ring-numeric-input-ring',
     ],
     input: [
       'p-ni-input',
@@ -25,7 +30,7 @@ const numericInput = tv({
       'flex flex-col h-fit justify-center bg-ni-trigger-container',
     trigger: [
       'px-ni-trigger-x py-ni-trigger-y',
-      'cursor-pointer focus:ring-increment-btn-ring',
+      'cursor-pointer',
     ],
     scrubber: 'absolute inset-0 cursor-ew-resize',
   },

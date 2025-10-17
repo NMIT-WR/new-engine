@@ -10,16 +10,17 @@ export const buttonVariants = tv({
     'font-medium',
     'transition-all duration-200',
     'focus:outline-none',
-    'focus-visible:ring-3 focus-visible:ring-offset-2',
+    'focus-visible:ring',
+    'focus-visible:ring-button-ring',
     'disabled:text-button-fg-disabled disabled:pointer-events-none',
   ],
   variants: {
     variant: {
-      primary: 'focus:ring-button-ring-primary',
-      secondary: 'focus:ring-button-ring-secondary',
-      tertiary: 'focus:ring-button-ring-tertiary',
-      danger: 'focus:ring-button-ring-danger',
-      warning: 'focus:ring-button-ring-warning',
+      primary: '',
+      secondary: '',
+      tertiary: '',
+      danger: '',
+      warning: '',
     },
     theme: {
       solid: 'disabled:bg-button-bg-disabled',

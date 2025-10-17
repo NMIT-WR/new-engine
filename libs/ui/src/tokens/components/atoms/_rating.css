@@ -19,11 +19,8 @@
   --text-rating-md: var(--text-icon-md);
   --text-rating-lg: var(--text-icon-lg);
 
-  /* === FOCUS RINGS === */
-  --color-rating-ring: --alpha(
-    var(--color-rating-fg-active) /
-    var(--opacity-ring)
-  );
+  /* === FOCUS RING === */
+  --color-rating-ring: var(--color-ring);
 }
 
 /* Semantic tokens for rating icons */
