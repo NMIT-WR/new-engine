@@ -1,30 +1,47 @@
 import * as numberInput from '@zag-js/number-input'
 import { normalizeProps, useMachine } from '@zag-js/react'
-import { type InputHTMLAttributes, useId } from 'react'
-import type { VariantProps } from 'tailwind-variants'
+import {
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+  type RefObject,
+  createContext,
+  useContext,
+  useId,
+} from 'react'
 import { tv } from '../utils'
 import { Button } from './button'
+import type { IconType } from './icon'
 import { Input } from './input'
 
-const numericInput = tv({
+const numericInputVariants = tv({
   slots: {
     root: ['flex relative'],
     container: [
-      'flex relative border-(length:--border-width-ni)',
-      'border-ni-border rounded-ni overflow-hidden items-center',
-      'data-[invalid]:bg-ni-invalid-bg',
-      'data-[invalid]:border-ni-invalid-border',
+      'group flex relative border-(length:--border-width-numeric-input)',
+      'border-numeric-input-border rounded-numeric-input overflow-hidden items-center',
+      'data-[invalid]:bg-numeric-input-invalid-bg',
+      'data-[invalid]:border-numeric-input-invalid-border',
+      'text-numeric-input-fg',
+      'has-[input:hover]:bg-numeric-input-input-bg-hover',
+      'has-[input:focus]:bg-numeric-input-input-bg-focus',
+      'focus-within:bg-numeric-input-input-bg-focus',
+      'focus-within:border-numeric-input-border-focus',
     ],
     input: [
-      'p-ni-input',
-      'bg-ni-input-bg border-none focus:bg-ni-input-bg-active hover:bg-ni-input-bg-hover',
+      'p-numeric-input-input border-none',
+      'bg-numeric-input-input-bg',
+      'focus:bg-numeric-input-input-bg-focus',
+      'hover:bg-numeric-input-input-bg-hover',
       'focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0',
-      'data-[invalid]:focus:border-input-border-danger-focus',
+      'data-[invalid]:focus:border-input-border-danger-focus duration-0',
     ],
-    triggerContainer:
-      'flex flex-col h-fit justify-center bg-ni-trigger-container',
+    triggerContainer: [
+      'flex flex-col h-fit justify-center bg-numeric-input-trigger-container-bg',
+    ],
     trigger: [
-      'px-ni-trigger-x py-ni-trigger-y',
+      'px-numeric-input-trigger-x py-numeric-input-trigger-y',
+      'bg-numeric-input-trigger-bg hover:bg-numeric-input-trigger-bg-hover',
+      'text-numeric-input-trigger-fg hover:text-numeric-input-trigger-fg-hover',
       'cursor-pointer focus:ring-increment-btn-ring',
     ],
     scrubber: 'absolute inset-0 cursor-ew-resize',
@@ -32,97 +49,112 @@ const numericInput = tv({
   variants: {
     size: {
       sm: {
-        root: 'text-ni-sm',
-        trigger: 'text-ni-sm',
-        input: 'text-ni-sm',
+        root: 'text-numeric-input-sm',
+        trigger: 'text-numeric-input-sm',
+        input: 'text-numeric-input-sm',
       },
       md: {
-        root: 'text-ni-md',
-        trigger: 'text-ni-md',
-        input: 'text-ni-md',
+        root: 'text-numeric-input-md',
+        trigger: 'text-numeric-input-md',
+        input: 'text-numeric-input-md',
       },
       lg: {
-        root: 'text-ni-lg',
-        trigger: 'text-ni-lg',
-        input: 'text-ni-lg',
-      },
-    },
-    hideControls: {
-      true: {
-        triggerContainer: 'invisible',
+        root: 'text-numeric-input-lg',
+        trigger: 'text-numeric-input-lg',
+        input: 'text-numeric-input-lg',
       },
     },
   },
   defaultVariants: {
-    size: 'sm',
+    size: 'md',
   },
 })
 
-export interface NumericInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'value' | 'defaultValue' | 'onChange' | 'type'
-  > {
-  size?: VariantProps<typeof numericInput>['size']
-  hideControls?: boolean
-  allowScrubbing?: boolean
-  name?: string
-  disabled?: boolean
-
-  value?: number
-  defaultValue?: number
-  onChange?: (value: number) => void
-  dir?: 'ltr' | 'rtl'
-  min?: number
-  max?: number
-  step?: number
-  precision?: number
-  allowMouseWheel?: boolean
-  allowOverflow?: boolean
-  clampValueOnBlur?: boolean
-  spinOnPress?: boolean
-  formatOptions?: Intl.NumberFormatOptions
+// Context for sharing state between sub-components
+interface NumericInputContextValue {
+  api: ReturnType<typeof numberInput.connect>
+  size?: 'sm' | 'md' | 'lg'
+  styles: ReturnType<typeof numericInputVariants>
   invalid?: boolean
+  describedBy?: string
 }
 
+const NumericInputContext = createContext<NumericInputContextValue | null>(null)
+
+function useNumericInputContext() {
+  const context = useContext(NumericInputContext)
+  if (!context) {
+    throw new Error(
+      'NumericInput components must be used within NumericInput.Root'
+    )
+  }
+  return context
+}
+
+// Root component
+export type NumericInputProps = Omit<
+  numberInput.Props,
+  'value' | 'defaultValue' | 'id'
+> &
+  Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'children'> & {
+    size?: 'sm' | 'md' | 'lg'
+    value?: number
+    defaultValue?: number
+    onChange?: (value: number) => void
+    precision?: number
+    children?: ReactNode
+    describedBy?: string
+    ref?: RefObject<HTMLDivElement>
+    id?: string
+  }
+
 export function NumericInput({
-  size = 'md',
-  hideControls = true,
-  allowScrubbing = false,
+  id,
+  name,
+  size,
   disabled = false,
+  required = false,
+  pattern,
+  readOnly,
+  inputMode,
+  value,
+  defaultValue,
+  onChange,
+  dir = 'ltr',
+  describedBy,
   min,
   max,
   step = 1,
   precision,
-  value,
-  defaultValue,
-  onChange,
   allowMouseWheel = true,
   allowOverflow,
   clampValueOnBlur = true,
   spinOnPress = true,
-  dir = 'ltr',
   formatOptions,
-  name,
-  className,
   invalid,
-  id: providedId,
+  children,
+  ref,
+  className,
   ...props
 }: NumericInputProps) {
   const generatedId = useId()
-  const id = providedId || generatedId
+  const uniqueId = id || generatedId
 
   const stringValue = value !== undefined ? String(value) : undefined
   const stringDefaultValue =
     defaultValue !== undefined ? String(defaultValue) : undefined
 
   const service = useMachine(numberInput.machine, {
-    id,
+    id: uniqueId,
     min,
     max,
     step,
     name,
     disabled,
+    required,
+    pattern,
+    readOnly,
+    inputMode,
     dir,
     invalid,
     value: stringValue,
@@ -141,43 +173,251 @@ export function NumericInput({
   })
 
   const api = numberInput.connect(service, normalizeProps)
-
-  const { root, container, input, triggerContainer, trigger, scrubber } =
-    numericInput({ size, hideControls })
-
-  const reducedProps = {
-    ...props,
-    size: undefined,
-  }
+  const styles = numericInputVariants({ size })
 
   return (
-    <div className={root({ className })} {...api.getRootProps()}>
+    <NumericInputContext.Provider
+      value={{ api, size, styles, invalid, describedBy }}
+    >
       <div
-        className={container()}
-        {...api.getControlProps()}
-        data-invalid={invalid || undefined}
+        ref={ref}
+        className={styles.root({ className })}
+        {...props}
+        {...api.getRootProps()}
       >
-        {allowScrubbing && (
-          <div className={scrubber()} {...api.getScrubberProps()} />
-        )}
-        <Input className={input()} {...api.getInputProps()} {...reducedProps} />
-        <div className={triggerContainer()}>
-          <Button
-            size="sm"
-            theme="borderless"
-            className={trigger()}
-            {...api.getIncrementTriggerProps()}
-            icon="token-icon-ni-increment"
-          />
-          <Button
-            size="sm"
-            theme="borderless"
-            className={trigger()}
-            {...api.getDecrementTriggerProps()}
-            icon="token-icon-ni-decrement"
-          />
-        </div>
+        {children}
       </div>
+    </NumericInputContext.Provider>
+  )
+}
+
+// Control component (wrapper for input + triggers)
+interface NumericInputControlProps extends ComponentPropsWithoutRef<'div'> {
+  ref?: RefObject<HTMLDivElement>
+}
+
+NumericInput.Control = function NumericInputControl({
+  children,
+  ref,
+  className,
+  ...props
+}: NumericInputControlProps) {
+  const { api, styles, invalid } = useNumericInputContext()
+
+  return (
+    <div
+      ref={ref}
+      className={styles.container({ className })}
+      {...props}
+      {...api.getControlProps()}
+      data-invalid={invalid || undefined}
+    >
+      {children}
     </div>
   )
 }
+
+// Input component
+interface NumericInputInputProps
+  extends Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
+  ref?: RefObject<HTMLInputElement>
+}
+
+NumericInput.Input = function NumericInputInput({
+  ref,
+  className,
+  ...props
+}: NumericInputInputProps) {
+  const { api, styles, describedBy } = useNumericInputContext()
+  const ariaDescribedBy =
+    [props['aria-describedby'], describedBy].filter(Boolean).join(' ') ||
+    undefined
+
+  return (
+    <Input
+      ref={ref}
+      {...props}
+      {...api.getInputProps()}
+      className={styles.input({ className })}
+      aria-describedby={ariaDescribedBy}
+    />
+  )
+}
+
+// Increment Trigger component
+interface NumericInputIncrementTriggerProps
+  extends Omit<ComponentPropsWithoutRef<'button'>, 'children'> {
+  // === Button styling ===
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'warning'
+  theme?: 'solid' | 'light' | 'borderless' | 'outlined'
+  size?: 'sm' | 'md' | 'lg'
+  uppercase?: boolean
+  block?: boolean
+
+  // === Icon ===
+  icon?: IconType
+  iconPosition?: 'left' | 'right'
+
+  // === Loading state ===
+  isLoading?: boolean
+  loadingText?: string
+
+  // === React ===
+  ref?: RefObject<HTMLButtonElement>
+  children?: ReactNode
+}
+
+NumericInput.IncrementTrigger = function NumericInputIncrementTrigger({
+  // Button props with defaults
+  variant = 'primary',
+  theme = 'borderless',
+  size = 'sm',
+  icon = 'token-icon-numeric-input-increment',
+  iconPosition = 'left',
+  uppercase,
+  block,
+  isLoading,
+  loadingText,
+
+  // React
+  ref,
+  className,
+  children,
+  ...props
+}: NumericInputIncrementTriggerProps) {
+  const { api, styles } = useNumericInputContext()
+
+  return (
+    <Button
+      ref={ref}
+      variant={variant}
+      theme={theme}
+      size={size}
+      icon={icon}
+      iconPosition={iconPosition}
+      uppercase={uppercase}
+      block={block}
+      isLoading={isLoading}
+      loadingText={loadingText}
+      className={styles.trigger({ className })}
+      {...props}
+      {...api.getIncrementTriggerProps()}
+    >
+      {children}
+    </Button>
+  )
+}
+
+// Decrement Trigger component
+interface NumericInputDecrementTriggerProps
+  extends Omit<ComponentPropsWithoutRef<'button'>, 'children'> {
+  // === Button styling ===
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'warning'
+  theme?: 'solid' | 'light' | 'borderless' | 'outlined'
+  size?: 'sm' | 'md' | 'lg'
+  uppercase?: boolean
+  block?: boolean
+
+  // === Icon ===
+  icon?: IconType
+  iconPosition?: 'left' | 'right'
+
+  // === Loading state ===
+  isLoading?: boolean
+  loadingText?: string
+
+  // === React ===
+  ref?: RefObject<HTMLButtonElement>
+  children?: ReactNode
+}
+
+NumericInput.DecrementTrigger = function NumericInputDecrementTrigger({
+  // Button props with defaults
+  variant = 'primary',
+  theme = 'borderless',
+  size = 'sm',
+  icon = 'token-icon-numeric-input-decrement',
+  iconPosition = 'left',
+  uppercase,
+  block,
+  isLoading,
+  loadingText,
+
+  // React
+  ref,
+  className,
+  children,
+  ...props
+}: NumericInputDecrementTriggerProps) {
+  const { api, styles } = useNumericInputContext()
+
+  return (
+    <Button
+      ref={ref}
+      variant={variant}
+      theme={theme}
+      size={size}
+      icon={icon}
+      iconPosition={iconPosition}
+      uppercase={uppercase}
+      block={block}
+      isLoading={isLoading}
+      loadingText={loadingText}
+      className={styles.trigger({ className })}
+      {...props}
+      {...api.getDecrementTriggerProps()}
+    >
+      {children}
+    </Button>
+  )
+}
+
+// Scrubber component (for drag-to-change functionality)
+interface NumericInputScrubberProps extends ComponentPropsWithoutRef<'div'> {
+  ref?: RefObject<HTMLDivElement>
+}
+
+NumericInput.Scrubber = function NumericInputScrubber({
+  ref,
+  className,
+  ...props
+}: NumericInputScrubberProps) {
+  const { api, styles } = useNumericInputContext()
+
+  return (
+    <div
+      ref={ref}
+      className={styles.scrubber({ className })}
+      {...props}
+      {...api.getScrubberProps()}
+    />
+  )
+}
+
+// Trigger Container component (wrapper for increment/decrement triggers)
+interface NumericInputTriggerContainerProps
+  extends ComponentPropsWithoutRef<'div'> {
+  ref?: RefObject<HTMLDivElement>
+}
+
+NumericInput.TriggerContainer = function NumericInputTriggerContainer({
+  children,
+  ref,
+  className,
+  ...props
+}: NumericInputTriggerContainerProps) {
+  const { styles } = useNumericInputContext()
+
+  return (
+    <div
+      ref={ref}
+      className={styles.triggerContainer({ className })}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Export main component with all subcomponents
+NumericInput.displayName = 'NumericInput'

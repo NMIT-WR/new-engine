@@ -52,6 +52,8 @@ zerops:
         WE_REDIS_URL: redis://${redis_hostname}:6379
         MEILISEARCH_HOST: http://${search_hostname}:${search_port}
         MEILISEARCH_API_KEY: ${search_masterKey}
+        SENTRY_DSN: ${MEDUSA_SENTRY_DSN}
+        SENTRY_NAME: ${MEDUSA_SENTRY_NAME}
       initCommands:
         # with each deploy
         - zsc execOnce ${appVersionId}_migration -- npm run migrate

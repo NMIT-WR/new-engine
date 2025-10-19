@@ -1,6 +1,7 @@
 @theme static {
   /* === BASE TOKEN MAPPING === */
   --color-tooltip-bg: var(--color-overlay);
+  --color-tooltip-border: var(--color-border-primary);
 
   /* === SIZING & SPACING === */
   --padding-tooltip-sm: var(--spacing-150) var(--spacing-200);
