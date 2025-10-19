@@ -6,15 +6,19 @@ import { NumericInput, type NumericInputProps } from '../atoms/numeric-input'
 
 type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
 
-interface FormNumericInputRawProps extends NumericInputProps {
+interface FormNumericInputProps extends Omit<NumericInputProps, 'children'> {
+  // === Form-specific props ===
   id: string
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
   extraText?: ReactNode
+
+  // === Compound pattern ===
+  children: ReactNode
 }
 
-export function FormNumericInputRaw({
+export function FormNumericInput({
   id,
   label,
   validateStatus = 'default',
@@ -23,64 +27,50 @@ export function FormNumericInputRaw({
   size = 'md',
   required,
   disabled,
-  ...props
-}: FormNumericInputRawProps) {
+  children,
+  ...numericInputProps
+}: FormNumericInputProps) {
+  const helpTextId = helpText ? `${id}-helper` : undefined
   const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
-    <div className="flex flex-col gap-150">
+    <div
+      className="flex flex-col gap-numeric-input-root-md data-[size=lg]:gap-numeric-input-root-lg data-[size=sm]:gap-numeric-input-root-sm"
+      data-size={size}
+    >
       <Label htmlFor={id} size={size} required={required} disabled={disabled}>
         {label}
       </Label>
+
       <NumericInput
         id={id}
         size={size}
         required={required}
         invalid={validateStatus === 'error'}
         disabled={disabled}
-        {...props}
-      />
+        {...numericInputProps}
+      >
+        {children}
+      </NumericInput>
 
-      {/* Status message */}
-      {helpText}
+      {/* Error/Help text */}
+      {helpText &&
+        (validateStatus === 'error' ? (
+          <ErrorText id={helpTextId} size={size} showIcon>
+            {helpText}
+          </ErrorText>
+        ) : (
+          <ExtraText id={helpTextId} size={size}>
+            {helpText}
+          </ExtraText>
+        ))}
 
+      {/* Extra text */}
       {extraText && (
         <ExtraText id={extraTextId} size={size}>
           {extraText}
         </ExtraText>
       )}
     </div>
-  )
-}
-
-export function FormNumericInput({
-  helpText,
-  id,
-  validateStatus,
-  size,
-  ...props
-}: FormNumericInputRawProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined
-
-  return (
-    <FormNumericInputRaw
-      id={id}
-      size={size}
-      validateStatus={validateStatus}
-      helpText={
-        helpText ? (
-          validateStatus === 'error' ? (
-            <ErrorText id={helpTextId} size={size} showIcon>
-              {helpText}
-            </ErrorText>
-          ) : (
-            <ExtraText id={helpTextId} size={size}>
-              {helpText}
-            </ExtraText>
-          )
-        ) : undefined
-      }
-      {...props}
-    />
   )
 }
