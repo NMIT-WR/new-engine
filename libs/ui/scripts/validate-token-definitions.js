@@ -13,7 +13,7 @@ import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { performance } from 'node:perf_hooks'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { globSync } from 'glob'
 
 const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
@@ -494,7 +494,10 @@ async function validateTokenDefinitions({ profile = false } = {}) {
   return false
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (
+  process.argv[1] &&
+  pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url
+) {
   const profile = process.argv.includes('--profile')
   validateTokenDefinitions({ profile })
     .then((ok) => process.exit(ok ? 0 : 1))
