@@ -16,15 +16,19 @@
   --color-tabs-trigger-solid-fg: var(--color-tabs-fg-secondary);
   --color-tabs-trigger-fg-selected: var(--color-tabs-active);
   --color-tabs-trigger-bg-selected: var(--color-tabs-active);
+  --color-tabs-trigger-bg-outline-selected: oklch(
+    from var(--color-tabs-active) l c h /
+    0.1
+  );
 
   --color-tabs-trigger-bg-hover: oklch(
     from var(--color-tabs-bg) calc(l - var(--surface-increment) * 2) c h
   );
 
   /* === INDICATOR === */
-  --color-tabs-indicator: var(--color-tabs-active);
-  --width-tabs-indicator: 1px;
-  --height-tabs-indicator: 1px;
+  --color-tabs-indicator-bg: var(--color-tabs-active);
+  --width-tabs-indicator: 2px;
+  --height-tabs-indicator: 2px;
 
   /* === CONTENT === */
   --color-tabs-content-fg: var(--color-tabs-fg-primary);
@@ -53,7 +57,13 @@
   --text-tabs-content-lg: var(--text-lg);
 
   /* === BORDER & RADIUS === */
+  --border-width-tabs: var(--border-width-md);
+  --color-tabs-border: var(--color-border-primary);
+  --color-tabs-border-selected: var(--color-tabs-active);
   --radius-tabs: 0;
   --radius-tabs-trigger: 0;
   --radius-tabs-indicator: 0;
+
+  /* === DISABLED STATE === */
+  --opacity-tabs-disabled: var(--opacity-disabled);
 }
