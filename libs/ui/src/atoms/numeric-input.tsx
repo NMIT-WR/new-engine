@@ -94,7 +94,7 @@ function useNumericInputContext() {
 // Root component
 export type NumericInputProps = Omit<
   numberInput.Props,
-  'value' | 'defaultValue'
+  'value' | 'defaultValue' | 'id'
 > &
   Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'children'> & {
     size?: 'sm' | 'md' | 'lg'
@@ -105,6 +105,7 @@ export type NumericInputProps = Omit<
     children?: ReactNode
     describedBy?: string
     ref?: RefObject<HTMLDivElement>
+    id?: string
   }
 
 export function NumericInput({
