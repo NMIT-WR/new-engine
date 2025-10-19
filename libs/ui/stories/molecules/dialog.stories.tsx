@@ -681,3 +681,106 @@ export const MobileMenuDrawer: Story = {
     )
   },
 }
+
+// Portal vs No Portal comparison - demonstrates when to use each mode
+export const PortalComparison: Story = {
+  render: () => {
+    const [withPortal, setWithPortal] = useState(false)
+    const [withoutPortal, setWithoutPortal] = useState(false)
+
+    return (
+      <div className="flex flex-col gap-600 p-400">
+        <div className="space-y-200">
+          <h2 className="text-lg font-semibold">
+            Portal Behavior Comparison
+          </h2>
+          <p className="text-sm text-fg-muted">
+            This example demonstrates the difference between using Portal (default) and not using Portal.
+            The container below has overflow:hidden and fixed height to simulate a real-world scenario
+            like a dropdown menu in a scrollable list.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-400">
+          {/* With Portal (default) */}
+          <div className="space-y-200">
+            <h3 className="font-medium">With Portal (default)</h3>
+            <div className="relative h-[200px] overflow-hidden rounded-lg border-2 border-border-primary bg-surface-secondary p-300">
+              <p className="mb-200 text-sm text-fg-muted">
+                Container with overflow:hidden
+              </p>
+              <Dialog
+                open={withPortal}
+                onOpenChange={({ open }) => setWithPortal(open)}
+                triggerText="Open Dialog"
+                title="Dialog with Portal"
+                description="This dialog uses Portal and escapes the container's overflow constraints"
+                position="absolute"
+                placement="center"
+                size="sm"
+                usePortal={true}
+              >
+                <div className="space-y-200">
+                  <p className="text-sm">
+                    This dialog is rendered outside the container using Portal,
+                    so it's not affected by the parent's overflow:hidden.
+                  </p>
+                  <p className="text-sm text-fg-muted">
+                    Perfect for modals, tooltips, and dropdowns that need to
+                    escape container constraints.
+                  </p>
+                </div>
+              </Dialog>
+            </div>
+          </div>
+
+          {/* Without Portal */}
+          <div className="space-y-200">
+            <h3 className="font-medium">Without Portal</h3>
+            <div className="relative h-[200px] overflow-hidden rounded-lg border-2 border-border-primary bg-surface-secondary p-300">
+              <p className="mb-200 text-sm text-fg-muted">
+                Container with overflow:hidden
+              </p>
+              <Dialog
+                open={withoutPortal}
+                onOpenChange={({ open }) => setWithoutPortal(open)}
+                triggerText="Open Dialog"
+                title="Dialog without Portal"
+                description="This dialog stays within the container and respects overflow"
+                position="absolute"
+                placement="center"
+                size="sm"
+                portal={false}
+              >
+                <div className="space-y-200">
+                  <p className="text-sm">
+                    This dialog is rendered inside the container without Portal,
+                    so it gets clipped by the parent's overflow:hidden.
+                  </p>
+                  <p className="text-sm text-fg-muted">
+                    Useful for inline tooltips, context menus that should stay
+                    within their container, or navigation submenus.
+                  </p>
+                </div>
+              </Dialog>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-surface-tertiary p-300">
+          <h4 className="mb-100 font-medium">When to use each:</h4>
+          <ul className="space-y-50 text-sm">
+            <li>
+              <strong>Use Portal (default):</strong> Modals, global notifications,
+              tooltips that need to escape container constraints
+            </li>
+            <li>
+              <strong>Use usePortal={false}:</strong> Navigation submenus,
+              inline context menus, hover cards that should respect DOM hierarchy
+            </li>
+          </ul>
+        </div>
+      </div>
+    )
+  },
+}

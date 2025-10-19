@@ -1,62 +1,4 @@
 services:
-  medusa-fe:
-    restart: unless-stopped
-    container_name: wr_medusa_fe
-    build:
-      context: .
-      dockerfile: docker/development/medusa-fe/Dockerfile
-    volumes:
-      - .:/var/www
-    command: pnpm --filter medusa-fe dev
-    #    command: ["tail" ,"-f"]
-    ports:
-      - "8001:8001"
-    networks:
-      - internal
-    depends_on:
-      - medusa-be
-      - medusa-meilisearch
-      - medusa-minio
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001"]
-      start_period: 10s
-    environment:
-      MEDUSA_BACKEND_URL: ${DC_FE_MEDUSA_BACKEND_URL}
-      NEXT_PUBLIC_BASE_URL: ${DC_FE_NEXT_PUBLIC_BASE_URL}
-      NEXT_PUBLIC_SEARCH_ENDPOINT: ${DC_FE_NEXT_PUBLIC_SEARCH_ENDPOINT}
-      NEXT_PUBLIC_DEFAULT_REGION: ${DC_FE_NEXT_PUBLIC_DEFAULT_REGION}
-      NEXT_PUBLIC_FEATURE_SEARCH_ENABLED: ${DC_FE_NEXT_PUBLIC_FEATURE_SEARCH_ENABLED}
-      NEXT_PUBLIC_INDEX_NAME: ${DC_FE_NEXT_PUBLIC_INDEX_NAME}
-      NEXT_PUBLIC_SEARCH_API_KEY: ${DC_FE_NEXT_PUBLIC_SEARCH_API_KEY}
-      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_FE_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
-  medusa-demo:
-    restart: unless-stopped
-    container_name: wr_medusa_demo
-    build:
-      context: .
-      dockerfile: docker/development/medusa-fe/Dockerfile
-    volumes:
-      - .:/var/www
-    command: pnpm --filter frontend-demo dev
-#    command: ["tail" ,"-f"]
-    ports:
-      - "8000:3000"
-    networks:
-      - internal
-    depends_on:
-      - medusa-be
-      - medusa-meilisearch
-      - medusa-minio
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      start_period: 10s
-    environment:
-      NODE_ENV: ${DC_DEMO_MEDUSA_NODE_ENV}
-      RESEND_API_KEY: ${DC_DEMO_MEDUSA_RESEND_API_KEY}
-      CONTACT_EMAIL: ${DC_DEMO_MEDUSA_CONTACT_EMAIL}
-      RESEND_FROM_EMAIL: ${DC_DEMO_MEDUSA_RESEND_FROM_EMAIL}
-      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${DC_DEMO_NEXT_PUBLIC_MEDUSA_BACKEND_URL}
-      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_DEMO_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
   medusa-be:
     restart: unless-stopped
     container_name: wr_medusa_be
@@ -98,6 +40,8 @@ services:
       STORE_CORS: ${DC_STORE_CORS}
       ADMIN_CORS: ${DC_ADMIN_CORS}
       AUTH_CORS: ${DC_AUTH_CORS}
+      SENTRY_NAME: ${DC_SENTRY_NAME}
+      SENTRY_DSN: ${DC_SENTRY_DSN}
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:

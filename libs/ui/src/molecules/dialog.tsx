@@ -6,8 +6,8 @@ import { Button } from '../atoms/button'
 
 const dialogVariants = tv({
   slots: {
-    backdrop: ['fixed inset-0 z-(--z-dialog-backdrop)'],
-    positioner: ['fixed inset-0 z-(--z-dialog-positioner) flex'],
+    backdrop: ['inset-0 z-(--z-dialog-backdrop)'],
+    positioner: ['inset-0 z-(--z-dialog-positioner) flex'],
     content: [
       'relative flex flex-col p-dialog-content gap-dialog-content',
       'bg-dialog-content-bg text-dialog-content-fg',
@@ -51,6 +51,24 @@ const dialogVariants = tv({
       bottom: {
         positioner: 'items-end justify-stretch',
         content: 'w-full rounded-dialog-bottom border-b-0',
+      },
+    },
+    position: {
+      fixed: {
+        backdrop: 'fixed',
+        positioner: 'fixed',
+      },
+      absolute: {
+        backdrop: 'absolute',
+        positioner: 'absolute',
+      },
+      sticky: {
+        backdrop: 'sticky',
+        positioner: 'sticky',
+      },
+      relative: {
+        backdrop: 'relative',
+        positioner: 'relative',
       },
     },
     size: {
@@ -141,6 +159,7 @@ const dialogVariants = tv({
     placement: 'center',
     behavior: 'modal',
     size: 'md',
+    position: 'fixed',
   },
 })
 
@@ -164,6 +183,7 @@ export interface DialogProps extends VariantProps<typeof dialogVariants> {
   hideCloseButton?: boolean
   className?: string
   modal?: boolean
+  portal?: boolean
 }
 
 export function Dialog({
@@ -174,6 +194,7 @@ export function Dialog({
   finalFocusEl,
   role = 'dialog',
   placement = 'center',
+  position = 'fixed',
   size = 'md',
   behavior = 'modal',
   closeOnEscape = true,
@@ -189,6 +210,7 @@ export function Dialog({
   actions,
   className,
   modal = true,
+  portal = true,
 }: DialogProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -218,7 +240,39 @@ export function Dialog({
     description: descriptionSlot,
     closeTrigger,
     actions: actionsSlot,
-  } = dialogVariants({ placement, size, behavior })
+  } = dialogVariants({ placement, size, behavior, position })
+
+  const dialogContent = () => {
+    return (
+      <>
+        <div className={backdrop()} {...api.getBackdropProps()} />
+        <div className={positioner()} {...api.getPositionerProps()}>
+          <div className={content({ className })} {...api.getContentProps()}>
+            {!hideCloseButton && (
+              <Button
+                theme="borderless"
+                className={closeTrigger()}
+                {...api.getCloseTriggerProps()}
+                icon="token-icon-dialog-close"
+              />
+            )}
+            {title && (
+              <h2 className={titleSlot()} {...api.getTitleProps()}>
+                {title}
+              </h2>
+            )}
+            {description && (
+              <div className={descriptionSlot()} {...api.getDescriptionProps()}>
+                {description}
+              </div>
+            )}
+            {children}
+            {actions && <div className={actionsSlot()}>{actions}</div>}
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
@@ -233,39 +287,8 @@ export function Dialog({
         </Button>
       )}
 
-      {api.open && (
-        <Portal>
-          <div className={backdrop()} {...api.getBackdropProps()} />
-          <div className={positioner()} {...api.getPositionerProps()}>
-            <div className={content({ className })} {...api.getContentProps()}>
-              {!hideCloseButton && (
-                <Button
-                  theme="borderless"
-                  className={closeTrigger()}
-                  {...api.getCloseTriggerProps()}
-                  icon="token-icon-dialog-close"
-                />
-              )}
-              {title && (
-                <h2 className={titleSlot()} {...api.getTitleProps()}>
-                  {title}
-                </h2>
-              )}
-              {description && (
-                <div
-                  className={descriptionSlot()}
-                  {...api.getDescriptionProps()}
-                >
-                  {description}
-                </div>
-              )}
-              <div className="flex-grow overflow-y-auto">{children}</div>
-
-              {actions && <div className={actionsSlot()}>{actions}</div>}
-            </div>
-          </div>
-        </Portal>
-      )}
+      {api.open &&
+        (portal ? <Portal>{dialogContent()}</Portal> : dialogContent())}
     </>
   )
 }

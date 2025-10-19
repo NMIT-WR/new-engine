@@ -5,7 +5,6 @@ import { Image } from '../../src/atoms/image'
 import { Input } from '../../src/atoms/input'
 import { Link } from '../../src/atoms/link'
 import { Footer } from '../../src/organisms/footer'
-import React from 'react'
 
 const meta: Meta<typeof Footer> = {
   title: 'Organisms/Footer',
@@ -270,7 +269,6 @@ export const Layouts: Story = {
   ),
 }
 
-
 // N1 Shop Footer
 export const N1ShopFooter: Story = {
   render: () => (
@@ -371,82 +369,103 @@ export const N1ShopFooter: Story = {
 export const TailwindVarianta1: Story = {
   render: () => (
     <Footer className="px-0 py-0" direction="vertical">
-      <Footer.Container className="max-w-full px-300 py-800 grid-cols-1 md:grid-cols-[300px_1fr_1fr_1fr_1fr]">
-          {/* Brand Section */}
-          <Footer.Section className="md:col-span-1">
-            <Image
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-              alt="Company Logo"
-              className="w-400 h-400 mb-300"
-            />
-            <Footer.Text className='mb-200'>
-              Making the world a better place through constructing elegant hierarchies.
-            </Footer.Text>
-            {/* Social Icons */}
-            <Footer.List className="flex-row justify-around">
-              <Footer.Link href="https://facebook.com" external>
-                <Icon icon="icon-[mdi--facebook]" className="text-slate-400 hover:text-white" size="lg" />
-              </Footer.Link>
-              <Footer.Link href="https://instagram.com" external>
-                <Icon icon="icon-[mdi--instagram]" className="text-slate-400 hover:text-white" size="lg" />
-              </Footer.Link>
-              <Footer.Link href="https://twitter.com" external>
-                <Icon icon="icon-[mdi--twitter]" className="text-slate-400 hover:text-white" size="lg" />
-              </Footer.Link>
-              <Footer.Link href="https://github.com" external>
-                <Icon icon="icon-[mdi--github]" className="text-slate-400 hover:text-white" size="lg" />
-              </Footer.Link>
-              <Footer.Link href="https://youtube.com" external>
-                <Icon icon="icon-[mdi--youtube]" className="text-slate-400 hover:text-white" size="lg" />
-              </Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+      <Footer.Container className="max-w-full grid-cols-1 px-300 py-800 md:grid-cols-[300px_1fr_1fr_1fr_1fr]">
+        {/* Brand Section */}
+        <Footer.Section className="md:col-span-1">
+          <Image
+            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+            alt="Company Logo"
+            className="mb-300 h-400 w-400"
+          />
+          <Footer.Text className="mb-200">
+            Making the world a better place through constructing elegant
+            hierarchies.
+          </Footer.Text>
+          {/* Social Icons */}
+          <Footer.List className="flex-row justify-around">
+            <Footer.Link href="https://facebook.com" external>
+              <Icon
+                icon="icon-[mdi--facebook]"
+                className="text-slate-400 hover:text-white"
+                size="lg"
+              />
+            </Footer.Link>
+            <Footer.Link href="https://instagram.com" external>
+              <Icon
+                icon="icon-[mdi--instagram]"
+                className="text-slate-400 hover:text-white"
+                size="lg"
+              />
+            </Footer.Link>
+            <Footer.Link href="https://twitter.com" external>
+              <Icon
+                icon="icon-[mdi--twitter]"
+                className="text-slate-400 hover:text-white"
+                size="lg"
+              />
+            </Footer.Link>
+            <Footer.Link href="https://github.com" external>
+              <Icon
+                icon="icon-[mdi--github]"
+                className="text-slate-400 hover:text-white"
+                size="lg"
+              />
+            </Footer.Link>
+            <Footer.Link href="https://youtube.com" external>
+              <Icon
+                icon="icon-[mdi--youtube]"
+                className="text-slate-400 hover:text-white"
+                size="lg"
+              />
+            </Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Solutions Section */}
-          <Footer.Section>
-            <Footer.Title className="mb-300">Solutions</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/marketing">Marketing</Footer.Link>
-              <Footer.Link href="/analytics">Analytics</Footer.Link>
-              <Footer.Link href="/automation">Automation</Footer.Link>
-              <Footer.Link href="/commerce">Commerce</Footer.Link>
-              <Footer.Link href="/insights">Insights</Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Solutions Section */}
+        <Footer.Section>
+          <Footer.Title className="mb-300">Solutions</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/marketing">Marketing</Footer.Link>
+            <Footer.Link href="/analytics">Analytics</Footer.Link>
+            <Footer.Link href="/automation">Automation</Footer.Link>
+            <Footer.Link href="/commerce">Commerce</Footer.Link>
+            <Footer.Link href="/insights">Insights</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Support Section */}
-          <Footer.Section>
-            <Footer.Title className="mb-300">Support</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/submit-ticket">Submit ticket</Footer.Link>
-              <Footer.Link href="/documentation">Documentation</Footer.Link>
-              <Footer.Link href="/guides">Guides</Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Support Section */}
+        <Footer.Section>
+          <Footer.Title className="mb-300">Support</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/submit-ticket">Submit ticket</Footer.Link>
+            <Footer.Link href="/documentation">Documentation</Footer.Link>
+            <Footer.Link href="/guides">Guides</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Company Section */}
-          <Footer.Section>
-            <Footer.Title className="mb-300">Company</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/about">About</Footer.Link>
-              <Footer.Link href="/blog">Blog</Footer.Link>
-              <Footer.Link href="/jobs">Jobs</Footer.Link>
-              <Footer.Link href="/press">Press</Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Company Section */}
+        <Footer.Section>
+          <Footer.Title className="mb-300">Company</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/about">About</Footer.Link>
+            <Footer.Link href="/blog">Blog</Footer.Link>
+            <Footer.Link href="/jobs">Jobs</Footer.Link>
+            <Footer.Link href="/press">Press</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Legal Section */}
-          <Footer.Section>
-            <Footer.Title className="mb-300">Legal</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/terms">Terms of service</Footer.Link>
-              <Footer.Link href="/privacy">Privacy policy</Footer.Link>
-              <Footer.Link href="/license">License</Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Legal Section */}
+        <Footer.Section>
+          <Footer.Title className="mb-300">Legal</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/terms">Terms of service</Footer.Link>
+            <Footer.Link href="/privacy">Privacy policy</Footer.Link>
+            <Footer.Link href="/license">License</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
       </Footer.Container>
 
-      <Footer.Divider className='py-0 mt-0 mb-0' />
+      <Footer.Divider className="mt-0 mb-0 py-0" />
 
       <Footer.Bottom className="py-300">
         <Footer.Text>
@@ -461,103 +480,70 @@ export const TailwindVarianta1: Story = {
 export const TailwindVarianta2: Story = {
   render: () => (
     <Footer className="px-0 py-0" direction="vertical">
-      <Footer.Container className="max-w-full px-300 py-800 grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
-          {/* Solutions Section */}
-          <Footer.Section>
-            <Footer.Title>Solutions</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/marketing">
-                Marketing
-              </Footer.Link>
-              <Footer.Link href="/analytics">
-                Analytics
-              </Footer.Link>
-              <Footer.Link href="/automation">
-                Automation
-              </Footer.Link>
-              <Footer.Link href="/commerce">
-                Commerce
-              </Footer.Link>
-              <Footer.Link href="/insights">
-                Insights
-              </Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+      <Footer.Container className="max-w-full grid-cols-1 px-300 py-800 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+        {/* Solutions Section */}
+        <Footer.Section>
+          <Footer.Title>Solutions</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/marketing">Marketing</Footer.Link>
+            <Footer.Link href="/analytics">Analytics</Footer.Link>
+            <Footer.Link href="/automation">Automation</Footer.Link>
+            <Footer.Link href="/commerce">Commerce</Footer.Link>
+            <Footer.Link href="/insights">Insights</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Support Section */}
-          <Footer.Section>
-            <Footer.Title >Support</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/submit-ticket" >
-                Submit ticket
-              </Footer.Link>
-              <Footer.Link href="/documentation">
-                Documentation
-              </Footer.Link>
-              <Footer.Link href="/guides">
-                Guides
-              </Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Support Section */}
+        <Footer.Section>
+          <Footer.Title>Support</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/submit-ticket">Submit ticket</Footer.Link>
+            <Footer.Link href="/documentation">Documentation</Footer.Link>
+            <Footer.Link href="/guides">Guides</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Company Section */}
-          <Footer.Section>
-            <Footer.Title >Company</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/about" >
-                About
-              </Footer.Link>
-              <Footer.Link href="/blog" >
-                Blog
-              </Footer.Link>
-              <Footer.Link href="/jobs">
-                Jobs
-              </Footer.Link>
-              <Footer.Link href="/press">
-                Press
-              </Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Company Section */}
+        <Footer.Section>
+          <Footer.Title>Company</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/about">About</Footer.Link>
+            <Footer.Link href="/blog">Blog</Footer.Link>
+            <Footer.Link href="/jobs">Jobs</Footer.Link>
+            <Footer.Link href="/press">Press</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Legal Section */}
-          <Footer.Section>
-            <Footer.Title >Legal</Footer.Title>
-            <Footer.List>
-              <Footer.Link href="/terms">
-                Terms of service
-              </Footer.Link>
-              <Footer.Link href="/privacy">
-                Privacy policy
-              </Footer.Link>
-              <Footer.Link href="/license">
-                License
-              </Footer.Link>
-            </Footer.List>
-          </Footer.Section>
+        {/* Legal Section */}
+        <Footer.Section>
+          <Footer.Title>Legal</Footer.Title>
+          <Footer.List>
+            <Footer.Link href="/terms">Terms of service</Footer.Link>
+            <Footer.Link href="/privacy">Privacy policy</Footer.Link>
+            <Footer.Link href="/license">License</Footer.Link>
+          </Footer.List>
+        </Footer.Section>
 
-          {/* Newsletter Section */}
-          <Footer.Section>
-            <Footer.Title >
-              Subscribe to our newsletter
-            </Footer.Title>
-            <Footer.Text >
-              The latest news, articles, and resources, sent to your inbox weekly.
-            </Footer.Text>
-            <div className="flex gap-200">
-              <Input
-                placeholder="Enter your email"
-                className="py-100"
-                size="sm"
-              />
-              <Button variant="primary" size="sm">
-                Subscribe
-              </Button>
-            </div>
-          </Footer.Section>
-
+        {/* Newsletter Section */}
+        <Footer.Section>
+          <Footer.Title>Subscribe to our newsletter</Footer.Title>
+          <Footer.Text>
+            The latest news, articles, and resources, sent to your inbox weekly.
+          </Footer.Text>
+          <div className="flex gap-200">
+            <Input
+              placeholder="Enter your email"
+              className="py-100"
+              size="sm"
+            />
+            <Button variant="primary" size="sm">
+              Subscribe
+            </Button>
+          </div>
+        </Footer.Section>
       </Footer.Container>
 
-      <Footer.Divider className='py-0 mt-0 mb-0' />
+      <Footer.Divider className="mt-0 mb-0 py-0" />
 
       <Footer.Bottom>
         <Footer.Text>
@@ -567,19 +553,39 @@ export const TailwindVarianta2: Story = {
         {/* Social Icons */}
         <div className="flex gap-200">
           <Footer.Link href="https://facebook.com" external>
-            <Icon icon="icon-[mdi--facebook]" className="text-gray-400 hover:text-white" size="lg" />
+            <Icon
+              icon="icon-[mdi--facebook]"
+              className="text-gray-400 hover:text-white"
+              size="lg"
+            />
           </Footer.Link>
           <Footer.Link href="https://instagram.com" external>
-            <Icon icon="icon-[mdi--instagram]" className="text-gray-400 hover:text-white" size="lg" />
+            <Icon
+              icon="icon-[mdi--instagram]"
+              className="text-gray-400 hover:text-white"
+              size="lg"
+            />
           </Footer.Link>
           <Footer.Link href="https://twitter.com" external>
-            <Icon icon="icon-[mdi--twitter]" className="text-gray-400 hover:text-white" size="lg" />
+            <Icon
+              icon="icon-[mdi--twitter]"
+              className="text-gray-400 hover:text-white"
+              size="lg"
+            />
           </Footer.Link>
           <Footer.Link href="https://github.com" external>
-            <Icon icon="icon-[mdi--github]" className="text-gray-400 hover:text-white" size="lg" />
+            <Icon
+              icon="icon-[mdi--github]"
+              className="text-gray-400 hover:text-white"
+              size="lg"
+            />
           </Footer.Link>
           <Footer.Link href="https://youtube.com" external>
-            <Icon icon="icon-[mdi--youtube]" className="text-gray-400 hover:text-white" size="lg" />
+            <Icon
+              icon="icon-[mdi--youtube]"
+              className="text-gray-400 hover:text-white"
+              size="lg"
+            />
           </Footer.Link>
         </div>
       </Footer.Bottom>
