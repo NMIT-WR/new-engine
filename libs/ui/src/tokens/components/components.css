@@ -2,8 +2,8 @@
 @import "./atoms/_button.css";
 @import "./atoms/_icon.css";
 @import "./atoms/_input.css";
+@import "./atoms/_numeric-input.css";
 @import "./atoms/_rating.css";
-@import "./atoms/_tabs.css";
 @import "./atoms/_textarea.css";
 @import "./atoms/_tooltip.css";
 
@@ -14,10 +14,10 @@
 @import "./molecules/_color-select.css";
 @import "./molecules/_combobox.css";
 @import "./molecules/_dialog.css";
-@import "./molecules/_numeric-input.css";
 @import "./molecules/_pagination.css";
 @import "./molecules/_popover.css";
 @import "./molecules/_menu.css";
+@import "./molecules/_tabs.css";
 @import "./molecules/_product-card.css";
 @import "./molecules/_slider.css";
 @import "./molecules/_search-form.css";
@@ -27,4 +27,5 @@
 @import "./molecules/_toast.css";
 @import "./molecules/_tree-view.css";
 
+@import "./organisms/_table.css";
 @import "./organisms/_footer.css";
