@@ -88,7 +88,6 @@
     "@storybook/react": "^8.6.12",
     "@storybook/test": "^8.6.12",
     "@tailwindcss/postcss": "^4.1.6",
-    "@types/react": "^19.1.4",
     "@typescript-eslint/parser": "^8.33.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -96,8 +95,6 @@
     "eslint-plugin-tailwindcss": "beta",
     "glob": "^11.0.2",
     "next": "^15.5.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
     "storybook": "^8.6.12",
     "storybook-addon-rslib": "^1.0.1",
     "storybook-react-rsbuild": "^1.0.1",
@@ -107,6 +104,8 @@
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.1",
     "react": ">=19.1.0",
     "react-dom": ">=19.1.0"
   }

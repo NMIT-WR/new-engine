@@ -125,9 +125,12 @@ export function Tooltip({
     size,
   })
 
+  const triggerProps = api.getTriggerProps()
+  const { onBeforeInput, ...spanCompatibleProps } = triggerProps
+
   return (
     <>
-      <span {...api.getTriggerProps()} ref={ref} className={trigger()}>
+      <span {...spanCompatibleProps} ref={ref} className={trigger()}>
         {children}
       </span>
       <Portal>
