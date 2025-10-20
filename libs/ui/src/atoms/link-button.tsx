@@ -38,7 +38,7 @@ export type LinkButtonProps<T extends ElementType = 'a'> = VariantProps<
   ref?: Ref<HTMLAnchorElement>
 } & Omit<
     ComponentPropsWithoutRef<T>,
-    'as' | 'ref' | keyof VariantProps<typeof linkButton>
+    'as' | 'ref' | 'children' | keyof VariantProps<typeof linkButton>
   >
 
 export function LinkButton<T extends ElementType = 'a'>({
