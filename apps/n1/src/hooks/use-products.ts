@@ -1,5 +1,6 @@
 import { cacheConfig } from '@/lib/cache-config'
 import { PRODUCT_LIMIT } from '@/lib/constants'
+import { fetchLogger, logQuery } from '@/lib/loggers'
 import { buildProductQueryParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
@@ -16,6 +17,8 @@ interface UseProductsProps {
 interface UseProductsReturn {
   products: StoreProduct[]
   isLoading: boolean
+  isFetching: boolean
+  isSuccess: boolean
   error: string | null
   totalCount: number
   currentPage: number
@@ -39,21 +42,38 @@ export function useProducts({
     limit,
   })
 
-  const { data, isLoading, error, dataUpdatedAt } = useQuery({
-    queryKey: queryKeys.products.list(queryParams),
-    queryFn: () => getProducts(queryParams),
-    enabled: !!regionId,
-    ...cacheConfig.semiStatic,
-  })
+  const { data, isLoading, error, dataUpdatedAt, isFetching, isSuccess } =
+    useQuery({
+      queryKey: queryKeys.products.list(queryParams),
+      queryFn: async () => {
+        // queryFn: async ({ signal }) => {
+        const start = performance.now()
+        //const result = await getProducts(queryParams, signal)
+        const result = await getProducts(queryParams)
+        const duration = performance.now() - start
 
-  // Dev logging
+        if (process.env.NODE_ENV === 'development') {
+          const categoryLabel = category_id?.[0]?.slice(-6) || 'all'
+          fetchLogger.current(categoryLabel, duration)
+        }
+
+        return result
+      },
+      enabled: !!regionId,
+      ...cacheConfig.semiStatic,
+    })
+
+  // Enhanced dev logging with cache-logger
   if (process.env.NODE_ENV === 'development' && data) {
-    const cacheAge = Date.now() - dataUpdatedAt
-    const source = cacheAge < 100 ? 'Fresh' : 'Cache'
     const categoryName = category_id?.[0]?.slice(-6) || 'all'
-    console.log(
-      `[Products] ${source} | ${categoryName} p${page} (${data.count})`
-    )
+    const operation = `useProducts(${categoryName} p${page})`
+
+    logQuery(operation, queryKeys.products.list(queryParams), {
+      isLoading,
+      isFetching,
+      isSuccess,
+      dataUpdatedAt,
+    })
   }
 
   const totalCount = data?.count || 0
@@ -62,6 +82,8 @@ export function useProducts({
   return {
     products: data?.products || [],
     isLoading,
+    isFetching,
+    isSuccess,
     error:
       error instanceof Error ? error.message : error ? String(error) : null,
     totalCount,
