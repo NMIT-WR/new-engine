@@ -1,4 +1,5 @@
 import { cacheConfig } from '@/lib/cache-config'
+import { prefetchLogger } from '@/lib/loggers'
 import { buildPrefetchParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
@@ -24,17 +25,27 @@ export function usePrefetchProducts() {
       const queryKey = queryKeys.products.list(queryParams)
       const cached = queryClient.getQueryData(queryKey)
 
-      if (!cached) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`[Prefetch] Category ${categoryId[0]} (page 1)`)
-        }
+      if (cached) {
+        const label = categoryId[0].slice(-6)
+        prefetchLogger.cacheHit('Categories', label)
+      } else {
+        const label =
+          categoryId.length === 1
+            ? categoryId[0].slice(-6)
+            : `${categoryId[0].slice(-6)} +${categoryId.length - 1}`
+        const start = performance.now()
+
+        prefetchLogger.start('Categories', label)
+
         await queryClient.prefetchQuery({
           queryKey,
           queryFn: () => getProducts(queryParams),
+          //queryFn: ({ signal }) => getProducts(queryParams, signal),
           ...cacheConfig.semiStatic,
         })
-      } else if (process.env.NODE_ENV === 'development') {
-        console.log(`[Cache hit] Category ${categoryId[0]}`)
+
+        const duration = performance.now() - start
+        prefetchLogger.complete('Categories', label, duration)
       }
     },
     [queryClient, regionId, countryCode]
