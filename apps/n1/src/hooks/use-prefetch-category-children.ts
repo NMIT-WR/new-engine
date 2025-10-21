@@ -2,29 +2,22 @@
 
 import { allCategories } from '@/data/static/categories'
 import { ALL_CATEGORIES_MAP } from '@/lib/constants'
-import { chunk } from '@/utils/helpers/array'
-import { sleep } from '@/utils/helpers/async'
+import { prefetchLogger } from '@/lib/loggers'
+// import { useQueryClient } from '@tanstack/react-query'  // Only needed for cancellation
 import { useEffect } from 'react'
 import { usePrefetchProducts } from './use-prefetch-products'
 import { useRegion } from './use-region'
 
 interface UsePrefetchCategoryChildrenParams {
+  enabled?: boolean
   categoryHandle: string
 }
 
-/**
- * Progressively prefetches category children in 3 sequential phases:
- * - Phase 1: Direct children (visible in aside) - waits for completion
- * - Phase 2: Siblings - waits for completion
- * - Phase 3: All nested leaf categories - chunked (5 at a time) with 200ms pauses
- */
-
-const DEFAULT_PAUSE = 200
-const DEFAULT_CHUNK_SIZE = 5
-
 export function usePrefetchCategoryChildren({
+  enabled = true,
   categoryHandle,
 }: UsePrefetchCategoryChildrenParams) {
+  // const queryClient = useQueryClient()  // Only needed for cancellation
   const currentCategory = allCategories.find(
     (cat) => cat.handle === categoryHandle
   )
@@ -32,22 +25,24 @@ export function usePrefetchCategoryChildren({
   const { prefetchCategoryProducts } = usePrefetchProducts()
 
   useEffect(() => {
-    if (!currentCategory || !regionId) return
+    if (!enabled || !currentCategory || !regionId) return
 
     let isCancelled = false
+
+    // Collect all category IDs that will be prefetched
+    const children = allCategories.filter(
+      (cat) => cat.parent_category_id === currentCategory.id
+    )
+    // const childCategoryIds = children
+    //   .flatMap((child) => ALL_CATEGORIES_MAP[child.handle] || [])
+    //   .filter((id): id is string => !!id)
 
     // Sequential prefetch with phases
     ;(async () => {
       // PHASE 1: Direct children - wait for completion
-      const children = allCategories.filter(
-        (cat) => cat.parent_category_id === currentCategory.id
-      )
-
       if (children.length > 0) {
-        if (process.env.NODE_ENV === 'development') {
-          const childHandles = children.map((c) => c.handle).join(', ')
-          console.log(`[Prefetch Children] Phase 1: ${childHandles}`)
-        }
+        const childHandles = children.map((c) => c.handle).join(', ')
+        prefetchLogger.info('Children', `Phase 1: ${childHandles}`)
 
         await Promise.all(
           children.map((child) => {
@@ -60,92 +55,49 @@ export function usePrefetchCategoryChildren({
         )
 
         if (isCancelled) return
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[Prefetch Children] Phase 1 complete')
-        }
+        prefetchLogger.info('Children', 'Phase 1 complete')
       }
-
-      // PHASE 2: Siblings - wait for completion
-      /*if (currentCategory.parent_category_id) {
-        const siblings = allCategories.filter(
-          (cat) =>
-            cat.parent_category_id === currentCategory.parent_category_id &&
-            cat.id !== currentCategory.id
-        )
-
-        if (siblings.length > 0) {
-          if (process.env.NODE_ENV === 'development') {
-            const siblingHandles = siblings.map((s) => s.handle).join(', ')
-            console.log(`[Prefetch Children] Phase 2: ${siblingHandles}`)
-          }
-
-          await Promise.all(
-            siblings.map((sibling) => {
-              const categoryIds = ALL_CATEGORIES_MAP[sibling.handle]
-              if (categoryIds?.length) {
-                return prefetchCategoryProducts(categoryIds)
-              }
-              return Promise.resolve()
-            })
-          )
-
-          if (isCancelled) return
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Prefetch Children] Phase 2 complete')
-          }
-        }
-      }*/
-
-      // PHASE 3: Nested leafs - chunked lazy loading (5 at a time)
-      const allLeafIds = ALL_CATEGORIES_MAP[categoryHandle]
-
-     /* if (allLeafIds?.length) {
-        const leafCategories = allCategories.filter((cat) =>
-          allLeafIds.includes(cat.id)
-        )
-
-        const uniqueLeafs = leafCategories.filter(
-          (leaf, index, self) =>
-            index === self.findIndex((l) => l.id === leaf.id)
-        )
-
-        if (uniqueLeafs.length > 0) {
-          if (process.env.NODE_ENV === 'development') {
-            console.log(
-              `[Prefetch Children] Phase 3: ${uniqueLeafs.length} leafs under ${categoryHandle} (chunked)`
-            )
-          }
-
-          const chunks = chunk(uniqueLeafs, DEFAULT_CHUNK_SIZE)
-
-          for (const [index, leafChunk] of chunks.entries()) {
-            if (isCancelled) return
-
-            await Promise.all(
-              leafChunk.map((leaf) => prefetchCategoryProducts([leaf.id]))
-            )
-
-            if (process.env.NODE_ENV === 'development') {
-              console.log(
-                `[Prefetch Children] Phase 3 chunk ${index + 1}/${chunks.length} complete`
-              )
-            }
-
-            // Pause between chunks (except last one)
-            if (index < chunks.length - 1) {
-              await sleep(DEFAULT_PAUSE)
-            }
-          }
-
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Prefetch Children] Phase 3 complete')
-          }
-        }
-      }*/
     })()
 
     return () => {
       isCancelled = true
+
+      // CANCELLATION SUPPORT (requires AbortSignal in getProducts)
+      // Cancel ongoing prefetch requests for this category's children
+      // if (childCategoryIds.length > 0) {
+      //   queryClient.cancelQueries({
+      //     predicate: (query) => {
+      //       const queryKey = query.queryKey
+      //       // Match: ['n1', 'products', 'list', { category_id: [...], ... }]
+      //       if (
+      //         queryKey[0] === 'n1' &&
+      //         queryKey[1] === 'products' &&
+      //         queryKey[2] === 'list'
+      //       ) {
+      //         const params = queryKey[3] as { category_id?: string[] }
+      //         const queryCategoryIds = params?.category_id || []
+
+      //         // Cancel if query uses any of our child category IDs
+      //         return queryCategoryIds.some((id) =>
+      //           childCategoryIds.includes(id)
+      //         )
+      //       }
+      //       return false
+      //     },
+      //   })
+
+      //   prefetchLogger.info(
+      //     'Children',
+      //     `Cancelled ${childCategoryIds.length} child prefetches for ${categoryHandle}`
+      //   )
+      // }
     }
-  }, [categoryHandle, regionId, currentCategory, prefetchCategoryProducts])
+  }, [
+    enabled,
+    categoryHandle,
+    regionId,
+    currentCategory,
+    prefetchCategoryProducts,
+    // queryClient,  // Only needed for cancellation
+  ])
 }
