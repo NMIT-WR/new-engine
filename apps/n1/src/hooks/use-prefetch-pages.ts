@@ -1,6 +1,7 @@
 'use client'
 
 import { cacheConfig } from '@/lib/cache-config'
+import { prefetchLogger } from '@/lib/loggers'
 import { buildProductQueryParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'
@@ -8,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 interface UsePrefetchPagesParams {
+  enabled?: boolean
   currentPage: number
   hasNextPage: boolean
   hasPrevPage: boolean
@@ -18,10 +20,11 @@ interface UsePrefetchPagesParams {
   countryCode?: string
 }
 
-/**
- * Prefetches surrounding pages for instant navigation
- */
+const MEDIUM_PRIORITY_DELAY = 500
+const LOW_PRIORITY_DELAY = 1500
+
 export function usePrefetchPages({
+  enabled = true,
   currentPage,
   hasNextPage,
   hasPrevPage,
@@ -34,54 +37,96 @@ export function usePrefetchPages({
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (!regionId) return
+    if (!enabled || !regionId) return
 
-    const pagesToPrefetch: number[] = []
+    const categoryName = category_id[0]?.slice(-6) || 'unknown'
+    const timers: NodeJS.Timeout[] = []
 
-    if (currentPage !== 1) {
-      pagesToPrefetch.push(1)
-    }
+    // Helper: Prefetch batch of pages with logging
+    const prefetchBatch = (pages: number[], priority: string) => {
+      if (pages.length === 0) return
 
-    if (hasPrevPage) {
-      pagesToPrefetch.push(currentPage - 1)
-      if (currentPage - 2 >= 1) {
-        pagesToPrefetch.push(currentPage - 2)
-      }
-    }
+      const pageLabels = pages.map((p) => `p${p}`).join(', ')
+      const start = performance.now()
 
-    if (hasNextPage) {
-      pagesToPrefetch.push(currentPage + 1)
-      if (currentPage + 2 <= totalPages) {
-        pagesToPrefetch.push(currentPage + 2)
-      }
-    }
+      prefetchLogger.start(
+        'Pages',
+        `${categoryName}: ${pageLabels} (${priority})`
+      )
 
-    if (totalPages > 1 && currentPage !== totalPages) {
-      pagesToPrefetch.push(totalPages)
-    }
+      Promise.all(
+        pages.map((page) => {
+          const queryParams = buildProductQueryParams({
+            category_id,
+            region_id: regionId,
+            country_code: countryCode,
+            page,
+            limit: pageSize,
+          })
 
-    if (process.env.NODE_ENV === 'development' && pagesToPrefetch.length > 0) {
-      const categoryName = category_id[0]?.slice(-6) || 'unknown'
-      const pages = pagesToPrefetch.map((p) => `p${p}`).join(', ')
-      console.log(`[Prefetch Pages] ${categoryName}: ${pages}`)
-    }
-
-    for (const page of pagesToPrefetch) {
-      const queryParams = buildProductQueryParams({
-        category_id,
-        region_id: regionId,
-        country_code: countryCode,
-        page,
-        limit: pageSize,
+          return queryClient.prefetchQuery({
+            queryKey: queryKeys.products.list(queryParams),
+            // queryFn: ({ signal }) => getProducts(queryParams, signal),
+            queryFn: () => getProducts(queryParams),
+            ...cacheConfig.semiStatic,
+          })
+        })
+      ).then(() => {
+        const duration = performance.now() - start
+        prefetchLogger.complete(
+          'Pages',
+          `${categoryName}: ${pageLabels} (${priority})`,
+          duration
+        )
       })
+    }
 
-      queryClient.prefetchQuery({
-        queryKey: queryKeys.products.list(queryParams),
-        queryFn: () => getProducts(queryParams),
-        ...cacheConfig.semiStatic,
-      })
+    // Build priority groups
+    const high = hasNextPage ? [currentPage + 1] : []
+
+    const medium =
+      hasNextPage && currentPage + 2 <= totalPages ? [currentPage + 2] : []
+
+    const lowCandidates = [
+      // previous page
+      hasPrevPage ? currentPage - 1 : null,
+      // first page
+      currentPage !== 1 ? 1 : null,
+      // last page
+      totalPages > 1 && currentPage !== totalPages ? totalPages : null,
+    ].filter((p): p is number => p !== null)
+
+    const low = [...new Set(lowCandidates)] // Deduplicate (e.g., p2: prev=1, first=1)
+
+    // Execute with priority delays
+    // HIGH: Immediate (0ms)
+    prefetchBatch(high, 'high')
+
+    // MEDIUM: 200ms delay
+    if (medium.length > 0) {
+      timers.push(
+        setTimeout(() => {
+          prefetchBatch(medium, 'medium')
+        }, MEDIUM_PRIORITY_DELAY)
+      )
+    }
+
+    // LOW: 1000ms delay
+    if (low.length > 0) {
+      timers.push(
+        setTimeout(() => {
+          prefetchBatch(low, 'low')
+        }, LOW_PRIORITY_DELAY)
+      )
+    }
+
+    return () => {
+      for (const timer of timers) {
+        clearTimeout(timer)
+      }
     }
   }, [
+    enabled,
     currentPage,
     hasNextPage,
     hasPrevPage,
