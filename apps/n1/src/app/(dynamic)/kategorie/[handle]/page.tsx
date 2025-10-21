@@ -12,6 +12,7 @@ import {
 } from '@/data/static/categories'
 import { usePrefetchCategoryChildren } from '@/hooks/use-prefetch-category-children'
 import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
+import { usePrefetchRootCategories } from '@/hooks/use-prefetch-root-categories'
 import { useProducts } from '@/hooks/use-products'
 import { useRegion } from '@/hooks/use-region'
 import {
@@ -19,6 +20,7 @@ import {
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
 } from '@/lib/constants'
+import { componentDebugLogger } from '@/lib/loggers'
 import { transformProduct } from '@/utils/transform/transform-product'
 import type { IconType } from '@new-engine/ui/atoms/icon'
 import { LinkButton } from '@new-engine/ui/atoms/link-button'
@@ -46,6 +48,8 @@ export default function ProductPage() {
   const {
     products: rawProducts,
     isLoading,
+    isSuccess,
+    isFetching,
     totalCount,
     currentPage: responsePage,
     totalPages,
@@ -57,8 +61,27 @@ export default function ProductPage() {
     limit: PRODUCT_LIMIT,
   })
 
+  // DEBUG: Log React Query states
+  componentDebugLogger.categoryPage({
+    isLoading,
+    isFetching,
+    isSuccess,
+    isReady: isSuccess && !isFetching,
+  })
+
+  // Wait for fetch/refetch completion before prefetching
+  const isCurrentPageReady = isSuccess && !isFetching
+
+  // Prefetch other root categories when current page is loaded
+  usePrefetchRootCategories({
+    enabled: isCurrentPageReady,
+    currentHandle: handle,
+    delay: 200,
+  })
+
   // Prefetch surrounding pages for instant navigation
   usePrefetchPages({
+    enabled: isCurrentPageReady,
     currentPage: responsePage,
     hasNextPage,
     hasPrevPage,
@@ -71,6 +94,7 @@ export default function ProductPage() {
 
   // Prefetch category children progressively
   usePrefetchCategoryChildren({
+    enabled: isCurrentPageReady,
     categoryHandle: handle,
   })
 
@@ -79,7 +103,9 @@ export default function ProductPage() {
   const handlePageChange = (page: number) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     newSearchParams.set('page', page.toString())
-    router.push(`/kategorie/${handle}?${newSearchParams.toString()}`, { scroll: true })
+    router.push(`/kategorie/${handle}?${newSearchParams.toString()}`, {
+      scroll: true,
+    })
   }
 
   if (!VALID_CATEGORY_ROUTES.includes(handle)) {
