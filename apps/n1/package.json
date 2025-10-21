@@ -25,6 +25,7 @@
     "@biomejs/biome": "2.2.0",
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/postcss": "^4",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "@types/node": "^20",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.1",
@@ -39,5 +40,11 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.2",
+      "@types/react-dom": "19.2.1"
+    }
+  }
 }
