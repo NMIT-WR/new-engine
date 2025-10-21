@@ -1,40 +1,41 @@
 'use client'
 import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
 import { useRegion } from '@/hooks/use-region'
-import { CATEGORY_MAP, VALID_CATEGORY_ROUTES } from '@/lib/constants'
+import { CATEGORY_MAP } from '@/lib/constants'
+import { prefetchLogger } from '@/lib/loggers'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
-const PREFETCH_DELAY_STANDARD = 200
-const PREFETCH_DELAY_CATEGORY_PAGE = 1500
+const PREFETCH_DELAY = 200
 
+/**
+ * Prefetches all root categories on non-category pages
+ * Category pages use usePrefetchRootCategories hook instead
+ */
 export function PrefetchManager() {
   const { prefetchCategoryProducts } = usePrefetchProducts()
   const { regionId } = useRegion()
   const pathname = usePathname()
   const hasPrefetched = useRef(false)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!regionId) return
     if (hasPrefetched.current) return
+
+    // Skip category pages - they have their own prefetch logic
+    if (pathname.startsWith('/kategorie/')) return
+
     hasPrefetched.current = true
 
-    const currentCategoryHandle = pathname.startsWith('/')
-      ? pathname.slice(1)
-      : pathname
-
-    const isOnCategory = VALID_CATEGORY_ROUTES.includes(currentCategoryHandle)
-    const delay = isOnCategory
-      ? PREFETCH_DELAY_CATEGORY_PAGE
-      : PREFETCH_DELAY_STANDARD
-
     const timer = setTimeout(() => {
-      for (const [handle, categoryIds] of Object.entries(CATEGORY_MAP)) {
-        if (handle !== currentCategoryHandle) {
-          prefetchCategoryProducts(categoryIds)
-        }
+      prefetchLogger.info('Categories', `Manager started from ${pathname}`)
+
+      // Prefetch ALL root categories
+      for (const categoryIds of Object.values(CATEGORY_MAP)) {
+        prefetchCategoryProducts(categoryIds)
       }
-    }, delay)
+    }, PREFETCH_DELAY)
 
     return () => clearTimeout(timer)
   }, [regionId, pathname, prefetchCategoryProducts])
