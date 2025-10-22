@@ -61,14 +61,14 @@ export const Default: Story = {
   ),
 }
 
-
 export const Badges: Story = {
   render: () => {
-    const badges: { variant: 'new' | 'limited' | 'sale' | 'default'; label: string }[] = [
-      { variant: 'new', label: 'New' },
-      { variant: 'limited', label: 'Limited Stock' },
-      { variant: 'sale', label: 'Sale' },
-      { variant: 'default', label: 'Eco friendly' },
+    // Using Badge component variants directly
+    const badges = [
+      { variant: 'success' as const, label: 'New' },
+      { variant: 'warning' as const, label: 'Limited Stock' },
+      { variant: 'danger' as const, label: 'Sale' },
+      { variant: 'info' as const, label: 'Eco friendly' },
     ]
     return (
     <ProductCard>
@@ -78,13 +78,60 @@ export const Badges: Story = {
       />
       <ProductCard.Name>Premium Cotton T-Shirt</ProductCard.Name>
       <ProductCard.Badges>
-        {badges.map((badge) => (
-          <ProductCard.Badge key={badge.variant} variant={badge.variant}>
+        {badges.map((badge, idx) => (
+          <Badge key={idx} variant={badge.variant}>
             {badge.label}
-          </ProductCard.Badge>
+          </Badge>
         ))}
       </ProductCard.Badges>
       <ProductCard.Price>$29.99</ProductCard.Price>
+      <ProductCard.Actions>
+        <ProductCard.Button buttonVariant="cart" icon="token-icon-cart-button">
+          Add to Cart
+        </ProductCard.Button>
+      </ProductCard.Actions>
+    </ProductCard>
+    )
+  },
+}
+
+// Showcase Badge flexibility with custom colors
+export const BadgesWithCustomColors: Story = {
+  name: 'Badges - Custom Colors',
+  render: () => {
+    return (
+    <ProductCard>
+      <ProductCard.Image
+        src={productImages.shoes}
+        alt="Running Shoes"
+      />
+      <ProductCard.Name>Limited Edition Running Shoes</ProductCard.Name>
+      <ProductCard.Badges>
+        {/* Standard Badge variants */}
+        <Badge variant="success">New Arrival</Badge>
+        <Badge variant="dynamic" bgColor="#fff" fgColor="#000" borderColor="#eee">50% OFF</Badge>
+
+        {/* Custom badges using dynamic variant */}
+        <Badge
+          variant="dynamic"
+          bgColor="#7f22fe"
+          fgColor="#fff"
+          borderColor="#9810fa"
+        >
+          Premium
+        </Badge>
+
+        <Badge
+          variant="dynamic"
+          bgColor="transparent"
+          fgColor="#fff"
+          borderColor="#fff"
+        >
+          Exclusive
+        </Badge>
+      </ProductCard.Badges>
+      <ProductCard.Price>$89.99</ProductCard.Price>
+      <ProductCard.Stock status="limited-stock">Only 3 left!</ProductCard.Stock>
       <ProductCard.Actions>
         <ProductCard.Button buttonVariant="cart" icon="token-icon-cart-button">
           Add to Cart
@@ -345,7 +392,15 @@ export const WithQuantityInput: Story = {
         </ProductCard.Stock>
       </div>
       <ProductCard.Actions>
-        <NumericInput defaultValue={1} hideControls={false} />
+        <NumericInput defaultValue={1}>
+          <NumericInput.Control>
+            <NumericInput.Input />
+            <NumericInput.TriggerContainer>
+              <NumericInput.IncrementTrigger />
+              <NumericInput.DecrementTrigger />
+            </NumericInput.TriggerContainer>
+          </NumericInput.Control>
+        </NumericInput>
         <ProductCard.Button
           buttonVariant="cart"
           icon="token-icon-cart-button"
@@ -414,7 +469,7 @@ export const ComplexCard: Story = {
         <div className="flex items-baseline gap-100">
           <span className="text-fg-muted line-through">$3,499</span>
           <ProductCard.Price>$2,449</ProductCard.Price>
-          <Badge variant="error" size="sm">
+          <Badge variant="danger">
             Save $1,050
           </Badge>
         </div>
@@ -426,7 +481,15 @@ export const ComplexCard: Story = {
       {/* Complex actions */}
       <ProductCard.Actions>
         <div className="mb-100 flex items-center gap-100">
-          <NumericInput />
+          <NumericInput defaultValue={1} min={1} max={10}>
+            <NumericInput.Control>
+              <NumericInput.Input />
+              <NumericInput.TriggerContainer>
+                <NumericInput.IncrementTrigger />
+                <NumericInput.DecrementTrigger />
+              </NumericInput.TriggerContainer>
+            </NumericInput.Control>
+          </NumericInput>
           <ProductCard.Button
             buttonVariant="cart"
             icon="token-icon-cart-button"
@@ -455,7 +518,8 @@ export const ComplexCard: Story = {
         </div>
 
         <Button
-          variant="ghost"
+          variant="secondary"
+          theme="borderless"
           size="sm"
           className="mt-100 w-full"
           onClick={fn()}
