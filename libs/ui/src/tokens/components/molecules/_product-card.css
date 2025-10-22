@@ -13,21 +13,6 @@
   --color-product-card-stock-fg-out-of-stock: var(--color-danger);
 
   /* === STATE VARIATIONS === */
-  /* Badge */
-  --color-product-card-badge-new-bg: var(--color-success);
-  --color-product-card-badge-info-bg: var(--color-info);
-  --color-product-card-badge-default-bg: var(--color-overlay);
-  --color-product-card-badge-limited-bg: var(--color-warning);
-  --color-product-card-badge-sale-bg: var(--color-danger);
-
-  --color-product-card-badge-fg: var(--color-fg-dark);
-
-  --color-product-card-badge-new-fg: var(--color-product-card-badge-fg);
-  --color-product-card-badge-info-fg: var(--color-product-card-badge-fg);
-  --color-product-card-badge-default-fg: var(--color-product-card-badge-fg);
-  --color-product-card-badge-limited-fg: var(--color-product-card-badge-fg);
-  --color-product-card-badge-sale-fg: var(--color-product-card-badge-fg);
-
   /* Add to cart button */
   --color-product-card-button-cart-bg: var(--color-button-primary);
   --color-product-card-button-cart-bg-hover: oklch(
