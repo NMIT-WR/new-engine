@@ -40,7 +40,7 @@ const meta: Meta<typeof ProductCard> = {
 }
 
 export default meta
-type Story = StoryObj<typeof ProductCard>
+type Story = StoryObj<typeof meta>
 
 // Basic usage with minimal configuration
 export const Default: Story = {
@@ -392,7 +392,7 @@ export const WithQuantityInput: Story = {
         </ProductCard.Stock>
       </div>
       <ProductCard.Actions>
-        <NumericInput defaultValue={1}>
+        <NumericInput id="product-quantity" defaultValue={1}>
           <NumericInput.Control>
             <NumericInput.Input />
             <NumericInput.TriggerContainer>
@@ -481,7 +481,7 @@ export const ComplexCard: Story = {
       {/* Complex actions */}
       <ProductCard.Actions>
         <div className="mb-100 flex items-center gap-100">
-          <NumericInput defaultValue={1} min={1} max={10}>
+          <NumericInput id="product-quantity" defaultValue={1} min={1} max={10}>
             <NumericInput.Control>
               <NumericInput.Input />
               <NumericInput.TriggerContainer>
@@ -633,4 +633,89 @@ export const ActionLayouts: Story = {
       </VariantGroup>
     </VariantContainer>
   ),
+}
+
+// Custom Layout Overrides
+export const CustomRowSpan: Story = {
+  name: 'Custom Row Span Override',
+  render: () => (
+    <ProductCard layout="row" className="w-lg grid-rows-[auto, auto, auto]">
+    <div className='row-span-3'>
+    <ProductCard.Name>Professional Camera</ProductCard.Name>
+      <ProductCard.Image
+        src={productImages.camera}
+        alt="Camera"
+        className="h-fit row-span-2"
+      />
+      </div>
+      <div className="col-2 row-3 place-self-end">
+      <ProductCard.Price>$1,299.99</ProductCard.Price>
+      <ProductCard.Rating rating={{ value: 4.5 }} />
+      <ProductCard.Actions>
+        <ProductCard.Button
+          buttonVariant="cart"
+          icon="token-icon-cart-button"
+        >
+          Add to Cart
+        </ProductCard.Button>
+      </ProductCard.Actions></div>
+    </ProductCard>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates simple className override - changing row-span-6 to row-span-3 and aspect-auto to aspect-video.',
+      },
+    },
+  },
+}
+
+export const CustomGridLayout: Story = {
+  name: 'Custom Grid Structure',
+  render: () => (
+    <ProductCard layout="row" className="w-xl grid-cols-[auto_1fr]">
+      <div className="flex flex-col gap-200">
+        <ProductCard.Name>Premium Wireless Headphones</ProductCard.Name>
+        <ProductCard.Image
+          src={productImages.headphones}
+          alt="Headphones"
+          className="aspect-video row-span-1"
+        />
+      </div>
+      <div className="flex flex-col gap-200">
+        <ProductCard.Badges className="flex flex-row flex-nowrap w-max">
+          <Badge variant="success">New Arrival</Badge>
+          <Badge variant="info">Noise Cancelling</Badge>
+        </ProductCard.Badges>
+        <ProductCard.Price>$349.99</ProductCard.Price>
+        <ProductCard.Rating rating={{ value: 4.9 }} />
+        <ProductCard.Stock status="limited-stock">
+          Only 5 left in stock!
+        </ProductCard.Stock>
+        <ProductCard.Actions>
+          <ProductCard.Button
+            buttonVariant="cart"
+            icon="token-icon-cart-button"
+          >
+            Add to Cart
+          </ProductCard.Button>
+          <ProductCard.Button
+            buttonVariant="wishlist"
+            icon="token-icon-wishlist-button"
+          >
+            Wishlist
+          </ProductCard.Button>
+        </ProductCard.Actions>
+      </div>
+    </ProductCard>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates complex layout override - custom grid with Title + Image in first column, all other content in second column. Uses grid-cols-[400px_1fr] to create asymmetric layout.',
+      },
+    },
+  },
 }
