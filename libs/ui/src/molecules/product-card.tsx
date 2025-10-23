@@ -82,7 +82,7 @@ const ProductCardContext = createContext<ProductCardContextValue>({})
 // === TYPE DEFINITIONS ===
 export interface ProductCardProps
   extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof productCardVariants> {
+    Omit<VariantProps<typeof productCardVariants>, 'buttonVariant'> {
   children: ReactNode
   ref?: Ref<HTMLDivElement>
 }
