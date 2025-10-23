@@ -21,8 +21,7 @@ const productCardVariants = tv({
       'rounded-product-card p-product-card-padding',
       'border-(length:--border-product-card-width) border-product-card-border bg-product-card-bg max-w-product-card-max shadow-sm',
     ],
-    imageSlot:
-      'object-cover aspect-product-card-image h-full rounded-product-card-image',
+    imageSlot: 'object-cover h-full rounded-product-card-image',
     nameSlot:
       'text-product-card-name-fg font-product-card-name text-product-card-name-size line-clamp-product-card-name',
     priceSlot:
@@ -59,9 +58,11 @@ const productCardVariants = tv({
         root: [
           'grid grid-cols-(--product-card-layout-column-grid) gap-product-card-col-layout',
         ],
+        imageSlot: 'aspect-product-card-image',
       },
       row: {
         root: 'grid grid-cols-(--product-card-layout-row-grid) gap-x-product-card-row-layout',
+        imageSlot: 'row-span-6 aspect-auto',
       },
     },
   },
@@ -295,4 +296,3 @@ ProductCard.Button = function ProductCardButton({
     </Button>
   )
 }
-
