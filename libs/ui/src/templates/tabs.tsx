@@ -1,4 +1,5 @@
-import type { RefObject } from 'react'
+import type * as React from 'react'
+import type { Ref } from 'react'
 import { Tabs, type TabsProps } from '../molecules/tabs'
 
 export interface TabItem {
@@ -8,11 +9,10 @@ export interface TabItem {
   disabled?: boolean
 }
 
-export interface TabsTemplateProps
-  extends Omit<TabsProps, 'children' | 'ref'> {
+export interface TabsTemplateProps extends Omit<TabsProps, 'children' | 'ref'> {
   items: TabItem[]
   showIndicator?: boolean
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 export function TabsTemplate({
@@ -30,9 +30,6 @@ export function TabsTemplate({
   className,
   ...tabsProps
 }: TabsTemplateProps) {
-  // Use first item as default if not specified
-  const effectiveDefaultValue = defaultValue || items[0]?.value
-
   return (
     <Tabs
       ref={ref}
@@ -41,7 +38,7 @@ export function TabsTemplate({
       fitted={fitted}
       justify={justify}
       orientation={orientation}
-      defaultValue={effectiveDefaultValue}
+      defaultValue={defaultValue}
       value={value}
       onValueChange={onValueChange}
       className={className}
