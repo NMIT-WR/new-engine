@@ -79,7 +79,7 @@ export const featuredProducts: Product[] = [
     stockStatus: 'in-stock',
     stockValue: 'Skladem 2 ks',
     variants: ['OS'],
-    badges: [{ variant: 'new', text: 'Novinka' }],
+    badges: [{ variant: 'success', children: 'Novinka' }],
     imageSrc: '/products/product1.jpg',
   },
   {
@@ -91,8 +91,8 @@ export const featuredProducts: Product[] = [
     stockValue: 'Skladem více než 10 ks',
     variants: ['42', '42.5', '43', '44', '44.5', '45', '45.5', '46'],
     badges: [
-      { variant: 'default', text: 'Více variant' },
-      { variant: 'new', text: 'Novinka' },
+      { variant: 'info', children: 'Více variant' },
+      { variant: 'success', children: 'Novinka' },
     ],
     imageSrc: '/products/product2.jpg',
   },
@@ -104,7 +104,7 @@ export const featuredProducts: Product[] = [
     stockStatus: 'in-stock',
     stockValue: 'Skladem více než 10 ks',
     variants: ['M', 'L', 'XL', '2XL'],
-    badges: [{ variant: 'default', text: 'Více variant' }],
+    badges: [{ variant: 'info', children: 'Více variant' }],
     imageSrc: '/products/product3.jpg',
   },
   {
@@ -115,7 +115,7 @@ export const featuredProducts: Product[] = [
     stockStatus: 'in-stock',
     stockValue: 'Skladem 3 ks',
     variants: ['145x248 mm.'],
-    badges: [{ variant: 'new', text: 'Novinka' }],
+    badges: [{ variant: 'success', children: 'Novinka' }],
     imageSrc: '/products/product4.jpg',
   },
   {
@@ -127,9 +127,9 @@ export const featuredProducts: Product[] = [
     stockValue: 'Poslední kus',
     variants: ['56'],
     badges: [
-      { variant: 'default', text: 'Více variant' },
-      { variant: 'sale', text: 'Výprodej' },
-      { variant: 'limited', text: 'Akce' },
+      { variant: 'info', children: 'Více variant' },
+      { variant: 'discount', children: 'Výprodej' },
+      { variant: 'warning', children: 'Akce' },
     ],
     imageSrc: '/products/product5.jpg',
   },
@@ -142,8 +142,8 @@ export const featuredProducts: Product[] = [
     stockValue: 'Poslední kus',
     variants: ['56'],
     badges: [
-      { variant: 'sale', text: 'Výprodej' },
-      { variant: 'limited', text: 'Akce' },
+      { variant: 'discount', children: 'Výprodej' },
+      { variant: 'warning', children: 'Akce' },
     ],
     imageSrc: '/products/product6.jpg',
   },
@@ -156,8 +156,8 @@ export const featuredProducts: Product[] = [
     stockValue: 'Poslední kus',
     variants: ['LG'],
     badges: [
-      { variant: 'sale', text: 'Výprodej' },
-      { variant: 'limited', text: 'Akce' },
+      { variant: 'discount', children: 'Výprodej' },
+      { variant: 'warning', children: 'Akce' },
     ],
     imageSrc: '/products/product7.jpg',
   },
