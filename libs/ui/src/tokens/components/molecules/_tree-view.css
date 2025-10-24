@@ -26,7 +26,7 @@
   --width-tree-indent: 1px;
 
   /* === DISABLED STATES === */
-  --opacity-tree-disabled: 60%;
+  --color-tree-fg-disabled: var(--color-fg-disabled);
 
   /* === SPACING === */
   --tree-indent-per-level: var(--spacing-100);
