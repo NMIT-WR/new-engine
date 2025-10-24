@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import type { Ref } from 'react'
 import type { IconType } from '../atoms/icon'
 import { NumericInput, type NumericInputProps } from '../atoms/numeric-input'
 
@@ -10,7 +10,7 @@ export interface NumericInputTemplateProps
   incrementIcon?: IconType
   decrementIcon?: IconType
   className?: string
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 export function NumericInputTemplate({
