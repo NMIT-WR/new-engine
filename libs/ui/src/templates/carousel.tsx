@@ -5,8 +5,9 @@ import {
   type CarouselRootProps,
   type CarouselSlide,
 } from '../molecules/carousel'
+import { slugify } from '../utils'
 
-export interface CarouselTemplateProps<T extends ElementType = any>
+export interface CarouselTemplateProps<T extends ElementType>
   extends Omit<CarouselRootProps<T>, 'children' | 'slideCount'> {
   slides: CarouselSlide[]
   showControls?: boolean
@@ -16,24 +17,24 @@ export interface CarouselTemplateProps<T extends ElementType = any>
   nextIcon?: IconType
 }
 
-export function CarouselTemplate<T extends ElementType = any>({
+export function CarouselTemplate<T extends ElementType>({
   slides,
   showControls = true,
   showIndicators = true,
   showAutoplay = false,
   prevIcon = 'token-icon-carousel-prev',
   nextIcon = 'token-icon-carousel-next',
-  size = 'md',
-  objectFit = 'cover',
-  aspectRatio = 'square',
-  orientation = 'horizontal',
-  loop = true,
-  autoplay = false,
-  allowMouseDrag = true,
-  slidesPerPage = 1,
-  slidesPerMove = 1,
-  spacing = '0px',
-  padding = '0px',
+  size,
+  objectFit,
+  aspectRatio,
+  orientation,
+  loop,
+  autoplay,
+  allowMouseDrag,
+  slidesPerPage,
+  slidesPerMove,
+  spacing,
+  padding,
   imageAs,
   width,
   height,
@@ -75,8 +76,8 @@ export function CarouselTemplate<T extends ElementType = any>({
           {showControls && showIndicators && <div className="flex-1" />}
           {showIndicators && (
             <Carousel.Indicators>
-              {slides.map((_, index) => (
-                <Carousel.Indicator key={index} index={index} />
+              {slides.map((slide, index) => (
+                <Carousel.Indicator key={slugify(slide.id)} index={index} />
               ))}
             </Carousel.Indicators>
           )}
