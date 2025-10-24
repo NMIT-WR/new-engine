@@ -1,28 +1,6 @@
-import type { Ref } from 'react'
-import { Badge } from '../atoms/badge'
+import { Badge, type BadgeProps } from '../atoms/badge'
 import { ProductCard, type ProductCardProps } from '../molecules/product-card'
-
-type ProductCardBadge =
-  | {
-      variant?:
-        | 'primary'
-        | 'secondary'
-        | 'tertiary'
-        | 'warning'
-        | 'danger'
-        | 'info'
-        | 'discount'
-        | 'success'
-        | 'outline'
-      label: string
-    }
-  | {
-      variant: 'dynamic'
-      label: string
-      bgColor: string
-      fgColor: string
-      borderColor: string
-    }
+import { slugify } from '../utils'
 
 export interface ProductCardTemplateProps
   extends Pick<ProductCardProps, 'layout'> {
@@ -33,10 +11,12 @@ export interface ProductCardTemplateProps
   name?: string
   price?: string
   originalPrice?: string
-  badges?: ProductCardBadge[]
+  badges?: BadgeProps[]
   rating?: {
     value: number
+    /** Total number of rating items to display (e.g., 5 for 5 stars) */
     count?: number
+    /** Number of reviews/ratings from users */
     reviewCount?: number
   }
   stock?: {
@@ -51,7 +31,6 @@ export interface ProductCardTemplateProps
   detailButtonText?: string
   wishlistButtonText?: string
   className?: string
-  ref?: Ref<HTMLDivElement>
 }
 
 export function ProductCardTemplate({
@@ -71,32 +50,31 @@ export function ProductCardTemplate({
   wishlistButtonText = 'Add to Wishlist',
   layout = 'column',
   className,
-  ref,
 }: ProductCardTemplateProps) {
   return (
-    <ProductCard layout={layout} className={className} ref={ref}>
+    <ProductCard layout={layout} className={className}>
       {image && <ProductCard.Image src={image.src} alt={image.alt} />}
 
       {badges && badges.length > 0 && (
         <ProductCard.Badges>
-          {badges.map((badge, index) => {
+          {badges.map((badge) => {
             if (badge.variant === 'dynamic') {
               return (
                 <Badge
-                  key={index}
+                  key={slugify(badge.children)}
                   variant="dynamic"
-                  bgColor={badge.bgColor || '#fff'}
-                  fgColor={badge.fgColor || '#000'}
-                  borderColor={badge.borderColor || '#ccc'}
+                  bgColor={badge.bgColor}
+                  fgColor={badge.fgColor}
+                  borderColor={badge.borderColor}
                 >
-                  {badge.label}
+                  {badge.children}
                 </Badge>
               )
             }
 
             return (
-              <Badge key={index} variant={badge.variant || 'info'}>
-                {badge.label}
+              <Badge key={slugify(badge.children)} variant={badge.variant}>
+                {badge.children}
               </Badge>
             )
           })}

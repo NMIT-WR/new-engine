@@ -162,8 +162,8 @@ export const Playground: Story = {
       alt: 'Premium Cotton T-Shirt',
     },
     badges: [
-      { variant: 'success', label: 'New' },
-      { variant: 'danger', label: 'Sale' },
+      { variant: 'success', children: 'New' },
+      { variant: 'danger', children: 'Sale' },
     ],
     rating: {
       value: 4.5,
@@ -192,8 +192,8 @@ export const OnSale: Story = {
       alt: 'Running Shoes Pro',
     },
     badges: [
-      { variant: 'danger', label: '40% OFF' },
-      { variant: 'info', label: 'Limited Time' },
+      { variant: 'danger', children: '40% OFF' },
+      { variant: 'info', children: 'Limited Time' },
     ],
     rating: {
       value: 4.8,
@@ -212,7 +212,7 @@ export const OutOfStock: Story = {
       alt: 'Vintage Camera',
     },
     badges: [
-      { variant: 'secondary', label: 'Collector Edition' },
+      { variant: 'secondary', children: 'Collector Edition' },
     ],
     rating: {
       value: 5,
