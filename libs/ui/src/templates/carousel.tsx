@@ -5,7 +5,6 @@ import {
   type CarouselRootProps,
   type CarouselSlide,
 } from '../molecules/carousel'
-import { slugify } from '../utils'
 
 export interface CarouselTemplateProps<T extends ElementType>
   extends Omit<CarouselRootProps<T>, 'children' | 'slideCount'> {
@@ -77,7 +76,7 @@ export function CarouselTemplate<T extends ElementType>({
           {showIndicators && (
             <Carousel.Indicators>
               {slides.map((slide, index) => (
-                <Carousel.Indicator key={slugify(slide.id)} index={index} />
+                <Carousel.Indicator key={slide.id} index={index} />
               ))}
             </Carousel.Indicators>
           )}
