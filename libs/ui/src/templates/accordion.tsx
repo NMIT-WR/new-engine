@@ -1,4 +1,3 @@
-import type { Ref } from 'react'
 import type { IconType } from '../atoms/icon'
 import { Accordion, type AccordionProps } from '../molecules/accordion'
 
@@ -10,11 +9,10 @@ export interface AccordionItem {
 }
 
 export interface AccordionTemplateProps
-  extends Omit<AccordionProps, 'children' | 'ref'> {
+  extends Omit<AccordionProps, 'children'> {
   items: AccordionItem[]
   showIndicator?: boolean
   indicatorIcon?: IconType
-  ref?: Ref<HTMLDivElement>
 }
 
 export function AccordionTemplate({
