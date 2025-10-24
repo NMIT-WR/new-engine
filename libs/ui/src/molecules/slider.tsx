@@ -12,7 +12,7 @@ const sliderVariants = tv({
     root: [
       'flex flex-col w-full gap-slider-root',
       'data-[orientation=vertical]:h-full',
-      'data-[disabled]:opacity-slider-disabled data-[disabled]:cursor-not-allowed',
+      'data-[disabled]:cursor-not-allowed',
     ],
     header: ['flex items-center justify-between'],
     value: ['text-slider-value-size'],
