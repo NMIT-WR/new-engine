@@ -52,7 +52,7 @@ export function AccordionTemplate({
           disabled={item.disabled}
         >
           <Accordion.Header>
-            {item.title}
+            <Accordion.Title>{item.title}</Accordion.Title>
             {showIndicator && <Accordion.Indicator icon={indicatorIcon} />}
           </Accordion.Header>
           <Accordion.Content>{item.content}</Accordion.Content>
