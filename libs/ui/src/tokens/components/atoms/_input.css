@@ -4,7 +4,7 @@
   --color-input: var(--color-fill-base);
   --color-input-border: var(--color-border-primary);
   --color-input-fg: var(--color-fg-primary);
-  --color-input-disabled: var(--color-bg-disabled);
+  --color-input-bg-disabled: var(--color-bg-disabled);
 
   /* Validation states - primary colors */
   --color-input-danger: var(--color-danger);
@@ -49,13 +49,12 @@
 
   /* Text colors */
   --color-input-fg-disabled: var(--color-fg-disabled);
-  --color-input-placeholder: var(--color-fg-placeholder);
+  --color-input-fg-placeholder: var(--color-fg-placeholder);
 
   /* Label colors */
   --color-label-fg: var(--color-input-fg);
   --color-label-disabled: var(--color-input-fg-disabled);
   --color-label-required: var(--color-input-danger);
-  --margin-label: var(--spacing-100);
 
   /* Error/Helper/Extra colors */
   --color-error-fg: var(--color-danger);

@@ -249,6 +249,7 @@ Tabs.Trigger = function TabsTrigger({
   return (
     <Button
       ref={ref}
+      type="button"
       theme="borderless"
       className={styles.trigger({ className })}
       {...api.getTriggerProps({ value, disabled })}
