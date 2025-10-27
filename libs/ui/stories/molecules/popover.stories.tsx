@@ -70,6 +70,21 @@ export const WithTitleAndDescription: Story = {
   },
 }
 
+export const Disabled: Story = {
+  args: {
+    id: 'disabled-popover',
+    trigger: 'Disabled Popover',
+    disabled: true,
+    title: 'Disabled State',
+    description: 'This popover trigger is disabled and cannot be opened.',
+    children: (
+      <div className="mt-4">
+        <p>This content should not be accessible.</p>
+      </div>
+    ),
+  },
+}
+
 export const Variants: Story = {
   args: {
     id: 'variants-popover',
