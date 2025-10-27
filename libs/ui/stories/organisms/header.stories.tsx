@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Button } from '../../src/atoms/button'
 import { Icon, type IconType } from '../../src/atoms/icon'
 import { Image } from '../../src/atoms/image'
+import { Link } from '../../src/atoms/link'
 import { Dialog } from '../../src/molecules/dialog'
 import { Popover } from '../../src/molecules/popover'
 import { SearchForm } from '../../src/molecules/search-form'
@@ -23,15 +24,23 @@ type Story = StoryObj<typeof Header>
 
 export const Default: Story = {
   render: () => (
-    <Header mobileMenuPosition="left">
+    <Header>
       <Header.Hamburger />
-      <Header.Nav persist>
-        <Header.NavItem href="/">Home</Header.NavItem>
-        <Header.NavItem href="/products">Products</Header.NavItem>
-        <Header.NavItem href="/about">About</Header.NavItem>
-        <Header.NavItem href="/contact">Contact</Header.NavItem>
+      <Header.Nav>
+        <Header.NavItem>
+          <Link href="/">Home</Link>
+        </Header.NavItem>
+        <Header.NavItem>
+          <Link href="/products">Products</Link>
+        </Header.NavItem>
+        <Header.NavItem>
+          <Link href="/about">About</Link>
+        </Header.NavItem>
+        <Header.NavItem>
+          <Link href="/contact">Contact</Link>
+        </Header.NavItem>
       </Header.Nav>
-      <Header.Actions persist>
+      <Header.Actions>
         <Button theme="borderless" variant="primary" size="sm">
           <Icon icon="icon-[lucide--search]" />
         </Button>
@@ -51,12 +60,18 @@ export const WithActiveState: Story = {
     <Header>
       <Header.Hamburger />
       <Header.Nav>
-        <Header.NavItem href="/" active>
-          Home
+        <Header.NavItem active>
+          <Link href="/">Home</Link>
         </Header.NavItem>
-        <Header.NavItem href="/products">Products</Header.NavItem>
-        <Header.NavItem href="/about">About</Header.NavItem>
-        <Header.NavItem href="/contact">Contact</Header.NavItem>
+        <Header.NavItem>
+          <Link href="/products">Products</Link>
+        </Header.NavItem>
+        <Header.NavItem>
+          <Link href="/about">About</Link>
+        </Header.NavItem>
+        <Header.NavItem>
+          <Link href="/contact">Contact</Link>
+        </Header.NavItem>
       </Header.Nav>
       <Header.Actions>
         <Button variant="primary" size="sm">
@@ -70,25 +85,24 @@ export const WithActiveState: Story = {
 export const PersistActionsBox: Story = {
   render: () => (
     <Header>
-
       <Header.Desktop>
         <Header.Nav>
-          <Header.NavItem href="/" active>
-            Home
+          <Header.NavItem active>
+            <Link href="/">Home</Link>
           </Header.NavItem>
-          <Header.NavItem href="/products">Products</Header.NavItem>
-          <Header.NavItem href="/about">About</Header.NavItem>
-          <Header.NavItem href="/contact">Contact</Header.NavItem>
+          <Header.NavItem><Link href="/products">Products</Link></Header.NavItem>
+          <Header.NavItem><Link href="/about">About</Link></Header.NavItem>
+          <Header.NavItem><Link href="/contact">Contact</Link></Header.NavItem>
         </Header.Nav>
       </Header.Desktop>
       <Header.Mobile>
         <Header.Nav>
-          <Header.NavItem href="/" active>
-            Home
+          <Header.NavItem active>
+            <Link href="/">Home</Link>
           </Header.NavItem>
-          <Header.NavItem href="/products">Products</Header.NavItem>
-          <Header.NavItem href="/about">About</Header.NavItem>
-          <Header.NavItem href="/contact">Contact</Header.NavItem>
+          <Header.NavItem><Link href="/products">Products</Link></Header.NavItem>
+          <Header.NavItem><Link href="/about">About</Link></Header.NavItem>
+          <Header.NavItem><Link href="/contact">Contact</Link></Header.NavItem>
         </Header.Nav>
       </Header.Mobile>
       <Header.Container position='end'>
@@ -111,8 +125,8 @@ export const Sizes: Story = {
         <Header size="sm">
           <Header.Hamburger />
           <Header.Nav>
-            <Header.NavItem href="/">Home</Header.NavItem>
-            <Header.NavItem href="/products">Products</Header.NavItem>
+            <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
+            <Header.NavItem><Link href="/products">Products</Link></Header.NavItem>
           </Header.Nav>
           <Header.Actions size="sm">
             <Button theme="borderless" size="sm">
@@ -127,8 +141,8 @@ export const Sizes: Story = {
         <Header size="md">
           <Header.Hamburger />
           <Header.Nav>
-            <Header.NavItem href="/">Home</Header.NavItem>
-            <Header.NavItem href="/products">Products</Header.NavItem>
+            <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
+            <Header.NavItem><Link href="/products">Products</Link></Header.NavItem>
           </Header.Nav>
           <Header.Actions size="md">
             <Button theme="borderless" variant="primary" size="md">
@@ -142,8 +156,8 @@ export const Sizes: Story = {
         <p className="mb-s100 text-fg-muted">Large</p>
         <Header size="lg">
           <Header.Nav>
-            <Header.NavItem href="/">Home</Header.NavItem>
-            <Header.NavItem href="/products">Products</Header.NavItem>
+            <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
+            <Header.NavItem><Link href="/products">Products</Link></Header.NavItem>
           </Header.Nav>
           <Header.Actions size="lg">
             <Button theme="borderless" variant="primary" size="lg">
@@ -163,10 +177,10 @@ export const NavWithMobileSubmenu: Story = {
         <Header.Hamburger />
         <Header.Desktop>
           <Header.Nav>
-            <Header.NavItem href="/">Home</Header.NavItem>
+            <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
             <Popover
               trigger={
-                <Header.NavItem href="/products/electronics">
+                <Header.NavItem>
                 <span>Electronics</span>
                 <Icon icon="icon-[mdi--chevron-down]" />
               </Header.NavItem>
@@ -175,21 +189,21 @@ export const NavWithMobileSubmenu: Story = {
             size="sm"
             triggerClassName="text-fg-primary hover:bg-transparent"
           >
-            <Header.NavItem href="/products/electronics">
-              Electronics
+            <Header.NavItem>
+              <Link href="/products/electronics">Electronics</Link>
             </Header.NavItem>
-            <Header.NavItem href="/products/clothing">
-              Clothing & Fashion
+            <Header.NavItem>
+              <Link href="/products/clothing">Clothing & Fashion</Link>
             </Header.NavItem>
-            <Header.NavItem href="/products/home-garden">
-              Home & Garden
+            <Header.NavItem>
+              <Link href="/products/home-garden">Home & Garden</Link>
             </Header.NavItem>
-            <Header.NavItem href="/products/sports">
-              Sports & Outdoors
+            <Header.NavItem>
+              <Link href="/products/sports">Sports & Outdoors</Link>
             </Header.NavItem>
           </Popover>
-          <Header.NavItem href="/about">About</Header.NavItem>
-          <Header.NavItem href="/contact">Contact</Header.NavItem>
+          <Header.NavItem><Link href="/about">About</Link></Header.NavItem>
+          <Header.NavItem><Link href="/contact">Contact</Link></Header.NavItem>
           </Header.Nav>
         </Header.Desktop>
         <Header.Actions>
@@ -200,32 +214,32 @@ export const NavWithMobileSubmenu: Story = {
         <Header.Mobile position='left'>
           <Accordion variant='child'>
             <Accordion.Item value="home">
-              <Header.NavItem href="/">Home</Header.NavItem>
+              <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
             </Accordion.Item>
             <Accordion.Item value="electronics">
               <Accordion.Header>
-                <Header.NavItem href="/products/electronics">
-                  Electronics
+                <Header.NavItem>
+                  <Link href="/products/electronics">Electronics</Link>
                 </Header.NavItem>
                 <Accordion.Indicator />
               </Accordion.Header>
               <Accordion.Content className='px-0'>
-                  <Header.NavItem href="/products/clothing">
-                    Clothing
+                  <Header.NavItem>
+                    <Link href="/products/clothing">Clothing</Link>
                   </Header.NavItem>
-                  <Header.NavItem href="/products/home-garden">
-                    Garden
+                  <Header.NavItem>
+                    <Link href="/products/home-garden">Garden</Link>
                   </Header.NavItem>
-                  <Header.NavItem href="/products/sports">
-                    Sports
+                  <Header.NavItem>
+                    <Link href="/products/sports">Sports</Link>
                   </Header.NavItem>
               </Accordion.Content>
             </Accordion.Item>
             <Accordion.Item value="about">
-              <Header.NavItem href="/about">About</Header.NavItem>
+              <Header.NavItem><Link href="/about">About</Link></Header.NavItem>
             </Accordion.Item>
             <Accordion.Item value="contact">
-              <Header.NavItem href="/contact">Contact</Header.NavItem>
+              <Header.NavItem><Link href="/contact">Contact</Link></Header.NavItem>
             </Accordion.Item>
           </Accordion>
         </Header.Mobile>
@@ -239,10 +253,10 @@ export const WithPopoverSubmenu: Story = {
     <Header>
       <Header.Hamburger />
       <Header.Nav>
-        <Header.NavItem href="/">Home</Header.NavItem>
+        <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
         <Popover
           trigger={
-            <Header.NavItem href="/products/electronics">
+            <Header.NavItem>
               <span>Electronics</span>
               <Icon icon="icon-[mdi--chevron-down]" />
             </Header.NavItem>
@@ -251,22 +265,22 @@ export const WithPopoverSubmenu: Story = {
           size="sm"
           triggerClassName="text-fg-primary hover:bg-transparent"
         >
-          <Header.NavItem href="/products/electronics">
-            Electronics
+          <Header.NavItem>
+            <Link href="/products/electronics">Electronics</Link>
           </Header.NavItem>
-          <Header.NavItem href="/products/clothing">
-            Clothing & Fashion
+          <Header.NavItem>
+            <Link href="/products/clothing">Clothing & Fashion</Link>
           </Header.NavItem>
-          <Header.NavItem href="/products/home-garden">
-            Home & Garden
+          <Header.NavItem>
+            <Link href="/products/home-garden">Home & Garden</Link>
           </Header.NavItem>
-          <Header.NavItem href="/products/sports">
-            Sports & Outdoors
+          <Header.NavItem>
+            <Link href="/products/sports">Sports & Outdoors</Link>
           </Header.NavItem>
         </Popover>
         <Popover
           trigger={
-            <Header.NavItem href="/products/electronics">
+            <Header.NavItem>
               <span>Services</span>
               <Icon icon="icon-[mdi--chevron-down]" />
             </Header.NavItem>
@@ -274,16 +288,16 @@ export const WithPopoverSubmenu: Story = {
           placement="bottom"
           triggerClassName="text-fg-primary hover:bg-transparent"
         >
-          <Header.NavItem href="/services/shipping">
-            Shipping Info
+          <Header.NavItem>
+            <Link href="/services/shipping">Shipping Info</Link>
           </Header.NavItem>
-          <Header.NavItem href="/services/returns">
-            Returns & Exchanges
+          <Header.NavItem>
+            <Link href="/services/returns">Returns & Exchanges</Link>
           </Header.NavItem>
-          <Header.NavItem href="/services/warranty">Warranty</Header.NavItem>
+          <Header.NavItem><Link href="/services/warranty">Warranty</Link></Header.NavItem>
         </Popover>
-        <Header.NavItem href="/about">About</Header.NavItem>
-        <Header.NavItem href="/contact">Contact</Header.NavItem>
+        <Header.NavItem><Link href="/about">About</Link></Header.NavItem>
+        <Header.NavItem><Link href="/contact">Contact</Link></Header.NavItem>
       </Header.Nav>
       <Header.Actions>
         <Button theme="borderless" variant="primary" size="sm">
@@ -305,11 +319,11 @@ export const WithNestedPopoverSubmenu: Story = {
     <Header>
       <Header.Hamburger />
       <Header.Nav>
-        <Header.NavItem href="/">Home</Header.NavItem>
+        <Header.NavItem><Link href="/">Home</Link></Header.NavItem>
 
         <Popover
           trigger={
-            <Header.NavItem href="/shop/new-arrivals">
+            <Header.NavItem>
               <span>Shop</span>
               <Icon icon="icon-[mdi--chevron-down]" />
             </Header.NavItem>
@@ -317,16 +331,16 @@ export const WithNestedPopoverSubmenu: Story = {
           placement="bottom"
           triggerClassName="text-fg-primary hover:bg-transparent"
         >
-          <Header.NavItem href="/shop/new-arrivals">
-            New Arrivals
+          <Header.NavItem>
+            <Link href="/shop/new-arrivals">New Arrivals</Link>
           </Header.NavItem>
-          <Header.NavItem href="/shop/best-sellers">
-            Best Sellers
+          <Header.NavItem>
+            <Link href="/shop/best-sellers">Best Sellers</Link>
           </Header.NavItem>
 
           <Popover
             trigger={
-              <Header.NavItem href="/shop/categories/laptops">
+              <Header.NavItem>
                 <span>Categories</span>
                 <Icon icon="icon-[mdi--chevron-down]" />
               </Header.NavItem>
@@ -334,16 +348,16 @@ export const WithNestedPopoverSubmenu: Story = {
             placement="right-start"
             triggerClassName="text-fg-primary px-0 py-0 hover:bg-transparent"
           >
-            <Header.NavItem href="/shop/categories/laptops">
-              Laptops & Computers
+            <Header.NavItem>
+              <Link href="/shop/categories/laptops">Laptops & Computers</Link>
             </Header.NavItem>
-            <Header.NavItem href="/shop/categories/phones">
-              Phones & Tablets
+            <Header.NavItem>
+              <Link href="/shop/categories/phones">Phones & Tablets</Link>
             </Header.NavItem>
 
             <Popover
               trigger={
-                <Header.NavItem href="/shop/accessories/cases">
+                <Header.NavItem>
                   <span>Accessories</span>
                   <Icon icon="icon-[mdi--chevron-down]" />
                 </Header.NavItem>
@@ -351,29 +365,29 @@ export const WithNestedPopoverSubmenu: Story = {
               placement="right-start"
               triggerClassName="text-fg-primary px-0 py-0 hover:bg-transparent"
             >
-              <Header.NavItem href="/shop/accessories/cases">
-                Cases & Covers
+              <Header.NavItem>
+                <Link href="/shop/accessories/cases">Cases & Covers</Link>
               </Header.NavItem>
-              <Header.NavItem href="/shop/accessories/chargers">
-                Chargers & Cables
+              <Header.NavItem>
+                <Link href="/shop/accessories/chargers">Chargers & Cables</Link>
               </Header.NavItem>
-              <Header.NavItem href="/shop/accessories/headphones">
-                Headphones
+              <Header.NavItem>
+                <Link href="/shop/accessories/headphones">Headphones</Link>
               </Header.NavItem>
             </Popover>
 
-            <Header.NavItem href="/shop/categories/gaming">
-              Gaming
+            <Header.NavItem>
+              <Link href="/shop/categories/gaming">Gaming</Link>
             </Header.NavItem>
           </Popover>
 
-          <Header.NavItem href="/shop/deals">Special Deals</Header.NavItem>
-          <Header.NavItem href="/shop/clearance">Clearance</Header.NavItem>
+          <Header.NavItem><Link href="/shop/deals">Special Deals</Link></Header.NavItem>
+          <Header.NavItem><Link href="/shop/clearance">Clearance</Link></Header.NavItem>
         </Popover>
 
         <Popover
           trigger={
-            <Header.NavItem href="/support/contact">
+            <Header.NavItem>
               <span>Support</span>
               <Icon icon="icon-[mdi--chevron-down]" />
             </Header.NavItem>
@@ -381,14 +395,14 @@ export const WithNestedPopoverSubmenu: Story = {
           placement="bottom"
           triggerClassName="text-fg-primary hover:bg-transparent"
         >
-          <Header.NavItem href="/support/contact">
-            Contact Support
+          <Header.NavItem>
+            <Link href="/support/contact">Contact Support</Link>
           </Header.NavItem>
-          <Header.NavItem href="/support/faq">FAQ</Header.NavItem>
+          <Header.NavItem><Link href="/support/faq">FAQ</Link></Header.NavItem>
 
           <Popover
             trigger={
-              <Header.NavItem href="/support/resources">
+              <Header.NavItem>
                 <span>Resources</span>
                 <Icon icon="icon-[mdi--chevron-down]" />
               </Header.NavItem>
@@ -396,19 +410,19 @@ export const WithNestedPopoverSubmenu: Story = {
             placement="right-start"
             triggerClassName="text-fg-primary px-0 py-0 hover:bg-transparent"
           >
-            <Header.NavItem href="/resources/guides">
-              User Guides
+            <Header.NavItem>
+              <Link href="/resources/guides">User Guides</Link>
             </Header.NavItem>
-            <Header.NavItem href="/resources/videos">
-              Video Tutorials
+            <Header.NavItem>
+              <Link href="/resources/videos">Video Tutorials</Link>
             </Header.NavItem>
-            <Header.NavItem href="/resources/downloads">
-              Downloads
+            <Header.NavItem>
+              <Link href="/resources/downloads">Downloads</Link>
             </Header.NavItem>
           </Popover>
         </Popover>
 
-        <Header.NavItem href="/about">About</Header.NavItem>
+        <Header.NavItem><Link href="/about">About</Link></Header.NavItem>
       </Header.Nav>
       <Header.Actions>
         <Button variant="primary" size="sm">
@@ -422,15 +436,9 @@ export const WithNestedPopoverSubmenu: Story = {
 export const HeaderWithDrawerSubmenu: Story = {
   render: () => {
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const [activeCategory, setActiveCategory] = useState('')
 
-    const handleNavClick = (category: string) => {
-      setActiveCategory(category)
-      if (drawerOpen) {
-        setDrawerOpen(false)
-      } else {
-        setDrawerOpen(true)
-      }
+    const handleNavClick = () => {
+      setDrawerOpen(prev => !prev)
     }
 
     const submenuItems = [
@@ -460,15 +468,16 @@ export const HeaderWithDrawerSubmenu: Story = {
       <Header className="z-50">
         <Header.Hamburger />
         <Header.Nav>
-          <Header.NavItem href="/novinky">Novinky</Header.NavItem>
-          <Header.NavItem href="/panske">Pánské</Header.NavItem>
-          <Header.NavItem href="/damske">Dámské</Header.NavItem>
-          <Header.NavItem onClick={() => handleNavClick('Dětské')}>
-            <span>Dětské</span>
-            <Icon icon="icon-[mdi--chevron-down]" />
+          <Header.NavItem><Link href="/novinky">Novinky</Link></Header.NavItem>
+          <Header.NavItem><Link href="/panske">Pánské</Link></Header.NavItem>
+          <Header.NavItem><Link href="/damske">Dámské</Link></Header.NavItem>
+          <Header.NavItem>
+            <Button className='hover:bg-transparent px-0 py-0' theme="borderless" onClick={handleNavClick} icon="icon-[mdi--chevron-down]">
+              Dětské
+            </Button>
           </Header.NavItem>
-          <Header.NavItem href="/obleceni">Oblečení</Header.NavItem>
-          <Header.NavItem href="/cyklo">Cyklo</Header.NavItem>
+          <Header.NavItem><Link href="/obleceni">Oblečení</Link></Header.NavItem>
+          <Header.NavItem><Link href="/cyklo">Cyklo</Link></Header.NavItem>
 
         </Header.Nav>
         <Header.Actions>
@@ -484,13 +493,12 @@ export const HeaderWithDrawerSubmenu: Story = {
         </Header.Actions>
         <Dialog
           open={drawerOpen}
-          onOpenChange={({ open }) => setDrawerOpen(open)}
           customTrigger
           placement="top"
           size="xs"
           hideCloseButton
           behavior="modeless"
-          className="top-16"
+          className="top-10"
           modal={false}
         >
           <div className="flex items-center justify-evenly">
@@ -704,7 +712,6 @@ export const N1Header: Story = {
         </Header.Container>
         <Dialog
           open={drawerOpen}
-          //onOpenChange={({ open }) => setDrawerOpen(open)}
           customTrigger
           placement="top"
           size="xs"

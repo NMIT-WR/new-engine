@@ -23,7 +23,7 @@ const headerVariants = tv({
       'data-[position=end]:justify-self-end-safe',
     ],
     nav: [
-      'flex-row header-desktop:items-center flex',
+      'items-center flex',
       'w-header-nav flex-1',
       'max-header-desktop:bg-header-bg',
     ],
@@ -91,7 +91,7 @@ const headerVariants = tv({
         actions: 'gap-header-actions-sm text-header-actions-sm',
       },
       md: {
-        root: 'gap-header-secion-md',
+        root: 'gap-header-section-md',
         nav: 'gap-header-nav-md text-header-nav-md',
         navItem: 'p-header-nav-item-md text-header-nav-item-md',
         actions: 'gap-header-actions-md text-header-actions-md',
@@ -259,7 +259,6 @@ Header.Container = function HeaderContainer({
   )
 }
 
-// Header.Nav - Navigation container
 Header.Nav = function HeaderNav({
   className,
   children,
@@ -278,7 +277,6 @@ Header.Nav = function HeaderNav({
   )
 }
 
-// Header.NavItem - Individual navigation item
 Header.NavItem = function HeaderNavItem({
   active = false,
   className,
@@ -303,7 +301,6 @@ Header.NavItem = function HeaderNavItem({
   )
 }
 
-// Header.Actions - Action buttons area
 Header.Actions = function HeaderActions({
   className,
   children,
