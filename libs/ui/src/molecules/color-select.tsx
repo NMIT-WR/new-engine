@@ -11,9 +11,9 @@ const colorSelectVariants = tv({
       'aspect-square overflow-hidden',
       'border-2 transition-all duration-200',
       'border-color-select-border hover:border-color-select-border-hover shadow-color-select',
-      'focus:outline-none',
-      'focus:ring',
-      'focus:ring-color-select-ring',
+      'focus-visible:outline-none',
+      'focus-visible:ring',
+      'focus-visible:ring-color-select-ring',
       'data-[selected=true]:border-color-select-selected data-[selected=true]:shadow-none',
     ],
     color: [

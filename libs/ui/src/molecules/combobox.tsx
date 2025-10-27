@@ -20,8 +20,8 @@ const comboboxVariants = tv({
       'transition-colors duration-200 ease-in-out',
       'hover:bg-combobox-bg-hover hover:border-combobox-border-hover',
       'data-[focus]:bg-combobox-bg-focus data-[focus]:border-combobox-border-focus',
-      'focus-within:ring',
-      'focus-within:ring-combobox-ring',
+      'data-[focus]:ring',
+      'data-[focus]:ring-combobox-ring',
       'data-[disabled]:bg-combobox-bg-disabled data-[disabled]:border-combobox-border-disabled',
       'data-[validation=error]:border-combobox-danger-fg',
       'data-[validation=success]:border-combobox-success-fg',
@@ -29,7 +29,7 @@ const comboboxVariants = tv({
     ],
     input: [
       'w-full relative border-none bg-combobox-input-bg',
-      'focus-visible:ring-0 focus-visible:ring-offset-0 hover:bg-combobox-input-bg-hover',
+      'focus-visible:ring-0 hover:bg-combobox-input-bg-hover',
       'focus:bg-combobox-input-bg-focused',
       'placeholder:text-combobox-placeholder',
       'data-[disabled]:text-combobox-fg-disabled',
@@ -69,7 +69,7 @@ const comboboxVariants = tv({
     {
       slots: ['clearTrigger', 'trigger'],
       class: [
-        'focus-visible:ring-0 focus-visible:ring-offset-0',
+        'focus-visible:ring-0',
         'text-combobox-trigger text-combobox-trigger-size',
         'hover:text-combobox-trigger-hover',
         'px-combobox-trigger',
