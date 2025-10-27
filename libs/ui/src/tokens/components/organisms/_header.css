@@ -22,8 +22,6 @@
     transparent
   );
 
-  /* === BRAND === */
-
   /* === NAVIGATION === */
 
   /* === ITEMS === */
@@ -33,16 +31,10 @@
   --text-header-nav-item-md: var(--text-md);
   --text-header-nav-item-lg: var(--text-lg);
 
-  /* === SUBMENU === */
-  --spacing-header-submenu: var(--spacing-200);
-  --padding-header-submenu-item: 0;
-  --spacing-header-mobile-submenu: var(--container-sm);
-
   /* === ACTIONS === */
 
   /* Foreground colors */
   --color-header-fg: var(--color-fg-primary);
-  --color-header-brand-fg: var(--color-header-fg);
   --color-header-nav-fg: var(--color-fg-secondary);
   --color-header-nav-fg-hover: var(--color-header-fg);
   --color-header-nav-fg-active: var(--color-header-accent);
@@ -51,25 +43,13 @@
   /* Border colors */
 
   /* === SIZE === */
-  /* Height tokens */
-  --height-header-sm: 3rem;
-  --height-header-md: 4rem;
-  --height-header-lg: 5rem;
-
   /* Width constraints */
   --width-header-max: 100%;
-  --width-header-brand: auto;
   --width-header-nav: auto;
   --width-header-actions: auto;
 
   /* === SPACING === */
-  /* Container padding */
-  --padding-header: var(--spacing-400) var(--spacing-400);
-
   /* Section spacing */
-  --padding-header-brand: var(--spacing-0);
-
-  --padding-header-container: var(--spacing-100) var(--spacing-200);
   --spacing-header-container: var(--spacing-100);
 
   --padding-header-nav-item-sm: 0 var(--spacing-100);
@@ -90,10 +70,6 @@
   --spacing-header-section-lg: var(--spacing-800);
 
   /* === TYPOGRAPHY === */
-  --text-header-brand-sm: var(--text-md);
-  --text-header-brand-md: var(--text-lg);
-  --text-header-brand-lg: var(--text-xl);
-
   /* Navigation */
   --text-header-nav-sm: var(--text-sm);
   --text-header-nav-md: var(--text-md);
@@ -103,7 +79,6 @@
   --text-header-actions-md: var(--text-sm);
   --text-header-actions-lg: var(--text-md);
 
-  --font-weight-header-brand: var(--font-weight-bold);
   --font-weight-header-nav: var(--font-weight-medium);
   --font-weight-header-nav-active: var(--font-weight-semibold);
 
@@ -116,13 +91,12 @@
   --color-header-hamburger-fg-hover: var(--color-fg-secondary);
 
   /* hamburger button */
-  --margin-header-hamburger: 0;
-  --size-header-hamburger: 4rem;
   --color-header-hamburger-ring: --alpha(
     --color-header-accent /
     var(--opacity-ring)
   );
-  --raidus-hamburger: 0;
+  --radius-hamburger: 0;
+  --padding-header-hamburger: 0;
 
   /* breakpoint */
   --breakpoint-header-desktop: 48rem;
