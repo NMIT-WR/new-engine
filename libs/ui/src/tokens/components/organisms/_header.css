@@ -12,24 +12,22 @@
   --color-header: var(--color-surface);
   --color-header-accent: var(--color-primary);
 
+  /* Reference typhography */
+  --text-header-sm: var(--text-sm);
+  --text-header-md: var(--text-md);
+  --text-header-lg: var(--text-lg);
+
   /* === DERIVED COLORS === */
   /* Background colors */
   --color-header-bg: var(--color-header);
-  --color-header-bg-transparent: transparent;
-  --color-header-bg-blur: color-mix(
-    in srgb,
-    var(--color-surface) 80%,
-    transparent
-  );
-
-  /* === NAVIGATION === */
 
   /* === ITEMS === */
   --color-header-nav-item-bg: transparent;
   --color-header-nav-item-bg-hover: transparent;
-  --text-header-nav-item-sm: var(--text-sm);
-  --text-header-nav-item-md: var(--text-md);
-  --text-header-nav-item-lg: var(--text-lg);
+
+  --text-header-item-sm: var(--text-header-sm);
+  --text-header-item-md: var(--text-header-md);
+  --text-header-item-lg: var(--text-header-lg);
 
   /* === ACTIONS === */
 
@@ -38,23 +36,22 @@
   --color-header-nav-fg: var(--color-fg-secondary);
   --color-header-nav-fg-hover: var(--color-header-fg);
   --color-header-nav-fg-active: var(--color-header-accent);
-  --color-header-actions-fg: var(--color-header-fg);
+  --color-header-actions-fg: var(--color-primary);
+  --color-header-actions-fg-hover: var(--color-header-fg);
 
   /* Border colors */
 
   /* === SIZE === */
   /* Width constraints */
   --width-header-max: 100%;
-  --width-header-nav: auto;
-  --width-header-actions: auto;
 
   /* === SPACING === */
   /* Section spacing */
   --spacing-header-container: var(--spacing-100);
 
-  --padding-header-nav-item-sm: 0 var(--spacing-100);
-  --padding-header-nav-item-md: 0 var(--spacing-200);
-  --padding-header-nav-item-lg: 0 var(--spacing-300);
+  --padding-header-item-sm: var(--spacing-100);
+  --padding-header-item-md: var(--spacing-150);
+  --padding-header-item-lg: var(--spacing-200);
 
   --spacing-header-nav-sm: var(--spacing-200);
   --spacing-header-nav-md: var(--spacing-300);
@@ -64,42 +61,26 @@
   --spacing-header-actions-md: var(--spacing-300);
   --spacing-header-actions-lg: var(--spacing-400);
 
-  /* Between sections */
-  --spacing-header-section-sm: var(--spacing-400);
-  --spacing-header-section-md: var(--spacing-600);
-  --spacing-header-section-lg: var(--spacing-800);
-
   /* === TYPOGRAPHY === */
-  /* Navigation */
-  --text-header-nav-sm: var(--text-sm);
-  --text-header-nav-md: var(--text-md);
-  --text-header-nav-lg: var(--text-lg);
-
-  --text-header-actions-sm: var(--text-xs);
-  --text-header-actions-md: var(--text-sm);
-  --text-header-actions-lg: var(--text-md);
-
   --font-weight-header-nav: var(--font-weight-medium);
   --font-weight-header-nav-active: var(--font-weight-semibold);
 
   /* === Z-INDEX === */
   /* Mobile menu hamburger colors */
-  --color-header-hamburger-bg: transparent;
-  --color-header-hamburger-bg-hover: transparent;
-  --color-header-hamburger-bg-active: transparent;
   --color-header-hamburger-fg: var(--color-fg-primary);
   --color-header-hamburger-fg-hover: var(--color-fg-secondary);
 
   /* hamburger button */
-  --color-header-hamburger-ring: --alpha(
-    --color-header-accent /
-    var(--opacity-ring)
-  );
-  --radius-hamburger: 0;
-  --padding-header-hamburger: 0;
+  --text-header-hamburger-sm: var(--text-header-sm);
+  --text-header-hamburger-md: var(--text-header-md);
+  --text-header-hamburger-lg: var(--text-header-lg);
+
+  --padding-header-hamburger-sm: var(--spacing-100);
+  --padding-header-hamburger-md: var(--spacing-150);
+  --padding-header-hamburger-lg: var(--spacing-200);
 
   /* breakpoint */
-  --breakpoint-header-desktop: 48rem;
+  --container-header-desktop: 48rem;
 
   --duration-header: 300ms;
 }
