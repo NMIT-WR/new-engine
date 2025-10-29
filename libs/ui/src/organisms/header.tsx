@@ -7,51 +7,39 @@ import { tv } from '../utils'
 const headerVariants = tv({
   slots: {
     root: [
-      'w-full',
-      'grid grid-flow-col justify-between',
+      'w-full @container bg-header-bg',
+      'flex justify-between',
       'max-w-header-max',
       'relative',
     ],
-    desktop: 'flex max-header-desktop:hidden',
+    desktop: 'flex @max-header-desktop:hidden w-full',
     mobile: [
-      'data-[open=false]:hidden header-desktop:hidden *:flex *:flex-col absolute top-full data-[position=left]:left-0 data-[position=right]:right-0',
+      'data-[open=false]:hidden @header-desktop:hidden *:flex *:flex-col absolute top-full data-[position=left]:left-0 data-[position=right]:right-0',
     ],
     container: [
-      'flex gap-header-container',
-      'data-[position=start]:justify-self-start-safe',
-      'data-[position=center]:justify-self-center-safe',
-      'data-[position=end]:justify-self-end-safe',
+      'grid gap-header-container w-full',
+      'data-[position=start]:justify-items-start-safe',
+      'data-[position=center]:justify-items-center-safe',
+      'data-[position=end]:justify-items-end-safe',
     ],
-    nav: [
-      'items-center flex',
-      'w-header-nav flex-1',
-      'max-header-desktop:bg-header-bg',
-    ],
+    nav: ['flex items-center flex-1', '@max-header-desktop:bg-header-bg'],
     navItem: [
       'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover',
       'data-[active=true]:text-header-nav-fg-active',
       'data-[active=true]:font-header-nav-active',
       'min-w-max',
     ],
-    actions: [
-      'items-center',
+    actions: ['flex items-center', 'shrink-0'],
+    actionItem: [
       'text-header-actions-fg',
-      'w-header-actions',
-      'shrink-0',
-      'flex',
+      'hover:text-header-actions-fg-hover',
     ],
     hamburger: [
-      'flex',
-      'header-desktop:hidden',
-      'h-full',
-      'p-header-hamburger',
-      'rounded-hamburger',
+      '@header-desktop:hidden',
+      'items-center',
       'text-header-hamburger-fg hover:text-header-hamburger-fg-hover',
-      'bg-header-hamburger-bg active:bg-header-hamburger-bg-active',
-      'hover:bg-header-hamburger-bg-hover',
       'transition-colors duration-header',
       'cursor-pointer',
-      'focus:outline-none focus:ring-2 focus:ring-header-hamburger-ring',
     ],
   },
   compoundSlots: [
@@ -72,40 +60,31 @@ const headerVariants = tv({
         root: ['flex-row'],
       },
     },
-    variant: {
-      solid: {
-        root: ['bg-header-bg'],
-      },
-      transparent: {
-        root: ['bg-header-bg-transparent'],
-      },
-      blur: {
-        root: ['bg-header-bg-blur'],
-      },
-    },
     size: {
       sm: {
-        root: 'gap-header-section-sm',
-        nav: 'gap-header-nav-sm text-header-nav-sm',
-        navItem: 'p-header-nav-item-sm text-header-nav-item-sm',
-        actions: 'gap-header-actions-sm text-header-actions-sm',
+        nav: 'gap-header-nav-sm',
+        navItem: 'p-header-item-sm text-header-item-sm',
+        actions: 'gap-header-actions-sm',
+        actionItem: 'text-header-item-sm p-header-item-sm',
+        hamburger: 'text-header-hamburger-sm p-header-hamburger-sm',
       },
       md: {
-        root: 'gap-header-section-md',
-        nav: 'gap-header-nav-md text-header-nav-md',
-        navItem: 'p-header-nav-item-md text-header-nav-item-md',
-        actions: 'gap-header-actions-md text-header-actions-md',
+        nav: 'gap-header-nav-md',
+        navItem: 'p-header-item-md text-header-item-md',
+        actions: 'gap-header-actions-md',
+        actionItem: 'text-header-item-md p-header-item-md',
+        hamburger: 'text-header-hamburger-md p-header-hamburger-md',
       },
       lg: {
-        root: 'gap-header-section-lg',
-        nav: 'gap-header-nav-lg text-header-nav-lg',
-        navItem: 'p-header-nav-item-lg text-header-nav-item-lg',
-        actions: 'gap-header-actions-lg text-header-actions-lg',
+        nav: 'gap-header-nav-lg',
+        navItem: 'p-header-item-lg text-header-item-lg',
+        actions: 'gap-header-actions-lg',
+        actionItem: 'text-header-item-lg p-header-item-lg ',
+        hamburger: 'text-header-hamburger-lg p-header-hamburger-lg',
       },
     },
   },
   defaultVariants: {
-    variant: 'solid',
     size: 'md',
     direction: 'horizontal',
   },
@@ -158,6 +137,12 @@ interface HeaderActionsProps extends HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg'
 }
 
+interface HeaderActionItemProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode
+  ref?: Ref<HTMLDivElement>
+  size?: 'sm' | 'md' | 'lg'
+}
+
 interface HeaderMobileProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   ref?: Ref<HTMLDivElement>
@@ -165,7 +150,6 @@ interface HeaderMobileProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function Header({
-  variant,
   size = 'md',
   direction = 'horizontal',
   className,
@@ -174,9 +158,8 @@ export function Header({
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev)
   const { root } = headerVariants({
-    variant,
     size,
     direction,
   })
@@ -319,6 +302,24 @@ Header.Actions = function HeaderActions({
   )
 }
 
+Header.ActionItem = function HeaderActionItem({
+  className,
+  children,
+  ref,
+  size: overrideSize,
+  ...props
+}: HeaderActionItemProps) {
+  const context = useContext(HeaderContext)
+  const size = overrideSize ?? context.size ?? 'md'
+  const { actionItem } = headerVariants({ size })
+
+  return (
+    <div ref={ref} className={actionItem({ className })} {...props}>
+      {children}
+    </div>
+  )
+}
+
 Header.Hamburger = function HeaderHamburger({
   className,
 }: { className?: string }) {
@@ -327,10 +328,13 @@ Header.Hamburger = function HeaderHamburger({
 
   return (
     <Button
-      theme="borderless"
-      onClick={toggleMobileMenu}
-      className={hamburger({ className })}
+      theme="unstyled"
+      type="button"
+      aria-expanded={isMobileMenuOpen}
       aria-label="Toggle mobile menu"
+      onClick={toggleMobileMenu}
+      size="current"
+      className={hamburger({ className })}
       icon={isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'}
     />
   )
