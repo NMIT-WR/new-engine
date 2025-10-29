@@ -5,7 +5,7 @@ import { tv } from '../utils'
 export type IconType = `token-icon-${string}` | `icon-[${string}]`
 
 const iconVariants = tv({
-  base: ['inline-block flex-shrink-0 align-middle leading-none'],
+  base: ['inline-block flex-shrink-0 leading-none self-center'],
   variants: {
     size: {
       current: '',
