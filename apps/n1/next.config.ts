@@ -3,11 +3,8 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@new-engine/ui'],
-
-  // React Compiler (Next.js 16 - top-level, not experimental!)
   reactCompiler: true,
-
-  // Optimize for serverless - exclude large binaries
+  cacheComponents: true,
   outputFileTracingExcludes: {
     '*': [
       'node_modules/@swc/core-linux-x64-gnu',
@@ -22,7 +19,6 @@ const nextConfig: NextConfig = {
       'node_modules/puppeteer',
     ],
   },
-
   images: {
     remotePatterns: [
       {
@@ -33,30 +29,15 @@ const nextConfig: NextConfig = {
     qualities: [40, 50, 60, 75, 90],
   },
 
-  // Next.js 16 experimental features
   experimental: {
-    useCache: true,
-    cacheComponents: true,
+    clientSegmentCache: true,
+    typedEnv: true,
     cacheLife: {
       product: {
         stale: 3600,
         revalidate: 3600,
         expire: 86400,
       },
-    },
-    turbopackFileSystemCacheForDev: true,
-
-    // Layout deduplication + incremental prefetching
-    clientSegmentCache: true,
-
-    // Type-safe environment variables
-    typedEnv: true,
-
-    // Forward browser logs to terminal (development)
-    browserDebugInfoInTerminal: {
-      depthLimit: 5,
-      edgeLimit: 100,
-      showSourceLocation: true,
     },
   },
 }
