@@ -1,4 +1,5 @@
 import type { StoreProduct } from '@medusajs/types'
+import type { BadgeProps } from '@new-engine/ui/atoms/badge'
 
 export interface StoreProductExtended extends StoreProduct {
   producer?: Producer
@@ -11,10 +12,7 @@ export interface Product {
   handle: string
   price?: string
   withoutTax?: string
-  badges?: {
-    variant: 'new' | 'limited' | 'info' | 'sale' | 'default'
-    text: string
-  }[]
+  badges?: BadgeProps[]
   imageSrc?: string
   stockStatus?: string
   stockValue?: string
