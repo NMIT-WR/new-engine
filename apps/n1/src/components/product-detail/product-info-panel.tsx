@@ -90,10 +90,10 @@ export const ProductInfoPanel = ({
         <div className="flex gap-2">
           {detail.badges.map((badge) => (
             <span
-              key={badge.text}
+              key={badge.id}
               className="rounded bg-gray-200 px-3 py-1 text-sm"
             >
-              {badge.text}
+              {badge.children}
             </span>
           ))}
         </div>
