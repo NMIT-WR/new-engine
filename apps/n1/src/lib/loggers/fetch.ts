@@ -12,4 +12,14 @@ export const fetchLogger = {
 
     console.log(`✅ [Current] ${label} ready in ${Math.round(duration)}ms`)
   },
+
+  /**
+   * Log fetch cancellation (AbortSignal)
+   */
+  cancelled: (label: string, offset?: number) => {
+    if (process.env.NODE_ENV !== 'development') return
+
+    const offsetStr = offset !== undefined ? ` @offset:${offset}` : ''
+    console.log(`🚫 [Cancelled] ${label}${offsetStr}`)
+  },
 }

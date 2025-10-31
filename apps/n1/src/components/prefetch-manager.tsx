@@ -13,7 +13,7 @@ const PREFETCH_DELAY = 200
  * Category pages use usePrefetchRootCategories hook instead
  */
 export function PrefetchManager() {
-  const { prefetchCategoryProducts } = usePrefetchProducts()
+  const { prefetchRootCategories } = usePrefetchProducts()
   const { regionId } = useRegion()
   const pathname = usePathname()
   const hasPrefetched = useRef(false)
@@ -29,16 +29,16 @@ export function PrefetchManager() {
     hasPrefetched.current = true
 
     const timer = setTimeout(() => {
-      prefetchLogger.info('Categories', `Manager started from ${pathname}`)
+      prefetchLogger.info('Root', `Manager started from ${pathname}`)
 
-      // Prefetch ALL root categories
+      // Prefetch ALL root categories (without AbortSignal)
       for (const categoryIds of Object.values(CATEGORY_MAP)) {
-        prefetchCategoryProducts(categoryIds)
+        prefetchRootCategories(categoryIds)
       }
     }, PREFETCH_DELAY)
 
     return () => clearTimeout(timer)
-  }, [regionId, pathname, prefetchCategoryProducts])
+  }, [regionId, pathname, prefetchRootCategories])
 
   return null
 }

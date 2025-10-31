@@ -18,7 +18,7 @@ export function usePrefetchRootCategories({
   delay = 200,
 }: UsePrefetchRootCategoriesParams) {
   const { regionId } = useRegion()
-  const { prefetchCategoryProducts } = usePrefetchProducts()
+  const { prefetchRootCategories } = usePrefetchProducts()
   const hasPrefetched = useRef(false)
 
   useEffect(() => {
@@ -28,17 +28,17 @@ export function usePrefetchRootCategories({
 
     const timer = setTimeout(() => {
       prefetchLogger.info(
-        'Categories',
+        'Root',
         `Prefetching other root from /kategorie/${currentHandle}`
       )
 
       for (const [handle, categoryIds] of Object.entries(CATEGORY_MAP)) {
         if (handle !== currentHandle) {
-          prefetchCategoryProducts(categoryIds)
+          prefetchRootCategories(categoryIds)
         }
       }
     }, delay)
 
     return () => clearTimeout(timer)
-  }, [enabled, regionId, currentHandle, delay, prefetchCategoryProducts])
+  }, [enabled, regionId, currentHandle, delay, prefetchRootCategories])
 }

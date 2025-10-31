@@ -3,13 +3,17 @@
  * Provides consistent logging format across all prefetch systems
  */
 
-type PrefetchType = 'Categories' | 'Pages' | 'Children' | 'Product'
+type PrefetchType = 'Root' | 'Categories' | 'Pages' | 'Children' | 'Product'
 
 export const prefetchLogger = {
   /**
    * Log prefetch start
    */
-  start: (type: PrefetchType, label: string, metadata?: Record<string, any>) => {
+  start: (
+    type: PrefetchType,
+    label: string,
+    metadata?: Record<string, any>
+  ) => {
     if (process.env.NODE_ENV !== 'development') return
 
     const metaStr = metadata
