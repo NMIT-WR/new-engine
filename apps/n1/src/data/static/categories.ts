@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT
-// Generated at: 2025-09-30T15:37:52.895Z
+// Generated at: 2025-10-30T09:43:52.135Z
 // Run 'pnpm run generate:categories' to regenerate
 // This version filters out categories without products and adds root_category_id
 
@@ -9,8 +9,8 @@ export interface LeafCategory {
   id: string
   name: string
   handle: string
-  parent_category_id: string
-  root_category_id: string // NEW: ID of root category
+  parent_category_id: string | null
+  root_category_id: string | null // NEW: ID of root category
 }
 
 export interface LeafParent {
@@ -6729,7 +6729,7 @@ const data: StaticCategoryData = {
       ]
     }
   ],
-  "generatedAt": "2025-09-30T15:37:52.894Z",
+  "generatedAt": "2025-10-30T09:43:52.134Z",
   "filteringStats": {
     "totalCategoriesBeforeFiltering": 580,
     "totalCategoriesAfterFiltering": 212,
