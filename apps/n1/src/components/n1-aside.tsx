@@ -4,7 +4,7 @@ import { findNodeById } from '@/utils/transform/find-node-by-id'
 import { getCategoryPath } from '@/utils/transform/get-category-path'
 import { transformToTree } from '@/utils/transform/transform-to-tree'
 import { TreeView } from '@new-engine/ui/molecules/tree-view'
-import type { TreeView as TreeType } from '@new-engine/ui/types'
+import type { TreeView as TreeType } from '@new-engine/ui/types-zag'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 
@@ -29,12 +29,6 @@ export function N1Aside({
   const expandedPath = getCategoryPath(currentCategory, categoryMap)
 
   const handleSelect = (details: TreeType.SelectionChangeDetails) => {
-    console.log(
-      'focusedValue',
-      details.focusedValue,
-      'currentCategory',
-      currentCategory
-    )
     if (details.focusedValue) {
       const node = findNodeById(treeData, details.focusedValue)
       if (node) {
