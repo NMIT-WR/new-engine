@@ -3,7 +3,7 @@
 import { allCategories } from '@/data/static/categories'
 import { ALL_CATEGORIES_MAP } from '@/lib/constants'
 import { prefetchLogger } from '@/lib/loggers'
-// import { useQueryClient } from '@tanstack/react-query'  // Only needed for cancellation
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { usePrefetchProducts } from './use-prefetch-products'
 import { useRegion } from './use-region'
@@ -17,7 +17,7 @@ export function usePrefetchCategoryChildren({
   enabled = true,
   categoryHandle,
 }: UsePrefetchCategoryChildrenParams) {
-  // const queryClient = useQueryClient()  // Only needed for cancellation
+  const queryClient = useQueryClient()
   const currentCategory = allCategories.find(
     (cat) => cat.handle === categoryHandle
   )
@@ -48,7 +48,7 @@ export function usePrefetchCategoryChildren({
           children.map((child) => {
             const categoryIds = ALL_CATEGORIES_MAP[child.handle]
             if (categoryIds?.length) {
-              return prefetchCategoryProducts(categoryIds)
+              return prefetchCategoryProducts(categoryIds, categoryHandle)
             }
             return Promise.resolve()
           })
@@ -62,35 +62,19 @@ export function usePrefetchCategoryChildren({
     return () => {
       isCancelled = true
 
-      // CANCELLATION SUPPORT (requires AbortSignal in getProducts)
       // Cancel ongoing prefetch requests for this category's children
-      // if (childCategoryIds.length > 0) {
-      //   queryClient.cancelQueries({
-      //     predicate: (query) => {
-      //       const queryKey = query.queryKey
-      //       // Match: ['n1', 'products', 'list', { category_id: [...], ... }]
-      //       if (
-      //         queryKey[0] === 'n1' &&
-      //         queryKey[1] === 'products' &&
-      //         queryKey[2] === 'list'
-      //       ) {
-      //         const params = queryKey[3] as { category_id?: string[] }
-      //         const queryCategoryIds = params?.category_id || []
+      // Uses meta scope to avoid canceling queries from other categories
+      queryClient.cancelQueries({
+        predicate: (query) => {
+          // ✅ Only cancel queries prefetched by THIS categoryHandle
+          return query.meta?.prefetchedBy === categoryHandle
+        },
+      })
 
-      //         // Cancel if query uses any of our child category IDs
-      //         return queryCategoryIds.some((id) =>
-      //           childCategoryIds.includes(id)
-      //         )
-      //       }
-      //       return false
-      //     },
-      //   })
-
-      //   prefetchLogger.info(
-      //     'Children',
-      //     `Cancelled ${childCategoryIds.length} child prefetches for ${categoryHandle}`
-      //   )
-      // }
+      prefetchLogger.info(
+        'Children',
+        `Cancelled prefetches for ${categoryHandle}`
+      )
     }
   }, [
     enabled,
@@ -98,6 +82,6 @@ export function usePrefetchCategoryChildren({
     regionId,
     currentCategory,
     prefetchCategoryProducts,
-    // queryClient,  // Only needed for cancellation
+    queryClient,
   ])
 }
