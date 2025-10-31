@@ -3,7 +3,7 @@ export const cacheConfig = {
     staleTime: 60 * 60 * 1000,
     gcTime: 24 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
   },
 
   realtime: {
