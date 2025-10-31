@@ -45,11 +45,9 @@ export function useProducts({
   const { data, isLoading, error, dataUpdatedAt, isFetching, isSuccess } =
     useQuery({
       queryKey: queryKeys.products.list(queryParams),
-      queryFn: async () => {
-        // queryFn: async ({ signal }) => {
+      queryFn: async ({ signal }) => {
         const start = performance.now()
-        //const result = await getProducts(queryParams, signal)
-        const result = await getProducts(queryParams)
+        const result = await getProducts(queryParams, signal)
         const duration = performance.now() - start
 
         if (process.env.NODE_ENV === 'development') {
