@@ -15,12 +15,9 @@ export const TopSales = () => {
 
   const products = data?.products.map(transformProduct)
 
-  const logIt = () => {
-    console.log(data, [category.id])
-  }
   return (
     <div>
-      <h2 onClick={logIt}>Top Sales</h2>
+      <h2>Top Sales</h2>
       {products?.map((product) => (
         <ProductCard key={product.id} layout="row">
           <ProductCard.Image width={200} height={200} src={product.imageSrc} />
