@@ -1,6 +1,10 @@
 import { PRODUCT_DETAILED_FIELDS } from '@/lib/constants'
+import { fetchLogger } from '@/lib/loggers'
 import { sdk } from '@/lib/medusa-client'
-import type { ProductQueryParams } from '@/lib/product-query-params'
+import {
+  type ProductQueryParams,
+  buildQueryString,
+} from '@/lib/product-query-params'
 import type { StoreProduct } from '@medusajs/types'
 
 export interface ProductListResponse {
@@ -18,12 +22,13 @@ export interface ProductDetailParams {
 }
 
 export async function getProducts(
-  params: ProductQueryParams
+  params: ProductQueryParams,
+  signal?: AbortSignal
 ): Promise<ProductListResponse> {
   const { category_id, region_id, country_code, limit, offset, fields } = params
 
   try {
-    const response = await sdk.store.product.list({
+    const queryString = buildQueryString({
       limit,
       offset,
       fields,
@@ -32,19 +37,57 @@ export async function getProducts(
       category_id,
     })
 
+    // Use native fetch with Medusa headers for AbortSignal support
+    const baseUrl =
+      process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ''
+
+    const response = await fetch(`${baseUrl}/store/products?${queryString}`, {
+      signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-publishable-api-key': publishableKey,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+
     return {
-      products: response.products || [],
-      count: response.count || 0,
+      products: data.products || [],
+      count: data.count || 0,
       limit: limit || 0,
       offset: offset || 0,
     }
   } catch (err) {
+    // AbortError is expected when request is cancelled
+    if (err instanceof Error && err.name === 'AbortError') {
+      if (process.env.NODE_ENV === 'development') {
+        const categoryLabel = category_id?.[0]?.slice(-6) || 'all'
+        fetchLogger.cancelled(categoryLabel, offset)
+      }
+      throw err // Let React Query handle it
+    }
+
     if (process.env.NODE_ENV === 'development') {
       console.error('[ProductService] Failed to fetch products:', err)
     }
     const message = err instanceof Error ? err.message : 'Unknown error'
     throw new Error(`Failed to fetch products: ${message}`)
   }
+}
+
+/**
+ * Fetch products without AbortSignal (for global/persistent prefetch)
+ * Use for root categories that should complete even after navigation
+ */
+export async function getProductsGlobal(
+  params: ProductQueryParams
+): Promise<ProductListResponse> {
+  return getProducts(params, undefined)
 }
 
 export async function getProductByHandle(
