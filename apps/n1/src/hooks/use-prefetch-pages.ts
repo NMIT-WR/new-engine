@@ -66,8 +66,7 @@ export function usePrefetchPages({
 
           return queryClient.prefetchQuery({
             queryKey: queryKeys.products.list(queryParams),
-            // queryFn: ({ signal }) => getProducts(queryParams, signal),
-            queryFn: () => getProducts(queryParams),
+            queryFn: ({ signal }) => getProducts(queryParams, signal),
             ...cacheConfig.semiStatic,
           })
         })
