@@ -28,13 +28,13 @@ export function useDate() {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
-      }), // "09.10.2025"
+      }),
     long: (date: Date) =>
       formatDate(date, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-      }), // "9. října 2025"
+      }),
 
     // Utilities
     now: () => new Date(),
