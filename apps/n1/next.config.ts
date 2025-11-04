@@ -29,16 +29,17 @@ const nextConfig: NextConfig = {
     qualities: [40, 50, 60, 75, 90],
   },
 
+  cacheLife: {
+    product: {
+      stale: 3600,
+      revalidate: 3600,
+      expire: 86400,
+    },
+  },
+
   experimental: {
     clientSegmentCache: true,
     typedEnv: true,
-    cacheLife: {
-      product: {
-        stale: 3600,
-        revalidate: 3600,
-        expire: 86400,
-      },
-    },
   },
 }
 
