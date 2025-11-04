@@ -36,7 +36,7 @@ const meta: Meta<typeof FormTextarea> = {
     },
     resize: {
       control: 'select',
-      options: ['none', 'both', 'horizontal', 'vertical'],
+      options: ['none', 'both', 'x', 'y'],
       description: 'Resize behavior of the textarea',
     },
     rows: {

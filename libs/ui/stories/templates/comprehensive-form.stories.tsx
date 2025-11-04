@@ -197,7 +197,7 @@ export const AllFormInputs: Story = {
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1">
                 <Label size={size}>Numeric Input</Label>
-                <NumericInput placeholder="Enter number" size={size} />
+                <NumericInput id="numeric-input" size={size} />
                 {validateStatus === 'error' ? (
                   <ErrorText size={size}>{helpText}</ErrorText>
                 ) : (

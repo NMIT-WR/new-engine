@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { ColorSelect} from '../../src/molecules/color-select'
+import { ColorSelect } from '../../src/molecules/color-select'
 import { Button } from '../../src/atoms/button'
 import { useState } from 'react'
+import { ColorItem } from '../../src/molecules/color-select'
 
 // Custom hook for color selection logic
 const useColorSelection = (
@@ -126,7 +127,7 @@ export const Default: Story = {
   render: (args) => {
     const { handleColorClick, isSelected } = useColorSelection([], args.selectionMode)
 
-    const colorsWithSelection = args.colors.map((c: {id?:string, color:string, selected?:boolean}) => ({
+    const colorsWithSelection = args.colors.map((c: ColorItem) => ({
       ...c,
       selected: isSelected(c.color)
     }))

@@ -771,11 +771,11 @@ export const PortalComparison: Story = {
           <h4 className="mb-100 font-medium">When to use each:</h4>
           <ul className="space-y-50 text-sm">
             <li>
-              <strong>Use Portal (default):</strong> Modals, global notifications,
+              <strong>Use portal (default):</strong> Modals, global notifications,
               tooltips that need to escape container constraints
             </li>
             <li>
-              <strong>Use usePortal={false}:</strong> Navigation submenus,
+              <strong>Use portal={false}:</strong> Navigation submenus,
               inline context menus, hover cards that should respect DOM hierarchy
             </li>
           </ul>

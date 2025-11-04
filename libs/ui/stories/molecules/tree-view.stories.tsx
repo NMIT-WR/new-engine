@@ -241,7 +241,6 @@ export const Minimal: Story = {
               indexPath={[index]}
               showIndentGuides={false}
               showNodeIcons={false}
-              onTriggerHover={() => console.log('hover')}
             />
           ))}
         </TreeView.Tree>
