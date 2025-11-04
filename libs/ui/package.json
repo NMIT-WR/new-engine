@@ -35,7 +35,10 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "src/tokens"],
+  "files": [
+    "dist",
+    "src/tokens"
+  ],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
@@ -79,6 +82,7 @@
     "@rsbuild/core": "1.6.1",
     "@rsbuild/plugin-react": "^1.4.1",
     "@rslib/core": "^0.17.0",
+    "@storybook/addon-a11y": "^10.0.3",
     "@storybook/addon-links": "^10.0.2",
     "@storybook/addon-onboarding": "^10.0.2",
     "@storybook/addon-themes": "^10.0.2",
