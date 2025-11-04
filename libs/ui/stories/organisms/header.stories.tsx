@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Button } from '../../src/atoms/button'
-import { Icon } from '../../src/atoms/icon'
+import { Icon, type IconType } from '../../src/atoms/icon'
 import { Link } from '../../src/atoms/link'
 import { Accordion } from '../../src/molecules/accordion'
 import { Dialog } from '../../src/molecules/dialog'
@@ -340,6 +340,7 @@ export const NestedSubmenu: Story = {
                 <Link href="/contact">Contact</Link>
               </Header.NavItem>
               <Popover
+                id="shop-popover-1"
                 trigger={
                   <Header.NavItem>
                     <span>Shop</span>
@@ -354,6 +355,7 @@ export const NestedSubmenu: Story = {
                 </Header.NavItem>
 
                 <Popover
+                  id="categories-popover-1"
                   trigger={
                     <Header.NavItem>
                       <span>Categories</span>
@@ -465,6 +467,7 @@ export const NestedSubmenu: Story = {
                   <Link href="/contact">Contact</Link>
                 </Header.NavItem>
                 <Popover
+                  id="shop-popover-2"
                   trigger={
                     <Header.NavItem>
                       <span>Shop</span>
@@ -479,6 +482,7 @@ export const NestedSubmenu: Story = {
                   </Header.NavItem>
 
                   <Popover
+                    id="categories-popover-2"
                     trigger={
                       <Header.NavItem>
                         <span>Categories</span>
@@ -893,7 +897,7 @@ export const DrawerSubmenu: Story = {
                 onClick={() => setDrawerOpen(false)}
               >
                 <span className="text-sm">{cat.name}</span>
-                <Icon icon={cat.icon} className="text-2xl" />
+                <Icon icon={cat.icon as IconType} className="text-2xl" />
               </Link>
             ))}
           </div>
