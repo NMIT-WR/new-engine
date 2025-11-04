@@ -718,7 +718,7 @@ export const PortalComparison: Story = {
                 position="absolute"
                 placement="center"
                 size="sm"
-                usePortal={true}
+                portal={true}
               >
                 <div className="space-y-200">
                   <p className="text-sm">
