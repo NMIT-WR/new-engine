@@ -33,11 +33,6 @@ export function usePrefetchCategoryChildren({
     const children = allCategories.filter(
       (cat) => cat.parent_category_id === currentCategory.id
     )
-    // const childCategoryIds = children
-    //   .flatMap((child) => ALL_CATEGORIES_MAP[child.handle] || [])
-    //   .filter((id): id is string => !!id)
-
-    // Sequential prefetch with phases
     ;(async () => {
       // PHASE 1: Direct children - wait for completion
       if (children.length > 0) {
