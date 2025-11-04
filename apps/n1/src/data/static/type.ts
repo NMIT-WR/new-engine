@@ -13,6 +13,7 @@ export interface CategoryTreeNode {
   handle: string
   description?: string
   children?: CategoryTreeNode[]
+  parent_category_id?: string | null
 }
 
 export interface CategoryData {

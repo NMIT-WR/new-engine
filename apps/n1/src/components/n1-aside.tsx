@@ -1,5 +1,6 @@
 'use client'
 import type { Category, CategoryTreeNode } from '@/data/static/type'
+import { usePrefetchOnHover } from '@/hooks/use-prefetch-on-hover'
 import { findNodeById } from '@/utils/transform/find-node-by-id'
 import { getCategoryPath } from '@/utils/transform/get-category-path'
 import { transformToTree } from '@/utils/transform/transform-to-tree'
@@ -25,6 +26,7 @@ export function N1Aside({
   const treeData = useMemo(() => {
     return transformToTree(categories)
   }, [categories])
+  const { handleHover, cancelHover } = usePrefetchOnHover()
 
   const expandedPath = getCategoryPath(currentCategory, categoryMap)
 
@@ -37,8 +39,12 @@ export function N1Aside({
     }
   }
 
+  const prefetchOnHover = (handle: string) => {
+    handleHover(handle)
+  }
+
   return (
-    <aside>
+    <aside onMouseLeave={cancelHover}>
       <TreeView
         className="w-3xs border-t-2 border-t-overlay p-200"
         data={treeData}
@@ -54,6 +60,7 @@ export function N1Aside({
               key={node.id}
               node={node}
               indexPath={[index]}
+              onTriggerHover={() => prefetchOnHover(node.handle as string)}
             />
           ))}
         </TreeView.Tree>
