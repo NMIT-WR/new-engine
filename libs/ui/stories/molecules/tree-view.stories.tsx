@@ -169,7 +169,7 @@ export const CustomComposition: Story = {
         <TreeView.Label>Project Structure</TreeView.Label>
         <TreeView.Tree>
           {fileSystemData.map((node, index) => {
-            const RenderNode = ({ node, indexPath }: { node: TreeNode; indexPath: number[] }) => () => (
+            const RenderNode = ({ node, indexPath }: { node: TreeNode; indexPath: number[] }) => (
               <TreeView.NodeProvider node={node} indexPath={indexPath}>
                 {node.children ? (
                   <TreeView.Branch>
@@ -179,7 +179,7 @@ export const CustomComposition: Story = {
                         <TreeView.BranchText />
                         {node.children && (
                           <Badge variant="secondary" className="ml-xs">
-                            {node.children.length}
+                            {String(node.children.length)}
                           </Badge>
                         )}
                       </TreeView.BranchControl>
@@ -451,7 +451,7 @@ export const CustomStyling: Story = {
         </h2>
         <TreeView.Tree className="bg-white/50 dark:bg-black/20 backdrop-blur-sm">
           {fileSystemData.map((node, index) => {
-            const CustomNode = ({ node, indexPath }: { node: TreeNode; indexPath: number[] }) => () => (
+            const CustomNode = ({ node, indexPath }: { node: TreeNode; indexPath: number[] }) => (
               <TreeView.NodeProvider node={node} indexPath={indexPath}>
                 {node.children ? (
                   <TreeView.Branch>
