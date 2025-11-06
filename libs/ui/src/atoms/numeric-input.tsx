@@ -3,7 +3,7 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import {
   type ComponentPropsWithoutRef,
   type ReactNode,
-  type RefObject,
+  type Ref,
   createContext,
   useContext,
   useId,
@@ -104,7 +104,7 @@ export type NumericInputProps = Omit<
     precision?: number
     children?: ReactNode
     describedBy?: string
-    ref?: RefObject<HTMLDivElement>
+    ref?: Ref<HTMLDivElement>
     id?: string
   }
 
@@ -193,7 +193,7 @@ export function NumericInput({
 
 // Control component (wrapper for input + triggers)
 interface NumericInputControlProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 NumericInput.Control = function NumericInputControl({
@@ -220,7 +220,7 @@ NumericInput.Control = function NumericInputControl({
 // Input component
 interface NumericInputInputProps
   extends Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
-  ref?: RefObject<HTMLInputElement>
+  ref?: Ref<HTMLInputElement>
 }
 
 NumericInput.Input = function NumericInputInput({
@@ -263,7 +263,7 @@ interface NumericInputIncrementTriggerProps
   loadingText?: string
 
   // === React ===
-  ref?: RefObject<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
   children?: ReactNode
 }
 
@@ -327,7 +327,7 @@ interface NumericInputDecrementTriggerProps
   loadingText?: string
 
   // === React ===
-  ref?: RefObject<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
   children?: ReactNode
 }
 
@@ -374,7 +374,7 @@ NumericInput.DecrementTrigger = function NumericInputDecrementTrigger({
 
 // Scrubber component (for drag-to-change functionality)
 interface NumericInputScrubberProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 NumericInput.Scrubber = function NumericInputScrubber({
@@ -397,7 +397,7 @@ NumericInput.Scrubber = function NumericInputScrubber({
 // Trigger Container component (wrapper for increment/decrement triggers)
 interface NumericInputTriggerContainerProps
   extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 NumericInput.TriggerContainer = function NumericInputTriggerContainer({
