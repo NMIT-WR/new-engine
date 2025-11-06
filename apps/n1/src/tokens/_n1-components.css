@@ -92,6 +92,10 @@
   --breakpoint-header-desktop: 52rem;
 
   /* === HEADER === */
+
+  /* === TABLE === */
+  --color-table-row-striped-bg-secondary: var(--color-n1-table);
+  --color-table-border: var(--color-n1-table-border);
 }
 
 /* === TREE-VIEW UTILITIES === */
