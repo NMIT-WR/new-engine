@@ -1,32 +1,41 @@
 @theme static {
+  --product-card-layout-row-grid: auto 1fr;
+  --product-card-layout-column-grid: 1fr;
   /* === BASE COLORS === */
   --color-product-card-bg: var(--color-surface);
   --color-product-card-name-fg: var(--color-fg-primary);
-  --color-product-card-stock-fg: var(--color-success);
+
   --color-product-card-price-fg: var(--color-fg-primary);
   --color-product-card-border: var(--color-border-primary);
 
+  --color-product-card-stock-fg-in-stock: var(--color-success);
+  --color-product-card-stock-fg-limited-stock: var(--color-warning);
+  --color-product-card-stock-fg-out-of-stock: var(--color-danger);
+
   /* === STATE VARIATIONS === */
   /* Add to cart button */
-  --color-button-cart-bg: var(--color-button-primary);
-  --color-button-cart-bg-hover: oklch(
-    from var(--color-button-cart-bg) calc(l + var(--state-hover)) c h
+  --color-product-card-button-cart-bg: var(--color-button-primary);
+  --color-product-card-button-cart-bg-hover: oklch(
+    from var(--color-product-card-button-cart-bg) calc(l + var(--state-hover)) c
+      h
   );
-  --color-button-cart-fg: var(--color-button-fg);
+  --color-product-card-button-cart-fg: var(--color-button-fg);
 
   /* Detail button */
-  --color-button-detail-bg: var(--color-button-secondary);
-  --color-button-detail-bg-hover: oklch(
-    from var(--color-button-detail-bg) calc(l + var(--state-hover)) c h
+  --color-product-card-button-detail-bg: var(--color-button-secondary);
+  --color-product-card-button-detail-bg-hover: oklch(
+    from var(--color-product-card-button-detail-bg) calc(l + var(--state-hover))
+      c h
   );
-  --color-button-detail-fg: var(--color-button-fg);
+  --color-product-card-button-detail-fg: var(--color-button-fg);
 
   /* Wishlist button */
-  --color-button-wishlist-bg: var(--color-button-tertiary);
-  --color-button-wishlist-bg-hover: oklch(
-    from var(--color-button-wishlist-bg) calc(l + var(--state-hover)) c h
+  --color-product-card-button-wishlist-bg: var(--color-button-tertiary);
+  --color-product-card-button-wishlist-bg-hover: oklch(
+    from var(--color-product-card-button-wishlist-bg)
+      calc(l + var(--state-hover)) c h
   );
-  --color-button-wishlist-fg: var(--color-button-fg);
+  --color-product-card-button-wishlist-fg: var(--color-button-fg);
 
   /* === SPACING === */
   --spacing-product-card-padding: var(--spacing-150);
@@ -42,6 +51,10 @@
   --text-product-card-price-size: var(--text-lg);
   --leading-product-card-name: var(--line-height-snug);
 
+  --font-weight-product-card-name: var(--font-weight-medium);
+  --font-weight-product-card-price: var(--font-weight-medium);
+  --font-weight-product-card-stock: var(--font-weight-medium);
+
   /* === BORDERS & RADIUS === */
   --border-product-card-width: var(--border-width-sm);
   --radius-product-card: var(--radius-md);
@@ -49,37 +62,6 @@
 
   /* === ASPECT RATIOS === */
   --aspect-product-card-image: var(--aspect-square);
-}
-
-/* === ORDERS IN LAYOUT === */
-
-@utility order-image {
-  order: 0;
-}
-
-@utility order-name {
-  order: 1;
-}
-
-@utility order-ratings {
-  order: 2;
-}
-
-@utility order-badges {
-  order: 3;
-  min-height: var(--spacing-400); /* Ensure consistent space even when empty */
-}
-
-@utility order-stock {
-  order: 4;
-}
-
-@utility order-price {
-  order: 5;
-}
-
-@utility order-buttons {
-  order: 6;
 }
 
 /* === UTILITIES === */
