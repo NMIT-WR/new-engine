@@ -88,19 +88,7 @@
   --color-helper-fg: var(--color-input-fg);
 
   /* Focus ring colors - using consistent opacity */
-  --color-input-ring: --alpha(var(--color-primary) / var(--opacity-ring));
-  --color-input-ring-error: --alpha(
-    var(--color-input-danger) /
-    var(--opacity-ring)
-  );
-  --color-input-ring-success: --alpha(
-    var(--color-input-success) /
-    var(--opacity-ring)
-  );
-  --color-input-ring-warning: --alpha(
-    var(--color-input-warning) /
-    var(--opacity-ring)
-  );
+  --color-input-ring: var(--color-ring);
 
   /* Spacing - keeping your existing values */
   --padding-input-sm: var(--spacing-250) var(--spacing-250);

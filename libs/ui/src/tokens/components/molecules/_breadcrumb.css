@@ -32,7 +32,7 @@
   --text-breadcrumb-lg: var(--text-md);
 
   /* === FOCUS RINGS === */
-  --color-breadcrumb-link-ring: var(--color-breadcrumb-accent);
+  --color-breadcrumb-ring: var(--color-ring);
 }
 
 @utility token-icon-breadcrumb-separator {

@@ -76,10 +76,7 @@
   --shadow-accordion-content-md: var(--shadow-primary);
 
   /* === FOCUS RINGS === */
-  --color-accordion-ring: --alpha(
-    var(--color-accordion-accent) /
-    var(--opacity-ring)
-  );
+  --color-accordion-ring: var(--color-ring);
 }
 
 /* Semantic tokens for accordion icons */

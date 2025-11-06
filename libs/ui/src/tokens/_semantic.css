@@ -354,5 +354,7 @@
   --spacing: 0.25rem;
 
   /* Focus ring */
-  --color-ring-primary: --alpha(var(--color-primary) / var(--opacity-ring));
+  --default-ring-color: light-dark(var(--color-black), var(--color-white));
+  --color-ring: var(--default-ring-color);
+  --default-ring-width: 3px;
 }

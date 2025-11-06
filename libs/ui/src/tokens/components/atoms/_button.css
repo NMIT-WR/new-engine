@@ -210,25 +210,6 @@
   --border-button-width-md: var(--border-width-md);
   --border-button-width-lg: var(--border-width-lg);
 
-  /* === FOCUS RINGS === */
-  --color-button-ring-primary: --alpha(
-    var(--color-button-primary) /
-    var(--opacity-ring)
-  );
-  --color-button-ring-secondary: --alpha(
-    var(--color-button-secondary) /
-    var(--opacity-ring)
-  );
-  --color-button-ring-tertiary: --alpha(
-    var(--color-button-tertiary) /
-    var(--opacity-ring)
-  );
-  --color-button-ring-warning: --alpha(
-    var(--color-button-warning) /
-    var(--opacity-ring)
-  );
-  --color-button-ring-danger: --alpha(
-    var(--color-button-danger) /
-    var(--opacity-ring)
-  );
+  /* === FOCUS RING === */
+  --color-button-ring: var(--color-ring);
 }

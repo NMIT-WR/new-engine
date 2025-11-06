@@ -56,10 +56,7 @@
   --text-carousel-trigger-size: var(--text-md);
 
   /* === FOCUS RINGS === */
-  --color-carousel-focus-ring: --alpha(
-    var(--color-carousel-accent) /
-    var(--opacity-ring)
-  );
+  --color-carousel-ring: var(--color-ring);
 
   /* === ASPECT RATIO === */
   /* Additional section for aspect ratios */

@@ -37,7 +37,6 @@
 
   /* === INVALID STATES === */
   --color-switch-bg-invalid: var(--color-switch-invalid);
-  --color-switch-ring-invalid: var(--color-switch-invalid);
 
   /* === SPACING === */
   --spacing-switch-root: var(--spacing-200);
@@ -59,5 +58,5 @@
   --radius-switch: var(--radius-full);
 
   /* === FOCUS RINGS === */
-  --color-switch-ring: var(--color-switch-success);
+  --color-switch-ring: var(--color-ring);
 }
