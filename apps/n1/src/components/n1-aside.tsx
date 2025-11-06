@@ -7,7 +7,6 @@ import { transformToTree } from '@/utils/transform/transform-to-tree'
 import { TreeView } from '@new-engine/ui/molecules/tree-view'
 import type { TreeView as TreeType } from '@new-engine/ui/types-zag'
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
 
 interface N1AsideProps {
   categories: CategoryTreeNode[]
@@ -23,9 +22,8 @@ export function N1Aside({
   currentCategory,
 }: N1AsideProps) {
   const router = useRouter()
-  const treeData = useMemo(() => {
-    return transformToTree(categories)
-  }, [categories])
+  const treeData = transformToTree(categories)
+
   const { handleHover, cancelHover } = usePrefetchOnHover()
 
   const expandedPath = getCategoryPath(currentCategory, categoryMap)
@@ -44,7 +42,7 @@ export function N1Aside({
   }
 
   return (
-    <aside onMouseLeave={cancelHover}>
+    <aside>
       <TreeView
         className="w-3xs border-t-2 border-t-overlay p-200"
         data={treeData}
@@ -60,7 +58,10 @@ export function N1Aside({
               key={node.id}
               node={node}
               indexPath={[index]}
-              onTriggerHover={() => prefetchOnHover(node.handle as string)}
+              onNodeHover={(hoveredNode) =>
+                prefetchOnHover(hoveredNode.handle as string)
+              }
+              onNodeLeave={() => cancelHover()}
             />
           ))}
         </TreeView.Tree>
