@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { ColorSelect } from '../../src/molecules/color-select'
+import { ColorSelect, ColorItem } from '../../src/molecules/color-select'
 import { Button } from '../../src/atoms/button'
 import { useState } from 'react'
-import { ColorItem } from '../../src/molecules/color-select'
 
 // Custom hook for color selection logic
 const useColorSelection = (

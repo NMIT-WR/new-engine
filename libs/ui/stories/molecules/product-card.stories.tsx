@@ -1,10 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from 'storybook/test'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
 import { ProductCard } from '../../src/molecules/product-card'
-
-// Mock function for onClick handlers (replacement for deprecated @storybook/test fn)
-const fn = () => () => {}
 
 // Sample product images for different scenarios
 const productImages = {

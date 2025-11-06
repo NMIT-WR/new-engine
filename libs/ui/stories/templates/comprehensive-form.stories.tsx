@@ -196,12 +196,24 @@ export const AllFormInputs: Story = {
           <VariantGroup title="Numeric & Boolean Inputs" fullWidth>
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1">
-                <Label size={size}>Numeric Input</Label>
-                <NumericInput id="numeric-input" size={size} />
+                <Label htmlFor="numeric-input" size={size}>Numeric Input</Label>
+                <NumericInput 
+                  id="numeric-input" 
+                  size={size} 
+                  invalid={validateStatus === 'error'}
+                  describedBy={validateStatus === 'error' ? 'numeric-input-error' : 'numeric-input-help'} >
+                  <NumericInput.Control>
+                    <NumericInput.Input />
+                    <NumericInput.TriggerContainer>
+                      <NumericInput.IncrementTrigger />
+                      <NumericInput.DecrementTrigger />
+                    </NumericInput.TriggerContainer>
+                  </NumericInput.Control>
+                </NumericInput>
                 {validateStatus === 'error' ? (
-                  <ErrorText size={size}>{helpText}</ErrorText>
+                  <ErrorText id="numeric-input-error" size={size}>{helpText}</ErrorText>
                 ) : (
-                  <ExtraText size={size}>{helpText}</ExtraText>
+                  <ExtraText id="numeric-input-help" size={size}>{helpText}</ExtraText>
                 )}
               </div>
 

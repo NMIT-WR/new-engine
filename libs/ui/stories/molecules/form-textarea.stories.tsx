@@ -233,7 +233,7 @@ export const AllVariants: Story = {
             id="resize-horizontal"
             label="Horizontal resize only"
             placeholder="Can only resize horizontally..."
-           resize="x"
+            resize="x"
             rows={3}
           />
         </div>
