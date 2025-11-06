@@ -718,3 +718,130 @@ export const ExpandVsSelectionTest: Story = {
     },
   },
 }
+
+
+export const WithHoverEvents: Story = {
+  render: () => {
+    const [logs, setLogs] = useState<string[]>([])
+
+    const addLog = (message: string) => {
+      const timestamp = new Date().toLocaleTimeString()
+      setLogs((prev) => [...prev, `[${timestamp}] ${message}`])
+    }
+
+    const treeData = [
+      {
+        id: 'obleceni',
+        name: 'Oblečení',
+        handle: 'obleceni',
+        children: [
+          {
+            id: 'trika',
+            name: 'Trika a tílka',
+            handle: 'trika-a-tilka',
+            children: [
+              {
+                id: 'kratke',
+                name: 'Krátké rukávy',
+                handle: 'kratke-rukavy',
+              },
+              {
+                id: 'dlouhe',
+                name: 'Dlouhé rukávy',
+                handle: 'dlouhe-rukavy',
+              },
+            ],
+          },
+          {
+            id: 'mikiny',
+            name: 'Mikiny',
+            handle: 'mikiny',
+          },
+        ],
+      },
+      {
+        id: 'cyklo',
+        name: 'Cyklo',
+        handle: 'cyklo',
+        children: [
+          {
+            id: 'cyklo-obleceni',
+            name: 'Oblečení',
+            handle: 'cyklo-obleceni',
+          },
+        ],
+      },
+    ]
+
+    const handleNodeHover = (node: any, indexPath: number[]) => {
+      addLog(`🎯 HOVER: ${node.name} (handle: ${node.handle}) at path [${indexPath.join(', ')}]`)
+    }
+
+    const handleNodeLeave = (node: any, indexPath: number[]) => {
+      addLog(`👋 LEAVE: ${node.name} (handle: ${node.handle})`)
+    }
+
+    return (
+      <div className="flex flex-col gap-400">
+        <TreeView
+          className="w-3xs border-t-2 border-t-overlay p-200"
+          data={treeData}
+          selectionMode="single"
+          size='sm'
+          defaultExpandedValue={['obleceni']}
+        >
+          <TreeView.Label className="capitalize">Kategorie</TreeView.Label>
+          <TreeView.Tree>
+            {treeData?.map((node, index) => (
+              <TreeView.Node
+                showNodeIcons={false}
+                key={node.id}
+                node={node}
+                indexPath={[index]}
+                onNodeHover={handleNodeHover}
+                onNodeLeave={handleNodeLeave}
+              />
+            ))}
+          </TreeView.Tree>
+        </TreeView>
+
+        <div className="flex-1">
+          <div className="flex flex-col mb-200">
+            <h3 className="font-semibold">Hover Events Log</h3>
+            <Button size="sm" onClick={() => setLogs([])}>
+              Clear
+            </Button>
+          </div>
+          <div className="bg-surface w-md rounded-sm p-100 h-48 overflow-y-auto font-mono text-xs">
+            {logs.length === 0 ? (
+              <div className="text-fg-secondary">Hover over nodes to see events...</div>
+            ) : (
+              logs.map((log, index) => (
+                <div
+                  key={index}
+                  className={
+                    log.includes('HOVER')
+                      ? 'text-success'
+                      : log.includes('LEAVE')
+                        ? 'text-warning'
+                        : 'text-info'
+                  }
+                >
+                  {log}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Test story for onNodeHover and onNodeLeave callbacks. Hover over any node (branch or leaf) to see events being logged. This demonstrates that callbacks work for all levels of the tree.',
+      },
+    },
+  },
+}
