@@ -91,7 +91,7 @@ export const ProductInfoPanel = ({
           {detail.badges.map((badge) => (
             <span
               key={badge.id}
-              className="rounded bg-gray-200 px-3 py-1 text-sm"
+              className="rounded bg-gray-200 px-3 py-1 text-2xs"
             >
               {badge.children}
             </span>

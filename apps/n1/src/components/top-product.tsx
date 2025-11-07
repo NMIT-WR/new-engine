@@ -13,7 +13,7 @@ export function TopProduct({ src, label }: TopProductProps) {
         width={200}
         className="flex w-[clamp(150px,100%,260px)]"
       />
-      <p className="text-center font-bold">{label}</p>
+      <p className="text-center font-bold text-sm">{label}</p>
     </div>
   )
 }

@@ -76,7 +76,7 @@ export const DesktopSubmenu = () => {
                     }
                   }}
                 >
-                  <Header.NavItem className="text-sm">
+                  <Header.NavItem className="text-2xs">
                     <div className="grid h-full items-center justify-center border border-transparent hover:border-border-primary">
                       <div className="flex flex-col items-center gap-200">
                         {item.image && (
@@ -90,7 +90,7 @@ export const DesktopSubmenu = () => {
                             className="h-[100px] w-[100px] object-contain"
                           />
                         )}
-                        <h3 className="font-bold text-md">{item.name}</h3>
+                        <h3 className="font-bold text-base">{item.name}</h3>
                       </div>
                     </div>
                   </Header.NavItem>

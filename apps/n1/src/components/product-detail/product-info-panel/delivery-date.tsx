@@ -28,7 +28,7 @@ export const DeliveryDate = () => {
           {day(deliveryDate)}
         </span>
       </Tooltip>
-      <div className="flex flex-col text-fg-secondary text-sm">
+      <div className="flex flex-col text-2xs text-fg-secondary">
         <span>Doručení do</span>
         <span>{short(deliveryDate)}</span>
       </div>
