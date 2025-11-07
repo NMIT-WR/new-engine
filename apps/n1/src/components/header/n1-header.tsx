@@ -1,5 +1,6 @@
 'use client'
 import { footerImgs } from '@/assets/footer'
+import { Badge } from '@new-engine/ui/atoms/badge'
 import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
 import { Link } from '@new-engine/ui/atoms/link'
 import { LinkButton } from '@new-engine/ui/atoms/link-button'
@@ -24,6 +25,7 @@ export const N1Header = () => {
       icon: 'icon-[mdi--shopping-cart-outline]',
       children: 'Košík',
       href: '/kosik',
+      badge: '0',
     },
   ]
 
@@ -93,15 +95,23 @@ export const N1Header = () => {
           {headerActionButtons.map((button) => (
             <LinkButton
               key={button.href}
-              theme="borderless"
+              theme="unstyled"
               variant="primary"
               size="current"
               href={button.href}
-              className="items-center gap-x-300 px-0 py-0 text-2xl text-fg-reverse hover:bg-transparent hover:text-primary"
+              className="items-center text-2xl text-fg-reverse hover:bg-transparent hover:text-primary"
             >
+              {button?.badge && (
+                <Badge
+                  variant="primary"
+                  className="-top-1 absolute left-1/4 z-1 aspect-square h-4 w-4 rounded-full px-0 text-fg-primary"
+                >
+                  0
+                </Badge>
+              )}
               {<Icon icon={button.icon as IconType} />}
               {button.children && (
-                <span className="font-bold text-md">{button.children}</span>
+                <span className="font-bold text-base">{button.children}</span>
               )}
             </LinkButton>
           ))}

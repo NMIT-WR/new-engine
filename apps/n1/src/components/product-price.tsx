@@ -12,7 +12,7 @@ export const ProductPrice = ({
   className = '',
 }: ProductPriceProps) => {
   const sizeClasses = {
-    sm: 'text-md',
+    sm: 'text-base',
     md: 'text-lg',
     lg: 'text-xl',
   }
@@ -21,7 +21,7 @@ export const ProductPrice = ({
     <div className={`flex flex-col ${className}`}>
       <span className={`font-bold ${sizeClasses[size]}`}>{priceWithTax}</span>
       {priceWithoutTax && (
-        <span className="text-fg-secondary text-sm">
+        <span className="text-2xs text-fg-secondary">
           {priceWithoutTax} bez DPH
         </span>
       )}
