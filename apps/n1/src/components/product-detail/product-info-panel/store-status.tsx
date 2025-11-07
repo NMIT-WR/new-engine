@@ -2,7 +2,7 @@ import { Tooltip } from '@new-engine/ui/atoms/tooltip'
 
 export const StoreStatus = ({ quantity }: { quantity: number }) => {
   const StatusContent = () => (
-    <div className="text-md">
+    <div className="text-base">
       <h4 className="font-bold">Sklad N1shop - doba dodání 1-2 dny:</h4>
       <p className="font-semibold text-success">{quantity} ks</p>
     </div>
