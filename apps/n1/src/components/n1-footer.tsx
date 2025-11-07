@@ -27,7 +27,7 @@ export function N1Footer() {
               />
               <div>
                 <Footer.Text>N Distribution s. r. o.</Footer.Text>
-                <Footer.Text className="text-xs">
+                <Footer.Text className="text-3xs">
                   Generála Šišky 1990/8, 143 00 Praha 4 - Modřany
                 </Footer.Text>
               </div>
@@ -85,17 +85,17 @@ export function N1Footer() {
         </Footer.Section>
       </Footer.Container>
       <Footer.Bottom className="bg-black">
-        <Footer.Text className="text-fg-dark text-md">
+        <Footer.Text className="text-base text-fg-dark">
           2025 COPYRIGHT N Distribution s.r.o.
         </Footer.Text>
 
         <div className="flex items-center gap-100">
-          <Footer.Text className="text-fg-dark text-md">
+          <Footer.Text className="text-base text-fg-dark">
             Tvorba eshopu:
           </Footer.Text>
           <Link
             href="https://webrevolution.cz"
-            className="text-fg-dark text-md underline hover:no-underline"
+            className="text-base text-fg-dark underline hover:no-underline"
           >
             Web Revolution
           </Link>

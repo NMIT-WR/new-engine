@@ -79,7 +79,7 @@ export default function KontaktyPage() {
 
         <form className="grid grid-cols-2 gap-400">
           <div className="space-y-200">
-            <label htmlFor="name" className="block font-medium text-sm">
+            <label htmlFor="name" className="block font-medium text-2xs">
               Jméno a příjmení
             </label>
             <input
@@ -90,7 +90,7 @@ export default function KontaktyPage() {
               className="w-full rounded-lg border border-border px-400 py-300 focus:border-primary focus:outline-none"
             />
 
-            <label htmlFor="phone" className="block font-medium text-sm">
+            <label htmlFor="phone" className="block font-medium text-2xs">
               Telefon
             </label>
             <input
@@ -100,7 +100,7 @@ export default function KontaktyPage() {
               className="w-full rounded-lg border border-border px-400 py-300 focus:border-primary focus:outline-none"
             />
 
-            <label htmlFor="email" className="block font-medium text-sm">
+            <label htmlFor="email" className="block font-medium text-2xs">
               E-mail
             </label>
             <input
@@ -113,7 +113,7 @@ export default function KontaktyPage() {
           </div>
 
           <div className="space-y-200">
-            <label htmlFor="message" className="block font-medium text-sm">
+            <label htmlFor="message" className="block font-medium text-2xs">
               Zpráva
             </label>
             <textarea
