@@ -109,7 +109,7 @@ export const ProductGrid = ({
                           buttonVariant="custom"
                           className="h-7 min-w-7 items-center border border-gray-400 bg-surface px-50 py-50"
                         >
-                          <span className="font-normal text-fg-primary text-sm">
+                          <span className="font-normal text-2xs text-fg-primary">
                             {variant}
                           </span>
                         </ProductCard.Button>
