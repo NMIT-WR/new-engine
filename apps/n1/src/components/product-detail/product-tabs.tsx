@@ -1,22 +1,36 @@
 import { Tabs } from '@new-engine/ui/molecules/tabs'
 
+interface TabConfig {
+  value: string
+  label: string
+  headline?: string
+  content: React.ReactNode
+}
+
 interface ProductTabsProps {
   description?: string | null
-  content?: React.ReactNode[]
+  tabs?: TabConfig[]
 }
-export const ProductTabs = ({ description, content }: ProductTabsProps) => {
+
+export const ProductTabs = ({ description, tabs }: ProductTabsProps) => {
   return (
     <div>
-      <Tabs variant="line">
+      <Tabs className="px-0" variant="line" defaultValue={tabs?.[0]?.value}>
         <Tabs.List>
-          <Tabs.Trigger value="tab1">PRODUKTOVÉ PARAMETRY</Tabs.Trigger>
-          <Tabs.Trigger value="tab2">TABULKA VELIKOSTÍ</Tabs.Trigger>
+          {tabs?.map((item, index) => (
+            <Tabs.Trigger key={index} value={`tab${index + 1}`}>
+              {item.label}
+            </Tabs.Trigger>
+          ))}
           <Tabs.Indicator />
         </Tabs.List>
-        <p>{description}</p>
-        {content?.map((item, index) => (
-          <Tabs.Content key={index} value={`tab${index + 1}`}>
-            {item}
+        <p className="py-250">{description}</p>
+        {tabs?.map((tab) => (
+          <Tabs.Content key={tab.value} value={tab.value} className="px-0">
+            {tab.headline && (
+              <h3 className="mb-200 font-bold text-lg">{tab.headline}</h3>
+            )}
+            {tab.content}
           </Tabs.Content>
         ))}
       </Tabs>

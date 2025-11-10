@@ -85,17 +85,17 @@ export function N1Footer() {
         </Footer.Section>
       </Footer.Container>
       <Footer.Bottom className="bg-black">
-        <Footer.Text className="text-base text-fg-dark">
+        <Footer.Text className="text-fg-dark text-xs">
           2025 COPYRIGHT N Distribution s.r.o.
         </Footer.Text>
 
         <div className="flex items-center gap-100">
-          <Footer.Text className="text-base text-fg-dark">
+          <Footer.Text className="text-fg-dark text-xs">
             Tvorba eshopu:
           </Footer.Text>
           <Link
             href="https://webrevolution.cz"
-            className="text-base text-fg-dark underline hover:no-underline"
+            className="text-fg-dark text-xs underline hover:no-underline"
           >
             Web Revolution
           </Link>

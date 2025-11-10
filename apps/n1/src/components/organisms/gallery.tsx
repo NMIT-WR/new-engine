@@ -90,25 +90,26 @@ export function Gallery({
       <div className={container()}>
         <div className={scrollArea()}>
           <div className={list()}>
-            {images.map((image, index) => (
-              <Button
-                key={image.id}
-                onClick={() => handleThumbnailClick(index)}
-                className={trigger()}
-                data-active={currentPage === index}
-                aria-label={`Zobrazit obrázek ${index + 1}`}
-                aria-current={currentPage === index ? 'true' : 'false'}
-              >
-                <ImageComponent
-                  as={Image}
-                  src={image.src || ''}
-                  alt={image.alt || `Obrázek produktu ${index + 1}`}
-                  width={thumbnailSize}
-                  height={thumbnailSize}
-                  quality={40}
-                />
-              </Button>
-            ))}
+            {images.length > 1 &&
+              images.map((image, index) => (
+                <Button
+                  key={image.id}
+                  onClick={() => handleThumbnailClick(index)}
+                  className={trigger()}
+                  data-active={currentPage === index}
+                  aria-label={`Zobrazit obrázek ${index + 1}`}
+                  aria-current={currentPage === index ? 'true' : 'false'}
+                >
+                  <ImageComponent
+                    as={Image}
+                    src={image.src || ''}
+                    alt={image.alt || `Obrázek produktu ${index + 1}`}
+                    width={thumbnailSize}
+                    height={thumbnailSize}
+                    quality={40}
+                  />
+                </Button>
+              ))}
           </div>
         </div>
       </div>
