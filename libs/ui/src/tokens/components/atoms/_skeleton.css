@@ -2,9 +2,8 @@
   /* === BASE COLOR MAPPING === */
   /* Background colors using reference layer */
   --color-skeleton-bg: var(--color-overlay);
-  --color-skeleton-bg-primary: var(--color-overlay);
+  --color-skeleton-bg-primary: var(--color-skeleton-bg);
   --color-skeleton-bg-secondary: var(--color-surface);
-  --color-skeleton-bg-tertiary: var(--color-base);
 
   /* === ANIMATION === */
   /* Use global motion tokens for consistent behavior */
@@ -16,14 +15,13 @@
   --spacing-skeleton-text-lg: var(--spacing-200);
 
   /* === SIZING === */
-  --size-skeleton-circle-sm: 2rem; /* 32px */
-  --size-skeleton-circle-md: 3rem; /* 48px */
-  --size-skeleton-circle-lg: 4rem; /* 64px */
-  --size-skeleton-circle-xl: 6rem; /* 96px */
+  --size-skeleton-circle-sm: 2rem;
+  --size-skeleton-circle-md: 3rem;
+  --size-skeleton-circle-lg: 4rem;
+  --size-skeleton-circle-xl: 6rem;
   --height-skeleton-text-line: 1rem; /* Match text line height */
 
   /* === BORDERS & RADIUS === */
-  --radius-skeleton: var(--radius-md);
   --radius-skeleton-text: var(--radius-sm);
 }
 
