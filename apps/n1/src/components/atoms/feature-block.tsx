@@ -21,7 +21,7 @@ export function FeatureBlock({ maintText, subText, icon }: FeatureBlockProps) {
         />
       </div>
       <div className="flex flex-col">
-        <span className="font-semibold text-base text-fg-primary">
+        <span className="font-semibold text-fg-primary text-xs">
           {maintText}
         </span>
         <span className="text-2xs text-fg-secondary">{subText}</span>

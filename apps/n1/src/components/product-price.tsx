@@ -12,7 +12,7 @@ export const ProductPrice = ({
   className = '',
 }: ProductPriceProps) => {
   const sizeClasses = {
-    sm: 'text-base',
+    sm: 'text-xs',
     md: 'text-lg',
     lg: 'text-xl',
   }

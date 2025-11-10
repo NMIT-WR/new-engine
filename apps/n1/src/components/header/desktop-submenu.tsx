@@ -90,7 +90,7 @@ export const DesktopSubmenu = () => {
                             className="h-[100px] w-[100px] object-contain"
                           />
                         )}
-                        <h3 className="font-bold text-base">{item.name}</h3>
+                        <h3 className="font-bold text-xs">{item.name}</h3>
                       </div>
                     </div>
                   </Header.NavItem>
