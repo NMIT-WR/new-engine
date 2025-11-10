@@ -1,0 +1,61 @@
+@theme static {
+  /* === BASE COLOR MAPPING === */
+  /* Background colors using reference layer */
+  --color-skeleton-bg: var(--color-overlay);
+  --color-skeleton-bg-primary: var(--color-overlay);
+  --color-skeleton-bg-secondary: var(--color-surface);
+  --color-skeleton-bg-tertiary: var(--color-base);
+
+  /* === ANIMATION === */
+  /* Use global motion tokens for consistent behavior */
+  --duration-skeleton-pulse: 2s;
+
+  /* === SPACING === */
+  --spacing-skeleton-text-sm: var(--spacing-100);
+  --spacing-skeleton-text-md: var(--spacing-150);
+  --spacing-skeleton-text-lg: var(--spacing-200);
+
+  /* === SIZING === */
+  --size-skeleton-circle-sm: 2rem; /* 32px */
+  --size-skeleton-circle-md: 3rem; /* 48px */
+  --size-skeleton-circle-lg: 4rem; /* 64px */
+  --size-skeleton-circle-xl: 6rem; /* 96px */
+  --height-skeleton-text-line: 1rem; /* Match text line height */
+
+  /* === BORDERS & RADIUS === */
+  --radius-skeleton: var(--radius-md);
+  --radius-skeleton-text: var(--radius-sm);
+}
+
+/* === ANIMATIONS === */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@utility animate-skeleton-pulse {
+  animation: skeleton-pulse var(--duration-skeleton-pulse) ease-in-out infinite;
+}
+
+@layer utilities {
+  .animate-skeleton-pulse {
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Display reduced motion for storybook without having to
+ enable the prefers-reduced-motion feature in DevTools */
+@layer utilities {
+  .force-reduced-motion {
+    animation: none;
+    opacity: 0.7;
+  }
+}
