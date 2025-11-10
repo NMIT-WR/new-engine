@@ -46,7 +46,9 @@ export const ProductInfoPanel = ({
               />
             )}
           </div>
-          <StoreStatus quantity={quantity} />
+          <div>
+            <StoreStatus quantity={quantity} />
+          </div>
         </div>
       </SectionBasicInfo>
 

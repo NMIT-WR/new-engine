@@ -29,7 +29,7 @@ export const ProductVariantSelect = ({
                   quantity={variant.inventory_quantity ?? 0}
                 />
               }
-              placement="bottom-end"
+              placement="bottom-start"
               data-selected={variant.id === selectedVariant?.id}
             >
               {variant.title}

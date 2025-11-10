@@ -73,7 +73,7 @@ export const topCategory = [
 export const featuredProducts: Product[] = [
   {
     id: 'product-1',
-    handle: 'product-1',
+    handle: 'panska-ksiltovka-fox-level-up-strapback-hat-product-16926',
     title: 'Pánská kšiltovka Fox Level Up Strapback Hat',
     price: '1 099 Kč',
     stockStatus: 'in-stock',
@@ -84,7 +84,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-2',
-    handle: 'product-2',
+    handle: 'panske-road-tretry-northwave-veloce-extreme-product-31246',
     title: 'Pánské Road tretry Northwave Veloce Extreme',
     price: '9 999 Kč',
     stockStatus: 'in-stock',
@@ -98,7 +98,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-3',
-    handle: 'product-3',
+    handle: 'panske-triko-fox-big-f-ss-prem-tee-product-22332',
     title: 'Pánské triko Fox Big F Ss Prem Tee',
     price: '999 Kč',
     stockStatus: 'in-stock',
@@ -109,7 +109,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-4',
-    handle: 'product-4',
+    handle: 'sedlo-selle-italia-flite-boost-superflow-tm-l3',
     title: 'Sedlo Selle Italia Flite Boost Superflow TM L3',
     price: '3 999 Kč',
     stockStatus: 'in-stock',
@@ -120,7 +120,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-5',
-    handle: 'product-5',
+    handle: 'silnicni-kolo-cervelo-r5-ultegra-di2-permafrost-product-30584',
     title: 'Silniční kolo Cervélo R5 Ultegra DI2 Permafrost',
     price: '172 499 Kč',
     stockStatus: 'in-stock',
@@ -135,7 +135,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-6',
-    handle: 'product-6',
+    handle: 'silnicni-kolo-cervelo-s5-force-axs-five-black',
     title: 'Silniční kolo Cervélo S5 Force AXS Five Black',
     price: '199 999 Kč',
     stockStatus: 'in-stock',
@@ -149,7 +149,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-7',
-    handle: 'product-7',
+    handle: 'trail-kolo-santa-cruz-tallboy-5-c-29-24-lg-melon-gx1-axs',
     title: 'Trail kolo Santa Cruz Tallboy 5 C 29 24 LG MELON GX1 AXS',
     price: '134 999 Kč',
     stockStatus: 'in-stock',
@@ -163,7 +163,7 @@ export const featuredProducts: Product[] = [
   },
   {
     id: 'product-8',
-    handle: 'product-8',
+    handle: 'zapletena-kola-reserve-wheels-rsv-30-sl-29-dt-350-110-xd-6b',
     title: 'Zapletená kola Reserve Wheels RSV 30 SL 29" | DT 350 110 XD 6b',
     price: '44 999 Kč',
     stockStatus: 'in-stock',

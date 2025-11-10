@@ -76,13 +76,15 @@ export const N1Header = () => {
       </Header.Container>
       <Header.Container className="z-40 flex justify-between bg-gray-950 px-500 py-300">
         <div className="flex h-full items-center gap-750">
-          <Image
-            src={footerImgs.footerLogo}
-            alt="N1 Shop Logo"
-            width={250}
-            height={250}
-            className="h-auto w-auto"
-          />
+          <NextLink href="/">
+            <Image
+              src={footerImgs.footerLogo}
+              alt="N1 Shop Logo"
+              width={250}
+              height={250}
+              className="h-auto w-auto"
+            />
+          </NextLink>
           <SearchForm
             buttonIcon
             size="sm"
@@ -104,14 +106,14 @@ export const N1Header = () => {
               {button?.badge && (
                 <Badge
                   variant="primary"
-                  className="-top-1 absolute left-1/4 z-1 aspect-square h-4 w-4 rounded-full px-0 text-fg-primary"
+                  className="-top-1 absolute left-1/4 z-1 aspect-square h-4 w-4 rounded-full px-0 text-3xs text-fg-primary"
                 >
                   0
                 </Badge>
               )}
               {<Icon icon={button.icon as IconType} />}
               {button.children && (
-                <span className="font-bold text-base">{button.children}</span>
+                <span className="font-bold text-xs">{button.children}</span>
               )}
             </LinkButton>
           ))}
