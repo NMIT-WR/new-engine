@@ -214,7 +214,7 @@
   --text-2xs: 0.8125rem; /* 13px header, badge, footer contact small text, old prices*/
   --text-3xs: 0.6875rem; /* basket counter */
 
-  /* Map to semantic values */
+  /* Map to semantic values there is a issue with map (because our colisition detection solves only text-color and text-xs|sm|md... etc.) */
   --text-h1: var(--text-2xl);
   --text-h2: var(--text-xl);
   --text-h3: var(--text-lg);
