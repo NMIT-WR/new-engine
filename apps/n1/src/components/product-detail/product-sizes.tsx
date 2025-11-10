@@ -24,8 +24,7 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
   return (
     <div className="flex flex-col gap-300">
       {sizingGuideUrl && (
-        <div className="rounded-md px-200">
-          <h3 className="font-medium">Tabulka velikostí</h3>
+        <div className="rounded-md">
           <LinkButton
             as={Link}
             href={sizingGuideUrl}
@@ -40,7 +39,9 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
       {manufacturer && (
         <div className="flex flex-col gap-150">
           <Table variant="striped">
-            <Table.Caption>Výrobce</Table.Caption>
+            <Table.Caption className="text-md" style={{ fontWeight: 500 }}>
+              Výrobce
+            </Table.Caption>
             <Table.Body>
               <Table.Row>
                 <Table.Cell className="font-medium text-fg-primary">
@@ -99,7 +100,7 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
       {responsiblePerson && (
         <div className="flex flex-col gap-150">
           <Table variant="striped">
-            <Table.Caption className="font-medium">
+            <Table.Caption className="text-md" style={{ fontWeight: 500 }}>
               Odpovědná osoba v EU
             </Table.Caption>
             <Table.Body>
