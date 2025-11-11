@@ -21,14 +21,14 @@
     var(--color-fg-primary) /
     var(--opacity-placeholder)
   );
-  --color-textarea-fg-disabled: var(--color-disabled-fg);
+  --color-textarea-fg-disabled: var(--color-fg-disabled);
 
   /* Border colors */
   --color-textarea-border: var(--color-border-primary);
   --color-textarea-border-success: var(--color-textarea-success);
   --color-textarea-border-warning: var(--color-textarea-warning);
   --color-textarea-border-danger: var(--color-textarea-danger);
-  --color-textarea-border-disabled: var(--color-disabled-border);
+  --color-textarea-border-disabled: var(--color-border-disabled);
 
   /* === STATE VARIATIONS === */
   /* Default hover/focus states */
@@ -72,7 +72,7 @@
   --color-textarea-bg-borderless-focus: var(--color-textarea-base);
 
   /* === DISABLED STATES === */
-  --color-textarea-bg-disabled: var(--color-disabled-bg);
+  --color-textarea-bg-disabled: var(--color-bg-disabled);
 
   /* === SPACING === */
   --padding-textarea-sm: var(--spacing-100) var(--spacing-150);

@@ -31,6 +31,9 @@ const selectVariants = tv({
       'hover:bg-select-trigger-bg-hover',
       'focus:outline-none focus:border-select-trigger-border-focus',
       'data-[disabled]:cursor-not-allowed',
+      'data-[disabled]:bg-select-bg-disabled',
+      'data-[disabled]:text-select-fg-disabled',
+      'data-[disabled]:border-select-border-disabled',
       'data-[invalid]:border-select-danger data-[invalid]:ring-select-danger',
     ],
     clearTrigger: [
@@ -55,7 +58,7 @@ const selectVariants = tv({
       'hover:bg-select-item-bg-hover',
       'data-[state=checked]:bg-select-item-bg-selected',
       'data-[state=checked]:text-select-item-selected-fg',
-      'data-[disabled]:opacity-select-disabled data-[disabled]:cursor-not-allowed',
+      'data-[disabled]:text-select-fg-disabled data-[disabled]:cursor-not-allowed',
     ],
     itemIndicator: ['text-select-indicator'],
     value: ['flex-grow truncate data-[placeholder]:text-select-placeholder'],

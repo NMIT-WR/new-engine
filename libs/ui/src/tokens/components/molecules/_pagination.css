@@ -32,15 +32,9 @@
   );
 
   /* === DISABLED STATES === */
-  --color-pagination-bg-disabled: var(--color-disabled-bg);
-  --color-pagination-fg-disabled: --alpha(
-    var(--color-pagination-fg) /
-    var(--opacity-disabled)
-  );
-  --color-pagination-border-disabled: --alpha(
-    var(--color-pagination-border) /
-    var(--opacity-disabled)
-  );
+  --color-pagination-bg-disabled: var(--color-bg-disabled);
+  --color-pagination-fg-disabled: var(--color-fg-disabled);
+  --color-pagination-border-disabled: var(--color-border-disabled);
 
   /* === SPACING === */
   --spacing-pagination: var(--spacing-200);

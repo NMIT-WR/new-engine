@@ -66,6 +66,7 @@ const fileSystemData: TreeNode[] = [
       {
         id: 'utils',
         name: 'utils',
+        disabled: true,
         children: [
           { id: 'helpers.ts', name: 'helpers.ts' },
           { id: 'constants.ts', name: 'constants.ts' },

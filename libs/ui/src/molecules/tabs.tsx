@@ -35,7 +35,7 @@ const tabsVariants = tv({
       'focus-visible:outline-none focus-visible:ring-2',
       'focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
       'data-[selected]:text-tabs-trigger-fg-selected',
-      'data-[disabled]:opacity-tabs-disabled data-[disabled]:cursor-not-allowed',
+      'data-[disabled]:text-tabs-fg-disabled data-[disabled]:cursor-not-allowed',
     ],
     indicator: [
       'absolute bg-tabs-indicator-bg rounded-tabs-indicator',
@@ -246,6 +246,7 @@ Tabs.Trigger = function TabsTrigger({
   return (
     <Button
       ref={ref}
+      type="button"
       theme="borderless"
       className={styles.trigger({ className })}
       {...api.getTriggerProps({ value, disabled })}

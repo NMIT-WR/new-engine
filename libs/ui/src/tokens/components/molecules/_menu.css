@@ -31,7 +31,7 @@
   --spacing-menu-submenu-offset: var(--spacing-200);
 
   /* ===== MENU DISABLED STATE ===== */
-  --opacity-menu-disabled: 50%;
+  --color-menu-fg-disabled: var(--color-fg-disabled);
 }
 
 /* Semantic tokens for menu icons */

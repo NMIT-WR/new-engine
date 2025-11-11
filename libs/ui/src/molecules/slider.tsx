@@ -12,7 +12,7 @@ const sliderVariants = tv({
     root: [
       'flex flex-col w-full gap-slider-root',
       'data-[orientation=vertical]:h-full',
-      'data-[disabled]:opacity-slider-disabled data-[disabled]:cursor-not-allowed',
+      'data-[disabled]:cursor-not-allowed',
     ],
     header: ['flex items-center justify-between'],
     value: ['text-slider-value-size'],
@@ -35,7 +35,7 @@ const sliderVariants = tv({
     range: [
       'bg-slider-range-bg rounded-slider-track h-full',
       'data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full',
-      'data-[disabled]:bg-slider-bg-disabled',
+      'data-[disabled]:bg-slider-range-bg-disabled',
       'hover:bg-slider-range-bg-hover',
       'data-[invalid=true]:bg-slider-range-bg-error',
     ],
