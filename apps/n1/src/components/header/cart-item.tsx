@@ -67,13 +67,6 @@ export const CartItem = ({
             height={64}
             quality={40}
             loading="lazy"
-            onClick={() =>
-              console.log({
-                item: item,
-                effectiveMax: effectiveMax,
-                localQuantity: localQuantity,
-              })
-            }
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
