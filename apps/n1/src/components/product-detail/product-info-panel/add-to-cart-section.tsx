@@ -75,7 +75,6 @@ export const AddToCartSection = ({
   }
 
   const maxQuantity = selectedVariant?.inventory_quantity || 99
-
   return (
     <div className="flex gap-200">
       <NumericInput
@@ -83,8 +82,10 @@ export const AddToCartSection = ({
         min={1}
         max={maxQuantity}
         allowOverflow={false}
+        defaultValue={1}
+        allowMouseWheel={true}
         value={quantity}
-        onChange={setQuantity}
+        onValueChange={(details) => setQuantity(Number(details.value))}
         disabled={isPending}
       >
         <NumericInput.DecrementTrigger />
@@ -93,7 +94,6 @@ export const AddToCartSection = ({
         </NumericInput.Control>
         <NumericInput.IncrementTrigger />
       </NumericInput>
-
       <Button
         variant="secondary"
         onClick={handleAddToCart}
