@@ -1,6 +1,7 @@
+import type { StoreCartLineItem } from '@medusajs/types'
 import { Button } from '@new-engine/ui/atoms/button'
 import { Icon } from '@new-engine/ui/atoms/icon'
-import type { StoreCartLineItem } from '@medusajs/types'
+import Image from 'next/image'
 
 interface CartItemProps {
   item: StoreCartLineItem
@@ -13,7 +14,7 @@ export const CartItem = ({
   item,
   onUpdateQuantity,
   onRemove,
-  isPending = false
+  isPending = false,
 }: CartItemProps) => {
   const handleDecrement = () => {
     if (item.quantity > 1) {
@@ -29,45 +30,46 @@ export const CartItem = ({
     }
   }
 
-  // Format price helper
-  const formatPrice = (amount?: number | null, currencyCode?: string) => {
-    if (!amount) return '0 Kč'
-    
-    const formatted = new Intl.NumberFormat('cs-CZ', {
-      style: 'currency',
-      currency: currencyCode || 'CZK',
-    }).format(amount / 100) // Medusa stores prices in cents
-
-    return formatted
-  }
+  // Format price directly - Medusa v2 stores prices in major units (not cents)
+  const formattedPrice = item.unit_price
+    ? `${Math.round(item.unit_price)} Kč`
+    : '0 Kč'
 
   return (
     <div className="flex gap-3 py-3 first:pt-0 last:pb-0">
       {/* Product thumbnail */}
       <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
-        {item.product?.thumbnail ? (
-          <img
-            src={item.product.thumbnail}
-            alt={item.product.title || item.title}
+        {item.thumbnail ? (
+          <Image
+            src={item.thumbnail}
+            alt={item.title}
             className="h-full w-full object-cover"
+            width={64}
+            height={64}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Icon icon="icon-[mdi--image-outline]" className="text-2xl text-gray-400" />
+            <Icon
+              icon="icon-[mdi--image-outline]"
+              className="text-2xl text-gray-400"
+            />
           </div>
         )}
       </div>
 
       {/* Product info */}
-      <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-medium text-gray-900 truncate">
+      <div className="min-w-0 flex-1">
+        <h4
+          className="truncate font-medium text-gray-900 text-sm"
+          onClick={() => console.log(item)}
+        >
           {item.product?.title || item.title}
         </h4>
         {item.variant?.title && item.variant.title !== 'Default' && (
-          <p className="text-xs text-gray-500 truncate">{item.variant.title}</p>
+          <p className="truncate text-gray-500 text-xs">{item.variant.title}</p>
         )}
-        <p className="mt-1 text-sm font-medium text-gray-900">
-          {formatPrice(item.subtotal, item.cart?.currency_code)}
+        <p className="mt-1 font-medium text-gray-900 text-sm">
+          {formattedPrice}
         </p>
       </div>
 
@@ -82,7 +84,7 @@ export const CartItem = ({
           disabled={isPending || item.quantity <= 1}
           className="h-7 w-7 p-0"
         />
-        <span className="min-w-[2rem] text-center text-sm font-medium">
+        <span className="min-w-[2rem] text-center font-medium text-sm">
           {item.quantity}
         </span>
         <Button
