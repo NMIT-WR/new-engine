@@ -1,12 +1,12 @@
 'use client'
 
+import { useRemoveLineItem, useUpdateLineItem } from '@/hooks/use-cart'
+import type { StoreCart } from '@medusajs/types'
 import { Button } from '@new-engine/ui/atoms/button'
 import Link from 'next/link'
-import { useUpdateLineItem, useRemoveLineItem } from '@/hooks/use-cart'
 import { CartEmptyState } from './cart-empty-state'
 import { CartItem } from './cart-item'
 import { CartSkeleton } from './cart-skeleton'
-import type { StoreCart } from '@medusajs/types'
 
 interface CartContentProps {
   cart: StoreCart | null | undefined
@@ -19,21 +19,15 @@ export const CartContent = ({
   cart,
   isLoading,
   isAuthenticated,
-  onClose
+  onClose,
 }: CartContentProps) => {
   const { mutate: updateQuantity, isPending: isUpdating } = useUpdateLineItem()
   const { mutate: removeItem, isPending: isRemoving } = useRemoveLineItem()
 
-  // Format price helper
-  const formatPrice = (amount?: number | null, currencyCode?: string) => {
+  // Helper to format prices - Medusa v2 stores prices in major units (not cents)
+  const formatAmount = (amount?: number | null) => {
     if (!amount) return '0 Kč'
-    
-    const formatted = new Intl.NumberFormat('cs-CZ', {
-      style: 'currency',
-      currency: currencyCode || 'CZK',
-    }).format(amount / 100) // Medusa stores prices in cents
-
-    return formatted
+    return `${Math.round(amount)} Kč`
   }
 
   // Cart now works for both authenticated and guest users
@@ -62,13 +56,13 @@ export const CartContent = ({
               updateQuantity({
                 cartId: cart.id,
                 lineItemId: item.id,
-                quantity
+                quantity,
               })
             }}
             onRemove={() => {
               removeItem({
                 cartId: cart.id,
-                lineItemId: item.id
+                lineItemId: item.id,
               })
             }}
             isPending={isPending}
@@ -77,13 +71,13 @@ export const CartContent = ({
       </div>
 
       {/* Totals section */}
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-gray-200 border-t pt-4">
         <div className="space-y-2">
           {/* Subtotal */}
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Mezisoučet:</span>
             <span className="text-gray-900">
-              {formatPrice(cart.subtotal, cart.currency_code)}
+              {formatAmount(cart.subtotal)}
             </span>
           </div>
 
@@ -92,7 +86,7 @@ export const CartContent = ({
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Doprava:</span>
               <span className="text-gray-900">
-                {formatPrice(cart.shipping_total, cart.currency_code)}
+                {formatAmount(cart.shipping_total)}
               </span>
             </div>
           )}
@@ -102,15 +96,15 @@ export const CartContent = ({
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">DPH:</span>
               <span className="text-gray-900">
-                {formatPrice(cart.tax_total, cart.currency_code)}
+                {formatAmount(cart.tax_total)}
               </span>
             </div>
           )}
 
           {/* Total */}
-          <div className="flex justify-between border-t border-gray-200 pt-2 text-base font-semibold">
+          <div className="flex justify-between border-gray-200 border-t pt-2 font-semibold text-base">
             <span>Celkem:</span>
-            <span>{formatPrice(cart.total, cart.currency_code)}</span>
+            <span>{formatAmount(cart.total)}</span>
           </div>
         </div>
       </div>
@@ -131,17 +125,15 @@ export const CartContent = ({
         </Link>
 
         {/* View cart button */}
-        <Link href="/kosik" className="block">
-          <Button
-            variant="secondary"
-            theme="outlined"
-            size="sm"
-            className="w-full justify-center"
-            onClick={onClose}
-          >
-            Zobrazit košík
-          </Button>
-        </Link>
+        <Button
+          variant="secondary"
+          theme="outlined"
+          size="sm"
+          className="w-full justify-center"
+          onClick={() => console.log('View cart: ', cart)}
+        >
+          Zobrazit košík
+        </Button>
       </div>
     </div>
   )
