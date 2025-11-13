@@ -1,31 +1,43 @@
 'use client'
 import { footerImgs } from '@/assets/footer'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
+import { Button } from '@new-engine/ui/atoms/button'
+import { Icon } from '@new-engine/ui/atoms/icon'
 import { Link } from '@new-engine/ui/atoms/link'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
 import { SearchForm } from '@new-engine/ui/molecules/search-form'
 import { Header } from '@new-engine/ui/organisms/header'
 import Image from 'next/image'
 import NextLink from 'next/link'
+import { CartPopover } from './cart-popover'
 import { DesktopSubmenu } from './desktop-submenu'
+import { LoginPopover } from './login-popover'
 import { MobileMenu } from './mobile-menu'
+import { useHeaderContext } from './store/header-context'
 
 export const N1Header = () => {
+  const { isCartOpen, toggleCart, toggleLoginForm } = useHeaderContext()
   const headerActionButtons = [
     {
       icon: 'icon-[mdi--heart-outline]',
       href: '/oblibene',
+      action: () => {
+        console.log('oblibene')
+      },
     },
     {
       icon: 'icon-[mdi--account-outline]',
       href: '/profil',
+      action: () => {
+        toggleLoginForm()
+      },
     },
     {
       icon: 'icon-[mdi--shopping-cart-outline]',
       children: 'Košík',
       href: '/kosik',
       badge: '0',
+      action: () => {
+        toggleCart()
+      },
     },
   ]
 
@@ -92,31 +104,16 @@ export const N1Header = () => {
           />
         </div>
 
-        <Header.Actions>
+        <Header.Actions className="relative text-2xl">
           <Header.Hamburger className="text-2xl text-fg-reverse" />
-          {headerActionButtons.map((button) => (
-            <LinkButton
-              key={button.href}
-              theme="unstyled"
-              variant="primary"
-              size="current"
-              href={button.href}
-              className="items-center text-2xl text-fg-reverse hover:bg-transparent hover:text-primary"
-            >
-              {button?.badge && (
-                <Badge
-                  variant="primary"
-                  className="-top-1 absolute left-1/4 z-1 aspect-square h-4 w-4 rounded-full px-0 text-3xs text-fg-primary"
-                >
-                  0
-                </Badge>
-              )}
-              {<Icon icon={button.icon as IconType} />}
-              {button.children && (
-                <span className="font-bold text-xs">{button.children}</span>
-              )}
-            </LinkButton>
-          ))}
+          <Button
+            icon="icon-[mdi--heart-outline]"
+            size="current"
+            theme="unstyled"
+            className="text-white"
+          />
+          <LoginPopover />
+          <CartPopover />
         </Header.Actions>
       </Header.Container>
 
