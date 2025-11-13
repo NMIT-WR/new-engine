@@ -1,5 +1,4 @@
 'use client'
-
 import { useRemoveLineItem, useUpdateLineItem } from '@/hooks/use-cart'
 import { useCartToast } from '@/hooks/use-toast'
 import type { Cart } from '@/services/cart-service'
