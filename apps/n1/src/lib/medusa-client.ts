@@ -9,10 +9,11 @@ if (!PUBLISHABLE_KEY) {
   console.warn('⚠️ NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY is not set!')
 }
 
-// Create SDK instance
+// Create SDK instance (uses JWT + localStorage by default)
 export const sdk = new Medusa({
   baseUrl: BACKEND_URL,
   publishableKey: PUBLISHABLE_KEY,
+  debug: process.env.NODE_ENV === 'development',
 })
 
 // Export a simple client config for direct fetch calls
