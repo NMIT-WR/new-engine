@@ -9,7 +9,11 @@ export interface UseLogoutOptions {
 
 /**
  * Logout mutation hook
- * Clears all auth cache on success
+ * Clears all user data cache on success:
+ * - Auth (customer, session)
+ * - Orders (order history)
+ * - Cart (active cart)
+ * - Customer (addresses)
  */
 export function useLogout(options?: UseLogoutOptions) {
   const queryClient = useQueryClient()
@@ -17,8 +21,18 @@ export function useLogout(options?: UseLogoutOptions) {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      // Clear all auth cache
+      // Invalidate all user data first (triggers refetch on mounted queries)
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.cart.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.customer.all() })
+
+      // Then remove from cache (clears stale data)
       queryClient.removeQueries({ queryKey: queryKeys.auth.all() })
+      queryClient.removeQueries({ queryKey: queryKeys.orders.all() })
+      queryClient.removeQueries({ queryKey: queryKeys.cart.all() })
+      queryClient.removeQueries({ queryKey: queryKeys.customer.all() })
+
       options?.onSuccess?.()
     },
     onError: (error: Error) => {
