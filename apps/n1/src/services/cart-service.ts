@@ -1,210 +1,186 @@
+import { isNotFoundError, logError } from '@/lib/errors'
 import { sdk } from '@/lib/medusa-client'
-import type { StoreCart } from '@medusajs/types'
+import type { HttpTypes } from '@medusajs/types'
 
-// Export types for reuse in components/hooks
-export type { StoreCart } from '@medusajs/types'
+export type Cart = HttpTypes.StoreCart
+export type CartLineItem = HttpTypes.StoreCartLineItem
+export type CartCreateResponse = HttpTypes.StoreCartResponse
+export type CartUpdateResponse = HttpTypes.StoreCartResponse
+export type OptimisticCart = Cart & { _optimistic?: boolean }
+export type OptimisticLineItem = CartLineItem & {
+  _optimistic?: boolean
+}
 
-/**
- * Get active cart - for now we need to manage cart ID in localStorage
- * TODO: In future, implement server-side cart management for authenticated users
- */
-export async function getCart(): Promise<StoreCart | null> {
+// Single cart storage key - Medusa handles guest/auth distinction
+const CART_ID_KEY = 'n1_cart_id'
+export const cartStorage = {
+  getCartId(): string | null {
+    if (typeof window === 'undefined') return null
+    return localStorage.getItem(CART_ID_KEY)
+  },
+
+  setCartId(cartId: string): void {
+    if (typeof window === 'undefined') return
+    localStorage.setItem(CART_ID_KEY, cartId)
+  },
+
+  clearCartId(): void {
+    if (typeof window === 'undefined') return
+    localStorage.removeItem(CART_ID_KEY)
+  },
+}
+
+export async function getCart(): Promise<Cart | null> {
   try {
-    // Get cart ID from localStorage
-    const cartId = typeof window !== 'undefined' ? localStorage.getItem('n1_cart_id') : null
-    
+    const cartId = cartStorage.getCartId()
+
     if (!cartId) {
-      // No cart ID stored yet
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[CartService] No cart ID found')
+      }
       return null
     }
 
     const { cart } = await sdk.store.cart.retrieve(cartId)
 
-    return cart || null
-  } catch (err: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to fetch cart:', err)
+    if (!cart) {
+      throw new Error('Cart retrieved but empty')
     }
-    
-    // If cart not found (404), remove the invalid ID from localStorage
-    if (err?.status === 404 || err?.response?.status === 404) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('n1_cart_id')
-      }
+
+    return cart
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      logError('CartService', 'Cart not found, clearing stored ID')
+      cartStorage.clearCartId()
+      return null
     }
-    
-    return null
+    logError('CartService', 'Failed to fetch cart')
+    throw error
   }
 }
 
-/**
- * Create new cart for customer
- * Automatically associates with authenticated customer
- */
-export async function createCart(regionId: string): Promise<StoreCart> {
+export async function createCart(
+  regionId: string,
+  options?: {
+    email?: string
+    salesChannelId?: string
+  }
+): Promise<Cart> {
   try {
+    if (!regionId) {
+      throw new Error('Region ID is required')
+    }
+
     const response = await sdk.store.cart.create({
       region_id: regionId,
+      email: options?.email,
+      sales_channel_id: options?.salesChannelId,
     })
 
     if (!response.cart) {
-      throw new Error('Nepodařilo se vytvořit košík')
+      throw new Error('Failed to create cart - no cart returned')
     }
 
-    // Store cart ID in localStorage for future retrieval
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('n1_cart_id', response.cart.id)
+    cartStorage.setCartId(response.cart.id)
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[CartService] Cart created:', response.cart.id)
     }
 
     return response.cart
-  } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to create cart:', err)
-    }
-    throw new Error('Nepodařilo se vytvořit košík')
+  } catch (error) {
+    logError('CartService', 'Failed to create cart')
+    throw error
   }
 }
 
-/**
- * Add item to cart
- */
-export async function addToCart(cartId: string, variantId: string, quantity: number): Promise<StoreCart> {
+export async function addToCart(
+  cartId: string,
+  variantId: string,
+  quantity = 1,
+  metadata?: Record<string, unknown>
+): Promise<Cart> {
   try {
+    if (!cartId || !variantId) {
+      throw new Error('Cart ID and Variant ID are required')
+    }
+
+    if (quantity < 1) {
+      throw new Error('Quantity must be at least 1')
+    }
+
     const response = await sdk.store.cart.createLineItem(cartId, {
       variant_id: variantId,
       quantity,
+      metadata,
     })
 
     if (!response.cart) {
-      throw new Error('Nepodařilo se přidat produkt do košíku')
+      throw new Error('Failed to add item - no cart returned')
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[CartService] Item added to cart:', {
+        variantId,
+        quantity,
+        metadata,
+      })
     }
 
     return response.cart
-  } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to add to cart:', err)
-    }
-    throw new Error('Nepodařilo se přidat produkt do košíku')
+  } catch (error) {
+    logError('CartService', 'Failed to add to cart')
+    throw error
   }
 }
 
-/**
- * Update line item quantity
- */
 export async function updateLineItem(
   cartId: string,
   lineItemId: string,
   quantity: number
-): Promise<StoreCart> {
+): Promise<Cart> {
   try {
+    if (!cartId || !lineItemId) {
+      throw new Error('Cart ID and Line Item ID are required')
+    }
+
+    if (quantity < 1) {
+      throw new Error('Quantity must be at least 1')
+    }
+
     const response = await sdk.store.cart.updateLineItem(cartId, lineItemId, {
       quantity,
     })
 
     if (!response.cart) {
-      throw new Error('Nepodařilo se aktualizovat košík')
+      throw new Error('Failed to update item - no cart returned')
     }
 
     return response.cart
-  } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to update line item:', err)
-    }
-    throw new Error('Nepodařilo se aktualizovat košík')
+  } catch (error) {
+    logError('CartService', 'Failed to update line item')
+    throw error
   }
 }
 
-/**
- * Remove line item from cart
- */
-export async function removeLineItem(cartId: string, lineItemId: string): Promise<StoreCart> {
+export async function removeLineItem(
+  cartId: string,
+  lineItemId: string
+): Promise<Cart> {
   try {
-    // Delete the line item
-    await sdk.store.cart.deleteLineItem(cartId, lineItemId)
-    
-    // Retrieve the updated cart
-    const { cart } = await sdk.store.cart.retrieve(cartId)
-
-    if (!cart) {
-      throw new Error('Nepodařilo se načíst aktualizovaný košík')
+    if (!cartId || !lineItemId) {
+      throw new Error('Cart ID and Line Item ID are required')
     }
 
-    return cart
-  } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to remove line item:', err)
-    }
-    throw new Error('Nepodařilo se odstranit produkt z košíku')
-  }
-}
+    const response = await sdk.store.cart.deleteLineItem(cartId, lineItemId)
 
-/**
- * Get cart by ID (for guest cart retrieval)
- * Returns null if cart doesn't exist
- */
-export async function getCartById(cartId: string): Promise<StoreCart | null> {
-  try {
-    const { cart } = await sdk.store.cart.retrieve(cartId)
-
-    return cart || null
-  } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to fetch cart by ID:', err)
-    }
-    return null
-  }
-}
-
-/**
- * Merge guest cart items into authenticated customer cart
- *
- * Flow:
- * 1. Get guest cart items
- * 2. Get or create customer cart
- * 3. Transfer all items from guest cart to customer cart
- *
- * @param guestCartId - ID of guest cart to merge
- * @param regionId - Region for creating customer cart if needed
- * @returns Merged customer cart
- */
-export async function mergeGuestCart(guestCartId: string, regionId: string): Promise<StoreCart | null> {
-  try {
-    // Get guest cart
-    const guestCart = await getCartById(guestCartId)
-    if (!guestCart || !guestCart.items || guestCart.items.length === 0) {
-      // No guest cart or empty - nothing to merge
-      return null
+    if (!response.parent) {
+      throw new Error('Failed to retrieve updated cart')
     }
 
-    // Get or create customer cart
-    let customerCart = await getCart()
-    if (!customerCart) {
-      customerCart = await createCart(regionId)
-    }
-
-    // Transfer all items from guest cart to customer cart
-    for (const item of guestCart.items) {
-      if (!item.variant_id) continue
-
-      await addToCart(customerCart.id, item.variant_id, item.quantity)
-    }
-
-    // Get updated cart with all items
-    const mergedCart = await getCart()
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `[CartService] Merged ${guestCart.items.length} items from guest cart ${guestCartId}`
-      )
-    }
-
-    return mergedCart
-  } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Failed to merge guest cart:', err)
-    }
-    // Don't throw - merge is best-effort
-    // If it fails, user can manually re-add items
-    return null
+    return response.parent
+  } catch (error) {
+    logError('CartService', 'Failed to remove line item')
+    throw error
   }
 }
