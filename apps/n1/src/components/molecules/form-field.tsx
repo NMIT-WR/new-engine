@@ -16,29 +16,6 @@ interface FormFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'on
   containerClassName?: string
 }
 
-/**
- * Reusable form field combining Label + Input + error message
- *
- * Eliminuje opakování pattern:
- * - Label s required prop
- * - Input s peer validation classes
- * - Error message s peer-user-invalid visibility
- *
- * Použití:
- * ```tsx
- * <FormField
- *   id="email"
- *   name="email"
- *   type="email"
- *   label="E-mailová adresa"
- *   required
- *   errorMessage="Zadejte platnou e-mailovou adresu"
- *   value={email}
- *   onChange={(e) => setEmail(e.target.value)}
- *   disabled={isPending}
- * />
- * ```
- */
 export const FormField = ({
   id,
   label,
