@@ -1,3 +1,4 @@
+import { logError } from '@/lib/errors'
 import { sdk } from '@/lib/medusa-client'
 import { clearToken } from '@/lib/token-utils'
 import type { StoreCustomer } from '@medusajs/types'
@@ -37,9 +38,7 @@ export async function login(credentials: LoginCredentials): Promise<string | und
 
     return token
   } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[AuthService] Login failed:', err)
-    }
+    logError('AuthService.login', err)
     const message = err instanceof Error ? err.message : 'Login failed'
     throw new Error(message)
   }
@@ -88,9 +87,7 @@ export async function register(data: RegisterData): Promise<string | undefined> 
 
     return token
   } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[AuthService] Registration failed:', err)
-    }
+    logError('AuthService.register', err)
 
     // CRITICAL: Clean up orphaned token if customer.create() failed
     // If register() succeeded but create() failed, we have token without customer
@@ -114,9 +111,7 @@ export async function logout(): Promise<void> {
   try {
     await sdk.auth.logout()
   } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[AuthService] Logout failed:', err)
-    }
+    logError('AuthService.logout', err)
     // Don't throw on logout errors - best effort
   }
 }
