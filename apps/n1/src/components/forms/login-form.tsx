@@ -51,15 +51,12 @@ export const LoginForm = ({
       noValidate
       className="mt-100 flex flex-col gap-100"
     >
-      {/* Server Error Banner */}
       {login.error && (
         <ErrorBanner
           title={AUTH_MESSAGES.LOGIN_FAILED}
           message={login.error.message}
         />
       )}
-
-      {/* Email Field */}
       <FormField
         id="login-email"
         name="email"
@@ -72,7 +69,6 @@ export const LoginForm = ({
         autoComplete="email"
       />
 
-      {/* Password Field */}
       <FormField
         id="login-password"
         name="password"
