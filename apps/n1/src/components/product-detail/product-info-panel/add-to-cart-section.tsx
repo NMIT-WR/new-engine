@@ -85,7 +85,7 @@ export const AddToCartSection = ({
         defaultValue={1}
         allowMouseWheel={true}
         value={quantity}
-        onValueChange={(details) => setQuantity(Number(details.value))}
+        onChange={setQuantity}
         disabled={isPending}
       >
         <NumericInput.DecrementTrigger />
