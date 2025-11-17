@@ -19,6 +19,10 @@
   --text-button-sm: var(--text-md);
   --color-button-border-secondary-selected: var(--color-border-tertiary);
 
+  /* INPUT */
+  --color-input-border-focus: var(--color-fg-primary);
+  --color-input-ring: var(--color-fg-primary);
+
   /* NUMERIC INPUT */
   --color-numeric-input-border: var(--color-border-secondary);
   --color-numeric-input-border-focus: var(--color-fg-primary);
@@ -51,9 +55,17 @@
   --spacing-carousel-root-md: 100%;
   /*--color-carousel-control-bg: var(--color-red-300);*/
 
+  /* CHECKBOX */
+  --width-checkbox: 1rem;
+  --height-checkbox: 1rem;
+
   /* PAGINATION */
   --color-pagination-filled-fg-active: var(--color-fg-primary);
   --color-pagination-border: var(--color-border-secondary);
+
+  /* POPOVER */
+  --color-popover-bg: var(--color-base);
+  --color-popover-fg: var(--color-fg-primary);
 
   /* PRODUCT CARD */
   --color-product-card-bg: var(--color-base);
