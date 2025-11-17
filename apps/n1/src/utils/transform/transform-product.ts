@@ -25,8 +25,10 @@ export const transformProduct = (product: StoreProduct): Product => {
 const removeDuplicatedImageUrl = (images: ProductImage[]) => {
   const uniqueUrls = new Set<string>()
   return images.filter((img) => {
-    if (uniqueUrls.has(img.src)) return false
-    uniqueUrls.add(img.src)
+    const filename = img.src.split('/').pop() || ''
+    const baseName = filename.replace(/^[a-f0-9]{10}-/, '')
+    if (uniqueUrls.has(baseName)) return false
+    uniqueUrls.add(baseName)
     return true
   })
 }
@@ -100,7 +102,7 @@ export const transformProductDetail = (
     material: product.material,
 
     // Full data
-    images,
+    images: images,
     variants,
     tags:
       product.tags?.map((tag) => ({
