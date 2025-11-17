@@ -27,3 +27,11 @@
 @utility token-icon-external-link {
   @apply icon-[mdi--external-link];
 }
+
+@utility token-icon-check {
+  @apply icon-[mdi--check-bold];
+}
+
+@utility token-icon-x {
+  @apply icon-[mdi--close-thick];
+}
