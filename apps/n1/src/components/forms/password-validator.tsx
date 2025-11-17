@@ -54,8 +54,8 @@ export const PasswordValidator = ({
             }`}
           >
             <span
-              className={`flex h-3 w-3 items-center justify-center rounded-full border p-150 text-3xs ${
-                req.met ? 'bg-success' : 'bg-overlay'
+              className={`flex h-4 w-4 items-center justify-center rounded-full border border-border-secondary text-[.75rem] ${
+                req.met ? 'bg-success' : 'bg-surface'
               }`}
               aria-hidden="true"
             >
