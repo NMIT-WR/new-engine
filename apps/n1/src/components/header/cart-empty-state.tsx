@@ -8,13 +8,11 @@ interface CartEmptyStateProps {
 export const CartEmptyState = ({ onContinueShopping }: CartEmptyStateProps) => {
   return (
     <div className="flex flex-col items-center justify-center py-8 text-center">
-      {/* Empty cart icon */}
-      <Icon
+    <Icon
         icon="icon-[mdi--cart-outline]"
         className="mb-4 text-6xl text-gray-300"
       />
       
-      {/* Message */}
       <h3 className="mb-2 text-lg font-semibold text-gray-900">
         Váš košík je prázdný
       </h3>
@@ -22,7 +20,6 @@ export const CartEmptyState = ({ onContinueShopping }: CartEmptyStateProps) => {
         Přidejte si něco hezkého z naší nabídky
       </p>
 
-      {/* CTA Button */}
       <Button
         variant="primary"
         theme="solid"
