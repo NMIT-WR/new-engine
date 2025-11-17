@@ -171,8 +171,8 @@
   --color-base-reverse: var(--color-gray-950);
 
   /* Borders */
-  --color-border-primary: var(--color-gray-700); /* #444444 - VERIFIED */
-  --color-border-secondary: #e4e4e4; /* Subtle dividers */
+  --color-border-primary: var(--color-gray-700);  
+  --color-border-secondary: #e4e4e4; 
   --color-border-tertiary: #000;
   --border-width-none: 0px;
   --border-width-sm: 1px;

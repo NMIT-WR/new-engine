@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@new-engine/ui/src/tokens/tokens-only.css";
+@import "./_n1-semantic.css";
 @import "./_n1shop-overrides.css";
 
 @plugin 'tailwindcss-animate';
