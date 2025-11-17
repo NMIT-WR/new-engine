@@ -20,10 +20,6 @@ export interface AuthResponse {
   customer?: StoreCustomer
 }
 
-/**
- * Authenticate customer with email and password
- * Uses session-based auth (HTTP-only cookies)
- */
 export async function login(credentials: LoginCredentials): Promise<string | undefined> {
   try {
     const token = await sdk.auth.login('customer', 'emailpass', {
@@ -44,18 +40,6 @@ export async function login(credentials: LoginCredentials): Promise<string | und
   }
 }
 
-/**
- * Register new customer with complete profile
- *
- * Medusa v2 flow (REQUIRED - simplified version doesn't work):
- * 1. auth.register() - Creates AuthIdentity (login credentials)
- * 2. auth.login() - Establishes proper session (NECESSARY!)
- * 3. customer.create() - Creates Customer profile
- * 4. auth.refresh() - Refreshes token for proper permissions
- *
- * NOTE: Steps 2 and 4 seem redundant but are REQUIRED for proper auth state.
- * Simplified flow (register → create) leaves user in broken state.
- */
 export async function register(data: RegisterData): Promise<string | undefined> {
   try {
     // Step 1: Register creates auth identity (email + password)
@@ -103,10 +87,6 @@ export async function register(data: RegisterData): Promise<string | undefined> 
   }
 }
 
-/**
- * Logout current customer
- * Clears session cookie
- */
 export async function logout(): Promise<void> {
   try {
     await sdk.auth.logout()
@@ -116,10 +96,6 @@ export async function logout(): Promise<void> {
   }
 }
 
-/**
- * Get current authenticated customer
- * Returns null if not authenticated
- */
 export async function getCustomer(): Promise<StoreCustomer | null> {
   try {
     const response = await sdk.store.customer.retrieve()
@@ -130,10 +106,6 @@ export async function getCustomer(): Promise<StoreCustomer | null> {
   }
 }
 
-/**
- * Check if customer is authenticated
- * Returns true if session exists and is valid
- */
 export async function isAuthenticated(): Promise<boolean> {
   try {
     const customer = await getCustomer()
