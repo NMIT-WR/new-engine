@@ -89,13 +89,13 @@ export const LoginForm = ({
           type="password"
           placeholder="••••••••"
           required
-          minLength={6}
+          minLength={8}
           autoComplete="current-password"
           disabled={login.isPending}
           className="peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success"
         />
         <p className="invisible text-danger text-xs peer-user-invalid:visible">
-          Heslo musí mít alespoň 6 znaků
+          Heslo musí mít alespoň 8 znaků
         </p>
       </div>
 
