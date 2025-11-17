@@ -1,5 +1,4 @@
 'use client'
-
 import { useRegister } from '@/hooks/use-register'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { Button } from '@new-engine/ui/atoms/button'
@@ -70,7 +69,6 @@ export const RegisterForm = ({
     e.preventDefault()
 
     if (!getFormValidity()) {
-      // Client-side validation
       console.error('Form is not valid')
       return
     }
@@ -95,7 +93,6 @@ export const RegisterForm = ({
       noValidate
       className={`mt-100 flex flex-col gap-200 ${className}`}
     >
-      {/* Server Error Banner */}
       {register.error && (
         <ErrorBanner
           title={AUTH_MESSAGES.REGISTER_FAILED}
@@ -103,7 +100,6 @@ export const RegisterForm = ({
         />
       )}
 
-      {/* Name Fields */}
       <div className="grid grid-cols-2 gap-100">
         <FormField
           id="register-first-name"
@@ -134,7 +130,6 @@ export const RegisterForm = ({
         />
       </div>
 
-      {/* Email Field */}
       <FormField
         id="register-email"
         name="email"
@@ -149,7 +144,6 @@ export const RegisterForm = ({
         autoComplete="email"
       />
 
-      {/* Password Field with Real-time Validation */}
       <div className="flex flex-col gap-50">
         <Label htmlFor="register-password" required>
           Heslo
@@ -174,11 +168,9 @@ export const RegisterForm = ({
           }`}
         />
 
-        {/* Real-time Password Requirements */}
         <PasswordValidator password={password} showRequirements />
       </div>
 
-      {/* Confirm Password Field with Match Indicator */}
       <div className="flex flex-col gap-50">
         <Label htmlFor="register-confirm-password" required>
           Potvrzení hesla
@@ -203,7 +195,6 @@ export const RegisterForm = ({
           }`}
         />
 
-        {/* Password Match Indicator */}
         {passwordsMatch && (
           <span className="font-medium text-success text-xs">
             {AUTH_MESSAGES.PASSWORDS_MATCH}
