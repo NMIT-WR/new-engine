@@ -7,6 +7,7 @@ import { slugify } from '@new-engine/ui/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Fragment } from 'react'
+import { ProductCardSkeleton } from '../skeletons/product-card-skeleton'
 
 interface ProductGridProps {
   products: Product[]
@@ -14,6 +15,8 @@ interface ProductGridProps {
   currentPage?: number
   pageSize?: number
   onPageChange?: (page: number) => void
+  isLoading?: boolean
+  skeletonCount?: number
 }
 
 export const ProductGrid = ({
@@ -22,9 +25,24 @@ export const ProductGrid = ({
   currentPage = 1,
   pageSize = 24,
   onPageChange,
+  isLoading = false,
+  skeletonCount = 12,
 }: ProductGridProps) => {
   const { delayedPrefetch } = usePrefetchProduct()
   const totalPages = Math.ceil((totalCount || products.length) / pageSize)
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-max-w">
+        <div className="grid w-full grid-cols-2 gap-200 md:grid-cols-4">
+          {Array.from({ length: skeletonCount }).map((_, index) => (
+            <ProductCardSkeleton key={`skeleton-${index}`} />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (products.length === 0) {
     return (

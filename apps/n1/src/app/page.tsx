@@ -3,10 +3,22 @@ import { FeatureBlock } from '@/components/atoms/feature-block'
 import { HeroCarousel } from '@/components/hero-carousel'
 import { ProductGrid } from '@/components/molecules/product-grid'
 import { TopProduct } from '@/components/top-product'
-import { featureBlocks, featuredProducts, topCategory } from '@/data/home'
+import { featureBlocks, topCategory } from '@/data/home'
 import { heroCarouselSlides } from '@/data/home'
+import { useProducts } from '@/hooks/use-products'
+import { transformProduct } from '@/utils/transform/transform-product'
 
 export default function Home() {
+  const { products: rawProducts, isLoading } = useProducts({
+    category_id: [
+      'pcat_01K1RB8NEB67KSN2VHMBT1XNX7',
+      'pcat_01K1RB8NDSY4KAVFFQVRNP2KAD',
+    ],
+    limit: 8,
+  })
+
+  const products = rawProducts.map(transformProduct)
+
   return (
     <main className="grid justify-center">
       <section className="w-full">
@@ -30,7 +42,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto my-28 max-w-max-w">
+      <section className="mx-auto my-28 w-full max-w-max-w">
         <h2 className="relative mx-auto mb-section flex max-w-max-w items-center justify-center font-bold text-xl">
           <span className="relative z-10 bg-base px-400 text-fg-primary">
             Vybíráme pro vás
@@ -39,7 +51,11 @@ export default function Home() {
             <span className="w-full border-border-secondary border-t" />
           </span>
         </h2>
-        <ProductGrid products={featuredProducts} />
+        <ProductGrid
+          products={products}
+          isLoading={isLoading}
+          skeletonCount={8}
+        />
       </section>
     </main>
   )
