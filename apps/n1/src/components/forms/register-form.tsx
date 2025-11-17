@@ -1,12 +1,15 @@
 'use client'
 
 import { useRegister } from '@/hooks/use-register'
+import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { Button } from '@new-engine/ui/atoms/button'
 import { Input } from '@new-engine/ui/atoms/input'
 import { Label } from '@new-engine/ui/atoms/label'
 import { Checkbox } from '@new-engine/ui/molecules/checkbox'
 import Link from 'next/link'
 import { type FormEvent, useRef, useState } from 'react'
+import { ErrorBanner } from '../atoms/error-banner'
+import { FormField } from '../molecules/form-field'
 import { PasswordValidator, usePasswordValidation } from './password-validator'
 
 interface RegisterFormProps {
@@ -94,78 +97,57 @@ export const RegisterForm = ({
     >
       {/* Server Error Banner */}
       {register.error && (
-        <div className="rounded-md bg-danger-light p-100 text-danger text-sm">
-          <p className="font-medium">Registrace se nezdařila</p>
-          <p className="mt-50 text-xs">{register.error.message}</p>
-        </div>
+        <ErrorBanner
+          title={AUTH_MESSAGES.REGISTER_FAILED}
+          message={register.error.message}
+        />
       )}
 
       {/* Name Fields */}
       <div className="grid grid-cols-2 gap-100">
-        <div className="flex flex-col gap-50">
-          <Label htmlFor="register-first-name" required>
-            Jméno
-          </Label>
-          <Input
-            id="register-first-name"
-            name="firstName"
-            type="text"
-            placeholder="Jan"
-            required
-            autoComplete="given-name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            disabled={register.isPending}
-            className="peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success"
-          />
-          <p className="invisible font-medium text-2xs text-danger peer-user-invalid:visible">
-            Vyplňte prosím jméno
-          </p>
-        </div>
+        <FormField
+          id="register-first-name"
+          name="firstName"
+          type="text"
+          label="Jméno"
+          placeholder="Jan"
+          required
+          errorMessage={AUTH_MESSAGES.FIRST_NAME_REQUIRED}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          disabled={register.isPending}
+          autoComplete="given-name"
+        />
 
-        <div className="flex flex-col gap-50">
-          <Label htmlFor="register-last-name" required>
-            Příjmení
-          </Label>
-          <Input
-            id="register-last-name"
-            name="lastName"
-            type="text"
-            placeholder="Novák"
-            required
-            autoComplete="family-name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            disabled={register.isPending}
-            className="peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success"
-          />
-          <p className="invisible font-medium text-2xs text-danger peer-user-invalid:visible">
-            Vyplňte prosím příjmení
-          </p>
-        </div>
+        <FormField
+          id="register-last-name"
+          name="lastName"
+          type="text"
+          label="Příjmení"
+          placeholder="Novák"
+          required
+          errorMessage={AUTH_MESSAGES.LAST_NAME_REQUIRED}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          disabled={register.isPending}
+          autoComplete="family-name"
+        />
       </div>
 
       {/* Email Field */}
-      <div className="flex flex-col gap-50">
-        <Label htmlFor="register-email" required>
-          E-mailová adresa
-        </Label>
-        <Input
-          id="register-email"
-          name="email"
-          type="email"
-          placeholder="vas@email.cz"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={register.isPending}
-          className="peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success"
-        />
-        <p className="invisible font-medium text-2xs text-danger peer-user-invalid:visible">
-          Zadejte platnou e-mailovou adresu
-        </p>
-      </div>
+      <FormField
+        id="register-email"
+        name="email"
+        type="email"
+        label="E-mailová adresa"
+        placeholder="vas@email.cz"
+        required
+        errorMessage={AUTH_MESSAGES.EMAIL_REQUIRED}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={register.isPending}
+        autoComplete="email"
+      />
 
       {/* Password Field with Real-time Validation */}
       <div className="flex flex-col gap-50">
@@ -224,12 +206,12 @@ export const RegisterForm = ({
         {/* Password Match Indicator */}
         {passwordsMatch && (
           <span className="font-medium text-success text-xs">
-            Hesla se shodují
+            {AUTH_MESSAGES.PASSWORDS_MATCH}
           </span>
         )}
         {passwordsDontMatch && (
           <span className="font-medium text-danger text-xs">
-            Hesla se neshodují
+            {AUTH_MESSAGES.PASSWORDS_DONT_MATCH}
           </span>
         )}
       </div>

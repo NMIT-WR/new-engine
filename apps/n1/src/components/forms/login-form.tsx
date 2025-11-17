@@ -1,10 +1,11 @@
 import { useLogin } from '@/hooks/use-login'
+import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { Button } from '@new-engine/ui/atoms/button'
-import { Input } from '@new-engine/ui/atoms/input'
-import { Label } from '@new-engine/ui/atoms/label'
 import { Checkbox } from '@new-engine/ui/molecules/checkbox'
 import Link from 'next/link'
 import { type FormEvent, useRef } from 'react'
+import { ErrorBanner } from '../atoms/error-banner'
+import { FormField } from '../molecules/form-field'
 
 interface LoginFormProps {
   onSuccess?: () => void
@@ -52,52 +53,38 @@ export const LoginForm = ({
     >
       {/* Server Error Banner */}
       {login.error && (
-        <div className="rounded-md bg-danger-light p-100 text-danger text-sm">
-          <p className="font-medium">Přihlášení se nezdařilo</p>
-          <p className="mt-50 text-xs">{login.error.message}</p>
-        </div>
+        <ErrorBanner
+          title={AUTH_MESSAGES.LOGIN_FAILED}
+          message={login.error.message}
+        />
       )}
 
       {/* Email Field */}
-      <div className="flex flex-col gap-50">
-        <Label htmlFor="login-email" required>
-          E-mailová adresa
-        </Label>
-        <Input
-          id="login-email"
-          name="email"
-          type="email"
-          placeholder="vas@email.cz"
-          required
-          autoComplete="email"
-          disabled={login.isPending}
-          className="peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success"
-        />
-        <p className="invisible text-danger text-xs peer-user-invalid:visible">
-          Zadejte platnou e-mailovou adresu
-        </p>
-      </div>
+      <FormField
+        id="login-email"
+        name="email"
+        type="email"
+        label="E-mailová adresa"
+        placeholder="vas@email.cz"
+        required
+        errorMessage={AUTH_MESSAGES.EMAIL_REQUIRED}
+        disabled={login.isPending}
+        autoComplete="email"
+      />
 
       {/* Password Field */}
-      <div className="flex flex-col gap-50">
-        <Label htmlFor="login-password" required>
-          Heslo
-        </Label>
-        <Input
-          id="login-password"
-          name="password"
-          type="password"
-          placeholder="••••••••"
-          required
-          minLength={8}
-          autoComplete="current-password"
-          disabled={login.isPending}
-          className="peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success"
-        />
-        <p className="invisible text-danger text-xs peer-user-invalid:visible">
-          Heslo musí mít alespoň 8 znaků
-        </p>
-      </div>
+      <FormField
+        id="login-password"
+        name="password"
+        type="password"
+        label="Heslo"
+        placeholder="••••••••"
+        required
+        minLength={8}
+        errorMessage={AUTH_MESSAGES.PASSWORD_TOO_SHORT}
+        disabled={login.isPending}
+        autoComplete="current-password"
+      />
 
       {showForgotPasswordLink && (
         <div className="enter flex items-center gap-150">
