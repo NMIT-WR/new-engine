@@ -1,7 +1,10 @@
 'use client'
 
 import { useRemoveLineItem, useUpdateLineItem } from '@/hooks/use-cart'
-import type { StoreCart } from '@medusajs/types'
+import { useCartToast } from '@/hooks/use-toast'
+import type { Cart } from '@/services/cart-service'
+import { getOptimisticFlag } from '@/utils/cart'
+import { formatAmount } from '@/utils/format/format-product'
 import { Button } from '@new-engine/ui/atoms/button'
 import Link from 'next/link'
 import { CartEmptyState } from './cart-empty-state'
@@ -9,79 +12,90 @@ import { CartItem } from './cart-item'
 import { CartSkeleton } from './cart-skeleton'
 
 interface CartContentProps {
-  cart: StoreCart | null | undefined
+  cart: Cart | null | undefined
   isLoading: boolean
-  isAuthenticated: boolean
   onClose?: () => void
 }
 
-export const CartContent = ({
-  cart,
-  isLoading,
-  isAuthenticated,
-  onClose,
-}: CartContentProps) => {
+export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
   const { mutate: updateQuantity, isPending: isUpdating } = useUpdateLineItem()
   const { mutate: removeItem, isPending: isRemoving } = useRemoveLineItem()
+  const toast = useCartToast()
 
-  // Helper to format prices - Medusa v2 stores prices in major units (not cents)
-  const formatAmount = (amount?: number | null) => {
-    if (!amount) return '0 Kč'
-    return `${Math.round(amount)} Kč`
+  const handleUpdateQuantity =
+    (itemId: string, itemTitle: string) => (quantity: number) => {
+      if (!cart) return
+
+      updateQuantity(
+        {
+          cartId: cart.id,
+          lineItemId: itemId,
+          quantity,
+        },
+        {
+          onError: (error) => {
+            toast.cartError(error.message)
+          },
+        }
+      )
+    }
+
+  const handleRemoveItem = (itemId: string, itemTitle: string) => () => {
+    if (!cart) return
+
+    removeItem(
+      {
+        cartId: cart.id,
+        lineItemId: itemId,
+      },
+      {
+        onSuccess: () => {
+          toast.removedFromCart(itemTitle)
+        },
+        onError: (error) => {
+          toast.cartError(error.message)
+        },
+      }
+    )
   }
 
-  // Cart now works for both authenticated and guest users
-
-  // Loading state
   if (isLoading) {
     return <CartSkeleton />
   }
 
-  // Empty cart state
   if (!cart || !cart.items || cart.items.length === 0) {
     return <CartEmptyState onContinueShopping={onClose} />
   }
 
   const isPending = isUpdating || isRemoving
+  const isOptimistic = getOptimisticFlag(cart)
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Cart items list */}
       <div className="max-h-[400px] divide-y divide-gray-200 overflow-y-auto">
-        {cart.items.map((item) => (
-          <CartItem
-            key={item.id}
-            item={item}
-            onUpdateQuantity={(quantity) => {
-              updateQuantity({
-                cartId: cart.id,
-                lineItemId: item.id,
-                quantity,
-              })
-            }}
-            onRemove={() => {
-              removeItem({
-                cartId: cart.id,
-                lineItemId: item.id,
-              })
-            }}
-            isPending={isPending}
-          />
-        ))}
+        {cart.items.map((item) => {
+          const itemTitle = item.product_title || item.title || 'Product'
+          const itemOptimistic = getOptimisticFlag(item)
+
+          return (
+            <CartItem
+              key={item.id}
+              item={item}
+              onUpdateQuantity={handleUpdateQuantity(item.id, itemTitle)}
+              onRemove={handleRemoveItem(item.id, itemTitle)}
+              isPending={isPending}
+              isOptimistic={isOptimistic || itemOptimistic}
+            />
+          )
+        })}
       </div>
 
-      {/* Totals section */}
       <div className="border-gray-200 border-t pt-4">
         <div className="space-y-2">
-          {/* Subtotal */}
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Mezisoučet:</span>
-            <span className="text-gray-900">
-              {formatAmount(cart.subtotal)}
-            </span>
+            <span className="text-gray-900">{formatAmount(cart.subtotal)}</span>
           </div>
-
-          {/* Shipping */}
           {cart.shipping_total !== undefined && cart.shipping_total > 0 && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Doprava:</span>
@@ -91,7 +105,6 @@ export const CartContent = ({
             </div>
           )}
 
-          {/* Tax */}
           {cart.tax_total !== undefined && cart.tax_total > 0 && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">DPH:</span>
@@ -101,38 +114,48 @@ export const CartContent = ({
             </div>
           )}
 
-          {/* Total */}
-          <div className="flex justify-between border-gray-200 border-t pt-2 font-semibold text-base">
+          {cart.discount_total !== undefined && cart.discount_total > 0 && (
+            <div className="flex justify-between text-green-600 text-sm">
+              <span>Sleva:</span>
+              <span>-{formatAmount(cart.discount_total)}</span>
+            </div>
+          )}
+
+          <div className="flex justify-between border-gray-200 border-t pt-2 font-semibold text-md">
             <span>Celkem:</span>
             <span>{formatAmount(cart.total)}</span>
           </div>
+
+          {cart.subtotal && cart.subtotal < 1500 && (
+            <p className="pt-2 text-center text-gray-500 text-xs">
+              Doprava zdarma od 1 500 Kč (zbývá{' '}
+              {formatAmount(1500 - cart.subtotal)})
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Action buttons */}
       <div className="space-y-2">
-        {/* Checkout button */}
-        <Link href="/pokladna" className="block">
+        <Link href="/pokladna" className="block" onClick={onClose}>
           <Button
             variant="primary"
             theme="solid"
             size="md"
             className="w-full justify-center"
-            onClick={onClose}
+            disabled={isPending}
           >
             Přejít k pokladně
           </Button>
         </Link>
 
-        {/* View cart button */}
         <Button
           variant="secondary"
           theme="outlined"
           size="sm"
           className="w-full justify-center"
-          onClick={() => console.log('View cart: ', cart)}
+          onClick={onClose}
         >
-          Zobrazit košík
+          Pokračovat v nákupu
         </Button>
       </div>
     </div>
