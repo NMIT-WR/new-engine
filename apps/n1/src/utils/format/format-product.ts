@@ -16,6 +16,12 @@ export const formatPrice = ({
   return price ? `${price.toFixed(0)} ${currencyMap}` : '0 Kč'
 }
 
+/* when we need to format price for basic item regardless of the variants */
+export const formatAmount = (amount?: number | null) => {
+  if (!amount) return '0 Kč'
+  return `${Math.round(amount)} Kč`
+}
+
 export const formatVariants = (
   variants?: StoreProduct['variants']
 ): string[] => {
