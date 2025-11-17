@@ -6,12 +6,12 @@ import { ProductInfoPanel } from '@/components/product-detail/product-info-panel
 import { ProductSizes } from '@/components/product-detail/product-sizes'
 import { ProductTable } from '@/components/product-detail/product-table'
 import { ProductTabs } from '@/components/product-detail/product-tabs'
+import { RelatedProducts } from '@/components/product-detail/related-products'
 import { useProduct } from '@/hooks/use-product'
 import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
 import { buildProductBreadcrumbs } from '@/utils/helpers/build-breadcrumb'
 import { selectVariant } from '@/utils/select-variant'
 import { transformProductDetail } from '@/utils/transform/transform-product'
-import { Button } from '@new-engine/ui/atoms/button'
 import { Link } from '@new-engine/ui/atoms/link'
 import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
 import { useParams, useSearchParams } from 'next/navigation'
@@ -80,10 +80,25 @@ export default function ProductPage() {
       key: 'distibutor',
       value: detail.producer?.title,
     },
+    {
+      key: 'velikost',
+      value: selectedVariant?.title,
+    },
   ]
+
   const tabsData = [
-    <ProductTable key="table" rows={productTableRows} />,
-    <ProductSizes key="sizes" attributes={detail.producer?.attributes} />,
+    {
+      value: 'tab1',
+      label: 'PRODUKTOVÉ PARAMETRY',
+      headline: 'PRODUKTOVÉ PARAMETRY',
+      content: <ProductTable rows={productTableRows} />,
+    },
+    {
+      value: 'tab2',
+      label: 'TABULKA VELIKOSTÍ',
+      headline: 'TABULKA VELIKOSTÍ',
+      content: <ProductSizes attributes={detail.producer?.attributes} />,
+    },
   ]
 
   return (
@@ -98,16 +113,6 @@ export default function ProductPage() {
             className="mb-4"
           />
           <Heading as="h1">{title}</Heading>
-
-          <Button
-            variant="secondary"
-            onClick={() => {
-              console.log('raw', rawProduct)
-              console.log('detail: ', detail)
-            }}
-          >
-            Check product
-          </Button>
         </header>
         <div className="mx-auto aspect-square max-w-md">
           {detail.images && (
@@ -129,8 +134,11 @@ export default function ProductPage() {
         />
       </div>
       {/* PRODUCT TABS */}
-      <ProductTabs description={detail.description} content={tabsData} />
+      <ProductTabs description={detail.description} tabs={tabsData} />
       {/* RELEATED PRODUCTS */}
+      <RelatedProducts
+        categories={rawProduct.categories?.map((category) => category.id)}
+      />
     </div>
   )
 }

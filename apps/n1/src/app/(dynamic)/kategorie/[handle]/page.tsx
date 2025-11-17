@@ -155,19 +155,15 @@ export default function ProductPage() {
           </div>
         </Banner>
         <section>
-          {isLoading ? (
-            <div className="py-8 text-center">
-              <p className="text-gray-500">Načítání produktů...</p>
-            </div>
-          ) : (
-            <ProductGrid
-              products={products}
-              totalCount={totalCount}
-              currentPage={responsePage}
-              pageSize={PRODUCT_LIMIT}
-              onPageChange={handlePageChange}
-            />
-          )}
+          <ProductGrid
+            products={products}
+            totalCount={totalCount}
+            currentPage={responsePage}
+            pageSize={PRODUCT_LIMIT}
+            onPageChange={handlePageChange}
+            isLoading={isLoading}
+            skeletonCount={24}
+          />
         </section>
       </main>
     </div>
