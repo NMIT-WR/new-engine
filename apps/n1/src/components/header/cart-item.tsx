@@ -38,8 +38,13 @@ export const CartItem = ({
   }, 300)
 
   const handleQuantityChange = (newQuantity: number) => {
+    if (Number.isNaN(newQuantity) || !Number.isFinite(newQuantity)) {
+      return
+    }
+
+    const validValue = Math.min(newQuantity, effectiveMax)
     setLocalQuantity(newQuantity)
-    debouncedUpdate(newQuantity)
+    debouncedUpdate(validValue)
   }
 
   const formattedPrice = item.unit_price
@@ -62,6 +67,13 @@ export const CartItem = ({
             height={64}
             quality={40}
             loading="lazy"
+            onClick={() =>
+              console.log({
+                item: item,
+                effectiveMax: effectiveMax,
+                localQuantity: localQuantity,
+              })
+            }
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -99,7 +111,7 @@ export const CartItem = ({
           onChange={handleQuantityChange}
           min={1}
           max={effectiveMax}
-          disabled={isPending}
+          allowOverflow={false}
           className="h-8 border-collapse gap-0"
         >
           <NumericInput.DecrementTrigger
