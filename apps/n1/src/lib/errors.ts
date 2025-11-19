@@ -77,9 +77,70 @@ export type MutationError = {
   code?: string
 }
 
-export function toMutationError(error: unknown): MutationError {
-  return {
-    message: getErrorMessage(error),
-    status: getErrorStatus(error) ?? undefined,
+/**
+ * Error codes for cart and checkout operations
+ */
+export type CartServiceErrorCode =
+  | 'CART_NOT_FOUND'
+  | 'CART_CREATION_FAILED'
+  | 'ITEM_ADD_FAILED'
+  | 'ITEM_UPDATE_FAILED'
+  | 'ITEM_REMOVE_FAILED'
+  | 'SHIPPING_NOT_AVAILABLE'
+  | 'SHIPPING_SET_FAILED'
+  | 'PAYMENT_INIT_FAILED'
+  | 'PAYMENT_FAILED'
+  | 'ORDER_CREATION_FAILED'
+  | 'VALIDATION_ERROR'
+  | 'NETWORK_ERROR'
+
+/**
+ * Structured error for cart and checkout operations
+ * Provides type-safe error codes and user-friendly messages
+ */
+export class CartServiceError extends Error {
+  code: CartServiceErrorCode
+  originalError?: unknown
+
+  constructor(
+    message: string,
+    code: CartServiceErrorCode,
+    originalError?: unknown
+  ) {
+    super(message)
+    this.name = 'CartServiceError'
+    this.code = code
+    this.originalError = originalError
+  }
+
+  /**
+   * Create CartServiceError from Medusa SDK error
+   */
+  static fromMedusaError(
+    error: unknown,
+    fallbackCode: CartServiceErrorCode = 'VALIDATION_ERROR'
+  ): CartServiceError {
+    const message = getErrorMessage(error)
+    const status = getErrorStatus(error)
+
+    // Map HTTP status to error code
+    let code: CartServiceErrorCode = fallbackCode
+
+    if (status === 404) {
+      code = 'CART_NOT_FOUND'
+    } else if (status && status >= 500) {
+      code = 'NETWORK_ERROR'
+    } else if (status === 400) {
+      code = 'VALIDATION_ERROR'
+    }
+
+    return new CartServiceError(message, code, error)
+  }
+
+  /**
+   * Check if error is CartServiceError
+   */
+  static isCartServiceError(error: unknown): error is CartServiceError {
+    return error instanceof CartServiceError
   }
 }
