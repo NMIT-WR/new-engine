@@ -2,15 +2,18 @@ import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
 import {
   type Cart,
+  type CompleteCartResult,
   type OptimisticCart,
   type OptimisticLineItem,
   addToCart,
   cartStorage,
+  completeCart,
   createCart,
   getCart,
   removeLineItem,
   updateLineItem,
 } from '@/services/cart-service'
+import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './use-auth'
 import { useRegion } from './use-region'
@@ -108,7 +111,6 @@ export function useCreateCart() {
 
 export function useAddToCart(options?: UseAddToCartOptions) {
   const queryClient = useQueryClient()
-  const { mutate: createNewCart } = useCreateCart()
   const { regionId } = useRegion()
 
   return useMutation<
@@ -143,7 +145,7 @@ export function useAddToCart(options?: UseAddToCartOptions) {
 
       return addToCart(cart.id, variantId, quantity, metadata)
     },
-    onMutate: async ({ variantId, quantity = 1 }) => {
+    onMutate: async ({ quantity = 1 }) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.cart.active() })
 
@@ -309,4 +311,60 @@ export function useClearCart() {
     queryClient.removeQueries({ queryKey: queryKeys.cart.active() })
     queryClient.setQueryData(queryKeys.cart.active(), null)
   }
+}
+
+type UseCompleteCartOptions = {
+  onSuccess?: (order: HttpTypes.StoreOrder) => void
+  onError?: (
+    error: { message: string; type: string; name?: string },
+    cart: Cart
+  ) => void
+}
+
+export function useCompleteCart(options?: UseCompleteCartOptions) {
+  const queryClient = useQueryClient()
+
+  return useMutation<
+    CompleteCartResult,
+    CartMutationError,
+    { cartId: string },
+    CartMutationContext
+  >({
+    mutationFn: ({ cartId }) => completeCart(cartId),
+    onSuccess: (result) => {
+      if (result.success) {
+        const order = result.order
+
+        // Clear cart cache
+        queryClient.setQueryData(queryKeys.cart.active(), null)
+        queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
+
+        queryClient.setQueryData(queryKeys.orders.detail(order.id), order)
+
+        queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[useCompleteCart] Order created successfully:', order.id)
+        }
+
+        options?.onSuccess?.(order)
+      } else {
+        // FAILURE PATH: Validation or payment error
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            '[useCompleteCart] Cart completion failed:',
+            result.error
+          )
+        }
+
+        // Update cart cache with the returned cart (might have changes)
+        queryClient.setQueryData(queryKeys.cart.active(), result.cart)
+
+        options?.onError?.(result.error, result.cart)
+      }
+    },
+    onError: (error) => {
+      console.error('[useCompleteCart] Failed to complete cart:', error)
+    },
+  })
 }

@@ -24,13 +24,22 @@ export const queryKeys = {
 
   orders: {
     all: () => [...queryKeys.all, 'orders'] as const,
-    list: () => [...queryKeys.orders.all(), 'list'] as const,
+    list: (params?: { limit?: number; offset?: number }) =>
+      [...queryKeys.orders.all(), 'list', params || {}] as const,
     detail: (id: string) => [...queryKeys.orders.all(), 'detail', id] as const,
   },
 
   cart: {
     all: () => [...queryKeys.all, 'cart'] as const,
     active: () => [...queryKeys.cart.all(), 'active'] as const,
+    shippingOptions: (cartId: string) =>
+      [...queryKeys.cart.all(), 'shipping-options', cartId] as const,
+  },
+
+  payment: {
+    all: () => [...queryKeys.all, 'payment'] as const,
+    providers: (regionId: string) =>
+      [...queryKeys.payment.all(), 'providers', regionId] as const,
   },
 
   customer: {
