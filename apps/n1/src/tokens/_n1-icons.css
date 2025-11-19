@@ -1,0 +1,37 @@
+/* === BASE ICONS === */
+
+@utility token-icon-heart-outline {
+  @apply icon-[mdi--heart-outline];
+}
+
+@utility token-icon-paw-outline {
+  @apply icon-[mdi--paw-outline];
+}
+
+@utility token-icon-help-outline {
+  @apply icon-[mdi--help-circle-outline];
+}
+
+@utility token-icon-email-outline {
+  @apply icon-[mdi--email-outline];
+}
+
+@utility token-icon-numeric-input-increment {
+  @apply icon-[mdi--plus];
+}
+
+@utility token-icon-numeric-input-decrement {
+  @apply icon-[mdi--minus];
+}
+
+@utility token-icon-external-link {
+  @apply icon-[mdi--external-link];
+}
+
+@utility token-icon-check {
+  @apply icon-[mdi--check-bold];
+}
+
+@utility token-icon-x {
+  @apply icon-[mdi--close-thick];
+}

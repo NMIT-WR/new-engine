@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { ColorSelect } from '../../src/molecules/color-select'
+import { ColorSelect, ColorItem } from '../../src/molecules/color-select'
 import { Button } from '../../src/atoms/button'
 import { useState } from 'react'
 
@@ -121,12 +121,12 @@ export const Default: Story = {
     size: 'md',
     radius: 'full',
     selectionMode: 'single',
-    onColorClick: (color) => {console.log('Selected color:', color)}
+    onColorClick: (color: string) => {console.log('Selected color:', color)}
   },
   render: (args) => {
     const { handleColorClick, isSelected } = useColorSelection([], args.selectionMode)
 
-    const colorsWithSelection = args.colors.map(c => ({
+    const colorsWithSelection = args.colors.map((c: ColorItem) => ({
       ...c,
       selected: isSelected(c.color)
     }))

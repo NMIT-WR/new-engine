@@ -4,16 +4,16 @@ import { VariantContainer } from '../../.storybook/decorator'
 import { Combobox, type ComboboxItem } from '../../src/molecules/combobox'
 
 const countries: ComboboxItem[] = [
-  { id: 1, label: 'Czech Republic', value: 'cz' },
-  { id: 2, label: 'Slovakia', value: 'sk' },
-  { id: 3, label: 'Germany', value: 'de' },
-  { id: 4, label: 'Austria', value: 'at', disabled: true },
-  { id: 5, label: 'Poland', value: 'pl' },
-  { id: 6, label: 'France', value: 'fr', disabled: true },
-  { id: 7, label: 'Italy', value: 'it' },
-  { id: 8, label: 'Spain', value: 'es' },
-  { id: 9, label: 'Great Britain', value: 'gb' },
-  { id: 10, label: 'USA', value: 'us' },
+  { id: '1', label: 'Czech Republic', value: 'cz' },
+  { id: '2', label: 'Slovakia', value: 'sk' },
+  { id: '3', label: 'Germany', value: 'de' },
+  { id: '4', label: 'Austria', value: 'at', disabled: true },
+  { id: '5', label: 'Poland', value: 'pl' },
+  { id: '6', label: 'France', value: 'fr', disabled: true },
+  { id: '7', label: 'Italy', value: 'it' },
+  { id: '8', label: 'Spain', value: 'es' },
+  { id: '9', label: 'Great Britain', value: 'gb' },
+  { id: '10', label: 'USA', value: 'us' },
 ]
 
 const meta: Meta<typeof Combobox> = {

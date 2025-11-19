@@ -615,6 +615,8 @@ interface TreeViewNodeProps {
   indexPath: number[]
   showIndentGuides?: boolean
   showNodeIcons?: boolean
+  onNodeHover?: (node: TreeNode, indexPath: number[]) => void
+  onNodeLeave?: (node: TreeNode, indexPath: number[]) => void
 }
 
 TreeView.Node = function TreeViewNode({
@@ -622,6 +624,8 @@ TreeView.Node = function TreeViewNode({
   indexPath,
   showIndentGuides = true,
   showNodeIcons = true,
+  onNodeHover,
+  onNodeLeave,
 }: TreeViewNodeProps) {
   const { api } = useTreeViewContext()
   const nodeProps = { node, indexPath }
@@ -631,7 +635,10 @@ TreeView.Node = function TreeViewNode({
     <TreeView.NodeProvider node={node} indexPath={indexPath}>
       {nodeState.isBranch ? (
         <TreeView.Branch>
-          <TreeView.BranchTrigger>
+          <TreeView.BranchTrigger
+            onMouseEnter={() => onNodeHover?.(node, indexPath)}
+            onMouseLeave={() => onNodeLeave?.(node, indexPath)}
+          >
             <TreeView.BranchControl>
               {showNodeIcons && <TreeView.NodeIcon />}
               <TreeView.BranchText />
@@ -647,12 +654,17 @@ TreeView.Node = function TreeViewNode({
                 indexPath={[...indexPath, index]}
                 showIndentGuides={showIndentGuides}
                 showNodeIcons={showNodeIcons}
+                onNodeHover={onNodeHover}
+                onNodeLeave={onNodeLeave}
               />
             ))}
           </TreeView.BranchContent>
         </TreeView.Branch>
       ) : (
-        <TreeView.Item>
+        <TreeView.Item
+          onMouseEnter={() => onNodeHover?.(node, indexPath)}
+          onMouseLeave={() => onNodeLeave?.(node, indexPath)}
+        >
           {showNodeIcons && <TreeView.NodeIcon />}
           <TreeView.ItemText />
         </TreeView.Item>

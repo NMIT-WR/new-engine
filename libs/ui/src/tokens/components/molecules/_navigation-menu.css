@@ -1,0 +1,123 @@
+@theme static {
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-navigation-menu: var(--color-surface);
+  --color-navigation-menu-accent: var(--color-primary);
+
+  /* === DERIVED COLORS === */
+  /* Background colors - using reference layer */
+  --color-navigation-menu-bg: transparent;
+  --color-navigation-menu-list-bg: transparent;
+
+  /* Trigger colors */
+  --color-navigation-menu-trigger-bg: transparent;
+  --color-navigation-menu-trigger-bg-hover: var(--color-fill-hover);
+  --color-navigation-menu-trigger-bg-active: var(--color-fill-active);
+  --color-navigation-menu-trigger-bg-open: var(--color-fill-hover);
+  --color-navigation-menu-trigger-fg: var(--color-fg-primary);
+  --color-navigation-menu-trigger-fg-hover: var(--color-fg-primary);
+  --color-navigation-menu-trigger-fg-open: var(--color-navigation-menu-accent);
+
+  /* Content (dropdown) colors */
+  --color-navigation-menu-content-bg: var(--color-navigation-menu);
+  --color-navigation-menu-content-border: var(--color-border-primary);
+
+  /* Viewport colors */
+  --color-navigation-menu-viewport-bg: var(--color-navigation-menu);
+  --color-navigation-menu-viewport-border: var(--color-border-primary);
+
+  /* Item/Link colors */
+  --color-navigation-menu-item-bg: transparent;
+  --color-navigation-menu-item-bg-hover: var(--color-fill-hover);
+  --color-navigation-menu-item-bg-active: var(--color-fill-active);
+  --color-navigation-menu-item-bg-current: var(--color-fill-base);
+  --color-navigation-menu-item-fg: var(--color-fg-primary);
+  --color-navigation-menu-item-fg-hover: var(--color-fg-primary);
+  --color-navigation-menu-item-fg-current: var(--color-navigation-menu-accent);
+
+  /* Indicator colors */
+  --color-navigation-menu-indicator-bg: var(--color-navigation-menu-accent);
+  --color-navigation-menu-indicator-track-bg: transparent;
+
+  /* Arrow (caret) colors */
+  --color-navigation-menu-arrow-bg: var(--color-navigation-menu-viewport-bg);
+  --color-navigation-menu-arrow-border: var(--color-navigation-menu-viewport-border);
+
+  /* === STATE VARIATIONS === */
+  /* Disabled states */
+  --color-navigation-menu-trigger-fg-disabled: var(--color-disabled-fg);
+  --color-navigation-menu-item-fg-disabled: var(--color-disabled-fg);
+
+  /* === SPACING === */
+  /* Root spacing */
+  --gap-navigation-menu-root: var(--spacing-100);
+
+  /* List spacing */
+  --gap-navigation-menu-list: var(--spacing-100);
+  --padding-navigation-menu-list: 0;
+
+  /* Trigger spacing */
+  --padding-navigation-menu-trigger: var(--spacing-150) var(--spacing-250);
+  --gap-navigation-menu-trigger: var(--spacing-100);
+
+  /* Content spacing */
+  --padding-navigation-menu-content: var(--spacing-250);
+  --gap-navigation-menu-content: var(--spacing-200);
+
+  /* Viewport spacing */
+  --padding-navigation-menu-viewport: var(--spacing-250);
+  --margin-navigation-menu-viewport-top: var(--spacing-150);
+
+  /* Item/Link spacing */
+  --padding-navigation-menu-item: var(--spacing-150) var(--spacing-250);
+  --gap-navigation-menu-item: var(--spacing-100);
+
+  /* Indicator spacing */
+  --height-navigation-menu-indicator: var(--spacing-50);
+  --height-navigation-menu-indicator-track: var(--spacing-50);
+
+  /* Arrow spacing */
+  --size-navigation-menu-arrow: var(--spacing-200);
+
+  /* === TYPOGRAPHY === */
+  --text-navigation-menu-trigger: var(--text-md);
+  --weight-navigation-menu-trigger: 500;
+  --text-navigation-menu-item: var(--text-md);
+
+  /* === BORDERS & RADIUS === */
+  --radius-navigation-menu-trigger: var(--radius-sm);
+  --radius-navigation-menu-content: var(--radius-md);
+  --radius-navigation-menu-viewport: var(--radius-md);
+  --radius-navigation-menu-item: var(--radius-sm);
+  --radius-navigation-menu-arrow: var(--radius-xs);
+
+  --border-width-navigation-menu-content: var(--border-width-sm);
+  --border-width-navigation-menu-viewport: var(--border-width-sm);
+
+  /* === SHADOWS === */
+  --shadow-navigation-menu-viewport: 0 10px 38px -10px rgba(0, 0, 0, 0.35),
+    0 10px 20px -15px rgba(0, 0, 0, 0.2);
+
+  /* === FOCUS RINGS === */
+  --color-navigation-menu-ring: --alpha(
+    var(--color-navigation-menu-accent) / var(--opacity-ring)
+  );
+
+  /* === Z-INDEX === */
+  --z-navigation-menu-viewport: 50;
+  --z-navigation-menu-content: 50;
+  --z-navigation-menu-indicator: 1;
+
+  /* === TRANSITIONS === */
+  --duration-navigation-menu-transition: 200ms;
+  --duration-navigation-menu-viewport-transition: 300ms;
+}
+
+/* Icon utilities for navigation menu */
+@utility token-icon-navigation-menu-chevron {
+  @apply icon-[mdi--chevron-down];
+}
+
+@utility token-icon-navigation-menu-arrow {
+  @apply icon-[mdi--menu-down];
+}
