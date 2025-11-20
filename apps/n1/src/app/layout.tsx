@@ -3,6 +3,7 @@ import { Open_Sans } from 'next/font/google'
 import '../tokens/index.css'
 import './global.css'
 import { N1Header } from '@/components/header/n1-header'
+import { HeaderProvider } from '@/components/header/store/header-context'
 import { N1Footer } from '@/components/n1-footer'
 import { Providers } from '@/components/provider'
 import type { ReactNode } from 'react'
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body className={`${openSans.variable} antialiased`}>
         <Providers>
           <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
-            <N1Header />
+            <HeaderProvider>
+              <N1Header />
+            </HeaderProvider>
             {children}
             <N1Footer />
           </div>
