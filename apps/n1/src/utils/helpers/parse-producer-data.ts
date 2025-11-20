@@ -191,9 +191,7 @@ function parseManufacturerSection(
   const emailElement = paragraphs.find((p) => p.querySelector('a'))
   const email =
     emailElement?.querySelector('a')?.textContent?.trim() ||
-    paragraphs
-      .find((p) => p.textContent?.includes('@'))
-      ?.textContent?.trim()
+    paragraphs.find((p) => p.textContent?.includes('@'))?.textContent?.trim()
 
   // PHONE: Find paragraph containing "Tel:"
   const phone = paragraphs
@@ -247,9 +245,7 @@ function parseResponsibleSection(
   const emailElement = paragraphs.find((p) => p.querySelector('a'))
   const email =
     emailElement?.querySelector('a')?.textContent?.trim() ||
-    paragraphs
-      .find((p) => p.textContent?.includes('@'))
-      ?.textContent?.trim()
+    paragraphs.find((p) => p.textContent?.includes('@'))?.textContent?.trim()
 
   // PHONE
   const phone = paragraphs

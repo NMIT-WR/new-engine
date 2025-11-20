@@ -61,6 +61,43 @@ export const cartToasts = {
   }),
 }
 
+// Checkout-specific toast messages
+export const checkoutToasts = {
+  addressUpdated: () => ({
+    title: 'Adresa aktualizována',
+    description: 'Dodací adresa byla úspěšně uložena',
+    type: 'success' as const,
+  }),
+
+  addressError: (error?: string) => ({
+    title: 'Nepodařilo se uložit adresu',
+    description: error || 'Zkuste to prosím znovu',
+    type: 'error' as const,
+  }),
+
+  shippingUpdated: () => ({
+    title: 'Doprava aktualizována',
+    type: 'success' as const,
+  }),
+
+  paymentInitiated: () => ({
+    title: 'Platba připravena',
+    type: 'success' as const,
+  }),
+
+  orderSuccess: (orderId: string) => ({
+    title: 'Objednávka vytvořena',
+    description: `Číslo objednávky: ${orderId}`,
+    type: 'success' as const,
+  }),
+
+  orderError: (error?: string) => ({
+    title: 'Chyba při vytváření objednávky',
+    description: error || 'Zkuste to prosím znovu',
+    type: 'error' as const,
+  }),
+}
+
 export function useCartToast() {
   return {
     // Cart-specific toast methods
@@ -105,6 +142,56 @@ export function useCartToast() {
       return toaster.create({
         ...message,
         duration: Number.POSITIVE_INFINITY,
+        ...options,
+      })
+    },
+  }
+}
+
+export function useCheckoutToast() {
+  return {
+    // Address toast methods
+    addressUpdated: (options = {}) => {
+      const message = checkoutToasts.addressUpdated()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.success,
+        ...options,
+      })
+    },
+
+    addressError: (error?: string, options = {}) => {
+      const message = checkoutToasts.addressError(error)
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.error,
+        ...options,
+      })
+    },
+
+    shippingUpdated: (options = {}) => {
+      const message = checkoutToasts.shippingUpdated()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.success,
+        ...options,
+      })
+    },
+
+    orderSuccess: (orderId: string, options = {}) => {
+      const message = checkoutToasts.orderSuccess(orderId)
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.success,
+        ...options,
+      })
+    },
+
+    orderError: (error?: string, options = {}) => {
+      const message = checkoutToasts.orderError(error)
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.error,
         ...options,
       })
     },

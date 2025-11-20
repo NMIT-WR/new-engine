@@ -18,7 +18,7 @@ type CartMutationContext = {
   previousCart?: Cart
 }
 
-type UseCheckoutShippingReturn = {
+export type UseCheckoutShippingReturn = {
   shippingOptions?: HttpTypes.StoreCartShippingOption[]
   isLoadingShipping: boolean
   isErrorShipping: boolean

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev -p 3002 --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "biome check",
@@ -11,6 +11,7 @@
     "generate:categories": "node scripts/generate-categories.mjs"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@medusajs/js-sdk": "^2.10.3",
     "@medusajs/types": "^2.10.3",
     "@new-engine/ui": "workspace:*",
@@ -19,7 +20,9 @@
     "next": "16.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "tailwind-variants": "^3.1.1"
+    "react-hook-form": "^7.66.1",
+    "tailwind-variants": "^3.1.1",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
