@@ -14,11 +14,14 @@ import {
   AbstractFulfillmentProviderService,
   ContainerRegistrationKeys,
   MedusaError,
+  ModuleProvider,
+  Modules,
 } from '@medusajs/framework/utils'
 import {
   BALIKOVNA_SERVICE,
   type BalikovnaServiceType,
   CESKA_POSTA_BALIKOVNA_IDENTIFIER,
+  CESKA_POSTA_BALIKOVNA_MODULE,
 } from './constants'
 import type {
   BalikovnaAddress,
@@ -27,14 +30,16 @@ import type {
   BalikovnaProviderMode,
   BalikovnaProviderOptions,
 } from './types'
+import type CeskaPostaBalikovnaModuleService from './shipment-service'
 
-export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProviderService {
+class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProviderService {
   static override identifier = CESKA_POSTA_BALIKOVNA_IDENTIFIER
 
   protected readonly logger: any
   protected readonly options: Required<BalikovnaProviderOptions> & {
     mode: BalikovnaProviderMode
   }
+  protected readonly shipmentService?: CeskaPostaBalikovnaModuleService
 
   constructor(container: any, options: BalikovnaProviderOptions = {}) {
     super()
@@ -52,6 +57,14 @@ export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProv
       productionBaseUrl:
         options.productionBaseUrl ?? 'https://onlinepodani.ceskaposta.cz',
       labelUrlTemplate: options.labelUrlTemplate ?? '',
+    }
+
+    try {
+      this.shipmentService = container.resolve(CESKA_POSTA_BALIKOVNA_MODULE)
+    } catch (e) {
+      this.logger?.warn?.(
+        '[Balikovna] Shipment service not registered. Persistence will be limited.'
+      )
     }
   }
 
@@ -124,7 +137,9 @@ export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProv
   override async validateOption(
     data: Record<string, unknown>
   ): Promise<boolean> {
-    const service = this.toService((data as BalikovnaFulfillmentData)?.service)
+    const service = this.toService(
+      (data as BalikovnaFulfillmentData)?.service
+    )
     return Boolean(service)
   }
 
@@ -144,6 +159,26 @@ export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProv
       `[Balikovna] Vytvářím zásilku ${trackingNumber} pro službu ${service}`
     )
 
+    const stored = await this.shipmentService?.createShipments([
+      {
+        fulfillment_id: fulfillment?.id ?? '',
+        order_id: order?.id ?? '',
+        service,
+        status: parsed.status ?? 'created',
+        tracking_number: trackingNumber,
+        label_url: labelUrl,
+        environment: this.options.mode,
+        pickup_point: parsed.pickup_point,
+        address: parsed.address,
+        contact: parsed.contact,
+        cash_on_delivery: parsed.cash_on_delivery,
+        provider_payload: {
+          items,
+          order,
+        },
+      },
+    ])
+
     return {
       data: {
         ...parsed,
@@ -151,6 +186,7 @@ export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProv
         label_url: labelUrl,
         environment: this.options.mode,
         status: parsed.status ?? 'created',
+        shipment_id: stored?.[0]?.id ?? undefined,
       },
       labels: [
         {
@@ -163,8 +199,14 @@ export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProv
   }
 
   override async cancelFulfillment(
-    _data: Record<string, unknown>
+    data: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
+    const shipmentId = (data as BalikovnaFulfillmentData)?.shipment_id
+    if (shipmentId && typeof shipmentId === 'string' && this.shipmentService) {
+      await this.shipmentService.updateShipments([
+        { id: shipmentId, status: 'cancelled' },
+      ])
+    }
     return { cancelled: true }
   }
 
@@ -337,3 +379,7 @@ export default class CeskaPostaBalikovnaProvider extends AbstractFulfillmentProv
     return `data:application/pdf;base64,${base64}`
   }
 }
+
+export default ModuleProvider(Modules.FULFILLMENT, {
+  services: [CeskaPostaBalikovnaProvider],
+})

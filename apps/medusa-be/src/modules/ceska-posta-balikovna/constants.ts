@@ -1,6 +1,7 @@
 export const CESKA_POSTA_BALIKOVNA_IDENTIFIER = 'ceska-posta-balikovna'
 export const CESKA_POSTA_BALIKOVNA_PLUGIN_ID = 'balikovna'
 export const CESKA_POSTA_BALIKOVNA_PROVIDER_ID = `${CESKA_POSTA_BALIKOVNA_IDENTIFIER}_${CESKA_POSTA_BALIKOVNA_PLUGIN_ID}`
+export const CESKA_POSTA_BALIKOVNA_MODULE = 'ceskaPostaBalikovnaService'
 
 export const BALIKOVNA_SERVICE = {
   NB: 'NB',

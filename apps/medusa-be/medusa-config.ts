@@ -71,6 +71,9 @@ module.exports = defineConfig({
             },
         },
         {
+            resolve: "./src/modules/ceska-posta-balikovna",
+        },
+        {
             resolve: "@medusajs/medusa/fulfillment",
             options: {
                 providers: [
@@ -79,7 +82,7 @@ module.exports = defineConfig({
                         id: "manual",
                     },
                     {
-                        resolve: "./src/modules/ceska-posta-balikovna",
+                        resolve: "./src/modules/ceska-posta-balikovna/provider",
                         id: "balikovna",
                         options: {
                             mode: process.env.CESKA_POSTA_MODE === 'production' ? 'production' : 'test',
