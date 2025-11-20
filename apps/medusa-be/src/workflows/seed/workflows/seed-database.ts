@@ -8,14 +8,14 @@ export type SeedDatabaseWorkflowInput = {
     salesChannels: Steps.CreateSalesChannelsStepInput
     currencies: Steps.UpdateStoreCurrenciesStepCurrenciesInput
     regions: Steps.CreateRegionsStepInput
-    taxRegions: Steps.CreateTaxRegionsStepInput
-    stockLocations: Steps.CreateStockLocationStepInput,
-    fulfillmentProviderId?: string,
-    defaultShippingProfile: Steps.CreateDefaultShippingProfileStepInput,
-    fulfillmentSets: Steps.CreateFulfillmentSetStepInput,
-    shippingOptions: Steps.CreateShippingOptionsStepSeedInput,
-    publishableKey: Steps.CreatePublishableKeyStepInput,
-    productCategories: Steps.CreateProductCategoriesStepInput,
+  taxRegions: Steps.CreateTaxRegionsStepInput
+  stockLocations: Steps.CreateStockLocationStepInput,
+  fulfillmentProviderId?: string | string[],
+  defaultShippingProfile: Steps.CreateDefaultShippingProfileStepInput,
+  fulfillmentSets: Steps.CreateFulfillmentSetStepInput,
+  shippingOptions: Steps.CreateShippingOptionsStepSeedInput,
+  publishableKey: Steps.CreatePublishableKeyStepInput,
+  productCategories: Steps.CreateProductCategoriesStepInput,
     products: Steps.CreateProductsStepInput,
 }
 
@@ -50,12 +50,31 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
         // create stock locations
         const createStockLocationResult = Steps.createStockLocationSeedStep(input.stockLocations)
 
+        const fulfillmentProviderIds = transform({input}, (data) => {
+            const ids: string[] = []
+            const explicit = data.input.fulfillmentProviderId
+            if (Array.isArray(explicit)) {
+                ids.push(...explicit)
+            } else if (explicit) {
+                ids.push(explicit)
+            }
+
+            const fromOptions = data.input.shippingOptions
+                .map((option) => option.providerId)
+                .filter((id): id is string => Boolean(id))
+
+            ids.push(...fromOptions)
+
+            const unique = Array.from(new Set(ids))
+            return unique.length ? unique : ["manual_manual"]
+        })
+
         // link stock locations to fulfillment provider
         const linkStockLocationsFulfillmentProviderInput: Steps.LinkStockLocationFulfillmentProviderStepInput = transform({
-            createStockLocationResult, input
+            createStockLocationResult, fulfillmentProviderIds
         }, (data) => ({
             stockLocations: data.createStockLocationResult.result,
-            fulfillmentProviderId: data.input.fulfillmentProviderId
+            fulfillmentProviderId: data.fulfillmentProviderIds
         }))
 
         const linkStockLocationsFulfillmentProviderResult = Steps.linkStockLocationFulfillmentProviderSeedStep(linkStockLocationsFulfillmentProviderInput)
@@ -82,11 +101,11 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
         // create shipping options
 
         const createShippingOptionsInput: Steps.CreateShippingOptionsStepInput = transform({
-                input, createFulfillmentSetsResult, createDefaultShippingProfileResult, createRegionsResult
+                input, createFulfillmentSetsResult, createDefaultShippingProfileResult, createRegionsResult, fulfillmentProviderIds
             }, (data) =>
                 data.input.shippingOptions.map(option => ({
                     name: option.name,
-                    providerId: data.input.fulfillmentProviderId || 'manual_manual',
+                    providerId: option.providerId ?? data.fulfillmentProviderIds[0] ?? 'manual_manual',
                     serviceZoneId: data.createFulfillmentSetsResult.result[0]?.service_zones[0]?.id as string,
                     shippingProfileId: data.createDefaultShippingProfileResult.result[0]?.id as string,
                     regions: data.createRegionsResult.result.map(region => ({
@@ -94,6 +113,7 @@ const seedDatabaseWorkflow: ReturnWorkflow<SeedDatabaseWorkflowInput, any, any> 
                         amount: 10 as number
                     })),
                     type: option.type,
+                    data: option.data,
                     prices: option.prices,
                     rules: option.rules,
                 }))

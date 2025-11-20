@@ -19,7 +19,8 @@ export const SHIPPING_OPTION_MAP: ShippingOptionMap = {
   ppl: 'so_01JZQ61P66XZR92M17YDTJ4676', // PPL - 89 CZK
   dhl: 'so_01JZQ62M923S25PH2GPAP7WBJG', // DHL - 129 CZK
   zasilkovna: 'so_01JZQ644TRK071DXXXHPFCX1JQ', // Zásilkovna - 65 CZK
-  balikovna: 'so_01JZQ63J2Z9FXY5BB41N6YVR62', // Balíkovna - 59 CZK
+  balikovna_nb: 'balikovna-nb', // Balíkovna - výdejní místo
+  balikovna_nd: 'balikovna-nd', // Balíkovna na adresu
   personal: 'so_01JZQ64TDTKDHNBHXTD3G2ZW4Q', // Osobní odběr - 0 CZK
 }
 
@@ -55,11 +56,21 @@ export const SHIPPING_METHODS: ShippingMethod[] = [
     image: '/assets/zasilkovna.webp',
   },
   {
-    id: 'balikovna',
-    name: 'Balíkovna',
-    description: 'Široká síť výdejních míst',
+    id: 'balikovna_nb',
+    name: 'Česká pošta – Balíkovna (výdejní místo)',
+    description: 'Výdejní místa Balíkovny po celé ČR',
     price: 59,
     priceFormatted: '59 Kč',
+    delivery: 'Doručení za 2-3 pracovní dny',
+    deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
+    image: '/assets/balikovna.webp',
+  },
+  {
+    id: 'balikovna_nd',
+    name: 'Česká pošta – Balíkovna na adresu',
+    description: 'Doručení na adresu v rámci ČR',
+    price: 89,
+    priceFormatted: '89 Kč',
     delivery: 'Doručení za 2-3 pracovní dny',
     deliveryDate: `Doručení ${getDeliveryDate(2)} - ${getDeliveryDate(3)}`,
     image: '/assets/balikovna.webp',

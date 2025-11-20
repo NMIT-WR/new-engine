@@ -4,7 +4,7 @@ import {StockLocationDTO} from "@medusajs/framework/types"
 
 export type LinkStockLocationFulfillmentProviderStepInput = {
     stockLocations: StockLocationDTO[],
-    fulfillmentProviderId?: string,
+    fulfillmentProviderId?: string | string[],
 }
 
 const LinkStockLocationFulfillmentProviderStepId = 'link-stock-location-fulfillment-provider-seed-step'
@@ -19,17 +19,25 @@ export const linkStockLocationFulfillmentProviderSeedStep = createStep(LinkStock
 
     let result: unknown[] = []
 
-    for (const stockLocation of input.stockLocations) {
-        const linkResult = await link.create({
-            [Modules.STOCK_LOCATION]: {
-                stock_location_id: stockLocation.id,
-            },
-            [Modules.FULFILLMENT]: {
-                fulfillment_provider_id: input.fulfillmentProviderId ?? "manual_manual",
-            },
-        })
+    const providerIds = Array.isArray(input.fulfillmentProviderId)
+        ? input.fulfillmentProviderId
+        : input.fulfillmentProviderId
+            ? [input.fulfillmentProviderId]
+            : ["manual_manual"]
 
-        result.push(linkResult)
+    for (const stockLocation of input.stockLocations) {
+        for (const providerId of providerIds) {
+            const linkResult = await link.create({
+                [Modules.STOCK_LOCATION]: {
+                    stock_location_id: stockLocation.id,
+                },
+                [Modules.FULFILLMENT]: {
+                    fulfillment_provider_id: providerId,
+                },
+            })
+
+            result.push(linkResult)
+        }
     }
 
     return new StepResponse({

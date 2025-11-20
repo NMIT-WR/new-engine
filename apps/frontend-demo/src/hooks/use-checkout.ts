@@ -5,10 +5,15 @@ import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { orderHelpers } from '@/stores/order-store'
-import type { CheckoutAddressData, UseCheckoutReturn } from '@/types/checkout'
+import type {
+  BalikovnaSelection,
+  CheckoutAddressData,
+  ReducedShippingMethod,
+  UseCheckoutReturn,
+} from '@/types/checkout'
 import { useToast } from '@new-engine/ui/molecules/toast'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCart } from './use-cart'
 import { useCustomer } from './use-customer'
 
@@ -24,6 +29,8 @@ export function useCheckout(): UseCheckoutReturn {
   const [addressData, setAddressData] = useState<CheckoutAddressData | null>(
     null
   )
+  const [balikovnaSelection, setBalikovnaSelection] =
+    useState<BalikovnaSelection | null>(null)
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
   // Update addresses in cart
@@ -88,31 +95,88 @@ export function useCheckout(): UseCheckoutReturn {
         cart_id: cart.id,
       })
 
-      const reducedShippingMethods = response.shipping_options.map((o) => ({
-        id: o.id,
-        name: o.name,
-        calculated_price: o.calculated_price,
-      }))
+      const reducedShippingMethods: ReducedShippingMethod[] =
+        response.shipping_options.map((o) => ({
+          id: o.id,
+          name: o.name,
+          calculated_price: o.calculated_price,
+          provider_id: (o as any).provider_id,
+          data: (o as any).data ?? {},
+        }))
       return reducedShippingMethods
     },
     enabled: !!cart?.id,
     ...cacheConfig.semiStatic,
   })
 
+  useEffect(() => {
+    const currentMethod = cart?.shipping_methods?.[0]
+    if (!currentMethod) return
+
+    if (!selectedShipping) {
+      setSelectedShipping(
+        (currentMethod as any).shipping_option_id ||
+          (currentMethod as any).id ||
+          ''
+      )
+    }
+
+    const existingData = (currentMethod as any).data as
+      | Record<string, any>
+      | undefined
+
+    if (!existingData?.service) {
+      if (balikovnaSelection) {
+        setBalikovnaSelection(null)
+      }
+      return
+    }
+
+    if (existingData.service === 'ND') {
+      setBalikovnaSelection({ service: 'ND', pickupPoint: undefined })
+      return
+    }
+
+    if (existingData.pickup_point) {
+      const pickup = existingData.pickup_point as any
+      setBalikovnaSelection({
+        service: (existingData.service as string) as BalikovnaSelection['service'],
+        pickupPoint: pickup?.id
+          ? {
+              id: pickup.id,
+              name: pickup.name || 'Balíkovna',
+              city: pickup.city,
+              street: pickup.street,
+              postalCode: pickup.postal_code || pickup.zip,
+              type: pickup.type,
+              region: pickup.region,
+            }
+          : undefined,
+      })
+    }
+  }, [cart?.shipping_methods, balikovnaSelection, selectedShipping])
+
   // Add shipping method to cart
-  const addShippingMethod = async (methodId: string) => {
+  const addShippingMethod = async (
+    methodId: string,
+    data?: Record<string, unknown>
+  ) => {
     if (!cart?.id) return
 
     try {
       await sdk.store.cart.addShippingMethod(cart.id, {
         option_id: methodId,
+        data,
       })
       await refetch()
     } catch (error) {
       console.error('Failed to add shipping method:', error)
       toast.create({
         title: 'Chyba při výběru dopravy',
-        description: 'Zkuste to prosím znovu',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Zkuste to prosím znovu',
         type: 'error',
       })
       throw error
@@ -223,11 +287,21 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Check if can proceed to step
   const canProceedToStep = (step: number) => {
+    const selectedMethod = shippingMethods?.find(
+      (m) => m.id === selectedShipping
+    )
+    const requiresPickup =
+      (selectedMethod?.data as Record<string, unknown> | undefined)?.service ===
+      'NB'
     switch (step) {
       case 1: // Shipping
         return !!address
       case 2: // Payment
-        return !!address && !!selectedShipping
+        return (
+          !!address &&
+          !!selectedShipping &&
+          (!requiresPickup || !!balikovnaSelection?.pickupPoint)
+        )
       case 3: // Summary
         return !!address && !!selectedShipping && !!selectedPayment
       default:
@@ -245,12 +319,14 @@ export function useCheckout(): UseCheckoutReturn {
     shippingMethods,
     isLoadingShipping,
     shippingError,
+    balikovnaSelection,
 
     // Actions
     setCurrentStep,
     setSelectedPayment,
     setSelectedShipping,
     setAddressData,
+    setBalikovnaSelection,
     updateAddresses,
     addShippingMethod,
     processOrder,

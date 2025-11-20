@@ -35,6 +35,8 @@ export default function CheckoutPage() {
     canProceedToStep,
     shippingMethods,
     isLoadingShipping,
+    balikovnaSelection,
+    setBalikovnaSelection,
   } = useCheckout()
 
   const [isOrderComplete, setIsOrderComplete] = useState(false)
@@ -122,14 +124,17 @@ export default function CheckoutPage() {
           isLoading={isLoadingShipping}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          onSelect={async (method) => {
+          onSelect={async (method, data) => {
             setSelectedShipping(method)
             try {
-              await addShippingMethod(method)
+              await addShippingMethod(method, data)
             } catch (error) {
               // Error already handled in hook
             }
           }}
+          addressData={addressData}
+          balikovnaSelection={balikovnaSelection}
+          onBalikovnaSelect={(selection) => setBalikovnaSelection(selection)}
         />
       ),
     },
@@ -161,6 +166,7 @@ export default function CheckoutPage() {
           isOrderComplete={isOrderComplete}
           orderNumber={orderNumber}
           isLoading={isProcessingPayment}
+          balikovnaSelection={balikovnaSelection}
         />
       ),
     },
