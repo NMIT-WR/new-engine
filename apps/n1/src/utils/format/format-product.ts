@@ -1,5 +1,7 @@
 import type { StoreProduct } from '@medusajs/types'
 
+const DEFAULT_TAX_RATE = 0.21
+
 export const formatPrice = ({
   variants,
   tax = true,
@@ -20,6 +22,23 @@ export const formatPrice = ({
 export const formatAmount = (amount?: number | null) => {
   if (!amount) return '0 Kč'
   return `${Math.round(amount)} Kč`
+}
+
+export const formatToTaxIncluded = ({
+  amount,
+  tax,
+  currency,
+}: {
+  amount?: number
+  tax?: number
+  currency?: string
+}) => {
+  if (!amount) return '0 Kč'
+  const taxRate = tax || DEFAULT_TAX_RATE
+  const taxAmount = amount * taxRate
+  const totalAmount = amount + taxAmount
+  const currencyMap = currency ? (currency === 'czk' ? 'Kč' : currency) : 'Kč'
+  return `${Math.round(totalAmount)} ${currencyMap}`
 }
 
 export const formatVariants = (
