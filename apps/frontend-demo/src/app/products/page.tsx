@@ -129,7 +129,7 @@ function ProductsContent() {
             { label: 'Domů', href: '/' },
             { label: 'Produkty', href: '/products' },
           ]}
-          linkComponent={Link}
+          linkAs={Link}
         />
         <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
           Všechny produkty

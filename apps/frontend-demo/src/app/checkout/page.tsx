@@ -125,7 +125,19 @@ export default function CheckoutPage() {
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
           onSelect={async (method, data) => {
+            // Always track the selection locally to drive UI/widget
             setSelectedShipping(method)
+
+            // Only push to backend when we have the required data
+            const option = shippingMethods?.find((m) => m.id === method)
+            const service = (option?.data as any)?.service
+            const needsPickup = service === 'NB'
+            const hasPickupData = !!(data as any)?.pickup_point
+
+            if (needsPickup && !hasPickupData) {
+              return
+            }
+
             try {
               await addShippingMethod(method, data)
             } catch (error) {

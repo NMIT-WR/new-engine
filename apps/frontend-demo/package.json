@@ -4,7 +4,7 @@
   "private": true,
   "description": "Frontend demo application",
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "pnpm generate:categories && next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
     "build:static": "next build",
     "build:no-types": "cross-env SKIP_TYPE_CHECK=1 next build",

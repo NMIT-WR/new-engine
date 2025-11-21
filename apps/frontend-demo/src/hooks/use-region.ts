@@ -14,6 +14,8 @@ export function useRegions() {
     regionStore,
     (state) => state.selectedRegionId
   )
+  const envDefaultRegionId =
+    process.env.NEXT_PUBLIC_DEFAULT_REGION_ID || undefined
 
   const {
     data: regions = [],
@@ -34,8 +36,9 @@ export function useRegions() {
     if (regions.length === 0 || selectedRegionId) return
 
     if (regions.length > 0 && !selectedRegionId) {
-      // Default to USD region if no stored preference
+      // Prefer explicit env default, then CZK, then EUR, then first region
       const defaultRegion =
+        regions.find((r) => r.id === envDefaultRegionId) ||
         regions.find((r) => r.currency_code === 'czk') ||
         regions.find((r) => r.currency_code === 'eur') ||
         regions[0]
@@ -44,7 +47,7 @@ export function useRegions() {
         setSelectedRegionId(defaultRegion.id)
       }
     }
-  }, [regions])
+  }, [regions, selectedRegionId, envDefaultRegionId])
 
   const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 

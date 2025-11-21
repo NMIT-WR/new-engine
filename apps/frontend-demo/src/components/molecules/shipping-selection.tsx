@@ -279,11 +279,21 @@ export function ShippingSelection({
     const service = getBalikovnaService(method)
 
     if (service === 'NB') {
+      // Always mark Balíkovna NB as selected so the widget is shown,
+      // even if pickup point is not chosen yet. The actual shipping
+      // method is sent to the backend once a point is selected.
+      onBalikovnaSelect({
+        service: 'NB',
+        pickupPoint: balikovnaSelection?.pickupPoint,
+      })
+
       if (!balikovnaSelection?.pickupPoint) {
+        // Set the choice locally but defer backend call until pickup is chosen
+        await onSelect(method.id)
         toast.create({
-          type: 'error',
+          type: 'info',
           title: 'Vyberte Balíkovnu',
-          description: 'Pro tuto dopravu je potřeba zvolit výdejní místo.',
+          description: 'Nejprve zvolte výdejní místo v widgetu níže.',
         })
         return
       }

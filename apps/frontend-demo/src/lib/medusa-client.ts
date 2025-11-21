@@ -4,10 +4,16 @@ import { STORAGE_KEYS } from './constants'
 // Environment validation
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
-const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ''
+const PUBLISHABLE_KEY =
+  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ||
+  // Fallback to local dev key so store API works out-of-the-box
+  'pk_f2ac1c3efaf10d8a861f0623a9d6e7697fad3c2b239b174ddca61ebff7c9005b'
 
-if (!PUBLISHABLE_KEY) {
-  console.warn('⚠️ NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY is not set!')
+// Keep a warning for production misconfigurations
+if (!process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY) {
+  console.warn(
+    '⚠️ NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY not set, using local fallback key.'
+  )
 }
 
 // Custom storage implementation
