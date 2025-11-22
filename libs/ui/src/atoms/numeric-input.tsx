@@ -182,8 +182,8 @@ export function NumericInput({
       <div
         ref={ref}
         className={styles.root({ className })}
-        {...props}
         {...api.getRootProps()}
+        {...props}
       >
         {children}
       </div>
@@ -208,8 +208,8 @@ NumericInput.Control = function NumericInputControl({
     <div
       ref={ref}
       className={styles.container({ className })}
-      {...props}
       {...api.getControlProps()}
+      {...props}
       data-invalid={invalid || undefined}
     >
       {children}
@@ -236,8 +236,8 @@ NumericInput.Input = function NumericInputInput({
   return (
     <Input
       ref={ref}
-      {...props}
       {...api.getInputProps()}
+      {...props}
       className={styles.input({ className })}
       aria-describedby={ariaDescribedBy}
     />
@@ -300,8 +300,8 @@ NumericInput.IncrementTrigger = function NumericInputIncrementTrigger({
       isLoading={isLoading}
       loadingText={loadingText}
       className={styles.trigger({ className })}
-      {...props}
       {...api.getIncrementTriggerProps()}
+      {...props}
     >
       {children}
     </Button>
@@ -364,8 +364,8 @@ NumericInput.DecrementTrigger = function NumericInputDecrementTrigger({
       isLoading={isLoading}
       loadingText={loadingText}
       className={styles.trigger({ className })}
-      {...props}
       {...api.getDecrementTriggerProps()}
+      {...props}
     >
       {children}
     </Button>
@@ -388,8 +388,8 @@ NumericInput.Scrubber = function NumericInputScrubber({
     <div
       ref={ref}
       className={styles.scrubber({ className })}
-      {...props}
       {...api.getScrubberProps()}
+      {...props}
     />
   )
 }
