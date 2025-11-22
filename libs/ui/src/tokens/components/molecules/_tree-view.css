@@ -19,7 +19,7 @@
   --color-tree-label-fg: var(--color-tree-fg);
 
   /* === NODE === */
-  --color-tree-node-ring: var(--color-ring-primary);
+  --color-tree-ring: var(--color-ring);
 
   /* === INDENT GUIDE === */
   --color-tree-indent-bg: var(--color-tree-border);

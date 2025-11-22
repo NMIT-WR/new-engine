@@ -6,20 +6,21 @@ import { Icon, type IconType } from './icon'
 export const buttonVariants = tv({
   base: [
     'relative',
-    'inline-flex items-center justify-center cursor-pointer',
+    'inline-flex items-baseline justify-center cursor-pointer',
     'font-medium',
     'transition-all duration-200',
     'focus:outline-none',
-    'focus-visible:ring-3 focus-visible:ring-offset-2',
+    'focus-visible:ring',
+    'focus-visible:ring-button-ring',
     'disabled:text-button-fg-disabled disabled:pointer-events-none',
   ],
   variants: {
     variant: {
-      primary: 'focus:ring-button-ring-primary',
-      secondary: 'focus:ring-button-ring-secondary',
-      tertiary: 'focus:ring-button-ring-tertiary',
-      danger: 'focus:ring-button-ring-danger',
-      warning: 'focus:ring-button-ring-warning',
+      primary: '',
+      secondary: '',
+      tertiary: '',
+      danger: '',
+      warning: '',
     },
     theme: {
       solid: 'disabled:bg-button-bg-disabled',
@@ -27,6 +28,7 @@ export const buttonVariants = tv({
       borderless:
         'bg-button-bg-borderless hover:bg-button-bg-borderless-hover active:bg-button-bg-borderless-active',
       outlined: 'border disabled:border-button-border-disabled',
+      unstyled: '',
     },
     uppercase: {
       true: 'uppercase',
@@ -35,8 +37,8 @@ export const buttonVariants = tv({
       sm: 'p-button-sm text-button-sm rounded-button-sm gap-button-sm',
       md: 'p-button-md text-button-md rounded-button-md gap-button-md',
       lg: 'p-button-lg text-button-lg rounded-button-lg gap-button-lg',
+      current: 'text-inherit gap-button-md',
     },
-
     block: {
       true: 'w-full',
     },

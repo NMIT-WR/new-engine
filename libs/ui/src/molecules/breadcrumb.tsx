@@ -19,7 +19,9 @@ const breadcrumbsVariants = tv({
       'no-underline',
       'cursor-pointer',
       'hover:text-breadcrumb-fg-hover',
-      'focus:outline-none focus:ring-2 focus:ring-breadcrumb-link-ring focus:ring-offset-2',
+      'focus:outline-none',
+      'focus-visible:ring',
+      'focus-visible:ring-breadcrumb-ring',
     ],
     currentLink: ['cursor-default'],
     separator: [

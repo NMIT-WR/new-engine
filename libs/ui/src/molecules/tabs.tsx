@@ -32,8 +32,9 @@ const tabsVariants = tv({
       'rounded-tabs-trigger',
       'cursor-pointer',
       'hover:bg-tabs-trigger-bg-hover',
-      'focus-visible:outline-none focus-visible:ring-2',
-      'focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
+      'focus-visible:outline-none',
+      'focus-visible:ring',
+      'focus-visible:ring-tabs-ring',
       'data-[selected]:text-tabs-trigger-fg-selected',
       'data-[disabled]:opacity-tabs-disabled data-[disabled]:cursor-not-allowed',
     ],
@@ -46,7 +47,8 @@ const tabsVariants = tv({
     content: [
       'text-tabs-content-fg',
       'outline-none',
-      'focus-visible:ring-2 focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
+      'focus-visible:ring',
+      'focus-visible:ring-tabs-ring',
     ],
   },
   variants: {
