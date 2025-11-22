@@ -535,13 +535,13 @@ export const WithBadges: Story = {
         <Tabs.List>
           <Tabs.Trigger value="tab1">
             Overview
-            <Badge variant="solid" size="sm" className="ml-50">
+            <Badge variant="primary" className="ml-50">
               New
             </Badge>
           </Tabs.Trigger>
           <Tabs.Trigger value="tab2">
             Messages
-            <Badge variant="solid" size="sm" className="ml-50">
+            <Badge variant="primary" className="ml-50">
               12
             </Badge>
           </Tabs.Trigger>
