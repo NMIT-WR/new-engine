@@ -12,6 +12,7 @@ import { FormInput } from '../../src/molecules/form-input'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
 import {Slider} from '../../src/molecules/slider'
+import { NumericInputTemplate } from '../../src/templates/numeric-input'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',
@@ -196,20 +197,8 @@ export const AllFormInputs: Story = {
           <VariantGroup title="Numeric & Boolean Inputs" fullWidth>
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1">
-                <Label htmlFor="numeric-input" size={size}>Numeric Input</Label>
-                <NumericInput 
-                  id="numeric-input" 
-                  size={size} 
-                  invalid={validateStatus === 'error'}
-                  describedBy={validateStatus === 'error' ? 'numeric-input-error' : 'numeric-input-help'} >
-                  <NumericInput.Control>
-                    <NumericInput.Input />
-                    <NumericInput.TriggerContainer>
-                      <NumericInput.IncrementTrigger />
-                      <NumericInput.DecrementTrigger />
-                    </NumericInput.TriggerContainer>
-                  </NumericInput.Control>
-                </NumericInput>
+                <Label size={size}>Numeric Input</Label>
+                <NumericInputTemplate id="numeric-input" size={size} />
                 {validateStatus === 'error' ? (
                   <ErrorText id="numeric-input-error" size={size}>{helpText}</ErrorText>
                 ) : (
