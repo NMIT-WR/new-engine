@@ -10,7 +10,9 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rslib build",
     "check": "biome check --write",
@@ -19,7 +21,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@rslib/core": "^0.5.5",
+    "@rslib/core": "^0.18.0",
     "@types/node": "^22.15.18",
     "typescript": "^5.8.3"
   },
