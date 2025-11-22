@@ -1,12 +1,12 @@
-'use client'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { Link } from '@new-engine/ui/atoms/link'
-import { useEffect, useState } from 'react'
-import type { NavItem } from '../molecules/navigation'
-import { RegionSelector } from '../region-selector'
-import { ThemeToggle } from '../theme-toggle'
+"use client"
+import { Badge } from "@new-engine/ui/atoms/badge"
+import { Button } from "@new-engine/ui/atoms/button"
+import { Icon } from "@new-engine/ui/atoms/icon"
+import { Link } from "@new-engine/ui/atoms/link"
+import { useEffect, useState } from "react"
+import type { NavItem } from "../molecules/navigation"
+import { RegionSelector } from "../region-selector"
+import { ThemeToggle } from "../theme-toggle"
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -23,12 +23,12 @@ export function MobileMenu({
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = ''
+      document.body.style.overflow = ""
     }
     return () => {
-      document.body.style.overflow = ''
+      document.body.style.overflow = ""
     }
   }, [isOpen])
 
@@ -54,28 +54,28 @@ export function MobileMenu({
             Nabídka
           </h2>
           <Button
-            theme="borderless"
-            onClick={onClose}
             className="rounded-mobile-menu-close p-mobile-menu-close-padding transition-colors hover:bg-mobile-menu-close-hover-bg"
             icon="token-icon-close"
+            onClick={onClose}
+            theme="borderless"
           />
         </div>
         <nav className="flex flex-col p-mobile-menu-nav-padding">
           {navigationItems.map((item) => (
             <div key={item.title}>
-              {item.role === 'submenu' && item.children ? (
+              {item.role === "submenu" && item.children ? (
                 <>
                   <Button
-                    theme="borderless"
-                    onClick={() => toggleExpanded(item.title)}
                     className="flex w-full items-center justify-between rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y font-mobile-menu-item-weight text-mobile-menu-item-size text-mobile-menu-text transition-colors hover:bg-mobile-menu-item-hover-bg"
+                    onClick={() => toggleExpanded(item.title)}
+                    theme="borderless"
                   >
                     {item.title}
                     <Icon
                       icon={
                         expandedItems.includes(item.title)
-                          ? 'token-icon-chevron-up'
-                          : 'token-icon-chevron-down'
+                          ? "token-icon-chevron-up"
+                          : "token-icon-chevron-down"
                       }
                       size="sm"
                     />
@@ -84,14 +84,14 @@ export function MobileMenu({
                     <ul className="mt-mobile-menu-submenu-gap ml-mobile-menu-submenu-indent flex flex-col gap-mobile-menu-submenu-gap">
                       {item.children.map((child) => (
                         <Link
-                          key={child.title}
-                          href={child.href}
-                          onClick={onClose}
                           className="block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y text-mobile-menu-submenu-size text-mobile-menu-text transition-colors hover:bg-mobile-menu-item-hover-bg"
+                          href={child.href}
+                          key={child.title}
+                          onClick={onClose}
                         >
                           {child.title}
                           {child.label && (
-                            <Badge variant="danger" className="ml-2">
+                            <Badge className="ml-2" variant="danger">
                               {child.label}
                             </Badge>
                           )}
@@ -102,9 +102,9 @@ export function MobileMenu({
                 </>
               ) : (
                 <Link
-                  href={item.href || '#'}
-                  onClick={onClose}
                   className="block rounded-mobile-menu-item px-mobile-menu-item-x py-mobile-menu-item-y font-mobile-menu-item-weight text-mobile-menu-item-size text-mobile-menu-text transition-colors hover:bg-mobile-menu-item-hover-bg"
+                  href={item.href || "#"}
+                  onClick={onClose}
                 >
                   {item.title}
                 </Link>

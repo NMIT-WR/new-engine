@@ -1,9 +1,9 @@
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import type { FormAddressData, FormUserData } from '@/types/checkout'
-import type { HttpTypes } from '@medusajs/types'
-import { useToast } from '@new-engine/ui/molecules/toast'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { HttpTypes } from "@medusajs/types"
+import { useToast } from "@new-engine/ui/molecules/toast"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
+import type { FormAddressData, FormUserData } from "@/types/checkout"
 
 export function useCustomer() {
   const queryClient = useQueryClient()
@@ -90,15 +90,15 @@ export function useCustomer() {
         )
       }
       toast.create({
-        title: 'Chyba při ukládání adresy',
-        description: error?.message || 'Zkuste to prosím znovu',
-        type: 'error',
+        title: "Chyba při ukládání adresy",
+        description: error?.message || "Zkuste to prosím znovu",
+        type: "error",
       })
     },
     onSuccess: () => {
       toast.create({
-        title: 'Adresa byla úspěšně uložena',
-        type: 'success',
+        title: "Adresa byla úspěšně uložena",
+        type: "success",
       })
     },
   })
@@ -147,15 +147,15 @@ export function useCustomer() {
         )
       }
       toast.create({
-        title: 'Chyba při aktualizaci profilu',
-        description: error?.message || 'Zkuste to prosím znovu',
-        type: 'error',
+        title: "Chyba při aktualizaci profilu",
+        description: error?.message || "Zkuste to prosím znovu",
+        type: "error",
       })
     },
     onSuccess: () => {
       toast.create({
-        title: 'Profil byl úspěšně aktualizován',
-        type: 'success',
+        title: "Profil byl úspěšně aktualizován",
+        type: "success",
       })
     },
   })
@@ -163,10 +163,10 @@ export function useCustomer() {
   // Map the Medusa address to FormAddressData format
   const mappedAddress: FormAddressData | null = mainAddress
     ? {
-        street: mainAddress.address_1 || '',
-        city: mainAddress.city || '',
-        postalCode: mainAddress.postal_code || '',
-        country: mainAddress.country_code || 'cz',
+        street: mainAddress.address_1 || "",
+        city: mainAddress.city || "",
+        postalCode: mainAddress.postal_code || "",
+        country: mainAddress.country_code || "cz",
       }
     : null
 

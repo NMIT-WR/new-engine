@@ -1,14 +1,14 @@
-'use client'
-import { contactContent } from '@/data/contact-content'
-import { useContactForm } from '@/hooks/use-contact-form'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import { FormInput } from '@new-engine/ui/molecules/form-input'
-import { FormTextarea } from '@new-engine/ui/molecules/form-textarea'
-import { Select } from '@new-engine/ui/molecules/select'
-import Image from 'next/image'
-import contactImage from '/assets/hero/contact.webp'
+"use client"
+import { Button } from "@new-engine/ui/atoms/button"
+import { Icon, type IconType } from "@new-engine/ui/atoms/icon"
+import { LinkButton } from "@new-engine/ui/atoms/link-button"
+import { FormInput } from "@new-engine/ui/molecules/form-input"
+import { FormTextarea } from "@new-engine/ui/molecules/form-textarea"
+import { Select } from "@new-engine/ui/molecules/select"
+import Image from "next/image"
+import { contactContent } from "@/data/contact-content"
+import { useContactForm } from "@/hooks/use-contact-form"
+import contactImage from "/assets/hero/contact.webp"
 
 export default function ContactPage() {
   const { hero, form, info, hours, help } = contactContent
@@ -19,13 +19,13 @@ export default function ContactPage() {
       {/* Hero Section */}
       <section className="relative flex h-about-hero-height items-center bg-center bg-cover md:h-about-hero-height-md">
         <Image
-          src={contactImage}
           alt="Naše kancelář"
           className="-z-1 brightness-60"
           fill
           objectFit="cover"
-          priority={true}
           placeholder="blur"
+          priority={true}
+          src={contactImage}
         />
         <div className="inset-0 mx-auto max-w-container-max px-container-x text-white">
           <div className="text-center">
@@ -40,14 +40,14 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Content */}
-      <section id="contact-form" className="py-contact-content-y">
+      <section className="py-contact-content-y" id="contact-form">
         <div className="mx-auto max-w-container-max px-container-x">
           <div className="grid grid-cols-1 gap-contact-grid-gap lg:grid-cols-3">
             {/* Contact Form */}
             <div className="lg:col-span-2">
               <form
-                onSubmit={handleSubmit}
                 className="grid rounded-contact-form bg-fill-base/20 p-contact-form-padding shadow-contact-form"
+                onSubmit={handleSubmit}
               >
                 <h2 className="mb-contact-form-title-bottom font-contact-form-title text-contact-form-title-fg text-contact-form-title-size">
                   {form.title}
@@ -56,78 +56,78 @@ export default function ContactPage() {
                   <FormInput
                     id="firstName"
                     label={form.labels.firstName}
-                    size="sm"
-                    value={formData.firstName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateField('firstName', e.target.value)
+                      updateField("firstName", e.target.value)
                     }
                     required
+                    size="sm"
+                    value={formData.firstName}
                   />
                   <FormInput
                     id="lastName"
                     label={form.labels.lastName}
-                    size="sm"
-                    value={formData.lastName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateField('lastName', e.target.value)
+                      updateField("lastName", e.target.value)
                     }
                     required
+                    size="sm"
+                    value={formData.lastName}
                   />
                   <FormInput
                     id="email"
                     label={form.labels.email}
-                    type="email"
-                    size="sm"
-                    value={formData.email}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateField('email', e.target.value)
+                      updateField("email", e.target.value)
                     }
                     required
+                    size="sm"
+                    type="email"
+                    value={formData.email}
                   />
                   <FormInput
                     id="phone"
                     label={form.labels.phone}
-                    type="tel"
-                    size="sm"
-                    value={formData.phone}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateField('phone', e.target.value)
+                      updateField("phone", e.target.value)
                     }
                     required
+                    size="sm"
+                    type="tel"
+                    value={formData.phone}
                   />
                   <div className="space-y-contact-field-gap md:col-span-2">
                     <Select
                       label={form.labels.subject}
-                      options={form.subjects}
-                      value={[formData.subject]}
                       onValueChange={(details) =>
-                        updateField('subject', details.value[0] || 'general')
+                        updateField("subject", details.value[0] || "general")
                       }
-                      size="sm"
+                      options={form.subjects}
                       placeholder="Vyberte téma"
+                      size="sm"
+                      value={[formData.subject]}
                     />
                   </div>
                   <div className="md:col-span-2">
                     <FormTextarea
                       id="message"
                       label={form.labels.message}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        updateField("message", e.target.value)
+                      }
+                      required
                       rows={6}
                       size="sm"
                       value={formData.message}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        updateField('message', e.target.value)
-                      }
-                      required
                     />
                   </div>
                 </div>
                 <Button
-                  type="submit"
                   className="mt-6 place-self-end"
-                  size="sm"
                   disabled={isSubmitting}
+                  size="sm"
+                  type="submit"
                 >
-                  {isSubmitting ? 'Odesílám...' : form.labels.submit}
+                  {isSubmitting ? "Odesílám..." : form.labels.submit}
                 </Button>
               </form>
             </div>
@@ -141,12 +141,12 @@ export default function ContactPage() {
                 </h3>
                 {info.items.map((item, index) => (
                   <div
-                    key={index}
                     className="mb-contact-info-item-gap flex items-start space-x-contact-info-icon-gap"
+                    key={index}
                   >
                     <Icon
-                      icon={item.icon as IconType}
                       className="h-6 text-md"
+                      icon={item.icon as IconType}
                     />
                     <div>
                       <p className="text-contact-info-text-fg text-contact-info-text-size">
@@ -154,8 +154,8 @@ export default function ContactPage() {
                       </p>
                       {item.link ? (
                         <a
-                          href={item.link}
                           className="text-contact-info-link-fg transition-colors hover:text-contact-info-link-fg-hover"
+                          href={item.link}
                         >
                           {item.value}
                         </a>
@@ -179,10 +179,10 @@ export default function ContactPage() {
                   otázky pro okamžitou pomoc.
                 </p>
                 <LinkButton
+                  className="px-0 py-0 hover:bg-transparent"
                   href="/faq"
                   size="sm"
                   theme="borderless"
-                  className="px-0 py-0 hover:bg-transparent"
                 >
                   <span className="underline">Často kladené dotazy</span>
                 </LinkButton>

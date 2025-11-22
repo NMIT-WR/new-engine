@@ -6,7 +6,7 @@ export interface Product {
   description?: string
   thumbnail?: string
   images?: ProductImage[]
-  status: 'draft' | 'published' | 'proposed'
+  status: "draft" | "published" | "proposed"
   collection?: ProductCollection
   categories?: ProductCategory[]
   variants?: ProductVariant[]

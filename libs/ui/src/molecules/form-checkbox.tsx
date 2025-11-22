@@ -1,27 +1,27 @@
-import type { ReactNode } from 'react'
-import { ErrorText } from '../atoms/error-text'
-import { ExtraText } from '../atoms/extra-text'
-import { Label } from '../atoms/label'
-import { Checkbox, type CheckboxProps } from './checkbox'
+import type { ReactNode } from "react"
+import { ErrorText } from "../atoms/error-text"
+import { ExtraText } from "../atoms/extra-text"
+import { Label } from "../atoms/label"
+import { Checkbox, type CheckboxProps } from "./checkbox"
 
-type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
+type ValidateStatus = "default" | "error" | "success" | "warning"
 
-interface FormCheckboxProps extends Omit<CheckboxProps, 'size'> {
+interface FormCheckboxProps extends Omit<CheckboxProps, "size"> {
   id: string
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
   extraText?: ReactNode
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
 }
 
 export function FormCheckboxRaw({
   id,
   label,
-  validateStatus = 'default',
+  validateStatus = "default",
   helpText,
   extraText,
-  size = 'md',
+  size = "md",
   required,
   disabled,
   ...props
@@ -31,10 +31,10 @@ export function FormCheckboxRaw({
   return (
     <div className="flex gap-150">
       <div className="mt-2 flex items-start">
-        <Checkbox id={id} required={required} disabled={disabled} {...props} />
+        <Checkbox disabled={disabled} id={id} required={required} {...props} />
       </div>
       <div className="flex flex-col">
-        <Label htmlFor={id} size={size} required={required} disabled={disabled}>
+        <Label disabled={disabled} htmlFor={id} required={required} size={size}>
           {label}
         </Label>
         {helpText}
@@ -59,11 +59,8 @@ export function FormCheckbox({
 
   return (
     <FormCheckboxRaw
-      id={id}
-      size={size}
-      validateStatus={validateStatus}
       helpText={
-        validateStatus === 'error' ? (
+        validateStatus === "error" ? (
           <ErrorText id={helpTextId} size={size}>
             {helpText}
           </ErrorText>
@@ -75,6 +72,9 @@ export function FormCheckbox({
           ))
         )
       }
+      id={id}
+      size={size}
+      validateStatus={validateStatus}
       {...props}
     />
   )

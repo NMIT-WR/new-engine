@@ -7,84 +7,84 @@
  * in both CSS and JS/TS files with better accuracy and performance.
  */
 
-import fs from 'fs'
-import path from 'path'
-import { globSync } from 'glob'
+import fs from "fs"
+import { globSync } from "glob"
+import path from "path"
 
 // Configuration
-const TOKEN_DIRS = ['src/tokens']
-const SEARCH_DIRS = ['src/atoms', 'src/molecules', 'stories']
-const TOKEN_FILE_PATTERN = '**/*.css'
-const SOURCE_FILE_PATTERN = '**/*.{ts,tsx,js,jsx,css}'
+const TOKEN_DIRS = ["src/tokens"]
+const SEARCH_DIRS = ["src/atoms", "src/molecules", "stories"]
+const TOKEN_FILE_PATTERN = "**/*.css"
+const SOURCE_FILE_PATTERN = "**/*.{ts,tsx,js,jsx,css}"
 
 // Tailwind v4 namespace to utility class prefixes mapping
 const NAMESPACE_TO_UTILITIES = {
   color: [
-    'bg',
-    'text',
-    'border',
-    'ring',
-    'fill',
-    'stroke',
-    'from',
-    'to',
-    'via',
-    'decoration',
-    'accent',
-    'caret',
-    'divide',
-    'outline',
-    'shadow',
-    'ring-offset',
+    "bg",
+    "text",
+    "border",
+    "ring",
+    "fill",
+    "stroke",
+    "from",
+    "to",
+    "via",
+    "decoration",
+    "accent",
+    "caret",
+    "divide",
+    "outline",
+    "shadow",
+    "ring-offset",
   ],
   spacing: [
-    'p',
-    'px',
-    'py',
-    'pt',
-    'pb',
-    'pl',
-    'pr',
-    'm',
-    'mx',
-    'my',
-    'mt',
-    'mb',
-    'ml',
-    'mr',
-    'gap',
-    'space-x',
-    'space-y',
-    'w',
-    'h',
-    'max-w',
-    'max-h',
-    'min-w',
-    'min-h',
-    'size',
-    'basis',
-    'inset',
-    'top',
-    'right',
-    'bottom',
-    'left',
+    "p",
+    "px",
+    "py",
+    "pt",
+    "pb",
+    "pl",
+    "pr",
+    "m",
+    "mx",
+    "my",
+    "mt",
+    "mb",
+    "ml",
+    "mr",
+    "gap",
+    "space-x",
+    "space-y",
+    "w",
+    "h",
+    "max-w",
+    "max-h",
+    "min-w",
+    "min-h",
+    "size",
+    "basis",
+    "inset",
+    "top",
+    "right",
+    "bottom",
+    "left",
   ],
-  text: ['text'],
-  'font-weight': ['font'],
-  font: ['font'],
-  border: ['border'],
-  radius: ['rounded'],
-  shadow: ['shadow'],
-  opacity: ['opacity'],
-  width: ['w'],
-  height: ['h'],
-  gap: ['gap'],
-  padding: ['p', 'px', 'py', 'pt', 'pb', 'pl', 'pr'],
-  margin: ['m', 'mx', 'my', 'mt', 'mb', 'ml', 'mr'],
-  'line-height': ['leading'],
-  ring: ['ring'],
-  aspect: ['aspect'],
-  leading: ['leading'],
+  text: ["text"],
+  "font-weight": ["font"],
+  font: ["font"],
+  border: ["border"],
+  radius: ["rounded"],
+  shadow: ["shadow"],
+  opacity: ["opacity"],
+  width: ["w"],
+  height: ["h"],
+  gap: ["gap"],
+  padding: ["p", "px", "py", "pt", "pb", "pl", "pr"],
+  margin: ["m", "mx", "my", "mt", "mb", "ml", "mr"],
+  "line-height": ["leading"],
+  ring: ["ring"],
+  aspect: ["aspect"],
+  leading: ["leading"],
 }
 
 // Cache for file contents to avoid re-reading
@@ -95,7 +95,7 @@ const fileCache = new Map()
  */
 function readFileWithCache(filePath) {
   if (!fileCache.has(filePath)) {
-    fileCache.set(filePath, fs.readFileSync(filePath, 'utf-8'))
+    fileCache.set(filePath, fs.readFileSync(filePath, "utf-8"))
   }
   return fileCache.get(filePath)
 }
@@ -117,7 +117,7 @@ function getTokenNamespace(token) {
  */
 function getTokenNameWithoutNamespace(token) {
   const match = token.match(/^--[^-]+-(.+)$/)
-  return match ? match[1] : token.replace(/^--/, '')
+  return match ? match[1] : token.replace(/^--/, "")
 }
 
 /**
@@ -127,7 +127,7 @@ function generatePossibleUtilities(token) {
   const namespace = getTokenNamespace(token)
   const nameWithoutNamespace = getTokenNameWithoutNamespace(token)
 
-  if (!namespace || !NAMESPACE_TO_UTILITIES[namespace]) {
+  if (!(namespace && NAMESPACE_TO_UTILITIES[namespace])) {
     // If no namespace match, return the token name for direct usage checks
     return [nameWithoutNamespace]
   }
@@ -165,7 +165,7 @@ function extractTokensFromFile(filePath) {
   const rootBlockRegex = /:root\s*{([^}]+)}/gs
 
   const extractFromBlock = (block) => {
-    const lines = block.split('\n')
+    const lines = block.split("\n")
     lines.forEach((line, index) => {
       // Match CSS custom properties (more precise regex)
       const match = line.match(/^\s*(--[\w-]+)\s*:/)
@@ -173,7 +173,7 @@ function extractTokensFromFile(filePath) {
         tokens.set(match[1], {
           file: filePath,
           line: index + 1,
-          inThemeBlock: block.includes('@theme'),
+          inThemeBlock: block.includes("@theme"),
         })
       }
     })
@@ -199,7 +199,7 @@ function extractTokensFromFile(filePath) {
 function createSearchPatterns(utilities) {
   return utilities.flatMap((utility) => {
     // Escape special regex characters
-    const escaped = utility.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const escaped = utility.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
     // Create patterns that match utility usage in various contexts
     return [
@@ -238,13 +238,13 @@ function isTokenUsed(token, allTokens) {
   const sameFileContent = readFileWithCache(tokenInfo.file)
   // Count how many times the token appears in the file
   const tokenRegex = new RegExp(
-    token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-    'g'
+    token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+    "g"
   )
   const matches = sameFileContent.match(tokenRegex) || []
   // If it appears more than once (definition + usage), it's a helper token
   if (matches.length > 1) {
-    return { used: true, location: tokenInfo.file, type: 'helper-token' }
+    return { used: true, location: tokenInfo.file, type: "helper-token" }
   }
 
   // Check usage in other CSS files
@@ -254,7 +254,7 @@ function isTokenUsed(token, allTokens) {
     const content = readFileWithCache(file)
     // Check for direct token usage in calc(), var(), or other CSS functions
     if (content.includes(token)) {
-      return { used: true, location: file, type: 'css-reference' }
+      return { used: true, location: file, type: "css-reference" }
     }
   }
 
@@ -268,7 +268,7 @@ function isTokenUsed(token, allTokens) {
       // Quick check: if none of the possible utilities appear in the file, skip it
       const quickCheck = possibleUtilities.some((util) => {
         // For simple utility names, check if they appear with common delimiters
-        if (!util.includes('var(')) {
+        if (!util.includes("var(")) {
           // Simply check if the utility name appears anywhere in the file
           const found = content.includes(util)
           if (debugMode && found) {
@@ -286,7 +286,7 @@ function isTokenUsed(token, allTokens) {
         content.includes(`(height:${token})`) ||
         content.includes(`(size:${token})`)
 
-      if (!quickCheck && !specialSyntaxCheck) {
+      if (!(quickCheck || specialSyntaxCheck)) {
         if (debugMode) {
           console.log(`  Skipping ${file} - no utilities found in quick check`)
         }
@@ -298,22 +298,22 @@ function isTokenUsed(token, allTokens) {
         const specialMatches = [
           content.match(
             new RegExp(
-              `\\(length:${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`
+              `\\(length:${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`
             )
           ),
           content.match(
             new RegExp(
-              `\\(width:${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`
+              `\\(width:${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`
             )
           ),
           content.match(
             new RegExp(
-              `\\(height:${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`
+              `\\(height:${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`
             )
           ),
           content.match(
             new RegExp(
-              `\\(size:${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`
+              `\\(size:${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`
             )
           ),
         ].filter((m) => m !== null)
@@ -326,7 +326,7 @@ function isTokenUsed(token, allTokens) {
           return {
             used: true,
             location: file,
-            type: 'tailwind-v4-syntax',
+            type: "tailwind-v4-syntax",
             match: match[0],
           }
         }
@@ -345,7 +345,7 @@ function isTokenUsed(token, allTokens) {
           return {
             used: true,
             location: file,
-            type: 'utility-class',
+            type: "utility-class",
             match: match[0],
           }
         }
@@ -362,7 +362,7 @@ function isTokenUsed(token, allTokens) {
 function generateReport(unusedTokens, allTokens) {
   const report = []
 
-  report.push('# Unused Tokens Report\n')
+  report.push("# Unused Tokens Report\n")
   report.push(`Generated on: ${new Date().toISOString()}\n`)
   report.push(`Total tokens analyzed: ${allTokens.size}`)
   report.push(`Unused tokens found: ${unusedTokens.length}\n`)
@@ -383,9 +383,9 @@ function generateReport(unusedTokens, allTokens) {
       const namespace = getTokenNamespace(token)
       const possibleUtils = generatePossibleUtilities(token)
         .slice(0, 5)
-        .join(', ')
+        .join(", ")
       report.push(`- Line ${line}: \`${token}\``)
-      report.push(`  - Namespace: ${namespace || 'none'}`)
+      report.push(`  - Namespace: ${namespace || "none"}`)
       report.push(`  - Expected utilities: ${possibleUtils}...`)
     })
   })
@@ -393,17 +393,17 @@ function generateReport(unusedTokens, allTokens) {
   // Summary statistics
   const namespaceStats = {}
   unusedTokens.forEach(({ token }) => {
-    const namespace = getTokenNamespace(token) || 'other'
+    const namespace = getTokenNamespace(token) || "other"
     namespaceStats[namespace] = (namespaceStats[namespace] || 0) + 1
   })
 
-  report.push('\n## Statistics by Namespace\n')
+  report.push("\n## Statistics by Namespace\n")
   Object.entries(namespaceStats).forEach(([namespace, count]) => {
     const percentage = ((count / unusedTokens.length) * 100).toFixed(1)
     report.push(`- ${namespace}: ${count} tokens (${percentage}%)`)
   })
 
-  return report.join('\n')
+  return report.join("\n")
 }
 
 // Global debug mode flag
@@ -414,12 +414,12 @@ let debugMode = false
  */
 async function main() {
   const args = process.argv.slice(2)
-  debugMode = args.includes('--debug')
+  debugMode = args.includes("--debug")
   const debugToken = args
-    .find((arg) => arg.startsWith('--token='))
-    ?.split('=')[1]
+    .find((arg) => arg.startsWith("--token="))
+    ?.split("=")[1]
 
-  console.log('🔍 Checking for unused CSS tokens (Tailwind v4 optimized)...\n')
+  console.log("🔍 Checking for unused CSS tokens (Tailwind v4 optimized)...\n")
 
   // Find all token files
   const tokenFiles = globSync(path.join(TOKEN_DIRS[0], TOKEN_FILE_PATTERN))
@@ -435,7 +435,7 @@ async function main() {
   })
 
   console.log(`Found ${allTokens.size} total tokens\n`)
-  console.log('Checking usage (this may take a moment)...\n')
+  console.log("Checking usage (this may take a moment)...\n")
 
   // Check each token
   const unusedTokens = []
@@ -455,7 +455,7 @@ async function main() {
       console.log(`\nChecking token: ${token}`)
       const utilities = generatePossibleUtilities(token)
       console.log(
-        `Possible utilities: ${utilities.slice(0, 10).join(', ')}${utilities.length > 10 ? '...' : ''}`
+        `Possible utilities: ${utilities.slice(0, 10).join(", ")}${utilities.length > 10 ? "..." : ""}`
       )
     }
 
@@ -470,27 +470,27 @@ async function main() {
     } else {
       unusedTokens.push({ token, ...info })
       if (debugMode) {
-        console.log(`❌ Token not found`)
+        console.log("❌ Token not found")
       }
     }
   }
 
-  console.log('\n')
+  console.log("\n")
 
   // Display results
   if (unusedTokens.length === 0) {
-    console.log('✅ All tokens are being used!')
+    console.log("✅ All tokens are being used!")
   } else {
     console.log(`⚠️  Found ${unusedTokens.length} unused tokens`)
 
     // Generate and save detailed report
     const report = generateReport(unusedTokens, allTokens)
-    const reportPath = 'unused-tokens-report.md'
+    const reportPath = "unused-tokens-report.md"
     fs.writeFileSync(reportPath, report)
     console.log(`\n📄 Detailed report saved to: ${reportPath}`)
 
     // Show summary
-    console.log('\n📊 Summary:')
+    console.log("\n📊 Summary:")
     console.log(`   Total tokens: ${allTokens.size}`)
     console.log(
       `   Unused tokens: ${unusedTokens.length} (${((unusedTokens.length / allTokens.size) * 100).toFixed(1)}%)`

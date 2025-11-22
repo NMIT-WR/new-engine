@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { cacheConfig } from '@/lib/cache-config'
-import { STORAGE_KEYS } from '@/lib/constants'
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import { orderHelpers } from '@/stores/order-store'
-import type { CheckoutAddressData, UseCheckoutReturn } from '@/types/checkout'
-import { useToast } from '@new-engine/ui/molecules/toast'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import { useCart } from './use-cart'
-import { useCustomer } from './use-customer'
+import { useToast } from "@new-engine/ui/molecules/toast"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { cacheConfig } from "@/lib/cache-config"
+import { STORAGE_KEYS } from "@/lib/constants"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
+import { orderHelpers } from "@/stores/order-store"
+import type { CheckoutAddressData, UseCheckoutReturn } from "@/types/checkout"
+import { useCart } from "./use-cart"
+import { useCustomer } from "./use-customer"
 
 export function useCheckout(): UseCheckoutReturn {
   const { cart, refetch, clearCart } = useCart()
@@ -19,8 +19,8 @@ export function useCheckout(): UseCheckoutReturn {
   const queryClient = useQueryClient()
 
   const [currentStep, setCurrentStep] = useState(0)
-  const [selectedPayment, setSelectedPayment] = useState('')
-  const [selectedShipping, setSelectedShipping] = useState('')
+  const [selectedPayment, setSelectedPayment] = useState("")
+  const [selectedShipping, setSelectedShipping] = useState("")
   const [addressData, setAddressData] = useState<CheckoutAddressData | null>(
     null
   )
@@ -40,7 +40,7 @@ export function useCheckout(): UseCheckoutReturn {
           city: data.shipping.city,
           postal_code: data.shipping.postalCode,
           phone: data.shipping.phone,
-          country_code: (data.shipping.country || 'CZ').toLowerCase(),
+          country_code: (data.shipping.country || "CZ").toLowerCase(),
           company: data.shipping.company,
         },
         billing_address: data.useSameAddress
@@ -51,7 +51,7 @@ export function useCheckout(): UseCheckoutReturn {
               city: data.shipping.city,
               postal_code: data.shipping.postalCode,
               phone: data.shipping.phone,
-              country_code: (data.shipping.country || 'CZ').toLowerCase(),
+              country_code: (data.shipping.country || "CZ").toLowerCase(),
               company: data.shipping.company,
             }
           : {
@@ -60,17 +60,17 @@ export function useCheckout(): UseCheckoutReturn {
               address_1: data.billing.street,
               city: data.billing.city,
               postal_code: data.billing.postalCode,
-              country_code: (data.billing.country || 'CZ').toLowerCase(),
+              country_code: (data.billing.country || "CZ").toLowerCase(),
               company: data.billing.company,
             },
       })
       setAddressData(data)
     } catch (err) {
-      console.error('Failed to update cart with addresses:', err)
+      console.error("Failed to update cart with addresses:", err)
       toast.create({
-        title: 'Chyba při ukládání adresy',
-        description: 'Zkuste to prosím znovu',
-        type: 'error',
+        title: "Chyba při ukládání adresy",
+        description: "Zkuste to prosím znovu",
+        type: "error",
       })
       throw err
     }
@@ -81,9 +81,9 @@ export function useCheckout(): UseCheckoutReturn {
     isLoading: isLoadingShipping,
     error: shippingError,
   } = useQuery({
-    queryKey: queryKeys.fulfillment.cartOptions(cart?.id || ''),
+    queryKey: queryKeys.fulfillment.cartOptions(cart?.id || ""),
     queryFn: async () => {
-      if (!cart?.id) throw new Error('No cart ID available')
+      if (!cart?.id) throw new Error("No cart ID available")
       const response = await sdk.store.fulfillment.listCartOptions({
         cart_id: cart.id,
       })
@@ -109,11 +109,11 @@ export function useCheckout(): UseCheckoutReturn {
       })
       await refetch()
     } catch (error) {
-      console.error('Failed to add shipping method:', error)
+      console.error("Failed to add shipping method:", error)
       toast.create({
-        title: 'Chyba při výběru dopravy',
-        description: 'Zkuste to prosím znovu',
-        type: 'error',
+        title: "Chyba při výběru dopravy",
+        description: "Zkuste to prosím znovu",
+        type: "error",
       })
       throw error
     }
@@ -135,9 +135,9 @@ export function useCheckout(): UseCheckoutReturn {
         currentCart.shipping_methods.length === 0
       ) {
         toast.create({
-          title: 'Chyba',
-          description: 'Prosím vyberte způsob dopravy',
-          type: 'error',
+          title: "Chyba",
+          description: "Prosím vyberte způsob dopravy",
+          type: "error",
         })
         setCurrentStep(1)
         return
@@ -147,9 +147,9 @@ export function useCheckout(): UseCheckoutReturn {
       if (!currentCart.payment_collection) {
         if (!currentCart.region_id) {
           toast.create({
-            title: 'Chyba',
-            description: 'Košík nemá nastavenou region',
-            type: 'error',
+            title: "Chyba",
+            description: "Košík nemá nastavenou region",
+            type: "error",
           })
           return
         }
@@ -175,14 +175,14 @@ export function useCheckout(): UseCheckoutReturn {
         latestCart.payment_collection.payment_sessions.length === 0
       ) {
         await sdk.store.payment.initiatePaymentSession(latestCart, {
-          provider_id: 'pp_system_default',
+          provider_id: "pp_system_default",
         })
       }
 
       // Complete order
       const result = await sdk.store.cart.complete(cart.id)
 
-      if (result.type === 'order') {
+      if (result.type === "order") {
         const order = result.order
 
         // Save completed order data
@@ -191,7 +191,7 @@ export function useCheckout(): UseCheckoutReturn {
         }
 
         // Clear cart from localStorage
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           localStorage.removeItem(STORAGE_KEYS.CART_ID)
         }
 
@@ -206,14 +206,14 @@ export function useCheckout(): UseCheckoutReturn {
         return order
       }
     } catch (error) {
-      console.error('Order creation error:', error)
+      console.error("Order creation error:", error)
       toast.create({
-        title: 'Chyba při vytváření objednávky',
+        title: "Chyba při vytváření objednávky",
         description:
           error instanceof Error
             ? error.message
-            : 'Něco se pokazilo. Zkuste to prosím znovu.',
-        type: 'error',
+            : "Něco se pokazilo. Zkuste to prosím znovu.",
+        type: "error",
       })
       throw error
     } finally {

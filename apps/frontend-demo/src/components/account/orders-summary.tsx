@@ -1,5 +1,5 @@
-import { formatPrice } from '@/lib/format-price'
-import { Icon } from '@new-engine/ui/atoms/icon'
+import { Icon } from "@new-engine/ui/atoms/icon"
+import { formatPrice } from "@/lib/format-price"
 
 interface OrdersSummaryProps {
   totalAmount: number
@@ -30,7 +30,7 @@ export function OrdersSummary({
             Celková útrata
           </p>
           <p className="font-bold text-orders-price-size text-primary">
-            {formatPrice(totalAmount, 'CZK')}
+            {formatPrice(totalAmount, "CZK")}
           </p>
         </div>
       </div>
@@ -38,8 +38,8 @@ export function OrdersSummary({
       <div className="flex flex-col gap-orders-summary border-t pt-md sm:flex-row sm:items-center">
         <div className="flex items-center gap-orders-sm">
           <Icon
-            icon="icon-[mdi--shopping-outline]"
             className="text-orders-fg-secondary"
+            icon="icon-[mdi--shopping-outline]"
           />
           <span className="text-orders-md">
             <strong className="text-orders-fg-primary">{numberOfOrders}</strong>
@@ -51,8 +51,8 @@ export function OrdersSummary({
         <div className="hidden sm:block sm:text-orders-fg-secondary">•</div>
         <div className="flex items-center gap-orders-sm">
           <Icon
-            icon="icon-[mdi--check-circle-outline]"
             className="text-orders-success"
+            icon="icon-[mdi--check-circle-outline]"
           />
           <span className="text-orders-md">
             <strong className="text-orders-success">{completedOrders}</strong>
@@ -64,8 +64,8 @@ export function OrdersSummary({
         <div className="hidden sm:block sm:text-orders-fg-secondary">•</div>
         <div className="flex items-center gap-orders-sm">
           <Icon
-            icon="icon-[mdi--clock-outline]"
             className="text-orders-pending"
+            icon="icon-[mdi--clock-outline]"
           />
           <span className="text-orders-md">
             <strong className="text-orders-pending">{pendingOrders}</strong>

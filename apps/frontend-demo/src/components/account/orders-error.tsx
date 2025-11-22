@@ -1,4 +1,4 @@
-import { Button } from '@new-engine/ui/atoms/button'
+import { Button } from "@new-engine/ui/atoms/button"
 
 export function OrdersError() {
   return (
@@ -7,10 +7,10 @@ export function OrdersError() {
         Chyba při načítání objednávek
       </p>
       <Button
-        variant="secondary"
-        theme="solid"
         onClick={() => window.location.reload()}
         size="sm"
+        theme="solid"
+        variant="secondary"
       >
         Zkusit znovu
       </Button>

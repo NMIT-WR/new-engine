@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import { useAuth } from '@/hooks/use-auth'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import type { ReactNode } from 'react'
+import { Button } from "@new-engine/ui/atoms/button"
+import { Icon } from "@new-engine/ui/atoms/icon"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import type { ReactNode } from "react"
+import { useAuth } from "@/hooks/use-auth"
 
 const accountLinks = [
   {
-    href: '/account/orders',
-    label: 'Moje objednávky',
-    icon: 'token-icon-shopping-bag' as const,
+    href: "/account/orders",
+    label: "Moje objednávky",
+    icon: "token-icon-shopping-bag" as const,
   },
   {
-    href: '/account/profile',
-    label: 'Můj profil',
-    icon: 'token-icon-profile' as const,
+    href: "/account/profile",
+    label: "Můj profil",
+    icon: "token-icon-profile" as const,
   },
 ]
 
@@ -41,31 +41,31 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
             const isActive = pathname === link.href
             return (
               <Link
-                key={link.href}
-                href={link.href}
                 className={`flex items-center gap-3 rounded-md py-2 transition-colors sm:px-3 ${
                   isActive
-                    ? 'bg-bg-surface-hover text-fg-primary'
-                    : 'text-fg-secondary hover:bg-bg-surface hover:text-fg-primary'
+                    ? "bg-bg-surface-hover text-fg-primary"
+                    : "text-fg-secondary hover:bg-bg-surface hover:text-fg-primary"
                 }`}
+                href={link.href}
+                key={link.href}
               >
-                <Icon icon={link.icon} className="hidden h-5 w-5 sm:block" />
+                <Icon className="hidden h-5 w-5 sm:block" icon={link.icon} />
                 <span className="font-medium text-sm">{link.label}</span>
               </Link>
             )
           })}
 
           <Button
-            onClick={handleLogout}
             className="mx-3 hidden text-fg-reverse sm:flex"
             icon="token-icon-exit"
+            onClick={handleLogout}
             size="sm"
           >
             <span className="font-medium text-xs">Odhlásit se</span>
           </Button>
           <Button
-            onClick={handleLogout}
             className="mx-3 text-fg-reverse sm:hidden"
+            onClick={handleLogout}
             size="sm"
           >
             <span className="font-medium text-xs">Odhlásit se</span>

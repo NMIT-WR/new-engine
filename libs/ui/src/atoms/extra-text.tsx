@@ -1,18 +1,18 @@
-import type { HTMLAttributes, ReactNode } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from '../utils'
+import type { HTMLAttributes, ReactNode } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { tv } from "../utils"
 
 const extraTextVariants = tv({
-  base: ['text-helper-fg'],
+  base: ["text-helper-fg"],
   variants: {
     size: {
-      sm: 'text-helper-sm',
-      md: 'text-helper-md',
-      lg: 'text-helper-lg',
+      sm: "text-helper-sm",
+      md: "text-helper-md",
+      lg: "text-helper-lg",
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 

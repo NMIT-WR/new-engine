@@ -1,8 +1,8 @@
-import { useRegions } from '@/hooks/use-region'
-import { queryKeys } from '@/lib/query-keys'
-import { getProduct } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
+import { useQueryClient } from "@tanstack/react-query"
+import { useCallback } from "react"
+import { useRegions } from "@/hooks/use-region"
+import { queryKeys } from "@/lib/query-keys"
+import { getProduct } from "@/services/product-service"
 
 export function usePrefetchProduct(enabled?: boolean) {
   const { selectedRegion } = useRegions()

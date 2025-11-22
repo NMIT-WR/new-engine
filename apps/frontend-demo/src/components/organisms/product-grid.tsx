@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { AddToCartDialog } from '@/components/molecules/add-to-cart-dialog'
-import { DemoProductCard } from '@/components/molecules/demo-product-card'
-import { usePrefetchProduct } from '@/hooks/use-prefetch-product'
-import { useRegions } from '@/hooks/use-region'
-import type { Product } from '@/types/product'
-import { formatPrice } from '@/utils/price-utils'
-import { extractProductData } from '@/utils/product-utils'
-import { Pagination } from '@new-engine/ui/molecules/pagination'
-import Link from 'next/link'
-import { useState } from 'react'
+import { Pagination } from "@new-engine/ui/molecules/pagination"
+import Link from "next/link"
+import { useState } from "react"
+import { AddToCartDialog } from "@/components/molecules/add-to-cart-dialog"
+import { DemoProductCard } from "@/components/molecules/demo-product-card"
+import { usePrefetchProduct } from "@/hooks/use-prefetch-product"
+import { useRegions } from "@/hooks/use-region"
+import type { Product } from "@/types/product"
+import { formatPrice } from "@/utils/price-utils"
+import { extractProductData } from "@/utils/product-utils"
 
 interface ProductGridProps {
   products: Product[]
@@ -75,22 +75,22 @@ export function ProductGrid({
             )
 
           return (
-            <div key={product.id} className="relative">
+            <div className="relative" key={product.id}>
               <Link
-                prefetch={true}
                 href={`/products/${product.handle}`}
                 onMouseEnter={() => prefetchProduct(product.handle)}
                 onTouchStart={() => prefetchProduct(product.handle)}
+                prefetch={true}
               >
                 <DemoProductCard
-                  name={product.title}
-                  price={formattedPrice || 'není k dispozici'}
-                  imageUrl={product.thumbnail || ''}
                   badges={displayBadges}
-                  className="hover:bg-highlight"
                   cartButtonText="Do košíku"
+                  className="hover:bg-highlight"
                   hasCartButton={true}
+                  imageUrl={product.thumbnail || ""}
+                  name={product.title}
                   onCartClick={() => handleAddToCart(product)}
+                  price={formattedPrice || "není k dispozici"}
                 />
               </Link>
             </div>
@@ -102,21 +102,21 @@ export function ProductGrid({
         <div className="mt-product-grid-pagination-margin flex justify-center">
           {/* Mobile pagination with no siblings */}
           <Pagination
+            className="sm:hidden"
             count={totalCount || products.length}
-            page={currentPage}
             onPageChange={onPageChange}
+            page={currentPage}
             pageSize={pageSize}
             siblingCount={0}
-            className="sm:hidden"
           />
           {/* Desktop pagination with siblings */}
           <Pagination
+            className="hidden sm:flex"
             count={totalCount || products.length}
-            page={currentPage}
             onPageChange={onPageChange}
+            page={currentPage}
             pageSize={pageSize}
             siblingCount={1}
-            className="hidden sm:flex"
           />
         </div>
       )}
@@ -124,14 +124,14 @@ export function ProductGrid({
       {/* Add to Cart Dialog */}
       {dialogProduct && (
         <AddToCartDialog
-          product={dialogProduct}
-          open={isDialogOpen}
           onOpenChange={({ open }) => {
             setIsDialogOpen(open)
             if (!open) {
               setDialogProduct(null)
             }
           }}
+          open={isDialogOpen}
+          product={dialogProduct}
         />
       )}
     </div>

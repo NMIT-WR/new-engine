@@ -1,15 +1,33 @@
-:root{
+:root {
   --opacity-disclaimer: 80%;
 }
 @theme static {
   /* === BASE COLORS === */
   /* Background colors */
-  --color-disclaimer-default-bg: --alpha(var(--color-primary) / var(--opacity-disclaimer));
-  --color-disclaimer-info-bg: --alpha(var(--color-info) / var(--opacity-disclaimer));
-  --color-disclaimer-warning-bg: --alpha(var(--color-warning) / var(--opacity-disclaimer));
-  --color-disclaimer-error-bg: --alpha(var(--color-danger) / var(--opacity-disclaimer));
-  --color-disclaimer-success-bg: --alpha(var(--color-success) / var(--opacity-disclaimer));
-  --color-disclaimer-fg: --alpha(var(--color-fg-reverse) / var(--opacity-disclaimer));
+  --color-disclaimer-default-bg: --alpha(
+    var(--color-primary) /
+    var(--opacity-disclaimer)
+  );
+  --color-disclaimer-info-bg: --alpha(
+    var(--color-info) /
+    var(--opacity-disclaimer)
+  );
+  --color-disclaimer-warning-bg: --alpha(
+    var(--color-warning) /
+    var(--opacity-disclaimer)
+  );
+  --color-disclaimer-error-bg: --alpha(
+    var(--color-danger) /
+    var(--opacity-disclaimer)
+  );
+  --color-disclaimer-success-bg: --alpha(
+    var(--color-success) /
+    var(--opacity-disclaimer)
+  );
+  --color-disclaimer-fg: --alpha(
+    var(--color-fg-reverse) /
+    var(--opacity-disclaimer)
+  );
 
   /* Text colors */
   --color-disclaimer-default-fg: var(--color-fg-reverse);

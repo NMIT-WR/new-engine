@@ -1,39 +1,39 @@
-import { sql } from 'drizzle-orm'
-import { sqlRaw } from './drizzle'
+import { sql } from 'drizzle-orm';
+import { sqlRaw } from './drizzle';
 
 type ProductRecord = {
-  product_slug: string
-  product_name: string
-  product_description: string
-  product_price: number
-  product_image_url: string
-  subcategory_slug: string
-  subcategory_name: string
-  subcategory_image_url: string
-  subcollection_name: string
-  category_slug: string
-  category_name: string
-  category_image_url: string
-  collection_slug: string
-  collection_name: string
-}
+  product_slug: string;
+  product_name: string;
+  product_description: string;
+  product_price: number;
+  product_image_url: string;
+  subcategory_slug: string;
+  subcategory_name: string;
+  subcategory_image_url: string;
+  subcollection_name: string;
+  category_slug: string;
+  category_name: string;
+  category_image_url: string;
+  collection_slug: string;
+  collection_name: string;
+};
 
-type ProcessedItemsCount = number
+type ProcessedItemsCount = number;
 
 export async function dummyDataImporter() {
-  console.log(`Start importing products...`)
+  console.log('Start importing products...');
   for (let page = 0; page < 1; page++) {
-    const processedItems = await importProductPage(page)
-    if (!processedItems) break
+    const processedItems = await importProductPage(page);
+    if (!processedItems) break;
   }
-  console.log(`Import has been completed.`)
+  console.log('Import has been completed.');
 }
 
 async function importProductPage(
   page: number,
-  step = 20
+  step = 20,
 ): Promise<ProcessedItemsCount> {
-  console.log(`Importing page ${page}`)
+  console.log(`Importing page ${page}`);
   const productList = await sqlRaw<ProductRecord>(sql`
       SELECT
         p.slug AS product_slug,
@@ -56,9 +56,9 @@ async function importProductPage(
       JOIN categories ca ON ca.slug = sco.category_slug
       JOIN collections cl ON cl.id = ca.collection_id
       LIMIT ${step}
-      OFFSET ${page * step}`)
+      OFFSET ${page * step}`);
 
-  console.log(`Loaded product list`, productList)
+  console.log('Loaded product list', productList);
 
-  return productList.length
+  return productList.length;
 }

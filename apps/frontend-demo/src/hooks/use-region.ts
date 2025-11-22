@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import { regionStore, setSelectedRegionId } from '@/stores/region-store'
-import type { StoreRegion } from '@medusajs/types'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useStore } from '@tanstack/react-store'
-import { useCallback, useEffect } from 'react'
+import type { StoreRegion } from "@medusajs/types"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useStore } from "@tanstack/react-store"
+import { useCallback, useEffect } from "react"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
+import { regionStore, setSelectedRegionId } from "@/stores/region-store"
 
 export function useRegions() {
   const queryClient = useQueryClient()
@@ -36,8 +36,8 @@ export function useRegions() {
     if (regions.length > 0 && !selectedRegionId) {
       // Default to USD region if no stored preference
       const defaultRegion =
-        regions.find((r) => r.currency_code === 'czk') ||
-        regions.find((r) => r.currency_code === 'eur') ||
+        regions.find((r) => r.currency_code === "czk") ||
+        regions.find((r) => r.currency_code === "eur") ||
         regions[0]
 
       if (defaultRegion) {

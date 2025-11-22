@@ -1,116 +1,116 @@
-import { normalizeProps, useMachine } from '@zag-js/react'
-import * as tabs from '@zag-js/tabs'
+import { normalizeProps, useMachine } from "@zag-js/react"
+import * as tabs from "@zag-js/tabs"
 import {
   type ComponentPropsWithoutRef,
-  type Ref,
   createContext,
+  type Ref,
   useContext,
   useId,
-} from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import { tv } from '../utils'
+} from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Button } from "../atoms/button"
+import { tv } from "../utils"
 
 const tabsVariants = tv({
   slots: {
     root: [
-      'flex w-full',
-      'data-[orientation=horizontal]:flex-col',
-      'data-[orientation=vertical]:flex-row',
-      'bg-tabs-bg',
-      'rounded-tabs',
+      "flex w-full",
+      "data-[orientation=horizontal]:flex-col",
+      "data-[orientation=vertical]:flex-row",
+      "bg-tabs-bg",
+      "rounded-tabs",
     ],
     list: [
-      'relative flex',
-      'bg-tabs-list-bg',
-      'data-[orientation=horizontal]:flex-row',
-      'data-[orientation=vertical]:flex-col',
+      "relative flex",
+      "bg-tabs-list-bg",
+      "data-[orientation=horizontal]:flex-row",
+      "data-[orientation=vertical]:flex-col",
     ],
     trigger: [
-      'relative flex items-center justify-center',
-      'text-tabs-trigger-fg',
-      'rounded-tabs-trigger',
-      'cursor-pointer',
-      'hover:bg-tabs-trigger-bg-hover',
-      'focus-visible:outline-none',
-      'focus-visible:ring',
-      'focus-visible:ring-tabs-ring',
-      'data-[selected]:text-tabs-trigger-fg-selected',
-      'data-[disabled]:opacity-tabs-disabled data-[disabled]:cursor-not-allowed',
+      "relative flex items-center justify-center",
+      "text-tabs-trigger-fg",
+      "rounded-tabs-trigger",
+      "cursor-pointer",
+      "hover:bg-tabs-trigger-bg-hover",
+      "focus-visible:outline-none",
+      "focus-visible:ring",
+      "focus-visible:ring-tabs-ring",
+      "data-[selected]:text-tabs-trigger-fg-selected",
+      "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-tabs-disabled",
     ],
     indicator: [
-      'absolute bg-tabs-indicator-bg rounded-tabs-indicator',
-      'data-[orientation=vertical]:h-(--height) data-[orientation=horizontal]:w-(--width)',
-      'data-[orientation=vertical]:w-tabs-indicator data-[orientation=horizontal]:h-tabs-indicator',
-      'data-[orientation=vertical]:start-0 data-[orientation=horizontal]:bottom-0',
+      "absolute rounded-tabs-indicator bg-tabs-indicator-bg",
+      "data-[orientation=vertical]:h-(--height) data-[orientation=horizontal]:w-(--width)",
+      "data-[orientation=horizontal]:h-tabs-indicator data-[orientation=vertical]:w-tabs-indicator",
+      "data-[orientation=vertical]:start-0 data-[orientation=horizontal]:bottom-0",
     ],
     content: [
-      'text-tabs-content-fg',
-      'outline-none',
-      'focus-visible:ring',
-      'focus-visible:ring-tabs-ring',
+      "text-tabs-content-fg",
+      "outline-none",
+      "focus-visible:ring",
+      "focus-visible:ring-tabs-ring",
     ],
   },
   variants: {
     variant: {
       default: {
-        list: '',
-        indicator: 'hidden',
+        list: "",
+        indicator: "hidden",
       },
       line: {
-        list: 'border-b-(length:--border-width-tabs) border-tabs-border',
+        list: "border-b-(length:--border-width-tabs) border-tabs-border",
         indicator:
-          'data-[orientation=horizontal]:-bottom-(--border-width-tabs)',
+          "data-[orientation=horizontal]:-bottom-(--border-width-tabs)",
       },
       solid: {
         trigger:
-          'data-[selected]:bg-tabs-trigger-bg-selected data-[selected]:text-tabs-trigger-solid-fg',
-        indicator: 'hidden',
+          "data-[selected]:bg-tabs-trigger-bg-selected data-[selected]:text-tabs-trigger-solid-fg",
+        indicator: "hidden",
       },
       outline: {
         trigger: [
-          'border-(length:--border-width-tabs) border-transparent',
-          'data-[selected]:border-tabs-border-selected',
-          'data-[selected]:bg-tabs-trigger-bg-outline-selected',
+          "border-(length:--border-width-tabs) border-transparent",
+          "data-[selected]:border-tabs-border-selected",
+          "data-[selected]:bg-tabs-trigger-bg-outline-selected",
         ],
-        indicator: 'hidden',
+        indicator: "hidden",
       },
     },
     size: {
       sm: {
-        trigger: 'text-tabs-trigger-sm p-tabs-trigger-sm',
-        content: 'p-tabs-content-sm text-tabs-content-sm',
+        trigger: "p-tabs-trigger-sm text-tabs-trigger-sm",
+        content: "p-tabs-content-sm text-tabs-content-sm",
       },
       md: {
-        trigger: 'text-tabs-trigger-md p-tabs-trigger-md',
-        content: 'p-tabs-content-md text-tabs-content-md',
+        trigger: "p-tabs-trigger-md text-tabs-trigger-md",
+        content: "p-tabs-content-md text-tabs-content-md",
       },
       lg: {
-        trigger: 'text-tabs-trigger-lg p-tabs-trigger-lg',
-        content: 'p-tabs-content-lg text-tabs-content-lg',
+        trigger: "p-tabs-trigger-lg text-tabs-trigger-lg",
+        content: "p-tabs-content-lg text-tabs-content-lg",
       },
     },
     fitted: {
       true: {
-        list: 'w-full',
-        trigger: 'flex-1',
+        list: "w-full",
+        trigger: "flex-1",
       },
     },
     justify: {
       start: {
-        list: 'justify-start',
+        list: "justify-start",
       },
       center: {
-        list: 'justify-center',
+        list: "justify-center",
       },
       end: {
-        list: 'justify-end',
+        list: "justify-end",
       },
     },
   },
   defaultVariants: {
-    variant: 'default',
-    size: 'md',
+    variant: "default",
+    size: "md",
     fitted: false,
   },
 })
@@ -118,10 +118,10 @@ const tabsVariants = tv({
 // Context for sharing state between sub-components
 interface TabsContextValue {
   api: ReturnType<typeof tabs.connect>
-  variant?: 'default' | 'line' | 'solid' | 'outline'
-  size?: 'sm' | 'md' | 'lg'
+  variant?: "default" | "line" | "solid" | "outline"
+  size?: "sm" | "md" | "lg"
   fitted?: boolean
-  justify?: 'start' | 'center' | 'end'
+  justify?: "start" | "center" | "end"
   styles: ReturnType<typeof tabsVariants>
 }
 
@@ -130,7 +130,7 @@ const TabsContext = createContext<TabsContextValue | null>(null)
 function useTabsContext() {
   const context = useContext(TabsContext)
   if (!context) {
-    throw new Error('Tabs components must be used within Tabs')
+    throw new Error("Tabs components must be used within Tabs")
   }
   return context
 }
@@ -138,13 +138,13 @@ function useTabsContext() {
 // Root component
 export interface TabsProps
   extends VariantProps<typeof tabsVariants>,
-    Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
+    Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
   id?: string
   defaultValue?: string
   value?: string
-  orientation?: 'horizontal' | 'vertical'
-  dir?: 'ltr' | 'rtl'
-  activationMode?: 'automatic' | 'manual'
+  orientation?: "horizontal" | "vertical"
+  dir?: "ltr" | "rtl"
+  activationMode?: "automatic" | "manual"
   loopFocus?: boolean
   onValueChange?: (value: string) => void
   ref?: Ref<HTMLDivElement>
@@ -154,9 +154,9 @@ export function Tabs({
   id,
   defaultValue,
   value,
-  orientation = 'horizontal',
-  dir = 'ltr',
-  activationMode = 'automatic',
+  orientation = "horizontal",
+  dir = "ltr",
+  activationMode = "automatic",
   loopFocus = true,
   onValueChange,
   variant,
@@ -192,8 +192,8 @@ export function Tabs({
       value={{ api, variant, size, fitted, justify, styles }}
     >
       <div
-        ref={ref}
         className={styles.root({ className })}
+        ref={ref}
         {...api.getRootProps()}
         {...props}
       >
@@ -204,7 +204,7 @@ export function Tabs({
 }
 
 // List component
-interface TabsListProps extends ComponentPropsWithoutRef<'div'> {
+interface TabsListProps extends ComponentPropsWithoutRef<"div"> {
   ref?: Ref<HTMLDivElement>
 }
 
@@ -218,8 +218,8 @@ Tabs.List = function TabsList({
 
   return (
     <div
-      ref={ref}
       className={styles.list({ className })}
+      ref={ref}
       {...api.getListProps()}
       {...props}
     >
@@ -229,7 +229,7 @@ Tabs.List = function TabsList({
 }
 
 // Trigger component
-interface TabsTriggerProps extends ComponentPropsWithoutRef<'button'> {
+interface TabsTriggerProps extends ComponentPropsWithoutRef<"button"> {
   value: string
   disabled?: boolean
   ref?: Ref<HTMLButtonElement>
@@ -247,9 +247,9 @@ Tabs.Trigger = function TabsTrigger({
 
   return (
     <Button
+      className={styles.trigger({ className })}
       ref={ref}
       theme="borderless"
-      className={styles.trigger({ className })}
       {...api.getTriggerProps({ value, disabled })}
       data-disabled={disabled || undefined}
       {...props}
@@ -260,7 +260,7 @@ Tabs.Trigger = function TabsTrigger({
 }
 
 // Content component
-interface TabsContentProps extends ComponentPropsWithoutRef<'div'> {
+interface TabsContentProps extends ComponentPropsWithoutRef<"div"> {
   value: string
   ref?: Ref<HTMLDivElement>
 }
@@ -276,8 +276,8 @@ Tabs.Content = function TabsContent({
 
   return (
     <div
-      ref={ref}
       className={styles.content({ className })}
+      ref={ref}
       {...api.getContentProps({ value })}
       {...props}
     >
@@ -287,7 +287,7 @@ Tabs.Content = function TabsContent({
 }
 
 // Indicator component
-interface TabsIndicatorProps extends ComponentPropsWithoutRef<'div'> {
+interface TabsIndicatorProps extends ComponentPropsWithoutRef<"div"> {
   ref?: Ref<HTMLDivElement>
 }
 
@@ -300,8 +300,8 @@ Tabs.Indicator = function TabsIndicator({
 
   return (
     <div
-      ref={ref}
       className={styles.indicator({ className })}
+      ref={ref}
       {...api.getIndicatorProps()}
       {...props}
     />
@@ -309,4 +309,4 @@ Tabs.Indicator = function TabsIndicator({
 }
 
 // Display name
-Tabs.displayName = 'Tabs'
+Tabs.displayName = "Tabs"

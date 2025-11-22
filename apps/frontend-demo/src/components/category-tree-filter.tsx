@@ -1,15 +1,15 @@
-'use client'
-import { useAccordionTree } from '@/hooks/use-accordion-tree'
-import { useCategoryPrefetch } from '@/hooks/use-category-prefetch'
-import type { CategoryTreeNode } from '@/lib/server/categories'
-import type { LeafCategory, LeafParent } from '@/lib/static-data/categories'
+"use client"
+import { type TreeNode, TreeView } from "@new-engine/ui/molecules/tree-view"
+import { useCallback, useMemo, useState } from "react"
+import { useAccordionTree } from "@/hooks/use-accordion-tree"
+import { useCategoryPrefetch } from "@/hooks/use-category-prefetch"
+import type { CategoryTreeNode } from "@/lib/server/categories"
+import type { LeafCategory, LeafParent } from "@/lib/static-data/categories"
 import {
   findNodeById,
   getLeafIdsForCategory,
   isSelectableCategory,
-} from '@/utils/category-tree-helpers'
-import { type TreeNode, TreeView } from '@new-engine/ui/molecules/tree-view'
-import { useCallback, useMemo, useState } from 'react'
+} from "@/utils/category-tree-helpers"
 
 interface CategoryFilterProps {
   categories: CategoryTreeNode[]
@@ -26,7 +26,7 @@ export function CategoryTreeFilter({
   onSelectionChange,
   label,
 }: CategoryFilterProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [selectedCategory, setSelectedCategory] = useState<string>("")
   const { expandedNodes, handleAccordionExpansion } =
     useAccordionTree(categories)
   const { delayedPrefetch, cancelAllPrefetches, prefetchCategoryProducts } =
@@ -43,10 +43,8 @@ export function CategoryTreeFilter({
 
   // Transform static category data for TreeView
   const treeData = useMemo(() => {
-    const transformTreeForSelection = (
-      nodes: CategoryTreeNode[]
-    ): TreeNode[] => {
-      return nodes.map((node) => ({
+    const transformTreeForSelection = (nodes: CategoryTreeNode[]): TreeNode[] =>
+      nodes.map((node) => ({
         id: node.id,
         name: node.name,
         children: node.children
@@ -58,7 +56,6 @@ export function CategoryTreeFilter({
           leafParentIds
         ),
       }))
-    }
     return transformTreeForSelection(categories)
   }, [categories, leafCategoryIds, leafParentIds])
 
@@ -159,19 +156,19 @@ export function CategoryTreeFilter({
 
   return (
     <TreeView
-      id="category-filter-v2"
       data={treeData}
-      label={label}
-      selectionMode="single"
-      selectedValue={selectedCategory ? [selectedCategory] : []}
       expandedValue={expandedNodes}
-      showNodeIcons={false}
-      onSelectionChange={handleSelectionChange}
-      onExpandedChange={handleExpandedChange}
       expandOnClick={true}
+      id="category-filter-v2"
+      label={label}
+      onExpandedChange={handleExpandedChange}
+      onSelectionChange={handleSelectionChange}
+      selectedValue={selectedCategory ? [selectedCategory] : []}
+      selectionMode="single"
       showIndentGuides={false}
+      showNodeIcons={false}
     />
   )
 }
 
-CategoryTreeFilter.displayName = 'CategoryTreeFilter'
+CategoryTreeFilter.displayName = "CategoryTreeFilter"

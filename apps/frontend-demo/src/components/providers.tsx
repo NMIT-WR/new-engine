@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { Toaster } from '@new-engine/ui/molecules/toast'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ThemeProvider } from 'next-themes'
-import type { PropsWithChildren } from 'react'
-import { useState } from 'react'
-import { CartPrefetch } from './cart-prefetch'
+import { Toaster } from "@new-engine/ui/molecules/toast"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ThemeProvider } from "next-themes"
+import type { PropsWithChildren } from "react"
+import { useState } from "react"
+import { CartPrefetch } from "./cart-prefetch"
 
 function makeQueryClient() {
   return new QueryClient({
@@ -21,7 +21,8 @@ function makeQueryClient() {
           // Retry up to 3 times for other errors
           return failureCount < 3
         },
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+        retryDelay: (attemptIndex) =>
+          Math.min(1000 * 2 ** attemptIndex, 30_000),
       },
       mutations: {
         retry: 1,
@@ -34,14 +35,13 @@ function makeQueryClient() {
 let browserQueryClient: QueryClient | undefined
 
 function getQueryClient() {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     // Server: always make a new query client
     return makeQueryClient()
-  } else {
-    // Browser: make client if we don't already have one
-    if (!browserQueryClient) browserQueryClient = makeQueryClient()
-    return browserQueryClient
   }
+  // Browser: make client if we don't already have one
+  if (!browserQueryClient) browserQueryClient = makeQueryClient()
+  return browserQueryClient
 }
 
 export function Providers({ children }: PropsWithChildren) {
@@ -52,8 +52,8 @@ export function Providers({ children }: PropsWithChildren) {
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
-        enableSystem
         disableTransitionOnChange
+        enableSystem
       >
         <CartPrefetch />
         {children}

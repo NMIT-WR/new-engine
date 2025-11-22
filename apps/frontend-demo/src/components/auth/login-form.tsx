@@ -1,23 +1,23 @@
-'use client'
+"use client"
 
-import { useAuth } from '@/hooks/use-auth'
+import { Button } from "@new-engine/ui/atoms/button"
+import { ErrorText } from "@new-engine/ui/atoms/error-text"
+import { Checkbox } from "@new-engine/ui/molecules/checkbox"
+import { FormInput } from "@new-engine/ui/molecules/form-input"
+import Link from "next/link"
+import { type FormEvent, useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
 import {
   AUTH_ERRORS,
   authFormFields,
   validateEmail,
   withLoading,
-} from '@/lib/auth'
-import { Button } from '@new-engine/ui/atoms/button'
-import { ErrorText } from '@new-engine/ui/atoms/error-text'
-import { Checkbox } from '@new-engine/ui/molecules/checkbox'
-import { FormInput } from '@new-engine/ui/molecules/form-input'
-import Link from 'next/link'
-import { type FormEvent, useState } from 'react'
-import { AuthFormWrapper } from './auth-form-wrapper'
+} from "@/lib/auth"
+import { AuthFormWrapper } from "./auth-form-wrapper"
 
 export function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
 
   const {
@@ -37,11 +37,11 @@ export function LoginForm() {
 
     // Client-side validation
     if (!validateEmail(email)) {
-      setFieldError('email', AUTH_ERRORS.INVALID_EMAIL)
+      setFieldError("email", AUTH_ERRORS.INVALID_EMAIL)
       return
     }
     if (password.length < 1) {
-      setFieldError('password', AUTH_ERRORS.PASSWORD_REQUIRED)
+      setFieldError("password", AUTH_ERRORS.PASSWORD_REQUIRED)
       return
     }
 
@@ -51,13 +51,13 @@ export function LoginForm() {
 
   return (
     <AuthFormWrapper
-      title="Vítejte zpět"
-      subtitle="Přihlaste se ke svému účtu a pokračujte"
-      footerText="Nemáte účet?"
-      footerLinkText="Zaregistrovat se"
       footerLinkHref="/auth/register"
+      footerLinkText="Zaregistrovat se"
+      footerText="Nemáte účet?"
+      subtitle="Přihlaste se ke svému účtu a pokračujte"
+      title="Vítejte zpět"
     >
-      <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
+      <form className="space-y-auth-form-gap" onSubmit={handleSubmit}>
         <FormInput
           {...withLoading(
             authFormFields.email({
@@ -69,12 +69,12 @@ export function LoginForm() {
             }),
             isFormLoading
           )}
-          validateStatus={getFieldError('email') ? 'error' : 'default'}
           helpText={
-            getFieldError('email') && (
-              <ErrorText showIcon>{getFieldError('email')}</ErrorText>
+            getFieldError("email") && (
+              <ErrorText showIcon>{getFieldError("email")}</ErrorText>
             )
           }
+          validateStatus={getFieldError("email") ? "error" : "default"}
         />
 
         <FormInput
@@ -88,46 +88,46 @@ export function LoginForm() {
             }),
             isFormLoading
           )}
-          validateStatus={getFieldError('password') ? 'error' : 'default'}
           helpText={
-            getFieldError('password') && (
-              <ErrorText>{getFieldError('password')}</ErrorText>
+            getFieldError("password") && (
+              <ErrorText>{getFieldError("password")}</ErrorText>
             )
           }
+          validateStatus={getFieldError("password") ? "error" : "default"}
         />
 
         <div className="flex items-center justify-between">
           <Checkbox
+            checked={rememberMe}
+            disabled={isFormLoading}
             id="rememberMe"
             labelText="Zapamatovat si mě"
-            checked={rememberMe}
             onCheckedChange={(details) =>
               setRememberMe(details.checked === true)
             }
-            disabled={isFormLoading}
           />
 
           <Link
-            href="/auth/forgot-password"
             className="text-auth-link hover:text-auth-link-hover"
+            href="/auth/forgot-password"
           >
             Zapoměli jste heslo?
           </Link>
         </div>
 
-        {error && !getFieldError('email') && !getFieldError('password') && (
+        {error && !getFieldError("email") && !getFieldError("password") && (
           <div className="rounded-md bg-red-50 p-3">
             <p className="text-red-800 text-sm">{error}</p>
           </div>
         )}
 
         <Button
-          type="submit"
           className="w-full"
-          size="lg"
           disabled={isFormLoading}
+          size="lg"
+          type="submit"
         >
-          {isFormLoading ? 'Přihlašování...' : 'Přihlásit se'}
+          {isFormLoading ? "Přihlašování..." : "Přihlásit se"}
         </Button>
       </form>
     </AuthFormWrapper>

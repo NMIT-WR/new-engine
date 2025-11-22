@@ -105,7 +105,10 @@
   );
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
-  --color-secondary: light-dark(var(--color-orange-500), var(--color-amber-400));
+  --color-secondary: light-dark(
+    var(--color-orange-500),
+    var(--color-amber-400)
+  );
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
   );
@@ -278,7 +281,10 @@
   /* All levels of background color in the application, including container, menu, navigation bar, etc. In dark mode, we usually use the background color to distinguish the front and back levels */
   --color-base-light: var(--color-white);
   --color-base-dark: var(--color-gray-950);
-  --color-base: light-dark(var(--color-base-light), var(--color-base-dark)); /*bottom page*/
+  --color-base: light-dark(
+    var(--color-base-light),
+    var(--color-base-dark)
+  ); /*bottom page*/
   --color-surface: oklch(
     from var(--color-base) calc(l - var(--surface-increment)) c h
   ); /* content that needs to be promoted on the page*/

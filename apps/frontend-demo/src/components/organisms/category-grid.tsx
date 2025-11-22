@@ -1,6 +1,6 @@
-import type { HomeCategory } from '@/types/product'
-import { Image } from '@new-engine/ui/atoms/image'
-import Link from 'next/link'
+import { Image } from "@new-engine/ui/atoms/image"
+import Link from "next/link"
+import type { HomeCategory } from "@/types/product"
 
 interface CategoryGridProps {
   title?: string
@@ -15,15 +15,15 @@ export function CategoryGrid({
 }: CategoryGridProps) {
   const leaves = categories.map((category) => category.leaves)
   const CategoryCard = ({ category }: { category: HomeCategory }) => {
-    const param = category.leaves?.join(',')
+    const param = category.leaves?.join(",")
     const content = (
       <>
         <div className="aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-700">
           {category.imageUrl && (
             <Image
-              src={category.imageUrl}
               alt={category.name}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              src={category.imageUrl}
             />
           )}
         </div>
@@ -41,10 +41,10 @@ export function CategoryGrid({
 
     return (
       <Link
+        className="group relative overflow-hidden rounded-category-card-radius"
+        href={`/products?categories=${param}`}
         key={category.name}
         prefetch={true}
-        href={`/products?categories=${param}`}
-        className="group relative overflow-hidden rounded-category-card-radius"
       >
         {content}
       </Link>
@@ -62,7 +62,7 @@ export function CategoryGrid({
         )}
         <div className="grid grid-cols-2 gap-category-grid-gap md:grid-cols-3">
           {categories.map((category) => (
-            <CategoryCard key={category.name} category={category} />
+            <CategoryCard category={category} key={category.name} />
           ))}
         </div>
       </div>

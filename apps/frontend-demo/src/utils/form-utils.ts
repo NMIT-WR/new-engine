@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import type { FormEvent } from "react"
 
 /**
  * Simple form submit handler with preventDefault

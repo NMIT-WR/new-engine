@@ -1,21 +1,21 @@
-'use client'
-import { useCart } from '@/hooks/use-cart'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
-import { Popover } from '@new-engine/ui/molecules/popover'
-import Link from 'next/link'
-import { type ComponentPropsWithoutRef, type ReactNode, useState } from 'react'
-import { Logo } from './atoms/logo'
-import { AuthDropdown } from './auth/auth-dropdown'
-import { CartPreview } from './molecules/cart-preview'
-import { HeaderSearch } from './molecules/header-search'
-import { type NavItem, Navigation } from './molecules/navigation'
-import { MobileMenu } from './organisms/mobile-menu'
-import { RegionSelector } from './region-selector'
-import { ThemeToggle } from './theme-toggle'
+"use client"
+import { Badge } from "@new-engine/ui/atoms/badge"
+import { Button } from "@new-engine/ui/atoms/button"
+import { Icon, type IconType } from "@new-engine/ui/atoms/icon"
+import { Popover } from "@new-engine/ui/molecules/popover"
+import Link from "next/link"
+import { type ComponentPropsWithoutRef, type ReactNode, useState } from "react"
+import { useCart } from "@/hooks/use-cart"
+import { Logo } from "./atoms/logo"
+import { AuthDropdown } from "./auth/auth-dropdown"
+import { CartPreview } from "./molecules/cart-preview"
+import { HeaderSearch } from "./molecules/header-search"
+import { type NavItem, Navigation } from "./molecules/navigation"
+import { MobileMenu } from "./organisms/mobile-menu"
+import { RegionSelector } from "./region-selector"
+import { ThemeToggle } from "./theme-toggle"
 
-interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
+interface HeaderProps extends ComponentPropsWithoutRef<"header"> {
   logo?: {
     text?: string
     icon?: IconType
@@ -27,7 +27,7 @@ interface HeaderProps extends ComponentPropsWithoutRef<'header'> {
 }
 
 export function Header({
-  logo = { text: 'Logo', href: '/' },
+  logo = { text: "Logo", href: "/" },
   navigationItems = [],
   actions,
   showMobileMenu = true,
@@ -48,7 +48,7 @@ export function Header({
         <div className="flex h-header-height-lg items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center">
-            <Link href={'/'}>
+            <Link href={"/"}>
               <Logo size="sm" />
             </Link>
 
@@ -75,7 +75,9 @@ export function Header({
               <HeaderSearch />
               {/* Cart button */}
               <Popover
+                contentClassName="z-50"
                 id="popover-header"
+                placement="bottom-end"
                 trigger={
                   <div className="relative mr-100 flex items-center">
                     <Icon
@@ -84,16 +86,14 @@ export function Header({
                     />
                     {itemCount > 0 && (
                       <Badge
-                        variant="danger"
                         className="-right-2 -top-2 absolute h-4 w-4 min-w-4 rounded-full text-xs"
+                        variant="danger"
                       >
-                        {itemCount > 99 ? '99+' : itemCount.toString()}
+                        {itemCount > 99 ? "99+" : itemCount.toString()}
                       </Badge>
                     )}
                   </div>
                 }
-                placement="bottom-end"
-                contentClassName="z-50"
                 triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
               >
                 <CartPreview />
@@ -109,11 +109,11 @@ export function Header({
               {/* Mobile menu button */}
               {showMobileMenu && (
                 <Button
-                  theme="borderless"
-                  size="sm"
-                  icon="token-icon-menu"
                   className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-icon-size text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus:outline-none focus:ring-header-mobile-menu-color focus:ring-header-mobile-menu-width focus:ring-inset lg:hidden"
+                  icon="token-icon-menu"
                   onClick={() => setIsMobileMenuOpen(true)}
+                  size="sm"
+                  theme="borderless"
                 />
               )}
             </div>
@@ -124,8 +124,8 @@ export function Header({
       {/* Mobile Menu */}
       <MobileMenu
         isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
         navigationItems={navigationItems}
+        onClose={() => setIsMobileMenuOpen(false)}
       />
     </header>
   )
