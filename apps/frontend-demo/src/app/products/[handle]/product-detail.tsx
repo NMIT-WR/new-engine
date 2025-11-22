@@ -14,7 +14,7 @@ import { useRegions } from "@/hooks/use-region"
 import { truncateProductTitle } from "@/lib/order-utils"
 import { formatPrice } from "@/utils/price-utils"
 
-interface ProductDetailProps {
+type ProductDetailProps = {
   handle: string
 }
 

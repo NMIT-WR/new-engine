@@ -1,7 +1,7 @@
 import { Icon } from "@new-engine/ui/atoms/icon"
 import { formatPrice } from "@/lib/format-price"
 
-interface OrdersSummaryProps {
+type OrdersSummaryProps = {
   totalAmount: number
   completedOrders: number
   pendingOrders: number

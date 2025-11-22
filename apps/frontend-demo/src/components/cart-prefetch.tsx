@@ -12,7 +12,9 @@ export function CartPrefetch() {
   const { selectedRegion } = useRegions()
 
   useEffect(() => {
-    if (!selectedRegion) return
+    if (!selectedRegion) {
+      return
+    }
 
     // Prefetch cart data
     queryClient.prefetchQuery({

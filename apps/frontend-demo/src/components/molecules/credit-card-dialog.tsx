@@ -9,14 +9,14 @@ import { useEffect, useState } from "react"
 import "../../tokens/app-components/molecules/_credit-card-dialog.css"
 import { Icon } from "@new-engine/ui/atoms/icon"
 
-interface CreditCardDialogProps {
+type CreditCardDialogProps = {
   open: boolean
   onOpenChange: (details: { open: boolean }) => void
   onSubmit: (cardData: CardData) => void
   isLoading?: boolean
 }
 
-interface CardData {
+type CardData = {
   cardNumber: string
   cardHolder: string
   expiryDate: string
@@ -33,9 +33,12 @@ function cardCheck(cardNumber: string): boolean {
 function detectCardType(cardNumber: string): "visa" | "mastercard" | "unknown" {
   const cleanNumber = cardNumber.replace(/\s/g, "")
 
-  if (/^4/.test(cleanNumber)) return "visa"
-  if (/^5[1-5]/.test(cleanNumber) || /^2[2-7]/.test(cleanNumber))
+  if (/^4/.test(cleanNumber)) {
+    return "visa"
+  }
+  if (/^5[1-5]/.test(cleanNumber) || /^2[2-7]/.test(cleanNumber)) {
     return "mastercard"
+  }
 
   return "unknown"
 }
@@ -51,7 +54,7 @@ function formatCardNumber(value: string): string {
 function formatExpiryDate(value: string): string {
   const cleanValue = value.replace(/\D/g, "")
   if (cleanValue.length >= 2) {
-    return cleanValue.slice(0, 2) + "/" + cleanValue.slice(2, 4)
+    return `${cleanValue.slice(0, 2)}/${cleanValue.slice(2, 4)}`
   }
   return cleanValue
 }
@@ -129,12 +132,12 @@ export function CreditCardDialog({
       const currentYear = new Date().getFullYear() % 100
       const currentMonth = new Date().getMonth() + 1
 
-      if (Number.parseInt(month) < 1 || Number.parseInt(month) > 12) {
+      if (Number.parseInt(month, 10) < 1 || Number.parseInt(month, 10) > 12) {
         newErrors.expiryDate = "Neplatný měsíc"
       } else if (
-        Number.parseInt(year) < currentYear ||
-        (Number.parseInt(year) === currentYear &&
-          Number.parseInt(month) < currentMonth)
+        Number.parseInt(year, 10) < currentYear ||
+        (Number.parseInt(year, 10) === currentYear &&
+          Number.parseInt(month, 10) < currentMonth)
       ) {
         newErrors.expiryDate = "Karta je expirovaná"
       }

@@ -95,7 +95,7 @@ const accordionVariants = tv({
 })
 
 // Context for sharing state between sub-components
-interface AccordionContextValue {
+type AccordionContextValue = {
   api: ReturnType<typeof accordion.connect>
   size?: "sm" | "md" | "lg"
   shadow?: "sm" | "md" | "none"
@@ -114,7 +114,7 @@ function useAccordionContext() {
 }
 
 // Context for sharing item state
-interface AccordionItemContextValue {
+type AccordionItemContextValue = {
   value: string
   disabled?: boolean
   variant?: "default" | "borderless" | "child"

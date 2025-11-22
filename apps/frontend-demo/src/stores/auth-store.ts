@@ -3,7 +3,7 @@ import { Store } from "@tanstack/react-store"
 import type { ValidationError } from "@/lib/auth/validation"
 import { sdk } from "@/lib/medusa-client"
 
-export interface AuthState {
+export type AuthState = {
   // Auth state
   user: HttpTypes.StoreCustomer | null
   isLoading: boolean
@@ -45,7 +45,7 @@ export const authHelpers = {
           isInitialized: true,
         }))
         return customer
-      } catch (error: any) {
+      } catch {
         // If 401, user is not authenticated
         authStore.setState((state) => ({
           ...state,
@@ -171,7 +171,7 @@ export const authHelpers = {
       // Step 4: Refresh token to ensure proper permissions
       try {
         await sdk.auth.refresh()
-      } catch (refreshError) {}
+      } catch {}
 
       // Step 5: Fetch the customer again to ensure we have the latest data
       try {
@@ -184,7 +184,7 @@ export const authHelpers = {
           isInitialized: true,
         }))
         return refreshedCustomer
-      } catch (fetchError) {
+      } catch {
         authStore.setState((state) => ({
           ...state,
           user: customer,
@@ -214,7 +214,7 @@ export const authHelpers = {
         isInitialized: true,
         validationErrors: [],
       }))
-    } catch (err) {
+    } catch {
       // Silent fail
     }
   },

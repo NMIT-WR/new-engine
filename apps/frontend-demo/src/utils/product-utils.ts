@@ -19,14 +19,14 @@ export function getStockStatusText(status: StockStatus): string {
 /**
  * Extract all common product display data
  */
-interface ProductDisplayData {
+type ProductDisplayData = {
   badges: BadgeProps[]
   displayBadges: BadgeProps[]
 }
 
 export function extractProductData(
   product: Product,
-  currencyCode?: string
+  _currencyCode?: string
 ): ProductDisplayData {
   // For API products, find the price that matches the current currency
   const primaryVariant = product.primaryVariant

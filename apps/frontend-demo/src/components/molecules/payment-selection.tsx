@@ -5,7 +5,7 @@ import { Icon } from "@new-engine/ui/atoms/icon"
 import { useToast } from "@new-engine/ui/molecules/toast"
 import { PAYMENT_METHODS } from "@/lib/checkout-data"
 
-interface PaymentSelectionProps {
+type PaymentSelectionProps = {
   selected: string
   onSelect: (method: string) => void
   currentStep: number

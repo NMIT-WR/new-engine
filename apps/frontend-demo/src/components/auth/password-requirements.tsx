@@ -1,6 +1,6 @@
 import { validatePassword } from "@/lib/auth/validation"
 
-interface PasswordRequirementsProps {
+type PasswordRequirementsProps = {
   password: string
 }
 

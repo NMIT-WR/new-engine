@@ -91,7 +91,7 @@ const footerVariants = tv({
   },
 })
 
-interface FooterContextValue {
+type FooterContextValue = {
   size?: "sm" | "md" | "lg"
   sectionFlow?: "col" | "row"
   layout?: "col" | "row"

@@ -4,7 +4,7 @@ import { Store } from "@tanstack/react-store"
 const COOKIE_NAME = "medusa_region_id"
 const COOKIE_MAX_AGE = 365 * 24 * 60 * 60
 
-export interface RegionState {
+export type RegionState = {
   selectedRegionId: string | null
 }
 
@@ -19,7 +19,9 @@ function setCookie(name: string, value: string) {
 }
 
 function getCookie(name: string): string | null {
-  if (typeof window === "undefined") return null
+  if (typeof window === "undefined") {
+    return null
+  }
 
   const value = `; ${document.cookie}`
   const parts = value.split(`; ${name}=`)

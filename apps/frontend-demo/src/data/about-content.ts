@@ -3,24 +3,24 @@ import type { StaticImageData } from "next/image"
 import pavelImg from "/assets/team/pavel.jpg"
 import petrImg from "/assets/team/petr.jpg"
 
-export interface TeamMember {
+export type TeamMember = {
   name: string
   role: string
   image: string | StaticImageData
 }
 
-export interface CompanyValue {
+export type CompanyValue = {
   title: string
   description: string
   icon: IconType // SVG path data
 }
 
-export interface CompanyStat {
+export type CompanyStat = {
   value: string
   label: string
 }
 
-export interface AboutContent {
+export type AboutContent = {
   hero: {
     title: string
     subtitle: string

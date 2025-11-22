@@ -5,7 +5,7 @@
 
 import type { ProductFilters } from "@/services/product-service"
 
-export interface MedusaProductQuery {
+export type MedusaProductQuery = {
   limit?: number
   offset?: number
   fields?: string
@@ -19,7 +19,7 @@ export interface MedusaProductQuery {
   [key: string]: any
 }
 
-export interface VariantOptionFilter {
+export type VariantOptionFilter = {
   option_id?: string
   value?: string
   option?: Record<string, any>
@@ -34,7 +34,9 @@ export function buildMedusaQuery(
 ): MedusaProductQuery {
   const query: MedusaProductQuery = { ...baseQuery }
 
-  if (!filters) return query
+  if (!filters) {
+    return query
+  }
 
   // Category filtering - Medusa supports this natively
   if (filters.categories?.length) {

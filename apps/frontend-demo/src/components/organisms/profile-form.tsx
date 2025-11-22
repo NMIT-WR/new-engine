@@ -9,7 +9,7 @@ import { useCustomer } from "@/hooks/use-customer"
 import { COUNTRIES, formatPhoneNumber, formatPostalCode } from "@/lib/address"
 import type { FormAddressData, FormUserData } from "@/types/checkout"
 
-interface ProfileFormProps {
+type ProfileFormProps = {
   initialAddress: FormAddressData | null
   user: HttpTypes.StoreCustomer
 }

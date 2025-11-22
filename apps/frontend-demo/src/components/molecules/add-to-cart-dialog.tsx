@@ -9,7 +9,7 @@ import { truncateProductTitle } from "@/lib/order-utils"
 import type { Product } from "@/types/product"
 import { formatPrice } from "@/utils/price-utils"
 
-interface AddToCartDialogProps {
+type AddToCartDialogProps = {
   product: Product
   open: boolean
   onOpenChange: (details: { open: boolean }) => void

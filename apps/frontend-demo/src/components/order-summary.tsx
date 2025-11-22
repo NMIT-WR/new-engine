@@ -10,7 +10,7 @@ import type {
   ReducedShippingMethod,
 } from "@/types/checkout"
 
-interface OrderSummaryProps {
+type OrderSummaryProps = {
   addressData?: CheckoutAddressData
   selectedShipping: ReducedShippingMethod | undefined
   selectedPayment: PaymentMethod | undefined
@@ -31,7 +31,7 @@ export function OrderSummary({
   orderNumber,
   isLoading = false,
 }: OrderSummaryProps) {
-  if (!(addressData && addressData.shipping)) {
+  if (!addressData?.shipping) {
     return (
       <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
         <div className="rounded-lg bg-surface p-4 sm:p-6">

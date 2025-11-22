@@ -20,7 +20,7 @@ const accountLinks = [
   },
 ]
 
-interface AccountLayoutProps {
+type AccountLayoutProps = {
   children: ReactNode
 }
 

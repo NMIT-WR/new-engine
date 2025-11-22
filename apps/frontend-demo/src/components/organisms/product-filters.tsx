@@ -12,12 +12,12 @@ import { getProducts } from "@/services/product-service"
 import { CategoryTreeFilter } from "../category-tree-filter"
 import { FilterSection } from "../molecules/filter-section"
 
-export interface FilterState {
+export type FilterState = {
   categories: Set<string>
   sizes: Set<string>
 }
 
-interface ProductFiltersProps {
+type ProductFiltersProps = {
   className?: string
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
@@ -31,7 +31,7 @@ export function ProductFilters({
   hideCategories = false,
 }: ProductFiltersProps) {
   const { selectedRegion } = useRegions()
-  const [categoryIds, setCategoryIds] = useState<string[]>([])
+  const [_categoryIds, setCategoryIds] = useState<string[]>([])
 
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()

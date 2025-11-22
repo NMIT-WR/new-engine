@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef, ElementType } from "react"
 
-export interface BaseImageProps {
+export type BaseImageProps = {
   src: string
   alt: string
   className?: string

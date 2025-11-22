@@ -28,7 +28,9 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Update addresses in cart
   const updateAddresses = async (data: CheckoutAddressData) => {
-    if (!cart?.id) return
+    if (!cart?.id) {
+      return
+    }
 
     try {
       await sdk.store.cart.update(cart.id, {
@@ -83,7 +85,9 @@ export function useCheckout(): UseCheckoutReturn {
   } = useQuery({
     queryKey: queryKeys.fulfillment.cartOptions(cart?.id || ""),
     queryFn: async () => {
-      if (!cart?.id) throw new Error("No cart ID available")
+      if (!cart?.id) {
+        throw new Error("No cart ID available")
+      }
       const response = await sdk.store.fulfillment.listCartOptions({
         cart_id: cart.id,
       })
@@ -101,7 +105,9 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Add shipping method to cart
   const addShippingMethod = async (methodId: string) => {
-    if (!cart?.id) return
+    if (!cart?.id) {
+      return
+    }
 
     try {
       await sdk.store.cart.addShippingMethod(cart.id, {
@@ -121,7 +127,9 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Process order
   const processOrder = async () => {
-    if (!cart?.id) return
+    if (!cart?.id) {
+      return
+    }
 
     setIsProcessingPayment(true)
 

@@ -11,7 +11,7 @@ import {
   isSelectableCategory,
 } from "@/utils/category-tree-helpers"
 
-interface CategoryFilterProps {
+type CategoryFilterProps = {
   categories: CategoryTreeNode[]
   leafCategories: LeafCategory[]
   leafParents: LeafParent[]
@@ -100,7 +100,9 @@ export function CategoryTreeFilter({
         // 2. LEAF PARENT CATEGORY - prefetch direct children only
         if (leafParentIds.has(nodeId)) {
           const expandedParentLeaf = leafParents.find((p) => p.id === nodeId)
-          if (!expandedParentLeaf) continue
+          if (!expandedParentLeaf) {
+            continue
+          }
 
           //console.log(`[Prefetch] Expanding parentLeaf: ${expandedParentLeaf.name}`)
           for (const childId of expandedParentLeaf.children || []) {
@@ -151,6 +153,7 @@ export function CategoryTreeFilter({
       leafParentIds,
       categories,
       delayedPrefetch,
+      prefetchCategoryProducts,
     ]
   )
 

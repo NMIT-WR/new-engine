@@ -20,7 +20,7 @@ export function useCustomer() {
       try {
         const response = await sdk.store.customer.listAddress()
         return response
-      } catch (error) {
+      } catch {
         return { addresses: [] }
       }
     },
@@ -81,7 +81,7 @@ export function useCustomer() {
       // Return context with snapshot for rollback
       return { previousAddresses }
     },
-    onError: (error: Error, newData, context) => {
+    onError: (error: Error, _newData, context) => {
       // Rollback on error
       if (context?.previousAddresses) {
         queryClient.setQueryData(
@@ -138,7 +138,7 @@ export function useCustomer() {
       // Return context with snapshot
       return { previousCustomer }
     },
-    onError: (error: Error, newData, context) => {
+    onError: (error: Error, _newData, context) => {
       // Rollback on error
       if (context?.previousCustomer) {
         queryClient.setQueryData(

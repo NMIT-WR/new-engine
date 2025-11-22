@@ -3,7 +3,7 @@
 import DOMPurify from "dompurify"
 import { useMemo } from "react"
 
-interface SafeHtmlContentProps {
+type SafeHtmlContentProps = {
   content: string | null | undefined
   className?: string
   /** Custom DOMPurify config for allowed tags and attributes */
@@ -21,7 +21,9 @@ export function SafeHtmlContent({
   config,
 }: SafeHtmlContentProps) {
   const processedContent = useMemo(() => {
-    if (!content) return { isHtml: false, content: "" }
+    if (!content) {
+      return { isHtml: false, content: "" }
+    }
 
     // Check if content contains HTML tags or HTML entities
     const hasHtmlTags = /<[^>]*>/g.test(content)

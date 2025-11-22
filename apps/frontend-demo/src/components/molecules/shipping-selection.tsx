@@ -6,7 +6,7 @@ import { SHIPPING_METHODS } from "@/lib/checkout-data"
 import { formatPrice } from "@/lib/format-price"
 import type { ReducedShippingMethod } from "@/types/checkout"
 
-interface ShippingSelectionProps {
+type ShippingSelectionProps = {
   selected: string
   onSelect: (method: string) => void
   currentStep: number

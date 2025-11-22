@@ -116,7 +116,7 @@ const menuVariants = tv({
 })
 
 // === SUBMENU COMPONENT ===
-interface SubmenuItemProps {
+type SubmenuItemProps = {
   item: SubmenuMenuItem
   parentApi: menu.Api
   parentService: menu.Service

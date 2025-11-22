@@ -59,12 +59,14 @@ export default function CheckoutPage() {
   }, [cart, isLoading, isOrderComplete])
 
   // Show loading state while cart is loading
-  if (isLoading) return <LoadingPage />
+  if (isLoading) {
+    return <LoadingPage />
+  }
 
   // Get order data (either from cart or saved completed order)
   const orderData = orderHelpers.getOrderData(cart)
 
-  if (!(orderData && orderData.items) || orderData.items.length === 0) {
+  if (!orderData?.items || orderData.items.length === 0) {
     return null
   }
 
@@ -90,7 +92,7 @@ export default function CheckoutPage() {
         setIsOrderComplete(true)
         setCurrentStep(3)
       }
-    } catch (error) {
+    } catch (_error) {
       // Error already handled in hook
     }
   }
@@ -105,7 +107,7 @@ export default function CheckoutPage() {
             try {
               await updateAddresses(data)
               setCurrentStep(1)
-            } catch (err) {
+            } catch (_err) {
               // Error already handled in hook
             }
           }}
@@ -123,7 +125,7 @@ export default function CheckoutPage() {
             setSelectedShipping(method)
             try {
               await addShippingMethod(method)
-            } catch (error) {
+            } catch (_error) {
               // Error already handled in hook
             }
           }}

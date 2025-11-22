@@ -7,9 +7,9 @@
  * in both CSS and JS/TS files with better accuracy and performance.
  */
 
-import fs from "fs"
+import fs from "node:fs"
+import path from "node:path"
 import { globSync } from "glob"
-import path from "path"
 
 // Configuration
 const TOKEN_DIRS = ["src/tokens"]
@@ -249,7 +249,9 @@ function isTokenUsed(token, allTokens) {
 
   // Check usage in other CSS files
   for (const file of tokenFiles) {
-    if (file === tokenInfo.file) continue // Skip the file where it's defined
+    if (file === tokenInfo.file) {
+      continue // Skip the file where it's defined
+    }
 
     const content = readFileWithCache(file)
     // Check for direct token usage in calc(), var(), or other CSS functions
@@ -444,7 +446,9 @@ async function main() {
 
   for (const [token, info] of allTokens) {
     // Debug specific token
-    if (debugToken && token !== debugToken) continue
+    if (debugToken && token !== debugToken) {
+      continue
+    }
 
     checked++
     if (!debugMode && checked % 25 === 0) {
@@ -465,7 +469,9 @@ async function main() {
       if (debugMode) {
         console.log(`✅ Found in: ${usage.location}`)
         console.log(`   Type: ${usage.type}`)
-        if (usage.match) console.log(`   Match: "${usage.match}"`)
+        if (usage.match) {
+          console.log(`   Match: "${usage.match}"`)
+        }
       }
     } else {
       unusedTokens.push({ token, ...info })

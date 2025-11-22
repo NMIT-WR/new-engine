@@ -72,7 +72,6 @@ export default function CartPage() {
               <div className="divide-y divide-cart-item-divider">
                 {items.map((item) => {
                   const price = item.unit_price || 0
-                  const itemTotal = price * item.quantity
 
                   return (
                     <div

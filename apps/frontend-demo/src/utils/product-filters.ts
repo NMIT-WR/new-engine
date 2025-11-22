@@ -1,6 +1,6 @@
 import type { Product } from "@/types/product"
 
-export interface ProductCounts {
+export type ProductCounts = {
   sizeCounts: Record<string, number>
   colorCounts: Record<string, number>
   categoryCounts: Array<{

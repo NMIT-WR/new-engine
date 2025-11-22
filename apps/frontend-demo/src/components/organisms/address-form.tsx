@@ -60,7 +60,13 @@ export function AddressForm({
         country: address.country || prev.country,
       }))
     }
-  }, [address?.street, address?.city, address?.postalCode, address?.country])
+  }, [
+    address?.street,
+    address?.city,
+    address?.postalCode,
+    address?.country,
+    address,
+  ])
 
   const [useSameAddress, setUseSameAddress] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})

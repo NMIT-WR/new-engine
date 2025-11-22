@@ -160,7 +160,7 @@ const carouselVariants = tv({
 })
 
 // === CONTEXT ===
-interface CarouselContextValue {
+type CarouselContextValue = {
   api: ReturnType<typeof carousel.connect>
   size?: "sm" | "md" | "lg" | "full"
   objectFit?: "cover" | "contain" | "fill" | "none"
@@ -197,7 +197,7 @@ export interface CarouselRootProps<T extends ElementType = typeof Image>
   height?: number
 }
 
-interface CarouselSlidesProps {
+type CarouselSlidesProps = {
   slides: CarouselSlide[]
   size?: "sm" | "md" | "lg" | "full"
   imageAs?: ElementType
@@ -206,38 +206,38 @@ interface CarouselSlidesProps {
   className?: string
 }
 
-interface CarouselSlideProps {
+type CarouselSlideProps = {
   index: number
   children: ReactNode
   size?: "sm" | "md" | "lg" | "full"
   className?: string
 }
 
-interface CarouselPreviousProps {
+type CarouselPreviousProps = {
   className?: string
   icon?: IconType
 }
 
-interface CarouselNextProps {
+type CarouselNextProps = {
   className?: string
   icon?: IconType
 }
 
-interface CarouselIndicatorsProps {
+type CarouselIndicatorsProps = {
   className?: string
 }
 
-interface CarouselIndicatorProps {
+type CarouselIndicatorProps = {
   index: number
   className?: string
   children?: ReactNode
 }
 
-interface CarouselAutoplayProps {
+type CarouselAutoplayProps = {
   className?: string
 }
 
-interface CarouselControlProps {
+type CarouselControlProps = {
   children: ReactNode
   className?: string
 }

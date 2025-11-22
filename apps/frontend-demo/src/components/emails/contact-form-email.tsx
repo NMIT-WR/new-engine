@@ -12,7 +12,7 @@ import {
   Text,
 } from "@react-email/components"
 
-interface ContactFormEmailProps {
+type ContactFormEmailProps = {
   firstName: string
   lastName: string
   email: string

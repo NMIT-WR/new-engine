@@ -13,7 +13,7 @@ import { Icon, type IconType } from "../atoms/icon"
 import { tv } from "../utils"
 
 // === COLLECTION TYPES ===
-export interface TreeNode {
+export type TreeNode = {
   id: string
   name: string
   children?: TreeNode[]
@@ -126,7 +126,7 @@ const treeViewVariants = tv({
 
 // === CONTEXTS ===
 // Main context for sharing tree state
-interface TreeViewContextValue {
+type TreeViewContextValue = {
   api: tree.Api
   size?: "sm" | "md" | "lg"
   styles: ReturnType<typeof treeViewVariants>
@@ -144,7 +144,7 @@ function useTreeViewContext() {
 }
 
 // Node context for sharing node-specific state
-interface TreeViewNodeContextValue {
+type TreeViewNodeContextValue = {
   node: TreeNode
   indexPath: number[]
   nodeProps: tree.NodeProps
@@ -282,7 +282,7 @@ TreeView.Tree = function TreeViewTree({
 }
 
 // === NODE PROVIDER COMPONENT ===
-interface TreeViewNodeProviderProps {
+type TreeViewNodeProviderProps = {
   node: TreeNode
   indexPath: number[]
   children: ReactNode
@@ -406,7 +406,7 @@ TreeView.BranchControl = function TreeViewBranchControl({
 }
 
 // === BRANCH TEXT COMPONENT ===
-interface TreeViewBranchTextProps {
+type TreeViewBranchTextProps = {
   children?: ReactNode
   className?: string
 }
@@ -429,7 +429,7 @@ TreeView.BranchText = function TreeViewBranchText({
 }
 
 // === BRANCH INDICATOR COMPONENT ===
-interface TreeViewBranchIndicatorProps {
+type TreeViewBranchIndicatorProps = {
   icon?: IconType
   className?: string
 }
@@ -486,7 +486,7 @@ TreeView.BranchContent = function TreeViewBranchContent({
 }
 
 // === INDENT GUIDE COMPONENT ===
-interface TreeViewIndentGuideProps {
+type TreeViewIndentGuideProps = {
   className?: string
 }
 
@@ -557,7 +557,7 @@ TreeView.Item = function TreeViewItem({
 }
 
 // === ITEM TEXT COMPONENT ===
-interface TreeViewItemTextProps {
+type TreeViewItemTextProps = {
   children?: ReactNode
   className?: string
 }
@@ -615,7 +615,7 @@ TreeView.NodeIcon = function TreeViewNodeIcon({
 
 // === HELPER NODE COMPONENT ===
 // This component provides a default implementation using all subcomponents
-interface TreeViewNodeProps {
+type TreeViewNodeProps = {
   node: TreeNode
   indexPath: number[]
   showIndentGuides?: boolean

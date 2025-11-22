@@ -2,13 +2,13 @@ import { sdk } from "@/lib/medusa-client"
 import type { Product } from "@/types/product"
 import { buildMedusaQuery } from "@/utils/server-filters"
 
-export interface ProductFilters {
+export type ProductFilters = {
   categories?: string[]
   sizes?: string[]
   // search removed - use 'q' parameter directly
 }
 
-export interface ProductListParams {
+export type ProductListParams = {
   limit?: number
   offset?: number
   fields?: string
@@ -20,7 +20,7 @@ export interface ProductListParams {
   country_code?: string
 }
 
-export interface ProductListResponse {
+export type ProductListResponse = {
   products: Product[]
   count: number
   limit: number

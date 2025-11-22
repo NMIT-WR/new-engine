@@ -80,7 +80,9 @@ export function getCacheConfig(
  * Network-aware cache config
  */
 export function getNetworkAwareCacheConfig(type: keyof typeof cacheConfig) {
-  if (typeof window === "undefined") return cacheConfig[type]
+  if (typeof window === "undefined") {
+    return cacheConfig[type]
+  }
 
   // Check for slow connection
   const connection = (navigator as any).connection

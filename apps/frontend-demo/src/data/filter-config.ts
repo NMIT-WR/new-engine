@@ -6,7 +6,7 @@ export type FilterType =
   | "tree"
   | "sale"
 
-export interface FilterOption {
+export type FilterOption = {
   value: string
   label: string
   count?: number
@@ -14,7 +14,7 @@ export interface FilterOption {
   children?: FilterOption[]
 }
 
-export interface FilterConfig {
+export type FilterConfig = {
   id: string
   type: FilterType
   title: string

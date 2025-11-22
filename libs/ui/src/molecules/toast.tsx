@@ -52,7 +52,7 @@ const toastVariants = tv({
 })
 
 // Toast Item Component
-interface ToastProps {
+type ToastProps = {
   actor: toast.Options<ReactNode>
   index: number
   parent: toast.GroupService

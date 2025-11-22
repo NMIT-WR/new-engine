@@ -73,7 +73,7 @@ const productCardVariants = tv({
 })
 
 // === CONTEXT ===
-interface ProductCardContextValue {
+type ProductCardContextValue = {
   layout?: "column" | "row"
 }
 

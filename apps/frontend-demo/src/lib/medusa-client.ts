@@ -67,7 +67,7 @@ if (typeof window !== "undefined") {
     if (token && sdk.auth) {
       try {
         await sdk.auth.refresh()
-      } catch (error) {
+      } catch {
         // Silent fail - let the app handle auth errors
       }
     }

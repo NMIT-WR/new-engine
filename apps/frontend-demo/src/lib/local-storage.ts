@@ -2,7 +2,7 @@
  * Type-safe localStorage utilities with error handling
  */
 
-interface StorageItem<T> {
+type StorageItem<T> = {
   value: T
   timestamp: number
   version?: string
@@ -13,11 +13,15 @@ export const storage = {
    * Get item from localStorage with type safety
    */
   get: <T>(key: string): T | null => {
-    if (typeof window === "undefined") return null
+    if (typeof window === "undefined") {
+      return null
+    }
 
     try {
       const item = localStorage.getItem(key)
-      if (!item) return null
+      if (!item) {
+        return null
+      }
 
       const parsed: StorageItem<T> = JSON.parse(item)
       return parsed.value
@@ -31,11 +35,15 @@ export const storage = {
    * Get item with metadata (timestamp, version)
    */
   getWithMeta: <T>(key: string): StorageItem<T> | null => {
-    if (typeof window === "undefined") return null
+    if (typeof window === "undefined") {
+      return null
+    }
 
     try {
       const item = localStorage.getItem(key)
-      if (!item) return null
+      if (!item) {
+        return null
+      }
 
       return JSON.parse(item)
     } catch (e) {
@@ -48,7 +56,9 @@ export const storage = {
    * Set item in localStorage with timestamp
    */
   set: <T>(key: string, value: T, version?: string): void => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") {
+      return
+    }
 
     try {
       const item: StorageItem<T> = {
@@ -71,7 +81,9 @@ export const storage = {
    * Remove item from localStorage
    */
   remove: (key: string): void => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") {
+      return
+    }
     localStorage.removeItem(key)
   },
 
@@ -79,10 +91,14 @@ export const storage = {
    * Check if item exists and is not expired
    */
   has: (key: string, maxAge?: number): boolean => {
-    if (typeof window === "undefined") return false
+    if (typeof window === "undefined") {
+      return false
+    }
 
     const item = storage.getWithMeta(key)
-    if (!item) return false
+    if (!item) {
+      return false
+    }
 
     if (maxAge && Date.now() - item.timestamp > maxAge) {
       storage.remove(key)
@@ -96,7 +112,9 @@ export const storage = {
    * Clear all items with specific prefix
    */
   clear: (prefix: string): void => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") {
+      return
+    }
 
     const keys = Object.keys(localStorage)
     keys.forEach((key) => {
@@ -110,7 +128,9 @@ export const storage = {
    * Cleanup old items with specific prefix
    */
   cleanup: (prefix: string, maxAge: number): void => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") {
+      return
+    }
 
     const keys = Object.keys(localStorage)
     let removed = 0
@@ -136,7 +156,9 @@ export const storage = {
    * Get storage size info
    */
   getSize: (): { used: number; total: number; percentage: number } | null => {
-    if (typeof window === "undefined") return null
+    if (typeof window === "undefined") {
+      return null
+    }
 
     try {
       let used = 0
@@ -162,7 +184,9 @@ export const storage = {
  * Hook for automatic cleanup on mount
  */
 export function useStorageCleanup() {
-  if (typeof window === "undefined") return
+  if (typeof window === "undefined") {
+    return
+  }
 
   // Cleanup on mount
   storage.cleanup("temp_", 24 * 60 * 60 * 1000) // 24 hours

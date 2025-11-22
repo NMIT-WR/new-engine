@@ -71,7 +71,7 @@ const numericInputVariants = tv({
 })
 
 // Context for sharing state between sub-components
-interface NumericInputContextValue {
+type NumericInputContextValue = {
   api: ReturnType<typeof numberInput.connect>
   size?: "sm" | "md" | "lg"
   styles: ReturnType<typeof numericInputVariants>

@@ -164,7 +164,9 @@ function ProductsContent() {
               clearIcon={false}
               onValueChange={(details) => {
                 const value = details.value[0]
-                if (value) urlFilters.setSortBy(value as any)
+                if (value) {
+                  urlFilters.setSortBy(value as any)
+                }
               }}
               options={SORT_OPTIONS.map((opt) => ({
                 value: opt.value,

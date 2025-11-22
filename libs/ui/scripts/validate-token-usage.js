@@ -141,7 +141,9 @@ const PREFIX_TO_NAMESPACES = (() => {
   const map = new Map()
   for (const [ns, prefixes] of Object.entries(NAMESPACE_MAPPINGS)) {
     for (const p of prefixes) {
-      if (!map.has(p)) map.set(p, [])
+      if (!map.has(p)) {
+        map.set(p, [])
+      }
       map.get(p).push(ns)
     }
   }
@@ -275,7 +277,9 @@ function mapClassToPossibleTokens(className) {
     }
   }
 
-  if (!(prefix && value)) return []
+  if (!(prefix && value)) {
+    return []
+  }
 
   const possibleTokens = []
 
@@ -463,15 +467,21 @@ function validateTokenUsage() {
           })
         }
         // If tokens are all external or any defined, consider it valid and continue
-        if (tokensNeedingCheck.length === 0 || anyDefined) continue
+        if (tokensNeedingCheck.length === 0 || anyDefined) {
+          continue
+        }
       }
 
       // 2) Ignore standard classes
-      if (shouldIgnoreClass(className)) continue
+      if (shouldIgnoreClass(className)) {
+        continue
+      }
 
       // 3) Map to possible tokens via namespace rules
       const possibleTokens = mapClassToPossibleTokens(className)
-      if (possibleTokens.length === 0) continue
+      if (possibleTokens.length === 0) {
+        continue
+      }
 
       // Check if ANY of the possible tokens exists
       const hasMatchingToken = possibleTokens.some((token) =>

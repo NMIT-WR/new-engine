@@ -74,7 +74,9 @@ export function withError(
   fieldProps: FormInputProps,
   error?: string
 ): FormInputProps {
-  if (!error) return fieldProps
+  if (!error) {
+    return fieldProps
+  }
 
   return {
     ...fieldProps,

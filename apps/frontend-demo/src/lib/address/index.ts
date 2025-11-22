@@ -10,12 +10,18 @@ export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // Formatters
 export const formatPhoneNumber = (value: string): string => {
   const cleaned = value.replace(/\D/g, "")
-  if (cleaned.length === 0) return ""
+  if (cleaned.length === 0) {
+    return ""
+  }
 
   // For Czech phone numbers without country code
   if (cleaned.length <= 9) {
-    if (cleaned.length <= 3) return cleaned
-    if (cleaned.length <= 6) return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`
+    if (cleaned.length <= 3) {
+      return cleaned
+    }
+    if (cleaned.length <= 6) {
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`
+    }
     return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6, 9)}`
   }
 
@@ -26,17 +32,27 @@ export const formatPhoneNumber = (value: string): string => {
   const thirdPart = cleaned.slice(9, 12)
 
   let formatted = "+"
-  if (country) formatted += country
-  if (firstPart) formatted += " " + firstPart
-  if (secondPart) formatted += " " + secondPart
-  if (thirdPart) formatted += " " + thirdPart
+  if (country) {
+    formatted += country
+  }
+  if (firstPart) {
+    formatted += ` ${firstPart}`
+  }
+  if (secondPart) {
+    formatted += ` ${secondPart}`
+  }
+  if (thirdPart) {
+    formatted += ` ${thirdPart}`
+  }
 
   return formatted
 }
 
 export const formatPostalCode = (value: string): string => {
   const cleaned = value.replace(/\D/g, "")
-  if (cleaned.length <= 3) return cleaned
+  if (cleaned.length <= 3) {
+    return cleaned
+  }
   return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 5)}`
 }
 
@@ -54,7 +70,7 @@ export const validatePostalCode = (postalCode: string): boolean => {
 }
 
 // Type for address in metadata
-export interface AddressMetadata {
+export type AddressMetadata = {
   street?: string
   city?: string
   postal_code?: string
@@ -65,7 +81,9 @@ export interface AddressMetadata {
 export const getAddressFromMetadata = (
   user: HttpTypes.StoreCustomer | null
 ): AddressMetadata => {
-  if (!user?.metadata?.address) return {}
+  if (!user?.metadata?.address) {
+    return {}
+  }
   return user.metadata.address as AddressMetadata
 }
 
@@ -173,7 +191,7 @@ export const ADDRESS_ERRORS = {
 } as const
 
 // Address validation options
-export interface AddressValidationOptions {
+export type AddressValidationOptions = {
   requireEmail?: boolean
   requirePhone?: boolean
   prefix?: string // prefix for error keys (e.g., 'shipping' or 'billing')
@@ -188,11 +206,18 @@ export const validateAddress = (
   const prefix = options.prefix ? `${options.prefix}` : ""
 
   // Required fields for all addresses
-  if (!address.firstName)
+  if (!address.firstName) {
     errors[`${prefix}FirstName`] = ADDRESS_ERRORS.firstName
-  if (!address.lastName) errors[`${prefix}LastName`] = ADDRESS_ERRORS.lastName
-  if (!address.street) errors[`${prefix}Street`] = ADDRESS_ERRORS.street
-  if (!address.city) errors[`${prefix}City`] = ADDRESS_ERRORS.city
+  }
+  if (!address.lastName) {
+    errors[`${prefix}LastName`] = ADDRESS_ERRORS.lastName
+  }
+  if (!address.street) {
+    errors[`${prefix}Street`] = ADDRESS_ERRORS.street
+  }
+  if (!address.city) {
+    errors[`${prefix}City`] = ADDRESS_ERRORS.city
+  }
 
   // Postal code validation
   if (!address.postalCode) {

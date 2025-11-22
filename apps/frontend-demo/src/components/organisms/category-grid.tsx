@@ -2,7 +2,7 @@ import { Image } from "@new-engine/ui/atoms/image"
 import Link from "next/link"
 import type { HomeCategory } from "@/types/product"
 
-interface CategoryGridProps {
+type CategoryGridProps = {
   title?: string
   subtitle?: string
   categories: HomeCategory[]
@@ -13,7 +13,6 @@ export function CategoryGrid({
   subtitle,
   categories,
 }: CategoryGridProps) {
-  const leaves = categories.map((category) => category.leaves)
   const CategoryCard = ({ category }: { category: HomeCategory }) => {
     const param = category.leaves?.join(",")
     const content = (

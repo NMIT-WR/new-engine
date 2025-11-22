@@ -5,7 +5,7 @@ import { cacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts } from "@/services/product-service"
 
-interface UseCategoryPrefetchOptions {
+type UseCategoryPrefetchOptions = {
   enabled?: boolean
   cacheStrategy?: keyof typeof cacheConfig
   prefetchLimit?: number // Custom limit for prefetch vs normal queries

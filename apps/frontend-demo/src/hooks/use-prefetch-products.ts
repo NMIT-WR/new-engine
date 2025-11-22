@@ -5,7 +5,7 @@ import { cacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts, type ProductListParams } from "@/services/product-service"
 
-interface UsePrefetchProductsOptions {
+type UsePrefetchProductsOptions = {
   enabled?: boolean
   // Allow custom cache config if needed
   cacheStrategy?: keyof typeof cacheConfig
@@ -21,7 +21,9 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
 
   const prefetchProducts = useCallback(
     (params?: Omit<ProductListParams, "region_id">) => {
-      if (!(enabled && selectedRegion?.id)) return
+      if (!(enabled && selectedRegion?.id)) {
+        return
+      }
 
       const queryParams = {
         ...params,

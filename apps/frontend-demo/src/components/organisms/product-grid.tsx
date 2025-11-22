@@ -11,7 +11,7 @@ import type { Product } from "@/types/product"
 import { formatPrice } from "@/utils/price-utils"
 import { extractProductData } from "@/utils/product-utils"
 
-interface ProductGridProps {
+type ProductGridProps = {
   products: Product[]
   totalCount?: number
   currentPage?: number

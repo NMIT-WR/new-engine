@@ -1,7 +1,7 @@
 import Link from "next/link"
 import type * as React from "react"
 
-interface AuthFormWrapperProps {
+type AuthFormWrapperProps = {
   title: string
   subtitle: string
   children: React.ReactNode

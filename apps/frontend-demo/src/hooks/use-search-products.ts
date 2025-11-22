@@ -3,7 +3,7 @@ import { getProducts } from "@/services"
 import type { Product } from "@/types/product"
 import { useRegions } from "./use-region"
 
-interface UseSearchProductsOptions {
+type UseSearchProductsOptions = {
   limit?: number
   fields?: string
 }
@@ -47,7 +47,7 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
         setIsSearching(false)
       }
     },
-    [options?.fields, options?.limit]
+    [options?.fields, options?.limit, selectedRegion?.id]
   )
 
   const clearResults = useCallback(() => {

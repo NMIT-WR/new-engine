@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts, type ProductFilters } from "@/services/product-service"
 
-interface UsePrefetchPagesParams {
+type UsePrefetchPagesParams = {
   currentPage: number
   hasNextPage: boolean
   hasPrevPage: boolean

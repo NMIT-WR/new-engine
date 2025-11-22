@@ -11,7 +11,7 @@ import { useCart } from "@/hooks/use-cart"
 import type { Product, ProductVariant } from "@/types/product"
 import { sortVariantsBySize } from "@/utils/variant-utils"
 
-interface ProductInfoProps {
+type ProductInfoProps = {
   product: Product
   selectedVariant: ProductVariant | null
   badges: BadgeProps[]

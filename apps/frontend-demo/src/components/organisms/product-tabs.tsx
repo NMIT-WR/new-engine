@@ -9,7 +9,7 @@ import { slugify } from "@new-engine/ui/utils"
 import { SafeHtmlContent } from "@/components/safe-html-content"
 import type { Product } from "@/types/product"
 
-interface ProductTabsProps {
+type ProductTabsProps = {
   product: Product
 }
 

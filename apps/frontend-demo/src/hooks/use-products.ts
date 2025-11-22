@@ -15,7 +15,7 @@ interface UseProductsParams extends ProductListParams {
   enabled?: boolean
 }
 
-interface UseProductsReturn {
+type UseProductsReturn = {
   products: Product[]
   isLoading: boolean
   error: string | null

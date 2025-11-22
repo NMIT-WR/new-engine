@@ -12,7 +12,7 @@ interface UseInfiniteProductsParams extends Omit<ProductListParams, "offset"> {
   enabled?: boolean
 }
 
-interface UseInfiniteProductsReturn {
+type UseInfiniteProductsReturn = {
   products: Product[]
   isLoading: boolean
   error: string | null
@@ -84,7 +84,7 @@ export function useInfiniteProducts(
       })
     },
     initialPageParam: baseOffset,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+    getNextPageParam: (lastPage, allPages) => {
       // Since we load the full range in the first request,
       // subsequent calls are just "load more" beyond the range
       const totalFetched = allPages.reduce(
@@ -94,7 +94,9 @@ export function useInfiniteProducts(
 
       // Check if there are more products to load
       const hasMore = totalFetched < lastPage.count
-      if (!hasMore) return
+      if (!hasMore) {
+        return
+      }
 
       // Calculate offset for the next batch (beyond current range)
       const nextOffset = baseOffset + totalFetched

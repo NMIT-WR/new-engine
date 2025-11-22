@@ -2,7 +2,7 @@ import { useToast } from "@new-engine/ui/molecules/toast"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 
-interface ContactFormData {
+type ContactFormData = {
   firstName: string
   lastName: string
   email: string
@@ -11,7 +11,7 @@ interface ContactFormData {
   message: string
 }
 
-interface UseContactFormProps {
+type UseContactFormProps = {
   onSuccess?: () => void
 }
 
@@ -49,7 +49,7 @@ export function useContactForm({ onSuccess }: UseContactFormProps = {}) {
 
   const mutation = useMutation({
     mutationFn: sendContactForm,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.create({
         title: "Zpráva odeslána",
         description:

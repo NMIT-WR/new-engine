@@ -9,7 +9,7 @@ import { Icon } from "../atoms/icon"
 import { Label } from "../atoms/label"
 
 // === TYPES ===
-export interface SelectOption {
+export type SelectOption = {
   label: ReactNode
   value: string
   disabled?: boolean

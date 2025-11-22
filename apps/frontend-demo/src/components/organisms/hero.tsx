@@ -3,7 +3,7 @@ import { LinkButton } from "@new-engine/ui/atoms/link-button"
 import Image, { type StaticImageData } from "next/image"
 import Link from "next/link"
 
-interface HeroProps {
+type HeroProps = {
   title: string
   subtitle?: string
   backgroundImage: string | StaticImageData

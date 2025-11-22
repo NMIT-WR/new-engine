@@ -1,7 +1,7 @@
 import type { IconType } from "../atoms/icon"
 import { Accordion, type AccordionProps } from "../molecules/accordion"
 
-export interface AccordionItem {
+export type AccordionItem = {
   value: string
   title: string
   content: React.ReactNode

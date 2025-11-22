@@ -40,7 +40,9 @@ function getQueryClient() {
     return makeQueryClient()
   }
   // Browser: make client if we don't already have one
-  if (!browserQueryClient) browserQueryClient = makeQueryClient()
+  if (!browserQueryClient) {
+    browserQueryClient = makeQueryClient()
+  }
   return browserQueryClient
 }
 

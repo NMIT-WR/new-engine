@@ -1,5 +1,5 @@
 // Product types matching Medusa structure
-export interface Product {
+export type Product = {
   id: string
   title: string
   handle: string
@@ -26,20 +26,20 @@ export interface Product {
   primaryVariant?: ProductVariant
 }
 
-export interface ProductImage {
+export type ProductImage = {
   id: string
   url: string
   alt?: string
 }
 
-export interface ProductCollection {
+export type ProductCollection = {
   id: string
   title: string
   handle: string
 }
 
 // Main Category type used in components
-export interface Category {
+export type Category = {
   id: string
   name: string
   handle: string
@@ -50,21 +50,21 @@ export interface Category {
   leaves?: string[]
 }
 
-export interface ProductCategory {
+export type ProductCategory = {
   id: string
   name: string
   handle: string
   parent_category_id?: string
 }
 
-export interface HomeCategory {
+export type HomeCategory = {
   name: string
   leaves: string[]
   imageUrl: string
   description: string
 }
 
-export interface ProductVariant {
+export type ProductVariant = {
   id: string
   title: string
   sku?: string
@@ -81,7 +81,7 @@ export interface ProductVariant {
   colorHex?: string
 }
 
-export interface ProductPrice {
+export type ProductPrice = {
   id: string
   currency_code: string
   calculated_amount?: number // Amount in dollars/euros
@@ -92,7 +92,7 @@ export interface ProductPrice {
   price_list_id?: string
 }
 
-export interface ProductOption {
+export type ProductOption = {
   id: string
   title: string
   values: string[]

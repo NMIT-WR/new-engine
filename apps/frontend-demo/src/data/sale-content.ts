@@ -1,4 +1,4 @@
-export interface SaleContent {
+export type SaleContent = {
   banner: {
     text: string
     icon?: string

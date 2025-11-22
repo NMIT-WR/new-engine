@@ -1,7 +1,7 @@
 import { Image } from "@new-engine/ui/atoms/image"
 import Link from "next/link"
 
-interface SaleBannerProps {
+type SaleBannerProps = {
   title: string
   subtitle: string
   backgroundImage: string

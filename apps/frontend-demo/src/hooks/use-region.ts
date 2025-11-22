@@ -31,7 +31,9 @@ export function useRegions() {
 
   // Initialize selected region from regions list or default to USD
   useEffect(() => {
-    if (regions.length === 0 || selectedRegionId) return
+    if (regions.length === 0 || selectedRegionId) {
+      return
+    }
 
     if (regions.length > 0 && !selectedRegionId) {
       // Default to USD region if no stored preference
@@ -44,7 +46,7 @@ export function useRegions() {
         setSelectedRegionId(defaultRegion.id)
       }
     }
-  }, [regions])
+  }, [regions, selectedRegionId])
 
   const selectedRegion = regions.find((r) => r.id === selectedRegionId) || null
 

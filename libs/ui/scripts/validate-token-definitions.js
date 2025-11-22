@@ -56,11 +56,15 @@ function profiled(enabled) {
   const marks = new Map()
   return {
     mark(label) {
-      if (!enabled) return
+      if (!enabled) {
+        return
+      }
       marks.set(label, performance.now())
     },
     end(label) {
-      if (!enabled) return 0
+      if (!enabled) {
+        return 0
+      }
       const start = marks.get(label) ?? performance.now()
       const delta = performance.now() - start
       marks.set(label, performance.now())
@@ -81,7 +85,9 @@ function shouldIgnoreToken(tokenName) {
 function tokenToUtilityClasses(tokenName) {
   const classes = new Set()
   const tokenParts = tokenName.slice(2).split("-")
-  if (tokenParts.length < 2) return classes
+  if (tokenParts.length < 2) {
+    return classes
+  }
 
   const primaryNamespace = tokenParts[0]
   const subNamespace = tokenParts.length > 2 ? tokenParts[1] : null
@@ -257,7 +263,9 @@ async function buildTokenIndices() {
   await Promise.all(
     files.map(async (file) => {
       const abs = path.join(ROOT, file)
-      if (!existsSync(abs)) return
+      if (!existsSync(abs)) {
+        return
+      }
       try {
         const content = await fs.readFile(abs, "utf8")
         const lines = content.split("\n")
@@ -284,18 +292,26 @@ async function buildTokenIndices() {
 
         // 2) Index var() usage on non-definition lines as direct CSS usage
         const defLine = new Set()
-        for (const [token, data] of defs) {
-          if (data.file === file) defLine.add(data.line)
+        for (const [_token, data] of defs) {
+          if (data.file === file) {
+            defLine.add(data.line)
+          }
         }
 
         for (let i = 0; i < lines.length; i++) {
           const lineNo = i + 1
-          if (defLine.has(lineNo)) continue
+          if (defLine.has(lineNo)) {
+            continue
+          }
           const line = lines[i]
-          if (!line.includes("var(")) continue
+          if (!line.includes("var(")) {
+            continue
+          }
           for (const vm of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
             const t = vm[1]
-            if (!cssUsage.has(t)) cssUsage.set(t, new Set())
+            if (!cssUsage.has(t)) {
+              cssUsage.set(t, new Set())
+            }
             cssUsage.get(t).add(`${file}:${lineNo} (CSS property)`) // direct usage
           }
         }
@@ -307,8 +323,12 @@ async function buildTokenIndices() {
 
   // Ensure every token key exists in maps
   for (const token of defs.keys()) {
-    if (!dependencyGraph.has(token)) dependencyGraph.set(token, new Set())
-    if (!cssUsage.has(token)) cssUsage.set(token, new Set())
+    if (!dependencyGraph.has(token)) {
+      dependencyGraph.set(token, new Set())
+    }
+    if (!cssUsage.has(token)) {
+      cssUsage.set(token, new Set())
+    }
   }
 
   return { defs, dependencyGraph, cssUsage }
@@ -325,22 +345,28 @@ async function buildComponentIndices(classToTokens, knownTokens) {
 
   const normalizeClass = (raw) => {
     // Strip variant prefixes like sm:, hover:, data-[...]: etc.
-    if (!raw) return ""
+    if (!raw) {
+      return ""
+    }
     const parts = String(raw).split(":")
-    const core = parts[parts.length - 1]
+    const core = parts.at(-1)
     return core
   }
 
   await Promise.all(
     files.map(async (file) => {
-      if (!existsSync(file)) return
+      if (!existsSync(file)) {
+        return
+      }
       try {
         const content = await fs.readFile(file, "utf8")
 
         // 1) Direct var(--token) usage in TSX
         for (const m of content.matchAll(/var\(\s*(--[\w-]+)/g)) {
           const t = m[1]
-          if (!componentVarUsage.has(t)) componentVarUsage.set(t, new Set())
+          if (!componentVarUsage.has(t)) {
+            componentVarUsage.set(t, new Set())
+          }
           const lineNo = content.substring(0, m.index).split("\n").length
           componentVarUsage
             .get(t)
@@ -362,10 +388,16 @@ async function buildComponentIndices(classToTokens, knownTokens) {
         for (const m of content.matchAll(classLike)) {
           const raw = m[2]
           const cls = normalizeClass(raw)
-          if (!cls) continue
+          if (!cls) {
+            continue
+          }
           const tokens = classToTokens.get(cls)
-          if (!tokens) continue
-          for (const t of tokens) classUsageTokens.add(t)
+          if (!tokens) {
+            continue
+          }
+          for (const t of tokens) {
+            classUsageTokens.add(t)
+          }
         }
       } catch {
         // ignore unreadable files
@@ -383,7 +415,9 @@ function computeClassMaps(tokens) {
     const classes = tokenToUtilityClasses(token)
     tokenToClasses.set(token, classes)
     for (const c of classes) {
-      if (!classToTokens.has(c)) classToTokens.set(c, new Set())
+      if (!classToTokens.has(c)) {
+        classToTokens.set(c, new Set())
+      }
       classToTokens.get(c).add(token)
     }
   }
@@ -396,7 +430,9 @@ function propagateUsage(initialUsed, dependencyGraph) {
   while (queue.length) {
     const cur = queue.shift()
     const deps = dependencyGraph.get(cur)
-    if (!deps) continue
+    if (!deps) {
+      continue
+    }
     for (const d of deps) {
       if (!used.has(d)) {
         used.add(d)
@@ -416,13 +452,17 @@ async function validateTokenDefinitions({ profile = false } = {}) {
   p.mark("tokens")
   const { defs, dependencyGraph, cssUsage } = await buildTokenIndices()
   const allTokens = Array.from(defs.keys())
-  if (profile) console.log(`⏱️  tokens: ${p.end("tokens").toFixed(1)}ms`)
+  if (profile) {
+    console.log(`⏱️  tokens: ${p.end("tokens").toFixed(1)}ms`)
+  }
   console.log(`📋 Found ${allTokens.length} total tokens\n`)
 
   // 2) Class maps from tokens
   p.mark("classmaps")
   const { classToTokens } = computeClassMaps(allTokens)
-  if (profile) console.log(`⏱️  class maps: ${p.end("classmaps").toFixed(1)}ms`)
+  if (profile) {
+    console.log(`⏱️  class maps: ${p.end("classmaps").toFixed(1)}ms`)
+  }
 
   // 3) Component indices
   p.mark("components")
@@ -430,33 +470,47 @@ async function validateTokenDefinitions({ profile = false } = {}) {
     classToTokens,
     new Set(allTokens)
   )
-  if (profile) console.log(`⏱️  components: ${p.end("components").toFixed(1)}ms`)
+  if (profile) {
+    console.log(`⏱️  components: ${p.end("components").toFixed(1)}ms`)
+  }
 
   // 4) Seed used set
   const usedDirect = new Set()
   for (const t of allTokens) {
-    if (isWhitelisted(t)) usedDirect.add(t)
+    if (isWhitelisted(t)) {
+      usedDirect.add(t)
+    }
   }
   // Direct CSS var() usage (outside token defs)
   for (const [t, locs] of cssUsage) {
-    if (locs.size > 0) usedDirect.add(t)
+    if (locs.size > 0) {
+      usedDirect.add(t)
+    }
   }
   // Component var() usage
   for (const [t, locs] of componentVarUsage) {
-    if (locs.size > 0) usedDirect.add(t)
+    if (locs.size > 0) {
+      usedDirect.add(t)
+    }
   }
   // Class usage
-  for (const t of classUsageTokens) usedDirect.add(t)
+  for (const t of classUsageTokens) {
+    usedDirect.add(t)
+  }
 
   // 5) Propagate through dependencies (forward)
   p.mark("closure")
   const usedTokens = propagateUsage(usedDirect, dependencyGraph)
-  if (profile) console.log(`⏱️  closure: ${p.end("closure").toFixed(1)}ms`)
+  if (profile) {
+    console.log(`⏱️  closure: ${p.end("closure").toFixed(1)}ms`)
+  }
 
   // 6) Classify
   const unusedTokens = []
   for (const t of allTokens) {
-    if (shouldIgnoreToken(t)) continue
+    if (shouldIgnoreToken(t)) {
+      continue
+    }
     if (!usedTokens.has(t)) {
       const d = defs.get(t)
       unusedTokens.push({ name: t, file: d.file, line: d.line, value: d.value })
@@ -471,26 +525,33 @@ async function validateTokenDefinitions({ profile = false } = {}) {
 
   if (unusedTokens.length === 0) {
     console.log("\n✅ All tokens are being used!")
-    if (profile) console.log(`⏱️  total: ${p.end("total").toFixed(1)}ms`)
+    if (profile) {
+      console.log(`⏱️  total: ${p.end("total").toFixed(1)}ms`)
+    }
     return true
   }
 
   console.log(`\n⚠️  Found ${unusedTokens.length} potentially unused tokens:\n`)
   const byFile = new Map()
   for (const tok of unusedTokens) {
-    if (!byFile.has(tok.file)) byFile.set(tok.file, [])
+    if (!byFile.has(tok.file)) {
+      byFile.set(tok.file, [])
+    }
     byFile.get(tok.file).push(tok)
   }
   for (const [file, list] of byFile) {
     console.log(`📄 ${file}:`)
-    for (const t of list)
+    for (const t of list) {
       console.log(`  Line ${t.line}: ${t.name} = ${t.value}`)
+    }
     console.log()
   }
   console.log(
     "💡 Note: Tokens might be used dynamically or externally and not detected."
   )
-  if (profile) console.log(`⏱️  total: ${p.end("total").toFixed(1)}ms`)
+  if (profile) {
+    console.log(`⏱️  total: ${p.end("total").toFixed(1)}ms`)
+  }
   return false
 }
 
@@ -503,7 +564,9 @@ if (
     .then((ok) => process.exit(ok ? 0 : 1))
     .catch((err) => {
       console.error("💥 Validation failed:", err?.message || err)
-      if (err?.stack) console.error(err.stack)
+      if (err?.stack) {
+        console.error(err.stack)
+      }
       process.exit(1)
     })
 }

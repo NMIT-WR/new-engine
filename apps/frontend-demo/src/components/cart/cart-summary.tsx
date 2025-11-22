@@ -2,7 +2,7 @@ import { LinkButton } from "@new-engine/ui/atoms/link-button"
 import Link from "next/link"
 import { formatPrice } from "@/utils/price-utils"
 
-interface CartSummaryProps {
+type CartSummaryProps = {
   subtotal: number
   total: number
   tax: number

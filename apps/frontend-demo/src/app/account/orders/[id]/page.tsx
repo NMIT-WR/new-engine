@@ -21,7 +21,7 @@ import {
 import { queryKeys } from "@/lib/query-keys"
 import type { Order } from "@/types/order"
 
-interface OrderDetailPageProps {
+type OrderDetailPageProps = {
   params: Promise<{
     id: string
   }>

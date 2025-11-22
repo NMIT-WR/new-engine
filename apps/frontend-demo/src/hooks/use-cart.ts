@@ -80,7 +80,9 @@ export function useMedusaCart() {
     ...cacheConfig.realtime, // 30s stale, 5m gc, refetch on focus
     retry: (failureCount, error: any) => {
       // Don't retry if cart was not found
-      if (error?.status === 404) return false
+      if (error?.status === 404) {
+        return false
+      }
       // Retry up to 3 times for other errors
       return failureCount < 3
     },
@@ -95,7 +97,9 @@ export function useMedusaCart() {
       variantId: string
       quantity?: number
     }) => {
-      if (!cart) throw new Error("No cart available")
+      if (!cart) {
+        throw new Error("No cart available")
+      }
 
       const { cart: updatedCart } = await sdk.store.cart.createLineItem(
         cart.id,
@@ -162,7 +166,9 @@ export function useMedusaCart() {
       lineItemId: string
       quantity: number
     }) => {
-      if (!cart) throw new Error("No cart available")
+      if (!cart) {
+        throw new Error("No cart available")
+      }
 
       if (quantity <= 0) {
         await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
@@ -192,7 +198,9 @@ export function useMedusaCart() {
   // Remove item mutation
   const removeItemMutation = useMutation({
     mutationFn: async (lineItemId: string) => {
-      if (!cart) throw new Error("No cart available")
+      if (!cart) {
+        throw new Error("No cart available")
+      }
 
       await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
       const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
@@ -218,7 +226,9 @@ export function useMedusaCart() {
   // Clear cart mutation
   const clearCartMutation = useMutation({
     mutationFn: async () => {
-      if (!cart) throw new Error("No cart available")
+      if (!cart) {
+        throw new Error("No cart available")
+      }
 
       // Remove all items
       for (const item of cart.items || []) {
@@ -241,7 +251,9 @@ export function useMedusaCart() {
   // Apply discount mutation
   const applyDiscountMutation = useMutation({
     mutationFn: async (code: string) => {
-      if (!cart) throw new Error("No cart available")
+      if (!cart) {
+        throw new Error("No cart available")
+      }
       const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
         promo_codes: [code],
       })

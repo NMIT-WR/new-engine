@@ -3,7 +3,7 @@ import type { ProductVariant } from "@/types/product"
 
 export type StockStatus = "in-stock" | "low-stock" | "out-of-stock"
 
-export interface InventoryInfo {
+export type InventoryInfo = {
   status: StockStatus
   quantity: number
   message: string

@@ -1,7 +1,7 @@
 import type { HomeCategory } from "@/types/product"
 import { getCategoryIdsByHandles } from "@/utils/category-helpers"
 
-export interface HeroContent {
+export type HeroContent = {
   title: string
   subtitle: string
   backgroundImage: string
@@ -15,14 +15,14 @@ export interface HeroContent {
   }
 }
 
-export interface FeaturedSection {
+export type FeaturedSection = {
   title: string
   subtitle: string
   linkText?: string
   linkHref: string
 }
 
-export interface BannerContent {
+export type BannerContent = {
   title: string
   subtitle: string
   backgroundImage: string
@@ -30,7 +30,7 @@ export interface BannerContent {
   linkHref: string
 }
 
-export interface HomeContent {
+export type HomeContent = {
   hero: HeroContent
   trending: FeaturedSection
   categories: {

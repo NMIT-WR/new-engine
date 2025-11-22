@@ -102,7 +102,7 @@ const tableVariants = tv({
 })
 
 // Context for sharing state between sub-components
-interface TableContextValue {
+type TableContextValue = {
   variant?: "line" | "outline" | "striped"
   size?: "sm" | "md" | "lg"
   interactive?: boolean

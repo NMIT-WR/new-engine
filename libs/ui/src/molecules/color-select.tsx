@@ -90,7 +90,7 @@ const colorSelectVariants = tv({
   },
 })
 
-export interface ColorItem {
+export type ColorItem = {
   id?: string
   color: string
   selected?: boolean
@@ -99,7 +99,7 @@ export interface ColorItem {
   disabled?: boolean
 }
 
-interface ColorSelectProps {
+type ColorSelectProps = {
   colors: ColorItem[]
   layout?: "list" | "grid"
   size?: "sm" | "md" | "lg" | "full"

@@ -8,7 +8,7 @@ import type { NavItem } from "../molecules/navigation"
 import { RegionSelector } from "../region-selector"
 import { ThemeToggle } from "../theme-toggle"
 
-interface MobileMenuProps {
+type MobileMenuProps = {
   isOpen: boolean
   onClose: () => void
   navigationItems: NavItem[]
@@ -32,7 +32,9 @@ export function MobileMenu({
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen) {
+    return null
+  }
 
   const toggleExpanded = (title: string) => {
     setExpandedItems((prev) =>

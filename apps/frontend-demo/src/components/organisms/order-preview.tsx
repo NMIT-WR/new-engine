@@ -6,7 +6,7 @@ import { useCart } from "@/hooks/use-cart"
 import { formatPrice } from "@/lib/format-price"
 import { orderHelpers } from "@/stores/order-store"
 
-interface OrderPreviewProps {
+type OrderPreviewProps = {
   shippingPrice?: number
   paymentFee?: number
   showDetails?: boolean

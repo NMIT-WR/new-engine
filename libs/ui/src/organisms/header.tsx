@@ -91,7 +91,7 @@ const headerVariants = tv({
 })
 
 // === CONTEXT ===
-interface HeaderContextValue {
+type HeaderContextValue = {
   size?: "sm" | "md" | "lg"
   isMobileMenuOpen: boolean
   setIsMobileMenuOpen: (open: boolean) => void
