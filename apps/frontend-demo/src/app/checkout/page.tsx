@@ -35,6 +35,8 @@ export default function CheckoutPage() {
     canProceedToStep,
     shippingMethods,
     isLoadingShipping,
+    balikovnaSelection,
+    setBalikovnaSelection,
   } = useCheckout()
 
   const [isOrderComplete, setIsOrderComplete] = useState(false)
@@ -122,14 +124,29 @@ export default function CheckoutPage() {
           isLoading={isLoadingShipping}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          onSelect={async (method) => {
+          onSelect={async (method, data) => {
+            // Always track the selection locally to drive UI/widget
             setSelectedShipping(method)
+
+            // Only push to backend when we have the required data
+            const option = shippingMethods?.find((m) => m.id === method)
+            const service = (option?.data as any)?.service
+            const needsPickup = service === 'NB'
+            const hasPickupData = !!(data as any)?.pickup_point
+
+            if (needsPickup && !hasPickupData) {
+              return
+            }
+
             try {
-              await addShippingMethod(method)
+              await addShippingMethod(method, data)
             } catch (error) {
               // Error already handled in hook
             }
           }}
+          addressData={addressData}
+          balikovnaSelection={balikovnaSelection}
+          onBalikovnaSelect={(selection) => setBalikovnaSelection(selection)}
         />
       ),
     },
@@ -161,6 +178,7 @@ export default function CheckoutPage() {
           isOrderComplete={isOrderComplete}
           orderNumber={orderNumber}
           isLoading={isProcessingPayment}
+          balikovnaSelection={balikovnaSelection}
         />
       ),
     },

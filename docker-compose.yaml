@@ -22,6 +22,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:9000/app"]
       start_period: 10s
     environment:
+      TS_NODE_TRANSPILE_ONLY: "1"
+      TS_NODE_USE_SWCRC: "0"
       VITE_HMR_PORT: ${DC_VITE_HMR_PORT}
       DATABASE_TYPE: postgres
       DATABASE_URL: ${DC_DATABASE_URL}

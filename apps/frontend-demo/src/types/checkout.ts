@@ -65,6 +65,8 @@ export interface ReducedShippingMethod {
   id: string
   name: string
   calculated_price: HttpTypes.StoreCalculatedPrice
+  provider_id?: string
+  data?: Record<string, unknown>
 }
 
 // UseCheckout hook return type
@@ -78,14 +80,19 @@ export interface UseCheckoutReturn {
   shippingMethods: ReducedShippingMethod[] | undefined
   isLoadingShipping: boolean
   shippingError: Error | null
+  balikovnaSelection: BalikovnaSelection | null
 
   // Actions
   setCurrentStep: (step: number) => void
   setSelectedPayment: (payment: string) => void
   setSelectedShipping: (shipping: string) => void
   setAddressData: (data: CheckoutAddressData) => void
+  setBalikovnaSelection: (selection: BalikovnaSelection | null) => void
   updateAddresses: (data: CheckoutAddressData) => Promise<void>
-  addShippingMethod: (methodId: string) => Promise<void>
+  addShippingMethod: (
+    methodId: string,
+    data?: Record<string, unknown>
+  ) => Promise<void>
   processOrder: () => Promise<HttpTypes.StoreOrder | undefined>
   canProceedToStep: (step: number) => boolean
   // getShippingMethod: () => void
@@ -108,3 +115,19 @@ export interface FormAddressData {
 }
 
 export type ShippingOptionMap = Record<string, string>
+
+export interface BalikovnaPoint {
+  id: string
+  name: string
+  street?: string
+  city: string
+  postalCode: string
+  type?: string
+  region?: string
+  zip?: string
+}
+
+export interface BalikovnaSelection {
+  service: 'NB' | 'ND'
+  pickupPoint?: BalikovnaPoint
+}

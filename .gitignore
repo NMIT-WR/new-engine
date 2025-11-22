@@ -40,6 +40,7 @@ storybook-static
 Thumbs.db
 .docker_data
 .pnpm-store
+.env.local
 
 .nx/cache
 .nx/workspace-data
@@ -67,3 +68,6 @@ local/
 opencode.json
 apps/frontend-demo/public/data/
 static-data/
+# Allow checked-in static data for frontend demo (categories)
+!apps/frontend-demo/src/lib/static-data/
+!apps/frontend-demo/src/lib/static-data/**

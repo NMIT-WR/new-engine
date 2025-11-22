@@ -131,7 +131,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
                 href: `/products/${product.handle}`,
               },
             ]}
-            linkComponent={Link}
+            linkAs={Link}
           />
         </div>
 

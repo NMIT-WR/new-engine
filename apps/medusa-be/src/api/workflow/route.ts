@@ -1,5 +1,6 @@
 import type {MedusaRequest, MedusaResponse,} from "@medusajs/framework/http"
 import seedDatabaseWorkflow, {SeedDatabaseWorkflowInput} from "../../workflows/seed/workflows/seed-database"
+import {BALIKOVNA_SERVICE, CESKA_POSTA_BALIKOVNA_PROVIDER_ID} from "../../modules/ceska-posta-balikovna/constants"
 
 export async function GET(
     req: MedusaRequest,
@@ -46,7 +47,7 @@ export async function GET(
                 },
             ],
         },
-        fulfillmentProviderId: undefined,
+        fulfillmentProviderId: [CESKA_POSTA_BALIKOVNA_PROVIDER_ID, 'manual_manual'],
         defaultShippingProfile: {
             name: 'Default Shipping Profile',
         },
@@ -64,7 +65,78 @@ export async function GET(
         },
         shippingOptions: [
             {
+                name: 'Česká pošta – Balíkovna (výdejní místo)',
+                providerId: CESKA_POSTA_BALIKOVNA_PROVIDER_ID,
+                type: {
+                    label: "Balíkovna",
+                    description: "Výdejní místo Balíkovny",
+                    code: "balikovna-nb",
+                },
+                data: {
+                    service: BALIKOVNA_SERVICE.NB,
+                    requires_pickup_point: true,
+                },
+                prices: [
+                    {
+                        currencyCode: "czk",
+                        amount: 59,
+                    },
+                    {
+                        currencyCode: "eur",
+                        amount: 3,
+                    },
+                ],
+                rules: [
+                    {
+                        attribute: "enabled_in_store",
+                        value: "true",
+                        operator: "eq",
+                    },
+                    {
+                        attribute: "is_return",
+                        value: "false",
+                        operator: "eq",
+                    },
+                ],
+            },
+            {
+                name: 'Česká pošta – Balíkovna na adresu',
+                providerId: CESKA_POSTA_BALIKOVNA_PROVIDER_ID,
+                type: {
+                    label: "Balíkovna na adresu",
+                    description: "Doručení Balíkovnou na adresu v rámci ČR",
+                    code: "balikovna-nd",
+                },
+                data: {
+                    service: BALIKOVNA_SERVICE.ND,
+                    requires_cz_address: true,
+                },
+                prices: [
+                    {
+                        currencyCode: "czk",
+                        amount: 89,
+                    },
+                    {
+                        currencyCode: "eur",
+                        amount: 4,
+                    },
+                ],
+                rules: [
+                    {
+                        attribute: "enabled_in_store",
+                        value: "true",
+                        operator: "eq",
+                    },
+                    {
+                        attribute: "is_return",
+                        value: "false",
+                        operator: "eq",
+                    },
+                ],
+            },
+            {
                 name: 'Standard Shipping',
+                providerId: 'manual_manual',
                 type: {
                     label: "Standard",
                     description: "Ship in 2-3 days.",
@@ -99,6 +171,7 @@ export async function GET(
             },
             {
                 name: 'Express Shipping',
+                providerId: 'manual_manual',
                 type: {
                     label: "Express",
                     description: "Ship in 24 hours.",

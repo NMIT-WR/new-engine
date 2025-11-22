@@ -1,6 +1,7 @@
 'use client'
 import { formatPrice } from '@/lib/format-price'
 import type {
+  BalikovnaSelection,
   CheckoutAddressData,
   PaymentMethod,
   ReducedShippingMethod,
@@ -16,6 +17,7 @@ interface OrderSummaryProps {
   selectedPayment: PaymentMethod | undefined
   onCompleteClick: () => void
   onEditClick: () => void
+  balikovnaSelection?: BalikovnaSelection | null
   isOrderComplete?: boolean
   orderNumber?: string
   isLoading?: boolean
@@ -30,6 +32,7 @@ export function OrderSummary({
   isOrderComplete = false,
   orderNumber,
   isLoading = false,
+  balikovnaSelection,
 }: OrderSummaryProps) {
   if (!addressData || !addressData.shipping) {
     return (
@@ -125,6 +128,20 @@ export function OrderSummary({
                 </p>
                 <p className="text-fg-secondary text-sm">
                   <strong>Způsob dopravy:</strong> {selectedShipping?.name}
+                  {balikovnaSelection?.pickupPoint &&
+                    balikovnaSelection.service === 'NB' && (
+                    <>
+                      <br />
+                      <span className="text-xs text-fg-secondary">
+                        {balikovnaSelection.pickupPoint.name},{' '}
+                        {balikovnaSelection.pickupPoint.street
+                          ? `${balikovnaSelection.pickupPoint.street}, `
+                          : ''}
+                        {balikovnaSelection.pickupPoint.postalCode}{' '}
+                        {balikovnaSelection.pickupPoint.city}
+                      </span>
+                    </>
+                  )}
                 </p>
                 <p className="text-fg-secondary text-sm">
                   <strong>Způsob platby:</strong> {selectedPayment?.name}
@@ -233,6 +250,17 @@ export function OrderSummary({
               <br />
               Očekávané doručení: 1-2 dny
             </p>
+            {balikovnaSelection?.pickupPoint &&
+              balikovnaSelection.service === 'NB' && (
+              <p className="text-fg-secondary text-sm">
+                Balíkovna: {balikovnaSelection.pickupPoint.name},{' '}
+                {balikovnaSelection.pickupPoint.street
+                  ? `${balikovnaSelection.pickupPoint.street}, `
+                  : ''}
+                {balikovnaSelection.pickupPoint.postalCode}{' '}
+                {balikovnaSelection.pickupPoint.city}
+              </p>
+            )}
           </div>
 
           <div>

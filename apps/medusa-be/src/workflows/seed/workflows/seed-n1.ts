@@ -14,7 +14,7 @@ export type SeedN1WorkflowInput = {
     regions: Steps.CreateRegionsStepInput
     taxRegions: Steps.CreateTaxRegionsStepInput
     stockLocations: Steps.CreateStockLocationStepInput,
-    fulfillmentProviderId?: string,
+    fulfillmentProviderId?: string | string[],
     defaultShippingProfile: Steps.CreateDefaultShippingProfileStepInput,
     fulfillmentSets: Steps.CreateFulfillmentSetStepInput,
     shippingOptions: Steps.CreateShippingOptionsStepSeedInput,
@@ -52,12 +52,31 @@ const seedN1Workflow = createWorkflow(
         // create stock locations
         const createStockLocationResult = Steps.createStockLocationSeedStep(input.stockLocations)
 
+        const fulfillmentProviderIds = transform({input}, (data) => {
+            const ids: string[] = []
+            const explicit = data.input.fulfillmentProviderId
+            if (Array.isArray(explicit)) {
+                ids.push(...explicit)
+            } else if (explicit) {
+                ids.push(explicit)
+            }
+
+            const fromOptions = data.input.shippingOptions
+                .map((option) => option.providerId)
+                .filter((id): id is string => Boolean(id))
+
+            ids.push(...fromOptions)
+
+            const unique = Array.from(new Set(ids))
+            return unique.length ? unique : ["manual_manual"]
+        })
+
         // link stock locations to fulfillment provider
         const linkStockLocationsFulfillmentProviderInput: Steps.LinkStockLocationFulfillmentProviderStepInput = transform({
-            createStockLocationResult, input
+            createStockLocationResult, fulfillmentProviderIds
         }, (data) => ({
             stockLocations: data.createStockLocationResult.result,
-            fulfillmentProviderId: data.input.fulfillmentProviderId
+            fulfillmentProviderId: data.fulfillmentProviderIds
         }))
 
         Steps.linkStockLocationFulfillmentProviderSeedStep(linkStockLocationsFulfillmentProviderInput)
@@ -84,11 +103,11 @@ const seedN1Workflow = createWorkflow(
         // create shipping options
 
         const createShippingOptionsInput: Steps.CreateShippingOptionsStepInput = transform({
-                input, createFulfillmentSetsResult, createDefaultShippingProfileResult, createRegionsResult
+                input, createFulfillmentSetsResult, createDefaultShippingProfileResult, createRegionsResult, fulfillmentProviderIds
             }, (data) =>
                 data.input.shippingOptions.map(option => ({
                     name: option.name,
-                    providerId: data.input.fulfillmentProviderId || 'manual_manual',
+                    providerId: option.providerId ?? data.fulfillmentProviderIds[0] ?? 'manual_manual',
                     serviceZoneId: data.createFulfillmentSetsResult.result[0]?.service_zones[0]?.id as string,
                     shippingProfileId: data.createDefaultShippingProfileResult.result[0]?.id as string,
                     regions: data.createRegionsResult.result.map(region => ({
@@ -96,6 +115,7 @@ const seedN1Workflow = createWorkflow(
                         amount: 10 as number
                     })),
                     type: option.type,
+                    data: option.data,
                     prices: option.prices,
                     rules: option.rules,
                 }))

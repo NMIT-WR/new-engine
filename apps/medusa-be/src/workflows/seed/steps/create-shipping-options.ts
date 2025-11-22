@@ -5,7 +5,7 @@ import {createShippingOptionsWorkflow} from "@medusajs/medusa/core-flows"
 
 export type CreateShippingOptionsStepInput = {
     name: string
-    providerId: string
+    providerId?: string
     serviceZoneId: string
     shippingProfileId: string
     regions: Array<
@@ -17,6 +17,7 @@ export type CreateShippingOptionsStepInput = {
         description: string
         code: string
     }
+    data?: Record<string, unknown>
     prices: {
         currencyCode?: string
         amount: number
@@ -29,7 +30,7 @@ export type CreateShippingOptionsStepInput = {
 }[]
 
 export type CreateShippingOptionsStepSeedInput = Array<
-    Omit<CreateShippingOptionsStepInput[0], 'providerId' | 'serviceZoneId' | 'shippingProfileId' | 'regions'>
+    Omit<CreateShippingOptionsStepInput[0], 'serviceZoneId' | 'shippingProfileId' | 'regions'>
 >
 
 const CreateShippingOptionsStepId = 'create-shipping-options-seed-step'
@@ -44,7 +45,7 @@ export const createShippingOptionsStep = createStep(CreateShippingOptionsStepId,
     const workflowInput = input.map((option) => ({
         name: option.name,
         price_type: "flat" as const,
-        provider_id: option.providerId,
+        provider_id: option.providerId || "manual_manual",
         service_zone_id: option.serviceZoneId,
         shipping_profile_id: option.shippingProfileId,
         type: {
@@ -52,6 +53,7 @@ export const createShippingOptionsStep = createStep(CreateShippingOptionsStepId,
             description: option.type.description,
             code: option.type.code
         },
+        data: option.data ?? {},
         prices: [
             ...option.prices.map((price) => {
                 return {

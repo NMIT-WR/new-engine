@@ -71,6 +71,32 @@ module.exports = defineConfig({
             },
         },
         {
+            resolve: "./src/modules/ceska-posta-balikovna",
+        },
+        {
+            resolve: "@medusajs/medusa/fulfillment",
+            options: {
+                providers: [
+                    {
+                        resolve: "@medusajs/medusa/fulfillment-manual",
+                        id: "manual",
+                    },
+                    {
+                        resolve: "./src/modules/ceska-posta-balikovna/provider",
+                        id: "balikovna",
+                        options: {
+                            mode: process.env.CESKA_POSTA_MODE === 'production' ? 'production' : 'test',
+                            apiKey: process.env.CESKA_POSTA_API_KEY,
+                            customerId: process.env.CESKA_POSTA_CUSTOMER_ID,
+                            testBaseUrl: process.env.CESKA_POSTA_TEST_BASE_URL,
+                            productionBaseUrl: process.env.CESKA_POSTA_PROD_BASE_URL,
+                            labelUrlTemplate: process.env.CESKA_POSTA_LABEL_URL_TEMPLATE,
+                        }
+                    },
+                ]
+            }
+        },
+        {
             resolve: "./src/modules/producer",
         },
         {

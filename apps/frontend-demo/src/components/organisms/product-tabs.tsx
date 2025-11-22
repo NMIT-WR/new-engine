@@ -5,8 +5,8 @@ import type { Product } from '@/types/product'
 import { Badge } from '@new-engine/ui/atoms/badge'
 import { Button } from '@new-engine/ui/atoms/button'
 import { Rating } from '@new-engine/ui/atoms/rating'
-import { type TabItem, Tabs } from '@new-engine/ui/atoms/tabs'
 import { Accordion } from '@new-engine/ui/molecules/accordion'
+import { type TabItem, Tabs } from '@new-engine/ui/molecules/tabs'
 import { slugify } from '@new-engine/ui/utils'
 
 interface ProductTabsProps {
