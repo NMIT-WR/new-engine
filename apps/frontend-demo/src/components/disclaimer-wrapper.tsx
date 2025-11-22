@@ -12,9 +12,14 @@ export function DisclaimerWrapper() {
     setDismissed(hasCookie)
   }, [])
 
-  const handleDismiss = () => {
-    document.cookie =
-      "disclaimerDismissed=true; path=/; max-age=864000; SameSite=Strict" // 1 year
+  const handleDismiss = async () => {
+    await cookieStore.set({
+      name: "disclaimerDismissed",
+      value: "true",
+      path: "/",
+      expires: Date.now() + 31_536_000 * 1000, // 1 year
+      sameSite: "strict",
+    })
     setDismissed(true)
   }
 

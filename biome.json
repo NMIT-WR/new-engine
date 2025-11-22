@@ -25,7 +25,15 @@
   },
   "linter": {
     "rules": {
-      "nursery": {},
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noForEach": "info"
+      },
+      "nursery": {
+        "noShadow": "warn",
+        "noEmptySource": "info",
+        "noIncrementDecrement": "info"
+      },
       "style": {
         "noParameterAssign": "error",
         "useAsConstAssertion": "error",
@@ -38,6 +46,16 @@
         "noInferrableTypes": "error",
         "noUselessElse": "error",
         "noNestedTernary": "off"
+      },
+      "performance": {
+        "noNamespaceImport": "info",
+        "useTopLevelRegex": "info"
+      },
+      "suspicious": {
+        "noEmptyBlockStatements": "info",
+        "noArrayIndexKey": "warn",
+        "noExplicitAny": "warn",
+        "noEvolvingTypes": "warn"
       }
     }
   },

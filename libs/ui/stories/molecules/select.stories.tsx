@@ -355,7 +355,7 @@ export const WithinForm: Story = {
             <p>
               <strong>Country:</strong>{' '}
               {(countries.find((c) => c.value === submittedData.country[0])
-                ?.label as any) || 'None'}
+                ?.label) || 'None'}
             </p>
             <p>
               <strong>Languages:</strong>{' '}

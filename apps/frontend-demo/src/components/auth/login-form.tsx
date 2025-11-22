@@ -7,12 +7,9 @@ import { FormInput } from "@new-engine/ui/molecules/form-input"
 import Link from "next/link"
 import { type FormEvent, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
-import {
-  AUTH_ERRORS,
-  authFormFields,
-  validateEmail,
-  withLoading,
-} from "@/lib/auth"
+import { validateEmail } from "@/lib/address"
+import { AUTH_ERRORS } from "@/lib/auth/constants"
+import { authFormFields, withLoading } from "@/lib/auth/form-config"
 import { AuthFormWrapper } from "./auth-form-wrapper"
 
 export function LoginForm() {
@@ -31,7 +28,7 @@ export function LoginForm() {
 
   const isFormLoading = loginMutation.isPending
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     clearErrors()
 

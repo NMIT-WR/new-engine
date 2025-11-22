@@ -8,7 +8,7 @@
  * - Dependency closure via forward BFS
  * - Optional --profile timings
  */
-
+// biome-ignore-all lint: Just quick script
 import { existsSync } from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"

@@ -5,14 +5,13 @@ import { Checkbox } from "@new-engine/ui/molecules/checkbox"
 import { FormInput } from "@new-engine/ui/molecules/form-input"
 import { type FormEvent, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
+import { AUTH_ERRORS } from "@/lib/auth/constants"
+import { authFormFields, withLoading } from "@/lib/auth/form-config"
 import {
-  AUTH_ERRORS,
-  authFormFields,
   type ValidationError,
   validateEmail,
   validatePassword,
-  withLoading,
-} from "@/lib/auth"
+} from "@/lib/auth/validation"
 import { AuthFormWrapper } from "./auth-form-wrapper"
 import { PasswordRequirements } from "./password-requirements"
 
@@ -34,7 +33,7 @@ export function RegisterForm() {
 
   const isFormLoading = registerMutation.isPending
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     clearErrors()
 

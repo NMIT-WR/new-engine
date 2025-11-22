@@ -6,7 +6,8 @@ import { FormInputRaw as FormInput } from "@new-engine/ui/molecules/form-input"
 import { Select } from "@new-engine/ui/molecules/select"
 import { useState } from "react"
 import { useCustomer } from "@/hooks/use-customer"
-import { COUNTRIES, formatPhoneNumber, formatPostalCode } from "@/lib/address"
+import { formatPhoneNumber, formatPostalCode } from "@/lib/address"
+import { COUNTRIES } from "@/lib/checkout-data"
 import type { FormAddressData, FormUserData } from "@/types/checkout"
 
 type ProfileFormProps = {

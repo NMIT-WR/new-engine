@@ -29,8 +29,7 @@ export function CategoryTreeFilter({
   const [selectedCategory, setSelectedCategory] = useState<string>("")
   const { expandedNodes, handleAccordionExpansion } =
     useAccordionTree(categories)
-  const { delayedPrefetch, cancelAllPrefetches, prefetchCategoryProducts } =
-    useCategoryPrefetch()
+  const { delayedPrefetch, prefetchCategoryProducts } = useCategoryPrefetch()
   // Create Sets for quick lookup
   const leafCategoryIds = useMemo(
     () => new Set(leafCategories.map((cat) => cat.id)),
@@ -138,7 +137,7 @@ export function CategoryTreeFilter({
                 /*console.log(
                   `[Prefetch] - ParentLeaf child "${childParentLeaf.name}": ${childParentLeaf.leafs.length} leafs`
                 )*/
-                void prefetchCategoryProducts(childParentLeaf.leafs)
+                prefetchCategoryProducts(childParentLeaf.leafs)
               }
             }
           }

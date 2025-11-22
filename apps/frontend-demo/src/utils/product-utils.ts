@@ -13,6 +13,8 @@ export function getStockStatusText(status: StockStatus): string {
       return "Malé množství"
     case "out-of-stock":
       return "Vyprodáno"
+    default:
+      return "Neznámý stav"
   }
 }
 

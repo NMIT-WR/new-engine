@@ -32,14 +32,13 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
     }
   }, [product])
 
-  const { products: relatedProducts, isLoading: isLoadingRelated } =
-    useProducts({
-      q: titleQuery,
-      region_id: selectedRegion?.id,
-      limit: 5,
-      sort: "newest",
-      enabled: !!titleQuery && !!selectedRegion?.id,
-    })
+  const { products: relatedProducts } = useProducts({
+    q: titleQuery,
+    region_id: selectedRegion?.id,
+    limit: 5,
+    sort: "newest",
+    enabled: !!titleQuery && !!selectedRegion?.id,
+  })
 
   // Filter out the current product from related products
   const filteredRelatedProducts = relatedProducts
@@ -99,7 +98,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
       selectedRegion?.currency_code
     )
   // Get badges for the product
-  const badges = []
+  const badges: { children: string; variant: "info" | "warning" }[] = []
   if (product.metadata?.isNew) {
     badges.push({ children: "New", variant: "info" as const })
   }

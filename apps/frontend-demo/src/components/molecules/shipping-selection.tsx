@@ -71,7 +71,6 @@ export function ShippingSelection({
   currentStep,
   setCurrentStep,
   shippingMethods,
-  isLoading,
 }: ShippingSelectionProps) {
   const toast = useToast()
   const handleProgress = () => {

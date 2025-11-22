@@ -11,7 +11,7 @@ import { useContactForm } from "@/hooks/use-contact-form"
 import contactImage from "/assets/hero/contact.webp"
 
 export default function ContactPage() {
-  const { hero, form, info, hours, help } = contactContent
+  const { hero, form, info, help } = contactContent
   const { formData, updateField, handleSubmit, isSubmitting } = useContactForm()
 
   return (

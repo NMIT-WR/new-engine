@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { getProducts } from "@/services"
+import { getProducts } from "@/services/product-service"
 import type { Product } from "@/types/product"
 import { useRegions } from "./use-region"
 

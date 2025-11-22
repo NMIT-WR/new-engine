@@ -7,7 +7,8 @@ import { Popover } from "@new-engine/ui/molecules/popover"
 import Link from "next/link"
 import { type FormEvent, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
-import { authFormFields, getAuthErrorMessage, withLoading } from "@/lib/auth"
+import { getAuthErrorMessage } from "@/lib/auth/error-handler"
+import { authFormFields, withLoading } from "@/lib/auth/form-config"
 
 export function AuthDropdown() {
   const { user, logout } = useAuth()

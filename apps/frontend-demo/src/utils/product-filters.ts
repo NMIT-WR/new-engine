@@ -102,6 +102,8 @@ export function sortProducts(
       sorted.sort((a, b) => b.title.localeCompare(a.title))
       break
     // 'newest' is default, no sorting needed
+    default:
+      break
   }
 
   return sorted

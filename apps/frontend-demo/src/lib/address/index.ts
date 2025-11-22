@@ -2,8 +2,6 @@ import type { HttpTypes } from "@medusajs/types"
 import type { ChangeEvent } from "react"
 import type { AddressData } from "@/types/checkout"
 
-export { COUNTRIES } from "@/lib/checkout-data"
-
 // Email validation regex
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 

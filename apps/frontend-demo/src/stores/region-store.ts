@@ -14,7 +14,13 @@ export const regionStore = new Store<RegionState>({
 
 function setCookie(name: string, value: string) {
   if (typeof window !== "undefined") {
-    document.cookie = `${name}=${value}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`
+    cookieStore.set({
+      name,
+      value,
+      path: "/",
+      expires: Date.now() + COOKIE_MAX_AGE * 1000,
+      sameSite: "lax",
+    })
   }
 }
 

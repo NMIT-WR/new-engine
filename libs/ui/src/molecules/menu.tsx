@@ -126,7 +126,6 @@ type SubmenuItemProps = {
   closeOnSelect?: boolean
 }
 
-// ! TODO: Fix menu.machine typing, it should work without 'as any'
 function SubmenuItem({
   item,
   parentApi,
@@ -136,17 +135,17 @@ function SubmenuItem({
   onSelect,
   closeOnSelect = true,
 }: SubmenuItemProps) {
-  const submenuService = useMachine(menu.machine as any, {
+  const submenuService = useMachine(menu.machine, {
     id: useId(),
     closeOnSelect,
     onSelect,
   })
 
-  const submenuApi = menu.connect(submenuService as any, normalizeProps)
+  const submenuApi = menu.connect(submenuService, normalizeProps)
 
   useEffect(() => {
     // Setup parent-child relationship
-    parentApi.setChild(submenuService as any)
+    parentApi.setChild(submenuService)
     submenuApi.setParent(parentService)
   }, [parentApi, submenuApi, submenuService, parentService])
 
@@ -177,7 +176,7 @@ function SubmenuItem({
           onCheckedChange={onCheckedChange}
           onSelect={onSelect}
           parentApi={submenuApi}
-          parentService={submenuService as any}
+          parentService={submenuService}
           size={size}
         />
       )
@@ -189,14 +188,14 @@ function SubmenuItem({
         <li
           className={`${itemSlot()} ${optionItem()}`}
           key={menuItem.value}
-          {...(submenuApi.getOptionItemProps({
+          {...submenuApi.getOptionItemProps({
             type: menuItem.type,
             value: menuItem.value,
             checked: menuItem.checked,
             onCheckedChange: (checked) => {
               onCheckedChange?.(menuItem, checked)
             },
-          }) as any)}
+          })}
         >
           {menuItem.checked && (
             <Icon className={itemIcon()} icon="token-icon-check" />
@@ -211,10 +210,10 @@ function SubmenuItem({
       <li
         className={itemSlot()}
         key={menuItem.value}
-        {...(submenuApi.getItemProps({
+        {...submenuApi.getItemProps({
           value: menuItem.value,
           disabled: menuItem.disabled,
-        }) as any)}
+        })}
       >
         {menuItem.icon && <Icon className={itemIcon()} icon={menuItem.icon} />}
         <span className={itemText()}>{menuItem.label}</span>
@@ -229,7 +228,7 @@ function SubmenuItem({
     <>
       <li
         className={itemSlot()}
-        {...(triggerProps as any)}
+        {...triggerProps}
         data-disabled={item.disabled || undefined}
       >
         {item.icon && <Icon className={itemIcon()} icon={item.icon} />}
@@ -238,11 +237,8 @@ function SubmenuItem({
       </li>
 
       <Portal>
-        <div
-          className={positioner()}
-          {...(submenuApi.getPositionerProps() as any)}
-        >
-          <ul className={content()} {...(submenuApi.getContentProps() as any)}>
+        <div className={positioner()} {...submenuApi.getPositionerProps()}>
+          <ul className={content()} {...submenuApi.getContentProps()}>
             {item.items.map(renderMenuItem)}
           </ul>
         </div>
@@ -385,14 +381,14 @@ export function Menu({
         <li
           className={`${itemSlot()} ${optionItem()}`}
           key={item.value}
-          {...(api.getOptionItemProps({
+          {...api.getOptionItemProps({
             type: item.type,
             value: item.value,
             checked: item.checked,
             onCheckedChange: (checked) => {
               onCheckedChange?.(item, checked)
             },
-          }) as any)}
+          })}
         >
           {/* Icon for checked state */}
           {item.checked && (
@@ -408,10 +404,10 @@ export function Menu({
       <li
         className={itemSlot()}
         key={item.value}
-        {...(api.getItemProps({
+        {...api.getItemProps({
           value: item.value,
           disabled: item.disabled,
-        }) as any)}
+        })}
       >
         {item.icon && <Icon className={itemIcon()} icon={item.icon} />}
         <span className={itemText()}>{item.label}</span>
@@ -443,8 +439,8 @@ export function Menu({
       )}
 
       <Portal>
-        <div className={positioner()} {...(api.getPositionerProps() as any)}>
-          <ul className={content()} {...(api.getContentProps() as any)}>
+        <div className={positioner()} {...api.getPositionerProps()}>
+          <ul className={content()} {...api.getContentProps()}>
             {items.map(renderMenuItem)}
           </ul>
         </div>

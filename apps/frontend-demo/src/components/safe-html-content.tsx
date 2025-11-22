@@ -75,6 +75,7 @@ export function SafeHtmlContent({
     return (
       <div
         className={className}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Already sanitized
         dangerouslySetInnerHTML={{ __html: processedContent.content }}
       />
     )

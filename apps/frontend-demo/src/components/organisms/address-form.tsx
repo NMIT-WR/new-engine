@@ -11,12 +11,12 @@ import { useAuth } from "@/hooks/use-auth"
 import { useCustomer } from "@/hooks/use-customer"
 import {
   ADDRESS_ERRORS,
-  COUNTRIES,
   formatPhoneNumber,
   formatPostalCode,
   validateAddress,
   validateEmail,
 } from "@/lib/address"
+import { COUNTRIES } from "@/lib/checkout-data"
 import type { AddressData, AddressFormProps } from "@/types/checkout"
 
 export function AddressForm({
@@ -24,7 +24,7 @@ export function AddressForm({
   isLoading = false,
 }: AddressFormProps) {
   const { user } = useAuth()
-  const { address, isLoading: isAddressLoading } = useCustomer()
+  const { address } = useCustomer()
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
     firstName: user?.first_name || "",

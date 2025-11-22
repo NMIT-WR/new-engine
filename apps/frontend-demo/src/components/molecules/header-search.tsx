@@ -24,7 +24,7 @@ export function HeaderSearch() {
   )
 
   // Use search hook
-  const { searchResults, isSearching, searchProducts } = useSearchProducts({
+  const { searchResults, searchProducts } = useSearchProducts({
     limit: 5,
   })
 

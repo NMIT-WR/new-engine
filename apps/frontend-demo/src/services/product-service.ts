@@ -162,7 +162,7 @@ const transformProduct = (product: any, withVariants?: boolean): Product => {
     product.images && product.images.length > 2 && product.images.slice(0, 2)
 
   // Remove variants array from the result to reduce payload size
-  const { variants, ...productWithoutVariants } = product
+  const { variants: _variants, ...productWithoutVariants } = product
 
   const result = withVariants ? product : productWithoutVariants
 

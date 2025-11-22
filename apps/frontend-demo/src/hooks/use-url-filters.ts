@@ -5,7 +5,7 @@ import { useCallback, useMemo } from "react"
 import type { FilterState } from "@/components/organisms/product-filters"
 import type { SortOption } from "@/utils/product-filters"
 
-type ExtendedSortOption = SortOption | "relevance"
+export type ExtendedSortOption = SortOption | "relevance"
 
 export type PageRange = {
   start: number

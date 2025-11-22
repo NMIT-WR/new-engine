@@ -6,7 +6,7 @@
  * This version understands Tailwind v4 namespace patterns and checks for actual usage
  * in both CSS and JS/TS files with better accuracy and performance.
  */
-
+// biome-ignore-all lint: Just quick script
 import fs from "node:fs"
 import path from "node:path"
 import { globSync } from "glob"

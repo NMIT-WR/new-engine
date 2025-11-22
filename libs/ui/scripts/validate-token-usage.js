@@ -6,7 +6,7 @@
  * Validates that all Tailwind classes in components have corresponding token definitions.
  * Follows Tailwind v4 theme variable namespace rules for precise mapping.
  */
-
+// biome-ignore-all lint: Just quick script
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"

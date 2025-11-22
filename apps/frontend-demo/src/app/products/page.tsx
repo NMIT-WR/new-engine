@@ -11,7 +11,7 @@ import { useInfiniteProducts } from "@/hooks/use-infinite-products"
 import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
 import { useProducts } from "@/hooks/use-products"
 import { useRegions } from "@/hooks/use-region"
-import { useUrlFilters } from "@/hooks/use-url-filters"
+import { type ExtendedSortOption, useUrlFilters } from "@/hooks/use-url-filters"
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Nejnovější" },
@@ -165,7 +165,7 @@ function ProductsContent() {
               onValueChange={(details) => {
                 const value = details.value[0]
                 if (value) {
-                  urlFilters.setSortBy(value as any)
+                  urlFilters.setSortBy(value as ExtendedSortOption)
                 }
               }}
               options={SORT_OPTIONS.map((opt) => ({
