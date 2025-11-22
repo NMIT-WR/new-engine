@@ -79,7 +79,7 @@ const headerVariants = tv({
         nav: 'gap-header-nav-lg',
         navItem: 'p-header-item-lg text-header-item-lg',
         actions: 'gap-header-actions-lg',
-        actionItem: 'text-header-item-lg p-header-item-lg ',
+        actionItem: 'text-header-item-lg p-header-item-lg',
         hamburger: 'text-header-hamburger-lg p-header-hamburger-lg',
       },
     },
