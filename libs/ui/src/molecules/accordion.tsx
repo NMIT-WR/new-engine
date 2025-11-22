@@ -135,7 +135,7 @@ function useAccordionItemContext() {
 }
 
 // Root component
-interface AccordionProps
+export interface AccordionProps
   extends VariantProps<typeof accordionVariants>,
     Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
   id?: string

@@ -90,7 +90,7 @@ const colorSelectVariants = tv({
   },
 })
 
-interface ColorItem {
+export interface ColorItem {
   id?: string
   color: string
   selected?: boolean
