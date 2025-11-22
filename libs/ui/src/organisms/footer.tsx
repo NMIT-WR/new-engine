@@ -1,100 +1,100 @@
 import {
+  createContext,
   type HTMLAttributes,
   type ReactNode,
-  createContext,
   useContext,
-} from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Link } from '../atoms/link'
-import { tv } from '../utils'
+} from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Link } from "../atoms/link"
+import { tv } from "../utils"
 
 const footerVariants = tv({
   slots: {
-    root: 'flex w-full bg-footer-bg items-center justify-center rounded-footer',
-    container: 'w-full max-w-footer-max bg-footer-container-bg',
-    section: 'bg-footer-section-bg',
-    list: 'flex flex-col bg-footer-list-bg list-none gap-footer-list-gap',
+    root: "flex w-full items-center justify-center rounded-footer bg-footer-bg",
+    container: "w-full max-w-footer-max bg-footer-container-bg",
+    section: "bg-footer-section-bg",
+    list: "flex list-none flex-col gap-footer-list-gap bg-footer-list-bg",
     bottom:
-      'flex w-full items-center bg-footer-bottom-bg justify-between border-t-(--border-width-footer) pt-footer-bottom',
+      "flex w-full items-center justify-between border-t-(--border-width-footer) bg-footer-bottom-bg pt-footer-bottom",
     title:
-      'font-footer-title text-footer-title-fg hover:text-footer-title-fg-hover transition-footer-title',
-    link: 'font-footer-link text-footer-link-fg hover:text-footer-link-fg-hover transition-footer-link',
-    text: 'text-footer-text-fg',
-    divider: 'flex w-full h-footer-divider border-0 bg-footer-divider-bg',
+      "font-footer-title text-footer-title-fg transition-footer-title hover:text-footer-title-fg-hover",
+    link: "font-footer-link text-footer-link-fg transition-footer-link hover:text-footer-link-fg-hover",
+    text: "text-footer-text-fg",
+    divider: "flex h-footer-divider w-full border-0 bg-footer-divider-bg",
   },
   variants: {
     direction: {
       vertical: {
-        root: 'flex-col',
+        root: "flex-col",
       },
       horizontal: {
-        root: 'flex-row',
+        root: "flex-row",
       },
     },
     layout: {
       col: {
-        container: 'grid grid-cols-(--footer-cols)',
+        container: "grid grid-cols-(--footer-cols)",
       },
       row: {
-        container: 'flex flex-row',
+        container: "flex flex-row",
       },
     },
     sectionFlow: {
       col: {
-        section: 'flex flex-col',
+        section: "flex flex-col",
       },
       row: {
-        section: 'flex flex-row',
+        section: "flex flex-row",
       },
     },
     size: {
       sm: {
-        root: 'p-footer-root-sm',
-        container: 'gap-footer-container-sm',
-        section: 'gap-footer-section-sm',
-        list: 'gap-footer-list-gap-sm',
-        title: 'text-footer-title-sm',
-        link: 'text-footer-link-sm',
-        text: 'text-footer-text-sm',
-        bottom: 'p-footer-bottom-sm',
-        divider: 'my-footer-divider-sm',
+        root: "p-footer-root-sm",
+        container: "gap-footer-container-sm",
+        section: "gap-footer-section-sm",
+        list: "gap-footer-list-gap-sm",
+        title: "text-footer-title-sm",
+        link: "text-footer-link-sm",
+        text: "text-footer-text-sm",
+        bottom: "p-footer-bottom-sm",
+        divider: "my-footer-divider-sm",
       },
       md: {
-        root: 'p-footer-root-md',
-        container: 'gap-footer-container-md',
-        section: 'gap-footer-section-md',
-        list: 'gap-footer-list-gap-md',
-        title: 'text-footer-title-md',
-        link: 'text-footer-link-md',
-        text: 'text-footer-text-md',
-        bottom: 'p-footer-bottom-md',
-        divider: 'my-footer-divider-md',
+        root: "p-footer-root-md",
+        container: "gap-footer-container-md",
+        section: "gap-footer-section-md",
+        list: "gap-footer-list-gap-md",
+        title: "text-footer-title-md",
+        link: "text-footer-link-md",
+        text: "text-footer-text-md",
+        bottom: "p-footer-bottom-md",
+        divider: "my-footer-divider-md",
       },
       lg: {
-        root: 'p-footer-root-lg',
-        container: 'gap-footer-container-lg',
-        section: 'gap-footer-section-lg',
-        list: 'gap-footer-list-gap-lg',
-        title: 'text-footer-title-lg',
-        link: 'text-footer-link-lg',
-        text: 'text-footer-text-lg',
-        bottom: 'p-footer-bottom-lg',
-        divider: 'my-footer-divider-lg',
+        root: "p-footer-root-lg",
+        container: "gap-footer-container-lg",
+        section: "gap-footer-section-lg",
+        list: "gap-footer-list-gap-lg",
+        title: "text-footer-title-lg",
+        link: "text-footer-link-lg",
+        text: "text-footer-text-lg",
+        bottom: "p-footer-bottom-lg",
+        divider: "my-footer-divider-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
-    direction: 'horizontal',
-    layout: 'col',
-    sectionFlow: 'col',
+    size: "md",
+    direction: "horizontal",
+    layout: "col",
+    sectionFlow: "col",
   },
 })
 
-interface FooterContextValue {
-  size?: 'sm' | 'md' | 'lg'
-  sectionFlow?: 'col' | 'row'
-  layout?: 'col' | 'row'
+type FooterContextValue = {
+  size?: "sm" | "md" | "lg"
+  sectionFlow?: "col" | "row"
+  layout?: "col" | "row"
 }
 
 const FooterContext = createContext<FooterContextValue>({})
@@ -192,10 +192,10 @@ Footer.Link = function FooterLink({
   const { link } = footerVariants({ size })
   return (
     <Link
-      href={href}
       className={link({ className })}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noopener noreferrer' : undefined}
+      href={href}
+      rel={external ? "noopener noreferrer" : undefined}
+      target={external ? "_blank" : undefined}
       {...props}
     >
       {children}

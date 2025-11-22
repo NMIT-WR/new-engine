@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { useTheme } from '@/hooks/use-theme'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { Switch } from '@new-engine/ui/molecules/switch'
+import { Icon } from "@new-engine/ui/atoms/icon"
+import { Switch } from "@new-engine/ui/molecules/switch"
+import { useTheme } from "@/hooks/use-theme"
 
 export function ThemeToggle() {
   const { theme, toggleTheme, mounted } = useTheme()
 
-  const isDark = theme === 'dark'
+  const isDark = theme === "dark"
 
   // Don't render switch until mounted to avoid hydration issues
   if (!mounted) {
@@ -15,14 +15,14 @@ export function ThemeToggle() {
       <div className="flex items-center gap-theme-toggle-gap">
         <div className="flex items-center gap-theme-toggle-icon-gap">
           <Icon
-            icon="token-icon-sun"
             className="text-theme-toggle-icon-size text-theme-toggle-sun-inactive transition-colors data-[active]:text-theme-toggle-sun-active"
             data-active
+            icon="token-icon-sun"
           />
           <div className="w-theme-toggle-width" />
           <Icon
-            icon="token-icon-moon"
             className="text-theme-toggle-icon-size text-theme-toggle-moon-inactive transition-colors data-[active]:text-theme-toggle-moon-active"
+            icon="token-icon-moon"
           />
         </div>
       </div>
@@ -33,21 +33,21 @@ export function ThemeToggle() {
     <div className="flex items-center gap-theme-toggle-gap">
       <div className="flex items-center gap-theme-toggle-icon-gap">
         <Icon
-          icon="token-icon-sun"
           className="text-theme-toggle-icon-size text-theme-toggle-sun-inactive transition-colors data-[active]:text-theme-toggle-sun-active"
-          data-active={isDark ? undefined : ''}
+          data-active={isDark ? undefined : ""}
+          icon="token-icon-sun"
         />
         <Switch
           checked={isDark}
-          onCheckedChange={toggleTheme}
           className="w-theme-toggle-width"
+          onCheckedChange={toggleTheme}
         >
           <span className="sr-only">Přepnout tmavý režim</span>
         </Switch>
         <Icon
-          icon="token-icon-moon"
           className="text-theme-toggle-icon-size text-theme-toggle-moon-inactive transition-colors data-[active]:text-theme-toggle-moon-active"
-          data-active={isDark ? '' : undefined}
+          data-active={isDark ? "" : undefined}
+          icon="token-icon-moon"
         />
       </div>
     </div>

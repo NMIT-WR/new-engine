@@ -1,4 +1,4 @@
-export interface SaleContent {
+export type SaleContent = {
   banner: {
     text: string
     icon?: string
@@ -15,16 +15,16 @@ export interface SaleContent {
 
 export const saleContent: SaleContent = {
   banner: {
-    text: 'Sezonní výprodej - Až 50% SLEVA! Pouze omezený čas',
-    icon: '🔥',
+    text: "Sezonní výprodej - Až 50% SLEVA! Pouze omezený čas",
+    icon: "🔥",
   },
   hero: {
-    title: 'Výprodej',
+    title: "Výprodej",
     subtitle:
-      'Nakupujte naše největší slevy sezony. Nové slevy přidáváme denně!',
+      "Nakupujte naše největší slevy sezony. Nové slevy přidáváme denně!",
   },
   breadcrumbs: [
-    { label: 'Domů', href: '/' },
-    { label: 'Výprodej', href: '/sale' },
+    { label: "Domů", href: "/" },
+    { label: "Výprodej", href: "/sale" },
   ],
 }

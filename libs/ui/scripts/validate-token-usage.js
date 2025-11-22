@@ -6,77 +6,77 @@
  * Validates that all Tailwind classes in components have corresponding token definitions.
  * Follows Tailwind v4 theme variable namespace rules for precise mapping.
  */
+// biome-ignore-all lint: Just quick script
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath, pathToFileURL } from "node:url"
+import { globSync } from "glob"
 
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
-import { globSync } from 'glob'
-
-const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
+const ROOT = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "..")
 
 // Tailwind v4 namespace to utility prefix mappings
 const NAMESPACE_MAPPINGS = {
   color: [
-    'bg',
-    'text',
-    'border',
-    'fill',
-    'stroke',
-    'outline',
-    'ring',
-    'ring-offset',
-    'shadow',
-    'accent',
-    'caret',
-    'decoration',
+    "bg",
+    "text",
+    "border",
+    "fill",
+    "stroke",
+    "outline",
+    "ring",
+    "ring-offset",
+    "shadow",
+    "accent",
+    "caret",
+    "decoration",
   ],
-  container: ['w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'],
+  container: ["w", "h", "min-w", "min-h", "max-w", "max-h"],
   spacing: [
-    'p',
-    'px',
-    'py',
-    'pt',
-    'pr',
-    'pb',
-    'pl',
-    'ps',
-    'pe',
-    'm',
-    'mx',
-    'my',
-    'mt',
-    'mr',
-    'mb',
-    'ml',
-    'ms',
-    'me',
-    'gap',
-    'gap-x',
-    'gap-y',
-    'space-x',
-    'space-y',
-    'w',
-    'h',
-    'max-w',
-    'min-w',
-    'max-h',
-    'min-h',
-    'top',
-    'right',
-    'bottom',
-    'left',
-    'inset',
-    'inset-x',
-    'inset-y',
+    "p",
+    "px",
+    "py",
+    "pt",
+    "pr",
+    "pb",
+    "pl",
+    "ps",
+    "pe",
+    "m",
+    "mx",
+    "my",
+    "mt",
+    "mr",
+    "mb",
+    "ml",
+    "ms",
+    "me",
+    "gap",
+    "gap-x",
+    "gap-y",
+    "space-x",
+    "space-y",
+    "w",
+    "h",
+    "max-w",
+    "min-w",
+    "max-h",
+    "min-h",
+    "top",
+    "right",
+    "bottom",
+    "left",
+    "inset",
+    "inset-x",
+    "inset-y",
   ],
-  text: ['text'],
-  'font-weight': ['font'],
-  font: ['font'],
-  radius: ['rounded'],
-  shadow: ['shadow', 'drop-shadow', 'inset-shadow'],
-  blur: ['blur'],
-  opacity: ['opacity'],
-  border: ['border'],
+  text: ["text"],
+  "font-weight": ["font"],
+  font: ["font"],
+  radius: ["rounded"],
+  shadow: ["shadow", "drop-shadow", "inset-shadow"],
+  blur: ["blur"],
+  opacity: ["opacity"],
+  border: ["border"],
 }
 
 // Standard Tailwind utilities to ignore (not custom tokens)
@@ -141,7 +141,9 @@ const PREFIX_TO_NAMESPACES = (() => {
   const map = new Map()
   for (const [ns, prefixes] of Object.entries(NAMESPACE_MAPPINGS)) {
     for (const p of prefixes) {
-      if (!map.has(p)) map.set(p, [])
+      if (!map.has(p)) {
+        map.set(p, [])
+      }
       map.get(p).push(ns)
     }
   }
@@ -257,7 +259,7 @@ function mapClassToPossibleTokens(className) {
   // Remove chained state/data prefixes (hover:, focus:, sm:, data-[...]:, etc.)
   let baseClass = className
   while (/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i.test(baseClass)) {
-    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, '')
+    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, "")
   }
 
   // Parse utility class: prefix-value (non-greedy matching)
@@ -265,7 +267,7 @@ function mapClassToPossibleTokens(className) {
   let prefix = null
   let value = null
   // Normalize negative utilities (-m-*, -mt-*, etc.)
-  const normalized = baseClass.startsWith('-') ? baseClass.slice(1) : baseClass
+  const normalized = baseClass.startsWith("-") ? baseClass.slice(1) : baseClass
   // Try to match against known prefixes (longest first to handle cases like 'ring-offset')
   for (const knownPrefix of KNOWN_PREFIXES) {
     if (normalized.startsWith(`${knownPrefix}-`)) {
@@ -275,14 +277,16 @@ function mapClassToPossibleTokens(className) {
     }
   }
 
-  if (!prefix || !value) return []
+  if (!(prefix && value)) {
+    return []
+  }
 
   const possibleTokens = []
 
   // Find which namespaces this prefix could belong to
   const namespaces = PREFIX_TO_NAMESPACES.get(prefix) || []
   for (const namespace of namespaces) {
-    if (namespace === 'font-weight') {
+    if (namespace === "font-weight") {
       possibleTokens.push(`--font-weight-${value}`)
     } else {
       possibleTokens.push(`--${namespace}-${value}`)
@@ -290,57 +294,57 @@ function mapClassToPossibleTokens(className) {
   }
 
   // Add specific namespace alternatives for spacing-related utilities
-  if (['p', 'px', 'py', 'pt', 'pr', 'pb', 'pl', 'ps', 'pe'].includes(prefix)) {
+  if (["p", "px", "py", "pt", "pr", "pb", "pl", "ps", "pe"].includes(prefix)) {
     possibleTokens.push(`--padding-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
   if (
     [
-      'm',
-      'mx',
-      'my',
-      'mt',
-      'mr',
-      'mb',
-      'ml',
-      'ms',
-      'me',
-      '-m',
-      '-mx',
-      '-my',
-      '-mt',
-      '-mr',
-      '-mb',
-      '-ml',
-      '-ms',
-      '-me',
+      "m",
+      "mx",
+      "my",
+      "mt",
+      "mr",
+      "mb",
+      "ml",
+      "ms",
+      "me",
+      "-m",
+      "-mx",
+      "-my",
+      "-mt",
+      "-mr",
+      "-mb",
+      "-ml",
+      "-ms",
+      "-me",
     ].includes(prefix)
   ) {
     possibleTokens.push(`--margin-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['gap', 'gap-x', 'gap-y'].includes(prefix)) {
+  if (["gap", "gap-x", "gap-y"].includes(prefix)) {
     possibleTokens.push(`--gap-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['w', 'min-w', 'max-w'].includes(prefix)) {
+  if (["w", "min-w", "max-w"].includes(prefix)) {
     possibleTokens.push(`--width-${value}`)
   }
 
-  if (['h', 'min-h', 'max-h'].includes(prefix)) {
+  if (["h", "min-h", "max-h"].includes(prefix)) {
     possibleTokens.push(`--height-${value}`)
   }
 
-  if (['space-x', 'space-y'].includes(prefix)) {
+  if (["space-x", "space-y"].includes(prefix)) {
     possibleTokens.push(`--space-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
   if (
-    ['inset', 'inset-x', 'inset-y', 'top', 'right', 'bottom', 'left'].includes(
+    ["inset", "inset-x", "inset-y", "top", "right", "bottom", "left"].includes(
       prefix
     )
   ) {
@@ -356,10 +360,10 @@ function mapClassToPossibleTokens(className) {
  */
 function loadDefinedTokens() {
   const tokens = new Set()
-  const tokenFiles = globSync('src/tokens/**/*.css', { cwd: ROOT })
+  const tokenFiles = globSync("src/tokens/**/*.css", { cwd: ROOT })
 
   for (const file of tokenFiles) {
-    const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    const content = fs.readFileSync(path.join(ROOT, file), "utf8")
     // Match CSS custom properties defined in tokens
     const tokenMatches = content.matchAll(/--([a-z][a-z0-9-]*)\s*:/g)
     for (const match of tokenMatches) {
@@ -368,12 +372,12 @@ function loadDefinedTokens() {
   }
 
   // Also treat inline style custom properties in components as defined
-  const componentFiles = globSync('src/**/*.{ts,tsx}', {
+  const componentFiles = globSync("src/**/*.{ts,tsx}", {
     cwd: ROOT,
-    ignore: ['**/*.stories.tsx', '**/*.test.tsx', '**/*.spec.tsx'],
+    ignore: ["**/*.stories.tsx", "**/*.test.tsx", "**/*.spec.tsx"],
   })
   for (const file of componentFiles) {
-    const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    const content = fs.readFileSync(path.join(ROOT, file), "utf8")
     // style={{ '--var': value }} or object entries '--var': value
     for (const m of content.matchAll(/["'](--[a-z][a-z0-9-]*)["']\s*:/gi)) {
       tokens.add(m[1])
@@ -390,7 +394,7 @@ function shouldIgnoreClass(className) {
   // Remove chained state/data prefixes for checking
   let baseClass = className
   while (/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i.test(baseClass)) {
-    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, '')
+    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:)/i, "")
   }
   return IGNORE_PATTERNS.some((pattern) => pattern.test(baseClass))
 }
@@ -417,21 +421,21 @@ function extractTokensFromArbitraryUtility(className) {
  * Main validation function
  */
 function validateTokenUsage() {
-  console.log('🔍 Validating token usage in components...\n')
+  console.log("🔍 Validating token usage in components...\n")
 
   const definedTokens = loadDefinedTokens()
   console.log(`📋 Found ${definedTokens.size} defined tokens`)
 
-  const componentFiles = globSync('src/**/*.{ts,tsx}', {
+  const componentFiles = globSync("src/**/*.{ts,tsx}", {
     cwd: ROOT,
-    ignore: ['**/*.stories.tsx', '**/*.test.tsx', '**/*.spec.tsx'],
+    ignore: ["**/*.stories.tsx", "**/*.test.tsx", "**/*.spec.tsx"],
   })
 
   let totalErrors = 0
   const errorsByFile = new Map()
 
   for (const file of componentFiles) {
-    const content = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    const content = fs.readFileSync(path.join(ROOT, file), "utf8")
     const classes = extractTailwindClasses(content, file)
     const fileErrors = []
 
@@ -443,9 +447,9 @@ function validateTokenUsage() {
         const externalAllow = new Set([
           // Keep truly external/runtime-provided vars here; we now require
           // --reference-width and --z-index to exist somewhere, per request.
-          '--available-height',
-          '--height',
-          '--border-width-badge-dynamic',
+          "--available-height",
+          "--height",
+          "--border-width-badge-dynamic",
         ])
         const tokensNeedingCheck = arbitraryTokens.filter(
           (t) => !externalAllow.has(t)
@@ -458,20 +462,26 @@ function validateTokenUsage() {
             expectedTokens: tokensNeedingCheck,
             line:
               content
-                .split('\n')
+                .split("\n")
                 .findIndex((line) => line.includes(className)) + 1,
           })
         }
         // If tokens are all external or any defined, consider it valid and continue
-        if (tokensNeedingCheck.length === 0 || anyDefined) continue
+        if (tokensNeedingCheck.length === 0 || anyDefined) {
+          continue
+        }
       }
 
       // 2) Ignore standard classes
-      if (shouldIgnoreClass(className)) continue
+      if (shouldIgnoreClass(className)) {
+        continue
+      }
 
       // 3) Map to possible tokens via namespace rules
       const possibleTokens = mapClassToPossibleTokens(className)
-      if (possibleTokens.length === 0) continue
+      if (possibleTokens.length === 0) {
+        continue
+      }
 
       // Check if ANY of the possible tokens exists
       const hasMatchingToken = possibleTokens.some((token) =>
@@ -483,7 +493,7 @@ function validateTokenUsage() {
           className,
           expectedTokens: possibleTokens,
           line:
-            content.split('\n').findIndex((line) => line.includes(className)) +
+            content.split("\n").findIndex((line) => line.includes(className)) +
             1,
         })
       }
@@ -498,7 +508,7 @@ function validateTokenUsage() {
   // Report results
   if (totalErrors === 0) {
     console.log(
-      '✅ All component classes have corresponding token definitions!'
+      "✅ All component classes have corresponding token definitions!"
     )
     return true
   }
@@ -507,7 +517,7 @@ function validateTokenUsage() {
   for (const [file, errors] of errorsByFile) {
     console.log(`📄 ${file}:`)
     for (const error of errors) {
-      const tokenList = error.expectedTokens.join(' OR ')
+      const tokenList = error.expectedTokens.join(" OR ")
       console.log(
         `  Line ${error.line}: ${error.className} → Missing token: ${tokenList}`
       )
@@ -529,7 +539,7 @@ if (
     const success = validateTokenUsage()
     process.exit(success ? 0 : 1)
   } catch (error) {
-    console.error('💥 Validation failed:', error.message)
+    console.error("💥 Validation failed:", error.message)
     process.exit(1)
   }
 }

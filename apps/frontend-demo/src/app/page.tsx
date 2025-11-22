@@ -1,16 +1,16 @@
-'use client'
-import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
-import { SaleBanner } from '@/components/molecules/sale-banner'
-import { CategoryGrid } from '@/components/organisms/category-grid'
-import { Hero } from '@/components/organisms/hero'
-import { ProductGrid } from '@/components/organisms/product-grid'
-import { homeCategories, homeContent } from '@/data/home-content'
-import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
-import { useProducts } from '@/hooks/use-products'
-import { useRegions } from '@/hooks/use-region'
-import { getCategoryIdByHandle } from '@/utils/category-helpers'
-import { useEffect } from 'react'
-import homeImage from '/assets/hero/home.webp'
+"use client"
+import { useEffect } from "react"
+import { ProductGridSkeleton } from "@/components/molecules/product-grid-skeleton"
+import { SaleBanner } from "@/components/molecules/sale-banner"
+import { CategoryGrid } from "@/components/organisms/category-grid"
+import { Hero } from "@/components/organisms/hero"
+import { ProductGrid } from "@/components/organisms/product-grid"
+import { homeCategories, homeContent } from "@/data/home-content"
+import { usePrefetchProducts } from "@/hooks/use-prefetch-products"
+import { useProducts } from "@/hooks/use-products"
+import { useRegions } from "@/hooks/use-region"
+import { getCategoryIdByHandle } from "@/utils/category-helpers"
+import homeImage from "/assets/hero/home.webp"
 
 export default function Home() {
   const { prefetchDefaultProducts } = usePrefetchProducts()
@@ -23,10 +23,10 @@ export default function Home() {
     newArrivals,
   } = homeContent
   const { products, isLoading } = useProducts({
-    q: 'triko',
-    sort: 'newest',
+    q: "triko",
+    sort: "newest",
     limit: 8,
-    category: getCategoryIdByHandle('kratke-rukavy'),
+    category: getCategoryIdByHandle("kratke-rukavy"),
     region_id: selectedRegion?.id,
   })
 
@@ -44,11 +44,11 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <Hero
-        title={hero.title}
-        subtitle={hero.subtitle}
         backgroundImage={homeImage}
         primaryAction={hero.primaryAction}
         secondaryAction={hero.secondaryAction}
+        subtitle={hero.subtitle}
+        title={hero.title}
       />
 
       {/* Featured Products */}
@@ -70,23 +70,23 @@ export default function Home() {
 
       {/* Categories - Grid View */}
       <CategoryGrid
-        title={categoriesSection.title}
-        subtitle={categoriesSection.subtitle}
         categories={homeCategories.map((cat) => ({
           name: cat.name,
           imageUrl: cat.imageUrl,
           leaves: cat.leaves,
           description: cat.description,
         }))}
+        subtitle={categoriesSection.subtitle}
+        title={categoriesSection.title}
       />
 
       {/* Banner Section */}
       <SaleBanner
-        title={saleBanner.title}
-        subtitle={saleBanner.subtitle}
         backgroundImage={saleBanner.backgroundImage}
-        linkText={saleBanner.linkText}
         linkHref={saleBanner.linkHref}
+        linkText={saleBanner.linkText}
+        subtitle={saleBanner.subtitle}
+        title={saleBanner.title}
       />
 
       {/* New Arrivals */}

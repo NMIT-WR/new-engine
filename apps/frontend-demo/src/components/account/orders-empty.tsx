@@ -1,13 +1,13 @@
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import Link from 'next/link'
+import { Icon } from "@new-engine/ui/atoms/icon"
+import { LinkButton } from "@new-engine/ui/atoms/link-button"
+import Link from "next/link"
 
 export function OrdersEmpty() {
   return (
     <div className="rounded-sm border border-orders-border bg-orders-card-bg p-orders-empty text-center">
       <Icon
-        icon="icon-[mdi--archive-outline]"
         className="mx-auto mb-md h-16 w-16 text-fg-tertiary"
+        icon="icon-[mdi--archive-outline]"
       />
       <p className="mb-xs font-medium text-orders-fg-primary">
         Žádné objednávky
@@ -17,10 +17,10 @@ export function OrdersEmpty() {
       </p>
       <LinkButton
         as={Link}
-        variant="primary"
-        theme="solid"
         href="/products"
         size="sm"
+        theme="solid"
+        variant="primary"
       >
         Začít nakupovat
       </LinkButton>

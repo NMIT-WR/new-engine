@@ -1,24 +1,23 @@
-'use client'
+"use client"
 
-import { useRegions } from '@/hooks/use-region'
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import { categoryTree } from '@/lib/static-data/categories'
-import data from '@/lib/static-data/categories'
-import { getProducts } from '@/services/product-service'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Dialog } from '@new-engine/ui/molecules/dialog'
-import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import { CategoryTreeFilter } from '../category-tree-filter'
-import { FilterSection } from '../molecules/filter-section'
+import { Button } from "@new-engine/ui/atoms/button"
+import { Dialog } from "@new-engine/ui/molecules/dialog"
+import { useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { useRegions } from "@/hooks/use-region"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import data, { categoryTree } from "@/lib/static-data/categories"
+import { getProducts } from "@/services/product-service"
+import { CategoryTreeFilter } from "../category-tree-filter"
+import { FilterSection } from "../molecules/filter-section"
 
-export interface FilterState {
+export type FilterState = {
   categories: Set<string>
   sizes: Set<string>
 }
 
-interface ProductFiltersProps {
+type ProductFiltersProps = {
   className?: string
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
@@ -32,7 +31,7 @@ export function ProductFilters({
   hideCategories = false,
 }: ProductFiltersProps) {
   const { selectedRegion } = useRegions()
-  const [categoryIds, setCategoryIds] = useState<string[]>([])
+  const [_categoryIds, setCategoryIds] = useState<string[]>([])
 
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
@@ -58,7 +57,7 @@ export function ProductFilters({
       page: 1,
       limit: 12,
       filters: productFilters,
-      sort: 'newest', // Add default sort to match products page
+      sort: "newest", // Add default sort to match products page
       region_id: selectedRegion?.id,
     })
 
@@ -75,7 +74,7 @@ export function ProductFilters({
             limit: 12,
             offset: 0,
             filters: productFilters,
-            sort: 'newest',
+            sort: "newest",
             region_id: selectedRegion?.id,
           }),
         ...cacheConfig.semiStatic, // Use consistent cache config
@@ -102,45 +101,43 @@ export function ProductFilters({
   // Count active filters for mobile button
   const activeFilterCount = filters.categories.size + filters.sizes.size
 
-  const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+  const SIZES = ["XS", "S", "M", "L", "XL", "XXL"]
 
-  const renderCategories = () => {
-    return (
-      <FilterSection title="Kategorie">
-        {categoryTree.length > 0 && (
-          <>
-            <div className="mb-2 text-gray-500 text-xs">
-              Tip: Filtry se aplikují pouze na koncové podkategorie
-            </div>
-            <CategoryTreeFilter
-              categories={categoryTree}
-              leafCategories={data.leafCategories}
-              leafParents={data.leafParents}
-              onSelectionChange={handleCategoryChange}
-            />
-          </>
-        )}
-      </FilterSection>
-    )
-  }
+  const renderCategories = () => (
+    <FilterSection title="Kategorie">
+      {categoryTree.length > 0 && (
+        <>
+          <div className="mb-2 text-gray-500 text-xs">
+            Tip: Filtry se aplikují pouze na koncové podkategorie
+          </div>
+          <CategoryTreeFilter
+            categories={categoryTree}
+            leafCategories={data.leafCategories}
+            leafParents={data.leafParents}
+            onSelectionChange={handleCategoryChange}
+          />
+        </>
+      )}
+    </FilterSection>
+  )
 
   const renderSizes = () => {
     return (
       <FilterSection
-        title="Velikost"
         onClear={
           filters.sizes.size > 0
             ? () => updateFilters({ sizes: new Set() })
             : undefined
         }
+        title="Velikost"
       >
         <div className="flex flex-wrap gap-2">
           {SIZES.map((size) => {
             const isSelected = filters.sizes.has(size)
             return (
               <Button
+                className="rounded-sm border"
                 key={size}
-                theme={isSelected ? 'solid' : 'borderless'}
                 onClick={() => {
                   const newSizes = new Set<string>()
                   // If clicking on already selected size, deselect it
@@ -157,7 +154,7 @@ export function ProductFilters({
                   }
                 }}
                 size="sm"
-                className="rounded-sm border"
+                theme={isSelected ? "solid" : "borderless"}
               >
                 {size}
               </Button>
@@ -174,9 +171,9 @@ export function ProductFilters({
       {hasActiveFilters && (
         <div className="mb-4 text-right">
           <Button
-            theme="borderless"
-            onClick={clearAllFilters}
             className="cursor-pointer text-primary text-sm hover:underline"
+            onClick={clearAllFilters}
+            theme="borderless"
           >
             Vymazat všechny filtry
           </Button>
@@ -192,14 +189,14 @@ export function ProductFilters({
   )
 
   return (
-    <div className={`w-full ${className || ''}`}>
+    <div className={`w-full ${className || ""}`}>
       {/* Mobile Filter Button */}
       <Button
-        theme="outlined"
-        size="sm"
-        onClick={() => setIsOpen(true)}
         className="flex items-center bg-surface md:hidden"
         icon="icon-[mdi--filter-variant]"
+        onClick={() => setIsOpen(true)}
+        size="sm"
+        theme="outlined"
       >
         Filtry
         {activeFilterCount > 0 && (
@@ -215,40 +212,40 @@ export function ProductFilters({
       {/* Mobile Filter Dialog */}
       <div className="hidden">
         <Dialog
-          open={isOpen}
-          onOpenChange={({ open }) => setIsOpen(open)}
-          title="Filtry"
           description="Upřesněte hledání produktů"
+          onOpenChange={({ open }) => setIsOpen(open)}
+          open={isOpen}
+          title="Filtry"
         >
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b p-4">
               <h2 className="font-semibold text-lg">Filtry</h2>
               <Button
-                theme="borderless"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                icon="icon-[mdi--close]"
                 aria-label="Zavřít filtry"
+                icon="icon-[mdi--close]"
+                onClick={() => setIsOpen(false)}
+                size="sm"
+                theme="borderless"
               />
             </div>
             <div className="flex-1 overflow-y-auto p-4">{filterContent}</div>
             <div className="flex gap-2 border-t p-4">
               <Button
-                theme="outlined"
-                size="sm"
                 className="flex-1"
                 onClick={() => {
                   clearAllFilters()
                   setIsOpen(false)
                 }}
+                size="sm"
+                theme="outlined"
               >
                 Vymazat vše
               </Button>
               <Button
-                theme="solid"
-                size="sm"
                 className="flex-1"
                 onClick={() => setIsOpen(false)}
+                size="sm"
+                theme="solid"
               >
                 Použít filtry
               </Button>

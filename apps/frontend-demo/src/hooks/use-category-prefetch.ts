@@ -1,11 +1,11 @@
-import { useRegions } from '@/hooks/use-region'
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import { getProducts } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useRef } from 'react'
+import { useQueryClient } from "@tanstack/react-query"
+import { useCallback, useRef } from "react"
+import { useRegions } from "@/hooks/use-region"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import { getProducts } from "@/services/product-service"
 
-interface UseCategoryPrefetchOptions {
+type UseCategoryPrefetchOptions = {
   enabled?: boolean
   cacheStrategy?: keyof typeof cacheConfig
   prefetchLimit?: number // Custom limit for prefetch vs normal queries
@@ -15,14 +15,14 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
   const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
   const enabled = options?.enabled ?? true
-  const cacheStrategy = options?.cacheStrategy ?? 'semiStatic'
+  const cacheStrategy = options?.cacheStrategy ?? "semiStatic"
   const prefetchLimit = options?.prefetchLimit ?? 12
   // Track active timeouts for cancellation
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
 
   const prefetchCategoryProducts = useCallback(
     async (categoryIds: string[]) => {
-      if (!enabled || !selectedRegion?.id || categoryIds.length === 0) {
+      if (!(enabled && selectedRegion?.id) || categoryIds.length === 0) {
         return
       }
 
@@ -32,7 +32,7 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
         limit: prefetchLimit,
         filters: { categories: categoryIds, sizes: [] },
         region_id: selectedRegion.id,
-        sort: 'newest',
+        sort: "newest",
       })
 
       const cachedData = queryClient.getQueryData(queryKey)
@@ -50,7 +50,7 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
               limit: prefetchLimit,
               offset: 0,
               region_id: selectedRegion.id,
-              sort: 'newest',
+              sort: "newest",
             }),
           ...cacheConfig[cacheStrategy],
         })

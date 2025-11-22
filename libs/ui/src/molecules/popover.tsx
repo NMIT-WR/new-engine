@@ -1,61 +1,61 @@
-import * as popover from '@zag-js/popover'
-import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import { type ReactNode, type Ref, useId } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import { tv } from '../utils'
+import * as popover from "@zag-js/popover"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { type ReactNode, type Ref, useId } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Button } from "../atoms/button"
+import { tv } from "../utils"
 
 const popoverVariants = tv({
   slots: {
     trigger: [
-      'p-popover-trigger',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
+      "p-popover-trigger",
+      "disabled:pointer-events-none",
+      "disabled:opacity-disabled",
     ],
-    positioner: ['absolute'],
+    positioner: ["absolute"],
     content: [
-      'bg-popover-bg',
-      'text-popover-fg',
-      'rounded-popover',
-      'outline-none',
-      'z-50',
+      "bg-popover-bg",
+      "text-popover-fg",
+      "rounded-popover",
+      "outline-none",
+      "z-50",
     ],
-    arrow: '',
-    title: ['font-popover-title', 'leading-none', 'mb-popover-title-mb'],
+    arrow: "",
+    title: ["font-popover-title", "leading-none", "mb-popover-title-mb"],
     description: [
-      'text-popover-description-fg text-popover-description-size',
-      'leading-normal',
+      "text-popover-description-fg text-popover-description-size",
+      "leading-normal",
     ],
   },
   variants: {
     shadow: {
       true: {
-        content: 'shadow-popover',
+        content: "shadow-popover",
       },
     },
     border: {
       true: {
-        content: 'border border-popover-border',
-        arrow: 'border-popover-border border-t border-l',
+        content: "border border-popover-border",
+        arrow: "border-popover-border border-t border-l",
       },
     },
     size: {
       sm: {
-        content: 'p-popover-sm text-sm',
-        title: 'text-popover-title-sm',
+        content: "p-popover-sm text-sm",
+        title: "text-popover-title-sm",
       },
       md: {
-        content: 'p-popover-md',
-        title: 'text-popover-title-md',
+        content: "p-popover-md",
+        title: "text-popover-title-md",
       },
       lg: {
-        content: 'p-popover-lg text-lg',
-        title: 'text-popover-title-lg',
+        content: "p-popover-lg text-lg",
+        title: "text-popover-title-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
     shadow: true,
   },
 })
@@ -66,12 +66,12 @@ export interface PopoverProps
   trigger: ReactNode
   children: ReactNode
   placement?: popover.Placement
-  offset?: popover.PositioningOptions['offset']
-  gutter?: popover.PositioningOptions['gutter']
-  flip?: popover.PositioningOptions['flip']
-  slide?: popover.PositioningOptions['slide']
-  sameWidth?: popover.PositioningOptions['sameWidth']
-  overflowPadding?: popover.PositioningOptions['overflowPadding']
+  offset?: popover.PositioningOptions["offset"]
+  gutter?: popover.PositioningOptions["gutter"]
+  flip?: popover.PositioningOptions["flip"]
+  slide?: popover.PositioningOptions["slide"]
+  sameWidth?: popover.PositioningOptions["sameWidth"]
+  overflowPadding?: popover.PositioningOptions["overflowPadding"]
   showArrow?: boolean
   title?: ReactNode
   description?: ReactNode
@@ -87,7 +87,7 @@ export function Popover({
   open,
   defaultOpen,
   onOpenChange,
-  placement = 'bottom',
+  placement = "bottom",
   offset = { mainAxis: 8, crossAxis: 0 },
   gutter = 8,
   sameWidth = false,
@@ -107,7 +107,7 @@ export function Popover({
   contentRef,
   triggerClassName,
   contentClassName,
-  size = 'md',
+  size = "md",
   shadow = true,
   border = true,
   onPointerDownOutside,
@@ -119,7 +119,7 @@ export function Popover({
     id: uniqueId,
     open,
     defaultOpen,
-    dir: 'ltr',
+    dir: "ltr",
     positioning: {
       placement,
       offset,
@@ -155,10 +155,10 @@ export function Popover({
     <div {...api.getPositionerProps()} className={positioner()}>
       <div
         {...api.getContentProps()}
-        ref={contentRef}
         className={contentStyles({ className: contentClassName })}
-        data-side={placement.split('-')[0]}
-        data-state={api.open ? 'open' : 'closed'}
+        data-side={placement.split("-")[0]}
+        data-state={api.open ? "open" : "closed"}
+        ref={contentRef}
       >
         {showArrow && (
           <div {...api.getArrowProps()}>
@@ -186,9 +186,9 @@ export function Popover({
       <Button
         theme="borderless"
         {...api.getTriggerProps()}
-        ref={triggerRef}
         className={triggerStyles({ className: triggerClassName })}
-        data-state={api.open ? 'open' : 'closed'}
+        data-state={api.open ? "open" : "closed"}
+        ref={triggerRef}
       >
         {trigger}
       </Button>

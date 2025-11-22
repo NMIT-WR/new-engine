@@ -1,20 +1,20 @@
-'use client'
+"use client"
 
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { Gallery } from '@/components/organisms/gallery'
-import { ProductGrid } from '@/components/organisms/product-grid'
-import { ProductInfo } from '@/components/organisms/product-info'
-import { ProductTabs } from '@/components/organisms/product-tabs'
-import { useProduct, useProducts } from '@/hooks/use-products'
-import { useRegions } from '@/hooks/use-region'
-import { truncateProductTitle } from '@/lib/order-utils'
-import { formatPrice } from '@/utils/price-utils'
-import { ErrorText } from '@new-engine/ui/atoms/error-text'
-import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { ErrorText } from "@new-engine/ui/atoms/error-text"
+import { Breadcrumb } from "@new-engine/ui/molecules/breadcrumb"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
+import { Gallery } from "@/components/organisms/gallery"
+import { ProductGrid } from "@/components/organisms/product-grid"
+import { ProductInfo } from "@/components/organisms/product-info"
+import { ProductTabs } from "@/components/organisms/product-tabs"
+import { useProduct, useProducts } from "@/hooks/use-products"
+import { useRegions } from "@/hooks/use-region"
+import { truncateProductTitle } from "@/lib/order-utils"
+import { formatPrice } from "@/utils/price-utils"
 
-interface ProductDetailProps {
+type ProductDetailProps = {
   handle: string
 }
 
@@ -24,7 +24,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
   )
-  const titleQuery = product?.title.split(' ').slice(0, 2).join(' ') || ''
+  const titleQuery = product?.title.split(" ").slice(0, 2).join(" ") || ""
   // Update selected variant when product loads or changes
   useEffect(() => {
     if (product?.variants?.[0]) {
@@ -32,14 +32,13 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
     }
   }, [product])
 
-  const { products: relatedProducts, isLoading: isLoadingRelated } =
-    useProducts({
-      q: titleQuery,
-      region_id: selectedRegion?.id,
-      limit: 5,
-      sort: 'newest',
-      enabled: !!titleQuery && !!selectedRegion?.id,
-    })
+  const { products: relatedProducts } = useProducts({
+    q: titleQuery,
+    region_id: selectedRegion?.id,
+    limit: 5,
+    sort: "newest",
+    enabled: !!titleQuery && !!selectedRegion?.id,
+  })
 
   // Filter out the current product from related products
   const filteredRelatedProducts = relatedProducts
@@ -51,13 +50,13 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
       <div className="min-h-screen bg-product-detail-bg">
         <div className="mx-auto max-w-product-detail-max-w px-product-detail-container-x py-product-detail-container-y">
           <div>
-            <SkeletonLoader variant="text" size="md" className="mb-8 w-48" />
+            <SkeletonLoader className="mb-8 w-48" size="md" variant="text" />
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              <SkeletonLoader variant="box" className="aspect-square w-full" />
+              <SkeletonLoader className="aspect-square w-full" variant="box" />
               <div className="space-y-4">
-                <SkeletonLoader variant="text" size="xl" className="w-3/4" />
-                <SkeletonLoader variant="text" size="lg" className="w-1/4" />
-                <SkeletonLoader variant="box" className="h-24 w-full" />
+                <SkeletonLoader className="w-3/4" size="xl" variant="text" />
+                <SkeletonLoader className="w-1/4" size="lg" variant="text" />
+                <SkeletonLoader className="h-24 w-full" variant="box" />
               </div>
             </div>
           </div>
@@ -73,7 +72,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         <div className="mx-auto max-w-product-detail-max-w px-product-detail-container-x py-product-detail-container-y text-center">
           <h1 className="mb-4 font-semibold text-2xl">Product not found</h1>
           <ErrorText showIcon>
-            {error || 'The product you are looking for does not exist.'}
+            {error || "The product you are looking for does not exist."}
           </ErrorText>
         </div>
       </div>
@@ -99,14 +98,14 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
       selectedRegion?.currency_code
     )
   // Get badges for the product
-  const badges = []
+  const badges: { children: string; variant: "info" | "warning" }[] = []
   if (product.metadata?.isNew) {
-    badges.push({ children: 'New', variant: 'info' as const })
+    badges.push({ children: "New", variant: "info" as const })
   }
   if (product.metadata?.discount) {
     badges.push({
       children: `${product.metadata.discount}% OFF`,
-      variant: 'warning' as const,
+      variant: "warning" as const,
     })
   }
 
@@ -124,8 +123,8 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         <div className="mb-product-detail-breadcrumb-margin">
           <Breadcrumb
             items={[
-              { label: 'Domů', href: '/' },
-              { label: 'Produkty', href: '/products' },
+              { label: "Domů", href: "/" },
+              { label: "Produkty", href: "/products" },
               {
                 label: truncateProductTitle(product.title),
                 href: `/products/${product.handle}`,
@@ -140,22 +139,22 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
           {/* Image Gallery */}
           <div className="aspect-square w-full max-w-container-sm">
             <Gallery
-              images={galleryImages}
               aspectRatio="square"
+              carouselSize={400}
+              images={galleryImages}
               orientation="horizontal"
               thumbnailSize={50}
-              carouselSize={400}
             />
           </div>
 
           {/* Info Section */}
           <ProductInfo
+            badges={badges}
+            onVariantChange={setSelectedVariant}
+            price={price || "Cena není k dispozici"}
+            priceWithTax={priceWithTax}
             product={product}
             selectedVariant={selectedVariant}
-            badges={badges}
-            price={price || 'Cena není k dispozici'}
-            priceWithTax={priceWithTax}
-            onVariantChange={setSelectedVariant}
           />
         </div>
 

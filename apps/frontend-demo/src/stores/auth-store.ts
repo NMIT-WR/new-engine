@@ -1,9 +1,9 @@
-import type { ValidationError } from '@/lib/auth/validation'
-import { sdk } from '@/lib/medusa-client'
-import type { HttpTypes } from '@medusajs/types'
-import { Store } from '@tanstack/react-store'
+import type { HttpTypes } from "@medusajs/types"
+import { Store } from "@tanstack/react-store"
+import type { ValidationError } from "@/lib/auth/validation"
+import { sdk } from "@/lib/medusa-client"
 
-export interface AuthState {
+export type AuthState = {
   // Auth state
   user: HttpTypes.StoreCustomer | null
   isLoading: boolean
@@ -45,7 +45,7 @@ export const authHelpers = {
           isInitialized: true,
         }))
         return customer
-      } catch (error: any) {
+      } catch {
         // If 401, user is not authenticated
         authStore.setState((state) => ({
           ...state,
@@ -82,14 +82,14 @@ export const authHelpers = {
       }))
 
       // Step 1: Login using SDK auth
-      const result = await sdk.auth.login('customer', 'emailpass', {
+      const result = await sdk.auth.login("customer", "emailpass", {
         email,
         password,
       })
 
       // Check if authentication requires more actions (e.g., third-party redirect)
-      if (typeof result !== 'string') {
-        throw new Error('Authentication requires additional steps')
+      if (typeof result !== "string") {
+        throw new Error("Authentication requires additional steps")
       }
 
       // Step 2: Fetch customer profile
@@ -121,7 +121,7 @@ export const authHelpers = {
       // Step 3: Clear anonymous cart ID
       // Cart will be merged automatically by Medusa
     } catch (err: any) {
-      const message = err?.message || 'Login failed'
+      const message = err?.message || "Login failed"
       authStore.setState((state) => ({
         ...state,
         error: message,
@@ -145,20 +145,20 @@ export const authHelpers = {
       }))
 
       // Step 1: Register auth identity
-      await sdk.auth.register('customer', 'emailpass', {
+      await sdk.auth.register("customer", "emailpass", {
         email,
         password,
       })
 
       // Step 2: Login to get JWT token (register doesn't return token)
-      const result = await sdk.auth.login('customer', 'emailpass', {
+      const result = await sdk.auth.login("customer", "emailpass", {
         email,
         password,
       })
 
       // Check if authentication requires more actions
-      if (typeof result !== 'string') {
-        throw new Error('Authentication requires additional steps')
+      if (typeof result !== "string") {
+        throw new Error("Authentication requires additional steps")
       }
 
       // Step 3: Create customer profile
@@ -171,7 +171,7 @@ export const authHelpers = {
       // Step 4: Refresh token to ensure proper permissions
       try {
         await sdk.auth.refresh()
-      } catch (refreshError) {}
+      } catch {}
 
       // Step 5: Fetch the customer again to ensure we have the latest data
       try {
@@ -184,7 +184,7 @@ export const authHelpers = {
           isInitialized: true,
         }))
         return refreshedCustomer
-      } catch (fetchError) {
+      } catch {
         authStore.setState((state) => ({
           ...state,
           user: customer,
@@ -194,7 +194,7 @@ export const authHelpers = {
         return customer
       }
     } catch (err: any) {
-      const message = err?.message || 'Registration failed'
+      const message = err?.message || "Registration failed"
       authStore.setState((state) => ({
         ...state,
         error: message,
@@ -214,7 +214,7 @@ export const authHelpers = {
         isInitialized: true,
         validationErrors: [],
       }))
-    } catch (err) {
+    } catch {
       // Silent fail
     }
   },
@@ -243,7 +243,7 @@ export const authHelpers = {
         user: customer,
       }))
     } catch (err: any) {
-      const message = err?.message || 'Profile update failed'
+      const message = err?.message || "Profile update failed"
       authStore.setState((state) => ({ ...state, error: message }))
       throw new Error(message)
     }

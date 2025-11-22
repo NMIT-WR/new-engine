@@ -1,15 +1,15 @@
-import type * as React from 'react'
-import type { Ref } from 'react'
-import { Tabs, type TabsProps } from '../molecules/tabs'
+import type * as React from "react"
+import type { Ref } from "react"
+import { Tabs, type TabsProps } from "../molecules/tabs"
 
-export interface TabItem {
+export type TabItem = {
   value: string
   label: string
   content: React.ReactNode
   disabled?: boolean
 }
 
-export interface TabsTemplateProps extends Omit<TabsProps, 'children' | 'ref'> {
+export interface TabsTemplateProps extends Omit<TabsProps, "children" | "ref"> {
   items: TabItem[]
   showIndicator?: boolean
   ref?: Ref<HTMLDivElement>
@@ -18,11 +18,11 @@ export interface TabsTemplateProps extends Omit<TabsProps, 'children' | 'ref'> {
 export function TabsTemplate({
   items,
   showIndicator = false,
-  variant = 'default',
-  size = 'md',
+  variant = "default",
+  size = "md",
   fitted = false,
-  justify = 'start',
-  orientation = 'horizontal',
+  justify = "start",
+  orientation = "horizontal",
   defaultValue,
   value,
   onValueChange,
@@ -32,24 +32,24 @@ export function TabsTemplate({
 }: TabsTemplateProps) {
   return (
     <Tabs
-      ref={ref}
-      variant={variant}
-      size={size}
+      className={className}
+      defaultValue={defaultValue}
       fitted={fitted}
       justify={justify}
-      orientation={orientation}
-      defaultValue={defaultValue}
-      value={value}
       onValueChange={onValueChange}
-      className={className}
+      orientation={orientation}
+      ref={ref}
+      size={size}
+      value={value}
+      variant={variant}
       {...tabsProps}
     >
       <Tabs.List>
         {items.map((item) => (
           <Tabs.Trigger
+            disabled={item.disabled}
             key={item.value}
             value={item.value}
-            disabled={item.disabled}
           >
             {item.label}
           </Tabs.Trigger>

@@ -1,24 +1,23 @@
-
 /* Credit Card Dialog Component Tokens */
 @theme static {
   /* Root container */
   --gap-cc-dialog-root: var(--spacing-md);
-  
+
   /* Form */
   --gap-cc-dialog-form: var(--spacing-md);
-  
+
   /* Card logos */
   --gap-cc-dialog-logos: var(--spacing-sm);
   --margin-cc-dialog-logos-margin: var(--spacing-sm);
   --height-cc-dialog-logo-height: 1.5rem;
   --opacity-cc-dialog-logo-opacity: 0.3;
   --opacity-cc-dialog-logo-active: 1;
-  
+
   /* Card type icon */
   --spacing-cc-dialog-icon-right: var(--spacing-sm);
   --spacing-cc-dialog-icon-top: 2.5rem;
   --height-cc-dialog-icon-height: 1.25rem;
-  
+
   /* CVV tooltip */
   --spacing-cc-dialog-tooltip-right: var(--spacing-sm);
   --spacing-cc-dialog-tooltip-top: 2.5rem;
@@ -31,7 +30,7 @@
   --shadow-cc-dialog-tooltip: var(--shadow-md);
   --text-cc-dialog-tooltip-size: var(--text-xs);
   --width-cc-dialog-tooltip-width: 12rem;
-  
+
   /* Security info */
   --gap-cc-dialog-security-gap: var(--spacing-xs);
   --color-cc-dialog-security-fg: var(--color-fg-secondary);

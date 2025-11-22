@@ -1,22 +1,22 @@
-import type { LabelHTMLAttributes, ReactNode } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from '../utils'
+import type { LabelHTMLAttributes, ReactNode } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { tv } from "../utils"
 
 const labelVariants = tv({
-  base: ['block', 'text-label-fg', 'font-label'],
+  base: ["block", "text-label-fg", "font-label"],
   variants: {
     size: {
-      sm: 'text-label-sm',
-      md: 'text-label-md',
-      lg: 'text-label-lg',
-      current: '',
+      sm: "text-label-sm",
+      md: "text-label-md",
+      lg: "text-label-lg",
+      current: "",
     },
     disabled: {
-      true: 'text-label-disabled',
+      true: "text-label-disabled",
     },
   },
   defaultVariants: {
-    size: 'current',
+    size: "current",
     disabled: false,
   },
 })

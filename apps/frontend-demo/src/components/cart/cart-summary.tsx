@@ -1,8 +1,8 @@
-import { formatPrice } from '@/utils/price-utils'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import Link from 'next/link'
+import { LinkButton } from "@new-engine/ui/atoms/link-button"
+import Link from "next/link"
+import { formatPrice } from "@/utils/price-utils"
 
-interface CartSummaryProps {
+type CartSummaryProps = {
   subtotal: number
   total: number
   tax: number
@@ -32,7 +32,7 @@ export function CartSummary({
           <div className="flex justify-between text-cart-summary-text">
             <span>Doprava</span>
             <span>
-              {shipping === 0 ? 'ZDARMA' : formatPrice(shipping, currencyCode)}
+              {shipping === 0 ? "ZDARMA" : formatPrice(shipping, currencyCode)}
             </span>
           </div>
           <div className="flex justify-between text-cart-summary-text">
@@ -48,15 +48,15 @@ export function CartSummary({
           <span>{formatPrice(total, currencyCode)}</span>
         </div>
         <div className="mt-300 flex justify-between">
-          <LinkButton href="/products" size="md" as={Link}>
+          <LinkButton as={Link} href="/products" size="md">
             Zpět k nákupu
           </LinkButton>
           <LinkButton
-            href="/checkout"
-            size="md"
-            //icon="token-icon-lock"
             as={Link}
+            href="/checkout"
+            //icon="token-icon-lock"
             prefetch={true}
+            size="md"
           >
             Pokračovat
           </LinkButton>

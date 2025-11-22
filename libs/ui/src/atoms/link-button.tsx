@@ -5,32 +5,32 @@ import type {
   ReactElement,
   ReactNode,
   Ref,
-} from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from '../utils'
-import { buttonVariants } from './button'
-import { Icon, type IconType } from './icon'
-import { Link } from './link'
+} from "react"
+import type { VariantProps } from "tailwind-variants"
+import { tv } from "../utils"
+import { buttonVariants } from "./button"
+import { Icon, type IconType } from "./icon"
+import { Link } from "./link"
 
 const linkButton = tv({
   extend: buttonVariants,
-  base: 'cursor-pointer',
+  base: "cursor-pointer",
   variants: {
     size: {
-      current: '',
+      current: "",
     },
   },
   defaultVariants: {
-    size: 'current',
+    size: "current",
   },
 })
 
-export type LinkButtonProps<T extends ElementType = 'a'> = VariantProps<
+export type LinkButtonProps<T extends ElementType = "a"> = VariantProps<
   typeof linkButton
 > & {
   href?: string
   icon?: IconType
-  iconPosition?: 'left' | 'right'
+  iconPosition?: "left" | "right"
   children?: ReactNode
   disabled?: boolean
   uppercase?: boolean
@@ -38,14 +38,14 @@ export type LinkButtonProps<T extends ElementType = 'a'> = VariantProps<
   ref?: Ref<HTMLAnchorElement>
 } & Omit<
     ComponentPropsWithoutRef<T>,
-    'as' | 'ref' | 'children' | keyof VariantProps<typeof linkButton>
+    "as" | "ref" | "children" | keyof VariantProps<typeof linkButton>
   >
 
-export function LinkButton<T extends ElementType = 'a'>({
+export function LinkButton<T extends ElementType = "a">({
   href,
   icon,
   as,
-  iconPosition = 'left',
+  iconPosition = "left",
   children,
   variant,
   theme,
@@ -59,7 +59,7 @@ export function LinkButton<T extends ElementType = 'a'>({
 }: LinkButtonProps<T>) {
   return (
     <Link
-      ref={ref}
+      aria-disabled={disabled}
       as={as as ElementType}
       className={linkButton({
         variant,
@@ -69,20 +69,20 @@ export function LinkButton<T extends ElementType = 'a'>({
         uppercase,
         className,
       })}
-      href={disabled ? undefined : href}
-      tabIndex={disabled ? -1 : 0}
-      aria-disabled={disabled}
       data-disabled={disabled || undefined}
+      href={disabled ? undefined : href}
       onClick={(e: MouseEvent) => {
         if (disabled) {
           e.preventDefault()
         }
       }}
+      ref={ref}
+      tabIndex={disabled ? -1 : 0}
       {...props}
     >
-      {icon && iconPosition === 'left' && <Icon icon={icon} size={size} />}
+      {icon && iconPosition === "left" && <Icon icon={icon} size={size} />}
       {children}
-      {icon && iconPosition === 'right' && <Icon icon={icon} size={size} />}
+      {icon && iconPosition === "right" && <Icon icon={icon} size={size} />}
     </Link>
   )
 }

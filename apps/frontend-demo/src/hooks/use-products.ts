@@ -1,21 +1,21 @@
-'use client'
+"use client"
 
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
+import { useQuery } from "@tanstack/react-query"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
 import {
-  type ProductListParams,
   getProduct,
   getProducts,
-} from '@/services/product-service'
-import type { Product } from '@/types/product'
-import { useQuery } from '@tanstack/react-query'
+  type ProductListParams,
+} from "@/services/product-service"
+import type { Product } from "@/types/product"
 
 interface UseProductsParams extends ProductListParams {
   page?: number
   enabled?: boolean
 }
 
-interface UseProductsReturn {
+type UseProductsReturn = {
   products: Product[]
   isLoading: boolean
   error: string | null

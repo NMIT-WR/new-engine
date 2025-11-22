@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { AUTH_MESSAGES } from '@/lib/auth/constants'
-import { queryKeys } from '@/lib/query-keys'
-import { authHelpers, authStore } from '@/stores/auth-store'
-import type { HttpTypes } from '@medusajs/types'
-import { useToast } from '@new-engine/ui/molecules/toast'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useStore } from '@tanstack/react-store'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect } from 'react'
+import type { HttpTypes } from "@medusajs/types"
+import { useToast } from "@new-engine/ui/molecules/toast"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useStore } from "@tanstack/react-store"
+import { useRouter } from "next/navigation"
+import { useCallback, useEffect } from "react"
+import { AUTH_MESSAGES } from "@/lib/auth/constants"
+import { queryKeys } from "@/lib/query-keys"
+import { authHelpers, authStore } from "@/stores/auth-store"
 
 export function useAuth() {
   const authState = useStore(authStore)
@@ -48,28 +48,26 @@ export function useAuth() {
       password: string
       firstName?: string
       lastName?: string
-    }) => {
-      return authHelpers.login(email, password, firstName, lastName)
-    },
+    }) => authHelpers.login(email, password, firstName, lastName),
     onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
 
       // Only redirect if not on test page
-      if (!window.location.pathname.includes('/test-auth')) {
-        router.push('/')
+      if (!window.location.pathname.includes("/test-auth")) {
+        router.push("/")
       }
 
       toast.create({
         ...AUTH_MESSAGES.LOGIN_SUCCESS,
-        type: 'success',
+        type: "success",
       })
     },
     onError: (error: Error) => {
       toast.create({
         ...AUTH_MESSAGES.LOGIN_ERROR,
         description: error.message,
-        type: 'error',
+        type: "error",
       })
     },
   })
@@ -86,28 +84,26 @@ export function useAuth() {
       password: string
       firstName?: string
       lastName?: string
-    }) => {
-      return authHelpers.register(email, password, firstName, lastName)
-    },
+    }) => authHelpers.register(email, password, firstName, lastName),
     onSuccess: () => {
       // Invalidate auth queries to refetch user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
 
       // Only redirect if not on test page
-      if (!window.location.pathname.includes('/test-auth')) {
-        router.push('/')
+      if (!window.location.pathname.includes("/test-auth")) {
+        router.push("/")
       }
 
       toast.create({
         ...AUTH_MESSAGES.REGISTER_SUCCESS,
-        type: 'success',
+        type: "success",
       })
     },
     onError: (error: Error) => {
       toast.create({
         ...AUTH_MESSAGES.REGISTER_ERROR,
         description: error.message,
-        type: 'error',
+        type: "error",
       })
     },
   })
@@ -118,43 +114,41 @@ export function useAuth() {
     onSuccess: () => {
       // Invalidate all queries since user context changed
       queryClient.invalidateQueries()
-      router.push('/')
+      router.push("/")
 
       toast.create({
         ...AUTH_MESSAGES.LOGOUT_SUCCESS,
-        type: 'success',
+        type: "success",
       })
     },
   })
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
-    mutationFn: (data: Partial<HttpTypes.StoreCustomer>) => {
-      return authHelpers.updateProfile(data)
-    },
+    mutationFn: (data: Partial<HttpTypes.StoreCustomer>) =>
+      authHelpers.updateProfile(data),
     onSuccess: () => {
       // Invalidate auth queries to refetch updated user
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.customer() })
 
       toast.create({
         ...AUTH_MESSAGES.UPDATE_SUCCESS,
-        type: 'success',
+        type: "success",
       })
     },
     onError: (error: Error) => {
       toast.create({
         ...AUTH_MESSAGES.UPDATE_ERROR,
         description: error.message,
-        type: 'error',
+        type: "error",
       })
     },
   })
 
   // Get field error
   const getFieldError = useCallback(
-    (field: string): string | undefined => {
-      return authState.validationErrors.find((e) => e.field === field)?.message
-    },
+    (field: string): string | undefined =>
+      authState.validationErrors.find((e) => e.field === field)?.message,
     [authState.validationErrors]
   )
 

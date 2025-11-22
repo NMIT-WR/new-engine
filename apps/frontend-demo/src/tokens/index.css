@@ -9,7 +9,7 @@
 @import "./_icons.css";
 @import "./_print.css";
 
-@plugin 'tailwindcss-animate';
+@plugin "tailwindcss-animate";
 
 /* Import UI library tokens (without Tailwind) */
 

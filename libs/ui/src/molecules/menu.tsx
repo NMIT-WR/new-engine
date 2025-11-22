@@ -1,19 +1,19 @@
-import * as menu from '@zag-js/menu'
-import { Portal, normalizeProps, useMachine } from '@zag-js/react'
+import * as menu from "@zag-js/menu"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import {
-  type ReactElement,
-  type ReactNode,
   cloneElement,
   isValidElement,
+  type ReactElement,
+  type ReactNode,
   useEffect,
   useId,
-} from 'react'
-import { type VariantProps, tv } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import { Icon, type IconType } from '../atoms/icon'
+} from "react"
+import { tv, type VariantProps } from "tailwind-variants"
+import { Button } from "../atoms/button"
+import { Icon, type IconType } from "../atoms/icon"
 
 type ActionMenuItem = {
-  type: 'action'
+  type: "action"
   value: string
   label: string
   icon?: IconType
@@ -21,7 +21,7 @@ type ActionMenuItem = {
 }
 
 type RadioMenuItem = {
-  type: 'radio'
+  type: "radio"
   value: string
   label: string
   name: string // radio group name
@@ -29,19 +29,19 @@ type RadioMenuItem = {
 }
 
 type CheckboxMenuItem = {
-  type: 'checkbox'
+  type: "checkbox"
   value: string
   label: string
   checked: boolean
 }
 
 type SeparatorMenuItem = {
-  type: 'separator'
+  type: "separator"
   id: string // pro key
 }
 
 type SubmenuMenuItem = {
-  type: 'submenu'
+  type: "submenu"
   value: string
   label: string
   icon?: IconType
@@ -59,94 +59,93 @@ export type MenuItem =
 // === COMPONENT VARIANTS ===
 const menuVariants = tv({
   slots: {
-    trigger: '',
-    positioner: ['w-(--reference-width)', 'isolate z-(--z-index)'],
+    trigger: "",
+    positioner: ["w-(--reference-width)", "isolate z-(--z-index)"],
     content: [
-      'bg-menu-content-bg border border-menu-content-border',
-      'rounded-menu shadow-menu-content-shadow',
-      'p-menu-content',
-      'overflow-auto',
-      'focus:outline-none',
-      'data-[state=open]:animate-in',
-      'data-[state=closed]:animate-out',
+      "border border-menu-content-border bg-menu-content-bg",
+      "rounded-menu shadow-menu-content-shadow",
+      "p-menu-content",
+      "overflow-auto",
+      "focus:outline-none",
+      "data-[state=open]:animate-in",
+      "data-[state=closed]:animate-out",
     ],
     item: [
-      'flex items-center gap-menu-item',
-      'cursor-pointer',
-      'px-menu-item-x py-menu-item-y',
-      'text-menu-item-fg',
-      'rounded-menu-item',
-      'hover:bg-menu-item-hover',
-      'focus:bg-menu-item-hover focus:outline-none',
-      'data-[disabled]:opacity-menu-disabled data-[disabled]:cursor-not-allowed',
-      'data-[highlighted]:bg-menu-item-hover',
-      'data-[disabled]:opacity-50',
+      "flex items-center gap-menu-item",
+      "cursor-pointer",
+      "px-menu-item-x py-menu-item-y",
+      "text-menu-item-fg",
+      "rounded-menu-item",
+      "hover:bg-menu-item-hover",
+      "focus:bg-menu-item-hover focus:outline-none",
+      "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-menu-disabled",
+      "data-[highlighted]:bg-menu-item-hover",
+      "data-[disabled]:opacity-50",
     ],
-    optionItem: ['data-[state=checked]:font-semibold'],
+    optionItem: ["data-[state=checked]:font-semibold"],
     separator: [
-      'my-menu-separator',
-      'h-menu-separator',
-      'bg-menu-separator-bg',
+      "my-menu-separator",
+      "h-menu-separator",
+      "bg-menu-separator-bg",
     ],
-    itemText: ['flex-grow'],
-    itemIcon: ['text-menu-item-icon-size text-menu-item-icon-fg'],
+    itemText: ["flex-grow"],
+    itemIcon: ["text-menu-item-icon-fg text-menu-item-icon-size"],
     submenuIndicator: [
-      'ms-menu-submenu-indicator text-menu-submenu-indicator-fg',
+      "ms-menu-submenu-indicator text-menu-submenu-indicator-fg",
     ],
   },
   variants: {
     size: {
       sm: {
-        content: 'text-sm',
-        item: 'text-sm',
+        content: "text-sm",
+        item: "text-sm",
       },
       md: {
-        content: 'text-md',
-        item: 'text-md',
+        content: "text-md",
+        item: "text-md",
       },
       lg: {
-        content: 'text-lg',
-        item: 'text-lg',
+        content: "text-lg",
+        item: "text-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 
 // === SUBMENU COMPONENT ===
-interface SubmenuItemProps {
+type SubmenuItemProps = {
   item: SubmenuMenuItem
   parentApi: menu.Api
   parentService: menu.Service
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
   onCheckedChange?: (item: MenuItem, checked: boolean) => void
   onSelect?: (details: { value: string }) => void
   closeOnSelect?: boolean
 }
 
-// ! TODO: Fix menu.machine typing, it should work without 'as any'
 function SubmenuItem({
   item,
   parentApi,
   parentService,
-  size = 'md',
+  size = "md",
   onCheckedChange,
   onSelect,
   closeOnSelect = true,
 }: SubmenuItemProps) {
-  const submenuService = useMachine(menu.machine as any, {
+  const submenuService = useMachine(menu.machine, {
     id: useId(),
     closeOnSelect,
     onSelect,
   })
 
-  const submenuApi = menu.connect(submenuService as any, normalizeProps)
+  const submenuApi = menu.connect(submenuService, normalizeProps)
 
   useEffect(() => {
     // Setup parent-child relationship
-    parentApi.setChild(submenuService as any)
+    parentApi.setChild(submenuService)
     submenuApi.setParent(parentService)
   }, [parentApi, submenuApi, submenuService, parentService])
 
@@ -163,43 +162,43 @@ function SubmenuItem({
 
   const renderMenuItem = (menuItem: MenuItem) => {
     // Handle separator
-    if (menuItem.type === 'separator') {
-      return <hr key={`separator-${menuItem.id}`} className={separator()} />
+    if (menuItem.type === "separator") {
+      return <hr className={separator()} key={`separator-${menuItem.id}`} />
     }
 
     // Handle submenu
-    if (menuItem.type === 'submenu') {
+    if (menuItem.type === "submenu") {
       return (
         <SubmenuItem
-          key={menuItem.value}
+          closeOnSelect={closeOnSelect}
           item={menuItem}
-          parentApi={submenuApi}
-          parentService={submenuService as any}
-          size={size}
+          key={menuItem.value}
           onCheckedChange={onCheckedChange}
           onSelect={onSelect}
-          closeOnSelect={closeOnSelect}
+          parentApi={submenuApi}
+          parentService={submenuService}
+          size={size}
         />
       )
     }
 
     // Handle radio/checkbox items
-    if (menuItem.type === 'radio' || menuItem.type === 'checkbox') {
+    if (menuItem.type === "radio" || menuItem.type === "checkbox") {
       return (
         <li
-          key={menuItem.value}
           className={`${itemSlot()} ${optionItem()}`}
-          {...(submenuApi.getOptionItemProps({
+          key={menuItem.value}
+          {...submenuApi.getOptionItemProps({
             type: menuItem.type,
             value: menuItem.value,
             checked: menuItem.checked,
             onCheckedChange: (checked) => {
               onCheckedChange?.(menuItem, checked)
             },
-          }) as any)}
+          })}
         >
           {menuItem.checked && (
-            <Icon icon="token-icon-check" className={itemIcon()} />
+            <Icon className={itemIcon()} icon="token-icon-check" />
           )}
           <span className={itemText()}>{menuItem.label}</span>
         </li>
@@ -209,14 +208,14 @@ function SubmenuItem({
     // Handle action items
     return (
       <li
-        key={menuItem.value}
         className={itemSlot()}
-        {...(submenuApi.getItemProps({
+        key={menuItem.value}
+        {...submenuApi.getItemProps({
           value: menuItem.value,
           disabled: menuItem.disabled,
-        }) as any)}
+        })}
       >
-        {menuItem.icon && <Icon icon={menuItem.icon} className={itemIcon()} />}
+        {menuItem.icon && <Icon className={itemIcon()} icon={menuItem.icon} />}
         <span className={itemText()}>{menuItem.label}</span>
       </li>
     )
@@ -229,20 +228,17 @@ function SubmenuItem({
     <>
       <li
         className={itemSlot()}
-        {...(triggerProps as any)}
+        {...triggerProps}
         data-disabled={item.disabled || undefined}
       >
-        {item.icon && <Icon icon={item.icon} className={itemIcon()} />}
+        {item.icon && <Icon className={itemIcon()} icon={item.icon} />}
         <span className={itemText()}>{item.label}</span>
-        <Icon icon="token-icon-menu-submenu" className={submenuIndicator()} />
+        <Icon className={submenuIndicator()} icon="token-icon-menu-submenu" />
       </li>
 
       <Portal>
-        <div
-          className={positioner()}
-          {...(submenuApi.getPositionerProps() as any)}
-        >
-          <ul className={content()} {...(submenuApi.getContentProps() as any)}>
+        <div className={positioner()} {...submenuApi.getPositionerProps()}>
+          <ul className={content()} {...submenuApi.getContentProps()}>
             {item.items.map(renderMenuItem)}
           </ul>
         </div>
@@ -260,8 +256,8 @@ export interface MenuProps extends VariantProps<typeof menuVariants> {
   className?: string
   onCheckedChange?: (item: MenuItem, checked: boolean) => void
   // menu.Props
-  'aria-label'?: string
-  dir?: 'ltr' | 'rtl'
+  "aria-label"?: string
+  dir?: "ltr" | "rtl"
   id?: string
   closeOnSelect?: boolean
   loopFocus?: boolean
@@ -284,7 +280,7 @@ export interface MenuProps extends VariantProps<typeof menuVariants> {
 }
 export function Menu({
   // NATIVE PROPS
-  'aria-label': ariaLabel,
+  "aria-label": ariaLabel,
   dir,
   id,
   closeOnSelect = true,
@@ -312,10 +308,10 @@ export function Menu({
 
   // CUSTOM PROPS
   items,
-  triggerText = 'Menu',
+  triggerText = "Menu",
   triggerIcon,
   customTrigger,
-  size = 'md',
+  size = "md",
   onCheckedChange,
 }: MenuProps) {
   const generatedId = useId()
@@ -341,7 +337,7 @@ export function Menu({
     onInteractOutside,
     onFocusOutside,
     onHighlightChange,
-    'aria-label': ariaLabel,
+    "aria-label": ariaLabel,
   })
 
   const api = menu.connect(service as any, normalizeProps)
@@ -359,44 +355,44 @@ export function Menu({
 
   const renderMenuItem = (item: MenuItem) => {
     // Handle separator
-    if (item.type === 'separator') {
-      return <hr key={`separator-${item.id}`} className={separator()} />
+    if (item.type === "separator") {
+      return <hr className={separator()} key={`separator-${item.id}`} />
     }
 
     // Handle submenu
-    if (item.type === 'submenu') {
+    if (item.type === "submenu") {
       return (
         <SubmenuItem
-          key={item.value}
+          closeOnSelect={closeOnSelect}
           item={item}
+          key={item.value}
+          onCheckedChange={onCheckedChange}
+          onSelect={onSelect}
           parentApi={api}
           parentService={service as any}
           size={size}
-          onCheckedChange={onCheckedChange}
-          onSelect={onSelect}
-          closeOnSelect={closeOnSelect}
         />
       )
     }
 
     // Handle radio/checkbox items
-    if (item.type === 'radio' || item.type === 'checkbox') {
+    if (item.type === "radio" || item.type === "checkbox") {
       return (
         <li
-          key={item.value}
           className={`${itemSlot()} ${optionItem()}`}
-          {...(api.getOptionItemProps({
+          key={item.value}
+          {...api.getOptionItemProps({
             type: item.type,
             value: item.value,
             checked: item.checked,
             onCheckedChange: (checked) => {
               onCheckedChange?.(item, checked)
             },
-          }) as any)}
+          })}
         >
           {/* Icon for checked state */}
           {item.checked && (
-            <Icon icon="token-icon-check" className={itemIcon()} />
+            <Icon className={itemIcon()} icon="token-icon-check" />
           )}
           <span className={itemText()}>{item.label}</span>
         </li>
@@ -406,14 +402,14 @@ export function Menu({
     // Handle action items
     return (
       <li
-        key={item.value}
         className={itemSlot()}
-        {...(api.getItemProps({
+        key={item.value}
+        {...api.getItemProps({
           value: item.value,
           disabled: item.disabled,
-        }) as any)}
+        })}
       >
-        {item.icon && <Icon icon={item.icon} className={itemIcon()} />}
+        {item.icon && <Icon className={itemIcon()} icon={item.icon} />}
         <span className={itemText()}>{item.label}</span>
       </li>
     )
@@ -433,18 +429,18 @@ export function Menu({
       ) : (
         <Button {...api.getTriggerProps()} className={trigger()}>
           {triggerText}
-          {triggerIcon && <Icon icon={triggerIcon} className="ms-1" />}
+          {triggerIcon && <Icon className="ms-1" icon={triggerIcon} />}
           {!triggerIcon && (
             <span {...api.getIndicatorProps()}>
-              <Icon icon="token-icon-menu-trigger" className="ms-1" />
+              <Icon className="ms-1" icon="token-icon-menu-trigger" />
             </span>
           )}
         </Button>
       )}
 
       <Portal>
-        <div className={positioner()} {...(api.getPositionerProps() as any)}>
-          <ul className={content()} {...(api.getContentProps() as any)}>
+        <div className={positioner()} {...api.getPositionerProps()}>
+          <ul className={content()} {...api.getContentProps()}>
             {items.map(renderMenuItem)}
           </ul>
         </div>
@@ -453,4 +449,4 @@ export function Menu({
   )
 }
 
-Menu.displayName = 'Menu'
+Menu.displayName = "Menu"

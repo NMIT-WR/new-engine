@@ -1,16 +1,15 @@
-import type { StoreProduct } from '@medusajs/types'
-import { useCallback, useState } from 'react'
-import { getProducts } from '@/services'
-import { Product } from '@/types/product'
-import { useRegions } from './use-region'
+import { useCallback, useState } from "react"
+import { getProducts } from "@/services/product-service"
+import type { Product } from "@/types/product"
+import { useRegions } from "./use-region"
 
-interface UseSearchProductsOptions {
+type UseSearchProductsOptions = {
   limit?: number
   fields?: string
 }
 
 export function useSearchProducts(options?: UseSearchProductsOptions) {
-  const {selectedRegion} = useRegions()
+  const { selectedRegion } = useRegions()
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState<Error | null>(null)
@@ -30,9 +29,9 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
       try {
         const response = await getProducts({
           q: query,
-          fields: options?.fields || 'id, handle, title',
+          fields: options?.fields || "id, handle, title",
           limit: options?.limit || 10,
-          sort: 'newest',
+          sort: "newest",
           region_id: selectedRegion?.id,
         })
 
@@ -40,7 +39,7 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
         return response.products
       } catch (err) {
         const error = err as Error
-        console.error('Search error:', error)
+        console.error("Search error:", error)
         setError(error)
         setSearchResults([])
         return []
@@ -48,7 +47,7 @@ export function useSearchProducts(options?: UseSearchProductsOptions) {
         setIsSearching(false)
       }
     },
-    [options?.fields, options?.limit]
+    [options?.fields, options?.limit, selectedRegion?.id]
   )
 
   const clearResults = useCallback(() => {

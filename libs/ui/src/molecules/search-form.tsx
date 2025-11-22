@@ -1,39 +1,39 @@
-import { type FormHTMLAttributes, type ReactNode, type Ref, useId } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Button, type ButtonProps } from '../atoms/button'
-import { Icon } from '../atoms/icon'
-import { Input, type InputProps } from '../atoms/input'
-import { Label } from '../atoms/label'
-import { tv } from '../utils'
+import { type FormHTMLAttributes, type ReactNode, type Ref, useId } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Button, type ButtonProps } from "../atoms/button"
+import { Icon } from "../atoms/icon"
+import { Input, type InputProps } from "../atoms/input"
+import { Label } from "../atoms/label"
+import { tv } from "../utils"
 
 // icon size looks too small if it is the same as the text
 const iconSizeMap = {
-  sm: 'lg',
-  md: 'xl',
-  lg: '2xl',
+  sm: "lg",
+  md: "xl",
+  lg: "2xl",
 } as const
 
 const formVariants = tv({
-  base: ['grid relative'],
+  base: ["relative grid"],
   variants: {
     size: {
-      sm: 'gap-search-form-sm',
-      md: 'gap-search-form-md',
-      lg: 'gap-search-form-lg',
+      sm: "gap-search-form-sm",
+      md: "gap-search-form-md",
+      lg: "gap-search-form-lg",
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 
 const inputWrapperVariants = tv({
-  base: ['grid relative overflow-hidden rounded-md'],
+  base: ["relative grid overflow-hidden rounded-md"],
   variants: {
     size: {
-      sm: 'gap-search-form-sm',
-      md: 'gap-search-form-md',
-      lg: 'gap-search-form-lg',
+      sm: "gap-search-form-sm",
+      md: "gap-search-form-md",
+      lg: "gap-search-form-lg",
     },
   },
 })
@@ -41,17 +41,17 @@ const inputWrapperVariants = tv({
 // make option to style button
 const buttonVariants = tv({
   base: [
-    'absolute',
-    'justify-self-end place-self-center',
-    'h-full rounded-none p-200',
+    "absolute",
+    "place-self-center justify-self-end",
+    "h-full rounded-none p-200",
   ],
 })
 
 export interface SearchFormProps
   extends VariantProps<typeof formVariants>,
-    Omit<FormHTMLAttributes<HTMLFormElement>, 'size'> {
-  inputProps?: Omit<InputProps, 'size'>
-  buttonProps?: Omit<ButtonProps, 'size'>
+    Omit<FormHTMLAttributes<HTMLFormElement>, "size"> {
+  inputProps?: Omit<InputProps, "size">
+  buttonProps?: Omit<ButtonProps, "size">
   label?: ReactNode
   buttonText?: ReactNode
   buttonIcon?: boolean
@@ -63,10 +63,10 @@ export interface SearchFormProps
 export function SearchForm({
   inputProps,
   buttonProps,
-  size = 'md',
+  size = "md",
   buttonText,
   buttonIcon = false,
-  placeholder = 'Search...',
+  placeholder = "Search...",
   label,
   className,
   ref,
@@ -78,14 +78,14 @@ export function SearchForm({
   const id = searchId || `search-${fallbackId}`
 
   const withButton = !!buttonText || buttonIcon
-  const iconSize = iconSizeMap[size] || 'lg'
+  const iconSize = iconSizeMap[size] || "lg"
 
   return (
     <search>
       <form
-        ref={ref}
         className={formVariants({ size, className })}
         onSubmit={props.onSubmit}
+        ref={ref}
         {...props}
       >
         {label && (
@@ -95,29 +95,29 @@ export function SearchForm({
         )}
         <div className={inputWrapperVariants({ size })}>
           <Input
+            aria-label={label ? undefined : "Search"}
             id={id}
-            type="search"
-            withButtonInside={withButton && 'right'}
             placeholder={placeholder}
             size={size}
-            aria-label={label ? undefined : 'Search'}
+            type="search"
+            withButtonInside={withButton && "right"}
             {...inputProps}
           />
           {withButton && (
             <Button
-              type="submit"
-              theme={buttonProps?.theme || 'borderless'}
+              aria-label={buttonText ? undefined : "Search"}
               block={false}
-              size={size}
-              aria-label={buttonText ? undefined : 'Search'}
               className={buttonVariants({
-                className: buttonText ? '' : 'aspect-square',
+                className: buttonText ? "" : "aspect-square",
               })}
+              size={size}
+              theme={buttonProps?.theme || "borderless"}
+              type="submit"
               {...buttonProps}
             >
               {buttonText}
               {buttonIcon && (
-                <Icon icon={'token-icon-search'} size={iconSize} />
+                <Icon icon={"token-icon-search"} size={iconSize} />
               )}
             </Button>
           )}
@@ -127,4 +127,4 @@ export function SearchForm({
   )
 }
 
-SearchForm.displayName = 'SearchForm'
+SearchForm.displayName = "SearchForm"

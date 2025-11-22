@@ -1,7 +1,7 @@
-import { Image } from '@new-engine/ui/atoms/image'
-import Link from 'next/link'
+import { Image } from "@new-engine/ui/atoms/image"
+import Link from "next/link"
 
-interface SaleBannerProps {
+type SaleBannerProps = {
   title: string
   subtitle: string
   backgroundImage: string
@@ -22,9 +22,9 @@ export function SaleBanner({
         <div className="relative overflow-hidden rounded-banner-radius bg-banner-bg">
           <div className="absolute inset-0">
             <Image
-              src={backgroundImage}
               alt="Sale banner"
               className="h-full w-full object-cover opacity-banner-image-opacity brightness-60"
+              src={backgroundImage}
             />
           </div>
           <div className="relative flex flex-col items-center gap-banner-content-gap px-banner-content-x py-banner-content-y text-center text-banner-text md:px-banner-content-x-md md:py-banner-content-y-md">
@@ -35,8 +35,8 @@ export function SaleBanner({
               {subtitle}
             </p>
             <Link
-              href={linkHref}
               className="inline-block rounded-banner-button-radius bg-banner-button-bg px-banner-button-x py-banner-button-y font-medium text-banner-button-text transition-colors hover:bg-banner-button-hover"
+              href={linkHref}
             >
               {linkText}
             </Link>

@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import { type ProductListParams, getProducts } from '@/services/product-service'
-import type { Product } from '@/types/product'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import type { PageRange } from './use-url-filters'
+import { useInfiniteQuery } from "@tanstack/react-query"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import { getProducts, type ProductListParams } from "@/services/product-service"
+import type { Product } from "@/types/product"
+import type { PageRange } from "./use-url-filters"
 
-interface UseInfiniteProductsParams extends Omit<ProductListParams, 'offset'> {
+interface UseInfiniteProductsParams extends Omit<ProductListParams, "offset"> {
   pageRange: PageRange
   enabled?: boolean
 }
 
-interface UseInfiniteProductsReturn {
+type UseInfiniteProductsReturn = {
   products: Product[]
   isLoading: boolean
   error: string | null
@@ -44,7 +44,7 @@ export function useInfiniteProducts(
 
   const baseOffset = (pageRange.start - 1) * limit
   const totalPagesNeeded = pageRange.end - pageRange.start + 1
-  
+
   // For range queries, we need to load all pages in the range at once
   const rangeLimit = totalPagesNeeded * limit
 
@@ -71,7 +71,7 @@ export function useInfiniteProducts(
       // For subsequent "load more" calls, use normal limit
       const isInitialLoad = pageParam === baseOffset
       const requestLimit = isInitialLoad ? rangeLimit : limit
-      
+
       return getProducts({
         limit: requestLimit,
         offset: pageParam,
@@ -84,18 +84,20 @@ export function useInfiniteProducts(
       })
     },
     initialPageParam: baseOffset,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      // Since we load the full range in the first request, 
+    getNextPageParam: (lastPage, allPages) => {
+      // Since we load the full range in the first request,
       // subsequent calls are just "load more" beyond the range
       const totalFetched = allPages.reduce(
         (sum, page) => sum + page.products.length,
         0
       )
-      
+
       // Check if there are more products to load
       const hasMore = totalFetched < lastPage.count
-      if (!hasMore) return undefined
-      
+      if (!hasMore) {
+        return
+      }
+
       // Calculate offset for the next batch (beyond current range)
       const nextOffset = baseOffset + totalFetched
       return nextOffset
@@ -115,7 +117,7 @@ export function useInfiniteProducts(
       error instanceof Error ? error.message : error ? String(error) : null,
     totalCount,
     currentPageRange: pageRange,
-    hasNextPage: hasNextPage || false,
+    hasNextPage,
     isFetchingNextPage,
     fetchNextPage: () => fetchNextPage(),
     refetch,

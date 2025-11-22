@@ -9,14 +9,14 @@ export const validateEmail = (email: string): boolean => {
 /**
  * Password validation rules
  */
-export interface PasswordRequirements {
+export type PasswordRequirements = {
   length: boolean
   uppercase: boolean
   lowercase: boolean
   number: boolean
 }
 
-export interface PasswordValidationResult {
+export type PasswordValidationResult = {
   isValid: boolean
   errors: string[]
   requirements: PasswordRequirements
@@ -35,16 +35,16 @@ export const validatePassword = (
 
   const errors: string[] = []
   if (!requirements.length) {
-    errors.push('Password must be at least 8 characters long')
+    errors.push("Password must be at least 8 characters long")
   }
   if (!requirements.uppercase) {
-    errors.push('Password must contain at least one uppercase letter')
+    errors.push("Password must contain at least one uppercase letter")
   }
   if (!requirements.lowercase) {
-    errors.push('Password must contain at least one lowercase letter')
+    errors.push("Password must contain at least one lowercase letter")
   }
   if (!requirements.number) {
-    errors.push('Password must contain at least one number')
+    errors.push("Password must contain at least one number")
   }
 
   const strength = Object.values(requirements).filter(Boolean).length
@@ -61,7 +61,7 @@ export const validatePassword = (
 /**
  * Validation error type
  */
-export interface ValidationError {
+export type ValidationError = {
   field: string
   message: string
 }

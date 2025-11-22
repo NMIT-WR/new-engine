@@ -1,6 +1,6 @@
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
+import { Icon, type IconType } from "@new-engine/ui/atoms/icon"
 
-interface FaqItemHeaderProps {
+type FaqItemHeaderProps = {
   icon: IconType
   // text-color, text-size for icon, bg-color for circle shape in background
   iconStyle?: string

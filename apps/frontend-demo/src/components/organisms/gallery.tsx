@@ -1,59 +1,59 @@
-'use client'
+"use client"
 
-import { Button } from '@new-engine/ui/atoms/button'
-import { Image as ImageComponent } from '@new-engine/ui/atoms/image'
-import { Carousel } from '@new-engine/ui/molecules/carousel'
-import type { CarouselSlide } from '@new-engine/ui/molecules/carousel'
-import { tv } from '@new-engine/ui/utils'
-import Image from 'next/image'
-import { useState } from 'react'
-import type { VariantProps } from 'tailwind-variants'
+import { Button } from "@new-engine/ui/atoms/button"
+import { Image as ImageComponent } from "@new-engine/ui/atoms/image"
+import type { CarouselSlide } from "@new-engine/ui/molecules/carousel"
+import { Carousel } from "@new-engine/ui/molecules/carousel"
+import { tv } from "@new-engine/ui/utils"
+import Image from "next/image"
+import { useState } from "react"
+import type { VariantProps } from "tailwind-variants"
 
 const galleryStyles = tv({
   slots: {
-    root: '',
-    mainCarousel: 'flex h-fit relative',
-    container: 'flex-shrink-0',
-    scrollArea: 'scrollbar-thin max-h-[60svh]',
-    list: 'flex gap-gallery-sm',
+    root: "",
+    mainCarousel: "relative flex h-fit",
+    container: "flex-shrink-0",
+    scrollArea: "scrollbar-thin max-h-[60svh]",
+    list: "flex gap-gallery-sm",
     trigger: [
-      'relative flex-shrink-0',
-      'aspect-square',
-      'overflow-hidden rounded-md border',
-      'transition-all duration-200 cursor-pointer',
-      'p-gallery-trigger',
-      'data-[active=true]:border-gallery-trigger-active',
-      'brightness-gallery-trigger',
-      'hover:brightness-gallery-trigger-active data-[active=true]:brightness-gallery-trigger-active',
+      "relative flex-shrink-0",
+      "aspect-square",
+      "overflow-hidden rounded-md border",
+      "cursor-pointer transition-all duration-200",
+      "p-gallery-trigger",
+      "data-[active=true]:border-gallery-trigger-active",
+      "brightness-gallery-trigger",
+      "hover:brightness-gallery-trigger-active data-[active=true]:brightness-gallery-trigger-active",
     ],
   },
   variants: {
     orientation: {
       horizontal: {
-        root: 'flex flex-col',
-        mainCarousel: 'order-1',
-        container: 'order-2',
-        scrollArea: 'w-full overflow-x-auto overflow-y-hidden',
-        list: 'flex-row py-gallery-sm',
+        root: "flex flex-col",
+        mainCarousel: "order-1",
+        container: "order-2",
+        scrollArea: "w-full overflow-x-auto overflow-y-hidden",
+        list: "flex-row py-gallery-sm",
       },
       vertical: {
-        root: 'grid grid-cols-5 gap-gallery-root w-full',
-        mainCarousel: 'col-span-4',
-        container: 'col-span-1',
-        scrollArea: 'h-full overflow-y-auto overflow-x-hidden',
-        list: 'flex-col px-gallery-list',
+        root: "grid w-full grid-cols-5 gap-gallery-root",
+        mainCarousel: "col-span-4",
+        container: "col-span-1",
+        scrollArea: "h-full overflow-y-auto overflow-x-hidden",
+        list: "flex-col px-gallery-list",
       },
     },
   },
   defaultVariants: {
-    orientation: 'vertical',
+    orientation: "vertical",
   },
 })
 
 interface GalleryProps extends VariantProps<typeof galleryStyles> {
   images: CarouselSlide[]
-  aspectRatio?: 'square' | 'portrait' | 'landscape' | 'wide'
-  size?: 'sm' | 'md' | 'lg' | 'full'
+  aspectRatio?: "square" | "portrait" | "landscape" | "wide"
+  size?: "sm" | "md" | "lg" | "full"
   className?: string
   thumbnailSize?: number
   carouselSize?: number
@@ -61,9 +61,9 @@ interface GalleryProps extends VariantProps<typeof galleryStyles> {
 
 export function Gallery({
   images,
-  aspectRatio = 'portrait',
+  aspectRatio = "portrait",
   orientation,
-  size = 'full',
+  size = "full",
   thumbnailSize = 60,
   carouselSize = 200,
   className,
@@ -90,21 +90,21 @@ export function Gallery({
           <div className={list()}>
             {images.map((image, index) => (
               <Button
-                key={image.id}
-                onClick={() => handleThumbnailClick(index)}
+                aria-current={currentPage === index ? "true" : "false"}
+                aria-label={`Zobrazit obrázek ${index + 1}`}
                 className={trigger()}
                 data-active={currentPage === index}
-                aria-label={`Zobrazit obrázek ${index + 1}`}
-                aria-current={currentPage === index ? 'true' : 'false'}
+                key={image.id}
+                onClick={() => handleThumbnailClick(index)}
               >
                 <ImageComponent
-                  as={Image}
-                  src={image.src || ''}
                   alt={image.alt || `Obrázek produktu ${index + 1}`}
-                  width={thumbnailSize}
+                  as={Image}
                   height={thumbnailSize}
                   objectFit="cover"
                   quality={40}
+                  src={image.src || ""}
+                  width={thumbnailSize}
                 />
               </Button>
             ))}
@@ -115,16 +115,16 @@ export function Gallery({
       {/* Main Carousel */}
       <div className={mainCarousel()}>
         <Carousel
-          imageAs={Image}
-          slides={images}
-          page={currentPage}
-          slideCount={images.length}
           aspectRatio={aspectRatio}
+          height={carouselSize}
+          imageAs={Image}
           loop
           onPageChange={handlePageChange}
+          page={currentPage}
           size={size}
+          slideCount={images.length}
+          slides={images}
           width={carouselSize}
-          height={carouselSize}
         />
       </div>
     </div>

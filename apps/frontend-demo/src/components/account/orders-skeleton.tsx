@@ -1,4 +1,4 @@
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
+import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
 
 export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
   const maxItems = Array.from({ length: Math.min(itemsCount, 10) })
@@ -29,8 +29,8 @@ export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
       <div className="block space-y-3 sm:hidden">
         {maxItems.map((_, i) => (
           <div
-            key={i}
             className="rounded-sm border border-orders-border bg-orders-card-bg p-sm"
+            key={i}
           >
             <div className="mb-2xs flex items-start justify-between">
               <div>
@@ -67,8 +67,8 @@ export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
             </div>
             {maxItems.map((_, i) => (
               <div
-                key={i}
                 className="hidden grid-cols-12 gap-orders-card border-orders-border border-b p-sm sm:grid"
+                key={i}
               >
                 <SkeletonLoader className="col-span-12 h-12" />
               </div>

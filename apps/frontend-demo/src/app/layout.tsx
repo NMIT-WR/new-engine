@@ -1,14 +1,14 @@
-import type { Metadata } from 'next'
-import '../tokens/index.css'
-import { DisclaimerWrapper } from '@/components/disclaimer-wrapper'
-import { Footer } from '@/components/footer'
-import { HeaderWrapper } from '@/components/header-wrapper'
-import { Providers } from '@/components/providers'
-import type * as React from 'react'
+import type { Metadata } from "next"
+import "../tokens/index.css"
+import type * as React from "react"
+import { DisclaimerWrapper } from "@/components/disclaimer-wrapper"
+import { Footer } from "@/components/footer"
+import { HeaderWrapper } from "@/components/header-wrapper"
+import { Providers } from "@/components/providers"
 
 export const metadata: Metadata = {
-  title: 'Frontend Demo',
-  description: 'Demo application using the UI library',
+  title: "Frontend Demo",
+  description: "Demo application using the UI library",
 }
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className="flex min-h-screen min-w-layout-min flex-col">
         <Providers>
           <HeaderWrapper
-            logo={{ text: 'Demo Store', icon: 'icon-[mdi--store]' }}
+            logo={{ text: "Demo Store", icon: "icon-[mdi--store]" }}
           />
           <main className="flex-1">
             <DisclaimerWrapper />

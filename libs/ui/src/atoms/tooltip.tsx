@@ -1,43 +1,43 @@
-import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import * as tooltip from '@zag-js/tooltip'
-import { type ReactNode, type Ref, useId } from 'react'
-import { type VariantProps, tv } from 'tailwind-variants'
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import * as tooltip from "@zag-js/tooltip"
+import { type ReactNode, type Ref, useId } from "react"
+import { tv, type VariantProps } from "tailwind-variants"
 
 const tooltipVariants = tv({
   slots: {
-    trigger: ['inline-flex'],
+    trigger: ["inline-flex"],
     content: [
-      '[--arrow-size:var(--tooltip-arrow-size)]',
-      '[--arrow-background:var(--tooltip-arrow-background)]',
-      'bg-tooltip-bg',
-      'rounded-tooltip shadow-tooltip',
+      "[--arrow-size:var(--tooltip-arrow-size)]",
+      "[--arrow-background:var(--tooltip-arrow-background)]",
+      "bg-tooltip-bg",
+      "rounded-tooltip shadow-tooltip",
     ],
-    positioner: ['relative'],
-    arrow: '',
+    positioner: ["relative"],
+    arrow: "",
   },
   variants: {
     variant: {
       default: {},
       outline: {
-        content: 'border border-tooltip-border',
-        arrow: 'border-t border-s border-tooltip-border',
+        content: "border border-tooltip-border",
+        arrow: "border-tooltip-border border-s border-t",
       },
     },
     size: {
       sm: {
-        content: 'text-tooltip-sm p-tooltip-sm',
+        content: "p-tooltip-sm text-tooltip-sm",
       },
       md: {
-        content: 'text-tooltip-md p-tooltip-md',
+        content: "p-tooltip-md text-tooltip-md",
       },
       lg: {
-        content: 'text-tooltip-lg p-tooltip-lg',
+        content: "p-tooltip-lg text-tooltip-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
-    variant: 'default',
+    size: "md",
+    variant: "default",
   },
 })
 
@@ -60,7 +60,7 @@ export function Tooltip({
   variant,
 
   id: MRAId,
-  dir = 'ltr',
+  dir = "ltr",
   openDelay = 200,
   closeDelay = 200,
   interactive = true,
@@ -127,11 +127,11 @@ export function Tooltip({
 
   const triggerProps = api.getTriggerProps()
   // Exclude onBeforeInput: incompatible with span elements in React 19.2+
-  const { onBeforeInput, ...spanCompatibleProps } = triggerProps
+  const { onBeforeInput: _onBeforeInput, ...spanCompatibleProps } = triggerProps
 
   return (
     <>
-      <span {...spanCompatibleProps} ref={ref} className={trigger()}>
+      <span {...spanCompatibleProps} className={trigger()} ref={ref}>
         {children}
       </span>
       <Portal>
@@ -153,4 +153,4 @@ export function Tooltip({
   )
 }
 
-Tooltip.displayName = 'Tooltip'
+Tooltip.displayName = "Tooltip"

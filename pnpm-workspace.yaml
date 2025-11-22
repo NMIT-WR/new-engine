@@ -20,4 +20,5 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@swc/core'
   - '@tailwindcss/oxide'
+  - lefthook
   - nx

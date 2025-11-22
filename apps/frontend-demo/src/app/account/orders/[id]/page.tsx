@@ -1,27 +1,27 @@
-'use client'
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { useAuth } from '@/hooks/use-auth'
-import { formatPrice } from '@/lib/format-price'
-import { sdk } from '@/lib/medusa-client'
+"use client"
+import { Badge } from "@new-engine/ui/atoms/badge"
+import { Button } from "@new-engine/ui/atoms/button"
+import { Icon } from "@new-engine/ui/atoms/icon"
+import { LinkButton } from "@new-engine/ui/atoms/link-button"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { use, useEffect } from "react"
+import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
+import { useAuth } from "@/hooks/use-auth"
+import { formatPrice } from "@/lib/format-price"
+import { sdk } from "@/lib/medusa-client"
 import {
-  ORDER_FIELDS,
   formatOrderDate,
   getOrderStatusLabel,
+  ORDER_FIELDS,
   truncateProductTitle,
-} from '@/lib/order-utils'
-import { queryKeys } from '@/lib/query-keys'
-import type { Order } from '@/types/order'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { use, useEffect } from 'react'
+} from "@/lib/order-utils"
+import { queryKeys } from "@/lib/query-keys"
+import type { Order } from "@/types/order"
 
-interface OrderDetailPageProps {
+type OrderDetailPageProps = {
   params: Promise<{
     id: string
   }>
@@ -35,7 +35,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
 
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push('/auth/login')
+      router.push("/auth/login")
     }
   }, [user, isInitialized, router])
 
@@ -53,13 +53,13 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
 
       if (cachedOrder) {
         const response = await sdk.store.order.retrieve(id, {
-          fields: ORDER_FIELDS.join(','),
+          fields: ORDER_FIELDS.join(","),
         })
         return response
       }
 
       const response = await sdk.store.order.retrieve(id, {
-        fields: ORDER_FIELDS.join(','),
+        fields: ORDER_FIELDS.join(","),
       })
       return response
     },
@@ -91,14 +91,14 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     <div className="mx-auto max-w-layout-max px-sm py-lg">
       <div className="mb-md">
         <LinkButton
-          href="/account/orders"
-          variant="secondary"
-          theme="borderless"
-          size="sm"
-          className="mb-4 gap-2"
           as={Link}
+          className="mb-4 gap-2"
+          href="/account/orders"
+          size="sm"
+          theme="borderless"
+          variant="secondary"
         >
-          <Icon icon="token-icon-arrow-left" className="h-4 w-4" />
+          <Icon className="h-4 w-4" icon="token-icon-arrow-left" />
           Zpět na objednávky
         </LinkButton>
 
@@ -114,7 +114,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             </div>
             <div className="flex flex-wrap gap-2">
               <Badge
-                variant={order.status === 'completed' ? 'success' : 'warning'}
+                variant={order.status === "completed" ? "success" : "warning"}
               >
                 {getOrderStatusLabel(order.status)}
               </Badge>
@@ -132,9 +132,9 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             Objednávka nebyla nalezena nebo k ní nemáte přístup
           </p>
           <Button
-            variant="secondary"
+            onClick={() => router.push("/account/orders")}
             theme="solid"
-            onClick={() => router.push('/account/orders')}
+            variant="secondary"
           >
             Zpět na seznam objednávek
           </Button>
@@ -152,22 +152,22 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             <div className="grid xs:grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
               {order.items?.map((item) => (
                 <div
-                  key={item.id}
                   className="group overflow-hidden rounded-lg bg-orders-card-bg shadow-sm transition-all hover:shadow-md"
+                  key={item.id}
                 >
                   <div className="relative aspect-square overflow-hidden bg-orders-item-overlay-bg">
                     {item.thumbnail ? (
                       <Image
-                        src={item.thumbnail}
-                        alt={item.product_title || ''}
-                        fill
+                        alt={item.product_title || ""}
                         className="object-cover"
+                        fill
+                        src={item.thumbnail}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
                         <Icon
-                          icon="token-icon-package"
                           className="h-12 w-12 text-orders-empty-icon"
+                          icon="token-icon-package"
                         />
                       </div>
                     )}
@@ -179,10 +179,10 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                   </div>
                   <div className="p-4">
                     <Link
-                      href={`/products/${item.product_handle}`}
                       className="mb-2 block font-medium text-tertiary hover:text-primary"
+                      href={`/products/${item.product_handle}`}
                     >
-                      {truncateProductTitle(item.product_title || '')}
+                      {truncateProductTitle(item.product_title || "")}
                     </Link>
                     <p className="mb-3 text-orders-fg-secondary text-orders-sm">
                       Varianta: {item.variant_title}
@@ -284,7 +284,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                     Vytvořeno
                   </p>
                   <p className="font-medium">
-                    {new Date(order.created_at).toLocaleString('cs-CZ')}
+                    {new Date(order.created_at).toLocaleString("cs-CZ")}
                   </p>
                 </div>
                 <div>
@@ -292,7 +292,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                     Poslední aktualizace
                   </p>
                   <p className="font-medium">
-                    {new Date(order.updated_at).toLocaleString('cs-CZ')}
+                    {new Date(order.updated_at).toLocaleString("cs-CZ")}
                   </p>
                 </div>
               </div>

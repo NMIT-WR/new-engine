@@ -1,50 +1,50 @@
-'use client'
+"use client"
 
-import { SafeHtmlContent } from '@/components/safe-html-content'
-import type { Product } from '@/types/product'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Rating } from '@new-engine/ui/atoms/rating'
-import { type TabItem, Tabs } from '@new-engine/ui/atoms/tabs'
-import { Accordion } from '@new-engine/ui/molecules/accordion'
-import { slugify } from '@new-engine/ui/utils'
+import { Badge } from "@new-engine/ui/atoms/badge"
+import { Button } from "@new-engine/ui/atoms/button"
+import { Rating } from "@new-engine/ui/atoms/rating"
+import { type TabItem, Tabs } from "@new-engine/ui/atoms/tabs"
+import { Accordion } from "@new-engine/ui/molecules/accordion"
+import { slugify } from "@new-engine/ui/utils"
+import { SafeHtmlContent } from "@/components/safe-html-content"
+import type { Product } from "@/types/product"
 
-interface ProductTabsProps {
+type ProductTabsProps = {
   product: Product
 }
 
 export function ProductTabs({ product }: ProductTabsProps) {
   const mockReviews = [
     {
-      id: '1',
-      author: 'Sára M.',
+      id: "1",
+      author: "Sára M.",
       rating: 5,
-      date: 'před 2 týdny',
-      comment: 'Naprosto skvělé! Kvalita je úzasná a dokonale to sedí.',
+      date: "před 2 týdny",
+      comment: "Naprosto skvělé! Kvalita je úzasná a dokonale to sedí.",
       verified: true,
     },
     {
-      id: '2',
-      author: 'Jan D.',
+      id: "2",
+      author: "Jan D.",
       rating: 4,
-      date: 'před měsícem',
-      comment: 'Skvělý produkt, přesně podle popisu. Doporučuji.',
+      date: "před měsícem",
+      comment: "Skvělý produkt, přesně podle popisu. Doporučuji.",
       verified: true,
     },
   ]
 
   const tabs: TabItem[] = [
     {
-      value: 'description',
-      label: 'Popis',
+      value: "description",
+      label: "Popis",
       content: (
         <div className="space-y-product-tabs-content-gap">
           <SafeHtmlContent
+            className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed"
             content={
               product.description ||
-              'Zažijte prvotřídní kvalitu a moderní design s tímto výjimečným produktem. Vyrobeno s důrazem na detail a vydrží roky.'
+              "Zažijte prvotřídní kvalitu a moderní design s tímto výjimečným produktem. Vyrobeno s důrazem na detail a vydrží roky."
             }
-            className="text-product-tabs-content-fg text-product-tabs-content-size leading-relaxed"
           />
           {product.features && product.features.length > 0 && (
             <div>
@@ -54,8 +54,8 @@ export function ProductTabs({ product }: ProductTabsProps) {
               <ul className="space-y-product-tabs-features-gap pl-5">
                 {product.features.map((feature) => (
                   <li
-                    key={slugify(feature)}
                     className="list-disc text-product-tabs-content-fg text-product-tabs-content-size"
+                    key={slugify(feature)}
                   >
                     {feature}
                   </li>
@@ -67,8 +67,8 @@ export function ProductTabs({ product }: ProductTabsProps) {
       ),
     },
     {
-      value: 'details',
-      label: 'Detaily produktu',
+      value: "details",
+      label: "Detaily produktu",
       content: (
         <div className="space-y-product-tabs-section-gap">
           {product.specifications && product.specifications.length > 0 && (
@@ -79,8 +79,8 @@ export function ProductTabs({ product }: ProductTabsProps) {
               <dl className="space-y-product-tabs-spec-gap">
                 {product.specifications.map((spec) => (
                   <div
-                    key={spec.name}
                     className="flex gap-product-tabs-spec-gap border-product-tabs-spec-border border-b py-product-tabs-table-cell-y last:border-0"
+                    key={spec.name}
                   >
                     <dt className="min-w-[var(--spacing-product-tabs-spec-label-width)] font-product-tabs-spec-label text-product-tabs-spec-label text-product-tabs-spec-size">
                       {spec.name}
@@ -95,12 +95,11 @@ export function ProductTabs({ product }: ProductTabsProps) {
           )}
           <div className="mt-product-tabs-accordion-margin">
             <Accordion
-              shadow="none"
               items={[
                 {
-                  id: 'shipping',
-                  value: 'shipping',
-                  title: 'Doprava a vracení',
+                  id: "shipping",
+                  value: "shipping",
+                  title: "Doprava a vracení",
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
                       <p>• Doprava zdarma při objednávce nad 1250 Kč</p>
@@ -111,9 +110,9 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   ),
                 },
                 {
-                  id: 'sizing',
-                  value: 'sizing',
-                  title: 'Tabulka velikostí',
+                  id: "sizing",
+                  value: "sizing",
+                  title: "Tabulka velikostí",
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
                       <p>
@@ -137,14 +136,14 @@ export function ProductTabs({ product }: ProductTabsProps) {
                         </thead>
                         <tbody>
                           {[
-                            { size: 'S', chest: '90-95', length: '68' },
-                            { size: 'M', chest: '96-101', length: '70' },
-                            { size: 'L', chest: '102-107', length: '72' },
-                            { size: 'XL', chest: '108-113', length: '74' },
+                            { size: "S", chest: "90-95", length: "68" },
+                            { size: "M", chest: "96-101", length: "70" },
+                            { size: "L", chest: "102-107", length: "72" },
+                            { size: "XL", chest: "108-113", length: "74" },
                           ].map(({ size, chest, length }) => (
                             <tr
-                              key={size}
                               className="border-product-tabs-spec-border border-b"
+                              key={size}
                             >
                               <td className="py-product-tabs-table-cell-y">
                                 {size}
@@ -163,9 +162,9 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   ),
                 },
                 {
-                  id: 'care',
-                  value: 'care',
-                  title: 'Péče o produkt',
+                  id: "care",
+                  value: "care",
+                  title: "Péče o produkt",
                   content: (
                     <div className="space-y-product-tabs-features-gap text-product-tabs-content-fg text-product-tabs-content-size">
                       <p>• Prát v pračce na 30°C s podobnými barvami</p>
@@ -177,14 +176,15 @@ export function ProductTabs({ product }: ProductTabsProps) {
                   ),
                 },
               ]}
+              shadow="none"
             />
           </div>
         </div>
       ),
     },
     {
-      value: 'reviews',
-      label: 'Recenze',
+      value: "reviews",
+      label: "Recenze",
       content: (
         <div className="space-y-product-tabs-section-gap">
           {mockReviews.length > 0 ? (
@@ -203,8 +203,8 @@ export function ProductTabs({ product }: ProductTabsProps) {
               <div className="space-y-product-tabs-content-gap">
                 {mockReviews.map((review) => (
                   <div
-                    key={review.id}
                     className="border-product-tabs-review-border border-b pb-product-tabs-content-gap"
+                    key={review.id}
                   >
                     <div className="mb-product-tabs-spec-gap flex items-start justify-between">
                       <div>
@@ -214,7 +214,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
                             <Badge variant="success">Ověřeno</Badge>
                           )}
                         </div>
-                        <Rating value={review.rating} size="sm" />
+                        <Rating size="sm" value={review.rating} />
                       </div>
                       <span className="text-product-tabs-content-muted text-product-tabs-review-meta">
                         {review.date}

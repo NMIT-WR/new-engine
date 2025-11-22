@@ -1,7 +1,7 @@
-import type { Cart } from '@/hooks/use-cart'
-import { Store } from '@tanstack/react-store'
+import { Store } from "@tanstack/react-store"
+import type { Cart } from "@/hooks/use-cart"
 
-interface OrderState {
+type OrderState = {
   completedOrder: Cart | null
 }
 

@@ -1,14 +1,14 @@
-export interface NavLink {
+export type NavLink = {
   href: string
   label: string
 }
 
-export interface NavSection {
+export type NavSection = {
   title: string
   links: NavLink[]
 }
 
-export interface BreadcrumbItem {
+export type BreadcrumbItem = {
   label: string
   href?: string
 }

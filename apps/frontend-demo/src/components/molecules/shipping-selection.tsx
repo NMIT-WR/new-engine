@@ -1,12 +1,12 @@
-import Image from 'next/image'
-import '../../tokens/app-components/molecules/_shipping-selection.css'
-import { SHIPPING_METHODS } from '@/lib/checkout-data'
-import { formatPrice } from '@/lib/format-price'
-import type { ReducedShippingMethod } from '@/types/checkout'
-import { Button } from '@new-engine/ui/atoms/button'
-import { useToast } from '@new-engine/ui/molecules/toast'
+import Image from "next/image"
+import "../../tokens/app-components/molecules/_shipping-selection.css"
+import { Button } from "@new-engine/ui/atoms/button"
+import { useToast } from "@new-engine/ui/molecules/toast"
+import { SHIPPING_METHODS } from "@/lib/checkout-data"
+import { formatPrice } from "@/lib/format-price"
+import type { ReducedShippingMethod } from "@/types/checkout"
 
-interface ShippingSelectionProps {
+type ShippingSelectionProps = {
   selected: string
   onSelect: (method: string) => void
   currentStep: number
@@ -27,18 +27,18 @@ const ShippingMethodDetail = ({
   const priceWithTax = (method.calculated_price?.calculated_amount || 0) * 1.21
   const formattedPrice = formatPrice(
     priceWithTax,
-    method.calculated_price.currency_code || 'CZK'
+    method.calculated_price.currency_code || "CZK"
   )
 
   return (
     <div className="flex flex-1 items-center gap-3 sm:gap-4">
       {detailInfo?.image && (
         <Image
-          src={detailInfo.image}
           alt={detailInfo.name}
-          width={100}
+          className={`${detailInfo.id === "balikovna" && "balikovna-dark"} h-[30px] w-[60px] object-contain sm:h-[40px] sm:w-[80px] lg:h-[50px] lg:w-[100px]`}
           height={50}
-          className={`${detailInfo.id === 'balikovna' && 'balikovna-dark'} h-[30px] w-[60px] object-contain sm:h-[40px] sm:w-[80px] lg:h-[50px] lg:w-[100px]`}
+          src={detailInfo.image}
+          width={100}
         />
       )}
       <div className="flex-1">
@@ -71,7 +71,6 @@ export function ShippingSelection({
   currentStep,
   setCurrentStep,
   shippingMethods,
-  isLoading,
 }: ShippingSelectionProps) {
   const toast = useToast()
   const handleProgress = () => {
@@ -79,9 +78,9 @@ export function ShippingSelection({
       setCurrentStep(currentStep + 1)
     } else {
       toast.create({
-        type: 'error',
-        title: 'Není vybrán dopravce',
-        description: 'Je potřeba zvolit jeden způsob dopravy',
+        type: "error",
+        title: "Není vybrán dopravce",
+        description: "Je potřeba zvolit jeden způsob dopravy",
       })
     }
   }
@@ -89,28 +88,28 @@ export function ShippingSelection({
   return (
     <div className="w-full space-y-250 py-2 sm:py-4">
       <div
+        aria-label="Vyberte způsob dopravy"
         className="grid grid-cols-1 gap-3 sm:gap-4"
         role="radiogroup"
-        aria-label="Vyberte způsob dopravy"
       >
         {shippingMethods?.map((method) => (
           <Button
-            key={method.id}
-            onClick={() => onSelect(method.id)}
-            className="relative flex items-center rounded-lg border-2 border-border-subtle bg-surface p-3 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:p-4"
-            data-selected={selected === method.id}
             aria-checked={selected === method.id}
             aria-label={`${method.name} - ${method.calculated_price.calculated_amount}`}
+            className="relative flex items-center rounded-lg border-2 border-border-subtle bg-surface p-3 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:p-4"
+            data-selected={selected === method.id}
+            key={method.id}
+            onClick={() => onSelect(method.id)}
           >
             <ShippingMethodDetail method={method} selected={selected} />
           </Button>
         ))}
       </div>
       <div className="flex w-full justify-between">
-        <Button size="sm" onClick={() => setCurrentStep(currentStep - 1)}>
+        <Button onClick={() => setCurrentStep(currentStep - 1)} size="sm">
           Zpět
         </Button>
-        <Button size="sm" onClick={handleProgress}>
+        <Button onClick={handleProgress} size="sm">
           Pokračovat
         </Button>
       </div>

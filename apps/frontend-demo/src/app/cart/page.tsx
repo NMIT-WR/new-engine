@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { CartSummary } from '@/components/cart/cart-summary'
-import { EmptyCart } from '@/components/cart/empty-cart'
-import { useCart } from '@/hooks/use-cart'
-import { truncateProductTitle } from '@/lib/order-utils'
-import { orderHelpers } from '@/stores/order-store'
-import { formatPrice } from '@/utils/price-utils'
-import { getProductPath } from '@/utils/product-utils'
-import { Button } from '@ui/atoms/button'
-import { NumericInput } from '@ui/atoms/numeric-input'
-import { Breadcrumb } from '@ui/molecules/breadcrumb'
-import Image from 'next/image'
-import Link from 'next/link'
+import { Button } from "@ui/atoms/button"
+import { NumericInput } from "@ui/atoms/numeric-input"
+import { Breadcrumb } from "@ui/molecules/breadcrumb"
+import Image from "next/image"
+import Link from "next/link"
+import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
+import { CartSummary } from "@/components/cart/cart-summary"
+import { EmptyCart } from "@/components/cart/empty-cart"
+import { useCart } from "@/hooks/use-cart"
+import { truncateProductTitle } from "@/lib/order-utils"
+import { orderHelpers } from "@/stores/order-store"
+import { formatPrice } from "@/utils/price-utils"
+import { getProductPath } from "@/utils/product-utils"
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
@@ -36,8 +36,8 @@ export default function CartPage() {
         <div className="mb-cart-breadcrumb-margin">
           <Breadcrumb
             items={[
-              { label: 'Domů', href: '/' },
-              { label: 'Košík', href: '/cart' },
+              { label: "Domů", href: "/" },
+              { label: "Košík", href: "/cart" },
             ]}
             linkComponent={Link}
           />
@@ -49,11 +49,11 @@ export default function CartPage() {
           </h1>
           {/* Clear cart button */}
           <Button
-            variant="tertiary"
-            theme="borderless"
-            size="sm"
-            onClick={clearCart}
             icon="token-icon-remove-all"
+            onClick={clearCart}
+            size="sm"
+            theme="borderless"
+            variant="tertiary"
           >
             Vyprázdnit košík
           </Button>
@@ -61,9 +61,9 @@ export default function CartPage() {
 
         {isLoading || !cart ? (
           <div className="space-y-4">
-            <SkeletonLoader variant="box" className="h-32 w-full" />
-            <SkeletonLoader variant="box" className="h-32 w-full" />
-            <SkeletonLoader variant="box" className="h-32 w-full" />
+            <SkeletonLoader className="h-32 w-full" variant="box" />
+            <SkeletonLoader className="h-32 w-full" variant="box" />
+            <SkeletonLoader className="h-32 w-full" variant="box" />
           </div>
         ) : items.length > 0 ? (
           <div className="lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap">
@@ -72,23 +72,22 @@ export default function CartPage() {
               <div className="divide-y divide-cart-item-divider">
                 {items.map((item) => {
                   const price = item.unit_price || 0
-                  const itemTotal = price * item.quantity
 
                   return (
                     <div
-                      key={item.id}
                       className="py-cart-item-y first:pt-0 last:pb-0"
+                      key={item.id}
                     >
                       <div className="flex gap-cart-item-gap">
                         {/* Product Image */}
                         <div className="h-cart-item-image w-cart-item-image rounded-cart-item-image bg-cart-item-image-bg">
                           {item.thumbnail && (
                             <Image
-                              src={item.thumbnail}
                               alt={item.title}
-                              width={120}
-                              height={120}
                               className="h-full w-full rounded-cart-item-image object-cover"
+                              height={120}
+                              src={item.thumbnail}
+                              width={120}
                             />
                           )}
                         </div>
@@ -98,7 +97,7 @@ export default function CartPage() {
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div className="flex items-end gap-300 text-cart-item-title-size">
                               <Link
-                                href={getProductPath(item.product_handle || '')}
+                                href={getProductPath(item.product_handle || "")}
                               >
                                 <h3 className="font-cart-item-title text-tertiary hover:text-cart-item-title">
                                   {`${truncateProductTitle(item.title)} (${item.variant_title})`}
@@ -112,22 +111,22 @@ export default function CartPage() {
 
                           <div className="flex flex-col gap-cart-item-actions-gap sm:flex-row sm:items-center">
                             <NumericInput
-                              value={item.quantity}
-                              min={1}
-                              max={99}
+                              className="h-fit w-24 py-0"
                               hideControls={false}
+                              max={99}
+                              min={1}
                               onChange={(value) =>
                                 updateQuantity(item.id, value)
                               }
                               size="sm"
-                              className="h-fit w-24 py-0"
+                              value={item.quantity}
                             />
                             <Button
-                              variant="tertiary"
-                              theme="borderless"
-                              size="sm"
-                              onClick={() => removeItem(item.id)}
                               icon="token-icon-remove"
+                              onClick={() => removeItem(item.id)}
+                              size="sm"
+                              theme="borderless"
+                              variant="tertiary"
                             >
                               Odebrat
                             </Button>
@@ -141,11 +140,11 @@ export default function CartPage() {
             </div>
 
             <CartSummary
-              subtotal={subtotal}
-              total={total}
-              tax={tax}
-              shipping={shipping}
               currencyCode={currencyCode}
+              shipping={shipping}
+              subtotal={subtotal}
+              tax={tax}
+              total={total}
             />
           </div>
         ) : (

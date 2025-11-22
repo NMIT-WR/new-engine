@@ -6,17 +6,17 @@
  */
 
 export const cacheConfig = {
-// categories, regions
+  // categories, regions
   static: {
     staleTime: 24 * 60 * 60 * 1000,
-    gcTime: 7 * 24 * 60 * 60 * 1000, 
+    gcTime: 7 * 24 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   },
 
   categories: {
-    staleTime: Infinity, 
-    gcTime: Infinity, 
+    staleTime: Number.POSITIVE_INFINITY,
+    gcTime: Number.POSITIVE_INFINITY,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -24,8 +24,8 @@ export const cacheConfig = {
 
   // product catalog, shipping options
   semiStatic: {
-    staleTime: 60 * 60 * 1000, 
-    gcTime: 24 * 60 * 60 * 1000, 
+    staleTime: 60 * 60 * 1000,
+    gcTime: 24 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   },
@@ -33,17 +33,17 @@ export const cacheConfig = {
   // product detail, search
   dynamic: {
     staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000, 
+    gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   },
 
   // Real-time data (cart, inventory)
   realtime: {
-    staleTime: 30 * 1000, 
-    gcTime: 5 * 60 * 1000, 
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    refetchOnMount: "always",
   },
 
   // User-specific data (profile, preferences)
@@ -51,7 +51,7 @@ export const cacheConfig = {
     staleTime: 0,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    refetchOnMount: "always",
   },
 
   // No cache (sensitive data)
@@ -59,7 +59,7 @@ export const cacheConfig = {
     staleTime: 0,
     gcTime: 0,
     refetchOnWindowFocus: true,
-    refetchOnMount: 'always',
+    refetchOnMount: "always",
   },
 } as const
 
@@ -80,12 +80,14 @@ export function getCacheConfig(
  * Network-aware cache config
  */
 export function getNetworkAwareCacheConfig(type: keyof typeof cacheConfig) {
-  if (typeof window === 'undefined') return cacheConfig[type]
+  if (typeof window === "undefined") {
+    return cacheConfig[type]
+  }
 
   // Check for slow connection
   const connection = (navigator as any).connection
   if (connection) {
-    const slowConnections = ['slow-2g', '2g', '3g']
+    const slowConnections = ["slow-2g", "2g", "3g"]
     const isSlowNetwork = slowConnections.includes(connection.effectiveType)
 
     if (isSlowNetwork) {

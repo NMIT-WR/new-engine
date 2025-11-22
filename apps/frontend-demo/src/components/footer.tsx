@@ -1,28 +1,28 @@
-'use client'
-import type { NavSection } from '@/types/navigation'
-import { handleFormSubmit } from '@/utils/form-utils'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Input } from '@new-engine/ui/atoms/input'
-import Link from 'next/link'
-import type { FormEvent } from 'react'
+"use client"
+import { Button } from "@new-engine/ui/atoms/button"
+import { Input } from "@new-engine/ui/atoms/input"
+import Link from "next/link"
+import type { FormEvent } from "react"
+import type { NavSection } from "@/types/navigation"
+import { handleFormSubmit } from "@/utils/form-utils"
 
 const footerSections: NavSection[] = [
   {
-    title: 'Rychlé odkazy',
+    title: "Rychlé odkazy",
     links: [
-      { href: '/products', label: 'Všechny produkty' },
-      { href: '/categories', label: 'Kategorie' },
-      { href: '/about', label: 'O nás' },
-      { href: '/contact', label: 'Kontakt' },
+      { href: "/products", label: "Všechny produkty" },
+      { href: "/categories", label: "Kategorie" },
+      { href: "/about", label: "O nás" },
+      { href: "/contact", label: "Kontakt" },
     ],
   },
   {
-    title: 'Zákaznický servis',
+    title: "Zákaznický servis",
     links: [
-      { href: '/shipping', label: 'Informace o dopravě' },
-      { href: '/returns', label: 'Reklamace' },
-      { href: '/faq', label: 'Časté dotazy' },
-      { href: '/support', label: 'Podpora' },
+      { href: "/shipping", label: "Informace o dopravě" },
+      { href: "/returns", label: "Reklamace" },
+      { href: "/faq", label: "Časté dotazy" },
+      { href: "/support", label: "Podpora" },
     ],
   },
 ]
@@ -58,8 +58,8 @@ export function Footer() {
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <Link
-                      href={link.href}
                       className="text-footer-link transition-colors hover:text-footer-link-hover"
+                      href={link.href}
                     >
                       {link.label}
                     </Link>
@@ -80,16 +80,16 @@ export function Footer() {
             <form className="mt-footer-form" onSubmit={handleNewsletterSubmit}>
               <div className="flex flex-col gap-footer-input-gap sm:flex-row">
                 <Input
-                  type="email"
+                  className="w-full border-footer-input-border bg-footer-input-bg text-footer-input-fg placeholder:text-footer-input-placeholder hover:bg-footer-input-bg-hover focus-visible:bg-footer-input-bg-focus sm:max-w-footer-input"
                   placeholder="Váš email"
                   size="sm"
-                  className="w-full border-footer-input-border bg-footer-input-bg text-footer-input-fg placeholder:text-footer-input-placeholder hover:bg-footer-input-bg-hover focus-visible:bg-footer-input-bg-focus sm:max-w-footer-input"
+                  type="email"
                 />
                 <Button
-                  variant="primary"
+                  className="text-nowrap"
                   size="sm"
                   type="submit"
-                  className="text-nowrap"
+                  variant="primary"
                 >
                   Přihlásit se
                 </Button>

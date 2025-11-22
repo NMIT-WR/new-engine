@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { useCart } from '@/hooks/use-cart'
-import { truncateProductTitle } from '@/lib/order-utils'
-import type { Product } from '@/types/product'
-import { formatPrice } from '@/utils/price-utils'
-import { Button } from '@ui/atoms/button'
-import { Dialog } from '@ui/molecules/dialog'
-import { Select } from '@ui/molecules/select'
-import { useState } from 'react'
+import { Button } from "@ui/atoms/button"
+import { Dialog } from "@ui/molecules/dialog"
+import { Select } from "@ui/molecules/select"
+import { useState } from "react"
+import { useCart } from "@/hooks/use-cart"
+import { truncateProductTitle } from "@/lib/order-utils"
+import type { Product } from "@/types/product"
+import { formatPrice } from "@/utils/price-utils"
 
-interface AddToCartDialogProps {
+type AddToCartDialogProps = {
   product: Product
   open: boolean
   onOpenChange: (details: { open: boolean }) => void
@@ -21,13 +21,13 @@ export function AddToCartDialog({
   onOpenChange,
 }: AddToCartDialogProps) {
   const { addItem, addItemMutation } = useCart()
-  const [selectedVariantId, setSelectedVariantId] = useState<string>('')
+  const [selectedVariantId, setSelectedVariantId] = useState<string>("")
 
   const variants = product.variants || []
 
   const variantOptions = variants.map((variant) => {
     const variantName = variant.options
-      ? Object.values(variant.options).join(' / ')
+      ? Object.values(variant.options).join(" / ")
       : variant.title
 
     const price = variant.calculated_price
@@ -35,11 +35,11 @@ export function AddToCartDialog({
           variant.calculated_price.calculated_amount || 0,
           variant.calculated_price.currency_code
         )
-      : ''
+      : ""
 
     return {
       value: variant.id,
-      label: `${variantName}${price ? ` - ${price}` : ''}`,
+      label: `${variantName}${price ? ` - ${price}` : ""}`,
     }
   })
 
@@ -57,54 +57,54 @@ export function AddToCartDialog({
 
   const handleClose = () => {
     onOpenChange({ open: false })
-    setSelectedVariantId('')
+    setSelectedVariantId("")
   }
 
   return (
     <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-      customTrigger={true}
-      title="Přidat do košíku"
-      description={`Vyberte variantu produktu ${truncateProductTitle(product.title)}`}
       actions={
         <div className="flex gap-3">
           <Button
-            size="sm"
-            variant="secondary"
-            theme="outlined"
             onClick={handleClose}
+            size="sm"
+            theme="outlined"
+            variant="secondary"
           >
             Zrušit
           </Button>
           <Button
-            size="sm"
-            variant="primary"
-            onClick={handleAddToCart}
             disabled={!selectedVariantId || addItemMutation.isPending}
             isLoading={addItemMutation.isPending}
+            onClick={handleAddToCart}
+            size="sm"
+            variant="primary"
           >
             Přidat do košíku
           </Button>
         </div>
       }
+      customTrigger={true}
+      description={`Vyberte variantu produktu ${truncateProductTitle(product.title)}`}
+      onOpenChange={onOpenChange}
+      open={open}
+      title="Přidat do košíku"
     >
       <div className="space-y-4">
         <div>
           <Select
+            className="overflow-hidden"
+            clearIcon={false}
             label="Vyberte variantu"
-            value={selectedVariantId ? [selectedVariantId] : []}
-            options={variantOptions}
-            placeholder="Vyberte variantu..."
             onValueChange={(details) => {
               const value = details.value[0]
               if (value) {
                 setSelectedVariantId(value)
               }
             }}
-            clearIcon={false}
+            options={variantOptions}
+            placeholder="Vyberte variantu..."
             size="sm"
-            className="overflow-hidden"
+            value={selectedVariantId ? [selectedVariantId] : []}
           />
         </div>
       </div>

@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { useCart } from '@/hooks/use-cart'
-import { formatPrice } from '@/lib/format-price'
-import { orderHelpers } from '@/stores/order-store'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import Image from 'next/image'
+import { Icon } from "@new-engine/ui/atoms/icon"
+import Image from "next/image"
+import { useCart } from "@/hooks/use-cart"
+import { formatPrice } from "@/lib/format-price"
+import { orderHelpers } from "@/stores/order-store"
 
-interface OrderPreviewProps {
+type OrderPreviewProps = {
   shippingPrice?: number
   paymentFee?: number
   showDetails?: boolean
@@ -17,7 +17,7 @@ export function OrderPreview({
   shippingPrice = 0,
   paymentFee = 0,
   showDetails = true,
-  className = '',
+  className = "",
 }: OrderPreviewProps) {
   const { cart } = useCart()
 
@@ -40,17 +40,17 @@ export function OrderPreview({
         <div className="mb-3 flex flex-col gap-2 border-gray-200 border-b pb-3 sm:mb-4 sm:gap-3 sm:pb-4 dark:border-gray-700">
           {orderData.items.map((cartItem) => (
             <div
-              key={cartItem.id}
               className="grid grid-cols-[auto_1fr_auto] items-start gap-2 sm:gap-3"
+              key={cartItem.id}
             >
               {cartItem.thumbnail && (
                 <div className="h-[48px] w-[48px] flex-shrink-0 sm:h-[60px] sm:w-[60px]">
                   <Image
-                    src={cartItem.thumbnail}
                     alt={cartItem.title}
-                    width={60}
-                    height={60}
                     className="rounded-md object-cover"
+                    height={60}
+                    src={cartItem.thumbnail}
+                    width={60}
                   />
                 </div>
               )}
@@ -98,7 +98,7 @@ export function OrderPreview({
           <span>
             {shippingPrice > 0
               ? formatPrice(orderData.shipping_total)
-              : 'Zdarma'}
+              : "Zdarma"}
           </span>
         </div>
 
@@ -117,15 +117,15 @@ export function OrderPreview({
 
       <div className="mt-3 flex flex-col gap-1.5 border-gray-200 border-t pt-3 text-success sm:mt-4 sm:gap-2 sm:pt-4 dark:border-gray-700">
         <div className="flex items-center gap-2 text-xs sm:text-sm">
-          <Icon icon="token-icon-lock" className="text-sm" />
+          <Icon className="text-sm" icon="token-icon-lock" />
           <span>Zabezpečená platba</span>
         </div>
         <div className="flex items-center gap-2 text-xs sm:text-sm">
-          <Icon icon="token-icon-check-decagram" className="text-sm" />
+          <Icon className="text-sm" icon="token-icon-check-decagram" />
           <span>100% garance kvality</span>
         </div>
         <div className="flex items-center gap-2 text-xs sm:text-sm">
-          <Icon icon="token-icon-back" className="text-sm" />
+          <Icon className="text-sm" icon="token-icon-back" />
           <span>30denní garance vrácení peněz</span>
         </div>
       </div>

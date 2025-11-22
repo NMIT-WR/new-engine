@@ -1,25 +1,25 @@
-import { formatPrice } from '@/lib/format-price'
+import type { StoreOrder } from "@medusajs/types"
+import { Badge } from "@new-engine/ui/atoms/badge"
+import { Icon } from "@new-engine/ui/atoms/icon"
+import { LinkButton } from "@new-engine/ui/atoms/link-button"
+import Image from "next/image"
+import Link from "next/link"
+import { formatPrice } from "@/lib/format-price"
 import {
   formatOrderDate,
   getOrderStatusLabel,
   truncateProductTitle,
-} from '@/lib/order-utils'
-import type { StoreOrder } from '@medusajs/types'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import Image from 'next/image'
-import Link from 'next/link'
+} from "@/lib/order-utils"
 
 export function MobileOrderCard({ order }: { order: StoreOrder }) {
   const statusVariant =
-    order.status === 'completed'
-      ? 'success'
-      : order.status === 'pending'
-        ? 'warning'
-        : order.status === 'canceled'
-          ? 'danger'
-          : 'info'
+    order.status === "completed"
+      ? "success"
+      : order.status === "pending"
+        ? "warning"
+        : order.status === "canceled"
+          ? "danger"
+          : "info"
 
   const itemCount = order.items?.length || 0
   const firstItem = order.items?.[0]
@@ -49,17 +49,17 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
           <div className="-space-x-2 flex">
             {order.items?.slice(0, 3).map((item, index) => (
               <div
-                key={item.id}
                 className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-orders-border bg-orders-overlay"
+                key={item.id}
                 style={{ zIndex: 3 - index }}
               >
                 {item.thumbnail && (
                   <Image
-                    src={item.thumbnail}
-                    alt={item.product_title || ''}
+                    alt={item.product_title || ""}
                     className="h-full w-full object-cover"
-                    width={48}
                     height={48}
+                    src={item.thumbnail}
+                    width={48}
                   />
                 )}
               </div>
@@ -81,14 +81,14 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
               </p>
             ) : firstItem ? (
               <p className="line-clamp-1 text-orders-fg-primary text-orders-md">
-                {truncateProductTitle(firstItem.product_title || '')}
+                {truncateProductTitle(firstItem.product_title || "")}
               </p>
             ) : null}
             <p className="text-orders-fg-secondary text-xs">
               {hasMultipleItems && firstItem && (
                 <span className="line-clamp-1">
-                  {truncateProductTitle(firstItem.product_title || '')}
-                  {itemCount > 2 && ' a další'}
+                  {truncateProductTitle(firstItem.product_title || "")}
+                  {itemCount > 2 && " a další"}
                 </span>
               )}
             </p>
@@ -100,8 +100,8 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
       <div className="flex items-center justify-between border-orders-border border-t pt-3">
         <div className="flex items-center gap-2">
           <Icon
-            icon="icon-[mdi--cash]"
             className="text-orders-fg-secondary"
+            icon="icon-[mdi--cash]"
             size="sm"
           />
           <span className="font-semibold text-orders-fg-primary">
@@ -114,9 +114,9 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
         <LinkButton
           as={Link}
           href={`/account/orders/${order.id}`}
+          prefetch={true}
           size="sm"
           variant="primary"
-          prefetch={true}
         >
           Zobrazit detail
         </LinkButton>

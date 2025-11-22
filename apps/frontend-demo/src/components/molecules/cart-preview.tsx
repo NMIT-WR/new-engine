@@ -1,13 +1,13 @@
-'use client'
-import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
-import { useCart } from '@/hooks/use-cart'
-import { getVariantInventory, isQuantityAvailable } from '@/lib/inventory'
-import { formatPrice } from '@/utils/price-utils'
-import { getProductPath } from '@/utils/product-utils'
-import { Button } from '@new-engine/ui/atoms/button'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import Image from 'next/image'
-import Link from 'next/link'
+"use client"
+import { Button } from "@new-engine/ui/atoms/button"
+import { LinkButton } from "@new-engine/ui/atoms/link-button"
+import Image from "next/image"
+import Link from "next/link"
+import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
+import { useCart } from "@/hooks/use-cart"
+import { getVariantInventory, isQuantityAvailable } from "@/lib/inventory"
+import { formatPrice } from "@/utils/price-utils"
+import { getProductPath } from "@/utils/product-utils"
 
 export function CartPreview() {
   const { cart, removeItem, isLoading } = useCart()
@@ -18,7 +18,7 @@ export function CartPreview() {
     return (
       <div className="w-cart-preview-max max-w-cart-preview-max">
         <div className="space-y-4 p-4">
-          <SkeletonLoader variant="box" size="md" />
+          <SkeletonLoader size="md" variant="box" />
         </div>
       </div>
     )
@@ -34,10 +34,10 @@ export function CartPreview() {
 
           <LinkButton
             as={Link}
-            href="/products"
-            variant="primary"
-            size="sm"
             block
+            href="/products"
+            size="sm"
+            variant="primary"
           >
             Prohlédnout Produkty
           </LinkButton>
@@ -57,7 +57,7 @@ export function CartPreview() {
       <div className="max-h-cart-preview-height overflow-y-auto">
         {items.map((item) => {
           const price = item.unit_price || 0
-          const imageUrl = item.thumbnail || '/placeholder.png'
+          const imageUrl = item.thumbnail || "/placeholder.png"
           const inventory = item.variant
             ? getVariantInventory(item.variant)
             : null
@@ -66,22 +66,22 @@ export function CartPreview() {
 
           return (
             <div
-              key={item.id}
               className="flex gap-cart-preview border-cart-preview-item-border border-b last:border-b-0"
+              key={item.id}
             >
               <div className="h-cart-preview-item-image w-cart-preview-item-image rounded-cart-preview bg-cart-preview-item-image-bg">
                 <Image
-                  src={imageUrl}
                   alt={item.title}
-                  width={60}
-                  height={60}
                   className="h-full w-full object-cover p-1"
+                  height={60}
+                  src={imageUrl}
+                  width={60}
                 />
               </div>
               <div className="min-w-0 flex-1">
                 <Link
-                  href={getProductPath(item.variant?.product?.handle || '')}
                   className="block font-cart-preview-item text-cart-preview-fg text-cart-preview-item-size hover:text-cart-preview-fg-secondary"
+                  href={getProductPath(item.variant?.product?.handle || "")}
                 >
                   <span className="line-clamp-cart-item-name">
                     {item.title}
@@ -103,12 +103,12 @@ export function CartPreview() {
               </div>
               <div className="flex flex-col items-end justify-between">
                 <Button
-                  type="button"
-                  theme="borderless"
-                  onClick={() => removeItem(item.id)}
-                  className="px-0 py-0 text-cart-preview-fg-secondary hover:text-cart-preview-fg"
                   aria-label="Odebrat z košíku"
+                  className="px-0 py-0 text-cart-preview-fg-secondary hover:text-cart-preview-fg"
                   icon="token-icon-close"
+                  onClick={() => removeItem(item.id)}
+                  theme="borderless"
+                  type="button"
                 />
                 <p className="font-cart-preview-item text-cart-preview-fg text-cart-preview-item-size">
                   {formatPrice(
@@ -134,11 +134,11 @@ export function CartPreview() {
         <div className="flex flex-col gap-cart-preview-actions-gap">
           <LinkButton
             as={Link}
-            prefetch={true}
-            href="/cart"
-            variant="primary"
-            size="md"
             block
+            href="/cart"
+            prefetch={true}
+            size="md"
+            variant="primary"
           >
             Do Košíku
           </LinkButton>
