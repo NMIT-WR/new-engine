@@ -2,7 +2,7 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import * as tabs from '@zag-js/tabs'
 import {
   type ComponentPropsWithoutRef,
-  type RefObject,
+  type Ref,
   createContext,
   useContext,
   useId,
@@ -32,8 +32,9 @@ const tabsVariants = tv({
       'rounded-tabs-trigger',
       'cursor-pointer',
       'hover:bg-tabs-trigger-bg-hover',
-      'focus-visible:outline-none focus-visible:ring-2',
-      'focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
+      'focus-visible:outline-none',
+      'focus-visible:ring',
+      'focus-visible:ring-tabs-ring',
       'data-[selected]:text-tabs-trigger-fg-selected',
       'data-[disabled]:opacity-tabs-disabled data-[disabled]:cursor-not-allowed',
     ],
@@ -46,7 +47,8 @@ const tabsVariants = tv({
     content: [
       'text-tabs-content-fg',
       'outline-none',
-      'focus-visible:ring-2 focus-visible:ring-tabs-ring focus-visible:ring-offset-2',
+      'focus-visible:ring',
+      'focus-visible:ring-tabs-ring',
     ],
   },
   variants: {
@@ -134,7 +136,7 @@ function useTabsContext() {
 }
 
 // Root component
-interface TabsProps
+export interface TabsProps
   extends VariantProps<typeof tabsVariants>,
     Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> {
   id?: string
@@ -145,7 +147,7 @@ interface TabsProps
   activationMode?: 'automatic' | 'manual'
   loopFocus?: boolean
   onValueChange?: (value: string) => void
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 export function Tabs({
@@ -203,7 +205,7 @@ export function Tabs({
 
 // List component
 interface TabsListProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 Tabs.List = function TabsList({
@@ -230,7 +232,7 @@ Tabs.List = function TabsList({
 interface TabsTriggerProps extends ComponentPropsWithoutRef<'button'> {
   value: string
   disabled?: boolean
-  ref?: RefObject<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
 }
 
 Tabs.Trigger = function TabsTrigger({
@@ -260,7 +262,7 @@ Tabs.Trigger = function TabsTrigger({
 // Content component
 interface TabsContentProps extends ComponentPropsWithoutRef<'div'> {
   value: string
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 Tabs.Content = function TabsContent({
@@ -286,7 +288,7 @@ Tabs.Content = function TabsContent({
 
 // Indicator component
 interface TabsIndicatorProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 Tabs.Indicator = function TabsIndicator({

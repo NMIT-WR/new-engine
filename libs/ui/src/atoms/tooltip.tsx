@@ -125,9 +125,13 @@ export function Tooltip({
     size,
   })
 
+  const triggerProps = api.getTriggerProps()
+  // Exclude onBeforeInput: incompatible with span elements in React 19.2+
+  const { onBeforeInput, ...spanCompatibleProps } = triggerProps
+
   return (
     <>
-      <span {...api.getTriggerProps()} ref={ref} className={trigger()}>
+      <span {...spanCompatibleProps} ref={ref} className={trigger()}>
         {children}
       </span>
       <Portal>

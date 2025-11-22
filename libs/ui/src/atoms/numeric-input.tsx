@@ -3,7 +3,7 @@ import { normalizeProps, useMachine } from '@zag-js/react'
 import {
   type ComponentPropsWithoutRef,
   type ReactNode,
-  type RefObject,
+  type Ref,
   createContext,
   useContext,
   useId,
@@ -24,8 +24,8 @@ const numericInputVariants = tv({
       'text-numeric-input-fg',
       'has-[input:hover]:bg-numeric-input-input-bg-hover',
       'has-[input:focus]:bg-numeric-input-input-bg-focus',
-      'focus-within:bg-numeric-input-input-bg-focus',
-      'focus-within:border-numeric-input-border-focus',
+      'focus-within:ring',
+      'focus-within:ring-numeric-input-ring',
     ],
     input: [
       'p-numeric-input-input border-none',
@@ -42,7 +42,7 @@ const numericInputVariants = tv({
       'px-numeric-input-trigger-x py-numeric-input-trigger-y',
       'bg-numeric-input-trigger-bg hover:bg-numeric-input-trigger-bg-hover',
       'text-numeric-input-trigger-fg hover:text-numeric-input-trigger-fg-hover',
-      'cursor-pointer focus:ring-increment-btn-ring',
+      'cursor-pointer',
     ],
     scrubber: 'absolute inset-0 cursor-ew-resize',
   },
@@ -104,7 +104,7 @@ export type NumericInputProps = Omit<
     precision?: number
     children?: ReactNode
     describedBy?: string
-    ref?: RefObject<HTMLDivElement>
+    ref?: Ref<HTMLDivElement>
     id?: string
   }
 
@@ -182,8 +182,8 @@ export function NumericInput({
       <div
         ref={ref}
         className={styles.root({ className })}
-        {...props}
         {...api.getRootProps()}
+        {...props}
       >
         {children}
       </div>
@@ -193,7 +193,7 @@ export function NumericInput({
 
 // Control component (wrapper for input + triggers)
 interface NumericInputControlProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 NumericInput.Control = function NumericInputControl({
@@ -208,8 +208,8 @@ NumericInput.Control = function NumericInputControl({
     <div
       ref={ref}
       className={styles.container({ className })}
-      {...props}
       {...api.getControlProps()}
+      {...props}
       data-invalid={invalid || undefined}
     >
       {children}
@@ -220,7 +220,7 @@ NumericInput.Control = function NumericInputControl({
 // Input component
 interface NumericInputInputProps
   extends Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
-  ref?: RefObject<HTMLInputElement>
+  ref?: Ref<HTMLInputElement>
 }
 
 NumericInput.Input = function NumericInputInput({
@@ -236,8 +236,8 @@ NumericInput.Input = function NumericInputInput({
   return (
     <Input
       ref={ref}
-      {...props}
       {...api.getInputProps()}
+      {...props}
       className={styles.input({ className })}
       aria-describedby={ariaDescribedBy}
     />
@@ -263,7 +263,7 @@ interface NumericInputIncrementTriggerProps
   loadingText?: string
 
   // === React ===
-  ref?: RefObject<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
   children?: ReactNode
 }
 
@@ -300,8 +300,8 @@ NumericInput.IncrementTrigger = function NumericInputIncrementTrigger({
       isLoading={isLoading}
       loadingText={loadingText}
       className={styles.trigger({ className })}
-      {...props}
       {...api.getIncrementTriggerProps()}
+      {...props}
     >
       {children}
     </Button>
@@ -327,7 +327,7 @@ interface NumericInputDecrementTriggerProps
   loadingText?: string
 
   // === React ===
-  ref?: RefObject<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
   children?: ReactNode
 }
 
@@ -364,8 +364,8 @@ NumericInput.DecrementTrigger = function NumericInputDecrementTrigger({
       isLoading={isLoading}
       loadingText={loadingText}
       className={styles.trigger({ className })}
-      {...props}
       {...api.getDecrementTriggerProps()}
+      {...props}
     >
       {children}
     </Button>
@@ -374,7 +374,7 @@ NumericInput.DecrementTrigger = function NumericInputDecrementTrigger({
 
 // Scrubber component (for drag-to-change functionality)
 interface NumericInputScrubberProps extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 NumericInput.Scrubber = function NumericInputScrubber({
@@ -388,8 +388,8 @@ NumericInput.Scrubber = function NumericInputScrubber({
     <div
       ref={ref}
       className={styles.scrubber({ className })}
-      {...props}
       {...api.getScrubberProps()}
+      {...props}
     />
   )
 }
@@ -397,7 +397,7 @@ NumericInput.Scrubber = function NumericInputScrubber({
 // Trigger Container component (wrapper for increment/decrement triggers)
 interface NumericInputTriggerContainerProps
   extends ComponentPropsWithoutRef<'div'> {
-  ref?: RefObject<HTMLDivElement>
+  ref?: Ref<HTMLDivElement>
 }
 
 NumericInput.TriggerContainer = function NumericInputTriggerContainer({

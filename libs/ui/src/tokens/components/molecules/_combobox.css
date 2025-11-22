@@ -100,18 +100,7 @@
 
   /* === FOCUS RINGS === */
   /* Focus ring colors and styles */
-  --color-combobox-ring-danger: --alpha(
-    var(--color-combobox-danger) /
-    var(--opacity-ring)
-  );
-  --color-combobox-ring-success: --alpha(
-    var(--color-combobox-success) /
-    var(--opacity-ring)
-  );
-  --color-combobox-ring-warning: --alpha(
-    var(--color-combobox-warning) /
-    var(--opacity-ring)
-  );
+  --color-combobox-ring: var(--color-ring);
 
   /* Z-index */
   --z-combobox-content: 20;

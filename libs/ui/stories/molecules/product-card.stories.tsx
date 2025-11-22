@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Badge } from '../../src/atoms/badge'
 import { Button } from '../../src/atoms/button'

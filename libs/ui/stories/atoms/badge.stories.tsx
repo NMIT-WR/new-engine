@@ -73,6 +73,7 @@ export const Dynamic: Story = {
 }
 
 export const AllVariants: Story = {
+  args: {} as BadgeProps,
   render: () => (
     <VariantContainer>
       <VariantGroup title="Solid themes">

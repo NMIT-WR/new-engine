@@ -117,20 +117,17 @@ export const States: Story = {
     return (
       <VariantContainer>
         <VariantGroup title="Disabled states">
-          <Button theme="outlined" disabled>
-            Primary
+          <Button disabled>
+            Solid
           </Button>
           <Button variant="secondary" theme="light" disabled>
-            Secondary
+            Light
           </Button>
           <Button variant="tertiary" theme="borderless" disabled>
-            Tertiary
+            Borderless
           </Button>
-          <Button variant="warning" theme="borderless" disabled>
-            Warning
-          </Button>
-          <Button variant="danger" theme="solid" disabled>
-            Danger
+          <Button variant="warning" theme="outlined" disabled>
+            Outlined
           </Button>
         </VariantGroup>
 
