@@ -34,7 +34,7 @@
     "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.338",
+    "@iconify/json": "^2.2.409",
     "@iconify/tailwind4": "^1.1.0",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4.1.17",
@@ -42,7 +42,7 @@
     "@types/node": "^20.17.47",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.22",
     "chokidar": "^4.0.3",
     "dotenv": "^16.6.0",
     "postcss": "^8.5.6",
