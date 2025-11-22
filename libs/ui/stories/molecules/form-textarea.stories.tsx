@@ -36,7 +36,7 @@ const meta: Meta<typeof FormTextarea> = {
     },
     resize: {
       control: 'select',
-      options: ['none', 'both', 'horizontal', 'vertical'],
+      options: ['none', 'both', 'x', 'y'],
       description: 'Resize behavior of the textarea',
     },
     rows: {
@@ -224,7 +224,7 @@ export const AllVariants: Story = {
             id="resize-vertical"
             label="Vertical resize only"
             placeholder="Can only resize vertically..."
-            resize="vertical"
+            resize="y"
             rows={3}
           />
         </div>
@@ -233,7 +233,7 @@ export const AllVariants: Story = {
             id="resize-horizontal"
             label="Horizontal resize only"
             placeholder="Can only resize horizontally..."
-            resize="horizontal"
+            resize="x"
             rows={3}
           />
         </div>

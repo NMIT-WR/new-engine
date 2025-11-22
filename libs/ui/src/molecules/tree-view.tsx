@@ -34,7 +34,8 @@ const treeViewVariants = tv({
     label: ['text-tree-label-fg font-tree-label'],
     tree: [
       'outline-none bg-tree-bg',
-      'focus-visible:ring-2 focus-visible:ring-tree-node-ring focus-visible:ring-offset-2',
+      'focus-visible:ring',
+      'focus-visible:ring-tree-ring',
     ],
     branch: [
       'data-[disabled]:opacity-tree-disabled data-[disabled]:pointer-events-none',
@@ -43,7 +44,9 @@ const treeViewVariants = tv({
       'group flex items-center justify-between',
       'hover:bg-tree-node-bg-hover',
       'cursor-pointer',
-      'has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-tree-node-ring',
+      'has-focus-visible:outline-none',
+      'has-focus-visible:ring',
+      'has-focus-visible:ring-tree-ring',
     ],
     branchControl: ['flex-1'],
     branchText: ['flex-1'],
@@ -61,7 +64,9 @@ const treeViewVariants = tv({
       'hover:bg-tree-node-bg-hover hover:text-tree-fg-hover',
       'data-[selected]:hover:bg-tree-node-bg-hover',
       'data-[selected]:hover:text-tree-fg-hover',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tree-node-ring',
+      'focus-visible:outline-none',
+      'focus-visible:ring',
+      'focus-visible:ring-tree-ring',
     ],
     itemText: ['flex-1'],
     nodeIcon: ['hover:text-tree-icon-hover'],
@@ -615,6 +620,8 @@ interface TreeViewNodeProps {
   indexPath: number[]
   showIndentGuides?: boolean
   showNodeIcons?: boolean
+  onNodeHover?: (node: TreeNode, indexPath: number[]) => void
+  onNodeLeave?: (node: TreeNode, indexPath: number[]) => void
 }
 
 TreeView.Node = function TreeViewNode({
@@ -622,6 +629,8 @@ TreeView.Node = function TreeViewNode({
   indexPath,
   showIndentGuides = true,
   showNodeIcons = true,
+  onNodeHover,
+  onNodeLeave,
 }: TreeViewNodeProps) {
   const { api } = useTreeViewContext()
   const nodeProps = { node, indexPath }
@@ -631,7 +640,10 @@ TreeView.Node = function TreeViewNode({
     <TreeView.NodeProvider node={node} indexPath={indexPath}>
       {nodeState.isBranch ? (
         <TreeView.Branch>
-          <TreeView.BranchTrigger>
+          <TreeView.BranchTrigger
+            onMouseEnter={() => onNodeHover?.(node, indexPath)}
+            onMouseLeave={() => onNodeLeave?.(node, indexPath)}
+          >
             <TreeView.BranchControl>
               {showNodeIcons && <TreeView.NodeIcon />}
               <TreeView.BranchText />
@@ -647,12 +659,17 @@ TreeView.Node = function TreeViewNode({
                 indexPath={[...indexPath, index]}
                 showIndentGuides={showIndentGuides}
                 showNodeIcons={showNodeIcons}
+                onNodeHover={onNodeHover}
+                onNodeLeave={onNodeLeave}
               />
             ))}
           </TreeView.BranchContent>
         </TreeView.Branch>
       ) : (
-        <TreeView.Item>
+        <TreeView.Item
+          onMouseEnter={() => onNodeHover?.(node, indexPath)}
+          onMouseLeave={() => onNodeLeave?.(node, indexPath)}
+        >
           {showNodeIcons && <TreeView.NodeIcon />}
           <TreeView.ItemText />
         </TreeView.Item>

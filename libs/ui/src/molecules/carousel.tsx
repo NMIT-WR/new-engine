@@ -67,7 +67,9 @@ const carouselVariants = tv({
       slots: ['autoplayTrigger', 'indicator', 'prevTrigger', 'nextTrigger'],
       class: [
         'p-carousel-trigger',
-        'focus:outline-none text-carousel-trigger-fg focus:ring-2 focus:ring-carousel-focus-ring focus:ring-offset-2',
+        'focus:outline-none text-carousel-trigger-fg',
+        'focus:ring',
+        'focus:ring-carousel-ring',
       ],
     },
     {
@@ -184,7 +186,7 @@ export type CarouselSlide = {
   imageProps?: Record<string, unknown>
 }
 
-interface CarouselRootProps<T extends ElementType = typeof Image>
+export interface CarouselRootProps<T extends ElementType = typeof Image>
   extends VariantProps<typeof carouselVariants>,
     Omit<carousel.Props, 'id' | 'size'> {
   id?: string

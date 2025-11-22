@@ -17,7 +17,7 @@
   --color-color-select-border-hover: var(--color-color-select-accent);
   --color-color-select-selected: var(--color-color-select-accent);
   --color-color-select-fg-check: var(--color-white);
-  --color-color-select-ring: var(--color-ring-primary);
+  --color-color-select-ring: var(--color-ring);
   --color-color-select-label-fg: var(--color-fg-secondary);
 
   /* === SPACING === */

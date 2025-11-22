@@ -34,7 +34,7 @@
   --color-tabs-content-fg: var(--color-tabs-fg-primary);
 
   /* === FOCUS RING === */
-  --color-tabs-ring: --alpha(var(--color-tabs-active) / var(--opacity-ring));
+  --color-tabs-ring: var(--color-ring);
 
   /* === PADDING === */
   /* Trigger padding */
