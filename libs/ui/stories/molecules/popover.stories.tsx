@@ -86,6 +86,11 @@ export const Disabled: Story = {
 }
 
 export const Variants: Story = {
+  args: {
+    id: 'variants-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <div className="space-y-8">
       {/* Sizes */}
@@ -189,6 +194,11 @@ export const Variants: Story = {
 }
 
 export const Controlled: Story = {
+  args: {
+    id: 'controlled-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => {
     const [open, setOpen] = useState(false)
 
@@ -207,7 +217,7 @@ export const Controlled: Story = {
           id="controlled-popover"
           trigger="Controlled Popover"
           open={open}
-          onOpenChange={setOpen}
+          onOpenChange={(details) => setOpen(details.open)}
           title="Controlled Popover"
           description="This popover is controlled by external state"
         >
@@ -265,6 +275,11 @@ export const WithForm: Story = {
 }
 
 export const CustomTrigger: Story = {
+  args: {
+    id: 'custom-trigger-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <div className="flex gap-4">
       <Popover
@@ -320,6 +335,11 @@ export const Modal: Story = {
 }
 
 export const AsyncContent: Story = {
+  args: {
+    id: 'async-content-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<string | null>(null)
@@ -375,6 +395,11 @@ export const AsyncContent: Story = {
 }
 
 export const PositioningBehaviors: Story = {
+  args: {
+    id: 'positioning-behaviors-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <div className="grid gap-8 p-8">
         <Popover
@@ -403,6 +428,11 @@ export const PositioningBehaviors: Story = {
 }
 
 export const SameWidthDemo: Story = {
+  args: {
+    id: 'same-width-demo-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <div className="flex gap-8 items-start">
       <Popover
@@ -427,6 +457,11 @@ export const SameWidthDemo: Story = {
 }
 
 export const EdgePositioning: Story = {
+  args: {
+    id: 'edge-positioning-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <div className="relative w-full h-[600px] border border-dashed border-border">
       <div className="absolute top-2 left-2">
@@ -496,6 +531,11 @@ export const EdgePositioning: Story = {
 }
 
 export const OverflowPaddingDemo: Story = {
+  args: {
+    id: 'overflow-padding-demo-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <div className="flex gap-8">
       <Popover
@@ -532,6 +572,11 @@ export const OverflowPaddingDemo: Story = {
 }
 
 export const NestedPopovers: Story = {
+  args: {
+    id: 'nested-popovers-popover',
+    trigger: 'Demo',
+    children: <div />,
+  },
   render: () => (
     <Popover id="level1-popover" trigger="Level 1" title="First Level" placement="bottom">
       <div className="mt-4 space-y-4">

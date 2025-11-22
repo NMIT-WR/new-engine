@@ -184,7 +184,7 @@ export type CarouselSlide = {
   imageProps?: Record<string, unknown>
 }
 
-interface CarouselRootProps<T extends ElementType = typeof Image>
+export interface CarouselRootProps<T extends ElementType = typeof Image>
   extends VariantProps<typeof carouselVariants>,
     Omit<carousel.Props, 'id' | 'size'> {
   id?: string

@@ -217,7 +217,7 @@ export const Sizes: Story = {
 
   render: () => {
 
-    const sizes = ['sm', 'md', 'lg']
+    const sizes = ['sm', 'md', 'lg'] as const
     const attributes = ["Product", "Category", "Price"]
    
 
