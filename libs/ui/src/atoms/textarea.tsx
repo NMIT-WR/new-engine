@@ -13,7 +13,8 @@ const textareaVariants = tv({
     'transition-all duration-200',
     'hover:bg-textarea-bg-hover hover:border-textarea-border-hover',
     'focus:outline-none focus:bg-textarea-bg-focus focus:border-textarea-border-focus',
-    'focus-visible:ring-1 focus-visible:ring-offset-transparent focus-visible:ring-offset-1 focus-visible:ring-textarea-ring',
+    'focus-visible:ring',
+    'focus-visible:ring-textarea-ring',
     'disabled:pointer-events-none disabled:bg-textarea-bg-disabled disabled:border-textarea-border-disabled disabled:text-textarea-fg-disabled',
   ],
   variants: {
@@ -23,20 +24,17 @@ const textareaVariants = tv({
         'border-textarea-border-danger',
         'hover:border-textarea-border-danger-hover',
         'focus:border-textarea-border-danger-focus',
-        'focus-visible:ring-textarea-ring-danger',
         'placeholder:text-textarea-placeholder-danger',
       ],
       success: [
         'border-textarea-border-success',
         'hover:border-textarea-border-success-hover',
         'focus:border-textarea-border-success-focus',
-        'focus-visible:ring-textarea-ring-success',
       ],
       warning: [
         'border-textarea-border-warning',
         'hover:border-textarea-border-warning-hover',
         'focus:border-textarea-border-warning-focus',
-        'focus-visible:ring-textarea-ring-warning',
       ],
       borderless: [
         'border-transparent',

@@ -45,7 +45,7 @@
   --width-steps-separator: 2px;
 
   /* === FOCUS RINGS === */
-  --color-steps-ring: --alpha(var(--color-steps-active) / var(--opacity-ring));
+  --color-steps-ring: var(--color-ring);
 }
 
 /* Semantic tokens for steps icons */
