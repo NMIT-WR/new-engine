@@ -67,3 +67,5 @@ local/
 opencode.json
 apps/frontend-demo/public/data/
 static-data/
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
