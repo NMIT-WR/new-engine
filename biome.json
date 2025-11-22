@@ -1,19 +1,20 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "extends": ["ultracite"],
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/core", "ultracite/react", "ultracite/next"],
   "files": {
-    "ignore": [
-      "**/node_modules/**/*",
-      "**/playwright-report/**/*",
-      "**/.medusa/**/*",
-      "**/migrations/**/*",
-      "**/.next/**/*",
-      "check-env-variables.js",
-      "apps/medusa-be/**/*",
-      "libs/data-layer/**/*",
-      "*.stories.tsx",
-      ".storybook/main.ts",
-      "libs/ui/src/tokens/index.css"
+    "includes": [
+      "**",
+      "!**/node_modules/**/*",
+      "!**/playwright-report/**/*",
+      "!**/.medusa/**/*",
+      "!**/migrations/**/*",
+      "!**/.next/**/*",
+      "!**/check-env-variables.js",
+      "!**/apps/medusa-be/**/*",
+      "!**/libs/data-layer/**/*",
+      "!**/*.stories.tsx",
+      "!**/.storybook/main.ts",
+      "!**/libs/ui/src/tokens/index.css"
     ]
   },
   "vcs": {
@@ -24,7 +25,18 @@
   },
   "linter": {
     "rules": {
-      "nursery": {
+      "nursery": {},
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error",
         "noNestedTernary": "off"
       }
     }
@@ -36,7 +48,7 @@
   },
   "overrides": [
     {
-      "include": ["*.spec.ts"],
+      "includes": ["**/*.spec.ts"],
       "javascript": {
         "globals": ["jest", "describe", "it", "expect"]
       }

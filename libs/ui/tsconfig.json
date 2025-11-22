@@ -5,7 +5,11 @@
     "noEmit": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "jsx": "react-jsx"
   },
   "include": ["src"]
