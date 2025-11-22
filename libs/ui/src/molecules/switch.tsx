@@ -23,8 +23,9 @@ const switchVariants = tv({
       'data-[state=checked]:hover:bg-switch-bg-checked-hover',
       'data-[disabled]:bg-switch-bg-disabled',
       'data-[disabled]:border-switch-border-disabled',
-      'data-[focus]:ring-2 data-[focus]:ring-offset-2 data-[focus]:ring-offset-base',
-      'data-[focus]:ring-switch-ring data-[focus]:outline-none',
+      'data-[focus]:outline-none',
+      'data-[focus]:ring',
+      'data-[focus]:ring-switch-ring',
       'data-[invalid]:bg-switch-bg-invalid data-[invalid]:ring-switch-ring-invalid',
     ],
     thumb: [

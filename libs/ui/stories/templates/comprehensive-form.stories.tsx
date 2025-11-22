@@ -200,9 +200,9 @@ export const AllFormInputs: Story = {
                 <Label size={size}>Numeric Input</Label>
                 <NumericInputTemplate id="numeric-input" size={size} />
                 {validateStatus === 'error' ? (
-                  <ErrorText size={size}>{helpText}</ErrorText>
+                  <ErrorText id="numeric-input-error" size={size}>{helpText}</ErrorText>
                 ) : (
-                  <ExtraText size={size}>{helpText}</ExtraText>
+                  <ExtraText id="numeric-input-help" size={size}>{helpText}</ExtraText>
                 )}
               </div>
 
