@@ -186,11 +186,13 @@ export const IndeterminateTest: Story = {
     const noneChecked = checkedCount === 0
     const isIndeterminate = !allChecked && !noneChecked
 
-    const handleParentChange = (checked: boolean) => {
+    const handleParentChange = (details: { checked: boolean | 'indeterminate' }) => {
+      const checked = details.checked === true
       setItems((prevItems) => prevItems.map((item) => ({ ...item, checked })))
     }
 
-    const handleChildChange = (id: number, checked: boolean) => {
+    const handleChildChange = (id: number, details: { checked: boolean | 'indeterminate' }) => {
+      const checked = details.checked === true
       setItems((prevItems) =>
         prevItems.map((item) => (item.id === id ? { ...item, checked } : item))
       )
@@ -218,8 +220,8 @@ export const IndeterminateTest: Story = {
               <Checkbox
                 id={`item-${item.id}`}
                 checked={item.checked}
-                onCheckedChange={(checked) =>
-                  handleChildChange(item.id, checked)
+                onCheckedChange={(details) =>
+                  handleChildChange(item.id, details)
                 }
               />
               <label htmlFor={`item-${item.id}`}>{item.name}</label>
