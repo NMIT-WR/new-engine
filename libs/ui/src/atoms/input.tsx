@@ -7,7 +7,7 @@ const inputVariants = tv({
     'block w-full',
     'bg-input',
     'text-input-fg',
-    'placeholder:text-input-placeholder',
+    'placeholder:text-input-fg-placeholder',
     'border border-input-border',
     'rounded-input',
     'transition-all duration-200',
@@ -29,21 +29,18 @@ const inputVariants = tv({
         'hover:border-input-border-danger-hover',
         'focus:border-input-border-danger-focus',
         'focus-visible:ring-input-ring-error',
-        'placeholder:text-input-placeholder-danger',
       ],
       success: [
         'border-input-border-success',
         'hover:border-input-border-success-hover',
         'focus:border-input-border-success-focus',
         'focus-visible:ring-input-ring-success',
-        'placeholder:text-input-placeholder-success',
       ],
       warning: [
         'border-input-border-warning',
         'hover:border-input-border-warning-hover',
         'focus:border-input-border-warning-focus',
         'focus-visible:ring-input-ring-warning',
-        'placeholder:text-input-placeholder-warning',
       ],
     },
     withButtonInside: {
@@ -56,10 +53,9 @@ const inputVariants = tv({
     },
     disabled: {
       true: [
-        'bg-input-disabled',
+        'bg-input-bg-disabled',
         'border-input-border-disabled',
         'text-input-fg-disabled',
-        'placeholder:text-input-placeholder-disabled',
       ],
     },
   },

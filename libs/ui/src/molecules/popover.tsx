@@ -7,11 +7,7 @@ import { tv } from '../utils'
 
 const popoverVariants = tv({
   slots: {
-    trigger: [
-      'p-popover-trigger',
-      'disabled:pointer-events-none',
-      'disabled:opacity-disabled',
-    ],
+    trigger: ['p-popover-trigger'],
     positioner: ['absolute'],
     content: [
       'bg-popover-bg',
@@ -79,6 +75,7 @@ export interface PopoverProps
   contentRef?: Ref<HTMLDivElement>
   triggerClassName?: string
   contentClassName?: string
+  disabled?: boolean
 }
 
 export function Popover({
@@ -110,6 +107,7 @@ export function Popover({
   size = 'md',
   shadow = true,
   border = true,
+  disabled = false,
   onPointerDownOutside,
 }: PopoverProps) {
   const generatedId = useId()
@@ -185,6 +183,7 @@ export function Popover({
     <>
       <Button
         theme="borderless"
+        disabled={disabled}
         {...api.getTriggerProps()}
         ref={triggerRef}
         className={triggerStyles({ className: triggerClassName })}
