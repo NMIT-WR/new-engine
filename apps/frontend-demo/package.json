@@ -50,6 +50,6 @@
     "puppeteer": "^24.31.0",
     "tailwindcss": "^4.1.17",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   }
 }

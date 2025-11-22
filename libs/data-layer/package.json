@@ -23,7 +23,7 @@
     "@biomejs/biome": "^1.9.4",
     "@rslib/core": "^0.18.0",
     "@types/node": "^22.15.18",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   },
   "private": true,
   "dependencies": {
