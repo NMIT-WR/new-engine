@@ -1,6 +1,7 @@
 import type { CartLineItem } from '@/services/cart-service'
 import { formatToTaxIncluded } from '@/utils/format/format-product'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface CartItemRowProps {
   item: CartLineItem
@@ -26,9 +27,15 @@ export function CartItemRow({ item, currencyCode }: CartItemRowProps) {
           onClick={() => console.log({ item: item, tax: tax })}
         />
       )}
-      <div className="flex-1">
-        <p className="font-medium text-fg-primary text-sm">{item.title}</p>
-        <p className="text-fg-secondary text-xs">Qty: {item.quantity}</p>
+      <div className="flex flex-1 flex-col">
+        <Link
+          href={`/produkt/${item.title}?variant=${item.variant_title}`}
+          className="font-medium text-fg-primary text-sm underline hover:no-underline"
+        >
+          {item.title}
+        </Link>
+        <span className="text-fg-secondary text-xs">{item.variant_title}</span>
+        <span className="text-fg-secondary text-xs">Kusů: {item.quantity}</span>
       </div>
       <div className="text-right">
         <p className="font-semibold text-fg-primary text-sm">{price}</p>
