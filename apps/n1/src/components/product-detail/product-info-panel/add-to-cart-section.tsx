@@ -1,8 +1,9 @@
 'use client'
-import { useAddToCart } from '@/hooks/use-cart'
+import { useAddToCart, useCart } from '@/hooks/use-cart'
 import { useRegion } from '@/hooks/use-region'
 import { useCartToast } from '@/hooks/use-toast'
 import type { ProductDetail, ProductVariantDetail } from '@/types/product'
+import { validateAddToCart } from '@/utils/cart/cart-validation'
 import { Button } from '@new-engine/ui/atoms/button'
 import { NumericInput } from '@new-engine/ui/atoms/numeric-input'
 import { slugify } from '@new-engine/ui/utils'
@@ -17,6 +18,7 @@ export const AddToCartSection = ({
 }) => {
   const [quantity, setQuantity] = useState(1)
   const { mutate: addToCart, isPending } = useAddToCart()
+  const { cart } = useCart()
   const { regionId } = useRegion()
   const toast = useCartToast()
 
@@ -33,12 +35,19 @@ export const AddToCartSection = ({
       return
     }
 
-    // Check stock availability
-    if (
-      selectedVariant.inventory_quantity &&
-      quantity > selectedVariant.inventory_quantity
-    ) {
-      toast.stockWarning()
+    // Validate stock availability (checks current cart + new quantity)
+    const validation = validateAddToCart({
+      cart,
+      variantId: selectedVariant.id,
+      quantity,
+      inventoryQuantity: selectedVariant.inventory_quantity,
+    })
+
+    if (!validation.valid) {
+      toast.stockWarningWithDetails(
+        validation.availableQuantity,
+        validation.requestedTotal
+      )
       return
     }
 
