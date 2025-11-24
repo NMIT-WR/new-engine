@@ -1,19 +1,13 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import type { Cart } from '@/services/cart-service'
+import type {
+  AddressFormData,
+  AddressErrors,
+} from '@/utils/address-validation'
+import { validateAddressForm } from '@/utils/address-validation'
 import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-
-type AddressData = {
-  first_name: string
-  last_name: string
-  address_1: string
-  address_2?: string
-  city: string
-  postal_code: string
-  country_code: string
-  phone?: string
-}
 
 type UpdateCartAddressOptions = {
   onSuccess?: (cart: Cart) => void
@@ -32,7 +26,7 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
     Error,
     {
       cartId: string
-      address: AddressData
+      address: AddressFormData
     },
     MutationContext
   >({
@@ -41,21 +35,11 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
         throw new Error('Cart ID is required')
       }
 
-      // Validate required fields
-      const requiredFields = [
-        'first_name',
-        'last_name',
-        'address_1',
-        'city',
-        'postal_code',
-        'country_code',
-      ]
-      const missingFields = requiredFields.filter(
-        (field) => !address[field as keyof AddressData]
-      )
-
-      if (missingFields.length > 0) {
-        throw new Error(`Missing required fields: ${missingFields.join(', ')}`)
+      // Use centralized validation
+      const validationErrors: AddressErrors = validateAddressForm(address)
+      if (Object.keys(validationErrors).length > 0) {
+        const errorMessages = Object.values(validationErrors).join(', ')
+        throw new Error(`Validation failed: ${errorMessages}`)
       }
 
       // Clean up the address data (remove empty strings for optional fields)
@@ -71,6 +55,12 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
       // Only add optional fields if they have values
       if (address.address_2?.trim()) {
         cleanedAddress.address_2 = address.address_2
+      }
+      if (address.company?.trim()) {
+        cleanedAddress.company = address.company
+      }
+      if (address.province?.trim()) {
+        cleanedAddress.province = address.province
       }
       if (address.phone?.trim()) {
         cleanedAddress.phone = address.phone
