@@ -24,7 +24,6 @@ export function CartItemRow({ item, currencyCode }: CartItemRowProps) {
           width={64}
           height={64}
           className="h-16 w-16 rounded object-cover"
-          onClick={() => console.log({ item: item, tax: tax })}
         />
       )}
       <div className="flex flex-1 flex-col">
