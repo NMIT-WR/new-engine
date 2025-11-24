@@ -46,5 +46,4 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # Remove after first publish + trusted publisher setup
         run: pnpm -C libs/ui semantic-release
