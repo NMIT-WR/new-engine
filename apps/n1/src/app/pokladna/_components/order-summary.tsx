@@ -73,23 +73,7 @@ export function OrderSummary({
         <PriceSummaryRow label="Celkem" value={total} variant="bold" />
       </div>
 
-      {/* Coupon Code */}
-      <div className="mb-400">
-        <Label htmlFor="coupon" className="text-sm">
-          Slevový kupón
-        </Label>
-        <div className="mt-100 flex gap-200">
-          <Input
-            id="coupon"
-            type="text"
-            placeholder="Vložte kód"
-            className="flex-1"
-          />
-          <Button variant="secondary" size="sm" className="items-center">
-            Aktivovat
-          </Button>
-        </div>
-      </div>
+      {/* TODO: Implement coupon code functionality */}
 
       {/* Error Message */}
       {errorMessage && (
