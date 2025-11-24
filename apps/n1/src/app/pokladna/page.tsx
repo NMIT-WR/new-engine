@@ -34,21 +34,8 @@ export default function CheckoutPage() {
     checkout.shipping.setShipping,
   ])
 
-  // Auto-initiate payment when shipping is set
-  useEffect(() => {
-    if (
-      checkout.payment.canInitiatePayment &&
-      !checkout.payment.hasPaymentCollection &&
-      !checkout.payment.isInitiatingPayment
-    ) {
-      checkout.payment.initiatePayment()
-    }
-  }, [
-    checkout.payment.canInitiatePayment,
-    checkout.payment.hasPaymentCollection,
-    checkout.payment.isInitiatingPayment,
-    checkout.payment.initiatePayment,
-  ])
+  // Payment initialization is now manual via button in PaymentFormSection
+  // User must explicitly select payment method and click "Pokračovat k platbě"
 
   const { mutate: completeCartMutation, isPending: isCompletingCart } =
     useCompleteCart({
@@ -108,7 +95,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="container mx-auto min-h-screen p-500">
-      <h1 className="mb-500 font-bold text-3xl text-fg-primary">Checkout</h1>
+      <h1 className="mb-500 font-bold text-3xl text-fg-primary">Pokladna</h1>
 
       {/* Two-column layout */}
       <div className="grid grid-cols-1 gap-700 lg:grid-cols-2">
@@ -116,7 +103,7 @@ export default function CheckoutPage() {
         <div className="[&>*+*]:mt-500">
           <ShippingAddressSection cart={cart} />
           <ShippingMethodSection shipping={checkout.shipping} />
-          <PaymentFormSection />
+          <PaymentFormSection cart={cart} />
         </div>
 
         {/* RIGHT COLUMN: Order Summary */}
@@ -130,22 +117,6 @@ export default function CheckoutPage() {
             onBack={handleBack}
             onComplete={handleCompleteCheckout}
           />
-
-          {/* Debug info (development only) */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="mt-400 rounded border border-border-primary bg-overlay p-200 text-xs">
-              <p className="font-semibold">Checkout Debug:</p>
-              <p>isReady: {String(checkout.isReady)}</p>
-              <p>
-                Shipping: {checkout.shipping.selectedShippingMethodId || 'none'}
-              </p>
-              <p>
-                Payment:{' '}
-                {checkout.payment.hasPaymentCollection ? 'initiated' : 'none'}
-              </p>
-              <p>Cart ID: {cart.id}</p>
-            </div>
-          )}
         </div>
       </div>
     </div>
