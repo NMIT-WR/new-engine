@@ -2,6 +2,11 @@
   "name": "@techsio/ui-kit",
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NMIT-WR/new-engine",
+    "directory": "libs/ui"
+  },
   "exports": {
     "./types/zag": {
       "types": "./dist/src/types/zag.d.ts",
@@ -37,10 +42,7 @@
       "import": "./dist/utils.js"
     }
   },
-  "files": [
-    "dist",
-    "src/tokens"
-  ],
+  "files": ["dist", "src/tokens"],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
