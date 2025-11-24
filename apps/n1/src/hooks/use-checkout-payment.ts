@@ -1,3 +1,5 @@
+import { useCartToast } from '@/hooks/use-toast'
+import { CACHE_TIMES } from '@/lib/constants'
 import { CartServiceError } from '@/lib/errors'
 import { queryKeys } from '@/lib/query-keys'
 import {
@@ -17,10 +19,11 @@ type UseCheckoutPaymentReturn = {
   paymentProviders?: HttpTypes.StorePaymentProvider[]
   isLoadingProviders: boolean
   isErrorProviders: boolean
-  initiatePayment: () => void
+  initiatePayment: (providerId: string) => void
   isInitiatingPayment: boolean
   canInitiatePayment: boolean
   hasPaymentCollection: boolean
+  hasPaymentSessions: boolean
 }
 
 export function useCheckoutPayment(
@@ -29,6 +32,7 @@ export function useCheckoutPayment(
   cart?: Cart | null
 ): UseCheckoutPaymentReturn {
   const queryClient = useQueryClient()
+  const toast = useCartToast()
 
   // Fetch available payment providers for region
   const {
@@ -44,34 +48,48 @@ export function useCheckoutPayment(
       return getPaymentProviders(regionId)
     },
     enabled: !!regionId,
-    staleTime: 5 * 60 * 1000,
+    staleTime: CACHE_TIMES.PAYMENT_PROVIDERS_STALE,
   })
 
   // Initiate payment collection mutation
   const { mutate: initiatePayment, isPending: isInitiatingPayment } =
-    useMutation<HttpTypes.StorePaymentCollectionResponse, CartMutationError>({
-      mutationFn: () => {
+    useMutation<
+      HttpTypes.StorePaymentCollectionResponse,
+      CartMutationError,
+      string
+    >({
+      mutationFn: (providerId: string) => {
         if (!cartId) {
           throw new CartServiceError('Cart ID je povinné', 'VALIDATION_ERROR')
         }
-        return createPaymentCollection(cartId)
+        if (!providerId) {
+          throw new CartServiceError(
+            'Provider ID je povinné',
+            'VALIDATION_ERROR'
+          )
+        }
+        return createPaymentCollection(cartId, providerId)
       },
       onSuccess: () => {
         // Refresh cart to get payment collection
         queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
-
         if (process.env.NODE_ENV === 'development') {
           console.log('[useCheckoutPayment] Payment collection created')
         }
       },
       onError: (error) => {
         console.error('[useCheckoutPayment] Failed to initiate payment:', error)
+
+        // Show error toast
+        toast.paymentInitiatedError()
       },
     })
 
   const hasShippingMethod = !!cart?.shipping_methods?.[0]
   const canInitiatePayment = !!cartId && hasShippingMethod
   const hasPaymentCollection = !!cart?.payment_collection
+  const hasPaymentSessions =
+    (cart?.payment_collection?.payment_sessions?.length || 0) > 0
 
   return {
     paymentProviders,
@@ -81,5 +99,6 @@ export function useCheckoutPayment(
     isInitiatingPayment,
     canInitiatePayment,
     hasPaymentCollection,
+    hasPaymentSessions,
   }
 }

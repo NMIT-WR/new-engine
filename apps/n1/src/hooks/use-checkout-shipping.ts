@@ -1,4 +1,4 @@
-import { cacheConfig } from '@/lib/cache-config'
+import { CACHE_TIMES, TAX_RATE } from '@/lib/constants'
 import { CartServiceError } from '@/lib/errors'
 import { queryKeys } from '@/lib/query-keys'
 import {
@@ -8,6 +8,7 @@ import {
 } from '@/services/cart-service'
 import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCartToast } from './use-toast'
 
 type CartMutationError = {
   message: string
@@ -18,7 +19,7 @@ type CartMutationContext = {
   previousCart?: Cart
 }
 
-type UseCheckoutShippingReturn = {
+export type UseCheckoutShippingReturn = {
   shippingOptions?: HttpTypes.StoreCartShippingOption[]
   isLoadingShipping: boolean
   isErrorShipping: boolean
@@ -34,6 +35,7 @@ export function useCheckoutShipping(
   cart?: Cart | null
 ): UseCheckoutShippingReturn {
   const queryClient = useQueryClient()
+  const toast = useCartToast()
 
   // Fetch shipping options for cart
   const {
@@ -49,7 +51,10 @@ export function useCheckoutShipping(
       return getShippingOptions(cartId)
     },
     enabled: !!cartId && (cart?.items?.length ?? 0) > 0,
-    ...cacheConfig.realtime, // Shipping options can change based on cart
+    // Longer cache for shipping options - they don't change often
+    staleTime: CACHE_TIMES.SHIPPING_OPTIONS_STALE,
+    gcTime: CACHE_TIMES.SHIPPING_OPTIONS_GC,
+    refetchOnWindowFocus: false,
   })
 
   // Set shipping method mutation
@@ -65,35 +70,78 @@ export function useCheckoutShipping(
       }
       return setShippingMethod(cartId, optionId)
     },
-    onMutate: async () => {
+    onMutate: async (optionId: string) => {
+      // Cancel outgoing queries to prevent race conditions
       await queryClient.cancelQueries({ queryKey: queryKeys.cart.active() })
 
+      // Snapshot previous value for rollback
       const previousCart = queryClient.getQueryData<Cart>(
         queryKeys.cart.active()
       )
 
+      // Optimistically update cart with new shipping method
+      if (previousCart && shippingOptions) {
+        const selectedOption = shippingOptions.find(
+          (opt) => opt.id === optionId
+        )
+
+        if (selectedOption) {
+          // Calculate amount with tax using centralized constant
+          const amountWithTax = selectedOption.amount * (1 + TAX_RATE)
+
+          const optimisticCart: Cart = {
+            ...previousCart,
+            shipping_methods: [
+              {
+                id: `optimistic_${Date.now()}`,
+                cart_id: cartId || '',
+                shipping_option_id: optionId,
+                name: selectedOption.name,
+                amount: selectedOption.amount,
+                is_tax_inclusive: true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              },
+            ],
+            shipping_total: amountWithTax,
+          }
+
+          // Immediately update UI
+          queryClient.setQueryData(queryKeys.cart.active(), optimisticCart)
+
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[useCheckoutShipping] Optimistic update applied')
+          }
+        }
+      }
+
       return { previousCart }
     },
     onSuccess: (updatedCart) => {
-      // Update cart cache with shipping method
+      // Replace optimistic data with real server data
       queryClient.setQueryData(queryKeys.cart.active(), updatedCart)
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('[useCheckoutShipping] Shipping method set')
+        console.log('[useCheckoutShipping] Shipping method confirmed:', {
+          methodId: updatedCart.shipping_methods?.[0]?.shipping_option_id,
+          total: updatedCart.shipping_total,
+        })
       }
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
+      // Rollback to previous cart state
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
+
+      // Show error toast to user
+      toast.shippingError()
+
       console.error('[useCheckoutShipping] Failed to set shipping:', error)
     },
     onSettled: () => {
-      // Refresh cart and shipping options
-      queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.cart.shippingOptions(cartId || ''),
-      })
+      // No invalidations needed - we have fresh data from onSuccess
+      // Shipping options don't change when selecting a method
     },
   })
 
