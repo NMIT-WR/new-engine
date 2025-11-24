@@ -1,5 +1,5 @@
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
+import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Link from 'next/link'
 
 export function EmptyCart() {

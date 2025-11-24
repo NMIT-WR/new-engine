@@ -1,13 +1,13 @@
 'use client'
 
-import { Button } from '@new-engine/ui/atoms/button'
-import { ErrorText } from '@new-engine/ui/atoms/error-text'
-import { Dialog } from '@new-engine/ui/molecules/dialog'
-import { FormInputRaw as FormInput } from '@new-engine/ui/molecules/form-input'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
+import { Dialog } from '@techsio/ui-kit/molecules/dialog'
+import { FormInputRaw as FormInput } from '@techsio/ui-kit/molecules/form-input'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import '../../tokens/app-components/molecules/_credit-card-dialog.css'
-import { Icon } from '@new-engine/ui/atoms/icon'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
 
 interface CreditCardDialogProps {
   open: boolean

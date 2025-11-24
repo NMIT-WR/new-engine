@@ -1,5 +1,5 @@
 import type { HomeCategory } from '@/types/product'
-import { Image } from '@new-engine/ui/atoms/image'
+import { Image } from '@techsio/ui-kit/atoms/image'
 import Link from 'next/link'
 
 interface CategoryGridProps {

@@ -1,11 +1,11 @@
 'use client'
 import { FaqItemHeader } from '@/components/faq/faq-item-header'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
+import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import {
   Accordion,
   type AccordionItem,
-} from '@new-engine/ui/molecules/accordion'
+} from '@techsio/ui-kit/molecules/accordion'
 
 const faqData: AccordionItem[] = [
   {

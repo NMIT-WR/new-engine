@@ -1,9 +1,9 @@
 'use client'
 import { useSearchProducts } from '@/hooks/use-search-products'
 import type { Product } from '@/types/product'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { Combobox, type ComboboxItem } from '@new-engine/ui/molecules/combobox'
-import { Popover } from '@new-engine/ui/molecules/popover'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
+import { Combobox, type ComboboxItem } from '@techsio/ui-kit/molecules/combobox'
+import { Popover } from '@techsio/ui-kit/molecules/popover'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 

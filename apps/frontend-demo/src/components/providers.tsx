@@ -1,6 +1,6 @@
 'use client'
 
-import { Toaster } from '@new-engine/ui/molecules/toast'
+import { Toaster } from '@techsio/ui-kit/molecules/toast'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from 'next-themes'
 import type { PropsWithChildren } from 'react'

@@ -1,4 +1,4 @@
-import { useToast } from '@new-engine/ui/molecules/toast'
+import { useToast } from '@techsio/ui-kit/molecules/toast'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 

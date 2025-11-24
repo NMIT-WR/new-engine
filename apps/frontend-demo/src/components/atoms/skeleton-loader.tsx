@@ -1,4 +1,4 @@
-import { tv } from '@new-engine/ui/utils'
+import { tv } from '@techsio/ui-kit/utils'
 import type * as React from 'react'
 import type { VariantProps } from 'tailwind-variants'
 

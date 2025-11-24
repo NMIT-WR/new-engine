@@ -1,13 +1,9 @@
 {
-  "name": "@new-engine/ui",
+  "name": "@techsio/ui-kit",
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./types-zag": {
+    "./types/zag": {
       "types": "./dist/src/types/zag.d.ts",
       "import": "./dist/types/zag.js"
     },
@@ -32,13 +28,15 @@
       "types": "./dist/src/organisms/*.d.ts",
       "import": "./dist/organisms/*.js"
     },
+    "./templates/*": {
+      "types": "./dist/src/templates/*.d.ts",
+      "import": "./dist/templates/*.js"
+    },
     "./utils": {
       "types": "./dist/src/utils.d.ts",
       "import": "./dist/utils.js"
     }
   },
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "src/tokens"
@@ -54,7 +52,8 @@
     "check:unused-tokens": "bun scripts/check-unused-tokens.js",
     "validate:tokens": "bun scripts/validate-token-usage.js && bun scripts/validate-token-definitions.js",
     "validate:token-usage": "bun scripts/validate-token-usage.js",
-    "validate:token-definitions": "bun scripts/validate-token-definitions.js"
+    "validate:token-definitions": "bun scripts/validate-token-definitions.js",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@zag-js/accordion": "^1.29.1",
@@ -86,6 +85,12 @@
     "@rsbuild/core": "1.6.7",
     "@rsbuild/plugin-react": "^1.4.1",
     "@rslib/core": "^0.18.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.2",
+    "@semantic-release/npm": "^13.1.2",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@storybook/addon-a11y": "^10.0.3",
     "@storybook/addon-links": "^10.0.2",
     "@storybook/addon-onboarding": "^10.0.2",
@@ -99,6 +104,8 @@
     "eslint-plugin-tailwindcss": "beta",
     "glob": "^11.0.2",
     "next": "^16.0.3",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "semantic-release": "^25.0.2",
     "storybook": "^10.0.2",
     "storybook-addon-rslib": "^2.1.6",
     "storybook-react-rsbuild": "^2.1.4",
@@ -112,5 +119,8 @@
     "@types/react-dom": ">=19.2.0",
     "react": ">=19.2.0",
     "react-dom": ">=19.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

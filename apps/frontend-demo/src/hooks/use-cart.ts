@@ -6,7 +6,7 @@ import { STORAGE_KEYS } from '@/lib/constants'
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import type { HttpTypes } from '@medusajs/types'
-import { useToast } from '@new-engine/ui/molecules/toast'
+import { useToast } from '@techsio/ui-kit/molecules/toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 

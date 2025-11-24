@@ -1,5 +1,5 @@
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
-import { tv } from '@new-engine/ui/utils'
+import { Icon, type IconType } from '@techsio/ui-kit/atoms/icon'
+import { tv } from '@techsio/ui-kit/utils'
 import type { HTMLAttributes } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 

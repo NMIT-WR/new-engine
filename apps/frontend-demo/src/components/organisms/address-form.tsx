@@ -10,13 +10,13 @@ import {
   validateEmail,
 } from '@/lib/address'
 import type { AddressData, AddressFormProps } from '@/types/checkout'
-import { Button } from '@new-engine/ui/atoms/button'
-import { ErrorText } from '@new-engine/ui/atoms/error-text'
-import { Link } from '@new-engine/ui/atoms/link'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import { FormCheckboxRaw as FormCheckbox } from '@new-engine/ui/molecules/form-checkbox'
-import { FormInputRaw as FormInput } from '@new-engine/ui/molecules/form-input'
-import { Select } from '@new-engine/ui/molecules/select'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
+import { Link } from '@techsio/ui-kit/atoms/link'
+import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
+import { FormCheckboxRaw as FormCheckbox } from '@techsio/ui-kit/molecules/form-checkbox'
+import { FormInputRaw as FormInput } from '@techsio/ui-kit/molecules/form-input'
+import { Select } from '@techsio/ui-kit/molecules/select'
 import { useEffect, useState } from 'react'
 
 export function AddressForm({
