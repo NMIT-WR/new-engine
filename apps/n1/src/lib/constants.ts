@@ -90,3 +90,32 @@ export const PRODUCT_LIST_FIELDS =
   'variants.calculated_price.currency_code'
 
 export const PRODUCT_LIMIT = 24 as const
+
+/**
+ * Tax rate for Czech Republic (DPH)
+ * Used for price calculations and display
+ */
+export const TAX_RATE = 0.21 // 21% VAT
+
+/**
+ * Default country code for addresses and regions
+ */
+export const DEFAULT_COUNTRY_CODE = 'cz'
+
+/**
+ * Cache times (in milliseconds) for React Query
+ */
+export const CACHE_TIMES = {
+  /** Shipping options staleTime - 5 minutes */
+  SHIPPING_OPTIONS_STALE: 5 * 60 * 1000,
+  /** Shipping options gcTime - 30 minutes */
+  SHIPPING_OPTIONS_GC: 30 * 60 * 1000,
+  /** Payment providers staleTime - 5 minutes */
+  PAYMENT_PROVIDERS_STALE: 5 * 60 * 1000,
+} as const
+
+/**
+ * Currency defaults
+ */
+export const DEFAULT_CURRENCY = 'czk'
+export const CURRENCY_SYMBOL = 'Kč'
