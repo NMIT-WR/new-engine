@@ -11,6 +11,18 @@ export type OptimisticLineItem = CartLineItem & {
   _optimistic?: boolean
 }
 
+// Type-safe optimistic shipping method for immediate UI updates
+export type OptimisticShippingMethod = {
+  id: string
+  cart_id: string
+  shipping_option_id: string
+  amount: number
+  is_tax_inclusive?: boolean
+  created_at: string
+  updated_at: string
+  _optimistic?: boolean
+}
+
 export type CompleteCartResult =
   | { success: true; order: HttpTypes.StoreOrder }
   | {
@@ -333,26 +345,72 @@ export async function setShippingMethod(
   }
 }
 
-export async function createPaymentCollection(cartId: string) {
+/**
+ * Initialize payment collection and session for cart with selected provider
+ * @param cartId - Cart ID to initialize payment for
+ * @param providerId - Payment provider ID (e.g., 'pp_system_default', 'pp_stripe_stripe')
+ */
+export async function createPaymentCollection(
+  cartId: string,
+  providerId: string
+) {
   try {
     if (!cartId) {
       throw new CartServiceError('Cart ID je povinné', 'PAYMENT_INIT_FAILED')
     }
 
-    // First, get the cart object
+    if (!providerId) {
+      throw new CartServiceError(
+        'Provider ID je povinné',
+        'PAYMENT_INIT_FAILED'
+      )
+    }
+
+    // Get current cart
     const { cart } = await sdk.store.cart.retrieve(cartId)
 
     if (!cart) {
       throw new CartServiceError('Košík nebyl nalezen', 'PAYMENT_INIT_FAILED')
     }
 
-    // Pass the cart object to initiatePaymentSession
+    // Check if payment sessions already exist (early return optimization)
+    if (cart.payment_collection?.payment_sessions?.length) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[CartService] Payment sessions already exist:', {
+          collectionId: cart.payment_collection?.id,
+          sessionCount: cart.payment_collection?.payment_sessions?.length || 0,
+          sessions: cart.payment_collection?.payment_sessions?.map((s) => ({
+            id: s.id,
+            status: s.status,
+            provider_id: s.provider_id,
+          })),
+        })
+      }
+      return { payment_collection: cart.payment_collection }
+    }
+
+    // Use the provider selected by user (not hardcoded!)
     const response = await sdk.store.payment.initiatePaymentSession(cart, {
-      provider_id: 'pp_system_default',
+      provider_id: providerId,
     })
 
+    if (!response.payment_collection) {
+      throw new CartServiceError(
+        'Nepodařilo se inicializovat platební session',
+        'PAYMENT_INIT_FAILED'
+      )
+    }
+
     if (process.env.NODE_ENV === 'development') {
-      console.log('[CartService] Payment collection created')
+      console.log('[CartService] Payment session initialized:', {
+        collectionId: response.payment_collection.id,
+        sessionCount: response.payment_collection.payment_sessions?.length || 0,
+        sessions: response.payment_collection.payment_sessions?.map((s) => ({
+          id: s.id,
+          status: s.status,
+          provider_id: s.provider_id,
+        })),
+      })
     }
 
     return response
@@ -360,6 +418,8 @@ export async function createPaymentCollection(cartId: string) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
+
+    console.error('[CartService] Payment initialization error:', error)
     throw CartServiceError.fromMedusaError(error, 'PAYMENT_INIT_FAILED')
   }
 }
@@ -370,6 +430,26 @@ export async function completeCart(
   try {
     if (!cartId) {
       throw new CartServiceError('Cart ID je povinné', 'ORDER_CREATION_FAILED')
+    }
+
+    // Debug: Check cart state before completing
+    if (process.env.NODE_ENV === 'development') {
+      const { cart: currentCart } = await sdk.store.cart.retrieve(cartId)
+      console.log('[CartService] Cart state before complete:', {
+        hasPaymentCollection: !!currentCart.payment_collection,
+        paymentCollectionId: currentCart.payment_collection?.id,
+        paymentSessionsCount:
+          currentCart.payment_collection?.payment_sessions?.length || 0,
+        paymentSessions: currentCart.payment_collection?.payment_sessions?.map(
+          (s) => ({
+            id: s.id,
+            status: s.status,
+            provider_id: s.provider_id,
+          })
+        ),
+        hasShippingMethod: !!currentCart.shipping_methods?.[0],
+        shippingMethodId: currentCart.shipping_methods?.[0]?.id,
+      })
     }
 
     const response = await sdk.store.cart.complete(cartId)
