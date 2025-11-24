@@ -7,9 +7,7 @@ on:
       - main
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  contents: read
 
 jobs:
   release:
@@ -22,6 +20,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false  # Important when using custom GH_TOKEN
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -29,7 +30,9 @@ jobs:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
           scope: '@techsio'
-          always-auth: true
+
+      - name: Update npm (trusted publishing needs >= 11.5.1)
+        run: npm install -g npm@latest
 
       - name: Enable Corepack
         run: corepack enable
@@ -40,8 +43,8 @@ jobs:
       - name: Build UI package
         run: pnpm -C libs/ui build
 
-      - name: Run semantic-release (trusted publishing)
+      - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # Remove after first publish + trusted publisher setup
         run: pnpm -C libs/ui semantic-release
