@@ -1,6 +1,6 @@
 {
   "name": "@techsio/ui-kit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -42,7 +42,10 @@
       "import": "./dist/utils.js"
     }
   },
-  "files": ["dist", "src/tokens"],
+  "files": [
+    "dist",
+    "src/tokens"
+  ],
   "scripts": {
     "build": "rslib build",
     "build:storybook": "storybook build",
