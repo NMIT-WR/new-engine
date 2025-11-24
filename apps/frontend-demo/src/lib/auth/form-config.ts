@@ -1,4 +1,4 @@
-import type { FormInput } from '@new-engine/ui/molecules/form-input'
+import type { FormInput } from '@techsio/ui-kit/molecules/form-input'
 import type { ComponentProps } from 'react'
 import { AUTH_FORM_CONFIG } from './constants'
 

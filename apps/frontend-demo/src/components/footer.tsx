@@ -1,8 +1,8 @@
 'use client'
 import type { NavSection } from '@/types/navigation'
 import { handleFormSubmit } from '@/utils/form-utils'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Input } from '@new-engine/ui/atoms/input'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { Input } from '@techsio/ui-kit/atoms/input'
 import Link from 'next/link'
 import type { FormEvent } from 'react'
 

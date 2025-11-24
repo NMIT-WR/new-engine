@@ -3,7 +3,7 @@
 import { Header } from '@/components/header'
 import type { NavItem } from '@/components/molecules/navigation'
 import { getCategoryIdsByHandles } from '@/utils/category-helpers'
-import type { IconType } from '@new-engine/ui/atoms/icon'
+import type { IconType } from '@techsio/ui-kit/atoms/icon'
 
 interface HeaderWrapperProps {
   logo: {

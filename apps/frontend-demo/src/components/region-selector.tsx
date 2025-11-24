@@ -1,8 +1,8 @@
 'use client'
 import { SkeletonLoader } from '@/components/atoms/skeleton-loader'
 import { useRegions } from '@/hooks/use-region'
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
-import { Select } from '@new-engine/ui/molecules/select'
+import { Icon, type IconType } from '@techsio/ui-kit/atoms/icon'
+import { Select } from '@techsio/ui-kit/molecules/select'
 
 const currencyToIcon: Record<string, IconType> = {
   CZK: 'token-icon-cz',

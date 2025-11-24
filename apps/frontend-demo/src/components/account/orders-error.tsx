@@ -1,4 +1,4 @@
-import { Button } from '@new-engine/ui/atoms/button'
+import { Button } from '@techsio/ui-kit/atoms/button'
 
 export function OrdersError() {
   return (

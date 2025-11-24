@@ -1,5 +1,5 @@
-import { Button } from '@new-engine/ui/atoms/button'
-import { tv } from '@new-engine/ui/utils'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { tv } from '@techsio/ui-kit/utils'
 import type { ButtonHTMLAttributes } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 

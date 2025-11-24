@@ -2,12 +2,12 @@
 
 import { SafeHtmlContent } from '@/components/safe-html-content'
 import type { Product } from '@/types/product'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Rating } from '@new-engine/ui/atoms/rating'
-import { type TabItem, Tabs } from '@new-engine/ui/atoms/tabs'
-import { Accordion } from '@new-engine/ui/molecules/accordion'
-import { slugify } from '@new-engine/ui/utils'
+import { Badge } from '@techsio/ui-kit/atoms/badge'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { Rating } from '@techsio/ui-kit/atoms/rating'
+import { type TabItem, Tabs } from '@techsio/ui-kit/atoms/tabs'
+import { Accordion } from '@techsio/ui-kit/molecules/accordion'
+import { slugify } from '@techsio/ui-kit/utils'
 
 interface ProductTabsProps {
   product: Product

@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@new-engine/ui/atoms/button'
+import { Button } from '@techsio/ui-kit/atoms/button'
 import { useEffect, useState } from 'react'
 import { Disclaimer } from './disclaimer'
 

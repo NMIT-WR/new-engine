@@ -1,4 +1,4 @@
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
+import { Icon, type IconType } from '@techsio/ui-kit/atoms/icon'
 
 interface FaqItemHeaderProps {
   icon: IconType

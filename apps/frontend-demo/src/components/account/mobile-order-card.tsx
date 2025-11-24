@@ -5,9 +5,9 @@ import {
   truncateProductTitle,
 } from '@/lib/order-utils'
 import type { StoreOrder } from '@medusajs/types'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
+import { Badge } from '@techsio/ui-kit/atoms/badge'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
+import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Image from 'next/image'
 import Link from 'next/link'
 

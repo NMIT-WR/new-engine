@@ -1,4 +1,4 @@
-import type { IconType } from '@new-engine/ui/atoms/icon'
+import type { IconType } from '@techsio/ui-kit/atoms/icon'
 import type { StaticImageData } from 'next/image'
 import pavelImg from '/assets/team/pavel.jpg'
 import petrImg from '/assets/team/petr.jpg'

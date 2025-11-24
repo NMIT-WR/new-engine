@@ -1,6 +1,6 @@
 /* Import Tailwind CSS first */
 @import "tailwindcss";
-@import "@new-engine/ui/src/tokens/tokens-only.css";
+@import "@techsio/ui-kit/src/tokens/tokens-only.css";
 @import "./_typography.css";
 @import "./_overrides.css";
 @import "./_layout.css";
@@ -28,5 +28,5 @@
   }
 }
 /* Tell Tailwind where to look for classes in both UI library and local components */
-@source "../../node_modules/@new-engine/ui/dist/**/*.js";
+@source "../../node_modules/@techsio/ui-kit/dist/**/*.js";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";

@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
-          scope: '@new-engine'
+          scope: '@techsio'
           always-auth: true
 
       - name: Enable Corepack

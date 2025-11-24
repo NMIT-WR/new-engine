@@ -1,7 +1,7 @@
 'use client'
-import { Icon, type IconType } from '@new-engine/ui/atoms/icon'
-import { Popover } from '@new-engine/ui/molecules/popover'
-import { slugify } from '@new-engine/ui/utils'
+import { Icon, type IconType } from '@techsio/ui-kit/atoms/icon'
+import { Popover } from '@techsio/ui-kit/molecules/popover'
+import { slugify } from '@techsio/ui-kit/utils'
 import Link from 'next/link'
 import type { ComponentPropsWithoutRef } from 'react'
 

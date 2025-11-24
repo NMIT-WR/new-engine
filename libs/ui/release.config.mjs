@@ -4,7 +4,7 @@ if (process.env.GITHUB_ACTIONS !== 'true') {
 
 const config = {
   branches: ['master', 'main'],
-  tagFormat: 'ui-v${version}',
+  tagFormat: 'ui-kit-v${version}',
   releaseRules: [{ breaking: true, release: 'minor' }],
   plugins: [
     '@semantic-release/commit-analyzer',

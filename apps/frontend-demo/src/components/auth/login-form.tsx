@@ -7,10 +7,10 @@ import {
   validateEmail,
   withLoading,
 } from '@/lib/auth'
-import { Button } from '@new-engine/ui/atoms/button'
-import { ErrorText } from '@new-engine/ui/atoms/error-text'
-import { Checkbox } from '@new-engine/ui/molecules/checkbox'
-import { FormInput } from '@new-engine/ui/molecules/form-input'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
+import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
+import { FormInput } from '@techsio/ui-kit/molecules/form-input'
 import Link from 'next/link'
 import { type FormEvent, useState } from 'react'
 import { AuthFormWrapper } from './auth-form-wrapper'
