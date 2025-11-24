@@ -1,3 +1,4 @@
+import { CURRENCY_SYMBOL, TAX_RATE } from '@/lib/constants'
 import type { StoreProduct } from '@medusajs/types'
 
 export const formatPrice = ({
@@ -12,14 +13,31 @@ export const formatPrice = ({
     ? variant?.calculated_price?.calculated_amount_with_tax
     : variant?.calculated_price?.calculated_amount_without_tax
   const currency = variant?.calculated_price?.currency_code
-  const currencyMap = currency === 'czk' ? 'Kč' : currency
-  return price ? `${price.toFixed(0)} ${currencyMap}` : '0 Kč'
+  const currencyMap = currency === 'czk' ? CURRENCY_SYMBOL : currency
+  return price ? `${price.toFixed(0)} ${currencyMap}` : `0 ${CURRENCY_SYMBOL}`
 }
 
 /* when we need to format price for basic item regardless of the variants */
 export const formatAmount = (amount?: number | null) => {
-  if (!amount) return '0 Kč'
-  return `${Math.round(amount)} Kč`
+  if (!amount) return `0 ${CURRENCY_SYMBOL}`
+  return `${Math.round(amount)} ${CURRENCY_SYMBOL}`
+}
+
+export const formatToTaxIncluded = ({
+  amount,
+  tax,
+  currency,
+}: {
+  amount?: number
+  tax?: number
+  currency?: string
+}) => {
+  if (!amount) return `0 ${CURRENCY_SYMBOL}`
+  const taxRate = tax || TAX_RATE
+  const taxAmount = amount * taxRate
+  const totalAmount = amount + taxAmount
+  const currencyMap = currency ? (currency === 'czk' ? CURRENCY_SYMBOL : currency) : CURRENCY_SYMBOL
+  return `${Math.round(totalAmount)} ${currencyMap}`
 }
 
 export const formatVariants = (
