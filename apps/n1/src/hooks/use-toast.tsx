@@ -45,7 +45,13 @@ export const cartToasts = {
   stockError: () => ({
     title: 'Nedostatečné množství',
     description: 'Produkt není dostupný v požadovaném množství',
-    type: 'warning' as const,
+    type: 'error' as const,
+  }),
+
+  stockErrorWithDetails: (available: number, requested: number) => ({
+    title: 'Nedostatečné množství',
+    description: `Na skladě je pouze ${available} ks, požadováno celkem ${requested} ks`,
+    type: 'error' as const,
   }),
 
   networkError: () => ({
@@ -58,6 +64,52 @@ export const cartToasts = {
     title: 'Košík sloučen',
     description: `${itemCount} položek přidáno do vašeho košíku`,
     type: 'success' as const,
+  }),
+
+  // Shipping-specific messages
+  shippingError: () => ({
+    title: 'Chyba při nastavení dopravy',
+    description:
+      'Nepodařilo se nastavit způsob dopravy. Zkuste to prosím znovu.',
+    type: 'error' as const,
+  }),
+
+  // Shipping address messages
+  shippingAddressSuccess: () => ({
+    title: 'Adresa uložena',
+    description: 'Dodací adresa byla aktualizována',
+    type: 'success' as const,
+  }),
+
+  shippingAddressError: () => ({
+    title: 'Chyba při ukládání adresy',
+    description: 'Nepodařilo se aktualizovat dodací adresu',
+    type: 'error' as const,
+  }),
+
+  shippingAddressValidation: (fields: string[]) => ({
+    title: 'Zkontrolujte adresu',
+    description: `Neplatné pole: ${fields.join(', ')}`,
+    type: 'warning' as const,
+  }),
+
+  // Payment-specific messages
+  paymentInitiatedSuccess: () => ({
+    title: 'Platba iniciována',
+    description: 'Platební session byla úspěšně vytvořena',
+    type: 'success' as const,
+  }),
+
+  paymentInitiatedError: () => ({
+    title: 'Chyba při inicializaci platby',
+    description: 'Nepodařilo se vytvořit platební session',
+    type: 'error' as const,
+  }),
+
+  paymentValidation: (issues: string[]) => ({
+    title: 'Nelze iniciovat platbu',
+    description: issues.join(', '),
+    type: 'warning' as const,
   }),
 }
 
@@ -100,11 +152,89 @@ export function useCartToast() {
       })
     },
 
+    stockWarningWithDetails: (
+      available: number,
+      requested: number,
+      options = {}
+    ) => {
+      const message = cartToasts.stockErrorWithDetails(available, requested)
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.warning,
+        ...options,
+      })
+    },
+
     networkError: (options = {}) => {
       const message = cartToasts.networkError()
       return toaster.create({
         ...message,
         duration: Number.POSITIVE_INFINITY,
+        ...options,
+      })
+    },
+
+    shippingError: (options = {}) => {
+      const message = cartToasts.shippingError()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.error,
+        ...options,
+      })
+    },
+
+    // Shipping address toast methods
+    shippingAddressSuccess: (options = {}) => {
+      const message = cartToasts.shippingAddressSuccess()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.success,
+        ...options,
+      })
+    },
+
+    shippingAddressError: (options = {}) => {
+      const message = cartToasts.shippingAddressError()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.error,
+        ...options,
+      })
+    },
+
+    shippingAddressValidation: (fields: string[], options = {}) => {
+      const message = cartToasts.shippingAddressValidation(fields)
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.warning,
+        ...options,
+      })
+    },
+
+    // Payment toast methods
+    paymentInitiatedSuccess: (options = {}) => {
+      const message = cartToasts.paymentInitiatedSuccess()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.success,
+        ...options,
+      })
+    },
+
+    paymentInitiatedError: (options = {}) => {
+      const message = cartToasts.paymentInitiatedError()
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.error,
+        ...options,
+      })
+    },
+
+    paymentValidation: (issues: string[], options = {}) => {
+      const message = cartToasts.paymentValidation(issues)
+      return toaster.create({
+        ...message,
+        duration: DEFAULT_DURATIONS.warning,
         ...options,
       })
     },
