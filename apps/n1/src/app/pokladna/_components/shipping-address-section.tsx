@@ -3,6 +3,7 @@
 import { FormField } from '@/components/molecules/form-field'
 import { useAddresses } from '@/hooks/use-addresses'
 import { useAuth } from '@/hooks/use-auth'
+import { useDebouncedValue } from '@/hooks/use-debounced-value'
 import { useCartToast } from '@/hooks/use-toast'
 import { useUpdateCartAddress } from '@/hooks/use-update-cart-address'
 import type { Cart } from '@/services/cart-service'
@@ -21,9 +22,8 @@ import {
   validateAddressField,
   validateAddressForm,
 } from '@/utils/address-validation'
-import { Button } from '@ui/atoms/button'
 import { Select } from '@ui/molecules/select'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface ShippingAddressSectionProps {
   cart: Cart
@@ -94,10 +94,24 @@ export function ShippingAddressSection({ cart }: ShippingAddressSectionProps) {
     useUpdateCartAddress()
 
   // Check if form is valid (for button disabled state)
-  const isFormValid = useMemo(
-    () => isAddressFormValid(formData),
-    [formData]
-  )
+  const isFormValid = isAddressFormValid(formData)
+
+  // 🎯 DEBOUNCED AUTO-SAVE: Save address automatically when user stops typing
+  const debouncedFormData = useDebouncedValue(formData, 800)
+
+  useEffect(() => {
+    if (
+      isFormValid &&
+      isDirty &&
+      !isUpdating &&
+      // Prevent auto-save on initial load when cart address exists
+      (cart.shipping_address?.first_name !== debouncedFormData.first_name ||
+        cart.shipping_address?.last_name !== debouncedFormData.last_name ||
+        cart.shipping_address?.address_1 !== debouncedFormData.address_1)
+    ) {
+      handleSaveAddress()
+    }
+  }, [debouncedFormData, isFormValid, isDirty, isUpdating])
 
   // Handle manual save
   const handleSaveAddress = () => {
@@ -125,10 +139,6 @@ export function ShippingAddressSection({ cart }: ShippingAddressSectionProps) {
         address: formData,
       },
       {
-        onSuccess: () => {
-          toast.shippingAddressSuccess()
-          setIsDirty(false)
-        },
         onError: () => {
           toast.shippingAddressError()
         },
@@ -309,17 +319,6 @@ export function ShippingAddressSection({ cart }: ShippingAddressSectionProps) {
           placeholder="+420 123 456 789"
         />
       </form>
-
-      {/* Save button - show only when form has changes */}
-
-      <Button
-        onClick={handleSaveAddress}
-        disabled={isUpdating || !isFormValid || !isDirty}
-        variant="primary"
-        className="mt-400 border"
-      >
-        {isUpdating ? 'Ukládám...' : 'Uložit adresu'}
-      </Button>
 
       {/* Info text */}
       {!customer && (

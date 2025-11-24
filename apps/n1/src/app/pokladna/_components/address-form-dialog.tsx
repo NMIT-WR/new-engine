@@ -1,22 +1,22 @@
 'use client'
 
 import type { HttpTypes } from '@medusajs/types'
+import type {
+  AddressErrors,
+  AddressFieldKey,
+  AddressFormData,
+  AddressTouched,
+} from '@/utils/address-validation'
+import {
+  formatPostalCode,
+  validateAddressField,
+  validateAddressForm,
+} from '@/utils/address-validation'
 import { Button } from '@ui/atoms/button'
 import { Dialog } from '@ui/molecules/dialog'
 import { FormInput } from '@ui/molecules/form-input'
 import { Select } from '@ui/molecules/select'
 import { useEffect, useState } from 'react'
-
-export interface AddressFormData {
-  first_name: string
-  last_name: string
-  address_1: string
-  address_2?: string
-  city: string
-  postal_code: string
-  country_code: string
-  phone?: string
-}
 
 interface AddressFormDialogProps {
   open: boolean
@@ -51,12 +51,8 @@ export function AddressFormDialog({
     phone: '',
   })
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof AddressFormData, string>>
-  >({})
-  const [touched, setTouched] = useState<
-    Partial<Record<keyof AddressFormData, boolean>>
-  >({})
+  const [errors, setErrors] = useState<AddressErrors>({})
+  const [touched, setTouched] = useState<AddressTouched>({})
 
   // Initialize form with existing data
   useEffect(() => {
@@ -82,128 +78,31 @@ export function AddressFormDialog({
     }
   }, [open])
 
-  const validateField = (
-    field: keyof AddressFormData,
-    value: string
-  ): string | undefined => {
-    switch (field) {
-      case 'first_name': {
-        if (!value.trim()) {
-          return 'First name is required'
-        }
-        if (value.length < 2) {
-          return 'First name must be at least 2 characters'
-        }
-        break
-      }
-      case 'last_name': {
-        if (!value.trim()) {
-          return 'Last name is required'
-        }
-        if (value.length < 2) {
-          return 'Last name must be at least 2 characters'
-        }
-        break
-      }
-      case 'address_1': {
-        if (!value.trim()) {
-          return 'Address is required'
-        }
-        if (value.length < 5) {
-          return 'Please enter a valid address'
-        }
-        break
-      }
-      case 'city': {
-        if (!value.trim()) {
-          return 'City is required'
-        }
-        if (value.length < 2) {
-          return 'Please enter a valid city'
-        }
-        break
-      }
-      case 'postal_code': {
-        if (!value.trim()) {
-          return 'Postal code is required'
-        }
-        // Czech postal code format: XXX XX
-        if (
-          formData.country_code === 'cz' &&
-          !/^\d{3}\s?\d{2}$/.test(value.replace(/\s/g, ''))
-        ) {
-          return 'Enter valid Czech postal code (e.g., 110 00)'
-        }
-        // Slovak postal code format: XXX XX
-        if (
-          formData.country_code === 'sk' &&
-          !/^\d{3}\s?\d{2}$/.test(value.replace(/\s/g, ''))
-        ) {
-          return 'Enter valid Slovak postal code (e.g., 811 01)'
-        }
-        break
-      }
-      case 'phone':
-        if (value && !/^\+?[\d\s()-]+$/.test(value)) {
-          return 'Please enter a valid phone number'
-        }
-        break
-    }
-    return undefined
-  }
-
-  const handleFieldChange = (field: keyof AddressFormData, value: string) => {
-    // Auto-format postal code
+  const handleFieldChange = (field: AddressFieldKey, value: string) => {
+    // Auto-format postal code using centralized function
     if (field === 'postal_code') {
-      const cleaned = value.replace(/\s/g, '')
-      if (cleaned.length === 5) {
-        value = `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`
-      }
+      value = formatPostalCode(value)
     }
 
     setFormData((prev) => ({ ...prev, [field]: value }))
 
-    // Clear error when user starts typing
+    // Clear error when user starts typing - use centralized validation
     if (touched[field]) {
-      const error = validateField(field, value)
+      const error = validateAddressField(field, value, formData.country_code)
       setErrors((prev) => ({ ...prev, [field]: error }))
     }
   }
 
-  const handleFieldBlur = (field: keyof AddressFormData) => {
+  const handleFieldBlur = (field: AddressFieldKey) => {
     setTouched((prev) => ({ ...prev, [field]: true }))
     const fieldValue = formData[field] || ''
-    const error = validateField(field, fieldValue)
+    const error = validateAddressField(field, fieldValue, formData.country_code)
     setErrors((prev) => ({ ...prev, [field]: error }))
   }
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof AddressFormData, string>> = {}
-
-    // Required fields
-    const requiredFields: (keyof AddressFormData)[] = [
-      'first_name',
-      'last_name',
-      'address_1',
-      'city',
-      'postal_code',
-    ]
-
-    requiredFields.forEach((field) => {
-      const fieldValue = formData[field] || ''
-      const error = validateField(field, fieldValue)
-      if (error) {
-        newErrors[field] = error
-      }
-    })
-
-    // Optional fields
-    if (formData.phone) {
-      const phoneError = validateField('phone', formData.phone)
-      if (phoneError) {
-        newErrors.phone = phoneError
-      }
-    }
+  const handleValidateForm = (): boolean => {
+    // Use centralized validation
+    const newErrors = validateAddressForm(formData)
 
     setErrors(newErrors)
     setTouched(
@@ -214,7 +113,7 @@ export function AddressFormDialog({
   }
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!handleValidateForm()) {
       return
     }
 
