@@ -1,5 +1,5 @@
 import { debounce, type DebouncedFunction } from '@/utils/debounce'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 export function useDebounce<T extends (...args: any[]) => any>(
   callback: T,
@@ -9,25 +9,29 @@ export function useDebounce<T extends (...args: any[]) => any>(
   }
 ): DebouncedFunction<T> {
   const callbackRef = useRef(callback)
-  const debouncedRef = useRef<DebouncedFunction<T> | null>(null)
 
+  // Always update callback ref to latest version
   callbackRef.current = callback
 
+  // Create debounced function synchronously during render (not after)
+  const debouncedFn = useMemo(
+    () =>
+      debounce(
+        (...args: Parameters<T>) => {
+          callbackRef.current(...args)
+        },
+        delay,
+        options
+      ),
+    [delay, options?.leading] // Recreate if delay or leading option changes
+  )
+
+  // Cleanup: cancel pending execution on unmount or dependency change
   useEffect(() => {
-    // Create debounced function that calls latest callback
-    debouncedRef.current = debounce(
-      (...args: Parameters<T>) => {
-        callbackRef.current(...args)
-      },
-      delay,
-      options
-    )
-
-    // Cleanup: cancel pending execution on unmount or delay change
     return () => {
-      debouncedRef.current?.cancel()
+      debouncedFn.cancel()
     }
-  }, [delay, options?.leading]) // Recreate if delay or leading option changes
+  }, [debouncedFn])
 
-  return debouncedRef.current || ((() => {}) as DebouncedFunction<T>)
+  return debouncedFn
 }
