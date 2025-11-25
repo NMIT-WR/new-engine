@@ -1,4 +1,5 @@
 'use client'
+import { useAuth } from '@/hooks/use-auth'
 import { type ReactNode, createContext, useContext, useState } from 'react'
 
 interface HeaderContextValue {
@@ -11,6 +12,7 @@ interface HeaderContextValue {
   toggleLoginForm: () => void
   toggleProfile: () => void
   toggleCart: () => void
+  isAuthenticated: boolean
 }
 
 export const HeaderContext = createContext<HeaderContextValue | undefined>(
@@ -21,6 +23,7 @@ export const HeaderProvider = ({ children }: { children: ReactNode }) => {
   const [isLoginFormOpen, setIsLoginFormOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const { isAuthenticated } = useAuth()
 
   const toggleLoginForm = () => {
     setIsLoginFormOpen((prev) => !prev)
@@ -50,6 +53,7 @@ export const HeaderProvider = ({ children }: { children: ReactNode }) => {
     toggleLoginForm,
     toggleProfile,
     toggleCart,
+    isAuthenticated,
   }
 
   return <HeaderContext value={contextValue}>{children}</HeaderContext>
