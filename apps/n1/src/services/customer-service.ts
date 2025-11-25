@@ -3,7 +3,7 @@ import { sdk } from '@/lib/medusa-client'
 import type { StoreCustomerAddress } from '@medusajs/types'
 
 // Export types for reuse in components/hooks
-export type { StoreCustomerAddress } from '@medusajs/types'
+export type { StoreCustomerAddress, StoreCustomer } from '@medusajs/types'
 
 export interface AddressesResponse {
   addresses: StoreCustomerAddress[]
@@ -88,5 +88,25 @@ export async function deleteAddress(addressId: string): Promise<void> {
   } catch (err) {
     logError('CustomerService.deleteAddress', err)
     throw new Error('Nepodařilo se smazat adresu')
+  }
+}
+
+export interface UpdateCustomerData {
+  first_name?: string
+  last_name?: string
+  phone?: string
+  password?: string
+  metadata?: Record<string, unknown>
+}
+
+export async function updateCustomer(
+  data: UpdateCustomerData
+): Promise<StoreCustomer> {
+  try {
+    const response = await sdk.store.customer.update(data)
+    return response.customer
+  } catch (err) {
+    logError('CustomerService.updateCustomer', err)
+    throw new Error('Nepodařilo se aktualizovat profil')
   }
 }
