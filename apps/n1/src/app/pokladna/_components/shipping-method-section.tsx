@@ -1,10 +1,10 @@
 import type { UseCheckoutShippingReturn } from '@/hooks/use-checkout-shipping'
 import { formatToTaxIncluded } from '@/utils/format/format-product'
 import type { HttpTypes } from '@medusajs/types'
-import { Button } from '@new-engine/ui/atoms/button'
-import { ErrorText } from '@new-engine/ui/atoms/error-text'
-import { ExtraText } from '@new-engine/ui/atoms/extra-text'
-import { Skeleton } from '@new-engine/ui/atoms/skeleton'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
+import { ExtraText } from '@techsio/ui-kit/atoms/extra-text'
+import { Skeleton } from '@techsio/ui-kit/atoms/skeleton'
 
 interface ShippingMethodSectionProps {
   shipping: UseCheckoutShippingReturn

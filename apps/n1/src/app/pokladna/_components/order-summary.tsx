@@ -2,8 +2,6 @@ import type { Cart } from '@/services/cart-service'
 import { formatAmount } from '@/utils/format/format-product'
 import type { HttpTypes } from '@medusajs/types'
 import { Button } from '@ui/atoms/button'
-import { Input } from '@ui/atoms/input'
-import { Label } from '@ui/atoms/label'
 import { CartItemRow } from './cart-item-row'
 import { PriceSummaryRow } from './price-summary-row'
 
