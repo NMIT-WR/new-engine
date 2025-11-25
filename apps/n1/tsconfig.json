@@ -25,12 +25,13 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts",
-    ".next\\dev/types/**/*.ts"
+    ".next\\dev/types/**/*.ts",
+    "src/hooks/use-customer.ts"
   ],
-  "exclude": ["node_modules", "local"]
+  "exclude": ["node_modules", "local", "local/**/*", ".next", "dist"]
 }
