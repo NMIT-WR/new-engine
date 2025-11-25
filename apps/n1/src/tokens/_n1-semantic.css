@@ -27,6 +27,7 @@
   --opacity-disabled-placeholder: 30%;
   --fill-increment: 5%;
   --surface-increment: 0.05;
+  --surface-alpha: 70%;
 }
 
 /* Explicit Dark class(es) */
@@ -169,6 +170,14 @@
   --color-float: oklch(0.4495 0 0); /* rgb(85,85,85) */
   --color-highlight: oklch(0.3052 0 0); /* rgb(47,47,47) */
   --color-base-reverse: var(--color-base-dark); /* rgb(20,20,20) */
+
+  --color-surface-light: --alpha(var(--color-surface) / var(--surface-alpha));
+  --color-overlay-light: --alpha(var(--color-overlay) / var(--surface-alpha));
+  --color-float-light: --alpha(var(--color-float) / var(--surface-alpha));
+  --color-highlight-light: --alpha(
+    var(--color-highlight) /
+    var(--surface-alpha)
+  );
 
   /* Borders */
   --color-border-primary: oklch(0.9189 0 0); /* rgb(218,218,218) */
