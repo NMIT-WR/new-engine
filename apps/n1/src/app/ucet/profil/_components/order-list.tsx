@@ -1,13 +1,10 @@
 'use client'
 
 import { useOrders } from '@/hooks/use-orders'
-import { Button } from '@new-engine/ui/atoms/button'
-import { formatPrice } from '@/lib/utils' // Assuming this exists, or I'll implement inline
-import { useState } from 'react'
 
 export function OrderList() {
   const { data, isLoading } = useOrders()
-  
+
   if (isLoading) {
     return <div className="text-fg-muted">Načítám objednávky...</div>
   }
@@ -16,7 +13,7 @@ export function OrderList() {
 
   if (orders.length === 0) {
     return (
-      <div className="text-center text-fg-muted py-lg">
+      <div className="py-lg text-center text-fg-muted">
         Zatím nemáte žádné objednávky.
       </div>
     )
@@ -24,7 +21,7 @@ export function OrderList() {
 
   return (
     <div className="space-y-md">
-      <h3 className="text-heading-sm font-semibold">Historie objednávek</h3>
+      <h3 className="font-semibold text-heading-sm">Historie objednávek</h3>
       <div className="space-y-sm">
         {orders.map((order) => (
           <div
@@ -32,9 +29,7 @@ export function OrderList() {
             className="flex items-center justify-between rounded border border-border p-md"
           >
             <div>
-              <div className="font-medium">
-                Objednávka #{order.display_id}
-              </div>
+              <div className="font-medium">Objednávka #{order.display_id}</div>
               <div className="text-body-sm text-fg-muted">
                 {new Date(order.created_at).toLocaleDateString('cs-CZ')} •{' '}
                 {order.status} • {order.payment_status}

@@ -2,7 +2,7 @@ import { carouselImages } from '@/assets/carousel'
 import { icons } from '@/assets/icons'
 import { topCategoryImages } from '@/assets/top-category'
 import type { Product } from '@/types/product'
-import type { CarouselSlide } from '@new-engine/ui/molecules/carousel'
+import type { CarouselSlide } from '@techsio/ui-kit/molecules/carousel'
 
 export const featureBlocks = [
   {

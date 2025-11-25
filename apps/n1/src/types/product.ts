@@ -1,5 +1,5 @@
 import type { StoreProduct } from '@medusajs/types'
-import type { BadgeProps } from '@new-engine/ui/atoms/badge'
+import type { BadgeProps } from '@techsio/ui-kit/atoms/badge'
 
 export interface StoreProductExtended extends StoreProduct {
   producer?: Producer

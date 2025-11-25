@@ -10,9 +10,9 @@ import { useToast } from '@/hooks/use-toast'
 import type {
   CreateAddressData,
   StoreCustomerAddress,
-} from '@/services/customer-service-2'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Input } from '@new-engine/ui/atoms/input'
+} from '@/services/customer-service'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { Input } from '@techsio/ui-kit/atoms/input'
 import { useState } from 'react'
 
 export function AddressList() {

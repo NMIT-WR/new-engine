@@ -1,7 +1,7 @@
 'use client'
 import { footerImgs } from '@/assets/footer'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { Footer } from '@new-engine/ui/organisms/footer'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
+import { Footer } from '@techsio/ui-kit/organisms/footer'
 import Image from 'next/image'
 import Link from 'next/link'
 

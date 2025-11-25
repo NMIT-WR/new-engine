@@ -1,6 +1,6 @@
 import { logError } from '@/lib/errors'
 import { sdk } from '@/lib/medusa-client'
-import type { StoreCustomerAddress } from '@medusajs/types'
+import type { StoreCustomer, StoreCustomerAddress } from '@medusajs/types'
 
 // Export types for reuse in components/hooks
 export type { StoreCustomerAddress, StoreCustomer } from '@medusajs/types'
