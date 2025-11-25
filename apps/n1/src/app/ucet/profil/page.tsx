@@ -5,11 +5,17 @@ import { useLogout } from '@/hooks/use-logout'
 import { Button } from '@new-engine/ui/atoms/button'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { AddressList } from './_components/address-list'
+import { OrderList } from './_components/order-list'
+import { ProfileForm } from './_components/profile-form'
 
 export default function ProfilePage() {
   const router = useRouter()
   const { customer, isAuthenticated, isLoading, isTokenExpired } = useAuth()
   const [showExpiredMessage, setShowExpiredMessage] = useState(false)
+  const [activeTab, setActiveTab] = useState<
+    'profile' | 'addresses' | 'orders'
+  >('profile')
 
   const logoutMutation = useLogout({
     onSuccess: () => {
@@ -66,7 +72,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl py-xl">
+    <div className="container mx-auto max-w-4xl py-xl">
       <div className="mb-lg flex items-center justify-between">
         <h1 className="font-bold text-heading-lg">Můj profil</h1>
         <Button
@@ -78,38 +84,57 @@ export default function ProfilePage() {
         </Button>
       </div>
 
-      <div className="rounded bg-surface-subtle p-lg">
-        <div className="mb-md">
-          <h2 className="mb-sm font-semibold text-heading-sm">
-            Základní informace
-          </h2>
-          <div className="grid gap-sm">
-            <div>
-              <span className="text-body-sm text-fg-muted">Jméno:</span>
-              <p className="font-medium text-body-md">
-                {customer.first_name} {customer.last_name}
-              </p>
-            </div>
-            <div>
-              <span className="text-body-sm text-fg-muted">E-mail:</span>
-              <p className="font-medium text-body-md">{customer.email}</p>
-            </div>
-          </div>
-        </div>
+      <div className="grid gap-lg md:grid-cols-[240px_1fr]">
+        <nav className="space-y-xs">
+          <Button
+            variant={activeTab === 'profile' ? 'primary' : 'secondary'}
+            theme={activeTab === 'profile' ? 'solid' : 'borderless'}
+            className="w-full justify-start"
+            onClick={() => setActiveTab('profile')}
+          >
+            Osobní údaje
+          </Button>
+          <Button
+            variant={activeTab === 'addresses' ? 'primary' : 'secondary'}
+            theme={activeTab === 'addresses' ? 'solid' : 'borderless'}
+            className="w-full justify-start"
+            onClick={() => setActiveTab('addresses')}
+          >
+            Adresy
+          </Button>
+          <Button
+            variant={activeTab === 'orders' ? 'primary' : 'secondary'}
+            theme={activeTab === 'orders' ? 'solid' : 'borderless'}
+            className="w-full justify-start"
+            onClick={() => setActiveTab('orders')}
+          >
+            Objednávky
+          </Button>
+        </nav>
 
-        <div className="rounded bg-success-bg-subtle p-md text-success-fg">
-          ✓ Autentizace funguje správně!
+        <div className="rounded bg-surface-subtle p-lg">
+          {activeTab === 'profile' && (
+            <div className="space-y-md">
+              <h2 className="font-semibold text-heading-md">Osobní údaje</h2>
+              <ProfileForm />
+            </div>
+          )}
+
+          {activeTab === 'addresses' && (
+            <div className="space-y-md">
+              <h2 className="font-semibold text-heading-md">Adresy</h2>
+              <AddressList />
+            </div>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className="space-y-md">
+              <h2 className="font-semibold text-heading-md">Objednávky</h2>
+              <OrderList />
+            </div>
+          )}
         </div>
       </div>
-
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-lg rounded bg-surface-subtle p-lg">
-          <h2 className="mb-sm font-semibold text-heading-sm">Debug Info</h2>
-          <pre className="overflow-auto text-body-xs">
-            {JSON.stringify(customer, null, 2)}
-          </pre>
-        </div>
-      )}
     </div>
   )
 }
