@@ -1,4 +1,4 @@
-import { Image } from '@new-engine/ui/atoms/image'
+import { Image } from '@techsio/ui-kit/atoms/image'
 import NextImage from 'next/image'
 import type { StaticImageData } from 'next/image'
 

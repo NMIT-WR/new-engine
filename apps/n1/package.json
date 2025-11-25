@@ -13,9 +13,9 @@
   "dependencies": {
     "@medusajs/js-sdk": "^2.10.3",
     "@medusajs/types": "^2.10.3",
-    "@new-engine/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-store": "^0.7.1",
+    "@techsio/ui-kit": "workspace:*",
     "next": "16.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -34,7 +34,7 @@
     "postcss-import": "^16.1.1",
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   },
   "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
   "main": "index.js",

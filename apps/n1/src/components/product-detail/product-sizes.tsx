@@ -1,7 +1,7 @@
 import type { Producer } from '@/types/product'
 import { parseProducerData } from '@/utils/helpers/parse-producer-data'
-import { LinkButton } from '@new-engine/ui/atoms/link-button'
-import { Table } from '@new-engine/ui/organisms/table'
+import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
+import { Table } from '@techsio/ui-kit/organisms/table'
 import Link from 'next/link'
 
 interface ProductSizesProps {

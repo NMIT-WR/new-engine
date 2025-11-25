@@ -1,5 +1,5 @@
 import { Heading } from '@/components/heading'
-import { Button } from '@new-engine/ui/atoms/button'
+import { Button } from '@techsio/ui-kit/atoms/button'
 
 export default function KontaktyPage() {
   return (

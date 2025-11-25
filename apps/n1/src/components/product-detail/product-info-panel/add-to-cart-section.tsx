@@ -4,9 +4,9 @@ import { useRegion } from '@/hooks/use-region'
 import { useCartToast } from '@/hooks/use-toast'
 import type { ProductDetail, ProductVariantDetail } from '@/types/product'
 import { validateAddToCart } from '@/utils/cart/cart-validation'
-import { Button } from '@new-engine/ui/atoms/button'
-import { NumericInput } from '@new-engine/ui/atoms/numeric-input'
-import { slugify } from '@new-engine/ui/utils'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { NumericInput } from '@techsio/ui-kit/atoms/numeric-input'
+import { slugify } from '@techsio/ui-kit/utils'
 import { useState } from 'react'
 
 export const AddToCartSection = ({

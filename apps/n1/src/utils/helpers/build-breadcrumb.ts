@@ -1,5 +1,5 @@
 import type { Category } from '@/data/static/type'
-import type { BreadcrumbItemType } from '@new-engine/ui/molecules/breadcrumb'
+import type { BreadcrumbItemType } from '@techsio/ui-kit/molecules/breadcrumb'
 import { getCategoryPath } from '../transform/get-category-path'
 
 export function buildBreadcrumbs(

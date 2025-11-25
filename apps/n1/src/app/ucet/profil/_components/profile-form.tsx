@@ -3,8 +3,8 @@
 import { useAuth } from '@/hooks/use-auth'
 import { useUpdateCustomer } from '@/hooks/use-customer'
 import { useToast } from '@/hooks/use-toast'
-import { Button } from '@new-engine/ui/atoms/button'
-import { Input } from '@new-engine/ui/atoms/input'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { Input } from '@techsio/ui-kit/atoms/input'
 import { useState } from 'react'
 
 export function ProfileForm() {
