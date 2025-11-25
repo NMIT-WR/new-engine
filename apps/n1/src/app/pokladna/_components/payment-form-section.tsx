@@ -3,7 +3,7 @@
 import { useCheckout } from '@/hooks/use-checkout'
 import { useRegion } from '@/hooks/use-region'
 import type { Cart } from '@/services/cart-service'
-import { Checkbox } from '@new-engine/ui/molecules/checkbox'
+import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
 import { Button } from '@ui/atoms/button'
 import { useState } from 'react'
 
