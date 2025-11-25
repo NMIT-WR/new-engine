@@ -1,4 +1,4 @@
-import { Tooltip } from '@new-engine/ui/atoms/tooltip'
+import { Tooltip } from '@techsio/ui-kit/atoms/tooltip'
 
 export const StoreStatus = ({ quantity }: { quantity: number }) => {
   const StatusContent = () => (

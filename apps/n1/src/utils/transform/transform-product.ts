@@ -6,7 +6,7 @@ import type {
   StoreProductExtended,
 } from '@/types/product'
 import type { StoreProduct } from '@medusajs/types'
-import { slugify } from '@new-engine/ui/utils'
+import { slugify } from '@techsio/ui-kit/utils'
 import { formatPrice, formatVariants } from '../format/format-product'
 
 export const transformProduct = (product: StoreProduct): Product => {

@@ -1,4 +1,4 @@
-import { Tabs } from '@new-engine/ui/molecules/tabs'
+import { Tabs } from '@techsio/ui-kit/molecules/tabs'
 
 interface TabConfig {
   value: string

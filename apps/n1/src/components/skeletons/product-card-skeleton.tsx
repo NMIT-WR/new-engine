@@ -1,4 +1,4 @@
-import { Skeleton } from '@new-engine/ui/atoms/skeleton'
+import { Skeleton } from '@techsio/ui-kit/atoms/skeleton'
 
 export const ProductCardSkeleton = () => {
   return (

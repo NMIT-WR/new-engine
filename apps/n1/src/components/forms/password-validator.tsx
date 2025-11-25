@@ -1,4 +1,4 @@
-import { Icon } from '@new-engine/ui/atoms/icon'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
 
 interface PasswordRequirement {
   id: string

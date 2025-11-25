@@ -1,7 +1,7 @@
 'use client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { Toaster } from '@new-engine/ui/molecules/toast'
+import { Toaster } from '@techsio/ui-kit/molecules/toast'
 import { Suspense } from 'react'
 import { PrefetchManager } from './prefetch-manager'
 

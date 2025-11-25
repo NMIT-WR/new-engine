@@ -12,8 +12,8 @@ import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
 import { buildProductBreadcrumbs } from '@/utils/helpers/build-breadcrumb'
 import { selectVariant } from '@/utils/select-variant'
 import { transformProductDetail } from '@/utils/transform/transform-product'
-import { Link } from '@new-engine/ui/atoms/link'
-import { Breadcrumb } from '@new-engine/ui/molecules/breadcrumb'
+import { Link } from '@techsio/ui-kit/atoms/link'
+import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
 import { useParams, useSearchParams } from 'next/navigation'
 
 export default function ProductPage() {

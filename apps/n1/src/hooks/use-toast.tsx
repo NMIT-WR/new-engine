@@ -1,8 +1,8 @@
 'use client'
 
-import { toaster } from '@new-engine/ui/molecules/toast'
+import { toaster } from '@techsio/ui-kit/molecules/toast'
 
-export { useToast } from '@new-engine/ui/molecules/toast'
+export { useToast } from '@techsio/ui-kit/molecules/toast'
 
 const DEFAULT_DURATIONS = {
   success: 3000,

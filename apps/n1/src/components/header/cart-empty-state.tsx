@@ -1,5 +1,5 @@
-import { Button } from '@new-engine/ui/atoms/button'
-import { Icon } from '@new-engine/ui/atoms/icon'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
 
 interface CartEmptyStateProps {
   onContinueShopping?: () => void

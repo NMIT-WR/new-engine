@@ -1,5 +1,8 @@
 'use client'
-import { Carousel, type CarouselSlide } from '@new-engine/ui/molecules/carousel'
+import {
+  Carousel,
+  type CarouselSlide,
+} from '@techsio/ui-kit/molecules/carousel'
 import NextImage from 'next/image'
 
 interface HeroCarouselProps {
