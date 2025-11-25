@@ -4,8 +4,8 @@ import { usePrefetchOnHover } from '@/hooks/use-prefetch-on-hover'
 import { findNodeById } from '@/utils/transform/find-node-by-id'
 import { getCategoryPath } from '@/utils/transform/get-category-path'
 import { transformToTree } from '@/utils/transform/transform-to-tree'
-import { TreeView } from '@new-engine/ui/molecules/tree-view'
-import type { TreeView as TreeType } from '@new-engine/ui/types-zag'
+import { TreeView } from '@techsio/ui-kit/molecules/tree-view'
+import type { TreeView as TreeType } from '@techsio/ui-kit/types/zag'
 import { useRouter } from 'next/navigation'
 
 interface N1AsideProps {

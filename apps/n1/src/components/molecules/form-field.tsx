@@ -1,8 +1,9 @@
-import { Input } from '@new-engine/ui/atoms/input'
-import { Label } from '@new-engine/ui/atoms/label'
+import { Input } from '@techsio/ui-kit/atoms/input'
+import { Label } from '@techsio/ui-kit/atoms/label'
 import type { ChangeEvent, InputHTMLAttributes } from 'react'
 
-interface FormFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
+interface FormFieldProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
   id: string
   label: string
   name: string

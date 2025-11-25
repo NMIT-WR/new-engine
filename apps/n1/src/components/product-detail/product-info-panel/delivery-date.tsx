@@ -1,5 +1,5 @@
 import { useDate } from '@/hooks/use-date'
-import { Tooltip } from '@new-engine/ui/atoms/tooltip'
+import { Tooltip } from '@techsio/ui-kit/atoms/tooltip'
 import Link from 'next/link'
 
 export const DeliveryDate = () => {

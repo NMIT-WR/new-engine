@@ -1,8 +1,8 @@
 'use client'
 import { useCart } from '@/hooks/use-cart'
-import { Badge } from '@new-engine/ui/atoms/badge'
-import { Icon } from '@new-engine/ui/atoms/icon'
-import { Popover } from '@new-engine/ui/molecules/popover'
+import { Badge } from '@techsio/ui-kit/atoms/badge'
+import { Icon } from '@techsio/ui-kit/atoms/icon'
+import { Popover } from '@techsio/ui-kit/molecules/popover'
 import { CartContent } from './cart-content'
 import { useHeaderContext } from './store/header-context'
 

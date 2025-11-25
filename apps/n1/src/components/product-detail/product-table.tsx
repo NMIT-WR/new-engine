@@ -1,4 +1,4 @@
-import { Table } from '@new-engine/ui/organisms/table'
+import { Table } from '@techsio/ui-kit/organisms/table'
 
 export interface ProductTableRowProps {
   key: string

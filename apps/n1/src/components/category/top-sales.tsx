@@ -1,7 +1,7 @@
 import { useProducts } from '@/hooks/use-products'
 import { ROOT_CATEGORIES } from '@/lib/constants'
 import { transformProduct } from '@/utils/transform/transform-product'
-import { ProductCard } from '@new-engine/ui/molecules/product-card'
+import { ProductCard } from '@techsio/ui-kit/molecules/product-card'
 
 export const TopSales = () => {
   const category = ROOT_CATEGORIES[0]
