@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/hooks/use-auth'
 import { useLogout } from '@/hooks/use-logout'
-import { Button } from '@new-engine/ui/atoms/button'
+import { Button } from '@techsio/ui-kit/atoms/button'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { AddressList } from './_components/address-list'

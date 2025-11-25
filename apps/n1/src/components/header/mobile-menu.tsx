@@ -1,5 +1,5 @@
-import { Dialog } from '@new-engine/ui/molecules/dialog'
-import { Header, HeaderContext } from '@new-engine/ui/organisms/header'
+import { Dialog } from '@techsio/ui-kit/molecules/dialog'
+import { Header, HeaderContext } from '@techsio/ui-kit/organisms/header'
 import { useContext } from 'react'
 
 export const MobileMenu = () => {
