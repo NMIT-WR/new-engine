@@ -1,5 +1,5 @@
 import { DEFAULT_COUNTRY_CODE } from '@/lib/constants'
-import type { StoreCustomerAddress } from '@/services/customer-service'
+import type { StoreCustomerAddress } from '@/services/customer-service-2'
 import type { AddressFormData } from './address-validation'
 
 /**
@@ -7,18 +7,21 @@ import type { AddressFormData } from './address-validation'
  * Funguje pro customer address, cart address nebo jakýkoliv compatible address objekt
  */
 function addressToFormData(
-  address: {
-    first_name?: string | null
-    last_name?: string | null
-    company?: string | null
-    address_1?: string | null
-    address_2?: string | null
-    city?: string | null
-    province?: string | null
-    postal_code?: string | null
-    country_code?: string | null
-    phone?: string | null
-  } | null | undefined
+  address:
+    | {
+        first_name?: string | null
+        last_name?: string | null
+        company?: string | null
+        address_1?: string | null
+        address_2?: string | null
+        city?: string | null
+        province?: string | null
+        postal_code?: string | null
+        country_code?: string | null
+        phone?: string | null
+      }
+    | null
+    | undefined
 ): Partial<AddressFormData> {
   // Return empty form if no address provided
   if (!address) {
@@ -66,18 +69,21 @@ export function customerAddressToFormData(
  * @deprecated Use addressToFormData instead
  */
 export function cartAddressToFormData(
-  address: {
-    first_name?: string | null
-    last_name?: string | null
-    company?: string | null
-    address_1?: string | null
-    address_2?: string | null
-    city?: string | null
-    province?: string | null
-    postal_code?: string | null
-    country_code?: string | null
-    phone?: string | null
-  } | null | undefined
+  address:
+    | {
+        first_name?: string | null
+        last_name?: string | null
+        company?: string | null
+        address_1?: string | null
+        address_2?: string | null
+        city?: string | null
+        province?: string | null
+        postal_code?: string | null
+        country_code?: string | null
+        phone?: string | null
+      }
+    | null
+    | undefined
 ): Partial<AddressFormData> {
   return addressToFormData(address)
 }
