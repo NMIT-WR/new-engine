@@ -58,6 +58,8 @@
   /* CHECKBOX */
   --width-checkbox: 1rem;
   --height-checkbox: 1rem;
+  --text-checkbox-icon-md: 0.75rem;
+  --color-checkbox: var(--color-base);
 
   /* PAGINATION */
   --color-pagination-filled-fg-active: var(--color-fg-primary);
@@ -82,6 +84,13 @@
   --font-weight-product-card-price: var(--font-weight-bold);
   --font-weight-product-card-name: var(--font-weight-bold);
   --spacing-product-card-col-layout: var(--spacing-200);
+
+  /* SELECT */
+  --gap-select-root: var(--spacing-50);
+  --color-select-item-selected-fg: var(--color-fg-primary);
+  --color-select-indicator: var(--color-fg-primary);
+  --color-select-content-border: var(--color-border-primary);
+  --color-select-trigger-border-focus: var(--color-border-primary);
 
   /* TABS */
   --color-tabs-bg: var(--color-base);
