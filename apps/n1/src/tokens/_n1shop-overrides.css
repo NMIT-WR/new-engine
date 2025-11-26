@@ -88,70 +88,42 @@
   --color-primary-hover: var(--color-yellow-500); /* #FFDD00 */
   --color-primary-active: var(--color-yellow-600); /* #FFC700 */
   --color-primary-disabled: var(--color-yellow-300);
-  --color-primary-light: var(--color-yellow-300);
-  --color-primary-light-hover: var(--color-yellow-400);
-  --color-primary-light-active: var(--color-yellow-500);
-  --color-primary-light-disabled: var(--color-gray-200);
 
   /* Secondary - Use gray for secondary buttons matching N1's "DO KOŠÍKU" style */
   --color-secondary: var(--color-gray-600); /* #555555 */
   --color-secondary-hover: var(--color-gray-700); /* #444444 */
   --color-secondary-active: var(--color-gray-800); /* #333333 */
   --color-secondary-disabled: var(--color-gray-400);
-  --color-secondary-light: var(--color-gray-100);
-  --color-secondary-light-hover: var(--color-gray-200);
-  --color-secondary-light-active: var(--color-gray-300);
-  --color-secondary-light-disabled: var(--color-gray-50);
 
   /* Tertiary - Blue for informational CTAs and badges like "Novinka" */
   --color-tertiary: var(--color-blue-400); /* #3498DB */
   --color-tertiary-hover: var(--color-blue-500); /* #2980B9 */
   --color-tertiary-active: var(--color-blue-600); /* #21618C */
   --color-tertiary-disabled: var(--color-blue-300);
-  --color-tertiary-light: var(--color-blue-300);
-  --color-tertiary-light-hover: var(--color-blue-400);
-  --color-tertiary-light-active: var(--color-blue-500);
-  --color-tertiary-light-disabled: var(--color-blue-300);
 
   /* Success - Green for "Skladem" status */
   --color-success: var(--color-emerald-500); /* #008000 - VERIFIED */
   --color-success-hover: var(--color-emerald-600);
   --color-success-active: var(--color-emerald-600);
   --color-success-disabled: var(--color-emerald-400);
-  --color-success-light: #e8f5e9;
-  --color-success-light-hover: #c8e6c9;
-  --color-success-light-active: #a5d6a7;
-  --color-success-light-disabled: #e8f5e9;
 
   /* Warning - Orange for "Poslední kus" */
   --color-warning: #ffdd27; /* #FFA500 - VERIFIED */
   --color-warning-hover: #ff8c00;
   --color-warning-active: #ff6347;
   --color-warning-disabled: #ffd54f;
-  --color-warning-light: #fffac5;
-  --color-warning-light-hover: #ffe0b2;
-  --color-warning-light-active: #ffcc80;
-  --color-warning-light-disabled: #fff3e0;
 
   /* Danger - Red for "Akce" badges and errors */
   --color-danger: var(--color-red-400); /* #E74C3C - VERIFIED */
   --color-danger-hover: var(--color-red-500);
   --color-danger-active: var(--color-red-600);
   --color-danger-disabled: var(--color-red-300);
-  --color-danger-light: #ffebee;
-  --color-danger-light-hover: #ffcdd2;
-  --color-danger-light-active: #ef9a9a;
-  --color-danger-light-disabled: #ffebee;
 
   /* Info - Blue, same as tertiary for consistency */
   --color-info: #4d9ada; /* #3498DB */
   --color-info-hover: var(--color-blue-500);
   --color-info-active: var(--color-blue-600);
   --color-info-disabled: var(--color-blue-300);
-  --color-info-light: #e3f2fd;
-  --color-info-light-hover: #bbdefb;
-  --color-info-light-active: #90caf9;
-  --color-info-light-disabled: #e3f2fd;
 
   /* Text colors */
   --color-fg-light: var(--color-black); /* #000000 for headings */
@@ -171,8 +143,8 @@
   --color-base-reverse: var(--color-gray-950);
 
   /* Borders */
-  --color-border-primary: var(--color-gray-700);  
-  --color-border-secondary: #e4e4e4; 
+  --color-border-primary: var(--color-gray-700);
+  --color-border-secondary: #e4e4e4;
   --color-border-tertiary: #000;
   --border-width-none: 0px;
   --border-width-sm: 1px;
