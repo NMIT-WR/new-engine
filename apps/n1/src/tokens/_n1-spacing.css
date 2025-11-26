@@ -18,4 +18,7 @@
   --spacing-850: 2.75rem; /* 44px */
   --spacing-900: 3rem; /* 48px */
   --spacing-950: 3.5rem; /* 56px */
+  --spacing-1000: 4rem; /* 60px */
+
+  --spacing-section: var(--spacing-600);
 }

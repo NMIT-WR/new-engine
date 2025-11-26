@@ -27,7 +27,7 @@
   --opacity-disabled-placeholder: 30%;
   --fill-increment: 5%;
   --surface-increment: 0.05;
-  --surface-alpha: 70%;
+  --color-light-alpha: 70%;
 }
 
 /* Explicit Dark class(es) */
@@ -100,12 +100,20 @@
   --color-primary-hover: oklch(
     from var(--color-primary) calc(l + var(--state-hover)) c h
   );
+  --color-primary-light: --alpha(
+    var(--color-primary) /
+    var(--color-light-alpha)
+  );
   --color-primary-disabled: var(--color-disabled-bg);
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
   --color-secondary: rgb(255, 231, 16); /* should be this rgb(255, 231, 16)? or this oklch(0.4495 0 0)? */
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
+  );
+  --color-secondary-light: --alpha(
+    var(--color-secondary) /
+    var(--color-light-alpha)
   );
   --color-secondary-disabled: var(--color-disabled-bg);
 
@@ -116,12 +124,20 @@
   --color-tertiary-hover: oklch(
     from var(--color-tertiary) calc(l + var(--state-hover)) c h
   );
+  --color-tertiary-light: --alpha(
+    var(--color-tertiary) /
+    var(--color-light-alpha)
+  );
   --color-tertiary-disabled: var(--color-disabled-bg);
 
   /* It is usually used to express the success, completion and opening status, and is used in scenarios with the above semantics */
   --color-success: oklch(0.6268 0.2022 144.15); /* rgb(0, 165, 35) */
   --color-success-hover: oklch(
     from var(--color-success) calc(l + var(--state-hover)) c h
+  );
+  --color-success-light: --alpha(
+    var(--color-success) /
+    var(--color-light-alpha)
   );
   --color-success-disabled: var(--color-disabled-bg);
 
@@ -130,12 +146,17 @@
   --color-info-hover: oklch(
     from var(--color-info) calc(l + var(--state-hover)) c h
   );
+  --color-info-light: --alpha(var(--color-info) / var(--color-light-alpha));
   --color-info-disabled: var(--color-disabled-bg);
 
   /* It is usually used to express warning and unsafe state, and is used in scenarios with the above semantics */
   --color-warning: oklch(0.8987 0.185667 97.8573); /* rgb(255, 221, 0) */
   --color-warning-hover: oklch(
     from var(--color-warning) calc(l + var(--state-hover)) c h
+  );
+  --color-warning-light: --alpha(
+    var(--color-warning) /
+    var(--color-light-alpha)
   );
   --color-warning-disabled: var(--color-disabled-bg);
 
@@ -144,6 +165,7 @@
   --color-danger-hover: oklch(
     from var(--color-danger) calc(l + var(--state-hover)) c h
   );
+  --color-danger-light: --alpha(var(--color-danger) / var(--color-light-alpha));
   --color-danger-disabled: var(--color-disabled-bg);
 
   /* Text colors and Icon colors*/
@@ -171,12 +193,18 @@
   --color-highlight: oklch(0.3052 0 0); /* rgb(47,47,47) */
   --color-base-reverse: var(--color-base-dark); /* rgb(20,20,20) */
 
-  --color-surface-light: --alpha(var(--color-surface) / var(--surface-alpha));
-  --color-overlay-light: --alpha(var(--color-overlay) / var(--surface-alpha));
-  --color-float-light: --alpha(var(--color-float) / var(--surface-alpha));
+  --color-surface-light: --alpha(
+    var(--color-surface) /
+    var(--color-light-alpha)
+  );
+  --color-overlay-light: --alpha(
+    var(--color-overlay) /
+    var(--color-light-alpha)
+  );
+  --color-float-light: --alpha(var(--color-float) / var(--color-light-alpha));
   --color-highlight-light: --alpha(
     var(--color-highlight) /
-    var(--surface-alpha)
+    var(--color-light-alpha)
   );
 
   /* Borders */
