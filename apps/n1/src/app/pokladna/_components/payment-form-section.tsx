@@ -98,7 +98,7 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
       {/* Default provider fallback */}
       {!hasPaymentSessions &&
         (!paymentProviders || paymentProviders.length === 0) && (
-          <div className="rounded border border-border-primary bg-surface-secondary p-300">
+          <div className="rounded border border-border-primary p-300">
             <p className="font-medium text-fg-primary text-sm">Při převzetí</p>
             <p className="mt-100 text-fg-secondary text-xs">
               Zaplatíte při doručení objednávky
