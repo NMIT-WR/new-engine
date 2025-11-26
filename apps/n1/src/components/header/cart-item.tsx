@@ -53,11 +53,11 @@ export const CartItem = ({
 
   return (
     <div
-      className={`flex gap-3 py-3 first:pt-0 last:pb-0 ${isOptimistic ? 'opacity-60' : ''}
+      className={`flex gap-300 py-300 first:pt-0 last:pb-0 ${isOptimistic ? 'opacity-60' : ''}
         ${isPending ? 'pointer-events-none' : ''}
       `}
     >
-      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
         {thumbnail ? (
           <Image
             src={thumbnail}
@@ -70,10 +70,7 @@ export const CartItem = ({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Icon
-              icon="icon-[mdi--image-outline]"
-              className="text-2xl text-gray-400"
-            />
+            <Icon icon="icon-[mdi--image-outline]" className="text-2xl" />
           </div>
         )}
       </div>
@@ -82,16 +79,16 @@ export const CartItem = ({
         <Link
           href={`/produkt/${item.product_handle}?variant=${item.variant_title}`}
         >
-          <h4 className="truncate font-medium text-gray-900 text-sm underline hover:no-underline">
+          <h4 className="truncate font-medium text-sm underline hover:no-underline">
             {title}
           </h4>
         </Link>
 
         {variantTitle && variantTitle !== 'Default' && (
-          <p className="truncate text-gray-500 text-xs">{variantTitle}</p>
+          <p className="truncate text-fg-secondary text-xs">{variantTitle}</p>
         )}
 
-        <p className="font-medium text-gray-900 text-sm">{formattedPrice}</p>
+        <p className="font-medium text-sm">{formattedPrice}</p>
 
         {effectiveMax < 3 && effectiveMax > 0 && (
           <p className="text-2xs text-danger">Zbývá pouze {effectiveMax} ks</p>
@@ -130,7 +127,7 @@ export const CartItem = ({
         icon="icon-[mdi--trash-can-outline]"
         onClick={onRemove}
         disabled={isPending}
-        className="h-7 w-7 p-0 text-gray-400 transition-colors hover:text-gray-600"
+        className="h-7 w-7 p-0 text-fg-5 transition-colors hover:text-fg-secondary"
         aria-label={`Odstranit ${title} z košíku`}
       />
     </div>

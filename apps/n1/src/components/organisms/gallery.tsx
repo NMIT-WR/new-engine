@@ -14,7 +14,7 @@ const galleryStyles = tv({
     root: '',
     mainCarousel: 'flex h-fit relative',
     container: 'flex-shrink-0',
-    scrollArea: 'scrollbar-thin max-h-[60svh]',
+    scrollArea: 'scrollbar-thin max-h-gallery',
     list: 'flex gap-gallery-sm',
     trigger: [
       'relative flex-shrink-0',
