@@ -87,7 +87,7 @@ export default function KontaktyPage() {
               id="name"
               name="name"
               required
-              className="w-full rounded-lg border border-border px-400 py-300 focus:border-primary focus:outline-none"
+              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
             />
 
             <label htmlFor="phone" className="block font-medium text-2xs">
@@ -97,7 +97,7 @@ export default function KontaktyPage() {
               type="tel"
               id="phone"
               name="phone"
-              className="w-full rounded-lg border border-border px-400 py-300 focus:border-primary focus:outline-none"
+              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
             />
 
             <label htmlFor="email" className="block font-medium text-2xs">
@@ -108,7 +108,7 @@ export default function KontaktyPage() {
               id="email"
               name="email"
               required
-              className="w-full rounded-lg border border-border px-400 py-300 focus:border-primary focus:outline-none"
+              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -121,7 +121,7 @@ export default function KontaktyPage() {
               name="message"
               required
               rows={5}
-              className="w-full resize-none rounded-lg border border-border px-400 py-300 focus:border-primary focus:outline-none"
+              className="w-full resize-none rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
             />
             <Button type="submit" className="w-full">
               Odeslat
