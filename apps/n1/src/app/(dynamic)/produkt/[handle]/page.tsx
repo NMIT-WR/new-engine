@@ -35,7 +35,7 @@ export default function ProductPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">Načítání produktu...</p>
+        <p className="text-fg-5">Načítání produktu...</p>
       </div>
     )
   }
@@ -43,7 +43,7 @@ export default function ProductPage() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-red-500">Chyba při načítání produktu</p>
+        <p className="text-danger-light">Chyba při načítání produktu</p>
       </div>
     )
   }
@@ -51,7 +51,7 @@ export default function ProductPage() {
   if (!rawProduct || !detail) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">Produkt nebyl nalezen</p>
+        <p className="text-fg-5">Produkt nebyl nalezen</p>
       </div>
     )
   }
@@ -102,15 +102,15 @@ export default function ProductPage() {
   ]
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-400">
       {/* PRODUCT DETAIL COMPONENT */}
-      <div className="grid gap-8 md:grid-cols-2">
-        <header className="col-span-2 space-y-4">
+      <div className="grid gap-700 md:grid-cols-2">
+        <header className="col-span-2 space-y-400">
           <Breadcrumb
             items={breadcrumbPath}
             linkAs={Link}
             size="md"
-            className="mb-4"
+            className="mb-400"
           />
           <Heading as="h1">{title}</Heading>
         </header>

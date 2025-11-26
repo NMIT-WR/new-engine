@@ -70,8 +70,8 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
   const isOptimistic = getOptimisticFlag(cart)
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="max-h-[400px] divide-y divide-gray-200 overflow-y-auto">
+    <div className="flex flex-col gap-400">
+      <div className="max-h-sm divide-y divide-border-secondary overflow-y-auto">
         {cart.items.map((item) => {
           const itemTitle = item.product_title || item.title || 'Product'
           const itemOptimistic = getOptimisticFlag(item)
@@ -89,44 +89,40 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
         })}
       </div>
 
-      <div className="border-gray-200 border-t pt-4">
-        <div className="space-y-2">
+      <div className="border-border-secondary border-t pt-400">
+        <div className="space-y-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Mezisoučet:</span>
-            <span className="text-gray-900">{formatAmount(cart.subtotal)}</span>
+            <span className="text-fg-secondary">Mezisoučet:</span>
+            <span>{formatAmount(cart.subtotal)}</span>
           </div>
           {cart.shipping_total !== undefined && cart.shipping_total > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Doprava:</span>
-              <span className="text-gray-900">
-                {formatAmount(cart.shipping_total)}
-              </span>
+              <span className="text-fg-secondary">Doprava:</span>
+              <span>{formatAmount(cart.shipping_total)}</span>
             </div>
           )}
 
           {cart.tax_total !== undefined && cart.tax_total > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">DPH:</span>
-              <span className="text-gray-900">
-                {formatAmount(cart.tax_total)}
-              </span>
+              <span className="text-fg-secondary">DPH:</span>
+              <span>{formatAmount(cart.tax_total)}</span>
             </div>
           )}
 
           {cart.discount_total !== undefined && cart.discount_total > 0 && (
-            <div className="flex justify-between text-green-600 text-sm">
+            <div className="flex justify-between text-sm text-success-light">
               <span>Sleva:</span>
               <span>-{formatAmount(cart.discount_total)}</span>
             </div>
           )}
 
-          <div className="flex justify-between border-gray-200 border-t pt-2 font-semibold text-md">
+          <div className="flex justify-between border-border-secondary border-t pt-200 font-semibold text-md">
             <span>Celkem:</span>
             <span>{formatAmount(cart.total)}</span>
           </div>
 
           {cart.subtotal && cart.subtotal < 1500 && (
-            <p className="pt-2 text-center text-gray-500 text-xs">
+            <p className="pt-200 text-center text-fg-secondary text-xs">
               Doprava zdarma od 1 500 Kč (zbývá{' '}
               {formatAmount(1500 - cart.subtotal)})
             </p>
@@ -134,7 +130,7 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-200">
         <Link href="/pokladna" className="block" onClick={onClose}>
           <Button
             variant="primary"

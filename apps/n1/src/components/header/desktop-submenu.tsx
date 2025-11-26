@@ -28,14 +28,14 @@ export const DesktopSubmenu = () => {
   return (
     <Header.Desktop>
       <div className="w-full" onMouseLeave={() => setDrawerOpen(false)}>
-        <Header.Container className="w-full border-highlight border-t-[1px] bg-gray-950 py-0">
+        <Header.Container className="w-full border-highlight border-t-[1px] bg-base-dark py-0">
           <Header.Nav className="z-30 gap-x-0 px-0 py-0">
             {links.map((link) => (
               <NextLink
                 key={link.href}
                 href={link.href}
                 prefetch={true}
-                className="group px-300 py-300 hover:bg-yellow-400"
+                className="group px-300 py-300 hover:bg-primary"
               >
                 <Header.NavItem
                   onMouseEnter={() => handleOpenSubmenu(link.label)}
@@ -87,7 +87,7 @@ export const DesktopSubmenu = () => {
                             height={100}
                             quality={50}
                             placeholder="blur"
-                            className="h-[100px] w-[100px] object-contain"
+                            className="size-image-sm object-contain"
                           />
                         )}
                         <h3 className="font-bold text-xs">{item.name}</h3>
