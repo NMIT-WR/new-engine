@@ -159,7 +159,7 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
       )}
 
       {distributor && (
-        <div className="rounded-md bg-surface-secondary p-200">
+        <div className="rounded-md bg-surface-light p-200">
           <p className="font-medium text-fg-primary">{distributor}</p>
         </div>
       )}
