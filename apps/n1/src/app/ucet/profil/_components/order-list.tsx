@@ -6,31 +6,31 @@ export function OrderList() {
   const { data, isLoading } = useOrders()
 
   if (isLoading) {
-    return <div className="text-fg-muted">Načítám objednávky...</div>
+    return <div className="text-fg-secondary">Načítám objednávky...</div>
   }
 
   const orders = data?.orders || []
 
   if (orders.length === 0) {
     return (
-      <div className="py-lg text-center text-fg-muted">
+      <div className="py-300 text-center text-fg-secondary">
         Zatím nemáte žádné objednávky.
       </div>
     )
   }
 
   return (
-    <div className="space-y-md">
-      <h3 className="font-semibold text-heading-sm">Historie objednávek</h3>
-      <div className="space-y-sm">
+    <div className="space-y-200">
+      <h3 className="font-semibold text-md">Historie objednávek</h3>
+      <div className="space-y-100">
         {orders.map((order) => (
           <div
             key={order.id}
-            className="flex items-center justify-between rounded border border-border p-md"
+            className="flex items-center justify-between rounded border p-200"
           >
             <div>
               <div className="font-medium">Objednávka #{order.display_id}</div>
-              <div className="text-body-sm text-fg-muted">
+              <div className="text-fg-secondary text-md">
                 {new Date(order.created_at).toLocaleDateString('cs-CZ')} •{' '}
                 {order.status} • {order.payment_status}
               </div>

@@ -68,7 +68,7 @@ export const ProductGrid = ({
                 delayedPrefetch(product.handle, 200)
               }}
             >
-              <ProductCard className="row-span-6 grid h-full max-w-[250px] cursor-pointer grid-rows-subgrid place-items-center hover:shadow-lg">
+              <ProductCard className="row-span-6 grid h-full max-w-3xs cursor-pointer grid-rows-subgrid place-items-center hover:shadow-lg">
                 <div className="flex flex-col items-start gap-200">
                   <ProductCard.Name className="h-full text-center">
                     {product.title}
@@ -93,7 +93,7 @@ export const ProductGrid = ({
                       <ProductCard.Button
                         key={slugify(variant)}
                         buttonVariant="custom"
-                        className="h-7 min-w-7 items-center border border-gray-400 bg-surface px-50 py-50"
+                        className="h-7 min-w-7 items-center border border-border-secondary bg-surface px-50 py-50"
                       >
                         <span className="font-normal text-2xs text-fg-primary">
                           {variant}
@@ -129,7 +129,7 @@ export const ProductGrid = ({
       </div>
 
       {totalPages > 1 && onPageChange && (
-        <div className="mt-8 flex justify-end">
+        <div className="mt-700 flex justify-end">
           <Pagination
             count={totalCount || products.length}
             page={currentPage}

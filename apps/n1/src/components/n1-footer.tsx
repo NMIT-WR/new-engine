@@ -10,7 +10,7 @@ export function N1Footer() {
     <Footer className="relative px-0 py-0" direction="vertical">
       <Footer.Container className="max-w-full gap-x-800 p-400">
         {/* Company Info Section */}
-        <Footer.Section className="in-w-[400px]">
+        <Footer.Section>
           <Image
             src={footerImgs.footerLogo}
             alt="N1 Shop Logo"

@@ -5,6 +5,7 @@ import { useUpdateCustomer } from '@/hooks/use-customer'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Input } from '@techsio/ui-kit/atoms/input'
+import { Label } from '@techsio/ui-kit/atoms/label'
 import { useState } from 'react'
 
 export function ProfileForm() {
@@ -40,10 +41,10 @@ export function ProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-md">
-      <div className="grid gap-md md:grid-cols-2">
-        <div className="space-y-xs">
-          <label htmlFor="first_name" className="font-medium text-body-sm">
+    <form onSubmit={handleSubmit} className="space-y-200">
+      <div className="grid gap-200 md:grid-cols-2">
+        <div className="space-y-50">
+          <label htmlFor="first_name" className="font-medium">
             Jméno
           </label>
           <Input
@@ -55,8 +56,8 @@ export function ProfileForm() {
             placeholder="Jan"
           />
         </div>
-        <div className="space-y-xs">
-          <label htmlFor="last_name" className="font-medium text-body-sm">
+        <div className="space-y-50">
+          <label htmlFor="last_name" className="font-medium">
             Příjmení
           </label>
           <Input
@@ -70,8 +71,8 @@ export function ProfileForm() {
         </div>
       </div>
 
-      <div className="space-y-xs">
-        <label htmlFor="phone" className="font-medium text-body-sm">
+      <div className="space-y-50">
+        <label htmlFor="phone" className="font-medium">
           Telefon
         </label>
         <Input
@@ -82,14 +83,14 @@ export function ProfileForm() {
         />
       </div>
 
-      <div className="space-y-xs">
-        <label className="font-medium text-body-sm text-fg-muted">
+      <div className="space-y-50">
+        <Label className="font-medium text-fg-secondary">
           E-mail (nelze změnit)
-        </label>
+        </Label>
         <Input
           value={customer?.email || ''}
           disabled
-          className="bg-surface-subtle"
+          className="bg-surface-light"
         />
       </div>
 

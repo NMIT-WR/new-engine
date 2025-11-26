@@ -62,7 +62,7 @@ export const N1Header = () => {
       className="z-50 flex h-fit max-h-96 w-full flex-col"
     >
       <Header.Container className="flex items-center justify-between bg-highlight px-400 py-150">
-        <div className="flex items-center gap-200 font-normal text-[12.6px] text-fg-reverse">
+        <div className="flex items-center gap-200 font-normal text-2xs text-fg-reverse">
           <Link as={NextLink} href="mailto:office@n1shop.cz">
             <Icon icon="icon-[mdi--email-outline]" className="mr-200" />
             <span className="hover:text-primary hover:underline">
@@ -86,7 +86,7 @@ export const N1Header = () => {
           <Icon icon="icon-[cif--gb]" />
         </div>
       </Header.Container>
-      <Header.Container className="z-40 flex justify-between bg-gray-950 px-500 py-300">
+      <Header.Container className="z-40 flex justify-between bg-base-dark px-500 py-300">
         <div className="flex h-full items-center gap-750">
           <NextLink href="/">
             <Image
@@ -100,7 +100,7 @@ export const N1Header = () => {
           <SearchForm
             buttonIcon
             size="sm"
-            className="w-[40vw] max-header-desktop:hidden"
+            className="w-search max-header-desktop:hidden"
           />
         </div>
 

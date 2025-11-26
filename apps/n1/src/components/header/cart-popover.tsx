@@ -28,7 +28,7 @@ export const CartPopover = () => {
             {itemCount > 0 && (
               <Badge
                 variant="primary"
-                className="-right-2 -top-1 absolute flex h-5 w-5 items-center rounded-full bg-primary text-3xs text-fg-primary"
+                className="-right-2 -top-1 absolute flex size-5 items-center rounded-full bg-primary text-3xs text-fg-primary"
               >
                 {itemCount > 99 ? '99+' : itemCount.toString()}
               </Badge>
@@ -40,7 +40,7 @@ export const CartPopover = () => {
         triggerClassName="text-3xl px-0 py-0 hover:bg-transparent"
         gutter={12}
         placement="bottom-end"
-        contentClassName="w-sm max-w-[calc(100vw-2rem)]"
+        contentClassName="w-sm max-w-mobile-w"
         title={itemCount > 0 ? `Košík (${itemCount})` : 'Košík'}
         shadow={false}
         portalled={false}

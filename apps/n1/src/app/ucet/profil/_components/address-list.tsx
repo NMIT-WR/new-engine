@@ -21,15 +21,15 @@ export function AddressList() {
   const [editingId, setEditingId] = useState<string | null>(null)
 
   if (isLoading) {
-    return <div className="text-fg-muted">Načítám adresy...</div>
+    return <div className="text-fg-secondary">Načítám adresy...</div>
   }
 
   const addresses = data?.addresses || []
 
   return (
-    <div className="space-y-lg">
+    <div className="space-y-250">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-heading-sm">Moje adresy</h3>
+        <h3 className="font-semibold text-md">Moje adresy</h3>
         {!isAdding && !editingId && (
           <Button
             onClick={() => setIsAdding(true)}
@@ -48,9 +48,9 @@ export function AddressList() {
         />
       )}
 
-      <div className="grid gap-md md:grid-cols-2">
+      <div className="grid gap-200 md:grid-cols-2">
         {addresses.map((address) => (
-          <div key={address.id} className="rounded border border-border p-md">
+          <div key={address.id} className="rounded border p-200">
             {editingId === address.id ? (
               <AddressForm
                 address={address}
@@ -68,7 +68,7 @@ export function AddressList() {
       </div>
 
       {!isAdding && addresses.length === 0 && (
-        <div className="py-lg text-center text-fg-muted">
+        <div className="py-250 text-center text-fg-secondary">
           Zatím nemáte uložené žádné adresy.
         </div>
       )}
@@ -97,11 +97,11 @@ function AddressCard({
   }
 
   return (
-    <div className="space-y-sm">
+    <div className="space-y-100">
       <div className="font-medium">
         {address.first_name} {address.last_name}
       </div>
-      <div className="text-body-sm text-fg-muted">
+      <div className="text-fg-secondary">
         <div>{address.company}</div>
         <div>{address.address_1}</div>
         <div>{address.address_2}</div>
@@ -110,7 +110,7 @@ function AddressCard({
         </div>
         <div>{address.country_code?.toUpperCase()}</div>
       </div>
-      <div className="flex gap-sm pt-sm">
+      <div className="flex gap-100 pt-100">
         <Button
           theme="borderless"
           variant="secondary"
@@ -190,8 +190,8 @@ function AddressForm({
   const isPending = createAddress.isPending || updateAddress.isPending
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-sm">
-      <div className="grid grid-cols-2 gap-sm">
+    <form onSubmit={handleSubmit} className="space-y-100">
+      <div className="grid grid-cols-2 gap-100">
         <Input
           placeholder="Jméno"
           value={formData.first_name}
@@ -222,7 +222,7 @@ function AddressForm({
         }
         required
       />
-      <div className="grid grid-cols-2 gap-sm">
+      <div className="grid grid-cols-2 gap-100">
         <Input
           placeholder="Město"
           value={formData.city}
@@ -238,7 +238,7 @@ function AddressForm({
           required
         />
       </div>
-      <div className="flex justify-end gap-sm pt-sm">
+      <div className="flex justify-end gap-100 pt-100">
         <Button
           type="button"
           theme="borderless"

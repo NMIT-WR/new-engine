@@ -45,12 +45,12 @@ export default function ProfilePage() {
   // Show session expired message
   if (showExpiredMessage) {
     return (
-      <div className="container mx-auto max-w-2xl py-xl">
-        <div className="rounded bg-warning-bg-subtle p-lg">
-          <div className="mb-sm font-semibold text-heading-sm text-warning-fg">
+      <div className="container mx-auto max-w-2xl py-300">
+        <div className="rounded bg-warning-light p-250">
+          <div className="mb-100 font-semibold text-md text-warning-light">
             Platnost relace vypršela
           </div>
-          <p className="text-body-md text-warning-fg">
+          <p className="text-sm text-warning-light">
             Vaše přihlášení vypršelo po 24 hodinách. Za chvíli budete
             přesměrováni na přihlašovací stránku...
           </p>
@@ -61,8 +61,8 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-2xl py-xl">
-        <div className="text-center text-fg-muted">Načítám...</div>
+      <div className="container mx-auto max-w-2xl py-400">
+        <div className="text-center text-fg-secondary">Načítám...</div>
       </div>
     )
   }
@@ -72,9 +72,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl py-xl">
-      <div className="mb-lg flex items-center justify-between">
-        <h1 className="font-bold text-heading-lg">Můj profil</h1>
+    <div className="container mx-auto max-w-4xl py-400">
+      <div className="mb-250 flex items-center justify-between">
+        <h1 className="font-bold text-xl">Můj profil</h1>
         <Button
           variant="secondary"
           onClick={() => logoutMutation.mutate()}
@@ -84,8 +84,8 @@ export default function ProfilePage() {
         </Button>
       </div>
 
-      <div className="grid gap-lg md:grid-cols-[240px_1fr]">
-        <nav className="space-y-xs">
+      <div className="grid gap-250 md:grid-cols-[240px_1fr]">
+        <nav className="space-y-50">
           <Button
             variant={activeTab === 'profile' ? 'primary' : 'secondary'}
             theme={activeTab === 'profile' ? 'solid' : 'borderless'}
@@ -112,24 +112,24 @@ export default function ProfilePage() {
           </Button>
         </nav>
 
-        <div className="rounded bg-surface-subtle p-lg">
+        <div className="rounded bg-surface-light p-250">
           {activeTab === 'profile' && (
-            <div className="space-y-md">
-              <h2 className="font-semibold text-heading-md">Osobní údaje</h2>
+            <div className="space-y-200">
+              <h2 className="font-semibold text-md">Osobní údaje</h2>
               <ProfileForm />
             </div>
           )}
 
           {activeTab === 'addresses' && (
-            <div className="space-y-md">
-              <h2 className="font-semibold text-heading-md">Adresy</h2>
+            <div className="space-y-200">
+              <h2 className="font-semibold text-md">Adresy</h2>
               <AddressList />
             </div>
           )}
 
           {activeTab === 'orders' && (
-            <div className="space-y-md">
-              <h2 className="font-semibold text-heading-md">Objednávky</h2>
+            <div className="space-y-200">
+              <h2 className="font-semibold text-md">Objednávky</h2>
               <OrderList />
             </div>
           )}
