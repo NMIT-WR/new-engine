@@ -22,7 +22,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
       queryClient.prefetchQuery({
         queryKey: queryKeys.orders.list({ limit: 10, offset: 0 }),
         queryFn: () => getOrders({ limit: 10 }),
-        ...cacheConfig.realtime, // 30s stale, refetch on focus
+        ...cacheConfig.userData, // 5min stale, user data
       })
 
       // Prefetch cart (most frequently updated)
@@ -36,7 +36,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
       queryClient.prefetchQuery({
         queryKey: queryKeys.customer.addresses(customer.id),
         queryFn: () => getAddresses(),
-        ...cacheConfig.realtime, // 30s stale, refetch on focus
+        ...cacheConfig.userData, // 5min stale, user data
       })
     }
 
