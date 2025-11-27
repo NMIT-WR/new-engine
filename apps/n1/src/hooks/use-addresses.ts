@@ -17,7 +17,7 @@ export function useAddresses() {
     queryKey: queryKeys.customer.addresses(customer?.id),
     queryFn: getAddresses,
     enabled: !!customer,
-    ...cacheConfig.realtime, // 30s stale, 5min persist
+    ...cacheConfig.userData,
   })
 }
 

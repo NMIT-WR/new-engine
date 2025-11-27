@@ -48,10 +48,7 @@ export async function getOrders(
 
 export async function getOrderById(orderId: string): Promise<StoreOrder> {
   try {
-    const response = await sdk.store.order.retrieve(orderId, {
-      fields:
-        '*items,*items.product,*items.variant,*shipping_address,*billing_address,*fulfillments,*payments,*customer',
-    })
+    const response = await sdk.store.order.retrieve(orderId)
 
     if (!response.order) {
       throw new Error('Objednávka nenalezena')
