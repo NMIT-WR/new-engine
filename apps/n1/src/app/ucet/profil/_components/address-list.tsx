@@ -11,8 +11,18 @@ import type {
   CreateAddressData,
   StoreCustomerAddress,
 } from '@/services/customer-service'
+import {
+  cleanPhoneNumber,
+  formatPhoneNumber,
+} from '@/utils/format/format-phone-number'
+import {
+  cleanPostalCode,
+  formatPostalCode,
+} from '@/utils/format/format-postal-code'
+import { ConfirmDialog } from '@/components/molecules/confirm-dialog'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Input } from '@techsio/ui-kit/atoms/input'
+import { Label } from '@techsio/ui-kit/atoms/label'
 import { useState } from 'react'
 
 export function AddressList() {
@@ -28,9 +38,9 @@ export function AddressList() {
 
   return (
     <div className="space-y-250">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-md">Moje adresy</h3>
-        {!isAdding && !editingId && (
+      {/* Tlačítko přidat - pouze když nejsme v edit/add módu a máme adresy */}
+      {!isAdding && !editingId && addresses.length > 0 && (
+        <div className="flex justify-end">
           <Button
             onClick={() => setIsAdding(true)}
             variant="secondary"
@@ -38,38 +48,57 @@ export function AddressList() {
           >
             Přidat adresu
           </Button>
-        )}
-      </div>
-
-      {isAdding && (
-        <AddressForm
-          onCancel={() => setIsAdding(false)}
-          onSuccess={() => setIsAdding(false)}
-        />
+        </div>
       )}
 
-      <div className="grid gap-200 md:grid-cols-2">
-        {addresses.map((address) => (
-          <div key={address.id} className="rounded border p-200">
-            {editingId === address.id ? (
-              <AddressForm
-                address={address}
-                onCancel={() => setEditingId(null)}
-                onSuccess={() => setEditingId(null)}
-              />
-            ) : (
-              <AddressCard
-                address={address}
-                onEdit={() => setEditingId(address.id)}
-              />
-            )}
-          </div>
-        ))}
-      </div>
+      {/* Formulář pro přidání nové adresy */}
+      {isAdding && (
+        <div className="rounded border border-border-secondary bg-surface p-200">
+          <AddressForm
+            onCancel={() => setIsAdding(false)}
+            onSuccess={() => setIsAdding(false)}
+          />
+        </div>
+      )}
 
+      {/* Grid s adresami */}
+      {addresses.length > 0 && (
+        <div className="grid gap-200 md:grid-cols-2">
+          {addresses.map((address) => (
+            <div
+              key={address.id}
+              className="rounded border border-border-secondary bg-surface p-200"
+            >
+              {editingId === address.id ? (
+                <AddressForm
+                  address={address}
+                  onCancel={() => setEditingId(null)}
+                  onSuccess={() => setEditingId(null)}
+                />
+              ) : (
+                <AddressCard
+                  address={address}
+                  onEdit={() => setEditingId(address.id)}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty state s CTA */}
       {!isAdding && addresses.length === 0 && (
-        <div className="py-250 text-center text-fg-secondary">
-          Zatím nemáte uložené žádné adresy.
+        <div className="py-400 text-center">
+          <p className="mb-200 text-fg-secondary">
+            Zatím nemáte uložené žádné adresy.
+          </p>
+          <Button
+            onClick={() => setIsAdding(true)}
+            variant="secondary"
+            size="sm"
+          >
+            Přidat první adresu
+          </Button>
         </div>
       )}
     </div>
@@ -80,15 +109,15 @@ function AddressCard({
   address,
   onEdit,
 }: { address: StoreCustomerAddress; onEdit: () => void }) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const deleteAddress = useDeleteAddress()
   const toaster = useToast()
 
   const handleDelete = () => {
-    if (!confirm('Opravdu chcete smazat tuto adresu?')) return
-
     deleteAddress.mutate(address.id, {
       onSuccess: () => {
         toaster.create({ title: 'Adresa smazána', type: 'success' })
+        setIsDeleteDialogOpen(false)
       },
       onError: () => {
         toaster.create({ title: 'Chyba při mazání', type: 'error' })
@@ -101,34 +130,44 @@ function AddressCard({
       <div className="font-medium">
         {address.first_name} {address.last_name}
       </div>
-      <div className="text-fg-secondary">
-        <div>{address.company}</div>
+      <div className="text-fg-secondary text-sm">
+        {address.company && <div>{address.company}</div>}
         <div>{address.address_1}</div>
-        <div>{address.address_2}</div>
+        {address.address_2 && <div>{address.address_2}</div>}
         <div>
-          {address.postal_code} {address.city}
+          {formatPostalCode(address.postal_code || '')} {address.city}
         </div>
-        <div>{address.country_code?.toUpperCase()}</div>
+        {/* Zobrazit zemi pouze pokud není CZ */}
+        {address.country_code &&
+          address.country_code.toLowerCase() !== 'cz' && (
+            <div>{address.country_code.toUpperCase()}</div>
+          )}
+        {address.phone && <div>{formatPhoneNumber(address.phone)}</div>}
       </div>
       <div className="flex gap-100 pt-100">
-        <Button
-          theme="borderless"
-          variant="secondary"
-          size="sm"
-          onClick={onEdit}
-        >
+        <Button variant="secondary" size="sm" onClick={onEdit}>
           Upravit
         </Button>
         <Button
-          theme="borderless"
           variant="danger"
           size="sm"
-          onClick={handleDelete}
-          disabled={deleteAddress.isPending}
+          onClick={() => setIsDeleteDialogOpen(true)}
         >
           Smazat
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Smazat adresu?"
+        description={`Opravdu chcete smazat adresu "${address.address_1}, ${address.city}"? Tato akce je nevratná.`}
+        confirmText="Smazat"
+        confirmVariant="danger"
+        isLoading={deleteAddress.isPending}
+        loadingText="Mažu..."
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }
@@ -153,17 +192,24 @@ function AddressForm({
     address_1: address?.address_1 || '',
     address_2: address?.address_2 || '',
     city: address?.city || '',
-    postal_code: address?.postal_code || '',
+    postal_code: formatPostalCode(address?.postal_code || ''),
     country_code: address?.country_code || 'cz',
-    phone: address?.phone || '',
+    phone: formatPhoneNumber(address?.phone || ''),
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Očistit formátované hodnoty pro API
+    const cleanedData = {
+      ...formData,
+      postal_code: cleanPostalCode(formData.postal_code),
+      phone: cleanPhoneNumber(formData.phone || ''),
+    }
+
     if (address) {
       updateAddress.mutate(
-        { addressId: address.id, data: formData },
+        { addressId: address.id, data: cleanedData },
         {
           onSuccess: () => {
             toaster.create({ title: 'Adresa upravena', type: 'success' })
@@ -175,7 +221,7 @@ function AddressForm({
         }
       )
     } else {
-      createAddress.mutate(formData, {
+      createAddress.mutate(cleanedData, {
         onSuccess: () => {
           toaster.create({ title: 'Adresa přidána', type: 'success' })
           onSuccess()
@@ -187,57 +233,107 @@ function AddressForm({
     }
   }
 
+  const handlePostalCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPostalCode(e.target.value)
+    setFormData({ ...formData, postal_code: formatted })
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    if (formatted.replace(/\s/g, '').length <= 13) {
+      setFormData({ ...formData, phone: formatted })
+    }
+  }
+
   const isPending = createAddress.isPending || updateAddress.isPending
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-100">
+    <form onSubmit={handleSubmit} className="space-y-150">
+      {/* Jméno a příjmení */}
       <div className="grid grid-cols-2 gap-100">
+        <div className="space-y-50">
+          <Label className="text-sm">Jméno</Label>
+          <Input
+            placeholder="Jan"
+            value={formData.first_name}
+            onChange={(e) =>
+              setFormData({ ...formData, first_name: e.target.value })
+            }
+            required
+          />
+        </div>
+        <div className="space-y-50">
+          <Label className="text-sm">Příjmení</Label>
+          <Input
+            placeholder="Novák"
+            value={formData.last_name}
+            onChange={(e) =>
+              setFormData({ ...formData, last_name: e.target.value })
+            }
+            required
+          />
+        </div>
+      </div>
+
+      {/* Firma */}
+      <div className="space-y-50">
+        <Label className="text-fg-secondary text-sm">Firma (volitelné)</Label>
         <Input
-          placeholder="Jméno"
-          value={formData.first_name}
+          placeholder="Název firmy"
+          value={formData.company}
           onChange={(e) =>
-            setFormData({ ...formData, first_name: e.target.value })
+            setFormData({ ...formData, company: e.target.value })
           }
-          required
         />
+      </div>
+
+      {/* Ulice */}
+      <div className="space-y-50">
+        <Label className="text-sm">Ulice a číslo popisné</Label>
         <Input
-          placeholder="Příjmení"
-          value={formData.last_name}
+          placeholder="Hlavní 123"
+          value={formData.address_1}
           onChange={(e) =>
-            setFormData({ ...formData, last_name: e.target.value })
+            setFormData({ ...formData, address_1: e.target.value })
           }
           required
         />
       </div>
-      <Input
-        placeholder="Firma (volitelné)"
-        value={formData.company}
-        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-      />
-      <Input
-        placeholder="Ulice a číslo popisné"
-        value={formData.address_1}
-        onChange={(e) =>
-          setFormData({ ...formData, address_1: e.target.value })
-        }
-        required
-      />
+
+      {/* Město a PSČ */}
       <div className="grid grid-cols-2 gap-100">
+        <div className="space-y-50">
+          <Label className="text-sm">Město</Label>
+          <Input
+            placeholder="Praha"
+            value={formData.city}
+            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-50">
+          <Label className="text-sm">PSČ</Label>
+          <Input
+            placeholder="123 45"
+            value={formData.postal_code}
+            onChange={handlePostalCodeChange}
+            required
+          />
+        </div>
+      </div>
+
+      {/* Telefon */}
+      <div className="space-y-50">
+        <Label className="text-fg-secondary text-sm">Telefon (volitelné)</Label>
         <Input
-          placeholder="Město"
-          value={formData.city}
-          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-          required
-        />
-        <Input
-          placeholder="PSČ"
-          value={formData.postal_code}
-          onChange={(e) =>
-            setFormData({ ...formData, postal_code: e.target.value })
-          }
-          required
+          type="tel"
+          placeholder="+420 123 456 789"
+          value={formData.phone}
+          onChange={handlePhoneChange}
         />
       </div>
+
+      {/* Akce */}
       <div className="flex justify-end gap-100 pt-100">
         <Button
           type="button"

@@ -3,6 +3,10 @@
 import { useAuth } from '@/hooks/use-auth'
 import { useUpdateCustomer } from '@/hooks/use-customer'
 import { useToast } from '@/hooks/use-toast'
+import {
+  cleanPhoneNumber,
+  formatPhoneNumber,
+} from '@/utils/format/format-phone-number'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Input } from '@techsio/ui-kit/atoms/input'
 import { Label } from '@techsio/ui-kit/atoms/label'
@@ -16,37 +20,46 @@ export function ProfileForm() {
   const [formData, setFormData] = useState({
     first_name: customer?.first_name || '',
     last_name: customer?.last_name || '',
-    phone: customer?.phone || '',
+    phone: formatPhoneNumber(customer?.phone || ''),
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    updateCustomer.mutate(formData, {
-      onSuccess: () => {
-        toaster.create({
-          title: 'Profil aktualizován',
-          description: 'Vaše údaje byly úspěšně uloženy.',
-          type: 'success',
-        })
-      },
-      onError: () => {
-        toaster.create({
-          title: 'Chyba',
-          description: 'Nepodařilo se aktualizovat profil.',
-          type: 'error',
-        })
-      },
-    })
+    updateCustomer.mutate(
+      { ...formData, phone: cleanPhoneNumber(formData.phone) },
+      {
+        onSuccess: () => {
+          toaster.create({
+            title: 'Profil aktualizován',
+            description: 'Vaše údaje byly úspěšně uloženy.',
+            type: 'success',
+          })
+        },
+        onError: () => {
+          toaster.create({
+            title: 'Chyba',
+            description: 'Nepodařilo se aktualizovat profil.',
+            type: 'error',
+          })
+        },
+      }
+    )
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    // Omezit délku (max 12 znaků pro XXX XXX XXX nebo 16 pro +420 XXX XXX XXX)
+    if (formatted.replace(/\s/g, '').length <= 13) {
+      setFormData({ ...formData, phone: formatted })
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-200">
       <div className="grid gap-200 md:grid-cols-2">
         <div className="space-y-50">
-          <label htmlFor="first_name" className="font-medium">
-            Jméno
-          </label>
+          <Label className="font-medium">Jméno</Label>
           <Input
             id="first_name"
             value={formData.first_name}
@@ -57,9 +70,7 @@ export function ProfileForm() {
           />
         </div>
         <div className="space-y-50">
-          <label htmlFor="last_name" className="font-medium">
-            Příjmení
-          </label>
+          <Label className="font-medium">Příjmení</Label>
           <Input
             id="last_name"
             value={formData.last_name}
@@ -72,21 +83,18 @@ export function ProfileForm() {
       </div>
 
       <div className="space-y-50">
-        <label htmlFor="phone" className="font-medium">
-          Telefon
-        </label>
+        <Label className="font-medium">Telefon</Label>
         <Input
           id="phone"
+          type="tel"
           value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          onChange={handlePhoneChange}
           placeholder="+420 123 456 789"
         />
       </div>
 
       <div className="space-y-50">
-        <Label className="font-medium text-fg-secondary">
-          E-mail (nelze změnit)
-        </Label>
+        <Label className="font-medium">E-mail (nelze změnit)</Label>
         <Input
           value={customer?.email || ''}
           disabled
