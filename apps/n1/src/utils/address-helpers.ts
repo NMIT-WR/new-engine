@@ -1,5 +1,5 @@
 import { DEFAULT_COUNTRY_CODE } from '@/lib/constants'
-import type { StoreCustomerAddress } from '@/services/customer-service-2'
+import type { StoreCustomerAddress } from '@/services/customer-service'
 import type { AddressFormData } from './address-validation'
 
 /**
