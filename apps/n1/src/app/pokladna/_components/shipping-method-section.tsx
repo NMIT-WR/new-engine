@@ -36,7 +36,7 @@ function ShippingOptionCard({
       disabled={isUpdating}
       data-selected={selected}
       aria-label={`${option.name}, ${formattedPrice || 'zdarma'}`}
-      className="flex w-full items-center gap-300 rounded-lg border border-border-secondary bg-overlay/10 p-300 data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay/50"
+      className="flex w-full items-center gap-300 rounded-lg border border-border-secondary bg-surface-light p-300 data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
     >
       <div className="flex-1 text-left">
         <p className="font-medium text-fg-primary text-sm">{option.name}</p>
