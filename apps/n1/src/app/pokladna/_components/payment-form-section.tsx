@@ -58,17 +58,19 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
             {paymentProviders.map((provider) => (
               <li
                 key={provider.id}
-                className="flex w-full items-center gap-300 rounded border border-border-secondary p-300"
+                className="flex w-full items-center rounded border border-border-secondary hover:bg-overlay data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
+                data-selected={provider.id === selectedProvider}
               >
                 <Checkbox
                   checked={selectedProvider === provider.id}
                   onCheckedChange={() => handleProviderSelect(provider.id)}
+                  className="pl-400"
                 />
                 <Button
                   onClick={() => handleProviderSelect(provider.id)}
                   disabled={isInitiatingPayment}
                   theme="unstyled"
-                  className="text-left"
+                  className="w-full text-left"
                 >
                   <div className="flex flex-1 flex-col">
                     <span className="font-medium text-fg-primary text-sm">
