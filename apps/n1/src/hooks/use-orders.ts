@@ -18,7 +18,7 @@ export function useOrders(options?: UseOrdersOptions) {
     queryKey: queryKeys.orders.list({ limit, offset }),
     queryFn: () => getOrders({ limit, offset }),
     enabled: isAuthenticated,
-    ...cacheConfig.realtime, // 30s stale, 5min persist
+    ...cacheConfig.userData,
   })
 }
 
@@ -34,6 +34,6 @@ export function useOrder(orderId: string | null) {
       return getOrderById(orderId)
     },
     enabled: isAuthenticated && !!orderId,
-    ...cacheConfig.realtime,
+    ...cacheConfig.userData,
   })
 }
