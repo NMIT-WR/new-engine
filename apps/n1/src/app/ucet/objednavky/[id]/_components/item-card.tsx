@@ -4,7 +4,10 @@ import { Icon } from '@techsio/ui-kit/atoms/icon'
 import { ProductCard } from '@techsio/ui-kit/molecules/product-card'
 import Image from 'next/image'
 import Link from 'next/link'
-import { formatPrice, truncateProductTitle } from './order-utils'
+import {
+  formatPrice,
+  truncateProductTitle,
+} from '../../../profil/_components/orders/order-utils'
 
 export const ItemCard = ({
   item,
