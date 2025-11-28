@@ -34,7 +34,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
 
       // Prefetch addresses
       queryClient.prefetchQuery({
-        queryKey: queryKeys.customer.addresses(customer.id),
+        queryKey: queryKeys.customer.profile(),
         queryFn: () => getAddresses(),
         ...cacheConfig.userData, // 5min stale, user data
       })

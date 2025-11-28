@@ -14,7 +14,7 @@ export function useAddresses() {
   const { customer } = useAuth()
 
   return useQuery({
-    queryKey: queryKeys.customer.addresses(customer?.id),
+    queryKey: queryKeys.customer.profile(),
     queryFn: getAddresses,
     enabled: !!customer,
     ...cacheConfig.userData,
@@ -23,14 +23,13 @@ export function useAddresses() {
 
 export function useCreateAddress() {
   const queryClient = useQueryClient()
-  const { customer } = useAuth()
 
   return useMutation({
     mutationFn: (data: CreateAddressData) => createAddress(data),
     onSuccess: () => {
       // Invalidate addresses cache to refetch
       queryClient.invalidateQueries({
-        queryKey: queryKeys.customer.addresses(customer?.id),
+        queryKey: queryKeys.customer.profile(),
       })
     },
   })
@@ -38,7 +37,6 @@ export function useCreateAddress() {
 
 export function useUpdateAddress() {
   const queryClient = useQueryClient()
-  const { customer } = useAuth()
 
   return useMutation({
     mutationFn: ({
@@ -49,7 +47,7 @@ export function useUpdateAddress() {
     onSuccess: () => {
       // Invalidate addresses cache to refetch
       queryClient.invalidateQueries({
-        queryKey: queryKeys.customer.addresses(customer?.id),
+        queryKey: queryKeys.customer.profile(),
       })
     },
   })
@@ -57,14 +55,13 @@ export function useUpdateAddress() {
 
 export function useDeleteAddress() {
   const queryClient = useQueryClient()
-  const { customer } = useAuth()
 
   return useMutation({
     mutationFn: (addressId: string) => deleteAddress(addressId),
     onSuccess: () => {
       // Invalidate addresses cache to refetch
       queryClient.invalidateQueries({
-        queryKey: queryKeys.customer.addresses(customer?.id),
+        queryKey: queryKeys.customer.profile(),
       })
     },
   })
