@@ -1,13 +1,11 @@
+import { formatAmount } from '@/utils/format/format-product'
+import { truncateText } from '@/utils/turncate-text'
 import type { StoreOrderLineItem } from '@medusajs/types'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { Icon } from '@techsio/ui-kit/atoms/icon'
 import { ProductCard } from '@techsio/ui-kit/molecules/product-card'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  formatPrice,
-  truncateProductTitle,
-} from '../../../profil/_components/orders/order-utils'
 
 export const ItemCard = ({
   item,
@@ -53,7 +51,7 @@ export const ItemCard = ({
           className="block underline transition-colors hover:text-primary hover:no-underline"
         >
           <ProductCard.Name>
-            {truncateProductTitle(item.product_title || item.title || '')}
+            {truncateText(item.product_title || item.title || '')}
           </ProductCard.Name>
         </Link>
 
@@ -69,14 +67,12 @@ export const ItemCard = ({
           <div>
             <p className="text-fg-tertiary text-xs">Cena za kus</p>
             <ProductCard.Price className="text-sm">
-              {formatPrice(item.total || 0, currency_code)}
+              {formatAmount(item.total)}
             </ProductCard.Price>
           </div>
           <div className="text-right">
             <p className="text-fg-tertiary text-xs">Celkem</p>
-            <ProductCard.Price>
-              {formatPrice(item.total || 0, currency_code)}
-            </ProductCard.Price>
+            <ProductCard.Price>{formatAmount(item.total)}</ProductCard.Price>
           </div>
         </div>
       </div>

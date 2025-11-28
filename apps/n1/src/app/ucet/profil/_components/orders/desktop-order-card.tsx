@@ -1,18 +1,18 @@
+import { formatDateString } from '@/utils/format/format-date'
+import {
+  getOrderStatusColor,
+  getOrderStatusLabel,
+} from '@/utils/format/format-order-status'
+import { formatAmount } from '@/utils/format/format-product'
+import { truncateText } from '@/utils/turncate-text'
 import type { StoreOrder } from '@medusajs/types'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  formatOrderDate,
-  formatPrice,
-  getOrderStatusLabel,
-  getOrderStatusVariant,
-  truncateProductTitle,
-} from './order-utils'
 
 export function DesktopOrderCard({ order }: { order: StoreOrder }) {
-  const statusVariant = getOrderStatusVariant(order.status)
+  const statusVariant = getOrderStatusColor(order.status)
 
   const correctWord = () => {
     const itemsCount = order.items?.length || 0
@@ -44,7 +44,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
       {/* Date */}
       <div className="col-span-2 flex items-center">
         <p className="text-fg-secondary text-sm">
-          {formatOrderDate({ dateString: order.created_at as string })}
+          {formatDateString(order.created_at as string)}
         </p>
       </div>
 
@@ -84,7 +84,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
             <p className="line-clamp-1 text-fg-primary">
               {order.items?.[0] &&
                 order.items.length < 2 &&
-                truncateProductTitle(order.items[0].product_title || '')}
+                truncateText(order.items[0].product_title || '')}
             </p>
             <p className="text-fg-tertiary text-sm">
               {order.items?.length || 0} {correctWord()}
@@ -96,10 +96,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
       {/* Total */}
       <div className="col-span-2 flex items-center justify-end">
         <p className="font-semibold text-fg-primary">
-          {formatPrice(
-            order.summary?.original_order_total || order.total || 0,
-            order.currency_code
-          )}
+          {formatAmount(order.summary.original_order_total)}
         </p>
       </div>
 
