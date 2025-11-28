@@ -10,16 +10,18 @@ export const queryKeys = {
     list: (params?: ProductQueryParams) =>
       [...queryKeys.products.all(), 'list', params || {}] as const,
     detail: (handle: string, regionId: string, countryCode: string) =>
-      [...queryKeys.products.all(), 'detail', handle, regionId, countryCode] as const,
+      [
+        ...queryKeys.products.all(),
+        'detail',
+        handle,
+        regionId,
+        countryCode,
+      ] as const,
   },
 
   auth: {
     all: () => [...queryKeys.all, 'auth'] as const,
     session: () => [...queryKeys.auth.all(), 'session'] as const,
-    customer: (customerId?: string) =>
-      customerId
-        ? ([...queryKeys.auth.all(), 'customer', customerId] as const)
-        : ([...queryKeys.auth.all(), 'customer'] as const),
   },
 
   orders: {
@@ -44,9 +46,6 @@ export const queryKeys = {
 
   customer: {
     all: () => [...queryKeys.all, 'customer'] as const,
-    addresses: (customerId?: string) =>
-      customerId
-        ? ([...queryKeys.customer.all(), 'addresses', customerId] as const)
-        : ([...queryKeys.customer.all(), 'addresses'] as const),
+    profile: () => [...queryKeys.all, 'customer', 'profile'] as const,
   },
 } as const
