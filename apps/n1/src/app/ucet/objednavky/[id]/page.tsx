@@ -1,12 +1,12 @@
 'use client'
 
 import { SkeletonLoader } from '@/app/ucet/objednavky/[id]/_components/skeleton-loader'
-import {
-  formatOrderDate,
-  getOrderStatusLabel,
-  getOrderStatusVariant,
-} from '@/app/ucet/profil/_components/orders/order-utils'
 import { useOrder } from '@/hooks/use-orders'
+import { formatDateString } from '@/utils/format/format-date'
+import {
+  getOrderStatusColor,
+  getOrderStatusLabel,
+} from '@/utils/format/format-order-status'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Link from 'next/link'
@@ -41,7 +41,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     )
   }
 
-  const statusVariant = getOrderStatusVariant(order.status || 'pending')
+  const statusVariant = getOrderStatusColor(order.status || 'pending')
 
   return (
     <div className="mx-auto max-w-max-w px-400">
@@ -63,9 +63,10 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               Objednávka #{order.display_id}
             </h1>
             <p className="text-fg-secondary">
-              {formatOrderDate({
-                dateString: order.created_at as string,
-                monthType: 'long',
+              {formatDateString(order.created_at as string, {
+                month: 'long',
+                year: 'numeric',
+                day: 'numeric',
               })}
             </p>
           </div>

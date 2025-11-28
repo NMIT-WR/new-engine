@@ -1,4 +1,4 @@
-import { CURRENCY_SYMBOL, TAX_RATE } from '@/lib/constants'
+import { CURRENCY_SYMBOL, DEFAULT_CURRENCY, TAX_RATE } from '@/lib/constants'
 import type { StoreProduct } from '@medusajs/types'
 
 export const formatPrice = ({
@@ -18,9 +18,19 @@ export const formatPrice = ({
 }
 
 /* when we need to format price for basic item regardless of the variants */
-export const formatAmount = (amount?: number | null) => {
+export const formatAmount = (
+  amount?: number | null,
+  useGrouping = true,
+  currency = DEFAULT_CURRENCY
+) => {
   if (!amount) return `0 ${CURRENCY_SYMBOL}`
-  return `${Math.round(amount)} ${CURRENCY_SYMBOL}`
+  return new Intl.NumberFormat('cs-CZ', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping,
+  }).format(amount)
 }
 
 export const formatToTaxIncluded = ({
@@ -36,7 +46,11 @@ export const formatToTaxIncluded = ({
   const taxRate = tax || TAX_RATE
   const taxAmount = amount * taxRate
   const totalAmount = amount + taxAmount
-  const currencyMap = currency ? (currency === 'czk' ? CURRENCY_SYMBOL : currency) : CURRENCY_SYMBOL
+  const currencyMap = currency
+    ? currency === 'czk'
+      ? CURRENCY_SYMBOL
+      : currency
+    : CURRENCY_SYMBOL
   return `${Math.round(totalAmount)} ${currencyMap}`
 }
 
