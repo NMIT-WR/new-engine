@@ -1,5 +1,5 @@
+import { formatAmount } from '@/utils/format/format-product'
 import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { formatPrice } from './order-utils'
 
 interface OrdersSummaryProps {
   totalAmount: number
@@ -25,7 +25,7 @@ export function OrdersSummary({
         </div>
         <div className="flex items-center gap-200 sm:block sm:text-right">
           <p className="text-fg-secondary text-sm">Celková útrata</p>
-          <p className="font-bold text-lg">{formatPrice(totalAmount, 'CZK')}</p>
+          <p className="font-bold text-lg">{formatAmount(totalAmount)}</p>
         </div>
       </div>
 

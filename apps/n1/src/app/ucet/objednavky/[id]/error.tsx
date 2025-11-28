@@ -11,7 +11,7 @@ interface ErrorProps {
 
 export default function ErrorOrder({ reset }: ErrorProps) {
   return (
-    <div className="rounded border border-danger bg-danger-light p-600 text-center">
+    <div className="rounded border border-danger p-600 text-center">
       <p className="mb-200 font-semibold text-danger">
         Chyba při načítání objednávky
       </p>
@@ -19,12 +19,13 @@ export default function ErrorOrder({ reset }: ErrorProps) {
         Objednávka nebyla nalezena nebo k ní nemáte přístup
       </p>
       <div className="flex justify-center gap-200">
-        <Button variant="secondary" theme="solid" onClick={reset}>
+        <Button variant="secondary" theme="solid" size="sm" onClick={reset}>
           Zkusit znovu
         </Button>
         <LinkButton
           variant="secondary"
           theme="borderless"
+          size="sm"
           as={Link}
           href="/ucet/profil"
         >

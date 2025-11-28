@@ -1,19 +1,19 @@
+import { formatDateString } from '@/utils/format/format-date'
+import {
+  getOrderStatusColor,
+  getOrderStatusLabel,
+} from '@/utils/format/format-order-status'
+import { formatAmount } from '@/utils/format/format-product'
+import { truncateText } from '@/utils/turncate-text'
 import type { StoreOrder } from '@medusajs/types'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import { Icon } from '@ui/atoms/icon'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  formatOrderDate,
-  formatPrice,
-  getOrderStatusLabel,
-  getOrderStatusVariant,
-  truncateProductTitle,
-} from './order-utils'
 
 export function MobileOrderCard({ order }: { order: StoreOrder }) {
-  const statusVariant = getOrderStatusVariant(order.status)
+  const statusVariant = getOrderStatusColor(order.status)
   const itemCount = order.items?.length || 0
   const firstItem = order.items?.[0]
   const hasMultipleItems = itemCount > 1
@@ -27,7 +27,7 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
             Objednávka #{order.display_id}
           </p>
           <p className="mt-50 text-fg-secondary text-sm">
-            {formatOrderDate({ dateString: order.created_at as string })}
+            {formatDateString(order.created_at as string)}
           </p>
         </div>
         <Badge variant={statusVariant}>
@@ -72,13 +72,13 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
               <p className="text-fg-primary">{itemCount} položek</p>
             ) : firstItem ? (
               <p className="line-clamp-1 text-fg-primary">
-                {truncateProductTitle(firstItem.product_title || '')}
+                {truncateText(firstItem.product_title || '')}
               </p>
             ) : null}
             <p className="text-fg-secondary text-sm">
               {hasMultipleItems && firstItem && (
                 <span className="line-clamp-1">
-                  {truncateProductTitle(firstItem.product_title || '')}
+                  {truncateText(firstItem.product_title || '')}
                   {itemCount > 2 && ' a další'}
                 </span>
               )}
@@ -92,10 +92,7 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
         <div className="flex items-center gap-100">
           <Icon icon="token-icon-cash" className="text-fg-secondary" />
           <span className="font-semibold text-fg-primary">
-            {formatPrice(
-              order.summary?.current_order_total || order.total || 0,
-              order.currency_code
-            )}
+            {formatAmount(order.summary.current_order_total)}
           </span>
         </div>
         <LinkButton
