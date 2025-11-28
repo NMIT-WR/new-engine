@@ -1,9 +1,9 @@
 import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
 import {
+  clearToken,
   getTokenFromStorage,
   isTokenExpired,
-  clearToken,
 } from '@/lib/token-utils'
 import { getCustomer } from '@/services/auth-service'
 import { useQuery } from '@tanstack/react-query'
@@ -19,11 +19,15 @@ export interface UseAuthReturn {
 /**
  * Get current authenticated customer
  * Checks token expiration before making API request
- * Uses realtime cache for responsive auth state
+ * Uses userData cache - invalidated explicitly on login/logout/register
  */
 export function useAuth(): UseAuthReturn {
-  const { data: customer = null, isLoading, error } = useQuery({
-    queryKey: queryKeys.auth.customer(),
+  const {
+    data: customer = null,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: queryKeys.customer.profile(),
     queryFn: async () => {
       // Check token expiration BEFORE making request
       const token = getTokenFromStorage()
@@ -42,7 +46,7 @@ export function useAuth(): UseAuthReturn {
       return getCustomer()
     },
     retry: false, // Don't retry auth failures
-    ...cacheConfig.realtime, // 30s stale, refetch on focus
+    ...cacheConfig.userData, // 5min stale, invalidated on auth actions
   })
 
   // Check current token expiration status for UI

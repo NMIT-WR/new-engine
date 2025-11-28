@@ -15,7 +15,7 @@ export function useUpdateCustomer() {
     onSuccess: () => {
       // Invalidate customer cache to refetch
       queryClient.invalidateQueries({
-        queryKey: queryKeys.auth.customer(),
+        queryKey: queryKeys.customer.profile(),
       })
     },
   })
