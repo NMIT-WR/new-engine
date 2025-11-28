@@ -1,7 +1,3 @@
-/**
- * Překlad statusů objednávky do češtiny
- */
-
 export type OrderStatus =
   | 'pending'
   | 'completed'
@@ -17,6 +13,7 @@ export type PaymentStatus =
   | 'partially_captured'
   | 'refunded'
   | 'partially_refunded'
+  | 'partially_returned'
   | 'canceled'
 
 export type FulfillmentStatus =
@@ -27,6 +24,8 @@ export type FulfillmentStatus =
   | 'shipped'
   | 'partially_delivered'
   | 'delivered'
+  | 'partially_returned'
+  | 'returned'
   | 'canceled'
 
 const orderStatusMap: Record<OrderStatus, string> = {
@@ -45,6 +44,7 @@ const paymentStatusMap: Record<PaymentStatus, string> = {
   partially_captured: 'Částečně zaplaceno',
   refunded: 'Vráceno',
   partially_refunded: 'Částečně vráceno',
+  partially_returned: 'Částečně vráceno',
   canceled: 'Zrušeno',
 }
 
@@ -56,24 +56,36 @@ const fulfillmentStatusMap: Record<FulfillmentStatus, string> = {
   shipped: 'Odesláno',
   partially_delivered: 'Částečně doručeno',
   delivered: 'Doručeno',
+  partially_returned: 'Částečně vráceno',
+  returned: 'Vráceno',
   canceled: 'Zrušeno',
 }
 
-export function formatOrderStatus(status: string): string {
+export function getOrderStatusColor(
+  status: string
+): 'success' | 'danger' | 'info' {
+  switch (status) {
+    case 'completed':
+      return 'success'
+    case 'canceled':
+      return 'danger'
+    default:
+      return 'info'
+  }
+}
+
+export function getOrderStatusLabel(status: string): string {
   return orderStatusMap[status as OrderStatus] || status
 }
 
-export function formatPaymentStatus(status: string): string {
+export function getPaymentStatusLabel(status: string): string {
   return paymentStatusMap[status as PaymentStatus] || status
 }
 
-export function formatFulfillmentStatus(status: string): string {
+export function getFulfillmentStatusLabel(status: string): string {
   return fulfillmentStatusMap[status as FulfillmentStatus] || status
 }
 
-/**
- * Vrací barvu badge podle stavu platby
- */
 export function getPaymentStatusColor(
   status: string
 ): 'success' | 'warning' | 'danger' | 'info' | 'secondary' {
@@ -95,9 +107,6 @@ export function getPaymentStatusColor(
   }
 }
 
-/**
- * Vrací barvu badge podle stavu doručení
- */
 export function getFulfillmentStatusColor(
   status: string
 ): 'success' | 'warning' | 'danger' | 'info' | 'secondary' {
@@ -120,20 +129,15 @@ export function getFulfillmentStatusColor(
   }
 }
 
-/**
- * Zjednodušený stav objednávky pro zobrazení v přehledu
- * Vrací jeden hlavní stav a jeho barvu
- */
 export function getOrderDisplayStatus(
   orderStatus: string,
   fulfillmentStatus: string
 ): { label: string; color: 'success' | 'danger' | 'info' } {
-  // Zrušeno má přednost
   if (orderStatus === 'canceled' || fulfillmentStatus === 'canceled') {
     return { label: 'Zrušeno', color: 'danger' }
   }
 
-  // Podle fulfillment statusu
+  // fulfillment status
   switch (fulfillmentStatus) {
     case 'delivered':
       return { label: 'Doručeno', color: 'success' }

@@ -1,4 +1,5 @@
-import { formatPrice } from '@/app/ucet/profil/_components/orders'
+import { formatDateString } from '@/utils/format/format-date'
+import { formatAmount } from '@/utils/format/format-product'
 import type { StoreOrder } from '@medusajs/types'
 import { ItemCard } from './item-card'
 
@@ -14,7 +15,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         <h2 className="mb-300 font-bold text-fg-primary text-lg">
           Objednané produkty
         </h2>
-        <div className="grid grid-cols-1 xs:grid-cols-2 gap-300 sm:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-300 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-3">
           {order.items?.map((item) => (
             <ItemCard
               key={item.id}
@@ -36,25 +37,13 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
             <div className="flex justify-between">
               <span className="text-fg-secondary">Mezisoučet</span>
               <span className="font-medium text-fg-primary">
-                {formatPrice(
-                  order.items?.reduce(
-                    (sum, item) => sum + (item.subtotal || 0),
-                    0
-                  ) || 0,
-                  order.currency_code
-                )}
+                {formatAmount(order.item_subtotal)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-fg-secondary">DPH</span>
               <span className="font-medium text-fg-primary">
-                {formatPrice(
-                  order.items?.reduce(
-                    (sum, item) => sum + (item.tax_total || 0),
-                    0
-                  ) || 0,
-                  order.currency_code
-                )}
+                {formatAmount(order.item_tax_total)}
               </span>
             </div>
             {order.shipping_methods?.[0] && (
@@ -63,10 +52,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                   Doprava ({order.shipping_methods[0].name})
                 </span>
                 <span className="font-medium text-fg-primary">
-                  {formatPrice(
-                    order.shipping_methods[0].total || 0,
-                    order.currency_code
-                  )}
+                  {formatAmount(order.shipping_total)}
                 </span>
               </div>
             )}
@@ -76,10 +62,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                   Celkem
                 </span>
                 <span className="font-bold text-fg-primary text-lg">
-                  {formatPrice(
-                    order.summary?.original_order_total || order.total || 0,
-                    order.currency_code
-                  )}
+                  {formatAmount(order.summary?.original_order_total)}
                 </span>
               </div>
             </div>
@@ -99,14 +82,26 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
             <div>
               <p className="text-fg-tertiary text-sm">Vytvořeno</p>
               <p className="font-medium text-fg-primary">
-                {new Date(order.created_at).toLocaleString('cs-CZ')}
+                {formatDateString(order.created_at as string, {
+                  day: 'numeric',
+                  month: 'numeric',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </p>
             </div>
             {order.updated_at && (
               <div>
                 <p className="text-fg-tertiary text-sm">Poslední aktualizace</p>
                 <p className="font-medium text-fg-primary">
-                  {new Date(order.updated_at).toLocaleString('cs-CZ')}
+                  {formatDateString(order.updated_at as string, {
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </p>
               </div>
             )}
