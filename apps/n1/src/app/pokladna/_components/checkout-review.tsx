@@ -1,6 +1,7 @@
 'use client'
 
 import type { StoreOrder } from '@/services/order-service'
+import { formatDateString } from '@/utils/format/format-date'
 import { formatAmount } from '@/utils/format/format-product'
 import { Badge } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
@@ -40,15 +41,6 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
   const shippingTotal = formatAmount(order.shipping_total || 0)
   const total = formatAmount(order.total || 0)
 
-  // Format date
-  const orderDate = new Date(order.created_at).toLocaleDateString('cs-CZ', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-
   return (
     <div className="mx-auto max-w-3xl">
       {/* Order Header */}
@@ -58,7 +50,15 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
             <h1 className="font-bold text-2xl text-fg-primary">
               Objednávka #{order.display_id}
             </h1>
-            <p className="mt-100 text-fg-secondary text-sm">{orderDate}</p>
+            <p className="mt-100 text-fg-secondary text-sm">
+              {formatDateString(order.created_at as string, {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
           </div>
           <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
         </div>
