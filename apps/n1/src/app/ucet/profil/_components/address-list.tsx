@@ -1,7 +1,7 @@
 'use client'
 
+import { ConfirmDialog } from '@/components/molecules/confirm-dialog'
 import {
-  useAddresses,
   useCreateAddress,
   useDeleteAddress,
   useUpdateAddress,
@@ -19,22 +19,22 @@ import {
   cleanPostalCode,
   formatPostalCode,
 } from '@/utils/format/format-postal-code'
-import { ConfirmDialog } from '@/components/molecules/confirm-dialog'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Input } from '@techsio/ui-kit/atoms/input'
 import { Label } from '@techsio/ui-kit/atoms/label'
 import { useState } from 'react'
+import { useAccountContext } from '../../context/account-context'
 
 export function AddressList() {
-  const { data, isLoading } = useAddresses()
+  const { customer } = useAccountContext()
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  if (isLoading) {
+  if (!customer || !customer.addresses) {
     return <div className="text-fg-secondary">Načítám adresy...</div>
   }
 
-  const addresses = data?.addresses || []
+  const addresses = customer.addresses
 
   return (
     <div className="space-y-250">

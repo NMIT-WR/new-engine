@@ -59,7 +59,12 @@ export function ProfileForm() {
     <form onSubmit={handleSubmit} className="space-y-200">
       <div className="grid gap-200 md:grid-cols-2">
         <div className="space-y-50">
-          <Label className="font-medium">Jméno</Label>
+          <Label
+            className="font-medium"
+            onClick={() => console.log('click: ', customer)}
+          >
+            Jméno
+          </Label>
           <Input
             id="first_name"
             value={formData.first_name}
