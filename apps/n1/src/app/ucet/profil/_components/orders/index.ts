@@ -1,6 +1,5 @@
 export { DesktopOrderCard } from './desktop-order-card'
 export { MobileOrderCard } from './mobile-order-card'
-export { ItemCard } from './item-card'
 export { OrdersEmpty } from './orders-empty'
 export { OrdersError } from './orders-error'
 export { OrdersSkeleton } from './orders-skeleton'
