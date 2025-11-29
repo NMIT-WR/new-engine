@@ -11,6 +11,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    actions: { argTypesRegex: '^on[A-Z].*' },
     options: {
       storySort: {
         order: [
