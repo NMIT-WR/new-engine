@@ -1,9 +1,8 @@
-import { useDate } from '@/hooks/use-date'
+import { addDays, formatDateShort, formatDay } from '@/utils/format/format-date'
 import { Tooltip } from '@techsio/ui-kit/atoms/tooltip'
 import Link from 'next/link'
 
 export const DeliveryDate = () => {
-  const { addDays, day, short } = useDate()
   const deliveryDate = addDays(3)
 
   const tooltipContent = (
@@ -25,12 +24,12 @@ export const DeliveryDate = () => {
         className="max-w-2xs bg-secondary text-fg-reverse [--arrow-background:var(--color-secondary)]"
       >
         <span className="cursor-help border-2 border-success border-t-5 px-150 font-bold text-fg-secondary text-xl">
-          {day(deliveryDate)}
+          {formatDay(deliveryDate)}
         </span>
       </Tooltip>
       <div className="flex flex-col text-2xs text-fg-secondary">
         <span>Doručení do</span>
-        <span>{short(deliveryDate)}</span>
+        <span>{formatDateShort(deliveryDate)}</span>
       </div>
     </div>
   )
