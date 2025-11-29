@@ -16,10 +16,10 @@ export const LoginPopover = () => {
   return (
     <>
       {isAuthenticated ? (
-        <Link href="/ucet/profil" className="relative">
+        <Link href="/ucet/profil" className="grid items-center">
           <Icon
             icon="icon-[mdi--account-outline]"
-            className="text-3xl text-primary"
+            className=" text-3xl text-primary"
           />
         </Link>
       ) : (

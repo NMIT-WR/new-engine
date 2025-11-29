@@ -7,10 +7,6 @@ export interface UseLoginOptions {
   onError?: (error: Error) => void
 }
 
-/**
- * Login mutation hook
- * Automatically invalidates auth cache on success
- */
 export function useLogin(options?: UseLoginOptions) {
   const queryClient = useQueryClient()
 
@@ -18,7 +14,7 @@ export function useLogin(options?: UseLoginOptions) {
     mutationFn: (credentials: LoginCredentials) => login(credentials),
     onSuccess: () => {
       // Invalidate auth cache to refetch customer data
-      queryClient.invalidateQueries({ queryKey: queryKeys.auth.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.customer.profile() })
       options?.onSuccess?.()
     },
     onError: (error: Error) => {
