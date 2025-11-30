@@ -29,7 +29,7 @@ export const DesktopSubmenu = () => {
     <Header.Desktop>
       <div className="w-full" onMouseLeave={() => setDrawerOpen(false)}>
         <Header.Container className="w-full border-highlight border-t-[1px] bg-base-dark py-0">
-          <Header.Nav className="z-30 gap-x-0 px-0 py-0">
+          <Header.Nav className="z-30 flex-wrap gap-x-0 px-0 py-0">
             {links.map((link) => (
               <NextLink
                 key={link.href}

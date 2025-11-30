@@ -11,36 +11,8 @@ import { CartPopover } from './cart-popover'
 import { DesktopSubmenu } from './desktop-submenu'
 import { LoginPopover } from './login-popover'
 import { MobileMenu } from './mobile-menu'
-import { useHeaderContext } from './store/header-context'
 
 export const N1Header = () => {
-  const { isCartOpen, toggleCart, toggleLoginForm } = useHeaderContext()
-  const headerActionButtons = [
-    {
-      icon: 'icon-[mdi--heart-outline]',
-      href: '/oblibene',
-      action: () => {
-        console.log('oblibene')
-      },
-    },
-    {
-      icon: 'icon-[mdi--account-outline]',
-      href: '/profil',
-      action: () => {
-        toggleLoginForm()
-      },
-    },
-    {
-      icon: 'icon-[mdi--shopping-cart-outline]',
-      children: 'Košík',
-      href: '/kosik',
-      badge: '0',
-      action: () => {
-        toggleCart()
-      },
-    },
-  ]
-
   const topHeaderLinks = [
     {
       href: '/obchodni-podminky',
