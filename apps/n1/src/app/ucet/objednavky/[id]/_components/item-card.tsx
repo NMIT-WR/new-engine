@@ -1,5 +1,5 @@
 import { formatAmount } from '@/utils/format/format-product'
-import { truncateText } from '@/utils/turncate-text'
+import { truncateText } from '@/utils/truncate-text'
 import type { StoreOrderLineItem } from '@medusajs/types'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { Icon } from '@techsio/ui-kit/atoms/icon'
