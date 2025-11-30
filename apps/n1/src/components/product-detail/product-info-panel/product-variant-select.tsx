@@ -14,7 +14,7 @@ export const ProductVariantSelect = ({
   handle,
 }: ProductVariantSelectProps) => {
   return (
-    <div className="flex gap-200">
+    <div className="flex flex-wrap gap-200">
       {detail.variants?.length > 1 &&
         detail.variants.map((variant) => {
           return (
