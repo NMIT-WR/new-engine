@@ -7,10 +7,6 @@ export interface UseRegisterOptions {
   onError?: (error: Error) => void
 }
 
-/**
- * Registration mutation hook
- * Automatically invalidates auth cache on success
- */
 export function useRegister(options?: UseRegisterOptions) {
   const queryClient = useQueryClient()
 
@@ -18,7 +14,7 @@ export function useRegister(options?: UseRegisterOptions) {
     mutationFn: (data: RegisterData) => register(data),
     onSuccess: () => {
       // Invalidate auth cache to refetch customer data
-      queryClient.invalidateQueries({ queryKey: queryKeys.auth.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.customer.profile() })
       options?.onSuccess?.()
     },
     onError: (error: Error) => {

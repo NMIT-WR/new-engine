@@ -1,25 +1,21 @@
-// Pánské
 import panskeCyklo from './panske-cyklo.webp'
 import panskeMoto from './panske-moto.webp'
 import panskeObleceni from './panske-obleceni.webp'
 import panskeSki from './panske-ski.webp'
 import panskeSnbSkate from './panske-snb-skt.webp'
 
-// Dámské
 import damskeCyklo from './damske-cyklo.webp'
 import damskeMoto from './damske-moto.webp'
 import damskeObleceni from './damske-obleceni.webp'
 import damskeSki from './damske-ski.webp'
 import damskeSnbSkate from './damske-snb-skate.webp'
 
-// Dětské
 import detskeCyklo from './detske-cyklo.webp'
 import detskeMoto from './detske-moto.webp'
 import detskeObleceni from './detske-obleceni.webp'
 import detskeSki from './detske-ski.webp'
 import detskeSnbSkate from './detske-snb-skate.webp'
 
-// Oblečení
 import obleceniBryle from './obleceni-bryle.webp'
 import obleceniBundy from './obleceni-bundy.webp'
 import obleceniKalhoty from './obleceni-kalhoty.webp'
@@ -32,7 +28,6 @@ import obleceniDoplnky from './obleceni-soplnky.webp'
 import obleceniSvetry from './obleceni-svetry.webp'
 import obleceniTrika from './obleceni-trika.webp'
 
-// Cyklo
 import cykloBoty from './cyklo-boty.webp'
 import cykloChranice from './cyklo-chranice.webp'
 import cykloDoplnky from './cyklo-doplnky.webp'
@@ -48,7 +43,6 @@ import cykloTasky from './cyklo-tasky.webp'
 import cykloVyziva from './cyklo-vyziva.webp'
 import cykloZapletenaKola from './cyklo-zapletena-kola.webp'
 
-// Moto
 import motoBoty from './moto-boty.webp'
 import motoBryle from './moto-bryle.webp'
 import motoChranice from './moto-chranice.webp'
@@ -56,12 +50,10 @@ import motoDoplnky from './moto-doplnky.webp'
 import motoObleceni from './moto-obleceni.webp'
 import motoPrilby from './moto-prilby.webp'
 
-// Snb-Skate
 import snbBrusle from './snb-brusle.webp'
 import snbSkate from './snb-skate.webp'
 import snbSnowboard from './snb-snowboard.webp'
 
-// Ski
 import skiDoplnky from './ski-doplnky.webp'
 import skiObleceni from './ski-obleceni.webp'
 

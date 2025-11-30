@@ -1,13 +1,6 @@
 import type { Producer } from '@/types/product'
 import type { ParsedProducerInfo, ProducerEntity } from '@/types/product-page'
 
-/**
- * Parses producer attributes (HTML string) into structured data
- * Extracts: sizing guide URL, manufacturer, responsible person, distributor
- *
- * @param attributes - Producer attributes array from database
- * @returns Parsed producer info or null if parsing fails
- */
 export const parseProducerData = (
   attributes?: Producer['attributes']
 ): ParsedProducerInfo | null => {
@@ -191,9 +184,7 @@ function parseManufacturerSection(
   const emailElement = paragraphs.find((p) => p.querySelector('a'))
   const email =
     emailElement?.querySelector('a')?.textContent?.trim() ||
-    paragraphs
-      .find((p) => p.textContent?.includes('@'))
-      ?.textContent?.trim()
+    paragraphs.find((p) => p.textContent?.includes('@'))?.textContent?.trim()
 
   // PHONE: Find paragraph containing "Tel:"
   const phone = paragraphs
@@ -247,9 +238,7 @@ function parseResponsibleSection(
   const emailElement = paragraphs.find((p) => p.querySelector('a'))
   const email =
     emailElement?.querySelector('a')?.textContent?.trim() ||
-    paragraphs
-      .find((p) => p.textContent?.includes('@'))
-      ?.textContent?.trim()
+    paragraphs.find((p) => p.textContent?.includes('@'))?.textContent?.trim()
 
   // PHONE
   const phone = paragraphs
