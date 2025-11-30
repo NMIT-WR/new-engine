@@ -1,5 +1,6 @@
 import { useDebounce } from '@/hooks/use-debounce'
 import type { CartLineItem } from '@/services/cart-service'
+import { formatToTaxIncluded } from '@/utils/format/format-product'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Icon } from '@techsio/ui-kit/atoms/icon'
 import { NumericInput } from '@techsio/ui-kit/atoms/numeric-input'
@@ -47,9 +48,7 @@ export const CartItem = ({
     debouncedUpdate(validValue)
   }
 
-  const formattedPrice = item.unit_price
-    ? `${Math.round(item.unit_price)} Kč`
-    : '0 Kč'
+  const formattedPrice = formatToTaxIncluded({ amount: item.unit_price })
 
   return (
     <div
