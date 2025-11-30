@@ -38,7 +38,6 @@ export function AddressList() {
 
   return (
     <div className="space-y-250">
-      {/* Tlačítko přidat - pouze když nejsme v edit/add módu a máme adresy */}
       {!isAdding && !editingId && addresses.length > 0 && (
         <div className="flex justify-end">
           <Button
@@ -51,7 +50,6 @@ export function AddressList() {
         </div>
       )}
 
-      {/* Formulář pro přidání nové adresy */}
       {isAdding && (
         <div className="rounded border border-border-secondary bg-surface p-200">
           <AddressForm
@@ -61,7 +59,6 @@ export function AddressList() {
         </div>
       )}
 
-      {/* Grid s adresami */}
       {addresses.length > 0 && (
         <div className="grid gap-200 md:grid-cols-2">
           {addresses.map((address) => (
@@ -86,7 +83,6 @@ export function AddressList() {
         </div>
       )}
 
-      {/* Empty state s CTA */}
       {!isAdding && addresses.length === 0 && (
         <div className="py-400 text-center">
           <p className="mb-200 text-fg-secondary">
@@ -200,7 +196,6 @@ function AddressForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Očistit formátované hodnoty pro API
     const cleanedData = {
       ...formData,
       postal_code: cleanPostalCode(formData.postal_code),
@@ -249,7 +244,6 @@ function AddressForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-150">
-      {/* Jméno a příjmení */}
       <div className="grid grid-cols-2 gap-100">
         <div className="space-y-50">
           <Label className="text-sm">Jméno</Label>
@@ -275,7 +269,6 @@ function AddressForm({
         </div>
       </div>
 
-      {/* Firma */}
       <div className="space-y-50">
         <Label className="text-fg-secondary text-sm">Firma (volitelné)</Label>
         <Input
@@ -287,7 +280,6 @@ function AddressForm({
         />
       </div>
 
-      {/* Ulice */}
       <div className="space-y-50">
         <Label className="text-sm">Ulice a číslo popisné</Label>
         <Input
@@ -300,7 +292,6 @@ function AddressForm({
         />
       </div>
 
-      {/* Město a PSČ */}
       <div className="grid grid-cols-2 gap-100">
         <div className="space-y-50">
           <Label className="text-sm">Město</Label>
@@ -322,7 +313,6 @@ function AddressForm({
         </div>
       </div>
 
-      {/* Telefon */}
       <div className="space-y-50">
         <Label className="text-fg-secondary text-sm">Telefon (volitelné)</Label>
         <Input
@@ -333,7 +323,6 @@ function AddressForm({
         />
       </div>
 
-      {/* Akce */}
       <div className="flex justify-end gap-100 pt-100">
         <Button
           type="button"

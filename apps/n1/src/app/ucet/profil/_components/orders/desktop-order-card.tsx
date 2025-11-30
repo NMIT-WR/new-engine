@@ -4,7 +4,7 @@ import {
   getOrderStatusLabel,
 } from '@/utils/format/format-order-status'
 import { formatAmount } from '@/utils/format/format-product'
-import { truncateText } from '@/utils/turncate-text'
+import { truncateText } from '@/utils/truncate-text'
 import type { StoreOrder } from '@medusajs/types'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
