@@ -345,11 +345,6 @@ export async function setShippingMethod(
   }
 }
 
-/**
- * Initialize payment collection and session for cart with selected provider
- * @param cartId - Cart ID to initialize payment for
- * @param providerId - Payment provider ID (e.g., 'pp_system_default', 'pp_stripe_stripe')
- */
 export async function createPaymentCollection(
   cartId: string,
   providerId: string
