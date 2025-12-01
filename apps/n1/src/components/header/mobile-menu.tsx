@@ -43,7 +43,6 @@ export const MobileMenu = () => {
                       key={link.label}
                       value={link.label}
                       className="border-border-secondary border-b"
-                      onClick={() => console.log(pathname)}
                     >
                       <Accordion.Header
                         className="data-[active=true]:bg-overlay-light"
