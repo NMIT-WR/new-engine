@@ -1,3 +1,4 @@
+import { mapAuthError } from '@/lib/auth-messages'
 import { logError } from '@/lib/errors'
 import { sdk } from '@/lib/medusa-client'
 import { clearToken } from '@/lib/token-utils'
@@ -35,8 +36,7 @@ export async function login(credentials: LoginCredentials): Promise<string | und
     return token
   } catch (err) {
     logError('AuthService.login', err)
-    const message = err instanceof Error ? err.message : 'Login failed'
-    throw new Error(message)
+    throw new Error(mapAuthError(err))
   }
 }
 
@@ -77,13 +77,7 @@ export async function register(data: RegisterData): Promise<string | undefined> 
     // If register() succeeded but create() failed, we have token without customer
     clearToken()
 
-    // Check if error is due to existing email
-    const message = err instanceof Error ? err.message : 'Registration failed'
-    if (message.includes('already exists')) {
-      throw new Error('Email již existuje. Zkuste se přihlásit.')
-    }
-
-    throw new Error(message)
+    throw new Error(mapAuthError(err))
   }
 }
 
