@@ -1,5 +1,6 @@
 'use client'
 import { useRegister } from '@/hooks/use-register'
+import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Input } from '@techsio/ui-kit/atoms/input'
@@ -32,9 +33,11 @@ export const RegisterForm = ({
   const [confirmPassword, setConfirmPassword] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(false)
   const passwordValidation = usePasswordValidation(password)
+  const toast = useAuthToast()
 
   const register = useRegister({
     onSuccess: () => {
+      toast.registerSuccess()
       formRef.current?.reset()
       setFirstName('')
       setLastName('')

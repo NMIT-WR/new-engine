@@ -1,3 +1,49 @@
+/**
+ * Maps English error messages from Medusa SDK to Czech user-friendly messages
+ */
+export function mapAuthError(error: unknown): string {
+  const message =
+    error instanceof Error
+      ? error.message.toLowerCase()
+      : String(error).toLowerCase()
+
+  // Invalid credentials (login)
+  if (
+    message.includes('invalid') ||
+    message.includes('credentials') ||
+    message.includes('unauthorized')
+  ) {
+    return AUTH_MESSAGES.INVALID_CREDENTIALS
+  }
+
+  // Email already exists (register)
+  if (message.includes('already exists') || message.includes('duplicate')) {
+    return AUTH_MESSAGES.EMAIL_EXISTS
+  }
+
+  // Network/connection errors
+  if (
+    message.includes('network') ||
+    message.includes('fetch') ||
+    message.includes('econnrefused')
+  ) {
+    return AUTH_MESSAGES.NETWORK_ERROR
+  }
+
+  // Server errors (5xx)
+  if (message.includes('server') || message.includes('500')) {
+    return AUTH_MESSAGES.SERVER_ERROR
+  }
+
+  // Multi-step auth not supported
+  if (message.includes('multi-step')) {
+    return AUTH_MESSAGES.MULTI_STEP_NOT_SUPPORTED
+  }
+
+  // Default fallback
+  return AUTH_MESSAGES.SERVER_ERROR
+}
+
 export const AUTH_MESSAGES = {
   LOGIN_FAILED: 'Přihlášení se nezdařilo',
   LOGIN_SUCCESS: 'Úspěšně přihlášen',

@@ -1,4 +1,5 @@
 import { useLogin } from '@/hooks/use-login'
+import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
@@ -23,9 +24,11 @@ export const LoginForm = ({
   className,
 }: LoginFormProps) => {
   const formRef = useRef<HTMLFormElement>(null)
+  const toast = useAuthToast()
 
   const login = useLogin({
     onSuccess: () => {
+      toast.loginSuccess()
       formRef.current?.reset()
       onSuccess?.()
     },
