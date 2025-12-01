@@ -1,13 +1,21 @@
 import { useLogout } from '@/hooks/use-logout'
+import { useAuthToast } from '@/hooks/use-toast'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { useRouter } from 'next/navigation'
 import { useAccountContext } from '../context/account-context'
 
 export const AccountMenu = () => {
   const router = useRouter()
+  const toast = useAuthToast()
   const { activeTab, setActiveTab } = useAccountContext()
   const logoutMutation = useLogout({
-    onSuccess: () => router.push('/prihlaseni'),
+    onSuccess: () => {
+      toast.logoutSuccess()
+      router.push('/prihlaseni')
+    },
+    onError: () => {
+      toast.logoutError()
+    },
   })
 
   const handleTabClick = (tab: 'profile' | 'addresses' | 'orders') => {

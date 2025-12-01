@@ -11,7 +11,7 @@ export const ErrorBanner = ({
 }: ErrorBannerProps) => {
   return (
     <div
-      className={`rounded-md bg-danger-light p-100 text-danger text-sm ${className}`}
+      className={`rounded-md p-100 text-danger text-sm ${className}`}
       role="alert"
     >
       <p className="font-medium">{title}</p>
