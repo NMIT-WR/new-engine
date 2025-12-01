@@ -1,16 +1,24 @@
 'use client'
 import { links, submenuItems } from '@/data/header'
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { Link } from '@techsio/ui-kit/atoms/link'
 import { Accordion } from '@techsio/ui-kit/molecules/accordion'
 import { Dialog } from '@techsio/ui-kit/molecules/dialog'
 import { Header, HeaderContext } from '@techsio/ui-kit/organisms/header'
 import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 export const MobileMenu = () => {
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useContext(HeaderContext)
   const pathname = usePathname()
+  const isDesktop = useMediaQuery('header')
+
+  useEffect(() => {
+    if (isDesktop && isMobileMenuOpen) {
+      setIsMobileMenuOpen(false)
+    }
+  }, [isDesktop, isMobileMenuOpen, setIsMobileMenuOpen])
 
   const handleClose = () => setIsMobileMenuOpen(false)
 
