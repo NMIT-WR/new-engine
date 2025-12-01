@@ -9,7 +9,10 @@ import { ProductTabs } from '@/components/product-detail/product-tabs'
 import { RelatedProducts } from '@/components/product-detail/related-products'
 import { useProduct } from '@/hooks/use-product'
 import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
-import { buildProductBreadcrumbs } from '@/utils/helpers/build-breadcrumb'
+import {
+  buildBreadcrumbs,
+  buildProductBreadcrumbs,
+} from '@/utils/helpers/build-breadcrumb'
 import { selectVariant } from '@/utils/select-variant'
 import { transformProductDetail } from '@/utils/transform/transform-product'
 import { Link } from '@techsio/ui-kit/atoms/link'
@@ -63,6 +66,11 @@ export default function ProductPage() {
     rawProduct.handle
   )
 
+  const breadcrumbPathMobile = buildBreadcrumbs(
+    rawProduct.categories?.[0].id,
+    CATEGORY_MAP_BY_ID
+  )
+
   const productTableRows = [
     {
       key: 'kód produktu',
@@ -104,13 +112,19 @@ export default function ProductPage() {
   return (
     <div className="container mx-auto p-400">
       {/* PRODUCT DETAIL COMPONENT */}
-      <div className="grid gap-700 md:grid-cols-2">
-        <header className="col-span-2 space-y-400">
+      <div className="grid grid-cols-1 gap-700 md:grid-cols-[auto_1fr]">
+        <header className="col-span-1 space-y-400 md:col-span-2">
           <Breadcrumb
             items={breadcrumbPath}
             linkAs={Link}
             size="md"
-            className="mb-400"
+            className="mb-400 hidden md:inline-flex"
+          />
+          <Breadcrumb
+            items={breadcrumbPathMobile}
+            linkAs={Link}
+            size="md"
+            className="mb-400 md:hidden"
           />
           <Heading as="h1">{title}</Heading>
         </header>
