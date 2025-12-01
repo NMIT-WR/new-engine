@@ -85,7 +85,6 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
                   width={64}
                   height={64}
                   className="h-16 w-16 rounded object-cover"
-                  onClick={() => console.log(item)}
                 />
               )}
               <div className="flex flex-1 flex-col">
