@@ -35,3 +35,28 @@
 @utility token-icon-x {
   @apply icon-[mdi--close-thick];
 }
+
+/* Order list icons */
+@utility token-icon-clock {
+  @apply icon-[mdi--alarm-clock];
+}
+
+@utility token-icon-shopping {
+  @apply icon-[mdi--shopping-outline];
+}
+
+@utility token-icon-check-circle {
+  @apply icon-[mdi--check-circle-outline];
+}
+
+@utility token-icon-cash {
+  @apply icon-[mdi--cash];
+}
+
+@utility token-icon-arrow-left {
+  @apply icon-[mdi--arrow-left];
+}
+
+@utility token-icon-archive {
+  @apply icon-[mdi--archive-outline];
+}
