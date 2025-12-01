@@ -104,7 +104,9 @@ export function useCreateCart() {
       }
     },
     onError: (error) => {
-      console.error('[useCreateCart] Failed to create cart:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useCreateCart] Failed to create cart:', error)
+      }
     },
   })
 }
@@ -181,7 +183,9 @@ export function useAddToCart(options?: UseAddToCartOptions) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
 
-      console.error('[useAddToCart] Failed to add item:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useAddToCart] Failed to add item:', error)
+      }
 
       options?.onError?.(error)
     },
@@ -243,7 +247,9 @@ export function useUpdateLineItem() {
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
-      console.error('[useUpdateLineItem] Failed to update quantity:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useUpdateLineItem] Failed to update quantity:', error)
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
@@ -295,7 +301,9 @@ export function useRemoveLineItem() {
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
-      console.error('[useRemoveLineItem] Failed to remove item:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useRemoveLineItem] Failed to remove item:', error)
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
@@ -364,7 +372,9 @@ export function useCompleteCart(options?: UseCompleteCartOptions) {
       }
     },
     onError: (error) => {
-      console.error('[useCompleteCart] Failed to complete cart:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useCompleteCart] Failed to complete cart:', error)
+      }
     },
   })
 }

@@ -44,13 +44,6 @@ export const parseProducerData = (
     // ============================================
     const paragraphs = Array.from(doc.querySelectorAll('p'))
 
-    // DEBUG: Log paragraphs for inspection
-    console.log('[parseProducerData] Total paragraphs:', paragraphs.length)
-    console.log(
-      '[parseProducerData] Paragraphs:',
-      paragraphs.map((p) => p.textContent)
-    )
-
     // ============================================
     // 5. FIND SECTION INDEXES
     // ============================================
@@ -65,13 +58,6 @@ export const parseProducerData = (
     const distributorIndex = paragraphs.findIndex((p) =>
       p.textContent?.includes('Distributor do ČR:')
     )
-
-    // DEBUG: Log section indexes
-    console.log('[parseProducerData] Section indexes:', {
-      manufacturer: manufacturerIndex,
-      responsible: responsibleIndex,
-      distributor: distributorIndex,
-    })
 
     // ============================================
     // 6. PARSE MANUFACTURER SECTION
@@ -121,17 +107,12 @@ export const parseProducerData = (
     // ============================================
     // 9. BUILD AND RETURN RESULT
     // ============================================
-    const result: ParsedProducerInfo = {
+    return {
       sizingGuideUrl,
       manufacturer,
       responsiblePerson,
       distributor,
     }
-
-    // DEBUG: Log final result
-    console.log('[parseProducerData] Final result:', result)
-
-    return result
   } catch (error) {
     console.error('[parseProducerData] Unexpected error:', error)
     return null
