@@ -22,9 +22,11 @@ export function usePrefetchOnHover(): UsePrefetchOnHoverReturn {
 
     // Schedule prefetch with delay
     timeoutRef.current = setTimeout(() => {
-      console.log('HOVER PREFETCH: ', categoryHandle)
       const categoryIds = ALL_CATEGORIES_MAP[categoryHandle]
-      console.log('CATEGORY IDS: ', categoryIds)
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[usePrefetchOnHover] Prefetch:', categoryHandle, categoryIds)
+      }
 
       if (categoryIds?.length) {
         // Use categoryHandle as scopedBy for potential cancellation
@@ -37,7 +39,6 @@ export function usePrefetchOnHover(): UsePrefetchOnHoverReturn {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = undefined
-      console.log('HOVER CANCELLED')
     }
   }
 
