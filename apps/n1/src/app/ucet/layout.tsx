@@ -64,11 +64,11 @@ export default function AccountLayout({
 
   return (
     <AccountProvider>
-      <main className="mx-auto w-4xl max-w-full py-400">
-        <h1 className="mb-250 font-bold text-xl">Můj profil</h1>
-        <div className="grid gap-250 md:grid-cols-[auto_1fr]">
+      <main className="mx-auto w-full max-w-4xl px-400 py-400">
+        <h1 className="mb-400 font-bold text-xl">Můj profil</h1>
+        <div className="grid grid-cols-1 gap-400 md:grid-cols-[auto_1fr]">
           <AccountMenu />
-          {children}
+          <div className="min-w-0">{children}</div>
         </div>
       </main>
     </AccountProvider>
