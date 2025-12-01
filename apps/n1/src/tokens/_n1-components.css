@@ -35,6 +35,11 @@
 
   /* === MOLECULES === */
 
+  /* ACCORDION */
+  --color-accordion-bg-hover: var(--color-overlay-light);
+  --color-accordion-content-bg: var(--color-surface-light);
+  --color-accordion-title-bg: transparent;
+
   /* BREADCRUMB */
   --color-breadcrumb-bg: transparent;
 
@@ -113,6 +118,7 @@
   --breakpoint-header-desktop: 52rem;
 
   /* === HEADER === */
+  --container-header-desktop: 56rem;
 
   /* === TABLE === */
   --color-table-row-striped-bg-secondary: var(--color-n1-table);
