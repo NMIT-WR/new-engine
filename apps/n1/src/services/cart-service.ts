@@ -414,7 +414,9 @@ export async function createPaymentCollection(
       throw error
     }
 
-    console.error('[CartService] Payment initialization error:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[CartService] Payment initialization error:', error)
+    }
     throw CartServiceError.fromMedusaError(error, 'PAYMENT_INIT_FAILED')
   }
 }

@@ -31,11 +31,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
       <div className="col-span-2 flex items-center">
         <div>
           <p className="font-medium text-fg-primary">#{order.display_id}</p>
-          <Badge
-            variant={statusVariant}
-            className="mt-100 inline-flex text-3xs"
-            onClick={() => console.log(order)}
-          >
+          <Badge variant={statusVariant} className="mt-100 inline-flex text-3xs">
             {getOrderStatusLabel(order.status)}
           </Badge>
         </div>

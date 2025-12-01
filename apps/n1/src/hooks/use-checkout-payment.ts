@@ -78,7 +78,9 @@ export function useCheckoutPayment(
         }
       },
       onError: (error) => {
-        console.error('[useCheckoutPayment] Failed to initiate payment:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[useCheckoutPayment] Failed to initiate payment:', error)
+        }
 
         // Show error toast
         toast.paymentInitiatedError()
