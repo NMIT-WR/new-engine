@@ -26,7 +26,6 @@ export const ItemCard = ({
             width={300}
             height={300}
             className="aspect-square w-full object-cover"
-            onClick={() => console.log(item)}
           />
         ) : (
           <div className="flex aspect-square w-full items-center justify-center bg-surface">

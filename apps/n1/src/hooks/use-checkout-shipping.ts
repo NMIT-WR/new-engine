@@ -137,7 +137,9 @@ export function useCheckoutShipping(
       // Show error toast to user
       toast.shippingError()
 
-      console.error('[useCheckoutShipping] Failed to set shipping:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useCheckoutShipping] Failed to set shipping:', error)
+      }
     },
     onSettled: () => {
       // No invalidations needed - we have fresh data from onSuccess
