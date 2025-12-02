@@ -119,6 +119,7 @@
 
   /* === HEADER === */
   --container-header-desktop: 56rem;
+  --height-header-container: 5.5rem;
 
   /* === TABLE === */
   --color-table-row-striped-bg-secondary: var(--color-n1-table);
