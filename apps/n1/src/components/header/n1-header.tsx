@@ -5,12 +5,21 @@ import { Icon } from '@techsio/ui-kit/atoms/icon'
 import { Link } from '@techsio/ui-kit/atoms/link'
 import { SearchForm } from '@techsio/ui-kit/molecules/search-form'
 import { Header } from '@techsio/ui-kit/organisms/header'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import NextLink from 'next/link'
 import { CartPopover } from './cart-popover'
 import { DesktopSubmenu } from './desktop-submenu'
 import { LoginPopover } from './login-popover'
-import { MobileMenu } from './mobile-menu'
+
+// MobileMenu uses usePathname() which is runtime data
+// Skip SSR to avoid "uncached data outside Suspense" during prerender
+const MobileMenu = dynamic(
+  () => import('./mobile-menu').then((m) => m.MobileMenu),
+  {
+    ssr: false,
+  }
+)
 
 export const N1Header = () => {
   const topHeaderLinks = [
@@ -58,7 +67,7 @@ export const N1Header = () => {
           <Icon icon="icon-[cif--gb]" />
         </div>
       </Header.Container>
-      <Header.Container className="z-40 flex justify-between bg-base-dark px-500 py-300">
+      <Header.Container className="z-40 flex h-header-container justify-between bg-base-dark px-500 py-300">
         <div className="flex h-full items-center gap-750">
           <NextLink href="/">
             <Image

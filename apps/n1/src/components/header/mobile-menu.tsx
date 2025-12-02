@@ -95,9 +95,8 @@ export const MobileMenu = () => {
                     as={NextLink}
                     href={link.href}
                     onClick={handleClose}
-                    className={`block border-border-secondary border-b px-400 py-200 font-medium transition-colors hover:bg-overlay-light ${
-                      isActive ? 'text-primary' : 'text-gray-900'
-                    }`}
+                    className="block border-border-secondary border-b px-400 py-200 font-medium transition-colors hover:bg-overlay-light data-[active=true]:bg-overlay-light"
+                    data-active={isActive}
                   >
                     {link.label}
                   </Link>
