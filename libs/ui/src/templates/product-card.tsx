@@ -1,6 +1,5 @@
 import { Badge, type BadgeProps } from '../atoms/badge'
 import { ProductCard, type ProductCardProps } from '../molecules/product-card'
-import { slugify } from '../utils'
 
 export interface ProductCardTemplateProps
   extends Pick<ProductCardProps, 'layout'> {
@@ -61,7 +60,7 @@ export function ProductCardTemplate({
             if (badge.variant === 'dynamic') {
               return (
                 <Badge
-                  key={slugify(badge.children)}
+                  key={badge.id}
                   variant="dynamic"
                   bgColor={badge.bgColor}
                   fgColor={badge.fgColor}
@@ -73,7 +72,7 @@ export function ProductCardTemplate({
             }
 
             return (
-              <Badge key={slugify(badge.children)} variant={badge.variant}>
+              <Badge key={badge.id} variant={badge.variant}>
                 {badge.children}
               </Badge>
             )

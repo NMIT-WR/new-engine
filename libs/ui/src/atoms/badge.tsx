@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
 
@@ -51,7 +51,7 @@ type BaseBadgeProps = Omit<
   HTMLAttributes<HTMLSpanElement>,
   'color' | 'children'
 > & {
-  children: string
+  children: ReactNode
 }
 
 type DefaultBadgeProps = BaseBadgeProps & {
