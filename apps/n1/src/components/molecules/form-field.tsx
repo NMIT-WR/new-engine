@@ -48,7 +48,7 @@ export const FormField = ({
         {...inputProps}
       />
       {errorMessage && (
-        <p className="invisible font-medium text-2xs text-danger peer-user-invalid:visible">
+        <p className="font-medium text-2xs text-danger">
           {errorMessage}
         </p>
       )}
