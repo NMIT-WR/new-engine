@@ -103,6 +103,14 @@ export const TAX_RATE = 0.21 // 21% VAT
 export const DEFAULT_COUNTRY_CODE = 'cz'
 
 /**
+ * Supported countries for shipping addresses
+ */
+export const COUNTRY_OPTIONS = [
+  { value: 'cz', label: 'Česká republika', displayValue: 'Česká republika' },
+  { value: 'sk', label: 'Slovensko', displayValue: 'Slovensko' },
+]
+
+/**
  * Cache times (in milliseconds) for React Query
  */
 export const CACHE_TIMES = {
