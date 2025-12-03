@@ -60,11 +60,15 @@ export function AddressList() {
       )}
 
       {addresses.length > 0 && (
-        <div className="grid gap-200 md:grid-cols-2">
+        <div className="grid auto-rows-min gap-200 md:grid-cols-2">
           {addresses.map((address) => (
             <div
               key={address.id}
-              className="rounded border border-border-secondary bg-surface p-200"
+              className={`h-fit rounded border border-border-secondary bg-surface p-200 ${
+                editingId === null
+                  ? 'row-span-3 grid grid-rows-subgrid gap-0'
+                  : 'flex flex-col gap-100'
+              }`}
             >
               {editingId === address.id ? (
                 <AddressForm
@@ -122,7 +126,7 @@ function AddressCard({
   }
 
   return (
-    <div className="space-y-100">
+    <div className="contents">
       <div className="font-medium">
         {address.first_name} {address.last_name}
       </div>
@@ -133,14 +137,13 @@ function AddressCard({
         <div>
           {formatPostalCode(address.postal_code || '')} {address.city}
         </div>
-        {/* Zobrazit zemi pouze pokud není CZ */}
         {address.country_code &&
           address.country_code.toLowerCase() !== 'cz' && (
             <div>{address.country_code.toUpperCase()}</div>
           )}
         {address.phone && <div>{formatPhoneNumber(address.phone)}</div>}
       </div>
-      <div className="flex gap-100 pt-100">
+      <div className="flex items-end gap-100 pt-100">
         <Button variant="secondary" size="sm" onClick={onEdit}>
           Upravit
         </Button>
