@@ -144,3 +144,48 @@ export class CartServiceError extends Error {
     return error instanceof CartServiceError
   }
 }
+
+// ============================================================================
+// Address Validation Error
+// ============================================================================
+
+import type { AddressErrors } from '@/utils/address-validation'
+
+/**
+ * Error thrown when address validation fails
+ * Used as a safety net in useCreateAddress/useUpdateAddress hooks
+ */
+export class AddressValidationError extends Error {
+  public readonly errors: AddressErrors
+  public readonly code = 'ADDRESS_VALIDATION_ERROR'
+
+  constructor(errors: AddressErrors) {
+    super('Adresa obsahuje neplatné údaje')
+    this.name = 'AddressValidationError'
+    this.errors = errors
+  }
+
+  /**
+   * Get the first error message (useful for toast notifications)
+   */
+  get firstError(): string {
+    const firstKey = Object.keys(this.errors)[0] as keyof AddressErrors
+    return this.errors[firstKey] || 'Neplatná adresa'
+  }
+
+  /**
+   * Get all error messages joined
+   */
+  get allErrors(): string {
+    return Object.values(this.errors).filter(Boolean).join(', ')
+  }
+
+  /**
+   * Check if error is AddressValidationError
+   */
+  static isAddressValidationError(
+    error: unknown
+  ): error is AddressValidationError {
+    return error instanceof AddressValidationError
+  }
+}
