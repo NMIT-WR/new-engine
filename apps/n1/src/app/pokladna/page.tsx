@@ -1,69 +1,36 @@
 'use client'
 
-import { useCart, useCompleteCart } from '@/hooks/use-cart'
-import { useCheckout } from '@/hooks/use-checkout'
-import { useRegion } from '@/hooks/use-region'
 import { Button } from '@ui/atoms/button'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { OrderSummary } from './_components/order-summary'
 import { PaymentFormSection } from './_components/payment-form-section'
 import { ShippingAddressSection } from './_components/shipping-address-section'
 import { ShippingMethodSection } from './_components/shipping-method-section'
+import {
+  CheckoutProvider,
+  useCheckoutContext,
+} from './_context/checkout-context'
 
 export default function CheckoutPage() {
+  return (
+    <CheckoutProvider>
+      <CheckoutContent />
+    </CheckoutProvider>
+  )
+}
+
+function CheckoutContent() {
   const router = useRouter()
-  const { cart, isLoading: isCartLoading, hasItems } = useCart()
-  const { regionId } = useRegion()
-  const checkout = useCheckout(cart?.id, regionId, cart)
-  const [errorMessage, setErrorMessage] = useState<string>('')
-
-  // Auto-select first shipping option when loaded
-  useEffect(() => {
-    if (
-      checkout.shipping.shippingOptions &&
-      checkout.shipping.shippingOptions.length > 0 &&
-      !checkout.shipping.selectedShippingMethodId
-    ) {
-      const firstOption = checkout.shipping.shippingOptions[0]
-      checkout.shipping.setShipping(firstOption.id)
-    }
-  }, [
-    checkout.shipping.shippingOptions,
-    checkout.shipping.selectedShippingMethodId,
-    checkout.shipping.setShipping,
-  ])
-
-  // Payment initialization is now manual via button in PaymentFormSection
-  // User must explicitly select payment method and click "Pokračovat k platbě"
-
-  const { mutate: completeCartMutation, isPending: isCompletingCart } =
-    useCompleteCart({
-      onSuccess: (order) => {
-        router.push(`/orders/${order.id}?success=true`)
-      },
-      onError: (error, _cart) => {
-        let errorMsg = error.message
-        if (error.type === 'validation_error') {
-          errorMsg = `Validace selhala: ${error.message}`
-        } else if (error.type === 'payment_error') {
-          errorMsg = `Platba selhala: ${error.message}`
-        }
-        setErrorMessage(errorMsg)
-      },
-    })
-
-  function handleCompleteCheckout() {
-    if (!cart?.id) {
-      return
-    }
-    setErrorMessage('')
-    completeCartMutation({ cartId: cart.id })
-  }
-
-  function handleBack() {
-    router.back()
-  }
+  const {
+    cart,
+    isCartLoading,
+    hasItems,
+    shipping,
+    isReady,
+    isCompleting,
+    error,
+    completeCheckout,
+  } = useCheckoutContext()
 
   // Loading state
   if (isCartLoading) {
@@ -74,7 +41,7 @@ export default function CheckoutPage() {
     )
   }
 
-  // Empty cart redirect
+  // Empty cart
   if (!hasItems || !cart) {
     return (
       <div className="container mx-auto p-500">
@@ -89,8 +56,8 @@ export default function CheckoutPage() {
     )
   }
 
-  const selectedShipping = checkout.shipping.shippingOptions?.find(
-    (opt) => opt.id === checkout.shipping.selectedShippingMethodId
+  const selectedShipping = shipping.shippingOptions?.find(
+    (opt) => opt.id === shipping.selectedShippingMethodId
   )
 
   return (
@@ -101,8 +68,8 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 gap-700 lg:grid-cols-2">
         {/* LEFT COLUMN: Checkout Form */}
         <div className="[&>*+*]:mt-500">
-          <ShippingAddressSection cart={cart} />
-          <ShippingMethodSection shipping={checkout.shipping} />
+          <ShippingAddressSection />
+          <ShippingMethodSection shipping={shipping} />
           <PaymentFormSection cart={cart} />
         </div>
 
@@ -111,11 +78,11 @@ export default function CheckoutPage() {
           <OrderSummary
             cart={cart}
             selectedShipping={selectedShipping}
-            errorMessage={errorMessage}
-            isReady={checkout.isReady}
-            isCompletingCart={isCompletingCart}
-            onBack={handleBack}
-            onComplete={handleCompleteCheckout}
+            errorMessage={error || ''}
+            isReady={isReady}
+            isCompletingCart={isCompleting}
+            onBack={() => router.back()}
+            onComplete={completeCheckout}
           />
         </div>
       </div>

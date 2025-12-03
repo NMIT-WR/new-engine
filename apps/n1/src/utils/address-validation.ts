@@ -16,6 +16,44 @@ export type AddressErrors = Partial<Record<AddressFieldKey, string>>
 export type AddressTouched = Partial<Record<AddressFieldKey, boolean>>
 
 /**
+ * Validation rules for react-hook-form Controller components
+ */
+export const ADDRESS_VALIDATION_RULES = {
+  first_name: {
+    required: 'Jméno je povinné',
+    minLength: { value: 2, message: 'Jméno musí mít alespoň 2 znaky' },
+  },
+  last_name: {
+    required: 'Příjmení je povinné',
+    minLength: { value: 2, message: 'Příjmení musí mít alespoň 2 znaky' },
+  },
+  address_1: {
+    required: 'Adresa je povinná',
+    minLength: { value: 3, message: 'Adresa musí mít alespoň 3 znaky' },
+  },
+  city: {
+    required: 'Město je povinné',
+    minLength: { value: 2, message: 'Město musí mít alespoň 2 znaky' },
+  },
+  postal_code: {
+    required: 'PSČ je povinné',
+    pattern: {
+      value: /^\d{3}\s?\d{2}$/,
+      message: 'PSČ musí být ve formátu 123 45',
+    },
+  },
+  country_code: {
+    required: 'Země je povinná',
+  },
+  phone: {
+    pattern: {
+      value: /^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$|^$/,
+      message: 'Neplatný formát telefonu',
+    },
+  },
+} as const
+
+/**
  * Centralizovaná definice povinných polí adresy
  */
 export const REQUIRED_ADDRESS_FIELDS = [
@@ -111,16 +149,7 @@ export function validateAddressField(
   return undefined
 }
 
-/**
- * Auto-formátování PSČ (XXX XX)
- */
-export function formatPostalCode(value: string): string {
-  const cleaned = value.replace(/\s/g, '')
-  if (cleaned.length === 5 && /^\d{5}$/.test(cleaned)) {
-    return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`
-  }
-  return value
-}
+
 
 /**
  * Validuje celý formulář adresy
