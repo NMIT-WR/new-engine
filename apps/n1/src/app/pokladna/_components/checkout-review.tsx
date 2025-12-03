@@ -2,6 +2,10 @@
 
 import type { StoreOrder } from '@/services/order-service'
 import { formatDateString } from '@/utils/format/format-date'
+import {
+  getOrderStatusColor,
+  getOrderStatusLabel,
+} from '@/utils/format/format-order-status'
 import { formatAmount } from '@/utils/format/format-product'
 import { Badge } from '@ui/atoms/badge'
 import { Button } from '@ui/atoms/button'
@@ -14,25 +18,12 @@ interface CheckoutReviewProps {
   order: StoreOrder
 }
 
-const ORDER_STATUS_LABELS: Record<
-  string,
-  {
-    label: string
-    variant: 'primary' | 'secondary' | 'success' | 'info' | 'danger'
-  }
-> = {
-  pending: { label: 'Čeká na zpracování', variant: 'info' },
-  completed: { label: 'Dokončeno', variant: 'success' },
-  canceled: { label: 'Zrušeno', variant: 'danger' },
-  requires_action: { label: 'Vyžaduje akci', variant: 'info' },
-}
-
 export function CheckoutReview({ order }: CheckoutReviewProps) {
   const router = useRouter()
 
-  const statusInfo = ORDER_STATUS_LABELS[order.status] || {
-    label: order.status,
-    variant: 'secondary' as const,
+  const statusInfo = {
+    label: getOrderStatusLabel(order.status),
+    variant: getOrderStatusColor(order.status),
   }
 
   // Format amounts
