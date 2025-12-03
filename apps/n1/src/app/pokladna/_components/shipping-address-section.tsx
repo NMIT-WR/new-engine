@@ -1,329 +1,277 @@
 'use client'
 
 import { FormField } from '@/components/molecules/form-field'
-import { useAddresses } from '@/hooks/use-addresses'
-import { useAuth } from '@/hooks/use-auth'
-import { useDebouncedValue } from '@/hooks/use-debounced-value'
-import { useCartToast } from '@/hooks/use-toast'
-import { useUpdateCartAddress } from '@/hooks/use-update-cart-address'
-import type { Cart } from '@/services/cart-service'
-import {
-  cartAddressToFormData,
-  customerAddressToFormData,
-  getDefaultAddress,
-} from '@/utils/address-helpers'
-import {
-  type AddressErrors,
-  type AddressFieldKey,
-  type AddressFormData,
-  type AddressTouched,
-  formatPostalCode,
-  isAddressFormValid,
-  validateAddressField,
-  validateAddressForm,
-} from '@/utils/address-validation'
+import { COUNTRY_OPTIONS } from '@/lib/constants'
+import type { AddressFormData } from '@/utils/address-validation'
+import { ADDRESS_VALIDATION_RULES } from '@/utils/address-validation'
+import { formatPhoneNumber } from '@/utils/format/format-phone-number'
+import { formatPostalCode } from '@/utils/format/format-postal-code'
 import { Select } from '@ui/molecules/select'
-import { useEffect, useState } from 'react'
+import { Controller } from 'react-hook-form'
+import {
+  useCheckoutContext,
+  useCheckoutForm,
+} from '../_context/checkout-context'
+import { AddressPicker } from './address-picker'
+import { SaveAddressPanel } from './save-address-panel'
 
-interface ShippingAddressSectionProps {
-  cart: Cart
-}
+export function ShippingAddressSection() {
+  const { customer, selectedAddressId, setSelectedAddressId, isCompleting } =
+    useCheckoutContext()
+  const {
+    control,
+    reset,
+    formState: { errors },
+  } = useCheckoutForm()
 
-const COUNTRY_OPTIONS = [
-  { value: 'cz', label: 'Česká republika', displayValue: 'Česká republika' },
-  { value: 'sk', label: 'Slovensko', displayValue: 'Slovensko' },
-]
+  const addresses = customer?.addresses || []
 
-export function ShippingAddressSection({ cart }: ShippingAddressSectionProps) {
-  const { customer } = useAuth()
-  const { data: addressesData } = useAddresses()
-  const addresses = addressesData?.addresses || []
-  const toast = useCartToast()
-
-  // Initialize form data with priority: cart address > customer default > empty
-  const [formData, setFormData] = useState<AddressFormData>(() => {
-    // Priority 1: Cart shipping address (already set)
-    if (cart.shipping_address) {
-      return cartAddressToFormData(cart.shipping_address) as AddressFormData
-    }
-
-    // Priority 2: Customer default address
-    const defaultAddress = getDefaultAddress(addresses)
-    if (defaultAddress) {
-      return customerAddressToFormData(defaultAddress) as AddressFormData
-    }
-
-    // Priority 3: Empty form with CZ default
-    return {
-      first_name: '',
-      last_name: '',
-      company: '',
-      address_1: '',
-      address_2: '',
-      city: '',
-      province: '',
-      postal_code: '',
-      country_code: 'cz',
-      phone: '',
-    }
-  })
-
-  const [errors, setErrors] = useState<AddressErrors>({})
-  const [touched, setTouched] = useState<AddressTouched>({})
-  const [isDirty, setIsDirty] = useState(false)
-
-  // Update form when customer addresses load
-  useEffect(() => {
-    // Only update if form is empty and we don't have cart address
-    if (
-      !cart.shipping_address &&
-      !formData.first_name &&
-      addresses.length > 0
-    ) {
-      const defaultAddress = getDefaultAddress(addresses)
-      if (defaultAddress) {
-        setFormData(
-          customerAddressToFormData(defaultAddress) as AddressFormData
-        )
-      }
-    }
-  }, [addresses, cart.shipping_address, formData.first_name])
-
-  // Manual save mutation
-  const { mutate: updateAddress, isPending: isUpdating } =
-    useUpdateCartAddress()
-
-  // Check if form is valid (for button disabled state)
-  const isFormValid = isAddressFormValid(formData)
-
-  // 🎯 DEBOUNCED AUTO-SAVE: Save address automatically when user stops typing
-  const debouncedFormData = useDebouncedValue(formData, 800)
-
-  useEffect(() => {
-    if (
-      isFormValid &&
-      isDirty &&
-      !isUpdating &&
-      // Prevent auto-save on initial load when cart address exists
-      (cart.shipping_address?.first_name !== debouncedFormData.first_name ||
-        cart.shipping_address?.last_name !== debouncedFormData.last_name ||
-        cart.shipping_address?.address_1 !== debouncedFormData.address_1)
-    ) {
-      handleSaveAddress()
-    }
-  }, [debouncedFormData, isFormValid, isDirty, isUpdating])
-
-  // Handle manual save
-  const handleSaveAddress = () => {
-    // Validate before saving
-    const validationErrors = validateAddressForm(formData)
-    if (Object.keys(validationErrors).length > 0) {
-      // Mark all fields as touched to show errors
-      const allTouched = Object.keys(formData).reduce(
-        (acc, key) => ({ ...acc, [key]: true }),
-        {} as AddressTouched
-      )
-      setTouched(allTouched)
-      setErrors(validationErrors)
-
-      // Show validation warning toast
-      const errorFields = Object.keys(validationErrors)
-      toast.shippingAddressValidation(errorFields)
-      return
-    }
-
-    // Save to cart with toast notifications
-    updateAddress(
-      {
-        cartId: cart.id,
-        address: formData,
-      },
-      {
-        onError: () => {
-          toast.shippingAddressError()
-        },
-      }
-    )
-  }
-
-  const handleFieldChange = (field: AddressFieldKey, value: string) => {
-    // Auto-format postal code
-    if (field === 'postal_code') {
-      value = formatPostalCode(value)
-    }
-
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    setIsDirty(true)
-
-    // Clear error when user starts typing
-    if (touched[field]) {
-      const error = validateAddressField(field, value, formData.country_code)
-      setErrors((prev) => ({ ...prev, [field]: error }))
-    }
-  }
-
-  const handleFieldBlur = (field: AddressFieldKey) => {
-    setTouched((prev) => ({ ...prev, [field]: true }))
-    const fieldValue = formData[field] || ''
-    const error = validateAddressField(field, fieldValue, formData.country_code)
-    setErrors((prev) => ({ ...prev, [field]: error }))
+  // Handle address selection from picker
+  const handleAddressSelect = (address: AddressFormData, id: string) => {
+    // Use reset() to set values AND clear isDirty flag
+    reset({ shippingAddress: address })
+    setSelectedAddressId(id)
   }
 
   return (
     <section className="rounded border border-border-secondary bg-surface/70 p-400">
-      <div className="mb-400 flex items-center justify-between">
+      <div className="mb-400 space-y-300">
         <h2 className="font-semibold text-fg-primary text-lg">
           Doručovací adresa
         </h2>
+
+        {addresses.length > 0 && (
+          <AddressPicker
+            addresses={addresses}
+            selectedId={selectedAddressId}
+            onSelect={handleAddressSelect}
+            disabled={isCompleting}
+          />
+        )}
       </div>
 
       <form className="flex flex-col gap-400">
         {/* First name | Last name */}
         <div className="grid grid-cols-2 gap-300">
-          <FormField
-            id="first_name"
-            label="Jméno"
-            name="first_name"
-            type="text"
-            value={formData.first_name}
-            onChange={(e) => handleFieldChange('first_name', e.target.value)}
-            onBlur={() => handleFieldBlur('first_name')}
-            errorMessage={errors.first_name}
-            required
-            disabled={isUpdating}
+          <Controller
+            name="shippingAddress.first_name"
+            control={control}
+            rules={ADDRESS_VALIDATION_RULES.first_name}
+            render={({ field }) => (
+              <FormField
+                id="first_name"
+                label="Jméno"
+                name={field.name}
+                type="text"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                errorMessage={errors.shippingAddress?.first_name?.message}
+                required
+                disabled={isCompleting}
+              />
+            )}
           />
-          <FormField
-            id="last_name"
-            label="Příjmení"
-            name="last_name"
-            type="text"
-            value={formData.last_name}
-            onChange={(e) => handleFieldChange('last_name', e.target.value)}
-            onBlur={() => handleFieldBlur('last_name')}
-            errorMessage={errors.last_name}
-            required
-            disabled={isUpdating}
+          <Controller
+            name="shippingAddress.last_name"
+            control={control}
+            rules={ADDRESS_VALIDATION_RULES.last_name}
+            render={({ field }) => (
+              <FormField
+                id="last_name"
+                label="Příjmení"
+                name={field.name}
+                type="text"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                errorMessage={errors.shippingAddress?.last_name?.message}
+                required
+                disabled={isCompleting}
+              />
+            )}
           />
         </div>
 
         {/* Company (optional) */}
-        <FormField
-          id="company"
-          label="Firma (volitelné)"
-          name="company"
-          type="text"
-          value={formData.company || ''}
-          onChange={(e) => handleFieldChange('company', e.target.value)}
-          disabled={isUpdating}
+        <Controller
+          name="shippingAddress.company"
+          control={control}
+          render={({ field }) => (
+            <FormField
+              id="company"
+              label="Firma (volitelné)"
+              name={field.name}
+              type="text"
+              value={field.value || ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              disabled={isCompleting}
+            />
+          )}
         />
 
         {/* Address */}
-        <FormField
-          id="address_1"
-          label="Adresa"
-          name="address_1"
-          type="text"
-          value={formData.address_1}
-          onChange={(e) => handleFieldChange('address_1', e.target.value)}
-          onBlur={() => handleFieldBlur('address_1')}
-          errorMessage={errors.address_1}
-          required
-          disabled={isUpdating}
-          placeholder="Ulice a číslo popisné"
+        <Controller
+          name="shippingAddress.address_1"
+          control={control}
+          rules={ADDRESS_VALIDATION_RULES.address_1}
+          render={({ field }) => (
+            <FormField
+              id="address_1"
+              label="Adresa"
+              name={field.name}
+              type="text"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              errorMessage={errors.shippingAddress?.address_1?.message}
+              required
+              disabled={isCompleting}
+              placeholder="Ulice a číslo popisné"
+            />
+          )}
         />
 
         {/* Apartment, suite, etc. (optional) */}
-        <FormField
-          id="address_2"
-          label="Byt, apartmá atd. (volitelné)"
-          name="address_2"
-          type="text"
-          value={formData.address_2 || ''}
-          onChange={(e) => handleFieldChange('address_2', e.target.value)}
-          disabled={isUpdating}
+        <Controller
+          name="shippingAddress.address_2"
+          control={control}
+          render={({ field }) => (
+            <FormField
+              id="address_2"
+              label="Byt, apartmá atd. (volitelné)"
+              name={field.name}
+              type="text"
+              value={field.value || ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              disabled={isCompleting}
+            />
+          )}
         />
 
         {/* City | Country */}
         <div className="grid grid-cols-2 gap-300">
-          <FormField
-            id="city"
-            label="Město"
-            name="city"
-            type="text"
-            value={formData.city}
-            onChange={(e) => handleFieldChange('city', e.target.value)}
-            onBlur={() => handleFieldBlur('city')}
-            errorMessage={errors.city}
-            required
-            disabled={isUpdating}
+          <Controller
+            name="shippingAddress.city"
+            control={control}
+            rules={ADDRESS_VALIDATION_RULES.city}
+            render={({ field }) => (
+              <FormField
+                id="city"
+                label="Město"
+                name={field.name}
+                type="text"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                errorMessage={errors.shippingAddress?.city?.message}
+                required
+                disabled={isCompleting}
+              />
+            )}
           />
-          <Select
-            id="country_code"
-            label="Země"
-            size="lg"
-            clearIcon={false}
-            options={COUNTRY_OPTIONS}
-            value={[formData.country_code]}
-            onValueChange={(details) => {
-              const value = details.value[0]
-              if (value) {
-                handleFieldChange('country_code', value)
-                // Re-validate postal code when country changes
-                if (errors.postal_code) {
-                  handleFieldBlur('postal_code')
-                }
-              }
-            }}
-            disabled={isUpdating}
-            className="grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center"
+          <Controller
+            name="shippingAddress.country_code"
+            control={control}
+            rules={ADDRESS_VALIDATION_RULES.country_code}
+            render={({ field }) => (
+              <Select
+                id="country_code"
+                label="Země"
+                size="lg"
+                clearIcon={false}
+                options={COUNTRY_OPTIONS}
+                value={[field.value || 'cz']}
+                onValueChange={(details) => {
+                  const value = details.value[0]
+                  if (value) {
+                    field.onChange(value)
+                  }
+                }}
+                disabled={isCompleting}
+                className="grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center"
+              />
+            )}
           />
         </div>
 
         {/* State/Province | Postal code */}
         <div className="grid grid-cols-2 gap-300">
-          <FormField
-            id="province"
-            label="Kraj (volitelné)"
-            name="province"
-            type="text"
-            value={formData.province || ''}
-            onChange={(e) => handleFieldChange('province', e.target.value)}
-            disabled={isUpdating}
+          <Controller
+            name="shippingAddress.province"
+            control={control}
+            render={({ field }) => (
+              <FormField
+                id="province"
+                label="Kraj (volitelné)"
+                name={field.name}
+                type="text"
+                value={field.value || ''}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={isCompleting}
+              />
+            )}
           />
-          <FormField
-            id="postal_code"
-            label="PSČ"
-            name="postal_code"
-            type="text"
-            value={formData.postal_code}
-            onChange={(e) => handleFieldChange('postal_code', e.target.value)}
-            onBlur={() => handleFieldBlur('postal_code')}
-            errorMessage={errors.postal_code}
-            required
-            disabled={isUpdating}
-            placeholder={formData.country_code === 'cz' ? '110 00' : '811 01'}
+          <Controller
+            name="shippingAddress.postal_code"
+            control={control}
+            rules={ADDRESS_VALIDATION_RULES.postal_code}
+            render={({ field }) => (
+              <FormField
+                id="postal_code"
+                label="PSČ"
+                name={field.name}
+                type="text"
+                value={field.value}
+                onChange={(e) => {
+                  // Auto-format postal code
+                  field.onChange(formatPostalCode(e.target.value))
+                }}
+                onBlur={field.onBlur}
+                errorMessage={errors.shippingAddress?.postal_code?.message}
+                required
+                disabled={isCompleting}
+                placeholder={field.value === 'cz' ? '110 00' : '811 01'}
+              />
+            )}
           />
         </div>
 
         {/* Phone */}
-        <FormField
-          id="phone"
-          label="Telefon (volitelné)"
-          name="phone"
-          type="tel"
-          value={formData.phone || ''}
-          onChange={(e) => handleFieldChange('phone', e.target.value)}
-          onBlur={() => handleFieldBlur('phone')}
-          errorMessage={errors.phone}
-          disabled={isUpdating}
-          placeholder="+420 123 456 789"
+        <Controller
+          name="shippingAddress.phone"
+          control={control}
+          rules={ADDRESS_VALIDATION_RULES.phone}
+          render={({ field }) => (
+            <FormField
+              id="phone"
+              label="Telefon (volitelné)"
+              name={field.name}
+              type="tel"
+              value={field.value || ''}
+              onChange={(e) => {
+                // Auto-format phone number
+                field.onChange(formatPhoneNumber(e.target.value))
+              }}
+              onBlur={field.onBlur}
+              errorMessage={errors.shippingAddress?.phone?.message}
+              disabled={isCompleting}
+              placeholder="+420 123 456 789"
+            />
+          )}
         />
       </form>
 
-      {/* Info text */}
+      {/* Save to profile panel (only for logged-in customers with changes) */}
+      <SaveAddressPanel />
+
+      {/* Info text for guests */}
       {!customer && (
         <p className="mt-400 text-fg-tertiary text-sm">
-          💡 Přihlaste se pro uložení adresy do svého účtu
+          Přihlaste se pro uložení adresy do svého účtu
         </p>
       )}
     </section>
