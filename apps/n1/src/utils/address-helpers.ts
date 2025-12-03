@@ -3,6 +3,22 @@ import type { StoreCustomerAddress } from '@/services/customer-service'
 import type { AddressFormData } from './address-validation'
 
 /**
+ * Default empty address for form initialization
+ */
+export const DEFAULT_ADDRESS: AddressFormData = {
+  first_name: '',
+  last_name: '',
+  company: '',
+  address_1: '',
+  address_2: '',
+  city: '',
+  province: '',
+  postal_code: '',
+  country_code: DEFAULT_COUNTRY_CODE,
+  phone: '',
+}
+
+/**
  * Generická konverze adresy na AddressFormData
  * Funguje pro customer address, cart address nebo jakýkoliv compatible address objekt
  */

@@ -1,6 +1,6 @@
 'use client'
 
-import type { HttpTypes } from '@medusajs/types'
+import { COUNTRY_OPTIONS } from '@/lib/constants'
 import type {
   AddressErrors,
   AddressFieldKey,
@@ -8,10 +8,11 @@ import type {
   AddressTouched,
 } from '@/utils/address-validation'
 import {
-  formatPostalCode,
   validateAddressField,
   validateAddressForm,
 } from '@/utils/address-validation'
+import { formatPostalCode } from '@/utils/format/format-postal-code'
+import type { HttpTypes } from '@medusajs/types'
 import { Button } from '@ui/atoms/button'
 import { Dialog } from '@ui/molecules/dialog'
 import { FormInput } from '@ui/molecules/form-input'
@@ -26,11 +27,6 @@ interface AddressFormDialogProps {
   isSubmitting?: boolean
   mode?: 'add' | 'edit'
 }
-
-const COUNTRY_OPTIONS = [
-  { value: 'cz', label: 'Czech Republic', displayValue: 'Czech Republic' },
-  { value: 'sk', label: 'Slovakia', displayValue: 'Slovakia' },
-]
 
 export function AddressFormDialog({
   open,

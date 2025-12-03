@@ -1,0 +1,217 @@
+'use client'
+
+import { useAuth } from '@/hooks/use-auth'
+import { useCart, useCompleteCart } from '@/hooks/use-cart'
+import { useCheckoutPayment } from '@/hooks/use-checkout-payment'
+import { useCheckoutShipping } from '@/hooks/use-checkout-shipping'
+import { useRegion } from '@/hooks/use-region'
+import { useUpdateCartAddress } from '@/hooks/use-update-cart-address'
+import {
+  DEFAULT_ADDRESS,
+  addressToFormData,
+  getDefaultAddress,
+} from '@/utils/address-helpers'
+import type { AddressFormData } from '@/utils/address-validation'
+import { useRouter } from 'next/navigation'
+import {
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import {
+  FormProvider,
+  type UseFormReturn,
+  useForm,
+  useFormContext,
+} from 'react-hook-form'
+
+// ============================================================================
+// Types
+// ============================================================================
+
+export interface CheckoutFormData {
+  shippingAddress: AddressFormData
+}
+
+interface CheckoutContextValue {
+  form: UseFormReturn<CheckoutFormData>
+  cart: ReturnType<typeof useCart>['cart']
+  isCartLoading: boolean
+  hasItems: boolean
+  shipping: ReturnType<typeof useCheckoutShipping>
+  payment: ReturnType<typeof useCheckoutPayment>
+  customer: ReturnType<typeof useAuth>['customer']
+  selectedAddressId: string | null
+  setSelectedAddressId: (id: string | null) => void
+  completeCheckout: () => Promise<void>
+  isCompleting: boolean
+  error: string | null
+  isReady: boolean
+}
+
+const CheckoutContext = createContext<CheckoutContextValue | null>(null)
+
+// ============================================================================
+// Provider
+// ============================================================================
+
+export function CheckoutProvider({ children }: { children: ReactNode }) {
+  const router = useRouter()
+
+  // Core data hooks
+  const { customer } = useAuth()
+  const { cart, isLoading: isCartLoading, hasItems } = useCart()
+  const { regionId } = useRegion()
+
+  // Checkout sub-hooks
+  const shipping = useCheckoutShipping(cart?.id, cart)
+  const payment = useCheckoutPayment(cart?.id, regionId, cart)
+
+  // Mutations
+  const { mutateAsync: updateCartAddressAsync, isPending: isSavingAddress } =
+    useUpdateCartAddress()
+  const { mutateAsync: completeCartAsync, isPending: isCompletingCart } =
+    useCompleteCart({
+      onSuccess: (order) => {
+        router.push(`/orders/${order.id}?success=true`)
+      },
+    })
+
+  // State
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null
+  )
+  const [error, setError] = useState<string | null>(null)
+
+  // Initialize form with default values
+  const form = useForm<CheckoutFormData>({
+    defaultValues: {
+      shippingAddress: DEFAULT_ADDRESS,
+    },
+    mode: 'onBlur',
+  })
+
+  // Initialize form with existing data (cart address > customer default)
+  useEffect(() => {
+    // Priority 1: Cart already has shipping address
+    if (cart?.shipping_address?.first_name) {
+      const addressData = addressToFormData(
+        cart.shipping_address
+      ) as AddressFormData
+      form.reset({ shippingAddress: addressData })
+      return
+    }
+
+    // Priority 2: Customer has saved addresses
+    if (customer?.addresses && customer.addresses.length > 0) {
+      const defaultAddress = getDefaultAddress(customer.addresses)
+      if (defaultAddress) {
+        const addressData = addressToFormData(defaultAddress) as AddressFormData
+        form.reset({ shippingAddress: addressData })
+        setSelectedAddressId(defaultAddress.id)
+      }
+    }
+  }, [cart?.shipping_address, customer?.addresses, form])
+
+  // Auto-select first shipping option when loaded
+  useEffect(() => {
+    if (
+      shipping.shippingOptions &&
+      shipping.shippingOptions.length > 0 &&
+      !shipping.selectedShippingMethodId
+    ) {
+      const firstOption = shipping.shippingOptions[0]
+      shipping.setShipping(firstOption.id)
+    }
+  }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
+
+  // Complete checkout flow
+  const completeCheckout = async () => {
+    if (!cart?.id) {
+      setError('Košík nebyl nalezen')
+      return
+    }
+
+    setError(null)
+
+    // 1. Validate form
+    const isValid = await form.trigger()
+    if (!isValid) {
+      setError('Prosím vyplňte všechna povinná pole')
+      return
+    }
+
+    // 2. Save shipping address to cart
+    try {
+      const { shippingAddress } = form.getValues()
+      await updateCartAddressAsync({
+        cartId: cart.id,
+        address: shippingAddress,
+      })
+    } catch {
+      setError('Nepodařilo se uložit doručovací adresu')
+      return
+    }
+
+    // 3. Complete the cart
+    try {
+      await completeCartAsync({ cartId: cart.id })
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Nepodařilo se dokončit objednávku'
+      setError(message)
+    }
+  }
+
+  // Compute isReady based on form validity and selections
+  const formState = form.formState
+  const isAddressValid =
+    formState.isValid || Object.keys(formState.errors).length === 0
+  const isReady =
+    isAddressValid &&
+    !!shipping.selectedShippingMethodId &&
+    payment.hasPaymentSessions &&
+    !shipping.isSettingShipping &&
+    !payment.isInitiatingPayment
+
+  const value: CheckoutContextValue = {
+    form,
+    cart,
+    isCartLoading,
+    hasItems,
+    shipping,
+    payment,
+    customer,
+    selectedAddressId,
+    setSelectedAddressId,
+    completeCheckout,
+    isCompleting: isSavingAddress || isCompletingCart,
+    error,
+    isReady,
+  }
+
+  return (
+    <CheckoutContext.Provider value={value}>
+      <FormProvider {...form}>{children}</FormProvider>
+    </CheckoutContext.Provider>
+  )
+}
+
+// ============================================================================
+// Hooks
+// ============================================================================
+
+export function useCheckoutContext() {
+  const context = useContext(CheckoutContext)
+  if (!context) {
+    throw new Error('useCheckoutContext must be used within CheckoutProvider')
+  }
+  return context
+}
+
+/** Shorthand for useFormContext with CheckoutFormData typing */
+export function useCheckoutForm() {
+  return useFormContext<CheckoutFormData>()
+}
