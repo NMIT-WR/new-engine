@@ -21,7 +21,9 @@ export interface AuthResponse {
   customer?: StoreCustomer
 }
 
-export async function login(credentials: LoginCredentials): Promise<string | undefined> {
+export async function login(
+  credentials: LoginCredentials
+): Promise<string | undefined> {
   try {
     const token = await sdk.auth.login('customer', 'emailpass', {
       email: credentials.email,
@@ -40,7 +42,9 @@ export async function login(credentials: LoginCredentials): Promise<string | und
   }
 }
 
-export async function register(data: RegisterData): Promise<string | undefined> {
+export async function register(
+  data: RegisterData
+): Promise<string | undefined> {
   try {
     // Step 1: Register creates auth identity (email + password)
     const token = await sdk.auth.register('customer', 'emailpass', {
@@ -93,7 +97,19 @@ export async function logout(): Promise<void> {
 export async function getCustomer(): Promise<StoreCustomer | null> {
   try {
     const response = await sdk.store.customer.retrieve()
-    return response.customer || null
+    const customer = response.customer
+
+    if (!customer) {
+      return null
+    }
+
+    if (customer.addresses?.length) {
+      customer.addresses = [...customer.addresses].sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      )
+    }
+    return customer
   } catch (err) {
     // Not authenticated or session expired
     return null
