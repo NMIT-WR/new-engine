@@ -5,7 +5,7 @@ import { addressToFormData } from '@/utils/address-helpers'
 import type { AddressFormData } from '@/utils/address-validation'
 import { formatPostalCode } from '@/utils/format/format-postal-code'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { Select } from '@ui/molecules/select'
+import { Select } from '@techsio/ui-kit/molecules/select'
 import { useMemo } from 'react'
 
 interface AddressPickerProps {
@@ -30,10 +30,10 @@ export function AddressPicker({
           className="flex w-full items-center justify-between gap-2"
         >
           <div className="flex flex-col gap-0.5 overflow-hidden">
-            <span className="truncate font-medium text-sm">
+            <span className="truncate text-fg-secondary text-sm">
               {address.city}, {formatPostalCode(address.postal_code ?? '')}
             </span>
-            <span className="truncate text-fg-tertiary text-xs">
+            <span className="truncate font-normal text-fg-secondary text-xs">
               {address.address_1}
               {address.address_2 ? `, ${address.address_2}` : ''}
             </span>
@@ -60,7 +60,7 @@ export function AddressPicker({
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-fg-tertiary text-xs">Vyberte z vašich adres</h2>
+      <h2 className="text-sm">Vyberte z vašich adres</h2>
       <Select
         options={options}
         value={selectedId ? [selectedId] : []}
