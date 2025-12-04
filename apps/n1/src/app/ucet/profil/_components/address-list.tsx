@@ -7,6 +7,7 @@ import {
   useUpdateAddress,
 } from '@/hooks/use-addresses'
 import { useToast } from '@/hooks/use-toast'
+import { AddressValidationError } from '@/lib/errors'
 import type {
   CreateAddressData,
   StoreCustomerAddress,
@@ -213,8 +214,13 @@ function AddressForm({
             toaster.create({ title: 'Adresa upravena', type: 'success' })
             onSuccess()
           },
-          onError: () => {
-            toaster.create({ title: 'Chyba při úpravě', type: 'error' })
+          onError: (error) => {
+            const message = AddressValidationError.isAddressValidationError(
+              error
+            )
+              ? error.firstError
+              : 'Chyba při úpravě'
+            toaster.create({ title: message, type: 'error' })
           },
         }
       )
@@ -224,8 +230,11 @@ function AddressForm({
           toaster.create({ title: 'Adresa přidána', type: 'success' })
           onSuccess()
         },
-        onError: () => {
-          toaster.create({ title: 'Chyba při přidání', type: 'error' })
+        onError: (error) => {
+          const message = AddressValidationError.isAddressValidationError(error)
+            ? error.firstError
+            : 'Chyba při přidání'
+          toaster.create({ title: message, type: 'error' })
         },
       })
     }
