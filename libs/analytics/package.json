@@ -4,11 +4,15 @@
   "type": "module",
   "exports": {
     "./meta": {
-      "types": "./dist/src/meta/index.d.ts",
+      "types": "./dist/meta/index.d.ts",
       "import": "./dist/meta/index.js"
     },
+    "./google": {
+      "types": "./dist/google/index.d.ts",
+      "import": "./dist/google/index.js"
+    },
     "./core": {
-      "types": "./dist/src/core/index.d.ts",
+      "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
     }
   },
