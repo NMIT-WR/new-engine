@@ -1,6 +1,7 @@
 'use client'
 
 import { useCreateAddress, useUpdateAddress } from '@/hooks/use-addresses'
+import { AddressValidationError } from '@/lib/errors'
 import { Button } from '@ui/atoms/button'
 import { useState } from 'react'
 import { useFormState } from 'react-hook-form'
@@ -10,29 +11,20 @@ import {
   useCheckoutForm,
 } from '../_context/checkout-context'
 
-/**
- * Panel for saving address changes to customer profile.
- * Shows only when:
- * - Customer is logged in
- * - Form has been modified (isDirty)
- */
 export function SaveAddressPanel() {
   const { customer, selectedAddressId } = useCheckoutContext()
-  const { watch, reset, control } = useCheckoutForm()
+  const { getValues, reset, control } = useCheckoutForm()
 
-  // Use useFormState for reliable isDirty tracking
   const { isDirty } = useFormState<CheckoutFormData>({ control })
 
   const [saveStatus, setSaveStatus] = useState<
     'idle' | 'saving' | 'success' | 'error'
   >('idle')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   // Mutations
   const { mutateAsync: createAddressAsync } = useCreateAddress()
   const { mutateAsync: updateAddressAsync } = useUpdateAddress()
-
-  // Watch form values
-  const formValues = watch('shippingAddress')
 
   // Don't render if not logged in or form hasn't been modified
   if (!customer || !isDirty) {
@@ -40,68 +32,83 @@ export function SaveAddressPanel() {
   }
 
   const handleSaveNew = async () => {
+    // Get current values at execution time (not render time!)
+    const currentValues = getValues('shippingAddress')
     setSaveStatus('saving')
+    setErrorMessage(null)
     try {
-      await createAddressAsync(formValues)
-      reset({ shippingAddress: formValues }) // Clear isDirty
+      await createAddressAsync(currentValues)
+      reset({ shippingAddress: currentValues }) // Clear isDirty
       setSaveStatus('success')
       setTimeout(() => setSaveStatus('idle'), 2000)
-    } catch {
+    } catch (error) {
+      if (AddressValidationError.isAddressValidationError(error)) {
+        setErrorMessage(error.firstError)
+      } else {
+        setErrorMessage('Nepodařilo se uložit adresu')
+      }
       setSaveStatus('error')
-      setTimeout(() => setSaveStatus('idle'), 3000)
+      setTimeout(() => {
+        setSaveStatus('idle')
+        setErrorMessage(null)
+      }, 4000)
     }
   }
 
   const handleUpdate = async () => {
-    if (!selectedAddressId) return
+    if (!selectedAddressId) {
+      return
+    }
+    // Get current values at execution time (not render time!)
+    const currentValues = getValues('shippingAddress')
     setSaveStatus('saving')
+    setErrorMessage(null)
     try {
       await updateAddressAsync({
         addressId: selectedAddressId,
-        data: formValues,
+        data: currentValues,
       })
-      reset({ shippingAddress: formValues }) // Clear isDirty
+      reset({ shippingAddress: currentValues }) // Clear isDirty
       setSaveStatus('success')
       setTimeout(() => setSaveStatus('idle'), 2000)
-    } catch {
+    } catch (error) {
+      if (AddressValidationError.isAddressValidationError(error)) {
+        setErrorMessage(error.firstError)
+      } else {
+        setErrorMessage('Nepodařilo se aktualizovat adresu')
+      }
       setSaveStatus('error')
-      setTimeout(() => setSaveStatus('idle'), 3000)
+      setTimeout(() => {
+        setSaveStatus('idle')
+        setErrorMessage(null)
+      }, 4000)
     }
   }
 
   return (
-    <div className="mt-400 flex flex-wrap items-center gap-300 rounded border border-info bg-info-light p-300">
-      <span className="text-fg-secondary text-sm">
+    <div className="mt-400 flex flex-wrap items-center gap-300 rounded border border-info bg-info-light/20 p-300">
+      <span
+        className={`text-sm ${saveStatus === 'error' ? 'text-danger' : 'text-fg-secondary'}`}
+      >
         {saveStatus === 'saving' && 'Ukládání...'}
         {saveStatus === 'success' && '✓ Uloženo'}
-        {saveStatus === 'error' && 'Nepodařilo se uložit'}
+        {/*saveStatus === 'error' && (errorMessage || 'Nepodařilo se uložit')*/}
         {saveStatus === 'idle' && 'Uložit změny do profilu?'}
       </span>
 
       {saveStatus === 'idle' && (
         <div className="flex gap-200">
-          <Button
-            type="button"
-            variant="tertiary"
-            theme="borderless"
-            size="sm"
-            onClick={handleSaveNew}
-          >
-            Uložit jako novou
+          <Button size="sm" onClick={handleSaveNew}>
+            Uložit jako novou adresu
           </Button>
           {selectedAddressId && (
-            <Button
-              type="button"
-              variant="tertiary"
-              theme="borderless"
-              size="sm"
-              onClick={handleUpdate}
-            >
+            <Button size="sm" onClick={handleUpdate}>
               Aktualizovat
             </Button>
           )}
         </div>
       )}
+      {saveStatus === 'error' && (errorMessage || 'Nepodařilo se uložit')}
     </div>
   )
 }
