@@ -18,6 +18,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -26,10 +27,6 @@ import {
   useForm,
   useFormContext,
 } from 'react-hook-form'
-
-// ============================================================================
-// Types
-// ============================================================================
 
 export interface CheckoutFormData {
   shippingAddress: AddressFormData
@@ -52,10 +49,6 @@ interface CheckoutContextValue {
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null)
-
-// ============================================================================
-// Provider
-// ============================================================================
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
@@ -85,6 +78,9 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   )
   const [error, setError] = useState<string | null>(null)
 
+  // Track if form has been initialized (prevents reset after address save)
+  const isFormInitialized = useRef(false)
+
   // Initialize form with default values
   const form = useForm<CheckoutFormData>({
     defaultValues: {
@@ -94,13 +90,20 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   })
 
   // Initialize form with existing data (cart address > customer default)
+  // Only runs ONCE on initial data load, not on subsequent customer.addresses changes
   useEffect(() => {
+    // Skip if already initialized (prevents reset after saving address)
+    if (isFormInitialized.current) {
+      return
+    }
+
     // Priority 1: Cart already has shipping address
     if (cart?.shipping_address?.first_name) {
       const addressData = addressToFormData(
         cart.shipping_address
       ) as AddressFormData
       form.reset({ shippingAddress: addressData })
+      isFormInitialized.current = true
       return
     }
 
@@ -111,6 +114,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         const addressData = addressToFormData(defaultAddress) as AddressFormData
         form.reset({ shippingAddress: addressData })
         setSelectedAddressId(defaultAddress.id)
+        isFormInitialized.current = true
       }
     }
   }, [cart?.shipping_address, customer?.addresses, form])
@@ -127,7 +131,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     }
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
 
-  // Complete checkout flow
   const completeCheckout = async () => {
     if (!cart?.id) {
       setError('Košík nebyl nalezen')
