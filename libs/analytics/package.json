@@ -1,0 +1,33 @@
+{
+  "name": "@libs/analytics",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./meta": {
+      "types": "./dist/src/meta/index.d.ts",
+      "import": "./dist/meta/index.js"
+    },
+    "./core": {
+      "types": "./dist/src/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch"
+  },
+  "devDependencies": {
+    "@rsbuild/plugin-react": "^1.4.1",
+    "@rslib/core": "^0.18.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": ">=19.2.0",
+    "next": ">=16.0.0"
+  }
+}
