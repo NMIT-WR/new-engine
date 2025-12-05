@@ -1,5 +1,8 @@
 'use client'
 
+import { HeurekaProduct } from '@libs/analytics/heureka'
+import { useMetaPixel } from '@libs/analytics/meta'
+import { useEffect } from 'react'
 import { Heading } from '@/components/heading'
 import { Gallery } from '@/components/organisms/gallery'
 import { ProductInfoPanel } from '@/components/product-detail/product-info-panel'
@@ -34,6 +37,22 @@ export default function ProductPage() {
     ? `${detail?.title} - ${selectedVariant.title}`
     : detail?.title
   const quantity = selectedVariant?.inventory_quantity ?? 0
+
+  // Meta Pixel - ViewContent tracking
+  const { trackViewContent } = useMetaPixel()
+
+  useEffect(() => {
+    if (detail && selectedVariant) {
+      trackViewContent({
+        content_ids: [selectedVariant.id],
+        content_type: 'product',
+        content_name: detail.title,
+        content_category: rawProduct?.categories?.[0]?.name,
+        currency: selectedVariant.calculated_price?.currency_code ?? 'CZK',
+        value: (selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0),
+      })
+    }
+  }, [detail?.id, selectedVariant?.id])
 
   if (isLoading) {
     return (
@@ -111,6 +130,9 @@ export default function ProductPage() {
 
   return (
     <div className="container mx-auto p-400">
+      {/* Heureka Product Tracking */}
+      <HeurekaProduct country="cz" />
+
       {/* PRODUCT DETAIL COMPONENT */}
       <div className="grid grid-cols-1 gap-700 md:grid-cols-[auto_1fr]">
         <header className="col-span-1 space-y-400 md:col-span-2">
