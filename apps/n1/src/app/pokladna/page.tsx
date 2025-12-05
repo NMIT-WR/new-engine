@@ -1,7 +1,9 @@
 'use client'
 
+import { useMetaPixel } from '@libs/analytics/meta'
 import { Button } from '@ui/atoms/button'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { OrderSummary } from './_components/order-summary'
 import { PaymentFormSection } from './_components/payment-form-section'
 import { ShippingAddressSection } from './_components/shipping-address-section'
@@ -31,6 +33,27 @@ function CheckoutContent() {
     error,
     completeCheckout,
   } = useCheckoutContext()
+  const { trackInitiateCheckout } = useMetaPixel()
+
+  // Meta Pixel - InitiateCheckout tracking
+  useEffect(() => {
+    if (cart && hasItems) {
+      const items = cart.items || []
+      trackInitiateCheckout({
+        content_ids: items
+          .map((item) => item.variant_id)
+          .filter((id): id is string => !!id),
+        content_type: 'product',
+        currency: (cart.currency_code ?? 'CZK').toUpperCase(),
+        value: cart.total ?? 0,
+        num_items: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
+        contents: items.map((item) => ({
+          id: item.variant_id || '',
+          quantity: item.quantity || 1,
+        })),
+      })
+    }
+  }, [cart?.id, hasItems, trackInitiateCheckout])
 
   // Loading state
   if (isCartLoading) {
