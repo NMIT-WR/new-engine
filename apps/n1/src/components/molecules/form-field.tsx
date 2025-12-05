@@ -15,6 +15,7 @@ interface FormFieldProps
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   className?: string
   containerClassName?: string
+  //isTouched?: boolean
 }
 
 export const FormField = ({
@@ -29,6 +30,7 @@ export const FormField = ({
   onChange,
   className = '',
   containerClassName = '',
+  //isTouched = false,
   ...inputProps
 }: FormFieldProps) => {
   return (
@@ -48,7 +50,7 @@ export const FormField = ({
         {...inputProps}
       />
       {errorMessage && (
-        <p className="font-medium text-2xs text-danger">
+        <p className="font-medium text-2xs text-danger peer-user-invalid:visible">
           {errorMessage}
         </p>
       )}

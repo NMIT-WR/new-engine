@@ -6,6 +6,8 @@ import { N1Header } from '@/components/header/n1-header'
 import { HeaderProvider } from '@/components/header/store/header-context'
 import { N1Footer } from '@/components/n1-footer'
 import { Providers } from '@/components/provider'
+import { GoogleTag } from '@libs/analytics/google'
+import { MetaPixel } from '@libs/analytics/meta'
 import type { ReactNode } from 'react'
 
 const openSans = Open_Sans({
@@ -28,6 +30,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.variable} antialiased`}>
+        <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''} />
+        <GoogleTag adsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? ''} />
         <Providers>
           <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
             <HeaderProvider>
