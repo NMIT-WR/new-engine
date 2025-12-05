@@ -1,4 +1,5 @@
 'use client'
+import { useMetaPixel } from '@libs/analytics/meta'
 import { useAddToCart, useCart } from '@/hooks/use-cart'
 import { useRegion } from '@/hooks/use-region'
 import { useCartToast } from '@/hooks/use-toast'
@@ -21,6 +22,7 @@ export const AddToCartSection = ({
   const { cart } = useCart()
   const { regionId } = useRegion()
   const toast = useCartToast()
+  const { trackAddToCart } = useMetaPixel()
 
   const handleAddToCart = async () => {
     // Validate region context
@@ -62,6 +64,25 @@ export const AddToCartSection = ({
       },
       {
         onSuccess: () => {
+          // Meta Pixel - AddToCart tracking
+          trackAddToCart({
+            content_ids: [selectedVariant.id],
+            content_type: 'product',
+            content_name: detail.title,
+            currency: (
+              selectedVariant.calculated_price?.currency_code ?? 'CZK'
+            ).toUpperCase(),
+            value:
+              (selectedVariant.calculated_price?.calculated_amount_with_tax ??
+                0) * quantity,
+            contents: [
+              {
+                id: selectedVariant.id,
+                quantity,
+              },
+            ],
+          })
+
           toast.addedToCart(detail.title, quantity)
           // Reset quantity after successful add
           setQuantity(1)
