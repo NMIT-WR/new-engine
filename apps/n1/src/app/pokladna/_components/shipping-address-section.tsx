@@ -33,10 +33,17 @@ export function ShippingAddressSection() {
     setSelectedAddressId(id)
   }
 
+  const handleCheck = () => {
+    console.log('errors:', errors.shippingAddress)
+  }
+
   return (
     <section className="rounded border border-border-secondary bg-surface/70 p-400">
       <div className="mb-400 space-y-300">
-        <h2 className="font-semibold text-fg-primary text-lg">
+        <h2
+          className="font-semibold text-fg-primary text-lg"
+          onClick={handleCheck}
+        >
           Doručovací adresa
         </h2>
 
@@ -57,7 +64,7 @@ export function ShippingAddressSection() {
             name="shippingAddress.first_name"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.first_name}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormField
                 id="first_name"
                 label="Jméno"
@@ -66,7 +73,7 @@ export function ShippingAddressSection() {
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
-                errorMessage={errors.shippingAddress?.first_name?.message}
+                errorMessage={fieldState.error?.message}
                 required
                 disabled={isCompleting}
               />
@@ -76,7 +83,7 @@ export function ShippingAddressSection() {
             name="shippingAddress.last_name"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.last_name}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormField
                 id="last_name"
                 label="Příjmení"
@@ -85,7 +92,7 @@ export function ShippingAddressSection() {
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
-                errorMessage={errors.shippingAddress?.last_name?.message}
+                errorMessage={fieldState.error?.message}
                 required
                 disabled={isCompleting}
               />
@@ -116,7 +123,7 @@ export function ShippingAddressSection() {
           name="shippingAddress.address_1"
           control={control}
           rules={ADDRESS_VALIDATION_RULES.address_1}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormField
               id="address_1"
               label="Adresa"
@@ -125,7 +132,7 @@ export function ShippingAddressSection() {
               value={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
-              errorMessage={errors.shippingAddress?.address_1?.message}
+              errorMessage={fieldState.error?.message}
               required
               disabled={isCompleting}
               placeholder="Ulice a číslo popisné"
@@ -157,7 +164,7 @@ export function ShippingAddressSection() {
             name="shippingAddress.city"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.city}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormField
                 id="city"
                 label="Město"
@@ -166,7 +173,7 @@ export function ShippingAddressSection() {
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
-                errorMessage={errors.shippingAddress?.city?.message}
+                errorMessage={fieldState.error?.message}
                 required
                 disabled={isCompleting}
               />
@@ -219,7 +226,7 @@ export function ShippingAddressSection() {
             name="shippingAddress.postal_code"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.postal_code}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormField
                 id="postal_code"
                 label="PSČ"
@@ -231,7 +238,7 @@ export function ShippingAddressSection() {
                   field.onChange(formatPostalCode(e.target.value))
                 }}
                 onBlur={field.onBlur}
-                errorMessage={errors.shippingAddress?.postal_code?.message}
+                errorMessage={fieldState.error?.message}
                 required
                 disabled={isCompleting}
                 placeholder={field.value === 'cz' ? '110 00' : '811 01'}
@@ -245,7 +252,7 @@ export function ShippingAddressSection() {
           name="shippingAddress.phone"
           control={control}
           rules={ADDRESS_VALIDATION_RULES.phone}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormField
               id="phone"
               label="Telefon (volitelné)"
@@ -257,7 +264,7 @@ export function ShippingAddressSection() {
                 field.onChange(formatPhoneNumber(e.target.value))
               }}
               onBlur={field.onBlur}
-              errorMessage={errors.shippingAddress?.phone?.message}
+              errorMessage={fieldState.error?.message}
               disabled={isCompleting}
               placeholder="+420 123 456 789"
             />

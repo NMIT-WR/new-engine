@@ -1,5 +1,8 @@
 'use client'
 
+import { useGoogleAds } from '@libs/analytics/google'
+import { HeurekaOrder } from '@libs/analytics/heureka'
+import { useMetaPixel } from '@libs/analytics/meta'
 import { CheckoutReview } from '@/app/pokladna/_components/checkout-review'
 import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
@@ -7,6 +10,7 @@ import { getOrderById } from '@/services/order-service'
 import { Button } from '@ui/atoms/button'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useRef } from 'react'
 
 export default function OrderPage() {
   const router = useRouter()
@@ -14,6 +18,10 @@ export default function OrderPage() {
   const searchParams = useSearchParams()
   const orderId = params.orderId as string
   const showSuccessBanner = searchParams.get('success') === 'true'
+
+  const { trackPurchase: trackMetaPurchase } = useMetaPixel()
+  const { trackPurchase: trackGooglePurchase } = useGoogleAds()
+  const purchaseTracked = useRef(false)
 
   const {
     data: order,
@@ -31,6 +39,45 @@ export default function OrderPage() {
     },
     ...cacheConfig.semiStatic,
   })
+
+  // Analytics - Purchase tracking (only on new purchases with success=true)
+  useEffect(() => {
+    if (showSuccessBanner && order && !purchaseTracked.current) {
+      purchaseTracked.current = true
+
+      const items = order.items || []
+      const currency = (order.currency_code ?? 'CZK').toUpperCase()
+      const value = order.total ?? 0
+
+      // Meta Pixel - Purchase
+      trackMetaPurchase({
+        currency,
+        value,
+        content_ids: items
+          .map((item) => item.variant_id)
+          .filter((id): id is string => !!id),
+        content_type: 'product',
+        num_items: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
+        contents: items.map((item) => ({
+          id: item.variant_id || '',
+          quantity: item.quantity || 1,
+        })),
+      })
+
+      // Google Ads - Purchase conversion
+      trackGooglePurchase({
+        transaction_id: order.id,
+        currency,
+        value,
+        items: items.map((item) => ({
+          id: item.variant_id || '',
+          name: item.title || '',
+          quantity: item.quantity || 1,
+          price: item.unit_price,
+        })),
+      })
+    }
+  }, [showSuccessBanner, order, trackMetaPurchase, trackGooglePurchase])
 
   // Loading state
   if (isLoading) {
@@ -60,6 +107,23 @@ export default function OrderPage() {
 
   return (
     <div className="container mx-auto min-h-screen p-500">
+      {/* Heureka Order Tracking - only on successful new orders */}
+      {showSuccessBanner && (
+        <HeurekaOrder
+          apiKey={process.env.NEXT_PUBLIC_HEUREKA_API_KEY ?? ''}
+          orderId={order.id}
+          products={(order.items || []).map((item) => ({
+            id: item.variant_id || '',
+            name: item.title || '',
+            priceWithVat: item.unit_price ?? 0,
+            quantity: item.quantity || 1,
+          }))}
+          totalWithVat={order.total ?? 0}
+          currency="CZK"
+          country="cz"
+        />
+      )}
+
       {showSuccessBanner && (
         <div className="mb-500 rounded-lg border border-success bg-success/10 p-400">
           <h2 className="font-semibold text-fg-primary text-lg">
