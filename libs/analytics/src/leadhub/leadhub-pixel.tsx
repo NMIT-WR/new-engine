@@ -1,0 +1,66 @@
+'use client'
+
+import Script from 'next/script'
+import type { LeadhubConfig } from './types'
+
+export type LeadhubPixelProps = LeadhubConfig
+
+/**
+ * Leadhub Pixel initialization component
+ *
+ * Place this component in your root layout to initialize the Leadhub tracking pixel.
+ * It will automatically track pageviews on every page.
+ *
+ * @example
+ * ```tsx
+ * // app/layout.tsx
+ * import { LeadhubPixel } from '@libs/analytics/leadhub'
+ *
+ * export default function RootLayout({ children }) {
+ *   return (
+ *     <html>
+ *       <body>
+ *         <LeadhubPixel trackingId={process.env.NEXT_PUBLIC_LEADHUB_TRACKING_ID} />
+ *         {children}
+ *       </body>
+ *     </html>
+ *   )
+ * }
+ * ```
+ */
+export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
+	if (!trackingId) {
+		if (debug) {
+			console.warn('[Leadhub] No tracking ID provided, skipping initialization')
+		}
+		return null
+	}
+
+	// Leadhub init script - creates window.lhi() function and loads agent.js
+	// Parameters: w=window, d=document, x='script', n='lhi', u=agentUrl, t=trackingId
+	const initScript = `
+		(function(w,d,x,n,u,t,f,s,o){
+			f='LHInsights';
+			w[n]=w[f]=w[f]||function(n,d){
+				(w[f].q=w[f].q||[]).push([n,d])
+			};
+			w[f].l=1*new Date();
+			w[f].t=t;
+			s=d.createElement(x);
+			s.async=1;
+			s.src=u+'?t='+t;
+			o=d.getElementsByTagName(x)[0];
+			o.parentNode.insertBefore(s,o)
+		})(window,document,'script','lhi','//www.lhinsights.com/agent.js','${trackingId}');
+		lhi('pageview');
+		${debug ? "console.log('[Leadhub] Initialized with tracking ID:', '" + trackingId + "');" : ''}
+	`
+
+	return (
+		<Script
+			id="leadhub-pixel"
+			strategy="afterInteractive"
+			dangerouslySetInnerHTML={{ __html: initScript }}
+		/>
+	)
+}

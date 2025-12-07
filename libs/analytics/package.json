@@ -15,6 +15,10 @@
       "types": "./dist/heureka/index.d.ts",
       "import": "./dist/heureka/index.js"
     },
+    "./leadhub": {
+      "types": "./dist/leadhub/index.d.ts",
+      "import": "./dist/leadhub/index.js"
+    },
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
