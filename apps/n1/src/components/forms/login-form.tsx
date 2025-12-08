@@ -1,6 +1,7 @@
 import { useLogin } from '@/hooks/use-login'
 import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
+import { useLeadhub } from '@libs/analytics/leadhub'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
 import Link from 'next/link'
@@ -25,9 +26,19 @@ export const LoginForm = ({
 }: LoginFormProps) => {
   const formRef = useRef<HTMLFormElement>(null)
   const toast = useAuthToast()
+  const { trackIdentify } = useLeadhub()
+  const emailRef = useRef<string>('')
 
   const login = useLogin({
     onSuccess: () => {
+      // Track customer identification in Leadhub
+      if (emailRef.current) {
+        trackIdentify({
+          email: emailRef.current,
+          subscribe: [],
+        })
+      }
+
       toast.loginSuccess()
       formRef.current?.reset()
       onSuccess?.()
@@ -40,9 +51,13 @@ export const LoginForm = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+
+    // Store email for Leadhub tracking after successful login
+    emailRef.current = email
 
     login.mutate({
-      email: formData.get('email') as string,
+      email,
       password: formData.get('password') as string,
     })
   }

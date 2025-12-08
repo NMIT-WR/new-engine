@@ -1,4 +1,5 @@
 'use client'
+import { useLeadhub } from '@libs/analytics/leadhub'
 import { Heading } from '@/components/heading'
 import { N1Aside } from '@/components/n1-aside'
 import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
@@ -26,6 +27,7 @@ import type { IconType } from '@techsio/ui-kit/atoms/icon'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import NextLink from 'next/link'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function ProductPage() {
   const params = useParams()
@@ -33,6 +35,7 @@ export default function ProductPage() {
   const searchParams = useSearchParams()
   const handle = params.handle as string
   const { regionId, countryCode } = useRegion()
+  const { trackViewCategory } = useLeadhub()
 
   const currentCategory = allCategories.find((cat) => cat.handle === handle)
   const currentCategoryChildren = allCategories.filter(
@@ -41,6 +44,33 @@ export default function ProductPage() {
   const rootCategory =
     allCategories.find((cat) => cat.id === currentCategory?.root_category_id) ??
     currentCategory
+
+  // Build category path for Leadhub tracking (e.g., "Pánské > Oblečení > Trika")
+  const buildCategoryPath = (): string | null => {
+    if (!currentCategory) return null
+
+    const path: string[] = []
+    let current: typeof currentCategory | undefined = currentCategory
+
+    while (current) {
+      path.unshift(current.name)
+      const parent = allCategories.find(
+        (c) => c.id === current!.parent_category_id
+      )
+      if (!parent) break
+      current = parent
+    }
+
+    return path.join(' > ')
+  }
+
+  // Leadhub ViewCategory tracking
+  useEffect(() => {
+    const categoryPath = buildCategoryPath()
+    if (categoryPath) {
+      trackViewCategory({ category: categoryPath })
+    }
+  }, [currentCategory?.id, trackViewCategory])
 
   // Get current page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1

@@ -1,4 +1,5 @@
 'use client'
+import { useLeadhub } from '@libs/analytics/leadhub'
 import { useMetaPixel } from '@libs/analytics/meta'
 import { useAddToCart, useCart } from '@/hooks/use-cart'
 import { useRegion } from '@/hooks/use-region'
@@ -23,6 +24,7 @@ export const AddToCartSection = ({
   const { regionId } = useRegion()
   const toast = useCartToast()
   const { trackAddToCart } = useMetaPixel()
+  const { trackSetCart } = useLeadhub()
 
   const handleAddToCart = async () => {
     // Validate region context
@@ -79,6 +81,23 @@ export const AddToCartSection = ({
               {
                 id: selectedVariant.id,
                 quantity,
+              },
+            ],
+          })
+
+          // Leadhub - SetCart tracking
+          // Note: Leadhub expects the full cart state, but here we track the added item
+          // For full cart sync, consider tracking in a cart provider/effect
+          trackSetCart({
+            products: [
+              {
+                product_id: selectedVariant.id,
+                quantity,
+                value:
+                  selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
+                currency: (
+                  selectedVariant.calculated_price?.currency_code ?? 'CZK'
+                ).toUpperCase(),
               },
             ],
           })
