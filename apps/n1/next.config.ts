@@ -38,7 +38,6 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    clientSegmentCache: true,
     typedEnv: true,
   },
 
