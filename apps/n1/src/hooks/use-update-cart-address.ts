@@ -1,10 +1,7 @@
 import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import type { Cart } from '@/services/cart-service'
-import type {
-  AddressFormData,
-  AddressErrors,
-} from '@/utils/address-validation'
+import type { AddressErrors, AddressFormData } from '@/utils/address-validation'
 import { validateAddressForm } from '@/utils/address-validation'
 import type { HttpTypes } from '@medusajs/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -27,10 +24,12 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
     {
       cartId: string
       address: AddressFormData
+      email?: string
     },
     MutationContext
   >({
-    mutationFn: async ({ cartId, address }) => {
+    mutationFn: async ({ cartId, address, email }) => {
+      console.log('[CartUpdate] Email being sent to Medusa:', email)
       if (!cartId) {
         throw new Error('Cart ID is required')
       }
@@ -69,6 +68,7 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
       // Update the cart with the shipping address
       const response = await sdk.store.cart.update(cartId, {
         shipping_address: cleanedAddress,
+        email: email || undefined,
       })
 
       if (!response.cart) {

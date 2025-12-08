@@ -38,7 +38,7 @@ export const ItemCard = ({
         {/* Quantity badge */}
         <ProductCard.Badges className="absolute top-1 right-1">
           <Badge variant="secondary" className="h-8 w-8 rounded-full">
-            {item.quantity.toString() as string}x
+            {`${item.quantity}x`}
           </Badge>
         </ProductCard.Badges>
       </div>

@@ -84,6 +84,7 @@ export function AddressFormFields<T extends FormWithAddress>({
               onBlur={field.onBlur}
               errorMessage={errors?.first_name?.message}
               required
+              minLength={2}
               disabled={disabled}
             />
           )}
@@ -103,6 +104,7 @@ export function AddressFormFields<T extends FormWithAddress>({
               onBlur={field.onBlur}
               errorMessage={errors?.last_name?.message}
               required
+              minLength={2}
               disabled={disabled}
             />
           )}
@@ -143,6 +145,7 @@ export function AddressFormFields<T extends FormWithAddress>({
             onBlur={field.onBlur}
             errorMessage={errors?.address_1?.message}
             required
+            minLength={3}
             disabled={disabled}
             placeholder="Ulice a číslo popisné"
           />
@@ -184,6 +187,7 @@ export function AddressFormFields<T extends FormWithAddress>({
               onBlur={field.onBlur}
               errorMessage={errors?.city?.message}
               required
+              minLength={2}
               disabled={disabled}
             />
           )}
@@ -249,6 +253,7 @@ export function AddressFormFields<T extends FormWithAddress>({
               onBlur={field.onBlur}
               errorMessage={errors?.postal_code?.message}
               required
+              pattern="^\d{3}\s?\d{2}$"
               disabled={disabled}
               placeholder="110 00"
             />
@@ -274,6 +279,7 @@ export function AddressFormFields<T extends FormWithAddress>({
             }}
             onBlur={field.onBlur}
             errorMessage={errors?.phone?.message}
+            pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
             disabled={disabled}
             placeholder="+420 123 456 789"
           />

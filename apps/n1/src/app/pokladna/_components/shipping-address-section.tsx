@@ -3,7 +3,10 @@
 import { FormField } from '@/components/molecules/form-field'
 import { COUNTRY_OPTIONS } from '@/lib/constants'
 import type { AddressFormData } from '@/utils/address-validation'
-import { ADDRESS_VALIDATION_RULES } from '@/utils/address-validation'
+import {
+  ADDRESS_VALIDATION_RULES,
+  EMAIL_VALIDATION_RULES,
+} from '@/utils/address-validation'
 import { formatPhoneNumber } from '@/utils/format/format-phone-number'
 import { formatPostalCode } from '@/utils/format/format-postal-code'
 import { Select } from '@ui/molecules/select'
@@ -75,6 +78,7 @@ export function ShippingAddressSection() {
                 onBlur={field.onBlur}
                 errorMessage={fieldState.error?.message}
                 required
+                minLength={2}
                 disabled={isCompleting}
               />
             )}
@@ -94,6 +98,7 @@ export function ShippingAddressSection() {
                 onBlur={field.onBlur}
                 errorMessage={fieldState.error?.message}
                 required
+                minLength={2}
                 disabled={isCompleting}
               />
             )}
@@ -134,6 +139,7 @@ export function ShippingAddressSection() {
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
               required
+              minLength={3}
               disabled={isCompleting}
               placeholder="Ulice a číslo popisné"
             />
@@ -175,6 +181,7 @@ export function ShippingAddressSection() {
                 onBlur={field.onBlur}
                 errorMessage={fieldState.error?.message}
                 required
+                minLength={2}
                 disabled={isCompleting}
               />
             )}
@@ -240,6 +247,7 @@ export function ShippingAddressSection() {
                 onBlur={field.onBlur}
                 errorMessage={fieldState.error?.message}
                 required
+                pattern="^\d{3}\s?\d{2}$"
                 disabled={isCompleting}
                 placeholder={field.value === 'cz' ? '110 00' : '811 01'}
               />
@@ -265,11 +273,36 @@ export function ShippingAddressSection() {
               }}
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
+              pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
               disabled={isCompleting}
               placeholder="+420 123 456 789"
             />
           )}
         />
+
+        {/* EMAIL */}
+        {!customer && (
+          <Controller
+            name="email"
+            control={control}
+            rules={EMAIL_VALIDATION_RULES}
+            render={({ field, fieldState }) => (
+              <FormField
+                id="email"
+                label="Email"
+                name={field.name}
+                type="email"
+                value={field.value || ''}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                errorMessage={fieldState.error?.message}
+                disabled={isCompleting}
+                required
+                placeholder="vas@email.cz"
+              />
+            )}
+          />
+        )}
       </form>
 
       {/* Save to profile panel (only for logged-in customers with changes) */}
