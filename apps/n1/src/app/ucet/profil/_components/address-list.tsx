@@ -1,6 +1,7 @@
 'use client'
 
 import { ConfirmDialog } from '@/components/molecules/confirm-dialog'
+import { FormField } from '@/components/molecules/form-field'
 import {
   useCreateAddress,
   useDeleteAddress,
@@ -21,8 +22,6 @@ import {
   formatPostalCode,
 } from '@/utils/format/format-postal-code'
 import { Button } from '@techsio/ui-kit/atoms/button'
-import { Input } from '@techsio/ui-kit/atoms/input'
-import { Label } from '@techsio/ui-kit/atoms/label'
 import { useState } from 'react'
 import { useAccountContext } from '../../context/account-context'
 
@@ -258,33 +257,43 @@ function AddressForm({
     <form onSubmit={handleSubmit} className="space-y-150">
       <div className="grid grid-cols-2 gap-100">
         <div className="space-y-50">
-          <Label className="text-sm">Jméno</Label>
-          <Input
-            placeholder="Jan"
+          <FormField
+            id="first_name"
+            label="Jméno"
+            name="first_name"
+            type="text"
+            required
+            minLength={2}
             value={formData.first_name}
             onChange={(e) =>
               setFormData({ ...formData, first_name: e.target.value })
             }
-            required
+            errorMessage="Jméno musí mít alespoň 2 znaky"
           />
         </div>
         <div className="space-y-50">
-          <Label className="text-sm">Příjmení</Label>
-          <Input
-            placeholder="Novák"
+          <FormField
+            id="last_name"
+            label="Příjmení"
+            name="last_name"
+            type="text"
+            required
+            minLength={2}
             value={formData.last_name}
             onChange={(e) =>
               setFormData({ ...formData, last_name: e.target.value })
             }
-            required
+            errorMessage="Příjmení musí mít alespoň 2 znaky"
           />
         </div>
       </div>
 
       <div className="space-y-50">
-        <Label className="text-fg-secondary text-sm">Firma (volitelné)</Label>
-        <Input
-          placeholder="Název firmy"
+        <FormField
+          id="company"
+          label="Firma (volitelné)"
+          name="company"
+          type="text"
           value={formData.company}
           onChange={(e) =>
             setFormData({ ...formData, company: e.target.value })
@@ -293,45 +302,63 @@ function AddressForm({
       </div>
 
       <div className="space-y-50">
-        <Label className="text-sm">Ulice a číslo popisné</Label>
-        <Input
-          placeholder="Hlavní 123"
+        <FormField
+          id="address_1"
+          label="Adresa"
+          name="address_1"
+          type="text"
+          placeholder="Ulice a číslo popisné"
           value={formData.address_1}
           onChange={(e) =>
             setFormData({ ...formData, address_1: e.target.value })
           }
           required
+          minLength={3}
+          errorMessage="Adresa musí mít alespoň 3 znaky"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-100">
         <div className="space-y-50">
-          <Label className="text-sm">Město</Label>
-          <Input
-            placeholder="Praha"
+          <FormField
+            id="city"
+            label="Město"
+            name="city"
+            type="text"
             value={formData.city}
             onChange={(e) => setFormData({ ...formData, city: e.target.value })}
             required
+            minLength={2}
+            errorMessage="Město musí mít alespoň 2 znaky"
           />
         </div>
         <div className="space-y-50">
-          <Label className="text-sm">PSČ</Label>
-          <Input
-            placeholder="123 45"
+          <FormField
+            id="postal_code"
+            label="PSČ"
+            name="postal_code"
+            type="text"
+            placeholder="110 00"
             value={formData.postal_code}
             onChange={handlePostalCodeChange}
             required
+            pattern="^\d{3}\s?\d{2}$"
+            errorMessage="PSČ musí být ve formátu 123 45"
           />
         </div>
       </div>
 
       <div className="space-y-50">
-        <Label className="text-fg-secondary text-sm">Telefon (volitelné)</Label>
-        <Input
+        <FormField
+          id="phone"
+          label="Telefon (volitelné)"
+          name="phone"
           type="tel"
           placeholder="+420 123 456 789"
           value={formData.phone}
           onChange={handlePhoneChange}
+          pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
+          errorMessage="Neplatný formát telefonu"
         />
       </div>
 

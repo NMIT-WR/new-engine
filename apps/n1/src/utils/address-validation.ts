@@ -65,6 +65,15 @@ export const REQUIRED_ADDRESS_FIELDS = [
   'country_code',
 ] as const satisfies readonly AddressFieldKey[]
 
+/* used in checkout */
+export const EMAIL_VALIDATION_RULES = {
+  required: 'E-mail je povinný',
+  pattern: {
+    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: 'Zadejte platnou e-mailovou adresu',
+  },
+}
+
 /**
  * Validuje jednotlivé pole adresy
  * @param field - Název pole
@@ -148,8 +157,6 @@ export function validateAddressField(
   }
   return undefined
 }
-
-
 
 /**
  * Validuje celý formulář adresy

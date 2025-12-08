@@ -29,6 +29,7 @@ import {
 } from 'react-hook-form'
 
 export interface CheckoutFormData {
+  email?: string
   shippingAddress: AddressFormData
 }
 
@@ -84,6 +85,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   // Initialize form with default values
   const form = useForm<CheckoutFormData>({
     defaultValues: {
+      email: customer?.email ?? '',
       shippingAddress: DEFAULT_ADDRESS,
     },
     mode: 'onBlur',
@@ -102,7 +104,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       const addressData = addressToFormData(
         cart.shipping_address
       ) as AddressFormData
-      form.reset({ shippingAddress: addressData })
+      form.reset({ email: cart.email, shippingAddress: addressData })
       isFormInitialized.current = true
       return
     }
@@ -117,7 +119,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         isFormInitialized.current = true
       }
     }
-  }, [cart?.shipping_address, customer?.addresses, form])
+  }, [cart?.shipping_address, cart?.email, customer?.addresses, form])
 
   // Auto-select first shipping option when loaded
   useEffect(() => {
@@ -148,10 +150,13 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
     // 2. Save shipping address to cart
     try {
-      const { shippingAddress } = form.getValues()
+      const { email, shippingAddress } = form.getValues()
+      const cartEmail = customer?.email || email
+      console.log('[Checkout] Saving cart email:', cartEmail) // debug
       await updateCartAddressAsync({
         cartId: cart.id,
         address: shippingAddress,
+        email: cartEmail,
       })
     } catch {
       setError('Nepodařilo se uložit doručovací adresu')
@@ -197,7 +202,9 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   return (
     <CheckoutContext.Provider value={value}>
-      <FormProvider {...form}>{children}</FormProvider>
+      <FormProvider {...form}>
+        <>{children}</>
+      </FormProvider>
     </CheckoutContext.Provider>
   )
 }
