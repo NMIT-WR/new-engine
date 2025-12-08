@@ -7,6 +7,7 @@ import { HeaderProvider } from '@/components/header/store/header-context'
 import { N1Footer } from '@/components/n1-footer'
 import { Providers } from '@/components/provider'
 import { GoogleTag } from '@libs/analytics/google'
+import { LeadhubPixel } from '@libs/analytics/leadhub'
 import { MetaPixel } from '@libs/analytics/meta'
 import type { ReactNode } from 'react'
 
@@ -32,6 +33,10 @@ export default function RootLayout({
       <body className={`${openSans.variable} antialiased`}>
         <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''} />
         <GoogleTag adsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? ''} />
+        <LeadhubPixel
+          trackingId={process.env.NEXT_PUBLIC_LEADHUB_TRACKING_ID ?? ''}
+          debug
+        />
         <Providers>
           <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
             <HeaderProvider>

@@ -1,6 +1,7 @@
 'use client'
 
 import { HeurekaProduct } from '@libs/analytics/heureka'
+import { useLeadhub } from '@libs/analytics/leadhub'
 import { useMetaPixel } from '@libs/analytics/meta'
 import { useEffect } from 'react'
 import { Heading } from '@/components/heading'
@@ -40,9 +41,12 @@ export default function ProductPage() {
 
   // Meta Pixel - ViewContent tracking
   const { trackViewContent } = useMetaPixel()
+  // Leadhub - ViewContent tracking
+  const { trackViewContent: trackLeadhubViewContent } = useLeadhub()
 
   useEffect(() => {
     if (detail && selectedVariant) {
+      // Meta Pixel
       trackViewContent({
         content_ids: [selectedVariant.id],
         content_type: 'product',
@@ -50,6 +54,11 @@ export default function ProductPage() {
         content_category: rawProduct?.categories?.[0]?.name,
         currency: selectedVariant.calculated_price?.currency_code ?? 'CZK',
         value: (selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0),
+      })
+
+      // Leadhub
+      trackLeadhubViewContent({
+        products: [{ product_id: selectedVariant.id }],
       })
     }
   }, [detail?.id, selectedVariant?.id])

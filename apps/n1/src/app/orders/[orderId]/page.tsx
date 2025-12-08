@@ -1,14 +1,15 @@
 'use client'
 
-import { useGoogleAds } from '@libs/analytics/google'
-import { HeurekaOrder } from '@libs/analytics/heureka'
-import { useMetaPixel } from '@libs/analytics/meta'
 import { CheckoutReview } from '@/app/pokladna/_components/checkout-review'
 import { cacheConfig } from '@/lib/cache-config'
 import { queryKeys } from '@/lib/query-keys'
 import { getOrderById } from '@/services/order-service'
-import { Button } from '@ui/atoms/button'
+import { useGoogleAds } from '@libs/analytics/google'
+import { HeurekaOrder } from '@libs/analytics/heureka'
+import { useLeadhub } from '@libs/analytics/leadhub'
+import { useMetaPixel } from '@libs/analytics/meta'
 import { useQuery } from '@tanstack/react-query'
+import { Button } from '@ui/atoms/button'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
@@ -21,6 +22,7 @@ export default function OrderPage() {
 
   const { trackPurchase: trackMetaPurchase } = useMetaPixel()
   const { trackPurchase: trackGooglePurchase } = useGoogleAds()
+  const { trackPurchase: trackLeadhubPurchase } = useLeadhub()
   const purchaseTracked = useRef(false)
 
   const {
@@ -76,8 +78,45 @@ export default function OrderPage() {
           price: item.unit_price,
         })),
       })
+
+      // Leadhub - Purchase
+      console.log('[Leadhub] Order email:', order.email)
+      trackLeadhubPurchase({
+        email: order.email || '',
+        value,
+        currency,
+        products: items.map((item) => ({
+          product_id: item.variant_id || '',
+          quantity: item.quantity || 1,
+          value: item.unit_price ?? 0,
+          currency,
+        })),
+        order_id: order.id,
+        first_name: order.shipping_address?.first_name,
+        last_name: order.shipping_address?.last_name,
+        phone: order.shipping_address?.phone || undefined,
+        address: order.shipping_address
+          ? {
+              street: [
+                order.shipping_address.address_1,
+                order.shipping_address.address_2,
+              ]
+                .filter(Boolean)
+                .join(' '),
+              city: order.shipping_address.city || undefined,
+              zip: order.shipping_address.postal_code || undefined,
+              country_code: order.shipping_address.country_code || undefined,
+            }
+          : undefined,
+      })
     }
-  }, [showSuccessBanner, order, trackMetaPurchase, trackGooglePurchase])
+  }, [
+    showSuccessBanner,
+    order,
+    trackMetaPurchase,
+    trackGooglePurchase,
+    trackLeadhubPurchase,
+  ])
 
   // Loading state
   if (isLoading) {
