@@ -2,6 +2,7 @@
 import { useRegister } from '@/hooks/use-register'
 import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
+import { useLeadhub } from '@libs/analytics/leadhub'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Input } from '@techsio/ui-kit/atoms/input'
 import { Label } from '@techsio/ui-kit/atoms/label'
@@ -34,9 +35,18 @@ export const RegisterForm = ({
   const [acceptTerms, setAcceptTerms] = useState(false)
   const passwordValidation = usePasswordValidation(password)
   const toast = useAuthToast()
+  const { trackIdentify } = useLeadhub()
 
   const register = useRegister({
     onSuccess: () => {
+      // Track customer identification in Leadhub
+      trackIdentify({
+        email,
+        subscribe: [],
+        first_name: firstName,
+        last_name: lastName,
+      })
+
       toast.registerSuccess()
       formRef.current?.reset()
       setFirstName('')
