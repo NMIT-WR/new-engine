@@ -29,7 +29,6 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
     MutationContext
   >({
     mutationFn: async ({ cartId, address, email }) => {
-      console.log('[CartUpdate] Email being sent to Medusa:', email)
       if (!cartId) {
         throw new Error('Cart ID is required')
       }
