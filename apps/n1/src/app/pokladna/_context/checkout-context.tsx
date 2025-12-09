@@ -133,7 +133,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     }
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
 
-  const completeCheckout = async () => {
+  const completeCheckout = form.handleSubmit(async (data) => {
     if (!cart?.id) {
       setError('Košík nebyl nalezen')
       return
@@ -141,25 +141,18 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
     setError(null)
 
-    // 1. Validate form
-    const isValid = await form.trigger()
-    if (!isValid) {
-      setError('Prosím vyplňte všechna povinná pole')
-      return
-    }
+    const { email, shippingAddress } = data
 
     // 2. Save shipping address to cart
     try {
-      const { email, shippingAddress } = form.getValues()
       const cartEmail = customer?.email || email
-      console.log('[Checkout] Saving cart email:', cartEmail) // debug
       await updateCartAddressAsync({
         cartId: cart.id,
-        address: shippingAddress,
+        address: { ...shippingAddress },
         email: cartEmail,
       })
-    } catch {
-      setError('Nepodařilo se uložit doručovací adresu')
+    } catch (err) {
+      setError('Problémy s doručovací adresu')
       return
     }
 
@@ -171,7 +164,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         err instanceof Error ? err.message : 'Nepodařilo se dokončit objednávku'
       setError(message)
     }
-  }
+  })
 
   // Compute isReady based on form validity and selections
   const formState = form.formState
@@ -202,16 +195,10 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   return (
     <CheckoutContext.Provider value={value}>
-      <FormProvider {...form}>
-        <>{children}</>
-      </FormProvider>
+      <FormProvider {...form}>{children as React.ReactElement}</FormProvider>
     </CheckoutContext.Provider>
   )
 }
-
-// ============================================================================
-// Hooks
-// ============================================================================
 
 export function useCheckoutContext() {
   const context = useContext(CheckoutContext)
