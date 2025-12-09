@@ -36,17 +36,10 @@ export function ShippingAddressSection() {
     setSelectedAddressId(id)
   }
 
-  const handleCheck = () => {
-    console.log('errors:', errors.shippingAddress)
-  }
-
   return (
     <section className="rounded border border-border-secondary bg-surface/70 p-400">
       <div className="mb-400 space-y-300">
-        <h2
-          className="font-semibold text-fg-primary text-lg"
-          onClick={handleCheck}
-        >
+        <h2 className="font-semibold text-fg-primary text-lg">
           Doručovací adresa
         </h2>
 
@@ -247,7 +240,9 @@ export function ShippingAddressSection() {
                 onBlur={field.onBlur}
                 errorMessage={fieldState.error?.message}
                 required
-                pattern="^\d{3}\s?\d{2}$"
+                pattern={
+                  ADDRESS_VALIDATION_RULES.postal_code.pattern.value.source
+                }
                 disabled={isCompleting}
                 placeholder={field.value === 'cz' ? '110 00' : '811 01'}
               />
@@ -273,9 +268,11 @@ export function ShippingAddressSection() {
               }}
               onBlur={field.onBlur}
               errorMessage={fieldState.error?.message}
-              pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
+              pattern={ADDRESS_VALIDATION_RULES.phone.pattern.value.source}
+              //pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
               disabled={isCompleting}
-              placeholder="+420 123 456 789"
+              maxLength={11}
+              placeholder="600 400 200"
             />
           )}
         />

@@ -75,7 +75,7 @@ export function OrderSummary({
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="mb-400 rounded bg-danger p-200 text-white">
+        <div className="mb-400 text-danger">
           <p className="text-sm">{errorMessage}</p>
         </div>
       )}

@@ -38,7 +38,7 @@ export const ADDRESS_VALIDATION_RULES = {
   postal_code: {
     required: 'PSČ je povinné',
     pattern: {
-      value: /^\d{3}\s?\d{2}$/,
+      value: /^\d{3}\s\d{2}$/,
       message: 'PSČ musí být ve formátu 123 45',
     },
   },
@@ -47,15 +47,12 @@ export const ADDRESS_VALIDATION_RULES = {
   },
   phone: {
     pattern: {
-      value: /^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$|^$/,
-      message: 'Neplatný formát telefonu',
+      value: /^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/,
+      message: 'Telefon musí mít 9 číslic',
     },
   },
 } as const
 
-/**
- * Centralizovaná definice povinných polí adresy
- */
 export const REQUIRED_ADDRESS_FIELDS = [
   'first_name',
   'last_name',
@@ -74,78 +71,66 @@ export const EMAIL_VALIDATION_RULES = {
   },
 }
 
-/**
- * Validuje jednotlivé pole adresy
- * @param field - Název pole
- * @param value - Hodnota pole
- * @param countryCode - Kód země (pro validaci PSČ)
- * @returns Chybová zpráva nebo undefined
- */
 export function validateAddressField(
   field: AddressFieldKey,
   value: string,
-  countryCode?: string
+  _countryCode?: string
 ): string | undefined {
   switch (field) {
     case 'first_name': {
       if (!value.trim()) {
-        return 'Jméno je povinné'
+        return ADDRESS_VALIDATION_RULES.first_name.required
       }
-      if (value.length < 2) {
-        return 'Jméno musí mít alespoň 2 znaky'
+      if (value.length < ADDRESS_VALIDATION_RULES.first_name.minLength.value) {
+        return ADDRESS_VALIDATION_RULES.first_name.minLength.message
       }
       break
     }
     case 'last_name': {
       if (!value.trim()) {
-        return 'Příjmení je povinné'
+        return ADDRESS_VALIDATION_RULES.last_name.required
       }
-      if (value.length < 2) {
-        return 'Příjmení musí mít alespoň 2 znaky'
+      if (value.length < ADDRESS_VALIDATION_RULES.last_name.minLength.value) {
+        return ADDRESS_VALIDATION_RULES.last_name.minLength.message
       }
       break
     }
     case 'address_1': {
       if (!value.trim()) {
-        return 'Adresa je povinná'
+        return ADDRESS_VALIDATION_RULES.address_1.required
       }
-      if (value.length < 5) {
-        return 'Zadejte platnou adresu'
+      if (value.length < ADDRESS_VALIDATION_RULES.address_1.minLength.value) {
+        return ADDRESS_VALIDATION_RULES.address_1.minLength.message
       }
       break
     }
     case 'city': {
       if (!value.trim()) {
-        return 'Město je povinné'
+        return ADDRESS_VALIDATION_RULES.city.required
       }
-      if (value.length < 2) {
-        return 'Zadejte platné město'
+      if (value.length < ADDRESS_VALIDATION_RULES.city.minLength.value) {
+        return ADDRESS_VALIDATION_RULES.city.minLength.message
+      }
+      break
+    }
+    case 'country_code': {
+      if (!value.trim()) {
+        return ADDRESS_VALIDATION_RULES.country_code.required
       }
       break
     }
     case 'postal_code': {
       if (!value.trim()) {
-        return 'PSČ je povinné'
+        return ADDRESS_VALIDATION_RULES.postal_code.required
       }
-      // Czech postal code format: XXX XX
-      if (
-        countryCode === 'cz' &&
-        !/^\d{3}\s?\d{2}$/.test(value.replace(/\s/g, ''))
-      ) {
-        return 'Zadejte platné české PSČ (např. 110 00)'
-      }
-      // Slovak postal code format: XXX XX
-      if (
-        countryCode === 'sk' &&
-        !/^\d{3}\s?\d{2}$/.test(value.replace(/\s/g, ''))
-      ) {
-        return 'Zadejte platné slovenské PSČ (např. 811 01)'
+      if (!ADDRESS_VALIDATION_RULES.postal_code.pattern.value.test(value)) {
+        return ADDRESS_VALIDATION_RULES.postal_code.pattern.message
       }
       break
     }
     case 'phone': {
-      if (value && !/^\+?[\d\s()-]+$/.test(value)) {
-        return 'Zadejte platné telefonní číslo'
+      if (value && !ADDRESS_VALIDATION_RULES.phone.pattern.value.test(value)) {
+        return ADDRESS_VALIDATION_RULES.phone.pattern.message
       }
       break
     }
@@ -154,14 +139,13 @@ export function validateAddressField(
     case 'address_2':
     case 'province':
       break
+
+    default:
+      break
   }
   return undefined
 }
 
-/**
- * Validuje celý formulář adresy
- * @returns Objekt s chybami nebo prázdný objekt
- */
 export function validateAddressForm(data: AddressFormData): AddressErrors {
   const errors: AddressErrors = {}
 
@@ -185,9 +169,6 @@ export function validateAddressForm(data: AddressFormData): AddressErrors {
   return errors
 }
 
-/**
- * Kontrola, zda je formulář validní
- */
 export function isAddressFormValid(data: AddressFormData): boolean {
   const errors = validateAddressForm(data)
   return Object.keys(errors).length === 0
