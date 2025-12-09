@@ -1,7 +1,7 @@
 'use client'
-import { useLeadhub } from '@libs/analytics/leadhub'
 import { Heading } from '@/components/heading'
 import { N1Aside } from '@/components/n1-aside'
+import { useLeadhub } from '@libs/analytics/leadhub'
 import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
 import './layout.css'
 import { Banner } from '@/components/atoms/banner'
@@ -21,7 +21,6 @@ import {
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
 } from '@/lib/constants'
-import { componentDebugLogger } from '@/lib/loggers'
 import { transformProduct } from '@/utils/transform/transform-product'
 import type { IconType } from '@techsio/ui-kit/atoms/icon'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
@@ -45,7 +44,6 @@ export default function ProductPage() {
     allCategories.find((cat) => cat.id === currentCategory?.root_category_id) ??
     currentCategory
 
-  // Build category path for Leadhub tracking (e.g., "Pánské > Oblečení > Trika")
   const buildCategoryPath = (): string | null => {
     if (!currentCategory) return null
 
@@ -89,14 +87,6 @@ export default function ProductPage() {
     category_id: ALL_CATEGORIES_MAP[handle],
     page: currentPage,
     limit: PRODUCT_LIMIT,
-  })
-
-  // DEBUG: Log React Query states
-  componentDebugLogger.categoryPage({
-    isLoading,
-    isFetching,
-    isSuccess,
-    isReady: isSuccess && !isFetching,
   })
 
   // Wait for fetch/refetch completion before prefetching

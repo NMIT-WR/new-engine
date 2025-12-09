@@ -49,7 +49,6 @@ export function ProfileForm() {
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhoneNumber(e.target.value)
-    // Omezit délku (max 12 znaků pro XXX XXX XXX nebo 16 pro +420 XXX XXX XXX)
     if (formatted.replace(/\s/g, '').length <= 13) {
       setFormData({ ...formData, phone: formatted })
     }

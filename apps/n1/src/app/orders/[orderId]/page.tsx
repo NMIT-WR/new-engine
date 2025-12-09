@@ -80,7 +80,6 @@ export default function OrderPage() {
       })
 
       // Leadhub - Purchase
-      console.log('[Leadhub] Order email:', order.email)
       trackLeadhubPurchase({
         email: order.email || '',
         value,
