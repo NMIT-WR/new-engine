@@ -247,7 +247,7 @@ export const UserProfileSkeleton: Story = {
 export const FeedSkeleton: Story = {
   name: '📰 Feed Item',
   render: () => (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-xs">
       {[1, 2, 3].map((item) => (
         <div key={item} className="border p-4 rounded-lg">
           <div className="flex gap-3 mb-4">
@@ -281,12 +281,12 @@ export const ReducedMotion: Story = {
       <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
         <p className="text-sm text-yellow-800">
           💡 <strong>Accessibility:</strong> When users enable "Reduce motion"
-            in their OS, animations automatically switch to the static state shown above.
+            in their OS, animations automatically switch to the static state shown below.
         </p>
       </div>
       <Skeleton className="h-20 w-64 force-reduced-motion" />
-      <Skeleton.Text noOfLines={3} className='force-reduced-motion'/>
-      <Skeleton.Circle size="lg" className='force-reduced-motion' />
+      <Skeleton.Text noOfLines={3} className="force-reduced-motion" />
+      <Skeleton.Circle size="lg" className="force-reduced-motion" />
     </div>
   ),
 }
@@ -297,7 +297,7 @@ export const AriaLabels: Story = {
     docs: {
       description: {
         story:
-          'Skeletons include proper ARIA attributes for screen readers: `role="status"`, `aria-busy="true"`, and `aria-label="Loading content"`.',
+          'Skeletons include proper ARIA attributes for screen readers: `aria-busy="true"` and `aria-label="Loading content"`.',
       },
     },
   },
@@ -305,7 +305,7 @@ export const AriaLabels: Story = {
     <div className="space-y-4">
       <div className="bg-blue-50 border border-blue-200 p-4 rounded">
         <p className="text-sm text-blue-800">
-          🔊 Screen readers will announce "Loading content" when skeleton appears.
+          🔊 Screen readers will recognize the loading state via aria-busy attribute.
         </p>
       </div>
       <Skeleton className="h-20 w-64" />

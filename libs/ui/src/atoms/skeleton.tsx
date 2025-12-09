@@ -3,6 +3,7 @@ import {
   type ReactNode,
   type Ref,
   createContext,
+  useContext,
 } from 'react'
 import type { VariantProps } from 'tailwind-variants'
 import { tv } from '../utils'
@@ -40,11 +41,12 @@ const skeletonVariants = tv({
 
 interface SkeletonContextValue {
   isLoaded: boolean
-  styles: ReturnType<typeof skeletonVariants>
   variant?: 'primary' | 'secondary'
 }
 
 const SkeletonContext = createContext<SkeletonContextValue | null>(null)
+
+const useSkeletonContext = () => useContext(SkeletonContext)
 
 interface SkeletonRootProps
   extends Omit<ComponentPropsWithoutRef<'div'>, 'children'>,
@@ -69,7 +71,7 @@ export function Skeleton({
   }
 
   return (
-    <SkeletonContext.Provider value={{ isLoaded, styles, variant }}>
+    <SkeletonContext.Provider value={{ isLoaded, variant }}>
       <div
         ref={ref}
         className={styles.root({ className })}
@@ -87,21 +89,28 @@ interface SkeletonCircleProps
   extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   isLoaded?: boolean
+  variant?: 'primary' | 'secondary'
   children?: ReactNode
   ref?: Ref<HTMLDivElement>
 }
 
 Skeleton.Circle = function SkeletonCircle({
   size = 'md',
-  isLoaded = false,
+  isLoaded,
+  variant,
   children,
   className,
   ref,
   ...props
 }: SkeletonCircleProps) {
-  const styles = skeletonVariants({ size })
+  const context = useSkeletonContext()
 
-  if (isLoaded) {
+  const resolvedIsLoaded = isLoaded ?? context?.isLoaded ?? false
+  const resolvedVariant = variant ?? context?.variant
+
+  const styles = skeletonVariants({ size, variant: resolvedVariant })
+
+  if (resolvedIsLoaded) {
     return <>{children}</>
   }
 
@@ -124,6 +133,7 @@ interface SkeletonTextProps
   spacing?: 'sm' | 'md' | 'lg'
   lastLineWidth?: string
   isLoaded?: boolean
+  variant?: 'primary' | 'secondary'
   children?: ReactNode
   containerClassName?: string
   ref?: Ref<HTMLDivElement>
@@ -133,16 +143,22 @@ Skeleton.Text = function SkeletonText({
   noOfLines = 3,
   spacing = 'md',
   lastLineWidth = '80%',
-  isLoaded = false,
+  isLoaded,
+  variant,
   children,
   containerClassName,
   className,
   ref,
   ...props
 }: SkeletonTextProps) {
-  const styles = skeletonVariants({ spacing })
+  const context = useSkeletonContext()
 
-  if (isLoaded) {
+  const resolvedIsLoaded = isLoaded ?? context?.isLoaded ?? false
+  const resolvedVariant = variant ?? context?.variant
+
+  const styles = skeletonVariants({ spacing, variant: resolvedVariant })
+
+  if (resolvedIsLoaded) {
     return <>{children}</>
   }
 
@@ -150,6 +166,8 @@ Skeleton.Text = function SkeletonText({
     <div
       ref={ref}
       className={styles.textContainer({ className: containerClassName })}
+      aria-busy="true"
+      aria-label="Loading content"
       {...props}
     >
       {Array.from({ length: noOfLines }).map((_, index) => {
@@ -163,8 +181,6 @@ Skeleton.Text = function SkeletonText({
               className: styles.textLine({ className }),
             })}
             style={{ width }}
-            aria-busy="true"
-            aria-label="Loading content"
           />
         )
       })}
@@ -178,6 +194,7 @@ interface SkeletonRectangleProps
   height?: string
   width?: string
   isLoaded?: boolean
+  variant?: 'primary' | 'secondary'
   children?: ReactNode
   ref?: Ref<HTMLDivElement>
 }
@@ -186,16 +203,22 @@ Skeleton.Rectangle = function SkeletonRectangle({
   aspectRatio,
   height,
   width = '100%',
-  isLoaded = false,
+  isLoaded,
+  variant,
   children,
   className,
   style,
   ref,
   ...props
 }: SkeletonRectangleProps) {
-  const styles = skeletonVariants()
+  const context = useSkeletonContext()
 
-  if (isLoaded) {
+  const resolvedIsLoaded = isLoaded ?? context?.isLoaded ?? false
+  const resolvedVariant = variant ?? context?.variant
+
+  const styles = skeletonVariants({ variant: resolvedVariant })
+
+  if (resolvedIsLoaded) {
     return <>{children}</>
   }
 
