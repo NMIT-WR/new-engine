@@ -106,8 +106,13 @@ export const DEFAULT_COUNTRY_CODE = 'cz'
  * Supported countries for shipping addresses
  */
 export const COUNTRY_OPTIONS = [
-  { value: 'cz', label: 'Česká republika', displayValue: 'Česká republika' },
-  { value: 'sk', label: 'Slovensko', displayValue: 'Slovensko' },
+  {
+    value: 'cz',
+    label: 'Česká republika',
+    displayValue: 'Česká republika',
+    phonePrefix: '+420',
+  },
+  // { value: 'sk', label: 'Slovensko', displayValue: 'Slovensko' },
 ]
 
 /**
