@@ -23,7 +23,7 @@ function getGtag() {
  * ```tsx
  * const { trackPurchase, trackConversion } = useGoogleAds()
  *
- * // Track a purchase (includes conversion)
+ * // Track a purchase (e-commerce event only)
  * trackPurchase({
  *   transaction_id: 'order_123',
  *   value: 599.50,
@@ -31,7 +31,18 @@ function getGtag() {
  *   items: [{ id: 'variant_1', quantity: 1 }]
  * })
  *
- * // Track a custom conversion
+ * // Track a purchase with conversion (e-commerce + Google Ads conversion)
+ * trackPurchase(
+ *   {
+ *     transaction_id: 'order_123',
+ *     value: 599.50,
+ *     currency: 'CZK',
+ *     items: [{ id: 'variant_1', quantity: 1 }]
+ *   },
+ *   'AW-XXXXX/YYYYY'
+ * )
+ *
+ * // Track a standalone conversion
  * trackConversion({
  *   send_to: 'AW-XXXXX/YYYYY',
  *   value: 599.50,
