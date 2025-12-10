@@ -207,6 +207,9 @@ Skeleton.Text = function SkeletonText({
     return <>{children}</>
   }
 
+  // Guard against invalid values (negative, NaN, Infinity)
+  const lineCount = Number.isFinite(noOfLines) ? Math.max(1, noOfLines) : 1
+
   return (
     <div
       ref={ref}
@@ -215,9 +218,9 @@ Skeleton.Text = function SkeletonText({
       aria-label="Loading content"
       {...props}
     >
-      {Array.from({ length: noOfLines }).map((_, index) => {
-        const isLastLine = index === noOfLines - 1
-        const width = isLastLine && noOfLines > 1 ? lastLineWidth : '100%'
+      {Array.from({ length: lineCount }).map((_, index) => {
+        const isLastLine = index === lineCount - 1
+        const width = isLastLine && lineCount > 1 ? lastLineWidth : '100%'
 
         return (
           <div
