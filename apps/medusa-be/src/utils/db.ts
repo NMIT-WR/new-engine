@@ -17,7 +17,7 @@ export const db = drizzle(
 // Helper function to check if a string is a date
 function isDateString(value: string): boolean {
   const date = new Date(value)
-  return !isNaN(date.getTime())
+  return !Number.isNaN(date.getTime())
 }
 
 /**

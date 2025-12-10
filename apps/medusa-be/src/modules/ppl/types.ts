@@ -29,8 +29,8 @@ export interface PplOptions {
   sender_email?: string
 }
 
-export type PplEnvironment = "testing" | "production"
-export type PplLabelFormat = "Png" | "Svg" | "Pdf" | "Zpl"
+export type PplEnvironment = 'testing' | 'production'
+export type PplLabelFormat = 'Png' | 'Svg' | 'Pdf' | 'Zpl'
 
 /**
  * OAuth 2.0 access token response
@@ -127,7 +127,7 @@ export interface PplShipmentRequest {
  * - PRIV: Parcel Private (home delivery, no COD)
  * - PRID: Parcel Private + COD (home delivery, with COD)
  */
-export type PplProductType = "SMAR" | "SMAD" | "PRIV" | "PRID" | string
+export type PplProductType = 'SMAR' | 'SMAD' | 'PRIV' | 'PRID' | string
 
 export interface PplExternalNumber {
   /** External number type code (usually "CUST") */
@@ -260,7 +260,7 @@ export interface PplCodSettings {
   /** COD amount */
   codPrice: number
   /** Currency (ONLY CZK supported) */
-  codCurrency: "CZK"
+  codCurrency: 'CZK'
   /** Variable symbol for payment identification */
   codVarSym: string
   /** Czech bank account number (use with bankCode) */
@@ -284,7 +284,7 @@ export interface PplCodSettings {
  */
 export interface PplReturnChannel {
   /** Return channel type */
-  type: "None" | "Ftp" | "Email" | string
+  type: 'None' | 'Ftp' | 'Email' | string
   /** Return address (FTP path or email) */
   address?: string
 }
@@ -312,12 +312,12 @@ export interface PplCompleteLabelSettings {
   /** Request merged label document */
   isCompleteLabelRequested?: boolean
   /** Page size for merged labels */
-  pageSize?: "Default" | "A4" | "A6"
+  pageSize?: 'Default' | 'A4' | 'A6'
   /** Starting position on page */
   position?: number
 }
 
-export type PplLabelPageSize = "Default" | "A4" | "A6"
+export type PplLabelPageSize = 'Default' | 'A4' | 'A6'
 
 /**
  * Batch status response
@@ -332,7 +332,7 @@ export interface PplBatchResponse {
   }
 }
 
-export type PplBatchState = "Received" | "InProcess" | "Complete" | "Error"
+export type PplBatchState = 'Received' | 'InProcess' | 'Complete' | 'Error'
 
 export interface PplBatchItem {
   /** Reference ID from request */
@@ -346,7 +346,7 @@ export interface PplBatchItem {
   /** Error message if item failed */
   errorMessage?: string
   /** Item state */
-  state?: "Ok" | "Error"
+  state?: 'Ok' | 'Error'
 }
 
 /**
@@ -378,50 +378,50 @@ export interface PplShipmentInfo {
  * Shipment states from PPL API
  */
 export type PplShipmentState =
-  | "DataShipment"           // Label created, not yet picked up
-  | "Active"                 // In transit
-  | "PickedUpFromSender"     // Picked up from sender
-  | "OutForDelivery"         // Out for delivery
-  | "DeliveredToPickupPoint" // At pickup point (ParcelShop/Box)
-  | "Delivered"              // Successfully delivered
-  | "NotDelivered"           // Delivery attempt failed
-  | "BackToSender"           // Returned to sender
-  | "Rejected"               // Rejected by recipient
-  | "Dormant"                // Inactive/expired
-  | "Undelivered"            // Not yet delivered (general)
+  | 'DataShipment' // Label created, not yet picked up
+  | 'Active' // In transit
+  | 'PickedUpFromSender' // Picked up from sender
+  | 'OutForDelivery' // Out for delivery
+  | 'DeliveredToPickupPoint' // At pickup point (ParcelShop/Box)
+  | 'Delivered' // Successfully delivered
+  | 'NotDelivered' // Delivery attempt failed
+  | 'BackToSender' // Returned to sender
+  | 'Rejected' // Rejected by recipient
+  | 'Dormant' // Inactive/expired
+  | 'Undelivered' // Not yet delivered (general)
 
 /**
  * States indicating successful delivery
  */
 export const PPL_DELIVERED_STATES: PplShipmentState[] = [
-  "Delivered",
-  "DeliveredToPickupPoint",
+  'Delivered',
+  'DeliveredToPickupPoint',
 ]
 
 /**
  * States indicating failed/returned delivery
  */
 export const PPL_FAILED_STATES: PplShipmentState[] = [
-  "BackToSender",
-  "Rejected",
-  "NotDelivered",
+  'BackToSender',
+  'Rejected',
+  'NotDelivered',
 ]
 
 /**
  * Human-readable status messages
  */
 export const PPL_STATUS_MESSAGES: Record<PplShipmentState, string> = {
-  DataShipment: "Label created, awaiting pickup",
-  Active: "In transit",
-  PickedUpFromSender: "Picked up from sender",
-  OutForDelivery: "Out for delivery",
-  DeliveredToPickupPoint: "Ready for pickup at ParcelShop/Box",
-  Delivered: "Delivered",
-  NotDelivered: "Delivery attempt failed",
-  BackToSender: "Returned to sender",
-  Rejected: "Rejected by recipient",
-  Dormant: "Inactive",
-  Undelivered: "Not yet delivered",
+  DataShipment: 'Label created, awaiting pickup',
+  Active: 'In transit',
+  PickedUpFromSender: 'Picked up from sender',
+  OutForDelivery: 'Out for delivery',
+  DeliveredToPickupPoint: 'Ready for pickup at ParcelShop/Box',
+  Delivered: 'Delivered',
+  NotDelivered: 'Delivery attempt failed',
+  BackToSender: 'Returned to sender',
+  Rejected: 'Rejected by recipient',
+  Dormant: 'Inactive',
+  Undelivered: 'Not yet delivered',
 }
 
 /**
@@ -442,7 +442,7 @@ export interface PplAccessPoint {
   isActive?: boolean
 }
 
-export type PplAccessPointType = "ParcelShop" | "ParcelBox" | "AlzaBox" | string
+export type PplAccessPointType = 'ParcelShop' | 'ParcelBox' | 'AlzaBox' | string
 
 /**
  * Access points query parameters
@@ -563,17 +563,17 @@ export interface PplShipmentQuery {
 /**
  * Order type
  */
-export type PplOrderType = "Transport" | "CollectionOrder" | string
+export type PplOrderType = 'Transport' | 'CollectionOrder' | string
 
 /**
  * Order state
  */
 export type PplOrderState =
-  | "Created"
-  | "InProcess"
-  | "Complete"
-  | "Canceled"
-  | "Error"
+  | 'Created'
+  | 'InProcess'
+  | 'Complete'
+  | 'Canceled'
+  | 'Error'
 
 /**
  * Query parameters for GET /order endpoint
@@ -728,11 +728,11 @@ export interface PplOrderCancelQuery {
  * Human-readable order state messages
  */
 export const PPL_ORDER_STATE_MESSAGES: Record<PplOrderState, string> = {
-  Created: "Order created",
-  InProcess: "Order in process",
-  Complete: "Order completed",
-  Canceled: "Order canceled",
-  Error: "Order failed",
+  Created: 'Order created',
+  InProcess: 'Order in process',
+  Complete: 'Order completed',
+  Canceled: 'Order canceled',
+  Error: 'Order failed',
 }
 
 /**
@@ -746,7 +746,7 @@ export interface PplAddressWhisperQuery {
   /** City name for autocomplete */
   city?: string
   /** Which field triggered the whisper */
-  calledFrom?: "Street" | "ZipCode" | "City"
+  calledFrom?: 'Street' | 'ZipCode' | 'City'
 }
 
 /**

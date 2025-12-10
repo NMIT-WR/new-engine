@@ -1,5 +1,13 @@
-import type {CreateProductWorkflowInputDTO, ExecArgs} from '@medusajs/framework/types'
-import {ContainerRegistrationKeys, MedusaError, Modules, ProductStatus,} from '@medusajs/framework/utils'
+import type {
+  CreateProductWorkflowInputDTO,
+  ExecArgs,
+} from '@medusajs/framework/types'
+import {
+  ContainerRegistrationKeys,
+  MedusaError,
+  Modules,
+  ProductStatus,
+} from '@medusajs/framework/utils'
 // @ts-nocheck necessary due to Medusa failing with strict mode
 import {
   createCollectionsWorkflow,
@@ -8,8 +16,8 @@ import {
   createProductsWorkflow,
   createStockLocationsWorkflow,
 } from '@medusajs/medusa/core-flows'
-import {sql} from 'drizzle-orm'
-import {sqlRaw} from '../utils/db'
+import { sql } from 'drizzle-orm'
+import { sqlRaw } from '../utils/db'
 
 // Product record shape from the database
 type ProductRecord = {
@@ -72,7 +80,7 @@ function sanitizeHandle(handle: string): string {
   }
 
   // Check if the handle is a date string (common issue with database exports)
-  if (handle.match(/^\d{4}-\d{2}-\d{2}/) || !isNaN(Date.parse(handle))) {
+  if (handle.match(/^\d{4}-\d{2}-\d{2}/) || !Number.isNaN(Date.parse(handle))) {
     return `product-${i++}-${Date.now()}`
   }
 
@@ -426,7 +434,9 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       )
 
       // Check which products already exist
-      const productHandles = medusaProducts.map((product) => product.handle as string)
+      const productHandles = medusaProducts.map(
+        (product) => product.handle as string
+      )
       logger.info(
         `Checking for existing products with ${productHandles.length} handles...`
       )
@@ -447,7 +457,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
         logger.info('No new products to create in this batch, skipping...')
         page++
         // If we got fewer products than the chunk size, we've reached the end
-        hasMore = productRecords.length >= CHUNK_SIZE;
+        hasMore = productRecords.length >= CHUNK_SIZE
         continue
       }
 
@@ -525,7 +535,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       logger.info(`Total products imported so far: ${totalImported}`)
 
       // If we got fewer products than the chunk size, we've reached the end
-      hasMore = productRecords.length >= CHUNK_SIZE;
+      hasMore = productRecords.length >= CHUNK_SIZE
     } catch (error: any) {
       console.log(error)
       const errorMessage =

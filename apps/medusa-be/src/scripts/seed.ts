@@ -89,7 +89,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
   logger.info('Seeding region data...')
   const regionService = container.resolve(Modules.REGION)
   let regions = await regionService.listRegions()
-  let region
 
   if (!regions || regions.length === 0) {
     logger.info('No regions found, creating new ones...')
@@ -130,7 +129,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
       'No regions available after seeding/checking.'
     )
   }
-  region = regions[0]
+  const region = regions[0]
   logger.info('Seeding tax regions...')
   await createTaxRegionsWorkflow(container).run({
     input: countries.map((country_code) => ({
@@ -751,7 +750,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: 'Medusa Sweatshirt',
           category_ids: [
-            categoryResult.find((cat) => cat.name === 'Sweatshirts')?.id as string,
+            categoryResult.find((cat) => cat.name === 'Sweatshirts')
+              ?.id as string,
           ],
           description:
             'Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.',
@@ -843,7 +843,9 @@ export default async function seedDemoData({ container }: ExecArgs) {
         },
         {
           title: 'Medusa Sweatpants',
-          category_ids: [categoryResult.find((cat) => cat.name === 'Pants')?.id as string],
+          category_ids: [
+            categoryResult.find((cat) => cat.name === 'Pants')?.id as string,
+          ],
           description:
             'Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.',
           handle: 'sweatpants',
@@ -934,7 +936,9 @@ export default async function seedDemoData({ container }: ExecArgs) {
         },
         {
           title: 'Medusa Shorts',
-          category_ids: [categoryResult.find((cat) => cat.name === 'Merch')?.id as string],
+          category_ids: [
+            categoryResult.find((cat) => cat.name === 'Merch')?.id as string,
+          ],
           description:
             'Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.',
           handle: 'shorts',

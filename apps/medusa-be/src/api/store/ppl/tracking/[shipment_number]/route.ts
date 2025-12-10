@@ -1,8 +1,8 @@
-import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import type { Logger } from "@medusajs/framework/types"
-import { PplClient } from "../../../../../modules/ppl"
-import type { PplOptions, PplShipmentState } from "../../../../../modules/ppl"
-import { PPL_STATUS_MESSAGES } from "../../../../../modules/ppl"
+import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
+import type { Logger } from '@medusajs/framework/types'
+import { PplClient } from '../../../../../modules/ppl'
+import type { PplOptions, PplShipmentState } from '../../../../../modules/ppl'
+import { PPL_STATUS_MESSAGES } from '../../../../../modules/ppl'
 
 /**
  * GET /store/ppl/tracking/:shipment_number
@@ -15,11 +15,11 @@ export async function GET(
   res: MedusaResponse
 ): Promise<void> {
   const { shipment_number } = req.params
-  const logger = req.scope.resolve<Logger>("logger")
+  const logger = req.scope.resolve<Logger>('logger')
 
   if (!shipment_number) {
     res.status(400).json({
-      error: "Shipment number is required",
+      error: 'Shipment number is required',
     })
     return
   }
@@ -28,13 +28,14 @@ export async function GET(
     const pplOptions: PplOptions = {
       client_id: process.env.PPL_CLIENT_ID!,
       client_secret: process.env.PPL_CLIENT_SECRET!,
-      environment: (process.env.PPL_ENVIRONMENT || "testing") as PplOptions["environment"],
-      default_label_format: "Png",
+      environment: (process.env.PPL_ENVIRONMENT ||
+        'testing') as PplOptions['environment'],
+      default_label_format: 'Png',
     }
 
     if (!pplOptions.client_id || !pplOptions.client_secret) {
       res.status(500).json({
-        error: "PPL credentials not configured",
+        error: 'PPL credentials not configured',
       })
       return
     }
@@ -42,14 +43,16 @@ export async function GET(
     const client = new PplClient(pplOptions, logger)
 
     // Fetch current status from PPL
-    const shipmentInfos = await client.getShipmentInfo({shipmentNumbers: [shipment_number]})
+    const shipmentInfos = await client.getShipmentInfo({
+      shipmentNumbers: [shipment_number],
+    })
     const info = shipmentInfos[0]
 
     const trackingUrl = `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${shipment_number}`
 
     if (!info) {
       res.status(404).json({
-        error: "Shipment not found",
+        error: 'Shipment not found',
         shipment_number,
         tracking_url: trackingUrl,
       })
@@ -57,8 +60,7 @@ export async function GET(
     }
 
     const status = info.shipmentState as PplShipmentState
-    const statusMessage =
-      PPL_STATUS_MESSAGES[status] || status
+    const statusMessage = PPL_STATUS_MESSAGES[status] || status
 
     res.json({
       shipment_number: info.shipmentNumber,
@@ -76,7 +78,7 @@ export async function GET(
       error instanceof Error ? error : new Error(String(error))
     )
     res.status(500).json({
-      error: "Failed to fetch tracking status",
+      error: 'Failed to fetch tracking status',
       tracking_url: `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${shipment_number}`,
     })
   }

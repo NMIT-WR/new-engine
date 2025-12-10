@@ -1,86 +1,105 @@
-import {IRegionModuleService, Logger, WorkflowTypes} from "@medusajs/framework/types"
-import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
-import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
-import {createRegionsWorkflow, updateRegionsWorkflow} from "@medusajs/medusa/core-flows"
+import type {
+  IRegionModuleService,
+  Logger,
+  WorkflowTypes,
+} from '@medusajs/framework/types'
+import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
+import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+import {
+  createRegionsWorkflow,
+  updateRegionsWorkflow,
+} from '@medusajs/medusa/core-flows'
 
 export type CreateRegionsStepInput = {
-    name: string,
-    currencyCode: string
-    countries?: string[]
-    paymentProviders?: string[]
+  name: string
+  currencyCode: string
+  countries?: string[]
+  paymentProviders?: string[]
 }[]
 
 const CreateRegionsStepId = 'create-regions-seed-step'
-export const createRegionsStep = createStep(CreateRegionsStepId, async (
-    input: CreateRegionsStepInput,
-    {container}
-) => {
+export const createRegionsStep = createStep(
+  CreateRegionsStepId,
+  async (input: CreateRegionsStepInput, { container }) => {
     const result: WorkflowTypes.RegionWorkflow.CreateRegionsWorkflowOutput = []
 
     const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
-    const regionService = container.resolve<IRegionModuleService>(Modules.REGION)
+    const regionService = container.resolve<IRegionModuleService>(
+      Modules.REGION
+    )
 
-    const regionNames = input.map(i => i.name)
+    const regionNames = input.map((i) => i.name)
 
     const existingRegions = await regionService.listRegions({
-        name: {$in: regionNames},
+      name: { $in: regionNames },
     })
 
-    const missingRegions = input.filter(i => !existingRegions.find(j => j.name === i.name))
-    const updateRegions = input.flatMap(inputRegion => {
-        const existingRegion = existingRegions.find(existing => existing.name === inputRegion.name)
-        if (existingRegion) {
-            return [{
-                ...existingRegion,
-                currency_code: inputRegion.currencyCode,
-                countries: inputRegion.countries,
-                payment_providers: inputRegion.paymentProviders
-            }]
-        }
-        return []
+    const missingRegions = input.filter(
+      (i) => !existingRegions.find((j) => j.name === i.name)
+    )
+    const updateRegions = input.flatMap((inputRegion) => {
+      const existingRegion = existingRegions.find(
+        (existing) => existing.name === inputRegion.name
+      )
+      if (existingRegion) {
+        return [
+          {
+            ...existingRegion,
+            currency_code: inputRegion.currencyCode,
+            countries: inputRegion.countries,
+            payment_providers: inputRegion.paymentProviders,
+          },
+        ]
+      }
+      return []
     })
 
     if (missingRegions.length !== 0) {
-        logger.info("Creating missing region data...")
+      logger.info('Creating missing region data...')
 
-        const {result: createRegionsResult} = await createRegionsWorkflow(container).run({
-            input: {
-                regions: missingRegions.map(i => ({
-                    name: i.name,
-                    currency_code: i.currencyCode,
-                    countries: i.countries,
-                    payment_providers: i.paymentProviders ?? ['pp_system_default'],
-                })),
-            },
-        })
+      const { result: createRegionsResult } = await createRegionsWorkflow(
+        container
+      ).run({
+        input: {
+          regions: missingRegions.map((i) => ({
+            name: i.name,
+            currency_code: i.currencyCode,
+            countries: i.countries,
+            payment_providers: i.paymentProviders ?? ['pp_system_default'],
+          })),
+        },
+      })
 
-        for (const resultElement of createRegionsResult) {
-            result.push(resultElement)
-        }
+      for (const resultElement of createRegionsResult) {
+        result.push(resultElement)
+      }
     }
 
     if (updateRegions.length !== 0) {
-        logger.info("Updating existing region data...")
+      logger.info('Updating existing region data...')
 
-        const toUpdate = updateRegions.map(i => ({
-            selector: {name: i.name},
-            update: {
-                currency_code: i.currency_code,
-                countries: i.countries,
-                payment_providers: i.payment_providers ?? ['pp_system_default'],
-            },
-        }))
+      const toUpdate = updateRegions.map((i) => ({
+        selector: { name: i.name },
+        update: {
+          currency_code: i.currency_code,
+          countries: i.countries,
+          payment_providers: i.payment_providers ?? ['pp_system_default'],
+        },
+      }))
 
-        for (const regionToUpdate of toUpdate) {
-            const {result: updateResult} = await updateRegionsWorkflow(container).run({
-                input: regionToUpdate,
-            })
+      for (const regionToUpdate of toUpdate) {
+        const { result: updateResult } = await updateRegionsWorkflow(
+          container
+        ).run({
+          input: regionToUpdate,
+        })
 
-            result.push(...updateResult)
-        }
+        result.push(...updateResult)
+      }
     }
 
     return new StepResponse({
-        result
+      result,
     })
-})
+  }
+)

@@ -9,7 +9,6 @@
       "**/migrations/**/*",
       "**/.next/**/*",
       "check-env-variables.js",
-      "apps/medusa-be/**/*",
       "libs/data-layer/**/*",
       "*.stories.tsx",
       ".storybook/main.ts",
@@ -39,6 +38,32 @@
       "include": ["*.spec.ts"],
       "javascript": {
         "globals": ["jest", "describe", "it", "expect"]
+      }
+    },
+    {
+      "include": ["apps/medusa-be/**/*"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "warn",
+            "noConsole": "off",
+            "noConsoleLog": "off",
+            "useAwait": "warn"
+          },
+          "style": {
+            "noNonNullAssertion": "warn",
+            "useBlockStatements": "off",
+            "useFilenamingConvention": "off"
+          },
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "warn",
+            "noForEach": "off",
+            "noUselessConstructor": "off"
+          },
+          "nursery": {
+            "useConsistentMemberAccessibility": "off"
+          }
+        }
       }
     }
   ]

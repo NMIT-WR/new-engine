@@ -1,311 +1,333 @@
-import type {MedusaRequest, MedusaResponse,} from "@medusajs/framework/http"
-import seedN1Workflow, {SeedN1WorkflowInput} from "../../workflows/seed/workflows/seed-n1";
-import {DATABASE_MODULE} from "../../modules/database";
-import {sql} from "drizzle-orm";
-import DatabaseModuleService from "../../modules/database/service";
+import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
+import { sql } from 'drizzle-orm'
+import { DATABASE_MODULE } from '../../modules/database'
+import type DatabaseModuleService from '../../modules/database/service'
+import seedN1Workflow, {
+  type SeedN1WorkflowInput,
+} from '../../workflows/seed/workflows/seed-n1'
 
-export async function GET(
-    req: MedusaRequest,
-    res: MedusaResponse
-) {
-    const countries = ["cz", "gb", "de", "dk", "se", "fr", "es", "it", 'pl', 'at', 'sk']
-    const input: Omit<SeedN1WorkflowInput, 'categories' | 'products'> = {
-        salesChannels: [{
-            name: "Default Sales Channel",
-            default: true,
-        }],
-        currencies: [{
-            code: "czk",
-            default: true,
-        }, {
-            code: "eur",
-            default: false,
-        }, {
-            code: "usd",
-            default: false,
-        }],
-        regions: [
-            {name: "Czechia", currencyCode: "czk", countries: ['cz'], paymentProviders: undefined},
-            {
-                name: "Europe",
-                currencyCode: "eur",
-                countries: countries.filter(c => c !== 'cz'),
-                paymentProviders: undefined
-            },
+export async function GET(req: MedusaRequest, res: MedusaResponse) {
+  const countries = [
+    'cz',
+    'gb',
+    'de',
+    'dk',
+    'se',
+    'fr',
+    'es',
+    'it',
+    'pl',
+    'at',
+    'sk',
+  ]
+  const input: Omit<SeedN1WorkflowInput, 'categories' | 'products'> = {
+    salesChannels: [
+      {
+        name: 'Default Sales Channel',
+        default: true,
+      },
+    ],
+    currencies: [
+      {
+        code: 'czk',
+        default: true,
+      },
+      {
+        code: 'eur',
+        default: false,
+      },
+      {
+        code: 'usd',
+        default: false,
+      },
+    ],
+    regions: [
+      {
+        name: 'Czechia',
+        currencyCode: 'czk',
+        countries: ['cz'],
+        paymentProviders: undefined,
+      },
+      {
+        name: 'Europe',
+        currencyCode: 'eur',
+        countries: countries.filter((c) => c !== 'cz'),
+        paymentProviders: undefined,
+      },
+    ],
+    taxRegions: {
+      countries,
+      taxProviderId: undefined,
+    },
+    stockLocations: {
+      locations: [
+        {
+          name: 'European Warehouse',
+          address: {
+            city: 'Copenhagen',
+            country_code: 'DK',
+            address_1: '',
+          },
+        },
+      ],
+    },
+    defaultShippingProfile: {
+      name: 'Default Shipping Profile',
+    },
+    fulfillmentSets: {
+      name: 'European Warehouse delivery',
+      type: 'shipping',
+      serviceZones: [
+        {
+          name: 'Europe',
+          geoZones: countries.map((c) => ({
+            countryCode: c,
+          })),
+        },
+      ],
+    },
+    shippingOptions: [
+      // Manual fulfillment options
+      {
+        name: 'Standard Shipping',
+        providerId: 'manual_manual',
+        type: {
+          label: 'Standard',
+          description: 'Ship in 2-3 days.',
+          code: 'standard',
+        },
+        prices: [
+          {
+            currencyCode: 'usd',
+            amount: 10,
+          },
+          {
+            currencyCode: 'eur',
+            amount: 10,
+          },
+          {
+            currencyCode: 'czk',
+            amount: 250,
+          },
         ],
-        taxRegions: {
-            countries,
-            taxProviderId: undefined,
-        },
-        stockLocations: {
-            locations: [
-                {
-                    name: 'European Warehouse',
-                    address: {
-                        city: 'Copenhagen',
-                        country_code: 'DK',
-                        address_1: '',
-                    },
-                },
-            ],
-        },
-        defaultShippingProfile: {
-            name: 'Default Shipping Profile',
-        },
-        fulfillmentSets: {
-            name: "European Warehouse delivery",
-            type: "shipping",
-            serviceZones: [
-                {
-                    name: "Europe",
-                    geoZones: countries.map(c => ({
-                        countryCode: c
-                    }))
-                },
-            ],
-        },
-        shippingOptions: [
-            // Manual fulfillment options
-            {
-                name: 'Standard Shipping',
-                providerId: 'manual_manual',
-                type: {
-                    label: "Standard",
-                    description: "Ship in 2-3 days.",
-                    code: "standard",
-                },
-                prices: [
-                    {
-                        currencyCode: "usd",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "czk",
-                        amount: 250,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
-            {
-                name: 'Express Shipping',
-                providerId: 'manual_manual',
-                type: {
-                    label: "Express",
-                    description: "Ship in 24 hours.",
-                    code: "express",
-                },
-                prices: [
-                    {
-                        currencyCode: "usd",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "czk",
-                        amount: 250,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
-            // PPL fulfillment options
-            {
-                name: 'PPL Parcel Smart',
-                providerId: 'ppl_ppl',
-                type: {
-                    label: "PPL Pickup Point",
-                    description: "Deliver to nearest ParcelShop/ParcelBox",
-                    code: "ppl-parcel-smart",
-                },
-                data: {
-                    product_type: "SMAR",
-                    requires_access_point: true,
-                    supports_cod: false,
-                },
-                prices: [
-                    {
-                        currencyCode: "czk",
-                        amount: 79,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 4,
-                    },
-                    {
-                        currencyCode: "usd",
-                        amount: 4,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
-            {
-                name: 'PPL Parcel Smart + COD',
-                providerId: 'ppl_ppl',
-                type: {
-                    label: "PPL Pickup Point + Cash on Delivery",
-                    description: "Deliver to ParcelShop/ParcelBox, pay on pickup",
-                    code: "ppl-parcel-smart-cod",
-                },
-                data: {
-                    product_type: "SMAD",
-                    requires_access_point: true,
-                    supports_cod: true,
-                },
-                prices: [
-                    {
-                        currencyCode: "czk",
-                        amount: 99,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 5,
-                    },
-                    {
-                        currencyCode: "usd",
-                        amount: 5,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
-            {
-                name: 'PPL Private',
-                providerId: 'ppl_ppl',
-                type: {
-                    label: "PPL Home Delivery",
-                    description: "Deliver to your address",
-                    code: "ppl-private",
-                },
-                data: {
-                    product_type: "PRIV",
-                    requires_access_point: false,
-                    supports_cod: false,
-                },
-                prices: [
-                    {
-                        currencyCode: "czk",
-                        amount: 99,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 5,
-                    },
-                    {
-                        currencyCode: "usd",
-                        amount: 5,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
-            {
-                name: 'PPL Private + COD',
-                providerId: 'ppl_ppl',
-                type: {
-                    label: "PPL Home Delivery + Cash on Delivery",
-                    description: "Deliver to your address, pay on delivery",
-                    code: "ppl-private-cod",
-                },
-                data: {
-                    product_type: "PRID",
-                    requires_access_point: false,
-                    supports_cod: true,
-                },
-                prices: [
-                    {
-                        currencyCode: "czk",
-                        amount: 119,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 6,
-                    },
-                    {
-                        currencyCode: "usd",
-                        amount: 6,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
+        rules: [
+          {
+            attribute: 'enabled_in_store',
+            value: 'true',
+            operator: 'eq',
+          },
+          {
+            attribute: 'is_return',
+            value: 'false',
+            operator: 'eq',
+          },
         ],
-        publishableKey: {
-            title: 'Webshop'
+      },
+      {
+        name: 'Express Shipping',
+        providerId: 'manual_manual',
+        type: {
+          label: 'Express',
+          description: 'Ship in 24 hours.',
+          code: 'express',
         },
-    }
+        prices: [
+          {
+            currencyCode: 'usd',
+            amount: 10,
+          },
+          {
+            currencyCode: 'eur',
+            amount: 10,
+          },
+          {
+            currencyCode: 'czk',
+            amount: 250,
+          },
+        ],
+        rules: [
+          {
+            attribute: 'enabled_in_store',
+            value: 'true',
+            operator: 'eq',
+          },
+          {
+            attribute: 'is_return',
+            value: 'false',
+            operator: 'eq',
+          },
+        ],
+      },
+      // PPL fulfillment options
+      {
+        name: 'PPL Parcel Smart',
+        providerId: 'ppl_ppl',
+        type: {
+          label: 'PPL Pickup Point',
+          description: 'Deliver to nearest ParcelShop/ParcelBox',
+          code: 'ppl-parcel-smart',
+        },
+        data: {
+          product_type: 'SMAR',
+          requires_access_point: true,
+          supports_cod: false,
+        },
+        prices: [
+          {
+            currencyCode: 'czk',
+            amount: 79,
+          },
+          {
+            currencyCode: 'eur',
+            amount: 4,
+          },
+          {
+            currencyCode: 'usd',
+            amount: 4,
+          },
+        ],
+        rules: [
+          {
+            attribute: 'enabled_in_store',
+            value: 'true',
+            operator: 'eq',
+          },
+          {
+            attribute: 'is_return',
+            value: 'false',
+            operator: 'eq',
+          },
+        ],
+      },
+      {
+        name: 'PPL Parcel Smart + COD',
+        providerId: 'ppl_ppl',
+        type: {
+          label: 'PPL Pickup Point + Cash on Delivery',
+          description: 'Deliver to ParcelShop/ParcelBox, pay on pickup',
+          code: 'ppl-parcel-smart-cod',
+        },
+        data: {
+          product_type: 'SMAD',
+          requires_access_point: true,
+          supports_cod: true,
+        },
+        prices: [
+          {
+            currencyCode: 'czk',
+            amount: 99,
+          },
+          {
+            currencyCode: 'eur',
+            amount: 5,
+          },
+          {
+            currencyCode: 'usd',
+            amount: 5,
+          },
+        ],
+        rules: [
+          {
+            attribute: 'enabled_in_store',
+            value: 'true',
+            operator: 'eq',
+          },
+          {
+            attribute: 'is_return',
+            value: 'false',
+            operator: 'eq',
+          },
+        ],
+      },
+      {
+        name: 'PPL Private',
+        providerId: 'ppl_ppl',
+        type: {
+          label: 'PPL Home Delivery',
+          description: 'Deliver to your address',
+          code: 'ppl-private',
+        },
+        data: {
+          product_type: 'PRIV',
+          requires_access_point: false,
+          supports_cod: false,
+        },
+        prices: [
+          {
+            currencyCode: 'czk',
+            amount: 99,
+          },
+          {
+            currencyCode: 'eur',
+            amount: 5,
+          },
+          {
+            currencyCode: 'usd',
+            amount: 5,
+          },
+        ],
+        rules: [
+          {
+            attribute: 'enabled_in_store',
+            value: 'true',
+            operator: 'eq',
+          },
+          {
+            attribute: 'is_return',
+            value: 'false',
+            operator: 'eq',
+          },
+        ],
+      },
+      {
+        name: 'PPL Private + COD',
+        providerId: 'ppl_ppl',
+        type: {
+          label: 'PPL Home Delivery + Cash on Delivery',
+          description: 'Deliver to your address, pay on delivery',
+          code: 'ppl-private-cod',
+        },
+        data: {
+          product_type: 'PRID',
+          requires_access_point: false,
+          supports_cod: true,
+        },
+        prices: [
+          {
+            currencyCode: 'czk',
+            amount: 119,
+          },
+          {
+            currencyCode: 'eur',
+            amount: 6,
+          },
+          {
+            currencyCode: 'usd',
+            amount: 6,
+          },
+        ],
+        rules: [
+          {
+            attribute: 'enabled_in_store',
+            value: 'true',
+            operator: 'eq',
+          },
+          {
+            attribute: 'is_return',
+            value: 'false',
+            operator: 'eq',
+          },
+        ],
+      },
+    ],
+    publishableKey: {
+      title: 'Webshop',
+    },
+  }
 
-    const dbService: DatabaseModuleService = req.scope.resolve(DATABASE_MODULE)
-    const resultCategories = await dbService.sqlRaw<any>(
-        sql`select cl.title,
+  const dbService: DatabaseModuleService = req.scope.resolve(DATABASE_MODULE)
+  const resultCategories = await dbService.sqlRaw<any>(
+    sql`select cl.title,
                                cl.description,
                                cl.rewrite_title       as handle,
                                c.visible              as isActive,
@@ -320,9 +342,10 @@ export async function GET(
                                               cparentl.id_category = cparent.id
                         where l.abbreviation = 'cz'
                           and l.active = 1
-        `)
+        `
+  )
 
-    const productSql = sql`
+  const productSql = sql`
             WITH RECURSIVE cte_products_base AS (
                 SELECT
                     p.*,
@@ -636,18 +659,17 @@ WHERE cpig.images IS NOT NULL
                 )
         `
 
-    const resultProducts = await dbService.sqlRaw<any>(
-        sql`
+  const resultProducts = await dbService.sqlRaw<any>(
+    sql`
             ${productSql}
             select *
             from cte_result
         `
-    )
+  )
 
-    const {result} = await seedN1Workflow(req.scope)
-        .run({
-            input: {...input, categories: resultCategories, products: resultProducts}
-        })
+  const { result } = await seedN1Workflow(req.scope).run({
+    input: { ...input, categories: resultCategories, products: resultProducts },
+  })
 
-    res.send(result)
+  res.send(result)
 }
