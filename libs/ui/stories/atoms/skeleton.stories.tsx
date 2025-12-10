@@ -22,7 +22,7 @@ type Story = StoryObj<typeof Skeleton>
 // ===== BASIC USAGE =====
 
 export const Basic: Story = {
-  render: () => <Skeleton className="h-20 w-64" />,
+  render: () => <Skeleton.Rectangle className="h-20 w-64" />,
 }
 
 export const WithContent: Story = {
@@ -30,10 +30,10 @@ export const WithContent: Story = {
     const [isLoaded, setIsLoaded] = useState(false)
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-250">
         <button
           onClick={() => setIsLoaded(!isLoaded)}
-          className="px-4 py-2 bg-primary text-white rounded"
+          className="px-250 py-150 bg-primary text-white rounded"
           type="button"
         >
           Toggle Loaded State
@@ -50,14 +50,76 @@ export const WithContent: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className="space-y-250">
       <div>
-        <p className="mb-2 text-sm text-gray-600">Primary (default)</p>
-        <Skeleton variant="primary" className="h-20 w-64" />
+        <p className="mb-150 text-sm text-fg-secondary">Primary (default)</p>
+        <Skeleton.Rectangle variant="primary" className="h-20 w-64" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">Secondary</p>
-        <Skeleton variant="secondary" className="h-20 w-64" />
+        <p className="mb-150 text-sm text-fg-secondary">Secondary</p>
+        <Skeleton.Rectangle variant="secondary" className="h-20 w-64" />
+      </div>
+    </div>
+  ),
+}
+
+export const AnimationSpeed: Story = {
+  render: () => (
+    <div className="space-y-300">
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">Slow (3s)</p>
+        <Skeleton.Rectangle speed="slow" className="h-16 w-64" />
+      </div>
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">Normal (2s) - default</p>
+        <Skeleton.Rectangle speed="normal" className="h-16 w-64" />
+      </div>
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">Fast (1s)</p>
+        <Skeleton.Rectangle speed="fast" className="h-16 w-64" />
+      </div>
+    </div>
+  ),
+}
+
+export const SpeedInheritance: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Speed is inherited from parent Skeleton via context. Child components automatically use the parent speed unless overridden.',
+      },
+    },
+  },
+  render: () => (
+    <div className="space-y-400 max-w-xs">
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">
+          Parent speed="fast" - children inherit
+        </p>
+        <Skeleton speed="fast">
+          <div className="flex gap-250 p-250 border rounded-lg">
+            <Skeleton.Circle size="lg" />
+            <div className="flex-1 space-y-150">
+              <Skeleton.Text noOfLines={2} />
+              <Skeleton.Rectangle height="100px" />
+            </div>
+          </div>
+        </Skeleton>
+      </div>
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">
+          Parent speed="slow" - one child overrides to fast
+        </p>
+        <Skeleton speed="slow">
+          <div className="flex gap-250 p-250 border rounded-lg">
+            <Skeleton.Circle size="lg" speed="fast" />
+            <div className="flex-1 space-y-150">
+              <Skeleton.Text noOfLines={2} />
+              <Skeleton.Rectangle height="100px" />
+            </div>
+          </div>
+        </Skeleton>
       </div>
     </div>
   ),
@@ -67,22 +129,22 @@ export const Variants: Story = {
 
 export const CircleSizes: Story = {
   render: () => (
-    <div className="flex gap-4 items-end">
+    <div className="flex gap-250 items-end">
       <div className="text-center">
         <Skeleton.Circle size="sm" />
-        <p className="mt-2 text-xs">sm (32px)</p>
+        <p className="mt-150 text-xs">sm (32px)</p>
       </div>
       <div className="text-center">
         <Skeleton.Circle size="md" />
-        <p className="mt-2 text-xs">md (48px)</p>
+        <p className="mt-150 text-xs">md (48px)</p>
       </div>
       <div className="text-center">
         <Skeleton.Circle size="lg" />
-        <p className="mt-2 text-xs">lg (64px)</p>
+        <p className="mt-150 text-xs">lg (64px)</p>
       </div>
       <div className="text-center">
         <Skeleton.Circle size="xl" />
-        <p className="mt-2 text-xs">xl (96px)</p>
+        <p className="mt-150 text-xs">xl (96px)</p>
       </div>
     </div>
   ),
@@ -93,10 +155,10 @@ export const CircleWithAvatar: Story = {
     const [isLoaded, setIsLoaded] = useState(false)
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-250">
         <button
           onClick={() => setIsLoaded(!isLoaded)}
-          className="px-4 py-2 bg-primary text-white rounded"
+          className="px-250 py-150 bg-primary text-white rounded"
           type="button"
         >
           Toggle Avatar
@@ -121,37 +183,37 @@ export const TextBasic: Story = {
 
 export const TextCustomLines: Story = {
   render: () => (
-    <div className="space-y-8">
+    <div className="space-y-400">
       <div>
-        <p className="mb-2 text-sm text-gray-600">3 lines (default)</p>
+        <p className="mb-150 text-sm text-fg-secondary">3 lines (default)</p>
         <Skeleton.Text noOfLines={3} />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">5 lines</p>
+        <p className="mb-150 text-sm text-fg-secondary">5 lines</p>
         <Skeleton.Text noOfLines={5} />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">1 line</p>
+        <p className="mb-150 text-sm text-fg-secondary">1 line</p>
         <Skeleton.Text noOfLines={1} />
       </div>
     </div>
   ),
 }
 
-export const TextSpacing: Story = {
+export const TextSizes: Story = {
   render: () => (
-    <div className="space-y-8">
+    <div className="space-y-400">
       <div>
-        <p className="mb-2 text-sm text-gray-600">Small spacing</p>
-        <Skeleton.Text spacing="sm" />
+        <p className="mb-150 text-sm text-fg-secondary">Small spacing</p>
+        <Skeleton.Text size="sm" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">Medium spacing (default)</p>
-        <Skeleton.Text spacing="md" />
+        <p className="mb-150 text-sm text-fg-secondary">Medium spacing (default)</p>
+        <Skeleton.Text size="md" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">Large spacing</p>
-        <Skeleton.Text spacing="lg" />
+        <p className="mb-150 text-sm text-fg-secondary">Large spacing number</p>
+        <Skeleton.Text size="lg" />
       </div>
     </div>
   ),
@@ -159,18 +221,37 @@ export const TextSpacing: Story = {
 
 export const TextLastLineWidth: Story = {
   render: () => (
-    <div className="space-y-8">
+    <div className="space-y-400">
       <div>
-        <p className="mb-2 text-sm text-gray-600">80% last line (default)</p>
+        <p className="mb-150 text-sm text-fg-secondary">80% last line (default)</p>
         <Skeleton.Text lastLineWidth="80%" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">90% last line</p>
+        <p className="mb-150 text-sm text-fg-secondary">90% last line</p>
         <Skeleton.Text lastLineWidth="90%" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">60% last line</p>
+        <p className="mb-150 text-sm text-fg-secondary">60% last line</p>
         <Skeleton.Text lastLineWidth="60%" />
+      </div>
+    </div>
+  ),
+}
+
+export const TextNumberOfLines: Story = {
+  render: () => (
+    <div className="space-y-400">
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">1 line</p>
+        <Skeleton.Text noOfLines={1} />
+      </div>
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">3 lines (default)</p>
+        <Skeleton.Text />
+      </div>
+      <div>
+        <p className="mb-150 text-sm text-fg-secondary">5 lines</p>
+        <Skeleton.Text noOfLines={5} />
       </div>
     </div>
   ),
@@ -180,17 +261,17 @@ export const TextLastLineWidth: Story = {
 
 export const RectangleAspectRatios: Story = {
   render: () => (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-250">
       <div>
-        <p className="mb-2 text-sm text-gray-600">16:9 (Video)</p>
+        <p className="mb-150 text-sm text-fg-secondary">16:9 (Video)</p>
         <Skeleton.Rectangle aspectRatio="16/9" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">4:3</p>
+        <p className="mb-150 text-sm text-fg-secondary">4:3</p>
         <Skeleton.Rectangle aspectRatio="4/3" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">1:1 (Square)</p>
+        <p className="mb-150 text-sm text-fg-secondary">1:1 (Square)</p>
         <Skeleton.Rectangle aspectRatio="1/1" />
       </div>
     </div>
@@ -199,13 +280,13 @@ export const RectangleAspectRatios: Story = {
 
 export const RectangleFixedDimensions: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className="space-y-250">
       <div>
-        <p className="mb-2 text-sm text-gray-600">Fixed height: 200px</p>
+        <p className="mb-150 text-sm text-fg-secondary">Fixed height: 200px</p>
         <Skeleton.Rectangle height="200px" />
       </div>
       <div>
-        <p className="mb-2 text-sm text-gray-600">Fixed width: 300px</p>
+        <p className="mb-150 text-sm text-fg-secondary">Fixed width: 300px</p>
         <Skeleton.Rectangle width="300px" height="100px" />
       </div>
     </div>
@@ -217,12 +298,12 @@ export const RectangleFixedDimensions: Story = {
 export const ProductCardSkeleton: Story = {
   name: '🛍️ Product Card',
   render: () => (
-    <div className="w-80 border p-4 rounded-lg">
-      <Skeleton.Rectangle aspectRatio="1/1" className="mb-4" />
-      <Skeleton.Text noOfLines={2} spacing="sm" />
-      <div className="flex gap-2 mt-4">
-        <Skeleton className="h-10 flex-1" />
-        <Skeleton className="h-10 w-10" />
+    <div className="w-80 border p-250 rounded-lg">
+      <Skeleton.Rectangle aspectRatio="1/1" className="mb-250" />
+      <Skeleton.Text noOfLines={2} size="sm" />
+      <div className="flex gap-150 mt-250">
+        <Skeleton.Rectangle className="h-10 flex-1" />
+        <Skeleton.Rectangle className="h-10 w-10" />
       </div>
     </div>
   ),
@@ -231,11 +312,11 @@ export const ProductCardSkeleton: Story = {
 export const UserProfileSkeleton: Story = {
   name: '👤 User Profile',
   render: () => (
-    <div className="flex gap-4 p-4 border rounded-lg max-w-md">
+    <div className="flex gap-250 p-250 border rounded-lg max-w-md">
       <Skeleton.Circle size="lg" />
       <div className="flex-1">
         <Skeleton.Text noOfLines={3} />
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-150 mt-250">
           <Skeleton className="h-8 w-20" />
           <Skeleton className="h-8 w-24" />
         </div>
@@ -247,16 +328,16 @@ export const UserProfileSkeleton: Story = {
 export const FeedSkeleton: Story = {
   name: '📰 Feed Item',
   render: () => (
-    <div className="space-y-4 max-w-xs">
+    <div className="space-y-250 max-w-xs">
       {[1, 2, 3].map((item) => (
-        <div key={item} className="border p-4 rounded-lg">
-          <div className="flex gap-3 mb-4">
+        <div key={item} className="border p-250 rounded-lg">
+          <div className="flex gap-200 mb-250">
             <Skeleton.Circle size="md" />
             <div className="flex-1">
-              <Skeleton.Text noOfLines={2} spacing="sm" />
+              <Skeleton.Text noOfLines={2} size="sm" />
             </div>
           </div>
-          <Skeleton.Rectangle aspectRatio="16/9" className="mb-3" />
+          <Skeleton.Rectangle aspectRatio="16/9" className="mb-200" />
           <Skeleton.Text noOfLines={3} />
         </div>
       ))}
@@ -277,9 +358,9 @@ export const ReducedMotion: Story = {
     },
   },
   render: () => (
-    <div className="space-y-4">
-      <div className="bg-yellow-50 border border-yellow-200 p-4 rounded">
-        <p className="text-sm text-yellow-800">
+    <div className="space-y-250">
+      <div className="bg-warning-subtle border border-warning p-250 rounded">
+        <p className="text-sm text-warning">
           💡 <strong>Accessibility:</strong> When users enable "Reduce motion"
             in their OS, animations automatically switch to the static state shown below.
         </p>
@@ -287,28 +368,6 @@ export const ReducedMotion: Story = {
       <Skeleton className="h-20 w-64 force-reduced-motion" />
       <Skeleton.Text noOfLines={3} className="force-reduced-motion" />
       <Skeleton.Circle size="lg" className="force-reduced-motion" />
-    </div>
-  ),
-}
-
-export const AriaLabels: Story = {
-  name: '♿ ARIA Labels',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Skeletons include proper ARIA attributes for screen readers: `aria-busy="true"` and `aria-label="Loading content"`.',
-      },
-    },
-  },
-  render: () => (
-    <div className="space-y-4">
-      <div className="bg-blue-50 border border-blue-200 p-4 rounded">
-        <p className="text-sm text-blue-800">
-          🔊 Screen readers will recognize the loading state via aria-busy attribute.
-        </p>
-      </div>
-      <Skeleton className="h-20 w-64" />
     </div>
   ),
 }
