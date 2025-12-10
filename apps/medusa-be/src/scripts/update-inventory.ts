@@ -88,7 +88,12 @@ export default async function updateInventory({ container }: ExecArgs) {
     logger.info(`Found ${inventoryLevels.length} inventory levels to update`)
 
     // Update inventory levels - setting new stock quantities
-    const updates = []
+    const updates: {
+      id: string
+      inventory_item_id: string
+      location_id: string
+      stocked_quantity: number
+    }[] = []
     for (const level of inventoryLevels) {
       // Find the corresponding variant
       const link = inventoryItemLinks.find(

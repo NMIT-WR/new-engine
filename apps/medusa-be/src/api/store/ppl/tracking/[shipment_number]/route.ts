@@ -25,19 +25,22 @@ export async function GET(
   }
 
   try {
-    const pplOptions: PplOptions = {
-      client_id: process.env.PPL_CLIENT_ID!,
-      client_secret: process.env.PPL_CLIENT_SECRET!,
-      environment: (process.env.PPL_ENVIRONMENT ||
-        'testing') as PplOptions['environment'],
-      default_label_format: 'Png',
-    }
+    const clientId = process.env.PPL_CLIENT_ID
+    const clientSecret = process.env.PPL_CLIENT_SECRET
 
-    if (!pplOptions.client_id || !pplOptions.client_secret) {
+    if (!clientId || !clientSecret) {
       res.status(500).json({
         error: 'PPL credentials not configured',
       })
       return
+    }
+
+    const pplOptions: PplOptions = {
+      client_id: clientId,
+      client_secret: clientSecret,
+      environment: (process.env.PPL_ENVIRONMENT ||
+        'testing') as PplOptions['environment'],
+      default_label_format: 'Png',
     }
 
     const client = new PplClient(pplOptions, logger)

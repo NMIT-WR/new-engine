@@ -288,8 +288,12 @@ export class PplClient {
         params.append('VariableSymbols', sym)
       }
     }
-    if (query.dateFrom) params.append('DateFrom', query.dateFrom)
-    if (query.dateTo) params.append('DateTo', query.dateTo)
+    if (query.dateFrom) {
+      params.append('DateFrom', query.dateFrom)
+    }
+    if (query.dateTo) {
+      params.append('DateTo', query.dateTo)
+    }
     if (query.shipmentStates) {
       for (const state of query.shipmentStates) {
         params.append('ShipmentStates', state)
@@ -391,14 +395,27 @@ export class PplClient {
       Offset: String(query.offset || 0),
     })
 
-    if (query.countryCode) params.append('CountryCode', query.countryCode)
-    if (query.zipCode) params.append('ZipCode', query.zipCode)
-    if (query.city) params.append('City', query.city)
-    if (query.accessPointTypes)
+    if (query.countryCode) {
+      params.append('CountryCode', query.countryCode)
+    }
+    if (query.zipCode) {
+      params.append('ZipCode', query.zipCode)
+    }
+    if (query.city) {
+      params.append('City', query.city)
+    }
+    if (query.accessPointTypes) {
       params.append('AccessPointTypes', query.accessPointTypes)
-    if (query.radius) params.append('Radius', String(query.radius))
-    if (query.latitude) params.append('Latitude', String(query.latitude))
-    if (query.longitude) params.append('Longitude', String(query.longitude))
+    }
+    if (query.radius) {
+      params.append('Radius', String(query.radius))
+    }
+    if (query.latitude) {
+      params.append('Latitude', String(query.latitude))
+    }
+    if (query.longitude) {
+      params.append('Longitude', String(query.longitude))
+    }
 
     const response = await fetch(`${this.baseUrl}/accessPoint?${params}`, {
       headers: {
@@ -434,10 +451,18 @@ export class PplClient {
     await this.throttle()
 
     const params = new URLSearchParams()
-    if (query.street) params.append('Street', query.street)
-    if (query.zipCode) params.append('ZipCode', query.zipCode)
-    if (query.city) params.append('City', query.city)
-    if (query.calledFrom) params.append('CalledFrom', query.calledFrom)
+    if (query.street) {
+      params.append('Street', query.street)
+    }
+    if (query.zipCode) {
+      params.append('ZipCode', query.zipCode)
+    }
+    if (query.city) {
+      params.append('City', query.city)
+    }
+    if (query.calledFrom) {
+      params.append('CalledFrom', query.calledFrom)
+    }
 
     const response = await fetch(`${this.baseUrl}/addressWhisper?${params}`, {
       headers: {
@@ -519,10 +544,18 @@ export class PplClient {
       Limit: String(query.limit),
       Offset: String(query.offset),
     })
-    if (query.service) params.append('Service', query.service)
-    if (query.currency) params.append('Currency', query.currency)
-    if (query.country) params.append('Country', query.country)
-    if (query.product) params.append('Product', query.product)
+    if (query.service) {
+      params.append('Service', query.service)
+    }
+    if (query.currency) {
+      params.append('Currency', query.currency)
+    }
+    if (query.country) {
+      params.append('Country', query.country)
+    }
+    if (query.product) {
+      params.append('Product', query.product)
+    }
 
     const response = await fetch(
       `${this.baseUrl}/codelist/servicePriceLimit?${params}`,
@@ -766,10 +799,18 @@ export class PplClient {
         params.append('OrderIds', String(id))
       }
     }
-    if (query.dateFrom) params.append('DateFrom', query.dateFrom)
-    if (query.dateTo) params.append('DateTo', query.dateTo)
-    if (query.sendDate) params.append('SendDate', query.sendDate)
-    if (query.productType) params.append('ProductType', query.productType)
+    if (query.dateFrom) {
+      params.append('DateFrom', query.dateFrom)
+    }
+    if (query.dateTo) {
+      params.append('DateTo', query.dateTo)
+    }
+    if (query.sendDate) {
+      params.append('SendDate', query.sendDate)
+    }
+    if (query.productType) {
+      params.append('ProductType', query.productType)
+    }
     if (query.orderStates) {
       for (const state of query.orderStates) {
         params.append('OrderStates', state)
@@ -811,10 +852,12 @@ export class PplClient {
     await this.throttle()
 
     const params = new URLSearchParams()
-    if (query.customerReference)
+    if (query.customerReference) {
       params.append('CustomerReference', query.customerReference)
-    if (query.orderReference)
+    }
+    if (query.orderReference) {
       params.append('OrderReference', query.orderReference)
+    }
 
     const response = await fetch(`${this.baseUrl}/order/cancel?${params}`, {
       method: 'POST',
@@ -887,9 +930,15 @@ export class PplClient {
       Limit: String(query.limit),
       Offset: String(query.offset),
     })
-    if (query.pageSize) params.append('PageSize', query.pageSize)
-    if (query.position) params.append('Position', String(query.position))
-    if (query.orderBy) params.append('OrderBy', query.orderBy)
+    if (query.pageSize) {
+      params.append('PageSize', query.pageSize)
+    }
+    if (query.position) {
+      params.append('Position', String(query.position))
+    }
+    if (query.orderBy) {
+      params.append('OrderBy', query.orderBy)
+    }
 
     const response = await fetch(
       `${this.baseUrl}/shipment/batch/${batchId}/label?${params}`,
@@ -992,12 +1041,21 @@ export class PplClient {
     const params = new URLSearchParams({
       Country: query.country,
     })
-    if (query.parcelShopCode)
+    if (query.parcelShopCode) {
       params.append('ParcelShopCode', query.parcelShopCode)
-    if (query.street) params.append('Street', query.street)
-    if (query.city) params.append('City', query.city)
-    if (query.zipCode) params.append('ZipCode', query.zipCode)
-    if (query.productType) params.append('ProductType', query.productType)
+    }
+    if (query.street) {
+      params.append('Street', query.street)
+    }
+    if (query.city) {
+      params.append('City', query.city)
+    }
+    if (query.zipCode) {
+      params.append('ZipCode', query.zipCode)
+    }
+    if (query.productType) {
+      params.append('ProductType', query.productType)
+    }
 
     const response = await fetch(`${this.baseUrl}/routing?${params}`, {
       headers: {

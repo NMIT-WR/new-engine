@@ -73,6 +73,7 @@ async function importProductPage(
 }
 
 let i = 0
+const DATE_STRING_PATTERN = /^\d{4}-\d{2}-\d{2}/
 /**
  * Sanitize a string to be URL-safe for use as a handle
  */
@@ -82,7 +83,7 @@ function sanitizeHandle(handle: string): string {
   }
 
   // Check if the handle is a date string (common issue with database exports)
-  if (handle.match(/^\d{4}-\d{2}-\d{2}/) || !Number.isNaN(Date.parse(handle))) {
+  if (handle.match(DATE_STRING_PATTERN) || !Number.isNaN(Date.parse(handle))) {
     return `product-${i++}-${Date.now()}`
   }
 
@@ -244,7 +245,7 @@ function extractCategories(products: ProductRecord[]): {
     { slug: string; name: string; image_url?: string }
   > = {}
 
-  products.forEach((product) => {
+  for (const product of products) {
     if (product.category_slug && !categoriesMap[product.category_slug]) {
       categoriesMap[product.category_slug] = {
         slug: product.category_slug,
@@ -252,7 +253,7 @@ function extractCategories(products: ProductRecord[]): {
         image_url: product.category_image_url,
       }
     }
-  })
+  }
 
   return Object.values(categoriesMap)
 }
@@ -266,14 +267,14 @@ function extractCollections(products: ProductRecord[]): {
 }[] {
   const collectionsMap: Record<string, { handle: string; title: string }> = {}
 
-  products.forEach((product) => {
+  for (const product of products) {
     if (product.collection_slug && !collectionsMap[product.collection_slug]) {
       collectionsMap[product.collection_slug] = {
         handle: product.collection_slug,
         title: product.collection_name,
       }
     }
-  })
+  }
 
   return Object.values(collectionsMap)
 }
@@ -362,11 +363,11 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
 
   // 5. Create a map of category slugs to category IDs for easy lookup
   const categoryMap: Record<string, string> = { ...existingCategoryMap }
-  categoryResult.forEach((category) => {
+  for (const category of categoryResult) {
     if (category.handle) {
       categoryMap[category.handle] = category.id
     }
-  })
+  }
 
   // 4. Extract and create collections
   logger.info('Extracting collections from product data...')
@@ -390,7 +391,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   )
 
   // Only run creation workflow if there are new collections to create
-  let collectionResult = []
+  let collectionResult: { handle: string; id: string }[] = []
   if (newCollections.length > 0) {
     logger.info('Creating new collections...')
     const { result } = await createCollectionsWorkflow(container).run({
@@ -511,7 +512,11 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       })
 
       // Create inventory levels for each inventory item with the location ID
-      const inventoryLevels = []
+      const inventoryLevels: {
+        stocked_quantity: number
+        inventory_item_id: string
+        location_id: string
+      }[] = []
       for (const inventoryItem of inventoryItems) {
         inventoryLevels.push({
           stocked_quantity: 100, // Default stock quantity
@@ -539,7 +544,6 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       // If we got fewer products than the chunk size, we've reached the end
       hasMore = productRecords.length >= CHUNK_SIZE
     } catch (error) {
-      console.log(error)
       const errorMessage =
         error instanceof Error ? error.message : String(error)
       const errorStack = error instanceof Error ? error.stack : undefined

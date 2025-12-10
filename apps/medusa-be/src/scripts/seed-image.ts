@@ -15,12 +15,12 @@ import mime from 'mime'
 export default async function seedImages({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
 
-  enum PRODUCTS {
-    MedusaTShirt = 'Medusa T-Shirt',
-    MedusaSweatshirt = 'Medusa Sweatshirt',
-    MedusaSweatpants = 'Medusa Sweatpants',
-    MedusaShorts = 'Medusa Shorts',
-  }
+  const PRODUCTS = {
+    MedusaTShirt: 'Medusa T-Shirt',
+    MedusaSweatshirt: 'Medusa Sweatshirt',
+    MedusaSweatpants: 'Medusa Sweatpants',
+    MedusaShorts: 'Medusa Shorts',
+  } as const
 
   async function uploadLocalFiles(
     productImageMap: Record<string, string[]>,

@@ -136,7 +136,6 @@ export const createProductCategoriesStep = createStep(
         )
 
         if (category === undefined || parent === undefined) {
-          console.log(i)
           throw new Error(
             `Could not find category parent pair ${i.handle} -> ${i.parentHandle}`
           )

@@ -14,7 +14,6 @@ export async function GET(
   res: MedusaResponse
 ) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-  console.log({ query: req.queryConfig })
   const { data: producers } = await query.graph({
     entity: 'producer',
     filters: {

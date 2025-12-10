@@ -4,23 +4,24 @@ import type {
   MedusaResponse,
 } from '@medusajs/framework'
 import type { MiddlewareRoute } from '@medusajs/framework/http'
+import type { Logger } from '@medusajs/framework/types'
+import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
 
 export const authRoutesMiddlewares: MiddlewareRoute[] = [
   {
     matcher: /^\/auth\/.*/,
     middlewares: [
-      async (
-        req: MedusaRequest,
-        res: MedusaResponse,
-        next: MedusaNextFunction
-      ) => {
+      (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
+        const logger = req.scope.resolve<Logger>(
+          ContainerRegistrationKeys.LOGGER
+        )
         const origin = req.headers.origin as string
         const allowedOrigins =
           process.env.AUTH_CORS?.split(',').map((o) => o.trim()) || []
 
-        console.log('[CORS Middleware] Request:', req.method, req.url)
-        console.log('[CORS Middleware] Origin:', origin)
-        console.log('[CORS Middleware] Allowed origins:', allowedOrigins)
+        logger.debug(
+          `[CORS Middleware] Request: ${req.method} ${req.url}, Origin: ${origin}`
+        )
 
         // Always set CORS headers for allowed origins
         if (origin && allowedOrigins.includes(origin)) {
@@ -35,9 +36,9 @@ export const authRoutesMiddlewares: MiddlewareRoute[] = [
             'content-type,x-publishable-api-key,authorization'
           )
           res.setHeader('Vary', 'Origin')
-          console.log('[CORS Middleware] Headers set for origin:', origin)
-        } else {
-          console.log('[CORS Middleware] Origin not allowed:', origin)
+          logger.debug(`[CORS Middleware] Headers set for origin: ${origin}`)
+        } else if (origin) {
+          logger.debug(`[CORS Middleware] Origin not allowed: ${origin}`)
         }
 
         // Handle preflight requests

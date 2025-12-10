@@ -457,9 +457,9 @@ export const createProductsStep = createStep(
           },
         })
 
-        updateResult.result.forEach((updated) => {
+        for (const updated of updateResult.result) {
           updatedIds.push(updated.id)
-        })
+        }
       }
 
       const products = await productService.listProducts(

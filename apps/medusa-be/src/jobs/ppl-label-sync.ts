@@ -70,7 +70,9 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
 
   // Check if PPL service is enabled
   if (process.env.PPL_ENABLED !== '1') {
-    logger.debug('PPL Label Sync: PPL service is disabled (PPL_ENABLED != 1), skipping')
+    logger.debug(
+      'PPL Label Sync: PPL service is disabled (PPL_ENABLED != 1), skipping'
+    )
     return
   }
 
@@ -122,25 +124,28 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
 }
 
 export const config = {
-    name: 'ppl-label-sync',
-    schedule: '*/1 * * * *', // Every 1 minute
+  name: 'ppl-label-sync',
+  schedule: '*/1 * * * *', // Every 1 minute
 }
 
 /**
  * Create PPL client from environment variables
  */
 function createPplClient(logger: Logger): PplClient | null {
+  const clientId = process.env.PPL_CLIENT_ID
+  const clientSecret = process.env.PPL_CLIENT_SECRET
+
+  if (!clientId || !clientSecret) {
+    logger.warn('PPL Label Sync: Missing PPL credentials, skipping')
+    return null
+  }
+
   const pplOptions: PplOptions = {
-    client_id: process.env.PPL_CLIENT_ID!,
-    client_secret: process.env.PPL_CLIENT_SECRET!,
+    client_id: clientId,
+    client_secret: clientSecret,
     environment: (process.env.PPL_ENVIRONMENT ||
       'testing') as PplOptions['environment'],
     default_label_format: 'Png',
-  }
-
-  if (!pplOptions.client_id || !pplOptions.client_secret) {
-    logger.warn('PPL Label Sync: Missing PPL credentials, skipping')
-    return null
   }
 
   return new PplClient(pplOptions, logger)

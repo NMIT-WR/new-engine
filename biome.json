@@ -45,22 +45,10 @@
       "linter": {
         "rules": {
           "suspicious": {
-            "noConsole": "off",
-            "noConsoleLog": "off",
-            "useAwait": "warn"
-          },
-          "style": {
-            "noNonNullAssertion": "warn",
-            "useBlockStatements": "off",
-            "useFilenamingConvention": "off"
+            "useAwait": "off"
           },
           "complexity": {
-            "noExcessiveCognitiveComplexity": "warn",
-            "noForEach": "off",
-            "noUselessConstructor": "off"
-          },
-          "nursery": {
-            "useConsistentMemberAccessibility": "off"
+            "noExcessiveCognitiveComplexity": "warn"
           }
         }
       }

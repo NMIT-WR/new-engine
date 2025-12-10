@@ -388,11 +388,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   })
 
-  enum PRODUCTS {
-    MedusaTShirt = 'Medusa T-Shirt',
-    MedusaSweatshirt = 'Medusa Sweatshirt',
-    MedusaSweatpants = 'Medusa Sweatpants',
-    MedusaShorts = 'Medusa Shorts',
+  const PRODUCTS = {
+    MedusaTShirt: 'Medusa T-Shirt',
+    MedusaSweatshirt: 'Medusa Sweatshirt',
+    MedusaSweatpants: 'Medusa Sweatpants',
+    MedusaShorts: 'Medusa Shorts',
   }
 
   async function uploadLocalFiles(
@@ -1039,7 +1039,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
     fields: ['id'],
   })
 
-  const inventoryLevels = []
+  const inventoryLevels: {
+    location_id: string
+    stocked_quantity: number
+    inventory_item_id: string
+  }[] = []
   for (const inventoryItem of inventoryItems) {
     const inventoryLevel = {
       location_id: stockLocation.id,
