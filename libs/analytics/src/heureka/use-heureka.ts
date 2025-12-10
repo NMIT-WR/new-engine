@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback } from 'react'
 import type { HeurekaOrderParams, HeurekaProductItem } from './types'
 
 /**
@@ -46,14 +47,14 @@ export function useHeureka(apiKey: string) {
   /**
    * Check if Heureka SDK is loaded and ready
    */
-  const isReady = () => {
+  const isReady = useCallback(() => {
     return getHeureka() !== null
-  }
+  }, [])
 
   /**
    * Add a single product to the current order
    */
-  const addProduct = (product: HeurekaProductItem) => {
+  const addProduct = useCallback((product: HeurekaProductItem) => {
     const heureka = getHeureka()
     if (heureka) {
       heureka(
@@ -66,46 +67,49 @@ export function useHeureka(apiKey: string) {
       return true
     }
     return false
-  }
+  }, [])
 
   /**
    * Send complete order data to Heureka
    */
-  const sendOrder = (params: HeurekaOrderParams) => {
-    const heureka = getHeureka()
-    if (!heureka) {
-      console.warn('[useHeureka] SDK not loaded yet')
-      return false
-    }
+  const sendOrder = useCallback(
+    (params: HeurekaOrderParams) => {
+      const heureka = getHeureka()
+      if (!heureka) {
+        console.warn('[useHeureka] SDK not loaded yet')
+        return false
+      }
 
-    const { orderId, products, totalWithVat, currency = 'CZK' } = params
+      const { orderId, products, totalWithVat, currency = 'CZK' } = params
 
-    // Authenticate
-    heureka('authenticate', apiKey)
+      // Authenticate
+      heureka('authenticate', apiKey)
 
-    // Set order ID
-    heureka('set_order_id', orderId)
+      // Set order ID
+      heureka('set_order_id', orderId)
 
-    // Add all products
-    for (const product of products) {
-      heureka(
-        'add_product',
-        product.id,
-        product.name,
-        String(product.priceWithVat),
-        String(product.quantity)
-      )
-    }
+      // Add all products
+      for (const product of products) {
+        heureka(
+          'add_product',
+          product.id,
+          product.name,
+          String(product.priceWithVat),
+          String(product.quantity)
+        )
+      }
 
-    // Set total and currency
-    heureka('set_total_vat', String(totalWithVat))
-    heureka('set_currency', currency)
+      // Set total and currency
+      heureka('set_total_vat', String(totalWithVat))
+      heureka('set_currency', currency)
 
-    // Send the order
-    heureka('send', 'Order')
+      // Send the order
+      heureka('send', 'Order')
 
-    return true
-  }
+      return true
+    },
+    [apiKey]
+  )
 
   return {
     isReady,
