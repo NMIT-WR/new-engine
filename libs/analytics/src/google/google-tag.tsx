@@ -3,6 +3,9 @@
 import Script from 'next/script'
 import type { GoogleAdsConfig } from './types'
 
+/** Valid Google Ads ID format: AW-XXXXXXXXX or G-XXXXXXXXX */
+const VALID_ADS_ID_PATTERN = /^(AW|G)-[A-Z0-9]+$/i
+
 /**
  * Google Tag (gtag.js) base component
  *
@@ -30,6 +33,14 @@ export function GoogleTag({ adsId, debug = false }: GoogleAdsConfig) {
   if (!adsId) {
     if (debug) {
       console.warn('[GoogleTag] No Ads ID provided, skipping initialization')
+    }
+    return null
+  }
+
+  // Validate adsId format to prevent XSS
+  if (!VALID_ADS_ID_PATTERN.test(adsId)) {
+    if (debug) {
+      console.error('[GoogleTag] Invalid Ads ID format:', adsId)
     }
     return null
   }
