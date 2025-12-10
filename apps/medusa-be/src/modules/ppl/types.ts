@@ -320,16 +320,10 @@ export interface PplCompleteLabelSettings {
 export type PplLabelPageSize = 'Default' | 'A4' | 'A6'
 
 /**
- * Batch status response
+ * Batch status response from GET /shipment/batch/{batchId}
  */
 export interface PplBatchResponse {
-  batchId: string
-  importState: PplBatchState
   items: PplBatchItem[]
-  /** Merged labels if completeLabelSettings was used */
-  completeLabel?: {
-    labelUrls: string[]
-  }
 }
 
 export type PplBatchState = 'Received' | 'InProcess' | 'Complete' | 'Error'
@@ -345,8 +339,10 @@ export interface PplBatchItem {
   trackingUrl?: string
   /** Error message if item failed */
   errorMessage?: string
-  /** Item state */
-  state?: 'Ok' | 'Error'
+  /** Item import state */
+  importState?: PplBatchState
+  /** Related items */
+  relatedItems?: unknown[]
 }
 
 /**
@@ -493,35 +489,60 @@ export interface PplApiError {
 }
 
 /**
- * Data stored in fulfillment.data for PPL shipments
+ * Fulfillment processing status
+ * - pending: Batch created, waiting for PPL to process
+ * - completed: Batch processed, label downloaded and stored
+ * - error: Batch processing or label download failed
  */
-export interface PplFulfillmentData {
-  /** PPL shipment number (tracking number) */
-  shipment_number: string
-  /** Original PPL label URL (may expire) */
-  ppl_label_url: string
-  /** Label URL stored in S3/MinIO */
-  label_url: string
-  /** Public tracking URL */
-  tracking_url: string
-  /** Access point code if pickup point delivery */
-  access_point_id?: string
-  /** Batch ID from creation */
+export type PplFulfillmentStatus = 'pending' | 'completed' | 'error'
+
+/**
+ * Data stored in fulfillment.data for PPL shipments
+ * Extends Record<string, unknown> for compatibility with Medusa's fulfillment data type
+ */
+export interface PplFulfillmentData extends Record<string, unknown> {
+  /** Fulfillment processing status */
+  status: PplFulfillmentStatus
+  /** Batch ID from PPL - always present after createFulfillment */
   batch_id: string
   /** Product type used */
   product_type: PplProductType
+  /** Access point code if pickup point delivery */
+  access_point_id?: string
+
+  // Fields populated after batch completes (by ppl-label-sync job)
+  /** PPL shipment number (tracking number) - only after batch completes */
+  shipment_number?: string
+  /** Original PPL label URL (may expire) - only after batch completes */
+  ppl_label_url?: string
+  /** Label URL stored in S3/MinIO - only after batch completes */
+  label_url?: string
+  /** Public tracking URL - only after batch completes */
+  tracking_url?: string
+
+  // Tracking status fields (populated by ppl-tracking-sync job)
   /** Last known shipment state */
   last_status?: PplShipmentState
   /** ISO date of last status update */
   last_status_date?: string
   /** Whether delivery failed */
   delivery_failed?: boolean
+
+  // Error handling fields
+  /** Error message if status === 'error' */
+  error_message?: string
+  /** Number of times label sync has been attempted */
+  sync_attempts?: number
+  /** ISO date of first sync attempt */
+  first_sync_attempt?: string
+  /** ISO date of last sync attempt */
+  last_sync_attempt?: string
 }
 
 /**
  * Data passed during checkout for PPL shipping option
  */
-export interface PplShippingOptionData {
+export interface PplShippingOptionData extends Record<string, unknown> {
   /** Product type code */
   product_type: PplProductType
   /** Whether option requires access point selection */
@@ -919,11 +940,20 @@ export interface PplCodelistProofOfIdentityType {
 }
 
 /**
- * Customer addresses response from GET /customer/address
+ * Customer address item from GET /customer/address
  */
-export interface PplCustomerAddressResponse {
-  items: PplAddress[]
+export interface PplCustomerAddress extends PplAddress {
+  /** Address type code (e.g., "SEAT", "INVO", "PICK", "BACK") */
+  code: string
+  /** Whether this is the default address */
+  default?: boolean
 }
+
+/**
+ * Customer addresses response from GET /customer/address
+ * Returns a direct array of addresses
+ */
+export type PplCustomerAddressResponse = PplCustomerAddress[]
 
 /**
  * Customer info response from GET /customer

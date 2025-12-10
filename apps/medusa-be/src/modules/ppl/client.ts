@@ -222,54 +222,6 @@ export class PplClient {
   }
 
   /**
-   * Poll until batch processing is complete
-   *
-   * Typically takes ~2 seconds for single shipment
-   *
-   * @param batchId - Batch ID from createShipmentBatch
-   * @param maxAttempts - Maximum poll attempts (default: 30)
-   * @param intervalMs - Interval between polls in ms (default: 500)
-   */
-  async pollUntilComplete(
-    batchId: string,
-    maxAttempts = 30,
-    intervalMs = 500
-  ): Promise<PplBatchResponse> {
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const batch = await this.getBatchStatus(batchId)
-
-      if (batch.importState === 'Complete') {
-        this.logger.info(
-          `PPL: Batch ${batchId} completed after ${attempt + 1} polls`
-        )
-        return batch
-      }
-
-      if (batch.importState === 'Error') {
-        const errors = batch.items
-          .filter((item) => item.errorMessage)
-          .map((item) => `${item.referenceId}: ${item.errorMessage}`)
-          .join('; ')
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          `PPL batch failed: ${errors || 'Unknown error'}`
-        )
-      }
-
-      // Still processing (Received or InProcess), wait and retry
-      this.logger.debug(
-        `PPL: Batch ${batchId} state: ${batch.importState}, attempt ${attempt + 1}/${maxAttempts}`
-      )
-      await this.sleep(intervalMs)
-    }
-
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      `PPL batch ${batchId} timed out after ${maxAttempts} attempts`
-    )
-  }
-
-  /**
    * Download label as Buffer for S3 storage
    *
    * @param labelUrl - Full URL or dataGuid path

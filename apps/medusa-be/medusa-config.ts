@@ -6,6 +6,7 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379'
 const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST || ''
 const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || ''
+const PPL_ENABLED = process.env.PPL_ENABLED === '1'
 
 module.exports = defineConfig({
     featureFlags: {
@@ -165,7 +166,8 @@ module.exports = defineConfig({
         {
             resolve: './src/modules/database',
         },
-        {
+        // PPL Fulfillment Provider - only included when PPL_ENABLED=1
+        ...(PPL_ENABLED ? [{
             resolve: "@medusajs/medusa/fulfillment",
             options: {
                 providers: [
@@ -196,6 +198,6 @@ module.exports = defineConfig({
                     },
                 ],
             },
-        },
+        }] : []),
     ],
 })

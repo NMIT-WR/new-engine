@@ -7,7 +7,6 @@ import type {
   FulfillmentItemDTO,
   FulfillmentOption,
   FulfillmentOrderDTO,
-  IFileModuleService,
   Logger,
   MedusaContainer,
   ValidateFulfillmentDataContext,
@@ -15,7 +14,6 @@ import type {
 import {
   AbstractFulfillmentProviderService,
   MedusaError,
-  Modules,
 } from '@medusajs/framework/utils'
 import { PplClient } from './client'
 import type {
@@ -139,7 +137,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       access_point_type: data.access_point_type as string | undefined,
     }
 
-    return shippingOptionData as unknown as Record<string, unknown>
+    return shippingOptionData
   }
 
   /**
@@ -228,11 +226,75 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       )
     }
 
+    const sender = await this.getSenderAddress()
+
+    // Build shipment request
+    const fulfillmentId = fulfillment.id || `temp-${Date.now()}`
+    const shipmentRequest: PplShipmentRequest = {
+      referenceId: fulfillmentId,
+      productType,
+      recipient,
+      ...(sender && { sender }),
+      externalNumbers: [
+        {
+          code: 'CUST',
+          externalNumber: order.display_id?.toString() || order.id || '',
+        },
+      ],
+      ...(accessPointId && {
+        specificDelivery: { parcelShopCode: accessPointId },
+      }),
+      ...(codSettings && { cashOnDelivery: codSettings }),
+    }
+
+    this.logger_.info(
+      `PPL: Creating shipment for fulfillment ${fulfillmentId}, product: ${productType}`
+    )
+
+    // Create shipment batch in PPL - returns immediately with batch_id
+    // The batch will be processed asynchronously by PPL
+    const batchId = await this.client.createShipmentBatch([shipmentRequest])
+
+    this.logger_.info(
+      `PPL: Shipment batch ${batchId} created for fulfillment ${fulfillmentId}. Status will be updated by ppl-label-sync job.`
+    )
+
+    // Build fulfillment data with pending status
+    // Label and shipment number will be populated by ppl-label-sync job
+    const fulfillmentData: PplFulfillmentData = {
+      status: 'pending',
+      batch_id: batchId,
+      product_type: productType,
+      access_point_id: accessPointId,
+    }
+
+    // Return without labels - they will be added when ppl-label-sync job completes
+    // Medusa expects labels array, but we return empty for now
+    return {
+      data: fulfillmentData,
+      labels: [],
+    }
+  }
+
+  private async getSenderAddress() {
     // Check if PPL customer has sender address configured, otherwise use fallback
     let sender: PplShipmentRequest['sender'] | undefined
     const customerAddresses = await this.client.getCustomerAddresses()
+    const defaultSeatAddress = customerAddresses?.find(
+      (a) => a.code === 'SEAT' && a.default === true
+    )
 
-    if (!customerAddresses || customerAddresses.items.length === 0) {
+    if (defaultSeatAddress) {
+      sender = {
+        name: defaultSeatAddress.name,
+        street: defaultSeatAddress.street,
+        city: defaultSeatAddress.city,
+        zipCode: defaultSeatAddress.zipCode,
+        country: defaultSeatAddress.country,
+        ...(defaultSeatAddress.phone && { phone: defaultSeatAddress.phone }),
+        ...(defaultSeatAddress.email && { email: defaultSeatAddress.email }),
+      }
+    } else {
       // No PPL address configured - check for fallback sender in options
       const {
         sender_name,
@@ -275,113 +337,16 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       )
     }
 
-    // Build shipment request
-    const fulfillmentId = fulfillment.id || `temp-${Date.now()}`
-    const shipmentRequest: PplShipmentRequest = {
-      referenceId: fulfillmentId,
-      productType,
-      recipient,
-      ...(sender && { sender }),
-      externalNumbers: [
-        {
-          code: 'CUST',
-          externalNumber: order.display_id?.toString() || order.id || '',
-        },
-      ],
-      ...(accessPointId && {
-        specificDelivery: { parcelShopCode: accessPointId },
-      }),
-      ...(codSettings && { cashOnDelivery: codSettings }),
-    }
-
-    this.logger_.info(
-      `PPL: Creating shipment for fulfillment ${fulfillmentId}, product: ${productType}`
-    )
-
-    // Create shipment in PPL
-    const batchId = await this.client.createShipmentBatch([shipmentRequest])
-
-    // Poll until complete (typically ~2 seconds)
-    const batchResult = await this.client.pollUntilComplete(batchId)
-
-    const shipmentResult = batchResult.items[0]
-    if (!shipmentResult || shipmentResult.errorMessage) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL shipment failed: ${shipmentResult?.errorMessage || 'Unknown error'}`
-      )
-    }
-
-    if (!shipmentResult.shipmentNumber || !shipmentResult.labelUrl) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        'PPL: Shipment created but missing shipment number or label URL'
-      )
-    }
-
-    // Download label and upload to S3/MinIO
-    let storedLabelUrl: string = shipmentResult.labelUrl
-    try {
-      const labelBuffer = await this.client.downloadLabel(
-        shipmentResult.labelUrl
-      )
-      const fileService = this.container_.resolve<IFileModuleService>(
-        Modules.FILE
-      )
-
-      const uploadedFiles = await fileService.createFiles([
-        {
-          filename: `ppl-label-${shipmentResult.shipmentNumber}.png`,
-          mimeType: 'image/png',
-          content: labelBuffer.toString('base64'),
-        },
-      ])
-
-      if (uploadedFiles[0]) {
-        storedLabelUrl = uploadedFiles[0].url
-      }
-      this.logger_.info(`PPL: Label stored at ${storedLabelUrl}`)
-    } catch (error) {
-      this.logger_.warn(
-        `PPL: Failed to store label in S3: ${error instanceof Error ? error.message : String(error)}. Using PPL URL.`
-      )
-      // Continue with PPL URL - label is still accessible
-    }
-
-    const trackingUrl =
-      shipmentResult.trackingUrl ||
-      `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${shipmentResult.shipmentNumber}`
-
-    // Build fulfillment data
-    const fulfillmentData: PplFulfillmentData = {
-      shipment_number: shipmentResult.shipmentNumber,
-      ppl_label_url: shipmentResult.labelUrl,
-      label_url: storedLabelUrl,
-      tracking_url: trackingUrl,
-      access_point_id: accessPointId,
-      batch_id: batchId,
-      product_type: productType,
-    }
-
-    this.logger_.info(
-      `PPL: Fulfillment created - Shipment: ${shipmentResult.shipmentNumber}`
-    )
-
-    return {
-      data: fulfillmentData as unknown as Record<string, unknown>,
-      labels: [
-        {
-          tracking_number: shipmentResult.shipmentNumber,
-          tracking_url: trackingUrl,
-          label_url: storedLabelUrl,
-        },
-      ],
-    }
+    return sender
   }
 
   /**
    * Called when admin cancels a fulfillment
-   * Uses POST /shipment/{shipmentNumber}/cancel
+   *
+   * If fulfillment is pending (no shipment_number yet), just return success
+   * since the shipment hasn't been processed by PPL yet.
+   *
+   * If fulfillment is completed, use POST /shipment/{shipmentNumber}/cancel
    * NOTE: Only works BEFORE physical pickup by PPL courier
    */
   override async cancelFulfillment(
@@ -389,12 +354,20 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
   ): Promise<Record<string, unknown>> {
     const fulfillmentData = data as unknown as PplFulfillmentData
     const shipmentNumber = fulfillmentData.shipment_number
+    const status = fulfillmentData.status
 
-    if (!shipmentNumber) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        'PPL: No shipment number found for cancellation'
+    // If pending, batch may still be processing - we can't cancel via API
+    // but the shipment effectively doesn't exist yet
+    if (status === 'pending' || !shipmentNumber) {
+      this.logger_.info(
+        `PPL: Fulfillment cancelled while pending (batch_id: ${fulfillmentData.batch_id}). No PPL cancellation needed.`
       )
+      return {
+        cancelled: true,
+        status: 'pending',
+        batch_id: fulfillmentData.batch_id,
+        note: 'Fulfillment was pending - no shipment to cancel in PPL',
+      }
     }
 
     this.logger_.info(`PPL: Attempting to cancel shipment ${shipmentNumber}`)

@@ -45,6 +45,7 @@ services:
       SENTRY_NAME: ${DC_SENTRY_NAME}
       SENTRY_DSN: ${DC_SENTRY_DSN}
       # PPL Fulfillment Provider
+      PPL_ENABLED: ${DC_PPL_ENABLED:-1}
       PPL_CLIENT_ID: ${DC_PPL_CLIENT_ID}
       PPL_CLIENT_SECRET: ${DC_PPL_CLIENT_SECRET}
       PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
