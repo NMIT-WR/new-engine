@@ -77,6 +77,23 @@ const SkeletonContext = createContext<SkeletonContextValue | null>(null)
 
 const useSkeletonContext = () => useContext(SkeletonContext)
 
+/**
+ * Resolves skeleton props with context fallback.
+ * Local props override context values.
+ */
+function useResolvedSkeletonProps(props: {
+  isLoaded?: boolean
+  variant?: 'primary' | 'secondary'
+  speed?: 'slow' | 'normal' | 'fast'
+}) {
+  const context = useSkeletonContext()
+  return {
+    isLoaded: props.isLoaded ?? context?.isLoaded ?? false,
+    variant: props.variant ?? context?.variant,
+    speed: props.speed ?? context?.speed,
+  }
+}
+
 interface SkeletonRootProps
   extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   isLoaded?: boolean
@@ -136,19 +153,15 @@ Skeleton.Circle = function SkeletonCircle({
   ref,
   ...props
 }: SkeletonCircleProps) {
-  const context = useSkeletonContext()
-
-  const resolvedIsLoaded = isLoaded ?? context?.isLoaded ?? false
-  const resolvedVariant = variant ?? context?.variant
-  const resolvedSpeed = speed ?? context?.speed
+  const resolved = useResolvedSkeletonProps({ isLoaded, variant, speed })
 
   const styles = skeletonVariants({
     size,
-    variant: resolvedVariant,
-    speed: resolvedSpeed,
+    variant: resolved.variant,
+    speed: resolved.speed,
   })
 
-  if (resolvedIsLoaded) {
+  if (resolved.isLoaded) {
     return <>{children}</>
   }
 
@@ -191,19 +204,15 @@ Skeleton.Text = function SkeletonText({
   ref,
   ...props
 }: SkeletonTextProps) {
-  const context = useSkeletonContext()
-
-  const resolvedIsLoaded = isLoaded ?? context?.isLoaded ?? false
-  const resolvedVariant = variant ?? context?.variant
-  const resolvedSpeed = speed ?? context?.speed
+  const resolved = useResolvedSkeletonProps({ isLoaded, variant, speed })
 
   const styles = skeletonVariants({
     size,
-    variant: resolvedVariant,
-    speed: resolvedSpeed,
+    variant: resolved.variant,
+    speed: resolved.speed,
   })
 
-  if (resolvedIsLoaded) {
+  if (resolved.isLoaded) {
     return <>{children}</>
   }
 
@@ -261,18 +270,14 @@ Skeleton.Rectangle = function SkeletonRectangle({
   ref,
   ...props
 }: SkeletonRectangleProps) {
-  const context = useSkeletonContext()
-
-  const resolvedIsLoaded = isLoaded ?? context?.isLoaded ?? false
-  const resolvedVariant = variant ?? context?.variant
-  const resolvedSpeed = speed ?? context?.speed
+  const resolved = useResolvedSkeletonProps({ isLoaded, variant, speed })
 
   const styles = skeletonVariants({
-    variant: resolvedVariant,
-    speed: resolvedSpeed,
+    variant: resolved.variant,
+    speed: resolved.speed,
   })
 
-  if (resolvedIsLoaded) {
+  if (resolved.isLoaded) {
     return <>{children}</>
   }
 
