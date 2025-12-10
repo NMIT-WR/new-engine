@@ -1,4 +1,32 @@
 services:
+  medusa-demo:
+    restart: unless-stopped
+    container_name: wr_medusa_demo
+    build:
+      context: .
+      dockerfile: docker/development/medusa-fe/Dockerfile
+    volumes:
+      - .:/var/www
+    command: pnpm --filter frontend-demo dev
+#    command: ["tail" ,"-f"]
+    ports:
+      - "8000:3000"
+    networks:
+      - internal
+    depends_on:
+      - medusa-be
+      - medusa-meilisearch
+      - medusa-minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      start_period: 10s
+    environment:
+      NODE_ENV: ${DC_DEMO_MEDUSA_NODE_ENV}
+      RESEND_API_KEY: ${DC_DEMO_MEDUSA_RESEND_API_KEY}
+      CONTACT_EMAIL: ${DC_DEMO_MEDUSA_CONTACT_EMAIL}
+      RESEND_FROM_EMAIL: ${DC_DEMO_MEDUSA_RESEND_FROM_EMAIL}
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${DC_DEMO_NEXT_PUBLIC_MEDUSA_BACKEND_URL}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_DEMO_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
   medusa-be:
     restart: unless-stopped
     container_name: wr_medusa_be

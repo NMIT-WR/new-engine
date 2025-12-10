@@ -1,4 +1,4 @@
-import {IRegionModuleService, Logger, RegionDTO, WorkflowTypes} from "@medusajs/framework/types"
+import {IRegionModuleService, Logger, WorkflowTypes} from "@medusajs/framework/types"
 import {ContainerRegistrationKeys, Modules} from "@medusajs/framework/utils"
 import {createStep, StepResponse,} from "@medusajs/framework/workflows-sdk"
 import {createRegionsWorkflow, updateRegionsWorkflow} from "@medusajs/medusa/core-flows"
@@ -15,7 +15,7 @@ export const createRegionsStep = createStep(CreateRegionsStepId, async (
     input: CreateRegionsStepInput,
     {container}
 ) => {
-    const result: Array<RegionDTO|WorkflowTypes.RegionWorkflow.UpdateRegionsWorkflowOutput> = []
+    const result: WorkflowTypes.RegionWorkflow.CreateRegionsWorkflowOutput = []
 
     const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     const regionService = container.resolve<IRegionModuleService>(Modules.REGION)
@@ -76,7 +76,7 @@ export const createRegionsStep = createStep(CreateRegionsStepId, async (
                 input: regionToUpdate,
             })
 
-            result.push(updateResult)
+            result.push(...updateResult)
         }
     }
 
