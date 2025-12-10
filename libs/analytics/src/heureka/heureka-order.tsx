@@ -4,6 +4,9 @@ import Script from 'next/script'
 import { useEffect, useRef } from 'react'
 import type { HeurekaCountry, HeurekaProductItem } from './types'
 
+/** Max retries for SDK polling (50 × 100ms = 5 seconds) */
+const MAX_POLL_RETRIES = 50
+
 export interface HeurekaOrderProps {
   /** API key from Heureka admin panel */
   apiKey: string
@@ -69,8 +72,18 @@ export function HeurekaOrder({
     }
 
     // Wait for heureka SDK to be ready
+    let retries = 0
     const sendOrder = () => {
       if (typeof window.heureka !== 'function') {
+        retries++
+        if (retries > MAX_POLL_RETRIES) {
+          if (debug) {
+            console.warn(
+              '[HeurekaOrder] SDK failed to load after 5s, giving up'
+            )
+          }
+          return
+        }
         if (debug) {
           console.log('[HeurekaOrder] Waiting for SDK...')
         }
