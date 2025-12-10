@@ -41,12 +41,12 @@ type ProductInput = {
     values: string[]
   }[]
   producer?: {
-    title: string
+    title?: string
     attributes?: {
       name: string
       value: string
     }[]
-  }
+  } | null
   variants?: {
     title: string
     sku: string

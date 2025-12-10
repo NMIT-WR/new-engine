@@ -11,7 +11,7 @@ export type StoreProducersDetailProductsSchemaType = z.infer<
 >
 
 export async function GET(
-  req: MedusaRequest<any, StoreProducersDetailProductsSchemaType>,
+  req: MedusaRequest<unknown, StoreProducersDetailProductsSchemaType>,
   res: MedusaResponse
 ) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)

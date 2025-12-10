@@ -6,6 +6,28 @@ import seedN1Workflow, {
   type SeedN1WorkflowInput,
 } from '../../workflows/seed/workflows/seed-n1'
 
+/** Category result from database query */
+interface CategoryRaw {
+  title: string
+  description: string
+  handle: string
+  isActive: boolean
+  parentHandle: string | undefined
+}
+
+/** Product result from complex database query with JSON fields */
+interface ProductRaw {
+  title: string
+  handle: string
+  description?: string
+  thumbnail?: string
+  images: string
+  variants: string
+  options: string
+  categories: string
+  producer: string
+}
+
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const countries = [
     'cz',
@@ -326,7 +348,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   }
 
   const dbService: DatabaseModuleService = req.scope.resolve(DATABASE_MODULE)
-  const resultCategories = await dbService.sqlRaw<any>(
+  const resultCategories = await dbService.sqlRaw<CategoryRaw>(
     sql`select cl.title,
                                cl.description,
                                cl.rewrite_title       as handle,
@@ -659,7 +681,7 @@ WHERE cpig.images IS NOT NULL
                 )
         `
 
-  const resultProducts = await dbService.sqlRaw<any>(
+  const resultProducts = await dbService.sqlRaw<ProductRaw>(
     sql`
             ${productSql}
             select *

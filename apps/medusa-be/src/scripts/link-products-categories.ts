@@ -129,8 +129,11 @@ export default async function linkProductsToCategories({
       logger.info(
         `Linked product ${product.handle} to ${newCategoryIds.length} new categories`
       )
-    } catch (error: any) {
-      logger.error(`Failed to link product ${product.handle}:`, error)
+    } catch (error) {
+      logger.error(
+        `Failed to link product ${product.handle}:`,
+        error instanceof Error ? error : new Error(String(error))
+      )
     }
   }
 

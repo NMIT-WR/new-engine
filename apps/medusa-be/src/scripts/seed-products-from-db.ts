@@ -1,6 +1,8 @@
 import type {
   CreateProductWorkflowInputDTO,
   ExecArgs,
+  MedusaContainer,
+  ProductCategoryDTO,
 } from '@medusajs/framework/types'
 import {
   ContainerRegistrationKeys,
@@ -152,7 +154,7 @@ function convertToMedusaProducts(
  * Check if categories already exist in the system by handle
  */
 async function checkExistingCategories(
-  container: any,
+  container: MedusaContainer,
   categoryHandles: string[]
 ): Promise<Record<string, string>> {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
@@ -168,9 +170,9 @@ async function checkExistingCategories(
 
   // Create a map of handle -> id for existing categories
   const existingCategoryMap: Record<string, string> = {}
-  existingCategories.forEach((category: any) => {
+  for (const category of existingCategories) {
     existingCategoryMap[category.handle] = category.id
-  })
+  }
 
   return existingCategoryMap
 }
@@ -179,7 +181,7 @@ async function checkExistingCategories(
  * Check if collections already exist in the system by handle
  */
 async function checkExistingCollections(
-  container: any,
+  container: MedusaContainer,
   collectionHandles: string[]
 ): Promise<Record<string, string>> {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
@@ -195,9 +197,9 @@ async function checkExistingCollections(
 
   // Create a map of handle -> id for existing collections
   const existingCollectionMap: Record<string, string> = {}
-  existingCollections.forEach((collection: any) => {
+  for (const collection of existingCollections) {
     existingCollectionMap[collection.handle] = collection.id
-  })
+  }
 
   return existingCollectionMap
 }
@@ -206,7 +208,7 @@ async function checkExistingCollections(
  * Check if products already exist in the system by handle
  */
 async function checkExistingProducts(
-  container: any,
+  container: MedusaContainer,
   productHandles: string[]
 ): Promise<Record<string, string>> {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
@@ -222,9 +224,9 @@ async function checkExistingProducts(
 
   // Create a map of handle -> id for existing products
   const existingProductMap: Record<string, string> = {}
-  existingProducts.forEach((product: any) => {
+  for (const product of existingProducts) {
     existingProductMap[product.handle] = product.id
-  })
+  }
 
   return existingProductMap
 }
@@ -344,7 +346,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   }))
 
   // Only run creation workflow if there are new categories to create
-  let categoryResult: any[] = []
+  let categoryResult: ProductCategoryDTO[] = []
   if (productCategories.length > 0) {
     logger.info('Creating product categories...')
     const { result } = await createProductCategoriesWorkflow(container).run({
@@ -536,10 +538,10 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
 
       // If we got fewer products than the chunk size, we've reached the end
       hasMore = productRecords.length >= CHUNK_SIZE
-    } catch (error: any) {
+    } catch (error) {
       console.log(error)
       const errorMessage =
-        error instanceof Error ? error.message : JSON.stringify(error.message)
+        error instanceof Error ? error.message : String(error)
       const errorStack = error instanceof Error ? error.stack : undefined
 
       logger.error(

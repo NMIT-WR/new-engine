@@ -45,7 +45,6 @@
       "linter": {
         "rules": {
           "suspicious": {
-            "noExplicitAny": "warn",
             "noConsole": "off",
             "noConsoleLog": "off",
             "useAwait": "warn"

@@ -55,8 +55,17 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
       fields: ['id', 'data', 'shipped_at', 'delivered_at', 'provider_id'],
     })
 
+    // Define fulfillment shape from query
+    interface FulfillmentRecord {
+      id: string
+      data: PplFulfillmentData | null
+      shipped_at: string | null
+      delivered_at: string | null
+      provider_id: string
+    }
+
     // Filter to PPL fulfillments that are shipped but not delivered
-    const pendingFulfillments = (fulfillments as any[]).filter(
+    const pendingFulfillments = (fulfillments as FulfillmentRecord[]).filter(
       (f) =>
         f.provider_id === 'ppl_ppl' && // provider_id format: {module}_{identifier}
         f.shipped_at &&

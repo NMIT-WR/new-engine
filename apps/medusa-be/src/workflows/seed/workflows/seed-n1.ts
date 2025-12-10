@@ -9,9 +9,22 @@ import * as Steps from '../steps'
 import seedCategoriesWorkflow, { type CategoryRaw } from './seed-categories'
 
 const seedN1WorkflowId = 'seed-n1-workflow'
+/** Raw product record from database - contains JSON strings for nested data */
+interface RawProductRecord {
+  title: string
+  handle: string
+  description?: string
+  thumbnail?: string
+  images: string
+  variants: string
+  options: string
+  categories: string
+  producer: string
+}
+
 export type SeedN1WorkflowInput = {
   categories: CategoryRaw[]
-  products: any[] // TODO: product DB type
+  products: RawProductRecord[]
   salesChannels: Steps.CreateSalesChannelsStepInput
   currencies: Steps.UpdateStoreCurrenciesStepCurrenciesInput
   regions: Steps.CreateRegionsStepInput

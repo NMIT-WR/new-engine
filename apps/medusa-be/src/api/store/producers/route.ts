@@ -8,7 +8,7 @@ export const StoreProducersSchema = createFindParams()
 export type StoreProducersSchemaType = z.infer<typeof StoreProducersSchema>
 
 export async function GET(
-  req: MedusaRequest<any, StoreProducersSchemaType>,
+  req: MedusaRequest<unknown, StoreProducersSchemaType>,
   res: MedusaResponse
 ) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)

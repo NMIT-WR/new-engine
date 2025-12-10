@@ -1,6 +1,5 @@
 import type { ApiKeyDTO, FulfillmentSetDTO } from '@medusajs/framework/types'
 import {
-  type ReturnWorkflow,
   WorkflowResponse,
   createWorkflow,
   transform,
@@ -23,11 +22,7 @@ export type SeedDatabaseWorkflowInput = {
   products: Steps.CreateProductsStepInput
 }
 
-const seedDatabaseWorkflow: ReturnWorkflow<
-  SeedDatabaseWorkflowInput,
-  any,
-  any
-> = createWorkflow(
+const seedDatabaseWorkflow = createWorkflow(
   SeedDatabaseWorkflowId,
   (input: SeedDatabaseWorkflowInput) => {
     // create sales channels

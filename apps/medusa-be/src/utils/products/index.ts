@@ -1,60 +1,101 @@
 import type * as Steps from '../../workflows/seed/steps'
 
+/** Raw product data from the database (JSON strings) */
+interface RawProductFromDb {
+  title: string
+  handle: string
+  description?: string
+  thumbnail?: string
+  images: string // JSON string
+  variants: string // JSON string
+  options: string // JSON string
+  categories: string // JSON string
+  producer: string // JSON string
+}
+
+/** Raw option data after JSON parsing */
+interface RawOption {
+  title?: string
+  option_values?: string[]
+}
+
+/** Raw variant data after JSON parsing */
+interface RawVariant {
+  title?: string
+  sku?: string | null
+  ean?: string
+  material?: string
+  collection?: string
+  options?: Record<string, string | null>
+  prices?: { amount: number; currency_code: string }[]
+  images?: { url?: string }[]
+  thumbnail?: string
+  metadata?: {
+    attributes?: { name: string; value?: string }[]
+    user_code?: string
+  }
+  quantities?: {
+    quantity?: number
+    supplier_quantity?: number
+  }
+}
+
+/** Raw producer data after JSON parsing */
+interface RawProducer {
+  title?: string
+  attributes?: { name: string; value: string }[]
+}
+
 export function toCreateProductsStepInput(
-  products: any
+  products: RawProductFromDb[]
 ): Steps.CreateProductsStepInput {
-  return products.map((raw: any) => {
-    const i = {
-      ...raw,
-      images: JSON.parse(raw.images),
-      variants: JSON.parse(raw.variants),
-      options: JSON.parse(raw.options),
-      categories: JSON.parse(raw.categories),
-      producer: JSON.parse(raw.producer),
-    }
+  return products.map((raw) => {
+    const parsedImages = JSON.parse(raw.images) as { url: string }[]
+    const parsedVariants = JSON.parse(raw.variants) as RawVariant[]
+    const parsedOptions = JSON.parse(raw.options) as RawOption[]
+    const parsedCategories = JSON.parse(raw.categories) as { handle: string }[]
+    const parsedProducer = JSON.parse(raw.producer) as RawProducer | null
 
-    const options = i.options.map((o: any) => {
-      return {
-        title: o.title ?? 'Variant',
-        values: o.option_values ?? ['Default'],
-      }
-    })
+    const options = parsedOptions.map((o) => ({
+      title: o.title ?? 'Variant',
+      values: o.option_values ?? ['Default'],
+    }))
 
-    const variants = i.variants
-      .filter((f: any) => f.sku !== null)
-      .map((v: any) => {
-        return {
-          title: v.title ?? undefined,
-          sku: v.sku ?? undefined,
-          ean: v.ean ?? undefined,
-          material: v.material ?? undefined,
-          collection: v.collection ?? undefined,
-          options:
-            v.options?.Variant === null ? { Variant: 'Default' } : v.options,
-          prices: v.prices,
-          images: (v.images ?? []).filter(
-            (im: { url?: string }) => im?.url !== null
-          ),
-          thumbnail: v.thumbnail ?? undefined,
-          metadata: {
-            attributes: v.metadata?.attributes ?? undefined,
-            user_code: v.metadata?.user_code ?? undefined,
-          },
-          quantities: v.quantities,
-        }
-      })
+    const variants = parsedVariants
+      .filter((v): v is RawVariant & { sku: string } => v.sku != null)
+      .map((v) => ({
+        title: v.title ?? v.sku,
+        sku: v.sku,
+        ean: v.ean,
+        material: v.material,
+        options: v.options
+          ? Object.fromEntries(
+              Object.entries(v.options).map(([key, value]) => [
+                key,
+                value ?? 'Default',
+              ])
+            )
+          : undefined,
+        prices: v.prices,
+        images: (v.images ?? []).filter(
+          (im): im is { url: string } => im.url != null
+        ),
+        thumbnail: v.thumbnail,
+        metadata: v.metadata,
+        quantities: v.quantities,
+      }))
 
     return {
-      title: i.title,
-      categories: i.categories,
-      description: i.description,
-      handle: i.handle,
+      title: raw.title,
+      categories: parsedCategories,
+      description: raw.description ?? '',
+      handle: raw.handle,
       weight: 1,
       shippingProfileName: 'Default Shipping Profile',
-      thumbnail: i.thumbnail,
-      images: i.images,
+      thumbnail: raw.thumbnail,
+      images: parsedImages,
       options: options.length === 0 ? undefined : options,
-      producer: i.producer,
+      producer: parsedProducer,
       variants: variants.length === 0 ? undefined : variants,
       salesChannelNames: ['Default Sales Channel'],
     }
