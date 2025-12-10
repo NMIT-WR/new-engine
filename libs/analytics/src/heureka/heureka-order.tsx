@@ -59,7 +59,9 @@ export function HeurekaOrder({
   const sent = useRef(false)
 
   useEffect(() => {
-    if (sent.current) return
+    if (sent.current) {
+      return
+    }
     if (!apiKey || !orderId || products.length === 0) {
       if (debug) {
         console.warn('[HeurekaOrder] Missing required data:', {
@@ -74,6 +76,11 @@ export function HeurekaOrder({
     // Wait for heureka SDK to be ready
     let retries = 0
     const sendOrder = () => {
+      // Guard against race conditions (Strict Mode, unstable deps)
+      if (sent.current) {
+        return
+      }
+
       if (typeof window.heureka !== 'function') {
         retries++
         if (retries > MAX_POLL_RETRIES) {
