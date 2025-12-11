@@ -72,8 +72,8 @@ export default function OrderPage() {
         currency,
         value,
         items: items.map((item) => ({
-          id: item.variant_id || '',
-          name: item.title || '',
+          item_id: item.variant_id || '',
+          item_name: item.title || '',
           quantity: item.quantity || 1,
           price: item.unit_price,
         })),

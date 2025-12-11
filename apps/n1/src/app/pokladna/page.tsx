@@ -1,5 +1,6 @@
 'use client'
 
+import { useGoogleAds } from '@libs/analytics/google'
 import { useMetaPixel } from '@libs/analytics/meta'
 import { Button } from '@ui/atoms/button'
 import { useRouter } from 'next/navigation'
@@ -34,6 +35,7 @@ function CheckoutContent() {
     completeCheckout,
   } = useCheckoutContext()
   const { trackInitiateCheckout } = useMetaPixel()
+  const { trackBeginCheckout } = useGoogleAds()
 
   // Meta Pixel - InitiateCheckout tracking
   useEffect(() => {
@@ -52,8 +54,20 @@ function CheckoutContent() {
           quantity: item.quantity || 1,
         })),
       })
+
+      // Google Ads - BeginCheckout tracking
+      trackBeginCheckout({
+        currency: (cart.currency_code ?? 'CZK').toUpperCase(),
+        value: cart.total ?? 0,
+        items: items.map((item) => ({
+          item_id: item.variant_id || '',
+          item_name: item.title || '',
+          price: item.unit_price ?? 0,
+          quantity: item.quantity || 1,
+        })),
+      })
     }
-  }, [cart?.id, hasItems, trackInitiateCheckout])
+  }, [cart?.id, hasItems, trackInitiateCheckout, trackBeginCheckout])
 
   // Loading state
   if (isCartLoading) {
