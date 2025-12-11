@@ -24,11 +24,12 @@ export interface GoogleAdsConversionParams {
 }
 
 // E-commerce item for remarketing
+// Based on: https://developers.google.com/tag-platform/gtagjs/reference/events
 export interface GoogleAdsItem {
-  id: string
-  name?: string
-  brand?: string
-  category?: string
+  item_id: string
+  item_name?: string
+  item_brand?: string
+  item_category?: string
   price?: number
   quantity?: number
 }
