@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.1.0...ui-kit-v0.1.1) (2025-12-11)
+
+
+### Bug Fixes
+
+* **ui:** remove duplicate border class from checkbox base styles ([1226749](https://github.com/NMIT-WR/new-engine/commit/12267495fd3d54fb46c1b05de43fbb9de724d1bf))
+
 # [0.1.0](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.0.0...ui-kit-v0.1.0) (2025-11-24)
 
 
