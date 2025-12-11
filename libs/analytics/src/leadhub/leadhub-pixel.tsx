@@ -3,6 +3,9 @@
 import Script from 'next/script'
 import type { LeadhubConfig } from './types'
 
+/** Valid Leadhub tracking ID format (alphanumeric, hyphens, underscores) */
+const VALID_TRACKING_ID_PATTERN = /^[a-zA-Z0-9_-]+$/
+
 export type LeadhubPixelProps = LeadhubConfig
 
 /**
@@ -32,6 +35,14 @@ export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
 	if (!trackingId) {
 		if (debug) {
 			console.warn('[Leadhub] No tracking ID provided, skipping initialization')
+		}
+		return null
+	}
+
+	// Validate trackingId format to prevent XSS
+	if (!VALID_TRACKING_ID_PATTERN.test(trackingId)) {
+		if (debug) {
+			console.error('[Leadhub] Invalid tracking ID format:', trackingId)
 		}
 		return null
 	}
