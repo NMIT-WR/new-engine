@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Skeleton } from '../../src/atoms/skeleton'
+import { Button } from '../../src/atoms/button'
 
 const meta: Meta<typeof Skeleton> = {
   title: 'Atoms/Skeleton',
@@ -31,13 +32,12 @@ export const WithContent: Story = {
 
     return (
       <div className="space-y-250">
-        <button
+        <Button
           onClick={() => setIsLoaded(!isLoaded)}
-          className="px-250 py-150 bg-primary text-white rounded"
-          type="button"
+          size='sm'
         >
           Toggle Loaded State
-        </button>
+        </Button>
         <Skeleton isLoaded={isLoaded} className="h-20 w-64">
           <div className="h-20 w-64 bg-primary text-white flex items-center justify-center rounded">
             ✨ Content loaded!
@@ -102,7 +102,7 @@ export const SpeedInheritance: Story = {
             <Skeleton.Circle size="lg" />
             <div className="flex-1 space-y-150">
               <Skeleton.Text noOfLines={2} />
-              <Skeleton.Rectangle height="100px" />
+              <Skeleton.Rectangle className="h-8" />
             </div>
           </div>
         </Skeleton>
@@ -116,7 +116,7 @@ export const SpeedInheritance: Story = {
             <Skeleton.Circle size="lg" speed="fast" />
             <div className="flex-1 space-y-150">
               <Skeleton.Text noOfLines={2} />
-              <Skeleton.Rectangle height="100px" />
+              <Skeleton.Rectangle className="h-8" />
             </div>
           </div>
         </Skeleton>
@@ -156,13 +156,12 @@ export const CircleWithAvatar: Story = {
 
     return (
       <div className="space-y-250">
-        <button
+        <Button
           onClick={() => setIsLoaded(!isLoaded)}
-          className="px-250 py-150 bg-primary text-white rounded"
-          type="button"
+          size="sm"
         >
           Toggle Avatar
-        </button>
+        </Button>
         <Skeleton.Circle size="lg" isLoaded={isLoaded}>
           <img
             src="https://i.pravatar.cc/150?img=1"
@@ -264,15 +263,15 @@ export const RectangleAspectRatios: Story = {
     <div className="grid grid-cols-3 gap-250">
       <div>
         <p className="mb-150 text-sm text-fg-secondary">16:9 (Video)</p>
-        <Skeleton.Rectangle aspectRatio="16/9" />
+        <Skeleton.Rectangle className="aspect-video" />
       </div>
       <div>
         <p className="mb-150 text-sm text-fg-secondary">4:3</p>
-        <Skeleton.Rectangle aspectRatio="4/3" />
+        <Skeleton.Rectangle className="aspect-[4/3]" />
       </div>
       <div>
         <p className="mb-150 text-sm text-fg-secondary">1:1 (Square)</p>
-        <Skeleton.Rectangle aspectRatio="1/1" />
+        <Skeleton.Rectangle className="aspect-square" />
       </div>
     </div>
   ),
@@ -282,12 +281,12 @@ export const RectangleFixedDimensions: Story = {
   render: () => (
     <div className="space-y-250">
       <div>
-        <p className="mb-150 text-sm text-fg-secondary">Fixed height: 200px</p>
-        <Skeleton.Rectangle height="200px" />
+        <p className="mb-150 text-sm text-fg-secondary">Fixed height (full width)</p>
+        <Skeleton.Rectangle className="h-64" />
       </div>
       <div>
-        <p className="mb-150 text-sm text-fg-secondary">Fixed width: 300px</p>
-        <Skeleton.Rectangle width="300px" height="100px" />
+        <p className="mb-150 text-sm text-fg-secondary">Fixed width + height</p>
+        <Skeleton.Rectangle className="w-64 h-16" />
       </div>
     </div>
   ),
@@ -299,7 +298,7 @@ export const ProductCardSkeleton: Story = {
   name: '🛍️ Product Card',
   render: () => (
     <div className="w-80 border p-250 rounded-lg">
-      <Skeleton.Rectangle aspectRatio="1/1" className="mb-250" />
+      <Skeleton.Rectangle className="mb-250 h-64" />
       <Skeleton.Text noOfLines={2} size="sm" />
       <div className="flex gap-150 mt-250">
         <Skeleton.Rectangle className="h-10 flex-1" />
@@ -317,8 +316,8 @@ export const UserProfileSkeleton: Story = {
       <div className="flex-1">
         <Skeleton.Text noOfLines={3} />
         <div className="flex gap-150 mt-250">
-          <Skeleton className="h-8 w-20" />
-          <Skeleton className="h-8 w-24" />
+          <Skeleton.Rectangle className="h-8 w-20" />
+          <Skeleton.Rectangle className="h-8 w-24" />
         </div>
       </div>
     </div>
@@ -337,7 +336,7 @@ export const FeedSkeleton: Story = {
               <Skeleton.Text noOfLines={2} size="sm" />
             </div>
           </div>
-          <Skeleton.Rectangle aspectRatio="16/9" className="mb-200" />
+          <Skeleton.Rectangle className="mb-200 aspect-video" />
           <Skeleton.Text noOfLines={3} />
         </div>
       ))}
@@ -365,7 +364,7 @@ export const ReducedMotion: Story = {
             in their OS, animations automatically switch to the static state shown below.
         </p>
       </div>
-      <Skeleton className="h-20 w-64 force-reduced-motion" />
+      <Skeleton.Rectangle className="h-20 w-64 force-reduced-motion" />
       <Skeleton.Text noOfLines={3} className="force-reduced-motion" />
       <Skeleton.Circle size="lg" className="force-reduced-motion" />
     </div>
