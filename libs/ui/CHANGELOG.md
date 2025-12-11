@@ -1,3 +1,13 @@
+## [0.2.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.0...ui-kit-v0.2.1) (2025-12-11)
+
+
+### Bug Fixes
+
+* **ui:** address PR [#167](https://github.com/NMIT-WR/new-engine/issues/167) review feedback ([b4c92ec](https://github.com/NMIT-WR/new-engine/commit/b4c92ec66b100399ea90bd48144b58ea02757946))
+* **ui:** complete unified disabled state implementation ([623b998](https://github.com/NMIT-WR/new-engine/commit/623b9980e2bdac7ca45708c62329d19c1e64a446))
+* **ui:** remove disabled opacity and keep cursor slider and textarea styling ([9388ba5](https://github.com/NMIT-WR/new-engine/commit/9388ba524a1d749fcd47f8b2feea42d18670999a))
+* **ui:** resolve tabs merge conflicts and complete unified disabled state ([0670007](https://github.com/NMIT-WR/new-engine/commit/06700072ee0190ba661c5fe99aa12f8f2aceb8db))
+
 # [0.2.0](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.1.1...ui-kit-v0.2.0) (2025-12-11)
 
 
