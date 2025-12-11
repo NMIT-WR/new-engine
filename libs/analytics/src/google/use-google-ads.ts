@@ -28,7 +28,7 @@ function getGtag() {
  *   transaction_id: 'order_123',
  *   value: 599.50,
  *   currency: 'CZK',
- *   items: [{ id: 'variant_1', quantity: 1 }]
+ *   items: [{ item_id: 'variant_1', item_name: 'Product Name', quantity: 1 }]
  * })
  *
  * // Track a purchase with conversion (e-commerce + Google Ads conversion)
@@ -37,7 +37,7 @@ function getGtag() {
  *     transaction_id: 'order_123',
  *     value: 599.50,
  *     currency: 'CZK',
- *     items: [{ id: 'variant_1', quantity: 1 }]
+ *     items: [{ item_id: 'variant_1', item_name: 'Product Name', quantity: 1 }]
  *   },
  *   'AW-XXXXX/YYYYY'
  * )
