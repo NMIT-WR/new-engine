@@ -1,5 +1,6 @@
 'use client'
 
+import { useGoogleAds } from '@libs/analytics/google'
 import { HeurekaProduct } from '@libs/analytics/heureka'
 import { useLeadhub } from '@libs/analytics/leadhub'
 import { useMetaPixel } from '@libs/analytics/meta'
@@ -41,6 +42,8 @@ export default function ProductPage() {
 
   // Meta Pixel - ViewContent tracking
   const { trackViewContent } = useMetaPixel()
+  // Google Ads - ViewItem tracking
+  const { trackViewItem } = useGoogleAds()
   // Leadhub - ViewContent tracking
   const { trackViewContent: trackLeadhubViewContent } = useLeadhub()
 
@@ -59,6 +62,21 @@ export default function ProductPage() {
       // Leadhub
       trackLeadhubViewContent({
         products: [{ product_id: selectedVariant.id }],
+      })
+
+      // Google Ads
+      trackViewItem({
+        currency: selectedVariant.calculated_price?.currency_code ?? 'CZK',
+        value: selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
+        items: [
+          {
+            item_id: selectedVariant.id,
+            item_name: detail.title,
+            item_category: rawProduct?.categories?.[0]?.name,
+            price:
+              selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
+          },
+        ],
       })
     }
   }, [detail?.id, selectedVariant?.id])

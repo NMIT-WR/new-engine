@@ -31,8 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.variable} antialiased`}>
-        <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''} />
-        <GoogleTag adsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? ''} />
+        <MetaPixel
+          pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''}
+          debug
+        />
+        <GoogleTag
+          adsId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? ''}
+          debug
+        />
         <LeadhubPixel
           trackingId={process.env.NEXT_PUBLIC_LEADHUB_TRACKING_ID ?? ''}
           debug
