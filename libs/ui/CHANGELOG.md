@@ -1,3 +1,17 @@
+# [0.2.0](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.1.1...ui-kit-v0.2.0) (2025-12-11)
+
+
+### Bug Fixes
+
+* **ui:** guard skeleton noOfLines against invalid values and use safe lineCount ([bd3977b](https://github.com/NMIT-WR/new-engine/commit/bd3977bf7ed6132cdb65a10fc74e4a9706cbcf76))
+
+
+### Features
+
+* **skeleton:** add Skeleton atom with Circle/TextRectangle ([b2c68b7](https://github.com/NMIT-WR/new-engine/commit/b2c68b7c39d8364c1ec5713b4fa88c01ef16be5f))
+* **skeleton:** add speed variant and refine slot classes ([a64a1a1](https://github.com/NMIT-WR/new-engine/commit/a64a1a169819e1b4c881dbe7fab12d1a5659b7f7))
+* **stories:** update Skeleton stories to use semantic tokens ([8b6f90e](https://github.com/NMIT-WR/new-engine/commit/8b6f90e04ba3df0d1b0bfce72b856b2d0be5bf86))
+
 ## [0.1.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.1.0...ui-kit-v0.1.1) (2025-12-11)
 
 
