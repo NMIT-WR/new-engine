@@ -3,7 +3,7 @@
 import Script from 'next/script'
 import type { MetaPixelConfig } from './types'
 
-/** Valid Meta Pixel ID format (numeric string, typically 15-16 digits) */
+/** Valid Meta Pixel ID format (numeric string) */
 const VALID_PIXEL_ID_PATTERN = /^\d+$/
 
 /**

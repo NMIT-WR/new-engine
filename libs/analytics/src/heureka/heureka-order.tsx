@@ -167,7 +167,7 @@ export function HeurekaOrder({
             n.src = c;
             g.parentNode.insertBefore(n, g);
           })(window, document, 'script',
-             '//${domain}/ocm/sdk.js?version=2&page=thank_you',
+             'https://${domain}/ocm/sdk.js?version=2&page=thank_you',
              'heureka', '${country}');
         `,
       }}
