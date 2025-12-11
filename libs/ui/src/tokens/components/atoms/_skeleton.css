@@ -1,0 +1,75 @@
+@theme static {
+  /* === BASE COLOR MAPPING === */
+  /* Background colors using reference layer */
+  --color-skeleton-bg: var(--color-overlay);
+  --color-skeleton-bg-primary: var(--color-skeleton-bg);
+  --color-skeleton-bg-secondary: var(--color-surface);
+
+  /* === ANIMATION === */
+  /* Use global motion tokens for consistent behavior */
+  --duration-skeleton-pulse-slow: 3s;
+  --duration-skeleton-pulse-normal: 2s;
+  --duration-skeleton-pulse-fast: 1s;
+
+  /* === SPACING === */
+  --spacing-skeleton-text-sm: var(--spacing-100);
+  --spacing-skeleton-text-md: var(--spacing-150);
+  --spacing-skeleton-text-lg: var(--spacing-200);
+  --spacing-skeleton-text-xl: var(--spacing-250);
+
+  /* === SIZING === */
+  --size-skeleton-circle-sm: 2rem;
+  --size-skeleton-circle-md: 3rem;
+  --size-skeleton-circle-lg: 4rem;
+  --size-skeleton-circle-xl: 6rem;
+  --height-skeleton-text-line: 1rem; /* Match text line height */
+
+  /* === BORDERS & RADIUS === */
+  --radius-skeleton-text: var(--radius-sm);
+}
+
+/* === ANIMATIONS === */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@utility animate-skeleton-pulse-slow {
+  animation: skeleton-pulse var(--duration-skeleton-pulse-slow) ease-in-out
+    infinite;
+}
+
+@utility animate-skeleton-pulse-normal {
+  animation: skeleton-pulse var(--duration-skeleton-pulse-normal) ease-in-out
+    infinite;
+}
+
+@utility animate-skeleton-pulse-fast {
+  animation: skeleton-pulse var(--duration-skeleton-pulse-fast) ease-in-out
+    infinite;
+}
+
+@layer utilities {
+  .animate-skeleton-pulse-slow,
+  .animate-skeleton-pulse-normal,
+  .animate-skeleton-pulse-fast {
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Display reduced motion for storybook without having to
+ enable the prefers-reduced-motion feature in DevTools */
+@layer utilities {
+  .force-reduced-motion {
+    animation: none;
+    opacity: 0.7;
+  }
+}
