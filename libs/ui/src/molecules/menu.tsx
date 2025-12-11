@@ -78,9 +78,8 @@ const menuVariants = tv({
       'rounded-menu-item',
       'hover:bg-menu-item-hover',
       'focus:bg-menu-item-hover focus:outline-none',
-      'data-[disabled]:opacity-menu-disabled data-[disabled]:cursor-not-allowed',
+      'data-[disabled]:text-menu-fg-disabled data-[disabled]:cursor-not-allowed',
       'data-[highlighted]:bg-menu-item-hover',
-      'data-[disabled]:opacity-50',
     ],
     optionItem: ['data-[state=checked]:font-semibold'],
     separator: [

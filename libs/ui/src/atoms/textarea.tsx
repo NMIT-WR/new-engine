@@ -56,7 +56,7 @@ const textareaVariants = tv({
       auto: 'resize-none field-sizing-content',
     },
     readonly: {
-      true: 'bg-textarea-bg-disabled cursor-default opacity-90 text-textarea-fg-disabled border-textarea-border-disabled',
+      true: 'bg-textarea-bg-disabled cursor-default text-textarea-fg-disabled border-textarea-border-disabled',
     },
   },
   defaultVariants: {

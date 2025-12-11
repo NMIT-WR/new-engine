@@ -61,9 +61,9 @@
 
   /* === DISABLED STATES === */
   /* Disabled appearance */
-  --color-combobox-bg-disabled: var(--color-disabled-bg);
-  --color-combobox-fg-disabled: var(--color-disabled-fg);
-  --color-combobox-border-disabled: var(--color-disabled-border);
+  --color-combobox-bg-disabled: var(--color-bg-disabled);
+  --color-combobox-fg-disabled: var(--color-fg-disabled);
+  --color-combobox-border-disabled: var(--color-border-disabled);
 
   /* === SPACING === */
   /* Padding, margin, gap values */

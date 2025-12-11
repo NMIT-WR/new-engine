@@ -147,6 +147,14 @@ export const Default: Story = {
   ),
 }
 
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    id: 'disabled-slider',
+    disabled: true,
+  },
+}
+
 export const WithError: Story = {
   args: {
     ...Default.args,
