@@ -14,7 +14,7 @@ const checkboxVariants = tv({
       'appearance-none relative cursor-pointer flex-shrink-0',
       'h-checkbox w-checkbox',
       'border border-checkbox-border rounded-checkbox',
-      'bg-checkbox data-[state=checked]:bg-checkbox-checked border-checkbox',
+      'bg-checkbox data-[state=checked]:bg-checkbox-checked',
       /* center icon, grid and place items do not work e.g. flex */
       'after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2',
       'data-[state=checked]:after:token-icon-checkbox text-icon-fg data-[state=checked]:text-checkbox-icon-md',
