@@ -1,4 +1,5 @@
 'use client'
+import { useGoogleAds } from '@libs/analytics/google'
 import { useLeadhub } from '@libs/analytics/leadhub'
 import { useMetaPixel } from '@libs/analytics/meta'
 import { useAddToCart, useCart } from '@/hooks/use-cart'
@@ -24,6 +25,7 @@ export const AddToCartSection = ({
   const { regionId } = useRegion()
   const toast = useCartToast()
   const { trackAddToCart } = useMetaPixel()
+  const { trackAddToCart: trackGoogleAddToCart } = useGoogleAds()
   const { trackSetCart } = useLeadhub()
 
   const handleAddToCart = async () => {
@@ -98,6 +100,25 @@ export const AddToCartSection = ({
                 currency: (
                   selectedVariant.calculated_price?.currency_code ?? 'CZK'
                 ).toUpperCase(),
+              },
+            ],
+          })
+
+          // Google Ads - AddToCart tracking
+          trackGoogleAddToCart({
+            currency: (
+              selectedVariant.calculated_price?.currency_code ?? 'CZK'
+            ).toUpperCase(),
+            value:
+              (selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0) *
+              quantity,
+            items: [
+              {
+                item_id: selectedVariant.id,
+                item_name: detail.title,
+                price:
+                  selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
+                quantity,
               },
             ],
           })
