@@ -4,9 +4,9 @@ import type {
   IFulfillmentModuleService,
   Logger,
   UpdateFulfillmentSetDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
 export type CreateFulfillmentSetStepInput = {
   name: string
@@ -19,7 +19,7 @@ export type CreateFulfillmentSetStepInput = {
   }[]
 }
 
-const CreateFulfillmentSetStepId = 'create-fulfillment-set-seed-step'
+const CreateFulfillmentSetStepId = "create-fulfillment-set-seed-step"
 export const createFulfillmentSetStep = createStep(
   CreateFulfillmentSetStepId,
   async (input: CreateFulfillmentSetStepInput, { container }) => {
@@ -34,13 +34,13 @@ export const createFulfillmentSetStep = createStep(
           name: input.name,
         },
         {
-          relations: ['service_zones', 'service_zones.geo_zones'],
+          relations: ["service_zones", "service_zones.geo_zones"],
         }
       )
 
     const result: FulfillmentSetDTO[] = []
     if (existingFulfillmentSets.length === 0) {
-      logger.info('Creating fulfillment sets...')
+      logger.info("Creating fulfillment sets...")
 
       const createData: CreateFulfillmentSetDTO = {
         name: input.name,
@@ -49,7 +49,7 @@ export const createFulfillmentSetStep = createStep(
           name: i.name,
           geo_zones: i.geoZones.map((j) => ({
             country_code: j.countryCode,
-            type: 'country' as const,
+            type: "country" as const,
           })),
         })),
       }
@@ -58,14 +58,14 @@ export const createFulfillmentSetStep = createStep(
         await fulfillmentModuleService.createFulfillmentSets(createData)
       result.push(fulfillmentSet)
     } else {
-      logger.info('Updating existing fulfillment sets...')
+      logger.info("Updating existing fulfillment sets...")
 
       for (const existingFulfillmentSet of existingFulfillmentSets) {
         const existingZonesByName = new Map(
           existingFulfillmentSet.service_zones?.map((sz) => [sz.name, sz]) ?? []
         )
 
-        const serviceZonesUpdate: UpdateFulfillmentSetDTO['service_zones'] =
+        const serviceZonesUpdate: UpdateFulfillmentSetDTO["service_zones"] =
           input.serviceZones.map((inputZone) => {
             const existingZone = existingZonesByName.get(inputZone.name)
 
@@ -73,7 +73,7 @@ export const createFulfillmentSetStep = createStep(
               // Existing zone found - include ID to preserve it and update geo_zones
               const existingGeoZonesByCountryCode = new Map(
                 (existingZone.geo_zones ?? [])
-                  .filter((gz) => 'country_code' in gz)
+                  .filter((gz) => "country_code" in gz)
                   .map((gz) => [
                     (gz as { country_code: string }).country_code,
                     gz,
@@ -92,7 +92,7 @@ export const createFulfillmentSetStep = createStep(
                   }
                   return {
                     country_code: inputGz.countryCode,
-                    type: 'country' as const,
+                    type: "country" as const,
                   }
                 }),
               }
@@ -103,7 +103,7 @@ export const createFulfillmentSetStep = createStep(
               name: inputZone.name,
               geo_zones: inputZone.geoZones.map((j) => ({
                 country_code: j.countryCode,
-                type: 'country' as const,
+                type: "country" as const,
               })),
             }
           })
@@ -122,7 +122,7 @@ export const createFulfillmentSetStep = createStep(
     }
 
     return new StepResponse({
-      result: result,
+      result,
     })
   }
 )

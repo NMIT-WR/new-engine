@@ -2,20 +2,20 @@ import type {
   ITaxModuleService,
   Logger,
   TaxRegionDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   createTaxRegionsWorkflow,
   updateTaxRegionsWorkflow,
-} from '@medusajs/medusa/core-flows'
+} from "@medusajs/medusa/core-flows"
 
 export type CreateTaxRegionsStepInput = {
   countries: string[]
   taxProviderId?: string
 }
 
-const CreateTaxRegionsStepId = 'create-tax-regions-seed-step'
+const CreateTaxRegionsStepId = "create-tax-regions-seed-step"
 export const createTaxRegionsStep = createStep(
   CreateTaxRegionsStepId,
   async (input: CreateTaxRegionsStepInput, { container }) => {
@@ -36,14 +36,14 @@ export const createTaxRegionsStep = createStep(
     )
 
     if (missingTaxRegions.length !== 0) {
-      logger.info('Creating missing tax regions...')
+      logger.info("Creating missing tax regions...")
 
       const { result: createTaxRegionsResult } = await createTaxRegionsWorkflow(
         container
       ).run({
         input: missingTaxRegions.map((country_code) => ({
           country_code,
-          provider_id: input.taxProviderId || 'tp_system',
+          provider_id: input.taxProviderId || "tp_system",
         })),
       })
 
@@ -53,11 +53,11 @@ export const createTaxRegionsStep = createStep(
     }
 
     if (updateTaxRegions.length !== 0) {
-      logger.info('Updating existing tax regions...')
+      logger.info("Updating existing tax regions...")
 
       const toUpdate = updateTaxRegions.map((i) => ({
         id: i.id,
-        tax_provider: input.taxProviderId || 'tp_system',
+        tax_provider: input.taxProviderId || "tp_system",
       }))
 
       const { result: updateTaxRegionResult } = await updateTaxRegionsWorkflow(

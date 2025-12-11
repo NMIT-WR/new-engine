@@ -1,8 +1,7 @@
-import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
-import type { Logger } from '@medusajs/framework/types'
-import { PplClient } from '../../../../../modules/ppl'
-import type { PplOptions, PplShipmentState } from '../../../../../modules/ppl'
-import { PPL_STATUS_MESSAGES } from '../../../../../modules/ppl'
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import type { Logger } from "@medusajs/framework/types"
+import type { PplOptions, PplShipmentState } from "../../../../../modules/ppl"
+import { PPL_STATUS_MESSAGES, PplClient } from "../../../../../modules/ppl"
 
 /**
  * GET /store/ppl/tracking/:shipment_number
@@ -15,11 +14,11 @@ export async function GET(
   res: MedusaResponse
 ): Promise<void> {
   const { shipment_number } = req.params
-  const logger = req.scope.resolve<Logger>('logger')
+  const logger = req.scope.resolve<Logger>("logger")
 
   if (!shipment_number) {
     res.status(400).json({
-      error: 'Shipment number is required',
+      error: "Shipment number is required",
     })
     return
   }
@@ -28,9 +27,9 @@ export async function GET(
     const clientId = process.env.PPL_CLIENT_ID
     const clientSecret = process.env.PPL_CLIENT_SECRET
 
-    if (!clientId || !clientSecret) {
+    if (!(clientId && clientSecret)) {
       res.status(500).json({
-        error: 'PPL credentials not configured',
+        error: "PPL credentials not configured",
       })
       return
     }
@@ -39,8 +38,8 @@ export async function GET(
       client_id: clientId,
       client_secret: clientSecret,
       environment: (process.env.PPL_ENVIRONMENT ||
-        'testing') as PplOptions['environment'],
-      default_label_format: 'Png',
+        "testing") as PplOptions["environment"],
+      default_label_format: "Png",
     }
 
     const client = new PplClient(pplOptions, logger)
@@ -55,7 +54,7 @@ export async function GET(
 
     if (!info) {
       res.status(404).json({
-        error: 'Shipment not found',
+        error: "Shipment not found",
         shipment_number,
         tracking_url: trackingUrl,
       })
@@ -77,11 +76,11 @@ export async function GET(
     })
   } catch (error) {
     logger.error(
-      'PPL tracking error',
+      "PPL tracking error",
       error instanceof Error ? error : new Error(String(error))
     )
     res.status(500).json({
-      error: 'Failed to fetch tracking status',
+      error: "Failed to fetch tracking status",
       tracking_url: `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${shipment_number}`,
     })
   }

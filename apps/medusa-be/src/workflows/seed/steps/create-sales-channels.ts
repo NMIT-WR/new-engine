@@ -2,17 +2,17 @@ import type {
   ISalesChannelModuleService,
   Logger,
   SalesChannelDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
-import { createSalesChannelsWorkflow } from '@medusajs/medusa/core-flows'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { createSalesChannelsWorkflow } from "@medusajs/medusa/core-flows"
 
 export type CreateSalesChannelsStepInput = {
   name: string
   default: boolean
 }[]
 
-const CreateSalesChannelsStepId = 'create-sales-channels-seed-step'
+const CreateSalesChannelsStepId = "create-sales-channels-seed-step"
 export const createSalesChannelsStep = createStep(
   CreateSalesChannelsStepId,
   async (input: CreateSalesChannelsStepInput, { container }) => {
@@ -22,7 +22,7 @@ export const createSalesChannelsStep = createStep(
     const salesChannelModuleService =
       container.resolve<ISalesChannelModuleService>(Modules.SALES_CHANNEL)
 
-    const salesChannels = input.map((i) => i.name) || ['Default Sales Channel']
+    const salesChannels = input.map((i) => i.name) || ["Default Sales Channel"]
 
     const existingSalesChannels =
       await salesChannelModuleService.listSalesChannels({
@@ -53,10 +53,10 @@ export const createSalesChannelsStep = createStep(
       }
     } else {
       const existingDefault = existingSalesChannels.find(
-        (i) => i.name === input.find((i) => i.default)?.name
+        (channel) => channel.name === input.find((inp) => inp.default)?.name
       )
       if (!existingDefault) {
-        throw new Error('Could not find default sales channel')
+        throw new Error("Could not find default sales channel")
       }
 
       result.push({
@@ -69,7 +69,7 @@ export const createSalesChannelsStep = createStep(
     if (defaultSalesChannel) {
       logger.info(`Found default sales channel: ${defaultSalesChannel.name}`)
     } else {
-      throw new Error('Could not find default sales channel')
+      throw new Error("Could not find default sales channel")
     }
 
     return new StepResponse({

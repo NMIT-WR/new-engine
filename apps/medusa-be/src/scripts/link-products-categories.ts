@@ -1,68 +1,68 @@
-import type { ExecArgs } from '@medusajs/framework/types'
-import { Modules } from '@medusajs/framework/utils'
+import type { ExecArgs } from "@medusajs/framework/types"
+import { Modules } from "@medusajs/framework/utils"
 
 // Mapping of product handles to category handles
 const productCategoryMapping: Record<string, string[]> = {
   // T-Shirts & Tops
-  't-shirt': ['t-shirts-tops'],
-  'white-cotton-t-shirt': ['t-shirts-tops'],
-  'classic-oxford-shirt': ['t-shirts-tops'],
-  'linen-button-up-shirt': ['t-shirts-tops'],
-  'wrap-blouse': ['t-shirts-tops'],
+  "t-shirt": ["t-shirts-tops"],
+  "white-cotton-t-shirt": ["t-shirts-tops"],
+  "classic-oxford-shirt": ["t-shirts-tops"],
+  "linen-button-up-shirt": ["t-shirts-tops"],
+  "wrap-blouse": ["t-shirts-tops"],
 
   // Jeans & Pants
-  sweatpants: ['jeans-pants'],
-  'blue-denim-jeans': ['jeans-pants'],
-  'slim-fit-chinos': ['jeans-pants'],
-  'cargo-pants': ['jeans-pants'],
-  'wide-leg-trousers': ['jeans-pants'],
-  shorts: ['jeans-pants'],
+  sweatpants: ["jeans-pants"],
+  "blue-denim-jeans": ["jeans-pants"],
+  "slim-fit-chinos": ["jeans-pants"],
+  "cargo-pants": ["jeans-pants"],
+  "wide-leg-trousers": ["jeans-pants"],
+  shorts: ["jeans-pants"],
 
   // Shoes & Sneakers
-  'sport-running-shoes': ['shoes-sneakers'],
-  'high-top-canvas-sneakers': ['shoes-sneakers'],
-  loafers: ['shoes-sneakers'],
-  'chelsea-boots': ['shoes-sneakers'],
+  "sport-running-shoes": ["shoes-sneakers"],
+  "high-top-canvas-sneakers": ["shoes-sneakers"],
+  loafers: ["shoes-sneakers"],
+  "chelsea-boots": ["shoes-sneakers"],
 
   // Jackets & Coats
-  'black-leather-jacket': ['jackets-coats'],
-  'wool-blend-coat': ['jackets-coats'],
-  'denim-jacket': ['jackets-coats'],
-  'bomber-jacket': ['jackets-coats'],
-  'track-jacket': ['jackets-coats', 'activewear'], // Can be in multiple categories
+  "black-leather-jacket": ["jackets-coats"],
+  "wool-blend-coat": ["jackets-coats"],
+  "denim-jacket": ["jackets-coats"],
+  "bomber-jacket": ["jackets-coats"],
+  "track-jacket": ["jackets-coats", "activewear"], // Can be in multiple categories
 
   // Dresses
-  'striped-summer-dress': ['dresses'],
-  'maxi-dress': ['dresses'],
+  "striped-summer-dress": ["dresses"],
+  "maxi-dress": ["dresses"],
 
   // Accessories
-  'casual-canvas-backpack': ['accessories'],
-  'wool-winter-scarf': ['accessories'],
-  'leather-crossbody-bag': ['accessories'],
-  'baseball-cap': ['accessories'],
-  'silk-blend-scarf': ['accessories'],
-  'bucket-hat': ['accessories'],
+  "casual-canvas-backpack": ["accessories"],
+  "wool-winter-scarf": ["accessories"],
+  "leather-crossbody-bag": ["accessories"],
+  "baseball-cap": ["accessories"],
+  "silk-blend-scarf": ["accessories"],
+  "bucket-hat": ["accessories"],
 
   // Knitwear
-  sweatshirt: ['knitwear'],
-  'cashmere-v-neck-sweater': ['knitwear'],
-  'turtleneck-sweater': ['knitwear'],
-  cardigan: ['knitwear'],
+  sweatshirt: ["knitwear"],
+  "cashmere-v-neck-sweater": ["knitwear"],
+  "turtleneck-sweater": ["knitwear"],
+  cardigan: ["knitwear"],
 
   // Activewear
-  'athletic-performance-leggings': ['activewear'],
+  "athletic-performance-leggings": ["activewear"],
 
   // Skirts
-  'pleated-midi-skirt': ['skirts'],
+  "pleated-midi-skirt": ["skirts"],
 }
 
 export default async function linkProductsToCategories({
   container,
 }: ExecArgs) {
   const productService = container.resolve(Modules.PRODUCT)
-  const logger = container.resolve('logger')
+  const logger = container.resolve("logger")
 
-  logger.info('Starting to link products to categories...')
+  logger.info("Starting to link products to categories...")
 
   // Get all categories
   const categories = await productService.listProductCategories({})
@@ -80,7 +80,7 @@ export default async function linkProductsToCategories({
   const products = await productService.listProducts(
     {},
     {
-      relations: ['categories'],
+      relations: ["categories"],
     }
   )
 
@@ -99,11 +99,11 @@ export default async function linkProductsToCategories({
 
     const categoryIds = categoryHandles
       .map((handle) => categoryMap[handle])
-      .filter((id) => typeof id === 'string')
+      .filter((id) => typeof id === "string")
 
     if (categoryIds.length === 0) {
       logger.warn(
-        `No category IDs found for handles: ${categoryHandles.join(', ')}`
+        `No category IDs found for handles: ${categoryHandles.join(", ")}`
       )
       continue
     }
@@ -125,7 +125,7 @@ export default async function linkProductsToCategories({
         category_ids: [...existingCategoryIds, ...newCategoryIds],
       })
 
-      linkedCount++
+      linkedCount += 1
       logger.info(
         `Linked product ${product.handle} to ${newCategoryIds.length} new categories`
       )
@@ -151,5 +151,5 @@ export default async function linkProductsToCategories({
     }
   }
 
-  logger.info('Finished linking products to categories!')
+  logger.info("Finished linking products to categories!")
 }

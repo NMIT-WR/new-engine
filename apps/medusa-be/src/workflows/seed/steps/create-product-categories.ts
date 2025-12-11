@@ -2,13 +2,13 @@ import type {
   IProductModuleService,
   Logger,
   ProductCategoryDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   createProductCategoriesWorkflow,
   updateProductCategoriesWorkflow,
-} from '@medusajs/medusa/core-flows'
+} from "@medusajs/medusa/core-flows"
 
 export type CreateProductCategoriesStepInput = {
   name: string
@@ -18,7 +18,7 @@ export type CreateProductCategoriesStepInput = {
   handle?: string
 }[]
 
-const CreateProductCategoriesStepId = 'create-product-categories-seed-step'
+const CreateProductCategoriesStepId = "create-product-categories-seed-step"
 export const createProductCategoriesStep = createStep(
   CreateProductCategoriesStepId,
   async (input: CreateProductCategoriesStepInput, { container }) => {
@@ -36,7 +36,7 @@ export const createProductCategoriesStep = createStep(
           name: input.map((i) => i.name),
         },
         {
-          select: ['id', 'name', 'handle'],
+          select: ["id", "name", "handle"],
         }
       )
 
@@ -73,7 +73,7 @@ export const createProductCategoriesStep = createStep(
     )
 
     if (missingProductCategories.length !== 0) {
-      logger.info('Creating product categories...')
+      logger.info("Creating product categories...")
 
       const { result: categoryResult } = await createProductCategoriesWorkflow(
         container
@@ -94,7 +94,7 @@ export const createProductCategoriesStep = createStep(
     }
 
     if (updateProductCategories.length !== 0) {
-      logger.info('Updating product categories...')
+      logger.info("Updating product categories...")
 
       for (const updateProductCategory of updateProductCategories) {
         const { result: categoryResult } =
@@ -123,7 +123,7 @@ export const createProductCategoriesStep = createStep(
         include_ancestors_tree: true,
       },
       {
-        select: ['id', 'name', 'handle'],
+        select: ["id", "name", "handle"],
       }
     )
 
@@ -148,7 +148,7 @@ export const createProductCategoriesStep = createStep(
       })
 
     if (updateParentProductCategories.length !== 0) {
-      logger.info('Updating product category parents...')
+      logger.info("Updating product category parents...")
 
       for (const updateProductCategory of updateParentProductCategories) {
         await updateProductCategoriesWorkflow(container).run({

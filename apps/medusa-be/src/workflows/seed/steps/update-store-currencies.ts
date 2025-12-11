@@ -2,10 +2,10 @@ import type {
   IStoreModuleService,
   Logger,
   StoreDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
-import { updateStoresWorkflow } from '@medusajs/medusa/core-flows'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { updateStoresWorkflow } from "@medusajs/medusa/core-flows"
 
 export type UpdateStoreCurrenciesStepCurrenciesInput = {
   code: string
@@ -17,7 +17,7 @@ export type UpdateStoreCurrenciesStepInput = {
   defaultSalesChannelId: string
 }
 
-const UpdateStoreCurrenciesStepId = 'update-store-currencies-seed-step'
+const UpdateStoreCurrenciesStepId = "update-store-currencies-seed-step"
 export const updateStoreCurrenciesStep = createStep(
   UpdateStoreCurrenciesStepId,
   async (input: UpdateStoreCurrenciesStepInput, { container }) => {
@@ -26,7 +26,7 @@ export const updateStoreCurrenciesStep = createStep(
       Modules.STORE
     )
 
-    logger.info('Updating store currencies data...')
+    logger.info("Updating store currencies data...")
 
     // medusa bug? storeModuleService interface is not exported / defined?
     const [store]: StoreDTO[] = await storeModuleService.listStores()

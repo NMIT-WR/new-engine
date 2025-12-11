@@ -1,9 +1,9 @@
 import {
-  WorkflowResponse,
   createWorkflow,
   transform,
-} from '@medusajs/framework/workflows-sdk'
-import * as Steps from '../steps'
+  WorkflowResponse,
+} from "@medusajs/framework/workflows-sdk"
+import * as Steps from "../steps"
 
 export type CategoryRaw = {
   title: string
@@ -13,7 +13,7 @@ export type CategoryRaw = {
   parentHandle?: string
 }
 
-const seedCategoriesWorkflowId = 'seed-categories-workflow'
+const seedCategoriesWorkflowId = "seed-categories-workflow"
 const seedCategoriesWorkflow = createWorkflow(
   seedCategoriesWorkflowId,
   (input: CategoryRaw[]) => {
@@ -21,22 +21,21 @@ const seedCategoriesWorkflow = createWorkflow(
       {
         input,
       },
-      (data) => {
-        return data.input.map((i) => ({
+      (data) =>
+        data.input.map((i) => ({
           name: i.title,
           description: i.description,
           handle: i.handle,
           isActive: Boolean(Number(i.isActive)),
           parentHandle: i.parentHandle,
         }))
-      }
     )
 
     Steps.createProductCategoriesStep(productCategories)
 
     return new WorkflowResponse({
       result: {
-        message: 'Categories seeded successfully',
+        message: "Categories seeded successfully",
       },
     })
   }

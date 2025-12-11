@@ -2,13 +2,13 @@ import type {
   IStockLocationService,
   Logger,
   StockLocationDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   createStockLocationsWorkflow,
   updateStockLocationsWorkflow,
-} from '@medusajs/medusa/core-flows'
+} from "@medusajs/medusa/core-flows"
 
 export type CreateStockLocationStepInput = {
   locations: {
@@ -21,7 +21,7 @@ export type CreateStockLocationStepInput = {
   }[]
 }
 
-const CreateStockLocationStepId = 'create-stock-location-seed-step'
+const CreateStockLocationStepId = "create-stock-location-seed-step"
 export const createStockLocationSeedStep = createStep(
   CreateStockLocationStepId,
   async (input: CreateStockLocationStepInput, { container }) => {
@@ -60,7 +60,7 @@ export const createStockLocationSeedStep = createStep(
     )
 
     if (missingStockLocations.length !== 0) {
-      logger.info('Creating missing stock locations ...')
+      logger.info("Creating missing stock locations ...")
 
       const { result: createResult } = await createStockLocationsWorkflow(
         container
@@ -75,7 +75,7 @@ export const createStockLocationSeedStep = createStep(
       }
     }
     if (updateStockLocations.length !== 0) {
-      logger.info('Updating existing stock locations ...')
+      logger.info("Updating existing stock locations ...")
 
       const toUpdate = updateStockLocations.map((i) => ({
         selector: { name: { $in: [i.name] } },

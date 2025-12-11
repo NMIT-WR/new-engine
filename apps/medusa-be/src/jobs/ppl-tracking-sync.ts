@@ -1,22 +1,25 @@
-import type { MedusaContainer } from '@medusajs/framework'
+import type { MedusaContainer } from "@medusajs/framework"
 import type {
   IEventBusModuleService,
   IFulfillmentModuleService,
   Logger,
   Query,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { PplClient } from '../modules/ppl'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import type {
   PplFulfillmentData,
   PplOptions,
   PplShipmentInfo,
   PplShipmentState,
-} from '../modules/ppl'
-import { PPL_DELIVERED_STATES, PPL_FAILED_STATES } from '../modules/ppl'
+} from "../modules/ppl"
+import {
+  PPL_DELIVERED_STATES,
+  PPL_FAILED_STATES,
+  PplClient,
+} from "../modules/ppl"
 
 // Types
-interface FulfillmentRecord {
+type FulfillmentRecord = {
   id: string
   data: PplFulfillmentData | null
   shipped_at: string | null
@@ -28,7 +31,7 @@ interface PendingFulfillment extends FulfillmentRecord {
   data: PplFulfillmentData & { shipment_number: string }
 }
 
-interface TrackingContext {
+type TrackingContext = {
   logger: Logger
   fulfillmentService: IFulfillmentModuleService
   eventBus: IEventBusModuleService
@@ -45,12 +48,12 @@ const BATCH_SIZE = 100
  * Uses GET /shipment endpoint to fetch current status in batches of 100.
  */
 export default async function pplTrackingSyncJob(container: MedusaContainer) {
-  const logger = container.resolve<Logger>('logger')
+  const logger = container.resolve<Logger>("logger")
 
   // Check if PPL service is enabled
-  if (process.env.PPL_ENABLED !== '1') {
+  if (process.env.PPL_ENABLED !== "1") {
     logger.debug(
-      'PPL Tracking Sync: PPL service is disabled (PPL_ENABLED != 1), skipping'
+      "PPL Tracking Sync: PPL service is disabled (PPL_ENABLED != 1), skipping"
     )
     return
   }
@@ -61,7 +64,7 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
   )
   const eventBus = container.resolve<IEventBusModuleService>(Modules.EVENT_BUS)
 
-  logger.info('PPL Tracking Sync: Starting...')
+  logger.info("PPL Tracking Sync: Starting...")
 
   try {
     const client = createPplClient(logger)
@@ -72,7 +75,7 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
     const pendingFulfillments = await fetchPendingFulfillments(query)
 
     if (pendingFulfillments.length === 0) {
-      logger.info('PPL Tracking Sync: No pending fulfillments to check')
+      logger.info("PPL Tracking Sync: No pending fulfillments to check")
       return
     }
 
@@ -83,18 +86,18 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
     const ctx: TrackingContext = { logger, fulfillmentService, eventBus }
     await processFulfillmentsInBatches(ctx, client, pendingFulfillments)
 
-    logger.info('PPL Tracking Sync: Completed')
+    logger.info("PPL Tracking Sync: Completed")
   } catch (error) {
     logger.error(
-      'PPL Tracking Sync failed',
+      "PPL Tracking Sync failed",
       error instanceof Error ? error : new Error(String(error))
     )
   }
 }
 
 export const config = {
-  name: 'ppl-tracking-sync',
-  schedule: '*/15 * * * *', // Every 15 minutes
+  name: "ppl-tracking-sync",
+  schedule: "*/15 * * * *", // Every 15 minutes
 }
 
 // Helper functions
@@ -103,8 +106,8 @@ function createPplClient(logger: Logger): PplClient | null {
   const clientId = process.env.PPL_CLIENT_ID
   const clientSecret = process.env.PPL_CLIENT_SECRET
 
-  if (!clientId || !clientSecret) {
-    logger.warn('PPL Tracking Sync: Missing PPL credentials, skipping')
+  if (!(clientId && clientSecret)) {
+    logger.warn("PPL Tracking Sync: Missing PPL credentials, skipping")
     return null
   }
 
@@ -112,8 +115,8 @@ function createPplClient(logger: Logger): PplClient | null {
     client_id: clientId,
     client_secret: clientSecret,
     environment: (process.env.PPL_ENVIRONMENT ||
-      'testing') as PplOptions['environment'],
-    default_label_format: 'Png',
+      "testing") as PplOptions["environment"],
+    default_label_format: "Png",
   }
 
   return new PplClient(pplOptions, logger)
@@ -123,16 +126,16 @@ async function fetchPendingFulfillments(
   query: Query
 ): Promise<PendingFulfillment[]> {
   const { data: fulfillments } = await query.graph({
-    entity: 'fulfillment',
-    fields: ['id', 'data', 'shipped_at', 'delivered_at', 'provider_id'],
+    entity: "fulfillment",
+    fields: ["id", "data", "shipped_at", "delivered_at", "provider_id"],
   })
 
   return (fulfillments as FulfillmentRecord[]).filter(
     (f): f is PendingFulfillment =>
-      f.provider_id === 'ppl_ppl' &&
+      f.provider_id === "ppl_ppl" &&
       f.shipped_at !== null &&
       !f.delivered_at &&
-      typeof f.data?.shipment_number === 'string'
+      typeof f.data?.shipment_number === "string"
   )
 }
 
@@ -189,7 +192,7 @@ async function processFulfillmentStatus(
   }
 
   ctx.logger.info(
-    `PPL: Shipment ${fulfillmentData.shipment_number} status changed: ${currentStatus || 'unknown'} -> ${newStatus}`
+    `PPL: Shipment ${fulfillmentData.shipment_number} status changed: ${currentStatus || "unknown"} -> ${newStatus}`
   )
 
   if (PPL_DELIVERED_STATES.includes(newStatus)) {
@@ -228,7 +231,7 @@ async function handleDelivered(
   })
 
   await eventBus.emit({
-    name: 'fulfillment.delivered',
+    name: "fulfillment.delivered",
     data: {
       fulfillment_id: fulfillment.id,
       shipment_number: fulfillmentData.shipment_number,
@@ -261,7 +264,7 @@ async function handleFailed(
   })
 
   await eventBus.emit({
-    name: 'fulfillment.delivery_failed',
+    name: "fulfillment.delivery_failed",
     data: {
       fulfillment_id: fulfillment.id,
       shipment_number: fulfillmentData.shipment_number,

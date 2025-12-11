@@ -1,16 +1,16 @@
-import type { ApiKeyDTO, FulfillmentSetDTO } from '@medusajs/framework/types'
+import type { ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types"
 import {
-  WorkflowResponse,
   createWorkflow,
   transform,
-} from '@medusajs/framework/workflows-sdk'
-import { toCreateProductsStepInput } from '../../../utils/products'
-import * as Steps from '../steps'
-import seedCategoriesWorkflow, { type CategoryRaw } from './seed-categories'
+  WorkflowResponse,
+} from "@medusajs/framework/workflows-sdk"
+import { toCreateProductsStepInput } from "../../../utils/products"
+import * as Steps from "../steps"
+import seedCategoriesWorkflow, { type CategoryRaw } from "./seed-categories"
 
-const seedN1WorkflowId = 'seed-n1-workflow'
+const seedN1WorkflowId = "seed-n1-workflow"
 /** Raw product record from database - contains JSON strings for nested data */
-interface RawProductRecord {
+type RawProductRecord = {
   title: string
   handle: string
   description?: string
@@ -55,7 +55,7 @@ const seedN1Workflow = createWorkflow(
           (i) => i.isDefault
         )
         if (!defaultSalesChannel) {
-          throw new Error('No default sales channel found')
+          throw new Error("No default sales channel found")
         }
         return {
           currencies: data.input.currencies,
@@ -88,7 +88,7 @@ const seedN1Workflow = createWorkflow(
           fulfillmentProviderIds: [
             ...new Set(
               data.input.shippingOptions.map(
-                (opt) => opt.providerId || 'manual_manual'
+                (opt) => opt.providerId || "manual_manual"
               )
             ),
           ],
@@ -140,7 +140,7 @@ const seedN1Workflow = createWorkflow(
         (data) =>
           data.input.shippingOptions.map((option) => ({
             name: option.name,
-            providerId: option.providerId || 'manual_manual',
+            providerId: option.providerId || "manual_manual",
             serviceZoneId: data.createFulfillmentSetsResult.result[0]
               ?.service_zones[0]?.id as string,
             shippingProfileId: data.createDefaultShippingProfileResult.result[0]
@@ -208,9 +208,7 @@ const seedN1Workflow = createWorkflow(
       {
         input,
       },
-      (data) => {
-        return toCreateProductsStepInput(data.input.products)
-      }
+      (data) => toCreateProductsStepInput(data.input.products)
     )
 
     const createProductsStepResult = Steps.createProductsStep(
@@ -225,18 +223,18 @@ const seedN1Workflow = createWorkflow(
           createProductsStepInput,
         },
         (data) => {
-          const inventoryItems: Steps.CreateInventoryLevelsStepInput['inventoryItems'] =
+          const inventoryItems: Steps.CreateInventoryLevelsStepInput["inventoryItems"] =
             []
-          data.createProductsStepInput.map((p) => {
-            p.variants?.map((v) => {
+          for (const p of data.createProductsStepInput) {
+            for (const v of p.variants ?? []) {
               if (v.quantities?.quantity !== undefined) {
                 inventoryItems.push({
                   sku: v.sku,
                   quantity: v.quantities?.quantity,
                 })
               }
-            })
-          })
+            }
+          }
 
           return {
             stockLocations: data.createStockLocationResult.result,
@@ -250,7 +248,7 @@ const seedN1Workflow = createWorkflow(
     return new WorkflowResponse({
       publishableKey: createPublishableKeyResult.result,
       products: createProductsStepResult.result,
-      result: 'N1 seed done',
+      result: "N1 seed done",
     })
   }
 )

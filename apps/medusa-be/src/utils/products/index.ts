@@ -1,7 +1,7 @@
-import type * as Steps from '../../workflows/seed/steps'
+import type * as Steps from "../../workflows/seed/steps"
 
 /** Raw product data from the database (JSON strings) */
-interface RawProductFromDb {
+type RawProductFromDb = {
   title: string
   handle: string
   description?: string
@@ -14,13 +14,13 @@ interface RawProductFromDb {
 }
 
 /** Raw option data after JSON parsing */
-interface RawOption {
+type RawOption = {
   title?: string
   option_values?: string[]
 }
 
 /** Raw variant data after JSON parsing */
-interface RawVariant {
+type RawVariant = {
   title?: string
   sku?: string | null
   ean?: string
@@ -41,7 +41,7 @@ interface RawVariant {
 }
 
 /** Raw producer data after JSON parsing */
-interface RawProducer {
+type RawProducer = {
   title?: string
   attributes?: { name: string; value: string }[]
 }
@@ -57,8 +57,8 @@ export function toCreateProductsStepInput(
     const parsedProducer = JSON.parse(raw.producer) as RawProducer | null
 
     const options = parsedOptions.map((o) => ({
-      title: o.title ?? 'Variant',
-      values: o.option_values ?? ['Default'],
+      title: o.title ?? "Variant",
+      values: o.option_values ?? ["Default"],
     }))
 
     const variants = parsedVariants
@@ -72,7 +72,7 @@ export function toCreateProductsStepInput(
           ? Object.fromEntries(
               Object.entries(v.options).map(([key, value]) => [
                 key,
-                value ?? 'Default',
+                value ?? "Default",
               ])
             )
           : undefined,
@@ -88,16 +88,16 @@ export function toCreateProductsStepInput(
     return {
       title: raw.title,
       categories: parsedCategories,
-      description: raw.description ?? '',
+      description: raw.description ?? "",
       handle: raw.handle,
       weight: 1,
-      shippingProfileName: 'Default Shipping Profile',
+      shippingProfileName: "Default Shipping Profile",
       thumbnail: raw.thumbnail,
       images: parsedImages,
       options: options.length === 0 ? undefined : options,
       producer: parsedProducer,
       variants: variants.length === 0 ? undefined : variants,
-      salesChannelNames: ['Default Sales Channel'],
+      salesChannelNames: ["Default Sales Channel"],
     }
   })
 }

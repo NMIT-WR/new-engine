@@ -6,7 +6,7 @@
 /**
  * Configuration options passed from medusa-config.ts
  */
-export interface PplOptions {
+export type PplOptions = {
   client_id: string
   client_secret: string
   environment: PplEnvironment
@@ -29,14 +29,14 @@ export interface PplOptions {
   sender_email?: string
 }
 
-export type PplEnvironment = 'testing' | 'production'
-export type PplLabelFormat = 'Png' | 'Svg' | 'Pdf' | 'Zpl'
+export type PplEnvironment = "testing" | "production"
+export type PplLabelFormat = "Png" | "Svg" | "Pdf" | "Zpl"
 
 /**
  * OAuth 2.0 access token response
  * Token is valid for 30 minutes (1800 seconds)
  */
-export interface PplAccessToken {
+export type PplAccessToken = {
   access_token: string
   token_type: string
   /** Token validity in seconds (typically 1800 = 30 min) */
@@ -49,7 +49,7 @@ export interface PplAccessToken {
 /**
  * Address format for PPL API
  */
-export interface PplAddress {
+export type PplAddress = {
   /** Name/company, max 50 chars */
   name: string
   /** Secondary name/company, max 50 chars */
@@ -73,7 +73,7 @@ export interface PplAddress {
 /**
  * Shipment creation request
  */
-export interface PplShipmentRequest {
+export type PplShipmentRequest = {
   /** Unique reference ID, max 128 chars (use fulfillment ID) */
   referenceId: string
   /** Product type code (SMAR, SMAD, PRIV, PRID, etc.) */
@@ -127,16 +127,16 @@ export interface PplShipmentRequest {
  * - PRIV: Parcel Private (home delivery, no COD)
  * - PRID: Parcel Private + COD (home delivery, with COD)
  */
-export type PplProductType = 'SMAR' | 'SMAD' | 'PRIV' | 'PRID' | string
+export type PplProductType = "SMAR" | "SMAD" | "PRIV" | "PRID" | string
 
-export interface PplExternalNumber {
+export type PplExternalNumber = {
   /** External number type code (usually "CUST") */
   code: string
   /** External number value (e.g., order ID) */
   externalNumber: string
 }
 
-export interface PplSpecificDelivery {
+export type PplSpecificDelivery = {
   /** Access point external number for pickup point delivery */
   parcelShopCode?: string
   /** Specific delivery date (ISO DateTime) */
@@ -149,7 +149,7 @@ export interface PplSpecificDelivery {
   specificTakeDate?: string
 }
 
-export interface PplPackageSet {
+export type PplPackageSet = {
   /** Package weight in kg */
   weight?: number
   /** Package height in cm */
@@ -163,14 +163,14 @@ export interface PplPackageSet {
 /**
  * Shipment set for multi-package shipments
  */
-export interface PplShipmentSet {
+export type PplShipmentSet = {
   /** Number of shipments in the set */
   numberOfShipments?: number
   /** Individual shipment items in the set */
   shipmentSetItems?: PplShipmentSetItem[]
 }
 
-export interface PplShipmentSetItem {
+export type PplShipmentSetItem = {
   /** Shipment number for this item */
   shipmentNumber?: string
   /** Weight information */
@@ -181,7 +181,7 @@ export interface PplShipmentSetItem {
   insurance?: PplInsurance
 }
 
-export interface PplWeighedShipmentInfo {
+export type PplWeighedShipmentInfo = {
   /** Weight in kg */
   weight?: number
 }
@@ -189,7 +189,7 @@ export interface PplWeighedShipmentInfo {
 /**
  * Insurance settings for shipment
  */
-export interface PplInsurance {
+export type PplInsurance = {
   /** Insurance currency code */
   insuranceCurrency?: string
   /** Insurance price/value */
@@ -199,7 +199,7 @@ export interface PplInsurance {
 /**
  * Additional service for shipment
  */
-export interface PplService {
+export type PplService = {
   /** Service code from /codelist/service */
   code: string
 }
@@ -207,7 +207,7 @@ export interface PplService {
 /**
  * Dormant shipment settings (inactive/sleeping shipment)
  */
-export interface PplDormantShipment {
+export type PplDormantShipment = {
   /** Shipment number */
   shipmentNumber?: string
   /** Note/description */
@@ -225,7 +225,7 @@ export interface PplDormantShipment {
 /**
  * Shipment routing information
  */
-export interface PplShipmentRouting {
+export type PplShipmentRouting = {
   /** Input route code */
   inputRouteCode?: string
 }
@@ -233,7 +233,7 @@ export interface PplShipmentRouting {
 /**
  * Direct injection settings for cross-border shipments
  */
-export interface PplDirectInjection {
+export type PplDirectInjection = {
   /** Enable direct addressing */
   directAddressing?: boolean
   /** Gateway ZIP code */
@@ -247,7 +247,7 @@ export interface PplDirectInjection {
 /**
  * Label service options
  */
-export interface PplLabelService {
+export type PplLabelService = {
   /** Enable labelless shipping */
   labelless?: boolean
 }
@@ -256,11 +256,11 @@ export interface PplLabelService {
  * Cash on Delivery settings
  * NOTE: Only CZK currency is supported!
  */
-export interface PplCodSettings {
+export type PplCodSettings = {
   /** COD amount */
   codPrice: number
   /** Currency (ONLY CZK supported) */
-  codCurrency: 'CZK'
+  codCurrency: "CZK"
   /** Variable symbol for payment identification */
   codVarSym: string
   /** Czech bank account number (use with bankCode) */
@@ -282,9 +282,9 @@ export interface PplCodSettings {
 /**
  * Return channel for label delivery
  */
-export interface PplReturnChannel {
+export type PplReturnChannel = {
   /** Return channel type */
-  type: 'None' | 'Ftp' | 'Email' | string
+  type: "None" | "Ftp" | "Email" | string
   /** Return address (FTP path or email) */
   address?: string
 }
@@ -292,7 +292,7 @@ export interface PplReturnChannel {
 /**
  * Batch creation request body
  */
-export interface PplBatchRequest {
+export type PplBatchRequest = {
   shipments: PplShipmentRequest[]
   labelSettings?: PplLabelSettings
   /** Return channel for label delivery */
@@ -301,34 +301,34 @@ export interface PplBatchRequest {
   shipmentsOrderBy?: string
 }
 
-export interface PplLabelSettings {
+export type PplLabelSettings = {
   format: PplLabelFormat
   dpi?: number
   /** Complete label settings for merged labels */
   completeLabelSettings?: PplCompleteLabelSettings
 }
 
-export interface PplCompleteLabelSettings {
+export type PplCompleteLabelSettings = {
   /** Request merged label document */
   isCompleteLabelRequested?: boolean
   /** Page size for merged labels */
-  pageSize?: 'Default' | 'A4' | 'A6'
+  pageSize?: "Default" | "A4" | "A6"
   /** Starting position on page */
   position?: number
 }
 
-export type PplLabelPageSize = 'Default' | 'A4' | 'A6'
+export type PplLabelPageSize = "Default" | "A4" | "A6"
 
 /**
  * Batch status response from GET /shipment/batch/{batchId}
  */
-export interface PplBatchResponse {
+export type PplBatchResponse = {
   items: PplBatchItem[]
 }
 
-export type PplBatchState = 'Received' | 'InProcess' | 'Complete' | 'Error'
+export type PplBatchState = "Received" | "InProcess" | "Complete" | "Error"
 
-export interface PplBatchItem {
+export type PplBatchItem = {
   /** Reference ID from request */
   referenceId: string
   /** PPL shipment number (tracking number) */
@@ -348,7 +348,7 @@ export interface PplBatchItem {
 /**
  * Shipment information from GET /shipment endpoint
  */
-export interface PplShipmentInfo {
+export type PplShipmentInfo = {
   shipmentNumber: string
   referenceId?: string
   shipmentState: PplShipmentState
@@ -374,56 +374,56 @@ export interface PplShipmentInfo {
  * Shipment states from PPL API
  */
 export type PplShipmentState =
-  | 'DataShipment' // Label created, not yet picked up
-  | 'Active' // In transit
-  | 'PickedUpFromSender' // Picked up from sender
-  | 'OutForDelivery' // Out for delivery
-  | 'DeliveredToPickupPoint' // At pickup point (ParcelShop/Box)
-  | 'Delivered' // Successfully delivered
-  | 'NotDelivered' // Delivery attempt failed
-  | 'BackToSender' // Returned to sender
-  | 'Rejected' // Rejected by recipient
-  | 'Dormant' // Inactive/expired
-  | 'Undelivered' // Not yet delivered (general)
+  | "DataShipment" // Label created, not yet picked up
+  | "Active" // In transit
+  | "PickedUpFromSender" // Picked up from sender
+  | "OutForDelivery" // Out for delivery
+  | "DeliveredToPickupPoint" // At pickup point (ParcelShop/Box)
+  | "Delivered" // Successfully delivered
+  | "NotDelivered" // Delivery attempt failed
+  | "BackToSender" // Returned to sender
+  | "Rejected" // Rejected by recipient
+  | "Dormant" // Inactive/expired
+  | "Undelivered" // Not yet delivered (general)
 
 /**
  * States indicating successful delivery
  */
 export const PPL_DELIVERED_STATES: PplShipmentState[] = [
-  'Delivered',
-  'DeliveredToPickupPoint',
+  "Delivered",
+  "DeliveredToPickupPoint",
 ]
 
 /**
  * States indicating failed/returned delivery
  */
 export const PPL_FAILED_STATES: PplShipmentState[] = [
-  'BackToSender',
-  'Rejected',
-  'NotDelivered',
+  "BackToSender",
+  "Rejected",
+  "NotDelivered",
 ]
 
 /**
  * Human-readable status messages
  */
 export const PPL_STATUS_MESSAGES: Record<PplShipmentState, string> = {
-  DataShipment: 'Label created, awaiting pickup',
-  Active: 'In transit',
-  PickedUpFromSender: 'Picked up from sender',
-  OutForDelivery: 'Out for delivery',
-  DeliveredToPickupPoint: 'Ready for pickup at ParcelShop/Box',
-  Delivered: 'Delivered',
-  NotDelivered: 'Delivery attempt failed',
-  BackToSender: 'Returned to sender',
-  Rejected: 'Rejected by recipient',
-  Dormant: 'Inactive',
-  Undelivered: 'Not yet delivered',
+  DataShipment: "Label created, awaiting pickup",
+  Active: "In transit",
+  PickedUpFromSender: "Picked up from sender",
+  OutForDelivery: "Out for delivery",
+  DeliveredToPickupPoint: "Ready for pickup at ParcelShop/Box",
+  Delivered: "Delivered",
+  NotDelivered: "Delivery attempt failed",
+  BackToSender: "Returned to sender",
+  Rejected: "Rejected by recipient",
+  Dormant: "Inactive",
+  Undelivered: "Not yet delivered",
 }
 
 /**
  * Access point (pickup location) from GET /accessPoint
  */
-export interface PplAccessPoint {
+export type PplAccessPoint = {
   /** Unique code to use in shipment.specificDelivery.parcelShopCode */
   code: string
   /** Access point name */
@@ -438,12 +438,12 @@ export interface PplAccessPoint {
   isActive?: boolean
 }
 
-export type PplAccessPointType = 'ParcelShop' | 'ParcelBox' | 'AlzaBox' | string
+export type PplAccessPointType = "ParcelShop" | "ParcelBox" | "AlzaBox" | string
 
 /**
  * Access points query parameters
  */
-export interface PplAccessPointsQuery {
+export type PplAccessPointsQuery = {
   /** Single access point code lookup */
   accessPointCode?: string
   countryCode?: string
@@ -472,7 +472,7 @@ export interface PplAccessPointsQuery {
 /**
  * Paginated response wrapper
  */
-export interface PplPaginatedResponse<T> {
+export type PplPaginatedResponse<T> = {
   items: T[]
   totalCount: number
   limit: number
@@ -482,7 +482,7 @@ export interface PplPaginatedResponse<T> {
 /**
  * Error response from PPL API
  */
-export interface PplApiError {
+export type PplApiError = {
   code?: string
   message: string
   details?: string
@@ -494,7 +494,7 @@ export interface PplApiError {
  * - completed: Batch processed, label downloaded and stored
  * - error: Batch processing or label download failed
  */
-export type PplFulfillmentStatus = 'pending' | 'completed' | 'error'
+export type PplFulfillmentStatus = "pending" | "completed" | "error"
 
 /**
  * Data stored in fulfillment.data for PPL shipments
@@ -560,7 +560,7 @@ export interface PplShippingOptionData extends Record<string, unknown> {
 /**
  * Query parameters for GET /shipment endpoint
  */
-export interface PplShipmentQuery {
+export type PplShipmentQuery = {
   /** Filter by shipment numbers */
   shipmentNumbers?: string[]
   /** Filter by invoice numbers */
@@ -584,22 +584,22 @@ export interface PplShipmentQuery {
 /**
  * Order type
  */
-export type PplOrderType = 'Transport' | 'CollectionOrder' | string
+export type PplOrderType = "Transport" | "CollectionOrder" | string
 
 /**
  * Order state
  */
 export type PplOrderState =
-  | 'Created'
-  | 'InProcess'
-  | 'Complete'
-  | 'Canceled'
-  | 'Error'
+  | "Created"
+  | "InProcess"
+  | "Complete"
+  | "Canceled"
+  | "Error"
 
 /**
  * Query parameters for GET /order endpoint
  */
-export interface PplOrderQuery {
+export type PplOrderQuery = {
   /** Filter by shipment numbers */
   shipmentNumbers?: string[]
   /** Filter by customer references */
@@ -629,7 +629,7 @@ export interface PplOrderQuery {
 /**
  * Order response from GET /order endpoint
  */
-export interface PplOrder {
+export type PplOrder = {
   /** Order ID */
   orderId?: number
   /** Order number */
@@ -669,14 +669,14 @@ export interface PplOrder {
 /**
  * Order batch creation request (POST /order/batch)
  */
-export interface PplOrderBatchRequest {
+export type PplOrderBatchRequest = {
   orders: PplOrderRequest[]
 }
 
 /**
  * Single order request
  */
-export interface PplOrderRequest {
+export type PplOrderRequest = {
   /** Order type (Transport or CollectionOrder) */
   orderType: PplOrderType
   /** Reference ID, max 128 chars */
@@ -706,7 +706,7 @@ export interface PplOrderRequest {
 /**
  * Order batch response (GET /order/batch/{batchId})
  */
-export interface PplOrderBatchResponse {
+export type PplOrderBatchResponse = {
   /** Batch ID */
   batchId: string
   /** Batch items */
@@ -716,7 +716,7 @@ export interface PplOrderBatchResponse {
 /**
  * Order batch item
  */
-export interface PplOrderBatchItem {
+export type PplOrderBatchItem = {
   /** Reference ID from request */
   referenceId?: string
   /** Order number (assigned after processing) */
@@ -730,7 +730,7 @@ export interface PplOrderBatchItem {
 /**
  * Order cancellation request (POST /order/cancel)
  */
-export interface PplOrderCancelRequest {
+export type PplOrderCancelRequest = {
   /** Note/reason for cancellation */
   note?: string
 }
@@ -738,7 +738,7 @@ export interface PplOrderCancelRequest {
 /**
  * Order cancellation query parameters
  */
-export interface PplOrderCancelQuery {
+export type PplOrderCancelQuery = {
   /** Customer reference to cancel */
   customerReference?: string
   /** Order reference to cancel */
@@ -749,17 +749,17 @@ export interface PplOrderCancelQuery {
  * Human-readable order state messages
  */
 export const PPL_ORDER_STATE_MESSAGES: Record<PplOrderState, string> = {
-  Created: 'Order created',
-  InProcess: 'Order in process',
-  Complete: 'Order completed',
-  Canceled: 'Order canceled',
-  Error: 'Order failed',
+  Created: "Order created",
+  InProcess: "Order in process",
+  Complete: "Order completed",
+  Canceled: "Order canceled",
+  Error: "Order failed",
 }
 
 /**
  * Query parameters for GET /addressWhisper endpoint
  */
-export interface PplAddressWhisperQuery {
+export type PplAddressWhisperQuery = {
   /** Street name for autocomplete */
   street?: string
   /** ZIP code for autocomplete */
@@ -767,20 +767,20 @@ export interface PplAddressWhisperQuery {
   /** City name for autocomplete */
   city?: string
   /** Which field triggered the whisper */
-  calledFrom?: 'Street' | 'ZipCode' | 'City'
+  calledFrom?: "Street" | "ZipCode" | "City"
 }
 
 /**
  * Address whisper response
  */
-export interface PplAddressWhisperResponse {
+export type PplAddressWhisperResponse = {
   items: PplAddressWhisperItem[]
 }
 
 /**
  * Single address suggestion from whisper
  */
-export interface PplAddressWhisperItem {
+export type PplAddressWhisperItem = {
   street?: string
   zipCode?: string
   city?: string
@@ -790,7 +790,7 @@ export interface PplAddressWhisperItem {
 /**
  * Generic codelist query parameters
  */
-export interface PplCodelistQuery {
+export type PplCodelistQuery = {
   /** Results limit (required) */
   limit: number
   /** Results offset (required) */
@@ -800,7 +800,7 @@ export interface PplCodelistQuery {
 /**
  * Product codelist item from GET /codelist/product
  */
-export interface PplCodelistProduct {
+export type PplCodelistProduct = {
   /** Product code (e.g., SMAR, SMAD, PRIV, PRID) */
   code: string
   /** Product name */
@@ -812,7 +812,7 @@ export interface PplCodelistProduct {
 /**
  * Age check codelist item from GET /codelist/ageCheck
  */
-export interface PplCodelistAgeCheck {
+export type PplCodelistAgeCheck = {
   /** Age check code */
   code: string
   /** Age check name/description */
@@ -822,7 +822,7 @@ export interface PplCodelistAgeCheck {
 /**
  * External number type from GET /codelist/externalNumber
  */
-export interface PplCodelistExternalNumber {
+export type PplCodelistExternalNumber = {
   /** External number type code */
   code: string
   /** External number type name */
@@ -832,7 +832,7 @@ export interface PplCodelistExternalNumber {
 /**
  * Country codelist item from GET /codelist/country
  */
-export interface PplCodelistCountry {
+export type PplCodelistCountry = {
   /** ISO country code */
   code: string
   /** Country name */
@@ -844,7 +844,7 @@ export interface PplCodelistCountry {
 /**
  * Currency codelist item from GET /codelist/currency
  */
-export interface PplCodelistCurrency {
+export type PplCodelistCurrency = {
   /** Currency code (e.g., CZK, EUR) */
   code: string
   /** Currency name */
@@ -854,7 +854,7 @@ export interface PplCodelistCurrency {
 /**
  * Service codelist item from GET /codelist/service
  */
-export interface PplCodelistServiceItem {
+export type PplCodelistServiceItem = {
   /** Service code */
   code: string
   /** Service name */
@@ -880,7 +880,7 @@ export interface PplServicePriceLimitQuery extends PplCodelistQuery {
 /**
  * Service price limit from GET /codelist/servicePriceLimit
  */
-export interface PplCodelistServicePriceLimit {
+export type PplCodelistServicePriceLimit = {
   /** Service code */
   service?: string
   /** Currency code */
@@ -898,7 +898,7 @@ export interface PplCodelistServicePriceLimit {
 /**
  * Shipment phase from GET /codelist/shipmentPhase
  */
-export interface PplCodelistShipmentPhase {
+export type PplCodelistShipmentPhase = {
   /** Phase code */
   code: string
   /** Phase name */
@@ -910,7 +910,7 @@ export interface PplCodelistShipmentPhase {
 /**
  * Status codelist item from GET /codelist/status
  */
-export interface PplCodelistStatus {
+export type PplCodelistStatus = {
   /** Status code */
   code: string
   /** Status name */
@@ -922,7 +922,7 @@ export interface PplCodelistStatus {
 /**
  * Validation message from GET /codelist/validationMessage
  */
-export interface PplCodelistValidationMessage {
+export type PplCodelistValidationMessage = {
   /** Validation message code */
   code: string
   /** Validation message text */
@@ -932,7 +932,7 @@ export interface PplCodelistValidationMessage {
 /**
  * Proof of identity type from GET /codelist/proofOfIdentityType
  */
-export interface PplCodelistProofOfIdentityType {
+export type PplCodelistProofOfIdentityType = {
   /** Identity document type code */
   code: string
   /** Identity document type name */
@@ -958,7 +958,7 @@ export type PplCustomerAddressResponse = PplCustomerAddress[]
 /**
  * Customer info response from GET /customer
  */
-export interface PplCustomerInfo {
+export type PplCustomerInfo = {
   /** Allowed currencies for the customer */
   currencies?: string[]
   /** Customer ID */
@@ -971,7 +971,7 @@ export interface PplCustomerInfo {
  * Shipment redirect request (POST /shipment/:shipmentNumber/redirect)
  * Used to update contact information for a shipment
  */
-export interface PplShipmentRedirectRequest {
+export type PplShipmentRedirectRequest = {
   address: {
     /** Contact person name */
     contact?: string
@@ -986,7 +986,7 @@ export interface PplShipmentRedirectRequest {
  * Connect set request (POST /shipment/batch/connectSet)
  * Used to connect multiple shipments into a set
  */
-export interface PplConnectSetRequest {
+export type PplConnectSetRequest = {
   /** Customer ID */
   customerId: number
   /** External set number/reference */
@@ -999,7 +999,7 @@ export interface PplConnectSetRequest {
  * Batch update request (PUT /shipment/batch/:batchId)
  * Used to update label settings for an existing batch
  */
-export interface PplBatchUpdateRequest {
+export type PplBatchUpdateRequest = {
   /** Updated label settings */
   labelSettings?: PplLabelSettings
   /** Updated return channel */
@@ -1009,7 +1009,7 @@ export interface PplBatchUpdateRequest {
 /**
  * Batch label query parameters (GET /shipment/batch/:batchId/label)
  */
-export interface PplBatchLabelQuery {
+export type PplBatchLabelQuery = {
   /** Page size for labels */
   pageSize?: PplLabelPageSize
   /** Starting position on page */
@@ -1025,7 +1025,7 @@ export interface PplBatchLabelQuery {
 /**
  * Batch label response item
  */
-export interface PplBatchLabelItem {
+export type PplBatchLabelItem = {
   /** Shipment number */
   shipmentNumber: string
   /** Reference ID */
@@ -1037,7 +1037,7 @@ export interface PplBatchLabelItem {
 /**
  * Batch label response (GET /shipment/batch/:batchId/label)
  */
-export interface PplBatchLabelResponse {
+export type PplBatchLabelResponse = {
   items: PplBatchLabelItem[]
   /** Complete/merged label URL if requested */
   completeLabelUrl?: string
@@ -1049,7 +1049,7 @@ export interface PplBatchLabelResponse {
 /**
  * Routing query parameters (GET /routing)
  */
-export interface PplRoutingQuery {
+export type PplRoutingQuery = {
   /** Parcel shop/access point code */
   parcelShopCode?: string
   /** Street address */
@@ -1067,7 +1067,7 @@ export interface PplRoutingQuery {
 /**
  * Routing response from GET /routing
  */
-export interface PplRoutingResponse {
+export type PplRoutingResponse = {
   /** Route code */
   routeCode?: string
   /** Depot code */
@@ -1081,7 +1081,7 @@ export interface PplRoutingResponse {
 /**
  * Version information response (GET /versionInformation)
  */
-export interface PplVersionInformationResponse {
+export type PplVersionInformationResponse = {
   items: PplVersionInfoItem[]
   totalCount?: number
 }
@@ -1089,7 +1089,7 @@ export interface PplVersionInformationResponse {
 /**
  * Version information item
  */
-export interface PplVersionInfoItem {
+export type PplVersionInfoItem = {
   /** Version number */
   version?: string
   /** Release date (ISO DateTime) */
@@ -1105,7 +1105,7 @@ export interface PplVersionInfoItem {
 /**
  * API info response (GET /info)
  */
-export interface PplApiInfo {
+export type PplApiInfo = {
   /** API version */
   version?: string
   /** API environment */

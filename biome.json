@@ -1,18 +1,19 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "extends": ["ultracite"],
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/core", "ultracite/react", "ultracite/next"],
   "files": {
-    "ignore": [
-      "**/node_modules/**/*",
-      "**/playwright-report/**/*",
-      "**/.medusa/**/*",
-      "**/migrations/**/*",
-      "**/.next/**/*",
-      "check-env-variables.js",
-      "libs/data-layer/**/*",
-      "*.stories.tsx",
-      ".storybook/main.ts",
-      "libs/ui/src/tokens/index.css"
+    "includes": [
+      "**",
+      "!**/node_modules/**/*",
+      "!**/playwright-report/**/*",
+      "!**/.medusa/**/*",
+      "!**/migrations/**/*",
+      "!**/.next/**/*",
+      "!**/check-env-variables.js",
+      "!**/libs/data-layer/**/*",
+      "!**/*.stories.tsx",
+      "!**/.storybook/main.ts",
+      "!**/libs/ui/src/tokens/index.css"
     ]
   },
   "vcs": {
@@ -23,8 +24,15 @@
   },
   "linter": {
     "rules": {
-      "nursery": {
-        "noNestedTernary": "off"
+      "performance": {
+        "noNamespaceImport": "info",
+        "useTopLevelRegex": "info"
+      },
+      "suspicious": {
+        "noEmptyBlockStatements": "info",
+        "noArrayIndexKey": "warn",
+        "noExplicitAny": "warn",
+        "noEvolvingTypes": "warn"
       }
     }
   },
@@ -35,13 +43,13 @@
   },
   "overrides": [
     {
-      "include": ["*.spec.ts"],
+      "includes": ["**/*.spec.ts"],
       "javascript": {
         "globals": ["jest", "describe", "it", "expect"]
       }
     },
     {
-      "include": ["apps/medusa-be/**/*"],
+      "includes": ["apps/medusa-be/**/*"],
       "linter": {
         "rules": {
           "suspicious": {
@@ -49,6 +57,9 @@
           },
           "complexity": {
             "noExcessiveCognitiveComplexity": "warn"
+          },
+          "performance": {
+            "noNamespaceImport": "info"
           }
         }
       }

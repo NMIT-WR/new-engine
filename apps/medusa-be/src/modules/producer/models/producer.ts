@@ -1,21 +1,21 @@
-import { model } from '@medusajs/framework/utils'
-import ProducerAttribute from './producer-attribute'
+import { model } from "@medusajs/framework/utils"
+import ProducerAttribute from "./producer-attribute"
 
 const Producer = model
-  .define('producer', {
+  .define("producer", {
     id: model.id().primaryKey(),
     title: model.text().searchable(),
     handle: model.text().searchable(),
     attributes: model.hasMany(() => ProducerAttribute, {
-      mappedBy: 'producer',
+      mappedBy: "producer",
     }),
   })
   .indexes([
     {
-      name: 'IDX_producer_handle_unique',
-      on: ['handle'],
+      name: "IDX_producer_handle_unique",
+      on: ["handle"],
       unique: true,
-      where: 'deleted_at IS NULL',
+      where: "deleted_at IS NULL",
     },
   ])
 

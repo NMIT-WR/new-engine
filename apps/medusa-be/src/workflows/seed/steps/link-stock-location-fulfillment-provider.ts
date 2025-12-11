@@ -1,7 +1,7 @@
-import type { Link } from '@medusajs/framework/modules-sdk'
-import type { Logger, StockLocationDTO } from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+import type { Link } from "@medusajs/framework/modules-sdk"
+import type { Logger, StockLocationDTO } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
 export type LinkStockLocationFulfillmentProviderStepInput = {
   stockLocations: StockLocationDTO[]
@@ -9,7 +9,7 @@ export type LinkStockLocationFulfillmentProviderStepInput = {
 }
 
 const LinkStockLocationFulfillmentProviderStepId =
-  'link-stock-location-fulfillment-provider-seed-step'
+  "link-stock-location-fulfillment-provider-seed-step"
 export const linkStockLocationFulfillmentProviderSeedStep = createStep(
   LinkStockLocationFulfillmentProviderStepId,
   async (
@@ -19,12 +19,12 @@ export const linkStockLocationFulfillmentProviderSeedStep = createStep(
     const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     const link = container.resolve<Link>(ContainerRegistrationKeys.LINK)
 
-    logger.info('Linking stock locations to fulfillment providers...')
+    logger.info("Linking stock locations to fulfillment providers...")
 
     const result: unknown[] = []
     const providerIds = input.fulfillmentProviderIds?.length
       ? input.fulfillmentProviderIds
-      : ['manual_manual']
+      : ["manual_manual"]
 
     for (const stockLocation of input.stockLocations) {
       for (const providerId of providerIds) {

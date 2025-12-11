@@ -2,9 +2,9 @@ import type {
   ExecArgs,
   ProductDTO,
   StockLocationDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { updateInventoryLevelsWorkflow } from '@medusajs/medusa/core-flows'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { updateInventoryLevelsWorkflow } from "@medusajs/medusa/core-flows"
 
 export default async function updateInventory({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
@@ -14,7 +14,7 @@ export default async function updateInventory({ container }: ExecArgs) {
 
   try {
     // Get the product by handle
-    const productHandle = 'blue-denim-jeans'
+    const productHandle = "blue-denim-jeans"
     logger.info(`Looking for product with handle: ${productHandle}`)
 
     const products = await productService.listProducts(
@@ -22,7 +22,7 @@ export default async function updateInventory({ container }: ExecArgs) {
         handle: productHandle,
       },
       {
-        relations: ['variants', 'variants.inventory_items'],
+        relations: ["variants", "variants.inventory_items"],
       }
     )
 
@@ -37,7 +37,7 @@ export default async function updateInventory({ container }: ExecArgs) {
     // Get stock location
     const stockLocations = await stockLocationService.listStockLocations(
       {
-        name: 'European Warehouse',
+        name: "European Warehouse",
       },
       { take: 1 }
     )
@@ -54,15 +54,15 @@ export default async function updateInventory({ container }: ExecArgs) {
 
     // Get inventory items for all variants
     const { data: inventoryItemLinks } = await query.graph({
-      entity: 'product_variant_inventory_item',
-      fields: ['variant_id', 'inventory_item_id'],
+      entity: "product_variant_inventory_item",
+      fields: ["variant_id", "inventory_item_id"],
       filters: {
         variant_id: product.variants.map((v) => v.id),
       },
     })
 
     if (!inventoryItemLinks || inventoryItemLinks.length === 0) {
-      logger.error('No inventory items found for product variants')
+      logger.error("No inventory items found for product variants")
       return
     }
 
@@ -71,13 +71,13 @@ export default async function updateInventory({ container }: ExecArgs) {
       (link) => link.inventory_item_id
     )
     const { data: inventoryLevels } = await query.graph({
-      entity: 'inventory_level',
+      entity: "inventory_level",
       fields: [
-        'id',
-        'inventory_item_id',
-        'location_id',
-        'stocked_quantity',
-        'reserved_quantity',
+        "id",
+        "inventory_item_id",
+        "location_id",
+        "stocked_quantity",
+        "reserved_quantity",
       ],
       filters: {
         inventory_item_id: inventoryItemIds,
@@ -132,13 +132,13 @@ export default async function updateInventory({ container }: ExecArgs) {
       })
 
       logger.info(`Successfully updated ${updates.length} inventory levels`)
-      logger.info('Inventory update completed!')
+      logger.info("Inventory update completed!")
     } else {
-      logger.warn('No inventory levels to update')
+      logger.warn("No inventory levels to update")
     }
   } catch (error) {
     logger.error(
-      'Error updating inventory:',
+      "Error updating inventory:",
       error instanceof Error ? error : new Error(String(error))
     )
     throw error

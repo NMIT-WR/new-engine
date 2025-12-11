@@ -2,10 +2,10 @@ import type {
   MedusaNextFunction,
   MedusaRequest,
   MedusaResponse,
-} from '@medusajs/framework'
-import type { MiddlewareRoute } from '@medusajs/framework/http'
-import type { Logger } from '@medusajs/framework/types'
-import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
+} from "@medusajs/framework"
+import type { MiddlewareRoute } from "@medusajs/framework/http"
+import type { Logger } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 export const authRoutesMiddlewares: MiddlewareRoute[] = [
   {
@@ -17,7 +17,7 @@ export const authRoutesMiddlewares: MiddlewareRoute[] = [
         )
         const origin = req.headers.origin as string
         const allowedOrigins =
-          process.env.AUTH_CORS?.split(',').map((o) => o.trim()) || []
+          process.env.AUTH_CORS?.split(",").map((o) => o.trim()) || []
 
         logger.debug(
           `[CORS Middleware] Request: ${req.method} ${req.url}, Origin: ${origin}`
@@ -25,24 +25,24 @@ export const authRoutesMiddlewares: MiddlewareRoute[] = [
 
         // Always set CORS headers for allowed origins
         if (origin && allowedOrigins.includes(origin)) {
-          res.setHeader('Access-Control-Allow-Origin', origin)
-          res.setHeader('Access-Control-Allow-Credentials', 'true')
+          res.setHeader("Access-Control-Allow-Origin", origin)
+          res.setHeader("Access-Control-Allow-Credentials", "true")
           res.setHeader(
-            'Access-Control-Allow-Methods',
-            'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'
+            "Access-Control-Allow-Methods",
+            "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
           )
           res.setHeader(
-            'Access-Control-Allow-Headers',
-            'content-type,x-publishable-api-key,authorization'
+            "Access-Control-Allow-Headers",
+            "content-type,x-publishable-api-key,authorization"
           )
-          res.setHeader('Vary', 'Origin')
+          res.setHeader("Vary", "Origin")
           logger.debug(`[CORS Middleware] Headers set for origin: ${origin}`)
         } else if (origin) {
           logger.debug(`[CORS Middleware] Origin not allowed: ${origin}`)
         }
 
         // Handle preflight requests
-        if (req.method === 'OPTIONS') {
+        if (req.method === "OPTIONS") {
           res.status(200).end()
           return
         }

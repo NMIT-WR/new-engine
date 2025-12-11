@@ -1,7 +1,7 @@
-import { MedusaService, kebabCase } from '@medusajs/framework/utils'
-import Producer from './models/producer'
-import ProducerAttribute from './models/producer-attribute'
-import ProducerAttributeType from './models/producer-attribute-type'
+import { kebabCase, MedusaService } from "@medusajs/framework/utils"
+import Producer from "./models/producer"
+import ProducerAttribute from "./models/producer-attribute"
+import ProducerAttributeType from "./models/producer-attribute-type"
 
 export type UpsertProducerDTO = {
   name: string
@@ -23,9 +23,7 @@ class ProducerModuleService extends MedusaService({
   ): Promise<Awaited<ReturnType<typeof this.createProducers>>[number]> {
     // create producer or get existing one
     const handle = input.handle ?? kebabCase(input.name)
-    let producer = (
-      await this.listProducers({ handle: handle }, { take: 1 })
-    ).shift()
+    let producer = (await this.listProducers({ handle }, { take: 1 })).shift()
 
     if (!producer) {
       producer = await this.createProducers({

@@ -19,7 +19,7 @@ update:
 	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update --latest
 test:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be add react-dom@^18.3.1
+	docker run -v .:/var/www pnpm-env pnpm --workspace-root add ultracite@6.3.6 biomejs/biome@^2.3.7
 npkill:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
 	docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y

@@ -1,6 +1,6 @@
-import { OAuth2Client } from '@badgateway/oauth2-client'
-import type { Logger } from '@medusajs/framework/types'
-import { MedusaError } from '@medusajs/framework/utils'
+import { OAuth2Client } from "@badgateway/oauth2-client"
+import type { Logger } from "@medusajs/framework/types"
+import { MedusaError } from "@medusajs/framework/utils"
 import type {
   PplAccessPoint,
   PplAccessPointsQuery,
@@ -39,14 +39,14 @@ import type {
   PplShipmentRedirectRequest,
   PplShipmentRequest,
   PplVersionInformationResponse,
-} from './types'
+} from "./types"
 
 /**
  * PPL CPL API Base URLs by environment
  */
 const BASE_URLS = {
-  testing: 'https://api-dev.dhl.com/ecs/ppl/myapi2',
-  production: 'https://api.dhl.com/ecs/ppl/myapi2',
+  testing: "https://api-dev.dhl.com/ecs/ppl/myapi2",
+  production: "https://api.dhl.com/ecs/ppl/myapi2",
 } as const
 
 /**
@@ -78,10 +78,10 @@ export class PplClient {
     // Initialize OAuth2 client
     this.oauth2Client = new OAuth2Client({
       server: this.baseUrl,
-      tokenEndpoint: '/ecs/ppl/myapi2/login/getAccessToken',
+      tokenEndpoint: "/ecs/ppl/myapi2/login/getAccessToken",
       clientId: options.client_id,
       clientSecret: options.client_secret,
-      authenticationMethod: 'client_secret_post',
+      authenticationMethod: "client_secret_post",
     })
   }
 
@@ -107,7 +107,7 @@ export class PplClient {
     try {
       // Use client credentials grant with custom scope
       const tokenResponse = await this.oauth2Client.clientCredentials({
-        scope: ['myapi2'],
+        scope: ["myapi2"],
       })
 
       this.cachedAccessToken = tokenResponse.accessToken
@@ -116,12 +116,12 @@ export class PplClient {
         ? tokenResponse.expiresAt * 1000
         : Date.now() + 1800 * 1000 // Default 30 min if not provided
 
-      this.logger.debug('PPL: OAuth token obtained/refreshed via OAuth2Client')
+      this.logger.debug("PPL: OAuth token obtained/refreshed via OAuth2Client")
 
       return this.cachedAccessToken
     } catch (error) {
       this.logger.error(
-        'PPL auth failed',
+        "PPL auth failed",
         error instanceof Error ? error : new Error(String(error))
       )
       throw new MedusaError(
@@ -163,11 +163,11 @@ export class PplClient {
     }
 
     const response = await fetch(`${this.baseUrl}/shipment/batch`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     })
@@ -182,13 +182,13 @@ export class PplClient {
     }
 
     // batchId is in Location header: /shipment/batch/{batchId}
-    const location = response.headers.get('Location')
-    const batchId = location?.split('/').pop()
+    const location = response.headers.get("Location")
+    const batchId = location?.split("/").pop()
 
     if (!batchId) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        'PPL: No batchId returned in Location header'
+        "PPL: No batchId returned in Location header"
       )
     }
 
@@ -206,7 +206,7 @@ export class PplClient {
     const response = await fetch(`${this.baseUrl}/shipment/batch/${batchId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -231,7 +231,7 @@ export class PplClient {
     await this.throttle()
 
     // If labelUrl is relative (e.g., /data/{guid}), prepend base URL
-    const fullUrl = labelUrl.startsWith('http')
+    const fullUrl = labelUrl.startsWith("http")
       ? labelUrl
       : `${this.baseUrl}${labelUrl}`
 
@@ -270,40 +270,40 @@ export class PplClient {
 
     if (query.shipmentNumbers) {
       for (const num of query.shipmentNumbers) {
-        params.append('ShipmentNumbers', num)
+        params.append("ShipmentNumbers", num)
       }
     }
     if (query.invoiceNumbers) {
       for (const num of query.invoiceNumbers) {
-        params.append('InvoiceNumbers', num)
+        params.append("InvoiceNumbers", num)
       }
     }
     if (query.customerReferences) {
       for (const ref of query.customerReferences) {
-        params.append('CustomerReferences', ref)
+        params.append("CustomerReferences", ref)
       }
     }
     if (query.variableSymbols) {
       for (const sym of query.variableSymbols) {
-        params.append('VariableSymbols', sym)
+        params.append("VariableSymbols", sym)
       }
     }
     if (query.dateFrom) {
-      params.append('DateFrom', query.dateFrom)
+      params.append("DateFrom", query.dateFrom)
     }
     if (query.dateTo) {
-      params.append('DateTo', query.dateTo)
+      params.append("DateTo", query.dateTo)
     }
     if (query.shipmentStates) {
       for (const state of query.shipmentStates) {
-        params.append('ShipmentStates', state)
+        params.append("ShipmentStates", state)
       }
     }
 
     const response = await fetch(`${this.baseUrl}/shipment?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -337,7 +337,7 @@ export class PplClient {
     if (shipmentNumbers.length > 100) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        'PPL: Maximum 100 shipment numbers per request'
+        "PPL: Maximum 100 shipment numbers per request"
       )
     }
     return this.getShipmentInfo({ shipmentNumbers })
@@ -359,10 +359,10 @@ export class PplClient {
     const response = await fetch(
       `${this.baseUrl}/shipment/${shipmentNumber}/cancel`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
+          Accept: "application/json",
         },
       }
     )
@@ -396,31 +396,31 @@ export class PplClient {
     })
 
     if (query.countryCode) {
-      params.append('CountryCode', query.countryCode)
+      params.append("CountryCode", query.countryCode)
     }
     if (query.zipCode) {
-      params.append('ZipCode', query.zipCode)
+      params.append("ZipCode", query.zipCode)
     }
     if (query.city) {
-      params.append('City', query.city)
+      params.append("City", query.city)
     }
     if (query.accessPointTypes) {
-      params.append('AccessPointTypes', query.accessPointTypes)
+      params.append("AccessPointTypes", query.accessPointTypes)
     }
     if (query.radius) {
-      params.append('Radius', String(query.radius))
+      params.append("Radius", String(query.radius))
     }
     if (query.latitude) {
-      params.append('Latitude', String(query.latitude))
+      params.append("Latitude", String(query.latitude))
     }
     if (query.longitude) {
-      params.append('Longitude', String(query.longitude))
+      params.append("Longitude", String(query.longitude))
     }
 
     const response = await fetch(`${this.baseUrl}/accessPoint?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -452,22 +452,22 @@ export class PplClient {
 
     const params = new URLSearchParams()
     if (query.street) {
-      params.append('Street', query.street)
+      params.append("Street", query.street)
     }
     if (query.zipCode) {
-      params.append('ZipCode', query.zipCode)
+      params.append("ZipCode", query.zipCode)
     }
     if (query.city) {
-      params.append('City', query.city)
+      params.append("City", query.city)
     }
     if (query.calledFrom) {
-      params.append('CalledFrom', query.calledFrom)
+      params.append("CalledFrom", query.calledFrom)
     }
 
     const response = await fetch(`${this.baseUrl}/addressWhisper?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -492,7 +492,7 @@ export class PplClient {
   async getCodelistProducts(
     query: PplCodelistQuery = { limit: 100, offset: 0 }
   ): Promise<PplCodelistProduct[]> {
-    return this.fetchCodelist<PplCodelistProduct>('product', query)
+    return this.fetchCodelist<PplCodelistProduct>("product", query)
   }
 
   /**
@@ -501,7 +501,7 @@ export class PplClient {
   async getCodelistCountries(
     query: PplCodelistQuery = { limit: 100, offset: 0 }
   ): Promise<PplCodelistCountry[]> {
-    return this.fetchCodelist<PplCodelistCountry>('country', query)
+    return this.fetchCodelist<PplCodelistCountry>("country", query)
   }
 
   /**
@@ -510,7 +510,7 @@ export class PplClient {
   async getCodelistCurrencies(
     query: PplCodelistQuery = { limit: 100, offset: 0 }
   ): Promise<PplCodelistCurrency[]> {
-    return this.fetchCodelist<PplCodelistCurrency>('currency', query)
+    return this.fetchCodelist<PplCodelistCurrency>("currency", query)
   }
 
   /**
@@ -519,7 +519,7 @@ export class PplClient {
   async getCodelistServices(
     query: PplCodelistQuery = { limit: 100, offset: 0 }
   ): Promise<PplCodelistServiceItem[]> {
-    return this.fetchCodelist<PplCodelistServiceItem>('service', query)
+    return this.fetchCodelist<PplCodelistServiceItem>("service", query)
   }
 
   /**
@@ -528,7 +528,7 @@ export class PplClient {
   async getCodelistStatuses(
     query: PplCodelistQuery = { limit: 100, offset: 0 }
   ): Promise<PplCodelistStatus[]> {
-    return this.fetchCodelist<PplCodelistStatus>('status', query)
+    return this.fetchCodelist<PplCodelistStatus>("status", query)
   }
 
   /**
@@ -545,16 +545,16 @@ export class PplClient {
       Offset: String(query.offset),
     })
     if (query.service) {
-      params.append('Service', query.service)
+      params.append("Service", query.service)
     }
     if (query.currency) {
-      params.append('Currency', query.currency)
+      params.append("Currency", query.currency)
     }
     if (query.country) {
-      params.append('Country', query.country)
+      params.append("Country", query.country)
     }
     if (query.product) {
-      params.append('Product', query.product)
+      params.append("Product", query.product)
     }
 
     const response = await fetch(
@@ -562,7 +562,7 @@ export class PplClient {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
+          Accept: "application/json",
         },
       }
     )
@@ -602,7 +602,7 @@ export class PplClient {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
+          Accept: "application/json",
         },
       }
     )
@@ -633,14 +633,14 @@ export class PplClient {
     const response = await fetch(`${this.baseUrl}/customer`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
     // 404 means no customer profile configured for these OAuth credentials
     if (response.status === 404) {
       this.logger.warn(
-        'PPL: No customer profile configured for these credentials'
+        "PPL: No customer profile configured for these credentials"
       )
       return null
     }
@@ -670,13 +670,13 @@ export class PplClient {
     const response = await fetch(`${this.baseUrl}/customer/address`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
     // 404 means customer has no address configured - return null instead of throwing
     if (response.status === 404) {
-      this.logger.warn('PPL: Customer has no address configured in PPL system')
+      this.logger.warn("PPL: Customer has no address configured in PPL system")
       return null
     }
 
@@ -701,11 +701,11 @@ export class PplClient {
     await this.throttle()
 
     const response = await fetch(`${this.baseUrl}/order/batch`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(request),
     })
@@ -719,13 +719,13 @@ export class PplClient {
       )
     }
 
-    const location = response.headers.get('Location')
-    const batchId = location?.split('/').pop()
+    const location = response.headers.get("Location")
+    const batchId = location?.split("/").pop()
 
     if (!batchId) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        'PPL: No batchId returned in Location header for order'
+        "PPL: No batchId returned in Location header for order"
       )
     }
 
@@ -745,7 +745,7 @@ export class PplClient {
     const response = await fetch(`${this.baseUrl}/order/batch/${batchId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -776,51 +776,51 @@ export class PplClient {
 
     if (query.shipmentNumbers) {
       for (const num of query.shipmentNumbers) {
-        params.append('ShipmentNumbers', num)
+        params.append("ShipmentNumbers", num)
       }
     }
     if (query.customerReferences) {
       for (const ref of query.customerReferences) {
-        params.append('CustomerReferences', ref)
+        params.append("CustomerReferences", ref)
       }
     }
     if (query.orderReferences) {
       for (const ref of query.orderReferences) {
-        params.append('OrderReferences', ref)
+        params.append("OrderReferences", ref)
       }
     }
     if (query.orderNumbers) {
       for (const num of query.orderNumbers) {
-        params.append('OrderNumbers', num)
+        params.append("OrderNumbers", num)
       }
     }
     if (query.orderIds) {
       for (const id of query.orderIds) {
-        params.append('OrderIds', String(id))
+        params.append("OrderIds", String(id))
       }
     }
     if (query.dateFrom) {
-      params.append('DateFrom', query.dateFrom)
+      params.append("DateFrom", query.dateFrom)
     }
     if (query.dateTo) {
-      params.append('DateTo', query.dateTo)
+      params.append("DateTo", query.dateTo)
     }
     if (query.sendDate) {
-      params.append('SendDate', query.sendDate)
+      params.append("SendDate", query.sendDate)
     }
     if (query.productType) {
-      params.append('ProductType', query.productType)
+      params.append("ProductType", query.productType)
     }
     if (query.orderStates) {
       for (const state of query.orderStates) {
-        params.append('OrderStates', state)
+        params.append("OrderStates", state)
       }
     }
 
     const response = await fetch(`${this.baseUrl}/order?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -853,18 +853,18 @@ export class PplClient {
 
     const params = new URLSearchParams()
     if (query.customerReference) {
-      params.append('CustomerReference', query.customerReference)
+      params.append("CustomerReference", query.customerReference)
     }
     if (query.orderReference) {
-      params.append('OrderReference', query.orderReference)
+      params.append("OrderReference", query.orderReference)
     }
 
     const response = await fetch(`${this.baseUrl}/order/cancel?${params}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: request ? JSON.stringify(request) : undefined,
     })
@@ -877,7 +877,7 @@ export class PplClient {
       return false
     }
 
-    this.logger.info('PPL: Order cancelled')
+    this.logger.info("PPL: Order cancelled")
     return true
   }
 
@@ -894,11 +894,11 @@ export class PplClient {
     await this.throttle()
 
     const response = await fetch(`${this.baseUrl}/shipment/batch/${batchId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(request),
     })
@@ -931,13 +931,13 @@ export class PplClient {
       Offset: String(query.offset),
     })
     if (query.pageSize) {
-      params.append('PageSize', query.pageSize)
+      params.append("PageSize", query.pageSize)
     }
     if (query.position) {
-      params.append('Position', String(query.position))
+      params.append("Position", String(query.position))
     }
     if (query.orderBy) {
-      params.append('OrderBy', query.orderBy)
+      params.append("OrderBy", query.orderBy)
     }
 
     const response = await fetch(
@@ -945,7 +945,7 @@ export class PplClient {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
+          Accept: "application/json",
         },
       }
     )
@@ -976,11 +976,11 @@ export class PplClient {
     const response = await fetch(
       `${this.baseUrl}/shipment/${shipmentNumber}/redirect`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify(request),
       }
@@ -1008,11 +1008,11 @@ export class PplClient {
     await this.throttle()
 
     const response = await fetch(`${this.baseUrl}/shipment/batch/connectSet`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(request),
     })
@@ -1042,25 +1042,25 @@ export class PplClient {
       Country: query.country,
     })
     if (query.parcelShopCode) {
-      params.append('ParcelShopCode', query.parcelShopCode)
+      params.append("ParcelShopCode", query.parcelShopCode)
     }
     if (query.street) {
-      params.append('Street', query.street)
+      params.append("Street", query.street)
     }
     if (query.city) {
-      params.append('City', query.city)
+      params.append("City", query.city)
     }
     if (query.zipCode) {
-      params.append('ZipCode', query.zipCode)
+      params.append("ZipCode", query.zipCode)
     }
     if (query.productType) {
-      params.append('ProductType', query.productType)
+      params.append("ProductType", query.productType)
     }
 
     const response = await fetch(`${this.baseUrl}/routing?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -1087,7 +1087,7 @@ export class PplClient {
     const response = await fetch(`${this.baseUrl}/versionInformation`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 
@@ -1114,7 +1114,7 @@ export class PplClient {
     const response = await fetch(`${this.baseUrl}/info`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     })
 

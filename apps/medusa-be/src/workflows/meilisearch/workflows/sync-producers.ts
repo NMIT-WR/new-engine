@@ -1,8 +1,8 @@
 import {
-  WorkflowResponse,
   createWorkflow,
-} from '@medusajs/framework/workflows-sdk'
-import { syncMeilisearchProducersStep } from '../steps/sync-producers'
+  WorkflowResponse,
+} from "@medusajs/framework/workflows-sdk"
+import { syncMeilisearchProducersStep } from "../steps/sync-producers"
 
 export type SyncMeilisearchProducersWorkflowInput = {
   filters?: Record<string, unknown>
@@ -11,7 +11,7 @@ export type SyncMeilisearchProducersWorkflowInput = {
 }
 
 export const syncMeilisearchProducersWorkflow = createWorkflow(
-  'sync-meilisearch-producers-workflow',
+  "sync-meilisearch-producers-workflow",
   (input: SyncMeilisearchProducersWorkflowInput) => {
     const result = syncMeilisearchProducersStep(input)
     return new WorkflowResponse(result)

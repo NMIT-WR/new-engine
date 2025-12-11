@@ -1,6 +1,6 @@
-import { type MySql2Database, drizzle } from 'drizzle-orm/mysql2'
-import type { SQL } from 'drizzle-orm/sql/sql'
-import mysql, { type FieldPacket } from 'mysql2/promise'
+import { drizzle, type MySql2Database } from "drizzle-orm/mysql2"
+import type { SQL } from "drizzle-orm/sql/sql"
+import mysql, { type FieldPacket } from "mysql2/promise"
 
 class DatabaseModuleService {
   // todo, DB table with connections & admin widget for configuration, currently hardcoded for singular use
@@ -11,7 +11,7 @@ class DatabaseModuleService {
       return this.db_
     }
     const connection = await mysql.createConnection(
-      'mysql://root:1234@engine-db:3306/n1shop'
+      "mysql://root:1234@engine-db:3306/n1shop"
     )
     this.db_ = drizzle(connection)
 

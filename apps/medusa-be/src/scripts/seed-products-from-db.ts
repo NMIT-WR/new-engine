@@ -3,13 +3,13 @@ import type {
   ExecArgs,
   MedusaContainer,
   ProductCategoryDTO,
-} from '@medusajs/framework/types'
+} from "@medusajs/framework/types"
 import {
   ContainerRegistrationKeys,
   MedusaError,
   Modules,
   ProductStatus,
-} from '@medusajs/framework/utils'
+} from "@medusajs/framework/utils"
 // @ts-nocheck necessary due to Medusa failing with strict mode
 import {
   createCollectionsWorkflow,
@@ -17,9 +17,9 @@ import {
   createProductCategoriesWorkflow,
   createProductsWorkflow,
   createStockLocationsWorkflow,
-} from '@medusajs/medusa/core-flows'
-import { sql } from 'drizzle-orm'
-import { sqlRaw } from '../utils/db'
+} from "@medusajs/medusa/core-flows"
+import { sql } from "drizzle-orm"
+import { sqlRaw } from "../utils/db"
 
 // Product record shape from the database
 type ProductRecord = {
@@ -79,20 +79,22 @@ const DATE_STRING_PATTERN = /^\d{4}-\d{2}-\d{2}/
  */
 function sanitizeHandle(handle: string): string {
   if (!handle) {
-    return `product-${i++}-${Date.now()}`
+    i += 1
+    return `product-${i}-${Date.now()}`
   }
 
   // Check if the handle is a date string (common issue with database exports)
   if (handle.match(DATE_STRING_PATTERN) || !Number.isNaN(Date.parse(handle))) {
-    return `product-${i++}-${Date.now()}`
+    i += 1
+    return `product-${i}-${Date.now()}`
   }
 
   // Replace any character that's not alphanumeric, dash, or underscore with a dash
   return handle
     .toLowerCase()
-    .replace(/[^a-z0-9-_]/g, '-')
-    .replace(/-+/g, '-') // Replace multiple consecutive dashes with a single dash
-    .replace(/^-|-$/g, '') // Remove leading and trailing dashes
+    .replace(/[^a-z0-9-_]/g, "-")
+    .replace(/-+/g, "-") // Replace multiple consecutive dashes with a single dash
+    .replace(/^-|-$/g, "") // Remove leading and trailing dashes
 }
 
 /**
@@ -121,22 +123,22 @@ function convertToMedusaProducts(
       thumbnail: product.product_image_url || undefined,
       options: [
         {
-          title: 'Default',
-          values: ['Default'],
+          title: "Default",
+          values: ["Default"],
         },
       ],
       variants: [
         {
-          title: 'Default',
+          title: "Default",
           sku: `SKU-${safeHandle}`, // Use sanitized handle for SKU as well
           prices: [
             {
               amount: product.product_price * 100, // Medusa expects prices in cents
-              currency_code: 'eur',
+              currency_code: "eur",
             },
             {
               amount: product.product_price * 100 * 1.1, // Simple USD conversion
-              currency_code: 'usd',
+              currency_code: "usd",
             },
           ],
         },
@@ -162,11 +164,11 @@ async function checkExistingCategories(
 
   // Query for existing categories with the given handles
   const { data: existingCategories } = await query.graph({
-    entity: 'product_category',
+    entity: "product_category",
     filters: {
       handle: categoryHandles,
     },
-    fields: ['id', 'handle'],
+    fields: ["id", "handle"],
   })
 
   // Create a map of handle -> id for existing categories
@@ -189,11 +191,11 @@ async function checkExistingCollections(
 
   // Query for existing collections with the given handles
   const { data: existingCollections } = await query.graph({
-    entity: 'product_collection',
+    entity: "product_collection",
     filters: {
       handle: collectionHandles,
     },
-    fields: ['id', 'handle'],
+    fields: ["id", "handle"],
   })
 
   // Create a map of handle -> id for existing collections
@@ -216,11 +218,11 @@ async function checkExistingProducts(
 
   // Query for existing products with the given handles
   const { data: existingProducts } = await query.graph({
-    entity: 'product',
+    entity: "product",
     filters: {
       handle: productHandles,
     },
-    fields: ['id', 'handle'],
+    fields: ["id", "handle"],
   })
 
   // Create a map of handle -> id for existing products
@@ -284,19 +286,19 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
 
-  logger.info('Starting bulk product import from database...')
+  logger.info("Starting bulk product import from database...")
 
   // 1. Get default sales channel
   const defaultSalesChannel = await salesChannelModuleService.listSalesChannels(
     {
-      name: 'Default Sales Channel',
+      name: "Default Sales Channel",
     }
   )
 
   if (!defaultSalesChannel || defaultSalesChannel.length === 0) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      'Default Sales Channel not found. Please run the seed script first.'
+      "Default Sales Channel not found. Please run the seed script first."
     )
   }
 
@@ -304,24 +306,24 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   logger.info(`Found default sales channel with ID: ${defaultSalesChannelId}`)
 
   // 2. Import a small batch of products first to extract categories and collections
-  logger.info('Fetching initial product data for category extraction...')
+  logger.info("Fetching initial product data for category extraction...")
   const sampleProducts = await importProductPage(0, 10)
 
   if (!sampleProducts || sampleProducts.length === 0) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      'No products found in the database'
+      "No products found in the database"
     )
   }
 
   // 3. Extract and create categories
-  logger.info('Extracting categories from product data...')
+  logger.info("Extracting categories from product data...")
   const categories = extractCategories(sampleProducts)
   logger.info(`Found ${categories.length} unique categories`)
 
   // Check which categories already exist
   const categoryHandles = categories.map((category) => category.slug)
-  logger.info('Checking for existing categories...')
+  logger.info("Checking for existing categories...")
   const existingCategoryMap = await checkExistingCategories(
     container,
     categoryHandles
@@ -349,7 +351,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   // Only run creation workflow if there are new categories to create
   let categoryResult: ProductCategoryDTO[] = []
   if (productCategories.length > 0) {
-    logger.info('Creating product categories...')
+    logger.info("Creating product categories...")
     const { result } = await createProductCategoriesWorkflow(container).run({
       input: {
         product_categories: productCategories,
@@ -358,7 +360,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
     categoryResult = result
     logger.info(`Successfully created ${categoryResult.length} new categories`)
   } else {
-    logger.info('No new categories to create, using existing ones')
+    logger.info("No new categories to create, using existing ones")
   }
 
   // 5. Create a map of category slugs to category IDs for easy lookup
@@ -370,13 +372,13 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   }
 
   // 4. Extract and create collections
-  logger.info('Extracting collections from product data...')
+  logger.info("Extracting collections from product data...")
   const collections = extractCollections(sampleProducts)
   logger.info(`Found ${collections.length} unique collections`)
 
   // Check which collections already exist
   const collectionHandles = collections.map((collection) => collection.handle)
-  logger.info('Checking for existing collections...')
+  logger.info("Checking for existing collections...")
   const existingCollectionMap = await checkExistingCollections(
     container,
     collectionHandles
@@ -393,7 +395,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
   // Only run creation workflow if there are new collections to create
   let collectionResult: { handle: string; id: string }[] = []
   if (newCollections.length > 0) {
-    logger.info('Creating new collections...')
+    logger.info("Creating new collections...")
     const { result } = await createCollectionsWorkflow(container).run({
       input: {
         collections: newCollections,
@@ -404,7 +406,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       `Successfully created ${collectionResult.length} new collections`
     )
   } else {
-    logger.info('No new collections to create, using existing ones')
+    logger.info("No new collections to create, using existing ones")
   }
 
   // 6. Import products in chunks
@@ -424,7 +426,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       const productRecords = await importProductPage(page, CHUNK_SIZE)
 
       if (!productRecords || productRecords.length === 0) {
-        logger.info('No more products to import')
+        logger.info("No more products to import")
         hasMore = false
         break
       }
@@ -457,8 +459,8 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       )
 
       if (newProducts.length === 0) {
-        logger.info('No new products to create in this batch, skipping...')
-        page++
+        logger.info("No new products to create in this batch, skipping...")
+        page += 1
         // If we got fewer products than the chunk size, we've reached the end
         hasMore = productRecords.length >= CHUNK_SIZE
         continue
@@ -485,11 +487,11 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
           input: {
             locations: [
               {
-                name: 'Default Warehouse',
+                name: "Default Warehouse",
                 address: {
-                  address_1: '123 Demo Street',
-                  city: 'Demo City',
-                  country_code: 'us',
+                  address_1: "123 Demo Street",
+                  city: "Demo City",
+                  country_code: "us",
                 },
               },
             ],
@@ -501,14 +503,14 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       if (!stockLocation) {
         throw new MedusaError(
           MedusaError.Types.NOT_FOUND,
-          'Stock location not found'
+          "Stock location not found"
         )
       }
 
       // Get inventory items for the products we just created
       const { data: inventoryItems } = await query.graph({
-        entity: 'inventory_item',
-        fields: ['id'],
+        entity: "inventory_item",
+        fields: ["id"],
       })
 
       // Create inventory levels for each inventory item with the location ID
@@ -537,7 +539,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       }
 
       totalImported += createdProducts.length
-      page++
+      page += 1
 
       logger.info(`Total products imported so far: ${totalImported}`)
 
@@ -549,11 +551,11 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
       const errorStack = error instanceof Error ? error.stack : undefined
 
       logger.error(
-        `Error importing products at page ${page}: ${errorMessage}\n${errorStack || ''}`
+        `Error importing products at page ${page}: ${errorMessage}\n${errorStack || ""}`
       )
 
       // Continue with the next chunk even if this one failed
-      page++
+      page += 1
 
       // If we've had multiple consecutive errors, stop the process
       if (page > 3 && totalImported === 0) {

@@ -1,8 +1,8 @@
-import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
-import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
-import { createFindParams } from '@medusajs/medusa/api/utils/validators'
-import type z from 'zod'
-import { ProductProducerLink } from '../../../../../links/product-producer'
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { createFindParams } from "@medusajs/medusa/api/utils/validators"
+import type z from "zod"
+import { ProductProducerLink } from "../../../../../links/product-producer"
 
 export const StoreProducersDetailProductsSchema = createFindParams()
 
@@ -18,13 +18,13 @@ export async function GET(
   const { data: productIds } = await query.graph({
     entity: ProductProducerLink.entryPoint,
     filters: {
-      producer_id: req.params.id ?? '-1',
+      producer_id: req.params.id ?? "-1",
     },
-    fields: ['product_id'],
+    fields: ["product_id"],
   })
 
   const { data: products } = await query.graph({
-    entity: 'product',
+    entity: "product",
     filters: {
       id: {
         $in: productIds.map((i) => i.product_id),

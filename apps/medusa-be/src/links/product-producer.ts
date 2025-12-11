@@ -1,6 +1,6 @@
-import { defineLink } from '@medusajs/framework/utils'
-import ProductModule from '@medusajs/medusa/product'
-import ProducerModule from '../modules/producer'
+import { defineLink } from "@medusajs/framework/utils"
+import ProductModule from "@medusajs/medusa/product"
+import ProducerModule from "../modules/producer"
 
 export const ProductProducerLink = defineLink(
   {
@@ -9,6 +9,6 @@ export const ProductProducerLink = defineLink(
   },
   {
     linkable: ProducerModule.linkable.producer,
-    filterable: ['id', 'title', 'handle'],
+    filterable: ["id", "title", "handle"],
   }
 )

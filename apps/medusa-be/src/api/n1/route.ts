@@ -1,13 +1,13 @@
-import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
-import { sql } from 'drizzle-orm'
-import { DATABASE_MODULE } from '../../modules/database'
-import type DatabaseModuleService from '../../modules/database/service'
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { sql } from "drizzle-orm"
+import { DATABASE_MODULE } from "../../modules/database"
+import type DatabaseModuleService from "../../modules/database/service"
 import seedN1Workflow, {
   type SeedN1WorkflowInput,
-} from '../../workflows/seed/workflows/seed-n1'
+} from "../../workflows/seed/workflows/seed-n1"
 
 /** Category result from database query */
-interface CategoryRaw {
+type CategoryRaw = {
   title: string
   description: string
   handle: string
@@ -16,7 +16,7 @@ interface CategoryRaw {
 }
 
 /** Product result from complex database query with JSON fields */
-interface ProductRaw {
+type ProductRaw = {
   title: string
   handle: string
   description?: string
@@ -30,50 +30,50 @@ interface ProductRaw {
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const countries = [
-    'cz',
-    'gb',
-    'de',
-    'dk',
-    'se',
-    'fr',
-    'es',
-    'it',
-    'pl',
-    'at',
-    'sk',
+    "cz",
+    "gb",
+    "de",
+    "dk",
+    "se",
+    "fr",
+    "es",
+    "it",
+    "pl",
+    "at",
+    "sk",
   ]
-  const input: Omit<SeedN1WorkflowInput, 'categories' | 'products'> = {
+  const input: Omit<SeedN1WorkflowInput, "categories" | "products"> = {
     salesChannels: [
       {
-        name: 'Default Sales Channel',
+        name: "Default Sales Channel",
         default: true,
       },
     ],
     currencies: [
       {
-        code: 'czk',
+        code: "czk",
         default: true,
       },
       {
-        code: 'eur',
+        code: "eur",
         default: false,
       },
       {
-        code: 'usd',
+        code: "usd",
         default: false,
       },
     ],
     regions: [
       {
-        name: 'Czechia',
-        currencyCode: 'czk',
-        countries: ['cz'],
+        name: "Czechia",
+        currencyCode: "czk",
+        countries: ["cz"],
         paymentProviders: undefined,
       },
       {
-        name: 'Europe',
-        currencyCode: 'eur',
-        countries: countries.filter((c) => c !== 'cz'),
+        name: "Europe",
+        currencyCode: "eur",
+        countries: countries.filter((c) => c !== "cz"),
         paymentProviders: undefined,
       },
     ],
@@ -84,24 +84,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     stockLocations: {
       locations: [
         {
-          name: 'European Warehouse',
+          name: "European Warehouse",
           address: {
-            city: 'Copenhagen',
-            country_code: 'DK',
-            address_1: '',
+            city: "Copenhagen",
+            country_code: "DK",
+            address_1: "",
           },
         },
       ],
     },
     defaultShippingProfile: {
-      name: 'Default Shipping Profile',
+      name: "Default Shipping Profile",
     },
     fulfillmentSets: {
-      name: 'European Warehouse delivery',
-      type: 'shipping',
+      name: "European Warehouse delivery",
+      type: "shipping",
       serviceZones: [
         {
-          name: 'Europe',
+          name: "Europe",
           geoZones: countries.map((c) => ({
             countryCode: c,
           })),
@@ -111,239 +111,239 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     shippingOptions: [
       // Manual fulfillment options
       {
-        name: 'Standard Shipping',
-        providerId: 'manual_manual',
+        name: "Standard Shipping",
+        providerId: "manual_manual",
         type: {
-          label: 'Standard',
-          description: 'Ship in 2-3 days.',
-          code: 'standard',
+          label: "Standard",
+          description: "Ship in 2-3 days.",
+          code: "standard",
         },
         prices: [
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 10,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 10,
           },
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 250,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
       {
-        name: 'Express Shipping',
-        providerId: 'manual_manual',
+        name: "Express Shipping",
+        providerId: "manual_manual",
         type: {
-          label: 'Express',
-          description: 'Ship in 24 hours.',
-          code: 'express',
+          label: "Express",
+          description: "Ship in 24 hours.",
+          code: "express",
         },
         prices: [
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 10,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 10,
           },
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 250,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
       // PPL fulfillment options
       {
-        name: 'PPL Parcel Smart',
-        providerId: 'ppl_ppl',
+        name: "PPL Parcel Smart",
+        providerId: "ppl_ppl",
         type: {
-          label: 'PPL Pickup Point',
-          description: 'Deliver to nearest ParcelShop/ParcelBox',
-          code: 'ppl-parcel-smart',
+          label: "PPL Pickup Point",
+          description: "Deliver to nearest ParcelShop/ParcelBox",
+          code: "ppl-parcel-smart",
         },
         data: {
-          product_type: 'SMAR',
+          product_type: "SMAR",
           requires_access_point: true,
           supports_cod: false,
         },
         prices: [
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 79,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 4,
           },
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 4,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
       {
-        name: 'PPL Parcel Smart + COD',
-        providerId: 'ppl_ppl',
+        name: "PPL Parcel Smart + COD",
+        providerId: "ppl_ppl",
         type: {
-          label: 'PPL Pickup Point + Cash on Delivery',
-          description: 'Deliver to ParcelShop/ParcelBox, pay on pickup',
-          code: 'ppl-parcel-smart-cod',
+          label: "PPL Pickup Point + Cash on Delivery",
+          description: "Deliver to ParcelShop/ParcelBox, pay on pickup",
+          code: "ppl-parcel-smart-cod",
         },
         data: {
-          product_type: 'SMAD',
+          product_type: "SMAD",
           requires_access_point: true,
           supports_cod: true,
         },
         prices: [
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 99,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 5,
           },
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 5,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
       {
-        name: 'PPL Private',
-        providerId: 'ppl_ppl',
+        name: "PPL Private",
+        providerId: "ppl_ppl",
         type: {
-          label: 'PPL Home Delivery',
-          description: 'Deliver to your address',
-          code: 'ppl-private',
+          label: "PPL Home Delivery",
+          description: "Deliver to your address",
+          code: "ppl-private",
         },
         data: {
-          product_type: 'PRIV',
+          product_type: "PRIV",
           requires_access_point: false,
           supports_cod: false,
         },
         prices: [
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 99,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 5,
           },
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 5,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
       {
-        name: 'PPL Private + COD',
-        providerId: 'ppl_ppl',
+        name: "PPL Private + COD",
+        providerId: "ppl_ppl",
         type: {
-          label: 'PPL Home Delivery + Cash on Delivery',
-          description: 'Deliver to your address, pay on delivery',
-          code: 'ppl-private-cod',
+          label: "PPL Home Delivery + Cash on Delivery",
+          description: "Deliver to your address, pay on delivery",
+          code: "ppl-private-cod",
         },
         data: {
-          product_type: 'PRID',
+          product_type: "PRID",
           requires_access_point: false,
           supports_cod: true,
         },
         prices: [
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 119,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 6,
           },
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 6,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
     ],
     publishableKey: {
-      title: 'Webshop',
+      title: "Webshop",
     },
   }
 

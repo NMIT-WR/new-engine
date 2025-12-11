@@ -1,20 +1,20 @@
 import type {
   IFulfillmentModuleService,
   Logger,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   createShippingProfilesWorkflow,
   updateShippingProfilesWorkflow,
-} from '@medusajs/medusa/core-flows'
+} from "@medusajs/medusa/core-flows"
 
 export type CreateDefaultShippingProfileStepInput = {
   name: string
 }
 
 const CreateDefaultShippingProfileStepId =
-  'create-default-shipping-profile-seed-step'
+  "create-default-shipping-profile-seed-step"
 export const createDefaultShippingProfileStep = createStep(
   CreateDefaultShippingProfileStepId,
   async (input: CreateDefaultShippingProfileStepInput, { container }) => {
@@ -24,17 +24,17 @@ export const createDefaultShippingProfileStep = createStep(
 
     const shippingProfiles =
       await fulfillmentModuleService.listShippingProfiles({
-        type: 'default',
+        type: "default",
         name: input.name,
       })
     const shippingProfile = shippingProfiles.length ? shippingProfiles[0] : null
 
     if (shippingProfile) {
-      logger.info('Updating shipping profile name...')
+      logger.info("Updating shipping profile name...")
       await updateShippingProfilesWorkflow(container).run({
         input: {
           selector: {
-            type: 'default',
+            type: "default",
             name: input.name,
           },
           update: {
@@ -43,13 +43,13 @@ export const createDefaultShippingProfileStep = createStep(
         },
       })
     } else {
-      logger.info('Creating shipping profile...')
+      logger.info("Creating shipping profile...")
       await createShippingProfilesWorkflow(container).run({
         input: {
           data: [
             {
               name: input.name,
-              type: 'default',
+              type: "default",
             },
           ],
         },
@@ -58,14 +58,14 @@ export const createDefaultShippingProfileStep = createStep(
 
     const finalShippingProfiles =
       await fulfillmentModuleService.listShippingProfiles({
-        type: 'default',
+        type: "default",
       })
     const finalShippingProfile = finalShippingProfiles.length
       ? finalShippingProfiles[0]
       : null
 
     if (finalShippingProfile === null) {
-      throw new Error('Could not find default shipping profile')
+      throw new Error("Could not find default shipping profile")
     }
 
     return new StepResponse({

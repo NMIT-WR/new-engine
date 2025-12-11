@@ -2,13 +2,13 @@ import type {
   IRegionModuleService,
   Logger,
   WorkflowTypes,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   createRegionsWorkflow,
   updateRegionsWorkflow,
-} from '@medusajs/medusa/core-flows'
+} from "@medusajs/medusa/core-flows"
 
 export type CreateRegionsStepInput = {
   name: string
@@ -17,7 +17,7 @@ export type CreateRegionsStepInput = {
   paymentProviders?: string[]
 }[]
 
-const CreateRegionsStepId = 'create-regions-seed-step'
+const CreateRegionsStepId = "create-regions-seed-step"
 export const createRegionsStep = createStep(
   CreateRegionsStepId,
   async (input: CreateRegionsStepInput, { container }) => {
@@ -55,7 +55,7 @@ export const createRegionsStep = createStep(
     })
 
     if (missingRegions.length !== 0) {
-      logger.info('Creating missing region data...')
+      logger.info("Creating missing region data...")
 
       const { result: createRegionsResult } = await createRegionsWorkflow(
         container
@@ -65,7 +65,7 @@ export const createRegionsStep = createStep(
             name: i.name,
             currency_code: i.currencyCode,
             countries: i.countries,
-            payment_providers: i.paymentProviders ?? ['pp_system_default'],
+            payment_providers: i.paymentProviders ?? ["pp_system_default"],
           })),
         },
       })
@@ -76,14 +76,14 @@ export const createRegionsStep = createStep(
     }
 
     if (updateRegions.length !== 0) {
-      logger.info('Updating existing region data...')
+      logger.info("Updating existing region data...")
 
       const toUpdate = updateRegions.map((i) => ({
         selector: { name: i.name },
         update: {
           currency_code: i.currency_code,
           countries: i.countries,
-          payment_providers: i.payment_providers ?? ['pp_system_default'],
+          payment_providers: i.payment_providers ?? ["pp_system_default"],
         },
       }))
 

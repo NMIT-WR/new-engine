@@ -1,25 +1,25 @@
-import type { Link } from '@medusajs/framework/modules-sdk'
+import type { Link } from "@medusajs/framework/modules-sdk"
 import type {
   IFulfillmentModuleService,
   IProductModuleService,
   ISalesChannelModuleService,
   Logger,
   ProductDTO,
-} from '@medusajs/framework/types'
+} from "@medusajs/framework/types"
 import {
   ContainerRegistrationKeys,
   Modules,
   ProductStatus,
-} from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   type BatchVariantImagesWorkflowInput,
   batchVariantImagesWorkflow,
   createProductsWorkflow,
   updateProductsWorkflow,
-} from '@medusajs/medusa/core-flows'
-import { PRODUCER_MODULE } from '../../../modules/producer'
-import type ProducerModuleService from '../../../modules/producer/service'
+} from "@medusajs/medusa/core-flows"
+import { PRODUCER_MODULE } from "../../../modules/producer"
+import type ProducerModuleService from "../../../modules/producer/service"
 
 type ProductInput = {
   title: string
@@ -84,7 +84,7 @@ type ProductVariantImagesInput = {
 
 export type CreateProductsStepInput = ProductInput[]
 
-const CreateProductsStepId = 'create-products-seed-step'
+const CreateProductsStepId = "create-products-seed-step"
 
 function processProductProducerInput(
   inputProduct: ProductInput,
@@ -177,9 +177,9 @@ function prepareVariantImagesWorkflowInput(
     if (!variantImage) {
       // if no images are specified for variant, use base images from the product entity
       const toAdd = product.images
-        ?.map((image) => {
-          return product.images.find((v) => v.url === image.url)?.id ?? null
-        })
+        ?.map(
+          (image) => product.images.find((v) => v.url === image.url)?.id ?? null
+        )
         .filter((v) => v !== null)
 
       const toRemove = variant.images
@@ -195,9 +195,7 @@ function prepareVariantImagesWorkflowInput(
     }
 
     const toAdd = (variantImage.images ?? [])
-      .map((image) => {
-        return product.images.find((v) => v.url === image)?.id ?? null
-      })
+      .map((image) => product.images.find((v) => v.url === image)?.id ?? null)
       .filter((v) => v !== null)
     const toRemove = variant.images
       .filter((img) => !toAdd.includes(img.id))
@@ -247,7 +245,7 @@ export const createProductsStep = createStep(
         }, []),
       },
       {
-        select: ['id', 'handle'],
+        select: ["id", "handle"],
       }
     )
     const allSalesChannelNames = new Set<string>()
@@ -270,8 +268,8 @@ export const createProductsStep = createStep(
         handle: input.map((i) => i.handle),
       },
       {
-        relations: ['variants', 'variants.options'],
-        select: ['variants.*', 'variants.options.*', '*'],
+        relations: ["variants", "variants.options"],
+        select: ["variants.*", "variants.options.*", "*"],
       }
     )
 
@@ -350,7 +348,7 @@ export const createProductsStep = createStep(
     })
 
     if (missingProducts.length !== 0) {
-      logger.info('Creating missing products...')
+      logger.info("Creating missing products...")
 
       const createProducts = missingProducts.map((p) => {
         processProductProducerInput(p, producers)
@@ -387,9 +385,9 @@ export const createProductsStep = createStep(
             material: v.material,
             options: v.options,
             thumbnail: v.thumbnail,
-            prices: v.prices?.map((p) => ({
-              amount: p.amount,
-              currency_code: p.currency_code,
+            prices: v.prices?.map((price) => ({
+              amount: price.amount,
+              currency_code: price.currency_code,
             })),
             metadata: v.metadata,
           })),
@@ -413,17 +411,17 @@ export const createProductsStep = createStep(
         { id: { $in: productIds } },
         {
           select: [
-            'id',
-            'handle',
-            'variants.sku',
-            'variants.images.id',
-            'variants.images.url',
+            "id",
+            "handle",
+            "variants.sku",
+            "variants.images.id",
+            "variants.images.url",
           ],
-          relations: ['variants', 'variants.images'],
+          relations: ["variants", "variants.images"],
         }
       )
 
-      logger.info('Creating product variant images...')
+      logger.info("Creating product variant images...")
 
       for (const product of products) {
         const variantImageInputs = prepareVariantImagesWorkflowInput(
@@ -443,7 +441,7 @@ export const createProductsStep = createStep(
     }
 
     if (updateProducts.length !== 0) {
-      logger.info('Updating existing products...')
+      logger.info("Updating existing products...")
 
       const updatedIds: string[] = []
 
@@ -466,17 +464,17 @@ export const createProductsStep = createStep(
         { id: { $in: updatedIds } },
         {
           select: [
-            'id',
-            'handle',
-            'variants.sku',
-            'variants.images.id',
-            'variants.images.url',
+            "id",
+            "handle",
+            "variants.sku",
+            "variants.images.id",
+            "variants.images.url",
           ],
-          relations: ['variants', 'variants.images'],
+          relations: ["variants", "variants.images"],
         }
       )
 
-      logger.info('Updating product variant images...')
+      logger.info("Updating product variant images...")
 
       for (const product of products) {
         const variantImageInputs = prepareVariantImagesWorkflowInput(
@@ -495,11 +493,11 @@ export const createProductsStep = createStep(
     }
 
     // add producer info
-    for (const [key, value] of producers.entries()) {
-      const attributes = [...value.attributes.entries()].map(
-        ([name, value]) => ({
+    for (const [key, producerData] of producers.entries()) {
+      const attributes = [...producerData.attributes.entries()].map(
+        ([name, attrValue]) => ({
           name,
-          value,
+          value: attrValue,
         })
       )
 
@@ -509,9 +507,9 @@ export const createProductsStep = createStep(
       })
 
       const products = await productService.listProducts(
-        { handle: { $in: value.products } },
+        { handle: { $in: producerData.products } },
         {
-          select: ['id'],
+          select: ["id"],
         }
       )
 

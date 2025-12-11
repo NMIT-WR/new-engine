@@ -1,13 +1,13 @@
-import type { IApiKeyModuleService, Logger } from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
-import { createApiKeysWorkflow } from '@medusajs/medusa/core-flows'
+import type { IApiKeyModuleService, Logger } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { createApiKeysWorkflow } from "@medusajs/medusa/core-flows"
 
 export type CreatePublishableKeyStepInput = {
   title: string
 }
 
-const createPublishableKeyStepId = 'create-publishable-key-seed-step'
+const createPublishableKeyStepId = "create-publishable-key-seed-step"
 export const createPublishableKeyStep = createStep(
   createPublishableKeyStepId,
   async (input: CreatePublishableKeyStepInput, { container }) => {
@@ -18,7 +18,7 @@ export const createPublishableKeyStep = createStep(
 
     const existingKey = await apiKeyService.listApiKeys({
       title: input.title,
-      type: 'publishable',
+      type: "publishable",
     })
 
     if (existingKey.length !== 0) {
@@ -27,7 +27,7 @@ export const createPublishableKeyStep = createStep(
       })
     }
 
-    logger.info('Creating or retrieving publishable API key data...')
+    logger.info("Creating or retrieving publishable API key data...")
     const { result: publishableApiKeyResult } = await createApiKeysWorkflow(
       container
     ).run({
@@ -35,8 +35,8 @@ export const createPublishableKeyStep = createStep(
         api_keys: [
           {
             title: input.title,
-            type: 'publishable',
-            created_by: '',
+            type: "publishable",
+            created_by: "",
           },
         ],
       },

@@ -1,19 +1,19 @@
-import type { MedusaContainer } from '@medusajs/framework'
+import type { MedusaContainer } from "@medusajs/framework"
 import type {
   IEventBusModuleService,
   IFileModuleService,
   IFulfillmentModuleService,
   Logger,
   Query,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { PplClient } from '../modules/ppl'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import type {
   PplBatchItem,
   PplBatchResponse,
   PplFulfillmentData,
   PplOptions,
-} from '../modules/ppl'
+} from "../modules/ppl"
+import { PplClient } from "../modules/ppl"
 
 /**
  * Maximum number of sync attempts before marking as error
@@ -28,7 +28,7 @@ const MAX_SYNC_ATTEMPTS = 60
 const MAX_PENDING_AGE_MS = 24 * 60 * 60 * 1000
 
 /** Fulfillment record shape from query */
-interface FulfillmentRecord {
+type FulfillmentRecord = {
   id: string
   data: PplFulfillmentData | null
   created_at: string
@@ -41,7 +41,7 @@ interface PendingFulfillment extends FulfillmentRecord {
 }
 
 /** Context passed to helper functions */
-interface SyncContext {
+type SyncContext = {
   logger: Logger
   fulfillmentService: IFulfillmentModuleService
   fileService: IFileModuleService
@@ -50,7 +50,7 @@ interface SyncContext {
 }
 
 /** Sync attempt tracking */
-interface SyncAttemptInfo {
+type SyncAttemptInfo = {
   syncAttempts: number
   firstSyncAttempt: string
   now: string
@@ -66,12 +66,12 @@ interface SyncAttemptInfo {
  * 4. Update fulfillment data with shipment_number, label_url, etc.
  */
 export default async function pplLabelSyncJob(container: MedusaContainer) {
-  const logger = container.resolve<Logger>('logger')
+  const logger = container.resolve<Logger>("logger")
 
   // Check if PPL service is enabled
-  if (process.env.PPL_ENABLED !== '1') {
+  if (process.env.PPL_ENABLED !== "1") {
     logger.debug(
-      'PPL Label Sync: PPL service is disabled (PPL_ENABLED != 1), skipping'
+      "PPL Label Sync: PPL service is disabled (PPL_ENABLED != 1), skipping"
     )
     return
   }
@@ -83,7 +83,7 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
   const fileService = container.resolve<IFileModuleService>(Modules.FILE)
   const eventBus = container.resolve<IEventBusModuleService>(Modules.EVENT_BUS)
 
-  logger.info('PPL Label Sync: Starting...')
+  logger.info("PPL Label Sync: Starting...")
 
   try {
     const client = createPplClient(logger)
@@ -102,7 +102,7 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
     const pendingFulfillments = await fetchPendingFulfillments(query)
 
     if (pendingFulfillments.length === 0) {
-      logger.info('PPL Label Sync: No pending fulfillments to process')
+      logger.info("PPL Label Sync: No pending fulfillments to process")
       return
     }
 
@@ -114,18 +114,18 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
       await processFulfillment(ctx, fulfillment)
     }
 
-    logger.info('PPL Label Sync: Completed')
+    logger.info("PPL Label Sync: Completed")
   } catch (error) {
     logger.error(
-      'PPL Label Sync failed',
+      "PPL Label Sync failed",
       error instanceof Error ? error : new Error(String(error))
     )
   }
 }
 
 export const config = {
-  name: 'ppl-label-sync',
-  schedule: '*/1 * * * *', // Every 1 minute
+  name: "ppl-label-sync",
+  schedule: "*/1 * * * *", // Every 1 minute
 }
 
 /**
@@ -135,8 +135,8 @@ function createPplClient(logger: Logger): PplClient | null {
   const clientId = process.env.PPL_CLIENT_ID
   const clientSecret = process.env.PPL_CLIENT_SECRET
 
-  if (!clientId || !clientSecret) {
-    logger.warn('PPL Label Sync: Missing PPL credentials, skipping')
+  if (!(clientId && clientSecret)) {
+    logger.warn("PPL Label Sync: Missing PPL credentials, skipping")
     return null
   }
 
@@ -144,8 +144,8 @@ function createPplClient(logger: Logger): PplClient | null {
     client_id: clientId,
     client_secret: clientSecret,
     environment: (process.env.PPL_ENVIRONMENT ||
-      'testing') as PplOptions['environment'],
-    default_label_format: 'Png',
+      "testing") as PplOptions["environment"],
+    default_label_format: "Png",
   }
 
   return new PplClient(pplOptions, logger)
@@ -158,15 +158,15 @@ async function fetchPendingFulfillments(
   query: Query
 ): Promise<PendingFulfillment[]> {
   const { data: fulfillments } = await query.graph({
-    entity: 'fulfillment',
-    fields: ['id', 'data', 'created_at', 'provider_id'],
+    entity: "fulfillment",
+    fields: ["id", "data", "created_at", "provider_id"],
   })
 
   return (fulfillments as FulfillmentRecord[]).filter(
     (f): f is PendingFulfillment =>
-      f.provider_id === 'ppl_ppl' &&
-      f.data?.status === 'pending' &&
-      typeof f.data?.batch_id === 'string'
+      f.provider_id === "ppl_ppl" &&
+      f.data?.status === "pending" &&
+      typeof f.data?.batch_id === "string"
   )
 }
 
@@ -231,7 +231,7 @@ function checkTimeoutConditions(
   const createdAt = new Date(fulfillment.created_at).getTime()
   if (Date.now() - createdAt > MAX_PENDING_AGE_MS) {
     return {
-      reason: 'pending for over 24 hours',
+      reason: "pending for over 24 hours",
       message: `Batch ${fulfillment.data.batch_id} pending for over 24 hours`,
     }
   }
@@ -256,19 +256,19 @@ async function handleBatchResult(
     await markAsError(
       ctx,
       fulfillment,
-      'Batch response has no items',
+      "Batch response has no items",
       attemptInfo
     )
     return
   }
 
-  if (item.importState === 'Complete') {
+  if (item.importState === "Complete") {
     await handleCompletedItem(ctx, fulfillment, item, attemptInfo)
-  } else if (item.importState === 'Error' || item.errorMessage) {
+  } else if (item.importState === "Error" || item.errorMessage) {
     await markAsError(
       ctx,
       fulfillment,
-      `PPL error: ${item.errorMessage || 'Unknown error'}`,
+      `PPL error: ${item.errorMessage || "Unknown error"}`,
       attemptInfo
     )
   } else {
@@ -301,11 +301,11 @@ async function handleCompletedItem(
   const fulfillmentData = fulfillment.data
 
   // Validate item has required fields
-  if (!item.shipmentNumber || !item.labelUrl) {
+  if (!(item.shipmentNumber && item.labelUrl)) {
     await markAsError(
       ctx,
       fulfillment,
-      'Batch completed but missing shipment number or label URL',
+      "Batch completed but missing shipment number or label URL",
       attemptInfo
     )
     return
@@ -327,7 +327,7 @@ async function handleCompletedItem(
   // Update fulfillment with completed data
   const updatedData: PplFulfillmentData = {
     ...fulfillmentData,
-    status: 'completed',
+    status: "completed",
     shipment_number: shipmentNumber,
     ppl_label_url: labelUrl,
     label_url: storedLabelUrl,
@@ -346,7 +346,7 @@ async function handleCompletedItem(
   )
 
   await eventBus.emit({
-    name: 'fulfillment.label_ready',
+    name: "fulfillment.label_ready",
     data: {
       fulfillment_id: fulfillment.id,
       shipment_number: shipmentNumber,
@@ -372,8 +372,8 @@ async function downloadAndStoreLabel(
     const uploadedFiles = await fileService.createFiles([
       {
         filename: `ppl-label-${shipmentNumber}.png`,
-        mimeType: 'image/png',
-        content: labelBuffer.toString('base64'),
+        mimeType: "image/png",
+        content: labelBuffer.toString("base64"),
       },
     ])
 
@@ -432,7 +432,7 @@ async function markAsError(
 
   const updatedData: PplFulfillmentData = {
     ...fulfillmentData,
-    status: 'error',
+    status: "error",
     error_message: errorMessage,
     sync_attempts: attemptInfo.syncAttempts,
     first_sync_attempt: attemptInfo.firstSyncAttempt,
@@ -444,7 +444,7 @@ async function markAsError(
   })
 
   await eventBus.emit({
-    name: 'fulfillment.label_failed',
+    name: "fulfillment.label_failed",
     data: {
       fulfillment_id: fulfillment.id,
       batch_id: fulfillmentData.batch_id,

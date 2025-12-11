@@ -1,11 +1,11 @@
-import type { MedusaContainer } from '@medusajs/framework'
-import { syncMeilisearchProducersWorkflow } from '../workflows/meilisearch/workflows/sync-producers'
+import type { MedusaContainer } from "@medusajs/framework"
+import { syncMeilisearchProducersWorkflow } from "../workflows/meilisearch/workflows/sync-producers"
 
 export default async function meilisearchProducersIndexJob(
   container: MedusaContainer
 ) {
-  const logger = container.resolve('logger')
-  logger.info('Starting producer indexing...')
+  const logger = container.resolve("logger")
+  logger.info("Starting producer indexing...")
 
   const {
     result: { producers },
@@ -17,7 +17,7 @@ export default async function meilisearchProducersIndexJob(
 }
 
 export const config = {
-  name: 'meilisearch-producers-index',
-  schedule: '* * * * *',
+  name: "meilisearch-producers-index",
+  schedule: "* * * * *",
   numberOfExecutions: 1,
 }

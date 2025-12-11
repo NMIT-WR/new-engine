@@ -5,13 +5,13 @@ import type {
   Logger,
   Query,
   StockLocationDTO,
-} from '@medusajs/framework/types'
-import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import {
   createInventoryLevelsWorkflow,
   updateInventoryLevelsWorkflow,
-} from '@medusajs/medusa/core-flows'
+} from "@medusajs/medusa/core-flows"
 
 export type CreateInventoryLevelsStepInput = {
   stockLocations: StockLocationDTO[]
@@ -21,7 +21,7 @@ export type CreateInventoryLevelsStepInput = {
   }[]
 }
 
-const CreateInventoryLevelsStepId = 'create-inventory-levels-seed-step'
+const CreateInventoryLevelsStepId = "create-inventory-levels-seed-step"
 export const createInventoryLevelsStep = createStep(
   CreateInventoryLevelsStepId,
   async (input: CreateInventoryLevelsStepInput, { container }) => {
@@ -32,20 +32,18 @@ export const createInventoryLevelsStep = createStep(
       Modules.INVENTORY
     )
 
-    logger.info('Creating inventory levels...')
+    logger.info("Creating inventory levels...")
 
     const { data: inventoryItems } = await query.graph({
-      entity: 'inventory_item',
-      fields: ['id', 'sku'],
+      entity: "inventory_item",
+      fields: ["id", "sku"],
     })
 
-    const inventoryItemsMap = input.inventoryItems.map((ii) => {
-      return {
-        id: inventoryItems.find((i) => i.sku === ii.sku)?.id,
-        sku: ii.sku,
-        quantity: ii.quantity,
-      }
-    })
+    const inventoryItemsMap = input.inventoryItems.map((ii) => ({
+      id: inventoryItems.find((i) => i.sku === ii.sku)?.id,
+      sku: ii.sku,
+      quantity: ii.quantity,
+    }))
 
     const inventoryLevels: CreateInventoryLevelInput[] = []
     for (const stockLocation of input.stockLocations) {

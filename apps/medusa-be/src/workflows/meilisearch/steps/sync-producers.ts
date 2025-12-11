@@ -1,7 +1,7 @@
-import type { Query } from '@medusajs/framework'
-import { StepResponse, createStep } from '@medusajs/framework/workflows-sdk'
-import type { MeiliSearchService } from '@rokmohar/medusa-plugin-meilisearch'
-import { MEILISEARCH, PRODUCERS } from '../'
+import type { Query } from "@medusajs/framework"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import type { MeiliSearchService } from "@rokmohar/medusa-plugin-meilisearch"
+import { MEILISEARCH, PRODUCERS } from "../"
 
 export type SyncMeilisearchProducersStepInput = {
   filters?: Record<string, unknown>
@@ -10,12 +10,12 @@ export type SyncMeilisearchProducersStepInput = {
 }
 
 export const syncMeilisearchProducersStep = createStep(
-  'sync-meilisearch-producers-step',
+  "sync-meilisearch-producers-step",
   async (
     { filters, limit, offset }: SyncMeilisearchProducersStepInput,
     { container }
   ) => {
-    const queryService = container.resolve<Query>('query')
+    const queryService = container.resolve<Query>("query")
     const meilisearchService: MeiliSearchService =
       container.resolve(MEILISEARCH)
 
@@ -23,7 +23,7 @@ export const syncMeilisearchProducersStep = createStep(
     const producerIndexes = await meilisearchService.getIndexesByType(PRODUCERS)
 
     const { data: producers } = await queryService.graph({
-      entity: 'producer',
+      entity: "producer",
       fields: producerFields,
       pagination: {
         take: limit,
@@ -39,9 +39,9 @@ export const syncMeilisearchProducersStep = createStep(
       (
         await Promise.all(
           producerIndexes.map((index) =>
-            meilisearchService.search(index, '', {
-              filter: `id IN [${producers.map((c) => c.id).join(',')}]`,
-              attributesToRetrieve: ['id'],
+            meilisearchService.search(index, "", {
+              filter: `id IN [${producers.map((c) => c.id).join(",")}]`,
+              attributesToRetrieve: ["id"],
             })
           )
         )

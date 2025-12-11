@@ -1,54 +1,54 @@
-import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import seedDatabaseWorkflow, {
   type SeedDatabaseWorkflowInput,
-} from '../../workflows/seed/workflows/seed-database'
+} from "../../workflows/seed/workflows/seed-database"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const countries = [
-    'cz',
-    'gb',
-    'de',
-    'dk',
-    'se',
-    'fr',
-    'es',
-    'it',
-    'pl',
-    'at',
-    'sk',
+    "cz",
+    "gb",
+    "de",
+    "dk",
+    "se",
+    "fr",
+    "es",
+    "it",
+    "pl",
+    "at",
+    "sk",
   ]
   const input: SeedDatabaseWorkflowInput = {
     salesChannels: [
       {
-        name: 'Default Sales Channel',
+        name: "Default Sales Channel",
         default: true,
       },
     ],
     currencies: [
       {
-        code: 'czk',
+        code: "czk",
         default: true,
       },
       {
-        code: 'eur',
+        code: "eur",
         default: false,
       },
       {
-        code: 'usd',
+        code: "usd",
         default: false,
       },
     ],
     regions: [
       {
-        name: 'Czechia',
-        currencyCode: 'czk',
-        countries: ['cz'],
+        name: "Czechia",
+        currencyCode: "czk",
+        countries: ["cz"],
         paymentProviders: undefined,
       },
       {
-        name: 'Europe',
-        currencyCode: 'eur',
-        countries: countries.filter((c) => c !== 'cz'),
+        name: "Europe",
+        currencyCode: "eur",
+        countries: countries.filter((c) => c !== "cz"),
         paymentProviders: undefined,
       },
     ],
@@ -59,24 +59,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     stockLocations: {
       locations: [
         {
-          name: 'European Warehouse',
+          name: "European Warehouse",
           address: {
-            city: 'Copenhagen',
-            country_code: 'DK',
-            address_1: '',
+            city: "Copenhagen",
+            country_code: "DK",
+            address_1: "",
           },
         },
       ],
     },
     defaultShippingProfile: {
-      name: 'Default Shipping Profile',
+      name: "Default Shipping Profile",
     },
     fulfillmentSets: {
-      name: 'European Warehouse delivery',
-      type: 'shipping',
+      name: "European Warehouse delivery",
+      type: "shipping",
       serviceZones: [
         {
-          name: 'Europe',
+          name: "Europe",
           geoZones: countries.map((c) => ({
             countryCode: c,
           })),
@@ -85,137 +85,137 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     },
     shippingOptions: [
       {
-        name: 'Standard Shipping',
-        providerId: 'manual_manual',
+        name: "Standard Shipping",
+        providerId: "manual_manual",
         type: {
-          label: 'Standard',
-          description: 'Ship in 2-3 days.',
-          code: 'standard',
+          label: "Standard",
+          description: "Ship in 2-3 days.",
+          code: "standard",
         },
         prices: [
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 10,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 10,
           },
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 250,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
       {
-        name: 'Express Shipping',
-        providerId: 'manual_manual',
+        name: "Express Shipping",
+        providerId: "manual_manual",
         type: {
-          label: 'Express',
-          description: 'Ship in 24 hours.',
-          code: 'express',
+          label: "Express",
+          description: "Ship in 24 hours.",
+          code: "express",
         },
         prices: [
           {
-            currencyCode: 'usd',
+            currencyCode: "usd",
             amount: 10,
           },
           {
-            currencyCode: 'eur',
+            currencyCode: "eur",
             amount: 10,
           },
           {
-            currencyCode: 'czk',
+            currencyCode: "czk",
             amount: 250,
           },
         ],
         rules: [
           {
-            attribute: 'enabled_in_store',
-            value: 'true',
-            operator: 'eq',
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
           },
           {
-            attribute: 'is_return',
-            value: 'false',
-            operator: 'eq',
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
           },
         ],
       },
     ],
     publishableKey: {
-      title: 'Webshop',
+      title: "Webshop",
     },
     productCategories: [
       {
-        name: 'Shirts',
+        name: "Shirts",
         isActive: true,
       },
       {
-        name: 'Sweatshirts',
+        name: "Sweatshirts",
         isActive: true,
       },
       {
-        name: 'Pants',
+        name: "Pants",
         isActive: true,
       },
       {
-        name: 'Merch',
+        name: "Merch",
         isActive: true,
       },
     ],
     products: [
       {
-        title: 'Medusa T-Shirt',
-        categories: [{ name: 'Shirts', handle: 'shirts' }],
+        title: "Medusa T-Shirt",
+        categories: [{ name: "Shirts", handle: "shirts" }],
         description:
-          'Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.',
-        handle: 't-shirt',
+          "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
+        handle: "t-shirt",
         weight: 400,
-        shippingProfileName: 'Default Shipping Profile',
+        shippingProfileName: "Default Shipping Profile",
         images: [
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png",
           },
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-back.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-back.png",
           },
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-front.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-front.png",
           },
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-back.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-back.png",
           },
         ],
         options: [
           {
-            title: 'Size',
-            values: ['S', 'M', 'L', 'XL'],
+            title: "Size",
+            values: ["S", "M", "L", "XL"],
           },
           {
-            title: 'Color',
-            values: ['Black', 'White'],
+            title: "Color",
+            values: ["Black", "White"],
           },
         ],
         variants: [
           {
-            title: 'S / Black',
-            sku: 'SHIRT-S-BLACK',
+            title: "S / Black",
+            sku: "SHIRT-S-BLACK",
             options: {
-              Size: 'S',
-              Color: 'Black',
+              Size: "S",
+              Color: "Black",
             },
             quantities: {
               quantity: 100,
@@ -223,24 +223,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'S / White',
-            sku: 'SHIRT-S-WHITE',
+            title: "S / White",
+            sku: "SHIRT-S-WHITE",
             options: {
-              Size: 'S',
-              Color: 'White',
+              Size: "S",
+              Color: "White",
             },
             quantities: {
               quantity: 100,
@@ -248,24 +248,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'M / Black',
-            sku: 'SHIRT-M-BLACK',
+            title: "M / Black",
+            sku: "SHIRT-M-BLACK",
             options: {
-              Size: 'M',
-              Color: 'Black',
+              Size: "M",
+              Color: "Black",
             },
             quantities: {
               quantity: 100,
@@ -273,24 +273,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'M / White',
-            sku: 'SHIRT-M-WHITE',
+            title: "M / White",
+            sku: "SHIRT-M-WHITE",
             options: {
-              Size: 'M',
-              Color: 'White',
+              Size: "M",
+              Color: "White",
             },
             quantities: {
               quantity: 100,
@@ -298,24 +298,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'L / Black',
-            sku: 'SHIRT-L-BLACK',
+            title: "L / Black",
+            sku: "SHIRT-L-BLACK",
             options: {
-              Size: 'L',
-              Color: 'Black',
+              Size: "L",
+              Color: "Black",
             },
             quantities: {
               quantity: 100,
@@ -323,24 +323,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'L / White',
-            sku: 'SHIRT-L-WHITE',
+            title: "L / White",
+            sku: "SHIRT-L-WHITE",
             options: {
-              Size: 'L',
-              Color: 'White',
+              Size: "L",
+              Color: "White",
             },
             quantities: {
               quantity: 100,
@@ -348,24 +348,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'XL / Black',
-            sku: 'SHIRT-XL-BLACK',
+            title: "XL / Black",
+            sku: "SHIRT-XL-BLACK",
             options: {
-              Size: 'XL',
-              Color: 'Black',
+              Size: "XL",
+              Color: "Black",
             },
             quantities: {
               quantity: 100,
@@ -373,24 +373,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'XL / White',
-            sku: 'SHIRT-XL-WHITE',
+            title: "XL / White",
+            sku: "SHIRT-XL-WHITE",
             options: {
-              Size: 'XL',
-              Color: 'White',
+              Size: "XL",
+              Color: "White",
             },
             quantities: {
               quantity: 100,
@@ -398,49 +398,49 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
         ],
-        salesChannelNames: ['Default Sales Channel'],
+        salesChannelNames: ["Default Sales Channel"],
       },
       {
-        title: 'Medusa Sweatshirt',
-        categories: [{ name: 'Sweatshirts', handle: 'sweatshirts' }],
+        title: "Medusa Sweatshirt",
+        categories: [{ name: "Sweatshirts", handle: "sweatshirts" }],
         description:
-          'Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.',
-        handle: 'sweatshirt',
+          "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
+        handle: "sweatshirt",
         weight: 400,
-        shippingProfileName: 'Default Shipping Profile',
+        shippingProfileName: "Default Shipping Profile",
         images: [
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png",
           },
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-back.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-back.png",
           },
         ],
         options: [
           {
-            title: 'Size',
-            values: ['S', 'M', 'L', 'XL'],
+            title: "Size",
+            values: ["S", "M", "L", "XL"],
           },
         ],
         variants: [
           {
-            title: 'S',
-            sku: 'SWEATSHIRT-S',
+            title: "S",
+            sku: "SWEATSHIRT-S",
             options: {
-              Size: 'S',
+              Size: "S",
             },
             quantities: {
               quantity: 100,
@@ -448,23 +448,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'M',
-            sku: 'SWEATSHIRT-M',
+            title: "M",
+            sku: "SWEATSHIRT-M",
             options: {
-              Size: 'M',
+              Size: "M",
             },
             quantities: {
               quantity: 100,
@@ -472,23 +472,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'L',
-            sku: 'SWEATSHIRT-L',
+            title: "L",
+            sku: "SWEATSHIRT-L",
             options: {
-              Size: 'L',
+              Size: "L",
             },
             quantities: {
               quantity: 100,
@@ -496,23 +496,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'XL',
-            sku: 'SWEATSHIRT-XL',
+            title: "XL",
+            sku: "SWEATSHIRT-XL",
             options: {
-              Size: 'XL',
+              Size: "XL",
             },
             quantities: {
               quantity: 100,
@@ -520,49 +520,49 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
         ],
-        salesChannelNames: ['Default Sales Channel'],
+        salesChannelNames: ["Default Sales Channel"],
       },
       {
-        title: 'Medusa Sweatpants',
-        categories: [{ name: 'Pants', handle: 'pants' }],
+        title: "Medusa Sweatpants",
+        categories: [{ name: "Pants", handle: "pants" }],
         description:
-          'Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.',
-        handle: 'sweatpants',
+          "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
+        handle: "sweatpants",
         weight: 400,
-        shippingProfileName: 'Default Shipping Profile',
+        shippingProfileName: "Default Shipping Profile",
         images: [
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png",
           },
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-back.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-back.png",
           },
         ],
         options: [
           {
-            title: 'Size',
-            values: ['S', 'M', 'L', 'XL'],
+            title: "Size",
+            values: ["S", "M", "L", "XL"],
           },
         ],
         variants: [
           {
-            title: 'S',
-            sku: 'SWEATPANTS-S',
+            title: "S",
+            sku: "SWEATPANTS-S",
             options: {
-              Size: 'S',
+              Size: "S",
             },
             quantities: {
               quantity: 100,
@@ -570,23 +570,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'M',
-            sku: 'SWEATPANTS-M',
+            title: "M",
+            sku: "SWEATPANTS-M",
             options: {
-              Size: 'M',
+              Size: "M",
             },
             quantities: {
               quantity: 100,
@@ -594,23 +594,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'L',
-            sku: 'SWEATPANTS-L',
+            title: "L",
+            sku: "SWEATPANTS-L",
             options: {
-              Size: 'L',
+              Size: "L",
             },
             quantities: {
               quantity: 100,
@@ -618,23 +618,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'XL',
-            sku: 'SWEATPANTS-XL',
+            title: "XL",
+            sku: "SWEATPANTS-XL",
             options: {
-              Size: 'XL',
+              Size: "XL",
             },
             quantities: {
               quantity: 100,
@@ -642,49 +642,49 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
         ],
-        salesChannelNames: ['Default Sales Channel'],
+        salesChannelNames: ["Default Sales Channel"],
       },
       {
-        title: 'Medusa Shorts',
-        categories: [{ name: 'Merch', handle: 'merch' }],
+        title: "Medusa Shorts",
+        categories: [{ name: "Merch", handle: "merch" }],
         description:
-          'Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.',
-        handle: 'shorts',
+          "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",
+        handle: "shorts",
         weight: 400,
-        shippingProfileName: 'Default Shipping Profile',
+        shippingProfileName: "Default Shipping Profile",
         images: [
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png",
           },
           {
-            url: 'https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-back.png',
+            url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-back.png",
           },
         ],
         options: [
           {
-            title: 'Size',
-            values: ['S', 'M', 'L', 'XL'],
+            title: "Size",
+            values: ["S", "M", "L", "XL"],
           },
         ],
         variants: [
           {
-            title: 'S',
-            sku: 'SHORTS-S',
+            title: "S",
+            sku: "SHORTS-S",
             options: {
-              Size: 'S',
+              Size: "S",
             },
             quantities: {
               quantity: 100,
@@ -692,23 +692,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'M',
-            sku: 'SHORTS-M',
+            title: "M",
+            sku: "SHORTS-M",
             options: {
-              Size: 'M',
+              Size: "M",
             },
             quantities: {
               quantity: 100,
@@ -716,23 +716,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'L',
-            sku: 'SHORTS-L',
+            title: "L",
+            sku: "SHORTS-L",
             options: {
-              Size: 'L',
+              Size: "L",
             },
             quantities: {
               quantity: 100,
@@ -740,23 +740,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
           {
-            title: 'XL',
-            sku: 'SHORTS-XL',
+            title: "XL",
+            sku: "SHORTS-XL",
             options: {
-              Size: 'XL',
+              Size: "XL",
             },
             quantities: {
               quantity: 100,
@@ -764,20 +764,20 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             prices: [
               {
                 amount: 10,
-                currency_code: 'eur',
+                currency_code: "eur",
               },
               {
                 amount: 15,
-                currency_code: 'usd',
+                currency_code: "usd",
               },
               {
-                currency_code: 'czk',
+                currency_code: "czk",
                 amount: 250,
               },
             ],
           },
         ],
-        salesChannelNames: ['Default Sales Channel'],
+        salesChannelNames: ["Default Sales Channel"],
       },
     ],
   }

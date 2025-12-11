@@ -1,7 +1,7 @@
-import type { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
-import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
-import { createFindParams } from '@medusajs/medusa/api/utils/validators'
-import type z from 'zod'
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { createFindParams } from "@medusajs/medusa/api/utils/validators"
+import type z from "zod"
 
 export const StoreProducersSchema = createFindParams()
 
@@ -13,7 +13,7 @@ export async function GET(
 ) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const { data: producers } = await query.graph({
-    entity: 'producer',
+    entity: "producer",
     ...req.queryConfig,
   })
 

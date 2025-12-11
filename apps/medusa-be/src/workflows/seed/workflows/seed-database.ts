@@ -1,12 +1,12 @@
-import type { ApiKeyDTO, FulfillmentSetDTO } from '@medusajs/framework/types'
+import type { ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types"
 import {
-  WorkflowResponse,
   createWorkflow,
   transform,
-} from '@medusajs/framework/workflows-sdk'
-import * as Steps from '../steps'
+  WorkflowResponse,
+} from "@medusajs/framework/workflows-sdk"
+import * as Steps from "../steps"
 
-const SeedDatabaseWorkflowId = 'seed-database-workflow'
+const SeedDatabaseWorkflowId = "seed-database-workflow"
 
 export type SeedDatabaseWorkflowInput = {
   salesChannels: Steps.CreateSalesChannelsStepInput
@@ -41,7 +41,7 @@ const seedDatabaseWorkflow = createWorkflow(
           (i) => i.isDefault
         )
         if (!defaultSalesChannel) {
-          throw new Error('No default sales channel found')
+          throw new Error("No default sales channel found")
         }
         return {
           currencies: data.input.currencies,
@@ -76,7 +76,7 @@ const seedDatabaseWorkflow = createWorkflow(
           fulfillmentProviderIds: [
             ...new Set(
               data.input.shippingOptions.map(
-                (opt) => opt.providerId || 'manual_manual'
+                (opt) => opt.providerId || "manual_manual"
               )
             ),
           ],
@@ -130,7 +130,7 @@ const seedDatabaseWorkflow = createWorkflow(
         (data) =>
           data.input.shippingOptions.map((option) => ({
             name: option.name,
-            providerId: option.providerId || 'manual_manual',
+            providerId: option.providerId || "manual_manual",
             serviceZoneId: data.createFulfillmentSetsResult.result[0]
               ?.service_zones[0]?.id as string,
             shippingProfileId: data.createDefaultShippingProfileResult.result[0]
@@ -210,18 +210,18 @@ const seedDatabaseWorkflow = createWorkflow(
           input,
         },
         (data) => {
-          const inventoryItems: Steps.CreateInventoryLevelsStepInput['inventoryItems'] =
+          const inventoryItems: Steps.CreateInventoryLevelsStepInput["inventoryItems"] =
             []
-          data.input.products.map((p) => {
-            p.variants?.map((v) => {
+          for (const p of data.input.products) {
+            for (const v of p.variants ?? []) {
               if (v.quantities?.quantity !== undefined) {
                 inventoryItems.push({
                   sku: v.sku,
                   quantity: v.quantities?.quantity,
                 })
               }
-            })
-          })
+            }
+          }
 
           return {
             stockLocations: data.createStockLocationResult.result,
