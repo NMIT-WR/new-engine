@@ -3,6 +3,9 @@
 import Script from 'next/script'
 import type { MetaPixelConfig } from './types'
 
+/** Valid Meta Pixel ID format (numeric string, typically 15-16 digits) */
+const VALID_PIXEL_ID_PATTERN = /^\d+$/
+
 /**
  * Meta Pixel base component
  *
@@ -30,6 +33,14 @@ export function MetaPixel({ pixelId, debug = false }: MetaPixelConfig) {
   if (!pixelId) {
     if (debug) {
       console.warn('[MetaPixel] No pixel ID provided, skipping initialization')
+    }
+    return null
+  }
+
+  // Validate pixelId format to prevent XSS
+  if (!VALID_PIXEL_ID_PATTERN.test(pixelId)) {
+    if (debug) {
+      console.error('[MetaPixel] Invalid pixel ID format:', pixelId)
     }
     return null
   }
