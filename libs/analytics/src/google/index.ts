@@ -3,9 +3,9 @@ export { useGoogleAds } from './use-google-ads'
 export type {
   GoogleAdsConfig,
   GoogleAdsItem,
-  ConversionParams,
-  ViewItemParams,
-  AddToCartParams,
-  BeginCheckoutParams,
-  PurchaseParams,
+  GoogleAdsConversionParams,
+  GoogleAdsViewItemParams,
+  GoogleAdsAddToCartParams,
+  GoogleAdsBeginCheckoutParams,
+  GoogleAdsPurchaseParams,
 } from './types'

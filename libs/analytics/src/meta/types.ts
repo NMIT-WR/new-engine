@@ -17,7 +17,7 @@ export type MetaPixelStandardEvent =
   | 'Search'
 
 // Parameters for ViewContent event
-export interface ViewContentParams {
+export interface MetaViewContentParams {
   content_ids?: string[]
   content_type?: 'product' | 'product_group'
   content_name?: string
@@ -27,7 +27,7 @@ export interface ViewContentParams {
 }
 
 // Parameters for AddToCart event
-export interface AddToCartParams {
+export interface MetaAddToCartParams {
   content_ids?: string[]
   content_type?: 'product' | 'product_group'
   content_name?: string
@@ -41,7 +41,7 @@ export interface AddToCartParams {
 }
 
 // Parameters for InitiateCheckout event
-export interface InitiateCheckoutParams {
+export interface MetaInitiateCheckoutParams {
   content_ids?: string[]
   content_type?: 'product' | 'product_group'
   currency?: string
@@ -55,7 +55,7 @@ export interface InitiateCheckoutParams {
 }
 
 // Parameters for Purchase event (currency and value are REQUIRED)
-export interface PurchaseParams {
+export interface MetaPurchaseParams {
   currency: string
   value: number
   content_ids?: string[]

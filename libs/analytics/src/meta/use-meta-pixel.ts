@@ -2,10 +2,10 @@
 
 import { useCallback } from 'react'
 import type {
-  ViewContentParams,
-  AddToCartParams,
-  InitiateCheckoutParams,
-  PurchaseParams,
+  MetaViewContentParams,
+  MetaAddToCartParams,
+  MetaInitiateCheckoutParams,
+  MetaPurchaseParams,
 } from './types'
 
 /**
@@ -39,7 +39,7 @@ export function useMetaPixel() {
   /**
    * Track ViewContent - when user views a product
    */
-  const trackViewContent = useCallback((params: ViewContentParams) => {
+  const trackViewContent = useCallback((params: MetaViewContentParams) => {
     const fbq = getFbq()
     if (fbq) {
       fbq('track', 'ViewContent', params)
@@ -49,7 +49,7 @@ export function useMetaPixel() {
   /**
    * Track AddToCart - when user adds item to cart
    */
-  const trackAddToCart = useCallback((params: AddToCartParams) => {
+  const trackAddToCart = useCallback((params: MetaAddToCartParams) => {
     const fbq = getFbq()
     if (fbq) {
       fbq('track', 'AddToCart', params)
@@ -59,7 +59,7 @@ export function useMetaPixel() {
   /**
    * Track InitiateCheckout - when user enters checkout
    */
-  const trackInitiateCheckout = useCallback((params: InitiateCheckoutParams) => {
+  const trackInitiateCheckout = useCallback((params: MetaInitiateCheckoutParams) => {
     const fbq = getFbq()
     if (fbq) {
       fbq('track', 'InitiateCheckout', params)
@@ -70,7 +70,7 @@ export function useMetaPixel() {
    * Track Purchase - when order is completed
    * Note: currency and value are REQUIRED by Meta
    */
-  const trackPurchase = useCallback((params: PurchaseParams) => {
+  const trackPurchase = useCallback((params: MetaPurchaseParams) => {
     const fbq = getFbq()
     if (fbq) {
       fbq('track', 'Purchase', params)

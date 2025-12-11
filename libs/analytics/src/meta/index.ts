@@ -3,8 +3,8 @@ export { useMetaPixel } from './use-meta-pixel'
 export type {
   MetaPixelConfig,
   MetaPixelStandardEvent,
-  ViewContentParams,
-  AddToCartParams,
-  InitiateCheckoutParams,
-  PurchaseParams,
+  MetaViewContentParams,
+  MetaAddToCartParams,
+  MetaInitiateCheckoutParams,
+  MetaPurchaseParams,
 } from './types'

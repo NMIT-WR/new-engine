@@ -2,11 +2,11 @@
 
 import { useCallback } from 'react'
 import type {
-  AddToCartParams,
-  BeginCheckoutParams,
-  ConversionParams,
-  PurchaseParams,
-  ViewItemParams,
+  GoogleAdsAddToCartParams,
+  GoogleAdsBeginCheckoutParams,
+  GoogleAdsConversionParams,
+  GoogleAdsPurchaseParams,
+  GoogleAdsViewItemParams,
 } from './types'
 
 function getGtag() {
@@ -56,7 +56,7 @@ export function useGoogleAds() {
    * Track a conversion event
    * Use this for custom conversions configured in Google Ads
    */
-  const trackConversion = useCallback((params: ConversionParams) => {
+  const trackConversion = useCallback((params: GoogleAdsConversionParams) => {
     const gtag = getGtag()
     if (gtag) {
       gtag('event', 'conversion', params)
@@ -68,7 +68,7 @@ export function useGoogleAds() {
    * This is the main conversion event for e-commerce
    */
   const trackPurchase = useCallback(
-    (params: PurchaseParams, conversionLabel?: string) => {
+    (params: GoogleAdsPurchaseParams, conversionLabel?: string) => {
       const gtag = getGtag()
       if (gtag) {
         // Track as e-commerce purchase event
@@ -96,7 +96,7 @@ export function useGoogleAds() {
   /**
    * Track view_item event (remarketing)
    */
-  const trackViewItem = useCallback((params: ViewItemParams) => {
+  const trackViewItem = useCallback((params: GoogleAdsViewItemParams) => {
     const gtag = getGtag()
     if (gtag) {
       gtag('event', 'view_item', params)
@@ -106,7 +106,7 @@ export function useGoogleAds() {
   /**
    * Track add_to_cart event (remarketing)
    */
-  const trackAddToCart = useCallback((params: AddToCartParams) => {
+  const trackAddToCart = useCallback((params: GoogleAdsAddToCartParams) => {
     const gtag = getGtag()
     if (gtag) {
       gtag('event', 'add_to_cart', params)
@@ -116,7 +116,7 @@ export function useGoogleAds() {
   /**
    * Track begin_checkout event (remarketing)
    */
-  const trackBeginCheckout = useCallback((params: BeginCheckoutParams) => {
+  const trackBeginCheckout = useCallback((params: GoogleAdsBeginCheckoutParams) => {
     const gtag = getGtag()
     if (gtag) {
       gtag('event', 'begin_checkout', params)
