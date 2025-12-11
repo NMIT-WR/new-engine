@@ -73,11 +73,13 @@ export function HeurekaOrder({
       return
     }
 
+    let cancelled = false
+
     // Wait for heureka SDK to be ready
     let retries = 0
     const sendOrder = () => {
-      // Guard against race conditions (Strict Mode, unstable deps)
-      if (sent.current) {
+      // Early exit if component unmounted or already sent
+      if (cancelled || sent.current) {
         return
       }
 
@@ -140,6 +142,10 @@ export function HeurekaOrder({
 
     // Start checking for SDK
     sendOrder()
+
+    return () => {
+      cancelled = true
+    }
   }, [apiKey, orderId, products, totalWithVat, currency, debug])
 
   if (!apiKey) {
