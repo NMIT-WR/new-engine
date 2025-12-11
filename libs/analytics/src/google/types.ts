@@ -12,7 +12,7 @@ export interface GoogleAdsConfig {
 }
 
 // Conversion event parameters
-export interface ConversionParams {
+export interface GoogleAdsConversionParams {
   /** Conversion label (from Google Ads) */
   send_to: string
   /** Conversion value */
@@ -34,28 +34,28 @@ export interface GoogleAdsItem {
 }
 
 // View item parameters (remarketing)
-export interface ViewItemParams {
+export interface GoogleAdsViewItemParams {
   currency?: string
   value?: number
   items: GoogleAdsItem[]
 }
 
 // Add to cart parameters (remarketing)
-export interface AddToCartParams {
+export interface GoogleAdsAddToCartParams {
   currency?: string
   value?: number
   items: GoogleAdsItem[]
 }
 
 // Begin checkout parameters (remarketing)
-export interface BeginCheckoutParams {
+export interface GoogleAdsBeginCheckoutParams {
   currency?: string
   value?: number
   items: GoogleAdsItem[]
 }
 
 // Purchase parameters (conversion + remarketing)
-export interface PurchaseParams {
+export interface GoogleAdsPurchaseParams {
   /** Transaction ID - required for deduplication */
   transaction_id: string
   /** Total value */

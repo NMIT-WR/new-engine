@@ -2,12 +2,12 @@
 
 import { useCallback } from 'react'
 import type {
-	IdentifyParams,
 	LeadhubFunction,
-	PurchaseParams,
-	SetCartParams,
-	ViewCategoryParams,
-	ViewContentParams,
+	LeadhubIdentifyParams,
+	LeadhubPurchaseParams,
+	LeadhubSetCartParams,
+	LeadhubViewCategoryParams,
+	LeadhubViewContentParams,
 } from './types'
 
 /**
@@ -43,7 +43,7 @@ export function useLeadhub() {
 	/**
 	 * Track product detail view
 	 */
-	const trackViewContent = useCallback((params: ViewContentParams) => {
+	const trackViewContent = useCallback((params: LeadhubViewContentParams) => {
 		const lhi = getLhi()
 		if (!lhi) return
 
@@ -53,7 +53,7 @@ export function useLeadhub() {
 	/**
 	 * Track category page view
 	 */
-	const trackViewCategory = useCallback((params: ViewCategoryParams) => {
+	const trackViewCategory = useCallback((params: LeadhubViewCategoryParams) => {
 		const lhi = getLhi()
 		if (!lhi) return
 
@@ -63,7 +63,7 @@ export function useLeadhub() {
 	/**
 	 * Track cart state (call on every cart change)
 	 */
-	const trackSetCart = useCallback((params: SetCartParams) => {
+	const trackSetCart = useCallback((params: LeadhubSetCartParams) => {
 		const lhi = getLhi()
 		if (!lhi) return
 
@@ -73,7 +73,7 @@ export function useLeadhub() {
 	/**
 	 * Identify user (call on login/registration)
 	 */
-	const trackIdentify = useCallback((params: IdentifyParams) => {
+	const trackIdentify = useCallback((params: LeadhubIdentifyParams) => {
 		const lhi = getLhi()
 		if (!lhi) return
 
@@ -83,7 +83,7 @@ export function useLeadhub() {
 	/**
 	 * Track completed purchase
 	 */
-	const trackPurchase = useCallback((params: PurchaseParams) => {
+	const trackPurchase = useCallback((params: LeadhubPurchaseParams) => {
 		const lhi = getLhi()
 		if (!lhi) return
 

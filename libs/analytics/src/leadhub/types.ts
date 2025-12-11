@@ -35,25 +35,25 @@ export interface LeadhubProduct {
 // ============================================================================
 
 /** ViewContent - when viewing a product detail page */
-export interface ViewContentParams {
+export interface LeadhubViewContentParams {
 	/** Array of products being viewed */
 	products: Pick<LeadhubProduct, 'product_id'>[]
 }
 
 /** ViewCategory - when viewing a category page */
-export interface ViewCategoryParams {
+export interface LeadhubViewCategoryParams {
 	/** Category path (e.g., 'Žena > Kabáty > Zimní kabáty') */
 	category: string
 }
 
 /** SetCart - when cart contents change */
-export interface SetCartParams {
+export interface LeadhubSetCartParams {
 	/** Array of products in cart */
 	products: LeadhubProduct[]
 }
 
 /** Identify - when user logs in or registers */
-export interface IdentifyParams {
+export interface LeadhubIdentifyParams {
 	/** User email (required, unique identifier) */
 	email: string
 	/** Newsletter/list subscriptions (required) */
@@ -81,7 +81,7 @@ export interface LeadhubAddress {
 }
 
 /** Purchase - when order is completed */
-export interface PurchaseParams {
+export interface LeadhubPurchaseParams {
 	/** Customer email (required) */
 	email: string
 	/** Total order value (required) */
@@ -120,11 +120,11 @@ export type LeadhubEventName =
 
 export type LeadhubFunction = {
 	(event: 'pageview'): void
-	(event: 'ViewContent', params: ViewContentParams): void
-	(event: 'ViewCategory', params: ViewCategoryParams): void
-	(event: 'SetCart', params: SetCartParams): void
-	(event: 'Identify', params: IdentifyParams): void
-	(event: 'Purchase', params: PurchaseParams): void
+	(event: 'ViewContent', params: LeadhubViewContentParams): void
+	(event: 'ViewCategory', params: LeadhubViewCategoryParams): void
+	(event: 'SetCart', params: LeadhubSetCartParams): void
+	(event: 'Identify', params: LeadhubIdentifyParams): void
+	(event: 'Purchase', params: LeadhubPurchaseParams): void
 	/** Queue for events before SDK loads */
 	q?: [string, unknown][]
 	/** Timestamp of initialization */

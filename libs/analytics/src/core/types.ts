@@ -13,7 +13,7 @@ export interface EcommerceProduct {
   sku?: string
 }
 
-export interface ViewContentParams {
+export interface CoreViewContentParams {
   productId: string
   productName: string
   value: number
@@ -21,7 +21,7 @@ export interface ViewContentParams {
   category?: string
 }
 
-export interface AddToCartParams {
+export interface CoreAddToCartParams {
   productId: string
   productName: string
   value: number
@@ -30,14 +30,14 @@ export interface AddToCartParams {
   category?: string
 }
 
-export interface InitiateCheckoutParams {
+export interface CoreInitiateCheckoutParams {
   productIds: string[]
   value: number
   currency: string
   numItems: number
 }
 
-export interface PurchaseParams {
+export interface CorePurchaseParams {
   orderId: string
   value: number
   currency: string
