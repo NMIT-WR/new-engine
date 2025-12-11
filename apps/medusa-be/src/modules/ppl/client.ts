@@ -49,11 +49,24 @@ const BASE_URLS = {
   production: "https://api.dhl.com/ecs/ppl/myapi2",
 } as const
 
+type RequestOptions = {
+  method?: "GET" | "POST" | "PUT" | "DELETE"
+  body?: unknown
+  expectedStatus?: number
+}
+
+type RequestOptionsWithAllow404 = RequestOptions & { allow404?: boolean }
+
 /**
- * PPL CPL API Client
+ * PPL CPL API Client (Singleton)
  *
  * Handles OAuth 2.0 authentication via @badgateway/oauth2-client,
  * rate limiting, and all API operations.
+ *
+ * Usage:
+ * - Call PplClient.initialize(options, logger) once at startup
+ * - Use PplClient.getInstance() to get the singleton
+ * - Use PplClient.getInstanceOrNull() in jobs that should skip when PPL is disabled
  *
  * Rate Limits:
  * - Token requests: 12/minute max
@@ -62,63 +75,99 @@ const BASE_URLS = {
  * - Orders per status request: 100 max
  */
 export class PplClient {
+  private static instance: PplClient | null = null
+
+  private static cachedAccessToken: string | null = null
+  private static tokenExpiresAt = 0
+  private static lastRequestTime = 0
+  private static oauth2Client: OAuth2Client | null = null
+
+  private static readonly MIN_REQUEST_INTERVAL = 40
+  private static readonly TOKEN_BUFFER_MS = 60_000
+  private static readonly MAX_RETRIES = 3
+  private static readonly INITIAL_RETRY_DELAY_MS = 200
+
   private readonly options: PplOptions
   private readonly logger: Logger
-  private readonly oauth2Client: OAuth2Client
-  private cachedAccessToken: string | null = null
-  private tokenExpiresAt = 0
-  private lastRequestTime = 0
-  private readonly MIN_REQUEST_INTERVAL = 40 // ms
-  private readonly TOKEN_BUFFER_MS = 60_000 // 60s buffer before expiry
 
-  constructor(options: PplOptions, logger: Logger) {
+  private constructor(options: PplOptions, logger: Logger) {
     this.options = options
     this.logger = logger
+    this.initOAuthClient()
+  }
 
-    // Initialize OAuth2 client
-    this.oauth2Client = new OAuth2Client({
+  private initOAuthClient(): void {
+    PplClient.oauth2Client = new OAuth2Client({
       server: this.baseUrl,
       tokenEndpoint: "/ecs/ppl/myapi2/login/getAccessToken",
-      clientId: options.client_id,
-      clientSecret: options.client_secret,
+      clientId: this.options.client_id,
+      clientSecret: this.options.client_secret,
       authenticationMethod: "client_secret_post",
     })
+    PplClient.cachedAccessToken = null
+    PplClient.tokenExpiresAt = 0
+  }
+
+  static initialize(options: PplOptions, logger: Logger): PplClient {
+    if (PplClient.instance) {
+      return PplClient.instance
+    }
+    PplClient.instance = new PplClient(options, logger)
+    logger.info(`PPL: Client initialized (${options.environment} environment)`)
+    return PplClient.instance
+  }
+
+  static getInstance(): PplClient {
+    if (!PplClient.instance) {
+      throw new Error(
+        "PplClient not initialized. Call PplClient.initialize() first."
+      )
+    }
+    return PplClient.instance
+  }
+
+  static getInstanceOrNull(): PplClient | null {
+    return PplClient.instance
+  }
+
+  getOptions(): Readonly<PplOptions> {
+    return this.options
   }
 
   private get baseUrl(): string {
     return BASE_URLS[this.options.environment]
   }
 
-  /**
-   * Get OAuth 2.0 access token using @badgateway/oauth2-client
-   * Token is cached with 60s buffer before expiry
-   */
   async getAccessToken(): Promise<string> {
-    // Return cached token if still valid (with 60s safety buffer)
     if (
-      this.cachedAccessToken &&
-      this.tokenExpiresAt > Date.now() + this.TOKEN_BUFFER_MS
+      PplClient.cachedAccessToken &&
+      PplClient.tokenExpiresAt > Date.now() + PplClient.TOKEN_BUFFER_MS
     ) {
-      return this.cachedAccessToken
+      return PplClient.cachedAccessToken
     }
 
     await this.throttle()
 
+    if (!PplClient.oauth2Client) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "PPL: OAuth2 client not initialized"
+      )
+    }
+
     try {
-      // Use client credentials grant with custom scope
-      const tokenResponse = await this.oauth2Client.clientCredentials({
+      const tokenResponse = await PplClient.oauth2Client.clientCredentials({
         scope: ["myapi2"],
       })
 
-      this.cachedAccessToken = tokenResponse.accessToken
-      // Calculate expiry time (expiresAt is a timestamp in seconds)
-      this.tokenExpiresAt = tokenResponse.expiresAt
+      PplClient.cachedAccessToken = tokenResponse.accessToken
+      PplClient.tokenExpiresAt = tokenResponse.expiresAt
         ? tokenResponse.expiresAt * 1000
-        : Date.now() + 1800 * 1000 // Default 30 min if not provided
+        : Date.now() + 1800 * 1000
 
-      this.logger.debug("PPL: OAuth token obtained/refreshed via OAuth2Client")
+      this.logger.debug("PPL: OAuth token obtained/refreshed")
 
-      return this.cachedAccessToken
+      return PplClient.cachedAccessToken
     } catch (error) {
       this.logger.error(
         "PPL auth failed",
@@ -147,9 +196,6 @@ export class PplClient {
       shipmentsOrderBy?: string
     }
   ): Promise<string> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const body = {
       shipments,
       labelSettings: options?.labelSettings ?? {
@@ -162,63 +208,18 @@ export class PplClient {
       }),
     }
 
-    const response = await fetch(`${this.baseUrl}/shipment/batch`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (response.status !== 201) {
-      const error = await response.text()
-      this.logger.error(`PPL shipment batch failed: ${error}`)
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL shipment creation failed: ${error}`
-      )
-    }
-
-    // batchId is in Location header: /shipment/batch/{batchId}
-    const location = response.headers.get("Location")
-    const batchId = location?.split("/").pop()
-
-    if (!batchId) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "PPL: No batchId returned in Location header"
-      )
-    }
-
-    this.logger.info(`PPL: Shipment batch created: ${batchId}`)
-    return batchId
+    return this.createBatchWithLocationHeader(
+      "/shipment/batch",
+      body,
+      "shipment"
+    )
   }
 
   /**
    * Get batch status
    */
   async getBatchStatus(batchId: string): Promise<PplBatchResponse> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/shipment/batch/${batchId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL batch status check failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplBatchResponse
+    return this.get<PplBatchResponse>(`/shipment/batch/${batchId}`)
   }
 
   /**
@@ -260,67 +261,43 @@ export class PplClient {
    * @param query - Query parameters for filtering shipments
    */
   async getShipmentInfo(query: PplShipmentQuery): Promise<PplShipmentInfo[]> {
-    const token = await this.getAccessToken()
-    await this.throttle()
+    const params = this.buildShipmentQueryParams(query)
+    const { data } = await this.makeRequest<
+      PplPaginatedResponse<PplShipmentInfo> | PplShipmentInfo[]
+    >(`/shipment?${params}`)
+    return Array.isArray(data) ? data : data?.items || []
+  }
 
+  private buildShipmentQueryParams(query: PplShipmentQuery): URLSearchParams {
     const params = new URLSearchParams({
       Limit: String(query.limit || 100),
       Offset: String(query.offset || 0),
     })
 
-    if (query.shipmentNumbers) {
-      for (const num of query.shipmentNumbers) {
-        params.append("ShipmentNumbers", num)
+    const arrayParams: [string[] | undefined, string][] = [
+      [query.shipmentNumbers, "ShipmentNumbers"],
+      [query.invoiceNumbers, "InvoiceNumbers"],
+      [query.customerReferences, "CustomerReferences"],
+      [query.variableSymbols, "VariableSymbols"],
+      [query.shipmentStates, "ShipmentStates"],
+    ]
+
+    for (const [values, key] of arrayParams) {
+      if (values) {
+        for (const value of values) {
+          params.append(key, value)
+        }
       }
     }
-    if (query.invoiceNumbers) {
-      for (const num of query.invoiceNumbers) {
-        params.append("InvoiceNumbers", num)
-      }
-    }
-    if (query.customerReferences) {
-      for (const ref of query.customerReferences) {
-        params.append("CustomerReferences", ref)
-      }
-    }
-    if (query.variableSymbols) {
-      for (const sym of query.variableSymbols) {
-        params.append("VariableSymbols", sym)
-      }
-    }
+
     if (query.dateFrom) {
       params.append("DateFrom", query.dateFrom)
     }
     if (query.dateTo) {
       params.append("DateTo", query.dateTo)
     }
-    if (query.shipmentStates) {
-      for (const state of query.shipmentStates) {
-        params.append("ShipmentStates", state)
-      }
-    }
 
-    const response = await fetch(`${this.baseUrl}/shipment?${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL shipment info fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    const data = (await response.json()) as
-      | PplPaginatedResponse<PplShipmentInfo>
-      | PplShipmentInfo[]
-
-    // API may return array directly or wrapped in items
-    return Array.isArray(data) ? data : data.items || []
+    return params
   }
 
   /**
@@ -353,30 +330,18 @@ export class PplClient {
    * @returns true if cancelled successfully, false if cancellation failed
    */
   async cancelShipment(shipmentNumber: string): Promise<boolean> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(
-      `${this.baseUrl}/shipment/${shipmentNumber}/cancel`,
-      {
+    try {
+      await this.makeRequest(`/shipment/${shipmentNumber}/cancel`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
-    )
-
-    if (!response.ok) {
-      const error = await response.text()
+      })
+      this.logger.info(`PPL: Shipment ${shipmentNumber} cancelled`)
+      return true
+    } catch (error) {
       this.logger.warn(
-        `PPL: Cancellation failed for ${shipmentNumber}: ${response.status} - ${error}`
+        `PPL: Cancellation failed for ${shipmentNumber}: ${error instanceof Error ? error.message : String(error)}`
       )
       return false
     }
-
-    this.logger.info(`PPL: Shipment ${shipmentNumber} cancelled`)
-    return true
   }
 
   /**
@@ -387,9 +352,6 @@ export class PplClient {
   async getAccessPoints(
     query: PplAccessPointsQuery = {}
   ): Promise<PplAccessPoint[]> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const params = new URLSearchParams({
       Limit: String(query.limit || 1000),
       Offset: String(query.offset || 0),
@@ -417,26 +379,10 @@ export class PplClient {
       params.append("Longitude", String(query.longitude))
     }
 
-    const response = await fetch(`${this.baseUrl}/accessPoint?${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL access points fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    const data = (await response.json()) as
-      | PplPaginatedResponse<PplAccessPoint>
-      | PplAccessPoint[]
-
-    return Array.isArray(data) ? data : data.items || []
+    const { data } = await this.makeRequest<
+      PplPaginatedResponse<PplAccessPoint> | PplAccessPoint[]
+    >(`/accessPoint?${params}`)
+    return Array.isArray(data) ? data : data?.items || []
   }
 
   /**
@@ -447,9 +393,6 @@ export class PplClient {
   async getAddressWhisper(
     query: PplAddressWhisperQuery
   ): Promise<PplAddressWhisperItem[]> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const params = new URLSearchParams()
     if (query.street) {
       params.append("Street", query.street)
@@ -464,26 +407,10 @@ export class PplClient {
       params.append("CalledFrom", query.calledFrom)
     }
 
-    const response = await fetch(`${this.baseUrl}/addressWhisper?${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL address whisper failed: ${response.status} - ${error}`
-      )
-    }
-
-    const data = (await response.json()) as
-      | { items: PplAddressWhisperItem[] }
-      | PplAddressWhisperItem[]
-
-    return Array.isArray(data) ? data : data.items || []
+    const { data } = await this.makeRequest<
+      { items: PplAddressWhisperItem[] } | PplAddressWhisperItem[]
+    >(`/addressWhisper?${params}`)
+    return Array.isArray(data) ? data : data?.items || []
   }
 
   /**
@@ -537,9 +464,6 @@ export class PplClient {
   async getCodelistServicePriceLimits(
     query: PplServicePriceLimitQuery
   ): Promise<PplCodelistServicePriceLimit[]> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const params = new URLSearchParams({
       Limit: String(query.limit),
       Offset: String(query.offset),
@@ -557,29 +481,11 @@ export class PplClient {
       params.append("Product", query.product)
     }
 
-    const response = await fetch(
-      `${this.baseUrl}/codelist/servicePriceLimit?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
-    )
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL codelist servicePriceLimit fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    const data = (await response.json()) as
+    const { data } = await this.makeRequest<
       | PplPaginatedResponse<PplCodelistServicePriceLimit>
       | PplCodelistServicePriceLimit[]
-
-    return Array.isArray(data) ? data : data.items || []
+    >(`/codelist/servicePriceLimit?${params}`)
+    return Array.isArray(data) ? data : data?.items || []
   }
 
   /**
@@ -589,34 +495,15 @@ export class PplClient {
     codelistName: string,
     query: PplCodelistQuery
   ): Promise<T[]> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const params = new URLSearchParams({
       Limit: String(query.limit),
       Offset: String(query.offset),
     })
 
-    const response = await fetch(
-      `${this.baseUrl}/codelist/${codelistName}?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
+    const { data } = await this.makeRequest<PplPaginatedResponse<T> | T[]>(
+      `/codelist/${codelistName}?${params}`
     )
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL codelist ${codelistName} fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    const data = (await response.json()) as PplPaginatedResponse<T> | T[]
-    return Array.isArray(data) ? data : data.items || []
+    return Array.isArray(data) ? data : data?.items || []
   }
 
   /**
@@ -627,33 +514,17 @@ export class PplClient {
    * @returns Customer info or null if no customer profile is configured (404)
    */
   async getCustomerInfo(): Promise<PplCustomerInfo | null> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/customer`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    // 404 means no customer profile configured for these OAuth credentials
-    if (response.status === 404) {
+    const { data, status } = await this.makeRequest<PplCustomerInfo>(
+      "/customer",
+      { allow404: true }
+    )
+    if (status === 404) {
       this.logger.warn(
         "PPL: No customer profile configured for these credentials"
       )
       return null
     }
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL customer info fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplCustomerInfo
+    return data
   }
 
   /**
@@ -664,73 +535,25 @@ export class PplClient {
    * @returns Customer addresses or null if no address is configured (404)
    */
   async getCustomerAddresses(): Promise<PplCustomerAddressResponse | null> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/customer/address`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    // 404 means customer has no address configured - return null instead of throwing
-    if (response.status === 404) {
+    const { data, status } = await this.makeRequest<PplCustomerAddressResponse>(
+      "/customer/address",
+      { allow404: true }
+    )
+    if (status === 404) {
       this.logger.warn("PPL: Customer has no address configured in PPL system")
       return null
     }
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL customer addresses fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplCustomerAddressResponse
+    return data
   }
 
   /**
    * Create order batch (pickup scheduling)
    *
    * POST /order/batch returns HTTP 201 with batchId in Location header
+   * NOTE: Uses direct fetch because we need access to Location header
    */
   async createOrderBatch(request: PplOrderBatchRequest): Promise<string> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/order/batch`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(request),
-    })
-
-    if (response.status !== 201) {
-      const error = await response.text()
-      this.logger.error(`PPL order batch failed: ${error}`)
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL order creation failed: ${error}`
-      )
-    }
-
-    const location = response.headers.get("Location")
-    const batchId = location?.split("/").pop()
-
-    if (!batchId) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "PPL: No batchId returned in Location header for order"
-      )
-    }
-
-    this.logger.info(`PPL: Order batch created: ${batchId}`)
-    return batchId
+    return this.createBatchWithLocationHeader("/order/batch", request, "order")
   }
 
   /**
@@ -739,25 +562,7 @@ export class PplClient {
    * GET /order/batch/{batchId}
    */
   async getOrderBatchStatus(batchId: string): Promise<PplOrderBatchResponse> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/order/batch/${batchId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL order batch status check failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplOrderBatchResponse
+    return this.get<PplOrderBatchResponse>(`/order/batch/${batchId}`)
   }
 
   /**
@@ -766,39 +571,36 @@ export class PplClient {
    * GET /order
    */
   async getOrders(query: PplOrderQuery): Promise<PplOrder[]> {
-    const token = await this.getAccessToken()
-    await this.throttle()
+    const params = this.buildOrderQueryParams(query)
+    const { data } = await this.makeRequest<
+      PplPaginatedResponse<PplOrder> | PplOrder[]
+    >(`/order?${params}`)
+    return Array.isArray(data) ? data : data?.items || []
+  }
 
+  private buildOrderQueryParams(query: PplOrderQuery): URLSearchParams {
     const params = new URLSearchParams({
       Limit: String(query.limit),
       Offset: String(query.offset),
     })
 
-    if (query.shipmentNumbers) {
-      for (const num of query.shipmentNumbers) {
-        params.append("ShipmentNumbers", num)
+    const arrayParams: [string[] | number[] | undefined, string][] = [
+      [query.shipmentNumbers, "ShipmentNumbers"],
+      [query.customerReferences, "CustomerReferences"],
+      [query.orderReferences, "OrderReferences"],
+      [query.orderNumbers, "OrderNumbers"],
+      [query.orderIds, "OrderIds"],
+      [query.orderStates, "OrderStates"],
+    ]
+
+    for (const [values, key] of arrayParams) {
+      if (values) {
+        for (const value of values) {
+          params.append(key, String(value))
+        }
       }
     }
-    if (query.customerReferences) {
-      for (const ref of query.customerReferences) {
-        params.append("CustomerReferences", ref)
-      }
-    }
-    if (query.orderReferences) {
-      for (const ref of query.orderReferences) {
-        params.append("OrderReferences", ref)
-      }
-    }
-    if (query.orderNumbers) {
-      for (const num of query.orderNumbers) {
-        params.append("OrderNumbers", num)
-      }
-    }
-    if (query.orderIds) {
-      for (const id of query.orderIds) {
-        params.append("OrderIds", String(id))
-      }
-    }
+
     if (query.dateFrom) {
       params.append("DateFrom", query.dateFrom)
     }
@@ -811,32 +613,8 @@ export class PplClient {
     if (query.productType) {
       params.append("ProductType", query.productType)
     }
-    if (query.orderStates) {
-      for (const state of query.orderStates) {
-        params.append("OrderStates", state)
-      }
-    }
 
-    const response = await fetch(`${this.baseUrl}/order?${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL orders fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    const data = (await response.json()) as
-      | PplPaginatedResponse<PplOrder>
-      | PplOrder[]
-
-    return Array.isArray(data) ? data : data.items || []
+    return params
   }
 
   /**
@@ -848,9 +626,6 @@ export class PplClient {
     query: PplOrderCancelQuery,
     request?: PplOrderCancelRequest
   ): Promise<boolean> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const params = new URLSearchParams()
     if (query.customerReference) {
       params.append("CustomerReference", query.customerReference)
@@ -859,26 +634,19 @@ export class PplClient {
       params.append("OrderReference", query.orderReference)
     }
 
-    const response = await fetch(`${this.baseUrl}/order/cancel?${params}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: request ? JSON.stringify(request) : undefined,
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
+    try {
+      await this.makeRequest(`/order/cancel?${params}`, {
+        method: "POST",
+        body: request,
+      })
+      this.logger.info("PPL: Order cancelled")
+      return true
+    } catch (error) {
       this.logger.warn(
-        `PPL: Order cancellation failed: ${response.status} - ${error}`
+        `PPL: Order cancellation failed: ${error instanceof Error ? error.message : String(error)}`
       )
       return false
     }
-
-    this.logger.info("PPL: Order cancelled")
-    return true
   }
 
   /**
@@ -890,27 +658,10 @@ export class PplClient {
     batchId: string,
     request: PplBatchUpdateRequest
   ): Promise<void> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/shipment/batch/${batchId}`, {
+    await this.makeRequest(`/shipment/batch/${batchId}`, {
       method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(request),
+      body: request,
     })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL batch update failed: ${response.status} - ${error}`
-      )
-    }
-
     this.logger.info(`PPL: Batch ${batchId} updated`)
   }
 
@@ -923,9 +674,6 @@ export class PplClient {
     batchId: string,
     query: PplBatchLabelQuery
   ): Promise<PplBatchLabelResponse> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
     const params = new URLSearchParams({
       Limit: String(query.limit),
       Offset: String(query.offset),
@@ -940,25 +688,9 @@ export class PplClient {
       params.append("OrderBy", query.orderBy)
     }
 
-    const response = await fetch(
-      `${this.baseUrl}/shipment/batch/${batchId}/label?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
+    return this.get<PplBatchLabelResponse>(
+      `/shipment/batch/${batchId}/label?${params}`
     )
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL batch labels fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplBatchLabelResponse
   }
 
   /**
@@ -970,32 +702,19 @@ export class PplClient {
     shipmentNumber: string,
     request: PplShipmentRedirectRequest
   ): Promise<boolean> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(
-      `${this.baseUrl}/shipment/${shipmentNumber}/redirect`,
-      {
+    try {
+      await this.makeRequest(`/shipment/${shipmentNumber}/redirect`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(request),
-      }
-    )
-
-    if (!response.ok) {
-      const error = await response.text()
+        body: request,
+      })
+      this.logger.info(`PPL: Shipment ${shipmentNumber} redirected`)
+      return true
+    } catch (error) {
       this.logger.warn(
-        `PPL: Redirect failed for ${shipmentNumber}: ${response.status} - ${error}`
+        `PPL: Redirect failed for ${shipmentNumber}: ${error instanceof Error ? error.message : String(error)}`
       )
       return false
     }
-
-    this.logger.info(`PPL: Shipment ${shipmentNumber} redirected`)
-    return true
   }
 
   /**
@@ -1004,29 +723,21 @@ export class PplClient {
    * POST /shipment/batch/connectSet
    */
   async connectShipmentSet(request: PplConnectSetRequest): Promise<boolean> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/shipment/batch/connectSet`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(request),
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      this.logger.warn(`PPL: Connect set failed: ${response.status} - ${error}`)
+    try {
+      await this.makeRequest("/shipment/batch/connectSet", {
+        method: "POST",
+        body: request,
+      })
+      this.logger.info(
+        `PPL: Shipments connected to set ${request.externalSetNumber}`
+      )
+      return true
+    } catch (error) {
+      this.logger.warn(
+        `PPL: Connect set failed: ${error instanceof Error ? error.message : String(error)}`
+      )
       return false
     }
-
-    this.logger.info(
-      `PPL: Shipments connected to set ${request.externalSetNumber}`
-    )
-    return true
   }
 
   /**
@@ -1035,12 +746,7 @@ export class PplClient {
    * GET /routing
    */
   async getRouting(query: PplRoutingQuery): Promise<PplRoutingResponse> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const params = new URLSearchParams({
-      Country: query.country,
-    })
+    const params = new URLSearchParams({ Country: query.country })
     if (query.parcelShopCode) {
       params.append("ParcelShopCode", query.parcelShopCode)
     }
@@ -1057,22 +763,7 @@ export class PplClient {
       params.append("ProductType", query.productType)
     }
 
-    const response = await fetch(`${this.baseUrl}/routing?${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL routing fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplRoutingResponse
+    return this.get<PplRoutingResponse>(`/routing?${params}`)
   }
 
   /**
@@ -1081,25 +772,7 @@ export class PplClient {
    * GET /versionInformation
    */
   async getVersionInformation(): Promise<PplVersionInformationResponse> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/versionInformation`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL version info fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplVersionInformationResponse
+    return this.get<PplVersionInformationResponse>("/versionInformation")
   }
 
   /**
@@ -1108,40 +781,195 @@ export class PplClient {
    * GET /info
    */
   async getApiInfo(): Promise<PplApiInfo> {
-    const token = await this.getAccessToken()
-    await this.throttle()
-
-    const response = await fetch(`${this.baseUrl}/info`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      const error = await response.text()
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `PPL API info fetch failed: ${response.status} - ${error}`
-      )
-    }
-
-    return (await response.json()) as PplApiInfo
+    return this.get<PplApiInfo>("/info")
   }
 
-  /**
-   * Ensure minimum 40ms between requests
-   */
   private async throttle(): Promise<void> {
     const now = Date.now()
-    const elapsed = now - this.lastRequestTime
-    if (elapsed < this.MIN_REQUEST_INTERVAL) {
-      await this.sleep(this.MIN_REQUEST_INTERVAL - elapsed)
+    const elapsed = now - PplClient.lastRequestTime
+    if (elapsed < PplClient.MIN_REQUEST_INTERVAL) {
+      await this.sleep(PplClient.MIN_REQUEST_INTERVAL - elapsed)
     }
-    this.lastRequestTime = Date.now()
+    PplClient.lastRequestTime = Date.now()
   }
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
+  private isRetryable(status: number): boolean {
+    return status === 429 || status >= 500
+  }
+
+  /**
+   * Creates a batch resource and extracts batchId from Location header
+   * Used for both shipment and order batch creation
+   */
+  private async createBatchWithLocationHeader(
+    path: string,
+    body: unknown,
+    resourceType: string
+  ): Promise<string> {
+    let lastError: Error | null = null
+
+    for (let attempt = 0; attempt <= PplClient.MAX_RETRIES; attempt++) {
+      if (attempt > 0) {
+        const delay = PplClient.INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1)
+        this.logger.debug(
+          `PPL: Retry ${attempt}/${PplClient.MAX_RETRIES} after ${delay}ms`
+        )
+        await this.sleep(delay)
+      }
+
+      try {
+        const token = await this.getAccessToken()
+        await this.throttle()
+
+        const response = await fetch(`${this.baseUrl}${path}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+        })
+
+        if (
+          this.isRetryable(response.status) &&
+          attempt < PplClient.MAX_RETRIES
+        ) {
+          const errorText = await response.text()
+          lastError = new Error(`${response.status} - ${errorText}`)
+          continue
+        }
+
+        if (response.status !== 201) {
+          const errorText = await response.text()
+          this.logger.error(`PPL ${resourceType} batch failed: ${errorText}`)
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `PPL ${resourceType} creation failed: ${errorText}`
+          )
+        }
+
+        const location = response.headers.get("Location")
+        const batchId = location?.split("/").pop()
+
+        if (!batchId) {
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `PPL: No batchId returned in Location header for ${resourceType}`
+          )
+        }
+
+        this.logger.info(`PPL: ${resourceType} batch created: ${batchId}`)
+        return batchId
+      } catch (error) {
+        if (error instanceof MedusaError) {
+          throw error
+        }
+        lastError = error instanceof Error ? error : new Error(String(error))
+        if (attempt === PplClient.MAX_RETRIES) {
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `PPL ${resourceType} batch failed after ${PplClient.MAX_RETRIES + 1} attempts: ${lastError.message}`
+          )
+        }
+      }
+    }
+
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      `PPL ${resourceType} batch failed: ${lastError?.message || "Unknown error"}`
+    )
+  }
+
+  private async get<T>(path: string): Promise<T> {
+    const { data } = await this.makeRequest<T>(path)
+    return data as T
+  }
+
+  private async makeRequest<T>(
+    path: string,
+    options: RequestOptionsWithAllow404 = {}
+  ): Promise<{ data: T | null; status: number }> {
+    const {
+      method = "GET",
+      body,
+      expectedStatus = 200,
+      allow404 = false,
+    } = options
+    let lastError: Error | null = null
+
+    for (let attempt = 0; attempt <= PplClient.MAX_RETRIES; attempt++) {
+      if (attempt > 0) {
+        const delay = PplClient.INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1)
+        this.logger.debug(
+          `PPL: Retry ${attempt}/${PplClient.MAX_RETRIES} after ${delay}ms`
+        )
+        await this.sleep(delay)
+      }
+
+      try {
+        const token = await this.getAccessToken()
+        await this.throttle()
+
+        const headers: Record<string, string> = {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        }
+        if (body) {
+          headers["Content-Type"] = "application/json"
+        }
+
+        const response = await fetch(`${this.baseUrl}${path}`, {
+          method,
+          headers,
+          body: body ? JSON.stringify(body) : undefined,
+        })
+
+        if (allow404 && response.status === 404) {
+          return { data: null, status: 404 }
+        }
+
+        if (
+          this.isRetryable(response.status) &&
+          attempt < PplClient.MAX_RETRIES
+        ) {
+          const errorText = await response.text()
+          lastError = new Error(`${response.status} - ${errorText}`)
+          continue
+        }
+
+        if (response.status !== expectedStatus && !response.ok) {
+          const errorText = await response.text()
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `PPL request failed: ${response.status} - ${errorText}`
+          )
+        }
+
+        const data =
+          response.status === 204 ? null : ((await response.json()) as T)
+        return { data, status: response.status }
+      } catch (error) {
+        if (error instanceof MedusaError) {
+          throw error
+        }
+        lastError = error instanceof Error ? error : new Error(String(error))
+        if (attempt === PplClient.MAX_RETRIES) {
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `PPL request failed after ${PplClient.MAX_RETRIES + 1} attempts: ${lastError.message}`
+          )
+        }
+      }
+    }
+
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      `PPL request failed: ${lastError?.message || "Unknown error"}`
+    )
   }
 }

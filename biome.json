@@ -59,6 +59,7 @@
             "noExcessiveCognitiveComplexity": "warn"
           },
           "performance": {
+            "noBarrelFile": "info",
             "noNamespaceImport": "info"
           }
         }

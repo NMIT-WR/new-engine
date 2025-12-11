@@ -6,16 +6,13 @@ import type {
   Query,
 } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
-import type {
-  PplFulfillmentData,
-  PplOptions,
-  PplShipmentInfo,
-  PplShipmentState,
-} from "../modules/ppl"
 import {
   PPL_DELIVERED_STATES,
   PPL_FAILED_STATES,
   PplClient,
+  type PplFulfillmentData,
+  type PplShipmentInfo,
+  type PplShipmentState,
 } from "../modules/ppl"
 
 // Types
@@ -50,11 +47,16 @@ const BATCH_SIZE = 100
 export default async function pplTrackingSyncJob(container: MedusaContainer) {
   const logger = container.resolve<Logger>("logger")
 
-  // Check if PPL service is enabled
   if (process.env.PPL_ENABLED !== "1") {
     logger.debug(
       "PPL Tracking Sync: PPL service is disabled (PPL_ENABLED != 1), skipping"
     )
+    return
+  }
+
+  const client = PplClient.getInstanceOrNull()
+  if (!client) {
+    logger.debug("PPL Tracking Sync: Client not initialized, skipping")
     return
   }
 
@@ -67,11 +69,6 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
   logger.info("PPL Tracking Sync: Starting...")
 
   try {
-    const client = createPplClient(logger)
-    if (!client) {
-      return
-    }
-
     const pendingFulfillments = await fetchPendingFulfillments(query)
 
     if (pendingFulfillments.length === 0) {
@@ -97,29 +94,7 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
 
 export const config = {
   name: "ppl-tracking-sync",
-  schedule: "*/15 * * * *", // Every 15 minutes
-}
-
-// Helper functions
-
-function createPplClient(logger: Logger): PplClient | null {
-  const clientId = process.env.PPL_CLIENT_ID
-  const clientSecret = process.env.PPL_CLIENT_SECRET
-
-  if (!(clientId && clientSecret)) {
-    logger.warn("PPL Tracking Sync: Missing PPL credentials, skipping")
-    return null
-  }
-
-  const pplOptions: PplOptions = {
-    client_id: clientId,
-    client_secret: clientSecret,
-    environment: (process.env.PPL_ENVIRONMENT ||
-      "testing") as PplOptions["environment"],
-    default_label_format: "Png",
-  }
-
-  return new PplClient(pplOptions, logger)
+  schedule: "*/15 * * * *",
 }
 
 async function fetchPendingFulfillments(

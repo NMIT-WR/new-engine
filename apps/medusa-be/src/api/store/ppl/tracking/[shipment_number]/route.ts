@@ -1,7 +1,11 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
-import type { PplOptions, PplShipmentState } from "../../../../../modules/ppl"
-import { PPL_STATUS_MESSAGES, PplClient } from "../../../../../modules/ppl"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import {
+  PPL_STATUS_MESSAGES,
+  PplClient,
+  type PplShipmentState,
+} from "../../../../../modules/ppl"
 
 /**
  * GET /store/ppl/tracking/:shipment_number
@@ -14,7 +18,7 @@ export async function GET(
   res: MedusaResponse
 ): Promise<void> {
   const { shipment_number } = req.params
-  const logger = req.scope.resolve<Logger>("logger")
+  const logger = req.scope.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
 
   if (!shipment_number) {
     res.status(400).json({
@@ -24,27 +28,14 @@ export async function GET(
   }
 
   try {
-    const clientId = process.env.PPL_CLIENT_ID
-    const clientSecret = process.env.PPL_CLIENT_SECRET
-
-    if (!(clientId && clientSecret)) {
-      res.status(500).json({
-        error: "PPL credentials not configured",
+    const client = PplClient.getInstanceOrNull()
+    if (!client) {
+      res.status(503).json({
+        error: "PPL service is not initialized",
       })
       return
     }
 
-    const pplOptions: PplOptions = {
-      client_id: clientId,
-      client_secret: clientSecret,
-      environment: (process.env.PPL_ENVIRONMENT ||
-        "testing") as PplOptions["environment"],
-      default_label_format: "Png",
-    }
-
-    const client = new PplClient(pplOptions, logger)
-
-    // Fetch current status from PPL
     const shipmentInfos = await client.getShipmentInfo({
       shipmentNumbers: [shipment_number],
     })

@@ -8,7 +8,6 @@ import type {
   FulfillmentOption,
   FulfillmentOrderDTO,
   Logger,
-  MedusaContainer,
   ValidateFulfillmentDataContext,
 } from "@medusajs/framework/types"
 import {
@@ -42,19 +41,14 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
   static override identifier = "ppl"
 
   protected readonly logger_: Logger
-  protected readonly options_: PplOptions
-  protected readonly client: PplClient
-  protected readonly container_: MedusaContainer
 
-  constructor(
-    container: MedusaContainer & InjectedDependencies,
-    options: PplOptions
-  ) {
+  constructor(container: InjectedDependencies, _options: PplOptions) {
     super()
     this.logger_ = container.logger
-    this.options_ = options
-    this.client = new PplClient(options, container.logger)
-    this.container_ = container
+  }
+
+  private getClient(): PplClient {
+    return PplClient.getInstance()
   }
 
   /**
@@ -200,24 +194,25 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       const orderId =
         order.display_id?.toString() || order.id?.substring(0, 10) || ""
 
+      const options = this.getClient().getOptions()
       codSettings = {
         codPrice: codAmount,
         codCurrency: "CZK",
         codVarSym: orderId,
-        ...(this.options_.cod_iban
+        ...(options.cod_iban
           ? {
-              iban: this.options_.cod_iban,
-              swift: this.options_.cod_swift,
+              iban: options.cod_iban,
+              swift: options.cod_swift,
             }
           : {
-              bankAccount: this.options_.cod_bank_account,
-              bankCode: this.options_.cod_bank_code,
+              bankAccount: options.cod_bank_account,
+              bankCode: options.cod_bank_code,
             }),
       }
     }
 
     // Check if PPL customer profile is configured (warn if not)
-    const customerInfo = await this.client.getCustomerInfo()
+    const customerInfo = await this.getClient().getCustomerInfo()
     if (!customerInfo) {
       this.logger_.warn(
         "PPL: Customer profile not configured (GET /customer returned 404). " +
@@ -253,7 +248,9 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
 
     // Create shipment batch in PPL - returns immediately with batch_id
     // The batch will be processed asynchronously by PPL
-    const batchId = await this.client.createShipmentBatch([shipmentRequest])
+    const batchId = await this.getClient().createShipmentBatch([
+      shipmentRequest,
+    ])
 
     this.logger_.info(
       `PPL: Shipment batch ${batchId} created for fulfillment ${fulfillmentId}. Status will be updated by ppl-label-sync job.`
@@ -279,7 +276,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
   private async getSenderAddress() {
     // Check if PPL customer has sender address configured, otherwise use fallback
     let sender: PplShipmentRequest["sender"] | undefined
-    const customerAddresses = await this.client.getCustomerAddresses()
+    const customerAddresses = await this.getClient().getCustomerAddresses()
     const defaultSeatAddress = customerAddresses?.find(
       (a) => a.code === "SEAT" && a.default === true
     )
@@ -295,14 +292,16 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         ...(defaultSeatAddress.email && { email: defaultSeatAddress.email }),
       }
     } else {
-      // No PPL address configured - check for fallback sender in options
+      const options = this.getClient().getOptions()
       const {
         sender_name,
         sender_street,
         sender_city,
         sender_zip_code,
         sender_country,
-      } = this.options_
+        sender_phone,
+        sender_email,
+      } = options
 
       if (
         !(
@@ -326,12 +325,8 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         city: sender_city,
         zipCode: sender_zip_code,
         country: sender_country,
-        ...(this.options_.sender_phone && {
-          phone: this.options_.sender_phone,
-        }),
-        ...(this.options_.sender_email && {
-          email: this.options_.sender_email,
-        }),
+        ...(sender_phone && { phone: sender_phone }),
+        ...(sender_email && { email: sender_email }),
       }
 
       this.logger_.info(
@@ -374,7 +369,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
 
     this.logger_.info(`PPL: Attempting to cancel shipment ${shipmentNumber}`)
 
-    const cancelled = await this.client.cancelShipment(shipmentNumber)
+    const cancelled = await this.getClient().cancelShipment(shipmentNumber)
 
     if (!cancelled) {
       this.logger_.warn(
