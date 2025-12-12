@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { action } from "storybook/actions"
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
 import { iconLabels, iconOptions } from '../helpers/icon-options'
+
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
   component: Button,
@@ -92,8 +94,8 @@ const meta: Meta<typeof Button> = {
       description: 'Content of the button',
     },
     onClick: {
-      action: 'clicked',
       description: 'Click handler',
+      onClick: action("onClick called!"),
     },
   },
   args: {
@@ -121,7 +123,6 @@ export const Playground: Story = {
   args: {
     children: 'Playground Button',
   },
-  render: (args) => <Button {...args} />,
 }
 
 export const Variants: Story = {
