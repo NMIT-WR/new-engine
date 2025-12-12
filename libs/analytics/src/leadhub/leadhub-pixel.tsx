@@ -32,24 +32,24 @@ export type LeadhubPixelProps = LeadhubConfig
  * ```
  */
 export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
-	if (!trackingId) {
-		if (debug) {
-			console.warn('[Leadhub] No tracking ID provided, skipping initialization')
-		}
-		return null
-	}
+  if (!trackingId) {
+    if (debug) {
+      console.warn('[Leadhub] No tracking ID provided, skipping initialization')
+    }
+    return null
+  }
 
-	// Validate trackingId format to prevent XSS
-	if (!VALID_TRACKING_ID_PATTERN.test(trackingId)) {
-		if (debug) {
-			console.error('[Leadhub] Invalid tracking ID format:', trackingId)
-		}
-		return null
-	}
+  // Validate trackingId format to prevent XSS
+  if (!VALID_TRACKING_ID_PATTERN.test(trackingId)) {
+    if (debug) {
+      console.error('[Leadhub] Invalid tracking ID format:', trackingId)
+    }
+    return null
+  }
 
-	// Leadhub init script - creates window.lhi() function and loads agent.js
-	// Parameters: w=window, d=document, x='script', n='lhi', u=agentUrl, t=trackingId
-	const initScript = `
+  // Leadhub init script - creates window.lhi() function and loads agent.js
+  // Parameters: w=window, d=document, x='script', n='lhi', u=agentUrl, t=trackingId
+  const initScript = `
 		(function(w,d,x,n,u,t,f,s,o){
 			f='LHInsights';
 			w[n]=w[f]=w[f]||function(n,d){
@@ -67,11 +67,11 @@ export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
 		${debug ? "console.log('[Leadhub] Initialized with tracking ID:', '" + trackingId + "');" : ''}
 	`
 
-	return (
-		<Script
-			id="leadhub-pixel"
-			strategy="afterInteractive"
-			dangerouslySetInnerHTML={{ __html: initScript }}
-		/>
-	)
+  return (
+    <Script
+      id="leadhub-pixel"
+      strategy="afterInteractive"
+      dangerouslySetInnerHTML={{ __html: initScript }}
+    />
+  )
 }

@@ -30,8 +30,8 @@ export interface HeurekaOrderParams {
   products: HeurekaProductItem[]
   /** Total order value with VAT */
   totalWithVat: number
-  /** Currency code (default: CZK) */
-  currency?: string
+  /** Currency code - required per Heureka documentation */
+  currency: string
 }
 
 /**

@@ -1,5 +1,11 @@
+// Components
 export { GoogleTag } from './google-tag'
-export { useGoogleAds } from './use-google-ads'
+
+// Adapter for unified analytics
+export { useGoogleAdapter } from './google-adapter'
+export type { UseGoogleAdapterConfig } from './google-adapter'
+
+// Types
 export type {
   GoogleAdsConfig,
   GoogleAdsItem,
