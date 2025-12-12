@@ -6,8 +6,6 @@ import type { HeurekaCountry } from './types'
 export interface HeurekaProductProps {
   /** Country variant: 'cz' for Heureka.cz, 'sk' for Heureka.sk */
   country?: HeurekaCountry
-  /** Enable debug logging */
-  debug?: boolean
 }
 
 /**
@@ -27,13 +25,8 @@ export interface HeurekaProductProps {
  */
 export function HeurekaProduct({
   country = 'cz',
-  debug = false,
 }: HeurekaProductProps) {
   const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
-
-  if (debug) {
-    console.log('[HeurekaProduct] Initializing for', domain)
-  }
 
   return (
     <Script
