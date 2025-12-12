@@ -249,18 +249,19 @@ const seedN1Workflow = createWorkflow(
             []
           for (const p of data.createProductsStepInput) {
             for (const v of p.variants ?? []) {
-              if (v.quantities?.quantity !== undefined) {
-                inventoryItems.push({
-                  sku: v.sku,
-                  quantity: v.quantities?.quantity,
-                })
+              if (!v.sku || v.quantities?.quantity === undefined) {
+                continue
               }
+              inventoryItems.push({
+                sku: v.sku,
+                quantity: v.quantities.quantity,
+              })
             }
           }
 
           return {
             stockLocations: data.createStockLocationResult.result,
-            inventoryItems: inventoryItems ?? [],
+            inventoryItems,
           }
         }
       )
