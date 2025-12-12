@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import type {
   AnalyticsAdapter,
   CoreAddToCartParams,
@@ -63,6 +63,11 @@ export interface TrackingResult {
  * ```
  */
 export function useAnalytics({ adapters, debug }: UseAnalyticsConfig) {
+  // Stable ref for adapters to prevent callback recreation on every render
+  // when consumers pass a new array reference (e.g., inline array literals)
+  const adaptersRef = useRef(adapters)
+  adaptersRef.current = adapters
+
   /**
    * Execute a tracking method across all adapters
    */
@@ -74,7 +79,7 @@ export function useAnalytics({ adapters, debug }: UseAnalyticsConfig) {
       const results: Record<string, boolean> = {}
       let allSuccess = true
 
-      for (const adapter of adapters) {
+      for (const adapter of adaptersRef.current) {
         const method = adapter[methodName] as
           | ((params: TParams) => boolean)
           | undefined
@@ -108,7 +113,7 @@ export function useAnalytics({ adapters, debug }: UseAnalyticsConfig) {
 
       return { success: allSuccess, results }
     },
-    [adapters, debug]
+    [debug]
   )
 
   const trackViewContent = useCallback(
@@ -144,7 +149,7 @@ export function useAnalytics({ adapters, debug }: UseAnalyticsConfig) {
       const results: Record<string, boolean> = {}
       let allSuccess = true
 
-      for (const adapter of adapters) {
+      for (const adapter of adaptersRef.current) {
         if (adapter.trackCustom) {
           try {
             const success = adapter.trackCustom(eventName, params)
@@ -173,7 +178,7 @@ export function useAnalytics({ adapters, debug }: UseAnalyticsConfig) {
 
       return { success: allSuccess, results }
     },
-    [adapters, debug]
+    [debug]
   )
 
   return useMemo(
