@@ -78,8 +78,11 @@ export function useLeadhubAdapter(
         'leadhub'
       ),
 
-      // Leadhub doesn't have a specific InitiateCheckout event
-      // We can use SetCart with current cart state
+      // Leadhub doesn't support InitiateCheckout event - using SetCart as workaround.
+      // Note: Per-product quantities are not available in CoreInitiateCheckoutParams
+      // (only productIds[] and total numItems), so we default to quantity: 1.
+      // This is acceptable since InitiateCheckout signals checkout intent,
+      // not exact cart state - accurate quantities are sent via trackAddToCart/trackPurchase.
       trackInitiateCheckout: createTracker(
         getLhi,
         (lhi, params) => {
