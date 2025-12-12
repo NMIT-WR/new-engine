@@ -10,7 +10,7 @@ import { tv } from '../utils'
 const skeletonVariants = tv({
   slots: {
     root: ['relative overflow-hidden'],
-    rectangle: [''],
+    rectangle: 'w-full',
     circle: ['rounded-full', 'shrink-0'],
     textContainer: ['flex', 'flex-col'],
     textLine: ['h-skeleton-text-line', 'rounded-skeleton-text', 'w-full'],
@@ -247,9 +247,6 @@ Skeleton.Text = function SkeletonText({
 
 interface SkeletonRectangleProps
   extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
-  aspectRatio?: string
-  height?: string
-  width?: string
   speed?: 'slow' | 'normal' | 'fast'
   isLoaded?: boolean
   variant?: 'primary' | 'secondary'
@@ -258,15 +255,11 @@ interface SkeletonRectangleProps
 }
 
 Skeleton.Rectangle = function SkeletonRectangle({
-  aspectRatio,
-  height,
-  width = '100%',
   speed,
   isLoaded,
   variant,
   children,
   className,
-  style,
   ref,
   ...props
 }: SkeletonRectangleProps) {
@@ -285,12 +278,6 @@ Skeleton.Rectangle = function SkeletonRectangle({
     <div
       ref={ref}
       className={styles.root({ className: styles.rectangle({ className }) })}
-      style={{
-        ...style,
-        width,
-        height,
-        aspectRatio,
-      }}
       aria-busy="true"
       aria-label="Loading content"
       {...props}
