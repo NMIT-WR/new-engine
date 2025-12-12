@@ -1,5 +1,11 @@
-const { loadEnv } = require("@medusajs/utils")
-loadEnv("test", process.cwd())
+// Only load environment for integration tests (unit tests should be isolated)
+if (process.env.TEST_TYPE !== "unit") {
+  try {
+    require("dotenv").config({ path: ".env.test" })
+  } catch {
+    // dotenv not available or .env.test doesn't exist - continue without it
+  }
+}
 
 module.exports = {
   transform: {
@@ -14,7 +20,7 @@ module.exports = {
   },
   testEnvironment: "node",
   moduleFileExtensions: ["js", "ts", "json"],
-  modulePathIgnorePatterns: ["dist/"],
+  modulePathIgnorePatterns: ["dist/", ".medusa/"],
 }
 
 if (process.env.TEST_TYPE === "integration:http") {
