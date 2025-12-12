@@ -23,7 +23,7 @@ export default async function searchIndexScript({ container }: ExecArgs) {
   while (true) {
     const products = await productModuleService.listProducts(
       {},
-      { skip, take: BATCH_SIZE }
+      { skip, take: BATCH_SIZE, order: { id: "ASC" } }
     )
 
     if (products.length === 0) {
@@ -32,7 +32,7 @@ export default async function searchIndexScript({ container }: ExecArgs) {
 
     await meilisearchIndexService.addDocuments("products", products)
     totalIndexed += products.length
-    skip += BATCH_SIZE
+    skip += products.length
 
     if (products.length < BATCH_SIZE) {
       break

@@ -50,13 +50,13 @@ export type CreateShippingOptionsStepSeedInput = Array<
 
 export type CreateShippingOptionsStepOutput = {
   id: string
-}
+}[]
 
 const CreateShippingOptionsStepId = "create-shipping-options-seed-step"
 export const createShippingOptionsStep = createStep(
   CreateShippingOptionsStepId,
   async (input: CreateShippingOptionsStepInput, { container }) => {
-    const result: CreateShippingOptionsStepOutput[] = []
+    const result: CreateShippingOptionsStepOutput = []
 
     const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     const fulfillmentService = container.resolve<IFulfillmentModuleService>(
@@ -93,7 +93,7 @@ export const createShippingOptionsStep = createStep(
       return []
     })
 
-    if (missingOptions.length !== 0) {
+    if (missingOptions.length > 0) {
       logger.info("Creating missing shipping options...")
 
       // For new shipping options, always create a new type
@@ -137,7 +137,7 @@ export const createShippingOptionsStep = createStep(
       }
     }
 
-    if (updateOptions.length !== 0) {
+    if (updateOptions.length > 0) {
       logger.info("Updating existing shipping options...")
 
       // For updates, check if the existing shipping option's type code matches the input type code
@@ -204,30 +204,27 @@ export const createShippingOptionsStep = createStep(
       }
 
       // Update existing types where code matched with new values from input
-      const typesToUpdate = updateOptions
-        .filter(
-          ({ existing, input: inputOption }) =>
-            existing.type?.code === inputOption.type.code && existing.type
-        )
-        .map(({ existing, input: inputOption }) => ({
-          typeId: existing.type.id,
-          update: {
-            label: inputOption.type.label,
-            description: inputOption.type.description,
-            code: inputOption.type.code,
-          },
-        }))
+      const typesToUpdate = updateOptions.filter(
+        ({ existing, input: inputOption }) =>
+          existing.type?.code === inputOption.type.code && existing.type
+      )
 
-      for (const typeToUpdate of typesToUpdate) {
-        logger.info(
-          `Updating existing shipping option type: ${typeToUpdate.update.code}`
-        )
-        await updateShippingOptionTypesWorkflow(container).run({
-          input: {
-            selector: { id: typeToUpdate.typeId },
-            update: typeToUpdate.update,
-          },
-        })
+      if (typesToUpdate.length > 0) {
+        for (const { existing, input: inputOption } of typesToUpdate) {
+          logger.info(
+            `Updating existing shipping option type: ${inputOption.type.code}`
+          )
+          await updateShippingOptionTypesWorkflow(container).run({
+            input: {
+              selector: { id: existing.type.id },
+              update: {
+                label: inputOption.type.label,
+                description: inputOption.type.description,
+                code: inputOption.type.code,
+              },
+            },
+          })
+        }
       }
     }
 

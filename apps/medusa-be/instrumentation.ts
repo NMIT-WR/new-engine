@@ -7,7 +7,7 @@ import { SentryPropagator, SentrySpanProcessor } from "@sentry/opentelemetry"
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE ?? "1.0"),
-  // @ts-expect-error - instrumenter option is valid for Sentry+OpenTelemetry integration but not in types
+  // @ts-expect-error - instrumenter: "otel" is valid for Sentry+OpenTelemetry integration but missing from @sentry/node types
   instrumenter: "otel",
 })
 

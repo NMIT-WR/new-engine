@@ -113,7 +113,7 @@ export default async function updateInventory({ container }: ExecArgs) {
 
       if (variant) {
         logger.info(
-          `Updating inventory for variant: ${variant.title} (${variant.sku})`
+          `Checking inventory for variant: ${variant.title} (${variant.sku})`
         )
         logger.info(
           `Current stock: ${level.stocked_quantity}, Reserved: ${level.reserved_quantity}`
@@ -122,6 +122,14 @@ export default async function updateInventory({ container }: ExecArgs) {
         // Set new stock quantity (you can adjust these values as needed)
         const newQuantity = 50 // Setting all variants to 50 units
 
+        // Skip if quantity is already at target - avoid unnecessary workflow runs
+        if (level.stocked_quantity === newQuantity) {
+          logger.info(
+            `Skipping update - stock quantity already at target: ${newQuantity}`
+          )
+          continue
+        }
+
         updates.push({
           id: level.id,
           inventory_item_id: level.inventory_item_id,
@@ -129,7 +137,7 @@ export default async function updateInventory({ container }: ExecArgs) {
           stocked_quantity: newQuantity,
         })
 
-        logger.info(`New stock quantity will be: ${newQuantity}`)
+        logger.info(`Will update stock quantity to: ${newQuantity}`)
       }
     }
 

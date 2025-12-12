@@ -1,4 +1,4 @@
-import type { Logger, ProviderLoaderOptions } from "@medusajs/framework/types"
+import type { ProviderLoaderOptions } from "@medusajs/framework/types"
 import { PplClient } from "../client"
 import type { PplOptions } from "../types"
 
@@ -11,11 +11,25 @@ export default async function initializeClientLoader({
     return
   }
 
-  const pplOptions = options as PplOptions | undefined
-  if (!(pplOptions?.client_id && pplOptions?.client_secret)) {
-    logger?.warn("PPL: Missing credentials, client not initialized")
+  if (!logger) {
+    console.warn("PPL: Logger not provided, skipping client initialization")
     return
   }
 
-  PplClient.initialize(pplOptions, logger as Logger)
+  const pplOptions = options as Partial<PplOptions> | undefined
+  if (
+    !(
+      pplOptions?.client_id &&
+      pplOptions?.client_secret &&
+      pplOptions?.environment &&
+      pplOptions?.default_label_format
+    )
+  ) {
+    logger.warn(
+      "PPL: Missing required configuration (client_id, client_secret, environment, default_label_format), client not initialized"
+    )
+    return
+  }
+
+  PplClient.initialize(pplOptions as PplOptions, logger)
 }

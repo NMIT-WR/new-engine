@@ -245,7 +245,7 @@ export class PplClient {
     if (!response.ok) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        `PPL label download failed: ${response.status}`
+        `PPL label download failed: ${response.status} - ${labelUrl}`
       )
     }
 
@@ -357,6 +357,9 @@ export class PplClient {
       Offset: String(query.offset || 0),
     })
 
+    if (query.accessPointCode) {
+      params.append("AccessPointCode", query.accessPointCode)
+    }
     if (query.countryCode) {
       params.append("CountryCode", query.countryCode)
     }
@@ -377,6 +380,21 @@ export class PplClient {
     }
     if (query.longitude) {
       params.append("Longitude", String(query.longitude))
+    }
+    if (query.tribalServicePoint !== undefined) {
+      params.append("TribalServicePoint", String(query.tribalServicePoint))
+    }
+    if (query.activeCardPayment !== undefined) {
+      params.append("ActiveCardPayment", String(query.activeCardPayment))
+    }
+    if (query.activeCashPayment !== undefined) {
+      params.append("ActiveCashPayment", String(query.activeCashPayment))
+    }
+    if (query.pickupEnabled !== undefined) {
+      params.append("PickupEnabled", String(query.pickupEnabled))
+    }
+    if (query.sizes) {
+      params.append("Sizes", query.sizes)
     }
 
     const { data } = await this.makeRequest<
@@ -841,6 +859,9 @@ export class PplClient {
         ) {
           const errorText = await response.text()
           lastError = new Error(`${response.status} - ${errorText}`)
+          this.logger.warn(
+            `PPL ${resourceType} batch request failed (will retry): ${response.status}`
+          )
           continue
         }
 
@@ -854,7 +875,7 @@ export class PplClient {
         }
 
         const location = response.headers.get("Location")
-        const batchId = location?.split("/").pop()
+        const batchId = location?.split("/").filter(Boolean).pop()
 
         if (!batchId) {
           throw new MedusaError(
@@ -939,6 +960,9 @@ export class PplClient {
         ) {
           const errorText = await response.text()
           lastError = new Error(`${response.status} - ${errorText}`)
+          this.logger.warn(
+            `PPL request to ${path} failed (will retry): ${response.status}`
+          )
           continue
         }
 

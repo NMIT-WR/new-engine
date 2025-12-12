@@ -174,11 +174,12 @@ function prepareVariantImagesWorkflowInput(
 
     const variantImage = variantImages.get(variant.sku)
 
+    // Defensive normalization: ensure we always work with arrays, never undefined
+    const productImages = product.images ?? []
+    const variantImagesCurrent = variant.images ?? []
+
     if (!variantImage) {
       // if no images are specified for variant, use base images from the product entity
-      const productImages = product.images ?? []
-      const variantImagesCurrent = variant.images ?? []
-
       const toAdd = productImages
         .map(
           (image) => productImages.find((v) => v.url === image.url)?.id ?? null
@@ -196,9 +197,6 @@ function prepareVariantImagesWorkflowInput(
       })
       continue
     }
-
-    const productImages = product.images ?? []
-    const variantImagesCurrent = variant.images ?? []
 
     const toAdd = (variantImage.images ?? [])
       .map((image) => productImages.find((v) => v.url === image)?.id ?? null)
@@ -428,11 +426,13 @@ export const createProductsStep = createStep(
           select: [
             "id",
             "handle",
+            "images.id",
+            "images.url",
             "variants.sku",
             "variants.images.id",
             "variants.images.url",
           ],
-          relations: ["variants", "variants.images"],
+          relations: ["images", "variants", "variants.images"],
         }
       )
 
@@ -481,11 +481,13 @@ export const createProductsStep = createStep(
           select: [
             "id",
             "handle",
+            "images.id",
+            "images.url",
             "variants.sku",
             "variants.images.id",
             "variants.images.url",
           ],
-          relations: ["variants", "variants.images"],
+          relations: ["images", "variants", "variants.images"],
         }
       )
 

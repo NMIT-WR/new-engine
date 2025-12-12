@@ -16,7 +16,11 @@ export const db = drizzle(
 )
 // Helper function to check if a string is a date (ISO format YYYY-MM-DD)
 // Uses strict regex to avoid false positives from new Date() coercion
-const ISO_DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})/
+// Matches: YYYY-MM-DD, YYYY-MM-DD HH:MM:SS.sss, YYYY-MM-DDTHH:MM:SS.sssZ
+// Anchored to prevent matching strings like "2024-01-15-INVALID"
+const ISO_DATE_REGEX =
+  /^(\d{4})-(\d{2})-(\d{2})(?:[ T][\d:.]*(Z|[+-]\d{2}:\d{2})?)?$/
+
 function isDateString(value: string): boolean {
   return ISO_DATE_REGEX.test(value)
 }

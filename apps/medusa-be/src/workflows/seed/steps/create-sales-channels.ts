@@ -22,7 +22,7 @@ export const createSalesChannelsStep = createStep(
     const salesChannelModuleService =
       container.resolve<ISalesChannelModuleService>(Modules.SALES_CHANNEL)
 
-    const salesChannels = input.map((i) => i.name) || ["Default Sales Channel"]
+    const salesChannels = input.map((i) => i.name)
 
     const existingSalesChannels =
       await salesChannelModuleService.listSalesChannels({

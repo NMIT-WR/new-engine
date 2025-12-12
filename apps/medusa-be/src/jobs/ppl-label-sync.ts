@@ -387,9 +387,10 @@ async function updateAttemptCount(
         last_sync_attempt: attemptInfo.now,
       },
     })
-  } catch {
+  } catch (error) {
     logger.error(
-      `PPL Label Sync: Failed to update attempt count for ${fulfillment.id}`
+      `PPL Label Sync: Failed to update attempt count for ${fulfillment.id}`,
+      error instanceof Error ? error : new Error(String(error))
     )
   }
 }

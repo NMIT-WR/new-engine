@@ -31,9 +31,6 @@ export const createTaxRegionsStep = createStep(
     const missingTaxRegions = input.countries.filter(
       (i) => !existingTaxRegions.find((j) => j.country_code === i)
     )
-    const updateTaxRegions = existingTaxRegions.filter((i) =>
-      input.countries.find((j) => j === i.country_code)
-    )
 
     if (missingTaxRegions.length !== 0) {
       logger.info("Creating missing tax regions...")
@@ -47,17 +44,15 @@ export const createTaxRegionsStep = createStep(
         })),
       })
 
-      for (const taxRegionsResultElement of createTaxRegionsResult) {
-        result.push(taxRegionsResultElement)
-      }
+      result.push(...createTaxRegionsResult)
     }
 
-    if (updateTaxRegions.length !== 0) {
+    if (existingTaxRegions.length !== 0) {
       logger.info("Updating existing tax regions...")
 
-      const toUpdate = updateTaxRegions.map((i) => ({
+      const toUpdate = existingTaxRegions.map((i) => ({
         id: i.id,
-        tax_provider: input.taxProviderId || "tp_system",
+        provider_id: input.taxProviderId || "tp_system",
       }))
 
       const { result: updateTaxRegionResult } = await updateTaxRegionsWorkflow(
@@ -66,9 +61,7 @@ export const createTaxRegionsStep = createStep(
         input: toUpdate,
       })
 
-      for (const updateTaxRegionResultElement of updateTaxRegionResult) {
-        result.push(updateTaxRegionResultElement)
-      }
+      result.push(...updateTaxRegionResult)
     }
 
     return new StepResponse({

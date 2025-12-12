@@ -17,7 +17,10 @@ export const users = pgTable(
     username: varchar({ length: 100 }).notNull(),
     passwordHash: text().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date", precision: 3 })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [uniqueIndex("users_username_unique").on(table.username)]
 )

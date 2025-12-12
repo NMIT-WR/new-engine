@@ -35,23 +35,32 @@ export const syncMeilisearchProducersStep = createStep(
       },
     })
 
-    const existingProducerIds = new Set(
-      (
-        await Promise.all(
-          producerIndexes.map((index) =>
-            meilisearchService.search(index, "", {
-              filter: `id IN [${producers.map((c) => c.id).join(",")}]`,
-              attributesToRetrieve: ["id"],
-            })
-          )
-        )
-      )
-        .flatMap((result) => result.hits)
-        .map((hit) => hit.id)
-    )
+    // Fetch all existing producer IDs from all indexes
+    const existingProducerIds = new Set<string>()
+    for (const index of producerIndexes) {
+      let searchOffset = 0
+      const batchSize = 1000
+      while (true) {
+        const result = await meilisearchService.search(index, "", {
+          offset: searchOffset,
+          limit: batchSize,
+          attributesToRetrieve: ["id"],
+        })
 
+        for (const hit of result.hits) {
+          existingProducerIds.add(hit.id)
+        }
+
+        if (result.hits.length < batchSize) {
+          break
+        }
+        searchOffset += batchSize
+      }
+    }
+
+    const currentProducerIds = new Set(producers.map((p) => p.id))
     const producersToDelete = Array.from(existingProducerIds).filter(
-      (id) => !producers.some((c) => c.id === id)
+      (id) => !currentProducerIds.has(id)
     )
 
     const transformedProducers = producers.map((producer) => ({

@@ -62,6 +62,8 @@ export const createInventoryLevelsStep = createStep(
       }
     }
 
+    logger.info("Checking for existing inventory levels...")
+
     const existingInventoryLevels =
       await inventoryLevelService.listInventoryLevels({
         location_id: input.stockLocations.map((l) => l.id),
@@ -96,6 +98,10 @@ export const createInventoryLevelsStep = createStep(
     })
 
     if (missingInventoryLevels.length !== 0) {
+      logger.info(
+        `Creating ${missingInventoryLevels.length} missing inventory levels...`
+      )
+
       const createResult = await createInventoryLevelsWorkflow(container).run({
         input: {
           inventory_levels: missingInventoryLevels,
@@ -107,6 +113,10 @@ export const createInventoryLevelsStep = createStep(
     }
 
     if (updateInventoryLevels.length !== 0) {
+      logger.info(
+        `Updating ${updateInventoryLevels.length} existing inventory levels...`
+      )
+
       const updateResult = await updateInventoryLevelsWorkflow(container).run({
         input: {
           updates: updateInventoryLevels,
@@ -119,7 +129,7 @@ export const createInventoryLevelsStep = createStep(
     }
 
     return new StepResponse({
-      result: { result },
+      result,
     })
   }
 )

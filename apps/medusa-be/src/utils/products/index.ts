@@ -5,13 +5,15 @@ function safeJsonParse<T>(
   json: string,
   fieldName: string,
   productHandle: string
-): T {
+): T | null {
   try {
-    return JSON.parse(json) as T
-  } catch {
+    const parsed = JSON.parse(json)
+    return parsed as T
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
-      `Invalid JSON in ${fieldName} for product "${productHandle}"`
+      `Invalid JSON in ${fieldName} for product "${productHandle}": ${errorMessage}`
     )
   }
 }
@@ -66,7 +68,7 @@ export function toCreateProductsStepInput(
   products: RawProductFromDb[]
 ): Steps.CreateProductsStepInput {
   return products.map((raw) => {
-    const parsedImages = safeJsonParse<{ url: string }[]>(
+    const parsedImages = safeJsonParse<{ url?: string }[]>(
       raw.images,
       "images",
       raw.handle
@@ -92,12 +94,12 @@ export function toCreateProductsStepInput(
       raw.handle
     )
 
-    const options = parsedOptions.map((o) => ({
+    const options = (parsedOptions ?? []).map((o) => ({
       title: o.title ?? "Variant",
       values: o.option_values ?? ["Default"],
     }))
 
-    const variants = parsedVariants
+    const variants = (parsedVariants ?? [])
       .filter((v): v is RawVariant & { sku: string } => v.sku != null)
       .map((v) => ({
         title: v.title ?? v.sku,
@@ -123,13 +125,15 @@ export function toCreateProductsStepInput(
 
     return {
       title: raw.title,
-      categories: parsedCategories,
+      categories: parsedCategories ?? [],
       description: raw.description ?? "",
       handle: raw.handle,
       weight: 1,
       shippingProfileName: "Default Shipping Profile",
       thumbnail: raw.thumbnail,
-      images: parsedImages,
+      images: (parsedImages ?? []).filter(
+        (im): im is { url: string } => im.url != null
+      ),
       options: options.length === 0 ? undefined : options,
       producer: parsedProducer,
       variants: variants.length === 0 ? undefined : variants,

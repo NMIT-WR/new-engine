@@ -34,18 +34,12 @@ class DatabaseModuleService {
     const [rows] = await db.execute(sql)
 
     const rowsTyped = rows as unknown as FieldPacket[]
-    return rowsTyped.map((row) => {
-      return Object.fromEntries(
-        Object.entries(row).map(([key, value]) => [
-          key,
-          value,
-          // value && typeof value === 'string' && this.isDateString(value)
-          //     ? new Date(value)
-          //     : value,
-          // above commented code converted more values to dateTime objects than it should
-        ])
-      ) as T
-    })
+    return rowsTyped.map(
+      (row) =>
+        Object.fromEntries(
+          Object.entries(row).map(([key, value]) => [key, value])
+        ) as T
+    )
   }
 }
 

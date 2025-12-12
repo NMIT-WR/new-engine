@@ -1,4 +1,3 @@
-import type { ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types"
 import {
   createWorkflow,
   transform,
@@ -105,11 +104,18 @@ const seedDatabaseWorkflow = createWorkflow(
           input,
           createFulfillmentSetsResult,
         },
-        (data) => ({
-          stockLocations: data.createStockLocationResult.result,
-          fulfillmentSet: data.createFulfillmentSetsResult
-            .result[0] as FulfillmentSetDTO,
-        })
+        (data) => {
+          const fulfillmentSet = data.createFulfillmentSetsResult.result[0]
+
+          if (!fulfillmentSet) {
+            throw new Error("No fulfillment set found")
+          }
+
+          return {
+            stockLocations: data.createStockLocationResult.result,
+            fulfillmentSet,
+          }
+        }
       )
 
     const linkStockLocationsFulfillmentSetResult =
@@ -127,23 +133,35 @@ const seedDatabaseWorkflow = createWorkflow(
           createDefaultShippingProfileResult,
           createRegionsResult,
         },
-        (data) =>
-          data.input.shippingOptions.map((option) => ({
+        (data) => {
+          const fulfillmentSet = data.createFulfillmentSetsResult.result[0]
+          const shippingProfile =
+            data.createDefaultShippingProfileResult.result[0]
+          const serviceZone = fulfillmentSet?.service_zones?.[0]
+
+          if (!serviceZone?.id) {
+            throw new Error("No service zone found in fulfillment set")
+          }
+
+          if (!shippingProfile?.id) {
+            throw new Error("No shipping profile found")
+          }
+
+          return data.input.shippingOptions.map((option) => ({
             name: option.name,
             providerId: option.providerId || "manual_manual",
-            serviceZoneId: data.createFulfillmentSetsResult.result[0]
-              ?.service_zones[0]?.id as string,
-            shippingProfileId: data.createDefaultShippingProfileResult.result[0]
-              ?.id as string,
+            serviceZoneId: serviceZone.id,
+            shippingProfileId: shippingProfile.id,
             regions: data.createRegionsResult.result.map((region) => ({
               ...region,
-              amount: 10 as number,
+              amount: 10,
             })),
             type: option.type,
             prices: option.prices,
             rules: option.rules,
             data: option.data,
           }))
+        }
       )
 
     const createShippingOptionsResult = Steps.createShippingOptionsStep(
@@ -182,11 +200,18 @@ const seedDatabaseWorkflow = createWorkflow(
           createPublishableKeyResult,
           salesChannelsResult,
         },
-        (data) => ({
-          salesChannels: data.salesChannelsResult.result,
-          publishableApiKey: data.createPublishableKeyResult
-            .result[0] as ApiKeyDTO,
-        })
+        (data) => {
+          const publishableApiKey = data.createPublishableKeyResult.result[0]
+
+          if (!publishableApiKey) {
+            throw new Error("No publishable API key found")
+          }
+
+          return {
+            salesChannels: data.salesChannelsResult.result,
+            publishableApiKey,
+          }
+        }
       )
 
     const linkSalesChannelsApiKeyStepInputResult =
@@ -217,7 +242,7 @@ const seedDatabaseWorkflow = createWorkflow(
               if (v.quantities?.quantity !== undefined) {
                 inventoryItems.push({
                   sku: v.sku,
-                  quantity: v.quantities?.quantity,
+                  quantity: v.quantities.quantity,
                 })
               }
             }
@@ -225,7 +250,7 @@ const seedDatabaseWorkflow = createWorkflow(
 
           return {
             stockLocations: data.createStockLocationResult.result,
-            inventoryItems: inventoryItems ?? [],
+            inventoryItems,
           }
         }
       )

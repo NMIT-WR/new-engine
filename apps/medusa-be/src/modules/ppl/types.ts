@@ -126,6 +126,7 @@ export type PplShipmentRequest = {
  * - SMAD: Parcel Smart + COD (pickup point, with COD)
  * - PRIV: Parcel Private (home delivery, no COD)
  * - PRID: Parcel Private + COD (home delivery, with COD)
+ * Note: Includes `| string` for forward-compatibility with PPL API changes
  */
 export type PplProductType = "SMAR" | "SMAD" | "PRIV" | "PRID" | string
 
@@ -438,6 +439,7 @@ export type PplAccessPoint = {
   isActive?: boolean
 }
 
+/** Access point types - includes | string for forward-compatibility with PPL API */
 export type PplAccessPointType = "ParcelShop" | "ParcelBox" | "AlzaBox" | string
 
 /**
@@ -582,7 +584,7 @@ export type PplShipmentQuery = {
 }
 
 /**
- * Order type
+ * Order type - includes | string for forward-compatibility with PPL API
  */
 export type PplOrderType = "Transport" | "CollectionOrder" | string
 

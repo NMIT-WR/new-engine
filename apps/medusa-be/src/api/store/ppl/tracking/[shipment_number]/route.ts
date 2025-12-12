@@ -72,6 +72,7 @@ export async function GET(
     )
     res.status(500).json({
       error: "Failed to fetch tracking status",
+      shipment_number,
       tracking_url: `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${shipment_number}`,
     })
   }

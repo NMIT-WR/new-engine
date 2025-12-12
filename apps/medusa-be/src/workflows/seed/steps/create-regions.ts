@@ -70,9 +70,7 @@ export const createRegionsStep = createStep(
         },
       })
 
-      for (const resultElement of createRegionsResult) {
-        result.push(resultElement)
-      }
+      result.push(...createRegionsResult)
     }
 
     if (updateRegions.length !== 0) {
