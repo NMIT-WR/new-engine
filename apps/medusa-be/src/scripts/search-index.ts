@@ -19,16 +19,14 @@ export default async function searchIndexScript({ container }: ExecArgs) {
 
   let skip = 0
   let totalIndexed = 0
-  let hasMore = true
 
-  while (hasMore) {
+  while (true) {
     const products = await productModuleService.listProducts(
       {},
       { skip, take: BATCH_SIZE }
     )
 
     if (products.length === 0) {
-      hasMore = false
       break
     }
 
@@ -37,7 +35,7 @@ export default async function searchIndexScript({ container }: ExecArgs) {
     skip += BATCH_SIZE
 
     if (products.length < BATCH_SIZE) {
-      hasMore = false
+      break
     }
   }
 
