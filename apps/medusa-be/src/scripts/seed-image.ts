@@ -45,7 +45,7 @@ export default async function seedImages({ container }: ExecArgs) {
                 return {
                   filename,
                   mimeType,
-                  content: buffer.toString("binary"),
+                  content: buffer.toString("base64"),
                   access,
                 }
               } catch (error) {

@@ -35,7 +35,7 @@ medusa-migrate:
 	docker exec wr_medusa_be pnpm --filter medusa-be run migrate
 # Usage: make medusa-generate-migration MODULE=my_module
 medusa-generate-migration:
-	docker exec wr_medusa_be pnpm --filter medusa-be run migrate:generate-only ${MODULE}
+	docker exec wr_medusa_be pnpm --filter medusa-be run migrate:generate-only $(MODULE)
 medusa-minio-init:
 	docker exec wr_medusa_minio mc config host add local http://localhost:9004 minioadmin minioadmin --api S3v4 --lookup auto && \
 	docker exec wr_medusa_minio mc admin accesskey create --access-key minioadminkey --secret-key minioadminkey local && \

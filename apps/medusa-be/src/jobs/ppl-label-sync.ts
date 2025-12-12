@@ -3,6 +3,7 @@ import type {
   IEventBusModuleService,
   IFileModuleService,
   IFulfillmentModuleService,
+  ILockingModule,
   Logger,
   Query,
 } from "@medusajs/framework/types"
@@ -13,6 +14,12 @@ import {
   PplClient,
   type PplFulfillmentData,
 } from "../modules/ppl"
+
+/** Lock key for preventing concurrent job runs */
+const JOB_LOCK_KEY = "ppl-label-sync-job"
+
+/** Lock timeout in seconds (2 minutes - should be longer than typical job duration) */
+const JOB_LOCK_TIMEOUT = 120
 
 /**
  * Maximum number of sync attempts before marking as error
@@ -63,9 +70,11 @@ type SyncAttemptInfo = {
  * 2. Poll PPL for batch completion
  * 3. Download labels and upload to S3
  * 4. Update fulfillment data with shipment_number, label_url, etc.
+ *
+ * Uses distributed locking to prevent concurrent runs across multiple instances.
  */
 export default async function pplLabelSyncJob(container: MedusaContainer) {
-  const logger = container.resolve<Logger>("logger")
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
 
   if (process.env.PPL_ENABLED !== "1") {
     logger.debug(
@@ -80,6 +89,40 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
     return
   }
 
+  const lockingModule = container.resolve<ILockingModule>(Modules.LOCKING)
+
+  // Use distributed lock to prevent concurrent job runs
+  try {
+    await lockingModule.execute(
+      JOB_LOCK_KEY,
+      async () => {
+        await executeSync(container, client, logger)
+      },
+      { timeout: JOB_LOCK_TIMEOUT }
+    )
+  } catch (error) {
+    // Lock acquisition timeout means another instance is running - skip silently
+    if (
+      error instanceof Error &&
+      error.message.includes("Timed-out acquiring lock")
+    ) {
+      logger.info(
+        "PPL Label Sync: Skipping - another instance is already running"
+      )
+      return
+    }
+    throw error
+  }
+}
+
+/**
+ * Execute the actual sync logic (wrapped by distributed lock)
+ */
+async function executeSync(
+  container: MedusaContainer,
+  client: PplClient,
+  logger: Logger
+): Promise<void> {
   const query = container.resolve<Query>(ContainerRegistrationKeys.QUERY)
   const fulfillmentService = container.resolve<IFulfillmentModuleService>(
     Modules.FULFILLMENT
@@ -136,13 +179,15 @@ async function fetchPendingFulfillments(
   const { data: fulfillments } = await query.graph({
     entity: "fulfillment",
     fields: ["id", "data", "created_at", "provider_id"],
+    filters: {
+      provider_id: "ppl_ppl",
+    },
   })
 
+  // JSON field filtering (data.status, data.batch_id) must be done in-memory
   return (fulfillments as FulfillmentRecord[]).filter(
     (f): f is PendingFulfillment =>
-      f.provider_id === "ppl_ppl" &&
-      f.data?.status === "pending" &&
-      typeof f.data?.batch_id === "string"
+      f.data?.status === "pending" && typeof f.data?.batch_id === "string"
   )
 }
 
@@ -197,7 +242,7 @@ function checkTimeoutConditions(
   fulfillment: PendingFulfillment,
   attemptInfo: SyncAttemptInfo
 ): { reason: string; message: string } | null {
-  if (attemptInfo.syncAttempts > MAX_SYNC_ATTEMPTS) {
+  if (attemptInfo.syncAttempts >= MAX_SYNC_ATTEMPTS) {
     return {
       reason: `exceeded max sync attempts (${MAX_SYNC_ATTEMPTS})`,
       message: `Batch ${fulfillment.data.batch_id} never completed after ${MAX_SYNC_ATTEMPTS} attempts`,

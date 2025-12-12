@@ -45,7 +45,7 @@ const BATCH_SIZE = 100
  * Uses GET /shipment endpoint to fetch current status in batches of 100.
  */
 export default async function pplTrackingSyncJob(container: MedusaContainer) {
-  const logger = container.resolve<Logger>("logger")
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
 
   if (process.env.PPL_ENABLED !== "1") {
     logger.debug(

@@ -1,4 +1,4 @@
-import type { ApiKeyDTO, FulfillmentSetDTO } from "@medusajs/framework/types"
+import type { ApiKeyDTO } from "@medusajs/framework/types"
 import {
   createWorkflow,
   transform,
@@ -116,11 +116,18 @@ const seedN1Workflow = createWorkflow(
           input,
           createFulfillmentSetsResult,
         },
-        (data) => ({
-          stockLocations: data.createStockLocationResult.result,
-          fulfillmentSet: data.createFulfillmentSetsResult
-            .result[0] as FulfillmentSetDTO,
-        })
+        (data) => {
+          const fulfillmentSet = data.createFulfillmentSetsResult.result[0]
+          if (!fulfillmentSet) {
+            throw new Error(
+              "No fulfillment sets created - cannot link stock locations"
+            )
+          }
+          return {
+            stockLocations: data.createStockLocationResult.result,
+            fulfillmentSet,
+          }
+        }
       )
 
     Steps.linkStockLocationFulfillmentSetStep(
@@ -137,23 +144,38 @@ const seedN1Workflow = createWorkflow(
           createDefaultShippingProfileResult,
           createRegionsResult,
         },
-        (data) =>
-          data.input.shippingOptions.map((option) => ({
+        (data) => {
+          const serviceZoneId =
+            data.createFulfillmentSetsResult.result[0]?.service_zones[0]?.id
+          if (!serviceZoneId) {
+            throw new Error(
+              "No service zone found - cannot create shipping options"
+            )
+          }
+
+          const shippingProfileId =
+            data.createDefaultShippingProfileResult.result[0]?.id
+          if (!shippingProfileId) {
+            throw new Error(
+              "No shipping profile found - cannot create shipping options"
+            )
+          }
+
+          return data.input.shippingOptions.map((option) => ({
             name: option.name,
             providerId: option.providerId || "manual_manual",
-            serviceZoneId: data.createFulfillmentSetsResult.result[0]
-              ?.service_zones[0]?.id as string,
-            shippingProfileId: data.createDefaultShippingProfileResult.result[0]
-              ?.id as string,
+            serviceZoneId,
+            shippingProfileId,
             regions: data.createRegionsResult.result.map((region) => ({
               ...region,
-              amount: 10 as number,
+              amount: 10,
             })),
             type: option.type,
             prices: option.prices,
             rules: option.rules,
             data: option.data,
           }))
+        }
       )
 
     Steps.createShippingOptionsStep(createShippingOptionsInput)
