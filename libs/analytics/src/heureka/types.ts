@@ -3,11 +3,13 @@
  * Documentation: https://sluzby.heureka.cz/napoveda/mereni-konverzi/
  */
 
+export type HeurekaCountry = 'cz' | 'sk'
+
 export interface HeurekaConfig {
   /** API key from Heureka admin panel */
   apiKey: string
   /** Country variant: 'cz' for Heureka.cz, 'sk' for Heureka.sk */
-  country?: 'cz' | 'sk'
+  country?: HeurekaCountry
   /** Enable debug logging */
   debug?: boolean
 }
@@ -62,5 +64,3 @@ declare global {
     ROIDataObject?: string
   }
 }
-
-export type HeurekaCountry = 'cz' | 'sk'
