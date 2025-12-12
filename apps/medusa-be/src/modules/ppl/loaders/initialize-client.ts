@@ -1,10 +1,15 @@
-import type { ProviderLoaderOptions } from "@medusajs/framework/types"
+import type {
+  ICacheService,
+  ProviderLoaderOptions,
+} from "@medusajs/framework/types"
+import { Modules } from "@medusajs/framework/utils"
 import { PplClient } from "../client"
 import type { PplOptions } from "../types"
 
 export default async function initializeClientLoader({
   options,
   logger,
+  container,
 }: ProviderLoaderOptions): Promise<void> {
   if (process.env.PPL_ENABLED !== "1") {
     logger?.debug("PPL: PPL_ENABLED != 1, skipping client initialization")
@@ -31,5 +36,15 @@ export default async function initializeClientLoader({
     return
   }
 
-  PplClient.initialize(pplOptions as PplOptions, logger)
+  // Resolve cache service for codelist caching
+  let cacheService: ICacheService | undefined
+  try {
+    cacheService = container.resolve<ICacheService>(Modules.CACHING)
+  } catch {
+    logger.debug(
+      "PPL: Cache service not available, codelists will not be cached"
+    )
+  }
+
+  PplClient.initialize(pplOptions as PplOptions, logger, cacheService)
 }

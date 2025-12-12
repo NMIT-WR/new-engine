@@ -255,13 +255,13 @@ export type PplLabelService = {
 
 /**
  * Cash on Delivery settings
- * NOTE: Only CZK currency is supported!
+ * Supported currencies depend on destination country (CZK, EUR, PLN, HUF, RON)
  */
 export type PplCodSettings = {
   /** COD amount */
   codPrice: number
-  /** Currency (ONLY CZK supported) */
-  codCurrency: "CZK"
+  /** Currency code (CZK, EUR, PLN, HUF, RON - depends on destination) */
+  codCurrency: string
   /** Variable symbol for payment identification */
   codVarSym: string
   /** Czech bank account number (use with bankCode) */

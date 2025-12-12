@@ -1,5 +1,5 @@
 import { OAuth2Client } from "@badgateway/oauth2-client"
-import type { Logger } from "@medusajs/framework/types"
+import type { ICacheService, Logger } from "@medusajs/framework/types"
 import { MedusaError } from "@medusajs/framework/utils"
 import type {
   PplAccessPoint,
@@ -86,13 +86,20 @@ export class PplClient {
   private static readonly TOKEN_BUFFER_MS = 60_000
   private static readonly MAX_RETRIES = 3
   private static readonly INITIAL_RETRY_DELAY_MS = 200
+  private static readonly CACHE_TTL_SECONDS = 86_400 // 24 hours
 
   private readonly options: PplOptions
   private readonly logger: Logger
+  private readonly cacheService: ICacheService | null
 
-  private constructor(options: PplOptions, logger: Logger) {
+  private constructor(
+    options: PplOptions,
+    logger: Logger,
+    cacheService?: ICacheService
+  ) {
     this.options = options
     this.logger = logger
+    this.cacheService = cacheService ?? null
     this.initOAuthClient()
   }
 
@@ -108,11 +115,15 @@ export class PplClient {
     PplClient.tokenExpiresAt = 0
   }
 
-  static initialize(options: PplOptions, logger: Logger): PplClient {
+  static initialize(
+    options: PplOptions,
+    logger: Logger,
+    cacheService?: ICacheService
+  ): PplClient {
     if (PplClient.instance) {
       return PplClient.instance
     }
-    PplClient.instance = new PplClient(options, logger)
+    PplClient.instance = new PplClient(options, logger, cacheService)
     logger.info(`PPL: Client initialized (${options.environment} environment)`)
     return PplClient.instance
   }
@@ -450,12 +461,75 @@ export class PplClient {
   }
 
   /**
+   * Get countries with caching (24h TTL)
+   * Uses Medusa cache service if available, otherwise fetches directly
+   */
+  async getCachedCountries(): Promise<PplCodelistCountry[]> {
+    const CACHE_KEY = "ppl:codelist:countries"
+
+    if (this.cacheService) {
+      const cached =
+        await this.cacheService.get<PplCodelistCountry[]>(CACHE_KEY)
+      if (cached) {
+        this.logger.debug("PPL: Using cached countries")
+        return cached
+      }
+    }
+
+    const countries = await this.getCodelistCountries({ limit: 100, offset: 0 })
+
+    if (this.cacheService) {
+      await this.cacheService.set(
+        CACHE_KEY,
+        countries,
+        PplClient.CACHE_TTL_SECONDS
+      )
+      this.logger.debug("PPL: Cached countries")
+    }
+
+    return countries
+  }
+
+  /**
    * Get currencies codelist
    */
   async getCodelistCurrencies(
     query: PplCodelistQuery = { limit: 100, offset: 0 }
   ): Promise<PplCodelistCurrency[]> {
     return this.fetchCodelist<PplCodelistCurrency>("currency", query)
+  }
+
+  /**
+   * Get currencies with caching (24h TTL)
+   * Uses Medusa cache service if available, otherwise fetches directly
+   */
+  async getCachedCurrencies(): Promise<PplCodelistCurrency[]> {
+    const CACHE_KEY = "ppl:codelist:currencies"
+
+    if (this.cacheService) {
+      const cached =
+        await this.cacheService.get<PplCodelistCurrency[]>(CACHE_KEY)
+      if (cached) {
+        this.logger.debug("PPL: Using cached currencies")
+        return cached
+      }
+    }
+
+    const currencies = await this.getCodelistCurrencies({
+      limit: 100,
+      offset: 0,
+    })
+
+    if (this.cacheService) {
+      await this.cacheService.set(
+        CACHE_KEY,
+        currencies,
+        PplClient.CACHE_TTL_SECONDS
+      )
+      this.logger.debug("PPL: Cached currencies")
+    }
+
+    return currencies
   }
 
   /**

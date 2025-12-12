@@ -165,6 +165,14 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       )
     }
 
+    const countryCode = shippingAddress.country_code?.toUpperCase()
+    if (!countryCode) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "PPL: Shipping address must include country_code"
+      )
+    }
+
     const recipient = {
       name: this.truncate(
         `${shippingAddress.first_name || ""} ${shippingAddress.last_name || ""}`.trim(),
@@ -173,7 +181,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       street: this.truncate(shippingAddress.address_1 || "", 60),
       city: this.truncate(shippingAddress.city || "", 50),
       zipCode: shippingAddress.postal_code || "",
-      country: (shippingAddress.country_code || "CZ").toUpperCase(),
+      country: countryCode,
       phone: this.truncate(shippingAddress.phone || "", 30),
       email: this.truncate(order.email || "", 50),
     }
@@ -181,12 +189,43 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
     // Build COD settings if applicable
     let codSettings: PplCodSettings | undefined
     if (supportsCod) {
-      //TODO: potentially add status of payment?
-      const codAmount = order.total as number
-      if (!codAmount) {
+      // Validate COD amount
+      const codAmount = order.total
+      if (codAmount == null || typeof codAmount !== "number") {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
-          "PPL: Order total is required for COD"
+          "PPL: Order total must be a valid number for COD shipments"
+        )
+      }
+
+      // Validate order currency
+      const orderCurrency = order.currency_code?.toUpperCase()
+      if (!orderCurrency) {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_DATA,
+          "PPL: Order currency_code is required for COD shipments"
+        )
+      }
+
+      // Validate currency is supported by PPL
+      const supportedCurrencies = await this.getClient().getCachedCurrencies()
+      const currencySupported = supportedCurrencies.some(
+        (c) => c.code === orderCurrency
+      )
+      if (!currencySupported) {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_DATA,
+          `PPL: Currency ${orderCurrency} is not supported for COD. Supported: ${supportedCurrencies.map((c) => c.code).join(", ")}`
+        )
+      }
+
+      // Validate COD is allowed for destination country
+      const countries = await this.getClient().getCachedCountries()
+      const destCountry = countries.find((c) => c.code === countryCode)
+      if (destCountry && destCountry.codAllowed === false) {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_DATA,
+          `PPL: COD is not allowed for country ${countryCode}`
         )
       }
 
@@ -197,7 +236,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       const options = this.getClient().getOptions()
       codSettings = {
         codPrice: codAmount,
-        codCurrency: "CZK",
+        codCurrency: orderCurrency,
         codVarSym: orderId,
         ...(options.cod_iban
           ? {
