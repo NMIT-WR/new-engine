@@ -60,6 +60,7 @@ export function useGoogleAdapter(
       trackAddToCart: createTracker(
         getGtag,
         (gtag, params) => {
+          const quantity = params.quantity || 1 // Guard against division by zero
           gtag('event', 'add_to_cart', {
             currency: params.currency,
             value: params.value,
@@ -68,8 +69,8 @@ export function useGoogleAdapter(
                 item_id: params.productId,
                 item_name: params.productName,
                 item_category: params.category,
-                price: params.value / params.quantity,
-                quantity: params.quantity,
+                price: params.value / quantity,
+                quantity: quantity,
               },
             ],
           })
