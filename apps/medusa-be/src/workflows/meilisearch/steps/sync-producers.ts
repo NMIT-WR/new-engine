@@ -9,10 +9,7 @@ export type SyncMeilisearchProducersStepInput = {
 
 export const syncMeilisearchProducersStep = createStep(
   "sync-meilisearch-producers-step",
-  async (
-    { filters }: SyncMeilisearchProducersStepInput,
-    { container }
-  ) => {
+  async ({ filters }: SyncMeilisearchProducersStepInput, { container }) => {
     const queryService = container.resolve<Query>("query")
     const meilisearchService: MeiliSearchService =
       container.resolve(MEILISEARCH)
@@ -39,11 +36,11 @@ export const syncMeilisearchProducersStep = createStep(
         },
       })
       allProducers.push(...batch)
-      if (batch.length < dbBatchSize) break
+      if (batch.length < dbBatchSize) {
+        break
+      }
       dbOffset += dbBatchSize
     }
-
-    const producers = allProducers
 
     // Fetch all existing producer IDs from all indexes
     const existingProducerIds = new Set<string>()
@@ -68,12 +65,12 @@ export const syncMeilisearchProducersStep = createStep(
       }
     }
 
-    const currentProducerIds = new Set(producers.map((p) => p.id))
+    const currentProducerIds = new Set(allProducers.map((p) => p.id))
     const producersToDelete = Array.from(existingProducerIds).filter(
       (id) => !currentProducerIds.has(id)
     )
 
-    const transformedProducers = producers.map((producer) => ({
+    const transformedProducers = allProducers.map((producer) => ({
       ...producer,
       handle: `/store/producers/${producer.handle}/products`,
     }))
@@ -90,7 +87,7 @@ export const syncMeilisearchProducersStep = createStep(
     )
 
     return new StepResponse({
-      producers,
+      producers: allProducers,
     })
   }
 )

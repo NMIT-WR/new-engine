@@ -6,24 +6,31 @@ import mysql from "mysql2/promise"
 class DatabaseModuleService {
   // todo, DB table with connections & admin widget for configuration, currently hardcoded for singular use
   private db_: MySql2Database | undefined = undefined
+  private dbInitPromise_: Promise<MySql2Database> | undefined = undefined
 
   private async initDatabase() {
     if (this.db_ !== undefined) {
       return this.db_
     }
-
-    const connectionString = process.env.LEGACY_DATABASE_URL
-    if (!connectionString) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "LEGACY_DATABASE_URL environment variable is required for legacy database connection"
-      )
+    // Prevent concurrent init races - return existing promise if in-flight
+    if (this.dbInitPromise_) {
+      return this.dbInitPromise_
     }
 
-    const connection = await mysql.createConnection(connectionString)
-    this.db_ = drizzle(connection)
+    this.dbInitPromise_ = (async () => {
+      const connectionString = process.env.LEGACY_DATABASE_URL
+      if (!connectionString) {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_DATA,
+          "LEGACY_DATABASE_URL environment variable is required for legacy database connection"
+        )
+      }
+      const connection = await mysql.createConnection(connectionString)
+      this.db_ = drizzle(connection)
+      return this.db_
+    })()
 
-    return this.db_
+    return this.dbInitPromise_
   }
 
   /**
@@ -33,8 +40,7 @@ class DatabaseModuleService {
     const db = await this.initDatabase()
     const [rows] = await db.execute(sql)
 
-    const rowsTyped = rows as unknown as T[]
-    return rowsTyped
+    return rows as unknown as T[]
   }
 }
 
