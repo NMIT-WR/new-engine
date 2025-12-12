@@ -154,7 +154,12 @@ const seedDatabaseWorkflow = createWorkflow(
             shippingProfileId: shippingProfile.id,
             regions: data.createRegionsResult.result.map((region) => ({
               ...region,
-              amount: 10,
+              amount:
+                option.prices.find(
+                  (p) =>
+                    p.currencyCode?.toLowerCase() ===
+                    region.currency_code?.toLowerCase()
+                )?.amount ?? 10,
             })),
             type: option.type,
             prices: option.prices,
