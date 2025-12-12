@@ -5,14 +5,12 @@ import { MEILISEARCH, PRODUCERS } from "../"
 
 export type SyncMeilisearchProducersStepInput = {
   filters?: Record<string, unknown>
-  limit?: number
-  offset?: number
 }
 
 export const syncMeilisearchProducersStep = createStep(
   "sync-meilisearch-producers-step",
   async (
-    { filters, limit, offset }: SyncMeilisearchProducersStepInput,
+    { filters }: SyncMeilisearchProducersStepInput,
     { container }
   ) => {
     const queryService = container.resolve<Query>("query")
@@ -22,18 +20,30 @@ export const syncMeilisearchProducersStep = createStep(
     const producerFields = await meilisearchService.getFieldsForType(PRODUCERS)
     const producerIndexes = await meilisearchService.getIndexesByType(PRODUCERS)
 
-    const { data: producers } = await queryService.graph({
-      entity: "producer",
-      fields: producerFields,
-      pagination: {
-        take: limit,
-        skip: offset,
-      },
-      filters: {
-        deleted_at: null,
-        ...filters,
-      },
-    })
+    // Fetch ALL producers in batches to avoid pagination corruption
+    // (pagination would cause deletion of producers not in the current page)
+    const allProducers: Record<string, unknown>[] = []
+    let dbOffset = 0
+    const dbBatchSize = 1000
+    while (true) {
+      const { data: batch } = await queryService.graph({
+        entity: "producer",
+        fields: producerFields,
+        pagination: {
+          take: dbBatchSize,
+          skip: dbOffset,
+        },
+        filters: {
+          deleted_at: null,
+          ...filters,
+        },
+      })
+      allProducers.push(...batch)
+      if (batch.length < dbBatchSize) break
+      dbOffset += dbBatchSize
+    }
+
+    const producers = allProducers
 
     // Fetch all existing producer IDs from all indexes
     const existingProducerIds = new Set<string>()

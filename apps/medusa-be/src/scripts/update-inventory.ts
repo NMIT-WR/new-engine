@@ -155,10 +155,8 @@ export default async function updateInventory({ container }: ExecArgs) {
       logger.warn("No inventory levels to update")
     }
   } catch (error) {
-    logger.error(
-      "Error updating inventory:",
-      error instanceof Error ? error : new Error(String(error))
-    )
-    throw error
+    const err = error instanceof Error ? error : new Error(String(error))
+    logger.error("Error updating inventory:", err)
+    throw err
   }
 }

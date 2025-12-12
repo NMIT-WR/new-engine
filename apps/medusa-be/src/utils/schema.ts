@@ -16,7 +16,9 @@ export const users = pgTable(
     id: serial().primaryKey().notNull(),
     username: varchar({ length: 100 }).notNull(),
     passwordHash: text().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { mode: "date", precision: 3 })
+      .defaultNow()
+      .notNull(),
     updatedAt: timestamp("updated_at", { mode: "date", precision: 3 })
       .defaultNow()
       .notNull()

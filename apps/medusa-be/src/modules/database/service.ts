@@ -1,7 +1,7 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2"
 import type { SQL } from "drizzle-orm/sql/sql"
-import mysql, { type FieldPacket } from "mysql2/promise"
+import mysql from "mysql2/promise"
 
 class DatabaseModuleService {
   // todo, DB table with connections & admin widget for configuration, currently hardcoded for singular use
@@ -33,13 +33,8 @@ class DatabaseModuleService {
     const db = await this.initDatabase()
     const [rows] = await db.execute(sql)
 
-    const rowsTyped = rows as unknown as FieldPacket[]
-    return rowsTyped.map(
-      (row) =>
-        Object.fromEntries(
-          Object.entries(row).map(([key, value]) => [key, value])
-        ) as T
-    )
+    const rowsTyped = rows as unknown as T[]
+    return rowsTyped
   }
 }
 
