@@ -17,9 +17,6 @@ update-medusa:
 update:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
 	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update --latest
-test:
-	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-	docker run -v .:/var/www pnpm-env pnpm --workspace-root add ultracite@6.3.6 biomejs/biome@^2.3.7
 npkill:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
 	docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
@@ -31,10 +28,12 @@ down-with-volumes:
 	docker compose -f docker-compose.yaml -p new-engine down -v
 
 # Medusa specific commands
+# Usage: make medusa-create-user EMAIL=admin@example.com PASSWORD=secret
 medusa-create-user:
 	docker exec wr_medusa_be pnpm --filter medusa-be exec medusa user -e $(EMAIL) -p $(PASSWORD)
 medusa-migrate:
 	docker exec wr_medusa_be pnpm --filter medusa-be run migrate
+# Usage: make medusa-generate-migration MODULE=my_module
 medusa-generate-migration:
 	docker exec wr_medusa_be pnpm --filter medusa-be run migrate:generate-only ${MODULE}
 medusa-minio-init:
@@ -46,3 +45,7 @@ medusa-meilisearch-reseed:
 	docker exec wr_medusa_be pnpm --filter medusa-be run addInitialSearchDocuments
 medusa-seed:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedInitialData
+medusa-seed-dev-data:
+	docker exec wr_medusa_be pnpm --filter medusa-be run seedDevData
+medusa-seed-n1:
+	docker exec wr_medusa_be pnpm --filter medusa-be run seedN1

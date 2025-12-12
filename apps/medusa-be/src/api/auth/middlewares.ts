@@ -20,7 +20,7 @@ export const authRoutesMiddlewares: MiddlewareRoute[] = [
           process.env.AUTH_CORS?.split(",").map((o) => o.trim()) || []
 
         logger.debug(
-          `[CORS Middleware] Request: ${req.method} ${req.url}, Origin: ${origin}`
+          `[CORS Middleware] ${req.method} ${req.path}, Origin: ${origin || "none"}`
         )
 
         // Always set CORS headers for allowed origins

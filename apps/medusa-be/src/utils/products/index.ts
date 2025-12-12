@@ -1,4 +1,20 @@
+import { MedusaError } from "@medusajs/framework/utils"
 import type * as Steps from "../../workflows/seed/steps"
+
+function safeJsonParse<T>(
+  json: string,
+  fieldName: string,
+  productHandle: string
+): T {
+  try {
+    return JSON.parse(json) as T
+  } catch {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      `Invalid JSON in ${fieldName} for product "${productHandle}"`
+    )
+  }
+}
 
 /** Raw product data from the database (JSON strings) */
 type RawProductFromDb = {
@@ -50,11 +66,31 @@ export function toCreateProductsStepInput(
   products: RawProductFromDb[]
 ): Steps.CreateProductsStepInput {
   return products.map((raw) => {
-    const parsedImages = JSON.parse(raw.images) as { url: string }[]
-    const parsedVariants = JSON.parse(raw.variants) as RawVariant[]
-    const parsedOptions = JSON.parse(raw.options) as RawOption[]
-    const parsedCategories = JSON.parse(raw.categories) as { handle: string }[]
-    const parsedProducer = JSON.parse(raw.producer) as RawProducer | null
+    const parsedImages = safeJsonParse<{ url: string }[]>(
+      raw.images,
+      "images",
+      raw.handle
+    )
+    const parsedVariants = safeJsonParse<RawVariant[]>(
+      raw.variants,
+      "variants",
+      raw.handle
+    )
+    const parsedOptions = safeJsonParse<RawOption[]>(
+      raw.options,
+      "options",
+      raw.handle
+    )
+    const parsedCategories = safeJsonParse<{ handle: string }[]>(
+      raw.categories,
+      "categories",
+      raw.handle
+    )
+    const parsedProducer = safeJsonParse<RawProducer | null>(
+      raw.producer,
+      "producer",
+      raw.handle
+    )
 
     const options = parsedOptions.map((o) => ({
       title: o.title ?? "Variant",

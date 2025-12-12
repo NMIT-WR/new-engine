@@ -1,10 +1,11 @@
-import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import type { ExecArgs, Logger } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { sql } from "drizzle-orm"
-import { DATABASE_MODULE } from "../../modules/database"
-import type DatabaseModuleService from "../../modules/database/service"
+import { DATABASE_MODULE } from "../modules/database"
+import type DatabaseModuleService from "../modules/database/service"
 import seedN1Workflow, {
   type SeedN1WorkflowInput,
-} from "../../workflows/seed/workflows/seed-n1"
+} from "../workflows/seed/workflows/seed-n1"
 
 /** Category result from database query */
 type CategoryRaw = {
@@ -28,7 +29,11 @@ type ProductRaw = {
   producer: string
 }
 
-export async function GET(req: MedusaRequest, res: MedusaResponse) {
+export default async function seedN1({ container }: ExecArgs) {
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+
+  logger.info("Starting N1 seed from legacy database...")
+
   const countries = [
     "cz",
     "gb",
@@ -347,7 +352,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     },
   }
 
-  const dbService: DatabaseModuleService = req.scope.resolve(DATABASE_MODULE)
+  const dbService: DatabaseModuleService = container.resolve(DATABASE_MODULE)
+
+  logger.info("Fetching categories from legacy database...")
   const resultCategories = await dbService.sqlRaw<CategoryRaw>(
     sql`select cl.title,
                                cl.description,
@@ -366,7 +373,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
                           and l.active = 1
         `
   )
+  logger.info(`Found ${resultCategories.length} categories`)
 
+  logger.info("Fetching products from legacy database...")
   const productSql = sql`
             WITH RECURSIVE cte_products_base AS (
                 SELECT
@@ -540,7 +549,12 @@ where pl.rewrite_title not like ''
             from image i
                 join product p on p.id = i.id_product
             where p.deleted = 0
-            group by i.url
+), cte_product_images_unique as (
+    select distinct
+        i.id_product,
+        JSON_ARRAYAGG(JSON_OBJECT('url',CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',i.url))) as images
+    from cte_product_images i
+    group by i.id_product
                 ), cte_product_images_grouped AS (
             select
                 cpi.id_product_group,
@@ -549,7 +563,7 @@ where pl.rewrite_title not like ''
                 'url', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cpi.url)
                 )
                 ) AS images
-            from cte_product_images cpi
+            from (select distinct cpi.id_product_group, cpi.url from cte_product_images cpi) cpi
             group by cpi.id_product_group
 ), cte_variants AS (
     select
@@ -560,7 +574,7 @@ where pl.rewrite_title not like ''
       'material', COALESCE(cpmv.value, cpmbp.value),
       'options', JSON_OBJECT('Variant', TRIM(v.variant_name_unique)),
       'prices', COALESCE(cpp.prices, cpbp.prices),
-      'images', JSON_ARRAYAGG(JSON_OBJECT('url',CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',COALESCE(cbppiv.url,cbppivbp.url)))),
+      'images', COALESCE(cbppiv.images,cbppivbp.images),
       'thumbnail', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',COALESCE(cbppivt.url,cbppivtbp.url)),
       'metadata', JSON_OBJECT(
               'attributes', COALESCE(cpav.attributes, cpabp.attributes),
@@ -593,9 +607,9 @@ LEFT JOIN product_lang v_pl
   AND v_pl.id_lang = pl.id_lang AND trim(v_pl.rewrite_title) <> ''
 LEFT JOIN cte_product_prices_agg cpbp ON cpbp.productId = bp.id
 LEFT JOIN cte_product_prices_agg cpp ON cpp.productId = v.id
-LEFT JOIN cte_product_images cbppiv ON cbppiv.id_product = v.id
+LEFT JOIN cte_product_images_unique cbppiv ON cbppiv.id_product = v.id
 LEFT JOIN cte_product_images cbppivt ON cbppivt.id_product = v.id AND cbppivt.image_num = 1
-LEFT JOIN cte_product_images cbppivbp ON cbppivbp.id_product = bp.id
+LEFT JOIN cte_product_images_unique cbppivbp ON cbppivbp.id_product = bp.id
 LEFT JOIN cte_product_images cbppivtbp ON cbppivtbp.id_product = bp.id AND cbppivtbp.image_num = 1
 GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite_title, CONCAT(pl.rewrite_title,v.id))
 ), cte_variants_grouped AS (
@@ -688,10 +702,13 @@ WHERE cpig.images IS NOT NULL
             from cte_result
         `
   )
+  logger.info(`Found ${resultProducts.length} products`)
 
-  const { result } = await seedN1Workflow(req.scope).run({
+  logger.info("Running seed workflow...")
+  const { result } = await seedN1Workflow(container).run({
     input: { ...input, categories: resultCategories, products: resultProducts },
   })
 
-  res.send(result)
+  logger.info("N1 seed completed successfully")
+  logger.info(`Result: ${JSON.stringify(result, null, 2)}`)
 }

@@ -14,10 +14,11 @@ export const db = drizzle(
     "postgresql://root:root@medusa-db:5432/medusa?sslmode=disable",
   { schema }
 )
-// Helper function to check if a string is a date
+// Helper function to check if a string is a date (ISO format YYYY-MM-DD)
+// Uses strict regex to avoid false positives from new Date() coercion
+const ISO_DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})/
 function isDateString(value: string): boolean {
-  const date = new Date(value)
-  return !Number.isNaN(date.getTime())
+  return ISO_DATE_REGEX.test(value)
 }
 
 /**

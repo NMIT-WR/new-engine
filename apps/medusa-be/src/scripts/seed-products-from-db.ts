@@ -409,7 +409,44 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
     logger.info("No new collections to create, using existing ones")
   }
 
-  // 6. Import products in chunks
+  // 6. Create or get stock location (once, before the loop)
+  const stockLocationService = container.resolve(Modules.STOCK_LOCATION)
+  const existingStockLocations = await stockLocationService.listStockLocations({
+    name: "Default Warehouse",
+  })
+
+  let stockLocationId: string
+  if (existingStockLocations.length > 0 && existingStockLocations[0]) {
+    stockLocationId = existingStockLocations[0].id
+    logger.info(`Using existing stock location: ${stockLocationId}`)
+  } else {
+    const { result: stockLocationResult } = await createStockLocationsWorkflow(
+      container
+    ).run({
+      input: {
+        locations: [
+          {
+            name: "Default Warehouse",
+            address: {
+              address_1: "123 Demo Street",
+              city: "Demo City",
+              country_code: "us",
+            },
+          },
+        ],
+      },
+    })
+    if (!stockLocationResult[0]) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Failed to create stock location"
+      )
+    }
+    stockLocationId = stockLocationResult[0].id
+    logger.info(`Created stock location: ${stockLocationId}`)
+  }
+
+  // 7. Import products in chunks
   const CHUNK_SIZE = 50
   let page = 0
   let totalImported = 0
@@ -481,33 +518,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
 
       logger.info(`Successfully created ${createdProducts.length} products`)
 
-      // 7. Set inventory levels for all variants of the created products
-      const { result: stockLocationResult } =
-        await createStockLocationsWorkflow(container).run({
-          input: {
-            locations: [
-              {
-                name: "Default Warehouse",
-                address: {
-                  address_1: "123 Demo Street",
-                  city: "Demo City",
-                  country_code: "us",
-                },
-              },
-            ],
-          },
-        })
-
-      // Check if stock location was created successfully
-      const stockLocation = stockLocationResult[0]
-      if (!stockLocation) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_FOUND,
-          "Stock location not found"
-        )
-      }
-
-      // Get inventory items for the products we just created
+      // Set inventory levels for all variants of the created products
       const { data: inventoryItems } = await query.graph({
         entity: "inventory_item",
         fields: ["id"],
@@ -523,7 +534,7 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
         inventoryLevels.push({
           stocked_quantity: 100, // Default stock quantity
           inventory_item_id: inventoryItem.id,
-          location_id: stockLocation.id, // Add the location ID here
+          location_id: stockLocationId,
         })
       }
 
@@ -556,8 +567,9 @@ export default async function seedProductsFromDb({ container }: ExecArgs) {
 
       // Continue with the next chunk even if this one failed
       page += 1
+      hasMore = true
 
-      // If we've had multiple consecutive errors, stop the process
+      // If we've had multiple consecutive errors without importing anything, stop
       if (page > 3 && totalImported === 0) {
         throw new MedusaError(
           MedusaError.Types.UNEXPECTED_STATE,

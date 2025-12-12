@@ -1,9 +1,14 @@
-import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import type { ExecArgs, Logger } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import seedDatabaseWorkflow, {
   type SeedDatabaseWorkflowInput,
-} from "../../workflows/seed/workflows/seed-database"
+} from "../workflows/seed/workflows/seed-database"
 
-export async function GET(req: MedusaRequest, res: MedusaResponse) {
+export default async function seedDevData({ container }: ExecArgs) {
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+
+  logger.info("Starting dev data seed...")
+
   const countries = [
     "cz",
     "gb",
@@ -782,9 +787,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     ],
   }
 
-  const { result } = await seedDatabaseWorkflow(req.scope).run({
+  const { result } = await seedDatabaseWorkflow(container).run({
     input,
   })
 
-  res.send(result)
+  logger.info("Database seed completed successfully")
+  logger.info(`Result: ${JSON.stringify(result, null, 2)}`)
 }

@@ -1,8 +1,15 @@
-import type { ExecArgs, IProductModuleService } from "@medusajs/framework/types"
-import { Modules } from "@medusajs/framework/utils"
+import type {
+  ExecArgs,
+  IProductModuleService,
+  Logger,
+} from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import type { MeiliSearchService } from "@rokmohar/medusa-plugin-meilisearch"
 
+const BATCH_SIZE = 1000
+
 export default async function searchIndexScript({ container }: ExecArgs) {
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
   const productModuleService: IProductModuleService = container.resolve(
     Modules.PRODUCT
   )
@@ -10,7 +17,29 @@ export default async function searchIndexScript({ container }: ExecArgs) {
   const meilisearchIndexService: MeiliSearchService =
     container.resolve("meilisearch")
 
-  const products = await productModuleService.listProducts()
+  let skip = 0
+  let totalIndexed = 0
+  let hasMore = true
 
-  await meilisearchIndexService.addDocuments("products", products)
+  while (hasMore) {
+    const products = await productModuleService.listProducts(
+      {},
+      { skip, take: BATCH_SIZE }
+    )
+
+    if (products.length === 0) {
+      hasMore = false
+      break
+    }
+
+    await meilisearchIndexService.addDocuments("products", products)
+    totalIndexed += products.length
+    skip += BATCH_SIZE
+
+    if (products.length < BATCH_SIZE) {
+      hasMore = false
+    }
+  }
+
+  logger.info(`Indexed ${totalIndexed} products to MeiliSearch`)
 }

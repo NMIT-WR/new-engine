@@ -1,6 +1,6 @@
 import { ModuleProvider, Modules } from "@medusajs/framework/utils"
-import PplFulfillmentProviderService from "./service"
 import initializeClientLoader from "./loaders/initialize-client"
+import PplFulfillmentProviderService from "./service"
 
 export default ModuleProvider(Modules.FULFILLMENT, {
   services: [PplFulfillmentProviderService],

@@ -391,7 +391,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
     MedusaSweatshirt: "Medusa Sweatshirt",
     MedusaSweatpants: "Medusa Sweatpants",
     MedusaShorts: "Medusa Shorts",
-  }
+  } as const
 
   async function uploadLocalFiles(
     productImageMap: Record<string, string[]>,
@@ -447,7 +447,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
           )
 
           if (validFiles.length === 0) {
-            throw new Error(
+            throw new MedusaError(
+              MedusaError.Types.INVALID_DATA,
               `No valid files processed for product ${productName}`
             )
           }

@@ -176,13 +176,16 @@ function prepareVariantImagesWorkflowInput(
 
     if (!variantImage) {
       // if no images are specified for variant, use base images from the product entity
-      const toAdd = product.images
-        ?.map(
-          (image) => product.images.find((v) => v.url === image.url)?.id ?? null
-        )
-        .filter((v) => v !== null)
+      const productImages = product.images ?? []
+      const variantImagesCurrent = variant.images ?? []
 
-      const toRemove = variant.images
+      const toAdd = productImages
+        .map(
+          (image) => productImages.find((v) => v.url === image.url)?.id ?? null
+        )
+        .filter((id): id is string => id !== null)
+
+      const toRemove = variantImagesCurrent
         .filter((img) => !toAdd.includes(img.id))
         .map((img) => img.id)
 
@@ -194,10 +197,13 @@ function prepareVariantImagesWorkflowInput(
       continue
     }
 
+    const productImages = product.images ?? []
+    const variantImagesCurrent = variant.images ?? []
+
     const toAdd = (variantImage.images ?? [])
-      .map((image) => product.images.find((v) => v.url === image)?.id ?? null)
-      .filter((v) => v !== null)
-    const toRemove = variant.images
+      .map((image) => productImages.find((v) => v.url === image)?.id ?? null)
+      .filter((id): id is string => id !== null)
+    const toRemove = variantImagesCurrent
       .filter((img) => !toAdd.includes(img.id))
       .map((img) => img.id)
 
@@ -304,12 +310,17 @@ export const createProductsStep = createStep(
           description: inputProduct.description,
           weight: inputProduct.weight,
           status: inputProduct.status || ProductStatus.PUBLISHED,
-          shipping_profile_id: existingShippingProfiles.map((sp) => {
-            if (sp.name === inputProduct.shippingProfileName) {
-              return sp.id
+          shipping_profile_id: (() => {
+            const profile = existingShippingProfiles.find(
+              (sp) => sp.name === inputProduct.shippingProfileName
+            )
+            if (!profile) {
+              throw new Error(
+                `Shipping profile "${inputProduct.shippingProfileName}" not found`
+              )
             }
-            throw new Error(`Shipping profile "${sp.name}" not found`)
-          })[0],
+            return profile.id
+          })(),
           thumbnail: inputProduct.thumbnail || existingProduct.thumbnail,
           images: inputProduct.images ?? [],
           options: inputProduct.options,
@@ -334,14 +345,12 @@ export const createProductsStep = createStep(
                 }
               : inputVariant
           }),
-          sales_channels: existingSalesChannels.filter((sc) => {
-            if (
-              sc.name ===
-              inputProduct.salesChannelNames.find((t) => t === sc.name)
-            ) {
-              return sc
+          sales_channels: inputProduct.salesChannelNames.map((name) => {
+            const channel = existingSalesChannels.find((sc) => sc.name === name)
+            if (!channel) {
+              throw new Error(`Sales channel "${name}" not found`)
             }
-            throw new Error(`Sales channel '${sc.name}' not found`)
+            return channel
           }),
         },
       ]
@@ -369,12 +378,17 @@ export const createProductsStep = createStep(
           handle: p.handle,
           weight: p.weight,
           status: p.status || ProductStatus.PUBLISHED,
-          shipping_profile_id: existingShippingProfiles.map((sp) => {
-            if (sp.name === p.shippingProfileName) {
-              return sp.id
+          shipping_profile_id: (() => {
+            const profile = existingShippingProfiles.find(
+              (sp) => sp.name === p.shippingProfileName
+            )
+            if (!profile) {
+              throw new Error(
+                `Shipping profile "${p.shippingProfileName}" not found`
+              )
             }
-            throw new Error(`Shipping profile '${sp.name}' not found`)
-          })[0],
+            return profile.id
+          })(),
           thumbnail: p.thumbnail,
           images: p.images ?? [],
           options: p.options,
@@ -391,11 +405,12 @@ export const createProductsStep = createStep(
             })),
             metadata: v.metadata,
           })),
-          sales_channels: existingSalesChannels.filter((sc) => {
-            if (sc.name === p.salesChannelNames.find((t) => t === sc.name)) {
-              return sc
+          sales_channels: p.salesChannelNames.map((name) => {
+            const channel = existingSalesChannels.find((sc) => sc.name === name)
+            if (!channel) {
+              throw new Error(`Sales channel "${name}" not found`)
             }
-            throw new Error(`Sales channel '${sc.name}' not found`)
+            return channel
           }),
         }
       })

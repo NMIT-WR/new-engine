@@ -34,6 +34,11 @@ export default async function updateInventory({ container }: ExecArgs) {
     const product = products[0] as ProductDTO
     logger.info(`Found product: ${product.title} (${product.id})`)
 
+    if (!product.variants || product.variants.length === 0) {
+      logger.error(`Product "${product.title}" has no variants`)
+      return
+    }
+
     // Get stock location
     const stockLocations = await stockLocationService.listStockLocations(
       {
@@ -84,6 +89,11 @@ export default async function updateInventory({ container }: ExecArgs) {
         location_id: stockLocation.id,
       },
     })
+
+    if (!inventoryLevels || inventoryLevels.length === 0) {
+      logger.error("No inventory levels found for the given location")
+      return
+    }
 
     logger.info(`Found ${inventoryLevels.length} inventory levels to update`)
 

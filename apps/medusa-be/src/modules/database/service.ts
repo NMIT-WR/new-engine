@@ -1,3 +1,4 @@
+import { MedusaError } from "@medusajs/framework/utils"
 import { drizzle, type MySql2Database } from "drizzle-orm/mysql2"
 import type { SQL } from "drizzle-orm/sql/sql"
 import mysql, { type FieldPacket } from "mysql2/promise"
@@ -10,9 +11,16 @@ class DatabaseModuleService {
     if (this.db_ !== undefined) {
       return this.db_
     }
-    const connection = await mysql.createConnection(
-      "mysql://root:1234@engine-db:3306/n1shop"
-    )
+
+    const connectionString = process.env.LEGACY_DATABASE_URL
+    if (!connectionString) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "LEGACY_DATABASE_URL environment variable is required for legacy database connection"
+      )
+    }
+
+    const connection = await mysql.createConnection(connectionString)
     this.db_ = drizzle(connection)
 
     return this.db_
