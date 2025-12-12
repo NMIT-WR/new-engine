@@ -2,19 +2,21 @@
 export { LeadhubPixel } from './leadhub-pixel'
 export type { LeadhubPixelProps } from './leadhub-pixel'
 
-// Hooks
-export { useLeadhub } from './use-leadhub'
+// Adapter for unified analytics
+export { useLeadhubAdapter } from './leadhub-adapter'
+export type { UseLeadhubAdapterConfig } from './leadhub-adapter'
 
 // Types
 export type {
-	LeadhubConfig,
-	LeadhubProduct,
-	LeadhubAddress,
-	LeadhubEventName,
-	LeadhubFunction,
-	LeadhubViewContentParams,
-	LeadhubViewCategoryParams,
-	LeadhubSetCartParams,
-	LeadhubIdentifyParams,
-	LeadhubPurchaseParams,
+  LeadhubConfig,
+  LeadhubProduct,
+  LeadhubAddress,
+  LeadhubEventName,
+  LeadhubExtras,
+  LeadhubFunction,
+  LeadhubViewContentParams,
+  LeadhubViewCategoryParams,
+  LeadhubSetCartParams,
+  LeadhubIdentifyParams,
+  LeadhubPurchaseParams,
 } from './types'

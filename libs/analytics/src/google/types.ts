@@ -63,8 +63,8 @@ export interface GoogleAdsPurchaseParams {
   value: number
   /** Currency code */
   currency: string
-  /** Items purchased */
-  items?: GoogleAdsItem[]
+  /** Items purchased - required per Google Ads documentation */
+  items: GoogleAdsItem[]
 }
 
 // gtag function signature
