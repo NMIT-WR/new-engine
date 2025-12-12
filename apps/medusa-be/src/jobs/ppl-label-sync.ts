@@ -8,12 +8,15 @@ import type {
   Query,
 } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
-import {
-  type PplBatchItem,
-  type PplBatchResponse,
-  PplClient,
-  type PplFulfillmentData,
+import type {
+  PplBatchItem,
+  PplBatchResponse,
+  PplFulfillmentData,
 } from "../modules/ppl"
+import {
+  PPL_CLIENT_MODULE,
+  type PplClientModuleService,
+} from "../modules/ppl-client"
 
 /** Lock key for preventing concurrent job runs */
 const JOB_LOCK_KEY = "ppl-label-sync-job"
@@ -52,7 +55,7 @@ type SyncContext = {
   fulfillmentService: IFulfillmentModuleService
   fileService: IFileModuleService
   eventBus: IEventBusModuleService
-  client: PplClient
+  pplClient: PplClientModuleService
 }
 
 /** Sync attempt tracking */
@@ -83,11 +86,7 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
     return
   }
 
-  const client = PplClient.getInstanceOrNull()
-  if (!client) {
-    logger.debug("PPL Label Sync: Client not initialized, skipping")
-    return
-  }
+  const pplClient = container.resolve<PplClientModuleService>(PPL_CLIENT_MODULE)
 
   const lockingModule = container.resolve<ILockingModule>(Modules.LOCKING)
 
@@ -96,7 +95,7 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
     await lockingModule.execute(
       JOB_LOCK_KEY,
       async () => {
-        await executeSync(container, client, logger)
+        await executeSync(container, pplClient, logger)
       },
       { timeout: JOB_LOCK_TIMEOUT }
     )
@@ -120,7 +119,7 @@ export default async function pplLabelSyncJob(container: MedusaContainer) {
  */
 async function executeSync(
   container: MedusaContainer,
-  client: PplClient,
+  pplClient: PplClientModuleService,
   logger: Logger
 ): Promise<void> {
   const query = container.resolve<Query>(ContainerRegistrationKeys.QUERY)
@@ -138,7 +137,7 @@ async function executeSync(
       fulfillmentService,
       fileService,
       eventBus,
-      client,
+      pplClient,
     }
 
     const pendingFulfillments = await fetchPendingFulfillments(query)
@@ -198,7 +197,7 @@ async function processFulfillment(
   ctx: SyncContext,
   fulfillment: PendingFulfillment
 ): Promise<void> {
-  const { logger, client } = ctx
+  const { logger, pplClient } = ctx
   const fulfillmentData = fulfillment.data
   const batchId = fulfillmentData.batch_id
   const now = new Date().toISOString()
@@ -224,7 +223,7 @@ async function processFulfillment(
       `PPL Label Sync: Checking batch ${batchId} for fulfillment ${fulfillment.id} (attempt ${attemptInfo.syncAttempts})`
     )
 
-    const batchResult = await client.getBatchStatus(batchId)
+    const batchResult = await pplClient.getBatchStatus(batchId)
     await handleBatchResult(ctx, fulfillment, batchResult, attemptInfo)
   } catch (error) {
     logger.error(
@@ -385,10 +384,10 @@ async function downloadAndStoreLabel(
   shipmentNumber: string,
   labelUrl: string
 ): Promise<string> {
-  const { logger, fileService, client } = ctx
+  const { logger, fileService, pplClient } = ctx
 
   try {
-    const labelBuffer = await client.downloadLabel(labelUrl)
+    const labelBuffer = await pplClient.downloadLabel(labelUrl)
 
     const uploadedFiles = await fileService.createFiles([
       {

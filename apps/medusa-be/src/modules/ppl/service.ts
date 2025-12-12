@@ -14,7 +14,10 @@ import {
   AbstractFulfillmentProviderService,
   MedusaError,
 } from "@medusajs/framework/utils"
-import { PplClient } from "./client"
+import {
+  PPL_CLIENT_MODULE,
+  type PplClientModuleService,
+} from "../ppl-client"
 import type {
   PplCodSettings,
   PplFulfillmentData,
@@ -22,11 +25,11 @@ import type {
   PplProductType,
   PplShipmentRequest,
   PplShippingOptionData,
-} from "./types"
+} from "../ppl-client/types"
 
 type InjectedDependencies = {
   logger: Logger
-}
+} & Record<typeof PPL_CLIENT_MODULE, PplClientModuleService>
 
 /**
  * PPL Fulfillment Provider Service
@@ -41,14 +44,16 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
   static override identifier = "ppl"
 
   protected readonly logger_: Logger
+  protected readonly pplClient_: PplClientModuleService
 
   constructor(container: InjectedDependencies, _options: PplOptions) {
     super()
     this.logger_ = container.logger
+    this.pplClient_ = container[PPL_CLIENT_MODULE]
   }
 
-  private getClient(): PplClient {
-    return PplClient.getInstance()
+  private getClient(): PplClientModuleService {
+    return this.pplClient_
   }
 
   /**

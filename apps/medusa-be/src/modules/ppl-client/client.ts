@@ -1,5 +1,5 @@
 import { OAuth2Client } from "@badgateway/oauth2-client"
-import type { ICacheService, Logger } from "@medusajs/framework/types"
+import type { ICachingModuleService, Logger } from "@medusajs/framework/types"
 import { MedusaError } from "@medusajs/framework/utils"
 import type {
   PplAccessPoint,
@@ -58,15 +58,12 @@ type RequestOptions = {
 type RequestOptionsWithAllow404 = RequestOptions & { allow404?: boolean }
 
 /**
- * PPL CPL API Client (Singleton)
+ * PPL CPL API Client
  *
  * Handles OAuth 2.0 authentication via @badgateway/oauth2-client,
  * rate limiting, and all API operations.
  *
- * Usage:
- * - Call PplClient.initialize(options, logger) once at startup
- * - Use PplClient.getInstance() to get the singleton
- * - Use PplClient.getInstanceOrNull() in jobs that should skip when PPL is disabled
+ * Managed by PplClientModuleService - do not instantiate directly.
  *
  * Rate Limits:
  * - Token requests: 12/minute max
@@ -75,70 +72,43 @@ type RequestOptionsWithAllow404 = RequestOptions & { allow404?: boolean }
  * - Orders per status request: 100 max
  */
 export class PplClient {
-  private static instance: PplClient | null = null
+  private cachedAccessToken: string | null = null
+  private tokenExpiresAt = 0
+  private lastRequestTime = 0
+  private oauth2Client: OAuth2Client | null = null
 
-  private static cachedAccessToken: string | null = null
-  private static tokenExpiresAt = 0
-  private static lastRequestTime = 0
-  private static oauth2Client: OAuth2Client | null = null
-
-  private static readonly MIN_REQUEST_INTERVAL = 40
-  private static readonly TOKEN_BUFFER_MS = 60_000
-  private static readonly MAX_RETRIES = 3
-  private static readonly INITIAL_RETRY_DELAY_MS = 200
-  private static readonly CACHE_TTL_SECONDS = 86_400 // 24 hours
+  private readonly MIN_REQUEST_INTERVAL = 40
+  private readonly TOKEN_BUFFER_MS = 60_000
+  private readonly MAX_RETRIES = 3
+  private readonly INITIAL_RETRY_DELAY_MS = 200
+  private readonly CACHE_TTL_SECONDS = 86_400 // 24 hours
 
   private readonly options: PplOptions
   private readonly logger: Logger
-  private readonly cacheService: ICacheService | null
+  private readonly cacheService: ICachingModuleService | null
 
-  private constructor(
+  constructor(
     options: PplOptions,
     logger: Logger,
-    cacheService?: ICacheService
+    cacheService: ICachingModuleService | null
   ) {
     this.options = options
     this.logger = logger
-    this.cacheService = cacheService ?? null
+    this.cacheService = cacheService
     this.initOAuthClient()
+    this.logger.info(
+      `PPL: Client initialized (${options.environment} environment)`
+    )
   }
 
   private initOAuthClient(): void {
-    PplClient.oauth2Client = new OAuth2Client({
+    this.oauth2Client = new OAuth2Client({
       server: this.baseUrl,
       tokenEndpoint: "/ecs/ppl/myapi2/login/getAccessToken",
       clientId: this.options.client_id,
       clientSecret: this.options.client_secret,
       authenticationMethod: "client_secret_post",
     })
-    PplClient.cachedAccessToken = null
-    PplClient.tokenExpiresAt = 0
-  }
-
-  static initialize(
-    options: PplOptions,
-    logger: Logger,
-    cacheService?: ICacheService
-  ): PplClient {
-    if (PplClient.instance) {
-      return PplClient.instance
-    }
-    PplClient.instance = new PplClient(options, logger, cacheService)
-    logger.info(`PPL: Client initialized (${options.environment} environment)`)
-    return PplClient.instance
-  }
-
-  static getInstance(): PplClient {
-    if (!PplClient.instance) {
-      throw new Error(
-        "PplClient not initialized. Call PplClient.initialize() first."
-      )
-    }
-    return PplClient.instance
-  }
-
-  static getInstanceOrNull(): PplClient | null {
-    return PplClient.instance
   }
 
   getOptions(): Readonly<PplOptions> {
@@ -151,15 +121,15 @@ export class PplClient {
 
   async getAccessToken(): Promise<string> {
     if (
-      PplClient.cachedAccessToken &&
-      PplClient.tokenExpiresAt > Date.now() + PplClient.TOKEN_BUFFER_MS
+      this.cachedAccessToken &&
+      this.tokenExpiresAt > Date.now() + this.TOKEN_BUFFER_MS
     ) {
-      return PplClient.cachedAccessToken
+      return this.cachedAccessToken
     }
 
     await this.throttle()
 
-    if (!PplClient.oauth2Client) {
+    if (!this.oauth2Client) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "PPL: OAuth2 client not initialized"
@@ -167,18 +137,18 @@ export class PplClient {
     }
 
     try {
-      const tokenResponse = await PplClient.oauth2Client.clientCredentials({
+      const tokenResponse = await this.oauth2Client.clientCredentials({
         scope: ["myapi2"],
       })
 
-      PplClient.cachedAccessToken = tokenResponse.accessToken
-      PplClient.tokenExpiresAt = tokenResponse.expiresAt
+      this.cachedAccessToken = tokenResponse.accessToken
+      this.tokenExpiresAt = tokenResponse.expiresAt
         ? tokenResponse.expiresAt * 1000
         : Date.now() + 1800 * 1000
 
       this.logger.debug("PPL: OAuth token obtained/refreshed")
 
-      return PplClient.cachedAccessToken
+      return this.cachedAccessToken
     } catch (error) {
       this.logger.error(
         "PPL auth failed",
@@ -468,8 +438,9 @@ export class PplClient {
     const CACHE_KEY = "ppl:codelist:countries"
 
     if (this.cacheService) {
-      const cached =
-        await this.cacheService.get<PplCodelistCountry[]>(CACHE_KEY)
+      const cached = (await this.cacheService.get({
+        key: CACHE_KEY,
+      })) as PplCodelistCountry[] | null
       if (cached) {
         this.logger.debug("PPL: Using cached countries")
         return cached
@@ -479,11 +450,11 @@ export class PplClient {
     const countries = await this.getCodelistCountries({ limit: 100, offset: 0 })
 
     if (this.cacheService) {
-      await this.cacheService.set(
-        CACHE_KEY,
-        countries,
-        PplClient.CACHE_TTL_SECONDS
-      )
+      await this.cacheService.set({
+        key: CACHE_KEY,
+        data: countries,
+        ttl: this.CACHE_TTL_SECONDS,
+      })
       this.logger.debug("PPL: Cached countries")
     }
 
@@ -507,8 +478,9 @@ export class PplClient {
     const CACHE_KEY = "ppl:codelist:currencies"
 
     if (this.cacheService) {
-      const cached =
-        await this.cacheService.get<PplCodelistCurrency[]>(CACHE_KEY)
+      const cached = (await this.cacheService.get({
+        key: CACHE_KEY,
+      })) as PplCodelistCurrency[] | null
       if (cached) {
         this.logger.debug("PPL: Using cached currencies")
         return cached
@@ -521,11 +493,11 @@ export class PplClient {
     })
 
     if (this.cacheService) {
-      await this.cacheService.set(
-        CACHE_KEY,
-        currencies,
-        PplClient.CACHE_TTL_SECONDS
-      )
+      await this.cacheService.set({
+        key: CACHE_KEY,
+        data: currencies,
+        ttl: this.CACHE_TTL_SECONDS,
+      })
       this.logger.debug("PPL: Cached currencies")
     }
 
@@ -878,11 +850,11 @@ export class PplClient {
 
   private async throttle(): Promise<void> {
     const now = Date.now()
-    const elapsed = now - PplClient.lastRequestTime
-    if (elapsed < PplClient.MIN_REQUEST_INTERVAL) {
-      await this.sleep(PplClient.MIN_REQUEST_INTERVAL - elapsed)
+    const elapsed = now - this.lastRequestTime
+    if (elapsed < this.MIN_REQUEST_INTERVAL) {
+      await this.sleep(this.MIN_REQUEST_INTERVAL - elapsed)
     }
-    PplClient.lastRequestTime = Date.now()
+    this.lastRequestTime = Date.now()
   }
 
   private sleep(ms: number): Promise<void> {
@@ -904,11 +876,11 @@ export class PplClient {
   ): Promise<string> {
     let lastError: Error | null = null
 
-    for (let attempt = 0; attempt <= PplClient.MAX_RETRIES; attempt++) {
+    for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       if (attempt > 0) {
-        const delay = PplClient.INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1)
+        const delay = this.INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1)
         this.logger.debug(
-          `PPL: Retry ${attempt}/${PplClient.MAX_RETRIES} after ${delay}ms`
+          `PPL: Retry ${attempt}/${this.MAX_RETRIES} after ${delay}ms`
         )
         await this.sleep(delay)
       }
@@ -927,10 +899,7 @@ export class PplClient {
           body: JSON.stringify(body),
         })
 
-        if (
-          this.isRetryable(response.status) &&
-          attempt < PplClient.MAX_RETRIES
-        ) {
+        if (this.isRetryable(response.status) && attempt < this.MAX_RETRIES) {
           const errorText = await response.text()
           lastError = new Error(`${response.status} - ${errorText}`)
           this.logger.warn(
@@ -965,10 +934,10 @@ export class PplClient {
           throw error
         }
         lastError = error instanceof Error ? error : new Error(String(error))
-        if (attempt === PplClient.MAX_RETRIES) {
+        if (attempt === this.MAX_RETRIES) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
-            `PPL ${resourceType} batch failed after ${PplClient.MAX_RETRIES + 1} attempts: ${lastError.message}`
+            `PPL ${resourceType} batch failed after ${this.MAX_RETRIES + 1} attempts: ${lastError.message}`
           )
         }
       }
@@ -997,11 +966,11 @@ export class PplClient {
     } = options
     let lastError: Error | null = null
 
-    for (let attempt = 0; attempt <= PplClient.MAX_RETRIES; attempt++) {
+    for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       if (attempt > 0) {
-        const delay = PplClient.INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1)
+        const delay = this.INITIAL_RETRY_DELAY_MS * 2 ** (attempt - 1)
         this.logger.debug(
-          `PPL: Retry ${attempt}/${PplClient.MAX_RETRIES} after ${delay}ms`
+          `PPL: Retry ${attempt}/${this.MAX_RETRIES} after ${delay}ms`
         )
         await this.sleep(delay)
       }
@@ -1028,10 +997,7 @@ export class PplClient {
           return { data: null, status: 404 }
         }
 
-        if (
-          this.isRetryable(response.status) &&
-          attempt < PplClient.MAX_RETRIES
-        ) {
+        if (this.isRetryable(response.status) && attempt < this.MAX_RETRIES) {
           const errorText = await response.text()
           lastError = new Error(`${response.status} - ${errorText}`)
           this.logger.warn(
@@ -1056,10 +1022,10 @@ export class PplClient {
           throw error
         }
         lastError = error instanceof Error ? error : new Error(String(error))
-        if (attempt === PplClient.MAX_RETRIES) {
+        if (attempt === this.MAX_RETRIES) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
-            `PPL request failed after ${PplClient.MAX_RETRIES + 1} attempts: ${lastError.message}`
+            `PPL request failed after ${this.MAX_RETRIES + 1} attempts: ${lastError.message}`
           )
         }
       }

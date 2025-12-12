@@ -3,9 +3,12 @@ import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import {
   PPL_STATUS_MESSAGES,
-  PplClient,
   type PplShipmentState,
 } from "../../../../../modules/ppl"
+import {
+  PPL_CLIENT_MODULE,
+  type PplClientModuleService,
+} from "../../../../../modules/ppl-client"
 
 /**
  * GET /store/ppl/tracking/:shipment_number
@@ -27,16 +30,18 @@ export async function GET(
     return
   }
 
-  try {
-    const client = PplClient.getInstanceOrNull()
-    if (!client) {
-      res.status(503).json({
-        error: "PPL service is not initialized",
-      })
-      return
-    }
+  if (process.env.PPL_ENABLED !== "1") {
+    res.status(503).json({
+      error: "PPL service is not enabled",
+    })
+    return
+  }
 
-    const shipmentInfos = await client.getShipmentInfo({
+  try {
+    const pplClient =
+      req.scope.resolve<PplClientModuleService>(PPL_CLIENT_MODULE)
+
+    const shipmentInfos = await pplClient.getShipmentInfo({
       shipmentNumbers: [shipment_number],
     })
     const info = shipmentInfos[0]

@@ -20,7 +20,7 @@ export default defineMiddlewares({
   ) => {
     const normalizedError = normalizeError(error)
     captureException(normalizedError)
-    return originalErrorHandler(normalizedError, req, res, next)
+    return originalErrorHandler(error, req, res, next)
   },
   routes: [...storeProducersRoutesMiddlewares],
 })

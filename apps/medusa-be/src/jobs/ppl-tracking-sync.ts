@@ -9,11 +9,14 @@ import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import {
   PPL_DELIVERED_STATES,
   PPL_FAILED_STATES,
-  PplClient,
   type PplFulfillmentData,
   type PplShipmentInfo,
   type PplShipmentState,
 } from "../modules/ppl"
+import {
+  PPL_CLIENT_MODULE,
+  type PplClientModuleService,
+} from "../modules/ppl-client"
 
 // Types
 type FulfillmentRecord = {
@@ -54,11 +57,7 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
     return
   }
 
-  const client = PplClient.getInstanceOrNull()
-  if (!client) {
-    logger.debug("PPL Tracking Sync: Client not initialized, skipping")
-    return
-  }
+  const pplClient = container.resolve<PplClientModuleService>(PPL_CLIENT_MODULE)
 
   const query = container.resolve<Query>(ContainerRegistrationKeys.QUERY)
   const fulfillmentService = container.resolve<IFulfillmentModuleService>(
@@ -81,7 +80,7 @@ export default async function pplTrackingSyncJob(container: MedusaContainer) {
     )
 
     const ctx: TrackingContext = { logger, fulfillmentService, eventBus }
-    await processFulfillmentsInBatches(ctx, client, pendingFulfillments)
+    await processFulfillmentsInBatches(ctx, pplClient, pendingFulfillments)
 
     logger.info("PPL Tracking Sync: Completed")
   } catch (error) {
@@ -116,7 +115,7 @@ async function fetchPendingFulfillments(
 
 async function processFulfillmentsInBatches(
   ctx: TrackingContext,
-  client: PplClient,
+  pplClient: PplClientModuleService,
   fulfillments: PendingFulfillment[]
 ): Promise<void> {
   // Create lookup map: shipment_number -> fulfillment
@@ -127,18 +126,18 @@ async function processFulfillmentsInBatches(
 
   for (let i = 0; i < shipmentNumbers.length; i += BATCH_SIZE) {
     const batch = shipmentNumbers.slice(i, i + BATCH_SIZE)
-    await processBatch(ctx, client, batch, fulfillmentMap)
+    await processBatch(ctx, pplClient, batch, fulfillmentMap)
   }
 }
 
 async function processBatch(
   ctx: TrackingContext,
-  client: PplClient,
+  pplClient: PplClientModuleService,
   shipmentNumbers: string[],
   fulfillmentMap: Map<string, PendingFulfillment>
 ): Promise<void> {
   try {
-    const shipmentInfos = await client.getShipmentInfo({ shipmentNumbers })
+    const shipmentInfos = await pplClient.getShipmentInfo({ shipmentNumbers })
 
     for (const info of shipmentInfos) {
       const fulfillment = fulfillmentMap.get(info.shipmentNumber)
