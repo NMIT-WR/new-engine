@@ -6,10 +6,11 @@ zerops:
         NX_DAEMON: false
       base: nodejs@22
       buildCommands:
-        # Remove everything in apps except medusa-be via regex
+        # Remove everything in apps except medusa-be, and remove libs/ui (not used by medusa-be)
         - |
           shopt -s extglob
           rm -rf apps/!(medusa-be)
+        - rm -rf libs/ui
         - rm -rf apps/medusa-be/node_modules
         - rm -rf node_modules
         - pnpm i
