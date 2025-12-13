@@ -1,3 +1,10 @@
+## [0.2.4](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.3...ui-kit-v0.2.4) (2025-12-13)
+
+
+### Bug Fixes
+
+* remove libs/ui from zerops BE build ([7c26020](https://github.com/NMIT-WR/new-engine/commit/7c2602062c4a572328db0b9af9784c7dbd6ed681))
+
 ## [0.2.3](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.2...ui-kit-v0.2.3) (2025-12-13)
 
 
