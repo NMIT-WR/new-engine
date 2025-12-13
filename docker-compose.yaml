@@ -7,10 +7,14 @@ services:
       dockerfile: docker/development/medusa-be/Dockerfile
     volumes:
       - .:/var/www
-    command: pnpm --filter medusa-be dev
+    command: pnpm --filter medusa-be dev -- --inspect=0.0.0.0:9009
+#    command: pnpm --filter medusa-be dev -- --inspect=0.0.0.0:9009
+#    command: sh -c "pnpm --filter medusa-be build && pnpm --filter medusa-be start"
+#    command: tail -f /dev/null
     ports:
       - "9000:9000"
       - "9009:9009"
+      - "24678:24678"
     depends_on:
       - medusa-db
       - medusa-valkey
@@ -22,9 +26,10 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:9000/app"]
       start_period: 10s
     environment:
-      VITE_HMR_PORT: ${DC_VITE_HMR_PORT}
+      #LOG_LEVEL: debug
       DATABASE_TYPE: postgres
       DATABASE_URL: ${DC_DATABASE_URL}
+      LEGACY_DATABASE_URL: ${DC_LEGACY_DATABASE_URL}
       MINIO_FILE_URL: ${DC_MINIO_FILE_URL}
       MINIO_REGION: ${DC_MINIO_REGION}
       MINIO_ENDPOINT: ${DC_MINIO_ENDPOINT}
@@ -42,6 +47,21 @@ services:
       AUTH_CORS: ${DC_AUTH_CORS}
       SENTRY_NAME: ${DC_SENTRY_NAME}
       SENTRY_DSN: ${DC_SENTRY_DSN}
+      # PPL Fulfillment Provider
+      PPL_ENABLED: ${DC_PPL_ENABLED:-0}
+      PPL_CLIENT_ID: ${DC_PPL_CLIENT_ID}
+      PPL_CLIENT_SECRET: ${DC_PPL_CLIENT_SECRET}
+      PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
+      PPL_COD_BANK_ACCOUNT: ${DC_PPL_COD_BANK_ACCOUNT}
+      PPL_COD_BANK_CODE: ${DC_PPL_COD_BANK_CODE}
+      # Company Address (fallback sender for fulfillment providers)
+      COMPANY_ADDRESS_NAME: ${DC_COMPANY_ADDRESS_NAME}
+      COMPANY_ADDRESS_STREET: ${DC_COMPANY_ADDRESS_STREET}
+      COMPANY_ADDRESS_CITY: ${DC_COMPANY_ADDRESS_CITY}
+      COMPANY_ADDRESS_ZIP_CODE: ${DC_COMPANY_ADDRESS_ZIP_CODE}
+      COMPANY_ADDRESS_COUNTRY: ${DC_COMPANY_ADDRESS_COUNTRY}
+      COMPANY_ADDRESS_PHONE: ${DC_COMPANY_ADDRESS_PHONE}
+      COMPANY_ADDRESS_EMAIL: ${DC_COMPANY_ADDRESS_EMAIL}
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:
@@ -73,7 +93,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
   medusa-meilisearch:
-    image: getmeili/meilisearch:v1.12
+    image: getmeili/meilisearch:v1.20
     container_name: wr_medusa_meilisearch
     ports:
       - "7700:7700"
@@ -90,7 +110,7 @@ services:
       MEILI_MASTER_KEY: ${DC_MEILI_MASTER_KEY}
       MEILI_NO_ANALYTICS: true
   medusa-db:
-    image: postgres:17.2-alpine
+    image: postgres:17.6-alpine
     restart: unless-stopped
     command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     ports:
