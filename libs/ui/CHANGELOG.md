@@ -1,3 +1,10 @@
+## [0.2.3](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.2...ui-kit-v0.2.3) (2025-12-13)
+
+
+### Bug Fixes
+
+* package conflicts, missing composer envs ([6f8bea2](https://github.com/NMIT-WR/new-engine/commit/6f8bea2113b4af0d75ac7cc2ba9f8162a8c9a021))
+
 ## [0.2.2](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.1...ui-kit-v0.2.2) (2025-12-13)
 
 
