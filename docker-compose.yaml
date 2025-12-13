@@ -27,6 +27,8 @@ services:
       start_period: 10s
     environment:
       #LOG_LEVEL: debug
+      JWT_SECRET: ${DC_JWT_SECRET:-supersecret}
+      COOKIE_SECRET: ${DC_COOKIE_SECRET:-supersecret}
       DATABASE_TYPE: postgres
       DATABASE_URL: ${DC_DATABASE_URL}
       LEGACY_DATABASE_URL: ${DC_LEGACY_DATABASE_URL}
