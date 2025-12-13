@@ -10,3 +10,9 @@ RUN npm i -g corepack@latest
 RUN corepack enable
 RUN corepack install -g pnpm@10.24.0
 WORKDIR /var/www
+
+# Prod like settings for testing, comment out host binding in docker-compose!!!
+#COPY . .
+#
+#ENV NODE_ENV=production
+#ENV DATABASE_TYPE=postgres
