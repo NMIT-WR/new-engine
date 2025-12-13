@@ -12,6 +12,7 @@ module.exports = defineConfig({
   featureFlags: {
     index_engine: true,
     caching: true,
+    backend_hmr: true,
   },
   admin: {
     // backendUrl: BACKEND_URL,
