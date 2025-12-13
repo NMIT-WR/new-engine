@@ -7,4 +7,8 @@ export { createTracker, createSimpleTracker } from './create-tracker'
 
 // Unified analytics hook
 export { useAnalytics } from './use-analytics'
-export type { UseAnalyticsConfig, TrackingResult } from './use-analytics'
+export type {
+  Analytics,
+  TrackingResult,
+  UseAnalyticsConfig,
+} from './use-analytics'

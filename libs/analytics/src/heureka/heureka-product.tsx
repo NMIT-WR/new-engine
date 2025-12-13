@@ -23,9 +23,7 @@ export interface HeurekaProductProps {
  * <HeurekaProduct country="cz" />
  * ```
  */
-export function HeurekaProduct({
-  country = 'cz',
-}: HeurekaProductProps) {
+export function HeurekaProduct({ country = 'cz' }: HeurekaProductProps) {
   const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
 
   return (

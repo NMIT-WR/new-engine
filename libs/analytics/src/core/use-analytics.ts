@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import type {
   AnalyticsAdapter,
   CoreAddToCartParams,
@@ -27,6 +27,17 @@ export interface TrackingResult {
   success: boolean
   /** Results per adapter */
   results: Record<string, boolean>
+}
+
+export interface Analytics {
+  trackViewContent: (params: CoreViewContentParams) => TrackingResult
+  trackAddToCart: (params: CoreAddToCartParams) => TrackingResult
+  trackInitiateCheckout: (params: CoreInitiateCheckoutParams) => TrackingResult
+  trackPurchase: (params: CorePurchaseParams) => TrackingResult
+  trackCustom: (
+    eventName: string,
+    params?: Record<string, unknown>
+  ) => TrackingResult
 }
 
 /**
@@ -62,139 +73,89 @@ export interface TrackingResult {
  * }
  * ```
  */
-export function useAnalytics({ adapters, debug }: UseAnalyticsConfig) {
+export function useAnalytics({
+  adapters,
+  debug,
+}: UseAnalyticsConfig): Analytics {
   // Stable ref for adapters to prevent callback recreation on every render
   // when consumers pass a new array reference (e.g., inline array literals)
   const adaptersRef = useRef(adapters)
   adaptersRef.current = adapters
 
-  /**
-   * Execute a tracking method across all adapters
-   */
-  const executeAcrossAdapters = useCallback(
-    <TParams>(
-      methodName: keyof Omit<AnalyticsAdapter, 'key'>,
-      params: TParams
+  // Stable ref for debug flag, so we can keep stable methods without
+  // useCallback/useMemo churn.
+  const debugRef = useRef(debug)
+  debugRef.current = debug
+
+  const analyticsRef = useRef<Analytics | null>(null)
+
+  if (!analyticsRef.current) {
+    const executeAcrossAdapters = (
+      label: string,
+      run: (adapter: AnalyticsAdapter) => boolean | undefined
     ): TrackingResult => {
       const results: Record<string, boolean> = {}
       let allSuccess = true
 
       for (const adapter of adaptersRef.current) {
-        const method = adapter[methodName] as
-          | ((params: TParams) => boolean)
-          | undefined
+        try {
+          const success = run(adapter)
+          results[adapter.key] = success ?? true
 
-        if (method) {
-          try {
-            const success = method(params)
-            results[adapter.key] = success
-            if (!success) {
-              allSuccess = false
-            }
-          } catch (error) {
-            results[adapter.key] = false
+          if (success === false) {
             allSuccess = false
-            if (debug) {
-              console.error(
-                `[Analytics:${adapter.key}] Error in ${String(methodName)}:`,
-                error
-              )
-            }
           }
-        } else {
-          // Method not implemented for this adapter - not an error
-          results[adapter.key] = true
+        } catch (error) {
+          results[adapter.key] = false
+          allSuccess = false
+          if (debugRef.current) {
+            console.error(
+              `[Analytics:${adapter.key}] Error in ${label}:`,
+              error
+            )
+          }
         }
       }
 
-      if (debug) {
-        console.log(`[Analytics] ${String(methodName)} results:`, results)
+      if (debugRef.current) {
+        console.log(`[Analytics] ${label} results:`, results)
       }
 
       return { success: allSuccess, results }
-    },
-    [debug]
-  )
+    }
 
-  const trackViewContent = useCallback(
-    (params: CoreViewContentParams): TrackingResult => {
-      return executeAcrossAdapters('trackViewContent', params)
-    },
-    [executeAcrossAdapters]
-  )
+    analyticsRef.current = {
+      trackViewContent: (params) =>
+        executeAcrossAdapters('trackViewContent', (adapter) =>
+          adapter.trackViewContent?.(params)
+        ),
 
-  const trackAddToCart = useCallback(
-    (params: CoreAddToCartParams): TrackingResult => {
-      return executeAcrossAdapters('trackAddToCart', params)
-    },
-    [executeAcrossAdapters]
-  )
+      trackAddToCart: (params) =>
+        executeAcrossAdapters('trackAddToCart', (adapter) =>
+          adapter.trackAddToCart?.(params)
+        ),
 
-  const trackInitiateCheckout = useCallback(
-    (params: CoreInitiateCheckoutParams): TrackingResult => {
-      return executeAcrossAdapters('trackInitiateCheckout', params)
-    },
-    [executeAcrossAdapters]
-  )
+      trackInitiateCheckout: (params) =>
+        executeAcrossAdapters('trackInitiateCheckout', (adapter) =>
+          adapter.trackInitiateCheckout?.(params)
+        ),
 
-  const trackPurchase = useCallback(
-    (params: CorePurchaseParams): TrackingResult => {
-      return executeAcrossAdapters('trackPurchase', params)
-    },
-    [executeAcrossAdapters]
-  )
+      trackPurchase: (params) =>
+        executeAcrossAdapters('trackPurchase', (adapter) =>
+          adapter.trackPurchase?.(params)
+        ),
 
-  const trackCustom = useCallback(
-    (eventName: string, params?: Record<string, unknown>): TrackingResult => {
-      const results: Record<string, boolean> = {}
-      let allSuccess = true
+      trackCustom: (eventName, params) =>
+        executeAcrossAdapters(`trackCustom(${eventName})`, (adapter) =>
+          adapter.trackCustom?.(eventName, params)
+        ),
+    }
+  }
 
-      for (const adapter of adaptersRef.current) {
-        if (adapter.trackCustom) {
-          try {
-            const success = adapter.trackCustom(eventName, params)
-            results[adapter.key] = success
-            if (!success) {
-              allSuccess = false
-            }
-          } catch (error) {
-            results[adapter.key] = false
-            allSuccess = false
-            if (debug) {
-              console.error(
-                `[Analytics:${adapter.key}] Error in trackCustom:`,
-                error
-              )
-            }
-          }
-        } else {
-          results[adapter.key] = true
-        }
-      }
+  const analytics = analyticsRef.current
+  if (!analytics) {
+    throw new Error('Analytics not initialized')
+  }
 
-      if (debug) {
-        console.log(`[Analytics] trackCustom(${eventName}) results:`, results)
-      }
-
-      return { success: allSuccess, results }
-    },
-    [debug]
-  )
-
-  return useMemo(
-    () => ({
-      trackViewContent,
-      trackAddToCart,
-      trackInitiateCheckout,
-      trackPurchase,
-      trackCustom,
-    }),
-    [
-      trackViewContent,
-      trackAddToCart,
-      trackInitiateCheckout,
-      trackPurchase,
-      trackCustom,
-    ]
-  )
+  return analytics
 }

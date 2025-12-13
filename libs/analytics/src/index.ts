@@ -31,6 +31,7 @@ export {
 } from './core'
 
 export type {
+  Analytics,
   UseAnalyticsConfig,
   TrackingResult,
   AnalyticsAdapter,
