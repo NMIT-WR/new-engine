@@ -9,7 +9,6 @@
     "build:static": "next build",
     "build:no-types": "cross-env SKIP_TYPE_CHECK=1 next build",
     "start": "next start -p 3000",
-    "lint": "next lint",
     "check:unused": "node scripts/check-unused-exports.js",
     "generate:categories": "node scripts/generate-categories.mjs",
     "prebuild": "pnpm generate:categories"
