@@ -1,3 +1,12 @@
+## [0.2.2](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.1...ui-kit-v0.2.2) (2025-12-13)
+
+
+### Bug Fixes
+
+* client cleanup, caching multi-container ([1d72287](https://github.com/NMIT-WR/new-engine/commit/1d72287e52d8383feb7ffae4a3198134c9133c2f))
+* coderabbit suggestions ([1f05508](https://github.com/NMIT-WR/new-engine/commit/1f05508c4e741f2aa161b65219598df3e37e78a1))
+* medusa container quirks, split ppl-client into it's own module ([8a73222](https://github.com/NMIT-WR/new-engine/commit/8a732224fb199135dc69adf8343af10e17128a1a))
+
 ## [0.2.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.0...ui-kit-v0.2.1) (2025-12-11)
 
 
