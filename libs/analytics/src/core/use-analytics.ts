@@ -104,7 +104,6 @@ export function useAnalytics({
         const resultKey = count === 1 ? adapter.key : `${adapter.key}#${count}`
 
         if (count > 1) {
-          allSuccess = false
           if (debugRef.current) {
             console.warn(
               `[Analytics] Duplicate adapter key detected: "${adapter.key}". Results will be keyed as "${resultKey}".`
