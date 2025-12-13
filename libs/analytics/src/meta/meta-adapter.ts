@@ -16,7 +16,7 @@ export interface UseMetaAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics/core'
+ * import { useAnalytics } from '@libs/analytics'
  * import { useMetaAdapter } from '@libs/analytics/meta'
  *
  * const analytics = useAnalytics({
@@ -28,6 +28,7 @@ export function useMetaAdapter(
   config?: UseMetaAdapterConfig
 ): AnalyticsAdapter {
   const debug = config?.debug
+  const adapterKey = 'meta' as const
 
   const trackCustom = createTracker(
     getFbq,
@@ -35,11 +36,11 @@ export function useMetaAdapter(
       fbq('trackCustom', args.eventName, args.params)
     },
     debug,
-    'meta'
+    adapterKey
   )
 
   return {
-    key: 'meta',
+    key: adapterKey,
 
     trackViewContent: createTracker(
       getFbq,
@@ -54,7 +55,7 @@ export function useMetaAdapter(
         })
       },
       debug,
-      'meta'
+      adapterKey
     ),
 
     trackAddToCart: createTracker(
@@ -75,7 +76,7 @@ export function useMetaAdapter(
         })
       },
       debug,
-      'meta'
+      adapterKey
     ),
 
     trackInitiateCheckout: createTracker(
@@ -89,7 +90,7 @@ export function useMetaAdapter(
         })
       },
       debug,
-      'meta'
+      adapterKey
     ),
 
     trackPurchase: createTracker(
@@ -108,7 +109,7 @@ export function useMetaAdapter(
         })
       },
       debug,
-      'meta'
+      adapterKey
     ),
 
     trackCustom: (eventName, params) => trackCustom({ eventName, params }),

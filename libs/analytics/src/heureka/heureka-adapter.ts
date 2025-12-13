@@ -21,7 +21,7 @@ export interface UseHeurekaAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics/core'
+ * import { useAnalytics } from '@libs/analytics'
  * import { useHeurekaAdapter } from '@libs/analytics/heureka'
  *
  * const analytics = useAnalytics({
@@ -33,9 +33,10 @@ export function useHeurekaAdapter(
   config: UseHeurekaAdapterConfig
 ): AnalyticsAdapter {
   const { apiKey, debug } = config
+  const adapterKey = 'heureka' as const
 
   return {
-    key: 'heureka',
+    key: adapterKey,
 
     // Heureka doesn't support view tracking
     trackViewContent: undefined,
@@ -75,7 +76,7 @@ export function useHeurekaAdapter(
         heureka('send', 'Order')
       },
       debug,
-      'heureka'
+      adapterKey
     ),
 
     // Heureka doesn't support custom events

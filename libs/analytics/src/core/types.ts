@@ -16,6 +16,7 @@ export interface EcommerceProduct {
 export interface CoreViewContentParams {
   productId: string
   productName: string
+  /** Unit value (usually product price). */
   value: number
   currency: string
   category?: string
@@ -24,6 +25,7 @@ export interface CoreViewContentParams {
 export interface CoreAddToCartParams {
   productId: string
   productName: string
+  /** Total value for the added quantity (e.g. unitPrice * quantity). */
   value: number
   currency: string
   quantity: number
@@ -32,6 +34,7 @@ export interface CoreAddToCartParams {
 
 export interface CoreInitiateCheckoutParams {
   productIds: string[]
+  /** Total cart value. */
   value: number
   currency: string
   numItems: number
@@ -39,6 +42,7 @@ export interface CoreInitiateCheckoutParams {
 
 export interface CorePurchaseParams {
   orderId: string
+  /** Total order value. */
   value: number
   currency: string
   numItems: number

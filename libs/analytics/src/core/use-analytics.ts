@@ -45,7 +45,7 @@ export interface Analytics {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics/core'
+ * import { useAnalytics } from '@libs/analytics'
  * import { useMetaAdapter } from '@libs/analytics/meta'
  * import { useGoogleAdapter } from '@libs/analytics/google'
  * import { useLeadhubAdapter } from '@libs/analytics/leadhub'

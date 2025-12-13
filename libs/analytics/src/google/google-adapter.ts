@@ -18,7 +18,7 @@ export interface UseGoogleAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics/core'
+ * import { useAnalytics } from '@libs/analytics'
  * import { useGoogleAdapter } from '@libs/analytics/google'
  *
  * const analytics = useAnalytics({
@@ -30,6 +30,7 @@ export function useGoogleAdapter(
   config?: UseGoogleAdapterConfig
 ): AnalyticsAdapter {
   const { conversionLabel, debug } = config ?? {}
+  const adapterKey = 'google' as const
 
   const trackCustom = createTracker(
     getGtag,
@@ -37,11 +38,11 @@ export function useGoogleAdapter(
       gtag('event', args.eventName, args.params)
     },
     debug,
-    'google'
+    adapterKey
   )
 
   return {
-    key: 'google',
+    key: adapterKey,
 
     trackViewContent: createTracker(
       getGtag,
@@ -61,7 +62,7 @@ export function useGoogleAdapter(
         })
       },
       debug,
-      'google'
+      adapterKey
     ),
 
     trackAddToCart: createTracker(
@@ -83,7 +84,7 @@ export function useGoogleAdapter(
         })
       },
       debug,
-      'google'
+      adapterKey
     ),
 
     trackInitiateCheckout: createTracker(
@@ -99,7 +100,7 @@ export function useGoogleAdapter(
         })
       },
       debug,
-      'google'
+      adapterKey
     ),
 
     trackPurchase: createTracker(
@@ -129,7 +130,7 @@ export function useGoogleAdapter(
         }
       },
       debug,
-      'google'
+      adapterKey
     ),
 
     trackCustom: (eventName, params) => trackCustom({ eventName, params }),

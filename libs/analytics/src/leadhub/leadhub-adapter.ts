@@ -23,7 +23,7 @@ export interface UseLeadhubAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics/core'
+ * import { useAnalytics } from '@libs/analytics'
  * import { useLeadhubAdapter } from '@libs/analytics/leadhub'
  *
  * const leadhubAdapter = useLeadhubAdapter()
@@ -42,9 +42,10 @@ export function useLeadhubAdapter(
   config?: UseLeadhubAdapterConfig
 ): AnalyticsAdapter & LeadhubExtras {
   const debug = config?.debug
+  const adapterKey = 'leadhub' as const
 
   return {
-    key: 'leadhub',
+    key: adapterKey,
 
     trackViewContent: createTracker(
       getLhi,
@@ -54,7 +55,7 @@ export function useLeadhubAdapter(
         })
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     // Leadhub uses SetCart instead of AddToCart
@@ -73,7 +74,7 @@ export function useLeadhubAdapter(
         })
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     // Leadhub doesn't support InitiateCheckout event - using SetCart as workaround.
@@ -92,7 +93,7 @@ export function useLeadhubAdapter(
         })
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     trackPurchase: createTracker(
@@ -112,7 +113,7 @@ export function useLeadhubAdapter(
         })
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     // Leadhub doesn't support arbitrary custom events
@@ -131,7 +132,7 @@ export function useLeadhubAdapter(
         lhi('ViewCategory', params)
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     trackIdentify: createTracker<LeadhubFunction, LeadhubIdentifyParams>(
@@ -140,7 +141,7 @@ export function useLeadhubAdapter(
         lhi('Identify', params)
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     trackSetCart: createTracker<LeadhubFunction, LeadhubSetCartParams>(
@@ -149,7 +150,7 @@ export function useLeadhubAdapter(
         lhi('SetCart', params)
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
 
     trackPageview: createSimpleTracker<LeadhubFunction>(
@@ -158,7 +159,7 @@ export function useLeadhubAdapter(
         lhi('pageview')
       },
       debug,
-      'leadhub'
+      adapterKey
     ),
   }
 }
