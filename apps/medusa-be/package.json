@@ -37,6 +37,7 @@
     "@badgateway/oauth2-client": "^3.3.1",
     "@medusajs/admin-sdk": "^2.12.2",
     "@medusajs/admin-shared": "^2.12.2",
+    "@medusajs/caching-redis": "^2.12.2",
     "@medusajs/cli": "^2.12.2",
     "@medusajs/dashboard": "^2.12.2",
     "@medusajs/draft-order": "^2.12.2",
