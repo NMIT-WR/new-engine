@@ -1,7 +1,12 @@
 const { loadEnv } = require("@medusajs/framework/utils")
 
-// Load .env.test for integration tests (unit tests should be isolated)
-if (process.env.TEST_TYPE !== "unit") {
+// TEST_TYPE: unit | integration:http | integration:modules
+const isIntegration =
+  process.env.TEST_TYPE === "integration:http" ||
+  process.env.TEST_TYPE === "integration:modules"
+
+// Load .env.test and setup only for integration tests (unit tests should be isolated)
+if (isIntegration) {
   loadEnv("test", process.cwd())
 }
 
@@ -19,14 +24,15 @@ module.exports = {
   testEnvironment: "node",
   moduleFileExtensions: ["js", "ts", "json"],
   modulePathIgnorePatterns: ["dist/", ".medusa/"],
-  setupFiles: ["./integration-tests/setup.js"],
+  setupFiles: isIntegration ? ["./integration-tests/setup.js"] : [],
 }
 
+// Default to unit tests when TEST_TYPE is unset or invalid (safe default)
 if (process.env.TEST_TYPE === "integration:http") {
   module.exports.testMatch = ["**/integration-tests/http/*.spec.[jt]s"]
 } else if (process.env.TEST_TYPE === "integration:modules") {
   module.exports.testMatch = ["**/src/modules/*/__tests__/**/*.[jt]s"]
-} else if (process.env.TEST_TYPE === "unit") {
+} else {
   module.exports.testMatch = [
     "**/src/**/__tests__/**/*.unit.spec.[jt]s",
     "**/tests/unit/**/*.unit.spec.[jt]s",

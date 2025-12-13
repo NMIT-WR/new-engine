@@ -281,30 +281,45 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
   /**
    * Called when admin cancels a fulfillment
    *
-   * If fulfillment is pending (no shipment_number yet), just return success
-   * since the shipment hasn't been processed by PPL yet.
+   * PPL API is async - batch creation returns immediately but processing happens later.
+   * We need to check the batch status to get the shipment_number if not yet available.
    *
-   * If fulfillment is completed, use POST /shipment/{shipmentNumber}/cancel
-   * NOTE: Only works BEFORE physical pickup by PPL courier
+   * NOTE: Cancellation only works BEFORE physical pickup by PPL courier
    */
   override async cancelFulfillment(
     data: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
     const fulfillmentData = data as unknown as PplFulfillmentData
-    const shipmentNumber = fulfillmentData.shipment_number
-    const status = fulfillmentData.status
+    let shipmentNumber = fulfillmentData.shipment_number
+    const batchId = fulfillmentData.batch_id
 
-    // If pending, batch may still be processing - we can't cancel via API
-    // but the shipment effectively doesn't exist yet
-    if (status === "pending" || !shipmentNumber) {
+    // If no shipment_number yet, try to fetch it from PPL batch status
+    // (batch may have been processed since fulfillment was created)
+    if (!shipmentNumber && batchId) {
       this.logger_.info(
-        `PPL: Fulfillment cancelled while pending (batch_id: ${fulfillmentData.batch_id}). No PPL cancellation needed.`
+        `PPL: No shipment_number in fulfillment data, checking batch ${batchId} status`
+      )
+
+      const batchStatus = await this.getClient().getBatchStatus(batchId)
+      const batchItem = batchStatus.items?.[0]
+
+      if (batchItem?.shipmentNumber) {
+        shipmentNumber = batchItem.shipmentNumber
+        this.logger_.info(
+          `PPL: Found shipment_number ${shipmentNumber} from batch status`
+        )
+      }
+    }
+
+    // If still no shipment number, batch hasn't been processed yet
+    if (!shipmentNumber) {
+      this.logger_.warn(
+        `PPL: Cannot cancel - batch ${batchId} not yet processed by PPL. Manual intervention may be needed.`
       )
       return {
-        cancelled: true,
-        status: "pending",
-        batch_id: fulfillmentData.batch_id,
-        note: "Fulfillment was pending - no shipment to cancel in PPL",
+        cancelled: false,
+        batch_id: batchId,
+        note: "Batch not yet processed by PPL. Check PPL portal or retry later.",
       }
     }
 

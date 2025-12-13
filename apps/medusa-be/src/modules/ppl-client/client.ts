@@ -48,7 +48,6 @@ const BASE_URLS = {
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE"
   body?: unknown
-  expectedStatus?: number
   allow404?: boolean
 }
 
@@ -69,6 +68,7 @@ export class PplClient {
 
   private readonly MAX_RETRIES = 3
   private readonly INITIAL_RETRY_DELAY_MS = 200
+  private readonly REQUEST_TIMEOUT_MS = 30_000 // 30 seconds
 
   private readonly options: PplOptions
 
@@ -107,9 +107,8 @@ export class PplClient {
       scope: ["myapi2"],
     })
 
-    const expiresAt = tokenResponse.expiresAt
-      ? tokenResponse.expiresAt * 1000
-      : Date.now() + 1800 * 1000
+    // @badgateway/oauth2-client v3.x returns expiresAt already in milliseconds
+    const expiresAt = tokenResponse.expiresAt ?? Date.now() + 1800 * 1000
 
     return {
       accessToken: tokenResponse.accessToken,
@@ -157,7 +156,7 @@ export class PplClient {
       ? labelUrl
       : `${this.baseUrl}${labelUrl}`
 
-    const response = await fetch(fullUrl, {
+    const response = await this.fetchWithTimeout(fullUrl, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -500,8 +499,8 @@ export class PplClient {
 
   private buildShipmentQueryParams(query: PplShipmentQuery): URLSearchParams {
     const params = new URLSearchParams({
-      Limit: String(query.limit || 100),
-      Offset: String(query.offset || 0),
+      Limit: String(query.limit ?? 100),
+      Offset: String(query.offset ?? 0),
     })
 
     const arrayParams: [string[] | undefined, string][] = [
@@ -534,8 +533,8 @@ export class PplClient {
     query: PplAccessPointsQuery
   ): URLSearchParams {
     const params = new URLSearchParams({
-      Limit: String(query.limit || 1000),
-      Offset: String(query.offset || 0),
+      Limit: String(query.limit ?? 1000),
+      Offset: String(query.offset ?? 0),
     })
 
     if (query.accessPointCode) {
@@ -641,6 +640,29 @@ export class PplClient {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
+  private async fetchWithTimeout(
+    url: string,
+    init: RequestInit,
+    timeoutMs: number = this.REQUEST_TIMEOUT_MS
+  ): Promise<Response> {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+    try {
+      return await fetch(url, { ...init, signal: controller.signal })
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_DATA,
+          `PPL request timed out after ${timeoutMs}ms: ${url}`
+        )
+      }
+      throw error
+    } finally {
+      clearTimeout(timeoutId)
+    }
+  }
+
   private isRetryable(status: number): boolean {
     return status === 429 || status >= 500
   }
@@ -693,7 +715,7 @@ export class PplClient {
   ): Promise<string> {
     return this.withRetry(
       () =>
-        fetch(`${this.baseUrl}${path}`, {
+        this.fetchWithTimeout(`${this.baseUrl}${path}`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -737,12 +759,7 @@ export class PplClient {
     path: string,
     options: RequestOptions = {}
   ): Promise<{ data: T | null; status: number }> {
-    const {
-      method = "GET",
-      body,
-      expectedStatus = 200,
-      allow404 = false,
-    } = options
+    const { method = "GET", body, allow404 = false } = options
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${token}`,
@@ -754,7 +771,7 @@ export class PplClient {
 
     return this.withRetry(
       () =>
-        fetch(`${this.baseUrl}${path}`, {
+        this.fetchWithTimeout(`${this.baseUrl}${path}`, {
           method,
           headers,
           body: body ? JSON.stringify(body) : undefined,
@@ -764,15 +781,16 @@ export class PplClient {
           return { data: null, status: 404 }
         }
 
-        if (response.status !== expectedStatus && !response.ok) {
+        // Accept any 2xx status, fail on 4xx/5xx
+        if (!response.ok) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
             `PPL request failed: ${response.status} - ${await response.text()}`
           )
         }
 
-        const data =
-          response.status === 204 ? null : ((await response.json()) as T)
+        const text = await response.text()
+        const data = text ? (JSON.parse(text) as T) : null
         return { data, status: response.status }
       },
       "PPL request failed"

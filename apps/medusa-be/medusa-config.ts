@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from "@medusajs/framework/utils"
+import { defineConfig, loadEnv, Modules } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
@@ -186,6 +186,7 @@ module.exports = defineConfig({
       ? [
           {
             resolve: "./src/modules/ppl-client",
+            dependencies: [Modules.LOCKING],
             options: {
               client_id: process.env.PPL_CLIENT_ID,
               client_secret: process.env.PPL_CLIENT_SECRET,

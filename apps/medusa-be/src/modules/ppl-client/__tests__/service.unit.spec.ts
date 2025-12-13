@@ -28,6 +28,10 @@ const mockCacheService = {
   clear: jest.fn(),
 }
 
+const mockLockingService = {
+  execute: jest.fn().mockImplementation(async (_key, fn) => fn()),
+}
+
 const mockLogger = {
   info: jest.fn(),
   warn: jest.fn(),
@@ -47,16 +51,25 @@ import { PplClientModuleService } from "../service"
 
 const createService = (
   options = validOptions,
-  cacheService: typeof mockCacheService | null = mockCacheService
+  cacheService: typeof mockCacheService | null = mockCacheService,
+  lockingService: typeof mockLockingService | null = mockLockingService
 ) =>
   new PplClientModuleService(
-    { logger: mockLogger, [Modules.CACHING]: cacheService } as any,
+    {
+      logger: mockLogger,
+      [Modules.CACHING]: cacheService,
+      [Modules.LOCKING]: lockingService,
+    } as any,
     options
   )
 
 describe("PplClientModuleService", () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    // Clear mockResolvedValueOnce queue (clearAllMocks doesn't do this)
+    mockCacheService.get.mockReset()
+    mockLockingService.execute.mockReset()
+    mockLockingService.execute.mockImplementation(async (_key, fn) => fn())
     jest.useFakeTimers()
   })
 
@@ -76,10 +89,10 @@ describe("PplClientModuleService", () => {
       ).toThrow("PPL: Missing required configuration")
     })
 
-    it("logs warning when cache service unavailable", () => {
-      createService(validOptions, null as any)
+    it("logs warning when cache or locking service unavailable", () => {
+      createService(validOptions, null, null)
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining("Cache service not available")
+        expect.stringContaining("Cache or locking service not available")
       )
     })
 
@@ -135,14 +148,23 @@ describe("PplClientModuleService", () => {
     })
 
     it("uses local fallback when Redis unavailable", async () => {
-      jest.useRealTimers() // Use real timers for this test
+      // MIN_REQUEST_INTERVAL_MS = 40 in service.ts
+      const MIN_INTERVAL = 40
+      const fixedNow = new Date("2025-01-15T12:00:00Z").getTime()
+      jest.setSystemTime(fixedNow)
+
       mockPplClient.fetchNewToken.mockResolvedValue({
         accessToken: "fallback-token",
-        expiresAt: Date.now() + 1_800_000,
+        expiresAt: fixedNow + 1_800_000,
       })
 
-      const service = createService(validOptions, null)
-      await service.createShipmentBatch([])
+      const service = createService(validOptions, null, null)
+      // createShipmentBatch calls acquireRateLimitSlot twice:
+      // 1. Before getToken() - elapsed is huge (from 0), no wait
+      // 2. Inside getToken() when fetching - elapsed is 0 (same tick), needs wait
+      const promise = service.createShipmentBatch([])
+      await jest.advanceTimersByTimeAsync(MIN_INTERVAL * 2)
+      await promise
 
       expect(mockPplClient.fetchNewToken).toHaveBeenCalled()
       expect(mockPplClient.createShipmentBatch).toHaveBeenCalledWith(
@@ -163,27 +185,32 @@ describe("PplClientModuleService", () => {
   })
 
   describe("rate limiting", () => {
-    it("waits when under MIN_REQUEST_INTERVAL", async () => {
-      const recentTimestamp = Date.now() - 10 // 10ms ago
-      mockCacheService.get
-        .mockResolvedValueOnce(null) // token - force fetch
-        .mockResolvedValueOnce({ timestamp: recentTimestamp }) // rate limit
+    // MIN_REQUEST_INTERVAL_MS = 40 in service.ts
+    const MIN_INTERVAL = 40
 
-      mockPplClient.fetchNewToken.mockResolvedValue({
-        accessToken: "token",
-        expiresAt: Date.now() + 1_800_000,
-      })
+    it("waits when under MIN_REQUEST_INTERVAL", async () => {
+      const elapsedSinceLastRequest = 10
+      const recentTimestamp = Date.now() - elapsedSinceLastRequest
+
+      // Call order: acquireRateLimitSlot() -> getToken()
+      mockCacheService.get
+        .mockResolvedValueOnce({ timestamp: recentTimestamp }) // rate limit - triggers wait
+        .mockResolvedValueOnce({
+          accessToken: "token",
+          expiresAt: Date.now() + 120_000,
+        }) // token - valid, no refetch needed
 
       const service = createService()
       const promise = service.createShipmentBatch([])
 
-      // Advance timers to allow rate limit wait
-      jest.advanceTimersByTime(50)
+      // Advance well past MIN_INTERVAL to ensure sleep completes
+      await jest.advanceTimersByTimeAsync(MIN_INTERVAL * 2)
       await promise
 
       expect(mockCacheService.set).toHaveBeenCalledWith(
         expect.objectContaining({ key: "ppl:rate:last_request" })
       )
+      expect(mockPplClient.fetchNewToken).not.toHaveBeenCalled()
     })
   })
 
@@ -244,22 +271,34 @@ describe("PplClientModuleService", () => {
     })
 
     it("invalidateAllCaches clears local fallback when Redis unavailable", async () => {
-      jest.useRealTimers() // Use real timers for this test
-      const service = createService(validOptions, null)
+      // MIN_REQUEST_INTERVAL_MS = 40 in service.ts
+      const MIN_INTERVAL = 40
+      const fixedNow = new Date("2025-01-15T12:00:00Z").getTime()
+      jest.setSystemTime(fixedNow)
+
+      const service = createService(validOptions, null, null)
 
       // Prime local fallback
       mockPplClient.fetchNewToken.mockResolvedValue({
         accessToken: "token",
-        expiresAt: Date.now() + 1_800_000,
+        expiresAt: fixedNow + 1_800_000,
       })
-      await service.createShipmentBatch([])
+      // First call - needs timer advance for rate limit sleep inside getToken()
+      const primePromise = service.createShipmentBatch([])
+      await jest.advanceTimersByTimeAsync(MIN_INTERVAL * 2)
+      await primePromise
 
       // Invalidate
       await service.invalidateAllCaches()
 
-      // Next call should fetch new token
+      // Advance time past rate limit interval before next call
+      await jest.advanceTimersByTimeAsync(MIN_INTERVAL * 2)
+
+      // Next call should fetch new token (cache was invalidated)
       mockPplClient.fetchNewToken.mockClear()
-      await service.createShipmentBatch([])
+      const secondPromise = service.createShipmentBatch([])
+      await jest.advanceTimersByTimeAsync(MIN_INTERVAL * 2)
+      await secondPromise
 
       expect(mockPplClient.fetchNewToken).toHaveBeenCalled()
     })

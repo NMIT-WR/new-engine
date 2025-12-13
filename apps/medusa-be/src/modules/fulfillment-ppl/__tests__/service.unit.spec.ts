@@ -22,6 +22,7 @@ const mockPplClient = {
   getOptions: jest.fn(),
   createShipmentBatch: jest.fn(),
   cancelShipment: jest.fn(),
+  getBatchStatus: jest.fn(),
 }
 
 const createService = () =>
@@ -310,22 +311,45 @@ describe("PplFulfillmentProviderService", () => {
   })
 
   describe("cancelFulfillment", () => {
-    it("returns success for pending fulfillment without calling PPL API", async () => {
+    it("fetches batch status and cancels when pending without shipment_number", async () => {
+      mockPplClient.getBatchStatus.mockResolvedValue({
+        items: [{ referenceId: "ful_123", shipmentNumber: "12345678901" }],
+      })
+      mockPplClient.cancelShipment.mockResolvedValue(true)
+
       const result = await createService().cancelFulfillment({
         status: "pending",
         batch_id: "batch_123",
       })
 
-      expect(mockPplClient.cancelShipment).not.toHaveBeenCalled()
+      expect(mockPplClient.getBatchStatus).toHaveBeenCalledWith("batch_123")
+      expect(mockPplClient.cancelShipment).toHaveBeenCalledWith("12345678901")
       expect(result).toEqual({
         cancelled: true,
-        status: "pending",
-        batch_id: "batch_123",
-        note: "Fulfillment was pending - no shipment to cancel in PPL",
+        shipment_number: "12345678901",
       })
     })
 
-    it("calls PPL API for completed fulfillment with shipment number", async () => {
+    it("returns failure when batch not yet processed", async () => {
+      mockPplClient.getBatchStatus.mockResolvedValue({
+        items: [{ referenceId: "ful_123" }], // No shipmentNumber yet
+      })
+
+      const result = await createService().cancelFulfillment({
+        status: "pending",
+        batch_id: "batch_123",
+      })
+
+      expect(mockPplClient.getBatchStatus).toHaveBeenCalledWith("batch_123")
+      expect(mockPplClient.cancelShipment).not.toHaveBeenCalled()
+      expect(result).toEqual({
+        cancelled: false,
+        batch_id: "batch_123",
+        note: "Batch not yet processed by PPL. Check PPL portal or retry later.",
+      })
+    })
+
+    it("calls PPL API directly when shipment_number already available", async () => {
       mockPplClient.cancelShipment.mockResolvedValue(true)
 
       const result = await createService().cancelFulfillment({
@@ -334,6 +358,7 @@ describe("PplFulfillmentProviderService", () => {
         shipment_number: "12345678901",
       })
 
+      expect(mockPplClient.getBatchStatus).not.toHaveBeenCalled()
       expect(mockPplClient.cancelShipment).toHaveBeenCalledWith("12345678901")
       expect(result).toEqual({
         cancelled: true,

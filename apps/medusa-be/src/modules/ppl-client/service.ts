@@ -1,4 +1,8 @@
-import type { ICachingModuleService, Logger } from "@medusajs/framework/types"
+import type {
+  ICachingModuleService,
+  ILockingModule,
+  Logger,
+} from "@medusajs/framework/types"
 import { MedusaError, Modules } from "@medusajs/framework/utils"
 import { PplClient } from "./client"
 import type {
@@ -34,6 +38,10 @@ const CACHE_KEYS = {
   STATUSES: "ppl:codelist:statuses",
 } as const
 
+const LOCK_KEYS = {
+  RATE_LIMIT: "ppl:rate_limit_lock",
+} as const
+
 const CACHE_TAGS = {
   ALL: "ppl",
   CODELISTS: "ppl:codelists",
@@ -50,6 +58,7 @@ const TOKEN_BUFFER_MS = 60_000
 type InjectedDependencies = {
   logger: Logger
   [Modules.CACHING]?: ICachingModuleService
+  [Modules.LOCKING]?: ILockingModule
 }
 
 type CachedToken = {
@@ -72,6 +81,7 @@ export class PplClientModuleService {
   private readonly client_: PplClient
   private readonly logger_: Logger
   private readonly cacheService_: ICachingModuleService | null
+  private readonly lockingService_: ILockingModule | null
   private readonly options_: PplOptions
 
   // Local fallback state (only used when Redis unavailable)
@@ -82,6 +92,7 @@ export class PplClientModuleService {
   constructor(container: InjectedDependencies, options: PplOptions) {
     this.logger_ = container.logger
     this.cacheService_ = container[Modules.CACHING] ?? null
+    this.lockingService_ = container[Modules.LOCKING] ?? null
 
     if (!this.validateOptions(options)) {
       throw new MedusaError(
@@ -92,9 +103,9 @@ export class PplClientModuleService {
 
     this.options_ = options
 
-    if (!this.cacheService_) {
+    if (!(this.cacheService_ && this.lockingService_)) {
       this.logger_.warn(
-        "PPL: Cache service not available. Using local-only mode (not suitable for multi-container)."
+        "PPL: Cache or locking service not available. Using local-only mode (not suitable for multi-container)."
       )
     }
 
@@ -189,32 +200,64 @@ export class PplClientModuleService {
   }
 
   // ============================================
-  // Rate Limiting (Redis prioritized)
+  // Rate Limiting (Redis prioritized, atomic)
   // ============================================
 
   private async acquireRateLimitSlot(): Promise<void> {
-    const now = Date.now()
+    const cacheService = this.cacheService_
+    const lockingService = this.lockingService_
 
-    // Redis available - use distributed rate limiting
-    if (this.cacheService_) {
-      const cached = (await this.cacheService_.get({
-        key: CACHE_KEYS.RATE_LIMIT,
-      })) as { timestamp: number } | null
+    // Distributed mode: use locking for atomic check-and-set
+    if (cacheService && lockingService) {
+      let waitTime = 0
 
-      if (cached && now - cached.timestamp < MIN_REQUEST_INTERVAL_MS) {
-        const waitTime = MIN_REQUEST_INTERVAL_MS - (now - cached.timestamp)
-        await this.sleep(waitTime)
+      try {
+        await lockingService.execute(
+          LOCK_KEYS.RATE_LIMIT,
+          async () => {
+            const now = Date.now()
+            const cached = (await cacheService.get({
+              key: CACHE_KEYS.RATE_LIMIT,
+            })) as { timestamp: number } | null
+
+            if (cached && now - cached.timestamp < MIN_REQUEST_INTERVAL_MS) {
+              waitTime = MIN_REQUEST_INTERVAL_MS - (now - cached.timestamp)
+            }
+
+            // Reserve our slot by writing the future timestamp
+            const slotTime = now + waitTime
+            await cacheService.set({
+              key: CACHE_KEYS.RATE_LIMIT,
+              data: { timestamp: slotTime },
+              ttl: CACHE_TTL.RATE_LIMIT,
+            })
+          },
+          { timeout: 5 }
+        )
+      } catch (error) {
+        // Lock timeout - fall through to local fallback for this request
+        if (error instanceof Error && error.message.includes("Timed-out")) {
+          this.logger_.warn(
+            "PPL: Rate limit lock timed out, using local fallback"
+          )
+          return this.acquireLocalRateLimitSlot()
+        }
+        throw error
       }
 
-      await this.cacheService_.set({
-        key: CACHE_KEYS.RATE_LIMIT,
-        data: { timestamp: Date.now() },
-        ttl: CACHE_TTL.RATE_LIMIT,
-      })
+      // Sleep outside the lock to minimize lock hold time
+      if (waitTime > 0) {
+        await this.sleep(waitTime)
+      }
       return
     }
 
-    // Fallback: Local-only mode (Redis unavailable)
+    // Fallback: Local-only mode (Redis/locking unavailable)
+    return this.acquireLocalRateLimitSlot()
+  }
+
+  private async acquireLocalRateLimitSlot(): Promise<void> {
+    const now = Date.now()
     const elapsed = now - this.fallbackLastRequestTime_
     if (elapsed < MIN_REQUEST_INTERVAL_MS) {
       await this.sleep(MIN_REQUEST_INTERVAL_MS - elapsed)

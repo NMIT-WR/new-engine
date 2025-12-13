@@ -100,11 +100,14 @@ async function fetchPendingFulfillments(
   const { data: fulfillments } = await query.graph({
     entity: "fulfillment",
     fields: ["id", "data", "shipped_at", "delivered_at", "provider_id"],
+    filters: {
+      provider_id: "ppl_ppl",
+    },
   })
 
+  // JSON field filtering (data.shipment_number) and date checks must be done in-memory
   return (fulfillments as FulfillmentRecord[]).filter(
     (f): f is PendingFulfillment =>
-      f.provider_id === "ppl_ppl" &&
       f.shipped_at !== null &&
       !f.delivered_at &&
       typeof f.data?.shipment_number === "string"
@@ -136,6 +139,17 @@ async function processBatch(
 ): Promise<void> {
   try {
     const shipmentInfos = await pplClient.getShipmentInfo({ shipmentNumbers })
+
+    // Log shipments requested but not returned by PPL
+    const returnedNumbers = new Set(shipmentInfos.map((i) => i.shipmentNumber))
+    const missingNumbers = shipmentNumbers.filter(
+      (n) => !returnedNumbers.has(n)
+    )
+    if (missingNumbers.length > 0) {
+      ctx.logger.warn(
+        `PPL Tracking Sync: ${missingNumbers.length} shipments not found in PPL response (batch ${shipmentNumbers[0]}...): ${missingNumbers.join(", ")}`
+      )
+    }
 
     for (const info of shipmentInfos) {
       const fulfillment = fulfillmentMap.get(info.shipmentNumber)
