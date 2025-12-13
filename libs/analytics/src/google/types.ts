@@ -78,7 +78,7 @@ export interface GtagFunction {
 // Extend Window interface
 declare global {
   interface Window {
-    gtag: GtagFunction
-    dataLayer: unknown[]
+    gtag?: GtagFunction
+    dataLayer?: unknown[]
   }
 }

@@ -3,7 +3,7 @@
  *
  * Recommended usage - unified hook:
  * ```tsx
- * import { useAnalytics } from '@libs/analytics/core'
+ * import { useAnalytics } from '@libs/analytics'
  * import { useMetaAdapter } from '@libs/analytics/meta'
  * import { useGoogleAdapter } from '@libs/analytics/google'
  *

@@ -62,7 +62,7 @@ export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
 			s.src=u+'?t='+t;
 			o=d.getElementsByTagName(x)[0];
 			o.parentNode.insertBefore(s,o)
-		})(window,document,'script','lhi','//www.lhinsights.com/agent.js','${trackingId}');
+		})(window,document,'script','lhi','https://www.lhinsights.com/agent.js','${trackingId}');
 		lhi('pageview');
 		${debug ? "console.log('[Leadhub] Initialized with tracking ID:', '" + trackingId + "');" : ''}
 	`

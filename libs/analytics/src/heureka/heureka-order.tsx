@@ -59,6 +59,7 @@ export function HeurekaOrder({
   const sent = useRef(false)
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
     if (sent.current) {
       return
     }
@@ -96,7 +97,8 @@ export function HeurekaOrder({
         if (debug) {
           console.log('[HeurekaOrder] Waiting for SDK...')
         }
-        setTimeout(sendOrder, 100)
+        if (timeoutId) clearTimeout(timeoutId)
+        timeoutId = setTimeout(sendOrder, 100)
         return
       }
 
@@ -145,6 +147,7 @@ export function HeurekaOrder({
 
     return () => {
       cancelled = true
+      if (timeoutId) clearTimeout(timeoutId)
     }
   }, [apiKey, orderId, products, totalWithVat, currency, debug])
 

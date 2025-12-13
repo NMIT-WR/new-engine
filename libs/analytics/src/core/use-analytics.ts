@@ -95,22 +95,36 @@ export function useAnalytics({
       run: (adapter: AnalyticsAdapter) => boolean | undefined
     ): TrackingResult => {
       const results: Record<string, boolean> = {}
+      const keyCounts: Record<string, number> = {}
       let allSuccess = true
 
       for (const adapter of adaptersRef.current) {
+        const count = (keyCounts[adapter.key] ?? 0) + 1
+        keyCounts[adapter.key] = count
+        const resultKey = count === 1 ? adapter.key : `${adapter.key}#${count}`
+
+        if (count > 1) {
+          allSuccess = false
+          if (debugRef.current) {
+            console.warn(
+              `[Analytics] Duplicate adapter key detected: "${adapter.key}". Results will be keyed as "${resultKey}".`
+            )
+          }
+        }
+
         try {
           const success = run(adapter)
-          results[adapter.key] = success ?? true
+          results[resultKey] = success ?? true
 
           if (success === false) {
             allSuccess = false
           }
         } catch (error) {
-          results[adapter.key] = false
+          results[resultKey] = false
           allSuccess = false
           if (debugRef.current) {
             console.error(
-              `[Analytics:${adapter.key}] Error in ${label}:`,
+              `[Analytics:${resultKey}] Error in ${label}:`,
               error
             )
           }

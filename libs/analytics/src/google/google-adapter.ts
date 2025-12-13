@@ -112,7 +112,6 @@ export function useGoogleAdapter(
           items: params.products.map((p) => ({
             item_id: p.id,
             item_name: p.name,
-            item_brand: undefined,
             item_category: p.category,
             price: p.price,
             quantity: p.quantity ?? 1,

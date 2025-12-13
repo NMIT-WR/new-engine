@@ -60,7 +60,7 @@ export interface HeurekaFunction {
 
 declare global {
   interface Window {
-    heureka: HeurekaFunction
+    heureka?: HeurekaFunction
     ROIDataObject?: string
   }
 }

@@ -29,7 +29,7 @@ const VALID_PIXEL_ID_PATTERN = /^\d+$/
  * }
  * ```
  */
-export function MetaPixel({ pixelId, debug = false }: MetaPixelConfig) {
+export function MetaPixel({ pixelId, debug = false, nonce }: MetaPixelConfig) {
   if (!pixelId) {
     if (debug) {
       console.warn('[MetaPixel] No pixel ID provided, skipping initialization')
@@ -45,11 +45,16 @@ export function MetaPixel({ pixelId, debug = false }: MetaPixelConfig) {
     return null
   }
 
+  if (debug) {
+    console.log('[MetaPixel] Initializing with ID:', pixelId)
+  }
+
   return (
     <>
       <Script
         id="meta-pixel-base"
         strategy="afterInteractive"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: `
             !function(f,b,e,v,n,t,s)
@@ -62,7 +67,6 @@ export function MetaPixel({ pixelId, debug = false }: MetaPixelConfig) {
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '${pixelId}');
             fbq('track', 'PageView');
-            ${debug ? "console.log('[MetaPixel] Initialized with ID:', '" + pixelId + "');" : ''}
           `,
         }}
       />

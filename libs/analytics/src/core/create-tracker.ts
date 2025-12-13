@@ -49,8 +49,7 @@ export function createTracker<TGlobalFn, TParams>(
       trackFn(globalFn, params)
       if (debug) {
         console.log(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Event tracked:`,
-          params
+          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Event tracked`
         )
       }
       return true

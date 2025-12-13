@@ -44,7 +44,7 @@ export function HeurekaProduct({ country = 'cz' }: HeurekaProductProps) {
             n.src = c;
             g.parentNode.insertBefore(n, g);
           })(window, document, 'script',
-             '//${domain}/ocm/sdk.js?version=2&page=product_detail',
+             'https://${domain}/ocm/sdk.js?version=2&page=product_detail',
              'heureka', '${country}');
         `,
       }}
