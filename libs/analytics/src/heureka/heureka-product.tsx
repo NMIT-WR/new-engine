@@ -6,6 +6,8 @@ import type { HeurekaCountry } from './types'
 export interface HeurekaProductProps {
   /** Country variant: 'cz' for Heureka.cz, 'sk' for Heureka.sk */
   country?: HeurekaCountry
+  /** CSP nonce for inline scripts (optional) */
+  nonce?: string
 }
 
 /**
@@ -23,13 +25,14 @@ export interface HeurekaProductProps {
  * <HeurekaProduct country="cz" />
  * ```
  */
-export function HeurekaProduct({ country = 'cz' }: HeurekaProductProps) {
+export function HeurekaProduct({ country = 'cz', nonce }: HeurekaProductProps) {
   const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
 
   return (
     <Script
       id="heureka-product-script"
       strategy="afterInteractive"
+      nonce={nonce}
       dangerouslySetInnerHTML={{
         __html: `
           (function(t, r, a, c, k, i, n, g) {

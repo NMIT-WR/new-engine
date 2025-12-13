@@ -30,7 +30,7 @@ const VALID_ADS_ID_PATTERN = /^(AW|G)-[A-Z0-9]+$/i
  * }
  * ```
  */
-export function GoogleTag({ adsId, debug = false }: GoogleAdsConfig) {
+export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
   const isValidAdsId =
     typeof adsId === 'string' && VALID_ADS_ID_PATTERN.test(adsId)
 
@@ -60,12 +60,14 @@ export function GoogleTag({ adsId, debug = false }: GoogleAdsConfig) {
       <Script
         id="google-tag-script"
         strategy="afterInteractive"
+        nonce={nonce}
         src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`}
       />
       {/* Initialize gtag */}
       <Script
         id="google-tag-init"
         strategy="afterInteractive"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];

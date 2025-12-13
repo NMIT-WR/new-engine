@@ -32,7 +32,7 @@ export type LeadhubPixelProps = LeadhubConfig
  * }
  * ```
  */
-export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
+export function LeadhubPixel({ trackingId, debug, nonce }: LeadhubPixelProps) {
   const isValidTrackingId =
     typeof trackingId === 'string' && VALID_TRACKING_ID_PATTERN.test(trackingId)
 
@@ -79,6 +79,7 @@ export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
     <Script
       id="leadhub-pixel"
       strategy="afterInteractive"
+      nonce={nonce}
       dangerouslySetInnerHTML={{ __html: initScript }}
     />
   )

@@ -2,6 +2,8 @@
 
 Unified e-commerce analytics tracking with a single hook and pluggable adapters.
 
+If your app uses a strict Content Security Policy, pass a `nonce` prop to the pixel/script components.
+
 ## Usage
 
 ```tsx

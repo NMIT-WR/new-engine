@@ -13,6 +13,8 @@ export interface LeadhubConfig {
   trackingId: string
   /** Enable debug logging */
   debug?: boolean
+  /** CSP nonce for inline scripts (optional) */
+  nonce?: string
 }
 
 // ============================================================================

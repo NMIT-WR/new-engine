@@ -9,6 +9,8 @@ export interface GoogleAdsConfig {
   adsId: string
   /** Enable debug mode */
   debug?: boolean
+  /** CSP nonce for inline scripts (optional) */
+  nonce?: string
 }
 
 // Conversion event parameters

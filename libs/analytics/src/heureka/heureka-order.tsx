@@ -22,6 +22,8 @@ export interface HeurekaOrderProps {
   country?: HeurekaCountry
   /** Enable debug logging */
   debug?: boolean
+  /** CSP nonce for inline scripts (optional) */
+  nonce?: string
 }
 
 /**
@@ -54,6 +56,7 @@ export function HeurekaOrder({
   currency = 'CZK',
   country = 'cz',
   debug = false,
+  nonce,
 }: HeurekaOrderProps) {
   const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
   const sent = useRef(false)
@@ -162,6 +165,7 @@ export function HeurekaOrder({
     <Script
       id="heureka-order-script"
       strategy="afterInteractive"
+      nonce={nonce}
       dangerouslySetInnerHTML={{
         __html: `
           (function(t, r, a, c, k, i, n, g) {
