@@ -13,12 +13,10 @@ zerops:
         - rm -rf libs/ui
         - rm -rf apps/medusa-be/node_modules
         - rm -rf node_modules
-        - pnpm i
-        - rm -rf node_modules
-        - pnpm i
-        - node_modules/.bin/nx run medusa-be:build --skip-nx-cache --verbose
-        - rm -rf apps/medusa-be/node_modules
+        - pnpm install --filter=medusa-be...
+        - pnpm nx run medusa-be:build --skip-nx-cache --verbose
         - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
+        - rm -rf apps/medusa-be/node_modules
         - mv medusa-be-temp-deploy/node_modules apps/medusa-be/
       deployFiles:
         - apps/medusa-be/.medusa/server/~
