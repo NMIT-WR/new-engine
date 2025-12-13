@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.3.1...ui-kit-v0.3.2) (2025-12-13)
+
+
+### Bug Fixes
+
+* zerops config too large? ([36a6e0f](https://github.com/NMIT-WR/new-engine/commit/36a6e0fc2050377822ec171cadc6b2e7e40ed149))
+
 ## [0.3.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.3.0...ui-kit-v0.3.1) (2025-12-13)
 
 
