@@ -33,7 +33,8 @@
   ],
   "scripts": {
     "build": "rslib build",
-    "dev": "rslib build --watch"
+    "dev": "rslib build --watch",
+    "lint": "pnpm -w exec biome check libs/analytics/src --diagnostic-level=error"
   },
   "devDependencies": {
     "@rsbuild/plugin-react": "^1.4.1",

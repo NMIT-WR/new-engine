@@ -122,10 +122,7 @@ export function useAnalytics({
           results[resultKey] = false
           allSuccess = false
           if (debugRef.current) {
-            console.error(
-              `[Analytics:${resultKey}] Error in ${label}:`,
-              error
-            )
+            console.error(`[Analytics:${resultKey}] Error in ${label}:`, error)
           }
         }
       }

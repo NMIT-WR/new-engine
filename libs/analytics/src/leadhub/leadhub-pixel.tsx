@@ -1,6 +1,7 @@
 'use client'
 
 import Script from 'next/script'
+import { useEffect } from 'react'
 import type { LeadhubConfig } from './types'
 
 /** Valid Leadhub tracking ID format (alphanumeric, hyphens, underscores) */
@@ -32,6 +33,14 @@ export type LeadhubPixelProps = LeadhubConfig
  * ```
  */
 export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
+  const isValidTrackingId =
+    typeof trackingId === 'string' && VALID_TRACKING_ID_PATTERN.test(trackingId)
+
+  useEffect(() => {
+    if (!debug || !isValidTrackingId) return
+    console.log('[Leadhub] Initialized with tracking ID:', trackingId)
+  }, [debug, isValidTrackingId, trackingId])
+
   if (!trackingId) {
     if (debug) {
       console.warn('[Leadhub] No tracking ID provided, skipping initialization')
@@ -40,7 +49,7 @@ export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
   }
 
   // Validate trackingId format to prevent XSS
-  if (!VALID_TRACKING_ID_PATTERN.test(trackingId)) {
+  if (!isValidTrackingId) {
     if (debug) {
       console.error('[Leadhub] Invalid tracking ID format:', trackingId)
     }
@@ -64,7 +73,6 @@ export function LeadhubPixel({ trackingId, debug }: LeadhubPixelProps) {
 			o.parentNode.insertBefore(s,o)
 		})(window,document,'script','lhi','https://www.lhinsights.com/agent.js','${trackingId}');
 		lhi('pageview');
-		${debug ? "console.log('[Leadhub] Initialized with tracking ID:', '" + trackingId + "');" : ''}
 	`
 
   return (
