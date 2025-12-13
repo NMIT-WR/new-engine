@@ -1,3 +1,16 @@
+# [0.3.0](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.4...ui-kit-v0.3.0) (2025-12-13)
+
+
+### Bug Fixes
+
+* pnpm hoisting fix, explicit caching-redis npm install ([abc0a9f](https://github.com/NMIT-WR/new-engine/commit/abc0a9f9d95a7b2d8397c94f843603b6ba14939a))
+* quicker BE build ([b6aa546](https://github.com/NMIT-WR/new-engine/commit/b6aa5469651ab4b8654da0ee5dfe0e8537eaaa78))
+
+
+### Features
+
+* enable PPL in zerops ([4ed1acf](https://github.com/NMIT-WR/new-engine/commit/4ed1acf05a4f3749c63d369502ce30ef12d5689d))
+
 ## [0.2.4](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.3...ui-kit-v0.2.4) (2025-12-13)
 
 
