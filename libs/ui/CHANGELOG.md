@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.3.0...ui-kit-v0.3.1) (2025-12-13)
+
+
+### Bug Fixes
+
+* zerops config typo ([62e145e](https://github.com/NMIT-WR/new-engine/commit/62e145e8dc9ba9d79636a456a829ea4b34e1c1e9))
+
 # [0.3.0](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.4...ui-kit-v0.3.0) (2025-12-13)
 
 
