@@ -7,15 +7,13 @@ import type {
 } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import {
+  PPL_CLIENT_MODULE,
   PPL_DELIVERED_STATES,
   PPL_FAILED_STATES,
+  type PplClientModuleService,
   type PplFulfillmentData,
   type PplShipmentInfo,
   type PplShipmentState,
-} from "../modules/ppl"
-import {
-  PPL_CLIENT_MODULE,
-  type PplClientModuleService,
 } from "../modules/ppl-client"
 
 // Types

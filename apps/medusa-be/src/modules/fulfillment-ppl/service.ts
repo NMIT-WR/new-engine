@@ -14,10 +14,7 @@ import {
   AbstractFulfillmentProviderService,
   MedusaError,
 } from "@medusajs/framework/utils"
-import {
-  PPL_CLIENT_MODULE,
-  type PplClientModuleService,
-} from "../ppl-client"
+import { PPL_CLIENT_MODULE, type PplClientModuleService } from "../ppl-client"
 import type {
   PplCodSettings,
   PplFulfillmentData,
@@ -40,8 +37,10 @@ type InjectedDependencies = {
  * - Cash on Delivery (CZK only)
  * - PNG label generation and S3/MinIO storage
  */
+export const PPL_PROVIDER_IDENTIFIER = "ppl"
+
 class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
-  static override identifier = "ppl"
+  static override identifier = PPL_PROVIDER_IDENTIFIER
 
   protected readonly logger_: Logger
   protected readonly pplClient_: PplClientModuleService
@@ -127,7 +126,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
     }
 
     // Return data to be stored in shipping_method.data
-    const shippingOptionData: PplShippingOptionData = {
+    return {
       product_type: optionData.product_type as PplProductType,
       requires_access_point: requiresAccessPoint,
       supports_cod: optionData.supports_cod as boolean,
@@ -135,14 +134,8 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
       access_point_name: data.access_point_name as string | undefined,
       access_point_type: data.access_point_type as string | undefined,
     }
-
-    return shippingOptionData
   }
 
-  /**
-   * Called when admin creates fulfillment for an order
-   * Creates shipment in PPL, downloads label, stores in S3
-   */
   override async createFulfillment(
     data: Record<string, unknown>,
     _items: Partial<Omit<FulfillmentItemDTO, "fulfillment">>[],
@@ -150,9 +143,11 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
     fulfillment: Partial<Omit<FulfillmentDTO, "provider_id" | "data" | "items">>
   ): Promise<CreateFulfillmentResult> {
     const shippingData = data as unknown as PplShippingOptionData
-    const productType = shippingData.product_type
-    const accessPointId = shippingData.access_point_id
-    const supportsCod = shippingData.supports_cod
+    const {
+      product_type: productType,
+      access_point_id: accessPointId,
+      supports_cod: supportsCod,
+    } = shippingData
 
     if (!order) {
       throw new MedusaError(
@@ -160,159 +155,61 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         "PPL: Order is required for fulfillment"
       )
     }
-
-    // Build recipient address from order shipping address
-    const shippingAddress = order.shipping_address
-    if (!shippingAddress) {
+    if (!order.shipping_address) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "PPL: Shipping address is required"
       )
     }
 
-    const countryCode = shippingAddress.country_code?.toUpperCase()
-    if (!countryCode) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "PPL: Shipping address must include country_code"
-      )
-    }
+    const recipient = this.buildRecipient(order.shipping_address, order.email)
+    const countryCode = recipient.country
 
-    const recipient = {
-      name: this.truncate(
-        `${shippingAddress.first_name || ""} ${shippingAddress.last_name || ""}`.trim(),
-        50
-      ),
-      street: this.truncate(shippingAddress.address_1 || "", 60),
-      city: this.truncate(shippingAddress.city || "", 50),
-      zipCode: shippingAddress.postal_code || "",
-      country: countryCode,
-      phone: this.truncate(shippingAddress.phone || "", 30),
-      email: this.truncate(order.email || "", 50),
-    }
+    const codSettings = supportsCod
+      ? await this.buildCodSettings(order, countryCode)
+      : undefined
 
-    // Build COD settings if applicable
-    let codSettings: PplCodSettings | undefined
-    if (supportsCod) {
-      // Validate COD amount
-      const codAmount = order.total
-      if (codAmount == null || typeof codAmount !== "number") {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "PPL: Order total must be a valid number for COD shipments"
-        )
-      }
-
-      // Validate order currency
-      const orderCurrency = order.currency_code?.toUpperCase()
-      if (!orderCurrency) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "PPL: Order currency_code is required for COD shipments"
-        )
-      }
-
-      // Validate currency is supported by PPL
-      const supportedCurrencies = await this.getClient().getCachedCurrencies()
-      const currencySupported = supportedCurrencies.some(
-        (c) => c.code === orderCurrency
-      )
-      if (!currencySupported) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          `PPL: Currency ${orderCurrency} is not supported for COD. Supported: ${supportedCurrencies.map((c) => c.code).join(", ")}`
-        )
-      }
-
-      // Validate COD is allowed for destination country
-      const countries = await this.getClient().getCachedCountries()
-      const destCountry = countries.find((c) => c.code === countryCode)
-      if (destCountry && destCountry.codAllowed === false) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          `PPL: COD is not allowed for country ${countryCode}`
-        )
-      }
-
-      // Generate variable symbol from order ID
-      const orderId =
-        order.display_id?.toString() || order.id?.substring(0, 10) || ""
-
-      const options = this.getClient().getOptions()
-      codSettings = {
-        codPrice: codAmount,
-        codCurrency: orderCurrency,
-        codVarSym: orderId,
-        ...(options.cod_iban
-          ? {
-              iban: options.cod_iban,
-              swift: options.cod_swift,
-            }
-          : {
-              bankAccount: options.cod_bank_account,
-              bankCode: options.cod_bank_code,
-            }),
-      }
-    }
-
-    // Check if PPL customer profile is configured (warn if not)
+    // Warn if PPL customer profile not configured
     const customerInfo = await this.getClient().getCustomerInfo()
     if (!customerInfo) {
       this.logger_.warn(
-        "PPL: Customer profile not configured (GET /customer returned 404). " +
-          "Shipment creation may fail with 'Invalid customer'. " +
-          "Contact PPL support at ithelp@ppl.cz to set up your customer profile."
+        "PPL: Customer profile not configured. Shipment creation may fail. Contact ithelp@ppl.cz"
       )
     }
 
     const sender = await this.getSenderAddress()
-
-    // Build shipment request
     const fulfillmentId = fulfillment.id || `temp-${Date.now()}`
-    const shipmentRequest: PplShipmentRequest = {
-      referenceId: fulfillmentId,
+    const orderId = order.display_id?.toString() || order.id || ""
+
+    const shipmentRequest = this.buildShipmentRequest({
+      fulfillmentId,
       productType,
       recipient,
-      ...(sender && { sender }),
-      externalNumbers: [
-        {
-          code: "CUST",
-          externalNumber: order.display_id?.toString() || order.id || "",
-        },
-      ],
-      ...(accessPointId && {
-        specificDelivery: { parcelShopCode: accessPointId },
-      }),
-      ...(codSettings && { cashOnDelivery: codSettings }),
-    }
+      sender,
+      orderId,
+      accessPointId,
+      codSettings,
+    })
 
     this.logger_.info(
-      `PPL: Creating shipment for fulfillment ${fulfillmentId}, product: ${productType}`
+      `PPL: Creating shipment for ${fulfillmentId}, product: ${productType}`
     )
 
-    // Create shipment batch in PPL - returns immediately with batch_id
-    // The batch will be processed asynchronously by PPL
     const batchId = await this.getClient().createShipmentBatch([
       shipmentRequest,
     ])
 
     this.logger_.info(
-      `PPL: Shipment batch ${batchId} created for fulfillment ${fulfillmentId}. Status will be updated by ppl-label-sync job.`
+      `PPL: Batch ${batchId} created. Status updated by ppl-label-sync job.`
     )
 
-    // Build fulfillment data with pending status
-    // Label and shipment number will be populated by ppl-label-sync job
-    const fulfillmentData: PplFulfillmentData = {
-      status: "pending",
-      batch_id: batchId,
-      product_type: productType,
-      access_point_id: accessPointId,
-    }
-
-    // Return without labels - they will be added when ppl-label-sync job completes
-    // Medusa expects labels array, but we return empty for now
     return {
-      data: fulfillmentData,
+      data: {
+        status: "pending",
+        batch_id: batchId,
+        product_type: productType,
+        access_point_id: accessPointId,
+      } satisfies PplFulfillmentData,
       labels: [],
     }
   }
@@ -521,9 +418,108 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
     // Not implemented
   }
 
-  /**
-   * Truncate string to max length
-   */
+  private buildRecipient(
+    shippingAddress: NonNullable<FulfillmentOrderDTO["shipping_address"]>,
+    email: string | undefined
+  ): PplShipmentRequest["recipient"] {
+    const countryCode = shippingAddress.country_code?.toUpperCase()
+    if (!countryCode) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "PPL: Shipping address must include country_code"
+      )
+    }
+
+    return {
+      name: this.truncate(
+        `${shippingAddress.first_name || ""} ${shippingAddress.last_name || ""}`.trim(),
+        50
+      ),
+      street: this.truncate(shippingAddress.address_1 || "", 60),
+      city: this.truncate(shippingAddress.city || "", 50),
+      zipCode: shippingAddress.postal_code || "",
+      country: countryCode,
+      phone: this.truncate(shippingAddress.phone || "", 30),
+      email: this.truncate(email || "", 50),
+    }
+  }
+
+  private async buildCodSettings(
+    order: Partial<FulfillmentOrderDTO>,
+    countryCode: string
+  ): Promise<PplCodSettings> {
+    const codAmount = order.total
+    if (codAmount == null || typeof codAmount !== "number") {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "PPL: Order total must be a valid number for COD shipments"
+      )
+    }
+
+    const orderCurrency = order.currency_code?.toUpperCase()
+    if (!orderCurrency) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "PPL: Order currency_code is required for COD shipments"
+      )
+    }
+
+    const supportedCurrencies = await this.getClient().getCachedCurrencies()
+    if (!supportedCurrencies.some((c) => c.code === orderCurrency)) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `PPL: Currency ${orderCurrency} is not supported for COD. Supported: ${supportedCurrencies.map((c) => c.code).join(", ")}`
+      )
+    }
+
+    const countries = await this.getClient().getCachedCountries()
+    const destCountry = countries.find((c) => c.code === countryCode)
+    if (destCountry?.codAllowed === false) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `PPL: COD is not allowed for country ${countryCode}`
+      )
+    }
+
+    const orderId =
+      order.display_id?.toString() || order.id?.substring(0, 10) || ""
+    const options = this.getClient().getOptions()
+
+    return {
+      codPrice: codAmount,
+      codCurrency: orderCurrency,
+      codVarSym: orderId,
+      ...(options.cod_iban
+        ? { iban: options.cod_iban, swift: options.cod_swift }
+        : {
+            bankAccount: options.cod_bank_account,
+            bankCode: options.cod_bank_code,
+          }),
+    }
+  }
+
+  private buildShipmentRequest(params: {
+    fulfillmentId: string
+    productType: PplProductType
+    recipient: PplShipmentRequest["recipient"]
+    sender: PplShipmentRequest["sender"] | undefined
+    orderId: string
+    accessPointId: string | undefined
+    codSettings: PplCodSettings | undefined
+  }): PplShipmentRequest {
+    return {
+      referenceId: params.fulfillmentId,
+      productType: params.productType,
+      recipient: params.recipient,
+      ...(params.sender && { sender: params.sender }),
+      externalNumbers: [{ code: "CUST", externalNumber: params.orderId }],
+      ...(params.accessPointId && {
+        specificDelivery: { parcelShopCode: params.accessPointId },
+      }),
+      ...(params.codSettings && { cashOnDelivery: params.codSettings }),
+    }
+  }
+
   private truncate(str: string, maxLength: number): string {
     if (!str) {
       return ""

@@ -8,46 +8,25 @@ import type {
   Query,
 } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
-import type {
-  PplBatchItem,
-  PplBatchResponse,
-  PplFulfillmentData,
-} from "../modules/ppl"
 import {
   PPL_CLIENT_MODULE,
+  type PplBatchItem,
+  type PplBatchResponse,
   type PplClientModuleService,
+  type PplFulfillmentData,
 } from "../modules/ppl-client"
+import {
+  checkTimeoutConditions,
+  type FulfillmentRecord,
+  type PendingFulfillment,
+  type SyncAttemptInfo,
+} from "../modules/ppl-client/utils"
 
 /** Lock key for preventing concurrent job runs */
 const JOB_LOCK_KEY = "ppl-label-sync-job"
 
 /** Lock timeout in seconds (2 minutes - should be longer than typical job duration) */
 const JOB_LOCK_TIMEOUT = 120
-
-/**
- * Maximum number of sync attempts before marking as error
- * After 60 attempts (1 per minute), that's ~1 hour of retrying
- */
-const MAX_SYNC_ATTEMPTS = 60
-
-/**
- * Maximum age of pending fulfillment in milliseconds before marking as error
- * 24 hours - if batch hasn't completed in 24h, something is wrong
- */
-const MAX_PENDING_AGE_MS = 24 * 60 * 60 * 1000
-
-/** Fulfillment record shape from query */
-type FulfillmentRecord = {
-  id: string
-  data: PplFulfillmentData | null
-  created_at: string
-  provider_id: string
-}
-
-/** Narrowed type after filter - has confirmed pending status and batch_id */
-interface PendingFulfillment extends FulfillmentRecord {
-  data: PplFulfillmentData & { batch_id: string }
-}
 
 /** Context passed to helper functions */
 type SyncContext = {
@@ -56,13 +35,6 @@ type SyncContext = {
   fileService: IFileModuleService
   eventBus: IEventBusModuleService
   pplClient: PplClientModuleService
-}
-
-/** Sync attempt tracking */
-type SyncAttemptInfo = {
-  syncAttempts: number
-  firstSyncAttempt: string
-  now: string
 }
 
 /**
@@ -232,31 +204,6 @@ async function processFulfillment(
 
     await updateAttemptCount(ctx, fulfillment, attemptInfo)
   }
-}
-
-/**
- * Check if fulfillment has exceeded timeout conditions
- */
-function checkTimeoutConditions(
-  fulfillment: PendingFulfillment,
-  attemptInfo: SyncAttemptInfo
-): { reason: string; message: string } | null {
-  if (attemptInfo.syncAttempts >= MAX_SYNC_ATTEMPTS) {
-    return {
-      reason: `exceeded max sync attempts (${MAX_SYNC_ATTEMPTS})`,
-      message: `Batch ${fulfillment.data.batch_id} never completed after ${MAX_SYNC_ATTEMPTS} attempts`,
-    }
-  }
-
-  const createdAt = new Date(fulfillment.created_at).getTime()
-  if (Date.now() - createdAt > MAX_PENDING_AGE_MS) {
-    return {
-      reason: "pending for over 24 hours",
-      message: `Batch ${fulfillment.data.batch_id} pending for over 24 hours`,
-    }
-  }
-
-  return null
 }
 
 /**

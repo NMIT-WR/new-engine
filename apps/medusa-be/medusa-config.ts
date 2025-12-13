@@ -218,7 +218,7 @@ module.exports = defineConfig({
             options: {
               providers: [
                 {
-                  resolve: "./src/modules/ppl",
+                  resolve: "./src/modules/fulfillment-ppl",
                   id: "ppl",
                 },
               ],

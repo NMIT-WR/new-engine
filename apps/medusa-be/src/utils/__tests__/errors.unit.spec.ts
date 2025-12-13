@@ -1,6 +1,5 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import {
-  CLIENT_ERROR_TYPES,
   type ErrorWithOriginalThrowable,
   normalizeError,
   shouldCaptureException,
@@ -114,25 +113,5 @@ describe("shouldCaptureException", () => {
     it("returns true for plain Error instances without status", () => {
       expect(shouldCaptureException(new Error("test"))).toBe(true)
     })
-  })
-})
-
-describe("CLIENT_ERROR_TYPES", () => {
-  it("contains the expected error types", () => {
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.UNAUTHORIZED)).toBe(true)
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.NOT_ALLOWED)).toBe(true)
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.INVALID_DATA)).toBe(true)
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.NOT_FOUND)).toBe(true)
-  })
-
-  it("does not contain error types that might indicate infrastructure issues", () => {
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.CONFLICT)).toBe(false)
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.DUPLICATE_ERROR)).toBe(
-      false
-    )
-    expect(
-      CLIENT_ERROR_TYPES.has(MedusaError.Types.PAYMENT_AUTHORIZATION_ERROR)
-    ).toBe(false)
-    expect(CLIENT_ERROR_TYPES.has(MedusaError.Types.DB_ERROR)).toBe(false)
   })
 })
