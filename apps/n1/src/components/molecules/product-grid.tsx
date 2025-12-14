@@ -98,7 +98,7 @@ export const ProductGrid = ({
                     <VariantsBox variants={product.variants || []} />
                   </ProductCard.Actions>
                 </div>
-                <ProductCard.Stock status="in-stock">
+                <ProductCard.Stock status={product.stockValue === 'Skladem' ? 'in-stock' : 'out-of-stock'}>
                   {product.stockValue}
                 </ProductCard.Stock>
                 <div className="flex w-full flex-col items-center justify-evenly xl:flex-row">
@@ -147,16 +147,3 @@ export const ProductGrid = ({
     </div>
   )
 }
-
-/*
-{product.variants && product.variants?.length > 1 && (
-                      <ProductCard.Button
-                        buttonVariant="custom"
-                        className="h-7 min-w-7 items-center border border-border-secondary bg-surface px-50 py-50"
-                      >
-                        <span className="font-normal text-2xs text-fg-primary">
-                          Více variantů
-                        </span>
-                      </ProductCard.Button>
-                    )}
-*/

@@ -14,8 +14,8 @@ export interface Product {
   withoutTax?: string
   badges?: BadgeProps[]
   imageSrc?: string
-  stockStatus?: string
-  stockValue?: string
+  stockStatus?: 'in-stock' | 'out-of-stock' | 'limited-stock' | undefined
+  stockValue?: 'Skladem' | 'Vyprodáno'
   variants?: string[]
 }
 

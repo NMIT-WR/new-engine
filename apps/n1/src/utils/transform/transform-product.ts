@@ -9,6 +9,14 @@ import type { StoreProduct } from '@medusajs/types'
 import { slugify } from '@techsio/ui-kit/utils'
 import { formatPrice, formatVariants } from '../format/format-product'
 
+export const formatStockValue = (variants?: StoreProduct['variants']): 'Skladem' | 'Vyprodáno' => {
+  if (!variants || variants.length === 0 || variants.every(v => v.inventory_quantity === 0)) {
+    return 'Vyprodáno'
+  }
+
+  return 'Skladem'
+}
+
 export const transformProduct = (product: StoreProduct): Product => {
   return {
     id: product.id,
@@ -17,7 +25,7 @@ export const transformProduct = (product: StoreProduct): Product => {
     price: formatPrice({ variants: product.variants }),
     withoutTax: formatPrice({ variants: product.variants, tax: false }),
     imageSrc: product.thumbnail || '/placeholder.jpg',
-    stockValue: 'Skladem',
+    stockValue: formatStockValue(product.variants),
     variants: formatVariants(product.variants),
   }
 }
@@ -66,7 +74,7 @@ export const transformProductDetail = (
       upc: variant.upc,
       material: variant.material,
       allow_backorder: variant.allow_backorder ?? false,
-      inventory_quantity: variant.inventory_quantity,
+      inventory_quantity: variant.inventory_quantity ?? undefined,
       manage_inventory: variant.manage_inventory ?? true,
       metadata: variant.metadata as ProductVariantDetail['metadata'],
       calculated_price: variant.calculated_price
@@ -90,7 +98,7 @@ export const transformProductDetail = (
     price: formatPrice({ variants: product.variants }),
     withoutTax: formatPrice({ variants: product.variants, tax: false }),
     imageSrc: product.thumbnail || '/placeholder.jpg',
-    stockValue: 'Skladem',
+    stockValue: formatStockValue(product.variants),
 
     // Extended fields
     description: product.description,

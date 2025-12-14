@@ -84,10 +84,12 @@ export const PRODUCT_DETAILED_FIELDS =
   'categories.id,categories.parent_category_id'
 
 export const PRODUCT_LIST_FIELDS =
-  'id,title,handle,thumbnail,' +
-  'variants.id,variants.title,' +
-  'variants.calculated_price.calculated_amount_with_tax,' +
-  'variants.calculated_price.currency_code'
+'id,title,handle,thumbnail,' +
+  'variants.title,' +
+  'variants.manage_inventory,' +
+  'variants.inventory_quantity,' +
+  'variants.calculated_price,'
+
 
 export const PRODUCT_LIMIT = 24 as const
 
