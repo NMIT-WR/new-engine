@@ -56,16 +56,25 @@
       "linter": {
         "rules": {
           "complexity": {
-            "noExcessiveCognitiveComplexity": "off",
-            "useSimplifiedLogicExpression": "off"
+            "noExcessiveCognitiveComplexity": "warn",
+            "useSimplifiedLogicExpression": "warn"
           },
           "performance": {
-            "noBarrelFile": "off",
-            "noImgElement": "off"
+            "noBarrelFile": "off"
           },
           "style": {
-            "useConsistentTypeDefinitions": "off",
-            "useUnifiedTypeSignatures": "off"
+            "useConsistentTypeDefinitions": "warn",
+            "useUnifiedTypeSignatures": "warn"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["libs/analytics/src/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noImgElement": "off"
           },
           "security": {
             "noDangerouslySetInnerHtml": "off"

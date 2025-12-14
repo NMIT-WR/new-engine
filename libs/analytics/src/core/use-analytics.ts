@@ -100,8 +100,8 @@ export function useAnalytics({
       label: string,
       run: (adapter: AnalyticsAdapter) => boolean | undefined
     ): TrackingResult => {
-      const results: Record<string, boolean> = {}
-      const keyCounts: Record<string, number> = {}
+      const results: Record<string, boolean> = Object.create(null)
+      const keyCounts: Record<string, number> = Object.create(null)
       let allSuccess = true
 
       for (const adapter of adaptersRef.current) {

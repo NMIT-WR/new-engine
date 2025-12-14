@@ -59,11 +59,13 @@ export function HeurekaOrder({
   nonce,
 }: HeurekaOrderProps) {
   const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
-  const sent = useRef(false)
+  const sentKey = useRef<string | null>(null)
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null
-    if (sent.current) {
+    const sendKey = `${country}:${orderId}`
+
+    if (sentKey.current === sendKey) {
       return
     }
     if (!apiKey || !orderId || products.length === 0) {
@@ -83,7 +85,7 @@ export function HeurekaOrder({
     let retries = 0
     const sendOrder = () => {
       // Early exit if component unmounted or already sent
-      if (cancelled || sent.current) {
+      if (cancelled || sentKey.current === sendKey) {
         return
       }
 
@@ -107,7 +109,7 @@ export function HeurekaOrder({
         return
       }
 
-      sent.current = true
+      sentKey.current = sendKey
 
       if (debug) {
         console.log('[HeurekaOrder] Sending order:', {
@@ -156,7 +158,7 @@ export function HeurekaOrder({
         clearTimeout(timeoutId)
       }
     }
-  }, [apiKey, orderId, products, totalWithVat, currency, debug])
+  }, [apiKey, orderId, products, totalWithVat, currency, country, debug])
 
   if (!apiKey) {
     if (debug) {
