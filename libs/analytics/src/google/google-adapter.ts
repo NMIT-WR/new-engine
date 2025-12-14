@@ -77,6 +77,7 @@ export function useGoogleAdapter(
               item_id: params.productId,
               item_name: params.productName,
               item_category: params.category,
+              // params.value is total value (unit price × quantity), divide to get unit price
               price: params.value / quantity,
               quantity: quantity,
             },
