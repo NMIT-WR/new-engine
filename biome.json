@@ -49,9 +49,24 @@
       }
     },
     {
-      "includes": ["libs/analytics/src/**/*.tsx"],
+      "includes": ["libs/analytics/src/**/*"],
+      "assist": {
+        "enabled": false
+      },
       "linter": {
         "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off",
+            "useSimplifiedLogicExpression": "off"
+          },
+          "performance": {
+            "noBarrelFile": "off",
+            "noImgElement": "off"
+          },
+          "style": {
+            "useConsistentTypeDefinitions": "off",
+            "useUnifiedTypeSignatures": "off"
+          },
           "security": {
             "noDangerouslySetInnerHtml": "off"
           }

@@ -88,7 +88,7 @@ export function HeurekaOrder({
       }
 
       if (typeof window.heureka !== 'function') {
-        retries++
+        retries += 1
         if (retries > MAX_POLL_RETRIES) {
           if (debug) {
             console.warn(
@@ -100,7 +100,9 @@ export function HeurekaOrder({
         if (debug) {
           console.log('[HeurekaOrder] Waiting for SDK...')
         }
-        if (timeoutId) clearTimeout(timeoutId)
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+        }
         timeoutId = setTimeout(sendOrder, 100)
         return
       }
@@ -150,9 +152,11 @@ export function HeurekaOrder({
 
     return () => {
       cancelled = true
-      if (timeoutId) clearTimeout(timeoutId)
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
     }
-  }, [apiKey, orderId, products, totalWithVat, currency, country, debug])
+  }, [apiKey, orderId, products, totalWithVat, currency, debug])
 
   if (!apiKey) {
     if (debug) {

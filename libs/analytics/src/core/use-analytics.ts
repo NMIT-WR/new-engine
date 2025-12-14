@@ -109,12 +109,10 @@ export function useAnalytics({
         keyCounts[adapter.key] = count
         const resultKey = count === 1 ? adapter.key : `${adapter.key}#${count}`
 
-        if (count > 1) {
-          if (debugRef.current) {
-            console.warn(
-              `[Analytics] Duplicate adapter key detected: "${adapter.key}". Results will be keyed as "${resultKey}".`
-            )
-          }
+        if (count > 1 && debugRef.current) {
+          console.warn(
+            `[Analytics] Duplicate adapter key detected: "${adapter.key}". Results will be keyed as "${resultKey}".`
+          )
         }
 
         try {

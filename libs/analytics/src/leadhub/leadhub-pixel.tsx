@@ -37,7 +37,9 @@ export function LeadhubPixel({ trackingId, debug, nonce }: LeadhubPixelProps) {
     typeof trackingId === 'string' && VALID_TRACKING_ID_PATTERN.test(trackingId)
 
   useEffect(() => {
-    if (!debug || !isValidTrackingId) return
+    if (!debug || !isValidTrackingId) {
+      return
+    }
     console.log('[Leadhub] Initialized with tracking ID:', trackingId)
   }, [debug, isValidTrackingId, trackingId])
 
