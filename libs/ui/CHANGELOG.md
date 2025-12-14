@@ -1,3 +1,53 @@
+## [0.3.2](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.3.1...ui-kit-v0.3.2) (2025-12-13)
+
+
+### Bug Fixes
+
+* zerops config too large? ([36a6e0f](https://github.com/NMIT-WR/new-engine/commit/36a6e0fc2050377822ec171cadc6b2e7e40ed149))
+
+## [0.3.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.3.0...ui-kit-v0.3.1) (2025-12-13)
+
+
+### Bug Fixes
+
+* zerops config typo ([62e145e](https://github.com/NMIT-WR/new-engine/commit/62e145e8dc9ba9d79636a456a829ea4b34e1c1e9))
+
+# [0.3.0](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.4...ui-kit-v0.3.0) (2025-12-13)
+
+
+### Bug Fixes
+
+* pnpm hoisting fix, explicit caching-redis npm install ([abc0a9f](https://github.com/NMIT-WR/new-engine/commit/abc0a9f9d95a7b2d8397c94f843603b6ba14939a))
+* quicker BE build ([b6aa546](https://github.com/NMIT-WR/new-engine/commit/b6aa5469651ab4b8654da0ee5dfe0e8537eaaa78))
+
+
+### Features
+
+* enable PPL in zerops ([4ed1acf](https://github.com/NMIT-WR/new-engine/commit/4ed1acf05a4f3749c63d369502ce30ef12d5689d))
+
+## [0.2.4](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.3...ui-kit-v0.2.4) (2025-12-13)
+
+
+### Bug Fixes
+
+* remove libs/ui from zerops BE build ([7c26020](https://github.com/NMIT-WR/new-engine/commit/7c2602062c4a572328db0b9af9784c7dbd6ed681))
+
+## [0.2.3](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.2...ui-kit-v0.2.3) (2025-12-13)
+
+
+### Bug Fixes
+
+* package conflicts, missing composer envs ([6f8bea2](https://github.com/NMIT-WR/new-engine/commit/6f8bea2113b4af0d75ac7cc2ba9f8162a8c9a021))
+
+## [0.2.2](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.1...ui-kit-v0.2.2) (2025-12-13)
+
+
+### Bug Fixes
+
+* client cleanup, caching multi-container ([1d72287](https://github.com/NMIT-WR/new-engine/commit/1d72287e52d8383feb7ffae4a3198134c9133c2f))
+* coderabbit suggestions ([1f05508](https://github.com/NMIT-WR/new-engine/commit/1f05508c4e741f2aa161b65219598df3e37e78a1))
+* medusa container quirks, split ppl-client into it's own module ([8a73222](https://github.com/NMIT-WR/new-engine/commit/8a732224fb199135dc69adf8343af10e17128a1a))
+
 ## [0.2.1](https://github.com/NMIT-WR/new-engine/compare/ui-kit-v0.2.0...ui-kit-v0.2.1) (2025-12-11)
 
 

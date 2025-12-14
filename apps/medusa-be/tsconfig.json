@@ -6,11 +6,16 @@
     "baseUrl": ".",
     "jsx": "react-jsx",
     "verbatimModuleSyntax": false,
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    "declaration": false,
+    "declarationMap": false,
+    "composite": false,
+    "incremental": true,
+    "tsBuildInfoFile": "./.medusa/tsconfig.tsbuildinfo"
   },
   "ts-node": {
     "swc": true
   },
   "include": ["**/*", ".medusa/types/*"],
-  "exclude": ["node_modules", ".medusa/server", ".medusa/admin", ".cache"]
+  "exclude": ["node_modules", ".medusa/*", ".cache"]
 }

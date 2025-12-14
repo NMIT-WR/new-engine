@@ -1,148 +1,362 @@
-import type {MedusaRequest, MedusaResponse,} from "@medusajs/framework/http"
-import seedN1Workflow, {SeedN1WorkflowInput} from "../../workflows/seed/workflows/seed-n1";
-import {DATABASE_MODULE} from "../../modules/database";
-import {sql} from "drizzle-orm";
-import DatabaseModuleService from "../../modules/database/service";
+import type { ExecArgs, Logger } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { sql } from "drizzle-orm"
+import { DATABASE_MODULE } from "../modules/database"
+import type DatabaseModuleService from "../modules/database/service"
+import seedN1Workflow, {
+  type SeedN1WorkflowInput,
+} from "../workflows/seed/workflows/seed-n1"
 
-export async function GET(
-    req: MedusaRequest,
-    res: MedusaResponse
-) {
-    const countries = ["cz", "gb", "de", "dk", "se", "fr", "es", "it", 'pl', 'at', 'sk']
-    const input: Omit<SeedN1WorkflowInput, 'categories' | 'products'> = {
-        salesChannels: [{
-            name: "Default Sales Channel",
-            default: true,
-        }],
-        currencies: [{
-            code: "czk",
-            default: true,
-        }, {
-            code: "eur",
-            default: false,
-        }, {
-            code: "usd",
-            default: false,
-        }],
-        regions: [
-            {name: "Czechia", currencyCode: "czk", countries: ['cz'], paymentProviders: undefined},
-            {
-                name: "Europe",
-                currencyCode: "eur",
-                countries: countries.filter(c => c !== 'cz'),
-                paymentProviders: undefined
-            },
-        ],
-        taxRegions: {
-            countries,
-            taxProviderId: undefined,
-        },
-        stockLocations: {
-            locations: [
-                {
-                    name: 'European Warehouse',
-                    address: {
-                        city: 'Copenhagen',
-                        country_code: 'DK',
-                        address_1: '',
-                    },
-                },
-            ],
-        },
-        fulfillmentProviderId: undefined,
-        defaultShippingProfile: {
-            name: 'Default Shipping Profile',
-        },
-        fulfillmentSets: {
-            name: "European Warehouse delivery",
-            type: "shipping",
-            serviceZones: [
-                {
-                    name: "Europe",
-                    geoZones: countries.map(c => ({
-                        countryCode: c
-                    }))
-                },
-            ],
-        },
-        shippingOptions: [
-            {
-                name: 'Standard Shipping',
-                type: {
-                    label: "Standard",
-                    description: "Ship in 2-3 days.",
-                    code: "standard",
-                },
-                prices: [
-                    {
-                        currencyCode: "usd",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "czk",
-                        amount: 250,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            },
-            {
-                name: 'Express Shipping',
-                type: {
-                    label: "Express",
-                    description: "Ship in 24 hours.",
-                    code: "express",
-                },
-                prices: [
-                    {
-                        currencyCode: "usd",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "eur",
-                        amount: 10,
-                    },
-                    {
-                        currencyCode: "czk",
-                        amount: 250,
-                    },
-                ],
-                rules: [
-                    {
-                        attribute: "enabled_in_store",
-                        value: "true",
-                        operator: "eq",
-                    },
-                    {
-                        attribute: "is_return",
-                        value: "false",
-                        operator: "eq",
-                    },
-                ],
-            }
-        ],
-        publishableKey: {
-            title: 'Webshop'
-        },
-    }
+/** Category result from database query */
+type CategoryRaw = {
+  title: string
+  description: string
+  handle: string
+  isActive: boolean
+  parentHandle: string | undefined
+}
 
-    const dbService: DatabaseModuleService = req.scope.resolve(DATABASE_MODULE)
-    const resultCategories = await dbService.sqlRaw<any>(
-        sql`select cl.title,
+/** Product result from complex database query with JSON fields */
+type ProductRaw = {
+  title: string
+  handle: string
+  description?: string
+  thumbnail?: string
+  images: string
+  variants: string
+  options: string
+  categories: string
+  producer: string
+}
+
+export default async function seedN1({ container }: ExecArgs) {
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+
+  logger.info("Starting N1 seed from legacy database...")
+
+  const countries = [
+    "cz",
+    "gb",
+    "de",
+    "dk",
+    "se",
+    "fr",
+    "es",
+    "it",
+    "pl",
+    "at",
+    "sk",
+  ]
+  const input: Omit<SeedN1WorkflowInput, "categories" | "products"> = {
+    salesChannels: [
+      {
+        name: "Default Sales Channel",
+        default: true,
+      },
+    ],
+    currencies: [
+      {
+        code: "czk",
+        default: true,
+      },
+      {
+        code: "eur",
+        default: false,
+      },
+      {
+        code: "usd",
+        default: false,
+      },
+    ],
+    regions: [
+      {
+        name: "Czechia",
+        currencyCode: "czk",
+        countries: ["cz"],
+        paymentProviders: undefined,
+      },
+      {
+        name: "Europe",
+        currencyCode: "eur",
+        countries: countries.filter((c) => c !== "cz"),
+        paymentProviders: undefined,
+      },
+    ],
+    taxRegions: {
+      countries,
+      taxProviderId: undefined,
+    },
+    stockLocations: {
+      locations: [
+        {
+          name: "European Warehouse",
+          address: {
+            city: "Copenhagen",
+            country_code: "DK",
+            address_1: "",
+          },
+        },
+      ],
+    },
+    defaultShippingProfile: {
+      name: "Default Shipping Profile",
+    },
+    fulfillmentSets: {
+      name: "European Warehouse delivery",
+      type: "shipping",
+      serviceZones: [
+        {
+          name: "Europe",
+          geoZones: countries.map((c) => ({
+            countryCode: c,
+          })),
+        },
+      ],
+    },
+    shippingOptions: [
+      // Manual fulfillment options
+      {
+        name: "Standard Shipping",
+        providerId: "manual_manual",
+        type: {
+          label: "Standard",
+          description: "Ship in 2-3 days.",
+          code: "standard",
+        },
+        prices: [
+          {
+            currencyCode: "usd",
+            amount: 10,
+          },
+          {
+            currencyCode: "eur",
+            amount: 10,
+          },
+          {
+            currencyCode: "czk",
+            amount: 250,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      {
+        name: "Express Shipping",
+        providerId: "manual_manual",
+        type: {
+          label: "Express",
+          description: "Ship in 24 hours.",
+          code: "express",
+        },
+        prices: [
+          {
+            currencyCode: "usd",
+            amount: 10,
+          },
+          {
+            currencyCode: "eur",
+            amount: 10,
+          },
+          {
+            currencyCode: "czk",
+            amount: 250,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      // PPL fulfillment options
+      {
+        name: "PPL Parcel Smart",
+        providerId: "ppl_ppl",
+        type: {
+          label: "PPL Pickup Point",
+          description: "Deliver to nearest ParcelShop/ParcelBox",
+          code: "ppl-parcel-smart",
+        },
+        data: {
+          product_type: "SMAR",
+          requires_access_point: true,
+          supports_cod: false,
+        },
+        prices: [
+          {
+            currencyCode: "czk",
+            amount: 79,
+          },
+          {
+            currencyCode: "eur",
+            amount: 4,
+          },
+          {
+            currencyCode: "usd",
+            amount: 4,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      {
+        name: "PPL Parcel Smart + COD",
+        providerId: "ppl_ppl",
+        type: {
+          label: "PPL Pickup Point + Cash on Delivery",
+          description: "Deliver to ParcelShop/ParcelBox, pay on pickup",
+          code: "ppl-parcel-smart-cod",
+        },
+        data: {
+          product_type: "SMAD",
+          requires_access_point: true,
+          supports_cod: true,
+        },
+        prices: [
+          {
+            currencyCode: "czk",
+            amount: 99,
+          },
+          {
+            currencyCode: "eur",
+            amount: 5,
+          },
+          {
+            currencyCode: "usd",
+            amount: 5,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      {
+        name: "PPL Private",
+        providerId: "ppl_ppl",
+        type: {
+          label: "PPL Home Delivery",
+          description: "Deliver to your address",
+          code: "ppl-private",
+        },
+        data: {
+          product_type: "PRIV",
+          requires_access_point: false,
+          supports_cod: false,
+        },
+        prices: [
+          {
+            currencyCode: "czk",
+            amount: 99,
+          },
+          {
+            currencyCode: "eur",
+            amount: 5,
+          },
+          {
+            currencyCode: "usd",
+            amount: 5,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+      {
+        name: "PPL Private + COD",
+        providerId: "ppl_ppl",
+        type: {
+          label: "PPL Home Delivery + Cash on Delivery",
+          description: "Deliver to your address, pay on delivery",
+          code: "ppl-private-cod",
+        },
+        data: {
+          product_type: "PRID",
+          requires_access_point: false,
+          supports_cod: true,
+        },
+        prices: [
+          {
+            currencyCode: "czk",
+            amount: 119,
+          },
+          {
+            currencyCode: "eur",
+            amount: 6,
+          },
+          {
+            currencyCode: "usd",
+            amount: 6,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: "true",
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
+    ],
+    publishableKey: {
+      title: "Webshop",
+    },
+  }
+
+  const dbService: DatabaseModuleService = container.resolve(DATABASE_MODULE)
+
+  logger.info("Fetching categories from legacy database...")
+  const resultCategories = await dbService.sqlRaw<CategoryRaw>(
+    sql`select cl.title,
                                cl.description,
                                cl.rewrite_title       as handle,
                                c.visible              as isActive,
@@ -157,9 +371,12 @@ export async function GET(
                                               cparentl.id_category = cparent.id
                         where l.abbreviation = 'cz'
                           and l.active = 1
-        `)
+        `
+  )
+  logger.info(`Found ${resultCategories.length} categories`)
 
-    const productSql = sql`
+  logger.info("Fetching products from legacy database...")
+  const productSql = sql`
             WITH RECURSIVE cte_products_base AS (
                 SELECT
                     p.*,
@@ -332,6 +549,12 @@ where pl.rewrite_title not like ''
             from image i
                 join product p on p.id = i.id_product
             where p.deleted = 0
+), cte_product_images_unique as (
+    select distinct
+        i.id_product,
+        JSON_ARRAYAGG(JSON_OBJECT('url',CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',i.url))) as images
+    from cte_product_images i
+    group by i.id_product
                 ), cte_product_images_grouped AS (
             select
                 cpi.id_product_group,
@@ -340,7 +563,7 @@ where pl.rewrite_title not like ''
                 'url', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cpi.url)
                 )
                 ) AS images
-            from cte_product_images cpi
+            from (select distinct cpi.id_product_group, cpi.url from cte_product_images cpi) cpi
             group by cpi.id_product_group
 ), cte_variants AS (
     select
@@ -351,9 +574,9 @@ where pl.rewrite_title not like ''
       'material', COALESCE(cpmv.value, cpmbp.value),
       'options', JSON_OBJECT('Variant', TRIM(v.variant_name_unique)),
       'prices', COALESCE(cpp.prices, cpbp.prices),
+      'images', COALESCE(cbppiv.images,cbppivbp.images),
+      'thumbnail', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',COALESCE(cbppivt.url,cbppivtbp.url)),
       'metadata', JSON_OBJECT(
-              'images', JSON_ARRAYAGG(JSON_OBJECT('url',CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cbppiv.url))),
-              'thumbnail', CONCAT('https://pub-adde8a563e2c43f7b6bc296d81c86358.r2.dev/1024_1024/',cbppivt.url),
               'attributes', COALESCE(cpav.attributes, cpabp.attributes),
               'user_code', COALESCE(v.user_code, bp.user_code)
           ),
@@ -384,8 +607,10 @@ LEFT JOIN product_lang v_pl
   AND v_pl.id_lang = pl.id_lang AND trim(v_pl.rewrite_title) <> ''
 LEFT JOIN cte_product_prices_agg cpbp ON cpbp.productId = bp.id
 LEFT JOIN cte_product_prices_agg cpp ON cpp.productId = v.id
-LEFT JOIN cte_product_images cbppiv ON cbppiv.id_product = v.id
+LEFT JOIN cte_product_images_unique cbppiv ON cbppiv.id_product = v.id
 LEFT JOIN cte_product_images cbppivt ON cbppivt.id_product = v.id AND cbppivt.image_num = 1
+LEFT JOIN cte_product_images_unique cbppivbp ON cbppivbp.id_product = bp.id
+LEFT JOIN cte_product_images cbppivtbp ON cbppivtbp.id_product = bp.id AND cbppivtbp.image_num = 1
 GROUP BY bp.id, pl.title, pl.rewrite_title, pl.description,COALESCE(v_pl.rewrite_title, CONCAT(pl.rewrite_title,v.id))
 ), cte_variants_grouped AS (
     SELECT
@@ -470,18 +695,20 @@ WHERE cpig.images IS NOT NULL
                 )
         `
 
-    const resultProducts = await dbService.sqlRaw<any>(
-        sql`
+  const resultProducts = await dbService.sqlRaw<ProductRaw>(
+    sql`
             ${productSql}
             select *
             from cte_result
         `
-    )
+  )
+  logger.info(`Found ${resultProducts.length} products`)
 
-    const {result} = await seedN1Workflow(req.scope)
-        .run({
-            input: {...input, categories: resultCategories, products: resultProducts}
-        })
+  logger.info("Running seed workflow...")
+  const { result } = await seedN1Workflow(container).run({
+    input: { ...input, categories: resultCategories, products: resultProducts },
+  })
 
-    res.send(result)
+  logger.info("N1 seed completed successfully")
+  logger.info(`Result: ${JSON.stringify(result, null, 2)}`)
 }
