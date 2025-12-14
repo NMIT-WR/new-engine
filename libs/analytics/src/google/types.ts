@@ -5,7 +5,7 @@
 
 // Google Ads configuration
 export interface GoogleAdsConfig {
-  /** Google Ads ID (format: AW-XXXXXXXXX) */
+  /** Google tag ID (Google Ads: AW-XXXXXXXXX, GA4: G-XXXXXXXXXX) */
   adsId: string
   /** Enable debug mode */
   debug?: boolean
@@ -72,9 +72,9 @@ export interface GoogleAdsPurchaseParams {
 // gtag function signature
 export interface GtagFunction {
   (command: 'js', date: Date): void
-  (command: 'config', targetId: string, config?: object): void
-  (command: 'event', eventName: string, params?: object): void
-  (command: 'set', params: object): void
+  (command: 'config', targetId: string, config?: Record<string, unknown>): void
+  (command: 'event', eventName: string, params?: Record<string, unknown>): void
+  (command: 'set', params: Record<string, unknown>): void
 }
 
 // Extend Window interface

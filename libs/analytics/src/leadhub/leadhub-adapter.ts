@@ -14,6 +14,7 @@ import type {
 const getLhi = createWindowGetter<LeadhubFunction>(['lhi', 'LHInsights'])
 
 export interface UseLeadhubAdapterConfig {
+  /** Enable debug logging (never enable in production). */
   debug?: boolean
 }
 

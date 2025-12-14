@@ -1,7 +1,6 @@
 'use client'
 
 import Script from 'next/script'
-import { useEffect } from 'react'
 import type { GoogleAdsConfig } from './types'
 
 /** Valid Google Ads ID format: AW-XXXXXXXXX or G-XXXXXXXXX */
@@ -34,11 +33,6 @@ export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
   const isValidAdsId =
     typeof adsId === 'string' && VALID_ADS_ID_PATTERN.test(adsId)
 
-  useEffect(() => {
-    if (!debug || !isValidAdsId) return
-    console.log('[GoogleTag] Initialized with ID:', adsId)
-  }, [adsId, debug, isValidAdsId])
-
   if (!adsId) {
     if (debug) {
       console.warn('[GoogleTag] No Ads ID provided, skipping initialization')
@@ -62,6 +56,11 @@ export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
         strategy="afterInteractive"
         nonce={nonce}
         src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`}
+        onLoad={() => {
+          if (debug) {
+            console.log('[GoogleTag] gtag.js loaded for ID:', adsId)
+          }
+        }}
       />
       {/* Initialize gtag */}
       <Script
@@ -71,9 +70,9 @@ export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${adsId}');
+            window.gtag = function gtag(){window.dataLayer.push(arguments);};
+            window.gtag('js', new Date());
+            window.gtag('config', ${JSON.stringify(adsId)});
           `,
         }}
       />

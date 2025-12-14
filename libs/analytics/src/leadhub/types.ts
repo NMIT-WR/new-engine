@@ -11,7 +11,7 @@
 export interface LeadhubConfig {
   /** Leadhub tracking ID (e.g., 'xeShUnk3RmyLHb8') */
   trackingId: string
-  /** Enable debug logging */
+  /** Enable debug logging (never enable in production). */
   debug?: boolean
   /** CSP nonce for inline scripts (optional) */
   nonce?: string
@@ -54,7 +54,7 @@ export interface LeadhubSetCartParams {
   products: LeadhubProduct[]
 }
 
-/** Identify - when user logs in or registers */
+/** Identify - when user logs in or registers (contains PII, handle with care). */
 export interface LeadhubIdentifyParams {
   /** User email (required, unique identifier) */
   email: string
@@ -82,7 +82,7 @@ export interface LeadhubAddress {
   country_code?: string
 }
 
-/** Purchase - when order is completed */
+/** Purchase - when order is completed (may contain PII, handle with care). */
 export interface LeadhubPurchaseParams {
   /** Customer email (optional - recommended for customer identification) */
   email?: string

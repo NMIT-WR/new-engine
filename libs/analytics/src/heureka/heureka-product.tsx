@@ -30,7 +30,7 @@ export function HeurekaProduct({ country = 'cz', nonce }: HeurekaProductProps) {
 
   return (
     <Script
-      id="heureka-product-script"
+      id={`heureka-product-script-${country}`}
       strategy="afterInteractive"
       nonce={nonce}
       dangerouslySetInnerHTML={{

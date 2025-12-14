@@ -45,6 +45,7 @@ export interface Analytics {
  *
  * @example
  * ```tsx
+ * import { useEffect, useRef } from 'react'
  * import { useAnalytics } from '@libs/analytics'
  * import { useMetaAdapter } from '@libs/analytics/meta'
  * import { useGoogleAdapter } from '@libs/analytics/google'
@@ -60,16 +61,21 @@ export interface Analytics {
  *     debug: process.env.NODE_ENV === 'development'
  *   })
  *
+ *   const trackedOrderId = useRef<string | null>(null)
+ *
  *   useEffect(() => {
+ *     if (!order?.id) return
+ *     if (trackedOrderId.current === order.id) return
+ *     trackedOrderId.current = order.id
+ *
  *     analytics.trackPurchase({
  *       orderId: order.id,
  *       value: order.total,
  *       currency: 'CZK',
  *       numItems: order.items.length,
  *       products: order.items,
- *       email: customer.email,
  *     })
- *   }, [])
+ *   }, [analytics, order])
  * }
  * ```
  */

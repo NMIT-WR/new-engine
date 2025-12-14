@@ -152,7 +152,7 @@ export function HeurekaOrder({
       cancelled = true
       if (timeoutId) clearTimeout(timeoutId)
     }
-  }, [apiKey, orderId, products, totalWithVat, currency, debug])
+  }, [apiKey, orderId, products, totalWithVat, currency, country, debug])
 
   if (!apiKey) {
     if (debug) {
@@ -163,7 +163,7 @@ export function HeurekaOrder({
 
   return (
     <Script
-      id="heureka-order-script"
+      id={`heureka-order-script-${country}`}
       strategy="afterInteractive"
       nonce={nonce}
       dangerouslySetInnerHTML={{

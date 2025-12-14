@@ -7,6 +7,7 @@ If your app uses a strict Content Security Policy, pass a `nonce` prop to the pi
 ## Usage
 
 ```tsx
+import { useEffect, useRef } from 'react'
 import { useAnalytics } from '@libs/analytics'
 import { useGoogleAdapter } from '@libs/analytics/google'
 import { useMetaAdapter } from '@libs/analytics/meta'
@@ -17,7 +18,13 @@ function CheckoutThankYou({ order }) {
     debug: process.env.NODE_ENV === 'development',
   })
 
+  const trackedOrderId = useRef<string | null>(null)
+
   useEffect(() => {
+    if (!order?.id) return
+    if (trackedOrderId.current === order.id) return
+    trackedOrderId.current = order.id
+
     analytics.trackPurchase({
       orderId: order.id,
       value: order.total,
@@ -25,7 +32,7 @@ function CheckoutThankYou({ order }) {
       numItems: order.items.length,
       products: order.items,
     })
-  }, [])
+  }, [analytics, order])
 
   return <div>Thank you for your order!</div>
 }
