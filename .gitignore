@@ -47,12 +47,6 @@ Thumbs.db
 test-output
 .env
 
-# Docker data
-.docker_data
-
-# PNPM store
-.pnpm-store
-
 # Local Netlify folder
 .netlify
 
@@ -70,3 +64,5 @@ static-data/
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 .code
+
+plans/
