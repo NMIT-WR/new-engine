@@ -18,7 +18,7 @@ export type LeadhubPixelProps = LeadhubConfig
  * @example
  * ```tsx
  * // app/layout.tsx
- * import { LeadhubPixel } from '@libs/analytics/leadhub'
+ * import { LeadhubPixel } from '@techsio/analytics/leadhub'
  *
  * export default function RootLayout({ children }) {
  *   return (

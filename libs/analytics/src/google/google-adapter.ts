@@ -18,8 +18,8 @@ export interface UseGoogleAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics'
- * import { useGoogleAdapter } from '@libs/analytics/google'
+ * import { useAnalytics } from '@techsio/analytics'
+ * import { useGoogleAdapter } from '@techsio/analytics/google'
  *
  * const analytics = useAnalytics({
  *   adapters: [useGoogleAdapter({ conversionLabel: 'AW-XXXXX/YYYYY' })]
@@ -94,7 +94,7 @@ export function useGoogleAdapter(
         const items =
           params.items?.map((item) => ({
             item_id: item.productId,
-            quantity: item.quantity || 1,
+            quantity: item.quantity ?? 1,
           })) ??
           params.productIds.map((id) => ({
             item_id: id,

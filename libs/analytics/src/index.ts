@@ -1,11 +1,11 @@
 /**
- * @libs/analytics - Unified e-commerce analytics tracking
+ * @techsio/analytics - Unified e-commerce analytics tracking
  *
  * Recommended usage - unified hook:
  * ```tsx
- * import { useAnalytics } from '@libs/analytics'
- * import { useMetaAdapter } from '@libs/analytics/meta'
- * import { useGoogleAdapter } from '@libs/analytics/google'
+ * import { useAnalytics } from '@techsio/analytics'
+ * import { useMetaAdapter } from '@techsio/analytics/meta'
+ * import { useGoogleAdapter } from '@techsio/analytics/google'
  *
  * const analytics = useAnalytics({
  *   adapters: [useMetaAdapter(), useGoogleAdapter()]
@@ -15,11 +15,11 @@
  * ```
  *
  * Or import from specific module paths:
- * - @libs/analytics/core - Core types and unified hook
- * - @libs/analytics/meta - Meta Pixel
- * - @libs/analytics/google - Google Ads / gtag
- * - @libs/analytics/leadhub - Leadhub CDP
- * - @libs/analytics/heureka - Heureka conversion tracking
+ * - @techsio/analytics/core - Core types and unified hook
+ * - @techsio/analytics/meta - Meta Pixel
+ * - @techsio/analytics/google - Google Ads / gtag
+ * - @techsio/analytics/leadhub - Leadhub CDP
+ * - @techsio/analytics/heureka - Heureka conversion tracking
  */
 
 // Re-export core for convenience

@@ -15,7 +15,7 @@ const VALID_ADS_ID_PATTERN = /^(AW|G)-[A-Z0-9]+$/i
  * @example
  * ```tsx
  * // app/layout.tsx
- * import { GoogleTag } from '@libs/analytics/google'
+ * import { GoogleTag } from '@techsio/analytics/google'
  *
  * export default function RootLayout({ children }) {
  *   return (

@@ -21,8 +21,8 @@ export interface UseHeurekaAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics'
- * import { useHeurekaAdapter } from '@libs/analytics/heureka'
+ * import { useAnalytics } from '@techsio/analytics'
+ * import { useHeurekaAdapter } from '@techsio/analytics/heureka'
  *
  * const analytics = useAnalytics({
  *   adapters: [useHeurekaAdapter({ apiKey: 'YOUR_HEUREKA_API_KEY' })]

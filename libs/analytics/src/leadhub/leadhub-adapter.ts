@@ -24,8 +24,8 @@ export interface UseLeadhubAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics'
- * import { useLeadhubAdapter } from '@libs/analytics/leadhub'
+ * import { useAnalytics } from '@techsio/analytics'
+ * import { useLeadhubAdapter } from '@techsio/analytics/leadhub'
  *
  * const leadhubAdapter = useLeadhubAdapter()
  *

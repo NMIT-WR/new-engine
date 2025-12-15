@@ -1,4 +1,4 @@
-# `@libs/analytics`
+# `@techsio/analytics`
 
 Unified e-commerce analytics tracking with a single hook and pluggable adapters.
 
@@ -8,9 +8,9 @@ If your app uses a strict Content Security Policy, pass a `nonce` prop to the pi
 
 ```tsx
 import { useEffect, useRef } from 'react'
-import { useAnalytics } from '@libs/analytics'
-import { useGoogleAdapter } from '@libs/analytics/google'
-import { useMetaAdapter } from '@libs/analytics/meta'
+import { useAnalytics } from '@techsio/analytics'
+import { useGoogleAdapter } from '@techsio/analytics/google'
+import { useMetaAdapter } from '@techsio/analytics/meta'
 
 function CheckoutThankYou({ order }) {
   const analytics = useAnalytics({

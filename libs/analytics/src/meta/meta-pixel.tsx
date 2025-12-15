@@ -15,7 +15,7 @@ const VALID_PIXEL_ID_PATTERN = /^\d+$/
  * @example
  * ```tsx
  * // app/layout.tsx
- * import { MetaPixel } from '@libs/analytics/meta'
+ * import { MetaPixel } from '@techsio/analytics/meta'
  *
  * export default function RootLayout({ children }) {
  *   return (

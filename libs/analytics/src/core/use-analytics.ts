@@ -46,10 +46,10 @@ export interface Analytics {
  * @example
  * ```tsx
  * import { useEffect, useRef } from 'react'
- * import { useAnalytics } from '@libs/analytics'
- * import { useMetaAdapter } from '@libs/analytics/meta'
- * import { useGoogleAdapter } from '@libs/analytics/google'
- * import { useLeadhubAdapter } from '@libs/analytics/leadhub'
+ * import { useAnalytics } from '@techsio/analytics'
+ * import { useMetaAdapter } from '@techsio/analytics/meta'
+ * import { useGoogleAdapter } from '@techsio/analytics/google'
+ * import { useLeadhubAdapter } from '@techsio/analytics/leadhub'
  *
  * function CheckoutSuccess({ order }) {
  *   const analytics = useAnalytics({

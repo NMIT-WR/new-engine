@@ -16,8 +16,8 @@ export interface UseMetaAdapterConfig {
  *
  * @example
  * ```tsx
- * import { useAnalytics } from '@libs/analytics'
- * import { useMetaAdapter } from '@libs/analytics/meta'
+ * import { useAnalytics } from '@techsio/analytics'
+ * import { useMetaAdapter } from '@techsio/analytics/meta'
  *
  * const analytics = useAnalytics({
  *   adapters: [useMetaAdapter()]
