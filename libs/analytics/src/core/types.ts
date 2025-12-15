@@ -32,7 +32,17 @@ export interface CoreAddToCartParams {
   category?: string
 }
 
+export interface CoreCheckoutItem {
+  productId: string
+  quantity: number
+}
+
 export interface CoreInitiateCheckoutParams {
+  /**
+   * Optional detailed cart items. Prefer this over `productIds` so adapters can
+   * pass accurate per-item quantities to analytics providers.
+   */
+  items?: CoreCheckoutItem[]
   productIds: string[]
   /** Total cart value. */
   value: number

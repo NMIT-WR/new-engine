@@ -2,6 +2,7 @@
 
 import Script from 'next/script'
 import { useEffect, useRef } from 'react'
+import { isHeurekaCountry, normalizeHeurekaCountry } from './country'
 import type { HeurekaCountry, HeurekaProductItem } from './types'
 
 /** Max retries for SDK polling (50 × 100ms = 5 seconds) */
@@ -58,12 +59,19 @@ export function HeurekaOrder({
   debug = false,
   nonce,
 }: HeurekaOrderProps) {
-  const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
+  const rawCountry = country as unknown
+  const safeCountry = normalizeHeurekaCountry(rawCountry)
+  if (debug && !isHeurekaCountry(rawCountry)) {
+    console.warn('[HeurekaOrder] Invalid country provided, defaulting to "cz"', {
+      country: rawCountry,
+    })
+  }
+  const domain = safeCountry === 'sk' ? 'heureka.sk' : 'heureka.cz'
+  const sendKey = `${safeCountry}:${orderId}`
   const sentKey = useRef<string | null>(null)
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null
-    const sendKey = `${country}:${orderId}`
 
     if (sentKey.current === sendKey) {
       return
@@ -158,7 +166,7 @@ export function HeurekaOrder({
         clearTimeout(timeoutId)
       }
     }
-  }, [apiKey, orderId, products, totalWithVat, currency, country, debug])
+  }, [apiKey, orderId, products, totalWithVat, currency, debug, sendKey])
 
   if (!apiKey) {
     if (debug) {
@@ -169,7 +177,7 @@ export function HeurekaOrder({
 
   return (
     <Script
-      id={`heureka-order-script-${country}`}
+      id={`heureka-order-script-${safeCountry}`}
       strategy="afterInteractive"
       nonce={nonce}
       dangerouslySetInnerHTML={{
@@ -186,8 +194,10 @@ export function HeurekaOrder({
             n.src = c;
             g.parentNode.insertBefore(n, g);
           })(window, document, 'script',
-             'https://${domain}/ocm/sdk.js?version=2&page=thank_you',
-             'heureka', '${country}');
+             ${JSON.stringify(
+               `https://${domain}/ocm/sdk.js?version=2&page=thank_you`
+             )},
+             'heureka', ${JSON.stringify(safeCountry)});
         `,
       }}
     />

@@ -43,3 +43,12 @@ function CheckoutThankYou({ order }) {
 - Create a module under `libs/analytics/src/<provider>/`.
 - Implement `AnalyticsAdapter` and map the core events to the provider API.
 - Prefer `createWindowGetter(...)` + `createTracker(...)` for consistent runtime-guards and debug logging.
+
+## Linting notes
+
+The repository `biome.json` disables `noDangerouslySetInnerHtml` and `noImgElement` for `libs/analytics/src/**/*.tsx` because pixel/components intentionally:
+
+- Inject vendor snippets via `next/script` (some providers require inline bootstrap code).
+- Render `<noscript><img ... /></noscript>` fallbacks for non-JS environments.
+
+All interpolated values are validated or constrained before injection (e.g., regex validation for IDs, enum-constrained country codes).

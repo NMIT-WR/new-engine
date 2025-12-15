@@ -1,11 +1,14 @@
 'use client'
 
 import Script from 'next/script'
+import { isHeurekaCountry, normalizeHeurekaCountry } from './country'
 import type { HeurekaCountry } from './types'
 
 export interface HeurekaProductProps {
   /** Country variant: 'cz' for Heureka.cz, 'sk' for Heureka.sk */
   country?: HeurekaCountry
+  /** Enable debug logging */
+  debug?: boolean
   /** CSP nonce for inline scripts (optional) */
   nonce?: string
 }
@@ -25,12 +28,23 @@ export interface HeurekaProductProps {
  * <HeurekaProduct country="cz" />
  * ```
  */
-export function HeurekaProduct({ country = 'cz', nonce }: HeurekaProductProps) {
-  const domain = country === 'sk' ? 'heureka.sk' : 'heureka.cz'
+export function HeurekaProduct({
+  country = 'cz',
+  debug = false,
+  nonce,
+}: HeurekaProductProps) {
+  const rawCountry = country as unknown
+  const safeCountry = normalizeHeurekaCountry(rawCountry)
+  if (debug && !isHeurekaCountry(rawCountry)) {
+    console.warn('[HeurekaProduct] Invalid country provided, defaulting to "cz"', {
+      country: rawCountry,
+    })
+  }
+  const domain = safeCountry === 'sk' ? 'heureka.sk' : 'heureka.cz'
 
   return (
     <Script
-      id={`heureka-product-script-${country}`}
+      id={`heureka-product-script-${safeCountry}`}
       strategy="afterInteractive"
       nonce={nonce}
       dangerouslySetInnerHTML={{
@@ -47,8 +61,10 @@ export function HeurekaProduct({ country = 'cz', nonce }: HeurekaProductProps) {
             n.src = c;
             g.parentNode.insertBefore(n, g);
           })(window, document, 'script',
-             'https://${domain}/ocm/sdk.js?version=2&page=product_detail',
-             'heureka', '${country}');
+             ${JSON.stringify(
+               `https://${domain}/ocm/sdk.js?version=2&page=product_detail`
+             )},
+             'heureka', ${JSON.stringify(safeCountry)});
         `,
       }}
     />

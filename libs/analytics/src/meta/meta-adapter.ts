@@ -82,11 +82,19 @@ export function useMetaAdapter(
     trackInitiateCheckout: createTracker(
       getFbq,
       (fbq, params) => {
+        const contentIds =
+          params.items?.map((item) => item.productId) ?? params.productIds
+        const contents = params.items?.map((item) => ({
+          id: item.productId,
+          quantity: item.quantity || 1,
+        }))
+
         fbq('track', 'InitiateCheckout', {
-          content_ids: params.productIds,
+          content_ids: contentIds,
           currency: params.currency,
           value: params.value,
           num_items: params.numItems,
+          ...(contents ? { contents } : {}),
         })
       },
       debug,

@@ -91,13 +91,20 @@ export function useGoogleAdapter(
     trackInitiateCheckout: createTracker(
       getGtag,
       (gtag, params) => {
+        const items =
+          params.items?.map((item) => ({
+            item_id: item.productId,
+            quantity: item.quantity || 1,
+          })) ??
+          params.productIds.map((id) => ({
+            item_id: id,
+            quantity: 1,
+          }))
+
         gtag('event', 'begin_checkout', {
           currency: params.currency,
           value: params.value,
-          items: params.productIds.map((id) => ({
-            item_id: id,
-            quantity: 1,
-          })),
+          items,
         })
       },
       debug,
