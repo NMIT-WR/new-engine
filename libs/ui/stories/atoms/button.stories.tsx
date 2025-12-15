@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
 import { iconLabels, iconOptions } from '../helpers/icon-options'
-import { fn } from 'storybook/test';
+import { fn } from 'storybook/test'
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
