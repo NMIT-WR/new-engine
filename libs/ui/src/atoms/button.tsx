@@ -260,13 +260,17 @@ export function Button({
   size,
   block,
   isLoading,
+  loadingText,
   icon,
   iconPosition = 'left',
   uppercase = false,
   children,
   className,
+  disabled: disabledProp,
   ...props
 }: ButtonProps & { ref?: Ref<HTMLButtonElement> }) {
+  const disabled = isLoading || disabledProp
+
   return (
     <button
       className={buttonVariants({
@@ -277,12 +281,21 @@ export function Button({
         uppercase,
         className,
       })}
-      disabled={isLoading}
+      disabled={disabled}
       {...props}
     >
-      {icon && iconPosition === 'left' && <Icon icon={icon} />}
-      {children}
-      {icon && iconPosition === 'right' && <Icon icon={icon} />}
+      {isLoading ? (
+        <>
+          <Icon icon="icon-[svg-spinners--ring-resize]" className="mr-2" />
+          {loadingText || children}
+        </>
+      ) : (
+        <>
+          {icon && iconPosition === 'left' && <Icon icon={icon} />}
+          {children}
+          {icon && iconPosition === 'right' && <Icon icon={icon} />}
+        </>
+      )}
     </button>
   )
 }
