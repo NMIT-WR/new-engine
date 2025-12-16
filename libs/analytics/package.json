@@ -4,27 +4,27 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/src/index.d.ts",
       "import": "./dist/index.js"
     },
     "./meta": {
-      "types": "./dist/meta/index.d.ts",
+      "types": "./dist/src/meta/index.d.ts",
       "import": "./dist/meta/index.js"
     },
     "./google": {
-      "types": "./dist/google/index.d.ts",
+      "types": "./dist/src/google/index.d.ts",
       "import": "./dist/google/index.js"
     },
     "./heureka": {
-      "types": "./dist/heureka/index.d.ts",
+      "types": "./dist/src/heureka/index.d.ts",
       "import": "./dist/heureka/index.js"
     },
     "./leadhub": {
-      "types": "./dist/leadhub/index.d.ts",
+      "types": "./dist/src/leadhub/index.d.ts",
       "import": "./dist/leadhub/index.js"
     },
     "./core": {
-      "types": "./dist/core/index.d.ts",
+      "types": "./dist/src/core/index.d.ts",
       "import": "./dist/core/index.js"
     }
   },
