@@ -139,9 +139,9 @@ export default function ContactPage() {
                 <h3 className="mb-contact-info-title-bottom font-contact-info-title text-contact-info-title-fg text-contact-info-title-size">
                   {info.title}
                 </h3>
-                {info.items.map((item, index) => (
+                {info.items.map((item) => (
                   <div
-                    key={index}
+                    key={item.label}
                     className="mb-contact-info-item-gap flex items-start space-x-contact-info-icon-gap"
                   >
                     <Icon
