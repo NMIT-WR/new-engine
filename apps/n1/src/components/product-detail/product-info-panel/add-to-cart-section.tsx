@@ -1,10 +1,8 @@
 'use client'
-import { useGoogleAds } from '@libs/analytics/google'
-import { useLeadhub } from '@libs/analytics/leadhub'
-import { useMetaPixel } from '@libs/analytics/meta'
 import { useAddToCart, useCart } from '@/hooks/use-cart'
 import { useRegion } from '@/hooks/use-region'
 import { useCartToast } from '@/hooks/use-toast'
+import { useAnalytics } from '@/providers/analytics-provider'
 import type { ProductDetail, ProductVariantDetail } from '@/types/product'
 import { validateAddToCart } from '@/utils/cart/cart-validation'
 import { Button } from '@techsio/ui-kit/atoms/button'
@@ -24,9 +22,7 @@ export const AddToCartSection = ({
   const { cart } = useCart()
   const { regionId } = useRegion()
   const toast = useCartToast()
-  const { trackAddToCart } = useMetaPixel()
-  const { trackAddToCart: trackGoogleAddToCart } = useGoogleAds()
-  const { trackSetCart } = useLeadhub()
+  const analytics = useAnalytics()
 
   const handleAddToCart = async () => {
     // Validate region context
@@ -68,57 +64,28 @@ export const AddToCartSection = ({
       },
       {
         onSuccess: () => {
-          // Meta Pixel - AddToCart tracking
-          trackAddToCart({
-            content_ids: [selectedVariant.id],
-            content_type: 'product',
-            content_name: detail.title,
-            currency: (
-              selectedVariant.calculated_price?.currency_code ?? 'CZK'
-            ).toUpperCase(),
-            value:
-              (selectedVariant.calculated_price?.calculated_amount_with_tax ??
-                0) * quantity,
-            contents: [
-              {
-                id: selectedVariant.id,
-                quantity,
-              },
-            ],
+          const currency = (
+            selectedVariant.calculated_price?.currency_code ?? 'CZK'
+          ).toUpperCase()
+          const price = selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0
+
+          // Unified analytics - AddToCart tracking (sends to Meta, Google, Leadhub)
+          analytics.trackAddToCart({
+            productId: selectedVariant.id,
+            productName: detail.title,
+            value: price * quantity,
+            currency,
+            quantity,
           })
 
-          // Leadhub - SetCart tracking
-          // Note: Leadhub expects the full cart state, but here we track the added item
-          // For full cart sync, consider tracking in a cart provider/effect
-          trackSetCart({
+          // Leadhub-specific - SetCart tracking for cart state sync
+          analytics.trackSetCart({
             products: [
               {
                 product_id: selectedVariant.id,
                 quantity,
-                value:
-                  selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
-                currency: (
-                  selectedVariant.calculated_price?.currency_code ?? 'CZK'
-                ).toUpperCase(),
-              },
-            ],
-          })
-
-          // Google Ads - AddToCart tracking
-          trackGoogleAddToCart({
-            currency: (
-              selectedVariant.calculated_price?.currency_code ?? 'CZK'
-            ).toUpperCase(),
-            value:
-              (selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0) *
-              quantity,
-            items: [
-              {
-                item_id: selectedVariant.id,
-                item_name: detail.title,
-                price:
-                  selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
-                quantity,
+                value: price,
+                currency,
               },
             ],
           })

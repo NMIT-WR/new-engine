@@ -1,10 +1,7 @@
 'use client'
 
-import { useGoogleAds } from '@libs/analytics/google'
-import { HeurekaProduct } from '@libs/analytics/heureka'
-import { useLeadhub } from '@libs/analytics/leadhub'
-import { useMetaPixel } from '@libs/analytics/meta'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { HeurekaProduct } from '@techsio/analytics/heureka'
 import { Heading } from '@/components/heading'
 import { Gallery } from '@/components/organisms/gallery'
 import { ProductInfoPanel } from '@/components/product-detail/product-info-panel'
@@ -14,6 +11,7 @@ import { ProductTabs } from '@/components/product-detail/product-tabs'
 import { RelatedProducts } from '@/components/product-detail/related-products'
 import { useProduct } from '@/hooks/use-product'
 import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
+import { useAnalytics } from '@/providers/analytics-provider'
 import {
   buildBreadcrumbs,
   buildProductBreadcrumbs,
@@ -31,6 +29,10 @@ export default function ProductPage() {
   const variantParam = searchParams.get('variant')
 
   const { data: rawProduct, isLoading, error } = useProduct({ handle })
+  const analytics = useAnalytics()
+
+  // Track which variant we've already tracked to prevent duplicates
+  const trackedVariantId = useRef<string | null>(null)
 
   const detail = rawProduct ? transformProductDetail(rawProduct) : null
   const selectedVariant = selectVariant(detail?.variants, variantParam)
@@ -40,51 +42,26 @@ export default function ProductPage() {
     : detail?.title
   const quantity = selectedVariant?.inventory_quantity ?? 0
 
-  // Meta Pixel - ViewContent tracking
-  const { trackViewContent } = useMetaPixel()
-  // Google Ads - ViewItem tracking
-  const { trackViewItem } = useGoogleAds()
-  // Leadhub - ViewContent tracking
-  const { trackViewContent: trackLeadhubViewContent } = useLeadhub()
-
+  // Unified analytics - ViewContent tracking (sends to Meta, Google, Leadhub)
   useEffect(() => {
-    if (detail && selectedVariant) {
-      // Meta Pixel
-      trackViewContent({
-        content_ids: [selectedVariant.id],
-        content_type: 'product',
-        content_name: detail.title,
-        content_category: rawProduct?.categories?.[0]?.name,
-        currency: selectedVariant.calculated_price?.currency_code ?? 'CZK',
-        value: (selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0),
-      })
+    if (!detail || !selectedVariant) return
+    if (trackedVariantId.current === selectedVariant.id) return
 
-      // Leadhub
-      trackLeadhubViewContent({
-        products: [{ product_id: selectedVariant.id }],
-      })
+    trackedVariantId.current = selectedVariant.id
 
-      // Google Ads
-      trackViewItem({
-        currency: selectedVariant.calculated_price?.currency_code ?? 'CZK',
-        value: selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
-        items: [
-          {
-            item_id: selectedVariant.id,
-            item_name: detail.title,
-            item_category: rawProduct?.categories?.[0]?.name,
-            price:
-              selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
-          },
-        ],
-      })
-    }
-  }, [detail?.id, selectedVariant?.id])
+    analytics.trackViewContent({
+      productId: selectedVariant.id,
+      productName: detail.title,
+      value: selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
+      currency: (selectedVariant.calculated_price?.currency_code ?? 'CZK').toUpperCase(),
+      category: rawProduct?.categories?.[0]?.name,
+    })
+  }, [detail?.id, selectedVariant?.id, analytics, rawProduct?.categories])
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-fg-5">Načítání produktu...</p>
+        <p className="text-fg-secondary">Načítání produktu...</p>
       </div>
     )
   }
@@ -92,7 +69,7 @@ export default function ProductPage() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-danger-light">Chyba při načítání produktu</p>
+        <p className="text-danger">Chyba při načítání produktu</p>
       </div>
     )
   }
@@ -100,7 +77,7 @@ export default function ProductPage() {
   if (!rawProduct || !detail) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-fg-5">Produkt nebyl nalezen</p>
+        <p className="text-fg-secondary">Produkt nebyl nalezen</p>
       </div>
     )
   }

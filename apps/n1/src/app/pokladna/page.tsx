@@ -1,10 +1,9 @@
 'use client'
 
-import { useGoogleAds } from '@libs/analytics/google'
-import { useMetaPixel } from '@libs/analytics/meta'
+import { useEffect, useRef } from 'react'
+import { useAnalytics } from '@/providers/analytics-provider'
 import { Button } from '@ui/atoms/button'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import { OrderSummary } from './_components/order-summary'
 import { PaymentFormSection } from './_components/payment-form-section'
 import { ShippingAddressSection } from './_components/shipping-address-section'
@@ -34,40 +33,33 @@ function CheckoutContent() {
     error,
     completeCheckout,
   } = useCheckoutContext()
-  const { trackInitiateCheckout } = useMetaPixel()
-  const { trackBeginCheckout } = useGoogleAds()
+  const analytics = useAnalytics()
 
-  // Meta Pixel - InitiateCheckout tracking
+  // Track which cart we've already tracked to prevent duplicates
+  const trackedCartId = useRef<string | null>(null)
+
+  // Unified analytics - InitiateCheckout tracking (sends to Meta, Google, Leadhub)
   useEffect(() => {
-    if (cart && hasItems) {
-      const items = cart.items || []
-      trackInitiateCheckout({
-        content_ids: items
-          .map((item) => item.variant_id)
-          .filter((id): id is string => !!id),
-        content_type: 'product',
-        currency: (cart.currency_code ?? 'CZK').toUpperCase(),
-        value: cart.total ?? 0,
-        num_items: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
-        contents: items.map((item) => ({
-          id: item.variant_id || '',
-          quantity: item.quantity || 1,
-        })),
-      })
+    if (!cart || !hasItems) return
+    if (trackedCartId.current === cart.id) return
 
-      // Google Ads - BeginCheckout tracking
-      trackBeginCheckout({
-        currency: (cart.currency_code ?? 'CZK').toUpperCase(),
-        value: cart.total ?? 0,
-        items: items.map((item) => ({
-          item_id: item.variant_id || '',
-          item_name: item.title || '',
-          price: item.unit_price ?? 0,
-          quantity: item.quantity || 1,
-        })),
-      })
-    }
-  }, [cart?.id, hasItems, trackInitiateCheckout, trackBeginCheckout])
+    trackedCartId.current = cart.id
+
+    const items = cart.items || []
+    const currency = (cart.currency_code ?? 'CZK').toUpperCase()
+    const value = cart.total ?? 0
+
+    analytics.trackInitiateCheckout({
+      value,
+      currency,
+      numItems: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
+      productIds: items.map((item) => item.variant_id || ''),
+      items: items.map((item) => ({
+        productId: item.variant_id || '',
+        quantity: item.quantity || 1,
+      })),
+    })
+  }, [cart?.id, hasItems, analytics])
 
   // Loading state
   if (isCartLoading) {

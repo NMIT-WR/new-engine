@@ -1,28 +1,24 @@
-'use client'
+"use client"
 
-import { CheckoutReview } from '@/app/pokladna/_components/checkout-review'
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import { getOrderById } from '@/services/order-service'
-import { useGoogleAds } from '@libs/analytics/google'
-import { HeurekaOrder } from '@libs/analytics/heureka'
-import { useLeadhub } from '@libs/analytics/leadhub'
-import { useMetaPixel } from '@libs/analytics/meta'
-import { useQuery } from '@tanstack/react-query'
-import { Button } from '@ui/atoms/button'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { HeurekaOrder } from "@techsio/analytics/heureka"
+import { useQuery } from "@tanstack/react-query"
+import { Button } from "@ui/atoms/button"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useRef } from "react"
+import { CheckoutReview } from "@/app/pokladna/_components/checkout-review"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import { useAnalytics } from "@/providers/analytics-provider"
+import { getOrderById } from "@/services/order-service"
 
 export default function OrderPage() {
   const router = useRouter()
   const params = useParams()
   const searchParams = useSearchParams()
   const orderId = params.orderId as string
-  const showSuccessBanner = searchParams.get('success') === 'true'
+  const showSuccessBanner = searchParams.get("success") === "true"
 
-  const { trackPurchase: trackMetaPurchase } = useMetaPixel()
-  const { trackPurchase: trackGooglePurchase } = useGoogleAds()
-  const { trackPurchase: trackLeadhubPurchase } = useLeadhub()
+  const analytics = useAnalytics()
   const purchaseTracked = useRef(false)
 
   const {
@@ -34,7 +30,7 @@ export default function OrderPage() {
     queryFn: () => getOrderById(orderId),
     enabled: !!orderId,
     retry: (failureCount, error) => {
-      if (error instanceof Error && error.message?.includes('nenalezena')) {
+      if (error instanceof Error && error.message?.includes("nenalezena")) {
         return false
       }
       return failureCount < 2
@@ -42,80 +38,32 @@ export default function OrderPage() {
     ...cacheConfig.semiStatic,
   })
 
-  // Analytics - Purchase tracking (only on new purchases with success=true)
+  // Unified analytics - Purchase tracking (sends to Meta, Google, Leadhub)
+  // Only on new purchases with success=true
   useEffect(() => {
-    if (showSuccessBanner && order && !purchaseTracked.current) {
-      purchaseTracked.current = true
+    if (!(showSuccessBanner && order) || purchaseTracked.current) return
 
-      const items = order.items || []
-      const currency = (order.currency_code ?? 'CZK').toUpperCase()
-      const value = order.total ?? 0
+    purchaseTracked.current = true
 
-      // Meta Pixel - Purchase
-      trackMetaPurchase({
+    const items = order.items || []
+    const currency = (order.currency_code ?? "CZK").toUpperCase()
+    const value = order.total ?? 0
+
+    analytics.trackPurchase({
+      orderId: order.id,
+      value,
+      currency,
+      numItems: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
+      products: items.map((item) => ({
+        id: item.variant_id || "",
+        name: item.title || "",
+        price: item.unit_price ?? 0,
         currency,
-        value,
-        content_ids: items
-          .map((item) => item.variant_id)
-          .filter((id): id is string => !!id),
-        content_type: 'product',
-        num_items: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
-        contents: items.map((item) => ({
-          id: item.variant_id || '',
-          quantity: item.quantity || 1,
-        })),
-      })
-
-      // Google Ads - Purchase conversion
-      trackGooglePurchase({
-        transaction_id: order.id,
-        currency,
-        value,
-        items: items.map((item) => ({
-          item_id: item.variant_id || '',
-          item_name: item.title || '',
-          quantity: item.quantity || 1,
-          price: item.unit_price,
-        })),
-      })
-
-      // Leadhub - Purchase
-      trackLeadhubPurchase({
-        email: order.email || '',
-        value,
-        currency,
-        products: items.map((item) => ({
-          product_id: item.variant_id || '',
-          quantity: item.quantity || 1,
-          value: item.unit_price ?? 0,
-          currency,
-        })),
-        order_id: order.id,
-        first_name: order.shipping_address?.first_name,
-        last_name: order.shipping_address?.last_name,
-        phone: order.shipping_address?.phone || undefined,
-        address: order.shipping_address
-          ? {
-              street: [
-                order.shipping_address.address_1,
-                order.shipping_address.address_2,
-              ]
-                .filter(Boolean)
-                .join(' '),
-              city: order.shipping_address.city || undefined,
-              zip: order.shipping_address.postal_code || undefined,
-              country_code: order.shipping_address.country_code || undefined,
-            }
-          : undefined,
-      })
-    }
-  }, [
-    showSuccessBanner,
-    order,
-    trackMetaPurchase,
-    trackGooglePurchase,
-    trackLeadhubPurchase,
-  ])
+        quantity: item.quantity || 1,
+      })),
+      email: order.email || undefined,
+    })
+  }, [showSuccessBanner, order, analytics])
 
   // Loading state
   if (isLoading) {
@@ -136,7 +84,7 @@ export default function OrderPage() {
         <p className="mt-200 text-fg-secondary">
           Nepodařilo se načíst detail objednávky.
         </p>
-        <Button onClick={() => router.push('/')} className="mt-400">
+        <Button className="mt-400" onClick={() => router.push("/")}>
           Zpět na hlavní stránku
         </Button>
       </div>
@@ -145,20 +93,23 @@ export default function OrderPage() {
 
   return (
     <div className="container mx-auto min-h-screen p-500">
-      {/* Heureka Order Tracking - only on successful new orders */}
-      {showSuccessBanner && (
+      {/* Heureka conversion tracking - standalone, SDK loads here */}
+      {showSuccessBanner && order && (
         <HeurekaOrder
-          apiKey={process.env.NEXT_PUBLIC_HEUREKA_API_KEY ?? ''}
+          apiKey={process.env.NEXT_PUBLIC_HEUREKA_API_KEY ?? ""}
           orderId={order.id}
-          products={(order.items || []).map((item) => ({
-            id: item.variant_id || '',
-            name: item.title || '',
-            priceWithVat: item.unit_price ?? 0,
-            quantity: item.quantity || 1,
-          }))}
+          products={
+            order.items?.map((item) => ({
+              id: item.variant_id || "",
+              name: item.title || "",
+              priceWithVat: item.unit_price ?? 0,
+              quantity: item.quantity || 1,
+            })) ?? []
+          }
           totalWithVat={order.total ?? 0}
-          currency="CZK"
+          currency={(order.currency_code ?? "CZK").toUpperCase()}
           country="cz"
+          debug
         />
       )}
 

@@ -1,7 +1,7 @@
 import { useLogin } from '@/hooks/use-login'
 import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
-import { useLeadhub } from '@libs/analytics/leadhub'
+import { useAnalytics } from '@/providers/analytics-provider'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
 import Link from 'next/link'
@@ -26,14 +26,14 @@ export const LoginForm = ({
 }: LoginFormProps) => {
   const formRef = useRef<HTMLFormElement>(null)
   const toast = useAuthToast()
-  const { trackIdentify } = useLeadhub()
+  const analytics = useAnalytics()
   const emailRef = useRef<string>('')
 
   const login = useLogin({
     onSuccess: () => {
       // Track customer identification in Leadhub
       if (emailRef.current) {
-        trackIdentify({
+        analytics.trackIdentify({
           email: emailRef.current,
           subscribe: [],
         })

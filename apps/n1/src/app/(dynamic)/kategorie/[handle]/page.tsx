@@ -1,7 +1,8 @@
 'use client'
+import { useEffect, useRef } from 'react'
 import { Heading } from '@/components/heading'
 import { N1Aside } from '@/components/n1-aside'
-import { useLeadhub } from '@libs/analytics/leadhub'
+import { useAnalytics } from '@/providers/analytics-provider'
 import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
 import './layout.css'
 import { Banner } from '@/components/atoms/banner'
@@ -26,15 +27,17 @@ import type { IconType } from '@techsio/ui-kit/atoms/icon'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import NextLink from 'next/link'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
 
-export default function ProductPage() {
+export default function CategoryPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
   const handle = params.handle as string
   const { regionId, countryCode } = useRegion()
-  const { trackViewCategory } = useLeadhub()
+  const analytics = useAnalytics()
+
+  // Track which category we've already tracked to prevent duplicates
+  const trackedCategoryId = useRef<string | null>(null)
 
   const currentCategory = allCategories.find((cat) => cat.handle === handle)
   const currentCategoryChildren = allCategories.filter(
@@ -62,13 +65,17 @@ export default function ProductPage() {
     return path.join(' > ')
   }
 
-  // Leadhub ViewCategory tracking
+  // Leadhub ViewCategory tracking (Leadhub-specific)
   useEffect(() => {
+    if (!currentCategory) return
+    if (trackedCategoryId.current === currentCategory.id) return
+
     const categoryPath = buildCategoryPath()
     if (categoryPath) {
-      trackViewCategory({ category: categoryPath })
+      trackedCategoryId.current = currentCategory.id
+      analytics.trackViewCategory({ category: categoryPath })
     }
-  }, [currentCategory?.id, trackViewCategory])
+  }, [currentCategory?.id, analytics])
 
   // Get current page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1
