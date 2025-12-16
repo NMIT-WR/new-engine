@@ -1,45 +1,45 @@
-import * as checkbox from '@zag-js/checkbox'
-import { normalizeProps, useMachine } from '@zag-js/react'
-import { type InputHTMLAttributes, type Ref, useId } from 'react'
-import { ErrorText } from '../atoms/error-text'
-import { ExtraText } from '../atoms/extra-text'
-import { Label } from '../atoms/label'
-import { tv } from '../utils'
+import * as checkbox from "@zag-js/checkbox"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { type InputHTMLAttributes, type Ref, useId } from "react"
+import { ErrorText } from "../atoms/error-text"
+import { ExtraText } from "../atoms/extra-text"
+import { Label } from "../atoms/label"
+import { tv } from "../utils"
 
 const checkboxVariants = tv({
   slots: {
     root: [],
-    label: ['flex items-center gap-checkbox-gap cursor-pointer'],
+    label: ["flex cursor-pointer items-center gap-checkbox-label-gap"],
     checkbox: [
-      'appearance-none relative cursor-pointer flex-shrink-0',
-      'h-checkbox w-checkbox',
-      'border border-checkbox-border rounded-checkbox',
-      'bg-checkbox data-[state=checked]:bg-checkbox-checked',
+      "relative flex-shrink-0 cursor-pointer appearance-none",
+      "h-checkbox w-checkbox",
+      "rounded-checkbox border border-checkbox-border",
+      "bg-checkbox data-[state=checked]:bg-checkbox-checked",
       /* center icon, grid and place items do not work e.g. flex */
-      'after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2',
-      'data-[state=checked]:after:token-icon-checkbox text-icon-fg data-[state=checked]:text-checkbox-icon-md',
-      'data-[disabled]:cursor-not-allowed',
-      'data-[disabled]:bg-checkbox-bg-disabled',
-      'data-[disabled]:text-checkbox-fg-disabled',
-      'data-[disabled]:border-checkbox-border-disabled',
-      'data-[disabled]:data-[state=checked]:bg-checkbox-bg-disabled',
-      'data-[disabled]:data-[state=checked]:text-checkbox-fg-disabled',
-      'data-[disabled]:data-[state=checked]:border-checkbox-border-disabled',
-      'transition-all duration-200',
-      'data-[focus]:outline-none',
-      'data-[focus]:ring',
-      'data-[focus]:ring-checkbox-ring',
-      'data-[invalid]:ring-checkbox-error ',
-      'data-[invalid]:border-checkbox-border-error',
-      'data-[state=indeterminate]:bg-checkbox-indeterminate',
-      'data-[state=indeterminate]:after:w-indeterminate data-[state=indeterminate]:after:h-indeterminate',
-      'data-[state=indeterminate]:after:bg-icon-fg',
+      "after:-translate-x-1/2 after:-translate-y-1/2 after:absolute after:top-1/2 after:left-1/2",
+      "data-[state=checked]:after:token-icon-checkbox text-icon-fg data-[state=checked]:text-checkbox-icon-md",
+      "data-[disabled]:cursor-not-allowed",
+      "data-[disabled]:bg-checkbox-bg-disabled",
+      "data-[disabled]:text-checkbox-fg-disabled",
+      "data-[disabled]:border-checkbox-border-disabled",
+      "data-[disabled]:data-[state=checked]:bg-checkbox-bg-disabled",
+      "data-[disabled]:data-[state=checked]:text-checkbox-fg-disabled",
+      "data-[disabled]:data-[state=checked]:border-checkbox-border-disabled",
+      "transition-all duration-200",
+      "data-[focus]:outline-none",
+      "data-[focus]:ring",
+      "data-[focus]:ring-checkbox-ring",
+      "data-[invalid]:ring-checkbox-error",
+      "data-[invalid]:border-checkbox-border-error",
+      "data-[state=indeterminate]:bg-checkbox-indeterminate",
+      "data-[state=indeterminate]:after:h-indeterminate data-[state=indeterminate]:after:w-indeterminate",
+      "data-[state=indeterminate]:after:bg-icon-fg",
     ],
   },
 })
 
 export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   ref?: Ref<HTMLInputElement>
   readOnly?: boolean
 
@@ -52,7 +52,7 @@ export interface CheckboxProps
   helperText?: string
   errorText?: string
 
-  onCheckedChange?: checkbox.Props['onCheckedChange']
+  onCheckedChange?: checkbox.Props["onCheckedChange"]
 }
 
 export function Checkbox({
@@ -77,8 +77,8 @@ export function Checkbox({
     disabled,
     defaultChecked,
     readOnly,
-    checked: indeterminate ? 'indeterminate' : checked,
-    invalid: invalid,
+    checked: indeterminate ? "indeterminate" : checked,
+    invalid,
     onCheckedChange: (details) => {
       // Always call the provided handler
       onCheckedChange?.(details)
@@ -119,4 +119,4 @@ export function Checkbox({
   )
 }
 
-Checkbox.displayName = 'Checkbox'
+Checkbox.displayName = "Checkbox"
