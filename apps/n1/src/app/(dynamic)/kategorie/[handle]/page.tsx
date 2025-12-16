@@ -4,7 +4,6 @@ import { Heading } from '@/components/heading'
 import { N1Aside } from '@/components/n1-aside'
 import { useAnalytics } from '@/providers/analytics-provider'
 import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
-import './layout.css'
 import { Banner } from '@/components/atoms/banner'
 import { ProductGrid } from '@/components/molecules/product-grid'
 import {
@@ -55,11 +54,7 @@ export default function CategoryPage() {
 
     while (current) {
       path.unshift(current.name)
-      const parent = allCategories.find(
-        (c) => c.id === current!.parent_category_id
-      )
-      if (!parent) break
-      current = parent
+      current = allCategories.find((c) => c.id === current!.parent_category_id)
     }
 
     return path.join(' > ')
@@ -96,17 +91,14 @@ export default function CategoryPage() {
     limit: PRODUCT_LIMIT,
   })
 
-  // Wait for fetch/refetch completion before prefetching
   const isCurrentPageReady = isSuccess && !isFetching
 
-  // Prefetch other root categories when current page is loaded
   usePrefetchRootCategories({
     enabled: isCurrentPageReady,
     currentHandle: handle,
     delay: 200,
   })
 
-  // Prefetch surrounding pages for instant navigation
   usePrefetchPages({
     enabled: isCurrentPageReady,
     currentPage: responsePage,
@@ -149,7 +141,7 @@ export default function CategoryPage() {
   ]
 
   return (
-    <div className="product-layout p-400">
+    <div className="grid relative grid-cols-[auto_minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)] p-400">
       <header className="col-span-2 row-span-1">
         <Breadcrumb linkAs={NextLink} items={breadcrumbItems} size="lg" />
       </header>
