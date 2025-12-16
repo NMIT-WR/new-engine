@@ -84,6 +84,7 @@
   --text-label-sm: var(--text-input-sm);
   --text-label-md: var(--text-input-md);
   --text-label-lg: var(--text-input-lg);
+  --spacing-label-required-gap: var(--spacing-50);
 
   /* Error message */
   --text-error-sm: var(--text-input-sm);
