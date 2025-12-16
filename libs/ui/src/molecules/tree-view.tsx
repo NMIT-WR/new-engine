@@ -78,7 +78,7 @@ const treeViewVariants = tv({
       class: [
         'relative',
         // get --depth from zag-js api
-        'ms-[calc(var(--depth)*var(--tree-indent-per-level))]',
+        'ms-(calc(var(--depth)*var(--tree-indent-per-level)))',
         'data-[depth=1]:ms-0',
       ],
     },

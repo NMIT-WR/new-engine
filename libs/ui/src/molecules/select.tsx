@@ -47,7 +47,7 @@ const selectVariants = tv({
     content: [
       'bg-select-content-bg border border-select-content-border',
       'rounded-select shadow-select-content max-h-fit',
-      'h-[calc(var(--available-height)-var(--spacing-content))]',
+      'h-(calc(var(--available-height)-var(--spacing-content)))',
       'overflow-auto z-(--z-content)',
     ],
     item: [
