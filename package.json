@@ -35,7 +35,12 @@
   "pnpm": {
     "overrides": {
       "medusa-be>@types/react": "^18.3.27",
-      "medusa-be>@types/react-dom": "^18.3.7"
+      "medusa-be>@types/react-dom": "^18.3.7",
+      "medusa-be>react": "^18.3.0",
+      "medusa-be>react-dom": "^18.3.0",
+      "csstype": "3.1.3",
+      "@techsio/ui-kit>@types/react": "^19.0.0",
+      "@techsio/ui-kit>@types/react-dom": "^19.0.0"
     }
   }
 }

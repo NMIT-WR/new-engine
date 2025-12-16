@@ -1,0 +1,51 @@
+{
+  "name": "@techsio/analytics",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./meta": {
+      "types": "./dist/src/meta/index.d.ts",
+      "import": "./dist/meta/index.js"
+    },
+    "./google": {
+      "types": "./dist/src/google/index.d.ts",
+      "import": "./dist/google/index.js"
+    },
+    "./heureka": {
+      "types": "./dist/src/heureka/index.d.ts",
+      "import": "./dist/heureka/index.js"
+    },
+    "./leadhub": {
+      "types": "./dist/src/leadhub/index.d.ts",
+      "import": "./dist/leadhub/index.js"
+    },
+    "./core": {
+      "types": "./dist/src/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "lint": "pnpm -w exec biome lint libs/analytics/src --diagnostic-level=error"
+  },
+  "devDependencies": {
+    "@rsbuild/plugin-react": "^1.4.1",
+    "@rslib/core": "^0.18.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": ">=19.2.0",
+    "react-dom": ">=19.2.0",
+    "next": ">=16.0.0"
+  }
+}

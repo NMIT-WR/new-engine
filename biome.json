@@ -49,6 +49,40 @@
       }
     },
     {
+      "includes": ["libs/analytics/src/**/*"],
+      "assist": {
+        "enabled": false
+      },
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "warn",
+            "useSimplifiedLogicExpression": "warn"
+          },
+          "performance": {
+            "noBarrelFile": "off"
+          },
+          "style": {
+            "useConsistentTypeDefinitions": "warn",
+            "useUnifiedTypeSignatures": "warn"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["libs/analytics/src/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noImgElement": "off"
+          },
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["apps/medusa-be/**/*"],
       "linter": {
         "rules": {
