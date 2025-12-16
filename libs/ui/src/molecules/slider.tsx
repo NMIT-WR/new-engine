@@ -270,8 +270,8 @@ export function Slider({
         </div>
         {api.value.map((_, index) => (
           <div
+            key={`thumb-${index}`}
             className={thumb()}
-            key={index}
             {...api.getThumbProps({ index })}
           >
             <input {...api.getHiddenInputProps({ index })} />

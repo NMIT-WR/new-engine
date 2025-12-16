@@ -59,7 +59,7 @@ export function StatsSection() {
                 colorClasses[stat.color as keyof typeof colorClasses]
 
               return (
-                <div key={index} className="relative">
+                <div key={`stat-${stat.year}`} className="relative">
                   {/* Main content */}
                   <div className="relative flex h-[20rem] flex-col justify-between overflow-hidden rounded-[1rem] border border-border-subtle bg-fill-base/50 p-[2rem] text-center shadow-sm md:h-[22rem] lg:h-[20rem]">
                     {/* Top section */}

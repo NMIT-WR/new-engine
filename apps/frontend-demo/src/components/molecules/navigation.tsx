@@ -77,8 +77,8 @@ export function Navigation({ items, className, ...props }: NavigationProps) {
   return (
     <nav className="bg-nav-bg" {...props}>
       <ul className="flex items-center gap-nav-gap">
-        {items.map((item, index) => (
-          <NavigationItem key={index} item={item} />
+        {items.map((item) => (
+          <NavigationItem key={slugify(item.title)} item={item} />
         ))}
       </ul>
     </nav>

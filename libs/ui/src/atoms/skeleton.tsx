@@ -233,7 +233,7 @@ Skeleton.Text = function SkeletonText({
 
         return (
           <div
-            key={index}
+            key={`skeleton-text-${index}`}
             className={styles.root({
               className: styles.textLine({ className }),
             })}
