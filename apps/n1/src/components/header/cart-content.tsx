@@ -11,7 +11,7 @@ import { CartEmptyState } from "./cart-empty-state"
 import { CartItem } from "./cart-item"
 import { CartSkeleton } from "./cart-skeleton"
 
-interface CartContentProps {
+type CartContentProps = {
   cart: Cart | null | undefined
   isLoading: boolean
   onClose?: () => void
@@ -23,8 +23,10 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
   const toast = useCartToast()
 
   const handleUpdateQuantity =
-    (itemId: string, itemTitle: string) => (quantity: number) => {
-      if (!cart) return
+    (itemId: string, _itemTitle: string) => (quantity: number) => {
+      if (!cart) {
+        return
+      }
 
       updateQuantity(
         {
@@ -41,7 +43,9 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
     }
 
   const handleRemoveItem = (itemId: string, itemTitle: string) => () => {
-    if (!cart) return
+    if (!cart) {
+      return
+    }
 
     removeItem(
       {
@@ -63,7 +67,7 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
     return <CartSkeleton />
   }
 
-  if (!(cart && cart.items) || cart.items.length === 0) {
+  if (!cart?.items || cart.items.length === 0) {
     return <CartEmptyState onContinueShopping={onClose} />
   }
 
