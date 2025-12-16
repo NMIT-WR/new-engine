@@ -1,22 +1,22 @@
-'use client'
-import { ProductGridSkeleton } from '@/components/molecules/product-grid-skeleton'
-import { ProductFilters } from '@/components/organisms/product-filters'
-import { ProductGrid } from '@/components/organisms/product-grid'
-import { useInfiniteProducts } from '@/hooks/use-infinite-products'
-import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
-import { useProducts } from '@/hooks/use-products'
-import { useRegions } from '@/hooks/use-region'
-import { useUrlFilters } from '@/hooks/use-url-filters'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
-import { Select } from '@techsio/ui-kit/molecules/select'
-import Link from 'next/link'
-import { Suspense, useEffect, useRef } from 'react'
+"use client"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
+import { Select } from "@techsio/ui-kit/molecules/select"
+import Link from "next/link"
+import { Suspense, useEffect, useRef } from "react"
+import { ProductGridSkeleton } from "@/components/molecules/product-grid-skeleton"
+import { ProductFilters } from "@/components/organisms/product-filters"
+import { ProductGrid } from "@/components/organisms/product-grid"
+import { useInfiniteProducts } from "@/hooks/use-infinite-products"
+import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
+import { useProducts } from "@/hooks/use-products"
+import { useRegions } from "@/hooks/use-region"
+import { useUrlFilters } from "@/hooks/use-url-filters"
 
 const SORT_OPTIONS = [
-  { value: 'newest', label: 'Nejnovější' },
-  { value: 'name-asc', label: 'Název: A-Z' },
-  { value: 'name-desc', label: 'Název: Z-A' },
+  { value: "newest", label: "Nejnovější" },
+  { value: "name-asc", label: "Název: A-Z" },
+  { value: "name-desc", label: "Název: Z-A" },
 ]
 
 function ProductsContent() {
@@ -46,7 +46,7 @@ function ProductsContent() {
     pageRange: urlFilters.pageRange,
     limit: pageSize,
     filters: productFilters,
-    sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+    sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
     q: urlFilters.searchQuery || undefined,
     region_id: selectedRegion?.id,
   })
@@ -65,7 +65,7 @@ function ProductsContent() {
     page: urlFilters.page,
     limit: pageSize,
     filters: productFilters,
-    sort: urlFilters.sortBy === 'relevance' ? undefined : urlFilters.sortBy,
+    sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
     q: urlFilters.searchQuery || undefined,
     region_id: selectedRegion?.id,
     enabled: !urlFilters.pageRange.isRange, // Disable when in range mode
@@ -126,8 +126,8 @@ function ProductsContent() {
       <div className="mb-product-listing-header-margin">
         <Breadcrumb
           items={[
-            { label: 'Domů', href: '/' },
-            { label: 'Produkty', href: '/products' },
+            { label: "Domů", href: "/" },
+            { label: "Produkty", href: "/products" },
           ]}
           linkComponent={Link}
         />
@@ -160,19 +160,19 @@ function ProductsContent() {
               Zobrazeno {products.length} z {totalCount} produktů
             </p>
             <Select
-              value={[urlFilters.sortBy || 'newest']}
-              options={SORT_OPTIONS.map((opt) => ({
-                value: opt.value,
-                label: opt.label,
-              }))}
+              className="max-w-64"
               clearIcon={false}
-              placeholder="Vybrat řazení"
               onValueChange={(details) => {
                 const value = details.value[0]
                 if (value) urlFilters.setSortBy(value as any)
               }}
+              options={SORT_OPTIONS.map((opt) => ({
+                value: opt.value,
+                label: opt.label,
+              }))}
+              placeholder="Vybrat řazení"
               size="sm"
-              className="max-w-64"
+              value={[urlFilters.sortBy || "newest"]}
             />
           </div>
 
@@ -181,26 +181,26 @@ function ProductsContent() {
           ) : products.length > 0 ? (
             <div>
               <ProductGrid
+                currentPage={currentPage}
+                onPageChange={urlFilters.setPage}
+                pageSize={pageSize}
                 products={products}
                 totalCount={totalCount}
-                currentPage={currentPage}
-                pageSize={pageSize}
-                onPageChange={urlFilters.setPage}
               />
 
               {/* Load More Button */}
               {
                 <div className="mt-8 flex justify-center">
                   <Button
+                    disabled={!infiniteHasNextPage || isFetchingNextPage}
                     onClick={async () => {
                       // First fetch the next page data
                       await fetchNextPage()
                       // Then update URL without navigation
                       urlFilters.extendPageRange()
                     }}
-                    disabled={!infiniteHasNextPage || isFetchingNextPage}
-                    variant="primary"
                     size="sm"
+                    variant="primary"
                   >
                     {isFetchingNextPage
                       ? `Načítání dalších ${pageSize}...`
