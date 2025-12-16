@@ -1,0 +1,125 @@
+@theme static {
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-navigation-menu-base: var(--color-surface);
+  --color-navigation-menu-accent: var(--color-primary);
+  --color-navigation-menu-border: var(--color-border-primary);
+
+  /* === DERIVED COLORS === */
+  /* Background colors */
+  --color-navigation-menu-bg: var(--color-navigation-menu-base);
+  --color-navigation-menu-list-bg: transparent;
+  --color-navigation-menu-item-bg: transparent;
+  --color-navigation-menu-trigger-bg: transparent;
+  --color-navigation-menu-content-bg: var(--color-navigation-menu-base);
+  --color-navigation-menu-link-bg: transparent;
+  --color-navigation-menu-viewport-bg: var(--color-navigation-menu-base);
+  --color-navigation-menu-indicator-bg: var(--color-navigation-menu-accent);
+
+  /* Foreground colors */
+  --color-navigation-menu-fg: var(--color-fg-primary);
+  --color-navigation-menu-trigger-fg: var(--color-navigation-menu-fg);
+  --color-navigation-menu-link-fg: var(--color-navigation-menu-fg);
+  --color-navigation-menu-content-fg: var(--color-navigation-menu-fg);
+
+  /* Border colors */
+  --color-navigation-menu-content-border: var(--color-navigation-menu-border);
+  --color-navigation-menu-viewport-border: var(--color-navigation-menu-border);
+
+  /* === STATE VARIATIONS === */
+  /* Hover states */
+  --color-navigation-menu-trigger-bg-hover: oklch(
+    from var(--color-navigation-menu-base) calc(l - var(--surface-increment) * 2) c h
+  );
+  --color-navigation-menu-trigger-fg-hover: var(--color-navigation-menu-accent);
+  --color-navigation-menu-link-bg-hover: oklch(
+    from var(--color-navigation-menu-base) calc(l - var(--surface-increment) * 2) c h
+  );
+  --color-navigation-menu-link-fg-hover: var(--color-navigation-menu-accent);
+
+  /* Open/Active states */
+  --color-navigation-menu-trigger-fg-open: var(--color-navigation-menu-accent);
+  --color-navigation-menu-trigger-bg-open: oklch(
+    from var(--color-navigation-menu-base) calc(l - var(--surface-increment)) c h
+  );
+
+  /* Current page state */
+  --color-navigation-menu-link-fg-current: var(--color-navigation-menu-accent);
+
+  /* === DISABLED STATES === */
+  --color-navigation-menu-trigger-fg-disabled: var(--color-fg-disabled);
+  --color-navigation-menu-link-fg-disabled: var(--color-fg-disabled);
+
+  /* === SPACING === */
+  /* Root spacing */
+  --gap-navigation-menu: var(--spacing-100);
+
+  /* List spacing */
+  --gap-navigation-menu-list: var(--spacing-50);
+
+  /* Trigger spacing */
+  --padding-navigation-menu-trigger-sm: var(--spacing-100) var(--spacing-150);
+  --padding-navigation-menu-trigger-md: var(--spacing-150) var(--spacing-200);
+  --padding-navigation-menu-trigger-lg: var(--spacing-200) var(--spacing-250);
+
+  /* Content spacing */
+  --padding-navigation-menu-content-sm: var(--spacing-150);
+  --padding-navigation-menu-content-md: var(--spacing-200);
+  --padding-navigation-menu-content-lg: var(--spacing-250);
+
+  /* Link spacing */
+  --padding-navigation-menu-link-sm: var(--spacing-100) var(--spacing-150);
+  --padding-navigation-menu-link-md: var(--spacing-150) var(--spacing-200);
+  --padding-navigation-menu-link-lg: var(--spacing-200) var(--spacing-250);
+
+  /* Viewport spacing */
+  --padding-navigation-menu-viewport: var(--spacing-200);
+
+  /* Indicator spacing */
+  --height-navigation-menu-indicator: var(--spacing-50);
+
+  /* === TYPOGRAPHY === */
+  /* Font sizes */
+  --text-navigation-menu-trigger-sm: var(--text-sm);
+  --text-navigation-menu-trigger-md: var(--text-md);
+  --text-navigation-menu-trigger-lg: var(--text-lg);
+
+  --text-navigation-menu-link-sm: var(--text-sm);
+  --text-navigation-menu-link-md: var(--text-md);
+  --text-navigation-menu-link-lg: var(--text-lg);
+
+  --text-navigation-menu-content-sm: var(--text-sm);
+  --text-navigation-menu-content-md: var(--text-md);
+  --text-navigation-menu-content-lg: var(--text-lg);
+
+  /* Font weights */
+  --font-weight-navigation-menu-trigger: var(--font-weight-medium);
+  --font-weight-navigation-menu-link: var(--font-weight-normal);
+
+  /* === BORDERS & RADIUS === */
+  --border-width-navigation-menu: var(--border-width-sm);
+  --radius-navigation-menu: var(--radius-sm);
+  --radius-navigation-menu-content: var(--radius-md);
+  --radius-navigation-menu-viewport: var(--radius-md);
+  --radius-navigation-menu-link: var(--radius-sm);
+
+  /* === SHADOWS === */
+  --shadow-navigation-menu-content: var(--shadow-lg);
+  --shadow-navigation-menu-viewport: var(--shadow-xl);
+
+  /* === FOCUS RINGS === */
+  --color-navigation-menu-ring: var(--color-ring);
+
+  /* === ANIMATION === */
+  --duration-navigation-menu: 200ms;
+  --timing-navigation-menu: ease-out;
+}
+
+/* Semantic tokens for navigation menu icons */
+@utility token-icon-navigation-menu-chevron {
+  @apply icon-[mdi--chevron-down];
+}
+
+@utility token-icon-navigation-menu-arrow {
+  @apply icon-[mdi--menu-down];
+}
