@@ -1,14 +1,15 @@
-'use client'
-import { useRemoveLineItem, useUpdateLineItem } from '@/hooks/use-cart'
-import { useCartToast } from '@/hooks/use-toast'
-import type { Cart } from '@/services/cart-service'
-import { getOptimisticFlag } from '@/utils/cart'
-import { formatAmount } from '@/utils/format/format-product'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import Link from 'next/link'
-import { CartEmptyState } from './cart-empty-state'
-import { CartItem } from './cart-item'
-import { CartSkeleton } from './cart-skeleton'
+"use client"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Link from "next/link"
+import { useRemoveLineItem, useUpdateLineItem } from "@/hooks/use-cart"
+import { useCartToast } from "@/hooks/use-toast"
+import type { Cart } from "@/services/cart-service"
+import { getOptimisticFlag } from "@/utils/cart"
+import { formatAmount } from "@/utils/format/format-product"
+import { CartEmptyState } from "./cart-empty-state"
+import { CartItem } from "./cart-item"
+import { CartSkeleton } from "./cart-skeleton"
 
 interface CartContentProps {
   cart: Cart | null | undefined
@@ -62,7 +63,7 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
     return <CartSkeleton />
   }
 
-  if (!cart || !cart.items || cart.items.length === 0) {
+  if (!(cart && cart.items) || cart.items.length === 0) {
     return <CartEmptyState onContinueShopping={onClose} />
   }
 
@@ -73,17 +74,17 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
     <div className="flex flex-col gap-400">
       <div className="max-h-sm divide-y divide-border-secondary overflow-y-auto">
         {cart.items.map((item) => {
-          const itemTitle = item.product_title || item.title || 'Product'
+          const itemTitle = item.product_title || item.title || "Product"
           const itemOptimistic = getOptimisticFlag(item)
 
           return (
             <CartItem
-              key={item.id}
-              item={item}
-              onUpdateQuantity={handleUpdateQuantity(item.id, itemTitle)}
-              onRemove={handleRemoveItem(item.id, itemTitle)}
-              isPending={isPending}
               isOptimistic={isOptimistic || itemOptimistic}
+              isPending={isPending}
+              item={item}
+              key={item.id}
+              onRemove={handleRemoveItem(item.id, itemTitle)}
+              onUpdateQuantity={handleUpdateQuantity(item.id, itemTitle)}
             />
           )
         })}
@@ -123,7 +124,7 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
 
           {cart.subtotal && cart.subtotal < 1500 && (
             <p className="pt-200 text-center text-fg-secondary text-xs">
-              Doprava zdarma od 1 500 Kč (zbývá{' '}
+              Doprava zdarma od 1 500 Kč (zbývá{" "}
               {formatAmount(1500 - cart.subtotal)})
             </p>
           )}
@@ -131,24 +132,25 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
       </div>
 
       <div className="space-y-200">
-        <Link href="/pokladna" className="block" onClick={onClose}>
-          <Button
-            variant="primary"
-            theme="solid"
-            size="md"
-            className="w-full justify-center"
-            disabled={isPending}
-          >
-            Přejít k pokladně
-          </Button>
-        </Link>
+        <LinkButton
+          as={Link}
+          className="w-full justify-center"
+          disabled={isPending}
+          href="/pokladna"
+          onClick={onClose}
+          size="md"
+          theme="solid"
+          variant="primary"
+        >
+          Přejít k pokladně
+        </LinkButton>
 
         <Button
-          variant="secondary"
-          theme="outlined"
-          size="sm"
           className="w-full justify-center"
           onClick={onClose}
+          size="sm"
+          theme="outlined"
+          variant="secondary"
         >
           Pokračovat v nákupu
         </Button>
