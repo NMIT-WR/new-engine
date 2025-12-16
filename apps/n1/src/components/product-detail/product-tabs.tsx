@@ -18,7 +18,7 @@ export const ProductTabs = ({ description, tabs }: ProductTabsProps) => {
       <Tabs className="px-0" variant="line" defaultValue={tabs?.[0]?.value}>
         <Tabs.List>
           {tabs?.map((item, index) => (
-            <Tabs.Trigger key={index} value={`tab${index + 1}`}>
+            <Tabs.Trigger key={index} value={`tab${index + 1}`} className='uppercase'>
               {item.label}
             </Tabs.Trigger>
           ))}
@@ -28,7 +28,7 @@ export const ProductTabs = ({ description, tabs }: ProductTabsProps) => {
         {tabs?.map((tab) => (
           <Tabs.Content key={tab.value} value={tab.value} className="px-0">
             {tab.headline && (
-              <h3 className="mb-200 font-bold text-lg">{tab.headline}</h3>
+              <h3 className="mb-200 font-bold text-lg uppercase">{tab.headline}</h3>
             )}
             {tab.content}
           </Tabs.Content>

@@ -120,14 +120,14 @@ export default function ProductPage() {
   const tabsData = [
     {
       value: 'tab1',
-      label: 'PRODUKTOVÉ PARAMETRY',
-      headline: 'PRODUKTOVÉ PARAMETRY',
+      label: 'produktové parametry',
+      headline: 'produktové parametry',
       content: <ProductTable rows={productTableRows} />,
     },
     {
       value: 'tab2',
-      label: 'TABULKA VELIKOSTÍ',
-      headline: 'TABULKA VELIKOSTÍ',
+      label: 'tabulka velikostí',
+      headline: 'tabulka velikostí',
       content: <ProductSizes attributes={detail.producer?.attributes} />,
     },
   ]
