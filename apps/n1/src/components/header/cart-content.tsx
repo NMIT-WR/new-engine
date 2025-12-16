@@ -22,25 +22,24 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
   const { mutate: removeItem, isPending: isRemoving } = useRemoveLineItem()
   const toast = useCartToast()
 
-  const handleUpdateQuantity =
-    (itemId: string, _itemTitle: string) => (quantity: number) => {
-      if (!cart) {
-        return
-      }
-
-      updateQuantity(
-        {
-          cartId: cart.id,
-          lineItemId: itemId,
-          quantity,
-        },
-        {
-          onError: (error) => {
-            toast.cartError(error.message)
-          },
-        }
-      )
+  const handleUpdateQuantity = (itemId: string) => (quantity: number) => {
+    if (!cart) {
+      return
     }
+
+    updateQuantity(
+      {
+        cartId: cart.id,
+        lineItemId: itemId,
+        quantity,
+      },
+      {
+        onError: (error) => {
+          toast.cartError(error.message)
+        },
+      }
+    )
+  }
 
   const handleRemoveItem = (itemId: string, itemTitle: string) => () => {
     if (!cart) {
@@ -88,7 +87,7 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
               item={item}
               key={item.id}
               onRemove={handleRemoveItem(item.id, itemTitle)}
-              onUpdateQuantity={handleUpdateQuantity(item.id, itemTitle)}
+              onUpdateQuantity={handleUpdateQuantity(item.id)}
             />
           )
         })}
