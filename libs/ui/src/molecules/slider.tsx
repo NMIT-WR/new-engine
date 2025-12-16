@@ -268,7 +268,7 @@ export function Slider({
         </div>
         {api.value.map((_, index) => (
           <div
-            key={index}
+            key={`thumb-${index}`}
             className={thumb()}
             {...api.getThumbProps({ index })}
           >
