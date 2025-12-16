@@ -18,9 +18,9 @@ const toastVariants = tv({
       'data-[type=warning]:bg-toast-warning-bg data-[type=warning]:border-toast-warning-border',
 
       // required styles by zag-js
-      'translate-x-[var(--x)] translate-y-[var(--y)]',
-      'scale-[var(--scale)] opacity-[var(--opacity)]',
-      'z-[var(--z-index)] h-[var(--height)]',
+      'translate-x-(--x) translate-y-(--y)',
+      'scale-(--scale) opacity-(--opacity)',
+      'z-(--z-index) h-(--height)',
       'will-change-[translate,opacity,scale]',
       'transition-[translate,scale,opacity] duration-400',
     ],
