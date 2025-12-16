@@ -43,6 +43,7 @@ export function RegionSelector({ className }: { className?: string }) {
   }))
   return (
     <Select
+      label="Region"
       options={options}
       value={selectedRegion ? [selectedRegion.id] : []}
       onValueChange={handleChange}

@@ -269,6 +269,7 @@ export function AddressForm({
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
+            label="Země"
             options={COUNTRIES}
             value={[shippingAddress.country]}
             onValueChange={(details) =>
@@ -403,6 +404,7 @@ export function AddressForm({
 
           <div className="mb-4 max-w-[20rem] sm:mb-6">
             <Select
+              label="Země"
               options={COUNTRIES}
               value={[billingAddress.country]}
               onValueChange={(details) =>

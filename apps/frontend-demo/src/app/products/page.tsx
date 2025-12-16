@@ -160,6 +160,7 @@ function ProductsContent() {
               Zobrazeno {products.length} z {totalCount} produktů
             </p>
             <Select
+              label="Řadit podle"
               value={[urlFilters.sortBy || 'newest']}
               options={SORT_OPTIONS.map((opt) => ({
                 value: opt.value,
