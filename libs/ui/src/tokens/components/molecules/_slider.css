@@ -69,5 +69,4 @@
 
   /* === FOCUS RINGS === */
   --color-slider-ring: var(--color-ring);
-  --ring-offset-slider: var(--spacing-050);
 }
