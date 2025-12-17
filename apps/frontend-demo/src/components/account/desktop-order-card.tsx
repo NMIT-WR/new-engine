@@ -1,20 +1,20 @@
-import { formatPrice } from '@/lib/format-price'
+import type { StoreOrder } from "@medusajs/types"
+import { Badge } from "@techsio/ui-kit/atoms/badge"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Image from "next/image"
+import Link from "next/link"
+import { formatPrice } from "@/lib/format-price"
 import {
   formatOrderDate,
   getOrderStatusLabel,
   truncateProductTitle,
-} from '@/lib/order-utils'
-import type { StoreOrder } from '@medusajs/types'
-import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Image from 'next/image'
-import Link from 'next/link'
+} from "@/lib/order-utils"
 
 export function DesktopOrderCard({ order }: { order: StoreOrder }) {
   return (
     <div
-      key={order.id}
       className="grid grid-cols-12 gap-orders-card border-orders-border border-b p-sm transition-colors hover:bg-orders-card-hover"
+      key={order.id}
     >
       <div className="col-span-2 flex items-center">
         <div>
@@ -22,16 +22,16 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
             #{order.display_id}
           </p>
           <Badge
-            variant={
-              order.status === 'completed'
-                ? 'success'
-                : order.status === 'pending'
-                  ? 'warning'
-                  : order.status === 'canceled'
-                    ? 'danger'
-                    : 'info'
-            }
             className="mt-orders-overlap inline-flex"
+            variant={
+              order.status === "completed"
+                ? "success"
+                : order.status === "pending"
+                  ? "warning"
+                  : order.status === "canceled"
+                    ? "danger"
+                    : "info"
+            }
           >
             {getOrderStatusLabel(order.status)}
           </Badge>
@@ -49,17 +49,17 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
           <div className="-space-x-2 flex">
             {order.items?.slice(0, 3).map((item, index) => (
               <div
-                key={item.id}
                 className="relative h-fit w-10 overflow-hidden rounded-full border-2 border-base bg-orders-overlay"
+                key={item.id}
                 style={{ zIndex: 3 - index }}
               >
                 {item.thumbnail && (
                   <Image
-                    src={item.thumbnail}
-                    alt={item.product_title || ''}
+                    alt={item.product_title || ""}
                     className="aspect-square object-cover"
-                    width={40}
                     height={40}
+                    src={item.thumbnail}
+                    width={40}
                   />
                 )}
               </div>
@@ -76,7 +76,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
             <p className="line-clamp-1 text-orders-fg-primary text-orders-md">
               {order.items?.[0] &&
                 order.items.length < 2 &&
-                truncateProductTitle(order.items[0].product_title || '')}
+                truncateProductTitle(order.items[0].product_title || "")}
             </p>
             <p className="text-fg-tertiary text-orders-sm">
               {order.items?.length || 0} položek
@@ -97,8 +97,8 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
       <div className="col-span-2 flex items-center justify-end">
         <LinkButton
           as={Link}
-          prefetch={true}
           href={`/account/orders/${order.id}`}
+          prefetch={true}
           size="sm"
           variant="primary"
         >

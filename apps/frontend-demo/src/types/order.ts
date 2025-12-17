@@ -88,11 +88,11 @@ export interface PaymentCollection {
   captured_amount: number
   refunded_amount: number
   status:
-    | 'not_paid'
-    | 'awaiting'
-    | 'authorized'
-    | 'partially_authorized'
-    | 'paid'
+    | "not_paid"
+    | "awaiting"
+    | "authorized"
+    | "partially_authorized"
+    | "paid"
 }
 
 export interface Fulfillment {
@@ -107,30 +107,30 @@ export interface Fulfillment {
 }
 
 export type OrderStatus =
-  | 'pending'
-  | 'completed'
-  | 'archived'
-  | 'canceled'
-  | 'requires_action'
+  | "pending"
+  | "completed"
+  | "archived"
+  | "canceled"
+  | "requires_action"
 export type PaymentStatus =
-  | 'not_paid'
-  | 'awaiting'
-  | 'authorized'
-  | 'partially_authorized'
-  | 'captured'
-  | 'partially_captured'
-  | 'partially_refunded'
-  | 'refunded'
-  | 'canceled'
+  | "not_paid"
+  | "awaiting"
+  | "authorized"
+  | "partially_authorized"
+  | "captured"
+  | "partially_captured"
+  | "partially_refunded"
+  | "refunded"
+  | "canceled"
 export type FulfillmentStatus =
-  | 'not_fulfilled'
-  | 'partially_fulfilled'
-  | 'fulfilled'
-  | 'partially_shipped'
-  | 'shipped'
-  | 'partially_returned'
-  | 'returned'
-  | 'canceled'
+  | "not_fulfilled"
+  | "partially_fulfilled"
+  | "fulfilled"
+  | "partially_shipped"
+  | "shipped"
+  | "partially_returned"
+  | "returned"
+  | "canceled"
 
 export interface Order {
   id: string

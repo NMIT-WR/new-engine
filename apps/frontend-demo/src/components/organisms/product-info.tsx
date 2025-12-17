@@ -1,15 +1,15 @@
-'use client'
-import { SafeHtmlContent } from '@/components/safe-html-content'
-import { useCart } from '@/hooks/use-cart'
-import type { Product, ProductVariant } from '@/types/product'
-import { sortVariantsBySize } from '@/utils/variant-utils'
-import { Badge, type BadgeProps } from '@ui/atoms/badge'
-import { Button } from '@ui/atoms/button'
-import { Label } from '@ui/atoms/label'
-import { NumericInput } from '@ui/atoms/numeric-input'
-import { Rating } from '@ui/atoms/rating'
-import { useToast } from '@ui/molecules/toast'
-import { useState } from 'react'
+"use client"
+import { Badge, type BadgeProps } from "@ui/atoms/badge"
+import { Button } from "@ui/atoms/button"
+import { Label } from "@ui/atoms/label"
+import { NumericInput } from "@ui/atoms/numeric-input"
+import { Rating } from "@ui/atoms/rating"
+import { useToast } from "@ui/molecules/toast"
+import { useState } from "react"
+import { SafeHtmlContent } from "@/components/safe-html-content"
+import { useCart } from "@/hooks/use-cart"
+import type { Product, ProductVariant } from "@/types/product"
+import { sortVariantsBySize } from "@/utils/variant-utils"
 
 interface ProductInfoProps {
   product: Product
@@ -36,10 +36,10 @@ export function ProductInfo({
   const handleAddToCart = () => {
     if (!selectedVariant) {
       toast.create({
-        title: 'Vyberte prosím možnosti',
+        title: "Vyberte prosím možnosti",
         description:
-          'Před přidáním do košíku vyberte prosím všechny možnosti produktu.',
-        type: 'error',
+          "Před přidáním do košíku vyberte prosím všechny možnosti produktu.",
+        type: "error",
       })
       return
     }
@@ -47,7 +47,7 @@ export function ProductInfo({
   }
 
   const validQuantity =
-    typeof quantity === 'number' && !Number.isNaN(quantity) ? quantity : 1
+    typeof quantity === "number" && !Number.isNaN(quantity) ? quantity : 1
 
   return (
     <div className="flex flex-col">
@@ -68,7 +68,7 @@ export function ProductInfo({
       {/* Rating */}
       {product.rating && (
         <div className="mb-product-info-rating-margin flex items-center gap-product-info-rating-gap">
-          <Rating value={product.rating} readOnly />
+          <Rating readOnly value={product.rating} />
           <span className="text-product-info-rating-text">
             ({product.reviewCount || 0} recenzí)
           </span>
@@ -77,8 +77,8 @@ export function ProductInfo({
 
       {/* Description */}
       <SafeHtmlContent
-        content={product.description}
         className="mb-product-info-description-margin text-product-info-description"
+        content={product.description}
       />
 
       {/* Variant Selectors */}
@@ -95,11 +95,11 @@ export function ProductInfo({
                 const isSelected = selectedVariant?.id === variant.id
                 return (
                   <Button
-                    key={variant.id}
-                    theme={isSelected ? 'solid' : 'borderless'}
-                    size="sm"
-                    onClick={() => onVariantChange(variant)}
                     className="roundend-product-btn border"
+                    key={variant.id}
+                    onClick={() => onVariantChange(variant)}
+                    size="sm"
+                    theme={isSelected ? "solid" : "borderless"}
                   >
                     {variant.title}
                   </Button>
@@ -123,24 +123,24 @@ export function ProductInfo({
       {/* Actions */}
       <div className="mb-product-info-action-margin flex gap-product-info-action-gap">
         <Button
-          variant="primary"
-          size="sm"
           className=""
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
+          size="sm"
+          variant="primary"
         >
           Přidat do košíku
-        </Button>{' '}
+        </Button>{" "}
         <NumericInput
-          value={validQuantity}
-          onChange={setQuantity}
-          min={1}
-          max={10}
-          hideControls={false}
-          size="sm"
           className="h-fit w-24 py-0"
+          hideControls={false}
+          max={10}
+          min={1}
+          onChange={setQuantity}
+          size="sm"
+          value={validQuantity}
         />
-        <Button variant="secondary" size="sm" icon="icon-[mdi--heart-outline]">
+        <Button icon="icon-[mdi--heart-outline]" size="sm" variant="secondary">
           <span className="sr-only">Přidat do seznamu přání</span>
         </Button>
       </div>

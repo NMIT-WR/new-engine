@@ -1,15 +1,15 @@
-'use client'
-import { DesktopOrderCard } from '@/components/account/desktop-order-card'
-import { MobileOrderCard } from '@/components/account/mobile-order-card'
-import { OrdersEmpty } from '@/components/account/orders-empty'
-import { OrdersError } from '@/components/account/orders-error'
-import { OrdersSkeleton } from '@/components/account/orders-skeleton'
-import { OrdersSummary } from '@/components/account/orders-summary'
-import { OrdersTableHeader } from '@/components/account/orders-table-header'
-import { useAuth } from '@/hooks/use-auth'
-import { useOrders } from '@/hooks/use-orders'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+"use client"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { DesktopOrderCard } from "@/components/account/desktop-order-card"
+import { MobileOrderCard } from "@/components/account/mobile-order-card"
+import { OrdersEmpty } from "@/components/account/orders-empty"
+import { OrdersError } from "@/components/account/orders-error"
+import { OrdersSkeleton } from "@/components/account/orders-skeleton"
+import { OrdersSummary } from "@/components/account/orders-summary"
+import { OrdersTableHeader } from "@/components/account/orders-table-header"
+import { useAuth } from "@/hooks/use-auth"
+import { useOrders } from "@/hooks/use-orders"
 
 const MIN_ORDERS_COUNT = 5
 export default function OrdersPage() {
@@ -18,7 +18,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (isInitialized && !user) {
-      router.push('/auth/login')
+      router.push("/auth/login")
     }
   }, [user, isInitialized, router])
 
@@ -48,10 +48,10 @@ export default function OrdersPage() {
     0
   )
   const completedOrders = orders.filter(
-    (order) => order.status === 'completed'
+    (order) => order.status === "completed"
   ).length
   const pendingOrders = orders.filter(
-    (order) => order.status === 'pending'
+    (order) => order.status === "pending"
   ).length
 
   return (
@@ -61,10 +61,10 @@ export default function OrdersPage() {
       ) : (
         <>
           <OrdersSummary
-            totalAmount={totalAmount}
             completedOrders={completedOrders}
-            pendingOrders={pendingOrders}
             numberOfOrders={orders.length}
+            pendingOrders={pendingOrders}
+            totalAmount={totalAmount}
           />
 
           {error ? (

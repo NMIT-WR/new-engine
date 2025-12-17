@@ -1,36 +1,36 @@
 export function StatsSection() {
   const stats = [
     {
-      value: '15+',
-      label: 'let zkušeností',
-      description: 'Od roku 2008 budujeme úspěšné e-shopy',
-      year: '2008',
-      milestone: 'První zákazník',
-      color: 'primary',
+      value: "15+",
+      label: "let zkušeností",
+      description: "Od roku 2008 budujeme úspěšné e-shopy",
+      year: "2008",
+      milestone: "První zákazník",
+      color: "primary",
     },
     {
-      value: '200+',
-      label: 'realizovaných projektů',
-      description: 'Úspěšně dokončených e-commerce řešení',
-      year: '2015',
-      milestone: 'První velký projekt',
-      color: 'secondary',
+      value: "200+",
+      label: "realizovaných projektů",
+      description: "Úspěšně dokončených e-commerce řešení",
+      year: "2015",
+      milestone: "První velký projekt",
+      color: "secondary",
     },
     {
-      value: '85%',
-      label: 'dlouhodobých klientů',
-      description: 'Vysoká míra spokojenosti a opakovaných zakázek',
-      year: '2020',
-      milestone: 'Expansion program',
-      color: 'success',
+      value: "85%",
+      label: "dlouhodobých klientů",
+      description: "Vysoká míra spokojenosti a opakovaných zakázek",
+      year: "2020",
+      milestone: "Expansion program",
+      color: "success",
     },
     {
-      value: '40%',
-      label: 'nárůst prodejů',
-      description: 'Průměrné zvýšení tržeb prvním roce',
-      year: '2024',
-      milestone: 'Optimization excellence',
-      color: 'info',
+      value: "40%",
+      label: "nárůst prodejů",
+      description: "Průměrné zvýšení tržeb prvním roce",
+      year: "2024",
+      milestone: "Optimization excellence",
+      color: "info",
     },
   ]
 
@@ -50,16 +50,16 @@ export function StatsSection() {
           <div className="grid grid-cols-1 gap-[2rem] md:grid-cols-2 lg:grid-cols-4 lg:gap-[1rem]">
             {stats.map((stat, index) => {
               const colorClasses = {
-                primary: { bg: 'bg-primary', text: 'text-primary' },
-                secondary: { bg: 'bg-secondary', text: 'text-secondary' },
-                success: { bg: 'bg-success', text: 'text-success' },
-                info: { bg: 'bg-info', text: 'text-info' },
+                primary: { bg: "bg-primary", text: "text-primary" },
+                secondary: { bg: "bg-secondary", text: "text-secondary" },
+                success: { bg: "bg-success", text: "text-success" },
+                info: { bg: "bg-info", text: "text-info" },
               }
               const colors =
                 colorClasses[stat.color as keyof typeof colorClasses]
 
               return (
-                <div key={`stat-${stat.year}`} className="relative">
+                <div className="relative" key={`stat-${stat.year}`}>
                   {/* Main content */}
                   <div className="relative flex h-[20rem] flex-col justify-between overflow-hidden rounded-[1rem] border border-border-subtle bg-fill-base/50 p-[2rem] text-center shadow-sm md:h-[22rem] lg:h-[20rem]">
                     {/* Top section */}

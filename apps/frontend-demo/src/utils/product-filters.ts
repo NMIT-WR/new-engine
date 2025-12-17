@@ -1,4 +1,4 @@
-import type { Product } from '@/types/product'
+import type { Product } from "@/types/product"
 
 export interface ProductCounts {
   sizeCounts: Record<string, number>
@@ -56,7 +56,7 @@ export function calculateProductCounts(products: Product[]): ProductCounts {
 
   // Transform category counts to array format
   const categoryArray = Object.entries(categoryCounts).map(([key, count]) => {
-    const [id, handle, name] = key.split(':')
+    const [id, handle, name] = key.split(":")
     return { id, name, handle, count }
   })
 
@@ -78,19 +78,15 @@ export function getSizesWithCounts(
     .map(([size, count]) => ({ size, count }))
     .sort((a, b) => {
       // Sort by standard size order
-      const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+      const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"]
       return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size)
     })
 }
 
-
 /**
  * Sort products based on sort option
  */
-export type SortOption =
-  | 'newest'
-  | 'name-asc'
-  | 'name-desc'
+export type SortOption = "newest" | "name-asc" | "name-desc"
 
 export function sortProducts(
   products: Product[],
@@ -99,10 +95,10 @@ export function sortProducts(
   const sorted = [...products]
 
   switch (sortBy) {
-    case 'name-asc':
+    case "name-asc":
       sorted.sort((a, b) => a.title.localeCompare(b.title))
       break
-    case 'name-desc':
+    case "name-desc":
       sorted.sort((a, b) => b.title.localeCompare(a.title))
       break
     // 'newest' is default, no sorting needed
@@ -110,4 +106,3 @@ export function sortProducts(
 
   return sorted
 }
-

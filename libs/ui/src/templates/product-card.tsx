@@ -1,9 +1,9 @@
-import { Badge, type BadgeProps } from '../atoms/badge'
-import { ProductCard, type ProductCardProps } from '../molecules/product-card'
-import { slugify } from '../utils'
+import { Badge, type BadgeProps } from "../atoms/badge"
+import { ProductCard, type ProductCardProps } from "../molecules/product-card"
+import { slugify } from "../utils"
 
 export interface ProductCardTemplateProps
-  extends Pick<ProductCardProps, 'layout'> {
+  extends Pick<ProductCardProps, "layout"> {
   image?: {
     src: string
     alt: string
@@ -20,7 +20,7 @@ export interface ProductCardTemplateProps
     reviewCount?: number
   }
   stock?: {
-    status?: 'in-stock' | 'limited-stock' | 'out-of-stock'
+    status?: "in-stock" | "limited-stock" | "out-of-stock"
     label: string
   }
   showActions?: boolean
@@ -45,27 +45,27 @@ export function ProductCardTemplate({
   onAddToCart,
   onViewDetails,
   onAddToWishlist,
-  cartButtonText = 'Add to Cart',
-  detailButtonText = 'View Details',
-  wishlistButtonText = 'Add to Wishlist',
-  layout = 'column',
+  cartButtonText = "Add to Cart",
+  detailButtonText = "View Details",
+  wishlistButtonText = "Add to Wishlist",
+  layout = "column",
   className,
 }: ProductCardTemplateProps) {
   return (
-    <ProductCard layout={layout} className={className}>
-      {image && <ProductCard.Image src={image.src} alt={image.alt} />}
+    <ProductCard className={className} layout={layout}>
+      {image && <ProductCard.Image alt={image.alt} src={image.src} />}
 
       {badges && badges.length > 0 && (
         <ProductCard.Badges>
           {badges.map((badge) => {
-            if (badge.variant === 'dynamic') {
+            if (badge.variant === "dynamic") {
               return (
                 <Badge
+                  bgColor={badge.bgColor}
+                  borderColor={badge.borderColor}
+                  fgColor={badge.fgColor}
                   key={slugify(badge.children)}
                   variant="dynamic"
-                  bgColor={badge.bgColor}
-                  fgColor={badge.fgColor}
-                  borderColor={badge.borderColor}
                 >
                   {badge.children}
                 </Badge>
@@ -109,7 +109,7 @@ export function ProductCardTemplate({
       )}
 
       {stock && (
-        <ProductCard.Stock status={stock.status || 'in-stock'}>
+        <ProductCard.Stock status={stock.status || "in-stock"}>
           {stock.label}
         </ProductCard.Stock>
       )}

@@ -1,7 +1,7 @@
-import { Store } from '@tanstack/react-store'
+import { Store } from "@tanstack/react-store"
 
 // Cookie helpers
-const COOKIE_NAME = 'medusa_region_id'
+const COOKIE_NAME = "medusa_region_id"
 const COOKIE_MAX_AGE = 365 * 24 * 60 * 60
 
 export interface RegionState {
@@ -13,18 +13,18 @@ export const regionStore = new Store<RegionState>({
 })
 
 function setCookie(name: string, value: string) {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     document.cookie = `${name}=${value}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`
   }
 }
 
 function getCookie(name: string): string | null {
-  if (typeof window === 'undefined') return null
+  if (typeof window === "undefined") return null
 
   const value = `; ${document.cookie}`
   const parts = value.split(`; ${name}=`)
   if (parts.length === 2) {
-    return parts.pop()?.split(';').shift() || null
+    return parts.pop()?.split(";").shift() || null
   }
   return null
 }
@@ -43,18 +43,18 @@ export function getSelectedRegionId(): string | null {
   return regionStore.state.selectedRegionId
 }
 
- if (typeof window !== 'undefined') {
-    const cookieRegionId = getCookie(COOKIE_NAME)
+if (typeof window !== "undefined") {
+  const cookieRegionId = getCookie(COOKIE_NAME)
 
-    // migration from localStorage to cookie
-    if (!cookieRegionId) {
-      const legacyRegionId = localStorage.getItem(COOKIE_NAME)
-      if (legacyRegionId) {
-        setCookie(COOKIE_NAME, legacyRegionId)
-        localStorage.removeItem(COOKIE_NAME)
-        regionStore.setState({ selectedRegionId: legacyRegionId })
-      }
-    } else {
-      regionStore.setState({ selectedRegionId: cookieRegionId })
+  // migration from localStorage to cookie
+  if (cookieRegionId) {
+    regionStore.setState({ selectedRegionId: cookieRegionId })
+  } else {
+    const legacyRegionId = localStorage.getItem(COOKIE_NAME)
+    if (legacyRegionId) {
+      setCookie(COOKIE_NAME, legacyRegionId)
+      localStorage.removeItem(COOKIE_NAME)
+      regionStore.setState({ selectedRegionId: legacyRegionId })
     }
+  }
 }

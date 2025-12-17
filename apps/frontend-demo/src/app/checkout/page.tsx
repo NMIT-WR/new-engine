@@ -1,21 +1,21 @@
-'use client'
+"use client"
 
-import { LoadingPage } from '@/components/loading-page'
-import { OrderSummary } from '@/components/order-summary'
-import { useCart } from '@/hooks/use-cart'
-import { useCheckout } from '@/hooks/use-checkout'
-import { PAYMENT_METHODS } from '@/lib/checkout-data'
-import { formatPrice } from '@/lib/format-price'
-import { orderHelpers } from '@/stores/order-store'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { Steps } from '@techsio/ui-kit/molecules/steps'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { PaymentSelection } from '../../components/molecules/payment-selection'
-import { ShippingSelection } from '../../components/molecules/shipping-selection'
-import { AddressForm } from '../../components/organisms/address-form'
-import { OrderPreview } from '../../components/organisms/order-preview'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { Steps } from "@techsio/ui-kit/molecules/steps"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { LoadingPage } from "@/components/loading-page"
+import { OrderSummary } from "@/components/order-summary"
+import { useCart } from "@/hooks/use-cart"
+import { useCheckout } from "@/hooks/use-checkout"
+import { PAYMENT_METHODS } from "@/lib/checkout-data"
+import { formatPrice } from "@/lib/format-price"
+import { orderHelpers } from "@/stores/order-store"
+import { PaymentSelection } from "../../components/molecules/payment-selection"
+import { ShippingSelection } from "../../components/molecules/shipping-selection"
+import { AddressForm } from "../../components/organisms/address-form"
+import { OrderPreview } from "../../components/organisms/order-preview"
 
 export default function CheckoutPage() {
   const { cart, isLoading } = useCart()
@@ -38,7 +38,7 @@ export default function CheckoutPage() {
   } = useCheckout()
 
   const [isOrderComplete, setIsOrderComplete] = useState(false)
-  const [orderNumber, setOrderNumber] = useState<string>('')
+  const [orderNumber, setOrderNumber] = useState<string>("")
   const [showOrderSummary, setShowOrderSummary] = useState(false)
 
   // Redirect if cart is empty and no completed order
@@ -64,7 +64,7 @@ export default function CheckoutPage() {
   // Get order data (either from cart or saved completed order)
   const orderData = orderHelpers.getOrderData(cart)
 
-  if (!orderData || !orderData.items || orderData.items.length === 0) {
+  if (!(orderData && orderData.items) || orderData.items.length === 0) {
     return null
   }
 
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
   const steps = [
     {
       value: 0,
-      title: 'Adresa',
+      title: "Adresa",
       content: (
         <AddressForm
           onComplete={async (data) => {
@@ -114,14 +114,11 @@ export default function CheckoutPage() {
     },
     {
       value: 1,
-      title: 'Doprava',
+      title: "Doprava",
       content: (
         <ShippingSelection
-          selected={selectedShipping}
-          shippingMethods={shippingMethods}
-          isLoading={isLoadingShipping}
           currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
+          isLoading={isLoadingShipping}
           onSelect={async (method) => {
             setSelectedShipping(method)
             try {
@@ -130,37 +127,40 @@ export default function CheckoutPage() {
               // Error already handled in hook
             }
           }}
+          selected={selectedShipping}
+          setCurrentStep={setCurrentStep}
+          shippingMethods={shippingMethods}
         />
       ),
     },
     {
       value: 2,
-      title: 'Platba',
+      title: "Platba",
       content: (
         <PaymentSelection
-          selected={selectedPayment}
+          currentStep={currentStep}
           onSelect={(method) => {
             setSelectedPayment(method)
             setCurrentStep(3)
           }}
+          selected={selectedPayment}
           setCurrentStep={setCurrentStep}
-          currentStep={currentStep}
         />
       ),
     },
     {
       value: 3,
-      title: 'Souhrn',
+      title: "Souhrn",
       content: (
         <OrderSummary
           addressData={addressData || undefined}
-          selectedShipping={selectedShippingMethod}
-          selectedPayment={selectedPaymentMethod}
+          isLoading={isProcessingPayment}
+          isOrderComplete={isOrderComplete}
           onCompleteClick={handleComplete}
           onEditClick={() => setCurrentStep(currentStep - 1)}
-          isOrderComplete={isOrderComplete}
           orderNumber={orderNumber}
-          isLoading={isProcessingPayment}
+          selectedPayment={selectedPaymentMethod}
+          selectedShipping={selectedShippingMethod}
         />
       ),
     },
@@ -185,17 +185,17 @@ export default function CheckoutPage() {
     <div className="container mx-auto max-w-[80rem] px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       {/* Mobile/Tablet: Sticky progress bar */}
       <div
-        id="payment-header"
         className="-mx-4 sm:-mx-6 sticky top-0 z-2 mb-4 border-border border-b-2 bg-base px-4 pb-4 shadow-sm sm:px-6 lg:relative lg:mx-0 lg:border-b-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:shadow-none"
+        id="payment-header"
       >
         <div className="mb-4 flex items-center gap-3 pt-4 lg:mb-6 lg:pt-0">
           <Link
-            href="/cart"
             className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface-hover lg:h-auto lg:w-auto"
+            href="/cart"
           >
             <Icon
-              icon="token-icon-arrow-left"
               className="text-fg-primary text-lg hover:text-fg-secondary"
+              icon="token-icon-arrow-left"
             />
           </Link>
           <h1 className="font-bold text-2xl sm:text-3xl">
@@ -205,18 +205,18 @@ export default function CheckoutPage() {
 
         {/* Mobile: Collapsible order summary */}
         <Button
-          onClick={() => setShowOrderSummary(!showOrderSummary)}
           className="bg-surface text-fg-primary hover:bg-surface-hover active:bg-surface-hover lg:hidden"
           icon={
             showOrderSummary
-              ? 'token-icon-chevron-up'
-              : 'token-icon-chevron-down'
+              ? "token-icon-chevron-up"
+              : "token-icon-chevron-down"
           }
           iconPosition="left"
+          onClick={() => setShowOrderSummary(!showOrderSummary)}
         >
           <div className="flex items-center gap-2">
             <span className="font-medium">
-              {showOrderSummary ? 'Skrýt' : 'Zobrazit'} souhrn objednávky
+              {showOrderSummary ? "Skrýt" : "Zobrazit"} souhrn objednávky
             </span>
           </div>
           <span className="font-bold">
@@ -227,8 +227,8 @@ export default function CheckoutPage() {
         {showOrderSummary && (
           <div className="-mx-4 sm:-mx-6 mb-6 py-4 sm:px-6 lg:hidden">
             <OrderPreview
-              shippingPrice={shippingPrice}
               paymentFee={paymentFee}
+              shippingPrice={shippingPrice}
             />
           </div>
         )}
@@ -237,23 +237,23 @@ export default function CheckoutPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-8">
         <div className="hidden sm:block">
           <Steps
-            items={steps}
             currentStep={currentStep}
+            items={steps}
+            linear={false}
             onStepChange={handleStepChange}
             onStepComplete={handleComplete}
             orientation="horizontal"
-            linear={false}
             showControls={false}
           />
         </div>
         <div className="sm:hidden">
           <Steps
-            items={steps}
             currentStep={currentStep}
+            items={steps}
+            linear={false}
             onStepChange={handleStepChange}
             onStepComplete={handleComplete}
             orientation="vertical"
-            linear={false}
             showControls={false}
           />
         </div>
@@ -262,8 +262,8 @@ export default function CheckoutPage() {
         <div className="hidden lg:block lg:pl-8">
           <div className="sticky top-8">
             <OrderPreview
-              shippingPrice={shippingPrice}
               paymentFee={paymentFee}
+              shippingPrice={shippingPrice}
             />
           </div>
         </div>

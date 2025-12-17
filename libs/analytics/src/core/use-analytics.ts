@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { useRef } from 'react'
+import { useRef } from "react"
 import type {
   AnalyticsAdapter,
   CoreAddToCartParams,
   CoreInitiateCheckoutParams,
   CorePurchaseParams,
   CoreViewContentParams,
-} from './types'
+} from "./types"
 
 /**
  * Configuration for the unified analytics hook
@@ -140,22 +140,22 @@ export function useAnalytics({
 
     analyticsRef.current = {
       trackViewContent: (params) =>
-        executeAcrossAdapters('trackViewContent', (adapter) =>
+        executeAcrossAdapters("trackViewContent", (adapter) =>
           adapter.trackViewContent?.(params)
         ),
 
       trackAddToCart: (params) =>
-        executeAcrossAdapters('trackAddToCart', (adapter) =>
+        executeAcrossAdapters("trackAddToCart", (adapter) =>
           adapter.trackAddToCart?.(params)
         ),
 
       trackInitiateCheckout: (params) =>
-        executeAcrossAdapters('trackInitiateCheckout', (adapter) =>
+        executeAcrossAdapters("trackInitiateCheckout", (adapter) =>
           adapter.trackInitiateCheckout?.(params)
         ),
 
       trackPurchase: (params) =>
-        executeAcrossAdapters('trackPurchase', (adapter) =>
+        executeAcrossAdapters("trackPurchase", (adapter) =>
           adapter.trackPurchase?.(params)
         ),
 
@@ -168,7 +168,7 @@ export function useAnalytics({
 
   const analytics = analyticsRef.current
   if (!analytics) {
-    throw new Error('Analytics not initialized')
+    throw new Error("Analytics not initialized")
   }
 
   return analytics

@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
-import { createSimpleTracker, createTracker } from '../core/create-tracker'
-import { createWindowGetter } from '../core/get-global-function'
-import type { AnalyticsAdapter } from '../core/types'
+import { createSimpleTracker, createTracker } from "../core/create-tracker"
+import { createWindowGetter } from "../core/get-global-function"
+import type { AnalyticsAdapter } from "../core/types"
 import type {
   LeadhubExtras,
   LeadhubFunction,
   LeadhubIdentifyParams,
   LeadhubSetCartParams,
   LeadhubViewCategoryParams,
-} from './types'
+} from "./types"
 
-const getLhi = createWindowGetter<LeadhubFunction>(['lhi', 'LHInsights'])
+const getLhi = createWindowGetter<LeadhubFunction>(["lhi", "LHInsights"])
 
 export interface UseLeadhubAdapterConfig {
   /** Enable debug logging (never enable in production). */
@@ -43,7 +43,7 @@ export function useLeadhubAdapter(
   config?: UseLeadhubAdapterConfig
 ): AnalyticsAdapter & LeadhubExtras {
   const debug = config?.debug
-  const adapterKey = 'leadhub' as const
+  const adapterKey = "leadhub" as const
 
   return {
     key: adapterKey,
@@ -51,7 +51,7 @@ export function useLeadhubAdapter(
     trackViewContent: createTracker(
       getLhi,
       (lhi, params) => {
-        lhi('ViewContent', {
+        lhi("ViewContent", {
           products: [{ product_id: params.productId }],
         })
       },
@@ -63,7 +63,7 @@ export function useLeadhubAdapter(
     trackAddToCart: createTracker(
       getLhi,
       (lhi, params) => {
-        lhi('SetCart', {
+        lhi("SetCart", {
           products: [
             {
               product_id: params.productId,
@@ -94,7 +94,7 @@ export function useLeadhubAdapter(
             quantity: 1,
           }))
 
-        lhi('SetCart', {
+        lhi("SetCart", {
           products,
         })
       },
@@ -105,7 +105,7 @@ export function useLeadhubAdapter(
     trackPurchase: createTracker(
       getLhi,
       (lhi, params) => {
-        lhi('Purchase', {
+        lhi("Purchase", {
           email: params.email,
           value: params.value,
           currency: params.currency,
@@ -135,7 +135,7 @@ export function useLeadhubAdapter(
     >(
       getLhi,
       (lhi, params) => {
-        lhi('ViewCategory', params)
+        lhi("ViewCategory", params)
       },
       debug,
       adapterKey
@@ -144,7 +144,7 @@ export function useLeadhubAdapter(
     trackIdentify: createTracker<LeadhubFunction, LeadhubIdentifyParams>(
       getLhi,
       (lhi, params) => {
-        lhi('Identify', params)
+        lhi("Identify", params)
       },
       debug,
       adapterKey
@@ -153,7 +153,7 @@ export function useLeadhubAdapter(
     trackSetCart: createTracker<LeadhubFunction, LeadhubSetCartParams>(
       getLhi,
       (lhi, params) => {
-        lhi('SetCart', params)
+        lhi("SetCart", params)
       },
       debug,
       adapterKey
@@ -162,7 +162,7 @@ export function useLeadhubAdapter(
     trackPageview: createSimpleTracker<LeadhubFunction>(
       getLhi,
       (lhi) => {
-        lhi('pageview')
+        lhi("pageview")
       },
       debug,
       adapterKey

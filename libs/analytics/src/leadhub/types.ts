@@ -39,7 +39,7 @@ export interface LeadhubProduct {
 /** ViewContent - when viewing a product detail page */
 export interface LeadhubViewContentParams {
   /** Array of products being viewed */
-  products: Pick<LeadhubProduct, 'product_id'>[]
+  products: Pick<LeadhubProduct, "product_id">[]
 }
 
 /** ViewCategory - when viewing a category page */
@@ -132,20 +132,20 @@ export interface LeadhubExtras {
 // ============================================================================
 
 export type LeadhubEventName =
-  | 'pageview'
-  | 'ViewContent'
-  | 'ViewCategory'
-  | 'SetCart'
-  | 'Identify'
-  | 'Purchase'
+  | "pageview"
+  | "ViewContent"
+  | "ViewCategory"
+  | "SetCart"
+  | "Identify"
+  | "Purchase"
 
 export type LeadhubFunction = {
-  (event: 'pageview'): void
-  (event: 'ViewContent', params: LeadhubViewContentParams): void
-  (event: 'ViewCategory', params: LeadhubViewCategoryParams): void
-  (event: 'SetCart', params: LeadhubSetCartParams): void
-  (event: 'Identify', params: LeadhubIdentifyParams): void
-  (event: 'Purchase', params: LeadhubPurchaseParams): void
+  (event: "pageview"): void
+  (event: "ViewContent", params: LeadhubViewContentParams): void
+  (event: "ViewCategory", params: LeadhubViewCategoryParams): void
+  (event: "SetCart", params: LeadhubSetCartParams): void
+  (event: "Identify", params: LeadhubIdentifyParams): void
+  (event: "Purchase", params: LeadhubPurchaseParams): void
   /** Queue for events before SDK loads */
   q?: [string, unknown][]
   /** Timestamp of initialization */

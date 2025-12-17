@@ -26,7 +26,6 @@
   @apply icon-[mdi-light--information];
 }
 
-
 @utility token-icon-close {
   @apply icon-[mdi--close];
 }
@@ -47,7 +46,6 @@
 @utility token-icon-input-info {
   @apply token-icon-info;
 }
-
 
 /* Navigation icons */
 @utility token-icon-chevron-down {

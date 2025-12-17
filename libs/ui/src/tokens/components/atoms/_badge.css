@@ -29,7 +29,9 @@
   --color-badge-fg-success: var(--color-badge-fg);
   --color-badge-fg-warning: var(--color-badge-fg);
   --color-badge-fg-danger: var(--color-badge-fg);
-  --color-badge-fg-discount: var(--color-fg-dark); /* Keep original for discount */
+  --color-badge-fg-discount: var(
+    --color-fg-dark
+  ); /* Keep original for discount */
 
   /* Border colors */
   --color-badge-border: var(--color-border-primary);
