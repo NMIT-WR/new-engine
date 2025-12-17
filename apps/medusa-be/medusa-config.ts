@@ -2,7 +2,6 @@ import { defineConfig, loadEnv, Modules } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
-// const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:9000";
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379"
 const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST || ""
 const MEILISEARCH_API_KEY = process.env.MEILISEARCH_API_KEY || ""
@@ -11,6 +10,7 @@ const FEATURE_PPL_ENABLED = process.env.FEATURE_PPL_ENABLED === "1"
 module.exports = defineConfig({
   featureFlags: {
     index_engine: true,
+    translation: true,
     caching: true,
     backend_hmr: true,
   },
@@ -102,6 +102,9 @@ module.exports = defineConfig({
     },
   ],
   modules: [
+    {
+      resolve: "@medusajs/medusa/translation",
+    },
     {
       resolve: "@medusajs/medusa/caching",
       options: {
