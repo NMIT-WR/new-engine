@@ -9,13 +9,13 @@ const AUTH_TAG_LENGTH = 16
  * The key must be a 64-character hex string (32 bytes).
  */
 export function getEncryptionKey(): Buffer {
-	const keyHex = process.env.SETTINGS_ENCRYPTION_KEY
-	if (!keyHex || keyHex.length !== 64) {
-		throw new Error(
-			"SETTINGS_ENCRYPTION_KEY must be a 64-character hex string. Generate with: openssl rand -hex 32"
-		)
-	}
-	return Buffer.from(keyHex, "hex")
+  const keyHex = process.env.SETTINGS_ENCRYPTION_KEY
+  if (!keyHex || keyHex.length !== 64) {
+    throw new Error(
+      "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string. Generate with: openssl rand -hex 32"
+    )
+  }
+  return Buffer.from(keyHex, "hex")
 }
 
 /**
@@ -23,24 +23,24 @@ export function getEncryptionKey(): Buffer {
  * Returns a base64-encoded string containing IV + ciphertext + auth tag.
  */
 export function encrypt(plaintext: string): string {
-	const key = getEncryptionKey()
-	const iv = crypto.randomBytes(IV_LENGTH)
+  const key = getEncryptionKey()
+  const iv = crypto.randomBytes(IV_LENGTH)
 
-	const cipher = crypto.createCipheriv(ALGORITHM, key, iv, {
-		authTagLength: AUTH_TAG_LENGTH,
-	})
+  const cipher = crypto.createCipheriv(ALGORITHM, key, iv, {
+    authTagLength: AUTH_TAG_LENGTH,
+  })
 
-	const ciphertext = Buffer.concat([
-		cipher.update(plaintext, "utf8"),
-		cipher.final(),
-	])
+  const ciphertext = Buffer.concat([
+    cipher.update(plaintext, "utf8"),
+    cipher.final(),
+  ])
 
-	const authTag = cipher.getAuthTag()
+  const authTag = cipher.getAuthTag()
 
-	// Combine: IV (12 bytes) + ciphertext + auth tag (16 bytes)
-	const combined = Buffer.concat([iv, ciphertext, authTag])
+  // Combine: IV (12 bytes) + ciphertext + auth tag (16 bytes)
+  const combined = Buffer.concat([iv, ciphertext, authTag])
 
-	return combined.toString("base64")
+  return combined.toString("base64")
 }
 
 /**
@@ -48,23 +48,23 @@ export function encrypt(plaintext: string): string {
  * Expects format: IV (12 bytes) + ciphertext + auth tag (16 bytes).
  */
 export function decrypt(ciphertext: string): string {
-	const key = getEncryptionKey()
-	const combined = Buffer.from(ciphertext, "base64")
+  const key = getEncryptionKey()
+  const combined = Buffer.from(ciphertext, "base64")
 
-	// Extract components
-	const iv = combined.subarray(0, IV_LENGTH)
-	const authTag = combined.subarray(combined.length - AUTH_TAG_LENGTH)
-	const encryptedData = combined.subarray(
-		IV_LENGTH,
-		combined.length - AUTH_TAG_LENGTH
-	)
+  // Extract components
+  const iv = combined.subarray(0, IV_LENGTH)
+  const authTag = combined.subarray(combined.length - AUTH_TAG_LENGTH)
+  const encryptedData = combined.subarray(
+    IV_LENGTH,
+    combined.length - AUTH_TAG_LENGTH
+  )
 
-	const decipher = crypto.createDecipheriv(ALGORITHM, key, iv, {
-		authTagLength: AUTH_TAG_LENGTH,
-	})
-	decipher.setAuthTag(authTag)
+  const decipher = crypto.createDecipheriv(ALGORITHM, key, iv, {
+    authTagLength: AUTH_TAG_LENGTH,
+  })
+  decipher.setAuthTag(authTag)
 
-	return decipher.update(encryptedData) + decipher.final("utf8")
+  return decipher.update(encryptedData) + decipher.final("utf8")
 }
 
 /**
@@ -72,19 +72,19 @@ export function decrypt(ciphertext: string): string {
  * Only encrypts non-null string values.
  */
 export function encryptFields<T extends Record<string, unknown>>(
-	data: T,
-	fields: (keyof T)[]
+  data: T,
+  fields: (keyof T)[]
 ): T {
-	const result = { ...data }
+  const result = { ...data }
 
-	for (const field of fields) {
-		const value = result[field]
-		if (typeof value === "string" && value.length > 0) {
-			result[field] = encrypt(value) as T[keyof T]
-		}
-	}
+  for (const field of fields) {
+    const value = result[field]
+    if (typeof value === "string" && value.length > 0) {
+      result[field] = encrypt(value) as T[keyof T]
+    }
+  }
 
-	return result
+  return result
 }
 
 /**
@@ -92,22 +92,22 @@ export function encryptFields<T extends Record<string, unknown>>(
  * Only decrypts non-null string values.
  */
 export function decryptFields<T extends Record<string, unknown>>(
-	data: T,
-	fields: (keyof T)[]
+  data: T,
+  fields: (keyof T)[]
 ): T {
-	const result = { ...data }
+  const result = { ...data }
 
-	for (const field of fields) {
-		const value = result[field]
-		if (typeof value === "string" && value.length > 0) {
-			try {
-				result[field] = decrypt(value) as T[keyof T]
-			} catch {
-				// If decryption fails, the value might not be encrypted (legacy data)
-				// Keep the original value
-			}
-		}
-	}
+  for (const field of fields) {
+    const value = result[field]
+    if (typeof value === "string" && value.length > 0) {
+      try {
+        result[field] = decrypt(value) as T[keyof T]
+      } catch {
+        // If decryption fails, the value might not be encrypted (legacy data)
+        // Keep the original value
+      }
+    }
+  }
 
-	return result
+  return result
 }

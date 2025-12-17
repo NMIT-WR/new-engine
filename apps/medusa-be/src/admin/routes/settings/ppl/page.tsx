@@ -7,11 +7,11 @@ import {
   Label,
   Select,
   Switch,
-  toast,
   Text,
+  toast,
 } from "@medusajs/ui"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { sdk } from "../../../lib/sdk"
 
 type PplConfigResponse = {
@@ -76,50 +76,68 @@ type FieldConfig = {
   colSpan?: 1 | 2
 }
 
+const getPlaceholder = (
+  isCleared: boolean | undefined,
+  fieldConfig: FieldConfig
+): string => {
+  if (isCleared) {
+    return "Value will be cleared"
+  }
+  if (fieldConfig.isSet) {
+    return "Leave empty to keep"
+  }
+  return fieldConfig.placeholder
+}
+
 const FormField = ({
-  config,
+  fieldConfig,
   value,
   onChange,
   onClear,
   isCleared,
 }: {
-  config: FieldConfig
+  fieldConfig: FieldConfig
   value: string
   onChange: (value: string) => void
   onClear?: () => void
   isCleared?: boolean
 }) => {
-  const inputId = `ppl-${config.field}`
-  const canClear = CLEARABLE_FIELDS.has(config.field) && config.isSet && !isCleared
+  const inputId = `ppl-${fieldConfig.field}`
+  const canClear =
+    CLEARABLE_FIELDS.has(fieldConfig.field) && fieldConfig.isSet && !isCleared
 
   return (
-    <div className={`flex flex-col gap-2 ${config.colSpan === 2 ? "col-span-2" : ""}`}>
+    <div
+      className={`flex flex-col gap-2 ${fieldConfig.colSpan === 2 ? "col-span-2" : ""}`}
+    >
       <div className="flex items-center justify-between">
         <Label htmlFor={inputId}>
-          {config.label}{" "}
+          {fieldConfig.label}{" "}
           {isCleared ? (
             <span className="text-ui-fg-error">(will be cleared)</span>
           ) : (
-            config.isSet && <span className="text-ui-fg-subtle">(set)</span>
+            fieldConfig.isSet && (
+              <span className="text-ui-fg-subtle">(set)</span>
+            )
           )}
         </Label>
         {canClear && onClear && (
           <button
-            type="button"
+            className="text-sm text-ui-fg-subtle hover:text-ui-fg-error"
             onClick={onClear}
-            className="text-ui-fg-subtle hover:text-ui-fg-error text-sm"
+            type="button"
           >
             Clear
           </button>
         )}
       </div>
       <Input
-        id={inputId}
-        type={config.type || "text"}
-        value={isCleared ? "" : value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={isCleared ? "Value will be cleared" : (config.isSet ? "Leave empty to keep" : config.placeholder)}
         disabled={isCleared}
+        id={inputId}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={getPlaceholder(isCleared, fieldConfig)}
+        type={fieldConfig.type || "text"}
+        value={isCleared ? "" : value}
       />
     </div>
   )
@@ -151,25 +169,25 @@ const PplSettingsPage = () => {
     },
   })
 
-  const config = data?.config
+  const pplConfig = data?.config
 
   useEffect(() => {
-    if (config) {
+    if (pplConfig) {
       setFormData({
-        is_enabled: config.is_enabled,
-        client_id: config.client_id || "",
-        default_label_format: config.default_label_format,
-        sender_name: config.sender_name || "",
-        sender_street: config.sender_street || "",
-        sender_city: config.sender_city || "",
-        sender_zip_code: config.sender_zip_code || "",
-        sender_country: config.sender_country || "",
-        sender_phone: config.sender_phone || "",
-        sender_email: config.sender_email || "",
+        is_enabled: pplConfig.is_enabled,
+        client_id: pplConfig.client_id || "",
+        default_label_format: pplConfig.default_label_format,
+        sender_name: pplConfig.sender_name || "",
+        sender_street: pplConfig.sender_street || "",
+        sender_city: pplConfig.sender_city || "",
+        sender_zip_code: pplConfig.sender_zip_code || "",
+        sender_country: pplConfig.sender_country || "",
+        sender_phone: pplConfig.sender_phone || "",
+        sender_email: pplConfig.sender_email || "",
       })
       setClearedFields(new Set())
     }
-  }, [config])
+  }, [pplConfig])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -181,7 +199,10 @@ const PplSettingsPage = () => {
     mutate(payload)
   }
 
-  const updateField = (field: keyof PplConfigInput, value: string | boolean) => {
+  const updateField = (
+    field: keyof PplConfigInput,
+    value: string | boolean
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     // If user types in a cleared field, unmark it
     if (clearedFields.has(field)) {
@@ -226,21 +247,45 @@ const PplSettingsPage = () => {
   }
 
   const credentialFields: FieldConfig[] = [
-    { field: "client_id", label: "Client ID", placeholder: "Your PPL Client ID" },
+    {
+      field: "client_id",
+      label: "Client ID",
+      placeholder: "Your PPL Client ID",
+    },
     {
       field: "client_secret",
       label: "Client Secret",
       placeholder: "Your PPL Client Secret",
       type: "password",
-      isSet: config?.client_secret_set,
+      isSet: pplConfig?.client_secret_set,
     },
   ]
 
   const codFields: FieldConfig[] = [
-    { field: "cod_bank_account", label: "Bank Account", placeholder: "Bank account", isSet: config?.cod_bank_account_set },
-    { field: "cod_bank_code", label: "Bank Code", placeholder: "Bank code", isSet: config?.cod_bank_code_set },
-    { field: "cod_iban", label: "IBAN", placeholder: "IBAN (alternative)", isSet: config?.cod_iban_set },
-    { field: "cod_swift", label: "SWIFT", placeholder: "SWIFT (with IBAN)", isSet: config?.cod_swift_set },
+    {
+      field: "cod_bank_account",
+      label: "Bank Account",
+      placeholder: "Bank account",
+      isSet: pplConfig?.cod_bank_account_set,
+    },
+    {
+      field: "cod_bank_code",
+      label: "Bank Code",
+      placeholder: "Bank code",
+      isSet: pplConfig?.cod_bank_code_set,
+    },
+    {
+      field: "cod_iban",
+      label: "IBAN",
+      placeholder: "IBAN (alternative)",
+      isSet: pplConfig?.cod_iban_set,
+    },
+    {
+      field: "cod_swift",
+      label: "SWIFT",
+      placeholder: "SWIFT (with IBAN)",
+      isSet: pplConfig?.cod_swift_set,
+    },
   ]
 
   const senderFields: FieldConfig[] = [
@@ -248,49 +293,71 @@ const PplSettingsPage = () => {
     { field: "sender_street", label: "Street", placeholder: "Street address" },
     { field: "sender_city", label: "City", placeholder: "City" },
     { field: "sender_zip_code", label: "ZIP Code", placeholder: "Postal code" },
-    { field: "sender_country", label: "Country", placeholder: "Country code (e.g., CZ)" },
+    {
+      field: "sender_country",
+      label: "Country",
+      placeholder: "Country code (e.g., CZ)",
+    },
     { field: "sender_phone", label: "Phone", placeholder: "Phone number" },
-    { field: "sender_email", label: "Email", placeholder: "Email address", type: "email", colSpan: 2 },
+    {
+      field: "sender_email",
+      label: "Email",
+      placeholder: "Email address",
+      type: "email",
+      colSpan: 2,
+    },
   ]
 
   return (
     <Container className="divide-y p-0">
       <div className="px-6 py-4">
         <Heading level="h1">PPL Configuration</Heading>
-        <Text className="text-ui-fg-subtle">Environment: {config?.environment}</Text>
+        <Text className="text-ui-fg-subtle">
+          Environment: {pplConfig?.environment}
+        </Text>
       </div>
 
       <form onSubmit={handleSubmit}>
         {/* General */}
         <div className="px-6 py-4">
-          <Heading level="h2" className="mb-4">General</Heading>
+          <Heading className="mb-4" level="h2">
+            General
+          </Heading>
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="ppl-is-enabled" id="ppl-is-enabled-label">Enable PPL</Label>
-                <Text className="text-ui-fg-subtle text-sm">
+                <Label htmlFor="ppl-is-enabled" id="ppl-is-enabled-label">
+                  Enable PPL
+                </Label>
+                <Text className="text-sm text-ui-fg-subtle">
                   Enable or disable PPL shipping integration
                 </Text>
               </div>
               <Switch
-                id="ppl-is-enabled"
                 aria-labelledby="ppl-is-enabled-label"
                 checked={formData.is_enabled ?? false}
-                onCheckedChange={(checked) => updateField("is_enabled", checked)}
+                id="ppl-is-enabled"
+                onCheckedChange={(checked) =>
+                  updateField("is_enabled", checked)
+                }
               />
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="ppl-label-format">Label Format</Label>
               <Select
+                onValueChange={(value) =>
+                  updateField("default_label_format", value)
+                }
                 value={formData.default_label_format}
-                onValueChange={(value) => updateField("default_label_format", value)}
               >
                 <Select.Trigger id="ppl-label-format">
                   <Select.Value placeholder="Select format" />
                 </Select.Trigger>
                 <Select.Content>
                   {LABEL_FORMATS.map((f) => (
-                    <Select.Item key={f.value} value={f.value}>{f.label}</Select.Item>
+                    <Select.Item key={f.value} value={f.value}>
+                      {f.label}
+                    </Select.Item>
                   ))}
                 </Select.Content>
               </Select>
@@ -299,63 +366,71 @@ const PplSettingsPage = () => {
         </div>
 
         {/* API Credentials */}
-        <div className="px-6 py-4 border-t">
-          <Heading level="h2" className="mb-4">API Credentials</Heading>
+        <div className="border-t px-6 py-4">
+          <Heading className="mb-4" level="h2">
+            API Credentials
+          </Heading>
           <div className="grid grid-cols-2 gap-4">
             {credentialFields.map((f) => (
               <FormField
+                fieldConfig={f}
+                isCleared={clearedFields.has(f.field)}
                 key={f.field}
-                config={f}
-                value={(formData[f.field] as string) ?? ""}
                 onChange={(v) => updateField(f.field, v)}
                 onClear={() => clearField(f.field)}
-                isCleared={clearedFields.has(f.field)}
+                value={(formData[f.field] as string) ?? ""}
               />
             ))}
           </div>
         </div>
 
         {/* COD Banking */}
-        <div className="px-6 py-4 border-t">
-          <Heading level="h2" className="mb-2">COD Banking</Heading>
-          <Text className="text-ui-fg-subtle text-sm mb-4">
+        <div className="border-t px-6 py-4">
+          <Heading className="mb-2" level="h2">
+            COD Banking
+          </Heading>
+          <Text className="mb-4 text-sm text-ui-fg-subtle">
             Bank details for cash on delivery payments
           </Text>
           <div className="grid grid-cols-2 gap-4">
             {codFields.map((f) => (
               <FormField
+                fieldConfig={f}
+                isCleared={clearedFields.has(f.field)}
                 key={f.field}
-                config={f}
-                value={(formData[f.field] as string) ?? ""}
                 onChange={(v) => updateField(f.field, v)}
                 onClear={() => clearField(f.field)}
-                isCleared={clearedFields.has(f.field)}
+                value={(formData[f.field] as string) ?? ""}
               />
             ))}
           </div>
         </div>
 
         {/* Fallback Sender Address */}
-        <div className="px-6 py-4 border-t">
-          <Heading level="h2" className="mb-2">Fallback Sender Address</Heading>
-          <Text className="text-ui-fg-subtle text-sm mb-4">
+        <div className="border-t px-6 py-4">
+          <Heading className="mb-2" level="h2">
+            Fallback Sender Address
+          </Heading>
+          <Text className="mb-4 text-sm text-ui-fg-subtle">
             Used when PPL customer has no address configured
           </Text>
           <div className="grid grid-cols-2 gap-4">
             {senderFields.map((f) => (
               <FormField
+                fieldConfig={f}
                 key={f.field}
-                config={f}
-                value={(formData[f.field] as string) ?? ""}
                 onChange={(v) => updateField(f.field, v)}
+                value={(formData[f.field] as string) ?? ""}
               />
             ))}
           </div>
         </div>
 
         {/* Save */}
-        <div className="px-6 py-4 border-t flex justify-end">
-          <Button type="submit" isLoading={isPending}>Save Changes</Button>
+        <div className="flex justify-end border-t px-6 py-4">
+          <Button isLoading={isPending} type="submit">
+            Save Changes
+          </Button>
         </div>
       </form>
     </Container>

@@ -109,7 +109,7 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
   private fallbackLastRequestTime_ = 0
 
   constructor(container: InjectedDependencies, options: PplModuleOptions) {
-    super(...arguments)
+    super(container, options)
 
     this.logger_ = container.logger
     this.cacheService_ = container[Modules.CACHING] ?? null
@@ -143,7 +143,9 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
     if (!config) {
       return null
     }
-    return decryptFields(config as unknown as PplConfigDTO, [...PPL_SENSITIVE_FIELDS])
+    return decryptFields(config as unknown as PplConfigDTO, [
+      ...PPL_SENSITIVE_FIELDS,
+    ])
   }
 
   /**
@@ -173,7 +175,9 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
         ...encrypted,
       })
       await this.invalidateConfigCache()
-      return decryptFields(updated as unknown as PplConfigDTO, [...PPL_SENSITIVE_FIELDS])
+      return decryptFields(updated as unknown as PplConfigDTO, [
+        ...PPL_SENSITIVE_FIELDS,
+      ])
     }
 
     // Should not happen if loader ran, but create with environment just in case
@@ -182,7 +186,9 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
       environment: this.environment_,
     })
     await this.invalidateConfigCache()
-    return decryptFields(created as unknown as PplConfigDTO, [...PPL_SENSITIVE_FIELDS])
+    return decryptFields(created as unknown as PplConfigDTO, [
+      ...PPL_SENSITIVE_FIELDS,
+    ])
   }
 
   /**
@@ -205,7 +211,7 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
     }
 
     // 3. Validate required fields
-    if (!config.client_id || !config.client_secret) {
+    if (!(config.client_id && config.client_secret)) {
       return null
     }
 
