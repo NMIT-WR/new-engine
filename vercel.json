@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd libs/ui && pnpm run build:storybook",
-  "devCommand": "cd libs/ui && pnpm run storybook",
-  "installCommand": "pnpm install --frozen-lockfile && cd libs/address && pnpm build",
+  "buildCommand": "pnpm exec nx run @techsio/ui-kit:build && pnpm exec nx run @techsio/ui-kit:build:storybook",
+  "devCommand": "pnpm exec nx run @techsio/ui-kit:storybook",
+  "installCommand": "pnpm install --frozen-lockfile --ignore-scripts",
   "framework": null,
   "outputDirectory": "./libs/ui/storybook-static"
 }
