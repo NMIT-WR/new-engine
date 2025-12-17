@@ -78,7 +78,7 @@ export function encryptFields<T extends Record<string, unknown>>(
   const result = { ...data }
 
   for (const field of fields) {
-    const value = result[field]
+    const value: unknown = result[field]
     if (typeof value === "string" && value.length > 0) {
       result[field] = encrypt(value) as T[keyof T]
     }
@@ -98,7 +98,7 @@ export function decryptFields<T extends Record<string, unknown>>(
   const result = { ...data }
 
   for (const field of fields) {
-    const value = result[field]
+    const value: unknown = result[field]
     if (typeof value === "string" && value.length > 0) {
       try {
         result[field] = decrypt(value) as T[keyof T]
