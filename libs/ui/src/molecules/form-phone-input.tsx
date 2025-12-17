@@ -315,7 +315,10 @@ export function FormPhoneInput({
   }
 
   // === Get current country data ===
-  const currentCountry = sortedCountries.find((c) => c.code === selectedCountry)
+  // Fall back to first available country if selectedCountry is excluded
+  const currentCountry =
+    sortedCountries.find((c) => c.code === selectedCountry) ||
+    sortedCountries[0]
   const callingCode =
     currentCountry?.callingCode || getCallingCode(selectedCountry)
 

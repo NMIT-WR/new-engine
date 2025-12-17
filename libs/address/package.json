@@ -29,7 +29,7 @@
     "lint": "pnpm -w exec biome lint libs/address/src --diagnostic-level=error"
   },
   "dependencies": {
-    "libphonenumber-js": "^1.11.0"
+    "libphonenumber-js": "^1.12.31"
   },
   "devDependencies": {
     "@rslib/core": "^0.18.0",

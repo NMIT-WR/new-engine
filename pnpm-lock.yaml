@@ -312,7 +312,7 @@ importers:
   libs/address:
     dependencies:
       libphonenumber-js:
-        specifier: ^1.11.0
+        specifier: ^1.12.31
         version: 1.12.31
     devDependencies:
       '@rslib/core':

@@ -1,5 +1,12 @@
 import type { Country, CountryCode, CountryOption } from "./types"
 
+// Shared postal code format for CZ/SK (XXX XX pattern)
+const formatCzSkPostalCode = (v: string) => {
+  const digits = v.replace(/\D/g, "")
+  if (digits.length <= 3) return digits
+  return `${digits.slice(0, 3)} ${digits.slice(3, 5)}`
+}
+
 export const COUNTRIES: Record<CountryCode, Country> = {
   CZ: {
     code: "CZ",
@@ -12,11 +19,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       example: "123 45",
       maxLength: 6,
       inputMode: "numeric",
-      format: (v) => {
-        const digits = v.replace(/\D/g, "")
-        if (digits.length <= 3) return digits
-        return `${digits.slice(0, 3)} ${digits.slice(3, 5)}`
-      },
+      format: formatCzSkPostalCode,
     },
     phone: {
       callingCode: "420",
@@ -34,11 +37,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       example: "123 45",
       maxLength: 6,
       inputMode: "numeric",
-      format: (v) => {
-        const digits = v.replace(/\D/g, "")
-        if (digits.length <= 3) return digits
-        return `${digits.slice(0, 3)} ${digits.slice(3, 5)}`
-      },
+      format: formatCzSkPostalCode,
     },
     phone: {
       callingCode: "421",

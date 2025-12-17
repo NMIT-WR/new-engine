@@ -189,7 +189,7 @@ export const ValidationStates: Story = {
 				label="Error State"
 				countryCode="CZ"
 				validateStatus="error"
-				helpText="Invalid postal code format"
+				errorText="Invalid postal code format"
 				value="123"
 			/>
 			<FormPostalInput
@@ -387,7 +387,8 @@ export const WithinForm: Story = {
 					}
 					onFormat={(postalCode) => setFormData({ ...formData, postalCode })}
 					validateStatus={error ? "error" : "default"}
-					helpText={error || "Enter your postal code"}
+					errorText={error ?? undefined}
+					helpText="Enter your postal code"
 				/>
 
 				<button

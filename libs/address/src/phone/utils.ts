@@ -33,7 +33,8 @@ export interface ParsedPhoneNumber {
 }
 
 /**
- * Validates a phone number for a given country
+ * Validates a phone number for a given country.
+ * Parses once and derives validity from success/failure to avoid redundant parsing.
  */
 export function validatePhoneNumber(
   value: string,
@@ -43,19 +44,19 @@ export function validatePhoneNumber(
     const country = countryCode?.toUpperCase() as
       | LibPhoneCountryCode
       | undefined
-    const isValid = isValidPhoneNumber(value, { defaultCountry: country })
+    const parsed = parsePhoneNumberWithError(value, {
+      defaultCountry: country,
+    })
 
-    if (isValid) {
-      const parsed = parsePhoneNumberWithError(value, {
-        defaultCountry: country,
-      })
+    // Check if the parsed number is valid
+    if (parsed.isValid()) {
       return {
         isValid: true,
-        e164: parsed?.number,
-        nationalFormat: parsed?.formatNational(),
-        internationalFormat: parsed?.formatInternational(),
-        countryCode: parsed?.country,
-        nationalNumber: parsed?.nationalNumber,
+        e164: parsed.number,
+        nationalFormat: parsed.formatNational(),
+        internationalFormat: parsed.formatInternational(),
+        countryCode: parsed.country,
+        nationalNumber: parsed.nationalNumber,
       }
     }
 
@@ -152,15 +153,15 @@ export function parsePhoneNumber(
 }
 
 /**
- * Converts a local number + country to E.164 format
+ * Converts a phone number to E.164 format
  */
-export function toE164(nationalNumber: string, countryCode: string): string {
+export function toE164(phoneNumber: string, countryCode: string): string {
   try {
     const country = countryCode.toUpperCase() as LibPhoneCountryCode
-    const formatter = new AsYouType(country)
-    formatter.input(nationalNumber)
-    const phoneNumber = formatter.getNumber()
-    return phoneNumber?.number ?? ""
+    const parsed = parsePhoneNumberWithError(phoneNumber, {
+      defaultCountry: country,
+    })
+    return parsed.number ?? ""
   } catch {
     return ""
   }

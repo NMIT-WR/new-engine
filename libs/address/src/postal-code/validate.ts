@@ -56,7 +56,7 @@ export function isPartialPostalCode(
   const config = getPostalCodeConfig(countryCode)
   if (!config) return true // Allow typing if country unknown
 
-  // Check if value length is within bounds
-  const cleanValue = value.replace(/\s/g, "")
+  // Strip both whitespace and dashes to handle all postal code formats (e.g., Polish "XX-XXX")
+  const cleanValue = value.replace(/[\s-]/g, "")
   return cleanValue.length <= config.maxLength
 }

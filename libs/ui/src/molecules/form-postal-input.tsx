@@ -22,7 +22,10 @@ export interface FormPostalInputProps
   /** Country code for validation/formatting (e.g., "CZ", "US") */
   countryCode?: string
   validateStatus?: ValidateStatus
+  /** Help text shown when not in error state */
   helpText?: ReactNode
+  /** Error text shown when validateStatus is "error" */
+  errorText?: ReactNode
   extraText?: ReactNode
   /** Called when value changes */
   onValueChange?: (value: string) => void
@@ -37,6 +40,7 @@ export function FormPostalInput({
   countryCode = "CZ",
   validateStatus = "default",
   helpText,
+  errorText,
   extraText,
   size = "md",
   required,
@@ -50,7 +54,7 @@ export function FormPostalInput({
   ref,
   ...props
 }: FormPostalInputProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined
+  const helperId = helpText || errorText ? `${id}-helper` : undefined
   const extraTextId = extraText ? `${id}-extra` : undefined
 
   // Get country-specific config
@@ -97,17 +101,18 @@ export function FormPostalInput({
         {...props}
       />
 
-      {/* Error/Help text */}
-      {helpText &&
-        (validateStatus === "error" ? (
-          <ErrorText id={helpTextId} showIcon size={size}>
-            {helpText}
-          </ErrorText>
-        ) : (
-          <ExtraText id={helpTextId} size={size}>
-            {helpText}
-          </ExtraText>
-        ))}
+      {/* Error text */}
+      {validateStatus === "error" && errorText && (
+        <ErrorText id={helperId} showIcon size={size}>
+          {errorText}
+        </ErrorText>
+      )}
+      {/* Help text */}
+      {validateStatus !== "error" && helpText && (
+        <ExtraText id={helperId} size={size}>
+          {helpText}
+        </ExtraText>
+      )}
 
       {/* Extra text */}
       {extraText && (
