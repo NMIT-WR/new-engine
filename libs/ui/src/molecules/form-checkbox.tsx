@@ -33,11 +33,15 @@ export function FormCheckboxRaw({
   ...props
 }: FormCheckboxProps) {
   const extraTextId = extraText ? `${id}-extra` : undefined
+  const helpTextId = helpText ? `${id}-help` : undefined
+  const describedBy =
+    [extraTextId, helpTextId].filter(Boolean).join(" ") || undefined
 
   return (
     <div className="flex gap-form-checkbox-gap">
-      <div className="mt-0.5 flex items-start">
+      <div className="mt-form-checkbox-indicator-offset flex items-start">
         <Checkbox
+          aria-describedby={describedBy}
           disabled={disabled}
           id={id}
           invalid={validateStatus === "error"}

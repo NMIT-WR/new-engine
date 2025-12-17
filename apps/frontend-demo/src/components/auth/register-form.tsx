@@ -178,18 +178,15 @@ export function RegisterForm() {
           }
         />
 
-        <div className="space-y-2">
-          <FormCheckbox
-            checked={acceptTerms}
-            disabled={isFormLoading}
-            id="acceptTerms"
-            label="Souhlasím s obchodními podmínkami"
-            onChange={(e) => setAcceptTerms(e.target.checked)}
-          />
-          {getFieldError("terms") && (
-            <p className="text-red-600 text-sm">{getFieldError("terms")}</p>
-          )}
-        </div>
+        <FormCheckbox
+          checked={acceptTerms}
+          disabled={isFormLoading}
+          helpText={getFieldError("terms")}
+          id="acceptTerms"
+          label="Souhlasím s obchodními podmínkami"
+          onChange={(e) => setAcceptTerms(e.target.checked)}
+          validateStatus={getFieldError("terms") ? "error" : "default"}
+        />
 
         <Button
           className="w-full"
