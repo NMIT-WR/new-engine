@@ -1,4 +1,4 @@
-export interface PostalCodeConfig {
+export type PostalCodeConfig = {
   /** Regex pattern for validation */
   pattern: RegExp
   /** Display format example */
@@ -11,14 +11,14 @@ export interface PostalCodeConfig {
   format?: (value: string) => string
 }
 
-export interface PhoneConfig {
+export type PhoneConfig = {
   /** Country calling code without + */
   callingCode: string
   /** Typical phone number length (without country code) */
   nationalNumberLength: number
 }
 
-export interface Country {
+export type Country = {
   /** ISO 3166-1 alpha-2 code (e.g., "CZ") */
   code: string
   /** ISO 3166-1 alpha-3 code (e.g., "CZE") */
@@ -37,7 +37,7 @@ export interface Country {
 
 export type CountryCode = "CZ" | "SK" | "PL" | "DE" | "AT" | "US" | "GB" | "CA"
 
-export interface CountryOption {
+export type CountryOption = {
   label: string
   value: string
   flag: string

@@ -3,7 +3,7 @@ import {
   getPostalCodeInputMode,
   getPostalCodeMaxLength,
   getPostalCodePlaceholder,
-} from "@techsio/address/postal-code"
+} from "@techsio/address/postal-code/format"
 import type { ReactNode, Ref } from "react"
 import { ErrorText } from "../atoms/error-text"
 import { ExtraText } from "../atoms/extra-text"

@@ -3,7 +3,7 @@ import {
   fromE164,
   getCallingCode,
   toE164,
-} from "@techsio/address/phone"
+} from "@techsio/address/phone/utils"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
 import { type ReactNode, useEffect, useId, useMemo, useState } from "react"

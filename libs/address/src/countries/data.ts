@@ -3,7 +3,9 @@ import type { Country, CountryCode, CountryOption } from "./types"
 // Shared postal code format for CZ/SK (XXX XX pattern)
 const formatCzSkPostalCode = (v: string) => {
   const digits = v.replace(/\D/g, "")
-  if (digits.length <= 3) return digits
+  if (digits.length <= 3) {
+    return digits
+  }
   return `${digits.slice(0, 3)} ${digits.slice(3, 5)}`
 }
 
@@ -91,7 +93,9 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       inputMode: "text",
       format: (v) => {
         const digits = v.replace(/\D/g, "")
-        if (digits.length <= 2) return digits
+        if (digits.length <= 2) {
+          return digits
+        }
         return `${digits.slice(0, 2)}-${digits.slice(2, 5)}`
       },
     },
@@ -131,7 +135,9 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       inputMode: "text",
       format: (v) => {
         const clean = v.replace(/\s/g, "").toUpperCase()
-        if (clean.length <= 4) return clean
+        if (clean.length <= 4) {
+          return clean
+        }
         // Insert space before last 3 characters
         return `${clean.slice(0, -3)} ${clean.slice(-3)}`
       },
@@ -154,7 +160,9 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       inputMode: "text",
       format: (v) => {
         const clean = v.replace(/\s/g, "").toUpperCase()
-        if (clean.length <= 3) return clean
+        if (clean.length <= 3) {
+          return clean
+        }
         return `${clean.slice(0, 3)} ${clean.slice(3, 6)}`
       },
     },

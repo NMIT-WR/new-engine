@@ -5,7 +5,9 @@ import { getPostalCodeConfig } from "./validate"
  */
 export function formatPostalCode(value: string, countryCode: string): string {
   const config = getPostalCodeConfig(countryCode)
-  if (!config?.format) return value
+  if (!config?.format) {
+    return value
+  }
   return config.format(value)
 }
 

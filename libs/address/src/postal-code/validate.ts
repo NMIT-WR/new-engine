@@ -1,7 +1,7 @@
-import { getCountry } from "../countries"
+import { getCountry } from "../countries/data"
 import type { PostalCodeConfig } from "../countries/types"
 
-export interface PostalCodeValidationResult {
+export type PostalCodeValidationResult = {
   isValid: boolean
   formattedValue?: string
   error?: string
@@ -54,7 +54,9 @@ export function isPartialPostalCode(
   countryCode: string
 ): boolean {
   const config = getPostalCodeConfig(countryCode)
-  if (!config) return true // Allow typing if country unknown
+  if (!config) {
+    return true // Allow typing if country unknown
+  }
 
   // Strip both whitespace and dashes to handle all postal code formats (e.g., Polish "XX-XXX")
   const cleanValue = value.replace(/[\s-]/g, "")

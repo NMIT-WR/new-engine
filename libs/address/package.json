@@ -3,21 +3,25 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/index.js"
+    "./countries/data": {
+      "types": "./dist/src/countries/data.d.ts",
+      "import": "./dist/countries/data.js"
     },
-    "./countries": {
-      "types": "./dist/src/countries/index.d.ts",
-      "import": "./dist/countries/index.js"
+    "./countries/types": {
+      "types": "./dist/src/countries/types.d.ts",
+      "import": "./dist/countries/types.js"
     },
-    "./postal-code": {
-      "types": "./dist/src/postal-code/index.d.ts",
-      "import": "./dist/postal-code/index.js"
+    "./postal-code/format": {
+      "types": "./dist/src/postal-code/format.d.ts",
+      "import": "./dist/postal-code/format.js"
     },
-    "./phone": {
-      "types": "./dist/src/phone/index.d.ts",
-      "import": "./dist/phone/index.js"
+    "./postal-code/validate": {
+      "types": "./dist/src/postal-code/validate.d.ts",
+      "import": "./dist/postal-code/validate.js"
+    },
+    "./phone/utils": {
+      "types": "./dist/src/phone/utils.d.ts",
+      "import": "./dist/phone/utils.js"
     }
   },
   "files": [

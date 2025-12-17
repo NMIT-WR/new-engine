@@ -6,7 +6,7 @@ import {
   parsePhoneNumberWithError,
 } from "libphonenumber-js"
 
-export interface PhoneValidationResult {
+export type PhoneValidationResult = {
   isValid: boolean
   /** Phone number in E.164 format (e.g., +12133734253) */
   e164?: string
@@ -21,7 +21,7 @@ export interface PhoneValidationResult {
   error?: string
 }
 
-export interface ParsedPhoneNumber {
+export type ParsedPhoneNumber = {
   /** Phone number in E.164 format */
   e164: string
   /** Country code (ISO alpha-2) */
@@ -201,7 +201,9 @@ export function getCallingCode(countryCode: string): string {
  * Detects country from a phone number that starts with +
  */
 export function detectCountryFromPhone(value: string): string | undefined {
-  if (!value.startsWith("+")) return
+  if (!value.startsWith("+")) {
+    return
+  }
 
   try {
     const formatter = new AsYouType()
