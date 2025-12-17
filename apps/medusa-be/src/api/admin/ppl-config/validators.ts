@@ -16,7 +16,7 @@ export const PostAdminPplConfigSchema = z.object({
   sender_zip_code: z.string().optional(),
   sender_country: z.string().optional(),
   sender_phone: z.string().optional(),
-  sender_email: z.string().optional(),
+  sender_email: z.string().email().nullish(),
 })
 
 export type PostAdminPplConfigSchemaType = z.infer<

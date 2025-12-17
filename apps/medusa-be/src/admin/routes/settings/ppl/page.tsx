@@ -331,11 +331,15 @@ const PplSettingsPage = () => {
                 <Label htmlFor="ppl-is-enabled" id="ppl-is-enabled-label">
                   Enable PPL
                 </Label>
-                <Text className="text-sm text-ui-fg-subtle">
+                <Text
+                  className="text-sm text-ui-fg-subtle"
+                  id="ppl-is-enabled-desc"
+                >
                   Enable or disable PPL shipping integration
                 </Text>
               </div>
               <Switch
+                aria-describedby="ppl-is-enabled-desc"
                 aria-labelledby="ppl-is-enabled-label"
                 checked={formData.is_enabled ?? false}
                 id="ppl-is-enabled"

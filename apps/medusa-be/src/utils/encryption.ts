@@ -11,9 +11,14 @@ const HEX_KEY_REGEX = /^[0-9a-fA-F]{64}$/
  */
 export function getEncryptionKey(): Buffer {
   const keyHex = process.env.SETTINGS_ENCRYPTION_KEY
-  if (!(keyHex && HEX_KEY_REGEX.test(keyHex))) {
+  if (!keyHex) {
     throw new Error(
-      "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string. Generate with: openssl rand -hex 32"
+      "SETTINGS_ENCRYPTION_KEY is required. Generate with: openssl rand -hex 32"
+    )
+  }
+  if (!HEX_KEY_REGEX.test(keyHex)) {
+    throw new Error(
+      `SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: ${keyHex.length}). Generate with: openssl rand -hex 32`
     )
   }
   return Buffer.from(keyHex, "hex")
@@ -65,7 +70,10 @@ export function decrypt(ciphertext: string): string {
   })
   decipher.setAuthTag(authTag)
 
-  return decipher.update(encryptedData) + decipher.final("utf8")
+  return Buffer.concat([
+    decipher.update(encryptedData),
+    decipher.final(),
+  ]).toString("utf8")
 }
 
 /**

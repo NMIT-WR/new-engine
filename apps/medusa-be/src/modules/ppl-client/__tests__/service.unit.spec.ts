@@ -371,8 +371,10 @@ describe("PplClientModuleService", () => {
         })
 
         // encryptFields should NOT receive client_secret (it was filtered out)
+        const encryptCallArgs = (encryptFields as jest.Mock).mock.calls[0][0]
+        expect(encryptCallArgs).not.toHaveProperty("client_secret")
         expect(encryptFields).toHaveBeenCalledWith(
-          expect.not.objectContaining({ client_secret: "" }),
+          expect.any(Object),
           expect.any(Array)
         )
       })

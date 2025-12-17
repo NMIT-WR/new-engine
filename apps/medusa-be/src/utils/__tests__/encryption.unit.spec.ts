@@ -17,7 +17,8 @@ describe("encryption utilities", () => {
     if (originalEnv) {
       process.env.SETTINGS_ENCRYPTION_KEY = originalEnv
     } else {
-      process.env.SETTINGS_ENCRYPTION_KEY = undefined
+      // biome-ignore lint/performance/noDelete: required to truly unset env var for testing
+      delete process.env.SETTINGS_ENCRYPTION_KEY
     }
   })
 
@@ -32,10 +33,11 @@ describe("encryption utilities", () => {
     })
 
     it("throws error when key is missing", () => {
-      process.env.SETTINGS_ENCRYPTION_KEY = undefined
+      // biome-ignore lint/performance/noDelete: required to truly unset env var for testing
+      delete process.env.SETTINGS_ENCRYPTION_KEY
 
       expect(() => getEncryptionKey()).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string"
+        "SETTINGS_ENCRYPTION_KEY is required"
       )
     })
 
@@ -43,7 +45,7 @@ describe("encryption utilities", () => {
       process.env.SETTINGS_ENCRYPTION_KEY = "abc123"
 
       expect(() => getEncryptionKey()).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string"
+        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 6)"
       )
     })
 
@@ -51,7 +53,7 @@ describe("encryption utilities", () => {
       process.env.SETTINGS_ENCRYPTION_KEY = `${VALID_KEY}extra`
 
       expect(() => getEncryptionKey()).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string"
+        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 69)"
       )
     })
   })
