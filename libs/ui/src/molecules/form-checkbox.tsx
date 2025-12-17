@@ -1,8 +1,8 @@
 import type { ReactNode } from "react"
+import { Checkbox, type CheckboxProps } from "../atoms/checkbox"
 import { ErrorText } from "../atoms/error-text"
 import { ExtraText } from "../atoms/extra-text"
-import { Label } from "../atoms/label"
-import { Checkbox, type CheckboxProps } from "./checkbox"
+import { Label, type LabelProps } from "../atoms/label"
 
 type ValidateStatus = "default" | "error" | "success" | "warning"
 
@@ -13,6 +13,11 @@ interface FormCheckboxProps extends Omit<CheckboxProps, "size"> {
   helpText?: ReactNode
   extraText?: ReactNode
   size?: "sm" | "md" | "lg"
+
+  /**
+   * Props passed to the text Label component.
+   */
+  labelProps?: Omit<LabelProps, "children" | "htmlFor">
 }
 
 export function FormCheckboxRaw({
@@ -24,17 +29,30 @@ export function FormCheckboxRaw({
   size = "md",
   required,
   disabled,
+  labelProps,
   ...props
 }: FormCheckboxProps) {
   const extraTextId = extraText ? `${id}-extra` : undefined
 
   return (
-    <div className="flex gap-150">
-      <div className="mt-2 flex items-start">
-        <Checkbox disabled={disabled} id={id} required={required} {...props} />
+    <div className="flex gap-form-checkbox-gap">
+      <div className="mt-0.5 flex items-start">
+        <Checkbox
+          disabled={disabled}
+          id={id}
+          invalid={validateStatus === "error"}
+          required={required}
+          {...props}
+        />
       </div>
       <div className="flex flex-col">
-        <Label disabled={disabled} htmlFor={id} required={required} size={size}>
+        <Label
+          disabled={disabled}
+          htmlFor={id}
+          required={required}
+          size={size}
+          {...labelProps}
+        >
           {label}
         </Label>
         {helpText}
@@ -45,6 +63,29 @@ export function FormCheckboxRaw({
         )}
       </div>
     </div>
+  )
+}
+
+function renderHelpText(
+  helpText: ReactNode,
+  helpTextId: string | undefined,
+  validateStatus: ValidateStatus | undefined,
+  size: "sm" | "md" | "lg" | undefined
+) {
+  if (!helpText) {
+    return null
+  }
+  if (validateStatus === "error") {
+    return (
+      <ErrorText id={helpTextId} size={size}>
+        {helpText}
+      </ErrorText>
+    )
+  }
+  return (
+    <ExtraText id={helpTextId} size={size}>
+      {helpText}
+    </ExtraText>
   )
 }
 
@@ -59,19 +100,7 @@ export function FormCheckbox({
 
   return (
     <FormCheckboxRaw
-      helpText={
-        validateStatus === "error" ? (
-          <ErrorText id={helpTextId} size={size}>
-            {helpText}
-          </ErrorText>
-        ) : (
-          (helpText ?? (
-            <ExtraText id={helpTextId} size={size}>
-              {helpText}
-            </ExtraText>
-          ))
-        )
-      }
+      helpText={renderHelpText(helpText, helpTextId, validateStatus, size)}
       id={id}
       size={size}
       validateStatus={validateStatus}

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Table } from '../../src/organisms/table'
-import { Checkbox } from '../../src/molecules/checkbox'
+import { Checkbox } from '../../src/atoms/checkbox'
 import { Button } from '../../src/atoms/button'
 import { VariantContainer } from '../../.storybook/decorator'
 
@@ -219,7 +219,7 @@ export const Sizes: Story = {
 
     const sizes = ['sm', 'md', 'lg'] as const
     const attributes = ["Product", "Category", "Price"]
-   
+
 
     return (
     <VariantContainer>
@@ -595,7 +595,7 @@ export const WithSelection: Story = {
                 <Checkbox
                   checked={allSelected}
                   indeterminate={someSelected}
-                  onCheckedChange={handleSelectAll}
+                  onChange={handleSelectAll}
                   aria-label="Select all products"
                 />
               </Table.ColumnHeader>
@@ -613,7 +613,7 @@ export const WithSelection: Story = {
                   <Table.Cell>
                     <Checkbox
                       checked={isSelected}
-                      onCheckedChange={() => handleSelectRow(product.id)}
+                      onChange={() => handleSelectRow(product.id)}
                       aria-label={`Select ${product.name}`}
                     />
                   </Table.Cell>
@@ -708,7 +708,7 @@ export const WithSelectionAndActions: Story = {
                 <Checkbox
                   checked={allSelected}
                   indeterminate={someSelected}
-                  onCheckedChange={handleSelectAll}
+                  onChange={handleSelectAll}
                   aria-label="Select all products"
                 />
               </Table.ColumnHeader>
@@ -726,7 +726,7 @@ export const WithSelectionAndActions: Story = {
                   <Table.Cell>
                     <Checkbox
                       checked={isSelected}
-                      onCheckedChange={() => handleSelectRow(product.id)}
+                      onChange={() => handleSelectRow(product.id)}
                       aria-label={`Select ${product.name}`}
                     />
                   </Table.Cell>
