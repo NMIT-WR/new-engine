@@ -134,10 +134,8 @@ export default function ProductPage() {
 
   return (
     <div className="container mx-auto p-400">
-      {/* Heureka Product Tracking */}
       <HeurekaProduct country="cz" />
 
-      {/* PRODUCT DETAIL COMPONENT */}
       <div className="grid grid-cols-1 gap-700 md:grid-cols-[auto_1fr]">
         <header className="col-span-1 space-y-400 md:col-span-2">
           <Breadcrumb
@@ -173,9 +171,7 @@ export default function ProductPage() {
           quantity={quantity}
         />
       </div>
-      {/* PRODUCT TABS */}
       <ProductTabs description={detail.description} tabs={tabsData} />
-      {/* RELEATED PRODUCTS */}
       <RelatedProducts
         categories={rawProduct.categories?.map((category) => category.id)}
       />

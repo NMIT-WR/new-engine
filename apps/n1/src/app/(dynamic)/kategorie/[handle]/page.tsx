@@ -60,7 +60,6 @@ export default function CategoryPage() {
     return path.join(' > ')
   }
 
-  // Leadhub ViewCategory tracking (Leadhub-specific)
   useEffect(() => {
     if (!currentCategory) return
     if (trackedCategoryId.current === currentCategory.id) return
@@ -111,7 +110,6 @@ export default function CategoryPage() {
     countryCode,
   })
 
-  // Prefetch category children progressively
   usePrefetchCategoryChildren({
     enabled: isCurrentPageReady,
     categoryHandle: handle,
