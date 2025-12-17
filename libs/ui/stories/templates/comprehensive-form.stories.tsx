@@ -214,8 +214,8 @@ export const AllFormInputs: Story = {
                   validateStatus={validateStatus}
                   helpText={helpText}
                   checked={formData.checkbox}
-                  onCheckedChange={(e) =>
-                    setFormData((prev) => ({ ...prev, checkbox: e }))
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, checkbox: checked }))
                   }
                 />
 
