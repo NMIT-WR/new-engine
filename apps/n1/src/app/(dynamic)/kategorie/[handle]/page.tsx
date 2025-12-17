@@ -25,7 +25,7 @@ import { transformProduct } from '@/utils/transform/transform-product'
 import type { IconType } from '@techsio/ui-kit/atoms/icon'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import NextLink from 'next/link'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { notFound, useParams, useRouter, useSearchParams } from 'next/navigation'
 
 export default function CategoryPage() {
   const params = useParams()
@@ -128,7 +128,7 @@ export default function CategoryPage() {
   }
 
   if (!VALID_CATEGORY_ROUTES.includes(handle)) {
-    return <div>Category not found</div>
+    notFound()
   }
 
   const rootCategoryTree = categoryTree.find(
