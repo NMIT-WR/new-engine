@@ -7,9 +7,6 @@ export type PostalCodeValidationResult = {
   error?: string
 }
 
-/**
- * Validates a postal code for a given country
- */
 export function validatePostalCode(
   value: string,
   countryCode: string
@@ -35,9 +32,6 @@ export function validatePostalCode(
   }
 }
 
-/**
- * Gets postal code configuration for a country
- */
 export function getPostalCodeConfig(
   countryCode: string
 ): PostalCodeConfig | undefined {

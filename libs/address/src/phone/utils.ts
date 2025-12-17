@@ -8,27 +8,21 @@ import {
 
 export type PhoneValidationResult = {
   isValid: boolean
-  /** Phone number in E.164 format (e.g., +12133734253) */
+  /** E.164 format (e.g., +12133734253) */
   e164?: string
-  /** Formatted for display in national format */
   nationalFormat?: string
-  /** Formatted for display in international format */
   internationalFormat?: string
-  /** Detected country code */
   countryCode?: string
-  /** National number without country code */
+  /** Without country code */
   nationalNumber?: string
   error?: string
 }
 
 export type ParsedPhoneNumber = {
-  /** Phone number in E.164 format */
   e164: string
-  /** Country code (ISO alpha-2) */
   countryCode: string
-  /** National number without country code */
   nationalNumber: string
-  /** Country calling code (e.g., "1" for US) */
+  /** e.g., "1" for US, "420" for CZ */
   callingCode: string
 }
 
@@ -48,7 +42,6 @@ export function validatePhoneNumber(
       defaultCountry: country,
     })
 
-    // Check if the parsed number is valid
     if (parsed.isValid()) {
       return {
         isValid: true,
@@ -72,9 +65,6 @@ export function validatePhoneNumber(
   }
 }
 
-/**
- * Formats a phone number for display (national format)
- */
 export function formatPhoneNumber(value: string, countryCode?: string): string {
   try {
     const country = countryCode?.toUpperCase() as
@@ -89,9 +79,6 @@ export function formatPhoneNumber(value: string, countryCode?: string): string {
   }
 }
 
-/**
- * Formats a phone number for display (international format)
- */
 export function formatPhoneNumberInternational(
   value: string,
   countryCode?: string
@@ -122,9 +109,6 @@ export function formatAsYouType(value: string, countryCode: string): string {
   }
 }
 
-/**
- * Parses a phone number and returns structured data
- */
 export function parsePhoneNumber(
   value: string,
   countryCode?: string
@@ -152,9 +136,6 @@ export function parsePhoneNumber(
   }
 }
 
-/**
- * Converts a phone number to E.164 format
- */
 export function toE164(phoneNumber: string, countryCode: string): string {
   try {
     const country = countryCode.toUpperCase() as LibPhoneCountryCode
@@ -167,9 +148,6 @@ export function toE164(phoneNumber: string, countryCode: string): string {
   }
 }
 
-/**
- * Extracts country code and national number from E.164 value
- */
 export function fromE164(e164Value: string): {
   countryCode: string | undefined
   nationalNumber: string
@@ -214,9 +192,6 @@ export function detectCountryFromPhone(value: string): string | undefined {
   }
 }
 
-/**
- * Checks if a phone number is valid for a given country
- */
 export function isValidPhone(value: string, countryCode?: string): boolean {
   try {
     const country = countryCode?.toUpperCase() as

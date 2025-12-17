@@ -173,7 +173,6 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   },
 }
 
-/** Array of all supported countries */
 export const COUNTRIES_LIST: Country[] = Object.values(COUNTRIES)
 
 /** Country options for Select component compatibility */
@@ -188,7 +187,6 @@ export function getCountry(code: string): Country | undefined {
   return COUNTRIES[code.toUpperCase() as CountryCode]
 }
 
-/** Get all country codes */
 export function getCountryCodes(): CountryCode[] {
   return Object.keys(COUNTRIES) as CountryCode[]
 }

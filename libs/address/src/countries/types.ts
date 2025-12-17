@@ -1,13 +1,11 @@
 export type PostalCodeConfig = {
-  /** Regex pattern for validation */
   pattern: RegExp
-  /** Display format example */
+  /** e.g., "123 45" */
   example: string
-  /** Max length for input */
   maxLength: number
-  /** Input mode hint (numeric vs text) */
+  /** Hint for mobile keyboards */
   inputMode: "numeric" | "text"
-  /** Optional format function to apply on blur */
+  /** Applied on blur */
   format?: (value: string) => string
 }
 
@@ -23,15 +21,12 @@ export type Country = {
   code: string
   /** ISO 3166-1 alpha-3 code (e.g., "CZE") */
   code3: string
-  /** Full country name in English */
   name: string
-  /** Localized name (Czech in this case) */
+  /** Czech localization */
   localizedName: string
-  /** Flag - ISO code for iconify circle-flags (e.g., "cz") */
+  /** ISO code for iconify circle-flags (e.g., "cz") */
   flag: string
-  /** Postal code configuration */
   postalCode: PostalCodeConfig
-  /** Phone configuration */
   phone: PhoneConfig
 }
 

@@ -12,22 +12,20 @@ import { Label } from "../atoms/label"
 
 type ValidateStatus = "default" | "error" | "success" | "warning"
 
-export interface FormPostalInputProps
-  extends Omit<
-    InputProps,
-    "type" | "inputMode" | "maxLength" | "autoComplete"
-  > {
+export type FormPostalInputProps = Omit<
+  InputProps,
+  "type" | "inputMode" | "maxLength" | "autoComplete"
+> & {
   id: string
   label: ReactNode
-  /** Country code for validation/formatting (e.g., "CZ", "US") */
+  /** e.g., "CZ", "US" */
   countryCode?: string
   validateStatus?: ValidateStatus
-  /** Help text shown when not in error state */
+  /** Shown when not in error state */
   helpText?: ReactNode
-  /** Error text shown when validateStatus is "error" */
+  /** Shown when validateStatus is "error" */
   errorText?: ReactNode
   extraText?: ReactNode
-  /** Called when value changes */
   onValueChange?: (value: string) => void
   /** Called on blur with formatted value */
   onFormat?: (formattedValue: string) => void

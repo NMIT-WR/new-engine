@@ -16,14 +16,13 @@ import { tv } from "../utils"
 
 // === TYPES ===
 
-export interface PhoneCountryData {
+export type PhoneCountryData = {
   /** ISO 3166-1 alpha-2 code (e.g., "US") */
   code: string
-  /** Country name */
   name: string
-  /** Country calling code without + (e.g., "1") */
+  /** Without + prefix (e.g., "1") */
   callingCode: string
-  /** Flag identifier for iconify flag set (e.g., "us") */
+  /** For iconify flag set (e.g., "us") */
   flag: string
 }
 
@@ -163,47 +162,33 @@ const DEFAULT_COUNTRIES: PhoneCountryData[] = [
 
 // === COMPONENT PROPS ===
 
-export interface FormPhoneInputProps
-  extends VariantProps<typeof phoneInputVariants> {
-  /** Form field ID */
+export type FormPhoneInputProps = VariantProps<typeof phoneInputVariants> & {
   id?: string
-  /** Field name for form submission */
   name?: string
-  /** Label text */
   label?: ReactNode
-  /** Placeholder text */
   placeholder?: string
-  /** Controlled value in E.164 format (e.g., "+12133734253") */
+  /** E.164 format (e.g., "+12133734253") */
   value?: string
-  /** Default value in E.164 format */
+  /** E.164 format */
   defaultValue?: string
-  /** Default country code (ISO alpha-2) */
+  /** ISO alpha-2 */
   defaultCountry?: string
-  /** Callback when value changes (emits E.164 format) */
+  /** Emits E.164 format */
   onChange?: (e164Value: string) => void
-  /** Callback when country changes */
   onCountryChange?: (countryCode: string) => void
-  /** Validation state */
   validateStatus?: ValidateStatus
-  /** Help text shown below input */
+  /** Shown below input */
   helpText?: ReactNode
-  /** Error text shown when validateStatus is "error" */
+  /** Shown when validateStatus is "error" */
   errorText?: ReactNode
-  /** Extra text shown below help/error text */
   extraText?: ReactNode
-  /** Disabled state */
   disabled?: boolean
-  /** Read-only state */
   readOnly?: boolean
-  /** Required field */
   required?: boolean
-  /** Custom country list */
   countries?: PhoneCountryData[]
-  /** Countries to show at top of list */
+  /** Shown at top of dropdown */
   priorityCountries?: string[]
-  /** Countries to exclude from list */
   excludeCountries?: string[]
-  /** Additional class name */
   className?: string
 }
 
@@ -264,8 +249,8 @@ export function FormPhoneInput({
   // === Zag.js Select for country dropdown ===
   const countryCollection = select.collection({
     items: sortedCountries,
-    itemToString: (item) => item.name,
-    itemToValue: (item) => item.code,
+    itemToString: (country) => country.name,
+    itemToValue: (country) => country.code,
   })
 
   const countryService = useMachine(select.machine, {
