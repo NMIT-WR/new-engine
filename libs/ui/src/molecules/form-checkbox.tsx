@@ -127,7 +127,7 @@ export function FormCheckbox({
 
   const api = connect(service, normalizeProps)
 
-  const styles = checkboxVariants({ size, className })
+  const styles = checkboxVariants({ size })
 
   const labelContent = label ?? children
 
