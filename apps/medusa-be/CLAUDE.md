@@ -31,6 +31,18 @@ src/
 ├── workflows/  # multi-step w/ rollback
 ```
 
+## Admin UI
+
+The `src/admin/` folder is a Vite-bundled React app with its own `tsconfig.json` (includes DOM types). It's excluded
+from the root tsconfig to prevent type conflicts.
+
+**Environment variables:**
+```typescript
+import.meta.env.VITE_MY_VAR  // Custom env vars (prefix with VITE_)
+import.meta.env.DEV          // true in development (boolean)
+import.meta.env.PROD         // true in production (boolean)
+```
+
 ## Module Isolation
 
 Modules can't access other modules directly.

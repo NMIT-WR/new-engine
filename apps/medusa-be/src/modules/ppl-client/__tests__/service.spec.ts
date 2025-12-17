@@ -84,14 +84,16 @@ moduleIntegrationTestRunner<PplClientModuleService>({
         })
 
         // Query raw DB value via auto-generated method
-        const [rawConfig] = await service.listPplConfigs({
+        const configs = await service.listPplConfigs({
           environment: "testing",
         })
+        const rawConfig = configs[0]
+        expect(rawConfig).toBeDefined()
 
         // Stored value should NOT be plaintext
-        expect(rawConfig.client_secret).not.toBe("plaintext-secret")
+        expect(rawConfig?.client_secret).not.toBe("plaintext-secret")
         // Should be base64 (encrypted)
-        expect(rawConfig.client_secret).toMatch(BASE64_PATTERN)
+        expect(rawConfig?.client_secret).toMatch(BASE64_PATTERN)
       })
 
       it("keeps existing value when updating with empty string", async () => {

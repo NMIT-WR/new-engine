@@ -253,6 +253,18 @@ describe("PplFulfillmentProviderService", () => {
   })
 
   describe("validateFulfillmentData", () => {
+    it("throws when PPL is disabled", async () => {
+      mockPplClient.getEffectiveConfig.mockResolvedValue(null)
+
+      await expect(
+        createService().validateFulfillmentData(
+          { requires_access_point: false, product_type: "PRIV" },
+          {},
+          {} as any
+        )
+      ).rejects.toThrow("PPL shipping is currently unavailable")
+    })
+
     it("throws when access point required but not provided", async () => {
       await expect(
         createService().validateFulfillmentData(
@@ -407,7 +419,7 @@ describe("PplFulfillmentProviderService", () => {
   })
 
   describe("getFulfillmentOptions", () => {
-    it("returns all available PPL shipping options", async () => {
+    it("returns all available PPL shipping options when enabled", async () => {
       const options = await createService().getFulfillmentOptions()
 
       expect(options).toHaveLength(4)
@@ -417,6 +429,14 @@ describe("PplFulfillmentProviderService", () => {
         "ppl-private",
         "ppl-private-cod",
       ])
+    })
+
+    it("returns empty array when PPL is disabled", async () => {
+      mockPplClient.getEffectiveConfig.mockResolvedValue(null)
+
+      const options = await createService().getFulfillmentOptions()
+
+      expect(options).toEqual([])
     })
   })
 })

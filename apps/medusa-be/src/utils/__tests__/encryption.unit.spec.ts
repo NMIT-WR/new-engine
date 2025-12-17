@@ -110,8 +110,9 @@ describe("encryption utilities", () => {
       const encrypted = encrypt("secret")
       // Tamper with the ciphertext (flip a bit using XOR)
       const tampered = Buffer.from(encrypted, "base64")
+      const tamperedIndex = 20
       // biome-ignore lint/suspicious/noBitwiseOperators: XOR is intentional for tampering test
-      tampered[20] ^= 0xff
+      tampered[tamperedIndex] = (tampered[tamperedIndex] ?? 0) ^ 0xff
       const tamperedBase64 = tampered.toString("base64")
 
       expect(() => decrypt(tamperedBase64)).toThrow()
