@@ -29,7 +29,7 @@ export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
       <div className="block space-y-3 sm:hidden">
         {maxItems.map((_, i) => (
           <div
-            key={i}
+            key={`mobile-skeleton-${i}`}
             className="rounded-sm border border-orders-border bg-orders-card-bg p-sm"
           >
             <div className="mb-2xs flex items-start justify-between">
@@ -67,7 +67,7 @@ export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
             </div>
             {maxItems.map((_, i) => (
               <div
-                key={i}
+                key={`desktop-skeleton-${i}`}
                 className="hidden grid-cols-12 gap-orders-card border-orders-border border-b p-sm sm:grid"
               >
                 <SkeletonLoader className="col-span-12 h-12" />

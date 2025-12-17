@@ -1,27 +1,27 @@
-'use client'
-import { useAuth } from '@/hooks/use-auth'
+"use client"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
+import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
+import { FormInput } from "@techsio/ui-kit/molecules/form-input"
+import { type FormEvent, useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
 import {
   AUTH_ERRORS,
-  type ValidationError,
   authFormFields,
+  type ValidationError,
   validateEmail,
   validatePassword,
   withLoading,
-} from '@/lib/auth'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
-import { FormInput } from '@techsio/ui-kit/molecules/form-input'
-import { type FormEvent, useState } from 'react'
-import { AuthFormWrapper } from './auth-form-wrapper'
-import { PasswordRequirements } from './password-requirements'
+} from "@/lib/auth"
+import { AuthFormWrapper } from "./auth-form-wrapper"
+import { PasswordRequirements } from "./password-requirements"
 
 export function RegisterForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
   const [acceptTerms, setAcceptTerms] = useState(false)
 
   const {
@@ -34,7 +34,7 @@ export function RegisterForm() {
 
   const isFormLoading = registerMutation.isPending
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     clearErrors()
 
@@ -44,7 +44,7 @@ export function RegisterForm() {
     // Email validation
     if (!validateEmail(email)) {
       errors.push({
-        field: 'email',
+        field: "email",
         message: AUTH_ERRORS.INVALID_EMAIL,
       })
     }
@@ -53,7 +53,7 @@ export function RegisterForm() {
     const passwordValidation = validatePassword(password)
     if (!passwordValidation.isValid) {
       errors.push({
-        field: 'password',
+        field: "password",
         message: passwordValidation.errors[0], // Show first error
       })
     }
@@ -61,7 +61,7 @@ export function RegisterForm() {
     // Password match validation
     if (password !== confirmPassword) {
       errors.push({
-        field: 'confirmPassword',
+        field: "confirmPassword",
         message: AUTH_ERRORS.PASSWORD_MISMATCH,
       })
     }
@@ -69,7 +69,7 @@ export function RegisterForm() {
     // Terms validation
     if (!acceptTerms) {
       errors.push({
-        field: 'terms',
+        field: "terms",
         message: AUTH_ERRORS.TERMS_REQUIRED,
       })
     }
@@ -85,13 +85,13 @@ export function RegisterForm() {
 
   return (
     <AuthFormWrapper
-      title="Vytvořit účet"
-      subtitle="Zaregistrujte se a začněte"
-      footerText="Již máte účet?"
-      footerLinkText="Přihlásit se"
       footerLinkHref="/auth/login"
+      footerLinkText="Přihlásit se"
+      footerText="Již máte účet?"
+      subtitle="Zaregistrujte se a začněte"
+      title="Vytvořit účet"
     >
-      <form onSubmit={handleSubmit} className="space-y-auth-form-gap">
+      <form className="space-y-auth-form-gap" onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-4">
           <FormInput
             {...withLoading(
@@ -125,12 +125,12 @@ export function RegisterForm() {
             }),
             isFormLoading
           )}
-          validateStatus={getFieldError('email') ? 'error' : 'default'}
           helpText={
-            getFieldError('email') && (
-              <ErrorText showIcon>{getFieldError('email')}</ErrorText>
+            getFieldError("email") && (
+              <ErrorText showIcon>{getFieldError("email")}</ErrorText>
             )
           }
+          validateStatus={getFieldError("email") ? "error" : "default"}
         />
 
         <div>
@@ -142,16 +142,16 @@ export function RegisterForm() {
                   setPassword(e.target.value)
                   clearErrors()
                 },
-                placeholder: 'Zadejte heslo',
+                placeholder: "Zadejte heslo",
               }),
               isFormLoading
             )}
-            validateStatus={getFieldError('password') ? 'error' : 'default'}
             helpText={
-              getFieldError('password') && (
-                <ErrorText>{getFieldError('password')}</ErrorText>
+              getFieldError("password") && (
+                <ErrorText showIcon>{getFieldError("password")}</ErrorText>
               )
             }
+            validateStatus={getFieldError("password") ? "error" : "default"}
           />
           <PasswordRequirements password={password} />
         </div>
@@ -164,42 +164,37 @@ export function RegisterForm() {
                 setConfirmPassword(e.target.value)
                 clearErrors()
               },
-              placeholder: 'Znovu zadejte heslo',
+              placeholder: "Znovu zadejte heslo",
             }),
             isFormLoading
           )}
-          validateStatus={
-            getFieldError('confirmPassword') ? 'error' : 'default'
-          }
           helpText={
-            getFieldError('confirmPassword') ? (
-              <ErrorText>{getFieldError('confirmPassword')}</ErrorText>
+            getFieldError("confirmPassword") ? (
+              <ErrorText showIcon>{getFieldError("confirmPassword")}</ErrorText>
             ) : undefined
+          }
+          validateStatus={
+            getFieldError("confirmPassword") ? "error" : "default"
           }
         />
 
-        <div className="space-y-2">
-          <Checkbox
-            id="acceptTerms"
-            labelText="Souhlasím s obchodními podmínkami"
-            checked={acceptTerms}
-            onCheckedChange={(details) =>
-              setAcceptTerms(details.checked === true)
-            }
-            disabled={isFormLoading}
-          />
-          {getFieldError('terms') && (
-            <p className="text-red-600 text-sm">{getFieldError('terms')}</p>
-          )}
-        </div>
+        <FormCheckbox
+          checked={acceptTerms}
+          disabled={isFormLoading}
+          helpText={getFieldError("terms")}
+          id="acceptTerms"
+          invalid={!!getFieldError("terms")}
+          label="Souhlasím s obchodními podmínkami"
+          onCheckedChange={setAcceptTerms}
+        />
 
         <Button
-          type="submit"
           className="w-full"
-          size="lg"
           disabled={isFormLoading || !acceptTerms}
+          size="lg"
+          type="submit"
         >
-          {isFormLoading ? 'Vytváření účtu...' : 'Vytvořit účet'}
+          {isFormLoading ? "Vytváření účtu..." : "Vytvořit účet"}
         </Button>
       </form>
     </AuthFormWrapper>

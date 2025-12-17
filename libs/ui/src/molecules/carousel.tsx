@@ -431,7 +431,7 @@ Carousel.Indicators = function CarouselIndicators({
       {api.pageSnapPoints.map((_, index) => (
         <Button
           className={indicator()}
-          key={index}
+          key={`indicator-${index}`}
           {...api.getIndicatorProps({ index })}
         />
       ))}

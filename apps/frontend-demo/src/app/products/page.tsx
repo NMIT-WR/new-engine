@@ -162,6 +162,7 @@ function ProductsContent() {
             <Select
               className="max-w-64"
               clearIcon={false}
+              label="Řadit podle"
               onValueChange={(details) => {
                 const value = details.value[0]
                 if (value) urlFilters.setSortBy(value as any)

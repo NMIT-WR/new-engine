@@ -1,0 +1,11 @@
+@theme {
+  /* Label colors */
+  --color-label-fg: var(--color-input-fg);
+  --color-label-fg-disabled: var(--color-input-fg-disabled);
+  --color-label-fg-required: var(--color-input-danger);
+
+  --font-label: var(--font-bold);
+  --text-label-sm: var(--text-input-sm);
+  --text-label-md: var(--text-input-md);
+  --text-label-lg: var(--text-input-lg);
+}

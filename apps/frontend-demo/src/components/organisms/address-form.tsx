@@ -3,7 +3,7 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { Link } from "@techsio/ui-kit/atoms/link"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
-import { FormCheckboxRaw as FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
+import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { Select } from "@techsio/ui-kit/molecules/select"
 import { useEffect, useState } from "react"
@@ -269,6 +269,7 @@ export function AddressForm({
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
+            label="Země"
             onValueChange={(details) =>
               setShippingAddress({
                 ...shippingAddress,
@@ -287,9 +288,7 @@ export function AddressForm({
           checked={useSameAddress}
           id="same-address"
           label="Fakturační adresa je stejná jako doručovací"
-          onCheckedChange={(details) =>
-            setUseSameAddress(details.checked as boolean)
-          }
+          onCheckedChange={setUseSameAddress}
         />
       </div>
 
@@ -403,6 +402,7 @@ export function AddressForm({
 
           <div className="mb-4 max-w-[20rem] sm:mb-6">
             <Select
+              label="Země"
               onValueChange={(details) =>
                 setBillingAddress({
                   ...billingAddress,
@@ -425,7 +425,6 @@ export function AddressForm({
           isLoading={isLoading}
           size="sm"
           type="submit"
-          //className="w-full sm:w-auto"
         >
           Pokračovat
         </Button>

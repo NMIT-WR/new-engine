@@ -126,7 +126,7 @@ export function Rating({
       <input {...api.getHiddenInputProps()} />
       <div className={control()} {...api.getControlProps()}>
         {api.items.map((index) => (
-          <div key={index} className={itemWrapper()}>
+          <div key={`star-${index}`} className={itemWrapper()}>
             <span className={item()} {...api.getItemProps({ index })} />
           </div>
         ))}
