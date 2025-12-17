@@ -6,7 +6,7 @@ export function ProductGridSkeleton({
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {[...Array(numberOfItems)].map((_, i) => (
-        <div key={i} className="space-y-3">
+        <div key={`product-skeleton-${i}`} className="space-y-3">
           <SkeletonLoader
             variant="box"
             size="fit"

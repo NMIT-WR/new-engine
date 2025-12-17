@@ -269,6 +269,7 @@ export function AddressForm({
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
+            label="Země"
             onValueChange={(details) =>
               setShippingAddress({
                 ...shippingAddress,
@@ -401,6 +402,7 @@ export function AddressForm({
 
           <div className="mb-4 max-w-[20rem] sm:mb-6">
             <Select
+              label="Země"
               onValueChange={(details) =>
                 setBillingAddress({
                   ...billingAddress,
@@ -423,7 +425,6 @@ export function AddressForm({
           isLoading={isLoading}
           size="sm"
           type="submit"
-          //className="w-full sm:w-auto"
         >
           Pokračovat
         </Button>

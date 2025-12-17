@@ -1,101 +1,103 @@
-import { normalizeProps, useMachine } from '@zag-js/react'
-import * as slider from '@zag-js/slider'
-import { useId } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { ErrorText } from '../atoms/error-text'
-import { ExtraText } from '../atoms/extra-text'
-import { Label } from '../atoms/label'
-import { slugify, tv } from '../utils'
+import { normalizeProps, useMachine } from "@zag-js/react"
+import * as slider from "@zag-js/slider"
+import { useId } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { ErrorText } from "../atoms/error-text"
+import { ExtraText } from "../atoms/extra-text"
+import { Label } from "../atoms/label"
+import { slugify, tv } from "../utils"
 
 const sliderVariants = tv({
   slots: {
     root: [
-      'flex flex-col w-full gap-slider-root',
-      'data-[orientation=vertical]:h-full',
-      'data-[disabled]:cursor-not-allowed',
+      "flex w-full flex-col gap-slider-root",
+      "data-[orientation=vertical]:h-full",
+      "data-[disabled]:cursor-not-allowed",
     ],
-    header: ['flex items-center justify-between'],
-    value: ['text-slider-value-size'],
-    label: ['block font-medium'],
+    header: ["flex items-center justify-between"],
+    value: ["text-slider-value-size"],
+    label: ["block font-medium"],
     control: [
-      'relative grid place-items-center ',
-      'data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1',
+      "relative grid place-items-center",
+      "data-[orientation=vertical]:h-full data-[orientation=vertical]:grid-rows-1",
     ],
     track: [
-      'rounded-slider-track bg-slider-track-bg flex-1',
-      'data-[orientation=horizontal]:w-full',
-      'data-[orientation=vertical]:h-full ',
-      'data-[disabled]:bg-slider-bg-disabled',
-      'border-(length:--border-width-slider) border-slider-border',
-      'data-[disabled]:border-slider-border-disabled',
-      'transition-colors duration-200',
-      'hover:bg-slider-track-bg-hover',
-      'data-[invalid=true]:border-slider-border-error',
+      "flex-1 rounded-slider-track bg-slider-track-bg",
+      "data-[orientation=horizontal]:w-full",
+      "data-[orientation=vertical]:h-full",
+      "data-[disabled]:bg-slider-bg-disabled",
+      "border-(length:--border-width-slider) border-slider-border",
+      "data-[disabled]:border-slider-border-disabled",
+      "transition-colors duration-200",
+      "hover:bg-slider-track-bg-hover",
+      "data-[invalid=true]:border-slider-border-error",
     ],
     range: [
-      'bg-slider-range-bg rounded-slider-track h-full',
-      'data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full',
-      'data-[disabled]:bg-slider-range-bg-disabled',
-      'hover:bg-slider-range-bg-hover',
-      'data-[invalid=true]:bg-slider-range-bg-error',
+      "h-full rounded-slider-track bg-slider-range-bg",
+      "data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-full",
+      "data-[disabled]:bg-slider-range-bg-disabled",
+      "hover:bg-slider-range-bg-hover",
+      "data-[invalid=true]:bg-slider-range-bg-error",
     ],
     thumb: [
-      'flex items-center justify-center',
-      'rounded-slider-thumb bg-slider-thumb-bg',
-      'focus:outline-none',
-      'focus-visible:ring',
-      'focus-visible:ring-slider-ring',
-      'data-[disabled]:bg-slider-thumb-bg-disabled',
-      'border-(length:--border-width-slider) border-slider-border',
-      'data-[disabled]:border-slider-border-disabled',
-      'hover:bg-slider-thumb-bg-hover',
-      'cursor-grab data-[dragging]:cursor-grabbing data-[disabled]:cursor-not-allowed',
-      'transition-colors duration-200',
-      'shadow-slider-thumb',
+      "flex items-center justify-center",
+      "rounded-slider-thumb bg-slider-thumb-bg",
+      "focus:outline-none",
+      "focus-visible:ring-2",
+      "focus-visible:ring-slider-ring",
+      "focus-visible:ring-offset-2",
+      "focus-visible:scale-110",
+      "data-[disabled]:bg-slider-thumb-bg-disabled",
+      "border-(length:--border-width-slider) border-slider-border",
+      "data-[disabled]:border-slider-border-disabled",
+      "hover:bg-slider-thumb-bg-hover",
+      "cursor-grab data-[disabled]:cursor-not-allowed data-[dragging]:cursor-grabbing",
+      "transition-all duration-200",
+      "shadow-slider-thumb",
     ],
-    markerGroup: ['relative h-full flex items-center'],
+    markerGroup: ["relative flex h-full items-center"],
     marker: [
-      'relative h-full flex flex-col justify-center items-center',
-      'data-[orientation=vertical]:w-full',
-      'data-[orientation=vertical]:h-marker-vertical',
-      'data-[orientation=vertical]:flex-row',
+      "relative flex h-full flex-col items-center justify-center",
+      "data-[orientation=vertical]:w-full",
+      "data-[orientation=vertical]:h-marker-vertical",
+      "data-[orientation=vertical]:flex-row",
     ],
     markerLine: [
-      'w-slider-marker h-full bg-slider-marker-bg',
-      'data-[orientation=vertical]:h-slider-marker data-[orientation=vertical]:w-full',
+      "h-full w-slider-marker bg-slider-marker-bg",
+      "data-[orientation=vertical]:h-slider-marker data-[orientation=vertical]:w-full",
     ],
     markerText: [
-      'absolute top-full',
-      'data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full',
-      'data-[orientation=vertical]:h-full',
-      'data-[orientation=vertical]:p-marker-text',
+      "absolute top-full",
+      "data-[orientation=vertical]:top-0 data-[orientation=vertical]:left-full",
+      "data-[orientation=vertical]:h-full",
+      "data-[orientation=vertical]:p-marker-text",
     ],
-    footer: ['flex flex-col'],
+    footer: ["flex flex-col"],
   },
   variants: {
     size: {
       sm: {
         track: [
-          'h-slider-track-sm data-[orientation=vertical]:w-slider-track-sm',
+          "h-slider-track-sm data-[orientation=vertical]:w-slider-track-sm",
         ],
-        thumb: ['w-slider-thumb-sm', 'h-slider-thumb-sm'],
+        thumb: ["w-slider-thumb-sm", "h-slider-thumb-sm"],
       },
       md: {
         track: [
-          'h-slider-track-md data-[orientation=vertical]:w-slider-track-md',
+          "h-slider-track-md data-[orientation=vertical]:w-slider-track-md",
         ],
-        thumb: ['w-slider-thumb-md', 'h-slider-thumb-md'],
+        thumb: ["w-slider-thumb-md", "h-slider-thumb-md"],
       },
       lg: {
         track: [
-          'h-slider-track-lg data-[orientation=vertical]:w-slider-track-lg',
+          "h-slider-track-lg data-[orientation=vertical]:w-slider-track-lg",
         ],
-        thumb: ['w-slider-thumb-lg', 'h-slider-thumb-lg'],
+        thumb: ["w-slider-thumb-lg", "h-slider-thumb-lg"],
       },
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 
@@ -114,10 +116,10 @@ export interface SliderProps extends VariantProps<typeof sliderVariants> {
   minStepsBetweenThumbs?: number
   disabled?: boolean
   readOnly?: boolean
-  dir?: 'ltr' | 'rtl'
-  orientation?: 'horizontal' | 'vertical'
-  origin?: 'start' | 'center' | 'end'
-  thumbAlignment?: 'center' | 'contain'
+  dir?: "ltr" | "rtl"
+  orientation?: "horizontal" | "vertical"
+  origin?: "start" | "center" | "end"
+  thumbAlignment?: "center" | "contain"
   showMarkers?: boolean
   markerCount?: number
   showValueText?: boolean
@@ -137,7 +139,7 @@ export function Slider({
   errorText,
   value,
   origin,
-  thumbAlignment = 'center',
+  thumbAlignment = "center",
   defaultValue = [25, 75],
   min = 0,
   max = 100,
@@ -145,9 +147,9 @@ export function Slider({
   minStepsBetweenThumbs = 0,
   disabled = false,
   readOnly = false,
-  dir = 'ltr',
-  orientation = 'horizontal',
-  size = 'md',
+  dir = "ltr",
+  orientation = "horizontal",
+  size = "md",
   showMarkers = false,
   markerCount = 5,
   showValueText = false,
@@ -217,8 +219,8 @@ export function Slider({
                       api.value[0] !== undefined &&
                       api.value[1] !== undefined
                     ? `${formatValue(api.value[0])} - ${formatValue(api.value[1])}`
-                    : ''}
-              </b>{' '}
+                    : ""}
+              </b>{" "}
             </output>
           )}
         </div>
@@ -240,13 +242,13 @@ export function Slider({
                     : min + ((max - min) / (markerCount - 1)) * index
                 return (
                   <div
-                    key={slugify(`marker-${markerValue}`)}
                     className={marker()}
+                    key={slugify(`marker-${markerValue}`)}
                     {...api.getMarkerProps({ value: markerValue })}
                   >
                     {/* hide first and last marker line, if thumb alignmetn is center */}
                     {!(
-                      thumbAlignment === 'center' &&
+                      thumbAlignment === "center" &&
                       (index === 0 || index === markerCount - 1)
                     ) && (
                       <div
@@ -268,7 +270,7 @@ export function Slider({
         </div>
         {api.value.map((_, index) => (
           <div
-            key={index}
+            key={`thumb-${index}`}
             className={thumb()}
             {...api.getThumbProps({ index })}
           >
@@ -279,12 +281,12 @@ export function Slider({
       {(helperText || errorText) && (
         <div className={footer()}>
           {/* Always render both containers to maintain consistent width */}
-          <div className={error ? 'block' : 'invisible h-0 overflow-hidden'}>
+          <div className={error ? "block" : "invisible h-0 overflow-hidden"}>
             <ErrorText>{errorText}</ErrorText>
           </div>
           <div
             className={
-              !error && helperText ? 'block' : 'invisible h-0 overflow-hidden'
+              !error && helperText ? "block" : "invisible h-0 overflow-hidden"
             }
           >
             <ExtraText>{helperText}</ExtraText>
