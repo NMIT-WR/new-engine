@@ -63,7 +63,7 @@ const stepsVariants = tv({
       'data-[orientation=vertical]:w-steps-separator data-[orientation=vertical]:h-full',
     ],
     containerButtons: [
-      'flex gap-2 h-fit',
+      'flex gap-steps-container-gap h-fit',
       'data-[orientation=vertical]:col-start-2',
     ],
     stepButton: [
