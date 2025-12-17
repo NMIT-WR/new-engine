@@ -33,7 +33,7 @@ type ValidateStatus = "default" | "error" | "success" | "warning"
 
 const phoneInputVariants = tv({
   slots: {
-    root: ["flex flex-col", "w-full"],
+    root: ["flex flex-col", "w-full", "min-w-phone-input"],
     control: [
       "relative flex w-full items-center",
       "bg-phone-input-bg",
@@ -138,7 +138,19 @@ const phoneInputVariants = tv({
   },
 })
 
+// === FLAG ICON TOKEN MAPPING ===
+// Static mapping - all values must match token-icon-flag-* utilities in CSS
+const FLAG_ICON_TOKENS: Record<string, IconType> = {
+  cz: "token-icon-flag-cz",
+  sk: "token-icon-flag-sk",
+  de: "token-icon-flag-de",
+  at: "token-icon-flag-at",
+  pl: "token-icon-flag-pl",
+  gb: "token-icon-flag-gb",
+}
+
 // === DEFAULT COUNTRIES ===
+// EU-typical countries only (must have corresponding flag token)
 
 const DEFAULT_COUNTRIES: PhoneCountryData[] = [
   { code: "CZ", name: "Czech Republic", callingCode: "420", flag: "cz" },
@@ -146,9 +158,7 @@ const DEFAULT_COUNTRIES: PhoneCountryData[] = [
   { code: "DE", name: "Germany", callingCode: "49", flag: "de" },
   { code: "AT", name: "Austria", callingCode: "43", flag: "at" },
   { code: "PL", name: "Poland", callingCode: "48", flag: "pl" },
-  { code: "US", name: "United States", callingCode: "1", flag: "us" },
   { code: "GB", name: "United Kingdom", callingCode: "44", flag: "gb" },
-  { code: "CA", name: "Canada", callingCode: "1", flag: "ca" },
 ]
 
 // === COMPONENT PROPS ===
@@ -372,17 +382,16 @@ export function FormPhoneInput({
             {...countryApi.getTriggerProps()}
             data-disabled={disabled || undefined}
           >
-            {currentCountry && (
-              <>
-                <Icon
-                  className={countryFlag()}
-                  icon={
-                    `icon-[flag--${currentCountry.flag}-4x3]` as IconType
-                  }
-                />
-                <span className={countryCodeStyle()}>+{callingCode}</span>
-              </>
-            )}
+            {(() => {
+              const flagIcon =
+                currentCountry && FLAG_ICON_TOKENS[currentCountry.flag]
+              return flagIcon ? (
+                <>
+                  <Icon className={countryFlag()} icon={flagIcon} />
+                  <span className={countryCodeStyle()}>+{callingCode}</span>
+                </>
+              ) : null
+            })()}
             <Icon
               className={countryChevron()}
               data-state={countryApi.open ? "open" : "closed"}
@@ -414,20 +423,24 @@ export function FormPhoneInput({
         <Portal>
           <div className={positioner()} {...countryApi.getPositionerProps()}>
             <ul className={content()} {...countryApi.getContentProps()}>
-              {sortedCountries.map((country) => (
-                <li
-                  className={item()}
-                  key={country.code}
-                  {...countryApi.getItemProps({ item: country })}
-                >
-                  <Icon
-                    className={itemFlag()}
-                    icon={`icon-[flag--${country.flag}-4x3]` as IconType}
-                  />
-                  <span className={itemName()}>{country.name}</span>
-                  <span className={itemDialCode()}>+{country.callingCode}</span>
-                </li>
-              ))}
+              {sortedCountries.map((country) => {
+                const flagIcon = FLAG_ICON_TOKENS[country.flag]
+                return (
+                  <li
+                    className={item()}
+                    key={country.code}
+                    {...countryApi.getItemProps({ item: country })}
+                  >
+                    {flagIcon && (
+                      <Icon className={itemFlag()} icon={flagIcon} />
+                    )}
+                    <span className={itemName()}>{country.name}</span>
+                    <span className={itemDialCode()}>
+                      +{country.callingCode}
+                    </span>
+                  </li>
+                )
+              })}
             </ul>
           </div>
         </Portal>

@@ -50,7 +50,7 @@ A phone number input component with integrated country selector and real-time fo
 	},
 	decorators: [
 		(Story) => (
-			<div className="w-80 p-4">
+			<div className="w-96 p-4">
 				<Story />
 			</div>
 		),
@@ -84,9 +84,9 @@ export const WithDefaultCountry: Story = {
 	args: {
 		id: "phone-default-country",
 		label: "Phone Number",
-		defaultCountry: "US",
-		placeholder: "Enter US phone number",
-		helpText: "Defaults to United States",
+		defaultCountry: "DE",
+		placeholder: "Enter German phone number",
+		helpText: "Defaults to Germany",
 	},
 }
 
@@ -134,7 +134,7 @@ export const ValidationStates: Story = {
 				placeholder="Phone number"
 				validateStatus="error"
 				errorText="Please enter a valid phone number"
-				defaultValue="+1555"
+				defaultValue="+49555"
 			/>
 			<FormPhoneInput
 				id="phone-success"
@@ -142,8 +142,8 @@ export const ValidationStates: Story = {
 				placeholder="Phone number"
 				validateStatus="success"
 				helpText="Phone number verified"
-				defaultValue="+12133734253"
-				defaultCountry="US"
+				defaultValue="+4930123456789"
+				defaultCountry="DE"
 			/>
 			<FormPhoneInput
 				id="phone-warning"
@@ -191,8 +191,8 @@ export const PriorityCountries: Story = {
 	args: {
 		id: "phone-priority",
 		label: "Phone Number",
-		priorityCountries: ["US", "GB", "CA"],
-		helpText: "US, UK, and Canada appear first in the dropdown",
+		priorityCountries: ["DE", "GB", "AT"],
+		helpText: "Germany, UK, and Austria appear first in the dropdown",
 	},
 }
 

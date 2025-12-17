@@ -82,6 +82,9 @@
   /* Dropdown max height */
   --size-phone-input-dropdown-max-h: 18rem;
 
+  /* Minimum width for full phone number display */
+  --size-phone-input-min-w: 18rem;
+
   /* === TYPOGRAPHY === */
   --text-phone-input-sm: var(--text-sm);
   --text-phone-input-md: var(--text-md);
@@ -106,10 +109,10 @@
 }
 
 /*
- * Flag icons safelist - required for dynamic icon generation
- * These classes are used dynamically in FormPhoneInput as `icon-[flag--${code}-4x3]`
- * Tailwind needs static references to include them in the build
- * Using flag icon set with 4x3 aspect ratio: https://icon-sets.iconify.design/flag/
+ * Flag icon tokens - themeable per customer
+ * Default: 4x3 aspect ratio flags from https://icon-sets.iconify.design/flag/
+ * Customers can override these utilities to use circle-flags, 1x1, etc.
+ * EU-typical countries only to minimize CSS size.
  */
 @utility token-icon-flag-cz {
   @apply icon-[flag--cz-4x3];
@@ -126,12 +129,6 @@
 @utility token-icon-flag-pl {
   @apply icon-[flag--pl-4x3];
 }
-@utility token-icon-flag-us {
-  @apply icon-[flag--us-4x3];
-}
 @utility token-icon-flag-gb {
   @apply icon-[flag--gb-4x3];
-}
-@utility token-icon-flag-ca {
-  @apply icon-[flag--ca-4x3];
 }
