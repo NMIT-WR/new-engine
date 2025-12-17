@@ -1,3 +1,5 @@
+jest.setTimeout(60_000)
+
 // Set encryption key before any imports
 process.env.SETTINGS_ENCRYPTION_KEY =
   "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
@@ -171,5 +173,3 @@ moduleIntegrationTestRunner<PplClientModuleService>({
     })
   },
 })
-
-jest.setTimeout(60_000)
