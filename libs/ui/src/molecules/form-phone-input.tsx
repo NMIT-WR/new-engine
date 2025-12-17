@@ -23,7 +23,7 @@ export interface PhoneCountryData {
   name: string
   /** Country calling code without + (e.g., "1") */
   callingCode: string
-  /** Flag identifier for iconify circle-flags (e.g., "us") */
+  /** Flag identifier for iconify flag set (e.g., "us") */
   flag: string
 }
 
@@ -377,7 +377,7 @@ export function FormPhoneInput({
                 <Icon
                   className={countryFlag()}
                   icon={
-                    `icon-[circle-flags--${currentCountry.flag}]` as IconType
+                    `icon-[flag--${currentCountry.flag}-4x3]` as IconType
                   }
                 />
                 <span className={countryCodeStyle()}>+{callingCode}</span>
@@ -422,7 +422,7 @@ export function FormPhoneInput({
                 >
                   <Icon
                     className={itemFlag()}
-                    icon={`icon-[circle-flags--${country.flag}]` as IconType}
+                    icon={`icon-[flag--${country.flag}-4x3]` as IconType}
                   />
                   <span className={itemName()}>{country.name}</span>
                   <span className={itemDialCode()}>+{country.callingCode}</span>

@@ -107,30 +107,31 @@
 
 /*
  * Flag icons safelist - required for dynamic icon generation
- * These classes are used dynamically in FormPhoneInput as `icon-[circle-flags--${code}]`
+ * These classes are used dynamically in FormPhoneInput as `icon-[flag--${code}-4x3]`
  * Tailwind needs static references to include them in the build
+ * Using flag icon set with 4x3 aspect ratio: https://icon-sets.iconify.design/flag/
  */
 @utility token-icon-flag-cz {
-  @apply icon-[circle-flags--cz];
+  @apply icon-[flag--cz-4x3];
 }
 @utility token-icon-flag-sk {
-  @apply icon-[circle-flags--sk];
+  @apply icon-[flag--sk-4x3];
 }
 @utility token-icon-flag-de {
-  @apply icon-[circle-flags--de];
+  @apply icon-[flag--de-4x3];
 }
 @utility token-icon-flag-at {
-  @apply icon-[circle-flags--at];
+  @apply icon-[flag--at-4x3];
 }
 @utility token-icon-flag-pl {
-  @apply icon-[circle-flags--pl];
+  @apply icon-[flag--pl-4x3];
 }
 @utility token-icon-flag-us {
-  @apply icon-[circle-flags--us];
+  @apply icon-[flag--us-4x3];
 }
 @utility token-icon-flag-gb {
-  @apply icon-[circle-flags--gb];
+  @apply icon-[flag--gb-4x3];
 }
 @utility token-icon-flag-ca {
-  @apply icon-[circle-flags--ca];
+  @apply icon-[flag--ca-4x3];
 }
