@@ -208,6 +208,16 @@ Extract pure functions (no side effects, no container dependencies) to separate 
 them without loading modules that have runtime dependencies (OAuth clients, service instantiation). Keep side-effect
 code (API calls, DB queries, container resolution) in the main file.
 
+**Shadowing:**
+Avoid naming local variables/props `config` in admin routes - it shadows the required `export const config = defineRouteConfig(...)` export. Rename to descriptive alternatives like `formConfig`, `entityConfig`, etc.
+
+**Type annotations for generic field access:**
+When accessing fields from generic objects (`T[keyof T]`), explicitly annotate as `unknown` before type guards to satisfy IDE analyzers:
+```typescript
+const value: unknown = result[field]
+if (typeof value === "string") { /* ... */ }
+```
+
 ## Patterns
 
 ### Route
@@ -240,7 +250,7 @@ export class MyModuleService extends MedusaService({ MyConfig }) {
   // Auto-generated: listMyConfigs, createMyConfigs, updateMyConfigs, deleteMyConfigs
 
   constructor(container: InjectedDependencies, options: MyModuleOptions) {
-    super(...arguments)  // Required - passes container and options to MedusaService
+    super(container, options)  // Required - passes container and options to MedusaService
     this.logger_ = container.logger
     this.environment_ = options.environment
   }
@@ -249,6 +259,8 @@ export class MyModuleService extends MedusaService({ MyConfig }) {
   async myCustomMethod() { /* ... */ }
 }
 ```
+
+**Note:** Don't use `super(...arguments)` - biome flags it as an error. Use explicit parameters instead.
 
 ### Module Loaders
 
