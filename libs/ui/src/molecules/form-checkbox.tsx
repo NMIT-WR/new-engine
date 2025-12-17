@@ -43,7 +43,8 @@ const checkboxVariants = tv({
       "data-[disabled]:text-label-fg-disabled",
     ],
     hiddenInput: "sr-only",
-    textWrapper: "pl-form-checkbox-text-offset",
+    textWrapper: "",
+    textIndented: "pl-form-checkbox-text-offset",
   },
   variants: {
     size: {
@@ -151,14 +152,20 @@ export function FormCheckbox({
       </label>
       {hasText && (
         <div className={styles.textWrapper()}>
-          {extraText && <ExtraText size={size}>{extraText}</ExtraText>}
+          {extraText && (
+            <div className={styles.textIndented()}>
+              <ExtraText size={size}>{extraText}</ExtraText>
+            </div>
+          )}
           {isInvalid && resolvedErrorText && (
             <ErrorText showIcon size={size}>
               {resolvedErrorText}
             </ErrorText>
           )}
           {!isInvalid && resolvedHelperText && (
-            <ExtraText size={size}>{resolvedHelperText}</ExtraText>
+            <div className={styles.textIndented()}>
+              <ExtraText size={size}>{resolvedHelperText}</ExtraText>
+            </div>
           )}
         </div>
       )}
