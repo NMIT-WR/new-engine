@@ -3,6 +3,7 @@ import crypto from "node:crypto"
 const ALGORITHM = "aes-256-gcm"
 const IV_LENGTH = 12
 const AUTH_TAG_LENGTH = 16
+const HEX_KEY_REGEX = /^[0-9a-fA-F]{64}$/
 
 /**
  * Gets the encryption key from environment variable.
@@ -10,7 +11,7 @@ const AUTH_TAG_LENGTH = 16
  */
 export function getEncryptionKey(): Buffer {
   const keyHex = process.env.SETTINGS_ENCRYPTION_KEY
-  if (!keyHex || keyHex.length !== 64) {
+  if (!(keyHex && HEX_KEY_REGEX.test(keyHex))) {
     throw new Error(
       "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string. Generate with: openssl rand -hex 32"
     )

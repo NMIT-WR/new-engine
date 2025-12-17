@@ -36,7 +36,20 @@ export default async function createDefaultConfigLoader({
   }
 
   // Create default config row (disabled by default, admin must enable)
-  await pplConfigService.create({ environment })
-
-  logger.info(`PPL: Created default config for ${environment} (disabled)`)
+  // Use try-catch to handle race condition when multiple containers start simultaneously
+  try {
+    await pplConfigService.create({ environment })
+    logger.info(`PPL: Created default config for ${environment} (disabled)`)
+  } catch (error) {
+    // Ignore unique constraint violation (another container created it first)
+    const errorMessage = String(error)
+    if (
+      errorMessage.includes("unique constraint") ||
+      errorMessage.includes("duplicate key")
+    ) {
+      logger.debug(`PPL: Config for ${environment} created by another process`)
+      return
+    }
+    throw error
+  }
 }

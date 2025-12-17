@@ -58,6 +58,50 @@ const mockEffectiveConfig = {
   default_label_format: "Pdf" as const,
 }
 
+/** Factory for mock PplConfigDTO objects */
+const createMockConfig = (
+  overrides: Partial<{
+    id: string
+    environment: "testing" | "production"
+    is_enabled: boolean
+    client_id: string | null
+    client_secret: string | null
+    default_label_format: string
+    cod_bank_account: string | null
+    cod_bank_code: string | null
+    cod_iban: string | null
+    cod_swift: string | null
+    sender_name: string | null
+    sender_street: string | null
+    sender_city: string | null
+    sender_zip_code: string | null
+    sender_country: string | null
+    sender_phone: string | null
+    sender_email: string | null
+  }> = {}
+) => ({
+  id: "config-1",
+  environment: "testing" as const,
+  is_enabled: true,
+  client_id: "id",
+  client_secret: "secret",
+  default_label_format: "Pdf",
+  cod_bank_account: null,
+  cod_bank_code: null,
+  cod_iban: null,
+  cod_swift: null,
+  sender_name: null,
+  sender_street: null,
+  sender_city: null,
+  sender_zip_code: null,
+  sender_country: null,
+  sender_phone: null,
+  sender_email: null,
+  created_at: new Date(),
+  updated_at: new Date(),
+  ...overrides,
+})
+
 const createService = (
   options = validOptions,
   cacheService: typeof mockCacheService | null = mockCacheService,
@@ -306,27 +350,12 @@ describe("PplClientModuleService", () => {
       it("removes empty string from sensitive fields (keep existing)", async () => {
         const service = createService()
         // Mock getConfig to return existing config
-        jest.spyOn(service, "getConfig").mockResolvedValue({
-          id: "config-1",
-          environment: "testing",
-          is_enabled: true,
-          client_id: "existing-id",
-          client_secret: "existing-secret",
-          default_label_format: "Pdf",
-          cod_bank_account: null,
-          cod_bank_code: null,
-          cod_iban: null,
-          cod_swift: null,
-          sender_name: null,
-          sender_street: null,
-          sender_city: null,
-          sender_zip_code: null,
-          sender_country: null,
-          sender_phone: null,
-          sender_email: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
+        jest.spyOn(service, "getConfig").mockResolvedValue(
+          createMockConfig({
+            client_id: "existing-id",
+            client_secret: "existing-secret",
+          })
+        )
         // Mock updatePplConfigs
         jest.spyOn(service, "updatePplConfigs").mockResolvedValue({
           id: "config-1",
@@ -350,27 +379,12 @@ describe("PplClientModuleService", () => {
 
       it("passes null through to clear sensitive field", async () => {
         const service = createService()
-        jest.spyOn(service, "getConfig").mockResolvedValue({
-          id: "config-1",
-          environment: "testing",
-          is_enabled: true,
-          client_id: "existing-id",
-          client_secret: "existing-secret",
-          default_label_format: "Pdf",
-          cod_bank_account: null,
-          cod_bank_code: null,
-          cod_iban: null,
-          cod_swift: null,
-          sender_name: null,
-          sender_street: null,
-          sender_city: null,
-          sender_zip_code: null,
-          sender_country: null,
-          sender_phone: null,
-          sender_email: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
+        jest.spyOn(service, "getConfig").mockResolvedValue(
+          createMockConfig({
+            client_id: "existing-id",
+            client_secret: "existing-secret",
+          })
+        )
         jest.spyOn(service, "updatePplConfigs").mockResolvedValue({
           id: "config-1",
           client_secret: null,
@@ -390,8 +404,8 @@ describe("PplClientModuleService", () => {
 
     describe("getEffectiveConfig", () => {
       // Helper to create service without the default mock
-      const createServiceForConfigTests = () => {
-        return new PplClientModuleService(
+      const createServiceForConfigTests = () =>
+        new PplClientModuleService(
           {
             logger: mockLogger,
             [Modules.CACHING]: mockCacheService,
@@ -399,7 +413,6 @@ describe("PplClientModuleService", () => {
           } as any,
           validOptions
         )
-      }
 
       it("returns cached config on cache hit", async () => {
         const cachedConfig = {
@@ -419,27 +432,9 @@ describe("PplClientModuleService", () => {
         mockCacheService.get.mockResolvedValueOnce(null) // cache miss
 
         const service = createServiceForConfigTests()
-        jest.spyOn(service, "getConfig").mockResolvedValue({
-          id: "config-1",
-          environment: "testing",
-          is_enabled: false, // Disabled
-          client_id: "id",
-          client_secret: "secret",
-          default_label_format: "Pdf",
-          cod_bank_account: null,
-          cod_bank_code: null,
-          cod_iban: null,
-          cod_swift: null,
-          sender_name: null,
-          sender_street: null,
-          sender_city: null,
-          sender_zip_code: null,
-          sender_country: null,
-          sender_phone: null,
-          sender_email: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
+        jest
+          .spyOn(service, "getConfig")
+          .mockResolvedValue(createMockConfig({ is_enabled: false }))
 
         const result = await service.getEffectiveConfig()
 
@@ -450,27 +445,9 @@ describe("PplClientModuleService", () => {
         mockCacheService.get.mockResolvedValueOnce(null)
 
         const service = createServiceForConfigTests()
-        jest.spyOn(service, "getConfig").mockResolvedValue({
-          id: "config-1",
-          environment: "testing",
-          is_enabled: true,
-          client_id: null, // Missing
-          client_secret: "secret",
-          default_label_format: "Pdf",
-          cod_bank_account: null,
-          cod_bank_code: null,
-          cod_iban: null,
-          cod_swift: null,
-          sender_name: null,
-          sender_street: null,
-          sender_city: null,
-          sender_zip_code: null,
-          sender_country: null,
-          sender_phone: null,
-          sender_email: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
+        jest
+          .spyOn(service, "getConfig")
+          .mockResolvedValue(createMockConfig({ client_id: null }))
 
         const result = await service.getEffectiveConfig()
 
@@ -481,27 +458,9 @@ describe("PplClientModuleService", () => {
         mockCacheService.get.mockResolvedValueOnce(null)
 
         const service = createServiceForConfigTests()
-        jest.spyOn(service, "getConfig").mockResolvedValue({
-          id: "config-1",
-          environment: "testing",
-          is_enabled: true,
-          client_id: "id",
-          client_secret: null, // Missing
-          default_label_format: "Pdf",
-          cod_bank_account: null,
-          cod_bank_code: null,
-          cod_iban: null,
-          cod_swift: null,
-          sender_name: null,
-          sender_street: null,
-          sender_city: null,
-          sender_zip_code: null,
-          sender_country: null,
-          sender_phone: null,
-          sender_email: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
+        jest
+          .spyOn(service, "getConfig")
+          .mockResolvedValue(createMockConfig({ client_secret: null }))
 
         const result = await service.getEffectiveConfig()
 
@@ -512,27 +471,15 @@ describe("PplClientModuleService", () => {
         mockCacheService.get.mockResolvedValueOnce(null)
 
         const service = createServiceForConfigTests()
-        jest.spyOn(service, "getConfig").mockResolvedValue({
-          id: "config-1",
-          environment: "testing",
-          is_enabled: true,
-          client_id: "valid-id",
-          client_secret: "valid-secret",
-          default_label_format: "Pdf",
-          cod_bank_account: "123456",
-          cod_bank_code: "0100",
-          cod_iban: null,
-          cod_swift: null,
-          sender_name: "Test Sender",
-          sender_street: null,
-          sender_city: null,
-          sender_zip_code: null,
-          sender_country: null,
-          sender_phone: null,
-          sender_email: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
+        jest.spyOn(service, "getConfig").mockResolvedValue(
+          createMockConfig({
+            client_id: "valid-id",
+            client_secret: "valid-secret",
+            cod_bank_account: "123456",
+            cod_bank_code: "0100",
+            sender_name: "Test Sender",
+          })
+        )
 
         const result = await service.getEffectiveConfig()
 

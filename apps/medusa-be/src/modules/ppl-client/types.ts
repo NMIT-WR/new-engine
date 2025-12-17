@@ -30,7 +30,7 @@ export type PplOptions = {
 }
 
 export type PplEnvironment = "testing" | "production"
-export type PplLabelFormat = "Png" | "Svg" | "Pdf" | "Zpl"
+export type PplLabelFormat = "Png" | "Jpeg" | "Svg" | "Pdf" | "Zpl"
 
 /**
  * OAuth 2.0 access token response

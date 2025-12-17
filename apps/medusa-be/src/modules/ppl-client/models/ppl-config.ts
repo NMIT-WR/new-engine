@@ -34,8 +34,8 @@ const PplConfig = model
     sender_email: model.text().nullable(),
   })
   .indexes([
-    // One config per environment
-    { on: ["environment"], unique: true },
+    // One config per environment (exclude soft-deleted records)
+    { on: ["environment"], unique: true, where: { deleted_at: null } },
   ])
 
 export default PplConfig

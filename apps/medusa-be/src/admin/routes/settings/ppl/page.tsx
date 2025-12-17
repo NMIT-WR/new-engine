@@ -63,6 +63,8 @@ const CLEARABLE_FIELDS = new Set([
 
 const LABEL_FORMATS = [
   { value: "Png", label: "PNG" },
+  { value: "Jpeg", label: "JPEG" },
+  { value: "Svg", label: "SVG" },
   { value: "Pdf", label: "PDF" },
   { value: "Zpl", label: "ZPL" },
 ]
