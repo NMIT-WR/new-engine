@@ -104,3 +104,33 @@
 @utility token-icon-phone-input-chevron {
   @apply icon-[mdi--chevron-down];
 }
+
+/*
+ * Flag icons safelist - required for dynamic icon generation
+ * These classes are used dynamically in FormPhoneInput as `icon-[circle-flags--${code}]`
+ * Tailwind needs static references to include them in the build
+ */
+@utility token-icon-flag-cz {
+  @apply icon-[circle-flags--cz];
+}
+@utility token-icon-flag-sk {
+  @apply icon-[circle-flags--sk];
+}
+@utility token-icon-flag-de {
+  @apply icon-[circle-flags--de];
+}
+@utility token-icon-flag-at {
+  @apply icon-[circle-flags--at];
+}
+@utility token-icon-flag-pl {
+  @apply icon-[circle-flags--pl];
+}
+@utility token-icon-flag-us {
+  @apply icon-[circle-flags--us];
+}
+@utility token-icon-flag-gb {
+  @apply icon-[circle-flags--gb];
+}
+@utility token-icon-flag-ca {
+  @apply icon-[circle-flags--ca];
+}
