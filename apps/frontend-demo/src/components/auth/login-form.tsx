@@ -102,7 +102,7 @@ export function LoginForm() {
             disabled={isFormLoading}
             id="rememberMe"
             label="Zapamatovat si mě"
-            onChange={(e) => setRememberMe(e.target.checked)}
+            onCheckedChange={setRememberMe}
           />
 
           <Link

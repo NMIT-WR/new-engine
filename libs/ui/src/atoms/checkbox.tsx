@@ -7,7 +7,6 @@ const checkboxVariants = tv({
     "size-checkbox",
     "rounded-checkbox border border-checkbox-border",
     "bg-checkbox-bg",
-    /* center icon, grid and place items do not work e.g. flex */
     "after:-translate-x-1/2 after:-translate-y-1/2 after:absolute after:top-1/2 after:left-1/2",
     "checked:bg-checkbox-bg-checked",
     "checked:border-checkbox-border-checked",
@@ -47,12 +46,10 @@ export function Checkbox({
   ref,
   ...props
 }: CheckboxProps) {
-  // Ref callback to set indeterminate (it's a JS property, not an HTML attribute)
   const setIndeterminate = (node: HTMLInputElement | null) => {
     if (node) {
       node.indeterminate = indeterminate ?? false
     }
-    // Forward to external ref if provided
     if (typeof ref === "function") {
       ref(node)
     } else if (ref) {

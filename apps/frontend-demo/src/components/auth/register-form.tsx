@@ -148,7 +148,7 @@ export function RegisterForm() {
             )}
             helpText={
               getFieldError("password") && (
-                <ErrorText>{getFieldError("password")}</ErrorText>
+                <ErrorText showIcon>{getFieldError("password")}</ErrorText>
               )
             }
             validateStatus={getFieldError("password") ? "error" : "default"}
@@ -170,7 +170,7 @@ export function RegisterForm() {
           )}
           helpText={
             getFieldError("confirmPassword") ? (
-              <ErrorText>{getFieldError("confirmPassword")}</ErrorText>
+              <ErrorText showIcon>{getFieldError("confirmPassword")}</ErrorText>
             ) : undefined
           }
           validateStatus={
@@ -183,9 +183,9 @@ export function RegisterForm() {
           disabled={isFormLoading}
           helpText={getFieldError("terms")}
           id="acceptTerms"
+          invalid={!!getFieldError("terms")}
           label="Souhlasím s obchodními podmínkami"
-          onChange={(e) => setAcceptTerms(e.target.checked)}
-          validateStatus={getFieldError("terms") ? "error" : "default"}
+          onCheckedChange={setAcceptTerms}
         />
 
         <Button
