@@ -1,6 +1,14 @@
-'use client'
-import { useAuth } from '@/hooks/use-auth'
-import { useCustomer } from '@/hooks/use-customer'
+"use client"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
+import { Link } from "@techsio/ui-kit/atoms/link"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
+import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
+import { Select } from "@techsio/ui-kit/molecules/select"
+import { useEffect, useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
+import { useCustomer } from "@/hooks/use-customer"
 import {
   ADDRESS_ERRORS,
   COUNTRIES,
@@ -8,16 +16,8 @@ import {
   formatPostalCode,
   validateAddress,
   validateEmail,
-} from '@/lib/address'
-import type { AddressData, AddressFormProps } from '@/types/checkout'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
-import { Link } from '@techsio/ui-kit/atoms/link'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import { FormCheckboxRaw as FormCheckbox } from '@techsio/ui-kit/molecules/form-checkbox'
-import { FormInputRaw as FormInput } from '@techsio/ui-kit/molecules/form-input'
-import { Select } from '@techsio/ui-kit/molecules/select'
-import { useEffect, useState } from 'react'
+} from "@/lib/address"
+import type { AddressData, AddressFormProps } from "@/types/checkout"
 
 export function AddressForm({
   onComplete,
@@ -27,27 +27,27 @@ export function AddressForm({
   const { address, isLoading: isAddressLoading } = useCustomer()
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
-    firstName: user?.first_name || '',
-    lastName: user?.last_name || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    street: address?.street || '',
-    city: address?.city || '',
-    postalCode: address?.postalCode || '',
-    country: address?.country || 'cz',
-    company: user?.company_name || '',
+    firstName: user?.first_name || "",
+    lastName: user?.last_name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    street: address?.street || "",
+    city: address?.city || "",
+    postalCode: address?.postalCode || "",
+    country: address?.country || "cz",
+    company: user?.company_name || "",
   })
 
   const [billingAddress, setBillingAddress] = useState<AddressData>({
-    firstName: user?.first_name || '',
-    lastName: user?.last_name || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    street: address?.street || '',
-    city: address?.city || '',
-    postalCode: address?.postalCode || '',
-    country: address?.country || 'cz',
-    company: user?.company_name || '',
+    firstName: user?.first_name || "",
+    lastName: user?.last_name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    street: address?.street || "",
+    city: address?.city || "",
+    postalCode: address?.postalCode || "",
+    country: address?.country || "cz",
+    company: user?.company_name || "",
   })
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export function AddressForm({
     const shippingErrors = validateAddress(shippingAddress, {
       requireEmail: true,
       requirePhone: true,
-      prefix: 'shipping',
+      prefix: "shipping",
     })
     newErrors = { ...newErrors, ...shippingErrors }
 
@@ -81,7 +81,7 @@ export function AddressForm({
       const billingErrors = validateAddress(billingAddress, {
         requireEmail: false,
         requirePhone: false,
-        prefix: 'billing',
+        prefix: "billing",
       })
       newErrors = { ...newErrors, ...billingErrors }
     }
@@ -102,7 +102,7 @@ export function AddressForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="relative flex flex-col">
+    <form className="relative flex flex-col" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4 sm:gap-5">
         <div>
           <h3 className="mb-1 font-semibold text-fg-primary sm:mb-2 sm:text-lg">
@@ -115,41 +115,41 @@ export function AddressForm({
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <FormInput
+            helpText={
+              errors.shippingFirstName && (
+                <ErrorText>{errors.shippingFirstName}</ErrorText>
+              )
+            }
             id="shipping-first-name"
             label="Jméno"
-            required
-            value={shippingAddress.firstName}
             onChange={(e) =>
               setShippingAddress({
                 ...shippingAddress,
                 firstName: e.target.value,
               })
             }
-            validateStatus={errors.shippingFirstName ? 'error' : 'default'}
-            helpText={
-              errors.shippingFirstName && (
-                <ErrorText>{errors.shippingFirstName}</ErrorText>
-              )
-            }
+            required
+            validateStatus={errors.shippingFirstName ? "error" : "default"}
+            value={shippingAddress.firstName}
           />
 
           <FormInput
+            helpText={
+              errors.shippingLastName && (
+                <ErrorText>{errors.shippingLastName}</ErrorText>
+              )
+            }
             id="shipping-last-name"
             label="Příjmení"
-            required
-            value={shippingAddress.lastName}
             onChange={(e) =>
               setShippingAddress({
                 ...shippingAddress,
                 lastName: e.target.value,
               })
             }
-            validateStatus={errors.shippingLastName ? 'error' : 'default'}
-            helpText={
-              errors.shippingLastName && (
-                <ErrorText>{errors.shippingLastName}</ErrorText>
-              )
-            }
+            required
+            validateStatus={errors.shippingLastName ? "error" : "default"}
+            value={shippingAddress.lastName}
           />
         </div>
 
@@ -157,25 +157,24 @@ export function AddressForm({
           id="shipping-company"
           label={
             <span>
-              Firma{' '}
+              Firma{" "}
               <span className="text-fg-secondary text-sm">(nepovinné)</span>
             </span>
           }
-          value={shippingAddress.company}
           onChange={(e) =>
             setShippingAddress({ ...shippingAddress, company: e.target.value })
           }
+          value={shippingAddress.company}
         />
         <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
           <FormInput
+            helpText={
+              errors.shippingEmail && (
+                <ErrorText>{errors.shippingEmail}</ErrorText>
+              )
+            }
             id="shipping-email"
             label="Email"
-            type="email"
-            required
-            value={shippingAddress.email}
-            onChange={(e) =>
-              setShippingAddress({ ...shippingAddress, email: e.target.value })
-            }
             onBlur={(e) => {
               const email = e.target.value
               if (email && !validateEmail(email)) {
@@ -184,112 +183,111 @@ export function AddressForm({
                   shippingEmail: ADDRESS_ERRORS.emailInvalid,
                 })
               } else {
-                setErrors({ ...errors, shippingEmail: '' })
+                setErrors({ ...errors, shippingEmail: "" })
               }
             }}
-            validateStatus={errors.shippingEmail ? 'error' : 'default'}
-            helpText={
-              errors.shippingEmail && (
-                <ErrorText>{errors.shippingEmail}</ErrorText>
-              )
+            onChange={(e) =>
+              setShippingAddress({ ...shippingAddress, email: e.target.value })
             }
+            required
+            type="email"
+            validateStatus={errors.shippingEmail ? "error" : "default"}
+            value={shippingAddress.email}
           />
 
           <FormInput
-            id="shipping-phone"
-            label="Telefon"
-            type="tel"
-            required
-            placeholder="123 456 789"
-            value={shippingAddress.phone}
-            onChange={(e) => {
-              const formatted = formatPhoneNumber(e.target.value)
-              setShippingAddress({ ...shippingAddress, phone: formatted })
-            }}
-            validateStatus={errors.shippingPhone ? 'error' : 'default'}
             helpText={
               errors.shippingPhone && (
                 <ErrorText>{errors.shippingPhone}</ErrorText>
               )
             }
+            id="shipping-phone"
+            label="Telefon"
+            onChange={(e) => {
+              const formatted = formatPhoneNumber(e.target.value)
+              setShippingAddress({ ...shippingAddress, phone: formatted })
+            }}
+            placeholder="123 456 789"
+            required
+            type="tel"
+            validateStatus={errors.shippingPhone ? "error" : "default"}
+            value={shippingAddress.phone}
           />
         </div>
 
         <FormInput
-          id="shipping-street"
-          label="Ulice a číslo popisné"
-          required
-          value={shippingAddress.street}
-          onChange={(e) =>
-            setShippingAddress({ ...shippingAddress, street: e.target.value })
-          }
-          validateStatus={errors.shippingStreet ? 'error' : 'default'}
           helpText={
             errors.shippingStreet && (
               <ErrorText>{errors.shippingStreet}</ErrorText>
             )
           }
+          id="shipping-street"
+          label="Ulice a číslo popisné"
+          onChange={(e) =>
+            setShippingAddress({ ...shippingAddress, street: e.target.value })
+          }
+          required
+          validateStatus={errors.shippingStreet ? "error" : "default"}
+          value={shippingAddress.street}
         />
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <FormInput
-            id="shipping-city"
-            label="Město"
-            required
-            value={shippingAddress.city}
-            onChange={(e) =>
-              setShippingAddress({ ...shippingAddress, city: e.target.value })
-            }
-            validateStatus={errors.shippingCity ? 'error' : 'default'}
             helpText={
               errors.shippingCity && (
                 <ErrorText>{errors.shippingCity}</ErrorText>
               )
             }
+            id="shipping-city"
+            label="Město"
+            onChange={(e) =>
+              setShippingAddress({ ...shippingAddress, city: e.target.value })
+            }
+            required
+            validateStatus={errors.shippingCity ? "error" : "default"}
+            value={shippingAddress.city}
           />
 
           <FormInput
-            id="shipping-postal-code"
-            label="PSČ"
-            required
-            placeholder="123 45"
-            value={shippingAddress.postalCode}
-            onChange={(e) => {
-              const formatted = formatPostalCode(e.target.value)
-              setShippingAddress({ ...shippingAddress, postalCode: formatted })
-            }}
-            validateStatus={errors.shippingPostalCode ? 'error' : 'default'}
             helpText={
               errors.shippingPostalCode && (
                 <ErrorText>{errors.shippingPostalCode}</ErrorText>
               )
             }
+            id="shipping-postal-code"
+            label="PSČ"
+            onChange={(e) => {
+              const formatted = formatPostalCode(e.target.value)
+              setShippingAddress({ ...shippingAddress, postalCode: formatted })
+            }}
+            placeholder="123 45"
+            required
+            validateStatus={errors.shippingPostalCode ? "error" : "default"}
+            value={shippingAddress.postalCode}
           />
         </div>
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
-            options={COUNTRIES}
-            value={[shippingAddress.country]}
             onValueChange={(details) =>
               setShippingAddress({
                 ...shippingAddress,
                 country: details.value[0],
               })
             }
+            options={COUNTRIES}
             required
+            value={[shippingAddress.country]}
           />
         </div>
       </div>
 
       <div className="mb-4 sm:mb-6">
         <FormCheckbox
+          checked={useSameAddress}
           id="same-address"
           label="Fakturační adresa je stejná jako doručovací"
-          checked={useSameAddress}
-          onCheckedChange={(details) =>
-            setUseSameAddress(details.checked as boolean)
-          }
+          onCheckedChange={setUseSameAddress}
         />
       </div>
 
@@ -301,130 +299,130 @@ export function AddressForm({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <FormInput
+              helpText={
+                errors.billingFirstName && (
+                  <ErrorText>{errors.billingFirstName}</ErrorText>
+                )
+              }
               id="billing-first-name"
               label="Jméno"
-              required
-              value={billingAddress.firstName}
               onChange={(e) =>
                 setBillingAddress({
                   ...billingAddress,
                   firstName: e.target.value,
                 })
               }
-              validateStatus={errors.billingFirstName ? 'error' : 'default'}
-              helpText={
-                errors.billingFirstName && (
-                  <ErrorText>{errors.billingFirstName}</ErrorText>
-                )
-              }
+              required
+              validateStatus={errors.billingFirstName ? "error" : "default"}
+              value={billingAddress.firstName}
             />
 
             <FormInput
+              helpText={
+                errors.billingLastName && (
+                  <ErrorText>{errors.billingLastName}</ErrorText>
+                )
+              }
               id="billing-last-name"
               label="Příjmení"
-              required
-              value={billingAddress.lastName}
               onChange={(e) =>
                 setBillingAddress({
                   ...billingAddress,
                   lastName: e.target.value,
                 })
               }
-              validateStatus={errors.billingLastName ? 'error' : 'default'}
-              helpText={
-                errors.billingLastName && (
-                  <ErrorText>{errors.billingLastName}</ErrorText>
-                )
-              }
+              required
+              validateStatus={errors.billingLastName ? "error" : "default"}
+              value={billingAddress.lastName}
             />
           </div>
 
           <FormInput
             id="billing-company"
             label="Firma (nepovinné)"
-            value={billingAddress.company}
             onChange={(e) =>
               setBillingAddress({ ...billingAddress, company: e.target.value })
             }
+            value={billingAddress.company}
           />
 
           <FormInput
-            id="billing-street"
-            label="Ulice a číslo popisné"
-            required
-            value={billingAddress.street}
-            onChange={(e) =>
-              setBillingAddress({ ...billingAddress, street: e.target.value })
-            }
-            validateStatus={errors.billingStreet ? 'error' : 'default'}
             helpText={
               errors.billingStreet && (
                 <ErrorText>{errors.billingStreet}</ErrorText>
               )
             }
+            id="billing-street"
+            label="Ulice a číslo popisné"
+            onChange={(e) =>
+              setBillingAddress({ ...billingAddress, street: e.target.value })
+            }
+            required
+            validateStatus={errors.billingStreet ? "error" : "default"}
+            value={billingAddress.street}
           />
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <FormInput
-              id="billing-city"
-              label="Město"
-              required
-              value={billingAddress.city}
-              onChange={(e) =>
-                setBillingAddress({ ...billingAddress, city: e.target.value })
-              }
-              validateStatus={errors.billingCity ? 'error' : 'default'}
               helpText={
                 errors.billingCity && (
                   <ErrorText>{errors.billingCity}</ErrorText>
                 )
               }
+              id="billing-city"
+              label="Město"
+              onChange={(e) =>
+                setBillingAddress({ ...billingAddress, city: e.target.value })
+              }
+              required
+              validateStatus={errors.billingCity ? "error" : "default"}
+              value={billingAddress.city}
             />
 
             <FormInput
+              helpText={
+                errors.billingPostalCode && (
+                  <ErrorText>{errors.billingPostalCode}</ErrorText>
+                )
+              }
               id="billing-postal-code"
               label="PSČ"
-              required
-              value={billingAddress.postalCode}
               onChange={(e) =>
                 setBillingAddress({
                   ...billingAddress,
                   postalCode: e.target.value,
                 })
               }
-              validateStatus={errors.billingPostalCode ? 'error' : 'default'}
-              helpText={
-                errors.billingPostalCode && (
-                  <ErrorText>{errors.billingPostalCode}</ErrorText>
-                )
-              }
+              required
+              validateStatus={errors.billingPostalCode ? "error" : "default"}
+              value={billingAddress.postalCode}
             />
           </div>
 
           <div className="mb-4 max-w-[20rem] sm:mb-6">
             <Select
-              options={COUNTRIES}
-              value={[billingAddress.country]}
               onValueChange={(details) =>
                 setBillingAddress({
                   ...billingAddress,
                   country: details.value[0],
                 })
               }
+              options={COUNTRIES}
               required
+              value={[billingAddress.country]}
             />
           </div>
         </div>
       )}
       <div className="flex w-full justify-between">
-        <LinkButton variant="primary" size="sm" as={Link} href="/cart">
+        <LinkButton as={Link} href="/cart" size="sm" variant="primary">
           Zpět do košíku
         </LinkButton>
         <Button
-          type="submit"
-          size="sm"
-          isLoading={isLoading}
           disabled={isLoading}
+          isLoading={isLoading}
+          size="sm"
+          type="submit"
           //className="w-full sm:w-auto"
         >
           Pokračovat

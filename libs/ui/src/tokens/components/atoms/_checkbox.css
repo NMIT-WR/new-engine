@@ -1,0 +1,49 @@
+@theme static {
+  /* === BASE COLOR MAPPING === */
+  /* Reference layer - single source of truth for theming */
+  --color-checkbox-primary: var(--color-primary);
+  --color-checkbox-success: var(--color-success);
+  --color-checkbox-danger: var(--color-danger);
+
+  /* === DERIVED COLORS === */
+  /* Background colors */
+  --color-checkbox-bg: var(--color-fill-active);
+  --color-checkbox-bg-checked: var(--color-checkbox-success);
+  --color-checkbox-bg-indeterminate: var(--color-checkbox-primary);
+
+  /* Foreground colors (icons/checkmarks) */
+  --color-checkbox-fg-checked: var(--color-fg-dark);
+  --color-checkbox-fg-indeterminate: var(--color-fg-dark);
+
+  /* Border colors */
+  --color-checkbox-border: var(--color-border-primary);
+  --color-checkbox-border-checked: var(--color-checkbox-success);
+  --color-checkbox-border-indeterminate: var(--color-checkbox-primary);
+
+  /* === VALIDATION STATES === */
+  --color-checkbox-border-error: var(--color-checkbox-danger);
+  --color-checkbox-ring-error: var(--color-checkbox-danger);
+
+  /* === DISABLED STATES === */
+  --color-checkbox-bg-disabled: var(--color-bg-disabled);
+  --color-checkbox-fg-disabled: var(--color-fg-disabled);
+  --color-checkbox-border-disabled: var(--color-border-disabled);
+
+  /* === FOCUS RINGS === */
+  --color-checkbox-ring-focus: var(--color-ring);
+
+  /* === SPACING === */
+  --spacing-checkbox: var(--spacing-200);
+  --spacing-checkbox-indeterminate-icon: 60%;
+
+  /* === BORDERS & RADIUS === */
+  --radius-checkbox: var(--radius-sm);
+
+  /* === FORM CHECKBOX MOLECULE === */
+  --spacing-form-checkbox-gap: var(--spacing-150);
+  --spacing-form-checkbox-indicator-offset: var(--spacing-50);
+}
+
+@utility token-icon-checkbox {
+  @apply icon-[mdi--check-bold];
+}

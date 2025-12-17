@@ -1,81 +1,170 @@
-import type { ReactNode } from 'react'
-import { ErrorText } from '../atoms/error-text'
-import { ExtraText } from '../atoms/extra-text'
-import { Label } from '../atoms/label'
-import { Checkbox, type CheckboxProps } from './checkbox'
+import { connect, machine } from "@zag-js/checkbox"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { type ReactNode, useId } from "react"
+import { ErrorText } from "../atoms/error-text"
+import { ExtraText } from "../atoms/extra-text"
+import { tv } from "../utils"
 
-type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
+const checkboxVariants = tv({
+  slots: {
+    root: "flex gap-form-checkbox-gap",
+    controlWrapper: "mt-form-checkbox-indicator-offset flex items-start",
+    control: [
+      "relative shrink-0 cursor-pointer",
+      "size-checkbox",
+      "rounded-checkbox border border-checkbox-border",
+      "bg-checkbox-bg",
+      "flex items-center justify-center",
+      "transition-all duration-200",
+      "data-[state=checked]:bg-checkbox-bg-checked",
+      "data-[state=checked]:border-checkbox-border-checked",
+      "data-[state=indeterminate]:bg-checkbox-bg-indeterminate",
+      "data-[state=indeterminate]:border-checkbox-border-indeterminate",
+      "data-[disabled]:cursor-not-allowed",
+      "data-[disabled]:bg-checkbox-bg-disabled",
+      "data-[disabled]:border-checkbox-border-disabled",
+      "data-[focus]:outline-none",
+      "data-[focus]:ring",
+      "data-[focus]:ring-checkbox-ring-focus",
+      "data-[invalid]:border-checkbox-border-error",
+      "data-[invalid]:ring-checkbox-ring-error",
+    ],
+    indicator: [
+      "text-checkbox-fg-checked",
+      "data-[state=checked]:token-icon-checkbox",
+      "data-[state=indeterminate]:size-checkbox-indeterminate-icon",
+      "data-[state=indeterminate]:rounded-full",
+      "data-[state=indeterminate]:bg-checkbox-fg-indeterminate",
+      "data-[disabled]:text-checkbox-fg-disabled",
+    ],
+    labelWrapper: "flex flex-col",
+    label: [
+      "cursor-pointer select-none",
+      "text-label-fg",
+      "data-[disabled]:cursor-not-allowed",
+      "data-[disabled]:text-label-fg-disabled",
+    ],
+    hiddenInput: "sr-only",
+  },
+  variants: {
+    size: {
+      sm: { label: "text-label-sm" },
+      md: { label: "text-label-md" },
+      lg: { label: "text-label-lg" },
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+})
 
-interface FormCheckboxProps extends Omit<CheckboxProps, 'size'> {
-  id: string
-  label: ReactNode
-  validateStatus?: ValidateStatus
+export type FormCheckboxProps = {
+  id?: string
+  name?: string
+  value?: string
+  checked?: boolean
+  defaultChecked?: boolean
+  indeterminate?: boolean
+  disabled?: boolean
+  invalid?: boolean
+  required?: boolean
+  readOnly?: boolean
+  children?: ReactNode
+  label?: ReactNode
+  helperText?: ReactNode
+  errorText?: ReactNode
   helpText?: ReactNode
   extraText?: ReactNode
-  size?: 'sm' | 'md' | 'lg'
+  validateStatus?: "default" | "error" | "success" | "warning"
+  size?: "sm" | "md" | "lg"
+  className?: string
+  onCheckedChange?: (checked: boolean) => void
 }
 
-export function FormCheckboxRaw({
+export function FormCheckbox({
   id,
+  name,
+  value,
+  checked,
+  defaultChecked,
+  indeterminate,
+  disabled = false,
+  invalid = false,
+  required = false,
+  readOnly = false,
+  children,
   label,
-  validateStatus = 'default',
+  helperText,
+  errorText,
   helpText,
   extraText,
-  size = 'md',
-  required,
-  disabled,
-  ...props
+  validateStatus,
+  size = "md",
+  className,
+  onCheckedChange,
 }: FormCheckboxProps) {
-  const extraTextId = extraText ? `${id}-extra` : undefined
+  const generatedId = useId()
+  const uniqueId = id || generatedId
+
+  const isInvalid = validateStatus === "error" || invalid
+  const resolvedErrorText = isInvalid ? (errorText ?? helpText) : undefined
+  const resolvedHelperText = isInvalid ? undefined : (helperText ?? helpText)
+
+  const service = useMachine(machine, {
+    id: uniqueId,
+    name,
+    value,
+    checked: indeterminate ? "indeterminate" : checked,
+    defaultChecked,
+    disabled,
+    invalid: isInvalid,
+    readOnly,
+    required,
+    onCheckedChange: (details) => {
+      onCheckedChange?.(details.checked === true)
+    },
+  })
+
+  const api = connect(service, normalizeProps)
+
+  const styles = checkboxVariants({ size, className })
+
+  const labelContent = label ?? children
 
   return (
-    <div className="flex gap-150">
-      <div className="mt-2 flex items-start">
-        <Checkbox id={id} required={required} disabled={disabled} {...props} />
-      </div>
-      <div className="flex flex-col">
-        <Label htmlFor={id} size={size} required={required} disabled={disabled}>
-          {label}
-        </Label>
-        {helpText}
-        {extraText && (
-          <ExtraText id={extraTextId} size={size}>
-            {extraText}
-          </ExtraText>
-        )}
-      </div>
+    <div className={className}>
+      <label className={styles.root()} {...api.getRootProps()}>
+        <div className={styles.controlWrapper()}>
+          <div className={styles.control()} {...api.getControlProps()}>
+            <span className={styles.indicator()} {...api.getIndicatorProps()} />
+          </div>
+          <input
+            className={styles.hiddenInput()}
+            {...api.getHiddenInputProps()}
+          />
+        </div>
+        <div className={styles.labelWrapper()}>
+          {labelContent && (
+            <span className={styles.label()} {...api.getLabelProps()}>
+              {labelContent}
+              {required && <span className="text-label-fg-required"> *</span>}
+            </span>
+          )}
+          {extraText && <ExtraText size={size}>{extraText}</ExtraText>}
+          {isInvalid && resolvedErrorText && (
+            <ErrorText showIcon size={size}>
+              {resolvedErrorText}
+            </ErrorText>
+          )}
+          {!isInvalid && resolvedHelperText && (
+            <ExtraText size={size}>{resolvedHelperText}</ExtraText>
+          )}
+        </div>
+      </label>
     </div>
   )
 }
 
-export function FormCheckbox({
-  helpText,
-  id,
-  validateStatus,
-  size,
-  ...props
-}: FormCheckboxProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined
+FormCheckbox.displayName = "FormCheckbox"
 
-  return (
-    <FormCheckboxRaw
-      id={id}
-      size={size}
-      validateStatus={validateStatus}
-      helpText={
-        validateStatus === 'error' ? (
-          <ErrorText id={helpTextId} size={size}>
-            {helpText}
-          </ErrorText>
-        ) : (
-          (helpText ?? (
-            <ExtraText id={helpTextId} size={size}>
-              {helpText}
-            </ExtraText>
-          ))
-        )
-      }
-      {...props}
-    />
-  )
-}
+export const FormCheckboxRaw = FormCheckbox
