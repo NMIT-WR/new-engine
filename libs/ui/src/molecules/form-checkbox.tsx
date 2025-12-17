@@ -7,8 +7,7 @@ import { tv } from "../utils"
 
 const checkboxVariants = tv({
   slots: {
-    root: "flex gap-form-checkbox-gap",
-    controlWrapper: "mt-form-checkbox-indicator-offset flex items-start",
+    root: "flex items-center gap-form-checkbox-gap",
     control: [
       "relative shrink-0 cursor-pointer",
       "size-checkbox",
@@ -37,7 +36,6 @@ const checkboxVariants = tv({
       "data-[state=indeterminate]:bg-checkbox-fg-indeterminate",
       "data-[disabled]:text-checkbox-fg-disabled",
     ],
-    labelWrapper: "flex flex-col",
     label: [
       "cursor-pointer select-none",
       "text-label-fg",
@@ -45,6 +43,7 @@ const checkboxVariants = tv({
       "data-[disabled]:text-label-fg-disabled",
     ],
     hiddenInput: "sr-only",
+    textWrapper: "pl-form-checkbox-text-offset",
   },
   variants: {
     size: {
@@ -131,25 +130,27 @@ export function FormCheckbox({
 
   const labelContent = label ?? children
 
+  const hasText = extraText || resolvedErrorText || resolvedHelperText
+
   return (
     <div className={className}>
       <label className={styles.root()} {...api.getRootProps()}>
-        <div className={styles.controlWrapper()}>
-          <div className={styles.control()} {...api.getControlProps()}>
-            <span className={styles.indicator()} {...api.getIndicatorProps()} />
-          </div>
-          <input
-            className={styles.hiddenInput()}
-            {...api.getHiddenInputProps()}
-          />
+        <div className={styles.control()} {...api.getControlProps()}>
+          <span className={styles.indicator()} {...api.getIndicatorProps()} />
         </div>
-        <div className={styles.labelWrapper()}>
-          {labelContent && (
-            <span className={styles.label()} {...api.getLabelProps()}>
-              {labelContent}
-              {required && <span className="text-label-fg-required"> *</span>}
-            </span>
-          )}
+        <input
+          className={styles.hiddenInput()}
+          {...api.getHiddenInputProps()}
+        />
+        {labelContent && (
+          <span className={styles.label()} {...api.getLabelProps()}>
+            {labelContent}
+            {required && <span className="text-label-fg-required"> *</span>}
+          </span>
+        )}
+      </label>
+      {hasText && (
+        <div className={styles.textWrapper()}>
           {extraText && <ExtraText size={size}>{extraText}</ExtraText>}
           {isInvalid && resolvedErrorText && (
             <ErrorText showIcon size={size}>
@@ -160,7 +161,7 @@ export function FormCheckbox({
             <ExtraText size={size}>{resolvedHelperText}</ExtraText>
           )}
         </div>
-      </label>
+      )}
     </div>
   )
 }
