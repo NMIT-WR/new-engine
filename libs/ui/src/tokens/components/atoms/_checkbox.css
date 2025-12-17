@@ -41,7 +41,10 @@
 
   /* === FORM CHECKBOX MOLECULE === */
   --spacing-form-checkbox-gap: var(--spacing-150);
-  --spacing-form-checkbox-text-offset: calc(var(--spacing-checkbox) + var(--spacing-form-checkbox-gap));
+  --spacing-form-checkbox-text-offset: calc(
+    var(--spacing-checkbox) +
+    var(--spacing-form-checkbox-gap)
+  );
 }
 
 @utility token-icon-checkbox {

@@ -12,7 +12,7 @@ const labelVariants = tv({
       current: "",
     },
     disabled: {
-      true: "text-label-disabled",
+      true: "text-label-fg-disabled",
     },
   },
   defaultVariants: {
@@ -48,7 +48,7 @@ export function Label({
       htmlFor={props.htmlFor}
     >
       {children}
-      {required && <span className="ms-1 text-label-required">*</span>}
+      {required && <span className="ms-1 text-label-fg-required">*</span>}
     </label>
   )
 }

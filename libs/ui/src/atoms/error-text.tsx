@@ -4,12 +4,12 @@ import { tv } from "../utils"
 import { Icon } from "./icon"
 
 const errorVariants = tv({
-  base: ["text-error-fg", "flex items-center gap-error-text-icon-gap"],
+  base: ["text-error-text-fg", "flex items-center gap-error-text-icon-gap"],
   variants: {
     size: {
-      sm: "text-error-sm",
-      md: "text-error-md",
-      lg: "text-error-lg",
+      sm: "text-error-text-sm",
+      md: "text-error-text-md",
+      lg: "text-error-text-lg",
     },
   },
   defaultVariants: {
