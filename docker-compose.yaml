@@ -49,21 +49,11 @@ services:
       AUTH_CORS: ${DC_AUTH_CORS}
       SENTRY_NAME: ${DC_SENTRY_NAME}
       SENTRY_DSN: ${DC_SENTRY_DSN}
-      # PPL Fulfillment Provider
-      PPL_ENABLED: ${DC_PPL_ENABLED:-0}
-      PPL_CLIENT_ID: ${DC_PPL_CLIENT_ID}
-      PPL_CLIENT_SECRET: ${DC_PPL_CLIENT_SECRET}
+      # Settings Encryption (for sensitive config stored in DB)
+      SETTINGS_ENCRYPTION_KEY: ${DC_SETTINGS_ENCRYPTION_KEY}
+      # PPL Fulfillment Provider (credentials managed in admin: Settings → PPL)
+      FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
       PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
-      PPL_COD_BANK_ACCOUNT: ${DC_PPL_COD_BANK_ACCOUNT}
-      PPL_COD_BANK_CODE: ${DC_PPL_COD_BANK_CODE}
-      # Company Address (fallback sender for fulfillment providers)
-      COMPANY_ADDRESS_NAME: ${DC_COMPANY_ADDRESS_NAME}
-      COMPANY_ADDRESS_STREET: ${DC_COMPANY_ADDRESS_STREET}
-      COMPANY_ADDRESS_CITY: ${DC_COMPANY_ADDRESS_CITY}
-      COMPANY_ADDRESS_ZIP_CODE: ${DC_COMPANY_ADDRESS_ZIP_CODE}
-      COMPANY_ADDRESS_COUNTRY: ${DC_COMPANY_ADDRESS_COUNTRY}
-      COMPANY_ADDRESS_PHONE: ${DC_COMPANY_ADDRESS_PHONE}
-      COMPANY_ADDRESS_EMAIL: ${DC_COMPANY_ADDRESS_EMAIL}
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:

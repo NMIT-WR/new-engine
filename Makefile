@@ -49,3 +49,7 @@ medusa-seed-dev-data:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedDevData
 medusa-seed-n1:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedN1
+
+# Biome commands
+biome-be:
+	bunx biome check --write apps/medusa-be
