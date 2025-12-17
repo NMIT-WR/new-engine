@@ -1,0 +1,38 @@
+{
+  "name": "@techsio/address",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./countries": {
+      "types": "./dist/src/countries/index.d.ts",
+      "import": "./dist/countries/index.js"
+    },
+    "./postal-code": {
+      "types": "./dist/src/postal-code/index.d.ts",
+      "import": "./dist/postal-code/index.js"
+    },
+    "./phone": {
+      "types": "./dist/src/phone/index.d.ts",
+      "import": "./dist/phone/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "lint": "pnpm -w exec biome lint libs/address/src --diagnostic-level=error"
+  },
+  "dependencies": {
+    "libphonenumber-js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@rslib/core": "^0.18.0",
+    "typescript": "^5.9.3"
+  }
+}
