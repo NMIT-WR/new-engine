@@ -20,6 +20,7 @@
     "test:integration:http": "cross-env TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "cross-env TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "test:unit": "cross-env TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
+    "test:all": "pnpm test:unit && pnpm test:integration:modules && pnpm test:integration:http",
     "migrate": "medusa db:migrate",
     "migrate:generate-only": "medusa db:generate",
     "syncLinks": "medusa db:sync-links",

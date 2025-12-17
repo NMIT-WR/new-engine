@@ -1,6 +1,13 @@
 import type { LoaderOptions } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
+type PplConfigServiceType = {
+  listAndCount: (
+    filter: Record<string, unknown>
+  ) => Promise<[unknown[], number]>
+  create: (data: Record<string, unknown>) => Promise<unknown>
+}
+
 /**
  * Creates a default PPL config row for the current environment if one doesn't exist.
  *
@@ -18,12 +25,8 @@ export default async function createDefaultConfigLoader({
 
   // Resolve the auto-generated internal service for PplConfig model
   // (MedusaService generates `{modelName}Service` for each model)
-  const pplConfigService = container.resolve<{
-    listAndCount: (
-      filter: Record<string, unknown>
-    ) => Promise<[unknown[], number]>
-    create: (data: Record<string, unknown>) => Promise<unknown>
-  }>("pplConfigService")
+  const pplConfigService =
+    container.resolve<PplConfigServiceType>("pplConfigService")
 
   // Check if config for this environment already exists
   const [, count] = await pplConfigService.listAndCount({ environment })

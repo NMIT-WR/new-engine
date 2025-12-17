@@ -1,8 +1,16 @@
 import { MedusaError, Modules } from "@medusajs/framework/utils"
+// Import after mocks
+import { PplClientModuleService } from "../service"
 
 // Mock the client before importing service
 jest.mock("../client", () => ({
   PplClient: jest.fn().mockImplementation(() => mockPplClient),
+}))
+
+// Mock encryption utilities
+jest.mock("../../../utils/encryption", () => ({
+  encryptFields: jest.fn((data) => ({ ...data, _encrypted: true })),
+  decryptFields: jest.fn((data) => ({ ...data, _decrypted: true })),
 }))
 
 const mockPplClient = {
@@ -43,15 +51,19 @@ const validOptions = {
   environment: "testing" as const,
 }
 
-// Import after mocks
-import { PplClientModuleService } from "../service"
+const mockEffectiveConfig = {
+  client_id: "test-client-id",
+  client_secret: "test-client-secret",
+  environment: "testing" as const,
+  default_label_format: "Pdf" as const,
+}
 
 const createService = (
   options = validOptions,
   cacheService: typeof mockCacheService | null = mockCacheService,
   lockingService: typeof mockLockingService | null = mockLockingService
-) =>
-  new PplClientModuleService(
+) => {
+  const service = new PplClientModuleService(
     {
       logger: mockLogger,
       [Modules.CACHING]: cacheService,
@@ -59,6 +71,13 @@ const createService = (
     } as any,
     options
   )
+  // Mock getEffectiveConfig by default to bypass DB dependency
+  // Tests that need to test config behavior should override this
+  jest
+    .spyOn(service, "getEffectiveConfig")
+    .mockResolvedValue(mockEffectiveConfig)
+  return service
+}
 
 describe("PplClientModuleService", () => {
   beforeEach(() => {
@@ -72,20 +91,6 @@ describe("PplClientModuleService", () => {
 
   afterEach(() => {
     jest.useRealTimers()
-  })
-
-  describe("constructor", () => {
-    it("logs warning when cache or locking service unavailable", () => {
-      createService(validOptions, null, null)
-      expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining("Cache or locking service not available")
-      )
-    })
-
-    it("initializes successfully and returns correct environment", () => {
-      const service = createService()
-      expect(service.getEnvironment()).toEqual("testing")
-    })
   })
 
   describe("token management", () => {
@@ -290,65 +295,278 @@ describe("PplClientModuleService", () => {
     })
   })
 
-  describe("shipment operations", () => {
+  describe("config management", () => {
+    const { encryptFields } = jest.requireMock("../../../utils/encryption")
+
     beforeEach(() => {
-      mockCacheService.get
-        .mockResolvedValueOnce(null) // rate limit
-        .mockResolvedValueOnce({
-          accessToken: "token",
-          expiresAt: Date.now() + 120_000,
-        }) // token
+      encryptFields.mockClear()
     })
 
-    it("createShipmentBatch passes shipments to client", async () => {
-      mockPplClient.createShipmentBatch.mockResolvedValue("batch-123")
-
-      const service = createService()
-      const shipments = [{ referenceId: "ref-1", productType: "PRIV" }]
-      const result = await service.createShipmentBatch(shipments as any)
-
-      expect(result).toBe("batch-123")
-      expect(mockPplClient.createShipmentBatch).toHaveBeenCalledWith(
-        "token",
-        shipments,
-        undefined
-      )
-    })
-
-    it("cancelShipment returns true on success", async () => {
-      mockCacheService.get
-        .mockResolvedValueOnce(null) // rate limit
-        .mockResolvedValueOnce({
-          accessToken: "token",
-          expiresAt: Date.now() + 120_000,
+    describe("updateConfig - sensitive field handling", () => {
+      it("removes empty string from sensitive fields (keep existing)", async () => {
+        const service = createService()
+        // Mock getConfig to return existing config
+        jest.spyOn(service, "getConfig").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: true,
+          client_id: "existing-id",
+          client_secret: "existing-secret",
+          default_label_format: "Pdf",
+          cod_bank_account: null,
+          cod_bank_code: null,
+          cod_iban: null,
+          cod_swift: null,
+          sender_name: null,
+          sender_street: null,
+          sender_city: null,
+          sender_zip_code: null,
+          sender_country: null,
+          sender_phone: null,
+          sender_email: null,
+          created_at: new Date(),
+          updated_at: new Date(),
         })
-      mockPplClient.cancelShipment.mockResolvedValue(true)
+        // Mock updatePplConfigs
+        jest.spyOn(service, "updatePplConfigs").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: true,
+          client_id: "new-id",
+          client_secret: "existing-secret",
+        } as any)
 
-      const service = createService()
-      const result = await service.cancelShipment("123456")
+        await service.updateConfig({
+          client_id: "new-id",
+          client_secret: "", // Empty string = keep existing
+        })
 
-      expect(result).toBe(true)
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining("cancelled")
-      )
+        // encryptFields should NOT receive client_secret (it was filtered out)
+        expect(encryptFields).toHaveBeenCalledWith(
+          expect.not.objectContaining({ client_secret: "" }),
+          expect.any(Array)
+        )
+      })
+
+      it("passes null through to clear sensitive field", async () => {
+        const service = createService()
+        jest.spyOn(service, "getConfig").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: true,
+          client_id: "existing-id",
+          client_secret: "existing-secret",
+          default_label_format: "Pdf",
+          cod_bank_account: null,
+          cod_bank_code: null,
+          cod_iban: null,
+          cod_swift: null,
+          sender_name: null,
+          sender_street: null,
+          sender_city: null,
+          sender_zip_code: null,
+          sender_country: null,
+          sender_phone: null,
+          sender_email: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })
+        jest.spyOn(service, "updatePplConfigs").mockResolvedValue({
+          id: "config-1",
+          client_secret: null,
+        } as any)
+
+        await service.updateConfig({
+          client_secret: null, // null = clear the value
+        })
+
+        // encryptFields should receive null (to clear the value)
+        expect(encryptFields).toHaveBeenCalledWith(
+          expect.objectContaining({ client_secret: null }),
+          expect.any(Array)
+        )
+      })
     })
 
-    it("cancelShipment returns false on failure", async () => {
-      mockCacheService.get
-        .mockResolvedValueOnce(null) // rate limit
-        .mockResolvedValueOnce({
-          accessToken: "token",
-          expiresAt: Date.now() + 120_000,
+    describe("getEffectiveConfig", () => {
+      // Helper to create service without the default mock
+      const createServiceForConfigTests = () => {
+        return new PplClientModuleService(
+          {
+            logger: mockLogger,
+            [Modules.CACHING]: mockCacheService,
+            [Modules.LOCKING]: mockLockingService,
+          } as any,
+          validOptions
+        )
+      }
+
+      it("returns cached config on cache hit", async () => {
+        const cachedConfig = {
+          client_id: "cached-id",
+          client_secret: "cached-secret",
+          environment: "testing",
+        }
+        mockCacheService.get.mockResolvedValueOnce(cachedConfig)
+
+        const service = createServiceForConfigTests()
+        const result = await service.getEffectiveConfig()
+
+        expect(result).toEqual(cachedConfig)
+      })
+
+      it("returns null when PPL is disabled", async () => {
+        mockCacheService.get.mockResolvedValueOnce(null) // cache miss
+
+        const service = createServiceForConfigTests()
+        jest.spyOn(service, "getConfig").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: false, // Disabled
+          client_id: "id",
+          client_secret: "secret",
+          default_label_format: "Pdf",
+          cod_bank_account: null,
+          cod_bank_code: null,
+          cod_iban: null,
+          cod_swift: null,
+          sender_name: null,
+          sender_street: null,
+          sender_city: null,
+          sender_zip_code: null,
+          sender_country: null,
+          sender_phone: null,
+          sender_email: null,
+          created_at: new Date(),
+          updated_at: new Date(),
         })
-      mockPplClient.cancelShipment.mockResolvedValue(false)
 
-      const service = createService()
-      const result = await service.cancelShipment("123456")
+        const result = await service.getEffectiveConfig()
 
-      expect(result).toBe(false)
-      expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining("Cancellation failed")
-      )
+        expect(result).toBeNull()
+      })
+
+      it("returns null when client_id is missing", async () => {
+        mockCacheService.get.mockResolvedValueOnce(null)
+
+        const service = createServiceForConfigTests()
+        jest.spyOn(service, "getConfig").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: true,
+          client_id: null, // Missing
+          client_secret: "secret",
+          default_label_format: "Pdf",
+          cod_bank_account: null,
+          cod_bank_code: null,
+          cod_iban: null,
+          cod_swift: null,
+          sender_name: null,
+          sender_street: null,
+          sender_city: null,
+          sender_zip_code: null,
+          sender_country: null,
+          sender_phone: null,
+          sender_email: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })
+
+        const result = await service.getEffectiveConfig()
+
+        expect(result).toBeNull()
+      })
+
+      it("returns null when client_secret is missing", async () => {
+        mockCacheService.get.mockResolvedValueOnce(null)
+
+        const service = createServiceForConfigTests()
+        jest.spyOn(service, "getConfig").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: true,
+          client_id: "id",
+          client_secret: null, // Missing
+          default_label_format: "Pdf",
+          cod_bank_account: null,
+          cod_bank_code: null,
+          cod_iban: null,
+          cod_swift: null,
+          sender_name: null,
+          sender_street: null,
+          sender_city: null,
+          sender_zip_code: null,
+          sender_country: null,
+          sender_phone: null,
+          sender_email: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })
+
+        const result = await service.getEffectiveConfig()
+
+        expect(result).toBeNull()
+      })
+
+      it("caches valid config in Redis", async () => {
+        mockCacheService.get.mockResolvedValueOnce(null)
+
+        const service = createServiceForConfigTests()
+        jest.spyOn(service, "getConfig").mockResolvedValue({
+          id: "config-1",
+          environment: "testing",
+          is_enabled: true,
+          client_id: "valid-id",
+          client_secret: "valid-secret",
+          default_label_format: "Pdf",
+          cod_bank_account: "123456",
+          cod_bank_code: "0100",
+          cod_iban: null,
+          cod_swift: null,
+          sender_name: "Test Sender",
+          sender_street: null,
+          sender_city: null,
+          sender_zip_code: null,
+          sender_country: null,
+          sender_phone: null,
+          sender_email: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })
+
+        const result = await service.getEffectiveConfig()
+
+        expect(result).toEqual(
+          expect.objectContaining({
+            client_id: "valid-id",
+            client_secret: "valid-secret",
+            environment: "testing",
+            default_label_format: "Pdf",
+            cod_bank_account: "123456",
+            cod_bank_code: "0100",
+            sender_name: "Test Sender",
+          })
+        )
+        expect(mockCacheService.set).toHaveBeenCalledWith(
+          expect.objectContaining({
+            key: "ppl:config",
+            ttl: 60,
+            tags: ["ppl"],
+          })
+        )
+      })
+    })
+
+    describe("invalidateConfigCache", () => {
+      it("clears config cache and resets client", async () => {
+        const service = createService()
+
+        await service.invalidateConfigCache()
+
+        expect(mockCacheService.clear).toHaveBeenCalledWith({
+          key: "ppl:config",
+        })
+      })
     })
   })
 })

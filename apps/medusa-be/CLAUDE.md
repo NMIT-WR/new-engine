@@ -6,6 +6,8 @@
 npx tsc --noEmit                          # typecheck
 bunx biome check --write .                # lint (monorepo root)
 pnpm test:unit                            # run unit tests
+pnpm test:integration:modules             # module tests (isolated, no HTTP)
+pnpm test:integration:http                # HTTP/e2e tests (full app)
 npx medusa exec ./src/scripts/my-script.ts  # run script
 npx medusa db:generate MODULE             # gen migration
 ```
@@ -632,6 +634,18 @@ runtime—test files with Jest globals (`describe`, `jest`) will crash the dev s
 - Mocking inherited MedusaService methods (`listMyEntities`, `createMyEntities`) — tests mock behavior, not code
 - Testing `query.graph()` pass-through routes — just tests framework
 - Testing static option arrays (`validateOption` for known values)
+- Testing logging output (`expect(logger.warn).toHaveBeenCalled()`) — implementation detail, not behavior
+- Testing simple getters that return constructor args (`expect(service.getEnv()).toBe(envWePassedIn)`) — tautological
+- Testing pass-through methods that just call a dependency and return its result — tests mock wiring, not logic
+- Testing that you correctly call mocks — if the test is just "verify we called X with Y", ask what behavior you're actually testing
+
+**What makes a test valuable:**
+
+- Tests behavior users/callers care about, not implementation details
+- Would catch a real bug if the code broke
+- Tests complex logic (conditionals, state machines, error handling)
+- Tests security-critical code (encryption, auth, validation)
+- Tests edge cases that could cause data loss or corruption
 
 **Good test patterns:**
 
@@ -704,6 +718,8 @@ await api.get("/store/my-entity", {headers: {"x-publishable-api-key": pak.token}
 **When to use:** Custom methods on MedusaService subclasses that can't be properly unit tested by mocking inherited
 methods. If you find yourself mocking `listMyEntities`, `createMyEntities`, etc., use module integration test instead.
 
+**File naming:** Use `*.spec.ts` (not `*.unit.spec.ts`) for module integration tests. The jest config separates them.
+
 ```typescript
 import {moduleIntegrationTestRunner} from "@medusajs/test-utils"
 
@@ -711,8 +727,13 @@ moduleIntegrationTestRunner<MyModuleService>({
     moduleName: MY_MODULE,
     moduleModels: [MyEntity],
     resolve: "./src/modules/my-module",
+    moduleOptions: {
+        environment: "testing",  // Pass options to module constructor
+    },
     injectedDependencies: {
-        [Modules.EVENT_BUS]: {emit: jest.fn()},  // Mock to prevent real events
+        [Modules.EVENT_BUS]: {emit: jest.fn()},
+        [Modules.CACHING]: {get: jest.fn(), set: jest.fn(), clear: jest.fn()},
+        [Modules.LOCKING]: {execute: jest.fn(async (_key, fn) => fn())},
     },
     testSuite: ({service}) => {
         it("creates entity", async () => {
@@ -726,7 +747,30 @@ moduleIntegrationTestRunner<MyModuleService>({
 **Key options:**
 
 - `moduleModels` → required even if empty (use dummy model)
-- `injectedDependencies` → mock external modules to prevent side effects
+- `moduleOptions` → passed to service constructor as second argument
+- `injectedDependencies` → mock external modules (CACHING, LOCKING, EVENT_BUS, etc.)
+
+**Awilix container gotcha:** Accessing `container[Modules.CACHING]` throws if not registered—even with `?? null`.
+Services using optional cross-module deps must catch resolution errors:
+
+```typescript
+private safeResolve<T>(container: InjectedDependencies, key: string): T | null {
+  try {
+    return (container as Record<string, unknown>)[key] as T ?? null
+  } catch {
+    return null
+  }
+}
+```
+
+**Loader gotcha:** Module loaders use dynamic imports which fail in Jest's VM even with `--experimental-vm-modules`. Mock loaders at the top of your test file:
+
+```typescript
+jest.mock("../loaders/my-loader", () => ({
+  __esModule: true,
+  default: jest.fn(),
+}))
+```
 
 ### Workflow Tests
 

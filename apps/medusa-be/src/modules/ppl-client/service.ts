@@ -112,9 +112,18 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
     super(container, options)
 
     this.logger_ = container.logger
-    this.cacheService_ = container[Modules.CACHING] ?? null
-    this.lockingService_ = container[Modules.LOCKING] ?? null
     this.environment_ = options.environment
+
+    // Resolve optional cross-module dependencies safely
+    // Awilix throws on access for unregistered keys, so we need try-catch
+    this.cacheService_ = this.safeResolve<ICachingModuleService>(
+      container,
+      Modules.CACHING
+    )
+    this.lockingService_ = this.safeResolve<ILockingModule>(
+      container,
+      Modules.LOCKING
+    )
 
     if (!(this.cacheService_ && this.lockingService_)) {
       this.logger_.warn(
@@ -125,6 +134,21 @@ export class PplClientModuleService extends MedusaService({ PplConfig }) {
     this.logger_.info(
       `PPL: Module service initialized (${this.environment_} environment)`
     )
+  }
+
+  /**
+   * Safely resolve optional cross-module dependencies.
+   * Returns null instead of throwing if the dependency is not registered.
+   */
+  private safeResolve<T>(
+    container: InjectedDependencies,
+    key: string
+  ): T | null {
+    try {
+      return ((container as Record<string, unknown>)[key] as T) ?? null
+    } catch {
+      return null
+    }
   }
 
   // ============================================
