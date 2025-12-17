@@ -19,7 +19,7 @@ const mockPplClient = {
   getCachedCountries: jest.fn(),
   getCustomerInfo: jest.fn(),
   getCustomerAddresses: jest.fn(),
-  getOptions: jest.fn(),
+  getEffectiveConfig: jest.fn(),
   createShipmentBatch: jest.fn(),
   cancelShipment: jest.fn(),
   getBatchStatus: jest.fn(),
@@ -75,7 +75,7 @@ describe("PplFulfillmentProviderService", () => {
     ])
     mockPplClient.getCustomerInfo.mockResolvedValue({ name: "Test Company" })
     mockPplClient.getCustomerAddresses.mockResolvedValue(null)
-    mockPplClient.getOptions.mockReturnValue({
+    mockPplClient.getEffectiveConfig.mockResolvedValue({
       sender_name: "Test Sender",
       sender_street: "Sender Street 1",
       sender_city: "Prague",
@@ -148,7 +148,7 @@ describe("PplFulfillmentProviderService", () => {
     })
 
     it("builds COD settings with bank account when supports_cod is true", async () => {
-      mockPplClient.getOptions.mockReturnValue({
+      mockPplClient.getEffectiveConfig.mockResolvedValue({
         sender_name: "Test",
         sender_street: "Street",
         sender_city: "City",
@@ -206,7 +206,7 @@ describe("PplFulfillmentProviderService", () => {
     })
 
     it("builds COD settings with IBAN when provided", async () => {
-      mockPplClient.getOptions.mockReturnValue({
+      mockPplClient.getEffectiveConfig.mockResolvedValue({
         sender_name: "Test",
         sender_street: "Street",
         sender_city: "City",

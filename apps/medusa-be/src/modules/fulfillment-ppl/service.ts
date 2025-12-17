@@ -233,7 +233,13 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         ...(defaultSeatAddress.email && { email: defaultSeatAddress.email }),
       }
     } else {
-      const options = this.getClient().getOptions()
+      const config = await this.getClient().getEffectiveConfig()
+      if (!config) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_ALLOWED,
+          "PPL: Service is disabled or not configured. Enable it in Settings → PPL."
+        )
+      }
       const {
         sender_name,
         sender_street,
@@ -242,7 +248,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         sender_country,
         sender_phone,
         sender_email,
-      } = options
+      } = config
 
       if (
         !(
@@ -256,7 +262,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           "PPL: No sender address configured in PPL system and no fallback sender address provided. " +
-            "Please configure a sender address in your PPL account or set COMPANY_ADDRESS_* environment variables."
+            "Please configure a sender address in Settings → PPL."
         )
       }
 
@@ -498,17 +504,23 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
 
     const orderId =
       order.display_id?.toString() || order.id?.substring(0, 10) || ""
-    const options = this.getClient().getOptions()
+    const config = await this.getClient().getEffectiveConfig()
+    if (!config) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "PPL: Service is disabled or not configured. Enable it in Settings → PPL."
+      )
+    }
 
     return {
       codPrice: codAmount,
       codCurrency: orderCurrency,
       codVarSym: orderId,
-      ...(options.cod_iban
-        ? { iban: options.cod_iban, swift: options.cod_swift }
+      ...(config.cod_iban
+        ? { iban: config.cod_iban, swift: config.cod_swift }
         : {
-            bankAccount: options.cod_bank_account,
-            bankCode: options.cod_bank_code,
+            bankAccount: config.cod_bank_account,
+            bankCode: config.cod_bank_code,
           }),
     }
   }

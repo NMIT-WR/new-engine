@@ -40,10 +40,7 @@ const mockLogger = {
 }
 
 const validOptions = {
-  client_id: "test-client",
-  client_secret: "test-secret",
   environment: "testing" as const,
-  default_label_format: "Pdf" as const,
 }
 
 // Import after mocks
@@ -78,17 +75,6 @@ describe("PplClientModuleService", () => {
   })
 
   describe("constructor", () => {
-    it("throws on missing required options", () => {
-      expect(() =>
-        createService({
-          client_id: "",
-          client_secret: "",
-          environment: "testing",
-          default_label_format: "",
-        } as any)
-      ).toThrow("PPL: Missing required configuration")
-    })
-
     it("logs warning when cache or locking service unavailable", () => {
       createService(validOptions, null, null)
       expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -96,9 +82,9 @@ describe("PplClientModuleService", () => {
       )
     })
 
-    it("initializes successfully with valid options", () => {
+    it("initializes successfully and returns correct environment", () => {
       const service = createService()
-      expect(service.getOptions()).toEqual(validOptions)
+      expect(service.getEnvironment()).toEqual("testing")
     })
   })
 

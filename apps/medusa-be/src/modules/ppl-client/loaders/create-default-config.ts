@@ -1,0 +1,39 @@
+import type { LoaderOptions } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+
+/**
+ * Creates a default PPL config row for the current environment if one doesn't exist.
+ *
+ * This loader runs during module initialization, before the main service is instantiated.
+ * It uses the auto-generated internal `pplConfigService` to create a disabled config row.
+ *
+ * The admin can then configure and enable PPL via Settings → PPL.
+ */
+export default async function createDefaultConfigLoader({
+  container,
+  options,
+}: LoaderOptions<{ environment: string }>) {
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+  const environment = options?.environment || "testing"
+
+  // Resolve the auto-generated internal service for PplConfig model
+  // (MedusaService generates `{modelName}Service` for each model)
+  const pplConfigService = container.resolve<{
+    listAndCount: (
+      filter: Record<string, unknown>
+    ) => Promise<[unknown[], number]>
+    create: (data: Record<string, unknown>) => Promise<unknown>
+  }>("pplConfigService")
+
+  // Check if config for this environment already exists
+  const [, count] = await pplConfigService.listAndCount({ environment })
+  if (count > 0) {
+    logger.debug(`PPL: Config for ${environment} already exists, skipping`)
+    return
+  }
+
+  // Create default config row (disabled by default, admin must enable)
+  await pplConfigService.create({ environment })
+
+  logger.info(`PPL: Created default config for ${environment} (disabled)`)
+}

@@ -1115,3 +1115,94 @@ export type PplApiInfo = {
   /** API status */
   status?: string
 }
+
+// ============================================
+// PPL Config Types (DB-stored configuration)
+// ============================================
+
+/**
+ * Fields that are encrypted in the database
+ */
+export const PPL_SENSITIVE_FIELDS = [
+  "client_secret",
+  "cod_bank_account",
+  "cod_bank_code",
+  "cod_iban",
+  "cod_swift",
+] as const
+
+/**
+ * PPL Config data transfer object (returned from service)
+ */
+export type PplConfigDTO = {
+  id: string
+  environment: PplEnvironment
+  is_enabled: boolean
+  client_id: string | null
+  client_secret: string | null
+  default_label_format: string
+  cod_bank_account: string | null
+  cod_bank_code: string | null
+  cod_iban: string | null
+  cod_swift: string | null
+  sender_name: string | null
+  sender_street: string | null
+  sender_city: string | null
+  sender_zip_code: string | null
+  sender_country: string | null
+  sender_phone: string | null
+  sender_email: string | null
+  created_at: Date
+  updated_at: Date
+}
+
+/**
+ * Input type for updating PPL config
+ * Empty string for sensitive fields = keep existing value
+ * null for sensitive fields = clear the value
+ */
+export type UpdatePplConfigInput = {
+  is_enabled?: boolean
+  client_id?: string
+  client_secret?: string | null
+  default_label_format?: PplLabelFormat
+  cod_bank_account?: string | null
+  cod_bank_code?: string | null
+  cod_iban?: string | null
+  cod_swift?: string | null
+  sender_name?: string
+  sender_street?: string
+  sender_city?: string
+  sender_zip_code?: string
+  sender_country?: string
+  sender_phone?: string
+  sender_email?: string
+}
+
+/**
+ * PPL Config response for admin API (masks sensitive fields)
+ */
+export type PplConfigResponse = {
+  id: string
+  environment: PplEnvironment
+  is_enabled: boolean
+  client_id: string | null
+  /** Masked - shows "••••••" if set, null if not */
+  client_secret_set: boolean
+  default_label_format: string
+  /** Masked - shows "••••••" if set, null if not */
+  cod_bank_account_set: boolean
+  /** Masked - shows "••••••" if set, null if not */
+  cod_bank_code_set: boolean
+  /** Masked - shows "••••••" if set, null if not */
+  cod_iban_set: boolean
+  /** Masked - shows "••••••" if set, null if not */
+  cod_swift_set: boolean
+  sender_name: string | null
+  sender_street: string | null
+  sender_city: string | null
+  sender_zip_code: string | null
+  sender_country: string | null
+  sender_phone: string | null
+  sender_email: string | null
+}

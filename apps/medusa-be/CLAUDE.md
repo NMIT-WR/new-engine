@@ -10,6 +10,10 @@ npx medusa exec ./src/scripts/my-script.ts  # run script
 npx medusa db:generate MODULE             # gen migration
 ```
 
+**Feature-flagged module migrations:** When a module is conditionally loaded via `FEATURE_*` env var, migrations can't
+be generated unless the feature is enabled. Restart the container with the feature enabled before running
+`make medusa-generate-migration MODULE=my_module`.
+
 ## Structure
 
 ```
@@ -216,12 +220,54 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 }
 ```
 
+**Admin route authentication:** Routes under `/admin/` are automatically protected by Medusa framework. No
+authentication middleware needed—just create the route file.
+
 ### Module
 
 ```typescript
 export const MY_MODULE = "my_module"
 export default Module(MY_MODULE, {service: MyModuleService})
 ```
+
+### Module with Model (Extending MedusaService)
+
+To add a data model to an existing module while keeping custom methods:
+
+```typescript
+// service.ts - Extend MedusaService with your model
+export class MyModuleService extends MedusaService({ MyConfig }) {
+  // Auto-generated: listMyConfigs, createMyConfigs, updateMyConfigs, deleteMyConfigs
+
+  constructor(container: InjectedDependencies, options: MyModuleOptions) {
+    super(...arguments)  // Required - passes container and options to MedusaService
+    this.logger_ = container.logger
+    this.environment_ = options.environment
+  }
+
+  // Keep custom methods alongside auto-generated CRUD
+  async myCustomMethod() { /* ... */ }
+}
+```
+
+### Module Loaders
+
+Use `loaders` array for initialization that runs at module load time (e.g., creating default DB records):
+
+```typescript
+// src/modules/my-module/loaders/init.ts
+export default async function initLoader({ container, options }: LoaderOptions<MyOptions>) {
+  // Runs during module bootstrap
+}
+
+// src/modules/my-module/index.ts
+export default Module(MY_MODULE, {
+  service: MyModuleService,
+  loaders: [initLoader],
+})
+```
+
+**Note:** Loaders run during parallel module loading. For cross-module deps, use `__hooks.onApplicationStart`.
 
 ### Model
 
