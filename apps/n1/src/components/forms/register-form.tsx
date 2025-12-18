@@ -4,9 +4,9 @@ import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { useAnalytics } from '@/providers/analytics-provider'
 import { Button } from '@techsio/ui-kit/atoms/button'
+import { Checkbox } from '@techsio/ui-kit/atoms/checkbox'
 import { Input } from '@techsio/ui-kit/atoms/input'
 import { Label } from '@techsio/ui-kit/atoms/label'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
 import Link from 'next/link'
 import { type FormEvent, useRef, useState } from 'react'
 import { ErrorBanner } from '../atoms/error-banner'
@@ -221,16 +221,15 @@ export const RegisterForm = ({
       </div>
 
       <div>
-        <Checkbox
-          name="accept-terms"
-          labelText="Souhlasím s podmínkami"
-          className="text-xs"
-          checked={acceptTerms}
-          onCheckedChange={(details) =>
-            setAcceptTerms(details.checked === true)
-          }
-          required
-        />
+        <label className="flex items-center gap-150 text-xs">
+          <Checkbox
+            name="accept-terms"
+            checked={acceptTerms}
+            onChange={(event) => setAcceptTerms(event.currentTarget.checked)}
+            required
+          />
+          <span>Souhlasím s podmínkami</span>
+        </label>
       </div>
 
       <Button

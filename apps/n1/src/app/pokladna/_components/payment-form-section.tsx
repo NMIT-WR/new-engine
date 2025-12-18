@@ -3,8 +3,7 @@
 import { useCheckout } from '@/hooks/use-checkout'
 import { useRegion } from '@/hooks/use-region'
 import type { Cart } from '@/services/cart-service'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
-import { Button } from '@ui/atoms/button'
+import { Checkbox } from '@techsio/ui-kit/atoms/checkbox'
 import { useState } from 'react'
 
 interface PaymentFormSectionProps {
@@ -56,23 +55,18 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
           </div>
           <ul className="space-y-300">
             {paymentProviders.map((provider) => (
-              <li
-                key={provider.id}
-                className="flex w-full items-center rounded border border-border-secondary hover:bg-overlay data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
-                data-selected={provider.id === selectedProvider}
-              >
-                <Checkbox
-                  checked={selectedProvider === provider.id}
-                  onCheckedChange={() => handleProviderSelect(provider.id)}
-                  className="pl-400"
-                />
-                <Button
-                  onClick={() => handleProviderSelect(provider.id)}
-                  disabled={isInitiatingPayment}
-                  theme="unstyled"
-                  className="w-full text-left"
+              <li key={provider.id}>
+                <label
+                  className="flex w-full cursor-pointer items-center gap-300 rounded border border-border-secondary bg-surface-light p-300 hover:bg-overlay data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
+                  data-selected={provider.id === selectedProvider}
                 >
-                  <div className="flex flex-1 flex-col">
+                  <Checkbox
+                    checked={selectedProvider === provider.id}
+                    disabled={isInitiatingPayment}
+                    name="payment-provider"
+                    onChange={() => handleProviderSelect(provider.id)}
+                  />
+                  <span className="flex flex-1 flex-col">
                     <span className="font-medium text-fg-primary text-sm">
                       {provider.id === 'pp_system_default'
                         ? 'Při převzetí'
@@ -83,8 +77,8 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
                         ? 'Zaplatíte při doručení objednávky'
                         : 'Online platba'}
                     </span>
-                  </div>
-                </Button>
+                  </span>
+                </label>
               </li>
             ))}
           </ul>

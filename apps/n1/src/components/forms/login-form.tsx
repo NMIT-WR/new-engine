@@ -3,7 +3,7 @@ import { useAuthToast } from '@/hooks/use-toast'
 import { AUTH_MESSAGES } from '@/lib/auth-messages'
 import { useAnalytics } from '@/providers/analytics-provider'
 import { Button } from '@techsio/ui-kit/atoms/button'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
+import { Checkbox } from '@techsio/ui-kit/atoms/checkbox'
 import Link from 'next/link'
 import { type FormEvent, useRef } from 'react'
 import { ErrorBanner } from '../atoms/error-banner'
@@ -101,10 +101,10 @@ export const LoginForm = ({
       />
 
       {showForgotPasswordLink && (
-        <div className="enter flex items-center gap-150">
+        <label className="enter flex items-center gap-150">
           <Checkbox name="remember" disabled={login.isPending} />
           <span className="text-sm">Zapamatovat</span>
-        </div>
+        </label>
       )}
 
       <Button
