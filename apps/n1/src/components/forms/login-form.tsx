@@ -22,7 +22,6 @@ export const LoginForm = ({
   toggle,
   showRegisterLink,
   showForgotPasswordLink,
-  className,
 }: LoginFormProps) => {
   const formRef = useRef<HTMLFormElement>(null)
   const toast = useAuthToast()
@@ -31,7 +30,6 @@ export const LoginForm = ({
 
   const login = useLogin({
     onSuccess: () => {
-      // Track customer identification in Leadhub
       if (emailRef.current) {
         analytics.trackIdentify({
           email: emailRef.current,
@@ -53,7 +51,6 @@ export const LoginForm = ({
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
 
-    // Store email for Leadhub tracking after successful login
     emailRef.current = email
 
     login.mutate({

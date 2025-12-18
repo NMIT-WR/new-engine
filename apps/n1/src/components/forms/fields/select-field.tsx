@@ -8,7 +8,7 @@ type SelectOption = {
   label: string
 }
 
-interface SelectFieldProps {
+type SelectFieldProps = {
   field: AnyFieldApi
   label: string
   options: SelectOption[]
@@ -18,10 +18,6 @@ interface SelectFieldProps {
   className?: string
 }
 
-/**
- * TanStack Form select field component
- * Integrates with @libs/ui Select
- */
 export function SelectField({
   field,
   label,
@@ -31,7 +27,6 @@ export function SelectField({
   placeholder,
   className,
 }: SelectFieldProps) {
-  // TanStack Form: show errors only after field has been blurred (user finished editing)
   const errors = field.state.meta.errors
   const showErrors = field.state.meta.isBlurred && errors.length > 0
 
@@ -39,7 +34,6 @@ export function SelectField({
     const value = details.value[0]
     if (value) {
       field.handleChange(value)
-      // Mark as touched when user selects a value
       if (!field.state.meta.isTouched) {
         field.handleBlur()
       }
@@ -56,6 +50,8 @@ export function SelectField({
         label={label}
         onValueChange={handleValueChange}
         options={options}
+        placeholder={placeholder}
+        required={required}
         size="lg"
         value={[field.state.value || ""]}
       />
