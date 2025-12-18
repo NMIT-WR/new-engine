@@ -28,6 +28,11 @@ export type CheckoutFormData = {
   shippingAddress: AddressFormData
 }
 
+/**
+ * Type helper - never called at runtime.
+ * Lets TypeScript infer the correct form type with typed fields (email, shippingAddress).
+ * Without this, ReturnType<typeof useForm> would give us a generic form without field types.
+ */
 const _formTypeHelper = (d: CheckoutFormData) => useForm({ defaultValues: d })
 
 type CheckoutForm = ReturnType<typeof _formTypeHelper>
@@ -36,6 +41,7 @@ type CheckoutContextValue = {
   form: CheckoutForm
   cart: ReturnType<typeof useCart>["cart"]
   isCartLoading: boolean
+  isCustomerLoading: boolean
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
@@ -53,7 +59,7 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null)
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
-  const { customer } = useAuth()
+  const { customer, isLoading: isCustomerLoading } = useAuth()
   const { cart, isLoading: isCartLoading, hasItems } = useCart()
   const { regionId } = useRegion()
 
@@ -183,6 +189,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     form,
     cart,
     isCartLoading,
+    isCustomerLoading,
     hasItems,
     shipping,
     payment,
