@@ -16,7 +16,7 @@ npx medusa db:generate MODULE               # gen migration
 
 ## Production Build
 
-`scripts/build-medusa.sh` (monorepo root) - used by Docker and Zerops, not local dev.
+`scripts/build-medusa.sh` (monorepo root) - used by Docker and Zerops (zerops uses project-level envs, don't add to build:envVariables if name of project-level env is the same!!!), not local dev.
 
 **Build-time secrets:** Medusa validates `JWT_SECRET`/`COOKIE_SECRET` at build but uses them only at runtime. Script provides placeholders; real secrets via runtime env vars.
 

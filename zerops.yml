@@ -4,9 +4,6 @@ zerops:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         NX_DAEMON: false
-        # Feature flags - evaluated at build time for conditional modules
-        FEATURE_PPL_ENABLED: ${FEATURE_PPL_ENABLED}
-        # JWT_SECRET and COOKIE_SECRET use placeholders via build-medusa.sh script
       base: nodejs@22
       buildCommands:
         - bash ./scripts/build-medusa.sh
@@ -47,9 +44,6 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
         SENTRY_DSN: ${MEDUSA_SENTRY_DSN}
         SENTRY_NAME: ${MEDUSA_SENTRY_NAME}
-        FEATURE_PPL_ENABLED: ${FEATURE_PPL_ENABLED}
-        PPL_ENVIRONMENT: ${PPL_ENVIRONMENT}
-        SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY}
       initCommands:
         # with each deploy
         - zsc execOnce ${appVersionId}_migration -- npm run migrate
