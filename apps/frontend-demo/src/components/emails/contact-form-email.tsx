@@ -10,7 +10,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from '@react-email/components'
+} from "@react-email/components"
 
 interface ContactFormEmailProps {
   firstName: string
@@ -55,8 +55,8 @@ export const ContactFormEmail = ({
                 Email:
               </Text>
               <Link
-                href={`mailto:${email}`}
                 className="text-email-link underline"
+                href={`mailto:${email}`}
               >
                 {email}
               </Link>
@@ -105,22 +105,22 @@ export const ContactFormEmail = ({
 }
 
 ContactFormEmail.PreviewProps = {
-  firstName: 'Jan',
-  lastName: 'Novák',
-  email: 'jan.novak@example.com',
-  phone: '+420 123 456 789',
-  subject: 'general',
-  message: 'Dobrý den, rád bych se zeptal na dostupnost vašich produktů.',
+  firstName: "Jan",
+  lastName: "Novák",
+  email: "jan.novak@example.com",
+  phone: "+420 123 456 789",
+  subject: "general",
+  message: "Dobrý den, rád bych se zeptal na dostupnost vašich produktů.",
 } as ContactFormEmailProps
 
 // Helper function to get subject label
 function getSubjectLabel(subject: string): string {
   const subjects: Record<string, string> = {
-    general: 'Obecný dotaz',
-    support: 'Technická podpora',
-    shipping: 'Doprava a doručení',
-    returns: 'Vrácení zboží',
-    other: 'Jiné',
+    general: "Obecný dotaz",
+    support: "Technická podpora",
+    shipping: "Doprava a doručení",
+    returns: "Vrácení zboží",
+    other: "Jiné",
   }
   return subjects[subject] || subject
 }

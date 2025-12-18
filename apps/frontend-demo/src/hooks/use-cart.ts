@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { useRegions } from '@/hooks/use-region'
-import { cacheConfig } from '@/lib/cache-config'
-import { STORAGE_KEYS } from '@/lib/constants'
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import type { HttpTypes } from '@medusajs/types'
-import { useToast } from '@techsio/ui-kit/molecules/toast'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import type { HttpTypes } from "@medusajs/types"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
+import { useState } from "react"
+import { useRegions } from "@/hooks/use-region"
+import { cacheConfig } from "@/lib/cache-config"
+import { STORAGE_KEYS } from "@/lib/constants"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
 
 export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query
@@ -25,13 +25,13 @@ export function useMedusaCart() {
     error,
   } = useQuery({
     queryKey: queryKeys.cart(
-      typeof window !== 'undefined'
+      typeof window !== "undefined"
         ? localStorage.getItem(STORAGE_KEYS.CART_ID) || undefined
         : undefined
     ),
     queryFn: async () => {
       const cartId =
-        typeof window !== 'undefined'
+        typeof window !== "undefined"
           ? localStorage.getItem(STORAGE_KEYS.CART_ID)
           : null
 
@@ -49,10 +49,10 @@ export function useMedusaCart() {
 
           return cart
         } catch (err: any) {
-          console.error('[Cart Hook] Failed to retrieve cart:', err)
+          console.error("[Cart Hook] Failed to retrieve cart:", err)
           // Only remove cart ID if it's a 404 (cart not found)
           if (err?.status === 404 || err?.response?.status === 404) {
-            if (typeof window !== 'undefined') {
+            if (typeof window !== "undefined") {
               localStorage.removeItem(STORAGE_KEYS.CART_ID)
             }
           } else {
@@ -64,14 +64,14 @@ export function useMedusaCart() {
 
       // Create new cart
       if (!selectedRegion) {
-        throw new Error('No region available')
+        throw new Error("No region available")
       }
 
       const { cart: newCart } = await sdk.store.cart.create({
         region_id: selectedRegion.id,
       })
 
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         localStorage.setItem(STORAGE_KEYS.CART_ID, newCart.id)
       }
       return newCart
@@ -91,8 +91,11 @@ export function useMedusaCart() {
     mutationFn: async ({
       variantId,
       quantity = 1,
-    }: { variantId: string; quantity?: number }) => {
-      if (!cart) throw new Error('No cart available')
+    }: {
+      variantId: string
+      quantity?: number
+    }) => {
+      if (!cart) throw new Error("No cart available")
 
       const { cart: updatedCart } = await sdk.store.cart.createLineItem(
         cart.id,
@@ -106,45 +109,45 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Přidáno do košíku',
-        description: 'Položka byla přidána do vašeho košíku',
-        type: 'success',
+        title: "Přidáno do košíku",
+        description: "Položka byla přidána do vašeho košíku",
+        type: "success",
       })
     },
     onError: (error: any) => {
-      console.error('[Cart Hook] Add item error:', error)
+      console.error("[Cart Hook] Add item error:", error)
 
       // Parse error message for specific inventory issue
       const errorMessage =
-        error?.message || error?.response?.data?.message || 'Unknown error'
+        error?.message || error?.response?.data?.message || "Unknown error"
 
-      if (errorMessage.toLowerCase().includes('inventory')) {
+      if (errorMessage.toLowerCase().includes("inventory")) {
         toast.create({
-          title: 'Vyprodáno',
+          title: "Vyprodáno",
           description:
-            'Tato varianta produktu není dostupná v požadovaném množství.',
-          type: 'error',
+            "Tato varianta produktu není dostupná v požadovaném množství.",
+          type: "error",
         })
       } else if (
-        errorMessage.toLowerCase().includes('cart') &&
-        errorMessage.toLowerCase().includes('not found')
+        errorMessage.toLowerCase().includes("cart") &&
+        errorMessage.toLowerCase().includes("not found")
       ) {
         // Cart was likely deleted or expired, clear localStorage and retry
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           localStorage.removeItem(STORAGE_KEYS.CART_ID)
         }
         toast.create({
-          title: 'Košík vypršel',
-          description: 'Váš košík vypršel. Zkuste to prosím znovu.',
-          type: 'error',
+          title: "Košík vypršel",
+          description: "Váš košík vypršel. Zkuste to prosím znovu.",
+          type: "error",
         })
         // Invalidate cart query to trigger recreation
         queryClient.invalidateQueries({ queryKey: queryKeys.cart() })
       } else {
         toast.create({
-          title: 'Nepodařilo se přidat položku',
+          title: "Nepodařilo se přidat položku",
           description: errorMessage,
-          type: 'error',
+          type: "error",
         })
       }
     },
@@ -155,8 +158,11 @@ export function useMedusaCart() {
     mutationFn: async ({
       lineItemId,
       quantity,
-    }: { lineItemId: string; quantity: number }) => {
-      if (!cart) throw new Error('No cart available')
+    }: {
+      lineItemId: string
+      quantity: number
+    }) => {
+      if (!cart) throw new Error("No cart available")
 
       if (quantity <= 0) {
         await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
@@ -176,9 +182,9 @@ export function useMedusaCart() {
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Nepodařilo se aktualizovat množství',
+        title: "Nepodařilo se aktualizovat množství",
         description: error.message,
-        type: 'error',
+        type: "error",
       })
     },
   })
@@ -186,7 +192,7 @@ export function useMedusaCart() {
   // Remove item mutation
   const removeItemMutation = useMutation({
     mutationFn: async (lineItemId: string) => {
-      if (!cart) throw new Error('No cart available')
+      if (!cart) throw new Error("No cart available")
 
       await sdk.store.cart.deleteLineItem(cart.id, lineItemId)
       const { cart: updatedCart } = await sdk.store.cart.retrieve(cart.id)
@@ -195,16 +201,16 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Odebráno z košíku',
-        description: 'Položka byla odebrána z vašeho košíku',
-        type: 'success',
+        title: "Odebráno z košíku",
+        description: "Položka byla odebrána z vašeho košíku",
+        type: "success",
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Nepodařilo se odebrat položku',
+        title: "Nepodařilo se odebrat položku",
         description: error.message,
-        type: 'error',
+        type: "error",
       })
     },
   })
@@ -212,7 +218,7 @@ export function useMedusaCart() {
   // Clear cart mutation
   const clearCartMutation = useMutation({
     mutationFn: async () => {
-      if (!cart) throw new Error('No cart available')
+      if (!cart) throw new Error("No cart available")
 
       // Remove all items
       for (const item of cart.items || []) {
@@ -225,9 +231,9 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Košík vyprázdněn',
-        description: 'Všechny položky byly odebrány z vašeho košíku',
-        type: 'success',
+        title: "Košík vyprázdněn",
+        description: "Všechny položky byly odebrány z vašeho košíku",
+        type: "success",
       })
     },
   })
@@ -235,7 +241,7 @@ export function useMedusaCart() {
   // Apply discount mutation
   const applyDiscountMutation = useMutation({
     mutationFn: async (code: string) => {
-      if (!cart) throw new Error('No cart available')
+      if (!cart) throw new Error("No cart available")
       const { cart: updatedCart } = await sdk.store.cart.update(cart.id, {
         promo_codes: [code],
       })
@@ -244,16 +250,16 @@ export function useMedusaCart() {
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(queryKeys.cart(updatedCart.id), updatedCart)
       toast.create({
-        title: 'Sleva aplikována',
-        description: 'Váš slevový kód byl aplikován',
-        type: 'success',
+        title: "Sleva aplikována",
+        description: "Váš slevový kód byl aplikován",
+        type: "success",
       })
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Neplatný slevový kód',
+        title: "Neplatný slevový kód",
         description: error.message,
-        type: 'error',
+        type: "error",
       })
     },
   })

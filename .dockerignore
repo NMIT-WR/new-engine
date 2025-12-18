@@ -1,9 +1,36 @@
-node_modules
+# Dependencies (installed fresh in container)
+**/node_modules
+
+# Git
 .git
+.gitignore
+
+# Build caches (prevent stale builds!)
+.nx
+**/.medusa
+**/dist
+**/.next
+**/storybook-static
+**/coverage
+**/test-output
+
+# Local dev data
 .docker_data
 .pnpm-store
-.gitignore
+
+# IDE & editor
 .vscode
 .idea
+.cursor
+
+# Secrets & local config (never copy into images)
+.env
+.env.local
+.env.*.local
+
+# Misc
 *.md
-dist
+.DS_Store
+Thumbs.db
+local
+plans

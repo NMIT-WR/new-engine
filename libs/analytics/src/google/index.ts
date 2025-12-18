@@ -1,9 +1,9 @@
 // Components
-export { GoogleTag } from './google-tag'
+export { GoogleTag } from "./google-tag"
 
 // Adapter for unified analytics
-export { useGoogleAdapter } from './google-adapter'
-export type { UseGoogleAdapterConfig } from './google-adapter'
+export { useGoogleAdapter } from "./google-adapter"
+export type { UseGoogleAdapterConfig } from "./google-adapter"
 
 // Types
 export type {
@@ -14,4 +14,4 @@ export type {
   GoogleAdsAddToCartParams,
   GoogleAdsBeginCheckoutParams,
   GoogleAdsPurchaseParams,
-} from './types'
+} from "./types"

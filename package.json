@@ -31,7 +31,7 @@
     "typescript": "^5.9.3",
     "ultracite": "6.3.6"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.26.0",
   "pnpm": {
     "overrides": {
       "medusa-be>@types/react": "^18.3.27",

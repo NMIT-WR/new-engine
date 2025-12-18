@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import Script from 'next/script'
-import { useEffect, useRef } from 'react'
-import { isHeurekaCountry, normalizeHeurekaCountry } from './country'
-import type { HeurekaCountry, HeurekaProductItem } from './types'
+import Script from "next/script"
+import { useEffect, useRef } from "react"
+import { isHeurekaCountry, normalizeHeurekaCountry } from "./country"
+import type { HeurekaCountry, HeurekaProductItem } from "./types"
 
 /** Max retries for SDK polling (50 × 100ms = 5 seconds) */
 const MAX_POLL_RETRIES = 50
@@ -54,19 +54,22 @@ export function HeurekaOrder({
   orderId,
   products,
   totalWithVat,
-  currency = 'CZK',
-  country = 'cz',
+  currency = "CZK",
+  country = "cz",
   debug = false,
   nonce,
 }: HeurekaOrderProps) {
   const rawCountry = country as unknown
   const safeCountry = normalizeHeurekaCountry(rawCountry)
   if (debug && !isHeurekaCountry(rawCountry)) {
-    console.warn('[HeurekaOrder] Invalid country provided, defaulting to "cz"', {
-      country: rawCountry,
-    })
+    console.warn(
+      '[HeurekaOrder] Invalid country provided, defaulting to "cz"',
+      {
+        country: rawCountry,
+      }
+    )
   }
-  const domain = safeCountry === 'sk' ? 'heureka.sk' : 'heureka.cz'
+  const domain = safeCountry === "sk" ? "heureka.sk" : "heureka.cz"
   const sendKey = `${safeCountry}:${orderId}`
   const sentKey = useRef<string | null>(null)
 
@@ -76,9 +79,9 @@ export function HeurekaOrder({
     if (sentKey.current === sendKey) {
       return
     }
-    if (!apiKey || !orderId || products.length === 0) {
+    if (!(apiKey && orderId) || products.length === 0) {
       if (debug) {
-        console.warn('[HeurekaOrder] Missing required data:', {
+        console.warn("[HeurekaOrder] Missing required data:", {
           apiKey: !!apiKey,
           orderId: !!orderId,
           products: products.length,
@@ -97,18 +100,18 @@ export function HeurekaOrder({
         return
       }
 
-      if (typeof window.heureka !== 'function') {
+      if (typeof window.heureka !== "function") {
         retries += 1
         if (retries > MAX_POLL_RETRIES) {
           if (debug) {
             console.warn(
-              '[HeurekaOrder] SDK failed to load after 5s, giving up'
+              "[HeurekaOrder] SDK failed to load after 5s, giving up"
             )
           }
           return
         }
         if (debug) {
-          console.log('[HeurekaOrder] Waiting for SDK...')
+          console.log("[HeurekaOrder] Waiting for SDK...")
         }
         if (timeoutId) {
           clearTimeout(timeoutId)
@@ -120,7 +123,7 @@ export function HeurekaOrder({
       sentKey.current = sendKey
 
       if (debug) {
-        console.log('[HeurekaOrder] Sending order:', {
+        console.log("[HeurekaOrder] Sending order:", {
           orderId,
           products,
           totalWithVat,
@@ -129,15 +132,15 @@ export function HeurekaOrder({
       }
 
       // Authenticate with API key
-      window.heureka('authenticate', apiKey)
+      window.heureka("authenticate", apiKey)
 
       // Set order ID
-      window.heureka('set_order_id', orderId)
+      window.heureka("set_order_id", orderId)
 
       // Add each product
       for (const product of products) {
         window.heureka(
-          'add_product',
+          "add_product",
           product.id,
           product.name,
           String(product.priceWithVat),
@@ -146,14 +149,14 @@ export function HeurekaOrder({
       }
 
       // Set total and currency
-      window.heureka('set_total_vat', String(totalWithVat))
-      window.heureka('set_currency', currency)
+      window.heureka("set_total_vat", String(totalWithVat))
+      window.heureka("set_currency", currency)
 
       // Send the order
-      window.heureka('send', 'Order')
+      window.heureka("send", "Order")
 
       if (debug) {
-        console.log('[HeurekaOrder] Order sent successfully')
+        console.log("[HeurekaOrder] Order sent successfully")
       }
     }
 
@@ -170,7 +173,7 @@ export function HeurekaOrder({
 
   if (!apiKey) {
     if (debug) {
-      console.warn('[HeurekaOrder] No API key provided, skipping')
+      console.warn("[HeurekaOrder] No API key provided, skipping")
     }
     return null
   }

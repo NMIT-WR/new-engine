@@ -1,4 +1,4 @@
-import ProductDetail from './product-detail'
+import ProductDetail from "./product-detail"
 
 // Enable ISR with 60 second revalidation
 export const revalidate = 60

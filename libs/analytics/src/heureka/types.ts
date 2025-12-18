@@ -3,7 +3,7 @@
  * Documentation: https://sluzby.heureka.cz/napoveda/mereni-konverzi/
  */
 
-export type HeurekaCountry = 'cz' | 'sk'
+export type HeurekaCountry = "cz" | "sk"
 
 export interface HeurekaConfig {
   /** API key from Heureka admin panel */
@@ -40,18 +40,18 @@ export interface HeurekaOrderParams {
  * Heureka SDK function signature
  */
 export interface HeurekaFunction {
-  (command: 'authenticate', apiKey: string): void
-  (command: 'set_order_id', orderId: string): void
+  (command: "authenticate", apiKey: string): void
+  (command: "set_order_id", orderId: string): void
   (
-    command: 'add_product',
+    command: "add_product",
     productId: string,
     productName: string,
     priceWithVat: string,
     quantity: string
   ): void
-  (command: 'set_total_vat', totalWithVat: string): void
-  (command: 'set_currency', currency: string): void
-  (command: 'send', type: 'Order'): void
+  (command: "set_total_vat", totalWithVat: string): void
+  (command: "set_currency", currency: string): void
+  (command: "send", type: "Order"): void
   /** Queue for commands before SDK loads */
   q?: unknown[]
   /** Country code */

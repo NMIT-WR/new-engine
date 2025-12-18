@@ -1,76 +1,76 @@
 import {
   type ComponentPropsWithoutRef,
+  createContext,
   type ReactNode,
   type Ref,
-  createContext,
   useContext,
-} from 'react'
-import { tv } from '../utils'
+} from "react"
+import { tv } from "../utils"
 
 const skeletonVariants = tv({
   slots: {
-    root: ['relative overflow-hidden'],
-    rectangle: 'w-full',
-    circle: ['rounded-full', 'shrink-0'],
-    textContainer: ['flex', 'flex-col'],
-    textLine: ['h-skeleton-text-line', 'rounded-skeleton-text', 'w-full'],
+    root: ["relative overflow-hidden"],
+    rectangle: "w-full",
+    circle: ["rounded-full", "shrink-0"],
+    textContainer: ["flex", "flex-col"],
+    textLine: ["h-skeleton-text-line", "rounded-skeleton-text", "w-full"],
   },
   variants: {
     variant: {
       primary: {
-        root: '',
-        circle: 'bg-skeleton-bg-primary',
-        rectangle: 'bg-skeleton-bg-primary',
-        textLine: 'bg-skeleton-bg-primary',
+        root: "",
+        circle: "bg-skeleton-bg-primary",
+        rectangle: "bg-skeleton-bg-primary",
+        textLine: "bg-skeleton-bg-primary",
       },
       secondary: {
-        root: '',
-        circle: 'bg-skeleton-bg-secondary',
-        rectangle: 'bg-skeleton-bg-secondary',
-        textLine: 'bg-skeleton-bg-secondary',
+        root: "",
+        circle: "bg-skeleton-bg-secondary",
+        rectangle: "bg-skeleton-bg-secondary",
+        textLine: "bg-skeleton-bg-secondary",
       },
     },
     size: {
       sm: {
-        circle: 'size-skeleton-circle-sm',
-        textContainer: 'gap-skeleton-text-sm',
+        circle: "size-skeleton-circle-sm",
+        textContainer: "gap-skeleton-text-sm",
       },
       md: {
-        circle: 'size-skeleton-circle-md',
-        textContainer: 'gap-skeleton-text-md',
+        circle: "size-skeleton-circle-md",
+        textContainer: "gap-skeleton-text-md",
       },
       lg: {
-        circle: 'size-skeleton-circle-lg',
-        textContainer: 'gap-skeleton-text-lg',
+        circle: "size-skeleton-circle-lg",
+        textContainer: "gap-skeleton-text-lg",
       },
       xl: {
-        circle: 'size-skeleton-circle-xl',
-        textContainer: 'gap-skeleton-text-xl',
+        circle: "size-skeleton-circle-xl",
+        textContainer: "gap-skeleton-text-xl",
       },
     },
     speed: {
       slow: {
-        root: 'animate-skeleton-pulse-slow',
+        root: "animate-skeleton-pulse-slow",
       },
       normal: {
-        root: 'animate-skeleton-pulse-normal',
+        root: "animate-skeleton-pulse-normal",
       },
       fast: {
-        root: 'animate-skeleton-pulse-fast',
+        root: "animate-skeleton-pulse-fast",
       },
     },
   },
   defaultVariants: {
-    variant: 'primary',
-    size: 'md',
-    speed: 'normal',
+    variant: "primary",
+    size: "md",
+    speed: "normal",
   },
 })
 
 interface SkeletonContextValue {
   isLoaded: boolean
-  variant?: 'primary' | 'secondary'
-  speed?: 'slow' | 'normal' | 'fast'
+  variant?: "primary" | "secondary"
+  speed?: "slow" | "normal" | "fast"
 }
 
 const SkeletonContext = createContext<SkeletonContextValue | null>(null)
@@ -83,8 +83,8 @@ const useSkeletonContext = () => useContext(SkeletonContext)
  */
 function useResolvedSkeletonProps(props: {
   isLoaded?: boolean
-  variant?: 'primary' | 'secondary'
-  speed?: 'slow' | 'normal' | 'fast'
+  variant?: "primary" | "secondary"
+  speed?: "slow" | "normal" | "fast"
 }) {
   const context = useSkeletonContext()
   return {
@@ -95,10 +95,10 @@ function useResolvedSkeletonProps(props: {
 }
 
 interface SkeletonRootProps
-  extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
+  extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   isLoaded?: boolean
-  variant?: 'primary' | 'secondary'
-  speed?: 'slow' | 'normal' | 'fast'
+  variant?: "primary" | "secondary"
+  speed?: "slow" | "normal" | "fast"
   children?: ReactNode
   ref?: Ref<HTMLDivElement>
 }
@@ -120,10 +120,10 @@ export function Skeleton({
         <>{children}</>
       ) : (
         <div
-          ref={ref}
-          className={styles.root({ className })}
           aria-busy="true"
           aria-label="Loading content"
+          className={styles.root({ className })}
+          ref={ref}
           {...props}
         >
           {children}
@@ -134,17 +134,17 @@ export function Skeleton({
 }
 
 interface SkeletonCircleProps
-  extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
-  size?: 'sm' | 'md' | 'lg' | 'xl'
-  speed?: 'slow' | 'normal' | 'fast'
+  extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
+  size?: "sm" | "md" | "lg" | "xl"
+  speed?: "slow" | "normal" | "fast"
   isLoaded?: boolean
-  variant?: 'primary' | 'secondary'
+  variant?: "primary" | "secondary"
   children?: ReactNode
   ref?: Ref<HTMLDivElement>
 }
 
 Skeleton.Circle = function SkeletonCircle({
-  size = 'md',
+  size = "md",
   speed,
   isLoaded,
   variant,
@@ -167,25 +167,25 @@ Skeleton.Circle = function SkeletonCircle({
 
   return (
     <div
-      ref={ref}
+      aria-busy="true"
+      aria-label="Loading content"
       className={styles.root({
         className: styles.circle({ className }),
       })}
-      aria-busy="true"
-      aria-label="Loading content"
+      ref={ref}
       {...props}
     />
   )
 }
 
 interface SkeletonTextProps
-  extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
+  extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   noOfLines?: number
-  size?: 'sm' | 'md' | 'lg' | 'xl'
-  speed?: 'slow' | 'normal' | 'fast'
+  size?: "sm" | "md" | "lg" | "xl"
+  speed?: "slow" | "normal" | "fast"
   lastLineWidth?: string
   isLoaded?: boolean
-  variant?: 'primary' | 'secondary'
+  variant?: "primary" | "secondary"
   children?: ReactNode
   containerClassName?: string
   ref?: Ref<HTMLDivElement>
@@ -193,9 +193,9 @@ interface SkeletonTextProps
 
 Skeleton.Text = function SkeletonText({
   noOfLines = 3,
-  size = 'md',
+  size = "md",
   speed,
-  lastLineWidth = '80%',
+  lastLineWidth = "80%",
   isLoaded,
   variant,
   children,
@@ -221,22 +221,22 @@ Skeleton.Text = function SkeletonText({
 
   return (
     <div
-      ref={ref}
-      className={styles.textContainer({ className: containerClassName })}
       aria-busy="true"
       aria-label="Loading content"
+      className={styles.textContainer({ className: containerClassName })}
+      ref={ref}
       {...props}
     >
       {Array.from({ length: lineCount }).map((_, index) => {
         const isLastLine = index === lineCount - 1
-        const width = isLastLine && lineCount > 1 ? lastLineWidth : '100%'
+        const width = isLastLine && lineCount > 1 ? lastLineWidth : "100%"
 
         return (
           <div
-            key={index}
             className={styles.root({
               className: styles.textLine({ className }),
             })}
+            key={`skeleton-text-${index}`}
             style={{ width }}
           />
         )
@@ -246,10 +246,10 @@ Skeleton.Text = function SkeletonText({
 }
 
 interface SkeletonRectangleProps
-  extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
-  speed?: 'slow' | 'normal' | 'fast'
+  extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
+  speed?: "slow" | "normal" | "fast"
   isLoaded?: boolean
-  variant?: 'primary' | 'secondary'
+  variant?: "primary" | "secondary"
   children?: ReactNode
   ref?: Ref<HTMLDivElement>
 }
@@ -276,10 +276,10 @@ Skeleton.Rectangle = function SkeletonRectangle({
 
   return (
     <div
-      ref={ref}
-      className={styles.root({ className: styles.rectangle({ className }) })}
       aria-busy="true"
       aria-label="Loading content"
+      className={styles.root({ className: styles.rectangle({ className }) })}
+      ref={ref}
       {...props}
     >
       {children}

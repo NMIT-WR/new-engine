@@ -214,6 +214,9 @@ export const AllFormInputs: Story = {
                   validateStatus={validateStatus}
                   helpText={helpText}
                   checked={formData.checkbox}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, checkbox: checked }))
+                  }
                 />
 
                 <div className="flex flex-col gap-1">

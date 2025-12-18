@@ -1,108 +1,108 @@
-import * as combobox from '@zag-js/combobox'
-import { Portal, normalizeProps, useMachine } from '@zag-js/react'
-import { useEffect, useId, useState } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import { ErrorText } from '../atoms/error-text'
-import { ExtraText } from '../atoms/extra-text'
-import { Icon } from '../atoms/icon'
-import { Input } from '../atoms/input'
-import { Label } from '../atoms/label'
-import { tv } from '../utils'
+import * as combobox from "@zag-js/combobox"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { useEffect, useId, useState } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Button } from "../atoms/button"
+import { ErrorText } from "../atoms/error-text"
+import { ExtraText } from "../atoms/extra-text"
+import { Icon } from "../atoms/icon"
+import { Input } from "../atoms/input"
+import { Label } from "../atoms/label"
+import { tv } from "../utils"
 
 const comboboxVariants = tv({
   slots: {
-    root: ['flex flex-col relative w-full'],
-    label: ['block text-label-md font-label'],
+    root: ["relative flex w-full flex-col"],
+    label: ["block font-label text-label-md"],
     control: [
-      'flex items-center w-full relative',
-      'bg-combobox-bg border-(length:--border-width-combobox) border-combobox-border rounded-combobox',
-      'transition-colors duration-200 ease-in-out',
-      'hover:bg-combobox-bg-hover hover:border-combobox-border-hover',
-      'data-[focus]:bg-combobox-bg-focus data-[focus]:border-combobox-border-focus',
-      'data-[focus]:ring',
-      'data-[focus]:ring-combobox-ring',
-      'data-[disabled]:bg-combobox-bg-disabled data-[disabled]:border-combobox-border-disabled',
-      'data-[validation=error]:border-combobox-danger-fg',
-      'data-[validation=success]:border-combobox-success-fg',
-      'data-[validation=warning]:border-combobox-warning-fg',
+      "relative flex w-full items-center",
+      "border-(length:--border-width-combobox) rounded-combobox border-combobox-border bg-combobox-bg",
+      "transition-colors duration-200 ease-in-out",
+      "hover:border-combobox-border-hover hover:bg-combobox-bg-hover",
+      "data-[focus]:border-combobox-border-focus data-[focus]:bg-combobox-bg-focus",
+      "data-[focus]:ring",
+      "data-[focus]:ring-combobox-ring",
+      "data-[disabled]:border-combobox-border-disabled data-[disabled]:bg-combobox-bg-disabled",
+      "data-[validation=error]:border-combobox-danger-fg",
+      "data-[validation=success]:border-combobox-success-fg",
+      "data-[validation=warning]:border-combobox-warning-fg",
     ],
     input: [
-      'w-full relative border-none bg-combobox-input-bg',
-      'focus-visible:ring-0 hover:bg-combobox-input-bg-hover',
-      'focus:bg-combobox-input-bg-focused',
-      'placeholder:text-combobox-placeholder',
-      'data-[disabled]:text-combobox-fg-disabled',
-      'data-[disabled]:bg-combobox-bg-disabled',
+      "relative w-full border-none bg-combobox-input-bg",
+      "hover:bg-combobox-input-bg-hover focus-visible:ring-0",
+      "focus:bg-combobox-input-bg-focused",
+      "placeholder:text-combobox-placeholder",
+      "data-[disabled]:text-combobox-fg-disabled",
+      "data-[disabled]:bg-combobox-bg-disabled",
     ],
-    clearTrigger: ['absolute right-combobox-clear-right'],
+    clearTrigger: ["absolute right-combobox-clear-right"],
     trigger: [
-      'flex items-center justify-center',
-      'p-combobox-trigger',
-      'transition-transform duration-200',
-      'data-[state=open]:rotate-180',
+      "flex items-center justify-center",
+      "p-combobox-trigger",
+      "transition-transform duration-200",
+      "data-[state=open]:rotate-180",
     ],
     positioner: [
-      'z-(--z-index) w-full *:overflow-y-auto *:max-h-(--available-height)',
+      "z-(--z-index) w-full *:max-h-(--available-height) *:overflow-y-auto",
     ],
     content: [
-      'flex flex-col overflow-clip',
-      'rounded-combobox shadow-md',
-      'bg-combobox-content-bg',
-      'border border-combobox-border z-(--z-combobox-content)',
+      "flex flex-col overflow-clip",
+      "rounded-combobox shadow-md",
+      "bg-combobox-content-bg",
+      "z-(--z-combobox-content) border border-combobox-border",
     ],
     item: [
-      'flex items-center',
-      'text-combobox-item-fg',
-      'cursor-pointer',
-      'data-[highlighted]:bg-combobox-item-bg-hover',
-      'data-[state=checked]:bg-combobox-item-bg-selected',
-      'data-[disabled]:text-combobox-fg-disabled data-[disabled]:cursor-not-allowed',
+      "flex items-center",
+      "text-combobox-item-fg",
+      "cursor-pointer",
+      "data-[highlighted]:bg-combobox-item-bg-hover",
+      "data-[state=checked]:bg-combobox-item-bg-selected",
+      "data-[disabled]:cursor-not-allowed data-[disabled]:text-combobox-fg-disabled",
     ],
     helper: [
-      'data-[validation=success]:text-combobox-success-fg',
-      'data-[validation=warning]:text-combobox-warning-fg',
+      "data-[validation=success]:text-combobox-success-fg",
+      "data-[validation=warning]:text-combobox-warning-fg",
     ],
     multiple: [],
   },
   compoundSlots: [
     {
-      slots: ['clearTrigger', 'trigger'],
+      slots: ["clearTrigger", "trigger"],
       class: [
-        'focus-visible:ring-0',
-        'text-combobox-trigger text-combobox-trigger-size',
-        'hover:text-combobox-trigger-hover',
-        'px-combobox-trigger',
-        'hover:bg-combobox-trigger-bg-hover',
-        'focus-visible:outline-none',
-        'active:bg-combobox-trigger-bg-active',
+        "focus-visible:ring-0",
+        "text-combobox-trigger text-combobox-trigger-size",
+        "hover:text-combobox-trigger-hover",
+        "px-combobox-trigger",
+        "hover:bg-combobox-trigger-bg-hover",
+        "focus-visible:outline-none",
+        "active:bg-combobox-trigger-bg-active",
       ],
     },
   ],
   variants: {
     size: {
       sm: {
-        root: 'gap-combobox-root-sm',
-        item: 'p-combobox-item-sm',
-        input: 'py-combobox-input-sm',
-        content: 'text-combobox-content-sm',
+        root: "gap-combobox-root-sm",
+        item: "p-combobox-item-sm",
+        input: "py-combobox-input-sm",
+        content: "text-combobox-content-sm",
       },
       md: {
-        root: 'gap-combobox-root-md',
-        item: 'p-combobox-item-md',
-        input: 'py-combobox-input-md',
-        content: 'text-combobox-content-md',
+        root: "gap-combobox-root-md",
+        item: "p-combobox-item-md",
+        input: "py-combobox-input-md",
+        content: "text-combobox-content-md",
       },
       lg: {
-        root: 'gap-combobox-root-lg',
-        item: 'p-combobox-item-lg',
-        input: 'py-combobox-input-lg',
-        content: 'text-combobox-content-lg',
+        root: "gap-combobox-root-lg",
+        item: "p-combobox-item-lg",
+        input: "py-combobox-input-lg",
+        content: "text-combobox-content-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 
@@ -128,12 +128,12 @@ export interface ComboboxProps<T = unknown>
   defaultValue?: string | string[]
   inputValue?: string
   multiple?: boolean
-  validationState?: 'normal' | 'error' | 'success' | 'warning'
+  validationState?: "normal" | "error" | "success" | "warning"
   error?: string
   helper?: string
   noResultsMessage?: string
   clearable?: boolean
-  selectionBehavior?: 'replace' | 'clear' | 'preserve'
+  selectionBehavior?: "replace" | "clear" | "preserve"
   closeOnSelect?: boolean
   allowCustomValue?: boolean
   loopFocus?: boolean
@@ -143,7 +143,7 @@ export interface ComboboxProps<T = unknown>
   onChange?: (value: string | string[]) => void
   onInputValueChange?: (value: string) => void
   onOpenChange?: (open: boolean) => void
-  inputBehavior?: 'autohighlight' | 'autocomplete' | 'none'
+  inputBehavior?: "autohighlight" | "autocomplete" | "none"
 }
 
 export function Combobox<T = unknown>({
@@ -151,7 +151,7 @@ export function Combobox<T = unknown>({
   name,
   label,
   size,
-  placeholder = 'Select option',
+  placeholder = "Select option",
   disabled = false,
   readOnly = false,
   required = false,
@@ -160,17 +160,17 @@ export function Combobox<T = unknown>({
   defaultValue,
   inputValue,
   multiple = false,
-  validationState = 'normal',
+  validationState = "normal",
   error,
   helper,
   noResultsMessage = 'No results found for "{inputValue}"',
   clearable = true,
-  selectionBehavior = 'replace',
+  selectionBehavior = "replace",
   closeOnSelect = false,
   allowCustomValue = false,
   loopFocus = true,
   autoFocus = false,
-  inputBehavior = 'autocomplete',
+  inputBehavior = "autocomplete",
   onChange,
   onInputValueChange,
   onOpenChange,
@@ -249,8 +249,8 @@ export function Combobox<T = unknown>({
       {label && (
         <Label
           className={labelStyles()}
-          size={size}
           required={required}
+          size={size}
           {...api.getLabelProps()}
         >
           {label}
@@ -264,8 +264,8 @@ export function Combobox<T = unknown>({
         <Input
           className={input()}
           {...restInputProps}
-          placeholder={placeholder}
           name={name}
+          placeholder={placeholder}
           required={required}
           size={size}
         />
@@ -273,19 +273,19 @@ export function Combobox<T = unknown>({
         {clearable && api.value.length > 0 && (
           <Button
             className={clearTrigger()}
-            theme="borderless"
             size={size}
+            theme="borderless"
             {...api.getClearTriggerProps()}
           >
-            <Icon icon={'token-icon-combobox-clear'} size="current" />
+            <Icon icon={"token-icon-combobox-clear"} size="current" />
           </Button>
         )}
 
         <Button
           {...api.getTriggerProps()}
-          theme="borderless"
-          size={size}
           className={trigger()}
+          size={size}
+          theme="borderless"
         >
           <Icon icon="token-icon-combobox-chevron" />
         </Button>
@@ -308,7 +308,7 @@ export function Combobox<T = unknown>({
           )}
           {api.open && api.inputValue && options.length === 0 && (
             <div className={content()}>
-              {noResultsMessage.replace('{inputValue}', api.inputValue)}
+              {noResultsMessage.replace("{inputValue}", api.inputValue)}
             </div>
           )}
         </div>
@@ -316,9 +316,9 @@ export function Combobox<T = unknown>({
 
       {helper && !error && (
         <ExtraText
+          className={helperSlot()}
           data-validation={validationState}
           size={size}
-          className={helperSlot()}
         >
           {helper}
         </ExtraText>

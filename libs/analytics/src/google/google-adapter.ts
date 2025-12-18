@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { createTracker } from '../core/create-tracker'
-import { createWindowGetter } from '../core/get-global-function'
-import type { AnalyticsAdapter } from '../core/types'
-import type { GtagFunction } from './types'
+import { createTracker } from "../core/create-tracker"
+import { createWindowGetter } from "../core/get-global-function"
+import type { AnalyticsAdapter } from "../core/types"
+import type { GtagFunction } from "./types"
 
-const getGtag = createWindowGetter<GtagFunction>('gtag')
+const getGtag = createWindowGetter<GtagFunction>("gtag")
 
 export interface UseGoogleAdapterConfig {
   /** Google Ads conversion label for purchase events */
@@ -30,12 +30,12 @@ export function useGoogleAdapter(
   config?: UseGoogleAdapterConfig
 ): AnalyticsAdapter {
   const { conversionLabel, debug } = config ?? {}
-  const adapterKey = 'google' as const
+  const adapterKey = "google" as const
 
   const trackCustom = createTracker(
     getGtag,
     (gtag, args: { eventName: string; params?: Record<string, unknown> }) => {
-      gtag('event', args.eventName, args.params)
+      gtag("event", args.eventName, args.params)
     },
     debug,
     adapterKey
@@ -47,7 +47,7 @@ export function useGoogleAdapter(
     trackViewContent: createTracker(
       getGtag,
       (gtag, params) => {
-        gtag('event', 'view_item', {
+        gtag("event", "view_item", {
           currency: params.currency,
           value: params.value,
           items: [
@@ -69,7 +69,7 @@ export function useGoogleAdapter(
       getGtag,
       (gtag, params) => {
         const quantity = params.quantity || 1 // Guard against division by zero
-        gtag('event', 'add_to_cart', {
+        gtag("event", "add_to_cart", {
           currency: params.currency,
           value: params.value,
           items: [
@@ -101,7 +101,7 @@ export function useGoogleAdapter(
             quantity: 1,
           }))
 
-        gtag('event', 'begin_checkout', {
+        gtag("event", "begin_checkout", {
           currency: params.currency,
           value: params.value,
           items,
@@ -114,7 +114,7 @@ export function useGoogleAdapter(
     trackPurchase: createTracker(
       getGtag,
       (gtag, params) => {
-        gtag('event', 'purchase', {
+        gtag("event", "purchase", {
           transaction_id: params.orderId,
           value: params.value,
           currency: params.currency,
@@ -129,7 +129,7 @@ export function useGoogleAdapter(
 
         // If conversion label provided, also track as conversion
         if (conversionLabel) {
-          gtag('event', 'conversion', {
+          gtag("event", "conversion", {
             send_to: conversionLabel,
             value: params.value,
             currency: params.currency,

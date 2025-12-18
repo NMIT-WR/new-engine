@@ -48,14 +48,24 @@ const BATCH_SIZE = 100
 export default async function pplTrackingSyncJob(container: MedusaContainer) {
   const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
 
-  if (process.env.PPL_ENABLED !== "1") {
+  // Check global feature flag (module loaded)
+  if (process.env.FEATURE_PPL_ENABLED !== "1") {
     logger.debug(
-      "PPL Tracking Sync: PPL service is disabled (PPL_ENABLED != 1), skipping"
+      "PPL Tracking Sync: PPL module is disabled (FEATURE_PPL_ENABLED != 1), skipping"
     )
     return
   }
 
   const pplClient = container.resolve<PplClientModuleService>(PPL_CLIENT_MODULE)
+
+  // Check runtime config (admin toggle)
+  const config = await pplClient.getConfig()
+  if (!config?.is_enabled) {
+    logger.debug(
+      "PPL Tracking Sync: PPL is disabled in settings (is_enabled = false), skipping"
+    )
+    return
+  }
 
   const query = container.resolve<Query>(ContainerRegistrationKeys.QUERY)
   const fulfillmentService = container.resolve<IFulfillmentModuleService>(

@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { queryKeys } from '@/lib/query-keys'
-import { getProducts, type ProductFilters } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { queryKeys } from "@/lib/query-keys"
+import { getProducts, type ProductFilters } from "@/services/product-service"
 
 interface UsePrefetchPagesParams {
   currentPage: number
@@ -76,7 +76,7 @@ export function usePrefetchPages({
             page,
             limit: pageSize,
             filters,
-            sort: sortBy === 'relevance' ? undefined : sortBy,
+            sort: sortBy === "relevance" ? undefined : sortBy,
             q: searchQuery || undefined,
             region_id: regionId,
           }),
@@ -85,7 +85,7 @@ export function usePrefetchPages({
               limit: pageSize,
               offset,
               filters,
-              sort: sortBy === 'relevance' ? undefined : sortBy,
+              sort: sortBy === "relevance" ? undefined : sortBy,
               q: searchQuery || undefined,
               region_id: regionId,
             }),

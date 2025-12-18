@@ -1,7 +1,7 @@
-'use client'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Image, { type StaticImageData } from 'next/image'
-import Link from 'next/link'
+"use client"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Image, { type StaticImageData } from "next/image"
+import Link from "next/link"
 
 interface HeroProps {
   title: string
@@ -31,12 +31,12 @@ export function Hero({
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src={backgroundImage}
           alt="Pozadí hero sekce"
           className="h-full w-full object-cover"
           fill
-          priority
           placeholder="blur"
+          priority
+          src={backgroundImage}
         />
         <div className="absolute inset-0 bg-hero-overlay" />
       </div>
@@ -57,12 +57,12 @@ export function Hero({
               <div className="flex w-fit flex-col gap-hero-button-gap md:flex-row">
                 {primaryAction && (
                   <LinkButton
-                    variant="primary"
+                    as={Link}
+                    className="h-fit py-xs lg:px-hero-button-x lg:py-hero-button-y"
+                    href="/products"
                     size="lg"
                     theme="solid"
-                    as={Link}
-                    href="/products"
-                    className="h-fit py-xs lg:px-hero-button-x lg:py-hero-button-y"
+                    variant="primary"
                   >
                     {primaryAction.label}
                   </LinkButton>

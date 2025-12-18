@@ -51,15 +51,6 @@
   --color-input-fg-disabled: var(--color-fg-disabled);
   --color-input-fg-placeholder: var(--color-fg-placeholder);
 
-  /* Label colors */
-  --color-label-fg: var(--color-input-fg);
-  --color-label-disabled: var(--color-input-fg-disabled);
-  --color-label-required: var(--color-input-danger);
-
-  /* Error/Helper/Extra colors */
-  --color-error-fg: var(--color-danger);
-  --color-helper-fg: var(--color-input-fg);
-
   /* Focus ring colors - using consistent opacity */
   --color-input-ring: var(--color-ring);
 
@@ -96,4 +87,6 @@
   --text-helper-md: var(--text-input-md);
   --text-helper-lg: var(--text-input-lg);
   --color-helper-fg: var(--color-fg-secondary);
+  /* Form field spacing */
+  --spacing-form-field-gap: var(--spacing-50);
 }

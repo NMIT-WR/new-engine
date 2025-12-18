@@ -1,6 +1,6 @@
-import { withThemeByClassName } from '@storybook/addon-themes'
-import type { Preview } from '@storybook/react'
-import '../src/tokens/index.css'
+import { withThemeByClassName } from "@storybook/addon-themes"
+import type { Preview } from "@storybook/react"
+import "../src/tokens/index.css"
 
 const preview: Preview = {
   parameters: {
@@ -14,13 +14,13 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          'Atoms',
-          'Molecules',
-          'Organisms',
-          'Templates',
-          'Pages',
-          'Overview',
-          '*',
+          "Atoms",
+          "Molecules",
+          "Organisms",
+          "Templates",
+          "Pages",
+          "Overview",
+          "*",
         ],
       },
     },
@@ -28,12 +28,12 @@ const preview: Preview = {
   decorators: [
     withThemeByClassName({
       themes: {
-        auto: '',
-        light: 'light',
-        dark: 'dark',
-        reverse: 'reverse',
+        auto: "",
+        light: "light",
+        dark: "dark",
+        reverse: "reverse",
       },
-      defaultTheme: 'auto',
+      defaultTheme: "auto",
     }),
   ],
 }

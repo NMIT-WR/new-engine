@@ -1,6 +1,6 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from '../utils'
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { tv } from "../utils"
 
 const linkVariants = tv({
   base: [],
@@ -16,26 +16,28 @@ export interface BaseLinkProps extends VariantProps<typeof linkVariants> {
 
 export interface NativeLinkProps
   extends BaseLinkProps,
-    Omit<ComponentPropsWithoutRef<'a'>, keyof BaseLinkProps> {
+    Omit<ComponentPropsWithoutRef<"a">, keyof BaseLinkProps> {
   as?: never
 }
 
-export type LinkProps<T extends ElementType = 'a'> = BaseLinkProps &
+export type LinkProps<T extends ElementType = "a"> = BaseLinkProps &
   Omit<ComponentPropsWithoutRef<T>, keyof BaseLinkProps> & {
     as?: T
   }
 
-export function Link<T extends ElementType = 'a'>({
+export function Link<T extends ElementType = "a">({
   as,
   children,
   external = false,
   className,
   ...props
 }: LinkProps<T>) {
-  const Component = (as || 'a') as ElementType
+  const Component = (as || "a") as ElementType
 
   const externalProps =
-    external && (!as || as === 'a') ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+    external && (!as || as === "a")
+      ? { target: "_blank", rel: "noopener noreferrer" }
+      : {}
 
   return (
     <Component

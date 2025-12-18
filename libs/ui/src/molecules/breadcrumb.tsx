@@ -1,75 +1,75 @@
-import type { ElementType, ReactElement } from 'react'
-import { type VariantProps, tv } from 'tailwind-variants'
-import { Icon, type IconType } from '../atoms/icon'
-import { Link } from '../atoms/link'
+import type { ElementType, ReactElement } from "react"
+import { tv, type VariantProps } from "tailwind-variants"
+import { Icon, type IconType } from "../atoms/icon"
+import { Link } from "../atoms/link"
 
 // === VARIANTS ===
 const breadcrumbsVariants = tv({
   slots: {
-    root: ['inline-flex flex-wrap items-center', 'bg-breadcrumb-bg'],
-    list: ['flex items-center', 'break-words', 'list-none'],
+    root: ["inline-flex flex-wrap items-center", "bg-breadcrumb-bg"],
+    list: ["flex items-center", "break-words", "list-none"],
     item: [
-      'inline-flex items-center',
-      'text-breadcrumb-item-fg',
-      'hover:text-breadcrumb-fg-hover',
-      'data-[current=true]:text-breadcrumb-fg-current',
-      'h-full',
+      "inline-flex items-center",
+      "text-breadcrumb-item-fg",
+      "hover:text-breadcrumb-fg-hover",
+      "data-[current=true]:text-breadcrumb-fg-current",
+      "h-full",
     ],
     link: [
-      'no-underline',
-      'cursor-pointer',
-      'hover:text-breadcrumb-fg-hover',
-      'focus:outline-none',
-      'focus-visible:ring',
-      'focus-visible:ring-breadcrumb-ring',
+      "no-underline",
+      "cursor-pointer",
+      "hover:text-breadcrumb-fg-hover",
+      "focus:outline-none",
+      "focus-visible:ring",
+      "focus-visible:ring-breadcrumb-ring",
     ],
-    currentLink: ['cursor-default'],
+    currentLink: ["cursor-default"],
     separator: [
-      'text-breadcrumb-separator-fg',
-      'inline-flex items-center justify-center',
-      'rtl:rotate-180',
+      "text-breadcrumb-separator-fg",
+      "inline-flex items-center justify-center",
+      "rtl:rotate-180",
     ],
     ellipsis: [
-      'text-breadcrumb-ellipsis-fg',
-      'inline-flex items-center justify-center',
+      "text-breadcrumb-ellipsis-fg",
+      "inline-flex items-center justify-center",
     ],
   },
   compoundSlots: [
     {
-      slots: ['link', 'currentLink'],
+      slots: ["link", "currentLink"],
       class: [
-        'font-medium inline-flex items-center',
-        'outline-none focus:outline-none',
+        "inline-flex items-center font-medium",
+        "outline-none focus:outline-none",
       ],
     },
   ],
   variants: {
     size: {
       sm: {
-        root: 'text-breadcrumb-sm p-breadcrumb-sm',
-        list: 'gap-breadcrumb-sm',
-        item: 'gap-breadcrumb-sm',
-        separator: 'gap-breadcrumb-sm',
-        ellipsis: 'text-breadcrumb-sm',
+        root: "p-breadcrumb-sm text-breadcrumb-sm",
+        list: "gap-breadcrumb-sm",
+        item: "gap-breadcrumb-sm",
+        separator: "gap-breadcrumb-sm",
+        ellipsis: "text-breadcrumb-sm",
       },
       md: {
-        root: 'text-breadcrumb-md p-breadcrumb-md',
-        list: 'gap-breadcrumb-md',
-        item: 'gap-breadcrumb-md',
-        separator: 'gap-breadcrumb-md',
-        ellipsis: 'text-breadcrumb-md',
+        root: "p-breadcrumb-md text-breadcrumb-md",
+        list: "gap-breadcrumb-md",
+        item: "gap-breadcrumb-md",
+        separator: "gap-breadcrumb-md",
+        ellipsis: "text-breadcrumb-md",
       },
       lg: {
-        root: 'text-breadcrumb-lg p-breadcrumb-lg',
-        list: 'gap-breadcrumb-lg',
-        item: 'gap-breadcrumb-lg',
-        separator: 'gap-breadcrumb-lg',
-        ellipsis: 'text-breadcrumb-lg',
+        root: "p-breadcrumb-lg text-breadcrumb-lg",
+        list: "gap-breadcrumb-lg",
+        item: "gap-breadcrumb-lg",
+        separator: "gap-breadcrumb-lg",
+        ellipsis: "text-breadcrumb-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 
@@ -86,7 +86,7 @@ function BreadcrumbItem({
   label,
   href,
   icon,
-  separator = 'token-icon-breadcrumb-separator',
+  separator = "token-icon-breadcrumb-separator",
   isCurrentPage,
   lastItem,
   linkAs,
@@ -104,22 +104,22 @@ function BreadcrumbItem({
     currentLink,
     link,
     separator: separatorSlot,
-  } = breadcrumbsVariants({ size: 'md' })
+  } = breadcrumbsVariants({ size: "md" })
   return (
     <li className={item()} data-current={isCurrentPage}>
       {icon && <Icon icon={icon} />}
       {isCurrentPage ? (
-        <span className={currentLink()} aria-current="page">
+        <span aria-current="page" className={currentLink()}>
           {label}
         </span>
       ) : (
-        <Link as={linkAs as ElementType} href={href || '#'} className={link()}>
+        <Link as={linkAs as ElementType} className={link()} href={href || "#"}>
           {label}
         </Link>
       )}
       {!lastItem && (
         <span className={separatorSlot()}>
-          <Icon icon={separator ?? 'token-icon-breadcrumb-separator'} />
+          <Icon icon={separator ?? "token-icon-breadcrumb-separator"} />
         </span>
       )}
     </li>
@@ -128,7 +128,7 @@ function BreadcrumbItem({
 
 function BreadcrumbEllipsis() {
   const { ellipsis, separator: separatorSlot } = breadcrumbsVariants({
-    size: 'md',
+    size: "md",
   })
   return (
     <li className={ellipsis()}>
@@ -136,7 +136,7 @@ function BreadcrumbEllipsis() {
         <Icon icon="token-icon-breadcrumb-ellipsis" />
       </span>
       <span className={separatorSlot()}>
-        <Icon icon={'token-icon-breadcrumb-separator'} />
+        <Icon icon={"token-icon-breadcrumb-separator"} />
       </span>
     </li>
   )
@@ -146,7 +146,7 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   items: BreadcrumbItemType[]
   maxItems?: number
   className?: string
-  'aria-label'?: string
+  "aria-label"?: string
   linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }
 
@@ -154,9 +154,9 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
 export function Breadcrumb({
   items,
   maxItems = 0,
-  size = 'md',
+  size = "md",
   className,
-  'aria-label': ariaLabel = 'breadcrumb',
+  "aria-label": ariaLabel = "breadcrumb",
   linkAs,
   ...props
 }: BreadcrumbProps) {
@@ -167,28 +167,28 @@ export function Breadcrumb({
       ? items
       : maxItems === 1
         ? [items.at(-1)]
-        : [items[0], 'ellipsis', ...items.slice(-(maxItems - 1))]
+        : [items[0], "ellipsis", ...items.slice(-(maxItems - 1))]
 
   return (
-    <nav className={root({ className })} aria-label={ariaLabel} {...props}>
+    <nav aria-label={ariaLabel} className={root({ className })} {...props}>
       <ol className={list()}>
         {displayItems.map((item, index) =>
-          item === 'ellipsis' ? (
+          item === "ellipsis" ? (
             <BreadcrumbEllipsis key="ellipsis" />
           ) : (
             item &&
-            typeof item !== 'string' && (
+            typeof item !== "string" && (
               <BreadcrumbItem
-                key={`${item.label}`}
-                label={item.label}
                 href={item.href}
                 icon={item.icon}
-                separator={item.separator}
-                lastItem={index === displayItems.length - 1}
-                linkAs={linkAs}
                 isCurrentPage={
                   item.isCurrent || index === displayItems.length - 1
                 }
+                key={`${item.label}`}
+                label={item.label}
+                lastItem={index === displayItems.length - 1}
+                linkAs={linkAs}
+                separator={item.separator}
               />
             )
           )

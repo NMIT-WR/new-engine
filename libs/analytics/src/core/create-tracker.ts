@@ -39,7 +39,7 @@ export function createTracker<TGlobalFn, TParams>(
     if (!globalFn) {
       if (debug) {
         console.warn(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Global function not available`
+          `[Analytics${adapterKey ? `:${adapterKey}` : ""}] Global function not available`
         )
       }
       return false
@@ -49,14 +49,14 @@ export function createTracker<TGlobalFn, TParams>(
       trackFn(globalFn, params)
       if (debug) {
         console.log(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Event tracked`
+          `[Analytics${adapterKey ? `:${adapterKey}` : ""}] Event tracked`
         )
       }
       return true
     } catch (error) {
       if (debug) {
         console.error(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Tracking error:`,
+          `[Analytics${adapterKey ? `:${adapterKey}` : ""}] Tracking error:`,
           error
         )
       }
@@ -90,7 +90,7 @@ export function createSimpleTracker<TGlobalFn>(
     if (!globalFn) {
       if (debug) {
         console.warn(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Global function not available`
+          `[Analytics${adapterKey ? `:${adapterKey}` : ""}] Global function not available`
         )
       }
       return false
@@ -100,14 +100,14 @@ export function createSimpleTracker<TGlobalFn>(
       trackFn(globalFn)
       if (debug) {
         console.log(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Event tracked`
+          `[Analytics${adapterKey ? `:${adapterKey}` : ""}] Event tracked`
         )
       }
       return true
     } catch (error) {
       if (debug) {
         console.error(
-          `[Analytics${adapterKey ? `:${adapterKey}` : ''}] Tracking error:`,
+          `[Analytics${adapterKey ? `:${adapterKey}` : ""}] Tracking error:`,
           error
         )
       }

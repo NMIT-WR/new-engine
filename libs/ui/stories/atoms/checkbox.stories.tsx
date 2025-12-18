@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { Checkbox } from '../../src/molecules/checkbox'
+import { Checkbox } from '../../src/atoms/checkbox'
 
 const meta = {
-  title: 'Molecules/Checkbox',
+  title: 'Atoms/Checkbox',
   component: Checkbox,
   parameters: {
     layout: 'centered',
@@ -34,7 +34,7 @@ const meta = {
       control: 'boolean',
       description: 'Marks checkbox as required for accessibility',
     },
-    onCheckedChange: { action: 'changed' },
+    onChange: { action: 'changed' },
   },
   args: {
     /*checked: undefined,
@@ -186,13 +186,13 @@ export const IndeterminateTest: Story = {
     const noneChecked = checkedCount === 0
     const isIndeterminate = !allChecked && !noneChecked
 
-    const handleParentChange = (details: { checked: boolean | 'indeterminate' }) => {
-      const checked = details.checked === true
+    const handleParentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked
       setItems((prevItems) => prevItems.map((item) => ({ ...item, checked })))
     }
 
-    const handleChildChange = (id: number, details: { checked: boolean | 'indeterminate' }) => {
-      const checked = details.checked === true
+    const handleChildChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked
       setItems((prevItems) =>
         prevItems.map((item) => (item.id === id ? { ...item, checked } : item))
       )
@@ -206,7 +206,7 @@ export const IndeterminateTest: Story = {
             id="parent"
             checked={allChecked}
             indeterminate={isIndeterminate}
-            onCheckedChange={handleParentChange}
+            onChange={handleParentChange}
           />
           <label htmlFor="parent">
             Select All ({checkedCount}/{items.length})
@@ -220,8 +220,8 @@ export const IndeterminateTest: Story = {
               <Checkbox
                 id={`item-${item.id}`}
                 checked={item.checked}
-                onCheckedChange={(details) =>
-                  handleChildChange(item.id, details)
+                onChange={(e) =>
+                  handleChildChange(item.id, e)
                 }
               />
               <label htmlFor={`item-${item.id}`}>{item.name}</label>
