@@ -4,6 +4,11 @@ zerops:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         NX_DAEMON: false
+        # Required at build time - medusa build validates these, but runtime envs are actually used
+        JWT_SECRET: build-placeholder
+        COOKIE_SECRET: build-placeholder
+        # Feature flags - evaluated at build time for conditional modules
+        FEATURE_PPL_ENABLED: ${FEATURE_PPL_ENABLED}
       base: nodejs@22
       buildCommands:
         # Remove everything in apps except medusa-be, and remove libs/ui (not used by medusa-be)

@@ -1,0 +1,10 @@
+# Prod overrides - use with: docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up --build
+services:
+  medusa-be:
+    build:
+      target: prod
+      args:
+        # JWT_SECRET and COOKIE_SECRET are NOT passed as build args (security risk - embeds in image layers).
+        # They use inline placeholders during build, real values come from runtime env vars.
+        FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
+    volumes: []  # No volume mounts in prod
