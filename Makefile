@@ -22,6 +22,11 @@ npkill:
 	docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
 dev:
 	docker compose -f docker-compose.yaml -p new-engine up --force-recreate -d --build
+prod:
+	-docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine down
+	-docker rmi new-engine-medusa-be-prod
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache medusa-be
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine up -d
 down:
 	docker compose -f docker-compose.yaml -p new-engine down
 down-with-volumes:

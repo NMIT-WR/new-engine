@@ -1,0 +1,10 @@
+# Prod overrides - use with: docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up --build
+services:
+  medusa-be:
+    build:
+      target: prod
+      args:
+        JWT_SECRET: ${DC_JWT_SECRET:-supersecret}
+        COOKIE_SECRET: ${DC_COOKIE_SECRET:-supersecret}
+        FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
+    volumes: []  # No volume mounts in prod

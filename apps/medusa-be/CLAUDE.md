@@ -296,7 +296,9 @@ export default async function seed({ container, args }: ExecArgs) {}
 ## Config Examples
 
 ```typescript
-// Conditional module
+// Conditional module - ⚠️ evaluated at BUILD time, not runtime!
+// FEATURE_ENABLED must be set during `medusa build`, not just at server start.
+// For Docker: add to build args. For Zerops: add to build.envVariables.
 ...(FEATURE_ENABLED ? [{
     resolve: "@medusajs/medusa/fulfillment",
     dependencies: ["my_client"],
