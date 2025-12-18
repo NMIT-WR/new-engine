@@ -18,7 +18,7 @@ export type PhoneConfig = {
 
 export type Country = {
   /** ISO 3166-1 alpha-2 code (e.g., "CZ") */
-  code: string
+  code: CountryCode
   /** ISO 3166-1 alpha-3 code (e.g., "CZE") */
   code3: string
   name: string
