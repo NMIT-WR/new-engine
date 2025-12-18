@@ -193,10 +193,6 @@ export function PplWidget({
     link.rel = "stylesheet"
     link.href = href
     document.head.appendChild(link)
-
-    return () => {
-      document.head.removeChild(link)
-    }
   }, [])
 
   const shouldLoadScript = languageResolved && locationResolved
@@ -225,7 +221,7 @@ export function PplWidget({
         {...(address && { "data-address": address })}
         {...(selectedCode && { "data-code": selectedCode })}
         {...(initialFilters && { "data-initialfilters": initialFilters })}
-        className="min-h-96 w-full rounded border border-border-secondary bg-surface"
+        className="w-full rounded border border-border-secondary bg-surface"
         style={{ minHeight: "400px" }}
       />
     </>

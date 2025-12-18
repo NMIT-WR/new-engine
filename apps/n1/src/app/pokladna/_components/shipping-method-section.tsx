@@ -3,6 +3,7 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
+import type { ReactNode } from "react"
 import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
 import { formatToTaxIncluded } from "@/utils/format/format-product"
 
@@ -30,11 +31,13 @@ function ShippingOptionCard({
 
   return (
     <Button
+      aria-checked={selected}
       aria-label={`${option.name}, ${formattedPrice || "zdarma"}`}
       className="flex w-full items-center gap-300 rounded-lg border border-border-secondary bg-surface-light p-300 data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
       data-selected={selected}
       disabled={isUpdating}
       onClick={() => onSelect(option.id)}
+      role="radio"
       type="button"
       variant="tertiary"
     >
@@ -50,7 +53,7 @@ function ShippingOptionCard({
 export function ShippingMethodSection({
   shipping,
 }: ShippingMethodSectionProps) {
-  let content: JSX.Element
+  let content: ReactNode
 
   if (shipping.isLoadingShipping) {
     content = (
