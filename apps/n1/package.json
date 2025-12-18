@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "biome check",
+    "lint": "pnpm -w exec biome check --changed ${NX_BASE:+--since=$NX_BASE} apps/n1",
     "format": "biome format --write",
     "generate:categories": "node scripts/generate-categories.mjs",
     "validate:token-usage": "node scripts/validate-token-usage.mjs"
