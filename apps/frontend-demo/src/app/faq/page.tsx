@@ -1,22 +1,22 @@
-'use client'
-import { FaqItemHeader } from '@/components/faq/faq-item-header'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
+"use client"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import {
   Accordion,
   type AccordionItem,
-} from '@techsio/ui-kit/molecules/accordion'
+} from "@techsio/ui-kit/molecules/accordion"
+import { FaqItemHeader } from "@/components/faq/faq-item-header"
 
 const faqData: AccordionItem[] = [
   {
-    id: 'faq-1',
-    value: 'implementation-time',
+    id: "faq-1",
+    value: "implementation-time",
     title: (
       <FaqItemHeader
-        tag="Implementace"
-        tagStyle="bg-primary/10 text-primary"
         icon="icon-[mdi--clock-outline]"
         iconStyle="text-primary text-md bg-primary/10"
+        tag="Implementace"
+        tagStyle="bg-primary/10 text-primary"
         title="Jak dlouho trvá implementace custom e-commerce řešení?"
       />
     ),
@@ -25,9 +25,9 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-border bg-surface p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0 text-info"
               icon="icon-[mdi--information-outline]"
               size="md"
-              className="mt-icon-align flex-shrink-0 text-info"
             />
             <div>
               <h4 className="font-medium text-fg-primary">
@@ -35,11 +35,11 @@ const faqData: AccordionItem[] = [
               </h4>
               <p className="text-fg-secondary text-sm leading-relaxed">
                 Doba implementace se odvíjí od rozsahu projektu a požadovaných
-                úprav.{' '}
+                úprav.{" "}
                 <strong className="text-fg-primary">
                   V rámci smluvní dokumentace vždy stanovujeme pevný termín
                   realizace, který důsledně dodržujeme.
-                </strong>{' '}
+                </strong>{" "}
                 Vaše spokojenost a dodržení termínů je pro nás prioritou.
               </p>
             </div>
@@ -49,9 +49,9 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-border bg-surface p-card-padding">
           <h4 className="mb-250 flex items-center gap-200 font-medium text-fg-primary">
             <Icon
+              color="secondary"
               icon="icon-[mdi--format-list-numbered]"
               size="md"
-              color="secondary"
             />
             Klíčové fáze implementace
           </h4>
@@ -92,10 +92,10 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-success/20 bg-success/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0"
+              color="success"
               icon="icon-[mdi--check-circle-outline]"
               size="md"
-              color="success"
-              className="mt-icon-align flex-shrink-0"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-success">
@@ -103,7 +103,7 @@ const faqData: AccordionItem[] = [
               </h4>
               <p className="text-fg-secondary text-sm leading-relaxed">
                 Během celého procesu klademe důraz na transparentní komunikaci a
-                pravidelné aktualizace o postupu projektu.{' '}
+                pravidelné aktualizace o postupu projektu.{" "}
                 <strong className="text-fg-primary">
                   Budete vždy vědět, kde se nacházíme a co nás čeká v dalším
                   kroku.
@@ -116,15 +116,15 @@ const faqData: AccordionItem[] = [
     ),
   },
   {
-    id: 'faq-2',
-    value: 'migration-process',
+    id: "faq-2",
+    value: "migration-process",
     title: (
       <FaqItemHeader
         icon="icon-[mdi--database-arrow-right]"
         iconStyle="text-info text-md bg-info/10"
-        title="Jak probíhá přechod ze současného e-shopu na vaše řešení?"
         tag="Migrace dat"
         tagStyle="bg-info/10 text-info"
+        title="Jak probíhá přechod ze současného e-shopu na vaše řešení?"
       />
     ),
     content: (
@@ -132,9 +132,9 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-info/20 bg-info/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0 text-info"
               icon="icon-[mdi--check-circle-outline]"
               size="md"
-              className="mt-icon-align flex-shrink-0 text-info"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-info">
@@ -144,7 +144,7 @@ const faqData: AccordionItem[] = [
                 Zajistíme převod všech produktových dat, popisů, kategorií,
                 parametrů, cen a fotografií.
                 <strong className="text-fg-primary">
-                  {' '}
+                  {" "}
                   Zachováme také data registrovaných zákazníků včetně jejich
                   přihlašovacích údajů
                 </strong>
@@ -158,10 +158,10 @@ const faqData: AccordionItem[] = [
           <div className="rounded-lg border border-border bg-surface p-card-padding">
             <div className="flex items-start gap-250">
               <Icon
+                className="mt-icon-align flex-shrink-0"
+                color="secondary"
                 icon="icon-[mdi--package-variant]"
                 size="md"
-                color="secondary"
-                className="mt-icon-align flex-shrink-0"
               />
               <div>
                 <h4 className="mb--title-bottom font-medium text-fg-primary">
@@ -180,9 +180,9 @@ const faqData: AccordionItem[] = [
           <div className="rounded-lg border border-border bg-surface p-card-padding">
             <div className="flex items-start gap-250">
               <Icon
+                className="mt-icon-align flex-shrink-0 text-tertiary"
                 icon="icon-[mdi--account-group]"
                 size="md"
-                className="mt-icon-align flex-shrink-0 text-tertiary"
               />
               <div>
                 <h4 className="mb--title-bottom font-medium text-fg-primary">
@@ -202,10 +202,10 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-warning/20 bg-warning/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0"
+              color="warning"
               icon="icon-[mdi--shield-check]"
               size="md"
-              color="warning"
-              className="mt-icon-align flex-shrink-0"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-fg-primary">
@@ -255,15 +255,15 @@ const faqData: AccordionItem[] = [
     ),
   },
   {
-    id: 'faq-3',
-    value: 'modular-development',
+    id: "faq-3",
+    value: "modular-development",
     title: (
       <FaqItemHeader
         icon="icon-[mdi--puzzle-outline]"
         iconStyle="text-success text-md bg-success/10"
-        title="Můžeme začít s základní verzí a postupně rozšiřovat funkcionalitu?"
         tag="Modularita"
         tagStyle="bg-success/10 text-success"
+        title="Můžeme začít s základní verzí a postupně rozšiřovat funkcionalitu?"
       />
     ),
     content: (
@@ -271,10 +271,10 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-success/20 bg-success/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0"
+              color="success"
               icon="icon-[mdi--check-bold]"
               size="md"
-              color="success"
-              className="mt-icon-align flex-shrink-0"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-success">
@@ -283,7 +283,7 @@ const faqData: AccordionItem[] = [
               <p className="text-fg-secondary text-sm leading-relaxed">
                 <strong className="text-fg-primary">
                   Naše řešení je modulární a umožňuje postupný rozvoj.
-                </strong>{' '}
+                </strong>{" "}
                 Základ tvoří osvědčené hotové moduly, které můžeme kdykoliv
                 doplnit o funkce na míru. Začnete rychle a rozšiřujete podle
                 potřeby.
@@ -294,10 +294,10 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-border bg-surface p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0"
+              color="secondary"
               icon="icon-[mdi--rocket-launch-outline]"
               size="md"
-              color="secondary"
-              className="mt-icon-align flex-shrink-0"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-fg-primary">
@@ -305,11 +305,11 @@ const faqData: AccordionItem[] = [
               </h4>
               <p className="text-fg-secondary text-sm leading-relaxed">
                 Systém je navržený tak, aby umožňoval implementaci nových
-                funkcionalit i v průběhu provozu.{' '}
+                funkcionalit i v průběhu provozu.{" "}
                 <strong className="text-fg-primary">
                   Díky modulárnímu přístupu lze e-shop rozvíjet podle vašich
                   aktuálních potřeb a růstu businessu.
-                </strong>{' '}
+                </strong>{" "}
                 Váš úspěch je naším úspěchem.
               </p>
             </div>
@@ -319,15 +319,15 @@ const faqData: AccordionItem[] = [
     ),
   },
   {
-    id: 'faq-4',
-    value: 'b2b-features',
+    id: "faq-4",
+    value: "b2b-features",
     title: (
       <FaqItemHeader
         icon="icon-[mdi--office-building]"
         iconStyle="text-tertiary text-md bg-tertiary/10"
-        title="Jak řešíte B2B specifika jako cenové hladiny a individuální ceníky?"
         tag="B2B řešení"
         tagStyle="bg-tertiary/10 text-tertiary"
+        title="Jak řešíte B2B specifika jako cenové hladiny a individuální ceníky?"
       />
     ),
     content: (
@@ -335,9 +335,9 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-tertiary/20 bg-tertiary/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0 text-tertiary"
               icon="icon-[mdi--office-building-outline]"
               size="md"
-              className="mt-icon-align flex-shrink-0 text-tertiary"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-tertiary">
@@ -358,9 +358,9 @@ const faqData: AccordionItem[] = [
             <div className="space-y-200">
               <div className="flex items-start gap-200">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-tertiary"
                   icon="icon-[mdi--currency-usd]"
                   size="sm"
-                  className="mt-icon-align flex-shrink-0 text-tertiary"
                 />
                 <span className="text-fg-secondary text-sm">
                   Správa individuálních ceníků a cenových hladin
@@ -368,9 +368,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-200">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-tertiary"
                   icon="icon-[mdi--swap-horizontal]"
                   size="sm"
-                  className="mt-icon-align flex-shrink-0 text-tertiary"
                 />
                 <span className="text-fg-secondary text-sm">
                   Možnost změny aktuálního ceníku pro registrované uživatele
@@ -378,9 +378,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-200">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-tertiary"
                   icon="icon-[mdi--shield-check]"
                   size="sm"
-                  className="mt-icon-align flex-shrink-0 text-tertiary"
                 />
                 <span className="text-fg-secondary text-sm">
                   Automatické kontroly prodejních cen oproti informačnímu
@@ -395,9 +395,9 @@ const faqData: AccordionItem[] = [
             <div className="space-y-200">
               <div className="flex items-start gap-200">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-tertiary"
                   icon="icon-[mdi--account-group]"
                   size="sm"
-                  className="mt-icon-align flex-shrink-0 text-tertiary"
                 />
                 <span className="text-fg-secondary text-sm">
                   Hlavní zákaznické účty s možností vytvářet podřízené účty
@@ -405,9 +405,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-200">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-tertiary"
                   icon="icon-[mdi--api]"
                   size="sm"
-                  className="mt-icon-align flex-shrink-0 text-tertiary"
                 />
                 <span className="text-fg-secondary text-sm">
                   Kontroly salda s možností napojení na API třetí strany
@@ -415,9 +415,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-200">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-tertiary"
                   icon="icon-[mdi--lock-outline]"
                   size="sm"
-                  className="mt-icon-align flex-shrink-0 text-tertiary"
                 />
                 <span className="text-fg-secondary text-sm">
                   Možnost omezení editace fakturačních údajů pro B2B zákazníky
@@ -430,9 +430,9 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-border bg-surface p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0 text-tertiary"
               icon="icon-[mdi--cog-outline]"
               size="md"
-              className="mt-icon-align flex-shrink-0 text-tertiary"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-fg-primary">
@@ -450,15 +450,15 @@ const faqData: AccordionItem[] = [
     ),
   },
   {
-    id: 'faq-5',
-    value: 'integrations',
+    id: "faq-5",
+    value: "integrations",
     title: (
       <FaqItemHeader
         icon="icon-[mdi--link-variant]"
         iconStyle="text-secondary text-md bg-secondary/10"
-        title="Jak řešíte napojení na externí systémy a API třetích stran?"
         tag="Integrace"
         tagStyle="bg-secondary/10 text-secondary"
+        title="Jak řešíte napojení na externí systémy a API třetích stran?"
       />
     ),
     content: (
@@ -471,10 +471,10 @@ const faqData: AccordionItem[] = [
           <div className="grid gap-250 md:grid-cols-3">
             <div className="rounded-lg border border-border bg-base p-250">
               <Icon
+                className="mb--title-bottom"
+                color="secondary"
                 icon="icon-[mdi--calculator]"
                 size="lg"
-                color="secondary"
-                className="mb--title-bottom"
               />
               <h5 className="mb--title-bottom font-medium text-fg-primary">
                 Účetní systémy
@@ -485,10 +485,10 @@ const faqData: AccordionItem[] = [
             </div>
             <div className="rounded-lg border border-border bg-base p-250">
               <Icon
+                className="mb--title-bottom"
+                color="secondary"
                 icon="icon-[mdi--credit-card]"
                 size="lg"
-                color="secondary"
-                className="mb--title-bottom"
               />
               <h5 className="mb--title-bottom font-medium text-fg-primary">
                 Platební brány
@@ -499,10 +499,10 @@ const faqData: AccordionItem[] = [
             </div>
             <div className="rounded-lg border border-border bg-base p-250">
               <Icon
+                className="mb--title-bottom"
+                color="secondary"
                 icon="icon-[mdi--compare]"
                 size="lg"
-                color="secondary"
-                className="mb--title-bottom"
               />
               <h5 className="mb--title-bottom font-medium text-fg-primary">
                 Srovnávače
@@ -513,10 +513,10 @@ const faqData: AccordionItem[] = [
             </div>
             <div className="rounded-lg border border-border bg-base p-250">
               <Icon
+                className="mb--title-bottom"
+                color="secondary"
                 icon="icon-[mdi--database-import]"
                 size="lg"
-                color="secondary"
-                className="mb--title-bottom"
               />
               <h5 className="mb--title-bottom font-medium text-fg-primary">
                 Dodavatelské systémy
@@ -527,10 +527,10 @@ const faqData: AccordionItem[] = [
             </div>
             <div className="rounded-lg border border-border bg-base p-250">
               <Icon
+                className="mb--title-bottom"
+                color="secondary"
                 icon="icon-[mdi--facebook]"
                 size="lg"
-                color="secondary"
-                className="mb--title-bottom"
               />
               <h5 className="mb--title-bottom font-medium text-fg-primary">
                 Sociální sítě
@@ -541,10 +541,10 @@ const faqData: AccordionItem[] = [
             </div>
             <div className="rounded-lg border border-border bg-base p-250">
               <Icon
+                className="mb--title-bottom"
+                color="secondary"
                 icon="icon-[mdi--message-text]"
                 size="lg"
-                color="secondary"
-                className="mb--title-bottom"
               />
               <h5 className="mb--title-bottom font-medium text-fg-primary">
                 SMS brány
@@ -559,10 +559,10 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-secondary/20 bg-secondary/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0"
+              color="secondary"
               icon="icon-[mdi--cog-outline]"
               size="md"
-              color="secondary"
-              className="mt-icon-align flex-shrink-0"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-secondary">
@@ -580,15 +580,15 @@ const faqData: AccordionItem[] = [
     ),
   },
   {
-    id: 'faq-6',
-    value: 'support',
+    id: "faq-6",
+    value: "support",
     title: (
       <FaqItemHeader
         icon="icon-[mdi--support]"
         iconStyle="text-info text-md bg-info/10"
-        title="Jak funguje technická podpora po spuštění e-shopu?"
         tag="Podpora"
         tagStyle="bg-info/10 text-info"
+        title="Jak funguje technická podpora po spuštění e-shopu?"
       />
     ),
     content: (
@@ -596,9 +596,9 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-info/20 bg-info/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0 text-info"
               icon="icon-[mdi--shield-check]"
               size="md"
-              className="mt-icon-align flex-shrink-0 text-info"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-info">
@@ -622,9 +622,9 @@ const faqData: AccordionItem[] = [
             <div className="space-y-250">
               <div className="flex items-start gap-250">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-info"
                   icon="icon-[mdi--headset]"
                   size="md"
-                  className="mt-icon-align flex-shrink-0 text-info"
                 />
                 <div>
                   <h5 className="mb-100 font-medium text-fg-primary text-sm">
@@ -637,9 +637,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-250">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-info"
                   icon="icon-[mdi--update]"
                   size="md"
-                  className="mt-icon-align flex-shrink-0 text-info"
                 />
                 <div>
                   <h5 className="mb-100 font-medium text-fg-primary text-sm">
@@ -652,9 +652,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-250">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-info"
                   icon="icon-[mdi--monitor-dashboard]"
                   size="md"
-                  className="mt-icon-align flex-shrink-0 text-info"
                 />
                 <div>
                   <h5 className="mb-100 font-medium text-fg-primary text-sm">
@@ -669,9 +669,9 @@ const faqData: AccordionItem[] = [
             <div className="space-y-250">
               <div className="flex items-start gap-250">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-info"
                   icon="icon-[mdi--account-tie]"
                   size="md"
-                  className="mt-icon-align flex-shrink-0 text-info"
                 />
                 <div>
                   <h5 className="mb-100 font-medium text-fg-primary text-sm">
@@ -684,9 +684,9 @@ const faqData: AccordionItem[] = [
               </div>
               <div className="flex items-start gap-250">
                 <Icon
+                  className="mt-icon-align flex-shrink-0 text-info"
                   icon="icon-[mdi--star]"
                   size="md"
-                  className="mt-icon-align flex-shrink-0 text-info"
                 />
                 <div>
                   <h5 className="mb-100 font-medium text-fg-primary text-sm">
@@ -704,10 +704,10 @@ const faqData: AccordionItem[] = [
         <div className="rounded-lg border border-success/20 bg-success/5 p-card-padding">
           <div className="flex items-start gap-250">
             <Icon
+              className="mt-icon-align flex-shrink-0"
+              color="success"
               icon="icon-[mdi--calendar-check]"
               size="md"
-              color="success"
-              className="mt-icon-align flex-shrink-0"
             />
             <div>
               <h4 className="mb--title-bottom font-medium text-success">
@@ -747,20 +747,20 @@ export default function FAQ() {
         {/* FAQ Accordion */}
         <div className="rounded-lg border border-stroke-primary">
           <Accordion
-            shadow="sm"
-            items={faqData}
             collapsible={true}
+            items={faqData}
             multiple={true}
+            shadow="sm"
           />
         </div>
 
         {/* Contact CTA */}
-        <div className="mt-800 text-center ">
+        <div className="mt-800 text-center">
           <div className="rounded-lg border border-stroke-primary bg-surface p-600 shadow-primary">
             <div className="mb-400 flex items-center justify-center">
               <Icon
-                icon="icon-[ic--outline-message]"
                 className="mr-250 text-2xl text-secondary"
+                icon="icon-[ic--outline-message]"
               />
               <h3 className="font-semibold text-fg-primary text-xl">
                 Máte další otázky?
@@ -773,10 +773,10 @@ export default function FAQ() {
             </p>
             <div className="flex flex-col justify-center gap-card-padding sm:flex-row">
               <LinkButton
+                className="px-250 py-150"
                 href="/contact"
                 theme="solid"
                 variant="primary"
-                className="px-250 py-150"
               >
                 Kontaktujte nás
               </LinkButton>

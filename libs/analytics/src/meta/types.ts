@@ -5,21 +5,21 @@
 
 // Standard e-commerce events
 export type MetaPixelStandardEvent =
-  | 'PageView'
-  | 'ViewContent'
-  | 'AddToCart'
-  | 'AddToWishlist'
-  | 'InitiateCheckout'
-  | 'AddPaymentInfo'
-  | 'Purchase'
-  | 'Lead'
-  | 'CompleteRegistration'
-  | 'Search'
+  | "PageView"
+  | "ViewContent"
+  | "AddToCart"
+  | "AddToWishlist"
+  | "InitiateCheckout"
+  | "AddPaymentInfo"
+  | "Purchase"
+  | "Lead"
+  | "CompleteRegistration"
+  | "Search"
 
 // Parameters for ViewContent event
 export interface MetaViewContentParams {
   content_ids?: string[]
-  content_type?: 'product' | 'product_group'
+  content_type?: "product" | "product_group"
   content_name?: string
   content_category?: string
   currency?: string
@@ -29,7 +29,7 @@ export interface MetaViewContentParams {
 // Parameters for AddToCart event
 export interface MetaAddToCartParams {
   content_ids?: string[]
-  content_type?: 'product' | 'product_group'
+  content_type?: "product" | "product_group"
   content_name?: string
   currency?: string
   value?: number
@@ -43,7 +43,7 @@ export interface MetaAddToCartParams {
 // Parameters for InitiateCheckout event
 export interface MetaInitiateCheckoutParams {
   content_ids?: string[]
-  content_type?: 'product' | 'product_group'
+  content_type?: "product" | "product_group"
   currency?: string
   value?: number
   num_items?: number
@@ -59,7 +59,7 @@ export interface MetaPurchaseParams {
   currency: string
   value: number
   content_ids?: string[]
-  content_type?: 'product' | 'product_group'
+  content_type?: "product" | "product_group"
   num_items?: number
   contents?: Array<{
     id: string
@@ -70,13 +70,13 @@ export interface MetaPurchaseParams {
 
 // fbq function signature
 export interface MetaPixelFbq {
-  (action: 'init', pixelId: string): void
+  (action: "init", pixelId: string): void
   (
-    action: 'track',
+    action: "track",
     event: MetaPixelStandardEvent,
     params?: Record<string, unknown>
   ): void
-  (action: 'trackCustom', event: string, params?: Record<string, unknown>): void
+  (action: "trackCustom", event: string, params?: Record<string, unknown>): void
   callMethod?: (...args: unknown[]) => void
   queue?: unknown[][]
   loaded?: boolean

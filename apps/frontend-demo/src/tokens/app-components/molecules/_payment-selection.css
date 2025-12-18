@@ -1,35 +1,35 @@
 :root {
   /* === Mobile First Base Values === */
-  
+
   /* === Root === */
   --padding-payment-root: var(--spacing-xs);
-  
+
   /* === Grid === */
   --gap-payment-grid: var(--spacing-xs);
   --payment-grid-cols: 2;
-  
+
   /* === Card === */
   --padding-payment-card: var(--spacing-xs);
   --height-payment-card: 100px;
   --spacing-payment-card: 100% 1fr;
-  
+
   /* === Badge === */
   --spacing-payment-badge: 4px;
   --width-payment-badge: 20px;
   --height-payment-badge: 20px;
-  
+
   /* === Icon === */
   --width-payment-icon: 12px;
   --height-payment-icon: 12px;
-  
+
   /* === Image === */
   --width-payment-img: 60px;
   --height-payment-img: 40px;
-  
+
   /* === Label === */
   --margin-payment-label: var(--spacing-2xs) 0 0 0;
   --text-payment-label: var(--text-xs);
-  
+
   /* === Tablet (sm: 640px+) === */
   @media (min-width: 640px) {
     --padding-payment-root: var(--spacing-sm);
@@ -41,7 +41,7 @@
     --height-payment-img: 50px;
     --text-payment-label: var(--text-sm);
   }
-  
+
   /* === Desktop (lg: 1024px+) === */
   @media (min-width: 1024px) {
     --padding-payment-root: var(--spacing-md);
@@ -69,11 +69,11 @@
   --radius-payment-card: var(--radius-lg);
   --shadow-payment-card-hover: var(--shadow-md);
   --shadow-payment-card-selected: var(--shadow-lg);
-  
+
   --color-payment-badge: var(--color-primary);
   --color-payment-icon: var(--color-fg-reverse);
   --font-weight-payment-label: var(--font-weight-medium);
-  
+
   --color-payment-ring: var(--color-primary);
   --color-payment-bg: var(--color-base);
 }

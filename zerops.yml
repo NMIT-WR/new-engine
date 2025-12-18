@@ -6,18 +6,9 @@ zerops:
         NX_DAEMON: false
       base: nodejs@22
       buildCommands:
-        # Remove everything in apps except medusa-be, and remove libs/ui (not used by medusa-be)
-        - |
-          shopt -s extglob
-          rm -rf apps/!(medusa-be)
-        - rm -rf libs/ui
-        - rm -rf apps/medusa-be/node_modules
-        - rm -rf node_modules
-        - pnpm install --filter=medusa-be...
-        - pnpm nx run medusa-be:build --skip-nx-cache --verbose
-        - pnpm --filter=medusa-be --prod deploy medusa-be-temp-deploy
-        - rm -rf apps/medusa-be/node_modules
-        - mv medusa-be-temp-deploy/node_modules apps/medusa-be/
+        - bash ./scripts/build-medusa.sh
+        # Move prod node_modules to apps/medusa-be (equivalent to Docker's COPY --from=build)
+        - mv medusa-be-prod/node_modules apps/medusa-be/
       deployFiles:
         - apps/medusa-be/.medusa/server/~
         - apps/medusa-be/~node_modules
@@ -53,19 +44,6 @@ zerops:
         MEILISEARCH_API_KEY: ${search_masterKey}
         SENTRY_DSN: ${MEDUSA_SENTRY_DSN}
         SENTRY_NAME: ${MEDUSA_SENTRY_NAME}
-        PPL_ENABLED: ${PPL_ENABLED}
-        PPL_CLIENT_ID: ${PPL_CLIENT_ID}
-        PPL_CLIENT_SECRET: ${PPL_CLIENT_SECRET}
-        PPL_ENVIRONMENT: ${PPL_ENVIRONMENT}
-        PPL_COD_BANK_ACCOUNT: ${PPL_COD_BANK_ACCOUNT}
-        PPL_COD_BANK_CODE: ${PPL_COD_BANK_CODE}
-        COMPANY_ADDRESS_NAME: ${COMPANY_ADDRESS_NAME}
-        COMPANY_ADDRESS_STREET: ${COMPANY_ADDRESS_STREET}
-        COMPANY_ADDRESS_CITY: ${COMPANY_ADDRESS_CITY}
-        COMPANY_ADDRESS_ZIP_CODE: ${COMPANY_ADDRESS_ZIP_CODE}
-        COMPANY_ADDRESS_COUNTRY: ${COMPANY_ADDRESS_COUNTRY}
-        COMPANY_ADDRESS_PHONE: ${COMPANY_ADDRESS_PHONE}
-        COMPANY_ADDRESS_EMAIL: ${COMPANY_ADDRESS_EMAIL}
       initCommands:
         # with each deploy
         - zsc execOnce ${appVersionId}_migration -- npm run migrate

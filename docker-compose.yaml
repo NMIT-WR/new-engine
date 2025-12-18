@@ -1,69 +1,62 @@
+x-medusa-env: &medusa-env
+  JWT_SECRET: ${DC_JWT_SECRET:-supersecret}
+  COOKIE_SECRET: ${DC_COOKIE_SECRET:-supersecret}
+  DATABASE_TYPE: postgres
+  DATABASE_URL: ${DC_DATABASE_URL}
+  LEGACY_DATABASE_URL: ${DC_LEGACY_DATABASE_URL}
+  MINIO_FILE_URL: ${DC_MINIO_FILE_URL}
+  MINIO_REGION: ${DC_MINIO_REGION}
+  MINIO_ENDPOINT: ${DC_MINIO_ENDPOINT}
+  MINIO_BUCKET: ${DC_MINIO_BUCKET}
+  MINIO_ACCESS_KEY: ${DC_MINIO_ACCESS_KEY}
+  MINIO_SECRET_KEY: ${DC_MINIO_SECRET_KEY}
+  REDIS_URL: ${DC_REDIS_URL}
+  CACHE_REDIS_URL: ${DC_REDIS_URL}
+  EVENTS_REDIS_URL: ${DC_REDIS_URL}
+  WE_REDIS_URL: ${DC_REDIS_URL}
+  MEILISEARCH_HOST: ${DC_MEILISEARCH_HOST}
+  MEILISEARCH_API_KEY: ${DC_MEILISEARCH_API_KEY}
+  STORE_CORS: ${DC_STORE_CORS}
+  ADMIN_CORS: ${DC_ADMIN_CORS}
+  AUTH_CORS: ${DC_AUTH_CORS}
+  SENTRY_NAME: ${DC_SENTRY_NAME}
+  SENTRY_DSN: ${DC_SENTRY_DSN}
+  SETTINGS_ENCRYPTION_KEY: ${DC_SETTINGS_ENCRYPTION_KEY}
+  FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
+  PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
+
+x-medusa-base: &medusa-base
+  restart: unless-stopped
+  container_name: wr_medusa_be
+  ports:
+    - "9000:9000"
+    - "9009:9009"
+    - "24678:24678"
+  depends_on:
+    - medusa-db
+    - medusa-valkey
+    - medusa-minio
+    - medusa-meilisearch
+  networks:
+    - internal
+  environment:
+    <<: *medusa-env
+
 services:
+  # DEV MODE (default): docker compose up
+  # PROD MODE: docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up --build
   medusa-be:
-    restart: unless-stopped
-    container_name: wr_medusa_be
+    <<: *medusa-base
     build:
       context: .
       dockerfile: docker/development/medusa-be/Dockerfile
+      target: dev
     volumes:
       - .:/var/www
-    command: pnpm --filter medusa-be dev -- --inspect=0.0.0.0:9009
-#    command: pnpm --filter medusa-be dev -- --inspect=0.0.0.0:9009
-#    command: sh -c "pnpm --filter medusa-be build && pnpm --filter medusa-be start"
-#    command: tail -f /dev/null
-    ports:
-      - "9000:9000"
-      - "9009:9009"
-      - "24678:24678"
-    depends_on:
-      - medusa-db
-      - medusa-valkey
-      - medusa-minio
-      - medusa-meilisearch
-    networks:
-      - internal
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/app"]
       start_period: 10s
-    environment:
-      #LOG_LEVEL: debug
-      JWT_SECRET: ${DC_JWT_SECRET:-supersecret}
-      COOKIE_SECRET: ${DC_COOKIE_SECRET:-supersecret}
-      DATABASE_TYPE: postgres
-      DATABASE_URL: ${DC_DATABASE_URL}
-      LEGACY_DATABASE_URL: ${DC_LEGACY_DATABASE_URL}
-      MINIO_FILE_URL: ${DC_MINIO_FILE_URL}
-      MINIO_REGION: ${DC_MINIO_REGION}
-      MINIO_ENDPOINT: ${DC_MINIO_ENDPOINT}
-      MINIO_BUCKET: ${DC_MINIO_BUCKET}
-      MINIO_ACCESS_KEY: ${DC_MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${DC_MINIO_SECRET_KEY}
-      REDIS_URL: ${DC_REDIS_URL}
-      CACHE_REDIS_URL: ${DC_REDIS_URL}
-      EVENTS_REDIS_URL: ${DC_REDIS_URL}
-      WE_REDIS_URL: ${DC_REDIS_URL}
-      MEILISEARCH_HOST: ${DC_MEILISEARCH_HOST}
-      MEILISEARCH_API_KEY: ${DC_MEILISEARCH_API_KEY}
-      STORE_CORS: ${DC_STORE_CORS}
-      ADMIN_CORS: ${DC_ADMIN_CORS}
-      AUTH_CORS: ${DC_AUTH_CORS}
-      SENTRY_NAME: ${DC_SENTRY_NAME}
-      SENTRY_DSN: ${DC_SENTRY_DSN}
-      # PPL Fulfillment Provider
-      PPL_ENABLED: ${DC_PPL_ENABLED:-0}
-      PPL_CLIENT_ID: ${DC_PPL_CLIENT_ID}
-      PPL_CLIENT_SECRET: ${DC_PPL_CLIENT_SECRET}
-      PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
-      PPL_COD_BANK_ACCOUNT: ${DC_PPL_COD_BANK_ACCOUNT}
-      PPL_COD_BANK_CODE: ${DC_PPL_COD_BANK_CODE}
-      # Company Address (fallback sender for fulfillment providers)
-      COMPANY_ADDRESS_NAME: ${DC_COMPANY_ADDRESS_NAME}
-      COMPANY_ADDRESS_STREET: ${DC_COMPANY_ADDRESS_STREET}
-      COMPANY_ADDRESS_CITY: ${DC_COMPANY_ADDRESS_CITY}
-      COMPANY_ADDRESS_ZIP_CODE: ${DC_COMPANY_ADDRESS_ZIP_CODE}
-      COMPANY_ADDRESS_COUNTRY: ${DC_COMPANY_ADDRESS_COUNTRY}
-      COMPANY_ADDRESS_PHONE: ${DC_COMPANY_ADDRESS_PHONE}
-      COMPANY_ADDRESS_EMAIL: ${DC_COMPANY_ADDRESS_EMAIL}
+      interval: 30s
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:

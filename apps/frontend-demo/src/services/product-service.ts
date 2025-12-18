@@ -1,6 +1,6 @@
-import { sdk } from '@/lib/medusa-client'
-import type { Product } from '@/types/product'
-import { buildMedusaQuery } from '@/utils/server-filters'
+import { sdk } from "@/lib/medusa-client"
+import type { Product } from "@/types/product"
+import { buildMedusaQuery } from "@/utils/server-filters"
 
 export interface ProductFilters {
   categories?: string[]
@@ -29,44 +29,44 @@ export interface ProductListResponse {
 
 // Fields for product list views (minimal data)
 const LIST_FIELDS = [
-  'id',
-  'title',
-  'handle',
-  'thumbnail',
-  'variants.title',
-  '*variants.calculated_price',
-  'variants.inventory_quantity',
-  'variants.manage_inventory',
-].join(',')
+  "id",
+  "title",
+  "handle",
+  "thumbnail",
+  "variants.title",
+  "*variants.calculated_price",
+  "variants.inventory_quantity",
+  "variants.manage_inventory",
+].join(",")
 
 // Fields for product detail views (all data)
 const DETAIL_FIELDS = [
-  'id',
-  'title',
-  'handle',
-  'description',
-  'thumbnail',
-  'status',
-  'collection_id',
-  'created_at',
-  'updated_at',
-  'tags',
-  'images.id',
-  'images.url',
-  'categories.id',
-  'categories.name',
-  'categories.handle',
-  'variants.id',
-  'variants.title',
-  'variants.sku',
-  'variants.manage_inventory',
-  'variants.allow_backorder',
-  '+variants.inventory_quantity',
-  'variants.prices.amount',
-  'variants.prices.currency_code',
-  'variants.calculated_price',
-  'variants.options',
-].join(',')
+  "id",
+  "title",
+  "handle",
+  "description",
+  "thumbnail",
+  "status",
+  "collection_id",
+  "created_at",
+  "updated_at",
+  "tags",
+  "images.id",
+  "images.url",
+  "categories.id",
+  "categories.name",
+  "categories.handle",
+  "variants.id",
+  "variants.title",
+  "variants.sku",
+  "variants.manage_inventory",
+  "variants.allow_backorder",
+  "+variants.inventory_quantity",
+  "variants.prices.amount",
+  "variants.prices.currency_code",
+  "variants.calculated_price",
+  "variants.options",
+].join(",")
 
 /**
  * Fetch products with filtering, pagination and sorting
@@ -96,19 +96,19 @@ export const getProducts = async (
     offset,
     q,
     category_id: categoryIds,
-    fields: fields,
+    fields,
     ...(region_id && { region_id }),
-    country_code: country_code ?? 'cz',
+    country_code: country_code ?? "cz",
   }
 
   // Add sorting
   if (sort) {
     const sortMap: Record<string, string> = {
-      newest: 'id',
-      'price-asc': 'variants.prices.amount',
-      'price-desc': '-variants.prices.amount',
-      'name-asc': 'title',
-      'name-desc': '-title',
+      newest: "id",
+      "price-asc": "variants.prices.amount",
+      "price-desc": "-variants.prices.amount",
+      "name-asc": "title",
+      "name-desc": "-title",
     }
     baseQuery.order = sortMap[sort] || sort
   }
@@ -120,7 +120,7 @@ export const getProducts = async (
     const response = await sdk.store.product.list(queryParams)
 
     if (!response.products) {
-      console.error('[ProductService] Invalid response structure:', response)
+      console.error("[ProductService] Invalid response structure:", response)
       return { products: [], count: 0, limit, offset }
     }
 
@@ -133,7 +133,7 @@ export const getProducts = async (
       offset,
     }
   } catch (error) {
-    console.error('[ProductService] Error fetching products:', error)
+    console.error("[ProductService] Error fetching products:", error)
     throw error
   }
 }
@@ -143,7 +143,7 @@ export const getProducts = async (
  */
 const transformProduct = (product: any, withVariants?: boolean): Product => {
   if (!product) {
-    throw new Error('Cannot transform null product')
+    throw new Error("Cannot transform null product")
   }
 
   // Get primary variant (first one)
@@ -187,11 +187,11 @@ export async function getProduct(
     fields: DETAIL_FIELDS, // Use full fields for detail views
     limit: 1,
     region_id,
-    country_code: country_code ?? 'cz',
+    country_code: country_code ?? "cz",
   })
 
   if (!response.products?.length) {
-    throw new Error('Product not found')
+    throw new Error("Product not found")
   }
 
   return transformProduct(response.products[0], true)

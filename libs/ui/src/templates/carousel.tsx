@@ -1,13 +1,13 @@
-import type { ElementType } from 'react'
-import type { IconType } from '../atoms/icon'
+import type { ElementType } from "react"
+import type { IconType } from "../atoms/icon"
 import {
   Carousel,
   type CarouselRootProps,
   type CarouselSlide,
-} from '../molecules/carousel'
+} from "../molecules/carousel"
 
 export interface CarouselTemplateProps<T extends ElementType>
-  extends Omit<CarouselRootProps<T>, 'children' | 'slideCount'> {
+  extends Omit<CarouselRootProps<T>, "children" | "slideCount"> {
   slides: CarouselSlide[]
   showControls?: boolean
   showIndicators?: boolean
@@ -21,8 +21,8 @@ export function CarouselTemplate<T extends ElementType>({
   showControls = true,
   showIndicators = true,
   showAutoplay = false,
-  prevIcon = 'token-icon-carousel-prev',
-  nextIcon = 'token-icon-carousel-next',
+  prevIcon = "token-icon-carousel-prev",
+  nextIcon = "token-icon-carousel-next",
   size,
   objectFit,
   aspectRatio,
@@ -43,30 +43,30 @@ export function CarouselTemplate<T extends ElementType>({
 }: CarouselTemplateProps<T>) {
   return (
     <Carousel
-      size={size}
-      objectFit={objectFit}
-      aspectRatio={aspectRatio}
-      orientation={orientation}
-      slideCount={slides.length}
-      loop={loop}
-      autoplay={autoplay}
       allowMouseDrag={allowMouseDrag}
-      slidesPerPage={slidesPerPage}
-      slidesPerMove={slidesPerMove}
-      spacing={spacing}
-      padding={padding}
-      imageAs={imageAs}
-      width={width}
-      height={height}
+      aspectRatio={aspectRatio}
+      autoplay={autoplay}
       className={className}
+      height={height}
+      imageAs={imageAs}
+      loop={loop}
+      objectFit={objectFit}
       onPageChange={onPageChange}
+      orientation={orientation}
+      padding={padding}
+      size={size}
+      slideCount={slides.length}
+      slidesPerMove={slidesPerMove}
+      slidesPerPage={slidesPerPage}
+      spacing={spacing}
+      width={width}
       {...carouselProps}
     >
       <Carousel.Slides
-        slides={slides}
-        imageAs={imageAs}
-        width={width}
         height={height}
+        imageAs={imageAs}
+        slides={slides}
+        width={width}
       />
 
       {(showControls || showIndicators) && (
@@ -76,7 +76,7 @@ export function CarouselTemplate<T extends ElementType>({
           {showIndicators && (
             <Carousel.Indicators>
               {slides.map((slide, index) => (
-                <Carousel.Indicator key={slide.id} index={index} />
+                <Carousel.Indicator index={index} key={slide.id} />
               ))}
             </Carousel.Indicators>
           )}

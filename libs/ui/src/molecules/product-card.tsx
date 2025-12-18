@@ -1,80 +1,80 @@
 import {
-  type ComponentPropsWithRef,
   type ComponentPropsWithoutRef,
+  type ComponentPropsWithRef,
+  createContext,
   type ElementType,
   type HTMLAttributes,
   type ReactNode,
   type Ref,
-  createContext,
   useContext,
-} from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import type { IconType } from '../atoms/icon'
-import { Image } from '../atoms/image'
-import { Rating, type RatingProps } from '../atoms/rating'
-import { tv } from '../utils'
+} from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Button } from "../atoms/button"
+import type { IconType } from "../atoms/icon"
+import { Image } from "../atoms/image"
+import { Rating, type RatingProps } from "../atoms/rating"
+import { tv } from "../utils"
 
 const productCardVariants = tv({
   slots: {
     root: [
-      'rounded-product-card p-product-card-padding',
-      'border-(length:--border-product-card-width) border-product-card-border bg-product-card-bg max-w-product-card-max shadow-sm',
+      "rounded-product-card p-product-card-padding",
+      "border-(length:--border-product-card-width) max-w-product-card-max border-product-card-border bg-product-card-bg shadow-sm",
     ],
-    imageSlot: 'object-cover h-full rounded-product-card-image',
+    imageSlot: "h-full rounded-product-card-image object-cover",
     nameSlot:
-      'text-product-card-name-fg font-product-card-name text-product-card-name-size line-clamp-product-card-name',
+      "line-clamp-product-card-name font-product-card-name text-product-card-name-fg text-product-card-name-size",
     priceSlot:
-      'text-product-card-price-fg font-product-card-price text-product-card-price-size',
+      "font-product-card-price text-product-card-price-fg text-product-card-price-size",
     stockStatusSlot: [
-      'text-product-card-stock-size font-product-card-stock',
-      'data-[stock=in-stock]:text-product-card-stock-fg-in-stock',
-      'data-[stock=limited-stock]:text-product-card-stock-fg-limited-stock',
-      'data-[stock=out-of-stock]:text-product-card-stock-fg-out-of-stock',
+      "font-product-card-stock text-product-card-stock-size",
+      "data-[stock=in-stock]:text-product-card-stock-fg-in-stock",
+      "data-[stock=limited-stock]:text-product-card-stock-fg-limited-stock",
+      "data-[stock=out-of-stock]:text-product-card-stock-fg-out-of-stock",
     ],
-    badgesSlot: 'flex flex-wrap gap-product-card-box',
-    ratingSlot: 'flex items-center',
-    actionsSlot: 'flex flex-wrap gap-product-card-buttons',
-    button: '',
+    badgesSlot: "flex flex-wrap gap-product-card-box",
+    ratingSlot: "flex items-center",
+    actionsSlot: "flex flex-wrap gap-product-card-buttons",
+    button: "",
   },
   variants: {
     buttonVariant: {
       cart: {
         button:
-          'bg-product-card-button-cart-bg hover:bg-product-card-button-cart-bg-hover text-product-card-button-cart-fg w-max',
+          "w-max bg-product-card-button-cart-bg text-product-card-button-cart-fg hover:bg-product-card-button-cart-bg-hover",
       },
       detail: {
         button:
-          'bg-product-card-button-detail-bg hover:bg-product-card-button-detail-bg-hover text-product-card-button-detail-fg w-max',
+          "w-max bg-product-card-button-detail-bg text-product-card-button-detail-fg hover:bg-product-card-button-detail-bg-hover",
       },
       wishlist: {
         button:
-          'bg-product-card-button-wishlist-bg hover:bg-product-card-button-wishlist-bg-hover text-product-card-button-wishlist-fg w-max',
+          "w-max bg-product-card-button-wishlist-bg text-product-card-button-wishlist-fg hover:bg-product-card-button-wishlist-bg-hover",
       },
       custom: {},
     },
     layout: {
       column: {
         root: [
-          'grid grid-cols-(--product-card-layout-column-grid) gap-product-card-col-layout',
+          "grid grid-cols-(--product-card-layout-column-grid) gap-product-card-col-layout",
         ],
-        imageSlot: 'aspect-product-card-image',
+        imageSlot: "aspect-product-card-image",
       },
       row: {
-        root: 'grid grid-cols-(--product-card-layout-row-grid) gap-x-product-card-row-layout',
-        imageSlot: 'row-span-6 aspect-auto',
+        root: "grid grid-cols-(--product-card-layout-row-grid) gap-x-product-card-row-layout",
+        imageSlot: "row-span-6 aspect-auto",
       },
     },
   },
   defaultVariants: {
-    layout: 'column',
-    buttonVariant: 'cart',
+    layout: "column",
+    buttonVariant: "cart",
   },
 })
 
 // === CONTEXT ===
 interface ProductCardContextValue {
-  layout?: 'column' | 'row'
+  layout?: "column" | "row"
 }
 
 const ProductCardContext = createContext<ProductCardContextValue>({})
@@ -82,14 +82,14 @@ const ProductCardContext = createContext<ProductCardContextValue>({})
 // === TYPE DEFINITIONS ===
 export interface ProductCardProps
   extends HTMLAttributes<HTMLDivElement>,
-    Omit<VariantProps<typeof productCardVariants>, 'buttonVariant'> {
+    Omit<VariantProps<typeof productCardVariants>, "buttonVariant"> {
   children: ReactNode
   ref?: Ref<HTMLDivElement>
 }
 
 type ProductCardImageProps<T extends ElementType = typeof Image> = {
   as?: T
-  ref?: ComponentPropsWithRef<T>['ref']
+  ref?: ComponentPropsWithRef<T>["ref"]
   className?: string
 } & Partial<ComponentPropsWithoutRef<T>>
 
@@ -105,7 +105,7 @@ interface ProductCardPriceProps extends HTMLAttributes<HTMLParagraphElement> {
 
 interface ProductCardStockProps extends HTMLAttributes<HTMLParagraphElement> {
   children: ReactNode
-  status?: 'in-stock' | 'limited-stock' | 'out-of-stock'
+  status?: "in-stock" | "limited-stock" | "out-of-stock"
   ref?: Ref<HTMLParagraphElement>
 }
 
@@ -128,7 +128,7 @@ interface ProductCardActionsProps extends HTMLAttributes<HTMLDivElement> {
 interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
   children?: ReactNode
   onClick?: () => void
-  buttonVariant?: 'cart' | 'detail' | 'wishlist' | 'custom'
+  buttonVariant?: "cart" | "detail" | "wishlist" | "custom"
   icon?: IconType
   ref?: Ref<HTMLButtonElement>
 }
@@ -136,7 +136,7 @@ interface ProductCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
 // === ROOT COMPONENT ===
 export function ProductCard({
   children,
-  layout = 'column',
+  layout = "column",
   className,
   ref,
   ...props
@@ -145,7 +145,7 @@ export function ProductCard({
 
   return (
     <ProductCardContext.Provider value={{ layout }}>
-      <div ref={ref} className={root({ className })} {...props}>
+      <div className={root({ className })} ref={ref} {...props}>
         {children}
       </div>
     </ProductCardContext.Provider>
@@ -161,7 +161,7 @@ ProductCard.Image = function ProductCardImage<
   const ImageComponent = (as || Image) as ElementType
 
   return (
-    <ImageComponent ref={ref} className={imageSlot({ className })} {...props} />
+    <ImageComponent className={imageSlot({ className })} ref={ref} {...props} />
   )
 }
 
@@ -175,7 +175,7 @@ ProductCard.Name = function ProductCardName({
   const { nameSlot } = productCardVariants({ layout: context.layout })
 
   return (
-    <h3 ref={ref} className={nameSlot({ className })} {...props}>
+    <h3 className={nameSlot({ className })} ref={ref} {...props}>
       {children}
     </h3>
   )
@@ -191,7 +191,7 @@ ProductCard.Price = function ProductCardPrice({
   const { priceSlot } = productCardVariants({ layout: context.layout })
 
   return (
-    <p ref={ref} className={priceSlot({ className })} {...props}>
+    <p className={priceSlot({ className })} ref={ref} {...props}>
       {children}
     </p>
   )
@@ -201,7 +201,7 @@ ProductCard.Stock = function ProductCardStock({
   children,
   className,
   ref,
-  status = 'in-stock',
+  status = "in-stock",
   ...props
 }: ProductCardStockProps) {
   const context = useContext(ProductCardContext)
@@ -211,9 +211,9 @@ ProductCard.Stock = function ProductCardStock({
 
   return (
     <p
-      ref={ref}
-      data-stock={status}
       className={stockStatusSlot({ className })}
+      data-stock={status}
+      ref={ref}
       {...props}
     >
       {children}
@@ -231,7 +231,7 @@ ProductCard.Badges = function ProductCardBadges({
   const { badgesSlot } = productCardVariants({ layout: context.layout })
 
   return (
-    <div ref={ref} className={badgesSlot({ className })} {...props}>
+    <div className={badgesSlot({ className })} ref={ref} {...props}>
       {children}
     </div>
   )
@@ -248,7 +248,7 @@ ProductCard.Rating = function ProductCardRating({
   const { ratingSlot } = productCardVariants({ layout: context.layout })
 
   return (
-    <div ref={ref} className={ratingSlot({ className })} {...props}>
+    <div className={ratingSlot({ className })} ref={ref} {...props}>
       {rating ? <Rating {...rating} /> : children}
     </div>
   )
@@ -266,7 +266,7 @@ ProductCard.Actions = function ProductCardActions({
   })
 
   return (
-    <div ref={ref} className={actionsSlot({ className })} {...props}>
+    <div className={actionsSlot({ className })} ref={ref} {...props}>
       {children}
     </div>
   )
@@ -285,11 +285,11 @@ ProductCard.Button = function ProductCardButton({
 
   return (
     <Button
+      className={button({ className })}
+      icon={icon}
+      onClick={onClick}
       ref={ref}
       size="sm"
-      className={button({ className })}
-      onClick={onClick}
-      icon={icon}
       {...props}
     >
       {children}

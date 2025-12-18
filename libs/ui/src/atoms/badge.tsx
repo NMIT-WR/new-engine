@@ -1,65 +1,65 @@
-import type { HTMLAttributes } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from '../utils'
+import type { HTMLAttributes } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { tv } from "../utils"
 
 const badgeVariants = tv({
   base: [
-    'inline-flex items-center justify-center',
-    'p-badge',
-    'rounded-badge border-badge-border',
-    'text-badge-size font-badge',
-    'border-(length:--border-width-badge-dynamic)',
+    "inline-flex items-center justify-center",
+    "p-badge",
+    "rounded-badge border-badge-border",
+    "font-badge text-badge-size",
+    "border-(length:--border-width-badge-dynamic)",
   ],
   variants: {
     variant: {
       primary: [
-        'bg-badge-bg-primary text-badge-fg-primary border-badge-border-primary',
+        "border-badge-border-primary bg-badge-bg-primary text-badge-fg-primary",
       ],
       secondary: [
-        'bg-badge-bg-secondary text-badge-fg-secondary border-badge-border-secondary',
+        "border-badge-border-secondary bg-badge-bg-secondary text-badge-fg-secondary",
       ],
       tertiary: [
-        'bg-badge-bg-tertiary text-badge-fg-tertiary border-badge-border-tertiary',
+        "border-badge-border-tertiary bg-badge-bg-tertiary text-badge-fg-tertiary",
       ],
       discount: [
-        'bg-badge-bg-discount text-badge-fg-discount border-badge-border-discount',
+        "border-badge-border-discount bg-badge-bg-discount text-badge-fg-discount",
       ],
-      info: ['bg-badge-bg-info text-badge-fg-info border-badge-border-info'],
+      info: ["border-badge-border-info bg-badge-bg-info text-badge-fg-info"],
       success: [
-        'bg-badge-bg-success text-badge-fg-success border-badge-border-success',
+        "border-badge-border-success bg-badge-bg-success text-badge-fg-success",
       ],
       warning: [
-        'bg-badge-bg-warning text-badge-fg-warning border-badge-border-warning',
+        "border-badge-border-warning bg-badge-bg-warning text-badge-fg-warning",
       ],
       danger: [
-        'bg-badge-bg-danger text-badge-fg-danger border-badge-border-danger',
+        "border-badge-border-danger bg-badge-bg-danger text-badge-fg-danger",
       ],
       outline: [
-        'bg-badge-bg-outline text-badge-fg-outline border-badge-border-outline',
+        "border-badge-border-outline bg-badge-bg-outline text-badge-fg-outline",
       ],
       dynamic: [],
     },
   },
   defaultVariants: {
-    variant: 'info',
+    variant: "info",
   },
 })
 
-type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>['variant']>
+type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>
 
 type BaseBadgeProps = Omit<
   HTMLAttributes<HTMLSpanElement>,
-  'color' | 'children'
+  "color" | "children"
 > & {
   children: string
 }
 
 type DefaultBadgeProps = BaseBadgeProps & {
-  variant?: Exclude<BadgeVariant, 'dynamic'>
+  variant?: Exclude<BadgeVariant, "dynamic">
 }
 
 type DynamicBadgeProps = BaseBadgeProps & {
-  variant: 'dynamic'
+  variant: "dynamic"
   bgColor: string
   fgColor: string
   borderColor: string
@@ -74,7 +74,7 @@ export function Badge({
   style,
   ...props
 }: BadgeProps) {
-  const isDynamic = variant === 'dynamic'
+  const isDynamic = variant === "dynamic"
 
   const { bgColor, fgColor, borderColor, ...restProps } =
     props as Partial<DynamicBadgeProps>
@@ -82,9 +82,9 @@ export function Badge({
   const dynamicStyles = isDynamic
     ? {
         ...style,
-        'background-color': bgColor,
+        "background-color": bgColor,
         color: fgColor,
-        'border-color': borderColor,
+        "border-color": borderColor,
       }
     : style
 

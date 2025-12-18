@@ -50,7 +50,9 @@
   --spacing-6xl: 12rem; /* 192px */
 
   --spacing-container-max: 80rem; /* 1280px - standard max width for content */
-  --spacing-container-x: var(--spacing-sm); /* horizontal padding for containers */
+  --spacing-container-x: var(
+    --spacing-sm
+  ); /* horizontal padding for containers */
   --spacing-container-x-md: var(--spacing-md); /* medium screens */
   --spacing-container-x-lg: var(--spacing-lg);
 
@@ -122,7 +124,10 @@
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
-  --color-tertiary: light-dark(var(--color-violet-600), var(--color-violet-400));
+  --color-tertiary: light-dark(
+    var(--color-violet-600),
+    var(--color-violet-400)
+  );
   --color-tertiary-hover: oklch(
     from var(--color-tertiary) calc(l + var(--state-hover)) c h
   );
@@ -257,7 +262,10 @@
   /* All levels of background color in the application, including container, menu, navigation bar, etc. In dark mode, we usually use the background color to distinguish the front and back levels */
   --color-base-light: var(--color-white);
   --color-base-dark: var(--color-slate-950);
-  --color-base: light-dark(var(--color-base-light), var(--color-base-dark)); /*bottom page*/
+  --color-base: light-dark(
+    var(--color-base-light),
+    var(--color-base-dark)
+  ); /*bottom page*/
   --color-surface: oklch(
     from var(--color-base) calc(l - var(--surface-increment)) c h
   ); /* content that needs to be promoted on the page*/

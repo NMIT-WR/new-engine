@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import DOMPurify from 'dompurify'
-import { useMemo } from 'react'
+import DOMPurify from "dompurify"
+import { useMemo } from "react"
 
 interface SafeHtmlContentProps {
   content: string | null | undefined
@@ -21,7 +21,7 @@ export function SafeHtmlContent({
   config,
 }: SafeHtmlContentProps) {
   const processedContent = useMemo(() => {
-    if (!content) return { isHtml: false, content: '' }
+    if (!content) return { isHtml: false, content: "" }
 
     // Check if content contains HTML tags or HTML entities
     const hasHtmlTags = /<[^>]*>/g.test(content)
@@ -32,27 +32,27 @@ export function SafeHtmlContent({
       // Default safe config for product descriptions
       const defaultConfig = {
         ALLOWED_TAGS: [
-          'p',
-          'br',
-          'strong',
-          'em',
-          'b',
-          'i',
-          'u',
-          'ul',
-          'ol',
-          'li',
-          'h3',
-          'h4',
-          'h5',
-          'h6',
-          'span',
-          'div',
+          "p",
+          "br",
+          "strong",
+          "em",
+          "b",
+          "i",
+          "u",
+          "ul",
+          "ol",
+          "li",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "span",
+          "div",
         ],
-        ALLOWED_ATTR: ['class', 'style'],
+        ALLOWED_ATTR: ["class", "style"],
         ALLOW_DATA_ATTR: false,
-        FORBID_TAGS: ['script', 'iframe', 'form', 'input'],
-        FORBID_ATTR: ['onerror', 'onclick', 'onload'],
+        FORBID_TAGS: ["script", "iframe", "form", "input"],
+        FORBID_ATTR: ["onerror", "onclick", "onload"],
       }
 
       // Merge custom config with defaults

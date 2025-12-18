@@ -1,4 +1,4 @@
-import type { HttpTypes } from '@medusajs/types'
+import type { HttpTypes } from "@medusajs/types"
 
 export interface AddressData {
   firstName: string

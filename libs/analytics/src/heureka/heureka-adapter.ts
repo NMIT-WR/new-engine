@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { createTracker } from '../core/create-tracker'
-import { createWindowGetter } from '../core/get-global-function'
-import type { AnalyticsAdapter } from '../core/types'
-import type { HeurekaFunction } from './types'
+import { createTracker } from "../core/create-tracker"
+import { createWindowGetter } from "../core/get-global-function"
+import type { AnalyticsAdapter } from "../core/types"
+import type { HeurekaFunction } from "./types"
 
-const getHeureka = createWindowGetter<HeurekaFunction>('heureka')
+const getHeureka = createWindowGetter<HeurekaFunction>("heureka")
 
 export interface UseHeurekaAdapterConfig {
   /** Heureka API key - required */
@@ -33,7 +33,7 @@ export function useHeurekaAdapter(
   config: UseHeurekaAdapterConfig
 ): AnalyticsAdapter {
   const { apiKey, debug } = config
-  const adapterKey = 'heureka' as const
+  const adapterKey = "heureka" as const
 
   return {
     key: adapterKey,
@@ -52,15 +52,15 @@ export function useHeurekaAdapter(
       getHeureka,
       (heureka, params) => {
         // Authenticate
-        heureka('authenticate', apiKey)
+        heureka("authenticate", apiKey)
 
         // Set order ID
-        heureka('set_order_id', params.orderId)
+        heureka("set_order_id", params.orderId)
 
         // Add all products
         for (const product of params.products) {
           heureka(
-            'add_product',
+            "add_product",
             product.id,
             product.name,
             String(product.price),
@@ -69,11 +69,11 @@ export function useHeurekaAdapter(
         }
 
         // Set total and currency
-        heureka('set_total_vat', String(params.value))
-        heureka('set_currency', params.currency)
+        heureka("set_total_vat", String(params.value))
+        heureka("set_currency", params.currency)
 
         // Send the order
-        heureka('send', 'Order')
+        heureka("send", "Order")
       },
       debug,
       adapterKey

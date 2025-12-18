@@ -1,6 +1,6 @@
-import { Button } from '@ui/atoms/button'
-import { useState } from 'react'
-import type { ReactNode } from 'react'
+import { Button } from "@ui/atoms/button"
+import type { ReactNode } from "react"
+import { useState } from "react"
 
 export interface FilterSectionProps<T = any> {
   title: string
@@ -40,16 +40,16 @@ export function FilterSection<T>({
         </h3>
         {onClear && (
           <Button
-            variant="tertiary"
-            theme="borderless"
-            size="sm"
             onClick={onClear}
+            size="sm"
+            theme="borderless"
+            variant="tertiary"
           >
             Vymazat
           </Button>
         )}
       </div>
-      <div className={className || ''}>
+      <div className={className || ""}>
         {hasItems
           ? visibleItems.map((item, index) => renderItem(item, index))
           : children}
@@ -57,13 +57,13 @@ export function FilterSection<T>({
       {hasMore && (
         <div className="mt-filter-section-view-more-margin">
           <Button
-            variant="tertiary"
-            theme="borderless"
-            size="sm"
             onClick={() => setShowAll(!showAll)}
+            size="sm"
+            theme="borderless"
+            variant="tertiary"
           >
             {showAll
-              ? 'Zobrazit méně'
+              ? "Zobrazit méně"
               : `Zobrazit dalších ${items.length - defaultItemsShown}`}
           </Button>
         </div>

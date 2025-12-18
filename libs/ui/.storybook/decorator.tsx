@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react"
 
 type VariantGroupProps = {
   title: string
@@ -16,7 +16,7 @@ export function VariantGroup({
       <h3 className="font-semibold text-fg-primary text-md">{title}</h3>
       <div
         className={`flex ${
-          fullWidth ? 'flex-col' : 'flex-wrap'
+          fullWidth ? "flex-col" : "flex-wrap"
         } items-start gap-4`}
       >
         {children}

@@ -13,7 +13,7 @@ install-fix-lock:
 	docker run -v .:/var/www pnpm-env pnpm install --fix-lockfile
 update-medusa:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
-	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update @medusajs*
+	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update "@medusajs/*" --latest
 update:
 	docker build -f docker/development/pnpm/Dockerfile -t pnpm-env . && \
 	docker run -v .:/var/www pnpm-env pnpm --filter medusa-be update --latest
@@ -22,6 +22,11 @@ npkill:
 	docker run -it -v .:/var/www pnpm-env pnpx npkill -x -D -y
 dev:
 	docker compose -f docker-compose.yaml -p new-engine up --force-recreate -d --build
+prod:
+	-docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine down
+	-docker rmi new-engine-medusa-be-prod
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache medusa-be
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine up -d
 down:
 	docker compose -f docker-compose.yaml -p new-engine down
 down-with-volumes:
@@ -49,3 +54,7 @@ medusa-seed-dev-data:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedDevData
 medusa-seed-n1:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedN1
+
+# Biome commands
+biome-be:
+	bunx biome check --write apps/medusa-be

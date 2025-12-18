@@ -45,6 +45,7 @@ export function RegionSelector({ className }: { className?: string }) {
     <Select
       className={className}
       clearIcon={false}
+      label="Region"
       onValueChange={handleChange}
       options={options}
       placeholder="Region"

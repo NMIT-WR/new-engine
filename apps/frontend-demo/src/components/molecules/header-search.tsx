@@ -1,26 +1,27 @@
-'use client'
-import { useSearchProducts } from '@/hooks/use-search-products'
-import type { Product } from '@/types/product'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { Combobox, type ComboboxItem } from '@techsio/ui-kit/molecules/combobox'
-import { Popover } from '@techsio/ui-kit/molecules/popover'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+"use client"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { Combobox, type ComboboxItem } from "@techsio/ui-kit/molecules/combobox"
+import { Popover } from "@techsio/ui-kit/molecules/popover"
+import { useRouter } from "next/navigation"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useSearchProducts } from "@/hooks/use-search-products"
+import type { Product } from "@/types/product"
 
 export function HeaderSearch() {
   const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
   const [selectedValue, setSelectedValue] = useState<string[]>([])
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current)
       }
-    }
-  }, [])
+    },
+    []
+  )
 
   // Use search hook
   const { searchResults, isSearching, searchProducts } = useSearchProducts({
@@ -30,7 +31,7 @@ export function HeaderSearch() {
   const comboboxItems = searchResults.map((product) => ({
     id: product.id,
     value: product.handle || product.id,
-    label: product.title || 'Untitled Product',
+    label: product.title || "Untitled Product",
   }))
 
   // Update search query and trigger debounced search
@@ -54,14 +55,14 @@ export function HeaderSearch() {
   // Create combobox items
   const searchItems: ComboboxItem<Product>[] = searchResults.map((product) => ({
     value: product.handle || product.id,
-    label: product.title || 'Untitled Product',
+    label: product.title || "Untitled Product",
     data: product,
   }))
 
   // Add "View all results" option if there's a search query
   if (searchQuery && searchResults.length > 0) {
     searchItems.push({
-      value: '__search__',
+      value: "__search__",
       label: `Zobrazit všechny výsledky pro "${searchQuery}"`,
       data: undefined,
     })
@@ -70,7 +71,7 @@ export function HeaderSearch() {
   const handleSearch = (query: string) => {
     if (query.trim()) {
       router.push(`/products?q=${encodeURIComponent(query.trim())}`)
-      setSearchQuery('')
+      setSearchQuery("")
       setSelectedValue([])
     }
   }
@@ -93,13 +94,14 @@ export function HeaderSearch() {
         handleSearch(selectedValue)
       }
 
-      setSearchQuery('')
+      setSearchQuery("")
       setSelectedValue([])
     }
   }
 
   return (
     <Popover
+      contentClassName="z-10"
       id="header-search-popover"
       trigger={
         <Icon
@@ -108,7 +110,6 @@ export function HeaderSearch() {
         />
       }
       triggerClassName="data-[state=open]:ring-0 data-[state=open]:ring-offset-0"
-      contentClassName="z-10"
     >
       <form
         onSubmit={(e) => {
@@ -119,16 +120,16 @@ export function HeaderSearch() {
         }}
       >
         <Combobox
-          placeholder="Hledat produkty..."
-          items={comboboxItems}
-          value={selectedValue}
-          onChange={handleSelect}
-          onInputValueChange={handleInputChange}
           allowCustomValue={true}
           autoFocus={true}
-          closeOnSelect
           clearable={false}
+          closeOnSelect
+          items={comboboxItems}
+          onChange={handleSelect}
+          onInputValueChange={handleInputChange}
+          placeholder="Hledat produkty..."
           size="sm"
+          value={selectedValue}
         />
       </form>
     </Popover>
