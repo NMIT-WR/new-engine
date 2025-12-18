@@ -133,9 +133,11 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       const addressData = addressToFormData(
         cart.shipping_address
       ) as AddressFormData
-      form.reset()
-      form.setFieldValue("email", cart.email ?? "")
-      form.setFieldValue("shippingAddress", addressData)
+      // Reset with new values to properly initialize without triggering isDirty
+      form.reset({
+        email: cart.email ?? "",
+        shippingAddress: addressData,
+      })
       isFormInitialized.current = true
       return
     }

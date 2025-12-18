@@ -34,8 +34,8 @@ export function SaveAddressPanel() {
     setErrorMessage(null)
     try {
       await createAddressAsync(currentValues)
-      form.reset()
-      form.setFieldValue("shippingAddress", currentValues)
+      // Reset with current values to clear isDirty without losing data
+      form.reset({ ...form.state.values, shippingAddress: currentValues })
       setSaveStatus("success")
       setTimeout(() => setSaveStatus("idle"), 2000)
     } catch (error) {
@@ -64,8 +64,8 @@ export function SaveAddressPanel() {
         addressId: selectedAddressId,
         data: currentValues,
       })
-      form.reset()
-      form.setFieldValue("shippingAddress", currentValues)
+      // Reset with current values to clear isDirty without losing data
+      form.reset({ ...form.state.values, shippingAddress: currentValues })
       setSaveStatus("success")
       setTimeout(() => setSaveStatus("idle"), 2000)
     } catch (error) {
