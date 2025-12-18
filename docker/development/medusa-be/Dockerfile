@@ -4,7 +4,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apt-get update && apt-get install -y curl --no-install-recommends && \
     rm -rf /var/lib/apt/lists/* && \
-    npm i -g corepack@latest && \
+    npm i -g corepack@0.34.5 && \
     corepack enable && \
     corepack install -g pnpm@10.26.0
 
@@ -33,11 +33,22 @@ RUN find apps -maxdepth 1 -mindepth 1 -type d ! -name 'medusa-be' -exec rm -rf {
 
 RUN pnpm install --filter=medusa-be...
 
-# Build args - medusa build validates these at build time
-ARG JWT_SECRET
-ARG COOKIE_SECRET
+# Inline dummy secrets satisfy Medusa's build-time validation without embedding real secrets in image layers.
+# Real secrets must be provided at runtime via env vars, or Medusa will crash (by design).
 ARG FEATURE_PPL_ENABLED=0
-RUN NODE_ENV=production JWT_SECRET=${JWT_SECRET} COOKIE_SECRET=${COOKIE_SECRET} FEATURE_PPL_ENABLED=${FEATURE_PPL_ENABLED} pnpm nx run medusa-be:build --skip-nx-cache
+RUN NODE_ENV=production \
+    JWT_SECRET=build-placeholder \
+    COOKIE_SECRET=build-placeholder \
+    FEATURE_PPL_ENABLED=${FEATURE_PPL_ENABLED} \
+    pnpm nx run medusa-be:build --skip-nx-cache 2>&1 | tee /tmp/build.log; \
+    if [ ! -f apps/medusa-be/.medusa/server/medusa-config.js ]; then \
+      echo ""; \
+      echo "========== BUILD FAILED =========="; \
+      echo "Expected output not found: .medusa/server/medusa-config.js"; \
+      echo "=== Last 50 lines of build output ==="; \
+      tail -50 /tmp/build.log; \
+      exit 1; \
+    fi
 
 # Get production-only dependencies and clean up
 RUN pnpm --filter=medusa-be --prod deploy medusa-be-prod && \
@@ -57,11 +68,15 @@ ENV DATABASE_TYPE=postgres
 
 WORKDIR /app
 
-# Copy only server (not client/types) and prod dependencies
-COPY --from=build /var/www/apps/medusa-be/.medusa/server ./
-COPY --from=build /var/www/medusa-be-prod/node_modules ./node_modules
+# Copy files with node user ownership (UID 1000, comes with node image)
+COPY --from=build --chown=node:node /var/www/apps/medusa-be/.medusa/server ./
+COPY --from=build --chown=node:node /var/www/medusa-be-prod/node_modules ./node_modules
+COPY --from=build --chown=node:node /var/www/apps/medusa-be/src/scripts/seed-files ./src/scripts/seed-files
 
-# Copy seed data files (for seeding scripts)
-COPY --from=build /var/www/apps/medusa-be/src/scripts/seed-files ./src/scripts/seed-files
+# Run as non-root user
+USER node
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:9000/health || exit 1
 
 CMD ["npm", "start"]
