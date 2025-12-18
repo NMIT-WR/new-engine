@@ -1,4 +1,4 @@
-import { Skeleton } from '@techsio/ui-kit/atoms/skeleton'
+import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
 
 export const ProductCardSkeleton = () => {
   return (
@@ -7,7 +7,10 @@ export const ProductCardSkeleton = () => {
       <Skeleton className="h-5 w-full rounded-sm" />
 
       {/* Image - square aspect ratio */}
-      <Skeleton.Rectangle aspectRatio="1/1" className="w-full rounded-md" />
+      <Skeleton.Rectangle
+        className="w-full rounded-md"
+        style={{ aspectRatio: 1 }}
+      />
 
       {/* Button */}
       <Skeleton className="h-10 w-24 self-end rounded-md" />
