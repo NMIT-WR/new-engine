@@ -1,5 +1,4 @@
 "use client"
-
 import { SelectField } from "@/components/forms/fields/select-field"
 import { TextField } from "@/components/forms/fields/text-field"
 import { COUNTRY_OPTIONS } from "@/lib/constants"
@@ -21,7 +20,6 @@ export function ShippingAddressSection() {
 
   const addresses = customer?.addresses || []
 
-  // Handle address selection from picker
   const handleAddressSelect = (address: AddressFormData, id: string) => {
     form.setFieldValue("shippingAddress", address)
     setSelectedAddressId(id)
@@ -45,7 +43,6 @@ export function ShippingAddressSection() {
       </div>
 
       <div className="flex flex-col gap-400">
-        {/* First name | Last name */}
         <div className="grid grid-cols-2 gap-300">
           <form.Field
             name="shippingAddress.first_name"
@@ -75,7 +72,6 @@ export function ShippingAddressSection() {
           </form.Field>
         </div>
 
-        {/* Company (optional) */}
         <form.Field name="shippingAddress.company">
           {(field) => (
             <TextField
@@ -86,7 +82,6 @@ export function ShippingAddressSection() {
           )}
         </form.Field>
 
-        {/* Address */}
         <form.Field
           name="shippingAddress.address_1"
           validators={addressValidators.address_1}
@@ -102,7 +97,6 @@ export function ShippingAddressSection() {
           )}
         </form.Field>
 
-        {/* Apartment, suite, etc. (optional) */}
         <form.Field name="shippingAddress.address_2">
           {(field) => (
             <TextField
@@ -113,7 +107,6 @@ export function ShippingAddressSection() {
           )}
         </form.Field>
 
-        {/* City | Country */}
         <div className="grid grid-cols-2 gap-300">
           <form.Field
             name="shippingAddress.city"
@@ -143,7 +136,6 @@ export function ShippingAddressSection() {
           </form.Field>
         </div>
 
-        {/* State/Province | Postal code */}
         <div className="grid grid-cols-2 gap-300">
           <form.Field name="shippingAddress.province">
             {(field) => (
@@ -171,7 +163,6 @@ export function ShippingAddressSection() {
           </form.Field>
         </div>
 
-        {/* Phone */}
         <form.Field
           name="shippingAddress.phone"
           validators={addressValidators.phone}
@@ -189,7 +180,6 @@ export function ShippingAddressSection() {
           )}
         </form.Field>
 
-        {/* EMAIL - only for guests */}
         {!customer && (
           <form.Field name="email" validators={emailValidator}>
             {(field) => (
@@ -206,10 +196,8 @@ export function ShippingAddressSection() {
         )}
       </div>
 
-      {/* Save to profile panel (only for logged-in customers with changes) */}
       <SaveAddressPanel />
 
-      {/* Info text for guests */}
       {!customer && (
         <p className="mt-400 text-fg-tertiary text-sm">
           Přihlaste se pro uložení adresy do svého účtu

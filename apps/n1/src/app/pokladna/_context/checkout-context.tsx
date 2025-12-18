@@ -23,19 +23,13 @@ import {
 } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export type CheckoutFormData = {
   email: string
   shippingAddress: AddressFormData
 }
 
-/** Helper to infer the correct form type - not actually called */
 const _formTypeHelper = (d: CheckoutFormData) => useForm({ defaultValues: d })
 
-/** Form type inferred from useForm return type */
 type CheckoutForm = ReturnType<typeof _formTypeHelper>
 
 type CheckoutContextValue = {
@@ -54,29 +48,18 @@ type CheckoutContextValue = {
   isReady: boolean
 }
 
-// ============================================================================
-// Context
-// ============================================================================
-
 const CheckoutContext = createContext<CheckoutContextValue | null>(null)
-
-// ============================================================================
-// Provider
-// ============================================================================
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
-  // Core data hooks
   const { customer } = useAuth()
   const { cart, isLoading: isCartLoading, hasItems } = useCart()
   const { regionId } = useRegion()
 
-  // Checkout sub-hooks
   const shipping = useCheckoutShipping(cart?.id, cart)
   const payment = useCheckoutPayment(cart?.id, regionId, cart)
 
-  // Mutations
   const { mutateAsync: updateCartAddressAsync, isPending: isSavingAddress } =
     useUpdateCartAddress()
   const { mutateAsync: completeCartAsync, isPending: isCompletingCart } =
@@ -86,7 +69,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       },
     })
 
-  // State
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null
   )
@@ -218,10 +200,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   )
 }
 
-// ============================================================================
-// Hooks
-// ============================================================================
-
 export function useCheckoutContext() {
   const context = useContext(CheckoutContext)
   if (!context) {
@@ -230,7 +208,6 @@ export function useCheckoutContext() {
   return context
 }
 
-/** Shorthand for accessing checkout form */
 export function useCheckoutForm() {
   const { form } = useCheckoutContext()
   return form

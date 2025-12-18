@@ -14,7 +14,6 @@ export function SaveAddressPanel() {
   const { customer, selectedAddressId } = useCheckoutContext()
   const form = useCheckoutForm()
 
-  // Subscribe to isDirty state
   const isDirty = useStore(form.store, (state) => state.isDirty)
 
   const [saveStatus, setSaveStatus] = useState<
@@ -22,23 +21,19 @@ export function SaveAddressPanel() {
   >("idle")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  // Mutations
   const { mutateAsync: createAddressAsync } = useCreateAddress()
   const { mutateAsync: updateAddressAsync } = useUpdateAddress()
 
-  // Don't render if not logged in or form hasn't been modified
   if (!(customer && isDirty)) {
     return null
   }
 
   const handleSaveNew = async () => {
-    // Get current values at execution time (not render time!)
     const currentValues = form.getFieldValue("shippingAddress")
     setSaveStatus("saving")
     setErrorMessage(null)
     try {
       await createAddressAsync(currentValues)
-      // Reset form with current values to clear isDirty
       form.reset()
       form.setFieldValue("shippingAddress", currentValues)
       setSaveStatus("success")
@@ -61,7 +56,6 @@ export function SaveAddressPanel() {
     if (!selectedAddressId) {
       return
     }
-    // Get current values at execution time (not render time!)
     const currentValues = form.getFieldValue("shippingAddress")
     setSaveStatus("saving")
     setErrorMessage(null)
@@ -70,7 +64,6 @@ export function SaveAddressPanel() {
         addressId: selectedAddressId,
         data: currentValues,
       })
-      // Reset form with current values to clear isDirty
       form.reset()
       form.setFieldValue("shippingAddress", currentValues)
       setSaveStatus("success")
