@@ -1,36 +1,75 @@
-'use client'
-import { useEffect, useRef } from 'react'
-import { Heading } from '@/components/heading'
-import { N1Aside } from '@/components/n1-aside'
-import { useAnalytics } from '@/providers/analytics-provider'
-import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
-import { Banner } from '@/components/atoms/banner'
-import { ProductGrid } from '@/components/molecules/product-grid'
+"use client"
+import type { IconType } from "@techsio/ui-kit/atoms/icon"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
+import NextLink from "next/link"
+import { notFound, useParams } from "next/navigation"
+import { createParser, useQueryState } from "nuqs"
+import { useEffect, useRef } from "react"
+import { Banner } from "@/components/atoms/banner"
+import { Heading } from "@/components/heading"
+import { ProductGrid } from "@/components/molecules/product-grid"
+import { N1Aside } from "@/components/n1-aside"
 import {
   allCategories,
   categoryMap,
   categoryTree,
-} from '@/data/static/categories'
-import { usePrefetchCategoryChildren } from '@/hooks/use-prefetch-category-children'
-import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
-import { usePrefetchRootCategories } from '@/hooks/use-prefetch-root-categories'
-import { useProducts } from '@/hooks/use-products'
-import { useRegion } from '@/hooks/use-region'
+} from "@/data/static/categories"
+import { usePrefetchCategoryChildren } from "@/hooks/use-prefetch-category-children"
+import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
+import { usePrefetchRootCategories } from "@/hooks/use-prefetch-root-categories"
+import { useProducts } from "@/hooks/use-products"
+import { useRegion } from "@/hooks/use-region"
 import {
   ALL_CATEGORIES_MAP,
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
-} from '@/lib/constants'
-import { transformProduct } from '@/utils/transform/transform-product'
-import type { IconType } from '@techsio/ui-kit/atoms/icon'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import NextLink from 'next/link'
-import { notFound, useParams, useRouter, useSearchParams } from 'next/navigation'
+} from "@/lib/constants"
+import { useAnalytics } from "@/providers/analytics-provider"
+import { transformProduct } from "@/utils/transform/transform-product"
+
+const parseAsPage = createParser<number>({
+  parse(value) {
+    const page = Number.parseInt(value, 10)
+    if (Number.isNaN(page) || page < 1) {
+      return null
+    }
+    return page
+  },
+  serialize(value) {
+    return String(Math.round(value))
+  },
+}).withDefault(1)
+
+const pageSearchParamsOptions = { history: "push", scroll: true } as const
+
+type Category = (typeof allCategories)[number]
+
+function buildCategoryPath(category: Category | undefined): string | null {
+  if (!category) {
+    return null
+  }
+
+  const path: string[] = []
+  let current: Category | undefined = category
+
+  while (current) {
+    path.unshift(current.name)
+
+    const parentCategoryId: string | null | undefined =
+      current.parent_category_id
+    if (!parentCategoryId) {
+      break
+    }
+
+    current = allCategories.find((c) => c.id === parentCategoryId)
+  }
+
+  return path.join(" > ")
+}
 
 export default function CategoryPage() {
   const params = useParams()
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const handle = params.handle as string
   const { regionId, countryCode } = useRegion()
   const analytics = useAnalytics()
@@ -46,33 +85,28 @@ export default function CategoryPage() {
     allCategories.find((cat) => cat.id === currentCategory?.root_category_id) ??
     currentCategory
 
-  const buildCategoryPath = (): string | null => {
-    if (!currentCategory) return null
-
-    const path: string[] = []
-    let current: typeof currentCategory | undefined = currentCategory
-
-    while (current) {
-      path.unshift(current.name)
-      current = allCategories.find((c) => c.id === current!.parent_category_id)
-    }
-
-    return path.join(' > ')
-  }
+  const categoryPath = buildCategoryPath(currentCategory)
+  const currentCategoryId = currentCategory?.id
 
   useEffect(() => {
-    if (!currentCategory) return
-    if (trackedCategoryId.current === currentCategory.id) return
-
-    const categoryPath = buildCategoryPath()
-    if (categoryPath) {
-      trackedCategoryId.current = currentCategory.id
-      analytics.trackViewCategory({ category: categoryPath })
+    if (!currentCategoryId) {
+      return
     }
-  }, [currentCategory?.id, analytics])
+    if (trackedCategoryId.current === currentCategoryId) {
+      return
+    }
+    if (!categoryPath) {
+      return
+    }
 
-  // Get current page from URL or default to 1
-  const currentPage = Number(searchParams.get('page')) || 1
+    trackedCategoryId.current = currentCategoryId
+    analytics.trackViewCategory({ category: categoryPath })
+  }, [analytics, categoryPath, currentCategoryId])
+
+  const [currentPage, setCurrentPage] = useQueryState(
+    "page",
+    parseAsPage.withOptions(pageSearchParamsOptions)
+  )
 
   const {
     products: rawProducts,
@@ -118,11 +152,7 @@ export default function CategoryPage() {
   const products = rawProducts.map(transformProduct)
 
   const handlePageChange = (page: number) => {
-    const newSearchParams = new URLSearchParams(searchParams.toString())
-    newSearchParams.set('page', page.toString())
-    router.push(`/kategorie/${handle}?${newSearchParams.toString()}`, {
-      scroll: true,
-    })
+    setCurrentPage(page)
   }
 
   if (!VALID_CATEGORY_ROUTES.includes(handle)) {
@@ -134,20 +164,20 @@ export default function CategoryPage() {
   )
 
   const breadcrumbItems: { label: string; href: string; icon?: IconType }[] = [
-    { label: 'Home', href: '/', icon: 'icon-[mdi--home]' },
+    { label: "Home", href: "/", icon: "icon-[mdi--home]" },
     { label: rootCategory?.handle || handle, href: `/kategorie/${handle}` },
   ]
 
   return (
-    <div className="grid relative grid-cols-[auto_minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)] p-400">
+    <div className="relative grid grid-cols-[auto_minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)] p-400">
       <header className="col-span-2 row-span-1">
-        <Breadcrumb linkAs={NextLink} items={breadcrumbItems} size="lg" />
+        <Breadcrumb items={breadcrumbItems} linkAs={NextLink} size="lg" />
       </header>
       <N1Aside
         categories={rootCategoryTree?.children || []}
         categoryMap={categoryMap}
-        label={rootCategory?.handle}
         currentCategory={currentCategory}
+        label={rootCategory?.handle}
       />
       <main className="px-300">
         <header className="space-y-300">
@@ -155,16 +185,16 @@ export default function CategoryPage() {
           <div className="grid grid-cols-4 gap-100">
             {currentCategoryChildren?.map((child) => (
               <LinkButton
-                key={child.id}
-                href={`/kategorie/${child.handle}`}
                 className="border border-overlay bg-surface py-200 text-fg-primary hover:bg-base"
+                href={`/kategorie/${child.handle}`}
+                key={child.id}
               >
                 {child.name}
               </LinkButton>
             ))}
           </div>
         </header>
-        <Banner variant="warning" className="my-300">
+        <Banner className="my-300" variant="warning">
           <div className="flex items-center gap-100">
             <span>Zobrazeno</span>
             <span className="font-bold">{totalCount}</span>
@@ -173,13 +203,13 @@ export default function CategoryPage() {
         </Banner>
         <section>
           <ProductGrid
-            products={products}
-            totalCount={totalCount}
             currentPage={responsePage}
-            pageSize={PRODUCT_LIMIT}
-            onPageChange={handlePageChange}
             isLoading={isLoading}
+            onPageChange={handlePageChange}
+            pageSize={PRODUCT_LIMIT}
+            products={products}
             skeletonCount={24}
+            totalCount={totalCount}
           />
         </section>
       </main>
