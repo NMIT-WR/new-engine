@@ -1,29 +1,14 @@
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-
-interface PasswordRequirement {
-  id: string
-  label: string
-  test: (password: string) => boolean
-}
+import {
+  PASSWORD_REQUIREMENTS,
+  isPasswordValid,
+} from '@/lib/form-validators'
+import { Icon } from '@ui/atoms/icon'
 
 interface PasswordValidatorProps {
   password: string
   showRequirements?: boolean
   className?: string
 }
-
-const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
-  {
-    id: 'min-length',
-    label: 'Alespoň 8 znaků',
-    test: (pwd) => pwd.length >= 8,
-  },
-  {
-    id: 'has-number',
-    label: 'Alespoň 1 číslice',
-    test: (pwd) => !!pwd.match(/\d/),
-  },
-]
 
 export const PasswordValidator = ({
   password,
@@ -84,7 +69,7 @@ export const usePasswordValidation = (password: string) => {
   }))
 
   return {
-    isValid: results.every((r) => r.met),
+    isValid: isPasswordValid(password),
     requirements: results,
   }
 }

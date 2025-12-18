@@ -13,10 +13,9 @@ export interface AddressFormData {
 
 export type AddressFieldKey = keyof AddressFormData
 export type AddressErrors = Partial<Record<AddressFieldKey, string>>
-export type AddressTouched = Partial<Record<AddressFieldKey, boolean>>
 
 /**
- * Validation rules for react-hook-form Controller components
+ * Validation rules used by standalone validation functions
  */
 export const ADDRESS_VALIDATION_RULES = {
   first_name: {
@@ -61,15 +60,6 @@ export const REQUIRED_ADDRESS_FIELDS = [
   'postal_code',
   'country_code',
 ] as const satisfies readonly AddressFieldKey[]
-
-/* used in checkout */
-export const EMAIL_VALIDATION_RULES = {
-  required: 'E-mail je povinný',
-  pattern: {
-    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    message: 'Zadejte platnou e-mailovou adresu',
-  },
-}
 
 export function validateAddressField(
   field: AddressFieldKey,
@@ -167,9 +157,4 @@ export function validateAddressForm(data: AddressFormData): AddressErrors {
   }
 
   return errors
-}
-
-export function isAddressFormValid(data: AddressFormData): boolean {
-  const errors = validateAddressForm(data)
-  return Object.keys(errors).length === 0
 }
