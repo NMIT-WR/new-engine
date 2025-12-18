@@ -40,10 +40,7 @@ export default function Home() {
 
       <section className="mx-auto grid max-w-max-w grid-cols-2 px-section py-section md:grid-cols-[repeat(auto-fit,minmax(25%,1fr))]">
         {featureBlocks.map((block) => (
-          <FeatureBlock
-            key={`${block.maintText}-${block.subText}`}
-            {...block}
-          />
+          <FeatureBlock key={block.icon.src} {...block} />
         ))}
       </section>
 
