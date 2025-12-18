@@ -2,6 +2,7 @@ if (process.env.GITHUB_ACTIONS !== "true") {
   throw new Error("Releases are restricted to run inside GitHub Actions")
 }
 
+// Pre-1.0 policy: treat breaking changes as minor.
 const preMajorReleaseRules = [{ breaking: true, release: "minor" }]
 
 const config = {
