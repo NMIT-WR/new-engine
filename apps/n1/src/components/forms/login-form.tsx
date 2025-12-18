@@ -1,13 +1,16 @@
-import { Button } from "@techsio/ui-kit/atoms/button"
-import { Checkbox } from "@techsio/ui-kit/molecules/checkbox"
+"use client"
+
+import { useForm } from "@tanstack/react-form"
+import { Button } from "@ui/atoms/button"
+import { Checkbox } from "@ui/atoms/checkbox"
 import Link from "next/link"
-import { type FormEvent, useRef } from "react"
+import { TextField } from "@/components/forms/fields/text-field"
 import { useLogin } from "@/hooks/use-login"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
+import { emailValidator } from "@/lib/form-validators"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
-import { FormField } from "../molecules/form-field"
 
 type LoginFormProps = {
   onSuccess?: () => void
@@ -17,28 +20,43 @@ type LoginFormProps = {
   className?: string
 }
 
-export const LoginForm = ({
+type LoginFormData = {
+  email: string
+  password: string
+}
+
+const loginValidators = {
+  email: emailValidator,
+  password: {
+    onChange: ({ value }: { value: string }) => {
+      if (!value?.trim()) return "Heslo je povinné"
+      if (value.length < 8) return AUTH_MESSAGES.PASSWORD_TOO_SHORT
+      return undefined
+    },
+  },
+}
+
+export function LoginForm({
   onSuccess,
   toggle,
   showRegisterLink,
   showForgotPasswordLink,
-}: LoginFormProps) => {
-  const formRef = useRef<HTMLFormElement>(null)
+}: LoginFormProps) {
   const toast = useAuthToast()
   const analytics = useAnalytics()
-  const emailRef = useRef<string>("")
 
   const login = useLogin({
     onSuccess: () => {
-      if (emailRef.current) {
+      const email = form.state.values.email
+      if (email) {
         analytics.trackIdentify({
-          email: emailRef.current,
+          email,
           subscribe: [],
         })
       }
 
       toast.loginSuccess()
-      formRef.current?.reset()
+      form.reset()
       onSuccess?.()
     },
     onError: (error) => {
@@ -46,25 +64,29 @@ export const LoginForm = ({
     },
   })
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-
-    emailRef.current = email
-
-    login.mutate({
-      email,
-      password: formData.get("password") as string,
-    })
+  const defaultValues: LoginFormData = {
+    email: "",
+    password: "",
   }
+
+  const form = useForm({
+    defaultValues,
+    onSubmit: ({ value }) => {
+      login.mutate({
+        email: value.email,
+        password: value.password,
+      })
+    },
+  })
 
   return (
     <form
       className="mt-100 flex flex-col gap-100"
       noValidate
-      onSubmit={handleSubmit}
-      ref={formRef}
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
     >
       {login.error && (
         <ErrorBanner
@@ -72,30 +94,34 @@ export const LoginForm = ({
           title={AUTH_MESSAGES.LOGIN_FAILED}
         />
       )}
-      <FormField
-        autoComplete="email"
-        disabled={login.isPending}
-        errorMessage={AUTH_MESSAGES.EMAIL_REQUIRED}
-        id="login-email"
-        label="E-mailová adresa"
-        name="email"
-        placeholder="vas@email.cz"
-        required
-        type="email"
-      />
 
-      <FormField
-        autoComplete="current-password"
-        disabled={login.isPending}
-        errorMessage={AUTH_MESSAGES.PASSWORD_TOO_SHORT}
-        id="login-password"
-        label="Heslo"
-        minLength={8}
-        name="password"
-        placeholder="••••••••"
-        required
-        type="password"
-      />
+      <form.Field name="email" validators={loginValidators.email}>
+        {(field) => (
+          <TextField
+            autoComplete="email"
+            disabled={login.isPending}
+            field={field}
+            label="E-mailová adresa"
+            placeholder="vas@email.cz"
+            required
+            type="email"
+          />
+        )}
+      </form.Field>
+
+      <form.Field name="password" validators={loginValidators.password}>
+        {(field) => (
+          <TextField
+            autoComplete="current-password"
+            disabled={login.isPending}
+            field={field}
+            label="Heslo"
+            placeholder="••••••••"
+            required
+            type="password"
+          />
+        )}
+      </form.Field>
 
       {showForgotPasswordLink && (
         <div className="enter flex items-center gap-150">
