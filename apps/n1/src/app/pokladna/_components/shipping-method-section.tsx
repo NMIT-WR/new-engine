@@ -63,7 +63,7 @@ export function ShippingMethodSection({
           aria-label="Načítání způsobů dopravy"
         >
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Skeleton.Rectangle key={i} height="72px" />
+            <Skeleton.Rectangle key={i} style={{ height: "72px" }} />
           ))}
         </div>
       ) : shipping.shippingOptions && shipping.shippingOptions.length > 0 ? (
