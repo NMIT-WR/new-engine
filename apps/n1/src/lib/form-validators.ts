@@ -1,11 +1,13 @@
+import { VALIDATION_MESSAGES } from "./validation-messages"
+
 export const addressValidators = {
   first_name: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Jméno je povinné"
+        return VALIDATION_MESSAGES.firstName.required
       }
       if (value.length < 2) {
-        return "Jméno musí mít alespoň 2 znaky"
+        return VALIDATION_MESSAGES.firstName.minLength
       }
       return
     },
@@ -13,10 +15,10 @@ export const addressValidators = {
   last_name: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Příjmení je povinné"
+        return VALIDATION_MESSAGES.lastName.required
       }
       if (value.length < 2) {
-        return "Příjmení musí mít alespoň 2 znaky"
+        return VALIDATION_MESSAGES.lastName.minLength
       }
       return
     },
@@ -24,10 +26,10 @@ export const addressValidators = {
   address_1: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Adresa je povinná"
+        return VALIDATION_MESSAGES.address.required
       }
       if (value.length < 3) {
-        return "Adresa musí mít alespoň 3 znaky"
+        return VALIDATION_MESSAGES.address.minLength
       }
       return
     },
@@ -35,10 +37,10 @@ export const addressValidators = {
   city: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Město je povinné"
+        return VALIDATION_MESSAGES.city.required
       }
       if (value.length < 2) {
-        return "Město musí mít alespoň 2 znaky"
+        return VALIDATION_MESSAGES.city.minLength
       }
       return
     },
@@ -46,10 +48,10 @@ export const addressValidators = {
   postal_code: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "PSČ je povinné"
+        return VALIDATION_MESSAGES.postalCode.required
       }
       if (!/^\d{3}\s\d{2}$/.test(value)) {
-        return "PSČ musí být ve formátu 123 45"
+        return VALIDATION_MESSAGES.postalCode.invalid
       }
       return
     },
@@ -57,7 +59,7 @@ export const addressValidators = {
   country_code: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Země je povinná"
+        return VALIDATION_MESSAGES.country.required
       }
       return
     },
@@ -68,7 +70,7 @@ export const addressValidators = {
         return
       }
       if (!/^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/.test(value)) {
-        return "Telefon musí mít 9 číslic"
+        return VALIDATION_MESSAGES.phone.invalid
       }
       return
     },
@@ -81,10 +83,10 @@ export const addressValidators = {
 export const emailValidator = {
   onChange: ({ value }: { value: string }) => {
     if (!value?.trim()) {
-      return "E-mail je povinný"
+      return VALIDATION_MESSAGES.email.required
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return "Zadejte platnou e-mailovou adresu"
+      return VALIDATION_MESSAGES.email.invalid
     }
     return
   },
@@ -110,7 +112,7 @@ export const registerValidators = {
   first_name: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Jméno je povinné"
+        return VALIDATION_MESSAGES.firstName.required
       }
       return
     },
@@ -118,7 +120,7 @@ export const registerValidators = {
   last_name: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Příjmení je povinné"
+        return VALIDATION_MESSAGES.lastName.required
       }
       return
     },
@@ -126,10 +128,10 @@ export const registerValidators = {
   email: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "E-mail je povinný"
+        return VALIDATION_MESSAGES.email.required
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return "Zadejte platnou e-mailovou adresu"
+        return VALIDATION_MESSAGES.email.invalid
       }
       return
     },
@@ -137,10 +139,10 @@ export const registerValidators = {
   password: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
-        return "Heslo je povinné"
+        return VALIDATION_MESSAGES.password.required
       }
       if (!isPasswordValid(value)) {
-        return "Heslo nesplňuje požadavky"
+        return VALIDATION_MESSAGES.password.invalid
       }
       return
     },
@@ -148,7 +150,7 @@ export const registerValidators = {
   acceptTerms: {
     onChange: ({ value }: { value: boolean }) => {
       if (!value) {
-        return "Musíte souhlasit s podmínkami"
+        return VALIDATION_MESSAGES.terms.required
       }
       return
     },

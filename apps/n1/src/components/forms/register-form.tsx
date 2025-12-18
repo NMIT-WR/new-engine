@@ -11,6 +11,7 @@ import { useRegister } from "@/hooks/use-register"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
 import { isPasswordValid, registerValidators } from "@/lib/form-validators"
+import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
 import { PasswordValidator, usePasswordValidation } from "./password-validator"
@@ -207,11 +208,11 @@ export function RegisterForm({
           onChangeListenTo: ["password"],
           onChange: ({ value, fieldApi }) => {
             if (!value) {
-              return "Potvrzení hesla je povinné"
+              return VALIDATION_MESSAGES.password.confirmRequired
             }
             const passwordValue = fieldApi.form.getFieldValue("password")
             if (value !== passwordValue) {
-              return AUTH_MESSAGES.PASSWORDS_DONT_MATCH
+              return VALIDATION_MESSAGES.password.mismatch
             }
             return
           },
@@ -238,12 +239,12 @@ export function RegisterForm({
             />
             {passwordsMatch && (
               <span className="font-medium text-success text-xs">
-                {AUTH_MESSAGES.PASSWORDS_MATCH}
+                {VALIDATION_MESSAGES.password.match}
               </span>
             )}
             {passwordsDontMatch && (
               <span className="font-medium text-danger text-xs">
-                {AUTH_MESSAGES.PASSWORDS_DONT_MATCH}
+                {VALIDATION_MESSAGES.password.mismatch}
               </span>
             )}
           </div>
