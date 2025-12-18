@@ -25,6 +25,8 @@ export default [
       tailwindcss: {
         // For TailwindCSS v4 - point to CSS config file
         config: tokensCssAbsolutePath,
+        // tailwind-variants uses `slots: [...]` to reference slot names, not Tailwind classes
+        ignoredKeys: ["compoundVariants", "defaultVariants", "slots"],
       },
     },
     plugins: {
@@ -44,6 +46,6 @@ export default [
   },
   {
     // Exclude generated/dist files from linting
-    ignores: ["dist/**/*", "storybook-static/**/*"],
+    ignores: ["dist/**/*", "storybook-static/**/*", "stories/**/*"],
   },
 ]

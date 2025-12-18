@@ -44,10 +44,11 @@
   --container-dialog-xs: var(--container-xs);
   --container-dialog-sm: var(--container-sm);
   --container-dialog-md: var(--container-md);
-  --container-dialog-lg: var(--container-lg);
-  --container-dialog-xl: var(--container-xl);
-  --container-dialog-center-h-max: 80svh;
-  --container-dialog-center-w-max: var(--container-2xl);
+	  --container-dialog-lg: var(--container-lg);
+	  --container-dialog-xl: var(--container-xl);
+	  --container-dialog-center-h-max: 80svh;
+	  --max-height-dialog-center-h-max: var(--container-dialog-center-h-max);
+	  --container-dialog-center-w-max: var(--container-2xl);
 
   /* === BORDERS & RADIUS === */
   --border-width-dialog: var(--border-width-sm);

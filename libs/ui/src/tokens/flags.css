@@ -1,0 +1,10 @@
+/* Lazy-loaded full flag icon set (Iconify + Tailwind v4) */
+
+/* Only generate utilities (avoid preflight duplication) */
+@import "tailwindcss/utilities";
+
+/* Iconify plugin for `icon-[...]` classes */
+@plugin "@iconify/tailwind4";
+
+/* Only scan the full mapping for this bundle */
+@source "../icons/flags.ts";

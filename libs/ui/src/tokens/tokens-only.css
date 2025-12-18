@@ -1,6 +1,9 @@
 /* Tokens only - without Tailwind import */
 /* This file is for apps that import Tailwind themselves */
 
+/* Prevent Tailwind/Iconify from bundling the full flag set into the main CSS */
+@source not "../icons/flags.ts";
+
 /* Primitive tokens */
 @import "./_base.css";
 @import "./_colors.css";

@@ -31,10 +31,12 @@
   --spacing-color-select-lg: var(--spacing-450);
 
   /* === TYPOGRAPHY === */
-  --text-color-select-sm: var(--text-xs);
-  --text-color-select-md: var(--text-sm);
-  --text-color-select-lg: var(--text-md);
-  --size-color-select-icon: 50%;
+	  --text-color-select-sm: var(--text-xs);
+	  --text-color-select-md: var(--text-sm);
+	  --text-color-select-lg: var(--text-md);
+	  --size-color-select-icon: 50%;
+	  --width-color-select-icon: var(--size-color-select-icon);
+	  --height-color-select-icon: var(--size-color-select-icon);
 
   /* === BORDERS & RADIUS === */
   --radius-color-select-full: var(--radius-full);
