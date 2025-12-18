@@ -1,4 +1,4 @@
-name: UI Release
+name: Address Release
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -34,16 +34,16 @@ jobs:
       - name: Set Nx SHAs
         uses: nrwl/nx-set-shas@v4
 
-      - name: Check if UI is affected
+      - name: Check if Address is affected
         id: check
         run: |
           AFFECTED=$(pnpm exec nx show projects --affected --base=$NX_BASE --head=$NX_HEAD)
-          if echo "$AFFECTED" | grep -Fxq "@techsio/ui-kit"; then
+          if echo "$AFFECTED" | grep -Fxq "address" || echo "$AFFECTED" | grep -Fxq "@techsio/address"; then
             echo "is_affected=true" >> $GITHUB_OUTPUT
-            echo "UI library is affected, will proceed with release"
+            echo "Address package is affected, will proceed with release"
           else
             echo "is_affected=false" >> $GITHUB_OUTPUT
-            echo "UI library is not affected, skipping release"
+            echo "Address package is not affected, skipping release"
           fi
 
   release:
@@ -69,18 +69,18 @@ jobs:
         with:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
-          scope: '@techsio'
+          scope: "@techsio"
 
       - name: Update npm (trusted publishing needs >= 11.5.1)
         run: npm install -g npm@latest
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
-      - name: Build UI package
-        run: pnpm exec nx run @techsio/ui-kit:build
+      - name: Build Address package
+        run: pnpm -C libs/address build
 
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: pnpm -C libs/ui semantic-release
+        run: pnpm -C libs/address semantic-release

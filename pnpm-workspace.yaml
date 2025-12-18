@@ -1,6 +1,9 @@
 minimumReleaseAge: 1440
 # trustPolicy: no-downgrade
 
+minimumReleaseAgeExclude:
+  - '@medusajs/*'
+
 packages:
   - packages/**
   - apps/**
