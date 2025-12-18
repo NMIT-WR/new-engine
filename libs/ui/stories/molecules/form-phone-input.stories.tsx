@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { useState } from "react"
+import { Button } from "../../src/atoms/button"
 import { FormPhoneInput } from "../../src/molecules/form-phone-input"
 
 const meta: Meta<typeof FormPhoneInput> = {
@@ -50,7 +51,7 @@ A phone number input component with integrated country selector and real-time fo
 	},
 	decorators: [
 		(Story) => (
-			<div className="w-96 p-4">
+			<div className="w-96 p-200">
 				<Story />
 			</div>
 		),
@@ -68,6 +69,7 @@ export const Default: Story = {
 		label: "Phone Number",
 		placeholder: "Enter phone number",
 		helpText: "Enter your phone number with country code",
+		size: "sm",
 	},
 }
 
@@ -94,7 +96,7 @@ export const WithDefaultCountry: Story = {
 
 export const Sizes: Story = {
 	render: () => (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-300">
 			<FormPhoneInput
 				id="phone-sm"
 				label="Small"
@@ -121,7 +123,7 @@ export const Sizes: Story = {
 
 export const ValidationStates: Story = {
 	render: () => (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-300">
 			<FormPhoneInput
 				id="phone-default-state"
 				label="Default State"
@@ -162,7 +164,7 @@ export const ValidationStates: Story = {
 
 export const States: Story = {
 	render: () => (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-300">
 			<FormPhoneInput
 				id="phone-disabled"
 				label="Disabled"
@@ -204,7 +206,7 @@ export const Controlled: Story = {
 		const [country, setCountry] = useState<string>("CZ")
 
 		return (
-			<div className="space-y-4">
+			<div className="space-y-200">
 				<FormPhoneInput
 					id="phone-controlled"
 					label="Phone Number"
@@ -213,7 +215,7 @@ export const Controlled: Story = {
 					onCountryChange={setCountry}
 				/>
 
-				<div className="text-sm space-y-1 p-3 bg-gray-100 rounded">
+				<div className="space-y-50 rounded bg-surface p-150 text-sm">
 					<div>
 						<strong>E.164 Value:</strong> {value || "(empty)"}
 					</div>
@@ -222,24 +224,26 @@ export const Controlled: Story = {
 					</div>
 				</div>
 
-				<div className="flex gap-2">
-					<button
+				<div className="flex gap-100">
+					<Button
 						type="button"
-						className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
+						size="sm"
 						onClick={() => {
 							setValue("+442071234567")
 							setCountry("GB")
 						}}
 					>
 						Set UK Number
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
-						className="px-3 py-1 text-sm bg-gray-200 rounded"
+						size="sm"
+						theme="light"
+						variant="danger"
 						onClick={() => setValue("")}
 					>
 						Clear
-					</button>
+					</Button>
 				</div>
 			</div>
 		)
@@ -274,7 +278,7 @@ export const WithinForm: Story = {
 		}
 
 		return (
-			<form onSubmit={handleSubmit} className="space-y-4">
+			<form onSubmit={handleSubmit} className="space-y-200">
 				<FormPhoneInput
 					id="form-phone"
 					label="Contact Phone"
@@ -287,16 +291,11 @@ export const WithinForm: Story = {
 					helpText="We'll use this to contact you about your order"
 				/>
 
-				<button
-					type="submit"
-					className="px-4 py-2 bg-blue-500 text-white rounded"
-				>
-					Submit
-				</button>
+				<Button type="submit" size="sm">Submit</Button>
 
 				{submitted && (
-					<div className="mt-4 rounded-md border border-green-200 bg-green-50 p-4">
-						<h4 className="mb-2 font-medium">Form Submitted:</h4>
+					<div className="rounded-md border border-success bg-success-light p-200">
+						<h4 className="font-medium">Form Submitted:</h4>
 						<p>
 							<strong>Phone (E.164):</strong> {submitted.phone}
 						</p>
