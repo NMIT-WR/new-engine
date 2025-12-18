@@ -1,9 +1,8 @@
-"use client"
+'use client'
 
-import { useQueryClient } from "@tanstack/react-query"
-import { Button } from "@techsio/ui-kit/atoms/button"
-import { useParams } from "next/navigation"
-import { queryKeys } from "@/lib/query-keys"
+import { useQueryClient } from '@tanstack/react-query'
+import { Button } from '@techsio/ui-kit/atoms/button'
+import { queryKeys } from '@/lib/query-keys'
 
 type ErrorProps = {
   error: Error & { digest?: string }
@@ -12,20 +11,10 @@ type ErrorProps = {
 
 export default function ErrorProduct({ reset }: ErrorProps) {
   const queryClient = useQueryClient()
-  const params = useParams()
-  const handle = typeof params.handle === "string" ? params.handle : undefined
 
   const handleRetry = () => {
     queryClient.resetQueries({ queryKey: queryKeys.regions() })
-
-    if (handle) {
-      queryClient.resetQueries({
-        queryKey: [...queryKeys.products.all(), "detail", handle],
-      })
-    } else {
-      queryClient.resetQueries({ queryKey: queryKeys.products.all() })
-    }
-
+    queryClient.resetQueries({ queryKey: queryKeys.products.all() })
     reset()
   }
 
