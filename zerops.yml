@@ -9,7 +9,7 @@ zerops:
         # JWT_SECRET and COOKIE_SECRET use placeholders via build-medusa.sh script
       base: nodejs@22
       buildCommands:
-        - ./scripts/build-medusa.sh
+        - bash ./scripts/build-medusa.sh
         # Move prod node_modules to apps/medusa-be (equivalent to Docker's COPY --from=build)
         - mv medusa-be-prod/node_modules apps/medusa-be/
       deployFiles:

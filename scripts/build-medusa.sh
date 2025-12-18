@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # Medusa Build Script
 # Used by both Docker and Zerops to ensure consistent build behavior.
