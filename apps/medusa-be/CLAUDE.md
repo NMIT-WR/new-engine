@@ -14,6 +14,14 @@ npx medusa db:generate MODULE               # gen migration
 
 **Feature-flagged migrations:** Enable `FEATURE_*` env var before `make medusa-generate-migration MODULE=my_module`.
 
+## Production Build
+
+`scripts/build-medusa.sh` (monorepo root) - used by Docker and Zerops, not local dev.
+
+**Build-time secrets:** Medusa validates `JWT_SECRET`/`COOKIE_SECRET` at build but uses them only at runtime. Script provides placeholders; real secrets via runtime env vars.
+
+**Silent failures:** Build may exit 0 with empty `.medusa/`. Script validates `.medusa/server/medusa-config.js` exists, fails fast with log tail if missing.
+
 ## Structure
 
 ```

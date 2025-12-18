@@ -26,33 +26,9 @@ FROM base AS build
 
 COPY . .
 
-# Remove all apps/libs not needed by medusa-be, clean caches
-RUN find apps -maxdepth 1 -mindepth 1 -type d ! -name 'medusa-be' -exec rm -rf {} + && \
-    rm -rf libs && \
-    rm -rf node_modules apps/medusa-be/node_modules apps/medusa-be/.medusa
-
-RUN pnpm install --filter=medusa-be...
-
-# Inline dummy secrets satisfy Medusa's build-time validation without embedding real secrets in image layers.
-# Real secrets must be provided at runtime via env vars, or Medusa will crash (by design).
+# Build using shared script (cleanup, install, build, validate, prod deploy)
 ARG FEATURE_PPL_ENABLED=0
-RUN NODE_ENV=production \
-    JWT_SECRET=build-placeholder \
-    COOKIE_SECRET=build-placeholder \
-    FEATURE_PPL_ENABLED=${FEATURE_PPL_ENABLED} \
-    pnpm nx run medusa-be:build --skip-nx-cache 2>&1 | tee /tmp/build.log; \
-    if [ ! -f apps/medusa-be/.medusa/server/medusa-config.js ]; then \
-      echo ""; \
-      echo "========== BUILD FAILED =========="; \
-      echo "Expected output not found: .medusa/server/medusa-config.js"; \
-      echo "=== Last 50 lines of build output ==="; \
-      tail -50 /tmp/build.log; \
-      exit 1; \
-    fi
-
-# Get production-only dependencies and clean up
-RUN pnpm --filter=medusa-be --prod deploy medusa-be-prod && \
-    rm -rf node_modules apps/medusa-be/node_modules
+RUN FEATURE_PPL_ENABLED=${FEATURE_PPL_ENABLED} ./scripts/build-medusa.sh
 
 # ============================================
 # PROD RUNTIME - minimal final image
@@ -72,6 +48,10 @@ WORKDIR /app
 COPY --from=build --chown=node:node /var/www/apps/medusa-be/.medusa/server ./
 COPY --from=build --chown=node:node /var/www/medusa-be-prod/node_modules ./node_modules
 COPY --from=build --chown=node:node /var/www/apps/medusa-be/src/scripts/seed-files ./src/scripts/seed-files
+
+# Create writable dirs for runtime (types, admin assets, local uploads if used)
+RUN mkdir -p /app/.medusa/types /app/.medusa/client /app/static && \
+    chown -R node:node /app/.medusa /app/static
 
 # Run as non-root user
 USER node
