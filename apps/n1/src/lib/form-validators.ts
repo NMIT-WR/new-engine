@@ -1,3 +1,4 @@
+import { AUTH_MESSAGES } from "./auth-messages"
 import { VALIDATION_MESSAGES } from "./validation-messages"
 
 export const addressValidators = {
@@ -95,15 +96,15 @@ export const emailValidator = {
 export const PASSWORD_REQUIREMENTS = [
   {
     id: "min-length",
-    label: "Alespoň 8 znaků",
+    label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_LENGTH,
     test: (pwd: string) => pwd.length >= 8,
   },
   {
     id: "has-number",
-    label: "Alespoň 1 číslice",
+    label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_NUMBER,
     test: (pwd: string) => /\d/.test(pwd),
   },
-] as const
+]
 
 export const isPasswordValid = (password: string): boolean =>
   PASSWORD_REQUIREMENTS.every((req) => req.test(password))
