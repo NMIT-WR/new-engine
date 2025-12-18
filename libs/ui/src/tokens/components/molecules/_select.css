@@ -59,12 +59,23 @@
   --spacing-content: var(--spacing-450);
 
   /* === TYPOGRAPHY === */
-  --text-select-trigger-size: var(--text-md);
+  /* Trigger typography - size variants */
+  --text-select-trigger-xs: var(--text-xs);
+  --text-select-trigger-sm: var(--text-sm);
+  --text-select-trigger-md: var(--text-md);
+  --text-select-trigger-lg: var(--text-lg);
 
-  --text-select-xs: var(--text-xs);
-  --text-select-sm: var(--text-sm);
-  --text-select-md: var(--text-md);
-  --text-select-lg: var(--text-lg);
+  /* Item typography - size variants */
+  --text-select-item-xs: var(--text-xs);
+  --text-select-item-sm: var(--text-sm);
+  --text-select-item-md: var(--text-md);
+  --text-select-item-lg: var(--text-lg);
+
+  /* Value text typography - size variants */
+  --text-select-value-xs: var(--text-xs);
+  --text-select-value-sm: var(--text-sm);
+  --text-select-value-md: var(--text-md);
+  --text-select-value-lg: var(--text-lg);
 
   /* === BORDERS & RADIUS === */
   --radius-select: var(--radius-sm);
