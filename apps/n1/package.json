@@ -6,8 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "bash -lc 'ROOT=$(git rev-parse --show-toplevel) && cd \"$ROOT\" || exit 1; BASE=$(git merge-base HEAD origin/feat/n1); FILES=(); while IFS= read -r file; do [ -n \"$file\" ] && FILES+=(\"$file\"); done < <(git diff --name-only --diff-filter=ACMRT \"$BASE\" -- apps/n1); if [ ${#FILES[@]} -eq 0 ]; then exit 0; fi; pnpm exec biome check \"${FILES[@]}\"'",
-    "format": "biome format --write",
+    "lint": "pnpm -w exec biome check --changed --since=origin/feat/n1",
+    "format": "pnpm -w exec biome format --write",
     "generate:categories": "node scripts/generate-categories.mjs",
     "validate:token-usage": "node scripts/validate-token-usage.mjs"
   },
@@ -26,7 +26,6 @@
     "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.90.2",

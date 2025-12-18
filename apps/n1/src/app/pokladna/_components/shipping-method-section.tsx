@@ -3,6 +3,7 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
+import type { ReactNode } from "react"
 import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
 import { formatToTaxIncluded } from "@/utils/format/format-product"
 
@@ -50,13 +51,13 @@ function ShippingOptionCard({
 export function ShippingMethodSection({
   shipping,
 }: ShippingMethodSectionProps) {
-  let content: JSX.Element
+  let content: ReactNode
 
   if (shipping.isLoadingShipping) {
     content = (
       <div aria-busy="true" className="grid grid-cols-1 gap-200 md:grid-cols-2">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <Skeleton.Rectangle key={i} style={{ height: "72px" }} />
+          <Skeleton.Rectangle className="h-[72px]" key={i} />
         ))}
       </div>
     )
