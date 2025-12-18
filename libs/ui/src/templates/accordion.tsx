@@ -1,5 +1,5 @@
-import type { IconType } from '../atoms/icon'
-import { Accordion, type AccordionProps } from '../molecules/accordion'
+import type { IconType } from "../atoms/icon"
+import { Accordion, type AccordionProps } from "../molecules/accordion"
 
 export interface AccordionItem {
   value: string
@@ -9,7 +9,7 @@ export interface AccordionItem {
 }
 
 export interface AccordionTemplateProps
-  extends Omit<AccordionProps, 'children'> {
+  extends Omit<AccordionProps, "children"> {
   items: AccordionItem[]
   showIndicator?: boolean
   indicatorIcon?: IconType
@@ -18,10 +18,10 @@ export interface AccordionTemplateProps
 export function AccordionTemplate({
   items,
   showIndicator = true,
-  indicatorIcon = 'token-icon-accordion-chevron',
-  variant = 'default',
-  size = 'md',
-  shadow = 'none',
+  indicatorIcon = "token-icon-accordion-chevron",
+  variant = "default",
+  size = "md",
+  shadow = "none",
   collapsible = true,
   multiple = false,
   defaultValue,
@@ -33,23 +33,23 @@ export function AccordionTemplate({
 }: AccordionTemplateProps) {
   return (
     <Accordion
-      ref={ref}
-      variant={variant}
-      size={size}
-      shadow={shadow}
-      collapsible={collapsible}
-      multiple={multiple}
-      defaultValue={defaultValue}
-      value={value}
-      onChange={onChange}
       className={className}
+      collapsible={collapsible}
+      defaultValue={defaultValue}
+      multiple={multiple}
+      onChange={onChange}
+      ref={ref}
+      shadow={shadow}
+      size={size}
+      value={value}
+      variant={variant}
       {...accordionProps}
     >
       {items.map((item) => (
         <Accordion.Item
+          disabled={item.disabled}
           key={item.value}
           value={item.value}
-          disabled={item.disabled}
         >
           <Accordion.Header>
             <Accordion.Title>{item.title}</Accordion.Title>

@@ -1,14 +1,14 @@
-'use client'
-import { formatPrice } from '@/lib/format-price'
+"use client"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Link from "next/link"
+import { formatPrice } from "@/lib/format-price"
 import type {
   CheckoutAddressData,
   PaymentMethod,
   ReducedShippingMethod,
-} from '@/types/checkout'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Link from 'next/link'
+} from "@/types/checkout"
 
 interface OrderSummaryProps {
   addressData?: CheckoutAddressData
@@ -31,7 +31,7 @@ export function OrderSummary({
   orderNumber,
   isLoading = false,
 }: OrderSummaryProps) {
-  if (!addressData || !addressData.shipping) {
+  if (!(addressData && addressData.shipping)) {
     return (
       <div className="fade-in slide-in-from-bottom-2 animate-in duration-300">
         <div className="rounded-lg bg-surface p-4 sm:p-6">
@@ -48,7 +48,7 @@ export function OrderSummary({
 
   const shippingPrice = formatPrice(
     selectedShipping?.calculated_price.calculated_amount || 0,
-    selectedShipping?.calculated_price.currency_code || 'CZK'
+    selectedShipping?.calculated_price.currency_code || "CZK"
   )
 
   // Order complete state
@@ -61,7 +61,7 @@ export function OrderSummary({
         <div className="rounded-lg bg-surface p-4 sm:p-6">
           <div className="mb-4 text-center sm:mb-6">
             <div className="no-print mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-success sm:mb-4 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
-              <Icon icon="token-icon-check" className="text-white sm:text-lg" />
+              <Icon className="text-white sm:text-lg" icon="token-icon-check" />
             </div>
             <h2 className="mb-4 font-bold text-lg sm:mb-6 sm:text-xl">
               Objednávka byla úspěšně odeslána!
@@ -77,11 +77,11 @@ export function OrderSummary({
                 Předpokládané doručení
               </h3>
               <p className="text-fg-secondary text-sm">
-                {deliveryDate.toLocaleDateString('cs-CZ', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
+                {deliveryDate.toLocaleDateString("cs-CZ", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
                 })}
               </p>
             </div>
@@ -117,10 +117,10 @@ export function OrderSummary({
                 <p className="text-fg-secondary text-sm">
                   <strong>Doručovací adresa:</strong>
                   <br />
-                  {addressData.shipping.firstName}{' '}
+                  {addressData.shipping.firstName}{" "}
                   {addressData.shipping.lastName}
                   <br />
-                  {addressData.shipping.street}, {addressData.shipping.city}{' '}
+                  {addressData.shipping.street}, {addressData.shipping.city}{" "}
                   {addressData.shipping.postalCode}
                 </p>
                 <p className="text-fg-secondary text-sm">
@@ -135,32 +135,32 @@ export function OrderSummary({
 
           <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4">
             <Button
+              className="hidden sm:flex"
+              icon="token-icon-printer"
               onClick={() => {
                 // Add print date to body for CSS
                 document.body.setAttribute(
-                  'data-print-date',
-                  new Date().toLocaleDateString('cs-CZ')
+                  "data-print-date",
+                  new Date().toLocaleDateString("cs-CZ")
                 )
                 window.print()
                 // Clean up after print
                 setTimeout(() => {
-                  document.body.removeAttribute('data-print-date')
+                  document.body.removeAttribute("data-print-date")
                 }, 1000)
               }}
               size="sm"
               variant="secondary"
-              icon="token-icon-printer"
-              className="hidden sm:flex"
             >
               Vytisknout potvrzení
             </Button>
             <LinkButton
-              href="/products"
-              variant="primary"
-              icon="token-icon-shopping-bag"
-              className="w-full gap-2 rounded-sm text-md sm:flex-1"
-              size="sm"
               as={Link}
+              className="w-full gap-2 rounded-sm text-md sm:flex-1"
+              href="/products"
+              icon="token-icon-shopping-bag"
+              size="sm"
+              variant="primary"
             >
               Pokračovat v nákupu
             </LinkButton>
@@ -238,31 +238,31 @@ export function OrderSummary({
           <div>
             <h3 className="mb-2 font-semibold text-fg-primary">Platba</h3>
             <p className="text-fg-secondary text-sm">
-              {selectedPayment?.name}{' '}
-              {selectedPayment?.fee ? `(+${selectedPayment.fee} Kč)` : ''}
+              {selectedPayment?.name}{" "}
+              {selectedPayment?.fee ? `(+${selectedPayment.fee} Kč)` : ""}
             </p>
           </div>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4">
           <Button
-            variant="secondary"
-            onClick={onEditClick}
             className="w-full sm:w-auto"
+            onClick={onEditClick}
             size="sm"
+            variant="secondary"
           >
             Upravit údaje
           </Button>
           <Button
-            onClick={onCompleteClick}
-            icon="icon-[mdi--lock-outline]"
             className="w-full sm:flex-1"
-            isLoading={isLoading}
             disabled={isLoading}
+            icon="icon-[mdi--lock-outline]"
+            isLoading={isLoading}
+            onClick={onCompleteClick}
             size="sm"
           >
             <span className="flex items-center gap-2">Dokončit objednávku</span>
-          </Button>{' '}
+          </Button>{" "}
         </div>
       </div>
     </div>

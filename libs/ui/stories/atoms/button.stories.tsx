@@ -1,32 +1,129 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
+import { fn } from 'storybook/test'
+import { iconLabels, iconOptions } from '../helpers/icon-options'
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
   component: Button,
+  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
       options: ['primary', 'secondary', 'tertiary', 'warning', 'danger'],
+      description: 'Controls the semantic style of the button',
+      table: {
+        defaultValue: { summary: 'primary' },
+      },
+    },
+    theme: {
+      control: 'select',
+      options: ['solid', 'light', 'outlined', 'borderless', 'unstyled'],
+      description: 'Controls the visual weight/theme of the button',
+      table: {
+        defaultValue: { summary: 'solid' },
+      },
     },
     size: {
       control: 'select',
-      options: ['sm', 'md', 'lg'],
+      options: ['sm', 'md', 'lg', 'current'],
+      description: 'Controls the size of the button',
+      table: {
+        defaultValue: { summary: 'md' },
+      },
     },
+    type: {
+      control: 'radio',
+      options: ['button', 'submit', 'reset'],
+      description: 'The HTML type of the button',
+      table: {
+        defaultValue: { summary: 'button' },
+      },
+    },
+    block: {
+      control: 'boolean',
+      description: 'Whether the button should take up the full width of its container',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    uppercase: {
+      control: 'boolean',
+      description: 'Whether the button text should be uppercase',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the button is disabled',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    isLoading: {
+      control: 'boolean',
+      description: 'Whether the button is in a loading state',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    loadingText: {
+      control: 'text',
+      description: 'Text to display when isLoading is true',
+    },
+    icon: {
+      control: {
+        type: 'select',
+        labels: iconLabels,
+      },
+      options: iconOptions,
+      description: 'Icon to display in the button',
+    },
+    iconPosition: {
+      control: 'radio',
+      options: ['left', 'right'],
+      description: 'Position of the icon relative to the text',
+      table: {
+        defaultValue: { summary: 'left' },
+      },
+    },
+    children: {
+      control: 'text',
+      description: 'Content of the button',
+    },
+    onClick: {
+      description: 'Click handler',
+    },
+  },
+  args: {
+    variant: 'primary',
+    theme: 'solid',
+    size: 'md',
+    type: 'button',
+    block: false,
+    uppercase: false,
+    disabled: false,
+    isLoading: false,
+    loadingText: 'Loading...',
+    children: 'Button',
+    iconPosition: 'left',
+    onClick: fn(),
   },
   parameters: {
     layout: 'centered',
-    docs: {
-      description: {
-        component: '',
-      },
-    },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof Button>
+
+export const Playground: Story = {
+  args: {
+    children: 'Playground Button',
+  },
+}
 
 export const Variants: Story = {
   render: () => (

@@ -1,78 +1,78 @@
-import { Badge, type BadgeProps } from '@ui/atoms/badge'
-import { Button } from '@ui/atoms/button'
-import { NumericInput } from '@ui/atoms/numeric-input'
-import { Rating, type RatingProps } from '@ui/atoms/rating'
-import { slugify, tv } from '@ui/utils'
-import Image from 'next/image'
-import { type HTMLAttributes, type ReactNode, useId } from 'react'
-import type { VariantProps } from 'tailwind-variants'
+import { Badge, type BadgeProps } from "@ui/atoms/badge"
+import { Button } from "@ui/atoms/button"
+import { NumericInput } from "@ui/atoms/numeric-input"
+import { Rating, type RatingProps } from "@ui/atoms/rating"
+import { slugify, tv } from "@ui/utils"
+import Image from "next/image"
+import { type HTMLAttributes, type ReactNode, useId } from "react"
+import type { VariantProps } from "tailwind-variants"
 
 //object-cover aspect-product-card-image
 const productCard = tv({
   slots: {
     base: [
-      'rounded-pc p-pc-padding h-full',
-      'border-(length:--border-pc-width) border-pc-border bg-pc max-w-pc-max shadow-sm',
+      "h-full rounded-pc p-pc-padding",
+      "border-(length:--border-pc-width) max-w-pc-max border-pc-border bg-pc shadow-sm",
     ],
-    imageSlot: 'object-cover aspect-pc-image h-full rounded-pc-image',
-    nameSlot: 'text-pc-name-fg text-pc-name-size truncate',
-    priceSlot: 'text-pc-price-fg text-pc-price-size',
-    stockStatusSlot: 'text-pc-stock-fg text-pc-stock-size ',
-    badgesSlot: 'flex flex-wrap gap-pc-box',
-    ratingSlot: 'flex items-center',
-    buttonsSlot: 'flex flex-wrap w-fit',
-    cartButton: 'bg-btn-cart hover:bg-btn-cart-hover text-btn-cart-fg w-max',
+    imageSlot: "aspect-pc-image h-full rounded-pc-image object-cover",
+    nameSlot: "truncate text-pc-name-fg text-pc-name-size",
+    priceSlot: "text-pc-price-fg text-pc-price-size",
+    stockStatusSlot: "text-pc-stock-fg text-pc-stock-size",
+    badgesSlot: "flex flex-wrap gap-pc-box",
+    ratingSlot: "flex items-center",
+    buttonsSlot: "flex w-fit flex-wrap",
+    cartButton: "w-max bg-btn-cart text-btn-cart-fg hover:bg-btn-cart-hover",
     detailButton:
-      'bg-btn-detail hover:bg-btn-detail-hover text-btn-detail-fg w-max',
+      "w-max bg-btn-detail text-btn-detail-fg hover:bg-btn-detail-hover",
     wishlistButton:
-      'bg-btn-wishlist hover:bg-btn-wishlist-hover text-btn-wishlist-fg w-max',
+      "w-max bg-btn-wishlist text-btn-wishlist-fg hover:bg-btn-wishlist-hover",
   },
   variants: {
     // variant for layout of the card
     layout: {
       column: {
-        base: ['grid grid-cols-1 gap-pc-col-layout'],
-        imageSlot: 'w-full order-image',
-        nameSlot: 'order-name',
-        priceSlot: 'order-price',
-        stockStatusSlot: 'order-stock',
-        badgesSlot: 'order-badges',
-        ratingSlot: 'order-ratings',
-        buttonsSlot: 'order-buttons',
+        base: ["grid grid-cols-1 gap-pc-col-layout"],
+        imageSlot: "order-image w-full",
+        nameSlot: "order-name",
+        priceSlot: "order-price",
+        stockStatusSlot: "order-stock",
+        badgesSlot: "order-badges",
+        ratingSlot: "order-ratings",
+        buttonsSlot: "order-buttons",
       },
       row: {
-        base: 'grid grid-cols-[auto_1fr] gap-x-pc-row-layout',
-        imageSlot: 'row-span-6',
+        base: "grid grid-cols-[auto_1fr] gap-x-pc-row-layout",
+        imageSlot: "row-span-6",
       },
     },
     // variant for layout of the buttons
     buttonLayout: {
       horizontal: {
-        buttonsSlot: 'justify-center gap-2',
+        buttonsSlot: "justify-center gap-2",
       },
       vertical: {
-        buttonsSlot: 'flex-col gap-2',
+        buttonsSlot: "flex-col gap-2",
       },
     },
   },
   /* Define compound styles for slots */
   compoundSlots: [
     {
-      layout: 'row',
+      layout: "row",
       slots: [
-        'nameSlot',
-        'priceSlot',
-        'stockStatusSlot',
-        'badgesSlot',
-        'ratingSlot',
-        'buttonsSlot',
+        "nameSlot",
+        "priceSlot",
+        "stockStatusSlot",
+        "badgesSlot",
+        "ratingSlot",
+        "buttonsSlot",
       ],
-      class: ['col-start-2'],
+      class: ["col-start-2"],
     },
   ],
   defaultVariants: {
-    layout: 'column',
-    buttonLayout: 'horizontal',
+    layout: "column",
+    buttonLayout: "horizontal",
   },
 })
 
@@ -110,9 +110,9 @@ export function DemoProductCard({
   hasCartButton,
   hasDetailButton,
   hasWishlistButton,
-  cartButtonText = 'Add to cart',
-  detailButtonText = 'Detail',
-  wishlistButtonText = 'Wishlist',
+  cartButtonText = "Add to cart",
+  detailButtonText = "Detail",
+  wishlistButtonText = "Wishlist",
   onCartClick,
   onDetailClick,
   onWishlistClick,
@@ -145,14 +145,14 @@ export function DemoProductCard({
       {/* Optimized Next.js Image */}
       <div className={`relative ${imageSlot({ layout })}`}>
         <Image
-          src={imageUrl}
           alt={name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 20vw, 15vw"
           className="object-cover"
+          fill
           loading="lazy"
-          quality={20}
           placeholder="empty"
+          quality={20}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 20vw, 15vw"
+          src={imageUrl}
         />
       </div>
 
@@ -195,14 +195,14 @@ export function DemoProductCard({
             <div className="flex gap-pc-box">
               {numericInput && <NumericInput />}
               <Button
-                size="sm"
                 className={cartButton()}
+                icon="token-icon-cart"
                 onClick={(event) => {
                   event.preventDefault()
                   event.stopPropagation()
                   onCartClick?.()
                 }}
-                icon="token-icon-cart"
+                size="sm"
               >
                 {cartButtonText}
               </Button>
@@ -210,20 +210,20 @@ export function DemoProductCard({
           )}
           {hasDetailButton && (
             <Button
-              size="sm"
               className={detailButton()}
-              onClick={onDetailClick}
               icon="token-icon-eye"
+              onClick={onDetailClick}
+              size="sm"
             >
               {detailButtonText}
             </Button>
           )}
           {hasWishlistButton && (
             <Button
-              size="sm"
               className={wishlistButton()}
-              onClick={onWishlistClick}
               icon="token-icon-heart"
+              onClick={onWishlistClick}
+              size="sm"
             >
               {wishlistButtonText}
             </Button>

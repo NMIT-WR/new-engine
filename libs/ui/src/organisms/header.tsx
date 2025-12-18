@@ -1,98 +1,98 @@
-import { createContext, useContext, useState } from 'react'
-import type { HTMLAttributes, ReactNode, Ref } from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { Button } from '../atoms/button'
-import { tv } from '../utils'
+import type { HTMLAttributes, ReactNode, Ref } from "react"
+import { createContext, useContext, useState } from "react"
+import type { VariantProps } from "tailwind-variants"
+import { Button } from "../atoms/button"
+import { tv } from "../utils"
 
 const headerVariants = tv({
   slots: {
     root: [
-      'w-full @container bg-header-bg',
-      'flex justify-between',
-      'max-w-header-max',
-      'relative',
+      "@container w-full bg-header-bg",
+      "flex justify-between",
+      "max-w-header-max",
+      "relative",
     ],
-    desktop: 'flex @max-header-desktop:hidden w-full',
+    desktop: "flex @max-header-desktop:hidden w-full",
     mobile: [
-      'data-[open=false]:hidden @header-desktop:hidden *:flex *:flex-col absolute top-full data-[position=left]:left-0 data-[position=right]:right-0',
+      "absolute top-full @header-desktop:hidden *:flex *:flex-col data-[position=right]:right-0 data-[position=left]:left-0 data-[open=false]:hidden",
     ],
     container: [
-      'grid gap-header-container w-full',
-      'data-[position=start]:justify-items-start-safe',
-      'data-[position=center]:justify-items-center-safe',
-      'data-[position=end]:justify-items-end-safe',
+      "grid w-full gap-header-container",
+      "data-[position=start]:justify-items-start-safe",
+      "data-[position=center]:justify-items-center-safe",
+      "data-[position=end]:justify-items-end-safe",
     ],
-    nav: ['flex items-center flex-1', '@max-header-desktop:bg-header-bg'],
+    nav: ["flex flex-1 items-center", "@max-header-desktop:bg-header-bg"],
     navItem: [
-      'bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover',
-      'data-[active=true]:text-header-nav-fg-active',
-      'data-[active=true]:font-header-nav-active',
-      'min-w-max',
+      "bg-header-nav-item-bg hover:bg-header-nav-item-bg-hover",
+      "data-[active=true]:text-header-nav-fg-active",
+      "data-[active=true]:font-header-nav-active",
+      "min-w-max",
     ],
-    actions: ['flex items-center', 'shrink-0'],
+    actions: ["flex items-center", "shrink-0"],
     actionItem: [
-      'text-header-actions-fg',
-      'hover:text-header-actions-fg-hover',
+      "text-header-actions-fg",
+      "hover:text-header-actions-fg-hover",
     ],
     hamburger: [
-      '@header-desktop:hidden',
-      'items-center',
-      'text-header-hamburger-fg hover:text-header-hamburger-fg-hover',
-      'transition-colors duration-header',
-      'cursor-pointer',
+      "@header-desktop:hidden",
+      "items-center",
+      "text-header-hamburger-fg hover:text-header-hamburger-fg-hover",
+      "transition-colors duration-header",
+      "cursor-pointer",
     ],
   },
   compoundSlots: [
     {
-      slots: ['navItem'],
+      slots: ["navItem"],
       class: [
-        'justify-start font-header-nav text-header-nav-fg hover:text-header-nav-fg-hover',
-        'cursor-pointer',
+        "justify-start font-header-nav text-header-nav-fg hover:text-header-nav-fg-hover",
+        "cursor-pointer",
       ],
     },
   ],
   variants: {
     direction: {
       vertical: {
-        root: ['flex-col'],
+        root: ["flex-col"],
       },
       horizontal: {
-        root: ['flex-row'],
+        root: ["flex-row"],
       },
     },
     size: {
       sm: {
-        nav: 'gap-header-nav-sm',
-        navItem: 'p-header-item-sm text-header-item-sm',
-        actions: 'gap-header-actions-sm',
-        actionItem: 'text-header-item-sm p-header-item-sm',
-        hamburger: 'text-header-hamburger-sm p-header-hamburger-sm',
+        nav: "gap-header-nav-sm",
+        navItem: "p-header-item-sm text-header-item-sm",
+        actions: "gap-header-actions-sm",
+        actionItem: "p-header-item-sm text-header-item-sm",
+        hamburger: "p-header-hamburger-sm text-header-hamburger-sm",
       },
       md: {
-        nav: 'gap-header-nav-md',
-        navItem: 'p-header-item-md text-header-item-md',
-        actions: 'gap-header-actions-md',
-        actionItem: 'text-header-item-md p-header-item-md',
-        hamburger: 'text-header-hamburger-md p-header-hamburger-md',
+        nav: "gap-header-nav-md",
+        navItem: "p-header-item-md text-header-item-md",
+        actions: "gap-header-actions-md",
+        actionItem: "p-header-item-md text-header-item-md",
+        hamburger: "p-header-hamburger-md text-header-hamburger-md",
       },
       lg: {
-        nav: 'gap-header-nav-lg',
-        navItem: 'p-header-item-lg text-header-item-lg',
-        actions: 'gap-header-actions-lg',
-        actionItem: 'text-header-item-lg p-header-item-lg',
-        hamburger: 'text-header-hamburger-lg p-header-hamburger-lg',
+        nav: "gap-header-nav-lg",
+        navItem: "p-header-item-lg text-header-item-lg",
+        actions: "gap-header-actions-lg",
+        actionItem: "p-header-item-lg text-header-item-lg",
+        hamburger: "p-header-hamburger-lg text-header-hamburger-lg",
       },
     },
   },
   defaultVariants: {
-    size: 'md',
-    direction: 'horizontal',
+    size: "md",
+    direction: "horizontal",
   },
 })
 
 // === CONTEXT ===
 interface HeaderContextValue {
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
   isMobileMenuOpen: boolean
   setIsMobileMenuOpen: (open: boolean) => void
   toggleMobileMenu: () => void
@@ -115,43 +115,43 @@ export interface HeaderProps
 interface HeaderContainerProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
   ref?: Ref<HTMLElement>
-  position?: 'start' | 'center' | 'end'
+  position?: "start" | "center" | "end"
 }
 
 interface HeaderNavProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
   ref?: Ref<HTMLElement>
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
 }
 
 interface HeaderNavItemProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean
   children: ReactNode
   ref?: Ref<HTMLDivElement>
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
 }
 
 interface HeaderActionsProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   ref?: Ref<HTMLDivElement>
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
 }
 
 interface HeaderActionItemProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   ref?: Ref<HTMLDivElement>
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
 }
 
 interface HeaderMobileProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   ref?: Ref<HTMLDivElement>
-  position?: 'left' | 'right'
+  position?: "left" | "right"
 }
 
 export function Header({
-  size = 'md',
-  direction = 'horizontal',
+  size = "md",
+  direction = "horizontal",
   className,
   children,
   ref,
@@ -174,10 +174,10 @@ export function Header({
       }}
     >
       <header
-        ref={ref}
         className={root({
           className,
         })}
+        ref={ref}
         {...props}
       >
         {children}
@@ -194,7 +194,7 @@ Header.Desktop = function HeaderDesktop({
 }: HeaderContainerProps) {
   const { desktop } = headerVariants()
   return (
-    <section ref={ref} className={desktop({ className })} {...props}>
+    <section className={desktop({ className })} ref={ref} {...props}>
       {children}
     </section>
   )
@@ -204,17 +204,17 @@ Header.Mobile = function HeaderMobile({
   className,
   children,
   ref,
-  position = 'right',
+  position = "right",
   ...props
 }: HeaderMobileProps) {
   const { isMobileMenuOpen } = useContext(HeaderContext)
   const { mobile } = headerVariants()
   return (
     <section
-      ref={ref}
       className={mobile({ className })}
       data-open={isMobileMenuOpen}
       data-position={position}
+      ref={ref}
       {...props}
     >
       {children}
@@ -232,9 +232,9 @@ Header.Container = function HeaderContainer({
   const { container } = headerVariants()
   return (
     <section
-      ref={ref}
       className={container({ className })}
       data-position={position}
+      ref={ref}
       {...props}
     >
       {children}
@@ -250,11 +250,11 @@ Header.Nav = function HeaderNav({
   ...props
 }: HeaderNavProps) {
   const { size: contextSize } = useContext(HeaderContext)
-  const size = overrideSize ?? contextSize ?? 'md'
+  const size = overrideSize ?? contextSize ?? "md"
   const { nav } = headerVariants({ size })
 
   return (
-    <nav ref={ref} className={nav({ className })} {...props}>
+    <nav className={nav({ className })} ref={ref} {...props}>
       {children}
     </nav>
   )
@@ -269,14 +269,14 @@ Header.NavItem = function HeaderNavItem({
   ...props
 }: HeaderNavItemProps) {
   const context = useContext(HeaderContext)
-  const size = overrideSize ?? context.size ?? 'md'
+  const size = overrideSize ?? context.size ?? "md"
   const { navItem } = headerVariants({ size })
 
   return (
     <div
-      ref={ref}
       className={navItem({ className })}
       data-active={active || undefined}
+      ref={ref}
       {...props}
     >
       {children}
@@ -292,11 +292,11 @@ Header.Actions = function HeaderActions({
   ...props
 }: HeaderActionsProps) {
   const context = useContext(HeaderContext)
-  const size = overrideSize ?? context.size ?? 'md'
+  const size = overrideSize ?? context.size ?? "md"
   const { actions } = headerVariants({ size })
 
   return (
-    <div ref={ref} className={actions({ className })} {...props}>
+    <div className={actions({ className })} ref={ref} {...props}>
       {children}
     </div>
   )
@@ -310,11 +310,11 @@ Header.ActionItem = function HeaderActionItem({
   ...props
 }: HeaderActionItemProps) {
   const context = useContext(HeaderContext)
-  const size = overrideSize ?? context.size ?? 'md'
+  const size = overrideSize ?? context.size ?? "md"
   const { actionItem } = headerVariants({ size })
 
   return (
-    <div ref={ref} className={actionItem({ className })} {...props}>
+    <div className={actionItem({ className })} ref={ref} {...props}>
       {children}
     </div>
   )
@@ -322,20 +322,22 @@ Header.ActionItem = function HeaderActionItem({
 
 Header.Hamburger = function HeaderHamburger({
   className,
-}: { className?: string }) {
+}: {
+  className?: string
+}) {
   const { toggleMobileMenu, isMobileMenuOpen } = useContext(HeaderContext)
   const { hamburger } = headerVariants()
 
   return (
     <Button
-      theme="unstyled"
-      type="button"
       aria-expanded={isMobileMenuOpen}
       aria-label="Toggle mobile menu"
+      className={hamburger({ className })}
+      icon={isMobileMenuOpen ? "icon-[mdi--close]" : "icon-[mdi--menu]"}
       onClick={toggleMobileMenu}
       size="current"
-      className={hamburger({ className })}
-      icon={isMobileMenuOpen ? 'icon-[mdi--close]' : 'icon-[mdi--menu]'}
+      theme="unstyled"
+      type="button"
     />
   )
 }

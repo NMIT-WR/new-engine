@@ -1,5 +1,5 @@
-import type { CategoryTreeNode } from '@/lib/server/categories'
-import type { LeafParent } from '@/lib/static-data/categories'
+import type { CategoryTreeNode } from "@/lib/server/categories"
+import type { LeafParent } from "@/lib/static-data/categories"
 
 /**
  * Find a node by ID in the category tree

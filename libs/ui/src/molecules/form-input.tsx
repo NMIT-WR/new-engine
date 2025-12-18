@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react'
-import { ErrorText } from '../atoms/error-text'
-import { ExtraText } from '../atoms/extra-text'
-import { Input, type InputProps } from '../atoms/input'
-import { Label } from '../atoms/label'
+import type { ReactNode } from "react"
+import { ErrorText } from "../atoms/error-text"
+import { ExtraText } from "../atoms/extra-text"
+import { Input, type InputProps } from "../atoms/input"
+import { Label } from "../atoms/label"
 
-type ValidateStatus = 'default' | 'error' | 'success' | 'warning'
+type ValidateStatus = "default" | "error" | "success" | "warning"
 
 interface FormInputRawProps extends InputProps {
   id: string
@@ -17,10 +17,10 @@ interface FormInputRawProps extends InputProps {
 export function FormInputRaw({
   id,
   label,
-  validateStatus = 'default',
+  validateStatus = "default",
   helpText,
   extraText,
-  size = 'md',
+  size = "md",
   required,
   disabled,
   ...props
@@ -29,15 +29,15 @@ export function FormInputRaw({
 
   return (
     <div className="flex flex-col gap-form-field-gap">
-      <Label htmlFor={id} size={size} required={required} disabled={disabled}>
+      <Label disabled={disabled} htmlFor={id} required={required} size={size}>
         {label}
       </Label>
       <Input
-        id={id}
-        size={size}
-        required={required}
-        variant={validateStatus}
         disabled={disabled}
+        id={id}
+        required={required}
+        size={size}
+        variant={validateStatus}
         {...props}
         className="p-input-sm md:p-input-md"
       />
@@ -65,12 +65,9 @@ export function FormInput({
 
   return (
     <FormInputRaw
-      id={id}
-      size={size}
-      validateStatus={validateStatus}
       helpText={
-        validateStatus === 'error' ? (
-          <ErrorText id={helpTextId} size={size} showIcon>
+        validateStatus === "error" ? (
+          <ErrorText id={helpTextId} showIcon size={size}>
             {helpText}
           </ErrorText>
         ) : (
@@ -79,6 +76,9 @@ export function FormInput({
           </ExtraText>
         )
       }
+      id={id}
+      size={size}
+      validateStatus={validateStatus}
       {...props}
     />
   )

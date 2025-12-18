@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import Script from 'next/script'
-import { isHeurekaCountry, normalizeHeurekaCountry } from './country'
-import type { HeurekaCountry } from './types'
+import Script from "next/script"
+import { isHeurekaCountry, normalizeHeurekaCountry } from "./country"
+import type { HeurekaCountry } from "./types"
 
 export interface HeurekaProductProps {
   /** Country variant: 'cz' for Heureka.cz, 'sk' for Heureka.sk */
@@ -29,18 +29,21 @@ export interface HeurekaProductProps {
  * ```
  */
 export function HeurekaProduct({
-  country = 'cz',
+  country = "cz",
   debug = false,
   nonce,
 }: HeurekaProductProps) {
   const rawCountry = country as unknown
   const safeCountry = normalizeHeurekaCountry(rawCountry)
   if (debug && !isHeurekaCountry(rawCountry)) {
-    console.warn('[HeurekaProduct] Invalid country provided, defaulting to "cz"', {
-      country: rawCountry,
-    })
+    console.warn(
+      '[HeurekaProduct] Invalid country provided, defaulting to "cz"',
+      {
+        country: rawCountry,
+      }
+    )
   }
-  const domain = safeCountry === 'sk' ? 'heureka.sk' : 'heureka.cz'
+  const domain = safeCountry === "sk" ? "heureka.sk" : "heureka.cz"
 
   return (
     <Script

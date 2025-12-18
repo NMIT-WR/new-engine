@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link"
 
 export default function NotFound() {
   return (
@@ -14,10 +14,10 @@ export default function NotFound() {
           Stránka, kterou hledáte, neexistuje nebo byla přesunuta.
         </p>
         <div className="flex justify-center gap-not-found-actions-gap">
-          <Link href="/" className="">
+          <Link className="" href="/">
             Přejít na úvodní stránku
           </Link>
-          <Link href="/products" className="">
+          <Link className="" href="/products">
             Prohlédnout produkty
           </Link>
         </div>

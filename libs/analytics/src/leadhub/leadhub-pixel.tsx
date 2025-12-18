@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import Script from 'next/script'
-import { useEffect } from 'react'
-import type { LeadhubConfig } from './types'
+import Script from "next/script"
+import { useEffect } from "react"
+import type { LeadhubConfig } from "./types"
 
 /** Valid Leadhub tracking ID format (alphanumeric, hyphens, underscores) */
 const VALID_TRACKING_ID_PATTERN = /^[a-zA-Z0-9_-]+$/
@@ -34,18 +34,18 @@ export type LeadhubPixelProps = LeadhubConfig
  */
 export function LeadhubPixel({ trackingId, debug, nonce }: LeadhubPixelProps) {
   const isValidTrackingId =
-    typeof trackingId === 'string' && VALID_TRACKING_ID_PATTERN.test(trackingId)
+    typeof trackingId === "string" && VALID_TRACKING_ID_PATTERN.test(trackingId)
 
   useEffect(() => {
-    if (!debug || !isValidTrackingId) {
+    if (!(debug && isValidTrackingId)) {
       return
     }
-    console.log('[Leadhub] Initialized with tracking ID:', trackingId)
+    console.log("[Leadhub] Initialized with tracking ID:", trackingId)
   }, [debug, isValidTrackingId, trackingId])
 
   if (!trackingId) {
     if (debug) {
-      console.warn('[Leadhub] No tracking ID provided, skipping initialization')
+      console.warn("[Leadhub] No tracking ID provided, skipping initialization")
     }
     return null
   }
@@ -53,7 +53,7 @@ export function LeadhubPixel({ trackingId, debug, nonce }: LeadhubPixelProps) {
   // Validate trackingId format to prevent XSS
   if (!isValidTrackingId) {
     if (debug) {
-      console.error('[Leadhub] Invalid tracking ID format:', trackingId)
+      console.error("[Leadhub] Invalid tracking ID format:", trackingId)
     }
     return null
   }

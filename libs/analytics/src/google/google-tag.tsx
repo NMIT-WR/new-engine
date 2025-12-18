@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import Script from 'next/script'
-import type { GoogleAdsConfig } from './types'
+import Script from "next/script"
+import type { GoogleAdsConfig } from "./types"
 
 /** Valid Google Ads ID format: AW-XXXXXXXXX or G-XXXXXXXXX */
 const VALID_ADS_ID_PATTERN = /^(AW|G)-[A-Z0-9]+$/i
@@ -31,11 +31,11 @@ const VALID_ADS_ID_PATTERN = /^(AW|G)-[A-Z0-9]+$/i
  */
 export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
   const isValidAdsId =
-    typeof adsId === 'string' && VALID_ADS_ID_PATTERN.test(adsId)
+    typeof adsId === "string" && VALID_ADS_ID_PATTERN.test(adsId)
 
   if (!adsId) {
     if (debug) {
-      console.warn('[GoogleTag] No Ads ID provided, skipping initialization')
+      console.warn("[GoogleTag] No Ads ID provided, skipping initialization")
     }
     return null
   }
@@ -43,7 +43,7 @@ export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
   // Validate adsId format to prevent XSS
   if (!isValidAdsId) {
     if (debug) {
-      console.error('[GoogleTag] Invalid Ads ID format:', adsId)
+      console.error("[GoogleTag] Invalid Ads ID format:", adsId)
     }
     return null
   }
@@ -58,7 +58,7 @@ export function GoogleTag({ adsId, debug = false, nonce }: GoogleAdsConfig) {
         src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`}
         onLoad={() => {
           if (debug) {
-            console.log('[GoogleTag] gtag.js loaded for ID:', adsId)
+            console.log("[GoogleTag] gtag.js loaded for ID:", adsId)
           }
         }}
       />

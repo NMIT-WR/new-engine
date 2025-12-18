@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import Script from 'next/script'
-import type { MetaPixelConfig } from './types'
+import Script from "next/script"
+import type { MetaPixelConfig } from "./types"
 
 /** Valid Meta Pixel ID format (numeric string) */
 const VALID_PIXEL_ID_PATTERN = /^\d+$/
@@ -32,7 +32,7 @@ const VALID_PIXEL_ID_PATTERN = /^\d+$/
 export function MetaPixel({ pixelId, debug = false, nonce }: MetaPixelConfig) {
   if (!pixelId) {
     if (debug) {
-      console.warn('[MetaPixel] No pixel ID provided, skipping initialization')
+      console.warn("[MetaPixel] No pixel ID provided, skipping initialization")
     }
     return null
   }
@@ -40,13 +40,13 @@ export function MetaPixel({ pixelId, debug = false, nonce }: MetaPixelConfig) {
   // Validate pixelId format to prevent XSS
   if (!VALID_PIXEL_ID_PATTERN.test(pixelId)) {
     if (debug) {
-      console.error('[MetaPixel] Invalid pixel ID format:', pixelId)
+      console.error("[MetaPixel] Invalid pixel ID format:", pixelId)
     }
     return null
   }
 
   if (debug) {
-    console.log('[MetaPixel] Initializing with ID:', pixelId)
+    console.log("[MetaPixel] Initializing with ID:", pixelId)
   }
 
   return (
@@ -75,7 +75,7 @@ export function MetaPixel({ pixelId, debug = false, nonce }: MetaPixelConfig) {
         <img
           height="1"
           width="1"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
           alt=""
         />

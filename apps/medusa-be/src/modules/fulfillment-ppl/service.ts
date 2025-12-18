@@ -52,13 +52,34 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
   }
 
   private getClient(): PplClientModuleService {
+    if (!this.pplClient_) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "PPL: ppl_client module not available. Check medusa-config dependencies."
+      )
+    }
     return this.pplClient_
   }
 
   /**
    * Returns available PPL shipping options for admin UI
+   * Returns empty array if PPL is disabled or not configured
    */
   override async getFulfillmentOptions(): Promise<FulfillmentOption[]> {
+    // Check if PPL is enabled and configured
+    // Wrapped in try-catch to prevent admin UI crash if ppl-client unavailable
+    try {
+      const config = await this.getClient().getEffectiveConfig()
+      if (!config) {
+        return []
+      }
+    } catch (error) {
+      this.logger_.warn(
+        `PPL: Could not check config status, returning no options: ${error instanceof Error ? error.message : String(error)}`
+      )
+      return []
+    }
+
     return [
       {
         id: "ppl-parcel-smart",
@@ -110,6 +131,15 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
     data: Record<string, unknown>,
     _context: ValidateFulfillmentDataContext
   ): Promise<Record<string, unknown>> {
+    // Check if PPL is enabled (blocks checkout with stale shipping options)
+    const config = await this.getClient().getEffectiveConfig()
+    if (!config) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "PPL shipping is currently unavailable. Please select a different shipping method."
+      )
+    }
+
     const requiresAccessPoint = optionData.requires_access_point as boolean
 
     // If this option requires access point, validate it was selected
@@ -233,7 +263,13 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         ...(defaultSeatAddress.email && { email: defaultSeatAddress.email }),
       }
     } else {
-      const options = this.getClient().getOptions()
+      const config = await this.getClient().getEffectiveConfig()
+      if (!config) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_ALLOWED,
+          "PPL: Service is disabled or not configured. Enable it in Settings → PPL."
+        )
+      }
       const {
         sender_name,
         sender_street,
@@ -242,7 +278,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         sender_country,
         sender_phone,
         sender_email,
-      } = options
+      } = config
 
       if (
         !(
@@ -256,7 +292,7 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           "PPL: No sender address configured in PPL system and no fallback sender address provided. " +
-            "Please configure a sender address in your PPL account or set COMPANY_ADDRESS_* environment variables."
+            "Please configure a sender address in Settings → PPL."
         )
       }
 
@@ -383,54 +419,77 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
     }
   }
 
+  /**
+   * Returns all documents for a fulfillment (labels, etc.)
+   * Called by Medusa to get fulfillment documents
+   */
+  // @ts-expect-error Base class returns never[] but we return actual documents
   override async getFulfillmentDocuments(
-    _data: Record<string, unknown>
-  ): Promise<never[]> {
-    // Return empty array as per base class signature
-    // Labels are accessible via fulfillment.data.label_url
-    return []
+    data: Record<string, unknown>
+  ): Promise<{ type: string; url: string; format?: string }[]> {
+    const fulfillmentData = data as unknown as PplFulfillmentData
+    const documents: { type: string; url: string; format?: string }[] = []
+
+    if (fulfillmentData.label_url) {
+      documents.push({
+        type: "label",
+        url: fulfillmentData.label_url,
+        format: "png",
+      })
+    }
+
+    if (fulfillmentData.tracking_url) {
+      documents.push({
+        type: "tracking",
+        url: fulfillmentData.tracking_url,
+      })
+    }
+
+    return documents
   }
 
   /**
-   * Get label documents for a fulfillment
-   * Note: Base class returns never[], so this is a separate helper method
+   * Retrieves a specific document type for a fulfillment
    */
-  async getLabelDocuments(
-    data: Record<string, unknown>
-  ): Promise<{ type: string; url: string; format: string }[]> {
-    const fulfillmentData = data as unknown as PplFulfillmentData
-    const labelUrl = fulfillmentData.label_url
+  // @ts-expect-error Base class returns void but we return document or null
+  override async retrieveDocuments(
+    fulfillmentData: Record<string, unknown>,
+    documentType: string
+  ): Promise<{ type: string; url: string; format?: string } | null> {
+    const data = fulfillmentData as unknown as PplFulfillmentData
 
-    if (!labelUrl) {
-      return []
+    switch (documentType) {
+      case "label":
+        return data.label_url
+          ? { type: "label", url: data.label_url, format: "png" }
+          : null
+      case "tracking":
+        return data.tracking_url
+          ? { type: "tracking", url: data.tracking_url }
+          : null
+      default:
+        return null
     }
-
-    return [
-      {
-        type: "label",
-        url: labelUrl,
-        format: "png",
-      },
-    ]
   }
 
+  /**
+   * Returns documents for a return fulfillment
+   * TODO: Implement when return flow is added
+   */
   override async getReturnDocuments(
     _data: Record<string, unknown>
   ): Promise<never[]> {
     return []
   }
 
+  /**
+   * Returns shipment documents (commercial invoice, packing list, etc.)
+   * TODO: Implement if PPL provides these documents
+   */
   override async getShipmentDocuments(
     _data: Record<string, unknown>
   ): Promise<never[]> {
     return []
-  }
-
-  override async retrieveDocuments(
-    _fulfillmentData: Record<string, unknown>,
-    _documentType: string
-  ): Promise<void> {
-    // Not implemented
   }
 
   private buildRecipient(
@@ -498,17 +557,23 @@ class PplFulfillmentProviderService extends AbstractFulfillmentProviderService {
 
     const orderId =
       order.display_id?.toString() || order.id?.substring(0, 10) || ""
-    const options = this.getClient().getOptions()
+    const config = await this.getClient().getEffectiveConfig()
+    if (!config) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "PPL: Service is disabled or not configured. Enable it in Settings → PPL."
+      )
+    }
 
     return {
       codPrice: codAmount,
       codCurrency: orderCurrency,
       codVarSym: orderId,
-      ...(options.cod_iban
-        ? { iban: options.cod_iban, swift: options.cod_swift }
+      ...(config.cod_iban
+        ? { iban: config.cod_iban, swift: config.cod_swift }
         : {
-            bankAccount: options.cod_bank_account,
-            bankCode: options.cod_bank_code,
+            bankAccount: config.cod_bank_account,
+            bankCode: config.cod_bank_code,
           }),
     }
   }

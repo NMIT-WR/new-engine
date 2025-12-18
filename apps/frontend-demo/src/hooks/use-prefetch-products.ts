@@ -1,9 +1,9 @@
-import { useRegions } from '@/hooks/use-region'
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import { type ProductListParams, getProducts } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
+import { useQueryClient } from "@tanstack/react-query"
+import { useCallback } from "react"
+import { useRegions } from "@/hooks/use-region"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import { getProducts, type ProductListParams } from "@/services/product-service"
 
 interface UsePrefetchProductsOptions {
   enabled?: boolean
@@ -17,11 +17,11 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
   const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
   const enabled = options?.enabled ?? true
-  const cacheStrategy = options?.cacheStrategy ?? 'semiStatic'
+  const cacheStrategy = options?.cacheStrategy ?? "semiStatic"
 
   const prefetchProducts = useCallback(
-    (params?: Omit<ProductListParams, 'region_id'>) => {
-      if (!enabled || !selectedRegion?.id) return
+    (params?: Omit<ProductListParams, "region_id">) => {
+      if (!(enabled && selectedRegion?.id)) return
 
       const queryParams = {
         ...params,
@@ -56,7 +56,7 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
         categories: [],
         sizes: [],
       },
-      sort: 'newest',
+      sort: "newest",
     })
   }, [prefetchProducts])
 
@@ -67,7 +67,7 @@ export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
         category: categoryHandle,
         limit: DEFAULT_LIMIT,
         offset: 0,
-        sort: 'newest', // Add default sort
+        sort: "newest", // Add default sort
       })
     },
     [prefetchProducts]

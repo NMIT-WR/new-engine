@@ -9,14 +9,14 @@
  * - Optional --profile timings
  */
 
-import { existsSync } from 'node:fs'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { performance } from 'node:perf_hooks'
-import { fileURLToPath, pathToFileURL } from 'node:url'
-import { globSync } from 'glob'
+import { existsSync } from "node:fs"
+import fs from "node:fs/promises"
+import path from "node:path"
+import { performance } from "node:perf_hooks"
+import { fileURLToPath, pathToFileURL } from "node:url"
+import { globSync } from "glob"
 
-const ROOT = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
+const ROOT = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "..")
 
 // Configuration for validation
 const CONFIG = {
@@ -41,14 +41,14 @@ const CONFIG = {
 
   // File patterns to exclude from usage scanning
   excludeFiles: [
-    '**/*.stories.tsx',
-    '**/*.test.tsx',
-    '**/*.spec.tsx',
-    '**/node_modules/**',
+    "**/*.stories.tsx",
+    "**/*.test.tsx",
+    "**/*.spec.tsx",
+    "**/node_modules/**",
   ],
 
   // Token CSS glob
-  tokenCssGlob: 'src/tokens/components/**/*.css',
+  tokenCssGlob: "src/tokens/components/**/*.css",
 }
 
 // Simple stopwatch profiling
@@ -80,128 +80,128 @@ function shouldIgnoreToken(tokenName) {
 // Map CSS token to possible Tailwind utility classes
 function tokenToUtilityClasses(tokenName) {
   const classes = new Set()
-  const tokenParts = tokenName.slice(2).split('-')
+  const tokenParts = tokenName.slice(2).split("-")
   if (tokenParts.length < 2) return classes
 
   const primaryNamespace = tokenParts[0]
   const subNamespace = tokenParts.length > 2 ? tokenParts[1] : null
-  const key = tokenParts.slice(subNamespace ? 2 : 1).join('-')
+  const key = tokenParts.slice(subNamespace ? 2 : 1).join("-")
 
   const mappings = {
     color: [
-      'bg',
-      'text',
-      'border',
-      'outline',
-      'decoration',
-      'shadow',
-      'inset-shadow',
-      'ring',
-      'ring-offset',
-      'inset-ring',
-      'accent',
-      'caret',
-      'fill',
-      'stroke',
+      "bg",
+      "text",
+      "border",
+      "outline",
+      "decoration",
+      "shadow",
+      "inset-shadow",
+      "ring",
+      "ring-offset",
+      "inset-ring",
+      "accent",
+      "caret",
+      "fill",
+      "stroke",
     ],
-    container: ['w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'],
+    container: ["w", "h", "min-w", "min-h", "max-w", "max-h"],
     spacing: [
-      'p',
-      'px',
-      'py',
-      'pt',
-      'pr',
-      'pb',
-      'pl',
-      'ps',
-      'pe',
-      'm',
-      'mx',
-      'my',
-      'mt',
-      'mr',
-      'mb',
-      'ml',
-      'ms',
-      'me',
-      '-m',
-      '-mx',
-      '-my',
-      '-mt',
-      '-mr',
-      '-mb',
-      '-ml',
-      '-ms',
-      '-me',
-      'w',
-      'h',
-      'min-w',
-      'min-h',
-      'max-w',
-      'max-h',
-      'inset',
-      'inset-x',
-      'inset-y',
-      'top',
-      'right',
-      'bottom',
-      'left',
-      'start',
-      'end',
-      '-inset',
-      '-inset-x',
-      '-inset-y',
-      '-top',
-      '-right',
-      '-bottom',
-      '-left',
-      '-start',
-      '-end',
-      'gap',
-      'gap-x',
-      'gap-y',
-      'space-x',
-      'space-y',
+      "p",
+      "px",
+      "py",
+      "pt",
+      "pr",
+      "pb",
+      "pl",
+      "ps",
+      "pe",
+      "m",
+      "mx",
+      "my",
+      "mt",
+      "mr",
+      "mb",
+      "ml",
+      "ms",
+      "me",
+      "-m",
+      "-mx",
+      "-my",
+      "-mt",
+      "-mr",
+      "-mb",
+      "-ml",
+      "-ms",
+      "-me",
+      "w",
+      "h",
+      "min-w",
+      "min-h",
+      "max-w",
+      "max-h",
+      "inset",
+      "inset-x",
+      "inset-y",
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "start",
+      "end",
+      "-inset",
+      "-inset-x",
+      "-inset-y",
+      "-top",
+      "-right",
+      "-bottom",
+      "-left",
+      "-start",
+      "-end",
+      "gap",
+      "gap-x",
+      "gap-y",
+      "space-x",
+      "space-y",
     ],
-    padding: ['p', 'px', 'py', 'pt', 'pr', 'pb', 'pl', 'ps', 'pe'],
+    padding: ["p", "px", "py", "pt", "pr", "pb", "pl", "ps", "pe"],
     margin: [
-      'm',
-      'mx',
-      'my',
-      'mt',
-      'mr',
-      'mb',
-      'ml',
-      'ms',
-      'me',
-      '-m',
-      '-mx',
-      '-my',
-      '-mt',
-      '-mr',
-      '-mb',
-      '-ml',
-      '-ms',
-      '-me',
+      "m",
+      "mx",
+      "my",
+      "mt",
+      "mr",
+      "mb",
+      "ml",
+      "ms",
+      "me",
+      "-m",
+      "-mx",
+      "-my",
+      "-mt",
+      "-mr",
+      "-mb",
+      "-ml",
+      "-ms",
+      "-me",
     ],
-    gap: ['gap'],
-    width: ['w', 'min-w', 'max-w'],
-    height: ['h', 'min-h', 'max-h'],
-    text: ['text'],
-    font: ['font'],
-    tracking: ['tracking'],
-    leading: ['leading'],
-    radius: ['rounded'],
-    shadow: ['shadow'],
-    'inset-shadow': ['inset-shadow'],
-    'drop-shadow': ['drop-shadow'],
-    blur: ['blur'],
-    perspective: ['perspective'],
-    aspect: ['aspect'],
-    ease: ['ease'],
-    animate: ['animate'],
-    opacity: ['opacity'],
-    border: ['border'],
+    gap: ["gap"],
+    width: ["w", "min-w", "max-w"],
+    height: ["h", "min-h", "max-h"],
+    text: ["text"],
+    font: ["font"],
+    tracking: ["tracking"],
+    leading: ["leading"],
+    radius: ["rounded"],
+    shadow: ["shadow"],
+    "inset-shadow": ["inset-shadow"],
+    "drop-shadow": ["drop-shadow"],
+    blur: ["blur"],
+    perspective: ["perspective"],
+    aspect: ["aspect"],
+    ease: ["ease"],
+    animate: ["animate"],
+    opacity: ["opacity"],
+    border: ["border"],
     z: [],
     arrow: [],
     tree: [],
@@ -211,8 +211,8 @@ function tokenToUtilityClasses(tokenName) {
 
   let namespace = primaryNamespace
   let tokenKey = key
-  if (primaryNamespace === 'font' && subNamespace === 'weight') {
-    namespace = 'font-weight'
+  if (primaryNamespace === "font" && subNamespace === "weight") {
+    namespace = "font-weight"
   } else if (subNamespace && mappings[`${primaryNamespace}-${subNamespace}`]) {
     namespace = `${primaryNamespace}-${subNamespace}`
   } else if (subNamespace) {
@@ -220,15 +220,15 @@ function tokenToUtilityClasses(tokenName) {
   }
 
   const customPropertyPrefixes = [
-    'arrow',
-    'tree',
-    'tooltip',
-    'textarea',
-    'z',
-    'opacity-bg',
-    'opacity-borderless',
-    'spacing-translate',
-    'spacing-menu-submenu',
+    "arrow",
+    "tree",
+    "tooltip",
+    "textarea",
+    "z",
+    "opacity-bg",
+    "opacity-borderless",
+    "spacing-translate",
+    "spacing-menu-submenu",
   ]
   if (
     customPropertyPrefixes.some((prefix) => tokenName.includes(`--${prefix}`))
@@ -238,7 +238,7 @@ function tokenToUtilityClasses(tokenName) {
 
   const prefixes = mappings[namespace] || mappings[primaryNamespace] || []
   for (const prefix of prefixes) {
-    if (namespace === 'font-weight') {
+    if (namespace === "font-weight") {
       classes.add(`font-${tokenKey}`)
     } else {
       classes.add(`${prefix}-${tokenKey}`)
@@ -259,8 +259,8 @@ async function buildTokenIndices() {
       const abs = path.join(ROOT, file)
       if (!existsSync(abs)) return
       try {
-        const content = await fs.readFile(abs, 'utf8')
-        const lines = content.split('\n')
+        const content = await fs.readFile(abs, "utf8")
+        const lines = content.split("\n")
 
         // 1) Parse token definitions and dependency edges
         const tokenRegex = /--([\w-]+)\s*:\s*([^;]+);/g
@@ -268,7 +268,7 @@ async function buildTokenIndices() {
         while ((m = tokenRegex.exec(content)) !== null) {
           const name = `--${m[1]}`
           const value = m[2].trim()
-          const line = content.substring(0, m.index).split('\n').length
+          const line = content.substring(0, m.index).split("\n").length
           defs.set(name, { value, file, line })
 
           // Extract dependencies from value
@@ -292,7 +292,7 @@ async function buildTokenIndices() {
           const lineNo = i + 1
           if (defLine.has(lineNo)) continue
           const line = lines[i]
-          if (!line.includes('var(')) continue
+          if (!line.includes("var(")) continue
           for (const vm of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
             const t = vm[1]
             if (!cssUsage.has(t)) cssUsage.set(t, new Set())
@@ -316,7 +316,7 @@ async function buildTokenIndices() {
 
 // Build component indices in a single pass
 async function buildComponentIndices(classToTokens, knownTokens) {
-  const files = globSync('src/**/*.{ts,tsx}', {
+  const files = globSync("src/**/*.{ts,tsx}", {
     cwd: ROOT,
     ignore: CONFIG.excludeFiles,
   })
@@ -325,8 +325,8 @@ async function buildComponentIndices(classToTokens, knownTokens) {
 
   const normalizeClass = (raw) => {
     // Strip variant prefixes like sm:, hover:, data-[...]: etc.
-    if (!raw) return ''
-    const parts = String(raw).split(':')
+    if (!raw) return ""
+    const parts = String(raw).split(":")
     const core = parts[parts.length - 1]
     return core
   }
@@ -335,13 +335,13 @@ async function buildComponentIndices(classToTokens, knownTokens) {
     files.map(async (file) => {
       if (!existsSync(file)) return
       try {
-        const content = await fs.readFile(file, 'utf8')
+        const content = await fs.readFile(file, "utf8")
 
         // 1) Direct var(--token) usage in TSX
         for (const m of content.matchAll(/var\(\s*(--[\w-]+)/g)) {
           const t = m[1]
           if (!componentVarUsage.has(t)) componentVarUsage.set(t, new Set())
-          const lineNo = content.substring(0, m.index).split('\n').length
+          const lineNo = content.substring(0, m.index).split("\n").length
           componentVarUsage
             .get(t)
             .add(`${file}:${lineNo} (component var() reference)`)
@@ -409,28 +409,28 @@ function propagateUsage(initialUsed, dependencyGraph) {
 
 async function validateTokenDefinitions({ profile = false } = {}) {
   const p = profiled(profile)
-  p.mark('total')
-  console.log('🔍 Analyzing token definitions and usage...')
+  p.mark("total")
+  console.log("🔍 Analyzing token definitions and usage...")
 
   // 1) Token indices
-  p.mark('tokens')
+  p.mark("tokens")
   const { defs, dependencyGraph, cssUsage } = await buildTokenIndices()
   const allTokens = Array.from(defs.keys())
-  if (profile) console.log(`⏱️  tokens: ${p.end('tokens').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  tokens: ${p.end("tokens").toFixed(1)}ms`)
   console.log(`📋 Found ${allTokens.length} total tokens\n`)
 
   // 2) Class maps from tokens
-  p.mark('classmaps')
+  p.mark("classmaps")
   const { classToTokens } = computeClassMaps(allTokens)
-  if (profile) console.log(`⏱️  class maps: ${p.end('classmaps').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  class maps: ${p.end("classmaps").toFixed(1)}ms`)
 
   // 3) Component indices
-  p.mark('components')
+  p.mark("components")
   const { componentVarUsage, classUsageTokens } = await buildComponentIndices(
     classToTokens,
     new Set(allTokens)
   )
-  if (profile) console.log(`⏱️  components: ${p.end('components').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  components: ${p.end("components").toFixed(1)}ms`)
 
   // 4) Seed used set
   const usedDirect = new Set()
@@ -449,9 +449,9 @@ async function validateTokenDefinitions({ profile = false } = {}) {
   for (const t of classUsageTokens) usedDirect.add(t)
 
   // 5) Propagate through dependencies (forward)
-  p.mark('closure')
+  p.mark("closure")
   const usedTokens = propagateUsage(usedDirect, dependencyGraph)
-  if (profile) console.log(`⏱️  closure: ${p.end('closure').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  closure: ${p.end("closure").toFixed(1)}ms`)
 
   // 6) Classify
   const unusedTokens = []
@@ -464,14 +464,14 @@ async function validateTokenDefinitions({ profile = false } = {}) {
   }
 
   // Report results
-  console.log(`\n📊 Validation Summary:`)
+  console.log("\n📊 Validation Summary:")
   console.log(`   Total tokens: ${allTokens.length}`)
   console.log(`   Used tokens: ${allTokens.length - unusedTokens.length}`)
   console.log(`   Unused tokens: ${unusedTokens.length}`)
 
   if (unusedTokens.length === 0) {
-    console.log('\n✅ All tokens are being used!')
-    if (profile) console.log(`⏱️  total: ${p.end('total').toFixed(1)}ms`)
+    console.log("\n✅ All tokens are being used!")
+    if (profile) console.log(`⏱️  total: ${p.end("total").toFixed(1)}ms`)
     return true
   }
 
@@ -488,9 +488,9 @@ async function validateTokenDefinitions({ profile = false } = {}) {
     console.log()
   }
   console.log(
-    '💡 Note: Tokens might be used dynamically or externally and not detected.'
+    "💡 Note: Tokens might be used dynamically or externally and not detected."
   )
-  if (profile) console.log(`⏱️  total: ${p.end('total').toFixed(1)}ms`)
+  if (profile) console.log(`⏱️  total: ${p.end("total").toFixed(1)}ms`)
   return false
 }
 
@@ -498,11 +498,11 @@ if (
   process.argv[1] &&
   pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url
 ) {
-  const profile = process.argv.includes('--profile')
+  const profile = process.argv.includes("--profile")
   validateTokenDefinitions({ profile })
     .then((ok) => process.exit(ok ? 0 : 1))
     .catch((err) => {
-      console.error('💥 Validation failed:', err?.message || err)
+      console.error("💥 Validation failed:", err?.message || err)
       if (err?.stack) console.error(err.stack)
       process.exit(1)
     })

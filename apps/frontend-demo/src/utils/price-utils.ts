@@ -14,14 +14,14 @@ export function getProductPrice(product: any, variantIndex = 0): number {
  * Currency symbol mapping
  */
 const currencySymbols: Record<string, string> = {
-  CZK: 'Kč',
-  EUR: '€',
-  USD: '$',
-  GBP: '£',
-  SEK: 'kr',
-  DKK: 'kr',
-  NOK: 'kr',
-  PLN: 'zł',
+  CZK: "Kč",
+  EUR: "€",
+  USD: "$",
+  GBP: "£",
+  SEK: "kr",
+  DKK: "kr",
+  NOK: "kr",
+  PLN: "zł",
 }
 
 /**
@@ -30,12 +30,12 @@ const currencySymbols: Record<string, string> = {
  * @param currencyCode - ISO currency code (e.g., 'EUR', 'USD')
  * @returns Formatted price string
  */
-export function formatPrice(amount: number, currencyCode = 'CZK'): string {
+export function formatPrice(amount: number, currencyCode = "CZK"): string {
   const symbol = currencySymbols[currencyCode.toUpperCase()] || currencyCode
 
   // For currencies that typically place symbol after (Nordic, Czech, Polish)
   if (
-    ['SEK', 'DKK', 'NOK', 'PLN', 'CZK'].includes(currencyCode.toUpperCase())
+    ["SEK", "DKK", "NOK", "PLN", "CZK"].includes(currencyCode.toUpperCase())
   ) {
     return `${amount.toFixed(0)} ${symbol}`
   }

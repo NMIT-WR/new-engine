@@ -1,5 +1,5 @@
-import type { HomeCategory } from '@/types/product'
-import { getCategoryIdsByHandles } from '@/utils/category-helpers'
+import type { HomeCategory } from "@/types/product"
+import { getCategoryIdsByHandles } from "@/utils/category-helpers"
 
 export interface HeroContent {
   title: string
@@ -43,85 +43,85 @@ export interface HomeContent {
 
 export const homeContent: HomeContent = {
   hero: {
-    title: 'Nová kolekce',
-    subtitle: 'Objevte nejnovější módní trendy',
-    backgroundImage: '/assets/hero/home.webp',
+    title: "Nová kolekce",
+    subtitle: "Objevte nejnovější módní trendy",
+    backgroundImage: "/assets/hero/home.webp",
     primaryAction: {
-      label: 'Nakupovat',
-      href: '/products',
+      label: "Nakupovat",
+      href: "/products",
     },
     secondaryAction: {
-      label: 'Zobrazit kolekci',
-      href: '/products',
+      label: "Zobrazit kolekci",
+      href: "/products",
     },
   },
   trending: {
-    title: 'Aktuální trendy',
-    subtitle: 'Podívejte se na nejpopulárnější položky',
-    linkText: 'Zobrazit všechny produkty',
-    linkHref: '/products',
+    title: "Aktuální trendy",
+    subtitle: "Podívejte se na nejpopulárnější položky",
+    linkText: "Zobrazit všechny produkty",
+    linkHref: "/products",
   },
   categories: {
-    title: 'Nakupovat podle kategorie',
-    subtitle: 'Najděte, co hledáte',
+    title: "Nakupovat podle kategorie",
+    subtitle: "Najděte, co hledáte",
   },
   saleBanner: {
-    title: 'Sezónní výprodej',
-    subtitle: 'Až 50% sleva na vybrané položky',
+    title: "Sezónní výprodej",
+    subtitle: "Až 50% sleva na vybrané položky",
     backgroundImage:
-      'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&h=600&fit=crop',
-    linkText: 'Nakupovat ve výprodeji',
-    linkHref: '/products?onSale=true',
+      "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&h=600&fit=crop",
+    linkText: "Nakupovat ve výprodeji",
+    linkHref: "/products?onSale=true",
   },
   newArrivals: {
-    title: 'Nové přírůstky',
-    subtitle: 'Čerstvé styly právě dorazily',
-    linkHref: '/products',
+    title: "Nové přírůstky",
+    subtitle: "Čerstvé styly právě dorazily",
+    linkHref: "/products",
   },
 }
 
 // Alternative hero content for different campaigns/seasons
 export const alternativeHeroContent: HeroContent[] = [
   {
-    title: 'Letní kolekce',
-    subtitle: 'Překonejte horko s našimi lehkými a vzdušnými styly',
+    title: "Letní kolekce",
+    subtitle: "Překonejte horko s našimi lehkými a vzdušnými styly",
     backgroundImage:
-      'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1920&h=1080&fit=crop',
+      "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1920&h=1080&fit=crop",
     primaryAction: {
-      label: 'Nakupovat letní',
-      href: '/products?season=summer',
+      label: "Nakupovat letní",
+      href: "/products?season=summer",
     },
     secondaryAction: {
-      label: 'Zobrazit lookbook',
-      href: '/inspiration',
+      label: "Zobrazit lookbook",
+      href: "/inspiration",
     },
   },
   {
-    title: 'Udržitelná móda',
-    subtitle: 'Ekologické materiály, nadčasový design',
+    title: "Udržitelná móda",
+    subtitle: "Ekologické materiály, nadčasový design",
     backgroundImage:
-      'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop',
+      "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop",
     primaryAction: {
-      label: 'Nakupovat udržitelně',
-      href: '/products?collection=sustainable',
+      label: "Nakupovat udržitelně",
+      href: "/products?collection=sustainable",
     },
     secondaryAction: {
-      label: 'Zjistit více',
-      href: '/about',
+      label: "Zjistit více",
+      href: "/about",
     },
   },
   {
-    title: 'Svateční nabídky',
-    subtitle: 'Najděte dokonalý dárek pro všechny na vašem seznamu',
+    title: "Svateční nabídky",
+    subtitle: "Najděte dokonalý dárek pro všechny na vašem seznamu",
     backgroundImage:
-      'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=1920&h=1080&fit=crop',
+      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=1920&h=1080&fit=crop",
     primaryAction: {
-      label: 'Nakupovat dárky',
-      href: '/products?collection=gifts',
+      label: "Nakupovat dárky",
+      href: "/products?collection=gifts",
     },
     secondaryAction: {
-      label: 'Průvodce dárky',
-      href: '/inspiration',
+      label: "Průvodce dárky",
+      href: "/inspiration",
     },
   },
 ]
@@ -129,56 +129,56 @@ export const alternativeHeroContent: HeroContent[] = [
 // Alternative banner content for different promotions
 export const alternativeBannerContent: BannerContent[] = [
   {
-    title: 'Víkend s dopravou zdarma',
-    subtitle: 'Bez minimální objednávky',
+    title: "Víkend s dopravou zdarma",
+    subtitle: "Bez minimální objednávky",
     backgroundImage:
-      'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&h=600&fit=crop',
-    linkText: 'Shop Now',
-    linkHref: '/products',
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&h=600&fit=crop",
+    linkText: "Shop Now",
+    linkHref: "/products",
   },
   {
-    title: 'Exkluzivně pro nové členy',
-    subtitle: 'Získejte 20% slevu na první objednávku',
+    title: "Exkluzivně pro nové členy",
+    subtitle: "Získejte 20% slevu na první objednávku",
     backgroundImage:
-      'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920&h=600&fit=crop',
-    linkText: 'Registrovat se',
-    linkHref: '/auth/register',
+      "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920&h=600&fit=crop",
+    linkText: "Registrovat se",
+    linkHref: "/auth/register",
   },
   {
-    title: 'Bleskový výprodej',
-    subtitle: 'Pouze dnes - Extra 30% sleva na výprodejové položky',
+    title: "Bleskový výprodej",
+    subtitle: "Pouze dnes - Extra 30% sleva na výprodejové položky",
     backgroundImage:
-      'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1920&h=600&fit=crop',
-    linkText: 'Nakupovat v blesckovém výprodeji',
-    linkHref: '/sale',
+      "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1920&h=600&fit=crop",
+    linkText: "Nakupovat v blesckovém výprodeji",
+    linkHref: "/sale",
   },
 ]
 
 const categoryHandles = {
-  panske: ['kratke-rukavy', 'na-zip', 'street', 'svetry'],
+  panske: ["kratke-rukavy", "na-zip", "street", "svetry"],
   damske: [
-    'pres-hlavu-category-140',
-    'svetry-category-144',
-    'street-category-147',
-    'kratasy-category-149',
-    'saty-a-sukne',
+    "pres-hlavu-category-140",
+    "svetry-category-144",
+    "street-category-147",
+    "kratasy-category-149",
+    "saty-a-sukne",
   ],
   detske: [
-    'kratke-rukavy-category-268',
-    'street-category-274',
-    'boty-category-282',
+    "kratke-rukavy-category-268",
+    "street-category-274",
+    "boty-category-282",
   ],
   cyklo: [
-    'ostatni-category-400',
-    'ponozky-category-394',
-    'dlouhe-category-391',
-    'dlouhe',
+    "ostatni-category-400",
+    "ponozky-category-394",
+    "dlouhe-category-391",
+    "dlouhe",
   ],
-  moto: ['bundy-category-81', 'kalhoty-category-82', 'mx-offroad', 'otevrene'],
+  moto: ["bundy-category-81", "kalhoty-category-82", "mx-offroad", "otevrene"],
   snowboard: [
-    'kulichy-category-124',
-    'rukavice-category-123',
-    'bundy-category-121',
+    "kulichy-category-124",
+    "rukavice-category-123",
+    "bundy-category-121",
   ],
 }
 
@@ -190,40 +190,40 @@ const categoryConfig: {
   description: string
 }[] = [
   {
-    key: 'panske',
-    name: 'Pánské',
-    image: 'cat-men.webp',
-    description: 'Od formálního po sportovní - vše pro pány',
+    key: "panske",
+    name: "Pánské",
+    image: "cat-men.webp",
+    description: "Od formálního po sportovní - vše pro pány",
   },
   {
-    key: 'damske',
-    name: 'Dámské',
-    image: 'cat-women.webp',
-    description: 'Elegance a trendy pro každou příležitost',
+    key: "damske",
+    name: "Dámské",
+    image: "cat-women.webp",
+    description: "Elegance a trendy pro každou příležitost",
   },
   {
-    key: 'detske',
-    name: 'Dětské',
-    image: 'cat-kids.webp',
-    description: 'Pohodlné a odolné pro každodenní radosti',
+    key: "detske",
+    name: "Dětské",
+    image: "cat-kids.webp",
+    description: "Pohodlné a odolné pro každodenní radosti",
   },
   {
-    key: 'cyklo',
-    name: 'Cyklo',
-    image: 'cat-cyclo.webp',
-    description: 'Vybavení pro vášnivé cyklisty',
+    key: "cyklo",
+    name: "Cyklo",
+    image: "cat-cyclo.webp",
+    description: "Vybavení pro vášnivé cyklisty",
   },
   {
-    key: 'moto',
-    name: 'Moto',
-    image: 'cat-moto.webp',
-    description: 'Bezpečnost a styl pro motorkáře',
+    key: "moto",
+    name: "Moto",
+    image: "cat-moto.webp",
+    description: "Bezpečnost a styl pro motorkáře",
   },
   {
-    key: 'snowboard',
-    name: 'Snowboard',
-    image: 'cat-ski.webp',
-    description: 'Pro ty, co milují adrenalin na sněhu',
+    key: "snowboard",
+    name: "Snowboard",
+    image: "cat-ski.webp",
+    description: "Pro ty, co milují adrenalin na sněhu",
   },
 ]
 

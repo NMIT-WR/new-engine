@@ -3,25 +3,32 @@ import type {
   ILockingModule,
   Logger,
 } from "@medusajs/framework/types"
-import { MedusaError, Modules } from "@medusajs/framework/utils"
+import { MedusaError, MedusaService, Modules } from "@medusajs/framework/utils"
+import { decryptFields, encryptFields } from "../../utils/encryption"
 import { PplClient } from "./client"
-import type {
-  PplAccessPoint,
-  PplAccessPointsQuery,
-  PplBatchResponse,
-  PplCodelistCountry,
-  PplCodelistCurrency,
-  PplCodelistProduct,
-  PplCodelistServiceItem,
-  PplCodelistStatus,
-  PplCustomerAddressResponse,
-  PplCustomerInfo,
-  PplLabelSettings,
-  PplOptions,
-  PplReturnChannel,
-  PplShipmentInfo,
-  PplShipmentQuery,
-  PplShipmentRequest,
+import PplConfig from "./models/ppl-config"
+import {
+  PPL_SENSITIVE_FIELDS,
+  type PplAccessPoint,
+  type PplAccessPointsQuery,
+  type PplBatchResponse,
+  type PplCodelistCountry,
+  type PplCodelistCurrency,
+  type PplCodelistProduct,
+  type PplCodelistServiceItem,
+  type PplCodelistStatus,
+  type PplConfigDTO,
+  type PplCustomerAddressResponse,
+  type PplCustomerInfo,
+  type PplEnvironment,
+  type PplLabelFormat,
+  type PplLabelSettings,
+  type PplOptions,
+  type PplReturnChannel,
+  type PplShipmentInfo,
+  type PplShipmentQuery,
+  type PplShipmentRequest,
+  type UpdatePplConfigInput,
 } from "./types"
 
 // ============================================
@@ -36,6 +43,7 @@ const CACHE_KEYS = {
   PRODUCTS: "ppl:codelist:products",
   SERVICES: "ppl:codelist:services",
   STATUSES: "ppl:codelist:statuses",
+  CONFIG: "ppl:config",
 } as const
 
 const LOCK_KEYS = {
@@ -50,6 +58,7 @@ const CACHE_TAGS = {
 const CACHE_TTL = {
   CODELISTS: 3600, // 1 hour
   RATE_LIMIT: 1, // 1 second
+  CONFIG: 60, // 60 seconds for config (lazy reload)
 } as const
 
 const MIN_REQUEST_INTERVAL_MS = 40
@@ -67,41 +76,54 @@ type CachedToken = {
 }
 
 /**
+ * Module options passed from medusa-config.ts
+ */
+type PplModuleOptions = {
+  environment: PplEnvironment
+}
+
+/**
  * PPL Client Module Service
  *
  * Manages the PPL API client lifecycle and provides:
+ * - DB-stored configuration with encryption for sensitive fields
  * - Distributed rate limiting via Redis (prioritized)
  * - Shared OAuth token across containers via Redis
  * - Cached codelists with tag-based invalidation
+ * - Lazy client initialization (re-created when config changes)
  * - Local fallback only when Redis is unavailable
  *
- * This module is only registered when PPL_ENABLED=1.
+ * This module is only registered when FEATURE_PPL_ENABLED=1.
+ * Config is stored in DB - admin enables/disables via Settings → PPL.
  */
-export class PplClientModuleService {
-  private readonly client_: PplClient
+export class PplClientModuleService extends MedusaService({ PplConfig }) {
+  private client_: PplClient | null = null
   private readonly logger_: Logger
   private readonly cacheService_: ICachingModuleService | null
   private readonly lockingService_: ILockingModule | null
-  private readonly options_: PplOptions
+  private readonly environment_: PplEnvironment
 
   // Local fallback state (only used when Redis unavailable)
   private fallbackToken_: string | null = null
   private fallbackTokenExpiresAt_ = 0
   private fallbackLastRequestTime_ = 0
 
-  constructor(container: InjectedDependencies, options: PplOptions) {
+  constructor(container: InjectedDependencies, options: PplModuleOptions) {
+    super(container, options)
+
     this.logger_ = container.logger
-    this.cacheService_ = container[Modules.CACHING] ?? null
-    this.lockingService_ = container[Modules.LOCKING] ?? null
+    this.environment_ = options.environment
 
-    if (!this.validateOptions(options)) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "PPL: Missing required configuration (client_id, client_secret, environment, default_label_format)"
-      )
-    }
-
-    this.options_ = options
+    // Resolve optional cross-module dependencies safely
+    // Awilix throws on access for unregistered keys, so we need try-catch
+    this.cacheService_ = this.safeResolve<ICachingModuleService>(
+      container,
+      Modules.CACHING
+    )
+    this.lockingService_ = this.safeResolve<ILockingModule>(
+      container,
+      Modules.LOCKING
+    )
 
     if (!(this.cacheService_ && this.lockingService_)) {
       this.logger_.warn(
@@ -109,19 +131,175 @@ export class PplClientModuleService {
       )
     }
 
-    this.client_ = new PplClient(options)
     this.logger_.info(
-      `PPL: Module service initialized (${options.environment} environment)`
+      `PPL: Module service initialized (${this.environment_} environment)`
     )
   }
 
-  private validateOptions(opts: Partial<PplOptions>): opts is PplOptions {
-    return !!(
-      opts?.client_id &&
-      opts?.client_secret &&
-      opts?.environment &&
-      opts?.default_label_format
+  /**
+   * Safely resolve optional cross-module dependencies.
+   * Returns null instead of throwing if the dependency is not registered.
+   */
+  private safeResolve<T>(
+    container: InjectedDependencies,
+    key: string
+  ): T | null {
+    try {
+      return ((container as Record<string, unknown>)[key] as T) ?? null
+    } catch {
+      return null
+    }
+  }
+
+  // ============================================
+  // Config Management (DB-stored)
+  // ============================================
+
+  /**
+   * Get config for current environment (decrypted)
+   */
+  async getConfig(): Promise<PplConfigDTO | null> {
+    const configs = await this.listPplConfigs(
+      { environment: this.environment_ },
+      { take: 1 }
     )
+    const config = configs[0]
+    if (!config) {
+      return null
+    }
+    return decryptFields(config as unknown as PplConfigDTO, [
+      ...PPL_SENSITIVE_FIELDS,
+    ])
+  }
+
+  /**
+   * Update config for current environment
+   * Empty string for sensitive fields = keep existing value
+   * null for sensitive fields = clear the value
+   */
+  async updateConfig(data: UpdatePplConfigInput): Promise<PplConfigDTO> {
+    const existing = await this.getConfig()
+
+    // Handle sensitive fields: empty string = keep, null = clear
+    const filteredData = { ...data }
+    for (const field of PPL_SENSITIVE_FIELDS) {
+      const key = field as keyof UpdatePplConfigInput
+      if (filteredData[key] === "") {
+        delete filteredData[key]
+      }
+      // null is kept as-is to clear the value
+    }
+
+    // Encrypt sensitive fields
+    const encrypted = encryptFields(filteredData, [...PPL_SENSITIVE_FIELDS])
+
+    if (existing) {
+      const updated = await this.updatePplConfigs({
+        id: existing.id,
+        ...encrypted,
+      })
+      await this.invalidateConfigCache()
+      return decryptFields(updated as unknown as PplConfigDTO, [
+        ...PPL_SENSITIVE_FIELDS,
+      ])
+    }
+
+    // Should not happen if loader ran, but create with environment just in case
+    const created = await this.createPplConfigs({
+      ...encrypted,
+      environment: this.environment_,
+    })
+    await this.invalidateConfigCache()
+    return decryptFields(created as unknown as PplConfigDTO, [
+      ...PPL_SENSITIVE_FIELDS,
+    ])
+  }
+
+  /**
+   * Get effective config for API calls (from DB with caching)
+   * Returns null if PPL is disabled or not configured
+   */
+  async getEffectiveConfig(): Promise<PplOptions | null> {
+    // 1. Check Redis cache
+    if (this.cacheService_) {
+      const cached = await this.cacheService_.get({ key: CACHE_KEYS.CONFIG })
+      if (cached) {
+        return cached as PplOptions
+      }
+    }
+
+    // 2. Fetch from DB
+    const config = await this.getConfig()
+    if (!config?.is_enabled) {
+      return null
+    }
+
+    // 3. Validate required fields
+    if (!(config.client_id && config.client_secret)) {
+      return null
+    }
+
+    // 4. Build options (environment from module options)
+    const options: PplOptions = {
+      client_id: config.client_id,
+      client_secret: config.client_secret,
+      environment: this.environment_,
+      default_label_format: config.default_label_format as PplLabelFormat,
+      cod_bank_account: config.cod_bank_account ?? undefined,
+      cod_bank_code: config.cod_bank_code ?? undefined,
+      cod_iban: config.cod_iban ?? undefined,
+      cod_swift: config.cod_swift ?? undefined,
+      sender_name: config.sender_name ?? undefined,
+      sender_street: config.sender_street ?? undefined,
+      sender_city: config.sender_city ?? undefined,
+      sender_zip_code: config.sender_zip_code ?? undefined,
+      sender_country: config.sender_country ?? undefined,
+      sender_phone: config.sender_phone ?? undefined,
+      sender_email: config.sender_email ?? undefined,
+    }
+
+    // 5. Cache result
+    if (this.cacheService_) {
+      await this.cacheService_.set({
+        key: CACHE_KEYS.CONFIG,
+        data: options,
+        ttl: CACHE_TTL.CONFIG,
+        tags: [CACHE_TAGS.ALL],
+      })
+    }
+
+    return options
+  }
+
+  /**
+   * Invalidate config cache (call after config update)
+   */
+  async invalidateConfigCache(): Promise<void> {
+    this.client_ = null // Force client re-init
+    if (this.cacheService_) {
+      await this.cacheService_.clear({ key: CACHE_KEYS.CONFIG })
+    }
+  }
+
+  // ============================================
+  // Lazy Client Initialization
+  // ============================================
+
+  private async getClient(): Promise<PplClient> {
+    if (this.client_) {
+      return this.client_
+    }
+
+    const config = await this.getEffectiveConfig()
+    if (!config) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "PPL is disabled or not configured. Enable it in Settings → PPL."
+      )
+    }
+
+    this.client_ = new PplClient(config)
+    return this.client_
   }
 
   // ============================================
@@ -184,7 +362,8 @@ export class PplClientModuleService {
     expiresAt: number
   }> {
     try {
-      const result = await this.client_.fetchNewToken()
+      const client = await this.getClient()
+      const result = await client.fetchNewToken()
       this.logger_.debug("PPL: OAuth token obtained/refreshed")
       return result
     } catch (error) {
@@ -301,8 +480,8 @@ export class PplClientModuleService {
   // Public API: Configuration
   // ============================================
 
-  getOptions(): Readonly<PplOptions> {
-    return this.options_
+  getEnvironment(): PplEnvironment {
+    return this.environment_
   }
 
   // ============================================
@@ -343,31 +522,36 @@ export class PplClientModuleService {
   ): Promise<string> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    return this.client_.createShipmentBatch(token, shipments, options)
+    const client = await this.getClient()
+    return client.createShipmentBatch(token, shipments, options)
   }
 
   async getBatchStatus(batchId: string): Promise<PplBatchResponse> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    return this.client_.getBatchStatus(token, batchId)
+    const client = await this.getClient()
+    return client.getBatchStatus(token, batchId)
   }
 
   async downloadLabel(labelUrl: string): Promise<Buffer> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    return this.client_.downloadLabel(token, labelUrl)
+    const client = await this.getClient()
+    return client.downloadLabel(token, labelUrl)
   }
 
   async getShipmentInfo(query: PplShipmentQuery): Promise<PplShipmentInfo[]> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    return this.client_.getShipmentInfo(token, query)
+    const client = await this.getClient()
+    return client.getShipmentInfo(token, query)
   }
 
   async cancelShipment(shipmentNumber: string): Promise<boolean> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    const result = await this.client_.cancelShipment(token, shipmentNumber)
+    const client = await this.getClient()
+    const result = await client.cancelShipment(token, shipmentNumber)
     if (result) {
       this.logger_.info(`PPL: Shipment ${shipmentNumber} cancelled`)
     } else {
@@ -385,7 +569,8 @@ export class PplClientModuleService {
   ): Promise<PplAccessPoint[]> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    return this.client_.getAccessPoints(token, query)
+    const client = await this.getClient()
+    return client.getAccessPoints(token, query)
   }
 
   // ============================================
@@ -398,7 +583,8 @@ export class PplClientModuleService {
       async () => {
         await this.acquireRateLimitSlot()
         const token = await this.getToken()
-        return this.client_.getCodelistCountries(token)
+        const client = await this.getClient()
+        return client.getCodelistCountries(token)
       },
       CACHE_TTL.CODELISTS,
       [CACHE_TAGS.ALL, CACHE_TAGS.CODELISTS]
@@ -411,7 +597,8 @@ export class PplClientModuleService {
       async () => {
         await this.acquireRateLimitSlot()
         const token = await this.getToken()
-        return this.client_.getCodelistCurrencies(token)
+        const client = await this.getClient()
+        return client.getCodelistCurrencies(token)
       },
       CACHE_TTL.CODELISTS,
       [CACHE_TAGS.ALL, CACHE_TAGS.CODELISTS]
@@ -424,7 +611,8 @@ export class PplClientModuleService {
       async () => {
         await this.acquireRateLimitSlot()
         const token = await this.getToken()
-        return this.client_.getCodelistProducts(token)
+        const client = await this.getClient()
+        return client.getCodelistProducts(token)
       },
       CACHE_TTL.CODELISTS,
       [CACHE_TAGS.ALL, CACHE_TAGS.CODELISTS]
@@ -437,7 +625,8 @@ export class PplClientModuleService {
       async () => {
         await this.acquireRateLimitSlot()
         const token = await this.getToken()
-        return this.client_.getCodelistServices(token)
+        const client = await this.getClient()
+        return client.getCodelistServices(token)
       },
       CACHE_TTL.CODELISTS,
       [CACHE_TAGS.ALL, CACHE_TAGS.CODELISTS]
@@ -450,7 +639,8 @@ export class PplClientModuleService {
       async () => {
         await this.acquireRateLimitSlot()
         const token = await this.getToken()
-        return this.client_.getCodelistStatuses(token)
+        const client = await this.getClient()
+        return client.getCodelistStatuses(token)
       },
       CACHE_TTL.CODELISTS,
       [CACHE_TAGS.ALL, CACHE_TAGS.CODELISTS]
@@ -464,7 +654,8 @@ export class PplClientModuleService {
   async getCustomerInfo(): Promise<PplCustomerInfo | null> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    const result = await this.client_.getCustomerInfo(token)
+    const client = await this.getClient()
+    const result = await client.getCustomerInfo(token)
     if (!result) {
       this.logger_.warn(
         "PPL: No customer profile configured for these credentials"
@@ -476,7 +667,8 @@ export class PplClientModuleService {
   async getCustomerAddresses(): Promise<PplCustomerAddressResponse | null> {
     await this.acquireRateLimitSlot()
     const token = await this.getToken()
-    const result = await this.client_.getCustomerAddresses(token)
+    const client = await this.getClient()
+    const result = await client.getCustomerAddresses(token)
     if (!result) {
       this.logger_.warn("PPL: Customer has no address configured in PPL system")
     }
