@@ -103,7 +103,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
           email: cartEmail,
         })
       } catch {
-        setError("Problémy s doručovací adresu")
+        setError("Problém s doručovací adresou")
         return
       }
 
