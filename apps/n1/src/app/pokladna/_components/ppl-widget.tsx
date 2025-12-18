@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { useEffect, useRef, useState } from 'react'
-import Script from 'next/script'
+import Script from "next/script"
+import { useEffect, useRef, useState } from "react"
 
-export interface PplAccessPointData {
+export type PplAccessPointData = {
   /** Unique access point code (external number) */
   code: string
   /** Access point name */
@@ -19,12 +19,12 @@ export interface PplAccessPointData {
   }
 }
 
-interface PplWidgetProps {
+type PplWidgetProps = {
   /** Callback when access point is selected */
   onSelect: (data: PplAccessPointData) => void
-  /** Initial latitude for map center (default: Prague) */
+  /** Initial latitude for map center */
   lat?: number
-  /** Initial longitude for map center (default: Prague) */
+  /** Initial longitude for map center */
   lng?: number
   /** Country code (default: CZ) */
   country?: string
@@ -33,7 +33,7 @@ interface PplWidgetProps {
   /** Pre-selected access point code */
   selectedCode?: string
   /** Display mode: 'default' or 'modal' */
-  mode?: 'default' | 'modal'
+  mode?: "default" | "modal"
   /** Initial filters (e.g., "ParcelShop,CardPayment") */
   initialFilters?: string
 }
@@ -55,39 +55,43 @@ interface PplWidgetProps {
  */
 export function PplWidget({
   onSelect,
-  lat = 50.0755,
-  lng = 14.4378,
-  country = 'CZ',
+  lat,
+  lng,
+  country = "CZ",
   address,
   selectedCode,
-  mode = 'default',
+  mode = "default",
   initialFilters,
 }: PplWidgetProps) {
+  const hasLatLngProps = typeof lat === "number" && typeof lng === "number"
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
+  const [language, setLanguage] = useState("cs")
+  const [languageResolved, setLanguageResolved] = useState(false)
+  const [locationResolved, setLocationResolved] = useState(hasLatLngProps)
+  const [geoLocation, setGeoLocation] = useState<{
+    lat: number
+    lng: number
+  } | null>(null)
   const widgetRef = useRef<HTMLDivElement>(null)
   const listenerAttached = useRef(false)
   // PPL widget expects exact ID 'ppl-parcelshop-map'
-  const widgetId = 'ppl-parcelshop-map'
-
-  console.log('[PplWidget] Rendering widget with ID:', widgetId)
+  const widgetId = "ppl-parcelshop-map"
 
   useEffect(() => {
-    if (!isScriptLoaded || listenerAttached.current) return
-
-    console.log('[PplWidget] Script loaded, attaching event listener')
+    if (!isScriptLoaded || listenerAttached.current) {
+      return
+    }
 
     const handleSelection = (event: MessageEvent) => {
       // PPL widget sends message event with pplPickupPointSelected
-      if (event.data && event.data.event === 'pplPickupPointSelected') {
+      if (event.data && event.data.event === "pplPickupPointSelected") {
         const point = event.data.point
 
-        console.log('[PplWidget] Access point selected:', point)
-
-        if (point && point.code) {
+        if (point?.code) {
           onSelect({
             code: point.code,
-            name: point.name || '',
-            type: point.type || 'ParcelShop',
+            name: point.name || "",
+            type: point.type || "ParcelShop",
             address: point.address,
           })
         }
@@ -95,60 +99,99 @@ export function PplWidget({
     }
 
     // Attach window message event listener for PPL widget selection
-    window.addEventListener('message', handleSelection)
+    window.addEventListener("message", handleSelection)
     listenerAttached.current = true
 
-    // Debug: Check if widget element exists and log its attributes
-    const widgetElement = document.getElementById(widgetId)
-    if (widgetElement) {
-      console.log('[PplWidget] Widget element found:', {
-        id: widgetElement.id,
-        attributes: Array.from(widgetElement.attributes).map(attr => ({
-          name: attr.name,
-          value: attr.value
-        }))
-      })
-    } else {
-      console.error('[PplWidget] Widget element NOT found with ID:', widgetId)
-    }
-
-    // Debug: Check if PPL global object exists
-    const win = window as any
-    console.log('[PplWidget] Checking for PPL global object:', {
-      hasPPL: !!win.PPL,
-      hasPpl: !!win.ppl,
-      hasParcelshop: !!win.parcelshop,
-      windowKeys: Object.keys(win).filter(k => k.toLowerCase().includes('ppl'))
-    })
-
-    // Try to trigger initialization if PPL object exists
-    if (win.PPL && typeof win.PPL.init === 'function') {
-      console.log('[PplWidget] Calling PPL.init()')
-      try {
-        win.PPL.init()
-      } catch (error) {
-        console.error('[PplWidget] PPL.init() failed:', error)
-      }
-    } else if (win.ppl && typeof win.ppl.init === 'function') {
-      console.log('[PplWidget] Calling ppl.init()')
-      try {
-        win.ppl.init()
-      } catch (error) {
-        console.error('[PplWidget] ppl.init() failed:', error)
-      }
-    }
-
     return () => {
-      window.removeEventListener('message', handleSelection)
+      window.removeEventListener("message", handleSelection)
       listenerAttached.current = false
     }
   }, [isScriptLoaded, onSelect])
 
+  useEffect(() => {
+    const normalizedLanguage =
+      (document.documentElement.lang || navigator.language || "cs")
+        .split("-")[0]
+        ?.toLowerCase() || "cs"
+    setLanguage(normalizedLanguage)
+    setLanguageResolved(true)
+  }, [])
+
+  useEffect(() => {
+    if (locationResolved || hasLatLngProps) {
+      return
+    }
+    if (!navigator.geolocation) {
+      setLocationResolved(true)
+      return
+    }
+
+    let cancelled = false
+
+    const markResolved = () => {
+      if (cancelled) {
+        return
+      }
+      setLocationResolved(true)
+    }
+
+    const requestLocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (cancelled) {
+            return
+          }
+          setGeoLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          })
+          setLocationResolved(true)
+        },
+        () => {
+          markResolved()
+        },
+        { enableHighAccuracy: false, maximumAge: 60_000, timeout: 2000 }
+      )
+    }
+
+    if (!navigator.permissions?.query) {
+      requestLocation()
+      return () => {
+        cancelled = true
+      }
+    }
+
+    navigator.permissions
+      .query({ name: "geolocation" as PermissionName })
+      .then((status) => {
+        if (status.state === "granted") {
+          requestLocation()
+          return
+        }
+        markResolved()
+      })
+      .catch(() => {
+        markResolved()
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [hasLatLngProps, locationResolved])
+
   // Load CSS stylesheet
   useEffect(() => {
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://www.ppl.cz/sources/map/main.css'
+    const href = "https://www.ppl.cz/sources/map/main.css"
+    const existingLink = document.head.querySelector<HTMLLinkElement>(
+      `link[href="${href}"]`
+    )
+    if (existingLink) {
+      return
+    }
+
+    const link = document.createElement("link")
+    link.rel = "stylesheet"
+    link.href = href
     document.head.appendChild(link)
 
     return () => {
@@ -156,34 +199,34 @@ export function PplWidget({
     }
   }, [])
 
+  const shouldLoadScript = languageResolved && locationResolved
+
   return (
     <>
-      <Script
-        src="https://www.ppl.cz/sources/map/main.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          console.log('[PplWidget] Script loaded successfully')
-          setIsScriptLoaded(true)
-        }}
-        onError={(e) => {
-          console.error('[PplWidget] Failed to load script:', e)
-        }}
-      />
+      {shouldLoadScript ? (
+        <Script
+          onLoad={() => {
+            setIsScriptLoaded(true)
+          }}
+          src="https://www.ppl.cz/sources/map/main.js"
+          strategy="afterInteractive"
+        />
+      ) : null}
 
       <div
-        ref={widgetRef}
-        id={widgetId}
-        data-lat={lat}
-        data-lng={lng}
-        data-mode={mode}
-        data-country={country.toLowerCase()}
         data-countries={country.toLowerCase()}
-        data-language="cs"
-        {...(address && { 'data-address': address })}
-        {...(selectedCode && { 'data-code': selectedCode })}
-        {...(initialFilters && { 'data-initialfilters': initialFilters })}
+        data-country={country.toLowerCase()}
+        data-language={language}
+        data-lat={hasLatLngProps ? lat : geoLocation?.lat}
+        data-lng={hasLatLngProps ? lng : geoLocation?.lng}
+        data-mode={mode}
+        id={widgetId}
+        ref={widgetRef}
+        {...(address && { "data-address": address })}
+        {...(selectedCode && { "data-code": selectedCode })}
+        {...(initialFilters && { "data-initialfilters": initialFilters })}
         className="min-h-96 w-full rounded border border-border-secondary bg-surface"
-        style={{ minHeight: '400px' }}
+        style={{ minHeight: "400px" }}
       />
     </>
   )
