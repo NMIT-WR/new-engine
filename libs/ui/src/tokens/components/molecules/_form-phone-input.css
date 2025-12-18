@@ -68,11 +68,14 @@
   --padding-phone-input-item-x: var(--spacing-200);
   --padding-phone-input-item-y: var(--spacing-150);
 
-  /* === SIZING === */
-  /* Control height per size */
-  --size-phone-input-sm: var(--spacing-800);
-  --size-phone-input-md: var(--spacing-900);
-  --size-phone-input-lg: var(--spacing-1000);
+	  /* === SIZING === */
+	  /* Control height per size */
+	  --size-phone-input-sm: var(--spacing-800);
+	  --size-phone-input-md: var(--spacing-900);
+	  --size-phone-input-lg: var(--spacing-1000);
+	  --height-phone-input-sm: var(--size-phone-input-sm);
+	  --height-phone-input-md: var(--size-phone-input-md);
+	  --height-phone-input-lg: var(--size-phone-input-lg);
 
   /* Flag icon sizes */
   --size-phone-input-flag-sm: var(--spacing-400);

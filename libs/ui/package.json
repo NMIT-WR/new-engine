@@ -12,6 +12,9 @@
       "types": "./dist/src/types/zag.d.ts",
       "import": "./dist/types/zag.js"
     },
+    "./flags": {
+      "import": "./dist/flags.css"
+    },
     "./tokens": {
       "import": "./src/tokens/tokens-only.css"
     },

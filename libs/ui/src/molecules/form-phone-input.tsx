@@ -12,7 +12,7 @@ import { ErrorText } from "../atoms/error-text"
 import { ExtraText } from "../atoms/extra-text"
 import { Icon, type IconType } from "../atoms/icon"
 import { Label } from "../atoms/label"
-import { tv } from "../utils"
+import { loadFlagIconsStylesheet, tv } from "../utils"
 
 // === TYPES ===
 
@@ -146,6 +146,12 @@ const FLAG_ICON_TOKENS: Record<string, IconType> = {
   at: "token-icon-flag-at",
   pl: "token-icon-flag-pl",
   gb: "token-icon-flag-gb",
+}
+
+function getFlagIcon(flag: string): IconType {
+  return (
+    FLAG_ICON_TOKENS[flag] ?? (`icon-[flag--${flag.toLowerCase()}-4x3]` as IconType)
+  )
 }
 
 // === DEFAULT COUNTRIES ===
@@ -314,8 +320,22 @@ export function FormPhoneInput({
   const currentCountry =
     sortedCountries.find((c) => c.code === selectedCountry) ||
     sortedCountries[0]
-  const callingCode =
-    currentCountry?.callingCode || getCallingCode(selectedCountry)
+  const callingCode = currentCountry?.callingCode || getCallingCode(selectedCountry)
+  const needsFullFlagSet = sortedCountries.some(
+    (country) => FLAG_ICON_TOKENS[country.flag] == null
+  )
+
+  useEffect(() => {
+    if (!currentCountry) return
+    if (FLAG_ICON_TOKENS[currentCountry.flag] != null) return
+    void loadFlagIconsStylesheet().catch(() => {})
+  }, [currentCountry?.flag])
+
+  useEffect(() => {
+    if (!countryApi.open) return
+    if (!needsFullFlagSet) return
+    void loadFlagIconsStylesheet().catch(() => {})
+  }, [countryApi.open, needsFullFlagSet])
 
   // === Styles ===
   const {
@@ -367,16 +387,15 @@ export function FormPhoneInput({
             {...countryApi.getTriggerProps()}
             data-disabled={disabled || undefined}
           >
-            {(() => {
-              const flagIcon =
-                currentCountry && FLAG_ICON_TOKENS[currentCountry.flag]
-              return flagIcon ? (
-                <>
-                  <Icon className={countryFlag()} icon={flagIcon} />
-                  <span className={countryCodeStyle()}>+{callingCode}</span>
-                </>
-              ) : null
-            })()}
+            {currentCountry && (
+              <>
+                <Icon
+                  className={countryFlag()}
+                  icon={getFlagIcon(currentCountry.flag)}
+                />
+                <span className={countryCodeStyle()}>+{callingCode}</span>
+              </>
+            )}
             <Icon
               className={countryChevron()}
               data-state={countryApi.open ? "open" : "closed"}
@@ -407,22 +426,19 @@ export function FormPhoneInput({
         {/* Country dropdown portal */}
         <Portal>
           <div className={positioner()} {...countryApi.getPositionerProps()}>
-            <ul className={content()} {...countryApi.getContentProps()}>
-              {sortedCountries.map((country) => {
-                const flagIcon = FLAG_ICON_TOKENS[country.flag]
-                return (
-                  <li
-                    className={item()}
-                    key={country.code}
-                    {...countryApi.getItemProps({ item: country })}
-                  >
-                    {flagIcon && (
-                      <Icon className={itemFlag()} icon={flagIcon} />
-                    )}
-                    <span className={itemName()}>{country.name}</span>
-                    <span className={itemDialCode()}>
-                      +{country.callingCode}
-                    </span>
+	            <ul className={content()} {...countryApi.getContentProps()}>
+	              {sortedCountries.map((country) => {
+	                return (
+	                  <li
+	                    className={item()}
+	                    key={country.code}
+	                    {...countryApi.getItemProps({ item: country })}
+	                  >
+	                    <Icon className={itemFlag()} icon={getFlagIcon(country.flag)} />
+	                    <span className={itemName()}>{country.name}</span>
+	                    <span className={itemDialCode()}>
+	                      +{country.callingCode}
+	                    </span>
                   </li>
                 )
               })}

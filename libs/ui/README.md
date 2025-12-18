@@ -34,6 +34,18 @@ Our design system is built with **Tailwind CSS v4** and React. It uses a **multi
     - For example, a Button component uses `-button-bg` which is set to `var(--color-brand-primary)`.
     - **Important:** All component tokens are defined centrally, not near the component code.
 
+### Flag Icons (Lazy-Loaded)
+
+We keep a small set of EU-typical flags in the default tokens bundle, and provide the full country flag set as a separate Tailwind entry that can be loaded on demand.
+
+- Default (no extra fetch): `token-icon-flag-cz`, `token-icon-flag-sk`, `token-icon-flag-de`, `token-icon-flag-at`, `token-icon-flag-pl`, `token-icon-flag-gb`
+- Full set (build-time include): `@techsio/ui-kit/flags` (or `@techsio/ui-kit/tokens/flags.css`) if your framework allows importing global CSS at the app entrypoint
+- Full set (runtime lazy-load, Next.js-safe): `FormPhoneInput` injects a `<link>` to `/flags.css` when non-default flags are needed; copy `node_modules/@techsio/ui-kit/dist/flags.css` to your static assets (e.g. `public/flags.css`) so it’s served at `/flags.css`
+
+```bash
+cp node_modules/@techsio/ui-kit/dist/flags.css public/flags.css
+```
+
 ---
 
 ## 3. Folder Structure
