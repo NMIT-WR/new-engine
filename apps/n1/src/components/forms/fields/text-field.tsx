@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { Input } from '@ui/atoms/input'
-import { Label } from '@ui/atoms/label'
-import type { AnyFieldApi } from '@tanstack/react-form'
-import type { ChangeEvent, InputHTMLAttributes } from 'react'
+import type { AnyFieldApi } from "@tanstack/react-form"
+import { Input } from "@ui/atoms/input"
+import { Label } from "@ui/atoms/label"
+import type { ChangeEvent, InputHTMLAttributes } from "react"
 
-interface TextFieldProps {
+type TextFieldProps = {
   field: AnyFieldApi
   label: string
-  type?: InputHTMLAttributes<HTMLInputElement>['type']
+  type?: InputHTMLAttributes<HTMLInputElement>["type"]
   placeholder?: string
   required?: boolean
   disabled?: boolean
@@ -26,7 +26,7 @@ interface TextFieldProps {
 export function TextField({
   field,
   label,
-  type = 'text',
+  type = "text",
   placeholder,
   required,
   disabled,
@@ -35,9 +35,9 @@ export function TextField({
   autoComplete,
   maxLength,
 }: TextFieldProps) {
+  // TanStack Form: show errors only after field has been blurred (user finished editing)
   const errors = field.state.meta.errors
-  const hasError = errors.length > 0
-  const isTouched = field.state.meta.isTouched
+  const showErrors = field.state.meta.isBlurred && errors.length > 0
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = transform ? transform(e.target.value) : e.target.value
@@ -45,24 +45,24 @@ export function TextField({
   }
 
   return (
-    <div className={`flex flex-col gap-50 ${className ?? ''}`}>
+    <div className={`flex flex-col gap-50 ${className ?? ""}`}>
       <Label htmlFor={field.name} required={required}>
         {label}
       </Label>
       <Input
-        id={field.name}
-        name={field.name}
-        type={type}
-        value={field.state.value ?? ''}
-        onChange={handleChange}
-        onBlur={field.handleBlur}
-        placeholder={placeholder}
-        disabled={disabled}
         autoComplete={autoComplete}
+        disabled={disabled}
+        id={field.name}
         maxLength={maxLength}
-        variant={isTouched && hasError ? 'error' : 'default'}
+        name={field.name}
+        onBlur={field.handleBlur}
+        onChange={handleChange}
+        placeholder={placeholder}
+        type={type}
+        value={field.state.value ?? ""}
+        variant={showErrors ? "error" : "default"}
       />
-      {isTouched && hasError && (
+      {showErrors && (
         <p className="font-medium text-2xs text-danger">{errors[0]}</p>
       )}
     </div>

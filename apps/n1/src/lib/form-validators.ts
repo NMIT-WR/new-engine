@@ -4,62 +4,6 @@
  */
 
 // ============================================================================
-// Validation Messages (Czech)
-// ============================================================================
-
-export const VALIDATION_MESSAGES = {
-  required: (field: string) => `${field} je povinné`,
-  minLength: (field: string, min: number) =>
-    `${field} musí mít alespoň ${min} znaky`,
-  email: 'Zadejte platnou e-mailovou adresu',
-  postalCode: 'PSČ musí být ve formátu 123 45',
-  phone: 'Telefon musí mít 9 číslic',
-  passwordMin: 'Heslo musí mít alespoň 8 znaků',
-  passwordsMatch: 'Hesla se musí shodovat',
-} as const
-
-// ============================================================================
-// Field Validators
-// ============================================================================
-
-export const validators = {
-  required:
-    (fieldName: string) =>
-    ({ value }: { value: string }) =>
-      !value?.trim() ? VALIDATION_MESSAGES.required(fieldName) : undefined,
-
-  minLength:
-    (fieldName: string, min: number) =>
-    ({ value }: { value: string }) =>
-      value && value.length < min
-        ? VALIDATION_MESSAGES.minLength(fieldName, min)
-        : undefined,
-
-  email: ({ value }: { value: string }) => {
-    if (!value?.trim()) return VALIDATION_MESSAGES.required('E-mail')
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return !emailRegex.test(value) ? VALIDATION_MESSAGES.email : undefined
-  },
-
-  postalCode: ({ value }: { value: string }) => {
-    if (!value?.trim()) return VALIDATION_MESSAGES.required('PSČ')
-    const postalRegex = /^\d{3}\s\d{2}$/
-    return !postalRegex.test(value) ? VALIDATION_MESSAGES.postalCode : undefined
-  },
-
-  phone: ({ value }: { value: string }) => {
-    if (!value) return undefined // Optional field
-    const phoneRegex = /^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/
-    return !phoneRegex.test(value) ? VALIDATION_MESSAGES.phone : undefined
-  },
-
-  password: ({ value }: { value: string }) => {
-    if (!value?.trim()) return VALIDATION_MESSAGES.required('Heslo')
-    return value.length < 8 ? VALIDATION_MESSAGES.passwordMin : undefined
-  },
-} as const
-
-// ============================================================================
 // Composed Validators for Address Fields
 // ============================================================================
 
@@ -107,7 +51,7 @@ export const addressValidators = {
   },
   phone: {
     onChange: ({ value }: { value: string | undefined }) => {
-      if (!value) return undefined // Optional
+      if (!value) return undefined // Optional field
       if (!/^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/.test(value)) {
         return 'Telefon musí mít 9 číslic'
       }
@@ -126,9 +70,7 @@ export const addressValidators = {
 export const emailValidator = {
   onChange: ({ value }: { value: string }) => {
     if (!value?.trim()) return 'E-mail je povinný'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return 'Zadejte platnou e-mailovou adresu'
-    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Zadejte platnou e-mailovou adresu'
     return undefined
   },
 } as const
@@ -173,9 +115,7 @@ export const registerValidators = {
   email: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) return 'E-mail je povinný'
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return 'Zadejte platnou e-mailovou adresu'
-      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Zadejte platnou e-mailovou adresu'
       return undefined
     },
   },

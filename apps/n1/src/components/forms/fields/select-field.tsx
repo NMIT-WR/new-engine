@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { Select } from '@ui/molecules/select'
-import type { AnyFieldApi } from '@tanstack/react-form'
+import type { AnyFieldApi } from "@tanstack/react-form"
+import { Select } from "@ui/molecules/select"
 
 type SelectOption = {
   value: string
@@ -31,33 +31,37 @@ export function SelectField({
   placeholder,
   className,
 }: SelectFieldProps) {
+  // TanStack Form: show errors only after field has been blurred (user finished editing)
   const errors = field.state.meta.errors
-  const hasError = errors.length > 0
-  const isTouched = field.state.meta.isTouched
+  const showErrors = field.state.meta.isBlurred && errors.length > 0
+
+  const handleValueChange = (details: { value: string[] }) => {
+    const value = details.value[0]
+    if (value) {
+      field.handleChange(value)
+      // Mark as touched when user selects a value
+      if (!field.state.meta.isTouched) {
+        field.handleBlur()
+      }
+    }
+  }
 
   return (
-    <div
-      className={`grid grid-rows-[auto_1fr] ${className ?? ''}`}
-    >
+    <>
       <Select
+        className={`grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center ${className ?? ""}`}
+        clearIcon={false}
+        disabled={disabled}
         id={field.name}
         label={label}
-        size="lg"
-        clearIcon={false}
+        onValueChange={handleValueChange}
         options={options}
-        value={[field.state.value || '']}
-        onValueChange={(details) => {
-          const value = details.value[0]
-          if (value) {
-            field.handleChange(value)
-          }
-        }}
-        disabled={disabled}
-        className="[&_button]:h-full [&_button]:items-center"
+        size="lg"
+        value={[field.state.value || ""]}
       />
-      {isTouched && hasError && (
+      {showErrors && (
         <p className="font-medium text-2xs text-danger">{errors[0]}</p>
       )}
-    </div>
+    </>
   )
 }
