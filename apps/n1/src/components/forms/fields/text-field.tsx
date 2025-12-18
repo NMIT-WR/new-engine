@@ -12,17 +12,12 @@ type TextFieldProps = {
   placeholder?: string
   required?: boolean
   disabled?: boolean
-  /** Transform value on change (e.g., formatPhoneNumber) */
   transform?: (value: string) => string
   className?: string
   autoComplete?: string
   maxLength?: number
 }
 
-/**
- * TanStack Form text field component
- * Integrates with @libs/ui Input and Label
- */
 export function TextField({
   field,
   label,
@@ -35,7 +30,6 @@ export function TextField({
   autoComplete,
   maxLength,
 }: TextFieldProps) {
-  // TanStack Form: show errors only after field has been blurred (user finished editing)
   const errors = field.state.meta.errors
   const showErrors = field.state.meta.isBlurred && errors.length > 0
 

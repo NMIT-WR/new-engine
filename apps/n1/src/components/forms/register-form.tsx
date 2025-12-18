@@ -94,7 +94,6 @@ export function RegisterForm({
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
 
-  // Subscribe to form validity
   const isFormValid = useStore(form.store, (state) => {
     const { values } = state
     return (
@@ -107,7 +106,6 @@ export function RegisterForm({
     )
   })
 
-  // Helper for password input validation styling
   const getValidationClass = (hasValue: boolean, isValid: boolean) => {
     if (!hasValue) {
       return ""
@@ -133,7 +131,6 @@ export function RegisterForm({
         />
       )}
 
-      {/* First name | Last name */}
       <div className="grid grid-cols-2 gap-100">
         <form.Field
           name="first_name"
@@ -165,7 +162,6 @@ export function RegisterForm({
         </form.Field>
       </div>
 
-      {/* Email */}
       <form.Field name="email" validators={registerValidators.email}>
         {(field) => (
           <TextField
@@ -180,7 +176,6 @@ export function RegisterForm({
         )}
       </form.Field>
 
-      {/* Password with validator UI */}
       <form.Field name="password" validators={registerValidators.password}>
         {(field) => (
           <div className="flex flex-col gap-50">
@@ -206,7 +201,6 @@ export function RegisterForm({
         )}
       </form.Field>
 
-      {/* Confirm Password */}
       <form.Field
         name="confirmPassword"
         validators={{
@@ -256,7 +250,6 @@ export function RegisterForm({
         )}
       </form.Field>
 
-      {/* Terms checkbox */}
       <form.Field
         name="acceptTerms"
         validators={registerValidators.acceptTerms}
