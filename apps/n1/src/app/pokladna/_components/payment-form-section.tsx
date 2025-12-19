@@ -1,7 +1,7 @@
 'use client'
 
 import { useCheckout } from '@/hooks/use-checkout'
-import { useRegion } from '@/hooks/use-region'
+import { useSuspenseRegion } from '@/hooks/use-region'
 import type { Cart } from '@/services/cart-service'
 import { Checkbox } from '@techsio/ui-kit/atoms/checkbox'
 import { useState } from 'react'
@@ -11,13 +11,12 @@ interface PaymentFormSectionProps {
 }
 
 export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
-  const { regionId } = useRegion()
+  const { regionId } = useSuspenseRegion()
   const checkout = useCheckout(cart.id, regionId, cart)
   const [selectedProvider, setSelectedProvider] = useState<string>('')
 
   const {
     paymentProviders,
-    isLoadingProviders,
     hasPaymentSessions,
     canInitiatePayment,
     isInitiatingPayment,
@@ -29,18 +28,6 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
       setSelectedProvider(providerId)
       initiatePayment(providerId)
     }
-  }
-
-  // Loading state
-  if (isLoadingProviders) {
-    return (
-      <section className="rounded border border-border-secondary bg-surface/70 p-400">
-        <h2 className="mb-400 font-semibold text-fg-primary text-lg">Platba</h2>
-        <p className="text-fg-secondary text-sm">
-          Načítání platebních metod...
-        </p>
-      </section>
-    )
   }
 
   return (

@@ -1,10 +1,10 @@
 'use client'
 
 import { useAuth } from '@/hooks/use-auth'
-import { useCart, useCompleteCart } from '@/hooks/use-cart'
+import { useCompleteCart, useSuspenseCart } from '@/hooks/use-cart'
 import { useCheckoutPayment } from '@/hooks/use-checkout-payment'
 import { useCheckoutShipping } from '@/hooks/use-checkout-shipping'
-import { useRegion } from '@/hooks/use-region'
+import { useSuspenseRegion } from '@/hooks/use-region'
 import { useUpdateCartAddress } from '@/hooks/use-update-cart-address'
 import {
   DEFAULT_ADDRESS,
@@ -35,8 +35,7 @@ export interface CheckoutFormData {
 
 interface CheckoutContextValue {
   form: UseFormReturn<CheckoutFormData>
-  cart: ReturnType<typeof useCart>['cart']
-  isCartLoading: boolean
+  cart: ReturnType<typeof useSuspenseCart>['cart']
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
@@ -56,8 +55,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   // Core data hooks
   const { customer } = useAuth()
-  const { cart, isLoading: isCartLoading, hasItems } = useCart()
-  const { regionId } = useRegion()
+  const { cart, hasItems } = useSuspenseCart()
+  const { regionId } = useSuspenseRegion()
 
   // Checkout sub-hooks
   const shipping = useCheckoutShipping(cart?.id, cart)
@@ -180,7 +179,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   const value: CheckoutContextValue = {
     form,
     cart,
-    isCartLoading,
     hasItems,
     shipping,
     payment,

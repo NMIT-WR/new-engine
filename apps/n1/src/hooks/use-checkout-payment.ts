@@ -8,7 +8,11 @@ import {
   getPaymentProviders,
 } from '@/services/cart-service'
 import type { HttpTypes } from '@medusajs/types'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 
 type CartMutationError = {
   message: string
@@ -17,8 +21,6 @@ type CartMutationError = {
 
 type UseCheckoutPaymentReturn = {
   paymentProviders?: HttpTypes.StorePaymentProvider[]
-  isLoadingProviders: boolean
-  isErrorProviders: boolean
   initiatePayment: (providerId: string) => void
   isInitiatingPayment: boolean
   canInitiatePayment: boolean
@@ -34,20 +36,17 @@ export function useCheckoutPayment(
   const queryClient = useQueryClient()
   const toast = useCartToast()
 
+  const canLoadProviders = !!regionId
+
   // Fetch available payment providers for region
-  const {
-    data: paymentProviders,
-    isLoading: isLoadingProviders,
-    isError: isErrorProviders,
-  } = useQuery({
-    queryKey: queryKeys.payment.providers(regionId || ''),
+  const { data: paymentProviders = [] } = useSuspenseQuery({
+    queryKey: queryKeys.payment.providers(regionId || 'unknown'),
     queryFn: () => {
-      if (!regionId) {
-        throw new CartServiceError('Region ID je povinné', 'VALIDATION_ERROR')
+      if (!canLoadProviders || !regionId) {
+        return []
       }
       return getPaymentProviders(regionId)
     },
-    enabled: !!regionId,
     staleTime: CACHE_TIMES.PAYMENT_PROVIDERS_STALE,
   })
 
@@ -95,8 +94,6 @@ export function useCheckoutPayment(
 
   return {
     paymentProviders,
-    isLoadingProviders,
-    isErrorProviders,
     initiatePayment,
     isInitiatingPayment,
     canInitiatePayment,

@@ -48,9 +48,11 @@ export default function RootLayout({
               <PageviewTracker />
             </Suspense>
             <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
-              <HeaderProvider>
-                <N1Header />
-              </HeaderProvider>
+              <Suspense fallback={null}>
+                <HeaderProvider>
+                  <N1Header />
+                </HeaderProvider>
+              </Suspense>
               {children}
               <N1Footer />
             </div>

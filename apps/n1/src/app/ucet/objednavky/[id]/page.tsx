@@ -1,7 +1,6 @@
 'use client'
 
-import { SkeletonLoader } from '@/app/ucet/objednavky/[id]/_components/skeleton-loader'
-import { useOrder } from '@/hooks/use-orders'
+import { useSuspenseOrder } from '@/hooks/use-orders'
 import { formatDateString } from '@/utils/format/format-date'
 import {
   getOrderStatusColor,
@@ -22,24 +21,8 @@ interface OrderDetailPageProps {
 
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = use(params)
-  const { data: order, isLoading, error } = useOrder(id)
+  const { data: order } = useSuspenseOrder(id)
   const { setActiveTab } = useAccountContext()
-
-  // Error - throw pro error.tsx boundary
-  if (error) {
-    throw error
-  }
-
-  // Loading - client-side fetch (loading.tsx je pro route transition)
-  if (isLoading || !order) {
-    return (
-      <div className="space-y-400">
-        <SkeletonLoader className="h-500 w-4xl" />
-        <SkeletonLoader className="h-[160px] w-full" />
-        <SkeletonLoader className="h-[400px] w-full" />
-      </div>
-    )
-  }
 
   const statusVariant = getOrderStatusColor(order.status || 'pending')
 

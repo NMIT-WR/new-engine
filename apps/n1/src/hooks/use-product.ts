@@ -2,11 +2,10 @@
 
 import { cacheConfig } from '@/lib/cache-config'
 import { fetchLogger, logQuery } from '@/lib/loggers'
-import { sdk } from '@/lib/medusa-client'
 import { queryKeys } from '@/lib/query-keys'
 import { getProductByHandle } from '@/services/product-service'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { useRegion } from './use-region'
+import { useRegion, useSuspenseRegion } from './use-region'
 
 interface UseProductParams {
   handle: string
@@ -53,25 +52,7 @@ export function useProduct({ handle, fields }: UseProductParams) {
 }
 
 export function useSuspenseProduct({ handle, fields }: UseProductParams) {
-  const { data: regions = [] } = useSuspenseQuery({
-    queryKey: queryKeys.regions(),
-    queryFn: async () => {
-      const response = await sdk.store.region.list()
-      return response.regions
-    },
-    staleTime: Number.POSITIVE_INFINITY,
-    gcTime: Number.POSITIVE_INFINITY,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  })
-
-  const selectedRegion =
-    regions.find((region) =>
-      region.countries?.some((country) => country.iso_2 === 'cz')
-    ) || regions[0]
-
-  const regionId = selectedRegion?.id
-  const countryCode = selectedRegion?.countries?.[0]?.iso_2 || 'cz'
+  const { regionId, countryCode } = useSuspenseRegion()
 
   if (!(handle && regionId && countryCode)) {
     throw new Error('Missing required product query parameters')
