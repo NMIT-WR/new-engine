@@ -14,6 +14,26 @@ export type PplAccessPointData = {
   }
 }
 
+/** Supported languages for PPL widget UI */
+const PPL_SUPPORTED_LANGUAGES = ["cs", "en", "de", "sk", "pl", "hu", "bg", "ro"] as const
+type PplLanguage = (typeof PPL_SUPPORTED_LANGUAGES)[number]
+
+/**
+ * Detect language from document.documentElement.lang
+ * Returns PPL-supported language or fallback to "cs"
+ */
+function detectPplLanguage(): PplLanguage {
+  if (typeof document === "undefined") return "cs"
+
+  const htmlLang = document.documentElement.lang?.split("-")[0]?.toLowerCase()
+
+  if (htmlLang && PPL_SUPPORTED_LANGUAGES.includes(htmlLang as PplLanguage)) {
+    return htmlLang as PplLanguage
+  }
+
+  return "cs"
+}
+
 type PplWidgetProps = {
   onSelect: (data: PplAccessPointData) => void
   lat?: number
@@ -23,6 +43,8 @@ type PplWidgetProps = {
   selectedCode?: string
   mode?: "default" | "static" | "catalog"
   initialFilters?: string
+  /** Language for widget UI. Auto-detected from <html lang> if not provided */
+  language?: PplLanguage
 }
 
 type PplEventDetail = {
@@ -60,9 +82,10 @@ export function PplWidget({
   selectedCode,
   mode = "default",
   initialFilters,
+  language: languageProp,
 }: PplWidgetProps) {
   const hasLatLngProps = typeof lat === "number" && typeof lng === "number"
-  const language = "cs" // PPL widget is CZ/SK only, no need for browser detection
+  const language = languageProp ?? detectPplLanguage()
   const [isReady, setIsReady] = useState(false)
   const [geoLocation, setGeoLocation] = useState<{
     lat: number
