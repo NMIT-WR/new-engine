@@ -14,7 +14,12 @@ import {
   updateLineItem,
 } from '@/services/cart-service'
 import type { HttpTypes } from '@medusajs/types'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 import { useAuth } from './use-auth'
 import { useRegion } from './use-region'
 
@@ -32,6 +37,13 @@ type UseCartReturn = {
   isLoading: boolean
   isError: boolean
   error: Error | null
+  itemCount: number
+  isEmpty: boolean
+  hasItems: boolean
+}
+
+type UseSuspenseCartReturn = {
+  cart: Cart | null | undefined
   itemCount: number
   isEmpty: boolean
   hasItems: boolean
@@ -75,6 +87,35 @@ export function useCart(): UseCartReturn {
     isLoading,
     isError,
     error: error as Error | null,
+    itemCount,
+    isEmpty,
+    hasItems,
+  }
+}
+
+export function useSuspenseCart(): UseSuspenseCartReturn {
+  const { data: cart } = useSuspenseQuery({
+    queryKey: queryKeys.cart.active(),
+    queryFn: getCart,
+    retry: (failureCount, error) => {
+      if (error instanceof Error && error.message?.includes('not found')) {
+        return false
+      }
+      if (error instanceof Error && error.message?.includes('Network')) {
+        return failureCount < 3
+      }
+      return failureCount < 1
+    },
+    ...cacheConfig.realtime,
+  })
+
+  const itemCount =
+    cart?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0
+  const isEmpty = itemCount === 0
+  const hasItems = itemCount > 0
+
+  return {
+    cart,
     itemCount,
     isEmpty,
     hasItems,

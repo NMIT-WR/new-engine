@@ -9,7 +9,7 @@ import { ProductSizes } from '@/components/product-detail/product-sizes'
 import { ProductTable } from '@/components/product-detail/product-table'
 import { ProductTabs } from '@/components/product-detail/product-tabs'
 import { RelatedProducts } from '@/components/product-detail/related-products'
-import { useProduct } from '@/hooks/use-product'
+import { useSuspenseProduct } from '@/hooks/use-product'
 import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
 import { useAnalytics } from '@/providers/analytics-provider'
 import {
@@ -28,7 +28,7 @@ export default function ProductPage() {
   const handle = params.handle as string
   const variantParam = searchParams.get('variant')
 
-  const { data: rawProduct, isLoading, error } = useProduct({ handle })
+  const { data: rawProduct } = useSuspenseProduct({ handle })
   const analytics = useAnalytics()
 
   // Track which variant we've already tracked to prevent duplicates
@@ -57,22 +57,6 @@ export default function ProductPage() {
       category: rawProduct?.categories?.[0]?.name,
     })
   }, [detail?.id, selectedVariant?.id, analytics, rawProduct?.categories])
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-fg-secondary">Načítání produktu...</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-danger">Chyba při načítání produktu</p>
-      </div>
-    )
-  }
 
   if (!rawProduct || !detail) {
     return (
@@ -108,7 +92,7 @@ export default function ProductPage() {
       value: detail.material,
     },
     {
-      key: 'distibutor',
+      key: 'distributor',
       value: detail.producer?.title,
     },
     {

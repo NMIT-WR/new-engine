@@ -4,7 +4,6 @@ import type { HttpTypes } from '@medusajs/types'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { ErrorText } from '@techsio/ui-kit/atoms/error-text'
 import { ExtraText } from '@techsio/ui-kit/atoms/extra-text'
-import { Skeleton } from '@techsio/ui-kit/atoms/skeleton'
 
 interface ShippingMethodSectionProps {
   shipping: UseCheckoutShippingReturn
@@ -56,17 +55,7 @@ export function ShippingMethodSection({
         Způsob dopravy
       </h2>
 
-      {shipping.isLoadingShipping ? (
-        <div
-          className="grid grid-cols-1 gap-200 md:grid-cols-2"
-          aria-busy="true"
-          aria-label="Načítání způsobů dopravy"
-        >
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Skeleton.Rectangle key={i} className="h-950" />
-          ))}
-        </div>
-      ) : shipping.shippingOptions && shipping.shippingOptions.length > 0 ? (
+      {shipping.shippingOptions && shipping.shippingOptions.length > 0 ? (
         <div
           className="grid grid-cols-1 gap-200 md:grid-cols-2"
           role="radiogroup"
