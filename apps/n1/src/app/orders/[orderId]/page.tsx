@@ -1,9 +1,8 @@
 "use client"
 
 import { HeurekaOrder } from "@techsio/analytics/heureka"
-import { useQuery } from "@tanstack/react-query"
-import { Button } from "@ui/atoms/button"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useRef } from "react"
 import { CheckoutReview } from "@/app/pokladna/_components/checkout-review"
 import { cacheConfig } from "@/lib/cache-config"
@@ -12,7 +11,6 @@ import { useAnalytics } from "@/providers/analytics-provider"
 import { getOrderById } from "@/services/order-service"
 
 export default function OrderPage() {
-  const router = useRouter()
   const params = useParams()
   const searchParams = useSearchParams()
   const orderId = params.orderId as string
@@ -21,14 +19,13 @@ export default function OrderPage() {
   const analytics = useAnalytics()
   const purchaseTracked = useRef(false)
 
-  const {
-    data: order,
-    isLoading,
-    isError,
-  } = useQuery({
+  if (!orderId) {
+    throw new Error("Order ID je povinné")
+  }
+
+  const { data: order } = useSuspenseQuery({
     queryKey: queryKeys.orders.detail(orderId),
     queryFn: () => getOrderById(orderId),
-    enabled: !!orderId,
     retry: (failureCount, error) => {
       if (error instanceof Error && error.message?.includes("nenalezena")) {
         return false
@@ -64,32 +61,6 @@ export default function OrderPage() {
       email: order.email || undefined,
     })
   }, [showSuccessBanner, order, analytics])
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="container mx-auto p-500">
-        <p className="text-fg-secondary">Načítání objednávky...</p>
-      </div>
-    )
-  }
-
-  // Error state
-  if (isError || !order) {
-    return (
-      <div className="container mx-auto p-500">
-        <h1 className="font-bold text-2xl text-fg-primary">
-          Objednávka nenalezena
-        </h1>
-        <p className="mt-200 text-fg-secondary">
-          Nepodařilo se načíst detail objednávky.
-        </p>
-        <Button className="mt-400" onClick={() => router.push("/")}>
-          Zpět na hlavní stránku
-        </Button>
-      </div>
-    )
-  }
 
   return (
     <div className="container mx-auto min-h-screen p-500">

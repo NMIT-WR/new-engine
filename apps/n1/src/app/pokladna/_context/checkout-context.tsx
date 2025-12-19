@@ -11,10 +11,10 @@ import {
   useState,
 } from "react"
 import { useAuth } from "@/hooks/use-auth"
-import { useCart, useCompleteCart } from "@/hooks/use-cart"
+import { useCompleteCart, useSuspenseCart } from "@/hooks/use-cart"
 import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
 import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
-import { useRegion } from "@/hooks/use-region"
+import { useSuspenseRegion } from "@/hooks/use-region"
 import { useUpdateCartAddress } from "@/hooks/use-update-cart-address"
 import {
   addressToFormData,
@@ -39,9 +39,7 @@ type CheckoutForm = ReturnType<typeof _formTypeHelper>
 
 type CheckoutContextValue = {
   form: CheckoutForm
-  cart: ReturnType<typeof useCart>["cart"]
-  isCartLoading: boolean
-  isCustomerLoading: boolean
+  cart: ReturnType<typeof useSuspenseCart>["cart"]
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
@@ -59,9 +57,9 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null)
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
-  const { customer, isLoading: isCustomerLoading } = useAuth()
-  const { cart, isLoading: isCartLoading, hasItems } = useCart()
-  const { regionId } = useRegion()
+  const { customer } = useAuth()
+  const { cart, hasItems } = useSuspenseCart()
+  const { regionId } = useSuspenseRegion()
 
   const shipping = useCheckoutShipping(cart?.id, cart)
   const payment = useCheckoutPayment(cart?.id, regionId, cart)
@@ -153,12 +151,15 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       const defaultAddress = getDefaultAddress(customer.addresses)
       if (defaultAddress) {
         const addressData = addressToFormData(defaultAddress) as AddressFormData
-        form.setFieldValue("shippingAddress", addressData)
+        form.reset({
+          email: customer?.email ?? "",
+          shippingAddress: addressData,
+        })
         setSelectedAddressId(defaultAddress.id)
         isFormInitialized.current = true
       }
     }
-  }, [cart?.shipping_address, cart?.email, customer?.addresses, form])
+  }, [cart?.shipping_address, cart?.email, customer?.addresses, customer?.email, form])
 
   // Auto-select first shipping option when loaded
   useEffect(() => {
@@ -188,8 +189,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   const contextValue: CheckoutContextValue = {
     form,
     cart,
-    isCartLoading,
-    isCustomerLoading,
     hasItems,
     shipping,
     payment,

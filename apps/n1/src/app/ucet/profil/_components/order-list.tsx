@@ -8,16 +8,29 @@ import {
   OrdersSummary,
   OrdersTableHeader,
 } from '@/app/ucet/profil/_components/orders'
-import { useOrders } from '@/hooks/use-orders'
+import { ErrorBoundary } from '@/components/error-boundary'
+import { useSuspenseOrders } from '@/hooks/use-orders'
 import { Pagination } from '@techsio/ui-kit/molecules/pagination'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 const MIN_ORDERS_COUNT = 5
 const PAGE_SIZE = 5
 
 export function OrderList() {
+  return (
+    <ErrorBoundary fallback={<OrdersError />}>
+      <Suspense
+        fallback={<OrdersSkeleton itemsCount={MIN_ORDERS_COUNT} />}
+      >
+        <OrderListContent />
+      </Suspense>
+    </ErrorBoundary>
+  )
+}
+
+function OrderListContent() {
   const [page, setPage] = useState(1)
-  const { data: ordersData, isLoading: ordersLoading, error } = useOrders()
+  const { data: ordersData } = useSuspenseOrders()
 
   const orders = ordersData?.orders || []
 
@@ -38,11 +51,6 @@ export function OrderList() {
   const startIndex = (page - 1) * PAGE_SIZE
   const paginatedOrders = orders.slice(startIndex, startIndex + PAGE_SIZE)
 
-  // Loading state
-  if (ordersLoading) {
-    return <OrdersSkeleton itemsCount={orders.length || MIN_ORDERS_COUNT} />
-  }
-
   return (
     <div className="space-y-400">
       {/* Summary section */}
@@ -54,9 +62,7 @@ export function OrderList() {
       />
 
       {/* Content */}
-      {error ? (
-        <OrdersError />
-      ) : orders.length === 0 ? (
+      {orders.length === 0 ? (
         <OrdersEmpty />
       ) : (
         <>

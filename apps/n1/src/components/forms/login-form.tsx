@@ -129,10 +129,10 @@ export function LoginForm({
       </form.Field>
 
       {showForgotPasswordLink && (
-        <div className="enter flex items-center gap-150">
+        <label className="enter flex items-center gap-150">
           <Checkbox disabled={login.isPending} name="remember" />
           <span className="text-sm">Zapamatovat</span>
-        </div>
+        </label>
       )}
 
       <Button

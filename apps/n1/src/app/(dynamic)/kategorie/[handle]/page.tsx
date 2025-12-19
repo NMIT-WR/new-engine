@@ -14,8 +14,8 @@ import {
 import { usePrefetchCategoryChildren } from '@/hooks/use-prefetch-category-children'
 import { usePrefetchPages } from '@/hooks/use-prefetch-pages'
 import { usePrefetchRootCategories } from '@/hooks/use-prefetch-root-categories'
-import { useProducts } from '@/hooks/use-products'
-import { useRegion } from '@/hooks/use-region'
+import { useSuspenseProducts } from '@/hooks/use-products'
+import { useSuspenseRegion } from '@/hooks/use-region'
 import {
   ALL_CATEGORIES_MAP,
   PRODUCT_LIMIT,
@@ -32,7 +32,7 @@ export default function CategoryPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const handle = params.handle as string
-  const { regionId, countryCode } = useRegion()
+  const { regionId, countryCode } = useSuspenseRegion()
   const analytics = useAnalytics()
 
   // Track which category we've already tracked to prevent duplicates
@@ -76,21 +76,19 @@ export default function CategoryPage() {
 
   const {
     products: rawProducts,
-    isLoading,
-    isSuccess,
     isFetching,
     totalCount,
     currentPage: responsePage,
     totalPages,
     hasNextPage,
     hasPrevPage,
-  } = useProducts({
+  } = useSuspenseProducts({
     category_id: ALL_CATEGORIES_MAP[handle],
     page: currentPage,
     limit: PRODUCT_LIMIT,
   })
 
-  const isCurrentPageReady = isSuccess && !isFetching
+  const isCurrentPageReady = !isFetching
 
   usePrefetchRootCategories({
     enabled: isCurrentPageReady,
@@ -178,7 +176,6 @@ export default function CategoryPage() {
             currentPage={responsePage}
             pageSize={PRODUCT_LIMIT}
             onPageChange={handlePageChange}
-            isLoading={isLoading}
             skeletonCount={24}
           />
         </section>

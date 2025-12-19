@@ -25,8 +25,6 @@ function CheckoutContent() {
   const router = useRouter()
   const {
     cart,
-    isCartLoading,
-    isCustomerLoading,
     hasItems,
     shipping,
     isReady,
@@ -41,7 +39,7 @@ function CheckoutContent() {
 
   // Unified analytics - InitiateCheckout tracking (sends to Meta, Google, Leadhub)
   useEffect(() => {
-    if (!(cart && hasItems)) {
+    if (!cart || !hasItems) {
       return
     }
     if (trackedCartId.current === cart.id) {
@@ -64,17 +62,7 @@ function CheckoutContent() {
         quantity: item.quantity || 1,
       })),
     })
-  }, [cart, hasItems, analytics])
-
-  // Loading state - wait for both cart and customer data to prevent form reset race condition
-  if (isCartLoading || isCustomerLoading) {
-    return (
-      <div className="container mx-auto p-500">
-        <p className="text-fg-secondary">Načítání...</p>
-      </div>
-    )
-  }
-
+  }, [cart?.id, hasItems, analytics])
   // Empty cart
   if (!(hasItems && cart)) {
     return (
@@ -83,7 +71,7 @@ function CheckoutContent() {
         <p className="mt-200 text-fg-secondary">
           Přidejte produkty do košíku před pokračováním na checkout.
         </p>
-        <Button className="mt-400" onClick={() => router.push("/")}>
+        <Button onClick={() => router.push("/")} className="mt-400">
           Zpět na hlavní stránku
         </Button>
       </div>

@@ -1,5 +1,5 @@
 'use client'
-import { footerImgs } from '@/assets/footer'
+import logo from '@/assets/logo-n1.webp'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { Icon } from '@techsio/ui-kit/atoms/icon'
 import { Link } from '@techsio/ui-kit/atoms/link'
@@ -71,7 +71,7 @@ export const N1Header = () => {
         <div className="flex h-full items-center gap-750">
           <NextLink href="/">
             <Image
-              src={footerImgs.footerLogo}
+              src={logo}
               alt="N1 Shop Logo"
               width={250}
               height={250}

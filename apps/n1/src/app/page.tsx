@@ -5,20 +5,11 @@ import { ProductGrid } from '@/components/molecules/product-grid'
 import { TopProduct } from '@/components/top-product'
 import { featureBlocks, topCategory } from '@/data/home'
 import { heroCarouselSlides } from '@/data/home'
-import { useProducts } from '@/hooks/use-products'
+import { useSuspenseProducts } from '@/hooks/use-products'
 import { transformProduct } from '@/utils/transform/transform-product'
+import { Suspense } from 'react'
 
 export default function Home() {
-  const { products: rawProducts, isLoading } = useProducts({
-    category_id: [
-      'pcat_01K1RB8NEB67KSN2VHMBT1XNX7',
-      'pcat_01K1RB8NDSY4KAVFFQVRNP2KAD',
-    ],
-    limit: 8,
-  })
-
-  const products = rawProducts.map(transformProduct)
-
   return (
     <main className="grid justify-center">
       <section className="w-full">
@@ -51,12 +42,28 @@ export default function Home() {
             <span className="w-full border-border-secondary border-t" />
           </span>
         </h2>
-        <ProductGrid
-          products={products}
-          isLoading={isLoading}
-          skeletonCount={8}
-        />
+        <Suspense
+          fallback={
+            <ProductGrid products={[]} isLoading skeletonCount={8} />
+          }
+        >
+          <HomeProductGrid />
+        </Suspense>
       </section>
     </main>
   )
+}
+
+function HomeProductGrid() {
+  const { products: rawProducts } = useSuspenseProducts({
+    category_id: [
+      'pcat_01K1RB8NEB67KSN2VHMBT1XNX7',
+      'pcat_01K1RB8NDSY4KAVFFQVRNP2KAD',
+    ],
+    limit: 8,
+  })
+
+  const products = rawProducts.map(transformProduct)
+
+  return <ProductGrid products={products} skeletonCount={8} />
 }
