@@ -1,10 +1,11 @@
-'use client'
+"use client"
 
-import { Dialog } from '@techsio/ui-kit/molecules/dialog'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { PplWidget, type PplAccessPointData } from './ppl-widget'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Dialog } from "@techsio/ui-kit/molecules/dialog"
+import { useEffect, useRef } from "react"
+import { type PplAccessPointData, PplWidget } from "./ppl-widget"
 
-interface PplPickupDialogProps {
+type PplPickupDialogProps = {
   /** Whether dialog is open (controlled) */
   open: boolean
   /** Current selected access point data */
@@ -23,16 +24,8 @@ interface PplPickupDialogProps {
  * Uses Dialog from @libs/ui/molecules/dialog to display
  * PPL widget in a modal overlay for better UX
  *
- * @example
- * ```tsx
- * <PplPickupDialog
- *   open={showDialog}
- *   selectedPoint={accessPoint}
- *   onSelect={(data) => handleAccessPointSelect(data)}
- *   onClose={() => setShowDialog(false)}
- *   address="Praha"
- * />
- * ```
+ * Key feature: Widget remounts on each dialog open via key prop
+ * to ensure fresh PPL script initialization
  */
 export function PplPickupDialog({
   open,
@@ -41,10 +34,20 @@ export function PplPickupDialog({
   onClose,
   address,
 }: PplPickupDialogProps) {
-  const handleSelect = (data: PplAccessPointData) => {
-    console.log('[PplPickupDialog] Access point selected:', data)
+  // Counter to force widget remount on each dialog open
+  const mountKeyRef = useRef(0)
 
-    // Pass data to parent (parent will close dialog)
+  // Increment key when dialog opens to force widget remount
+  useEffect(() => {
+    if (open) {
+      mountKeyRef.current += 1
+    }
+  }, [open])
+
+  const handleSelect = (data: PplAccessPointData) => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("[PplPickupDialog] Access point selected:", data)
+    }
     onSelect(data)
   }
 
@@ -56,29 +59,29 @@ export function PplPickupDialog({
 
   return (
     <Dialog
-      open={open}
-      onOpenChange={handleOpenChange}
-      customTrigger
-      placement="center"
-      size="xl"
-      title="Vyberte výdejní místo PPL"
-      description="Najděte nejbližší ParcelShop nebo ParcelBox pro vyzvednutí zásilky"
-      closeOnEscape={true}
-      closeOnInteractOutside={false}
       actions={
-        <Button variant="secondary" theme="outlined" onClick={onClose}>
+        <Button onClick={onClose} theme="outlined" variant="secondary">
           Zrušit
         </Button>
       }
+      className="rounded-md border-border-secondary shadow-none"
+      customTrigger
+      description="Najděte nejbližší ParcelShop nebo ParcelBox pro vyzvednutí zásilky"
+      onOpenChange={handleOpenChange}
+      open={open}
+      title="Vyberte výdejní místo PPL"
     >
-      <div className="min-h-[500px] w-[850px]">
-        <PplWidget
-          onSelect={handleSelect}
-          country="CZ"
-          mode="default"
-          address={address}
-          selectedCode={selectedPoint?.code}
-        />
+      <div className="">
+        {open && (
+          <PplWidget
+            address={address}
+            country="CZ"
+            key={mountKeyRef.current}
+            mode="default"
+            onSelect={handleSelect}
+            selectedCode={selectedPoint?.code}
+          />
+        )}
       </div>
     </Dialog>
   )

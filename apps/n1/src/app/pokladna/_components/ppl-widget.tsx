@@ -1,16 +1,11 @@
 "use client"
 
-import Script from "next/script"
 import { useEffect, useRef, useState } from "react"
 
 export type PplAccessPointData = {
-  /** Unique access point code (external number) */
   code: string
-  /** Access point name */
   name: string
-  /** Type: ParcelShop, ParcelBox, AlzaBox */
   type: string
-  /** Full address object */
   address?: {
     street?: string
     city?: string
@@ -20,38 +15,41 @@ export type PplAccessPointData = {
 }
 
 type PplWidgetProps = {
-  /** Callback when access point is selected */
   onSelect: (data: PplAccessPointData) => void
-  /** Initial latitude for map center */
   lat?: number
-  /** Initial longitude for map center */
   lng?: number
-  /** Country code (default: CZ) */
   country?: string
-  /** Initial address for search */
   address?: string
-  /** Pre-selected access point code */
   selectedCode?: string
-  /** Display mode: 'default' or 'modal' */
   mode?: "default" | "modal"
-  /** Initial filters (e.g., "ParcelShop,CardPayment") */
   initialFilters?: string
 }
+
+type PplEventDetail = {
+  id?: number
+  accessPointType?: string
+  code: string
+  name: string
+  street?: string
+  city?: string
+  zipCode?: string
+  country?: string
+  gps?: { latitude: number; longitude: number }
+  activeCardPayment?: boolean
+  activeCashPayment?: boolean
+}
+
+const PPL_SCRIPT_URL = "https://www.ppl.cz/sources/map/main.js"
+const PPL_CSS_URL = "https://www.ppl.cz/sources/map/main.css"
+const WIDGET_ID = "ppl-parcelshop-map"
 
 /**
  * PPL Widget for selecting pickup points (ParcelShop/ParcelBox)
  *
- * Official documentation:
- * https://www.ppl.cz/documents/20122/1893929/PPL_CZ_integration_PPL_widget_pick_up_points_v1.5.0.pdf
+ * Uses the official PPL widget from ppl.cz
+ * Event: "ppl-parcelshop-map" with event.detail containing pickup point data
  *
- * @example
- * ```tsx
- * <PplWidget
- *   onSelect={(data) => console.log('Selected:', data)}
- *   address="Praha"
- *   country="CZ"
- * />
- * ```
+ * @see https://ppl-widget.apidog.io
  */
 export function PplWidget({
   onSelect,
@@ -64,126 +62,91 @@ export function PplWidget({
   initialFilters,
 }: PplWidgetProps) {
   const hasLatLngProps = typeof lat === "number" && typeof lng === "number"
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false)
   const [language, setLanguage] = useState("cs")
-  const [languageResolved, setLanguageResolved] = useState(false)
-  const [locationResolved, setLocationResolved] = useState(hasLatLngProps)
+  const [isReady, setIsReady] = useState(false)
   const [geoLocation, setGeoLocation] = useState<{
     lat: number
     lng: number
   } | null>(null)
   const widgetRef = useRef<HTMLDivElement>(null)
-  const listenerAttached = useRef(false)
-  // PPL widget expects exact ID 'ppl-parcelshop-map'
-  const widgetId = "ppl-parcelshop-map"
+  const mountIdRef = useRef(0)
 
-  useEffect(() => {
-    if (!isScriptLoaded || listenerAttached.current) {
-      return
-    }
-
-    const handleSelection = (event: MessageEvent) => {
-      // PPL widget sends message event with pplPickupPointSelected
-      if (event.data && event.data.event === "pplPickupPointSelected") {
-        const point = event.data.point
-
-        if (point?.code) {
-          onSelect({
-            code: point.code,
-            name: point.name || "",
-            type: point.type || "ParcelShop",
-            address: point.address,
-          })
-        }
-      }
-    }
-
-    // Attach window message event listener for PPL widget selection
-    window.addEventListener("message", handleSelection)
-    listenerAttached.current = true
-
-    return () => {
-      window.removeEventListener("message", handleSelection)
-      listenerAttached.current = false
-    }
-  }, [isScriptLoaded, onSelect])
-
+  // Detect language on mount
   useEffect(() => {
     const normalizedLanguage =
       (document.documentElement.lang || navigator.language || "cs")
         .split("-")[0]
         ?.toLowerCase() || "cs"
     setLanguage(normalizedLanguage)
-    setLanguageResolved(true)
   }, [])
 
+  // Request geolocation if not provided via props
   useEffect(() => {
-    if (locationResolved || hasLatLngProps) {
-      return
-    }
-    if (!navigator.geolocation) {
-      setLocationResolved(true)
+    if (hasLatLngProps || !navigator.geolocation) {
+      setIsReady(true)
       return
     }
 
     let cancelled = false
 
-    const markResolved = () => {
+    const handleSuccess = (position: GeolocationPosition) => {
       if (cancelled) {
         return
       }
-      setLocationResolved(true)
+      setGeoLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      })
+      setIsReady(true)
     }
 
-    const requestLocation = () => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
+    const handleError = () => {
+      if (cancelled) {
+        return
+      }
+      setIsReady(true)
+    }
+
+    // Check permission first if available
+    if (navigator.permissions?.query) {
+      navigator.permissions
+        .query({ name: "geolocation" as PermissionName })
+        .then((status) => {
           if (cancelled) {
             return
           }
-          setGeoLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          })
-          setLocationResolved(true)
-        },
-        () => {
-          markResolved()
-        },
-        { enableHighAccuracy: false, maximumAge: 60_000, timeout: 2000 }
-      )
-    }
-
-    if (!navigator.permissions?.query) {
-      requestLocation()
-      return () => {
-        cancelled = true
-      }
-    }
-
-    navigator.permissions
-      .query({ name: "geolocation" as PermissionName })
-      .then((status) => {
-        if (status.state === "granted") {
-          requestLocation()
-          return
-        }
-        markResolved()
+          if (status.state === "granted") {
+            navigator.geolocation.getCurrentPosition(
+              handleSuccess,
+              handleError,
+              {
+                enableHighAccuracy: false,
+                maximumAge: 60_000,
+                timeout: 2000,
+              }
+            )
+          } else {
+            setIsReady(true)
+          }
+        })
+        .catch(() => setIsReady(true))
+    } else {
+      navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+        enableHighAccuracy: false,
+        maximumAge: 60_000,
+        timeout: 2000,
       })
-      .catch(() => {
-        markResolved()
-      })
+    }
 
     return () => {
       cancelled = true
     }
-  }, [hasLatLngProps, locationResolved])
+  }, [hasLatLngProps])
 
-  // Load CSS stylesheet
+  // Load CSS once
   useEffect(() => {
-    const href = "https://www.ppl.cz/sources/map/main.css"
     const existingLink = document.head.querySelector<HTMLLinkElement>(
-      `link[href="${href}"]`
+      `link[href="${PPL_CSS_URL}"]`
     )
     if (existingLink) {
       return
@@ -191,39 +154,94 @@ export function PplWidget({
 
     const link = document.createElement("link")
     link.rel = "stylesheet"
-    link.href = href
+    link.href = PPL_CSS_URL
     document.head.appendChild(link)
   }, [])
 
-  const shouldLoadScript = languageResolved && locationResolved
+  // Main effect: attach event listener and load script
+  useEffect(() => {
+    if (!isReady) {
+      return
+    }
+
+    mountIdRef.current += 1
+    const currentMountId = mountIdRef.current
+
+    // Event handler for PPL widget selection
+    // Official event: "ppl-parcelshop-map" on document, data in event.detail
+    const handlePplSelection = (event: Event) => {
+      const customEvent = event as CustomEvent<PplEventDetail>
+      const detail = customEvent.detail
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("[PplWidget] Selection event received:", detail)
+      }
+
+      if (detail?.code) {
+        onSelect({
+          code: detail.code,
+          name: detail.name || "",
+          type: detail.accessPointType || "ParcelShop",
+          address: {
+            street: detail.street,
+            city: detail.city,
+            zipCode: detail.zipCode,
+            country: detail.country,
+          },
+        })
+      }
+    }
+
+    // Attach event listener BEFORE loading script
+    document.addEventListener("ppl-parcelshop-map", handlePplSelection)
+
+    // Remove any existing PPL script to force reinitialization
+    const existingScript = document.querySelector(
+      `script[src="${PPL_SCRIPT_URL}"]`
+    )
+    if (existingScript) {
+      existingScript.remove()
+    }
+
+    // Load script dynamically
+    const script = document.createElement("script")
+    script.src = PPL_SCRIPT_URL
+    script.async = true
+    script.onload = () => {
+      if (currentMountId !== mountIdRef.current) {
+        return
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.log("[PplWidget] Script loaded, widget should initialize")
+      }
+    }
+    document.body.appendChild(script)
+
+    return () => {
+      document.removeEventListener("ppl-parcelshop-map", handlePplSelection)
+      // Don't remove script on cleanup - let next mount handle it
+    }
+  }, [isReady, onSelect])
+
+  // Determine final lat/lng
+  const finalLat = hasLatLngProps ? lat : geoLocation?.lat
+  const finalLng = hasLatLngProps ? lng : geoLocation?.lng
 
   return (
-    <>
-      {shouldLoadScript ? (
-        <Script
-          onLoad={() => {
-            setIsScriptLoaded(true)
-          }}
-          src="https://www.ppl.cz/sources/map/main.js"
-          strategy="afterInteractive"
-        />
-      ) : null}
-
-      <div
-        data-countries={country.toLowerCase()}
-        data-country={country.toLowerCase()}
-        data-language={language}
-        data-lat={hasLatLngProps ? lat : geoLocation?.lat}
-        data-lng={hasLatLngProps ? lng : geoLocation?.lng}
-        data-mode={mode}
-        id={widgetId}
-        ref={widgetRef}
-        {...(address && { "data-address": address })}
-        {...(selectedCode && { "data-code": selectedCode })}
-        {...(initialFilters && { "data-initialfilters": initialFilters })}
-        className="w-full rounded border border-border-secondary bg-surface"
-        style={{ minHeight: "400px" }}
-      />
-    </>
+    <div
+      data-countries={country.toLowerCase()}
+      data-country={country.toLowerCase()}
+      data-language={language}
+      data-mode={mode}
+      id={WIDGET_ID}
+      ref={widgetRef}
+      {...(finalLat !== undefined && { "data-lat": finalLat })}
+      {...(finalLng !== undefined && { "data-lng": finalLng })}
+      {...(address && { "data-address": address })}
+      {...(selectedCode && { "data-code": selectedCode })}
+      {...(initialFilters && { "data-initialfilters": initialFilters })}
+      className="w-full rounded border border-border-secondary"
+      style={{ minHeight: "400px" }}
+    />
   )
 }
