@@ -1,5 +1,6 @@
 'use client'
-import { footerImgs } from '@/assets/footer'
+import logo from '@/assets/logo-n1.webp'
+import wrLogo from '@/assets/wr.png'
 import { Icon } from '@techsio/ui-kit/atoms/icon'
 import { Footer } from '@techsio/ui-kit/organisms/footer'
 import Image from 'next/image'
@@ -12,7 +13,7 @@ export function N1Footer() {
         {/* Company Info Section */}
         <Footer.Section>
           <Image
-            src={footerImgs.footerLogo}
+            src={logo}
             alt="N1 Shop Logo"
             width={400}
             height={400}
@@ -100,7 +101,7 @@ export function N1Footer() {
             Web Revolution
           </Link>
           <Image
-            src={footerImgs.wrLogo}
+            src={wrLogo}
             alt="Web Revolution"
             width={32}
             height={32}
