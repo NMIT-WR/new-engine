@@ -2,7 +2,6 @@
 
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { Dialog } from "@techsio/ui-kit/molecules/dialog"
-import { useEffect, useRef } from "react"
 import { type PplAccessPointData, PplWidget } from "./ppl-widget"
 
 type PplPickupDialogProps = {
@@ -24,8 +23,7 @@ type PplPickupDialogProps = {
  * Uses Dialog from @libs/ui/molecules/dialog to display
  * PPL widget in a modal overlay for better UX
  *
- * Key feature: Widget remounts on each dialog open via key prop
- * to ensure fresh PPL script initialization
+ * Widget remounts automatically via conditional render {open && ...}
  */
 export function PplPickupDialog({
   open,
@@ -34,16 +32,6 @@ export function PplPickupDialog({
   onClose,
   address,
 }: PplPickupDialogProps) {
-  // Counter to force widget remount on each dialog open
-  const mountKeyRef = useRef(0)
-
-  // Increment key when dialog opens to force widget remount
-  useEffect(() => {
-    if (open) {
-      mountKeyRef.current += 1
-    }
-  }, [open])
-
   const handleSelect = (data: PplAccessPointData) => {
     if (process.env.NODE_ENV === "development") {
       console.log("[PplPickupDialog] Access point selected:", data)
@@ -71,12 +59,11 @@ export function PplPickupDialog({
       open={open}
       title="Vyberte výdejní místo PPL"
     >
-      <div className="">
+      <div>
         {open && (
           <PplWidget
             address={address}
             country="CZ"
-            key={mountKeyRef.current}
             mode="default"
             onSelect={handleSelect}
             selectedCode={selectedPoint?.code}

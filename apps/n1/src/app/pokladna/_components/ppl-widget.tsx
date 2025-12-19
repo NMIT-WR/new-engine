@@ -21,7 +21,7 @@ type PplWidgetProps = {
   country?: string
   address?: string
   selectedCode?: string
-  mode?: "default" | "modal"
+  mode?: "default" | "static" | "catalog"
   initialFilters?: string
 }
 
@@ -62,23 +62,13 @@ export function PplWidget({
   initialFilters,
 }: PplWidgetProps) {
   const hasLatLngProps = typeof lat === "number" && typeof lng === "number"
-  const [language, setLanguage] = useState("cs")
+  const language = "cs" // PPL widget is CZ/SK only, no need for browser detection
   const [isReady, setIsReady] = useState(false)
   const [geoLocation, setGeoLocation] = useState<{
     lat: number
     lng: number
   } | null>(null)
-  const widgetRef = useRef<HTMLDivElement>(null)
   const mountIdRef = useRef(0)
-
-  // Detect language on mount
-  useEffect(() => {
-    const normalizedLanguage =
-      (document.documentElement.lang || navigator.language || "cs")
-        .split("-")[0]
-        ?.toLowerCase() || "cs"
-    setLanguage(normalizedLanguage)
-  }, [])
 
   // Request geolocation if not provided via props
   useEffect(() => {
@@ -229,12 +219,10 @@ export function PplWidget({
 
   return (
     <div
-      data-countries={country.toLowerCase()}
       data-country={country.toLowerCase()}
       data-language={language}
       data-mode={mode}
       id={WIDGET_ID}
-      ref={widgetRef}
       {...(finalLat !== undefined && { "data-lat": finalLat })}
       {...(finalLng !== undefined && { "data-lng": finalLng })}
       {...(address && { "data-address": address })}
