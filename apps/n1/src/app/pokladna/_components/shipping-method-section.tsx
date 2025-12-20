@@ -6,12 +6,13 @@ import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
 import type { ReactNode } from "react"
 import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
 import type { ShippingMethodData } from "@/services/cart-service"
-import { formatToTaxIncluded } from "@/utils/format/format-product"
 import {
-  type PplAccessPointData,
   accessPointToShippingData,
   isPPLParcelOption,
-} from "../_context/checkout-context"
+  type PplAccessPointData,
+} from "@/utils/address-helpers"
+import { formatToTaxIncluded } from "@/utils/format/format-product"
+import { SelectedParcelCard } from "./selected-parcel-card"
 
 type ShippingMethodSectionProps = {
   shipping: UseCheckoutShippingReturn
@@ -60,7 +61,7 @@ function ShippingOptionCard({
   // Show access point name if selected for PPL Parcel
   const subtitle = isPPLParcel
     ? selectedAccessPoint
-      ? `${selectedAccessPoint.name}, ${selectedAccessPoint.address?.city || ''}`
+      ? `${selectedAccessPoint.name}, ${selectedAccessPoint.address?.city || ""}`
       : "Výdejní místo"
     : "Dodání 2-3 dny"
 
@@ -91,6 +92,15 @@ export function ShippingMethodSection({
   onOpenPickupDialog,
 }: ShippingMethodSectionProps) {
   let content: ReactNode
+
+  // Check if currently selected option is PPL Parcel
+  const selectedOption = shipping.shippingOptions?.find(
+    (opt) => opt.id === shipping.selectedShippingMethodId
+  )
+  const showParcelCard =
+    selectedOption &&
+    isPPLParcelOption(selectedOption.name) &&
+    selectedAccessPoint
 
   if (shipping.isLoadingShipping) {
     content = (
@@ -140,6 +150,14 @@ export function ShippingMethodSection({
         Způsob dopravy
       </h2>
       {content}
+
+      {/* Show selected parcel details */}
+      {showParcelCard && selectedAccessPoint && (
+        <SelectedParcelCard
+          accessPoint={selectedAccessPoint}
+          onChangeClick={() => onOpenPickupDialog(selectedOption.id)}
+        />
+      )}
     </section>
   )
 }

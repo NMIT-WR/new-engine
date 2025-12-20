@@ -15,7 +15,16 @@ export type PplAccessPointData = {
 }
 
 /** Supported languages for PPL widget UI */
-const PPL_SUPPORTED_LANGUAGES = ["cs", "en", "de", "sk", "pl", "hu", "bg", "ro"] as const
+const PPL_SUPPORTED_LANGUAGES = [
+  "cs",
+  "en",
+  "de",
+  "sk",
+  "pl",
+  "hu",
+  "bg",
+  "ro",
+] as const
 type PplLanguage = (typeof PPL_SUPPORTED_LANGUAGES)[number]
 
 /**
@@ -23,7 +32,9 @@ type PplLanguage = (typeof PPL_SUPPORTED_LANGUAGES)[number]
  * Returns PPL-supported language or fallback to "cs"
  */
 function detectPplLanguage(): PplLanguage {
-  if (typeof document === "undefined") return "cs"
+  if (typeof document === "undefined") {
+    return "cs"
+  }
 
   const htmlLang = document.documentElement.lang?.split("-")[0]?.toLowerCase()
 

@@ -1,10 +1,10 @@
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import type { Cart } from '@/services/cart-service'
-import type { AddressErrors, AddressFormData } from '@/utils/address-validation'
-import { validateAddressForm } from '@/utils/address-validation'
-import type { HttpTypes } from '@medusajs/types'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { HttpTypes } from "@medusajs/types"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
+import type { Cart } from "@/services/cart-service"
+import type { AddressErrors, AddressFormData } from "@/utils/address-validation"
+import { validateAddressForm } from "@/utils/address-validation"
 
 type UpdateCartAddressOptions = {
   onSuccess?: (cart: Cart) => void
@@ -18,8 +18,8 @@ type MutationContext = {
 /** Helper to clean address data for Medusa API */
 function cleanAddress(
   address: AddressFormData
-): HttpTypes.StoreUpdateCart['shipping_address'] {
-  const cleaned: HttpTypes.StoreUpdateCart['shipping_address'] = {
+): HttpTypes.StoreUpdateCart["shipping_address"] {
+  const cleaned: HttpTypes.StoreUpdateCart["shipping_address"] = {
     first_name: address.first_name,
     last_name: address.last_name,
     address_1: address.address_1,
@@ -28,10 +28,18 @@ function cleanAddress(
     country_code: address.country_code,
   }
 
-  if (address.address_2?.trim()) cleaned.address_2 = address.address_2
-  if (address.company?.trim()) cleaned.company = address.company
-  if (address.province?.trim()) cleaned.province = address.province
-  if (address.phone?.trim()) cleaned.phone = address.phone
+  if (address.address_2?.trim()) {
+    cleaned.address_2 = address.address_2
+  }
+  if (address.company?.trim()) {
+    cleaned.company = address.company
+  }
+  if (address.province?.trim()) {
+    cleaned.province = address.province
+  }
+  if (address.phone?.trim()) {
+    cleaned.phone = address.phone
+  }
 
   return cleaned
 }
@@ -52,27 +60,20 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
   >({
     mutationFn: async ({ cartId, billingAddress, shippingAddress, email }) => {
       if (!cartId) {
-        throw new Error('Cart ID is required')
+        throw new Error("Cart ID is required")
       }
 
       // Validate billing address
-      const validationErrors: AddressErrors = validateAddressForm(billingAddress)
+      const validationErrors: AddressErrors =
+        validateAddressForm(billingAddress)
       if (Object.keys(validationErrors).length > 0) {
-        const errorMessages = Object.values(validationErrors).join(', ')
+        const errorMessages = Object.values(validationErrors).join(", ")
         throw new Error(`Validation failed: ${errorMessages}`)
       }
 
       // Clean both addresses
       const cleanedBillingAddress = cleanAddress(billingAddress)
       const cleanedShippingAddress = cleanAddress(shippingAddress)
-
-      // DEBUG: Log addresses being sent to Medusa
-      console.log('[useUpdateCartAddress] Updating cart addresses:', {
-        cartId,
-        billing: cleanedBillingAddress,
-        shipping: cleanedShippingAddress,
-        email,
-      })
 
       // Update the cart with both addresses
       const response = await sdk.store.cart.update(cartId, {
@@ -82,14 +83,8 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
       })
 
       if (!response.cart) {
-        throw new Error('Failed to update addresses')
+        throw new Error("Failed to update addresses")
       }
-
-      // DEBUG: Log response
-      console.log('[useUpdateCartAddress] Cart updated:', {
-        billing: response.cart.billing_address,
-        shipping: response.cart.shipping_address,
-      })
 
       return response.cart
     },

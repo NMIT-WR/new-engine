@@ -1,91 +1,53 @@
-'use client'
+"use client"
 
-import { useAuth } from '@/hooks/use-auth'
-import { useCart, useCompleteCart } from '@/hooks/use-cart'
-import { useCheckoutPayment } from '@/hooks/use-checkout-payment'
-import { useCheckoutShipping } from '@/hooks/use-checkout-shipping'
-import { useRegion } from '@/hooks/use-region'
-import { useUpdateCartAddress } from '@/hooks/use-update-cart-address'
-import type { ShippingMethodData } from '@/services/cart-service'
-import type { PplAccessPointData } from '../_components/ppl-widget'
+import { useRouter } from "next/navigation"
 import {
-  DEFAULT_ADDRESS,
-  addressToFormData,
-  getDefaultAddress,
-} from '@/utils/address-helpers'
-import type { AddressFormData } from '@/utils/address-validation'
-import { useRouter } from 'next/navigation'
-import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
   useRef,
   useState,
-} from 'react'
+} from "react"
 import {
   FormProvider,
   type UseFormReturn,
   useForm,
   useFormContext,
-} from 'react-hook-form'
+} from "react-hook-form"
+import { useAuth } from "@/hooks/use-auth"
+import { useCart, useCompleteCart } from "@/hooks/use-cart"
+import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
+import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
+import { useRegion } from "@/hooks/use-region"
+import { useUpdateCartAddress } from "@/hooks/use-update-cart-address"
+import {
+  accessPointToAddress,
+  accessPointToShippingData,
+  addressToFormData,
+  DEFAULT_ADDRESS,
+  getDefaultAddress,
+  isPPLParcelOption,
+  type PplAccessPointData,
+} from "@/utils/address-helpers"
+import type { AddressFormData } from "@/utils/address-validation"
 
 export interface CheckoutFormData {
   email?: string
   billingAddress: AddressFormData
 }
 
-/** Re-export PplAccessPointData for convenience */
-export type { PplAccessPointData }
-
-/** Check if shipping option requires PPL Parcel access point selection */
-export function isPPLParcelOption(optionName: string): boolean {
-  const name = optionName.toLowerCase()
-  return name.includes('parcel smart') || name.includes('parcelsmart')
-}
-
-/** Convert PPL access point to shipping method data */
-export function accessPointToShippingData(
-  accessPoint: PplAccessPointData
-): ShippingMethodData {
-  return {
-    access_point_id: accessPoint.code,
-    access_point_name: accessPoint.name,
-    access_point_type: accessPoint.type,
-    access_point_street: accessPoint.address?.street,
-    access_point_city: accessPoint.address?.city,
-    access_point_zip: accessPoint.address?.zipCode,
-    access_point_country: accessPoint.address?.country,
-  }
-}
-
-/** Convert PPL access point to Medusa address format for shipping_address */
-export function accessPointToAddress(
-  accessPoint: PplAccessPointData,
-  billingAddress: AddressFormData
-): AddressFormData {
-  return {
-    first_name: billingAddress.first_name,
-    last_name: billingAddress.last_name,
-    company: accessPoint.name,
-    address_1: accessPoint.address?.street || '',
-    address_2: '',
-    city: accessPoint.address?.city || '',
-    postal_code: accessPoint.address?.zipCode || '',
-    country_code: accessPoint.address?.country?.toLowerCase() || 'cz',
-    province: '',
-    phone: billingAddress.phone,
-  }
-}
+/** Re-export for backward compatibility */
+export { accessPointToShippingData, isPPLParcelOption, type PplAccessPointData }
 
 interface CheckoutContextValue {
   form: UseFormReturn<CheckoutFormData>
-  cart: ReturnType<typeof useCart>['cart']
+  cart: ReturnType<typeof useCart>["cart"]
   isCartLoading: boolean
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
-  customer: ReturnType<typeof useAuth>['customer']
+  customer: ReturnType<typeof useAuth>["customer"]
   selectedAddressId: string | null
   setSelectedAddressId: (id: string | null) => void
   completeCheckout: () => Promise<void>
@@ -153,10 +115,10 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   // Initialize form with default values
   const form = useForm<CheckoutFormData>({
     defaultValues: {
-      email: customer?.email ?? '',
+      email: customer?.email ?? "",
       billingAddress: DEFAULT_ADDRESS,
     },
-    mode: 'onBlur',
+    mode: "onBlur",
   })
 
   // Initialize form with existing data (cart address > customer default)
@@ -198,8 +160,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       !shipping.selectedShippingMethodId
     ) {
       // Find PPL Private option (doesn't require access point selection)
-      const pplPrivate = shipping.shippingOptions.find(
-        (opt) => opt.name.toLowerCase().includes('ppl private')
+      const pplPrivate = shipping.shippingOptions.find((opt) =>
+        opt.name.toLowerCase().includes("ppl private")
       )
       if (pplPrivate) {
         shipping.setShipping(pplPrivate.id)
@@ -208,9 +170,23 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     }
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
 
+  // Reset access point when switching to non-parcel shipping method
+  useEffect(() => {
+    if (!(shipping.selectedShippingMethodId && shipping.shippingOptions)) return
+
+    const currentOption = shipping.shippingOptions.find(
+      (opt) => opt.id === shipping.selectedShippingMethodId
+    )
+
+    // If switched to non-parcel option, clear access point
+    if (currentOption && !isPPLParcelOption(currentOption.name)) {
+      setSelectedAccessPoint(null)
+    }
+  }, [shipping.selectedShippingMethodId, shipping.shippingOptions])
+
   const completeCheckout = form.handleSubmit(async (data) => {
     if (!cart?.id) {
-      setError('Košík nebyl nalezen')
+      setError("Košík nebyl nalezen")
       return
     }
 
@@ -228,27 +204,17 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
     let shippingAddress: AddressFormData
     if (isPplParcel && selectedAccessPoint) {
-      shippingAddress = accessPointToAddress(selectedAccessPoint, billingAddress)
-      console.log('[completeCheckout] PPL Parcel - shipping from access point:', {
-        accessPoint: selectedAccessPoint.name,
-        shippingAddress,
-      })
+      shippingAddress = accessPointToAddress(
+        selectedAccessPoint,
+        billingAddress
+      )
     } else {
       shippingAddress = billingAddress
-      console.log('[completeCheckout] Standard delivery - shipping = billing:', {
-        shippingAddress,
-      })
     }
 
     // Save both addresses to cart
     try {
       const cartEmail = customer?.email || email
-      console.log('[completeCheckout] Updating cart addresses:', {
-        cartId: cart.id,
-        billingAddress,
-        shippingAddress,
-        email: cartEmail,
-      })
       await updateCartAddressAsync({
         cartId: cart.id,
         billingAddress,
@@ -256,20 +222,43 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         email: cartEmail,
       })
     } catch (err) {
-      console.error('[completeCheckout] Address update failed:', err)
-      setError('Problémy s adresou')
+      if (err instanceof Error) {
+        if (err.message.includes("billing") || err.message.includes("faktur")) {
+          setError("Chyba fakturační adresy: " + err.message)
+        } else if (
+          err.message.includes("shipping") ||
+          err.message.includes("doruč")
+        ) {
+          setError("Chyba doručovací adresy: " + err.message)
+        } else if (err.message.includes("Validation")) {
+          setError("Neplatná adresa: " + err.message)
+        } else {
+          setError("Nepodařilo se uložit adresu: " + err.message)
+        }
+      } else {
+        setError("Nepodařilo se uložit adresu")
+      }
       return
     }
 
     // Complete the cart
     try {
-      console.log('[completeCheckout] Completing cart:', cart.id)
       await completeCartAsync({ cartId: cart.id })
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Nepodařilo se dokončit objednávku'
-      console.error('[completeCheckout] Cart completion failed:', message)
-      setError(message)
+      if (err instanceof Error) {
+        if (err.message.includes("payment") || err.message.includes("platb")) {
+          setError("Chyba platby: " + err.message)
+        } else if (
+          err.message.includes("stock") ||
+          err.message.includes("sklad")
+        ) {
+          setError("Některé produkty nejsou skladem: " + err.message)
+        } else {
+          setError("Nepodařilo se dokončit objednávku: " + err.message)
+        }
+      } else {
+        setError("Nepodařilo se dokončit objednávku")
+      }
     }
   })
 
@@ -277,9 +266,19 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   const formState = form.formState
   const isAddressValid =
     formState.isValid || Object.keys(formState.errors).length === 0
+
+  // Check if selected shipping requires access point
+  const currentShippingOption = shipping.shippingOptions?.find(
+    (opt) => opt.id === shipping.selectedShippingMethodId
+  )
+  const requiresAccessPoint =
+    currentShippingOption && isPPLParcelOption(currentShippingOption.name)
+  const hasRequiredAccessPoint = !requiresAccessPoint || !!selectedAccessPoint
+
   const isReady =
     isAddressValid &&
     !!shipping.selectedShippingMethodId &&
+    hasRequiredAccessPoint &&
     payment.hasPaymentSessions &&
     !shipping.isSettingShipping &&
     !payment.isInitiatingPayment
@@ -317,7 +316,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 export function useCheckoutContext() {
   const context = useContext(CheckoutContext)
   if (!context) {
-    throw new Error('useCheckoutContext must be used within CheckoutProvider')
+    throw new Error("useCheckoutContext must be used within CheckoutProvider")
   }
   return context
 }
