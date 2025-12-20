@@ -23,7 +23,6 @@ import { useRegion } from "@/hooks/use-region"
 import { useUpdateCartAddress } from "@/hooks/use-update-cart-address"
 import {
   accessPointToAddress,
-  accessPointToShippingData,
   addressToFormData,
   DEFAULT_ADDRESS,
   getDefaultAddress,
@@ -32,15 +31,12 @@ import {
 } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 
-export interface CheckoutFormData {
+export type CheckoutFormData = {
   email?: string
   billingAddress: AddressFormData
 }
 
-/** Re-export for backward compatibility */
-export { accessPointToShippingData, isPPLParcelOption, type PplAccessPointData }
-
-interface CheckoutContextValue {
+type CheckoutContextValue = {
   form: UseFormReturn<CheckoutFormData>
   cart: ReturnType<typeof useCart>["cart"]
   isCartLoading: boolean
@@ -67,17 +63,12 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null)
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
-
-  // Core data hooks
   const { customer } = useAuth()
   const { cart, isLoading: isCartLoading, hasItems } = useCart()
   const { regionId } = useRegion()
-
-  // Checkout sub-hooks
   const shipping = useCheckoutShipping(cart?.id, cart)
   const payment = useCheckoutPayment(cart?.id, regionId, cart)
 
-  // Mutations
   const { mutateAsync: updateCartAddressAsync, isPending: isSavingAddress } =
     useUpdateCartAddress()
   const { mutateAsync: completeCartAsync, isPending: isCompletingCart } =
@@ -87,13 +78,11 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       },
     })
 
-  // State
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null
   )
   const [error, setError] = useState<string | null>(null)
 
-  // PPL Parcel state
   const [selectedAccessPoint, setSelectedAccessPoint] =
     useState<PplAccessPointData | null>(null)
   const [isPickupDialogOpen, setIsPickupDialogOpen] = useState(false)
@@ -172,17 +161,14 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   // Reset access point when switching to non-parcel shipping method
   useEffect(() => {
-    if (!(shipping.selectedShippingMethodId && shipping.shippingOptions)) return
-
-    const currentOption = shipping.shippingOptions.find(
-      (opt) => opt.id === shipping.selectedShippingMethodId
-    )
-
     // If switched to non-parcel option, clear access point
-    if (currentOption && !isPPLParcelOption(currentOption.name)) {
+    if (
+      shipping.selectedOption &&
+      !isPPLParcelOption(shipping.selectedOption.name)
+    ) {
       setSelectedAccessPoint(null)
     }
-  }, [shipping.selectedShippingMethodId, shipping.shippingOptions])
+  }, [shipping.selectedOption])
 
   const completeCheckout = form.handleSubmit(async (data) => {
     if (!cart?.id) {
@@ -197,10 +183,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     // Determine shipping address based on delivery method
     // If PPL Parcel selected + access point → shipping = access point address
     // Otherwise → shipping = billing address
-    const selectedOption = shipping.shippingOptions?.find(
-      (opt) => opt.id === shipping.selectedShippingMethodId
-    )
-    const isPplParcel = selectedOption && isPPLParcelOption(selectedOption.name)
+    const isPplParcel =
+      shipping.selectedOption && isPPLParcelOption(shipping.selectedOption.name)
 
     let shippingAddress: AddressFormData
     if (isPplParcel && selectedAccessPoint) {
@@ -268,11 +252,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     formState.isValid || Object.keys(formState.errors).length === 0
 
   // Check if selected shipping requires access point
-  const currentShippingOption = shipping.shippingOptions?.find(
-    (opt) => opt.id === shipping.selectedShippingMethodId
-  )
   const requiresAccessPoint =
-    currentShippingOption && isPPLParcelOption(currentShippingOption.name)
+    shipping.selectedOption && isPPLParcelOption(shipping.selectedOption.name)
   const hasRequiredAccessPoint = !requiresAccessPoint || !!selectedAccessPoint
 
   const isReady =

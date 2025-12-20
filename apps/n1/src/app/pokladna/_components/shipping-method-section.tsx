@@ -58,7 +58,6 @@ function ShippingOptionCard({
     }
   }
 
-  // Show access point name if selected for PPL Parcel
   const subtitle = isPPLParcel
     ? selectedAccessPoint
       ? `${selectedAccessPoint.name}, ${selectedAccessPoint.address?.city || ""}`
@@ -93,10 +92,8 @@ export function ShippingMethodSection({
 }: ShippingMethodSectionProps) {
   let content: ReactNode
 
-  // Check if currently selected option is PPL Parcel
-  const selectedOption = shipping.shippingOptions?.find(
-    (opt) => opt.id === shipping.selectedShippingMethodId
-  )
+  const selectedOption = shipping.selectedOption
+
   const showParcelCard =
     selectedOption &&
     isPPLParcelOption(selectedOption.name) &&
@@ -151,8 +148,7 @@ export function ShippingMethodSection({
       </h2>
       {content}
 
-      {/* Show selected parcel details */}
-      {showParcelCard && selectedAccessPoint && (
+      {showParcelCard && (
         <SelectedParcelCard
           accessPoint={selectedAccessPoint}
           onChangeClick={() => onOpenPickupDialog(selectedOption.id)}
