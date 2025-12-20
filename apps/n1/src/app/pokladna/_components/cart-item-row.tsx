@@ -1,7 +1,7 @@
-import type { CartLineItem } from '@/services/cart-service'
-import { formatToTaxIncluded } from '@/utils/format/format-product'
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from "next/image"
+import Link from "next/link"
+import type { CartLineItem } from "@/services/cart-service"
+import { formatToTaxIncluded } from "@/utils/format/format-product"
 
 interface CartItemRowProps {
   item: CartLineItem
@@ -19,17 +19,17 @@ export function CartItemRow({ item, currencyCode }: CartItemRowProps) {
     <div className="flex gap-200">
       {item.thumbnail && (
         <Image
-          src={item.thumbnail}
           alt={item.title}
-          width={64}
-          height={64}
           className="h-16 w-16 rounded object-cover"
+          height={64}
+          src={item.thumbnail}
+          width={64}
         />
       )}
       <div className="flex flex-1 flex-col">
         <Link
-          href={`/produkt/${item.title}?variant=${item.variant_title}`}
           className="font-medium text-fg-primary text-sm underline hover:no-underline"
+          href={`/produkt/${item.title}?variant=${item.variant_title}`}
         >
           {item.title}
         </Link>

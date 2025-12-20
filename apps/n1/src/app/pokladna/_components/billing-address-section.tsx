@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import { FormField } from '@/components/molecules/form-field'
-import { COUNTRY_OPTIONS } from '@/lib/constants'
-import type { AddressFormData } from '@/utils/address-validation'
+import { Select } from "@ui/molecules/select"
+import { Controller } from "react-hook-form"
+import { FormField } from "@/components/molecules/form-field"
+import { COUNTRY_OPTIONS } from "@/lib/constants"
+import type { AddressFormData } from "@/utils/address-validation"
 import {
   ADDRESS_VALIDATION_RULES,
   EMAIL_VALIDATION_RULES,
-} from '@/utils/address-validation'
-import { formatPhoneNumber } from '@/utils/format/format-phone-number'
-import { formatPostalCode } from '@/utils/format/format-postal-code'
-import { Select } from '@ui/molecules/select'
-import { Controller } from 'react-hook-form'
+} from "@/utils/address-validation"
+import { formatPhoneNumber } from "@/utils/format/format-phone-number"
+import { formatPostalCode } from "@/utils/format/format-postal-code"
 import {
   useCheckoutContext,
   useCheckoutForm,
-} from '../_context/checkout-context'
-import { AddressPicker } from './address-picker'
-import { SaveAddressPanel } from './save-address-panel'
+} from "../_context/checkout-context"
+import { AddressPicker } from "./address-picker"
+import { SaveAddressPanel } from "./save-address-panel"
 
 export function BillingAddressSection() {
   const { customer, selectedAddressId, setSelectedAddressId, isCompleting } =
@@ -46,9 +46,9 @@ export function BillingAddressSection() {
         {addresses.length > 0 && (
           <AddressPicker
             addresses={addresses}
-            selectedId={selectedAddressId}
-            onSelect={handleAddressSelect}
             disabled={isCompleting}
+            onSelect={handleAddressSelect}
+            selectedId={selectedAddressId}
           />
         )}
       </div>
@@ -57,102 +57,102 @@ export function BillingAddressSection() {
         {/* First name | Last name */}
         <div className="grid grid-cols-2 gap-300">
           <Controller
-            name="billingAddress.first_name"
             control={control}
-            rules={ADDRESS_VALIDATION_RULES.first_name}
+            name="billingAddress.first_name"
             render={({ field, fieldState }) => (
               <FormField
+                disabled={isCompleting}
+                errorMessage={fieldState.error?.message}
                 id="first_name"
                 label="Jméno"
+                minLength={2}
                 name={field.name}
+                onBlur={field.onBlur}
+                onChange={field.onChange}
+                required
                 type="text"
                 value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                errorMessage={fieldState.error?.message}
-                required
-                minLength={2}
-                disabled={isCompleting}
               />
             )}
+            rules={ADDRESS_VALIDATION_RULES.first_name}
           />
           <Controller
-            name="billingAddress.last_name"
             control={control}
-            rules={ADDRESS_VALIDATION_RULES.last_name}
+            name="billingAddress.last_name"
             render={({ field, fieldState }) => (
               <FormField
+                disabled={isCompleting}
+                errorMessage={fieldState.error?.message}
                 id="last_name"
                 label="Příjmení"
+                minLength={2}
                 name={field.name}
+                onBlur={field.onBlur}
+                onChange={field.onChange}
+                required
                 type="text"
                 value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                errorMessage={fieldState.error?.message}
-                required
-                minLength={2}
-                disabled={isCompleting}
               />
             )}
+            rules={ADDRESS_VALIDATION_RULES.last_name}
           />
         </div>
 
         {/* Company (optional) */}
         <Controller
-          name="billingAddress.company"
           control={control}
+          name="billingAddress.company"
           render={({ field }) => (
             <FormField
+              disabled={isCompleting}
               id="company"
               label="Firma (volitelné)"
               name={field.name}
-              type="text"
-              value={field.value || ''}
-              onChange={field.onChange}
               onBlur={field.onBlur}
-              disabled={isCompleting}
+              onChange={field.onChange}
+              type="text"
+              value={field.value || ""}
             />
           )}
         />
 
         {/* Address */}
         <Controller
-          name="billingAddress.address_1"
           control={control}
-          rules={ADDRESS_VALIDATION_RULES.address_1}
+          name="billingAddress.address_1"
           render={({ field, fieldState }) => (
             <FormField
+              disabled={isCompleting}
+              errorMessage={fieldState.error?.message}
               id="address_1"
               label="Adresa"
+              minLength={3}
               name={field.name}
+              onBlur={field.onBlur}
+              onChange={field.onChange}
+              placeholder="Ulice a číslo popisné"
+              required
               type="text"
               value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              errorMessage={fieldState.error?.message}
-              required
-              minLength={3}
-              disabled={isCompleting}
-              placeholder="Ulice a číslo popisné"
             />
           )}
+          rules={ADDRESS_VALIDATION_RULES.address_1}
         />
 
         {/* Apartment, suite, etc. (optional) */}
         <Controller
-          name="billingAddress.address_2"
           control={control}
+          name="billingAddress.address_2"
           render={({ field }) => (
             <FormField
+              disabled={isCompleting}
               id="address_2"
               label="Byt, apartmá atd. (volitelné)"
               name={field.name}
-              type="text"
-              value={field.value || ''}
-              onChange={field.onChange}
               onBlur={field.onBlur}
-              disabled={isCompleting}
+              onChange={field.onChange}
+              type="text"
+              value={field.value || ""}
             />
           )}
         />
@@ -160,144 +160,144 @@ export function BillingAddressSection() {
         {/* City | Country */}
         <div className="grid grid-cols-2 gap-300">
           <Controller
-            name="billingAddress.city"
             control={control}
-            rules={ADDRESS_VALIDATION_RULES.city}
+            name="billingAddress.city"
             render={({ field, fieldState }) => (
               <FormField
+                disabled={isCompleting}
+                errorMessage={fieldState.error?.message}
                 id="city"
                 label="Město"
+                minLength={2}
                 name={field.name}
+                onBlur={field.onBlur}
+                onChange={field.onChange}
+                required
                 type="text"
                 value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                errorMessage={fieldState.error?.message}
-                required
-                minLength={2}
-                disabled={isCompleting}
               />
             )}
+            rules={ADDRESS_VALIDATION_RULES.city}
           />
           <Controller
-            name="billingAddress.country_code"
             control={control}
-            rules={ADDRESS_VALIDATION_RULES.country_code}
+            name="billingAddress.country_code"
             render={({ field }) => (
               <Select
+                className="grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center"
+                clearIcon={false}
+                disabled={isCompleting}
                 id="country_code"
                 label="Země"
-                size="lg"
-                clearIcon={false}
-                options={COUNTRY_OPTIONS}
-                value={[field.value || 'cz']}
                 onValueChange={(details) => {
                   const value = details.value[0]
                   if (value) {
                     field.onChange(value)
                   }
                 }}
-                disabled={isCompleting}
-                className="grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center"
+                options={COUNTRY_OPTIONS}
+                size="lg"
+                value={[field.value || "cz"]}
               />
             )}
+            rules={ADDRESS_VALIDATION_RULES.country_code}
           />
         </div>
 
         {/* State/Province | Postal code */}
         <div className="grid grid-cols-2 gap-300">
           <Controller
-            name="billingAddress.province"
             control={control}
+            name="billingAddress.province"
             render={({ field }) => (
               <FormField
+                disabled={isCompleting}
                 id="province"
                 label="Kraj (volitelné)"
                 name={field.name}
-                type="text"
-                value={field.value || ''}
-                onChange={field.onChange}
                 onBlur={field.onBlur}
-                disabled={isCompleting}
+                onChange={field.onChange}
+                type="text"
+                value={field.value || ""}
               />
             )}
           />
           <Controller
-            name="billingAddress.postal_code"
             control={control}
-            rules={ADDRESS_VALIDATION_RULES.postal_code}
+            name="billingAddress.postal_code"
             render={({ field, fieldState }) => (
               <FormField
+                disabled={isCompleting}
+                errorMessage={fieldState.error?.message}
                 id="postal_code"
                 label="PSČ"
                 name={field.name}
-                type="text"
-                value={field.value}
+                onBlur={field.onBlur}
                 onChange={(e) => {
                   // Auto-format postal code
                   field.onChange(formatPostalCode(e.target.value))
                 }}
-                onBlur={field.onBlur}
-                errorMessage={fieldState.error?.message}
-                required
                 pattern={
                   ADDRESS_VALIDATION_RULES.postal_code.pattern.value.source
                 }
-                disabled={isCompleting}
-                placeholder={field.value === 'cz' ? '110 00' : '811 01'}
+                placeholder={field.value === "cz" ? "110 00" : "811 01"}
+                required
+                type="text"
+                value={field.value}
               />
             )}
+            rules={ADDRESS_VALIDATION_RULES.postal_code}
           />
         </div>
 
         {/* Phone */}
         <Controller
-          name="billingAddress.phone"
           control={control}
-          rules={ADDRESS_VALIDATION_RULES.phone}
+          name="billingAddress.phone"
           render={({ field, fieldState }) => (
             <FormField
+              disabled={isCompleting}
+              errorMessage={fieldState.error?.message}
               id="phone"
               label="Telefon (volitelné)"
+              maxLength={11}
               name={field.name}
-              type="tel"
-              value={field.value || ''}
+              onBlur={field.onBlur}
               onChange={(e) => {
                 // Auto-format phone number
                 field.onChange(formatPhoneNumber(e.target.value))
               }}
-              onBlur={field.onBlur}
-              errorMessage={fieldState.error?.message}
               pattern={ADDRESS_VALIDATION_RULES.phone.pattern.value.source}
               //pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
-              disabled={isCompleting}
-              maxLength={11}
               placeholder="600 400 200"
+              type="tel"
+              value={field.value || ""}
             />
           )}
+          rules={ADDRESS_VALIDATION_RULES.phone}
         />
 
         {/* EMAIL */}
         {!customer && (
           <Controller
-            name="email"
             control={control}
-            rules={EMAIL_VALIDATION_RULES}
+            name="email"
             render={({ field, fieldState }) => (
               <FormField
+                disabled={isCompleting}
+                errorMessage={fieldState.error?.message}
                 id="email"
                 label="Email"
                 name={field.name}
-                type="email"
-                value={field.value || ''}
-                onChange={field.onChange}
                 onBlur={field.onBlur}
-                errorMessage={fieldState.error?.message}
-                disabled={isCompleting}
-                required
+                onChange={field.onChange}
                 placeholder="vas@email.cz"
+                required
+                type="email"
+                value={field.value || ""}
               />
             )}
+            rules={EMAIL_VALIDATION_RULES}
           />
         )}
       </form>
