@@ -32,7 +32,7 @@ import {
 
 export interface CheckoutFormData {
   email?: string
-  shippingAddress: AddressFormData
+  billingAddress: AddressFormData
 }
 
 /** Re-export PplAccessPointData for convenience */
@@ -56,6 +56,25 @@ export function accessPointToShippingData(
     access_point_city: accessPoint.address?.city,
     access_point_zip: accessPoint.address?.zipCode,
     access_point_country: accessPoint.address?.country,
+  }
+}
+
+/** Convert PPL access point to Medusa address format for shipping_address */
+export function accessPointToAddress(
+  accessPoint: PplAccessPointData,
+  billingAddress: AddressFormData
+): AddressFormData {
+  return {
+    first_name: billingAddress.first_name,
+    last_name: billingAddress.last_name,
+    company: accessPoint.name,
+    address_1: accessPoint.address?.street || '',
+    address_2: '',
+    city: accessPoint.address?.city || '',
+    postal_code: accessPoint.address?.zipCode || '',
+    country_code: accessPoint.address?.country?.toLowerCase() || 'cz',
+    province: '',
+    phone: billingAddress.phone,
   }
 }
 
@@ -135,7 +154,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   const form = useForm<CheckoutFormData>({
     defaultValues: {
       email: customer?.email ?? '',
-      shippingAddress: DEFAULT_ADDRESS,
+      billingAddress: DEFAULT_ADDRESS,
     },
     mode: 'onBlur',
   })
@@ -148,12 +167,12 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Priority 1: Cart already has shipping address
-    if (cart?.shipping_address?.first_name) {
+    // Priority 1: Cart already has billing address
+    if (cart?.billing_address?.first_name) {
       const addressData = addressToFormData(
-        cart.shipping_address
+        cart.billing_address
       ) as AddressFormData
-      form.reset({ email: cart.email, shippingAddress: addressData })
+      form.reset({ email: cart.email, billingAddress: addressData })
       isFormInitialized.current = true
       return
     }
@@ -163,12 +182,12 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       const defaultAddress = getDefaultAddress(customer.addresses)
       if (defaultAddress) {
         const addressData = addressToFormData(defaultAddress) as AddressFormData
-        form.reset({ shippingAddress: addressData })
+        form.reset({ billingAddress: addressData })
         setSelectedAddressId(defaultAddress.id)
         isFormInitialized.current = true
       }
     }
-  }, [cart?.shipping_address, cart?.email, customer?.addresses, form])
+  }, [cart?.billing_address, cart?.email, customer?.addresses, form])
 
   // Auto-select PPL Private as default (PPL Parcel requires dialog)
   // NOTE: Options 0-6 use manual_manual provider which is disabled on backend
@@ -197,27 +216,59 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
     setError(null)
 
-    const { email, shippingAddress } = data
+    const { email, billingAddress } = data
 
-    // 2. Save shipping address to cart
+    // Determine shipping address based on delivery method
+    // If PPL Parcel selected + access point → shipping = access point address
+    // Otherwise → shipping = billing address
+    const selectedOption = shipping.shippingOptions?.find(
+      (opt) => opt.id === shipping.selectedShippingMethodId
+    )
+    const isPplParcel = selectedOption && isPPLParcelOption(selectedOption.name)
+
+    let shippingAddress: AddressFormData
+    if (isPplParcel && selectedAccessPoint) {
+      shippingAddress = accessPointToAddress(selectedAccessPoint, billingAddress)
+      console.log('[completeCheckout] PPL Parcel - shipping from access point:', {
+        accessPoint: selectedAccessPoint.name,
+        shippingAddress,
+      })
+    } else {
+      shippingAddress = billingAddress
+      console.log('[completeCheckout] Standard delivery - shipping = billing:', {
+        shippingAddress,
+      })
+    }
+
+    // Save both addresses to cart
     try {
       const cartEmail = customer?.email || email
+      console.log('[completeCheckout] Updating cart addresses:', {
+        cartId: cart.id,
+        billingAddress,
+        shippingAddress,
+        email: cartEmail,
+      })
       await updateCartAddressAsync({
         cartId: cart.id,
-        address: { ...shippingAddress },
+        billingAddress,
+        shippingAddress,
         email: cartEmail,
       })
     } catch (err) {
-      setError('Problémy s doručovací adresu')
+      console.error('[completeCheckout] Address update failed:', err)
+      setError('Problémy s adresou')
       return
     }
 
-    // 3. Complete the cart
+    // Complete the cart
     try {
+      console.log('[completeCheckout] Completing cart:', cart.id)
       await completeCartAsync({ cartId: cart.id })
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Nepodařilo se dokončit objednávku'
+      console.error('[completeCheckout] Cart completion failed:', message)
       setError(message)
     }
   })

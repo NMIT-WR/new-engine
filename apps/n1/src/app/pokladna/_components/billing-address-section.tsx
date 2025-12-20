@@ -18,7 +18,7 @@ import {
 import { AddressPicker } from './address-picker'
 import { SaveAddressPanel } from './save-address-panel'
 
-export function ShippingAddressSection() {
+export function BillingAddressSection() {
   const { customer, selectedAddressId, setSelectedAddressId, isCompleting } =
     useCheckoutContext()
   const {
@@ -32,7 +32,7 @@ export function ShippingAddressSection() {
   // Handle address selection from picker
   const handleAddressSelect = (address: AddressFormData, id: string) => {
     // Use reset() to set values AND clear isDirty flag
-    reset({ shippingAddress: address })
+    reset({ billingAddress: address })
     setSelectedAddressId(id)
   }
 
@@ -40,7 +40,7 @@ export function ShippingAddressSection() {
     <section className="rounded border border-border-secondary bg-surface/70 p-400">
       <div className="mb-400 space-y-300">
         <h2 className="font-semibold text-fg-primary text-lg">
-          Doručovací adresa
+          Fakturační adresa
         </h2>
 
         {addresses.length > 0 && (
@@ -57,7 +57,7 @@ export function ShippingAddressSection() {
         {/* First name | Last name */}
         <div className="grid grid-cols-2 gap-300">
           <Controller
-            name="shippingAddress.first_name"
+            name="billingAddress.first_name"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.first_name}
             render={({ field, fieldState }) => (
@@ -77,7 +77,7 @@ export function ShippingAddressSection() {
             )}
           />
           <Controller
-            name="shippingAddress.last_name"
+            name="billingAddress.last_name"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.last_name}
             render={({ field, fieldState }) => (
@@ -100,7 +100,7 @@ export function ShippingAddressSection() {
 
         {/* Company (optional) */}
         <Controller
-          name="shippingAddress.company"
+          name="billingAddress.company"
           control={control}
           render={({ field }) => (
             <FormField
@@ -118,7 +118,7 @@ export function ShippingAddressSection() {
 
         {/* Address */}
         <Controller
-          name="shippingAddress.address_1"
+          name="billingAddress.address_1"
           control={control}
           rules={ADDRESS_VALIDATION_RULES.address_1}
           render={({ field, fieldState }) => (
@@ -141,7 +141,7 @@ export function ShippingAddressSection() {
 
         {/* Apartment, suite, etc. (optional) */}
         <Controller
-          name="shippingAddress.address_2"
+          name="billingAddress.address_2"
           control={control}
           render={({ field }) => (
             <FormField
@@ -160,7 +160,7 @@ export function ShippingAddressSection() {
         {/* City | Country */}
         <div className="grid grid-cols-2 gap-300">
           <Controller
-            name="shippingAddress.city"
+            name="billingAddress.city"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.city}
             render={({ field, fieldState }) => (
@@ -180,7 +180,7 @@ export function ShippingAddressSection() {
             )}
           />
           <Controller
-            name="shippingAddress.country_code"
+            name="billingAddress.country_code"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.country_code}
             render={({ field }) => (
@@ -207,7 +207,7 @@ export function ShippingAddressSection() {
         {/* State/Province | Postal code */}
         <div className="grid grid-cols-2 gap-300">
           <Controller
-            name="shippingAddress.province"
+            name="billingAddress.province"
             control={control}
             render={({ field }) => (
               <FormField
@@ -223,7 +223,7 @@ export function ShippingAddressSection() {
             )}
           />
           <Controller
-            name="shippingAddress.postal_code"
+            name="billingAddress.postal_code"
             control={control}
             rules={ADDRESS_VALIDATION_RULES.postal_code}
             render={({ field, fieldState }) => (
@@ -252,7 +252,7 @@ export function ShippingAddressSection() {
 
         {/* Phone */}
         <Controller
-          name="shippingAddress.phone"
+          name="billingAddress.phone"
           control={control}
           rules={ADDRESS_VALIDATION_RULES.phone}
           render={({ field, fieldState }) => (

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { OrderSummary } from './_components/order-summary'
 import { PaymentFormSection } from './_components/payment-form-section'
 import { PplPickupDialog } from './_components/ppl-pickup-dialog'
-import { ShippingAddressSection } from './_components/shipping-address-section'
+import { BillingAddressSection } from './_components/billing-address-section'
 import { ShippingMethodSection } from './_components/shipping-method-section'
 import {
   CheckoutProvider,
@@ -116,7 +116,7 @@ function CheckoutContent() {
       <div className="grid grid-cols-1 gap-700 lg:grid-cols-2">
         {/* LEFT COLUMN: Checkout Form */}
         <div className="[&>*+*]:mt-500">
-          <ShippingAddressSection />
+          <BillingAddressSection />
           <ShippingMethodSection
             onOpenPickupDialog={openPickupDialog}
             selectedAccessPoint={selectedAccessPoint}

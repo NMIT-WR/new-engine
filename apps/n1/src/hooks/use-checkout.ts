@@ -11,12 +11,13 @@ export function useCheckout(
   const payment = useCheckoutPayment(cartId, regionId, cart)
 
   // Check if checkout is ACTUALLY ready (not just if it CAN be ready)
+  // Note: We validate billing_address from form - shipping_address is set at checkout time
   const isReady =
-    !!cart?.shipping_address?.first_name && // Shipping address IS filled
-    !!cart?.shipping_address?.last_name && // Required fields present
-    !!cart?.shipping_address?.address_1 &&
-    !!cart?.shipping_address?.city &&
-    !!cart?.shipping_address?.postal_code &&
+    !!cart?.billing_address?.first_name && // Billing address IS filled
+    !!cart?.billing_address?.last_name && // Required fields present
+    !!cart?.billing_address?.address_1 &&
+    !!cart?.billing_address?.city &&
+    !!cart?.billing_address?.postal_code &&
     !!shipping.selectedShippingMethodId && // Shipping IS selected
     payment.hasPaymentSessions && // Payment IS initialized
     !shipping.isSettingShipping && // Not currently setting shipping
