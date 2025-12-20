@@ -5,29 +5,64 @@ import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
 import type { ReactNode } from "react"
 import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
+import type { ShippingMethodData } from "@/services/cart-service"
 import { formatToTaxIncluded } from "@/utils/format/format-product"
+import {
+  type PplAccessPointData,
+  accessPointToShippingData,
+  isPPLParcelOption,
+} from "../_context/checkout-context"
 
 type ShippingMethodSectionProps = {
   shipping: UseCheckoutShippingReturn
+  selectedAccessPoint: PplAccessPointData | null
+  onOpenPickupDialog: (optionId: string) => void
 }
 
 type ShippingOptionCardProps = {
   option: HttpTypes.StoreCartShippingOption
   selected: boolean
   isUpdating?: boolean
-  onSelect: (id: string) => void
+  selectedAccessPoint: PplAccessPointData | null
+  onSelect: (id: string, data?: ShippingMethodData) => void
+  onOpenPickupDialog: (optionId: string) => void
 }
 
 function ShippingOptionCard({
   option,
   selected,
   isUpdating,
+  selectedAccessPoint,
   onSelect,
+  onOpenPickupDialog,
 }: ShippingOptionCardProps) {
   const formattedPrice = formatToTaxIncluded({
     amount: option.amount,
     currency: option.calculated_price.currency_code ?? "czk",
   })
+
+  const isPPLParcel = isPPLParcelOption(option.name)
+
+  const handleClick = () => {
+    if (isPPLParcel) {
+      // PPL Parcel - if we have selected access point, use it; otherwise open dialog
+      if (selectedAccessPoint) {
+        onSelect(option.id, accessPointToShippingData(selectedAccessPoint))
+      } else {
+        onOpenPickupDialog(option.id)
+      }
+    } else {
+      // Regular shipping (including PPL Private)
+      onSelect(option.id)
+    }
+  }
+
+  // Show access point name if selected for PPL Parcel
+  const subtitle = isPPLParcel
+    ? selectedAccessPoint
+      ? `${selectedAccessPoint.name}, ${selectedAccessPoint.address?.city || ''}`
+      : "Výdejní místo"
+    : "Dodání 2-3 dny"
 
   return (
     <Button
@@ -36,14 +71,14 @@ function ShippingOptionCard({
       className="flex w-full items-center gap-300 rounded-lg border border-border-secondary bg-surface-light p-300 data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
       data-selected={selected}
       disabled={isUpdating}
-      onClick={() => onSelect(option.id)}
+      onClick={handleClick}
       role="radio"
       type="button"
       variant="tertiary"
     >
       <div className="flex-1 text-left">
         <p className="font-medium text-fg-primary text-sm">{option.name}</p>
-        <ExtraText size="sm">Dodání 2-3 dny</ExtraText>
+        <ExtraText size="sm">{subtitle}</ExtraText>
       </div>
       <span>{formattedPrice || "Zdarma"}</span>
     </Button>
@@ -52,6 +87,8 @@ function ShippingOptionCard({
 
 export function ShippingMethodSection({
   shipping,
+  selectedAccessPoint,
+  onOpenPickupDialog,
 }: ShippingMethodSectionProps) {
   let content: ReactNode
 
@@ -79,9 +116,11 @@ export function ShippingMethodSection({
           <ShippingOptionCard
             isUpdating={shipping.isSettingShipping}
             key={option.id}
+            onOpenPickupDialog={onOpenPickupDialog}
             onSelect={shipping.setShipping}
             option={option}
             selected={shipping.selectedShippingMethodId === option.id}
+            selectedAccessPoint={selectedAccessPoint}
           />
         ))}
       </div>

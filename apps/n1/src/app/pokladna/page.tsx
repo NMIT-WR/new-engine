@@ -6,11 +6,13 @@ import { Button } from '@ui/atoms/button'
 import { useRouter } from 'next/navigation'
 import { OrderSummary } from './_components/order-summary'
 import { PaymentFormSection } from './_components/payment-form-section'
+import { PplPickupDialog } from './_components/ppl-pickup-dialog'
 import { ShippingAddressSection } from './_components/shipping-address-section'
 import { ShippingMethodSection } from './_components/shipping-method-section'
 import {
   CheckoutProvider,
   useCheckoutContext,
+  accessPointToShippingData,
 } from './_context/checkout-context'
 
 export default function CheckoutPage() {
@@ -32,6 +34,13 @@ function CheckoutContent() {
     isCompleting,
     error,
     completeCheckout,
+    // PPL state
+    selectedAccessPoint,
+    openPickupDialog,
+    isPickupDialogOpen,
+    closePickupDialog,
+    pendingOptionId,
+    setSelectedAccessPoint,
   } = useCheckoutContext()
   const analytics = useAnalytics()
 
@@ -89,6 +98,16 @@ function CheckoutContent() {
     (opt) => opt.id === shipping.selectedShippingMethodId
   )
 
+  // Handle PPL access point selection
+  const handleAccessPointSelect = (accessPoint: Parameters<typeof setSelectedAccessPoint>[0]) => {
+    setSelectedAccessPoint(accessPoint)
+    // If we have a pending option, set the shipping with the access point data
+    if (pendingOptionId && accessPoint) {
+      shipping.setShipping(pendingOptionId, accessPointToShippingData(accessPoint))
+    }
+    closePickupDialog()
+  }
+
   return (
     <div className="container mx-auto min-h-screen p-500">
       <h1 className="mb-500 font-bold text-3xl text-fg-primary">Pokladna</h1>
@@ -98,7 +117,11 @@ function CheckoutContent() {
         {/* LEFT COLUMN: Checkout Form */}
         <div className="[&>*+*]:mt-500">
           <ShippingAddressSection />
-          <ShippingMethodSection shipping={shipping} />
+          <ShippingMethodSection
+            onOpenPickupDialog={openPickupDialog}
+            selectedAccessPoint={selectedAccessPoint}
+            shipping={shipping}
+          />
           <PaymentFormSection cart={cart} />
         </div>
 
@@ -115,6 +138,14 @@ function CheckoutContent() {
           />
         </div>
       </div>
+
+      {/* PPL Pickup Point Dialog */}
+      <PplPickupDialog
+        onClose={closePickupDialog}
+        onSelect={handleAccessPointSelect}
+        open={isPickupDialogOpen}
+        selectedPoint={selectedAccessPoint}
+      />
     </div>
   )
 }

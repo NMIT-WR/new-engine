@@ -3,6 +3,7 @@ import { CartServiceError } from '@/lib/errors'
 import { queryKeys } from '@/lib/query-keys'
 import {
   type Cart,
+  type ShippingMethodData,
   getShippingOptions,
   setShippingMethod,
 } from '@/services/cart-service'
@@ -19,11 +20,16 @@ type CartMutationContext = {
   previousCart?: Cart
 }
 
+type SetShippingVariables = {
+  optionId: string
+  data?: ShippingMethodData
+}
+
 export type UseCheckoutShippingReturn = {
   shippingOptions?: HttpTypes.StoreCartShippingOption[]
   isLoadingShipping: boolean
   isErrorShipping: boolean
-  setShipping: (optionId: string) => void
+  setShipping: (optionId: string, data?: ShippingMethodData) => void
   isSettingShipping: boolean
   canLoadShipping: boolean
   canSetShipping: boolean
@@ -58,19 +64,19 @@ export function useCheckoutShipping(
   })
 
   // Set shipping method mutation
-  const { mutate: setShipping, isPending: isSettingShipping } = useMutation<
+  const { mutate: mutateShipping, isPending: isSettingShipping } = useMutation<
     Cart,
     CartMutationError,
-    string,
+    SetShippingVariables,
     CartMutationContext
   >({
-    mutationFn: (optionId: string) => {
+    mutationFn: ({ optionId, data }) => {
       if (!cartId) {
         throw new CartServiceError('Cart ID je povinné', 'VALIDATION_ERROR')
       }
-      return setShippingMethod(cartId, optionId)
+      return setShippingMethod(cartId, optionId, data)
     },
-    onMutate: async (optionId: string) => {
+    onMutate: async ({ optionId }) => {
       // Cancel outgoing queries to prevent race conditions
       await queryClient.cancelQueries({ queryKey: queryKeys.cart.active() })
 
@@ -151,6 +157,11 @@ export function useCheckoutShipping(
   const canSetShipping = !!shippingOptions && shippingOptions.length > 0
   const selectedShippingMethodId =
     cart?.shipping_methods?.[0]?.shipping_option_id
+
+  // Wrapper for easier API - accepts optionId and optional data
+  const setShipping = (optionId: string, data?: ShippingMethodData) => {
+    mutateShipping({ optionId, data })
+  }
 
   return {
     shippingOptions,

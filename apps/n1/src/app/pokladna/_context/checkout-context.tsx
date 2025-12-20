@@ -6,6 +6,8 @@ import { useCheckoutPayment } from '@/hooks/use-checkout-payment'
 import { useCheckoutShipping } from '@/hooks/use-checkout-shipping'
 import { useRegion } from '@/hooks/use-region'
 import { useUpdateCartAddress } from '@/hooks/use-update-cart-address'
+import type { ShippingMethodData } from '@/services/cart-service'
+import type { PplAccessPointData } from '../_components/ppl-widget'
 import {
   DEFAULT_ADDRESS,
   addressToFormData,
@@ -33,6 +35,30 @@ export interface CheckoutFormData {
   shippingAddress: AddressFormData
 }
 
+/** Re-export PplAccessPointData for convenience */
+export type { PplAccessPointData }
+
+/** Check if shipping option requires PPL Parcel access point selection */
+export function isPPLParcelOption(optionName: string): boolean {
+  const name = optionName.toLowerCase()
+  return name.includes('parcel smart') || name.includes('parcelsmart')
+}
+
+/** Convert PPL access point to shipping method data */
+export function accessPointToShippingData(
+  accessPoint: PplAccessPointData
+): ShippingMethodData {
+  return {
+    access_point_id: accessPoint.code,
+    access_point_name: accessPoint.name,
+    access_point_type: accessPoint.type,
+    access_point_street: accessPoint.address?.street,
+    access_point_city: accessPoint.address?.city,
+    access_point_zip: accessPoint.address?.zipCode,
+    access_point_country: accessPoint.address?.country,
+  }
+}
+
 interface CheckoutContextValue {
   form: UseFormReturn<CheckoutFormData>
   cart: ReturnType<typeof useCart>['cart']
@@ -47,6 +73,13 @@ interface CheckoutContextValue {
   isCompleting: boolean
   error: string | null
   isReady: boolean
+  // PPL Parcel state
+  selectedAccessPoint: PplAccessPointData | null
+  setSelectedAccessPoint: (accessPoint: PplAccessPointData | null) => void
+  isPickupDialogOpen: boolean
+  openPickupDialog: (optionId: string) => void
+  closePickupDialog: () => void
+  pendingOptionId: string | null
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null)
@@ -78,6 +111,22 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     null
   )
   const [error, setError] = useState<string | null>(null)
+
+  // PPL Parcel state
+  const [selectedAccessPoint, setSelectedAccessPoint] =
+    useState<PplAccessPointData | null>(null)
+  const [isPickupDialogOpen, setIsPickupDialogOpen] = useState(false)
+  const [pendingOptionId, setPendingOptionId] = useState<string | null>(null)
+
+  const openPickupDialog = (optionId: string) => {
+    setPendingOptionId(optionId)
+    setIsPickupDialogOpen(true)
+  }
+
+  const closePickupDialog = () => {
+    setIsPickupDialogOpen(false)
+    setPendingOptionId(null)
+  }
 
   // Track if form has been initialized (prevents reset after address save)
   const isFormInitialized = useRef(false)
@@ -121,15 +170,22 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     }
   }, [cart?.shipping_address, cart?.email, customer?.addresses, form])
 
-  // Auto-select first shipping option when loaded
+  // Auto-select PPL Private as default (PPL Parcel requires dialog)
+  // NOTE: Options 0-6 use manual_manual provider which is disabled on backend
   useEffect(() => {
     if (
       shipping.shippingOptions &&
       shipping.shippingOptions.length > 0 &&
       !shipping.selectedShippingMethodId
     ) {
-      const firstOption = shipping.shippingOptions[0]
-      shipping.setShipping(firstOption.id)
+      // Find PPL Private option (doesn't require access point selection)
+      const pplPrivate = shipping.shippingOptions.find(
+        (opt) => opt.name.toLowerCase().includes('ppl private')
+      )
+      if (pplPrivate) {
+        shipping.setShipping(pplPrivate.id)
+      }
+      // Don't auto-select if no PPL Private found - let user choose manually
     }
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
 
@@ -191,6 +247,13 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     isCompleting: isSavingAddress || isCompletingCart,
     error,
     isReady,
+    // PPL Parcel state
+    selectedAccessPoint,
+    setSelectedAccessPoint,
+    isPickupDialogOpen,
+    openPickupDialog,
+    closePickupDialog,
+    pendingOptionId,
   }
 
   return (

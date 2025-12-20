@@ -308,9 +308,21 @@ export async function getPaymentProviders(regionId: string) {
   }
 }
 
+/** Data for PPL Parcel access point selection */
+export type ShippingMethodData = {
+  access_point_id?: string
+  access_point_name?: string
+  access_point_type?: string
+  access_point_street?: string
+  access_point_city?: string
+  access_point_zip?: string
+  access_point_country?: string
+}
+
 export async function setShippingMethod(
   cartId: string,
-  optionId: string
+  optionId: string,
+  data?: ShippingMethodData
 ): Promise<Cart> {
   try {
     if (!cartId || !optionId) {
@@ -320,9 +332,12 @@ export async function setShippingMethod(
       )
     }
 
+    // For PPL Parcel, send access point data; for regular shipping, send empty object
+    const shippingData = data && Object.keys(data).length > 0 ? data : {}
+
     const response = await sdk.store.cart.addShippingMethod(cartId, {
       option_id: optionId,
-      data: {},
+      data: shippingData,
     })
 
     if (!response.cart) {
