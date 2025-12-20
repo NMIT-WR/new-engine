@@ -10,7 +10,7 @@ import { TextField } from "@/components/forms/fields/text-field"
 import { useRegister } from "@/hooks/use-register"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
-import { isPasswordValid, registerValidators } from "@/lib/form-validators"
+import { registerValidators } from "@/lib/form-validators"
 import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
@@ -94,18 +94,6 @@ export function RegisterForm({
     confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
-
-  const isFormValid = useStore(form.store, (state) => {
-    const { values } = state
-    return (
-      values.first_name.trim().length > 0 &&
-      values.last_name.trim().length > 0 &&
-      values.email.includes("@") &&
-      isPasswordValid(values.password) &&
-      values.password === values.confirmPassword &&
-      values.acceptTerms
-    )
-  })
 
   const getValidationClass = (hasValue: boolean, isValid: boolean) => {
     if (!hasValue) {
@@ -272,7 +260,7 @@ export function RegisterForm({
 
       <Button
         block
-        disabled={register.isPending || !isFormValid}
+        disabled={register.isPending || !form.state.canSubmit}
         size="sm"
         type="submit"
       >

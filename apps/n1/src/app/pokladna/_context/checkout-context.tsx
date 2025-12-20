@@ -1,6 +1,6 @@
 "use client"
 
-import { useForm } from "@tanstack/react-form"
+import { useForm, type ReactFormExtendedApi } from "@tanstack/react-form"
 import { useRouter } from "next/navigation"
 import {
   createContext,
@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useSuspenseAuth } from "@/hooks/use-auth"
 import { useCompleteCart, useSuspenseCart } from "@/hooks/use-cart"
 import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
 import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
@@ -28,14 +28,20 @@ export type CheckoutFormData = {
   shippingAddress: AddressFormData
 }
 
-/**
- * Type helper - never called at runtime.
- * Lets TypeScript infer the correct form type with typed fields (email, shippingAddress).
- * Without this, ReturnType<typeof useForm> would give us a generic form without field types.
- */
-const _formTypeHelper = (d: CheckoutFormData) => useForm({ defaultValues: d })
-
-type CheckoutForm = ReturnType<typeof _formTypeHelper>
+type CheckoutForm = ReactFormExtendedApi<
+  CheckoutFormData,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  never
+>
 
 type CheckoutContextValue = {
   form: CheckoutForm
@@ -43,7 +49,7 @@ type CheckoutContextValue = {
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
-  customer: ReturnType<typeof useAuth>["customer"]
+  customer: ReturnType<typeof useSuspenseAuth>["customer"]
   selectedAddressId: string | null
   setSelectedAddressId: (id: string | null) => void
   completeCheckout: () => void
@@ -57,7 +63,7 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null)
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
-  const { customer } = useAuth()
+  const { customer } = useSuspenseAuth()
   const { cart, hasItems } = useSuspenseCart()
   const { regionId } = useSuspenseRegion()
 

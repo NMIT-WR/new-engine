@@ -93,6 +93,23 @@ export const emailValidator = {
   },
 } as const
 
+export const loginPasswordValidator = {
+  onChange: ({ value }: { value: string }) => {
+    if (!value?.trim()) {
+      return VALIDATION_MESSAGES.password.required
+    }
+    if (value.length < 8) {
+      return VALIDATION_MESSAGES.password.tooShort
+    }
+    return
+  },
+} as const
+
+export const loginValidators = {
+  email: emailValidator,
+  password: loginPasswordValidator,
+} as const
+
 export const PASSWORD_REQUIREMENTS = [
   {
     id: "min-length",

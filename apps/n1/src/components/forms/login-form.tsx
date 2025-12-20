@@ -8,8 +8,7 @@ import { TextField } from "@/components/forms/fields/text-field"
 import { useLogin } from "@/hooks/use-login"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
-import { emailValidator } from "@/lib/form-validators"
-import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
+import { loginValidators } from "@/lib/form-validators"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
 
@@ -24,21 +23,6 @@ type LoginFormProps = {
 type LoginFormData = {
   email: string
   password: string
-}
-
-const loginValidators = {
-  email: emailValidator,
-  password: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.password.required
-      }
-      if (value.length < 8) {
-        return VALIDATION_MESSAGES.password.tooShort
-      }
-      return
-    },
-  },
 }
 
 export function LoginForm({

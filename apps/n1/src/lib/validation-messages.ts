@@ -1,9 +1,4 @@
 export const VALIDATION_MESSAGES = {
-  // Generic patterns
-  required: (field: string) => `${field} je povinné`,
-  minLength: (field: string, min: number) =>
-    `${field} musí mít alespoň ${min} znaky`,
-
   // Field-specific messages
   firstName: {
     required: "Jméno je povinné",
