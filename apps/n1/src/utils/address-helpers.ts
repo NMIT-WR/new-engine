@@ -4,9 +4,6 @@ import type { ShippingMethodData } from "@/services/cart-service"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import type { AddressFormData } from "./address-validation"
 
-/**
- * Default empty address for form initialization
- */
 export const DEFAULT_ADDRESS: AddressFormData = {
   first_name: "",
   last_name: "",
@@ -20,10 +17,6 @@ export const DEFAULT_ADDRESS: AddressFormData = {
   phone: "",
 }
 
-/**
- * Generická konverze adresy na AddressFormData
- * Funguje pro customer address, cart address nebo jakýkoliv compatible address objekt
- */
 function addressToFormData(
   address:
     | {
@@ -44,16 +37,7 @@ function addressToFormData(
   // Return empty form if no address provided
   if (!address) {
     return {
-      first_name: "",
-      last_name: "",
-      company: "",
-      address_1: "",
-      address_2: "",
-      city: "",
-      province: "",
-      postal_code: "",
-      country_code: DEFAULT_COUNTRY_CODE,
-      phone: "",
+      ...DEFAULT_ADDRESS,
     }
   }
 
@@ -72,47 +56,9 @@ function addressToFormData(
   }
 }
 
-/**
- * Konverze customer adresy na AddressFormData
- * @deprecated Use addressToFormData instead
- */
-export function customerAddressToFormData(
-  address: StoreCustomerAddress | null | undefined
-): Partial<AddressFormData> {
-  return addressToFormData(address)
-}
-
-/**
- * Konverze cart shipping address na AddressFormData
- * @deprecated Use addressToFormData instead
- */
-export function cartAddressToFormData(
-  address:
-    | {
-        first_name?: string | null
-        last_name?: string | null
-        company?: string | null
-        address_1?: string | null
-        address_2?: string | null
-        city?: string | null
-        province?: string | null
-        postal_code?: string | null
-        country_code?: string | null
-        phone?: string | null
-      }
-    | null
-    | undefined
-): Partial<AddressFormData> {
-  return addressToFormData(address)
-}
-
 // Export as main function
 export { addressToFormData }
 
-/**
- * Získá default adresu z customer adres
- * První adresa v seznamu je považována za default
- */
 export function getDefaultAddress(
   addresses: StoreCustomerAddress[] | undefined
 ): StoreCustomerAddress | null {
@@ -121,10 +67,6 @@ export function getDefaultAddress(
   }
   return addresses[0]
 }
-
-// =============================================================================
-// PPL Access Point Helpers
-// =============================================================================
 
 /** Re-export PplAccessPointData for convenience */
 export type { PplAccessPointData }
