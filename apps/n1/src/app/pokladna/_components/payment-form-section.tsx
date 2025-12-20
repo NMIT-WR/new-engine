@@ -1,20 +1,19 @@
-'use client'
+"use client"
 
-import { useCheckout } from '@/hooks/use-checkout'
-import { useRegion } from '@/hooks/use-region'
-import type { Cart } from '@/services/cart-service'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
-import { Button } from '@ui/atoms/button'
-import { useState } from 'react'
+import { Checkbox } from "@techsio/ui-kit/molecules/checkbox"
+import { Button } from "@ui/atoms/button"
+import { useState } from "react"
+import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
+import { useRegion } from "@/hooks/use-region"
+import type { Cart } from "@/services/cart-service"
 
-interface PaymentFormSectionProps {
+type PaymentFormSectionProps = {
   cart: Cart
 }
 
 export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
   const { regionId } = useRegion()
-  const checkout = useCheckout(cart.id, regionId, cart)
-  const [selectedProvider, setSelectedProvider] = useState<string>('')
+  const [selectedProvider, setSelectedProvider] = useState<string>("")
 
   const {
     paymentProviders,
@@ -23,7 +22,7 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
     canInitiatePayment,
     isInitiatingPayment,
     initiatePayment,
-  } = checkout.payment
+  } = useCheckoutPayment(cart.id, regionId, cart)
 
   function handleProviderSelect(providerId: string) {
     if (selectedProvider !== providerId) {
@@ -32,7 +31,6 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
     }
   }
 
-  // Loading state
   if (isLoadingProviders) {
     return (
       <section className="rounded border border-border-secondary bg-surface/70 p-400">
@@ -57,31 +55,31 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
           <ul className="space-y-300">
             {paymentProviders.map((provider) => (
               <li
-                key={provider.id}
                 className="flex w-full items-center rounded border border-border-secondary hover:bg-overlay data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
                 data-selected={provider.id === selectedProvider}
+                key={provider.id}
               >
                 <Checkbox
                   checked={selectedProvider === provider.id}
-                  onCheckedChange={() => handleProviderSelect(provider.id)}
                   className="pl-400"
+                  onCheckedChange={() => handleProviderSelect(provider.id)}
                 />
                 <Button
-                  onClick={() => handleProviderSelect(provider.id)}
-                  disabled={isInitiatingPayment}
-                  theme="unstyled"
                   className="w-full text-left"
+                  disabled={isInitiatingPayment}
+                  onClick={() => handleProviderSelect(provider.id)}
+                  theme="unstyled"
                 >
                   <div className="flex flex-1 flex-col">
                     <span className="font-medium text-fg-primary text-sm">
-                      {provider.id === 'pp_system_default'
-                        ? 'Při převzetí'
+                      {provider.id === "pp_system_default"
+                        ? "Při převzetí"
                         : provider.id}
                     </span>
                     <span className="text-fg-secondary text-xs">
-                      {provider.id === 'pp_system_default'
-                        ? 'Zaplatíte při doručení objednávky'
-                        : 'Online platba'}
+                      {provider.id === "pp_system_default"
+                        ? "Zaplatíte při doručení objednávky"
+                        : "Online platba"}
                     </span>
                   </div>
                 </Button>
@@ -97,7 +95,6 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
         </>
       )}
 
-      {/* Default provider fallback */}
       {!hasPaymentSessions &&
         (!paymentProviders || paymentProviders.length === 0) && (
           <div className="rounded border border-border-primary p-300">
