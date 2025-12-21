@@ -76,14 +76,6 @@ const PPL_SCRIPT_URL = "https://www.ppl.cz/sources/map/main.js"
 const PPL_CSS_URL = "https://www.ppl.cz/sources/map/main.css"
 const WIDGET_ID = "ppl-parcelshop-map"
 
-/**
- * PPL Widget for selecting pickup points (ParcelShop/ParcelBox)
- *
- * Uses the official PPL widget from ppl.cz
- * Event: "ppl-parcelshop-map" with event.detail containing pickup point data
- *
- * @see https://ppl-widget.apidog.io
- */
 export function PplWidget({
   onSelect,
   lat,
@@ -152,12 +144,8 @@ export function PplWidget({
       setIsReady(true)
     }
 
-    // Geolocation options:
-    // - enableHighAccuracy: false - WiFi/cell positioning is sufficient for parcel shop map
-    // - maximumAge: 60s - cache position for 1 minute
-    // - timeout: 2s - fast fail, user can search manually if needed
     const geoOptions: PositionOptions = {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       maximumAge: 60_000,
       timeout: 2000,
     }
