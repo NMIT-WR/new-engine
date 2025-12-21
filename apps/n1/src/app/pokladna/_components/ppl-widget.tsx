@@ -112,10 +112,19 @@ export function PplWidget({
     }
 
     let cancelled = false
+    const startTime = Date.now()
 
     const handleSuccess = (position: GeolocationPosition) => {
       if (cancelled) {
         return
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.log("[PplWidget] Geolocation success:", {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: `${position.coords.accuracy.toFixed(0)}m`,
+          elapsed: `${Date.now() - startTime}ms`,
+        })
       }
       setGeoLocation({
         lat: position.coords.latitude,
@@ -124,17 +133,29 @@ export function PplWidget({
       setIsReady(true)
     }
 
-    const handleError = () => {
+    const handleError = (error: GeolocationPositionError) => {
       if (cancelled) {
         return
+      }
+      if (process.env.NODE_ENV === "development") {
+        const errorMessages: Record<number, string> = {
+          1: "PERMISSION_DENIED",
+          2: "POSITION_UNAVAILABLE",
+          3: "TIMEOUT",
+        }
+        console.log("[PplWidget] Geolocation error:", {
+          code: errorMessages[error.code] || error.code,
+          message: error.message,
+          elapsed: `${Date.now() - startTime}ms`,
+        })
       }
       setIsReady(true)
     }
 
     // Geolocation options:
-    // - enableHighAccuracy: false - GPS takes 5-30s and may timeout; approximate location is sufficient for parcel shop map
+    // - enableHighAccuracy: false - WiFi/cell positioning is sufficient for parcel shop map
     // - maximumAge: 60s - cache position for 1 minute
-    // - timeout: 2s - fast fail if location unavailable
+    // - timeout: 2s - fast fail, user can search manually if needed
     const geoOptions: PositionOptions = {
       enableHighAccuracy: false,
       maximumAge: 60_000,
@@ -149,7 +170,13 @@ export function PplWidget({
             name: "geolocation" as PermissionName,
           })
 
-          if (cancelled) return
+          if (cancelled) {
+            return
+          }
+
+          if (process.env.NODE_ENV === "development") {
+            console.log("[PplWidget] Geolocation permission:", status.state)
+          }
 
           if (status.state === "granted") {
             navigator.geolocation.getCurrentPosition(
@@ -158,6 +185,7 @@ export function PplWidget({
               geoOptions
             )
           } else {
+            // Permission not granted (prompt/denied) - skip geolocation
             setIsReady(true)
           }
         } catch {
