@@ -131,35 +131,47 @@ export function PplWidget({
       setIsReady(true)
     }
 
+    // Geolocation options:
+    // - enableHighAccuracy: false - GPS takes 5-30s and may timeout; approximate location is sufficient for parcel shop map
+    // - maximumAge: 60s - cache position for 1 minute
+    // - timeout: 2s - fast fail if location unavailable
+    const geoOptions: PositionOptions = {
+      enableHighAccuracy: false,
+      maximumAge: 60_000,
+      timeout: 2000,
+    }
+
     // Check permission first if available
     if (navigator.permissions?.query) {
-      navigator.permissions
-        .query({ name: "geolocation" as PermissionName })
-        .then((status) => {
-          if (cancelled) {
-            return
-          }
+      const checkPermission = async () => {
+        try {
+          const status = await navigator.permissions.query({
+            name: "geolocation" as PermissionName,
+          })
+
+          if (cancelled) return
+
           if (status.state === "granted") {
             navigator.geolocation.getCurrentPosition(
               handleSuccess,
               handleError,
-              {
-                enableHighAccuracy: false,
-                maximumAge: 60_000,
-                timeout: 2000,
-              }
+              geoOptions
             )
           } else {
             setIsReady(true)
           }
-        })
-        .catch(() => setIsReady(true))
+        } catch {
+          setIsReady(true)
+        }
+      }
+
+      checkPermission()
     } else {
-      navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
-        enableHighAccuracy: false,
-        maximumAge: 60_000,
-        timeout: 2000,
-      })
+      navigator.geolocation.getCurrentPosition(
+        handleSuccess,
+        handleError,
+        geoOptions
+      )
     }
 
     return () => {
