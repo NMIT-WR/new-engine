@@ -16,6 +16,8 @@ type TextFieldProps = {
   className?: string
   autoComplete?: string
   maxLength?: number
+  externalError?: string
+  onExternalErrorClear?: () => void
 }
 
 export function TextField({
@@ -29,13 +31,24 @@ export function TextField({
   className,
   autoComplete,
   maxLength,
+  externalError,
+  onExternalErrorClear,
 }: TextFieldProps) {
-  const errors = field.state.meta.errors
-  const showErrors = field.state.meta.isBlurred && errors.length > 0
+  const fieldErrors = field.state.meta.errors
+  const showFieldErrors = field.state.meta.isBlurred && fieldErrors.length > 0
+
+  const errorId = `${field.name}-error`
+  const showError = !!externalError || showFieldErrors
+  const errorMessage = externalError || fieldErrors[0]
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = transform ? transform(e.target.value) : e.target.value
     field.handleChange(value)
+
+    // Clear external error when user starts typing
+    if (externalError && onExternalErrorClear) {
+      onExternalErrorClear()
+    }
   }
 
   return (
@@ -54,10 +67,14 @@ export function TextField({
         placeholder={placeholder}
         type={type}
         value={field.state.value ?? ""}
-        variant={showErrors ? "error" : "default"}
+        variant={showError ? "error" : "default"}
+        aria-invalid={showError}
+        aria-describedby={showError ? errorId : undefined}
       />
-      {showErrors && (
-        <p className="font-medium text-2xs text-danger">{errors[0]}</p>
+      {showError && (
+        <p id={errorId} className="font-medium text-2xs text-danger">
+          {errorMessage}
+        </p>
       )}
     </div>
   )

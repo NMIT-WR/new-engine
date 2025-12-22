@@ -4,13 +4,13 @@ import { useForm } from "@tanstack/react-form"
 import { Button } from "@ui/atoms/button"
 import { Checkbox } from "@ui/atoms/checkbox"
 import Link from "next/link"
+import { useRef, useState } from "react"
 import { TextField } from "@/components/forms/fields/text-field"
 import { useLogin } from "@/hooks/use-login"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
 import { loginValidators } from "@/lib/form-validators"
 import { useAnalytics } from "@/providers/analytics-provider"
-import { ErrorBanner } from "../atoms/error-banner"
 
 type LoginFormProps = {
   onSuccess?: () => void
@@ -33,10 +33,19 @@ export function LoginForm({
 }: LoginFormProps) {
   const toast = useAuthToast()
   const analytics = useAnalytics()
+  const formRef = useRef<typeof form | null>(null)
+  const [backendError, setBackendError] = useState<string>()
+
+  const defaultValues: LoginFormData = {
+    email: "",
+    password: "",
+  }
 
   const login = useLogin({
     onSuccess: () => {
-      const email = form.state.values.email
+      if (!formRef.current) return
+
+      const email = formRef.current.state.values.email
       if (email) {
         analytics.trackIdentify({
           email,
@@ -45,18 +54,15 @@ export function LoginForm({
       }
 
       toast.loginSuccess()
-      form.reset()
+      formRef.current.reset()
+      setBackendError(undefined)
       onSuccess?.()
     },
     onError: (error) => {
       console.error("Login failed:", error.message)
+      setBackendError(AUTH_MESSAGES.INVALID_CREDENTIALS)
     },
   })
-
-  const defaultValues: LoginFormData = {
-    email: "",
-    password: "",
-  }
 
   const form = useForm({
     defaultValues,
@@ -68,6 +74,9 @@ export function LoginForm({
     },
   })
 
+  // Store form reference
+  formRef.current = form
+
   return (
     <form
       className="mt-100 flex flex-col gap-100"
@@ -77,12 +86,6 @@ export function LoginForm({
         form.handleSubmit()
       }}
     >
-      {login.error && (
-        <ErrorBanner
-          message={login.error.message}
-          title={AUTH_MESSAGES.LOGIN_FAILED}
-        />
-      )}
 
       <form.Field name="email" validators={loginValidators.email}>
         {(field) => (
@@ -102,6 +105,8 @@ export function LoginForm({
         {(field) => (
           <TextField
             autoComplete="current-password"
+            externalError={backendError}
+            onExternalErrorClear={() => setBackendError(undefined)}
             disabled={login.isPending}
             field={field}
             label="Heslo"

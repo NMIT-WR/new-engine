@@ -94,13 +94,11 @@ export const emailValidator = {
 } as const
 
 export const loginPasswordValidator = {
-  onChange: ({ value }: { value: string }) => {
+  onSubmit: ({ value }: { value: string }) => {
     if (!value?.trim()) {
       return VALIDATION_MESSAGES.password.required
     }
-    if (value.length < 8) {
-      return VALIDATION_MESSAGES.password.tooShort
-    }
+    // No further validation - backend will return generic error
     return
   },
 } as const
