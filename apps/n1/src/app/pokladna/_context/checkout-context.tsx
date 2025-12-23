@@ -1,6 +1,6 @@
 "use client"
 
-import { useForm, type ReactFormExtendedApi } from "@tanstack/react-form"
+import { useForm } from "@tanstack/react-form"
 import { useRouter } from "next/navigation"
 import {
   createContext,
@@ -28,20 +28,11 @@ export type CheckoutFormData = {
   shippingAddress: AddressFormData
 }
 
-type CheckoutForm = ReactFormExtendedApi<
-  CheckoutFormData,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-  never
->
+/** Helper to infer the correct form type - not actually called */
+const _formTypeHelper = (d: CheckoutFormData) => useForm({ defaultValues: d })
+
+/** Form type for checkout - inferred from useForm return type */
+type CheckoutForm = ReturnType<typeof _formTypeHelper>
 
 type CheckoutContextValue = {
   form: CheckoutForm
