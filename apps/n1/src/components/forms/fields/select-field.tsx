@@ -1,7 +1,7 @@
 "use client"
 
-import type { AnyFieldApi } from "@tanstack/react-form"
 import { Select } from "@ui/molecules/select"
+import type { AnyFieldApiCompat } from "@/types/form"
 
 type SelectOption = {
   value: string
@@ -9,7 +9,7 @@ type SelectOption = {
 }
 
 type SelectFieldProps = {
-  field: AnyFieldApi
+  field: AnyFieldApiCompat
   label: string
   options: SelectOption[]
   required?: boolean
@@ -41,7 +41,6 @@ export function SelectField({
   }
 
   return (
-    <>
       <Select
         className={`grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center ${className ?? ""}`}
         clearIcon={false}
@@ -54,10 +53,7 @@ export function SelectField({
         required={required}
         size="lg"
         value={[field.state.value || ""]}
+        errorText={showErrors && errors[0]}
       />
-      {showErrors && (
-        <p className="font-medium text-2xs text-danger">{errors[0]}</p>
-      )}
-    </>
   )
 }

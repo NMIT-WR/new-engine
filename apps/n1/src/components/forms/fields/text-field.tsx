@@ -1,12 +1,13 @@
 "use client"
 
-import type { AnyFieldApi } from "@tanstack/react-form"
 import { Input } from "@ui/atoms/input"
 import { Label } from "@ui/atoms/label"
+import type { AnyFieldApiCompat } from "@/types/form"
 import type { ChangeEvent, InputHTMLAttributes } from "react"
+import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 
 type TextFieldProps = {
-  field: AnyFieldApi
+  field: AnyFieldApiCompat
   label: string
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
   placeholder?: string
@@ -52,11 +53,9 @@ export function TextField({
   }
 
   return (
-    <div className={`flex flex-col gap-50 ${className ?? ""}`}>
-      <Label htmlFor={field.name} required={required}>
-        {label}
-      </Label>
-      <Input
+      <FormInput
+        label={label}
+        required={required}
         autoComplete={autoComplete}
         disabled={disabled}
         id={field.name}
@@ -70,12 +69,9 @@ export function TextField({
         variant={showError ? "error" : "default"}
         aria-invalid={showError}
         aria-describedby={showError ? errorId : undefined}
+        helpText={showError && errorMessage}
+        validateStatus={showError ? "error" : "default"}
+        showIcon={false}
       />
-      {showError && (
-        <p id={errorId} className="font-medium text-2xs text-danger">
-          {errorMessage}
-        </p>
-      )}
-    </div>
   )
 }
