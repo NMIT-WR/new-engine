@@ -41,14 +41,6 @@ export function AddressFormDialog({
   isSubmitting = false,
   mode = "add",
 }: AddressFormDialogProps) {
-  // Button text helper to avoid nested ternary
-  const getSubmitButtonText = () => {
-    if (isSubmitting) {
-      return "Saving..."
-    }
-    return mode === "edit" ? "Update Address" : "Add Address"
-  }
-
   const defaultValues: AddressFormData = {
     ...DEFAULT_ADDRESS,
     first_name: initialData?.first_name || "",
@@ -112,7 +104,7 @@ export function AddressFormDialog({
             onClick={() => form.handleSubmit()}
             disabled={isSubmitting}
           >
-            {getSubmitButtonText()}
+            {isSubmitting ? "Saving..." : mode === "edit" ? "Update Address" : "Add Address"}
           </Button>
         </>
       }
