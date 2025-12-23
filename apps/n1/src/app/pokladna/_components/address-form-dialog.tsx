@@ -8,6 +8,7 @@ import { SelectField } from "@/components/forms/fields/select-field"
 import { TextField } from "@/components/forms/fields/text-field"
 import { COUNTRY_OPTIONS } from "@/lib/constants"
 import { addressValidators } from "@/lib/form-validators"
+import { addressToFormData } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 import { formatPhoneNumber } from "@/utils/format/format-phone-number"
 import { formatPostalCode } from "@/utils/format/format-postal-code"
@@ -22,17 +23,6 @@ type AddressFormDialogProps = {
   mode?: "add" | "edit"
 }
 
-const DEFAULT_ADDRESS: AddressFormData = {
-  first_name: "",
-  last_name: "",
-  address_1: "",
-  address_2: "",
-  city: "",
-  postal_code: "",
-  country_code: "cz",
-  phone: "",
-}
-
 export function AddressFormDialog({
   open,
   onOpenChange,
@@ -41,20 +31,8 @@ export function AddressFormDialog({
   isSubmitting = false,
   mode = "add",
 }: AddressFormDialogProps) {
-  const defaultValues: AddressFormData = {
-    ...DEFAULT_ADDRESS,
-    first_name: initialData?.first_name || "",
-    last_name: initialData?.last_name || "",
-    address_1: initialData?.address_1 || "",
-    address_2: initialData?.address_2 || "",
-    city: initialData?.city || "",
-    postal_code: initialData?.postal_code || "",
-    country_code: initialData?.country_code || "cz",
-    phone: initialData?.phone || "",
-  }
-
   const form = useForm({
-    defaultValues,
+    defaultValues: addressToFormData(initialData),
     onSubmit: async ({ value }) => {
       await onSubmit(value)
       onOpenChange({ open: false })
@@ -64,17 +42,7 @@ export function AddressFormDialog({
   // Reset form when dialog opens with new initial data
   useEffect(() => {
     if (open) {
-      form.reset({
-        ...DEFAULT_ADDRESS,
-        first_name: initialData?.first_name || "",
-        last_name: initialData?.last_name || "",
-        address_1: initialData?.address_1 || "",
-        address_2: initialData?.address_2 || "",
-        city: initialData?.city || "",
-        postal_code: initialData?.postal_code || "",
-        country_code: initialData?.country_code || "cz",
-        phone: initialData?.phone || "",
-      })
+      form.reset(addressToFormData(initialData))
     }
   }, [open, initialData, form])
 
