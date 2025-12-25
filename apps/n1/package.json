@@ -12,16 +12,16 @@
     "validate:token-usage": "node scripts/validate-token-usage.mjs"
   },
   "dependencies": {
-    "@techsio/analytics": "workspace:*",
     "@medusajs/js-sdk": "^2.10.3",
     "@medusajs/types": "^2.10.3",
+    "@tanstack/react-form": "^1.27.4",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-store": "^0.7.1",
+    "@techsio/analytics": "workspace:*",
     "@techsio/ui-kit": "workspace:*",
     "next": "16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-hook-form": "^7.67.0",
     "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {

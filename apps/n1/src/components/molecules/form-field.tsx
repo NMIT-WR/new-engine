@@ -1,9 +1,9 @@
-import { Input } from '@techsio/ui-kit/atoms/input'
-import { Label } from '@techsio/ui-kit/atoms/label'
-import type { ChangeEvent, InputHTMLAttributes } from 'react'
+import { Input } from "@techsio/ui-kit/atoms/input"
+import { Label } from "@techsio/ui-kit/atoms/label"
+import type { ChangeEvent, InputHTMLAttributes } from "react"
 
 interface FormFieldProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "size"> {
   id: string
   label: string
   name: string
@@ -15,7 +15,6 @@ interface FormFieldProps
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   className?: string
   containerClassName?: string
-  //isTouched?: boolean
 }
 
 export const FormField = ({
@@ -28,32 +27,29 @@ export const FormField = ({
   disabled = false,
   value,
   onChange,
-  className = '',
-  containerClassName = '',
-  //isTouched = false,
+  className = "",
+  containerClassName = "",
   ...inputProps
-}: FormFieldProps) => {
-  return (
-    <div className={`flex flex-col gap-50 ${containerClassName}`}>
-      <Label htmlFor={id} required={required}>
-        {label}
-      </Label>
-      <Input
-        id={id}
-        name={name}
-        type={type}
-        required={required}
-        disabled={disabled}
-        value={value}
-        onChange={onChange}
-        className={`peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success ${className}`}
-        {...inputProps}
-      />
-      {errorMessage && (
-        <p className="invisible font-medium text-2xs text-danger peer-user-invalid:visible">
-          {errorMessage}
-        </p>
-      )}
-    </div>
-  )
-}
+}: FormFieldProps) => (
+  <div className={`flex flex-col gap-50 ${containerClassName}`}>
+    <Label htmlFor={id} required={required}>
+      {label}
+    </Label>
+    <Input
+      className={`peer user-invalid:border-danger user-valid:border-success focus-visible:user-invalid:ring-danger focus-visible:user-valid:ring-success ${className}`}
+      disabled={disabled}
+      id={id}
+      name={name}
+      onChange={onChange}
+      required={required}
+      type={type}
+      value={value}
+      {...inputProps}
+    />
+    {errorMessage && (
+      <p className="invisible font-medium text-2xs text-danger peer-user-invalid:visible">
+        {errorMessage}
+      </p>
+    )}
+  </div>
+)
