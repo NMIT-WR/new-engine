@@ -39,14 +39,6 @@ export function AddressForm({
   const isEditing = !!address
   const isPending = createAddress.isPending || updateAddress.isPending
 
-  // Button text helper to avoid nested ternary
-  const getSubmitButtonText = () => {
-    if (isPending) {
-      return "Ukládám..."
-    }
-    return isEditing ? "Uložit" : "Přidat"
-  }
-
   // Initialize form with existing address or defaults
   const defaultValues: AddressFormData = {
     ...DEFAULT_ADDRESS,
@@ -116,7 +108,7 @@ export function AddressForm({
           Zrušit
         </Button>
         <Button disabled={isPending} size="sm" type="submit">
-          {getSubmitButtonText()}
+          {isPending ? "Ukládám..." : isEditing ? "Uložit" : "Přidat"}
         </Button>
       </div>
     </form>

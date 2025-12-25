@@ -2,9 +2,8 @@
 
 import { useForm, useStore } from "@tanstack/react-form"
 import { Button } from "@ui/atoms/button"
-import { Checkbox } from "@ui/atoms/checkbox"
-import { Input } from "@ui/atoms/input"
-import { Label } from "@ui/atoms/label"
+import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
+import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 import Link from "next/link"
 import { TextField } from "@/components/forms/fields/text-field"
 import { useRegister } from "@/hooks/use-register"
@@ -95,13 +94,11 @@ export function RegisterForm({
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
 
-  const getValidationClass = (hasValue: boolean, isValid: boolean) => {
+  const getValidateStatus = (hasValue: boolean, isValid: boolean) => {
     if (!hasValue) {
-      return ""
+      return "default"
     }
-    return isValid
-      ? "border-success focus-visible:ring-success"
-      : "border-danger focus-visible:ring-danger"
+    return isValid ? "success" : "error"
   }
 
   return (
@@ -168,14 +165,11 @@ export function RegisterForm({
       <form.Field name="password" validators={registerValidators.password}>
         {(field) => (
           <div className="flex flex-col gap-50">
-            <Label htmlFor="register-password" required>
-              Heslo
-            </Label>
-            <Input
+            <FormInput
               autoComplete="new-password"
-              className={`transition-colors ${getValidationClass(field.state.value.length > 0, passwordValidation.isValid)}`}
               disabled={register.isPending}
               id="register-password"
+              label="Heslo"
               minLength={8}
               name={field.name}
               onBlur={field.handleBlur}
@@ -183,6 +177,10 @@ export function RegisterForm({
               placeholder="••••••••"
               required
               type="password"
+              validateStatus={getValidateStatus(
+                field.state.value.length > 0,
+                passwordValidation.isValid
+              )}
               value={field.state.value}
             />
             <PasswordValidator password={field.state.value} showRequirements />
@@ -208,14 +206,11 @@ export function RegisterForm({
       >
         {(field) => (
           <div className="flex flex-col gap-50">
-            <Label htmlFor="register-confirm-password" required>
-              Potvrzení hesla
-            </Label>
-            <Input
+            <FormInput
               autoComplete="new-password"
-              className={`transition-colors ${getValidationClass(field.state.value.length > 0, passwordsMatch)}`}
               disabled={register.isPending}
               id="register-confirm-password"
+              label="Potvrzení hesla"
               minLength={8}
               name={field.name}
               onBlur={field.handleBlur}
@@ -223,6 +218,10 @@ export function RegisterForm({
               placeholder="••••••••"
               required
               type="password"
+              validateStatus={getValidateStatus(
+                field.state.value.length > 0,
+                passwordsMatch
+              )}
               value={field.state.value}
             />
             {passwordsMatch && (
@@ -244,17 +243,14 @@ export function RegisterForm({
         validators={registerValidators.acceptTerms}
       >
         {(field) => (
-          <div className="flex items-center gap-200">
-            <Checkbox
-              checked={field.state.value}
-              id="accept-terms"
-              name="accept-terms"
-              onChange={(e) => field.handleChange(e.target.checked)}
-            />
-            <Label className="cursor-pointer text-xs" htmlFor="accept-terms">
-              Souhlasím s podmínkami
-            </Label>
-          </div>
+          <FormCheckbox
+            checked={field.state.value}
+            id="accept-terms"
+            label="Souhlasím s podmínkami"
+            name="accept-terms"
+            onCheckedChange={(checked) => field.handleChange(checked)}
+            size="sm"
+          />
         )}
       </form.Field>
 
