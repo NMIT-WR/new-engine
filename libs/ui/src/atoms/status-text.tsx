@@ -4,7 +4,7 @@ import { tv } from "../utils"
 import { Icon } from "./icon"
 
 const statusTextVariants = tv({
-  base: ["flex items-center gap-status-text-icon-gap"],
+  base: ["flex items-center"],
   variants: {
     status: {
       error: "text-status-text-fg-error",
@@ -13,9 +13,9 @@ const statusTextVariants = tv({
       default: "text-status-text-fg-default",
     },
     size: {
-      sm: "text-status-text-sm",
-      md: "text-status-text-md",
-      lg: "text-status-text-lg",
+      sm: "text-status-text-sm gap-status-text-icon-gap-sm",
+      md: "text-status-text-md gap-status-text-icon-gap-md",
+      lg: "text-status-text-lg gap-status-text-icon-gap-lg",
     },
   },
   defaultVariants: {
@@ -25,9 +25,9 @@ const statusTextVariants = tv({
 })
 
 const ICON_MAP = {
-  error: "token-icon-error",
-  success: "token-icon-success",
-  warning: "token-icon-warning",
+  error: "token-icon-status-text-error",
+  success: "token-icon-status-text-success",
+  warning: "token-icon-status-text-warning",
   default: undefined,
 } as const
 

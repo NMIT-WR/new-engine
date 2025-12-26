@@ -36,7 +36,6 @@ const meta: Meta<typeof StatusText> = {
 export default meta
 type Story = StoryObj<typeof StatusText>
 
-// Basic usage examples
 export const Default: Story = {
   args: {
     children: "This is default status text",
@@ -69,7 +68,6 @@ export const Warning: Story = {
   },
 }
 
-// All status variants
 export const AllStatuses: Story = {
   render: () => (
     <VariantContainer>
@@ -110,7 +108,6 @@ export const AllStatuses: Story = {
   ),
 }
 
-// Size variants
 export const Sizes: Story = {
   render: () => (
     <VariantContainer>
@@ -159,7 +156,6 @@ export const Sizes: Story = {
   ),
 }
 
-// Form validation context
 export const FormValidationContext: Story = {
   render: () => (
     <div className="flex w-full max-w-md flex-col gap-6">
@@ -226,7 +222,6 @@ export const FormValidationContext: Story = {
   ),
 }
 
-// Long text wrapping
 export const LongText: Story = {
   render: () => (
     <div className="w-80">
