@@ -1,0 +1,21 @@
+@theme {
+  /* === Reference Layer === */
+  /* Maps to semantic tokens for themeable properties */
+
+  /* Status colors */
+  --color-status-text-fg-error: var(--color-danger);
+  --color-status-text-fg-success: var(--color-success);
+  --color-status-text-fg-warning: var(--color-warning);
+  --color-status-text-fg-default: var(--color-fg-secondary);
+
+  /* === Derived Tokens === */
+  /* Component-specific tokens derived from reference layer */
+
+  /* Text sizes - inherit from input sizing */
+  --text-status-text-sm: var(--text-input-sm);
+  --text-status-text-md: var(--text-input-md);
+  --text-status-text-lg: var(--text-input-lg);
+
+  /* Icon gap - spacing between icon and text */
+  --spacing-status-text-icon-gap: var(--spacing-50);
+}
