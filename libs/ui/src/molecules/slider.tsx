@@ -2,9 +2,8 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as slider from "@zag-js/slider"
 import { useId } from "react"
 import type { VariantProps } from "tailwind-variants"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Label } from "../atoms/label"
+import { StatusText } from "../atoms/status-text"
 import { slugify, tv } from "../utils"
 
 const sliderVariants = tv({
@@ -52,7 +51,6 @@ const sliderVariants = tv({
       "data-[disabled]:border-slider-border-disabled",
       "hover:bg-slider-thumb-bg-hover",
       "cursor-grab data-[disabled]:cursor-not-allowed data-[dragging]:cursor-grabbing",
-      "transition-all duration-200",
       "shadow-slider-thumb",
     ],
     markerGroup: ["relative flex h-full items-center"],
@@ -72,7 +70,6 @@ const sliderVariants = tv({
       "data-[orientation=vertical]:h-full",
       "data-[orientation=vertical]:p-marker-text",
     ],
-    footer: ["flex flex-col"],
   },
   variants: {
     size: {
@@ -105,9 +102,9 @@ export interface SliderProps extends VariantProps<typeof sliderVariants> {
   id?: string
   name?: string
   label?: string
-  helperText?: string
-  error?: boolean
-  errorText?: string
+  validateStatus?: "default" | "error" | "success" | "warning"
+  helpText?: string
+  showHelpTextIcon?: boolean
   value?: number[]
   defaultValue?: number[]
   min?: number
@@ -134,9 +131,9 @@ export function Slider({
   id,
   name,
   label,
-  helperText,
-  error,
-  errorText,
+  validateStatus,
+  helpText,
+  showHelpTextIcon = true,
   value,
   origin,
   thumbAlignment = "center",
@@ -196,7 +193,6 @@ export function Slider({
     marker,
     markerLine,
     markerText,
-    footer,
   } = sliderVariants({
     className,
     size,
@@ -227,11 +223,11 @@ export function Slider({
       )}
 
       <div className={control()} {...api.getControlProps()}>
-        <div className={track()} {...api.getTrackProps()} data-invalid={error}>
+        <div className={track()} {...api.getTrackProps()} data-invalid={validateStatus === "error"}>
           <div
             className={range()}
             {...api.getRangeProps()}
-            data-invalid={error}
+            data-invalid={validateStatus === "error"}
           />
           {showMarkers && (
             <div {...api.getMarkerGroupProps()} className={markerGroup()}>
@@ -278,20 +274,13 @@ export function Slider({
           </div>
         ))}
       </div>
-      {(helperText || errorText) && (
-        <div className={footer()}>
-          {/* Always render both containers to maintain consistent width */}
-          <div className={error ? "block" : "invisible h-0 overflow-hidden"}>
-            <ErrorText>{errorText}</ErrorText>
-          </div>
-          <div
-            className={
-              !error && helperText ? "block" : "invisible h-0 overflow-hidden"
-            }
-          >
-            <ExtraText>{helperText}</ExtraText>
-          </div>
-        </div>
+      {helpText && (
+        <StatusText
+          status={validateStatus}
+          showIcon={showHelpTextIcon}
+        >
+          {helpText}
+        </StatusText>
       )}
     </div>
   )
