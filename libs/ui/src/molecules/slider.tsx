@@ -278,6 +278,7 @@ export function Slider({
         <StatusText
           status={validateStatus}
           showIcon={showHelpTextIcon}
+          size={size}
         >
           {helpText}
         </StatusText>
