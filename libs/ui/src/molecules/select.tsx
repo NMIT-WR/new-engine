@@ -3,10 +3,9 @@ import * as select from "@zag-js/select"
 import { type ReactNode, useId } from "react"
 import { tv, type VariantProps } from "tailwind-variants"
 import { Button } from "../atoms/button"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Icon } from "../atoms/icon"
 import { Label } from "../atoms/label"
+import { StatusText } from "../atoms/status-text"
 
 // === TYPES ===
 export interface SelectOption {
@@ -99,8 +98,9 @@ export interface SelectProps
   options: SelectOption[]
   label?: ReactNode
   placeholder?: string
-  helperText?: string
-  errorText?: string
+  validateStatus?: "default" | "error" | "success" | "warning"
+  helpText?: ReactNode
+  showHelpTextIcon?: boolean
   className?: string
   id?: string
   clearIcon?: boolean
@@ -116,11 +116,11 @@ export function Select({
   multiple = false,
   clearIcon = true,
   disabled = false,
-  invalid = false,
   required = false,
   readOnly = false,
-  errorText,
-  helperText,
+  validateStatus,
+  helpText,
+  showHelpTextIcon = true,
   closeOnSelect = true,
   loopFocus = true,
   name,
@@ -149,7 +149,7 @@ export function Select({
     form,
     multiple,
     disabled,
-    invalid,
+    invalid: validateStatus === "error",
     required,
     readOnly,
     closeOnSelect,
@@ -175,6 +175,8 @@ export function Select({
     itemIndicator,
     value: valueSlot,
   } = selectVariants({ size })
+
+  const statusTextSize = size === 'xs' ? 'sm' : size
 
   return (
     <>
@@ -250,8 +252,15 @@ export function Select({
           </div>
         </Portal>
 
-        {invalid && <ErrorText>{errorText}</ErrorText>}
-        {!invalid && helperText && <ExtraText>{helperText}</ExtraText>}
+        {helpText && (
+          <StatusText
+            status={validateStatus}
+            showIcon={showHelpTextIcon}
+            size={statusTextSize}
+          >
+            {helpText}
+          </StatusText>
+        )}
       </div>
     </>
   )

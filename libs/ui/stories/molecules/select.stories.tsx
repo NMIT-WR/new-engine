@@ -111,9 +111,18 @@ A select component built with Zag.js that provides accessible dropdown selection
       control: 'boolean',
       description: 'Whether the select is disabled',
     },
-    invalid: {
+    validateStatus: {
+      control: { type: 'select' },
+      options: ['default', 'error', 'success', 'warning'],
+      description: 'Validation status of the select',
+    },
+    helpText: {
+      control: 'text',
+      description: 'Help text displayed below the select',
+    },
+    showHelpTextIcon: {
       control: 'boolean',
-      description: 'Whether the select has validation errors',
+      description: 'Whether to show an icon with the help text',
     },
     required: {
       control: 'boolean',
@@ -167,19 +176,32 @@ export const Sizes: Story = {
 
 export const States: Story = {
   render: () => (
-    <>
+    <div className="flex flex-col gap-200 w-md">
       <Select options={countries} label="Disabled" disabled />
       <Select
         options={countries}
-        label="Invalid"
-        invalid
-        errorText="Please select a valid country"
+        label="Error"
+        validateStatus="error"
+        helpText="Please select a valid country"
+      />
+      <Select
+        options={countries}
+        label="Success"
+        validateStatus="success"
+        helpText="Great choice!"
+        defaultValue={['us']}
+      />
+      <Select
+        options={countries}
+        label="Warning"
+        validateStatus="warning"
+        helpText="This country may require additional documentation"
       />
       <Select
         options={countries}
         label="Required"
         required
-        helperText="This field is required"
+        helpText="This field is required"
       />
       <Select
         options={countries}
@@ -187,30 +209,30 @@ export const States: Story = {
         readOnly
         defaultValue={['us']}
       />
-    </>
+    </div>
   ),
   parameters: {
     docs: {
       description: {
         story:
-          'Demonstrates different states of the Select component including disabled, invalid with error message, required with helper text, and read-only with default value.',
+          'Demonstrates different states of the Select component including disabled, validation states (error, success, warning), required with helper text, and read-only with default value.',
       },
     },
   },
 }
 
-export const WithHelperText: Story = {
+export const WithHelpText: Story = {
   args: {
     options: countries,
     label: 'Country',
     placeholder: 'Select your country',
-    helperText: 'Choose the country where you currently reside',
+    helpText: 'Choose the country where you currently reside',
   },
   parameters: {
     docs: {
       description: {
         story:
-          'Shows how to add helper text below the select to provide additional context to users.',
+          'Shows how to add help text below the select to provide additional context to users.',
       },
     },
   },
@@ -325,8 +347,12 @@ export const WithinForm: Story = {
           options={countries}
           label="Country"
           required
-          invalid={formState.country.length === 0}
-          errorText="Please select a country"
+          validateStatus={formState.country.length === 0 ? 'error' : 'default'}
+          helpText={
+            formState.country.length === 0
+              ? 'Please select a country'
+              : undefined
+          }
           value={formState.country}
           onValueChange={(details) =>
             setFormState((prev) => ({ ...prev, country: details.value }))
@@ -338,7 +364,7 @@ export const WithinForm: Story = {
           label="Languages"
           multiple
           placeholder="Select languages you speak"
-          helperText="You can select multiple languages"
+          helpText="You can select multiple languages"
           value={formState.language}
           onValueChange={(details) =>
             setFormState((prev) => ({ ...prev, language: details.value }))
