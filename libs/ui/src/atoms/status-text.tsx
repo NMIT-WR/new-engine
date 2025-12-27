@@ -4,7 +4,10 @@ import { tv } from "../utils"
 import { Icon } from "./icon"
 
 const statusTextVariants = tv({
-  base: ["flex items-center"],
+  slots: {
+    base: "flex items-center",
+    icon: "self-start mt-status-text-icon-margin"
+  },
   variants: {
     status: {
       error: "text-status-text-fg-error",
@@ -50,9 +53,15 @@ export function StatusText({
 }: StatusTextProps) {
   const icon = ICON_MAP[status ?? "default"]
 
+  const {base, icon: iconSlot} = statusTextVariants({
+    status,
+    size,
+    className,
+  })
+
   return (
     <div
-      className={statusTextVariants({
+      className={base({
         status,
         size,
         className,
@@ -60,7 +69,7 @@ export function StatusText({
       ref={ref}
       {...props}
     >
-      {showIcon && icon && <Icon icon={icon} />}
+      {showIcon && icon && <Icon size={size} icon={icon} className={iconSlot()} />}
       <span>{children}</span>
     </div>
   )
