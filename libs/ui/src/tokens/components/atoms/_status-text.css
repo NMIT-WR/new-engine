@@ -15,7 +15,9 @@
   --spacing-status-text-icon-gap-md: var(--spacing-100);
   --spacing-status-text-icon-gap-lg: var(--spacing-200);
 
-  --spacing-status-text-icon-margin: var(--spacing-100);
+  --spacing-status-text-icon-sm: var(--spacing-50);
+  --spacing-status-text-icon-md: var(--spacing-100);
+  --spacing-status-text-icon-lg: var(--spacing-200);
 }
 
 @utility token-icon-status-text-success {

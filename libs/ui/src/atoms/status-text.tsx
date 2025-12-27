@@ -6,7 +6,7 @@ import { Icon } from "./icon"
 const statusTextVariants = tv({
   slots: {
     base: "flex items-center",
-    icon: "self-start mt-status-text-icon-margin"
+    icon: "self-start"
   },
   variants: {
     status: {
@@ -16,9 +16,18 @@ const statusTextVariants = tv({
       default: "text-status-text-fg-default",
     },
     size: {
-      sm: "text-status-text-sm gap-status-text-icon-gap-sm",
-      md: "text-status-text-md gap-status-text-icon-gap-md",
-      lg: "text-status-text-lg gap-status-text-icon-gap-lg",
+      sm: {
+        base: "text-status-text-sm gap-status-text-icon-gap-sm",
+        icon: "mt-status-text-icon-sm",
+      },
+      md: {
+        base: "text-status-text-md gap-status-text-icon-gap-md",
+        icon: "mt-status-text-icon-md",
+      },
+      lg: {
+        base: "text-status-text-lg gap-status-text-icon-gap-lg",
+        icon: "mt-status-text-icon-lg",
+      },
     },
   },
   defaultVariants: {
