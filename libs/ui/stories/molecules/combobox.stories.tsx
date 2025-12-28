@@ -24,10 +24,18 @@ const meta: Meta<typeof Combobox> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    validationState: {
-      control: 'select',
-      options: ['normal', 'error', 'success', 'warning'],
-      description: 'Validation state of the combobox',
+    validateStatus: {
+      control: { type: 'select' },
+      options: ['default', 'error', 'success', 'warning'],
+      description: 'Validation status of the combobox',
+    },
+    helpText: {
+      control: 'text',
+      description: 'Help text displayed below the combobox',
+    },
+    showHelpTextIcon: {
+      control: 'boolean',
+      description: 'Whether to show an icon with the help text',
     },
     multiple: {
       control: 'boolean',
@@ -56,7 +64,7 @@ export const Default: Story = {
     label: 'Select Country',
     placeholder: 'Choose a country...',
     items: countries,
-    helper: 'Select your country of residence',
+    helpText: 'Select your country of residence',
   },
 }
 
@@ -64,32 +72,31 @@ export const ValidationStates: Story = {
   render: () => (
     <VariantContainer>
       <Combobox
-        label="Normal State"
+        label="Default State"
         placeholder="Select country"
         items={countries}
-        helper="Default state without validation"
-        validationState="normal"
+        helpText="Default state without validation"
       />
       <Combobox
         label="Error State"
         placeholder="Select country"
         items={countries}
-        error="Please select a valid country"
-        validationState="error"
+        validateStatus="error"
+        helpText="Please select a valid country"
       />
       <Combobox
         label="Success State"
         placeholder="Select country"
         items={countries}
-        helper="Your choice is valid"
-        validationState="success"
+        validateStatus="success"
+        helpText="Your choice is valid"
       />
       <Combobox
         label="Warning State"
         placeholder="Select country"
         items={countries}
-        helper="This country may require additional verification"
-        validationState="warning"
+        validateStatus="warning"
+        helpText="This country may require additional verification"
       />
     </VariantContainer>
   ),
@@ -100,7 +107,7 @@ export const MultipleSelection: Story = {
     label: 'Select Countries',
     placeholder: 'Choose countries...',
     items: countries,
-    helper: 'Select the countries you have visited',
+    helpText: 'Select the countries you have visited',
     multiple: true,
     closeOnSelect: false,
   },
@@ -113,21 +120,21 @@ export const Sizes: Story = {
         label="Small Size"
         placeholder="Select country"
         items={countries}
-        helper="Small combobox variant"
+        helpText="Small combobox variant"
         size="sm"
       />
       <Combobox
         label="Medium Size"
         placeholder="Select country"
         items={countries}
-        helper="Medium combobox variant (default)"
+        helpText="Medium combobox variant (default)"
         size="md"
       />
       <Combobox
         label="Large Size"
         placeholder="Select country"
         items={countries}
-        helper="Large combobox variant"
+        helpText="Large combobox variant"
         size="lg"
       />
     </VariantContainer>
@@ -140,26 +147,23 @@ export const ComplexStory: Story = {
       string | null
     >(null)
 
-    const validationState =
+    const validateStatus =
       selectedCountryValue === 'us'
         ? 'error'
         : selectedCountryValue === 'sk'
           ? 'warning'
           : selectedCountryValue === 'cz'
             ? 'success'
-            : 'normal'
+            : 'default'
 
-    const dynamicHelperMessage =
-      validationState === 'error'
+    const dynamicHelpText =
+      validateStatus === 'error'
         ? 'USA is currently unavailable'
-        : validationState === 'warning'
+        : validateStatus === 'warning'
           ? 'Slovakia requires additional identity verification'
-          : validationState === 'success'
+          : validateStatus === 'success'
             ? 'Country successfully selected'
             : 'Select your country of residence'
-
-    const dynamicErrorMessage =
-      validationState === 'error' ? dynamicHelperMessage : undefined
 
     return (
       <div className="w-72 space-y-8">
@@ -172,11 +176,8 @@ export const ComplexStory: Story = {
             const singleValue = Array.isArray(value) ? value[0] : value
             setSelectedCountryValue(singleValue ?? null)
           }}
-          validationState={validationState}
-          error={dynamicErrorMessage}
-          helper={
-            validationState !== 'error' ? dynamicHelperMessage : undefined
-          }
+          validateStatus={validateStatus}
+          helpText={dynamicHelpText}
         />
         <div className="text-sm ">
           Try selecting different countries to see validation states change:
