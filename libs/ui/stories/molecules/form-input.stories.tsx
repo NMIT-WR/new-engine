@@ -33,6 +33,10 @@ const meta: Meta<typeof FormInput> = {
       options: ['default', 'error', 'success', 'warning'],
       description: 'Validation state that affects input style and helper text',
     },
+    showHelpTextIcon: {
+      control: 'boolean',
+      description: 'Whether to show an icon with the help text',
+    },
   },
 }
 
@@ -72,6 +76,15 @@ export const AllVariants: Story = {
       <VariantGroup title="Validation States">
         <div className="w-64">
           <FormInput
+            id="default-input"
+            label="Default state"
+            placeholder="Enter value"
+            validateStatus="default"
+            helpText="This is default help text"
+          />
+        </div>
+        <div className="w-64">
+          <FormInput
             id="success-input"
             label="Success state"
             placeholder="johndoe"
@@ -81,7 +94,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
-            id="success-input"
+            id="error-input"
             label="Error state"
             placeholder="Enter email"
             validateStatus="error"
@@ -90,7 +103,7 @@ export const AllVariants: Story = {
         </div>
         <div className="w-64">
           <FormInput
-            id="success-input"
+            id="warning-input"
             label="Warning state"
             placeholder="Enter password"
             validateStatus="warning"
@@ -111,10 +124,9 @@ export const AllVariants: Story = {
         <div className="w-64">
           <FormInput
             id="error-input"
-            label="With helper and extra text"
+            label="With error message"
             placeholder="Enter value"
             helpText="This is error text!"
-            extraText="This is extra text below input"
             validateStatus="error"
           />
         </div>
@@ -180,6 +192,71 @@ export const AllVariants: Story = {
         </div>
       </VariantGroup>
     </VariantContainer>
+  ),
+}
+
+// Validation States - Dedicated story showing all 4 validation states
+export const ValidationStates: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-64">
+      <FormInput
+        id="default-validation"
+        label="Default State"
+        placeholder="Enter username"
+        validateStatus="default"
+        helpText="This is default help text"
+      />
+      <FormInput
+        id="error-validation"
+        label="Error State"
+        placeholder="Enter username"
+        validateStatus="error"
+        helpText="Username is already taken"
+      />
+      <FormInput
+        id="success-validation"
+        label="Success State"
+        placeholder="Enter username"
+        validateStatus="success"
+        helpText="Username is available"
+      />
+      <FormInput
+        id="warning-validation"
+        label="Warning State"
+        placeholder="Enter username"
+        validateStatus="warning"
+        helpText="Username contains special characters"
+      />
+    </div>
+  ),
+}
+
+// Sizes - Dedicated story showing all size variants
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-64">
+      <FormInput
+        id="small-size"
+        label="Small Size"
+        placeholder="Enter value"
+        size="sm"
+        helpText="Small input variant"
+      />
+      <FormInput
+        id="medium-size"
+        label="Medium Size (Default)"
+        placeholder="Enter value"
+        size="md"
+        helpText="Medium input variant"
+      />
+      <FormInput
+        id="large-size"
+        label="Large Size"
+        placeholder="Enter value"
+        size="lg"
+        helpText="Large input variant"
+      />
+    </div>
   ),
 }
 
@@ -262,7 +339,7 @@ export const RegistrationForm: Story = {
             label="Username"
             placeholder="johndoe"
             required
-            extraText="Visible to other users"
+            helpText="Visible to other users"
           />
 
           <FormInput
