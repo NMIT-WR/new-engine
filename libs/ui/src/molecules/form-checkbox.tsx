@@ -1,8 +1,7 @@
 import { connect, machine } from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { type ReactNode, useId } from "react"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
+import { StatusText } from "../atoms/status-text"
 import { tv } from "../utils"
 
 const checkboxVariants = tv({
@@ -43,8 +42,7 @@ const checkboxVariants = tv({
       "data-[disabled]:text-label-fg-disabled",
     ],
     hiddenInput: "sr-only",
-    textWrapper: "",
-    textIndented: "pl-form-checkbox-text-offset",
+    textIndented: "data-[icon=false]:pl-form-checkbox-text-offset",
   },
   variants: {
     size: {
@@ -66,16 +64,13 @@ export type FormCheckboxProps = {
   defaultChecked?: boolean
   indeterminate?: boolean
   disabled?: boolean
-  invalid?: boolean
   required?: boolean
   readOnly?: boolean
   children?: ReactNode
   label?: ReactNode
-  helperText?: ReactNode
-  errorText?: ReactNode
   helpText?: ReactNode
-  extraText?: ReactNode
   validateStatus?: "default" | "error" | "success" | "warning"
+  showHelpTextIcon?: boolean
   size?: "sm" | "md" | "lg"
   className?: string
   onCheckedChange?: (checked: boolean) => void
@@ -89,26 +84,19 @@ export function FormCheckbox({
   defaultChecked,
   indeterminate,
   disabled = false,
-  invalid = false,
   required = false,
   readOnly = false,
   children,
   label,
-  helperText,
-  errorText,
   helpText,
-  extraText,
-  validateStatus,
+  validateStatus = "default",
+  showHelpTextIcon = validateStatus === "default" ? false : true,
   size = "md",
   className,
   onCheckedChange,
 }: FormCheckboxProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
-
-  const isInvalid = validateStatus === "error" || invalid
-  const resolvedErrorText = isInvalid ? (errorText ?? helpText) : undefined
-  const resolvedHelperText = isInvalid ? undefined : (helperText ?? helpText)
 
   const service = useMachine(machine, {
     id: uniqueId,
@@ -117,7 +105,7 @@ export function FormCheckbox({
     checked: indeterminate ? "indeterminate" : checked,
     defaultChecked,
     disabled,
-    invalid: isInvalid,
+    invalid: validateStatus === "error",
     readOnly,
     required,
     onCheckedChange: (details) => {
@@ -130,8 +118,6 @@ export function FormCheckbox({
   const styles = checkboxVariants({ size })
 
   const labelContent = label ?? children
-
-  const hasText = extraText || resolvedErrorText || resolvedHelperText
 
   return (
     <div className={className}>
@@ -150,23 +136,15 @@ export function FormCheckbox({
           </span>
         )}
       </label>
-      {hasText && (
-        <div className={styles.textWrapper()}>
-          {extraText && (
-            <div className={styles.textIndented()}>
-              <ExtraText size={size}>{extraText}</ExtraText>
-            </div>
-          )}
-          {isInvalid && resolvedErrorText && (
-            <ErrorText showIcon size={size}>
-              {resolvedErrorText}
-            </ErrorText>
-          )}
-          {!isInvalid && resolvedHelperText && (
-            <div className={styles.textIndented()}>
-              <ExtraText size={size}>{resolvedHelperText}</ExtraText>
-            </div>
-          )}
+      {helpText && (
+        <div className={styles.textIndented()} data-icon={showHelpTextIcon}>
+          <StatusText
+            status={validateStatus}
+            showIcon={showHelpTextIcon}
+            size={size}
+          >
+            {helpText}
+          </StatusText>
         </div>
       )}
     </div>
