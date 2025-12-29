@@ -19,7 +19,7 @@ export function FormNumericInput({
   label,
   validateStatus = "default",
   helpText,
-  showHelpTextIcon = validateStatus === "default" ? false : true,
+  showHelpTextIcon = validateStatus !== "default",
   size = "md",
   required,
   disabled,
