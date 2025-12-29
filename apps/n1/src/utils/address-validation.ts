@@ -137,7 +137,6 @@ export function validateAddressField(
 export function validateAddressForm(data: AddressFormData): AddressErrors {
   const errors: AddressErrors = {}
 
-  // Validate required fields
   for (const field of REQUIRED_ADDRESS_FIELDS) {
     const fieldValue = data[field] || ""
     const error = validateAddressField(field, fieldValue, data.country_code)

@@ -19,11 +19,8 @@ import {
 import { AddressFormFields } from "./address-form-fields"
 
 type AddressFormProps = {
-  /** Existing address to edit (undefined for new address) */
   address?: StoreCustomerAddress
-  /** Called when form is cancelled */
   onCancel: () => void
-  /** Called after successful save */
   onSuccess: () => void
 }
 
@@ -70,7 +67,6 @@ export function AddressForm({
         }
         onSuccess()
       } catch (error) {
-        // Handle validation errors from hooks
         if (AddressValidationError.isAddressValidationError(error)) {
           toaster.create({
             title: error.firstError,

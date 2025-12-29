@@ -74,7 +74,6 @@ export function LoginForm({
     },
   })
 
-  // Store form reference
   formRef.current = form
 
   return (

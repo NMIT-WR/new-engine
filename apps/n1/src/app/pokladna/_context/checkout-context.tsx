@@ -78,7 +78,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   // Track if form has been initialized (prevents reset after address save)
   const isFormInitialized = useRef(false)
 
-  // Initialize TanStack Form - let TypeScript infer types from defaultValues
   const defaultValues: CheckoutFormData = {
     email: customer?.email ?? "",
     shippingAddress: DEFAULT_ADDRESS,
@@ -95,7 +94,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
       const { email, shippingAddress } = value
 
-      // Save shipping address to cart
       try {
         const cartEmail = customer?.email || email
         await updateCartAddressAsync({
@@ -108,7 +106,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      // Complete the cart
       try {
         await completeCartAsync({ cartId: cart.id })
       } catch (err) {
@@ -124,12 +121,10 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   // Initialize form with existing data (cart address > customer default)
   // Only runs ONCE on initial data load, not on subsequent customer.addresses changes
   useEffect(() => {
-    // Skip if already initialized (prevents reset after saving address)
     if (isFormInitialized.current) {
       return
     }
 
-    // Priority 1: Cart already has shipping address
     if (cart?.shipping_address?.first_name) {
       const addressData = addressToFormData(
         cart.shipping_address
@@ -143,7 +138,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Priority 2: Customer has saved addresses
     if (customer?.addresses && customer.addresses.length > 0) {
       const defaultAddress = getDefaultAddress(customer.addresses)
       if (defaultAddress) {
@@ -158,7 +152,6 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     }
   }, [cart?.shipping_address, cart?.email, customer?.addresses, customer?.email, form])
 
-  // Auto-select first shipping option when loaded
   useEffect(() => {
     if (
       shipping.shippingOptions &&
@@ -170,12 +163,10 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     }
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
 
-  // Submit handler
   const completeCheckout = () => {
     form.handleSubmit()
   }
 
-  // Compute isReady based on form validity and selections
   const isReady =
     form.state.isValid &&
     !!shipping.selectedShippingMethodId &&

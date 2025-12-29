@@ -79,7 +79,6 @@ export function RegisterForm({
     },
   })
 
-  // Subscribe to confirm password for match check
   const password = useStore(form.store, (state) => state.values.password)
   const confirmPassword = useStore(
     form.store,

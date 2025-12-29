@@ -9,23 +9,18 @@ import { formatPhoneNumber } from "@/utils/format/format-phone-number"
 import { formatPostalCode } from "@/utils/format/format-postal-code"
 import { useForm } from "@tanstack/react-form"
 
-/** Helper to infer the correct form type - not actually called */
 const _formTypeHelper = (d: AddressFormData) => useForm({ defaultValues: d })
 
-/** Form type for address forms - inferred from useForm return type */
 type AddressForm = ReturnType<typeof _formTypeHelper>
 
 type AddressFormFieldsProps = {
-  /** TanStack Form instance */
   form: AddressForm
-  /** Disable all fields */
   disabled?: boolean
 }
 
 export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
   return (
     <div className="flex flex-col gap-400">
-      {/* First name | Last name */}
       <div className="grid grid-cols-2 gap-300">
         <form.Field name="first_name" validators={addressValidators.first_name}>
           {(field) => (
@@ -49,7 +44,6 @@ export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
         </form.Field>
       </div>
 
-      {/* Company (optional) */}
       <form.Field name="company">
         {(field) => (
           <TextField
@@ -60,7 +54,6 @@ export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
         )}
       </form.Field>
 
-      {/* Address */}
       <form.Field name="address_1" validators={addressValidators.address_1}>
         {(field) => (
           <TextField
@@ -73,7 +66,6 @@ export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
         )}
       </form.Field>
 
-      {/* Apartment, suite, etc. (optional) */}
       <form.Field name="address_2">
         {(field) => (
           <TextField
@@ -84,7 +76,6 @@ export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
         )}
       </form.Field>
 
-      {/* City | Country */}
       <div className="grid grid-cols-2 gap-300">
         <form.Field name="city" validators={addressValidators.city}>
           {(field) => (
@@ -111,7 +102,6 @@ export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
         </form.Field>
       </div>
 
-      {/* Province | Postal code */}
       <div className="grid grid-cols-2 gap-300">
         <form.Field name="province">
           {(field) => (
@@ -139,7 +129,6 @@ export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
         </form.Field>
       </div>
 
-      {/* Phone */}
       <form.Field name="phone" validators={addressValidators.phone}>
         {(field) => (
           <TextField

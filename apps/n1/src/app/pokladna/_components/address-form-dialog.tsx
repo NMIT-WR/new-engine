@@ -39,7 +39,6 @@ export function AddressFormDialog({
     },
   })
 
-  // Reset form when dialog opens with new initial data
   useEffect(() => {
     if (open) {
       form.reset(addressToFormData(initialData))
@@ -84,7 +83,6 @@ export function AddressFormDialog({
           form.handleSubmit()
         }}
       >
-        {/* Name fields */}
         <div className="grid grid-cols-2 gap-300">
           <form.Field
             name="first_name"
@@ -114,7 +112,6 @@ export function AddressFormDialog({
           </form.Field>
         </div>
 
-        {/* Address fields */}
         <form.Field name="address_1" validators={addressValidators.address_1}>
           {(field) => (
             <TextField
@@ -138,7 +135,6 @@ export function AddressFormDialog({
           )}
         </form.Field>
 
-        {/* City and Postal Code */}
         <div className="grid grid-cols-2 gap-300">
           <form.Field name="city" validators={addressValidators.city}>
             {(field) => (
@@ -169,7 +165,6 @@ export function AddressFormDialog({
           </form.Field>
         </div>
 
-        {/* Country and Phone */}
         <div className="grid grid-cols-2 gap-300">
           <form.Field
             name="country_code"

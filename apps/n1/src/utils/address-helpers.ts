@@ -3,9 +3,6 @@ import type { StoreCustomerAddress } from '@/services/customer-service'
 import type { AddressFormData } from './address-validation'
 import type { HttpTypes } from '@medusajs/types'
 
-/**
- * Default empty address for form initialization
- */
 export const DEFAULT_ADDRESS: AddressFormData = {
   first_name: '',
   last_name: '',
@@ -60,7 +57,6 @@ function addressToFormData(
   }
 }
 
-// Export as main function
 export { addressToFormData }
 
 /**
