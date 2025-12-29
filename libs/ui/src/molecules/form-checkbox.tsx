@@ -90,7 +90,7 @@ export function FormCheckbox({
   label,
   helpText,
   validateStatus = "default",
-  showHelpTextIcon = validateStatus === "default" ? false : true,
+  showHelpTextIcon = validateStatus !== "default",
   size = "md",
   className,
   onCheckedChange,
