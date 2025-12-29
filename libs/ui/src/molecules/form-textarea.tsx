@@ -10,7 +10,6 @@ interface FormTextareaRawProps extends TextareaProps {
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
-  showHelpTextIcon?: boolean
 }
 
 export function FormTextareaRaw({
@@ -18,7 +17,6 @@ export function FormTextareaRaw({
   label,
   validateStatus = "default",
   helpText,
-  showHelpTextIcon,
   size = "md",
   required,
   disabled,
@@ -43,14 +41,18 @@ export function FormTextareaRaw({
   )
 }
 
+type FormTextareaProps = FormTextareaRawProps & {
+  showHelpTextIcon?: boolean
+}
+
 export function FormTextarea({
   helpText,
   id,
   validateStatus = "default",
-  showHelpTextIcon = validateStatus === "default" ? false : true,
+  showHelpTextIcon = validateStatus !== "default",
   size = "md",
   ...props
-}: FormTextareaRawProps) {
+}: FormTextareaProps) {
   return (
     <FormTextareaRaw
       helpText={
@@ -65,8 +67,6 @@ export function FormTextarea({
       }
       id={id}
       size={size}
-      validateStatus={validateStatus}
-      showHelpTextIcon={showHelpTextIcon}
       {...props}
     />
   )
