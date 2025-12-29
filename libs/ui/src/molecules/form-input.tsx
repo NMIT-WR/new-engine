@@ -10,7 +10,6 @@ interface FormInputRawProps extends InputProps {
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
-  showHelpTextIcon?: boolean
 }
 
 export function FormInputRaw({
@@ -18,7 +17,6 @@ export function FormInputRaw({
   label,
   validateStatus = "default",
   helpText,
-  showHelpTextIcon,
   size = "md",
   required,
   disabled,
@@ -44,14 +42,18 @@ export function FormInputRaw({
   )
 }
 
+type FormInputProps = FormInputRawProps & {
+  showHelpTextIcon?: boolean
+}
+
 export function FormInput({
   helpText,
   id,
   validateStatus = "default",
-  showHelpTextIcon = validateStatus === "default" ? false : true,
+  showHelpTextIcon = validateStatus !== "default",
   size = "md",
   ...props
-}: FormInputRawProps) {
+}: FormInputProps) {
   return (
     <FormInputRaw
       helpText={
@@ -68,7 +70,6 @@ export function FormInput({
       id={id}
       size={size}
       validateStatus={validateStatus}
-      showHelpTextIcon={showHelpTextIcon}
       {...props}
     />
   )
