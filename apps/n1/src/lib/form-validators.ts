@@ -1,29 +1,147 @@
 import { AUTH_MESSAGES } from "./auth-messages"
 import { VALIDATION_MESSAGES } from "./validation-messages"
 
+// ============================================================================
+// SHARED FIELD VALIDATORS - Single Source of Truth
+// ============================================================================
+
+/**
+ * Creates firstName validator with consistent rules across all forms.
+ * Rules: required, minLength(2)
+ * Used in: AddressFormDialog, RegisterForm, ProfileForm
+ */
+export const createFirstNameValidator = () => ({
+  onChange: ({ value }: { value: string }) => {
+    if (!value?.trim()) {
+      return VALIDATION_MESSAGES.firstName.required
+    }
+    if (value.length < 2) {
+      return VALIDATION_MESSAGES.firstName.minLength
+    }
+    return
+  },
+})
+
+/**
+ * Creates lastName validator with consistent rules across all forms.
+ * Rules: required, minLength(2)
+ * Used in: AddressFormDialog, RegisterForm, ProfileForm
+ */
+export const createLastNameValidator = () => ({
+  onChange: ({ value }: { value: string }) => {
+    if (!value?.trim()) {
+      return VALIDATION_MESSAGES.lastName.required
+    }
+    if (value.length < 2) {
+      return VALIDATION_MESSAGES.lastName.minLength
+    }
+    return
+  },
+})
+
+/**
+ * Creates phone validator with consistent rules across all forms.
+ * Rules: optional, Czech phone format (+420 XXX XXX XXX or XXX XXX XXX)
+ * Used in: AddressFormDialog, ProfileForm
+ */
+export const createPhoneValidator = () => ({
+  onChange: ({ value }: { value: string | undefined }) => {
+    if (!value) {
+      return // Optional field
+    }
+    if (!/^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/.test(value)) {
+      return VALIDATION_MESSAGES.phone.invalid
+    }
+    return
+  },
+})
+
+/**
+ * Creates confirmPassword validator that checks password match.
+ * Rules: required, must match password field
+ * Used in: RegisterForm
+ */
+export const createConfirmPasswordValidator = () => ({
+  onChangeListenTo: ["password"],
+  onChange: ({ value, fieldApi }: { value: string; fieldApi: any }) => {
+    if (!value) {
+      return VALIDATION_MESSAGES.password.confirmRequired
+    }
+    const passwordValue = fieldApi.form.getFieldValue("password")
+    if (value !== passwordValue) {
+      return VALIDATION_MESSAGES.password.mismatch
+    }
+    return
+  },
+}) as any
+
+// ============================================================================
+// STANDALONE VALIDATORS
+// ============================================================================
+
+export const emailValidator = {
+  onChange: ({ value }: { value: string }) => {
+    if (!value?.trim()) {
+      return VALIDATION_MESSAGES.email.required
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      return VALIDATION_MESSAGES.email.invalid
+    }
+    return
+  },
+} as const
+
+export const loginPasswordValidator = {
+  onSubmit: ({ value }: { value: string }) => {
+    if (!value?.trim()) {
+      return VALIDATION_MESSAGES.password.required
+    }
+    // No further validation - backend will return generic error
+    return
+  },
+} as const
+
+// ============================================================================
+// PASSWORD STRENGTH VALIDATION
+// ============================================================================
+
+export const PASSWORD_REQUIREMENTS = [
+  {
+    id: "min-length",
+    label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_LENGTH,
+    test: (pwd: string) => pwd.length >= 8,
+  },
+  {
+    id: "has-number",
+    label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_NUMBER,
+    test: (pwd: string) => /\d/.test(pwd),
+  },
+]
+
+export const isPasswordValid = (password: string): boolean =>
+  PASSWORD_REQUIREMENTS.every((req) => req.test(password))
+
+// ============================================================================
+// FORM-SPECIFIC VALIDATORS
+// ============================================================================
+
+/**
+ * Login form validators
+ * - email: onChange validation (required, format)
+ * - password: onSubmit validation (required only, no strength check)
+ */
+export const loginValidators = {
+  email: emailValidator,
+  password: loginPasswordValidator,
+} as const
+
+/**
+ * Address form validators (AddressFormDialog)
+ * Uses shared validators for name and phone fields
+ */
 export const addressValidators = {
-  first_name: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.firstName.required
-      }
-      if (value.length < 2) {
-        return VALIDATION_MESSAGES.firstName.minLength
-      }
-      return
-    },
-  },
-  last_name: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.lastName.required
-      }
-      if (value.length < 2) {
-        return VALIDATION_MESSAGES.lastName.minLength
-      }
-      return
-    },
-  },
+  first_name: createFirstNameValidator(),
+  last_name: createLastNameValidator(),
   address_1: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
@@ -65,93 +183,21 @@ export const addressValidators = {
       return
     },
   },
-  phone: {
-    onChange: ({ value }: { value: string | undefined }) => {
-      if (!value) {
-        return
-      }
-      if (!/^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/.test(value)) {
-        return VALIDATION_MESSAGES.phone.invalid
-      }
-      return
-    },
-  },
+  phone: createPhoneValidator(),
   company: {},
   address_2: {},
   province: {},
 } as const
 
-export const emailValidator = {
-  onChange: ({ value }: { value: string }) => {
-    if (!value?.trim()) {
-      return VALIDATION_MESSAGES.email.required
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return VALIDATION_MESSAGES.email.invalid
-    }
-    return
-  },
-} as const
-
-export const loginPasswordValidator = {
-  onSubmit: ({ value }: { value: string }) => {
-    if (!value?.trim()) {
-      return VALIDATION_MESSAGES.password.required
-    }
-    // No further validation - backend will return generic error
-    return
-  },
-} as const
-
-export const loginValidators = {
-  email: emailValidator,
-  password: loginPasswordValidator,
-} as const
-
-export const PASSWORD_REQUIREMENTS = [
-  {
-    id: "min-length",
-    label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_LENGTH,
-    test: (pwd: string) => pwd.length >= 8,
-  },
-  {
-    id: "has-number",
-    label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_NUMBER,
-    test: (pwd: string) => /\d/.test(pwd),
-  },
-]
-
-export const isPasswordValid = (password: string): boolean =>
-  PASSWORD_REQUIREMENTS.every((req) => req.test(password))
-
+/**
+ * Register form validators
+ * Uses shared validators for name fields and email
+ * Includes password strength validation and confirmPassword
+ */
 export const registerValidators = {
-  first_name: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.firstName.required
-      }
-      return
-    },
-  },
-  last_name: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.lastName.required
-      }
-      return
-    },
-  },
-  email: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.email.required
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return VALIDATION_MESSAGES.email.invalid
-      }
-      return
-    },
-  },
+  first_name: createFirstNameValidator(),
+  last_name: createLastNameValidator(),
+  email: emailValidator,
   password: {
     onChange: ({ value }: { value: string }) => {
       if (!value?.trim()) {
@@ -163,6 +209,7 @@ export const registerValidators = {
       return
     },
   },
+  confirmPassword: createConfirmPasswordValidator(),
   acceptTerms: {
     onChange: ({ value }: { value: boolean }) => {
       if (!value) {
@@ -171,4 +218,14 @@ export const registerValidators = {
       return
     },
   },
+} as const
+
+/**
+ * Profile form validators
+ * Uses shared validators for name and phone fields
+ */
+export const profileValidators = {
+  first_name: createFirstNameValidator(),
+  last_name: createLastNameValidator(),
+  phone: createPhoneValidator(),
 } as const

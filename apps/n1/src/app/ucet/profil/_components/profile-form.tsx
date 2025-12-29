@@ -8,7 +8,7 @@ import { TextField } from "@/components/forms/fields/text-field"
 import { useAuth } from "@/hooks/use-auth"
 import { useUpdateCustomer } from "@/hooks/use-customer"
 import { useToast } from "@/hooks/use-toast"
-import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
+import { profileValidators } from "@/lib/form-validators"
 import {
   cleanPhoneNumber,
   formatPhoneNumber,
@@ -19,26 +19,6 @@ type ProfileFormData = {
   last_name: string
   phone: string
 }
-
-const profileValidators = {
-  first_name: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.firstName.required
-      }
-      return
-    },
-  },
-  last_name: {
-    onChange: ({ value }: { value: string }) => {
-      if (!value?.trim()) {
-        return VALIDATION_MESSAGES.lastName.required
-      }
-      return
-    },
-  },
-  phone: {}, // Optional field
-} as const
 
 export function ProfileForm() {
   const { customer } = useAuth()

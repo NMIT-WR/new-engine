@@ -3,7 +3,6 @@
 import { useForm, useStore } from "@tanstack/react-form"
 import { Button } from "@ui/atoms/button"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
-import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 import Link from "next/link"
 import { TextField } from "@/components/forms/fields/text-field"
 import { useRegister } from "@/hooks/use-register"
@@ -13,7 +12,7 @@ import { registerValidators } from "@/lib/form-validators"
 import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
-import { PasswordValidator, usePasswordValidation } from "./password-validator"
+import { PasswordValidator } from "./password-validator"
 
 type RegisterFormProps = {
   onSuccess?: () => void
@@ -80,11 +79,8 @@ export function RegisterForm({
     },
   })
 
-  // Subscribe to password value for PasswordValidator component
-  const password = useStore(form.store, (state) => state.values.password)
-  const passwordValidation = usePasswordValidation(password)
-
   // Subscribe to confirm password for match check
+  const password = useStore(form.store, (state) => state.values.password)
   const confirmPassword = useStore(
     form.store,
     (state) => state.values.confirmPassword
@@ -93,13 +89,6 @@ export function RegisterForm({
     confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
-
-  const getValidateStatus = (hasValue: boolean, isValid: boolean) => {
-    if (!hasValue) {
-      return "default"
-    }
-    return isValid ? "success" : "error"
-  }
 
   return (
     <form
@@ -165,23 +154,14 @@ export function RegisterForm({
       <form.Field name="password" validators={registerValidators.password}>
         {(field) => (
           <div className="flex flex-col gap-50">
-            <FormInput
+            <TextField
               autoComplete="new-password"
               disabled={register.isPending}
-              id="register-password"
+              field={field}
               label="Heslo"
-              minLength={8}
-              name={field.name}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
               placeholder="••••••••"
               required
               type="password"
-              validateStatus={getValidateStatus(
-                field.state.value.length > 0,
-                passwordValidation.isValid
-              )}
-              value={field.state.value}
             />
             <PasswordValidator password={field.state.value} showRequirements />
           </div>
@@ -190,39 +170,18 @@ export function RegisterForm({
 
       <form.Field
         name="confirmPassword"
-        validators={{
-          onChangeListenTo: ["password"],
-          onChange: ({ value, fieldApi }) => {
-            if (!value) {
-              return VALIDATION_MESSAGES.password.confirmRequired
-            }
-            const passwordValue = fieldApi.form.getFieldValue("password")
-            if (value !== passwordValue) {
-              return VALIDATION_MESSAGES.password.mismatch
-            }
-            return
-          },
-        }}
+        validators={registerValidators.confirmPassword}
       >
         {(field) => (
           <div className="flex flex-col gap-50">
-            <FormInput
+            <TextField
               autoComplete="new-password"
               disabled={register.isPending}
-              id="register-confirm-password"
+              field={field}
               label="Potvrzení hesla"
-              minLength={8}
-              name={field.name}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
               placeholder="••••••••"
               required
               type="password"
-              validateStatus={getValidateStatus(
-                field.state.value.length > 0,
-                passwordsMatch
-              )}
-              value={field.state.value}
             />
             {passwordsMatch && (
               <span className="font-medium text-success text-xs">

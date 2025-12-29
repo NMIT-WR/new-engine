@@ -61,15 +61,3 @@ export const PasswordValidator = ({
     </div>
   )
 }
-
-export const usePasswordValidation = (password: string) => {
-  const results = PASSWORD_REQUIREMENTS.map((req) => ({
-    id: req.id,
-    met: req.test(password),
-  }))
-
-  return {
-    isValid: isPasswordValid(password),
-    requirements: results,
-  }
-}
