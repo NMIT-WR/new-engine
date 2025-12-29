@@ -60,7 +60,7 @@ export function StatusText({
   ref,
   ...props
 }: StatusTextProps) {
-  const icon = ICON_MAP[status ?? "default"]
+  const icon = ICON_MAP[status]
 
   const {base, icon: iconSlot} = statusTextVariants({
     status,
