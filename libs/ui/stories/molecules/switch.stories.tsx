@@ -231,7 +231,7 @@ export const SettingsPanel: Story = {
           <Switch
             checked={settings.security}
             onCheckedChange={handleSettingChange('security')}
-            validateStatus={!settings.security ? 'error' : settings.security ? 'success' : 'default'}
+            validateStatus={settings.security ? 'success' : 'error'}
             helpText={
               !settings.security
                 ? 'Required for account security'
