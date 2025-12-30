@@ -2,9 +2,8 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as zagSwitch from "@zag-js/switch"
 import { type ReactNode, useId } from "react"
 import type { VariantProps } from "tailwind-variants"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Label } from "../atoms/label"
+import { StatusText } from "../atoms/status-text"
 import { tv } from "../utils"
 
 const switchVariants = tv({
@@ -55,15 +54,15 @@ export interface SwitchProps extends VariantProps<typeof switchVariants> {
   checked?: boolean
   defaultChecked?: boolean
   disabled?: boolean
-  invalid?: boolean
   readOnly?: boolean
   required?: boolean
   children?: ReactNode
   onCheckedChange?: (checked: boolean) => void
   className?: string
   dir?: "ltr" | "rtl"
-  helperText?: string
-  errorText?: string
+  validateStatus?: "default" | "error" | "success" | "warning"
+  helpText?: ReactNode
+  showHelpTextIcon?: boolean
 }
 
 export function Switch({
@@ -73,15 +72,15 @@ export function Switch({
   checked,
   defaultChecked,
   disabled = false,
-  invalid = false,
   readOnly = false,
   required = false,
   dir = "ltr",
   children,
   className,
   onCheckedChange,
-  helperText,
-  errorText,
+  validateStatus,
+  helpText,
+  showHelpTextIcon = true,
 }: SwitchProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -94,7 +93,7 @@ export function Switch({
     defaultChecked,
     dir,
     disabled,
-    invalid,
+    invalid: validateStatus === "error",
     readOnly,
     required,
     onCheckedChange: ({ checked }) => onCheckedChange?.(checked),
@@ -119,13 +118,14 @@ export function Switch({
           </span>
         )}
       </Label>
-      {(errorText || helperText) && (
-        <div>
-          {invalid && errorText && <ErrorText size="sm">{errorText}</ErrorText>}
-          {!invalid && helperText && (
-            <ExtraText size="sm">{helperText}</ExtraText>
-          )}
-        </div>
+      {helpText && (
+        <StatusText
+          status={validateStatus}
+          showIcon={showHelpTextIcon}
+          size="sm"
+        >
+          {helpText}
+        </StatusText>
       )}
     </div>
   )
