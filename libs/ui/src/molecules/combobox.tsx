@@ -3,11 +3,10 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useEffect, useId, useState } from "react"
 import type { VariantProps } from "tailwind-variants"
 import { Button } from "../atoms/button"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Icon } from "../atoms/icon"
 import { Input } from "../atoms/input"
 import { Label } from "../atoms/label"
+import { StatusText } from "../atoms/status-text"
 import { tv } from "../utils"
 
 const comboboxVariants = tv({
@@ -128,9 +127,9 @@ export interface ComboboxProps<T = unknown>
   defaultValue?: string | string[]
   inputValue?: string
   multiple?: boolean
-  validationState?: "normal" | "error" | "success" | "warning"
-  error?: string
-  helper?: string
+  validateStatus?: "default" | "error" | "success" | "warning"
+  helpText?: string
+  showHelpTextIcon?: boolean
   noResultsMessage?: string
   clearable?: boolean
   selectionBehavior?: "replace" | "clear" | "preserve"
@@ -160,9 +159,9 @@ export function Combobox<T = unknown>({
   defaultValue,
   inputValue,
   multiple = false,
-  validationState = "normal",
-  error,
-  helper,
+  validateStatus,
+  helpText,
+  showHelpTextIcon = true,
   noResultsMessage = 'No results found for "{inputValue}"',
   clearable = true,
   selectionBehavior = "replace",
@@ -241,7 +240,6 @@ export function Combobox<T = unknown>({
     content,
     clearTrigger,
     item: itemSlot,
-    helper: helperSlot,
   } = comboboxVariants({ size })
 
   return (
@@ -259,7 +257,7 @@ export function Combobox<T = unknown>({
       <div
         className={control()}
         {...api.getControlProps()}
-        data-validation={validationState}
+        data-validation={validateStatus}
       >
         <Input
           className={input()}
@@ -314,16 +312,15 @@ export function Combobox<T = unknown>({
         </div>
       </Portal>
 
-      {helper && !error && (
-        <ExtraText
-          className={helperSlot()}
-          data-validation={validationState}
+      {helpText && (
+        <StatusText
+          status={validateStatus}
+          showIcon={showHelpTextIcon}
           size={size}
         >
-          {helper}
-        </ExtraText>
+          {helpText}
+        </StatusText>
       )}
-      {error && <ErrorText>{error}</ErrorText>}
     </div>
   )
 }
