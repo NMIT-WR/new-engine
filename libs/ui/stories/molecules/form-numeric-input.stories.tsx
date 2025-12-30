@@ -16,6 +16,26 @@ const meta: Meta<typeof FormNumericInput> = {
     },
   },
   tags: ['autodocs'],
+  argTypes: {
+    validateStatus: {
+      control: 'select',
+      options: ['default', 'error', 'success', 'warning'],
+      description: 'Validation status of the numeric input',
+    },
+    helpText: {
+      control: 'text',
+      description: 'Help text displayed below the input',
+    },
+    showHelpTextIcon: {
+      control: 'boolean',
+      description: 'Whether to show an icon with the help text',
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Size of the numeric input',
+    },
+  },
 }
 
 export default meta
@@ -110,31 +130,98 @@ export const WithHelpText: Story = {
   },
 }
 
-// With Extra Text - Shows additional helper text
-export const WithExtraText: Story = {
+// Validation States - Shows all validation states
+export const ValidationStates: Story = {
   render: () => {
-    const [value, setValue] = useState(25)
+    const [value1, setValue1] = useState(25)
+    const [value2, setValue2] = useState(50)
+    const [value3, setValue3] = useState(75)
+    const [value4, setValue4] = useState(100)
 
     return (
-      <div className="w-md">
-        <FormNumericInput
-          id="quantity-extra"
-          label="Quantity"
-          value={value}
-          onChange={setValue}
-          min={0}
-          max={100}
-          helpText="Enter a value between 0 and 100"
-          extraText="This value will be used in your order"
-        >
-          <NumericInput.Control>
-            <NumericInput.Input />
-            <NumericInput.TriggerContainer>
-              <NumericInput.IncrementTrigger />
-              <NumericInput.DecrementTrigger />
-            </NumericInput.TriggerContainer>
-          </NumericInput.Control>
-        </FormNumericInput>
+      <div className="flex flex-col gap-lg">
+        <div className="w-md">
+          <FormNumericInput
+            id="quantity-default"
+            label="Default State"
+            value={value1}
+            onChange={setValue1}
+            min={0}
+            max={100}
+            helpText="Enter a value between 0 and 100"
+          >
+            <NumericInput.Control>
+              <NumericInput.Input />
+              <NumericInput.TriggerContainer>
+                <NumericInput.IncrementTrigger />
+                <NumericInput.DecrementTrigger />
+              </NumericInput.TriggerContainer>
+            </NumericInput.Control>
+          </FormNumericInput>
+        </div>
+
+        <div className="w-md">
+          <FormNumericInput
+            id="quantity-error"
+            label="Error State"
+            value={value2}
+            onChange={setValue2}
+            min={0}
+            max={100}
+            validateStatus="error"
+            helpText="Value must be between 0 and 100"
+          >
+            <NumericInput.Control>
+              <NumericInput.Input />
+              <NumericInput.TriggerContainer>
+                <NumericInput.IncrementTrigger />
+                <NumericInput.DecrementTrigger />
+              </NumericInput.TriggerContainer>
+            </NumericInput.Control>
+          </FormNumericInput>
+        </div>
+
+        <div className="w-md">
+          <FormNumericInput
+            id="quantity-success"
+            label="Success State"
+            value={value3}
+            onChange={setValue3}
+            min={0}
+            max={100}
+            validateStatus="success"
+            helpText="Quantity is valid"
+          >
+            <NumericInput.Control>
+              <NumericInput.Input />
+              <NumericInput.TriggerContainer>
+                <NumericInput.IncrementTrigger />
+                <NumericInput.DecrementTrigger />
+              </NumericInput.TriggerContainer>
+            </NumericInput.Control>
+          </FormNumericInput>
+        </div>
+
+        <div className="w-md">
+          <FormNumericInput
+            id="quantity-warning"
+            label="Warning State"
+            value={value4}
+            onChange={setValue4}
+            min={0}
+            max={100}
+            validateStatus="warning"
+            helpText="Quantity is at maximum limit"
+          >
+            <NumericInput.Control>
+              <NumericInput.Input />
+              <NumericInput.TriggerContainer>
+                <NumericInput.IncrementTrigger />
+                <NumericInput.DecrementTrigger />
+              </NumericInput.TriggerContainer>
+            </NumericInput.Control>
+          </FormNumericInput>
+        </div>
       </div>
     )
   },
@@ -450,7 +537,6 @@ export const ComplexDemo: Story = {
                 ? 'Value must be between 0 and 100'
                 : 'Adjust quantity using buttons, arrow keys, or mouse wheel'
             }
-            extraText="Minimum order quantity is 5 units"
             allowMouseWheel
             clampValueOnBlur
           >
