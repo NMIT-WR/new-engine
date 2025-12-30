@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { ErrorText } from '../../src/atoms/error-text'
 import { Input } from '../../src/atoms/input'
 import { Label } from '../../src/atoms/label'
+import { StatusText } from '../../src/atoms/status-text'
 
 const meta: Meta<typeof Input> = {
   title: 'Atoms/Input',
@@ -95,7 +95,7 @@ export const AllVariants: Story = {
             variant="error"
             placeholder="john@example.com"
           />
-          <ErrorText>Email is in invalid format</ErrorText>
+          <StatusText status="error" showIcon>Email is in invalid format</StatusText>
         </div>
 
         <div className="w-64">
