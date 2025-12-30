@@ -1,8 +1,7 @@
 import type { ReactNode } from "react"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Input, type InputProps } from "../atoms/input"
 import { Label } from "../atoms/label"
+import { StatusText } from "../atoms/status-text"
 
 type ValidateStatus = "default" | "error" | "success" | "warning"
 
@@ -11,7 +10,6 @@ interface FormInputRawProps extends InputProps {
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
-  extraText?: ReactNode
 }
 
 export function FormInputRaw({
@@ -19,14 +17,11 @@ export function FormInputRaw({
   label,
   validateStatus = "default",
   helpText,
-  extraText,
   size = "md",
   required,
   disabled,
   ...props
 }: FormInputRawProps) {
-  const extraTextId = extraText ? `${id}-extra` : undefined
-
   return (
     <div className="flex flex-col gap-form-field-gap">
       <Label disabled={disabled} htmlFor={id} required={required} size={size}>
@@ -42,38 +37,34 @@ export function FormInputRaw({
         className="p-input-sm md:p-input-md"
       />
 
-      {/* Status message */}
       {helpText}
-
-      {extraText && (
-        <ExtraText id={extraTextId} size={size}>
-          {extraText}
-        </ExtraText>
-      )}
     </div>
   )
+}
+
+type FormInputProps = FormInputRawProps & {
+  showHelpTextIcon?: boolean
 }
 
 export function FormInput({
   helpText,
   id,
-  validateStatus,
-  size,
+  validateStatus = "default",
+  showHelpTextIcon = validateStatus !== "default",
+  size = "md",
   ...props
-}: FormInputRawProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined
-
+}: FormInputProps) {
   return (
     <FormInputRaw
       helpText={
-        validateStatus === "error" ? (
-          <ErrorText id={helpTextId} showIcon size={size}>
+        helpText && (
+          <StatusText
+            status={validateStatus}
+            showIcon={showHelpTextIcon}
+            size={size}
+          >
             {helpText}
-          </ErrorText>
-        ) : (
-          <ExtraText id={helpTextId} size={size}>
-            {helpText}
-          </ExtraText>
+          </StatusText>
         )
       }
       id={id}
