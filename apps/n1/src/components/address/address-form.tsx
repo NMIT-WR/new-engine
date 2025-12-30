@@ -8,14 +8,6 @@ import { AddressValidationError } from "@/lib/errors"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import { addressToFormData, DEFAULT_ADDRESS } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
-import {
-  cleanPhoneNumber,
-  formatPhoneNumber,
-} from "@/utils/format/format-phone-number"
-import {
-  cleanPostalCode,
-  formatPostalCode,
-} from "@/utils/format/format-postal-code"
 import { AddressFormFields } from "./address-form-fields"
 
 type AddressFormProps = {
@@ -36,33 +28,22 @@ export function AddressForm({
   const isEditing = !!address
   const isPending = createAddress.isPending || updateAddress.isPending
 
-  // Initialize form with existing address or defaults
   const defaultValues: AddressFormData = {
     ...DEFAULT_ADDRESS,
     ...addressToFormData(address),
-    // Format display values
-    postal_code: formatPostalCode(address?.postal_code || ""),
-    phone: formatPhoneNumber(address?.phone || ""),
   }
   const form = useForm({
     defaultValues,
     onSubmit: async ({ value }) => {
-      // Clean data before sending to API
-      const cleanedData = {
-        ...value,
-        postal_code: cleanPostalCode(value.postal_code),
-        phone: cleanPhoneNumber(value.phone || ""),
-      }
-
       try {
         if (isEditing && address) {
           await updateAddress.mutateAsync({
             addressId: address.id,
-            data: cleanedData,
+            data: value,
           })
           toaster.create({ title: "Adresa upravena", type: "success" })
         } else {
-          await createAddress.mutateAsync(cleanedData)
+          await createAddress.mutateAsync(value)
           toaster.create({ title: "Adresa přidána", type: "success" })
         }
         onSuccess()
