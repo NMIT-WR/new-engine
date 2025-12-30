@@ -1,18 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { ErrorText } from '../../src/atoms/error-text'
-import { ExtraText } from '../../src/atoms/extra-text'
 import { Label } from '../../src/atoms/label'
 import { NumericInput } from '../../src/atoms/numeric-input'
-import { Textarea } from '../../src/atoms/textarea'
 import { Combobox } from '../../src/molecules/combobox'
 import { FormCheckbox } from '../../src/molecules/form-checkbox'
 import { FormInput } from '../../src/molecules/form-input'
+import { FormNumericInput } from '../../src/molecules/form-numeric-input'
+import { FormTextarea } from '../../src/molecules/form-textarea'
 import { Select } from '../../src/molecules/select'
 import { Switch } from '../../src/molecules/switch'
 import {Slider} from '../../src/molecules/slider'
-import { NumericInputTemplate } from '../../src/templates/numeric-input'
 
 const meta: Meta = {
   title: 'Templates/Comprehensive Form',
@@ -134,77 +132,63 @@ export const AllFormInputs: Story = {
                 }
               />
 
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="textarea" size={size}>
-                  Textarea
-                </Label>
-                <Textarea
-                  id="textarea"
-                  placeholder="Enter long text"
-                  size={size}
-                  variant={
-                    validateStatus === 'default' ? 'default' : validateStatus
-                  }
-                  value={formData.textarea}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      textarea: e.target.value,
-                    }))
-                  }
-                />
-                {validateStatus === 'error' ? (
-                  <ErrorText size={size}>{helpText}</ErrorText>
-                ) : (
-                  <ExtraText size={size}>{helpText}</ExtraText>
-                )}
-              </div>
+              <FormTextarea
+                id="textarea"
+                label="Textarea"
+                placeholder="Enter long text"
+                size={size}
+                validateStatus={validateStatus}
+                helpText={helpText}
+                value={formData.textarea}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    textarea: e.target.value,
+                  }))
+                }
+              />
             </div>
           </VariantGroup>
 
           <VariantGroup title="Selection Inputs" fullWidth>
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="flex flex-col gap-1">
-                <Label size={size}>Select</Label>
-                <Select
-                  placeholder="Choose an option"
-                  options={selectOptions}
-                  size={size}
-                />
-                {validateStatus === 'error' ? (
-                  <ErrorText size={size}>{helpText}</ErrorText>
-                ) : (
-                  <ExtraText size={size}>{helpText}</ExtraText>
-                )}
-              </div>
+              <Select
+                label="Select"
+                placeholder="Choose an option"
+                options={selectOptions}
+                size={size}
+                validateStatus={validateStatus}
+                helpText={helpText}
+              />
 
-              <div className="flex flex-col gap-1">
-                <Label size={size}>Combobox</Label>
-                <Combobox
-                  placeholder="Search and select"
-                  size={size}
-                  items={comboboxOptions}
-                />
-                {validateStatus === 'error' ? (
-                  <ErrorText size={size}>{helpText}</ErrorText>
-                ) : (
-                  <ExtraText size={size}>{helpText}</ExtraText>
-                )}
-              </div>
+              <Combobox
+                label="Combobox"
+                placeholder="Search and select"
+                size={size}
+                items={comboboxOptions}
+                validateStatus={validateStatus}
+                helpText={helpText}
+              />
             </div>
           </VariantGroup>
 
           <VariantGroup title="Numeric & Boolean Inputs" fullWidth>
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="flex flex-col gap-1">
-                <Label size={size}>Numeric Input</Label>
-                <NumericInputTemplate id="numeric-input" size={size} />
-                {validateStatus === 'error' ? (
-                  <ErrorText id="numeric-input-error" size={size}>{helpText}</ErrorText>
-                ) : (
-                  <ExtraText id="numeric-input-help" size={size}>{helpText}</ExtraText>
-                )}
-              </div>
+              <FormNumericInput
+                id="numeric-input"
+                label="Numeric Input"
+                size={size}
+                validateStatus={validateStatus}
+                helpText={helpText}
+              >
+                <NumericInput.Control>
+                  <NumericInput.Input />
+                  <NumericInput.TriggerContainer>
+                    <NumericInput.IncrementTrigger />
+                    <NumericInput.DecrementTrigger />
+                  </NumericInput.TriggerContainer>
+                </NumericInput.Control>
+              </FormNumericInput>
 
               <div className="space-y-4">
                 <FormCheckbox
@@ -219,21 +203,16 @@ export const AllFormInputs: Story = {
                   }
                 />
 
-                <div className="flex flex-col gap-1">
-                  <Switch
-                    checked={formData.switch}
-                    onCheckedChange={(checked) =>
-                      setFormData((prev) => ({ ...prev, switch: checked }))
-                    }
-                  >
-                    Switch Option
-                  </Switch>
-                  {validateStatus === 'error' ? (
-                    <ErrorText size={size}>{helpText}</ErrorText>
-                  ) : (
-                    <ExtraText size={size}>{helpText}</ExtraText>
-                  )}
-                </div>
+                <Switch
+                  checked={formData.switch}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, switch: checked }))
+                  }
+                  validateStatus={validateStatus}
+                  helpText={helpText}
+                >
+                  Switch Option
+                </Switch>
               </div>
             </div>
           </VariantGroup>
@@ -246,7 +225,7 @@ export const AllFormInputs: Story = {
                 min={0}
                 max={100}
                 value={formData.range}
-                helperText={helpText}
+                helpText={helpText}
               />
             </div>
           </VariantGroup>
