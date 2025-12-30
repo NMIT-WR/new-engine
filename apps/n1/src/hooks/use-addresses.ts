@@ -8,10 +8,24 @@ import {
   getAddresses,
   updateAddress,
 } from '@/services/customer-service'
+import { cleanPhoneNumber } from '@/utils/format/format-phone-number'
+import { cleanPostalCode } from '@/utils/format/format-postal-code'
 import type { AddressFormData } from '@/utils/address-validation'
 import { validateAddressForm } from '@/utils/address-validation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './use-auth'
+
+/**
+ * Clean address data before sending to API
+ * Removes formatting (spaces, etc.) from postal code and phone number
+ */
+function cleanAddressData<T extends Partial<CreateAddressData>>(data: T): T {
+  return {
+    ...data,
+    postal_code: data.postal_code ? cleanPostalCode(data.postal_code) : data.postal_code,
+    phone: data.phone ? cleanPhoneNumber(data.phone) : data.phone,
+  }
+}
 
 export function useAddresses() {
   const { customer } = useAuth()
@@ -29,12 +43,16 @@ export function useCreateAddress() {
 
   return useMutation({
     mutationFn: async (data: CreateAddressData) => {
-      // Safety net validation before API call
+      // Safety net validation before API call (validates formatted data)
       const errors = validateAddressForm(data as AddressFormData)
       if (Object.keys(errors).length > 0) {
         throw new AddressValidationError(errors)
       }
-      return await createAddress(data)
+
+      // Clean data before API call
+      const cleanedData = cleanAddressData(data)
+
+      return await createAddress(cleanedData)
     },
     onSuccess: () => {
       // Invalidate addresses cache to refetch
@@ -68,7 +86,11 @@ export function useUpdateAddress() {
           throw new AddressValidationError(errors)
         }
       }
-      return await updateAddress(addressId, data)
+
+      // Clean data before API call
+      const cleanedData = cleanAddressData(data)
+
+      return await updateAddress(addressId, cleanedData)
     },
     onSuccess: () => {
       // Invalidate addresses cache to refetch
