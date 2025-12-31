@@ -244,8 +244,6 @@ interface SelectLabelProps extends ComponentPropsWithoutRef<"label"> {
 
 Select.Label = function SelectLabel({
   children,
-  className,
-  ref,
   ...props
 }: SelectLabelProps) {
   const { api } = useSelectContext()
