@@ -281,7 +281,7 @@ export const States: Story = {
 				</Select.Positioner>
 			</Select>
 
-			<Select items={countries} invalid validateStatus="error">
+			<Select items={countries} validateStatus="error">
 				<Select.Label>Invalid</Select.Label>
 				<Select.Control>
 					<Select.Trigger>
@@ -758,7 +758,6 @@ export const WithinForm: Story = {
 				<Select
 					items={countries}
 					required
-					invalid={formState.country.length === 0}
 					validateStatus={formState.country.length === 0 ? "error" : "default"}
 					value={formState.country}
 					onValueChange={(details) =>

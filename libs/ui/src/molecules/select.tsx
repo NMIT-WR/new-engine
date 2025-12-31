@@ -148,7 +148,7 @@ function useSelectItemContext() {
 // === ROOT COMPONENT ===
 export interface SelectProps
   extends VariantProps<typeof selectVariants>,
-    Omit<select.Props, "collection" | "id"> {
+    Omit<select.Props, "collection" | "id" | "invalid"> {
   items: SelectItem[]
   id?: string
   className?: string
@@ -167,7 +167,6 @@ export function Select({
   multiple = false,
   disabled = false,
   validateStatus = "default",
-  invalid = validateStatus === "error", // Sync with Zag.js for accessibility/ARIA
   required = false,
   readOnly = false,
   closeOnSelect = true,
@@ -184,6 +183,9 @@ export function Select({
 }: SelectProps) {
   const generatedId = useId()
   const id = providedId || generatedId
+
+  // Derive invalid from validateStatus for Zag.js accessibility
+  const invalid = validateStatus === "error"
 
   const collection = select.collection({
     items,
