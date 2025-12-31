@@ -74,8 +74,8 @@ const selectVariants = tv({
     itemText: ["flex-grow"],
     itemGroup: [""],
     itemGroupLabel: [
-      "px-select-item py-select-item",
-      "font-medium text-select-fg-disabled text-sm",
+      "px-select-item",
+      "font-medium text-select-fg-disabled",
     ],
     valueText: [
       "flex-grow truncate data-[placeholder]:text-select-placeholder",
@@ -87,21 +87,25 @@ const selectVariants = tv({
         trigger: "text-select-trigger-xs",
         item: "text-select-item-xs",
         valueText: "text-select-value-xs",
+        itemGroupLabel: "text-select-item-group-label-xs",
       },
       sm: {
         trigger: "text-select-trigger-sm",
         item: "text-select-item-sm",
         valueText: "text-select-value-sm",
+        itemGroupLabel: "text-select-item-group-label-sm",
       },
       md: {
         trigger: "text-select-trigger-md",
         item: "text-select-item-md",
         valueText: "text-select-value-md",
+        itemGroupLabel: "text-select-item-group-label-md",
       },
       lg: {
         trigger: "text-select-trigger-lg",
         item: "text-select-item-lg",
         valueText: "text-select-value-lg",
+        itemGroupLabel: "text-select-item-group-label-lg",
       },
     },
   },

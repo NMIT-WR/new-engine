@@ -77,6 +77,11 @@
   --text-select-value-md: var(--text-md);
   --text-select-value-lg: var(--text-lg);
 
+  --text-select-item-group-label-xs: var(--text-xs);
+  --text-select-item-group-label-sm: var(--text-sm);
+  --text-select-item-group-label-md: var(--text-md);
+  --text-select-item-group-label-lg: var(--text-lg);
+
   /* === BORDERS & RADIUS === */
   --radius-select: var(--radius-sm);
 
