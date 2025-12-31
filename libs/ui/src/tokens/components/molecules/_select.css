@@ -3,6 +3,8 @@
   --color-select: var(--color-surface);
   --color-select-accent: var(--color-primary);
   --color-select-danger: var(--color-danger);
+  --color-select-success: var(--color-success);
+  --color-select-warning: var(--color-warning);
   --color-select-border: var(--color-border-primary);
   --color-select-fg: var(--color-fg-primary);
 

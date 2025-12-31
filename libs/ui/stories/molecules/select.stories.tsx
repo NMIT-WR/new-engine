@@ -95,8 +95,7 @@ A compound pattern Select component built with Zag.js that provides maximum flex
 - \`Select.Item\` - Selectable item
 - \`Select.ItemText\` - Item text
 - \`Select.ItemIndicator\` - Checkmark indicator
-- \`Select.ErrorText\` - Error message
-- \`Select.HelperText\` - Helper text
+- \`Select.StatusText\` - Status/helper text with auto error detection
 				`,
 			},
 		},
@@ -263,7 +262,7 @@ export const States: Story = {
 				</Select.Positioner>
 			</Select>
 
-			<Select items={countries} invalid>
+			<Select items={countries} invalid validateStatus="error">
 				<Select.Label>Invalid</Select.Label>
 				<Select.Control>
 					<Select.Trigger>
@@ -280,7 +279,7 @@ export const States: Story = {
 						))}
 					</Select.Content>
 				</Select.Positioner>
-				<Select.ErrorText>Please select a valid country</Select.ErrorText>
+				<Select.StatusText>Please select a valid country</Select.StatusText>
 			</Select>
 
 			<Select items={countries} required>
@@ -300,7 +299,96 @@ export const States: Story = {
 						))}
 					</Select.Content>
 				</Select.Positioner>
-				<Select.HelperText>This field is required</Select.HelperText>
+				<Select.StatusText>This field is required</Select.StatusText>
+			</Select>
+		</>
+	),
+}
+
+// === VALIDATION STATES ===
+
+export const ValidationStates: Story = {
+	name: 'Validation States (error, success, warning)',
+	render: () => (
+		<>
+			<Select items={countries} validateStatus="error">
+				<Select.Label>Error State</Select.Label>
+				<Select.Control>
+					<Select.Trigger>
+						<Select.ValueText placeholder="Select..." />
+					</Select.Trigger>
+				</Select.Control>
+				<Select.Positioner>
+					<Select.Content>
+						{countries.slice(0, 5).map((item) => (
+							<Select.Item key={item.value} item={item}>
+								<Select.ItemText />
+								<Select.ItemIndicator />
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Positioner>
+				<Select.StatusText showIcon>Please fix the error</Select.StatusText>
+			</Select>
+
+			<Select items={countries} validateStatus="success">
+				<Select.Label>Success State</Select.Label>
+				<Select.Control>
+					<Select.Trigger>
+						<Select.ValueText placeholder="Select..." />
+					</Select.Trigger>
+				</Select.Control>
+				<Select.Positioner>
+					<Select.Content>
+						{countries.slice(0, 5).map((item) => (
+							<Select.Item key={item.value} item={item}>
+								<Select.ItemText />
+								<Select.ItemIndicator />
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Positioner>
+				<Select.StatusText showIcon>Selection saved successfully</Select.StatusText>
+			</Select>
+
+			<Select items={countries} validateStatus="warning">
+				<Select.Label>Warning State</Select.Label>
+				<Select.Control>
+					<Select.Trigger>
+						<Select.ValueText placeholder="Select..." />
+					</Select.Trigger>
+				</Select.Control>
+				<Select.Positioner>
+					<Select.Content>
+						{countries.slice(0, 5).map((item) => (
+							<Select.Item key={item.value} item={item}>
+								<Select.ItemText />
+								<Select.ItemIndicator />
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Positioner>
+				<Select.StatusText showIcon>This option is deprecated</Select.StatusText>
+			</Select>
+
+			<Select items={countries} validateStatus="default">
+				<Select.Label>Default State</Select.Label>
+				<Select.Control>
+					<Select.Trigger>
+						<Select.ValueText placeholder="Select..." />
+					</Select.Trigger>
+				</Select.Control>
+				<Select.Positioner>
+					<Select.Content>
+						{countries.slice(0, 5).map((item) => (
+							<Select.Item key={item.value} item={item}>
+								<Select.ItemText />
+								<Select.ItemIndicator />
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Positioner>
+				<Select.StatusText>Helper text for this field</Select.StatusText>
 			</Select>
 		</>
 	),
@@ -633,6 +721,7 @@ export const WithinForm: Story = {
 					items={countries}
 					required
 					invalid={formState.country.length === 0}
+					validateStatus={formState.country.length === 0 ? "error" : "default"}
 					value={formState.country}
 					onValueChange={(details) =>
 						setFormState((prev) => ({ ...prev, country: details.value }))
@@ -656,7 +745,7 @@ export const WithinForm: Story = {
 						</Select.Content>
 					</Select.Positioner>
 					{formState.country.length === 0 && (
-						<Select.ErrorText>Please select a country</Select.ErrorText>
+						<Select.StatusText>Please select a country</Select.StatusText>
 					)}
 				</Select>
 
@@ -692,7 +781,7 @@ export const WithinForm: Story = {
 							))}
 						</Select.Content>
 					</Select.Positioner>
-					<Select.HelperText>You can select multiple languages</Select.HelperText>
+					<Select.StatusText>You can select multiple languages</Select.StatusText>
 				</Select>
 
 				<Button type="submit" variant="primary">
