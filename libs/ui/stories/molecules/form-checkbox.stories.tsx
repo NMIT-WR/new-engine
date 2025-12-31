@@ -9,6 +9,26 @@ const meta: Meta<typeof FormCheckbox> = {
 		layout: "centered",
 	},
 	tags: ["autodocs"],
+	argTypes: {
+		validateStatus: {
+			control: { type: 'select' },
+			options: ['default', 'error', 'success', 'warning'],
+			description: 'Validation status of the checkbox',
+		},
+		helpText: {
+			control: 'text',
+			description: 'Help text displayed below the checkbox',
+		},
+		showHelpTextIcon: {
+			control: 'boolean',
+			description: 'Whether to show an icon with the help text',
+		},
+		size: {
+			control: { type: 'select' },
+			options: ['sm', 'md', 'lg'],
+			description: 'Size of the checkbox label',
+		},
+	},
 }
 
 export default meta
@@ -37,45 +57,33 @@ export const Indeterminate: Story = {
 	},
 }
 
-export const WithValidationError: Story = {
-	args: {
-		...Default.args,
-		id: "error-checkbox",
-		validateStatus: "error",
-		helpText: "You must accept the terms to continue",
-	},
-}
-
-export const WithInvalidProp: Story = {
-	args: {
-		...Default.args,
-		id: "invalid-checkbox",
-		invalid: true,
-		errorText: "This field is required",
-	},
-}
-
-export const WithHelperText: Story = {
-	args: {
-		...Default.args,
-		id: "helper-checkbox",
-		helperText: "By checking this box, you agree to our terms of service",
-	},
-}
-
-export const WithHelpText: Story = {
-	args: {
-		...Default.args,
-		id: "helptext-checkbox",
-		helpText: "This text shows as helper or error depending on state",
-	},
-}
-
-export const WithExtraText: Story = {
-	args: {
-		...Default.args,
-		id: "extra-checkbox",
-		extraText: "This option is recommended for new users",
+export const WithValidation: Story = {
+	render: function Render() {
+		return (
+			<div className="flex flex-col gap-6">
+				<FormCheckbox
+					label="Error state without icon"
+					validateStatus="error"
+					helpText="You must accept the terms to continue"
+					showHelpTextIcon={false}
+				/>
+				<FormCheckbox
+					label="Success state"
+					validateStatus="success"
+					helpText="Terms accepted successfully"
+					defaultChecked
+				/>
+				<FormCheckbox
+					label="Warning state"
+					validateStatus="warning"
+					helpText="Please review the terms carefully"
+				/>
+				<FormCheckbox
+					label="Default help text"
+					helpText="By checking this box, you agree to our terms of service"
+				/>
+			</div>
+		)
 	},
 }
 
@@ -114,18 +122,18 @@ export const AllStates: Story = {
 				<FormCheckbox label="Disabled" disabled />
 				<FormCheckbox label="Disabled Checked" disabled defaultChecked />
 				<FormCheckbox
-					label="Invalid with errorText"
-					invalid
-					errorText="Error message"
+					label="Error state"
+					validateStatus="error"
+					helpText="Error message"
 				/>
 				<FormCheckbox
-					label="Invalid with helpText"
-					validateStatus="error"
-					helpText="Error via helpText"
+					label="Success state"
+					validateStatus="success"
+					helpText="Success message"
+					defaultChecked
 				/>
 				<FormCheckbox label="Required" required />
-				<FormCheckbox label="With Helper" helperText="Helper text" />
-				<FormCheckbox label="With Extra" extraText="Extra contextual text" />
+				<FormCheckbox label="With Help Text" helpText="Helper text" />
 			</div>
 		)
 	},
