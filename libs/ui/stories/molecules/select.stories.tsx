@@ -599,7 +599,6 @@ export const CustomItemContent: Story = {
 				value: 'pro',
 				price: '$19/mo',
 				features: 'Unlimited projects, 100GB storage',
-				badge: 'Popular',
 			},
 			{
 				label: 'Enterprise',
