@@ -178,6 +178,25 @@ export const WithDefaultValue: Story = {
 export const Sizes: Story = {
 	render: () => (
 		<>
+			<Select items={countries} size="xs">
+				<Select.Label>Extra Small</Select.Label>
+				<Select.Control>
+					<Select.Trigger>
+						<Select.ValueText placeholder="Select..." />
+					</Select.Trigger>
+				</Select.Control>
+				<Select.Positioner>
+					<Select.Content>
+						{countries.slice(0, 5).map((item) => (
+							<Select.Item key={item.value} item={item}>
+								<Select.ItemText />
+								<Select.ItemIndicator />
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Positioner>
+			</Select>
+
 			<Select items={countries} size="sm">
 				<Select.Label>Small</Select.Label>
 				<Select.Control>
@@ -300,6 +319,25 @@ export const States: Story = {
 					</Select.Content>
 				</Select.Positioner>
 				<Select.StatusText>This field is required</Select.StatusText>
+			</Select>
+
+			<Select items={countries} readOnly defaultValue={["us"]}>
+				<Select.Label>Read-only</Select.Label>
+				<Select.Control>
+					<Select.Trigger>
+						<Select.ValueText placeholder="Select..." />
+					</Select.Trigger>
+				</Select.Control>
+				<Select.Positioner>
+					<Select.Content>
+						{countries.map((item) => (
+							<Select.Item key={item.value} item={item}>
+								<Select.ItemText />
+								<Select.ItemIndicator />
+							</Select.Item>
+						))}
+					</Select.Content>
+				</Select.Positioner>
 			</Select>
 		</>
 	),
