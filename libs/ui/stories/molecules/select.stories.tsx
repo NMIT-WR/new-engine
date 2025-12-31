@@ -548,8 +548,8 @@ export const WithItemGroups: Story = {
 				</Select.Control>
 				<Select.Positioner>
 					<Select.Content>
-						<Select.ItemGroup>
-							<Select.ItemGroupLabel>Europe</Select.ItemGroupLabel>
+						<Select.ItemGroup id="europe">
+							<Select.ItemGroupLabel htmlFor="europe">Europe</Select.ItemGroupLabel>
 							{europeCountries.map((item) => (
 								<Select.Item key={item.value} item={item}>
 									<Select.ItemText />
@@ -558,8 +558,8 @@ export const WithItemGroups: Story = {
 							))}
 						</Select.ItemGroup>
 
-						<Select.ItemGroup>
-							<Select.ItemGroupLabel>Americas</Select.ItemGroupLabel>
+						<Select.ItemGroup id="americas">
+							<Select.ItemGroupLabel htmlFor="americas">Americas</Select.ItemGroupLabel>
 							{americaCountries.map((item) => (
 								<Select.Item key={item.value} item={item}>
 									<Select.ItemText />
@@ -568,8 +568,8 @@ export const WithItemGroups: Story = {
 							))}
 						</Select.ItemGroup>
 
-						<Select.ItemGroup>
-							<Select.ItemGroupLabel>Asia</Select.ItemGroupLabel>
+						<Select.ItemGroup id="asia">
+							<Select.ItemGroupLabel htmlFor="asia">Asia</Select.ItemGroupLabel>
 							{asiaCountries.map((item) => (
 								<Select.Item key={item.value} item={item}>
 									<Select.ItemText />
@@ -887,8 +887,10 @@ export const ConditionalRendering: Story = {
 					</Select.Control>
 					<Select.Positioner>
 						<Select.Content>
-							<Select.ItemGroup>
-								<Select.ItemGroupLabel>Basic Plans</Select.ItemGroupLabel>
+							<Select.ItemGroup id="basic-plans">
+								<Select.ItemGroupLabel htmlFor="basic-plans">
+									Basic Plans
+								</Select.ItemGroupLabel>
 								{basicItems.map((item) => (
 									<Select.Item key={item.value} item={item}>
 										<Select.ItemText />
@@ -898,8 +900,10 @@ export const ConditionalRendering: Story = {
 							</Select.ItemGroup>
 
 							{showPremium && (
-								<Select.ItemGroup>
-									<Select.ItemGroupLabel>Premium Plans</Select.ItemGroupLabel>
+								<Select.ItemGroup id="premium-plans">
+									<Select.ItemGroupLabel htmlFor="premium-plans">
+										Premium Plans
+									</Select.ItemGroupLabel>
 									{premiumItems.map((item) => (
 										<Select.Item key={item.value} item={item}>
 											<span className="flex items-center gap-2">

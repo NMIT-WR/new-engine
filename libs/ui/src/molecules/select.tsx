@@ -450,40 +450,54 @@ Select.Content = function SelectContent({
 }
 
 interface SelectItemGroupProps extends ComponentPropsWithoutRef<"div"> {
+  id: string
   ref?: Ref<HTMLDivElement>
 }
 
 Select.ItemGroup = function SelectItemGroup({
+  id,
   children,
   className,
   ref,
   ...props
 }: SelectItemGroupProps) {
-  const { size } = useSelectContext()
+  const { api, size } = useSelectContext()
   const styles = selectVariants({ size })
 
   return (
-    <div className={styles.itemGroup({ className })} ref={ref} {...props}>
+    <div
+      className={styles.itemGroup({ className })}
+      ref={ref}
+      {...api.getItemGroupProps({ id })}
+      {...props}
+    >
       {children}
     </div>
   )
 }
 
 interface SelectItemGroupLabelProps extends ComponentPropsWithoutRef<"div"> {
+  htmlFor: string
   ref?: Ref<HTMLDivElement>
 }
 
 Select.ItemGroupLabel = function SelectItemGroupLabel({
+  htmlFor,
   children,
   className,
   ref,
   ...props
 }: SelectItemGroupLabelProps) {
-  const { size } = useSelectContext()
+  const { api, size } = useSelectContext()
   const styles = selectVariants({ size })
 
   return (
-    <div className={styles.itemGroupLabel({ className })} ref={ref} {...props}>
+    <div
+      className={styles.itemGroupLabel({ className })}
+      ref={ref}
+      {...api.getItemGroupLabelProps({ htmlFor })}
+      {...props}
+    >
       {children}
     </div>
   )
