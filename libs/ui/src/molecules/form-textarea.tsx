@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Label } from "../atoms/label"
+import { StatusText } from "../atoms/status-text"
 import { Textarea, type TextareaProps } from "../atoms/textarea"
 
 type ValidateStatus = "default" | "error" | "success" | "warning"
@@ -11,7 +10,6 @@ interface FormTextareaRawProps extends TextareaProps {
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
-  extraText?: ReactNode
 }
 
 export function FormTextareaRaw({
@@ -19,14 +17,11 @@ export function FormTextareaRaw({
   label,
   validateStatus = "default",
   helpText,
-  extraText,
   size = "md",
   required,
   disabled,
   ...props
 }: FormTextareaRawProps) {
-  const extraTextId = extraText ? `${id}-extra` : undefined
-
   return (
     <div className="flex flex-col gap-form-field-gap">
       <Label disabled={disabled} htmlFor={id} required={required} size={size}>
@@ -41,43 +36,37 @@ export function FormTextareaRaw({
         {...props}
       />
 
-      {/* Status message */}
       {helpText}
-
-      {extraText && (
-        <ExtraText id={extraTextId} size={size}>
-          {extraText}
-        </ExtraText>
-      )}
     </div>
   )
+}
+
+type FormTextareaProps = FormTextareaRawProps & {
+  showHelpTextIcon?: boolean
 }
 
 export function FormTextarea({
   helpText,
   id,
-  validateStatus,
-  size,
+  validateStatus = "default",
+  showHelpTextIcon = validateStatus !== "default",
+  size = "md",
   ...props
-}: FormTextareaRawProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined
-
+}: FormTextareaProps) {
   return (
     <FormTextareaRaw
       helpText={
-        validateStatus === "error" ? (
-          <ErrorText id={helpTextId} showIcon size={size}>
+        helpText && 
+          <StatusText
+            status={validateStatus}
+            showIcon={showHelpTextIcon}
+            size={size}
+          >
             {helpText}
-          </ErrorText>
-        ) : (
-          <ExtraText id={helpTextId} size={size}>
-            {helpText}
-          </ExtraText>
-        )
+          </StatusText>
       }
       id={id}
       size={size}
-      validateStatus={validateStatus}
       {...props}
     />
   )

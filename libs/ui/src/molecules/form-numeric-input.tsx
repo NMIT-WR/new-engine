@@ -1,20 +1,16 @@
 import type { ReactNode } from "react"
-import { ErrorText } from "../atoms/error-text"
-import { ExtraText } from "../atoms/extra-text"
 import { Label } from "../atoms/label"
 import { NumericInput, type NumericInputProps } from "../atoms/numeric-input"
+import { StatusText } from "../atoms/status-text"
 
 type ValidateStatus = "default" | "error" | "success" | "warning"
 
 interface FormNumericInputProps extends Omit<NumericInputProps, "children"> {
-  // === Form-specific props ===
   id: string
   label: ReactNode
   validateStatus?: ValidateStatus
   helpText?: ReactNode
-  extraText?: ReactNode
-
-  // === Compound pattern ===
+  showHelpTextIcon?: boolean
   children: ReactNode
 }
 
@@ -23,20 +19,16 @@ export function FormNumericInput({
   label,
   validateStatus = "default",
   helpText,
-  extraText,
+  showHelpTextIcon = validateStatus !== "default",
   size = "md",
   required,
   disabled,
   children,
   ...numericInputProps
 }: FormNumericInputProps) {
-  const helpTextId = helpText ? `${id}-helper` : undefined
-  const extraTextId = extraText ? `${id}-extra` : undefined
-
   return (
     <div
-      className="flex flex-col gap-numeric-input-root-md data-[size=lg]:gap-numeric-input-root-lg data-[size=sm]:gap-numeric-input-root-sm"
-      data-size={size}
+      className="flex flex-col gap-form-field-gap"
     >
       <Label disabled={disabled} htmlFor={id} required={required} size={size}>
         {label}
@@ -53,23 +45,14 @@ export function FormNumericInput({
         {children}
       </NumericInput>
 
-      {/* Error/Help text */}
-      {helpText &&
-        (validateStatus === "error" ? (
-          <ErrorText id={helpTextId} showIcon size={size}>
-            {helpText}
-          </ErrorText>
-        ) : (
-          <ExtraText id={helpTextId} size={size}>
-            {helpText}
-          </ExtraText>
-        ))}
-
-      {/* Extra text */}
-      {extraText && (
-        <ExtraText id={extraTextId} size={size}>
-          {extraText}
-        </ExtraText>
+      {helpText && (
+        <StatusText
+          status={validateStatus}
+          showIcon={showHelpTextIcon}
+          size={size}
+        >
+          {helpText}
+        </StatusText>
       )}
     </div>
   )
