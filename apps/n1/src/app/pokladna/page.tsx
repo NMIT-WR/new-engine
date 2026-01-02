@@ -27,7 +27,6 @@ function CheckoutContent() {
   const router = useRouter()
   const {
     cart,
-    isCartLoading,
     hasItems,
     shipping,
     isReady,
@@ -73,13 +72,6 @@ function CheckoutContent() {
     })
   }, [cart?.id, hasItems, analytics])
 
-  if (isCartLoading) {
-    return (
-      <div className="container mx-auto p-500">
-        <p className="text-fg-secondary">Načítání košíku...</p>
-      </div>
-    )
-  }
 
   if (!(hasItems && cart)) {
     return (

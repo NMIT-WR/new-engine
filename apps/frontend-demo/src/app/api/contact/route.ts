@@ -1,10 +1,10 @@
-import { ContactFormEmail } from '@/components/emails/contact-form-email'
-import { type NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
+import { type NextRequest, NextResponse } from "next/server"
+import { Resend } from "resend"
+import { ContactFormEmail } from "@/components/emails/contact-form-email"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const contactEmail = process.env.CONTACT_EMAIL || 'your-email@example.com'
-const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
+const contactEmail = process.env.CONTACT_EMAIL || "your-email@example.com"
+const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
     const { firstName, lastName, email, phone, subject, message } = body
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !message) {
+    if (!(firstName && lastName && email && message)) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       )
     }
@@ -35,18 +35,18 @@ export async function POST(req: NextRequest) {
     })
 
     if (error) {
-      console.error('Resend error:', error)
+      console.error("Resend error:", error)
       return NextResponse.json(
-        { error: 'Failed to send email' },
+        { error: "Failed to send email" },
         { status: 500 }
       )
     }
 
     return NextResponse.json({ success: true, data })
   } catch (error) {
-    console.error('API error:', error)
+    console.error("API error:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }

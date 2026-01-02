@@ -19,7 +19,7 @@ const mockPplClient = {
   getCachedCountries: jest.fn(),
   getCustomerInfo: jest.fn(),
   getCustomerAddresses: jest.fn(),
-  getOptions: jest.fn(),
+  getEffectiveConfig: jest.fn(),
   createShipmentBatch: jest.fn(),
   cancelShipment: jest.fn(),
   getBatchStatus: jest.fn(),
@@ -75,7 +75,7 @@ describe("PplFulfillmentProviderService", () => {
     ])
     mockPplClient.getCustomerInfo.mockResolvedValue({ name: "Test Company" })
     mockPplClient.getCustomerAddresses.mockResolvedValue(null)
-    mockPplClient.getOptions.mockReturnValue({
+    mockPplClient.getEffectiveConfig.mockResolvedValue({
       sender_name: "Test Sender",
       sender_street: "Sender Street 1",
       sender_city: "Prague",
@@ -148,7 +148,7 @@ describe("PplFulfillmentProviderService", () => {
     })
 
     it("builds COD settings with bank account when supports_cod is true", async () => {
-      mockPplClient.getOptions.mockReturnValue({
+      mockPplClient.getEffectiveConfig.mockResolvedValue({
         sender_name: "Test",
         sender_street: "Street",
         sender_city: "City",
@@ -206,7 +206,7 @@ describe("PplFulfillmentProviderService", () => {
     })
 
     it("builds COD settings with IBAN when provided", async () => {
-      mockPplClient.getOptions.mockReturnValue({
+      mockPplClient.getEffectiveConfig.mockResolvedValue({
         sender_name: "Test",
         sender_street: "Street",
         sender_city: "City",
@@ -253,6 +253,18 @@ describe("PplFulfillmentProviderService", () => {
   })
 
   describe("validateFulfillmentData", () => {
+    it("throws when PPL is disabled", async () => {
+      mockPplClient.getEffectiveConfig.mockResolvedValue(null)
+
+      await expect(
+        createService().validateFulfillmentData(
+          { requires_access_point: false, product_type: "PRIV" },
+          {},
+          {} as any
+        )
+      ).rejects.toThrow("PPL shipping is currently unavailable")
+    })
+
     it("throws when access point required but not provided", async () => {
       await expect(
         createService().validateFulfillmentData(
@@ -407,7 +419,7 @@ describe("PplFulfillmentProviderService", () => {
   })
 
   describe("getFulfillmentOptions", () => {
-    it("returns all available PPL shipping options", async () => {
+    it("returns all available PPL shipping options when enabled", async () => {
       const options = await createService().getFulfillmentOptions()
 
       expect(options).toHaveLength(4)
@@ -417,6 +429,14 @@ describe("PplFulfillmentProviderService", () => {
         "ppl-private",
         "ppl-private-cod",
       ])
+    })
+
+    it("returns empty array when PPL is disabled", async () => {
+      mockPplClient.getEffectiveConfig.mockResolvedValue(null)
+
+      const options = await createService().getFulfillmentOptions()
+
+      expect(options).toEqual([])
     })
   })
 })

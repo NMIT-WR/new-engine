@@ -22,7 +22,7 @@ export function createWindowGetter<T>(keys: string | string[]): () => T | null {
   const keyArray = Array.isArray(keys) ? keys : [keys]
 
   return (): T | null => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return null
     }
 

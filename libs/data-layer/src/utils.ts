@@ -25,76 +25,76 @@ export function formatSQL(query: string, colorize = true): string {
       (formattedQuery, keyword) =>
         formattedQuery.replace(
           new RegExp(`\\b${keyword}\\b`, 'gi'),
-          `\n${colorize ? `\x1b[92m${keyword}\x1b[33m` : keyword}${keyword === 'SELECT' ? '\n' : ''}`
+          `\n${colorize ? `\x1b[92m${keyword}\x1b[33m` : keyword}${keyword === 'SELECT' ? '\n' : ''}`,
         ),
-      query
+      query,
     )
     .trim()
     .split('\n')
     .map((line) => `   ${line}`)
     .join('\n')
-    .trim()
+    .trim();
 }
 
 export function isDateString(
-  value: string | Date | null | undefined | unknown
+  value: string | Date | null | undefined | unknown,
 ): boolean {
   if (!value) {
-    return false
+    return false;
   }
   if (
     value instanceof Date ||
     (typeof value === 'object' && isPureDateObject(value))
   ) {
-    return true
+    return true;
   }
   if (typeof value !== 'string') {
-    return false
+    return false;
   }
 
   // Ex. '2023-12-29 14:19:05.264'
   // Ex. '2023-10-28T12:54:07.311Z'
 
-  return /^(\d{4})-(\d{2})-(\d{2})/.test(value)
+  return /^(\d{4})-(\d{2})-(\d{2})/.test(value);
 }
 
 export function safeEscapeSqlValue(value: unknown): string {
   if (typeof value === 'string') {
-    return `"${value}"`
+    return `"${value}"`;
   }
   if (typeof value === 'object') {
-    return JSON.stringify(value)
+    return JSON.stringify(value);
   }
-  return String(value)
+  return String(value);
 }
 
 type DrizzleResult = {
-  sql: string
-  params: unknown[]
-}
+  sql: string;
+  params: unknown[];
+};
 
 export function parseDrizzleMessage(
-  message: string | undefined
+  message: string | undefined,
 ): DrizzleResult {
   const m = String(message || '')
     .replace(/\n/g, ' ')
     .trim()
-    .replace(/^Query:\s+/, '')
+    .replace(/^Query:\s+/, '');
 
   if (!m) {
-    return { sql: '', params: [] }
+    return { sql: '', params: [] };
   }
   if (m.length > 1_000_000) {
-    return { sql: m.slice(0, 10_000).trim(), params: [] }
+    return { sql: m.slice(0, 10_000).trim(), params: [] };
   }
 
   const [, sql, paramsString] =
-    m.match(/^(.+?)(?:\s+--\sparams:\s+(.+))?$/) || []
+    m.match(/^(.+?)(?:\s+--\sparams:\s+(.+))?$/) || [];
 
   return {
     sql: String(sql || '').trim(),
     params: (paramsString ? JSON.parse(paramsString) : []) as unknown[],
-  }
+  };
 }
 
 export function normalizeString(haystack: string): string {
@@ -103,14 +103,14 @@ export function normalizeString(haystack: string): string {
     .split('\n')
     .map((line) => line.replace(/\s+/g, ' ').trim())
     .join('\n')
-    .trim()
+    .trim();
 }
 
 function isPureDateObject(o: object): boolean {
   try {
-    // @ts-ignore
-    return typeof o.getMonth === 'function'
+    // @ts-expect-error
+    return typeof o.getMonth === 'function';
   } catch (_e) {
-    return false
+    return false;
   }
 }

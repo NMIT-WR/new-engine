@@ -105,11 +105,13 @@ export const createInventoryLevelsStep = createStep(
       )
 
       for (let i = 0; i < missingInventoryLevels.length; i += CHUNK_SIZE) {
-        const createResult = await createInventoryLevelsWorkflow(container).run({
-          input: {
-            inventory_levels: missingInventoryLevels.slice(i, i + CHUNK_SIZE),
-          },
-        })
+        const createResult = await createInventoryLevelsWorkflow(container).run(
+          {
+            input: {
+              inventory_levels: missingInventoryLevels.slice(i, i + CHUNK_SIZE),
+            },
+          }
+        )
         for (const resultElement of createResult.result) {
           result.push(resultElement)
         }
@@ -122,11 +124,13 @@ export const createInventoryLevelsStep = createStep(
       )
 
       for (let i = 0; i < updateInventoryLevels.length; i += CHUNK_SIZE) {
-        const updateResult = await updateInventoryLevelsWorkflow(container).run({
-          input: {
-            updates: updateInventoryLevels.slice(i, i + CHUNK_SIZE),
-          },
-        })
+        const updateResult = await updateInventoryLevelsWorkflow(container).run(
+          {
+            input: {
+              updates: updateInventoryLevels.slice(i, i + CHUNK_SIZE),
+            },
+          }
+        )
 
         for (const resultElement of updateResult.result) {
           result.push(resultElement)

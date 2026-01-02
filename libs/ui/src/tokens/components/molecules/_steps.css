@@ -39,6 +39,7 @@
   --padding-content: var(--spacing-250);
   --height-steps-indicator: var(--spacing-350);
   --padding-steps-btn: var(--spacing-100) var(--spacing-200);
+  --spacing-steps-container-gap: var(--spacing-100);
 
   /* === SIZES === */
   --height-steps-separator: 2px;

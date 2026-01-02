@@ -97,6 +97,23 @@
   edit hosts file on your host machine and add `127.0.0.1 medusa-minio` record
     * the issue is described here: <a href="https://github.com/curl/curl/issues/11104">curl/issues/11104</a>
 
+---
+
+## Testing Production Build Locally
+
+To test the production Docker build locally:
+
+```shell
+make prod
+```
+
+This builds a production-optimized image and starts the container. Access the admin at:
+* <a href="https://admin.medusa.localhost/app">https://admin.medusa.localhost/app</a> (requires HTTPS for session cookies)
+
+Note: Production mode uses secure cookies, so you must access via HTTPS (Caddy) rather than `http://localhost:9000`.
+
+---
+
 # WrSearch
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
@@ -206,4 +223,3 @@ https://github.com/zeropsio/zcli
 ```shell
 curl -L https://zerops.io/zcli/install.sh | sh
 ```
-

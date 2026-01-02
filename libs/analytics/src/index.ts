@@ -28,7 +28,7 @@ export {
   createWindowGetter,
   createTracker,
   createSimpleTracker,
-} from './core'
+} from "./core"
 
 export type {
   Analytics,
@@ -40,7 +40,7 @@ export type {
   CoreInitiateCheckoutParams,
   CorePurchaseParams,
   EcommerceProduct,
-} from './core'
+} from "./core"
 
 // Component re-exports for convenience
-export { MetaPixel } from './meta'
+export { MetaPixel } from "./meta"

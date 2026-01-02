@@ -1,4 +1,3 @@
-
 @theme static {
   /* === COLOR SELECTOR COLORS === */
   /* Default state */
@@ -16,7 +15,7 @@
 
   /* === COLOR SELECTOR SIZING === */
   --spacing-color-selector-sm: var(--spacing-md);
-  --spacing-color-selector-md:  var(--spacing-lg);
+  --spacing-color-selector-md: var(--spacing-lg);
   --spacing-color-selector-lg: var(--spacing-xl);
   --padding-color-selector: 0 0;
 
@@ -28,8 +27,9 @@
   --radius-color-selector-inner: calc(var(--radius-full) - 5px);
 
   /* === COLOR SELECTOR SHADOW === */
-  --shadow-color-selector-selected: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-color-selector-selected);
+  --shadow-color-selector-selected:
+    0 0 0 2px var(--color-background), 0 0 0 4px
+    var(--color-color-selector-selected);
 }
-
 
 /* Icon token for color selector check */

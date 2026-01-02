@@ -35,16 +35,16 @@ export const validatePassword = (
 
   const errors: string[] = []
   if (!requirements.length) {
-    errors.push('Password must be at least 8 characters long')
+    errors.push("Password must be at least 8 characters long")
   }
   if (!requirements.uppercase) {
-    errors.push('Password must contain at least one uppercase letter')
+    errors.push("Password must contain at least one uppercase letter")
   }
   if (!requirements.lowercase) {
-    errors.push('Password must contain at least one lowercase letter')
+    errors.push("Password must contain at least one lowercase letter")
   }
   if (!requirements.number) {
-    errors.push('Password must contain at least one number')
+    errors.push("Password must contain at least one number")
   }
 
   const strength = Object.values(requirements).filter(Boolean).length

@@ -1,6 +1,6 @@
-import { useToast } from '@techsio/ui-kit/molecules/toast'
-import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMutation } from "@tanstack/react-query"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
+import { useState } from "react"
 
 interface ContactFormData {
   firstName: string
@@ -16,10 +16,10 @@ interface UseContactFormProps {
 }
 
 async function sendContactForm(data: ContactFormData) {
-  const response = await fetch('/api/contact', {
-    method: 'POST',
+  const response = await fetch("/api/contact", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   })
@@ -27,7 +27,7 @@ async function sendContactForm(data: ContactFormData) {
   const result = await response.json()
 
   if (!response.ok) {
-    throw new Error(result.error || 'Něco se pokazilo')
+    throw new Error(result.error || "Něco se pokazilo")
   }
 
   return result
@@ -37,12 +37,12 @@ export function useContactForm({ onSuccess }: UseContactFormProps = {}) {
   const toast = useToast()
 
   const initialFormData: ContactFormData = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    subject: 'general',
-    message: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    subject: "general",
+    message: "",
   }
 
   const [formData, setFormData] = useState<ContactFormData>(initialFormData)
@@ -51,10 +51,10 @@ export function useContactForm({ onSuccess }: UseContactFormProps = {}) {
     mutationFn: sendContactForm,
     onSuccess: (data) => {
       toast.create({
-        title: 'Zpráva odeslána',
+        title: "Zpráva odeslána",
         description:
-          'Vaše zpráva byla úspěšně odeslána. Ozveme se vám co nejdříve.',
-        type: 'success',
+          "Vaše zpráva byla úspěšně odeslána. Ozveme se vám co nejdříve.",
+        type: "success",
         duration: 5000,
       })
 
@@ -66,11 +66,11 @@ export function useContactForm({ onSuccess }: UseContactFormProps = {}) {
     },
     onError: (error: Error) => {
       toast.create({
-        title: 'Chyba',
+        title: "Chyba",
         description:
           error.message ||
-          'Nepodařilo se odeslat zprávu. Zkuste to prosím později.',
-        type: 'error',
+          "Nepodařilo se odeslat zprávu. Zkuste to prosím později.",
+        type: "error",
         duration: 5000,
       })
     },

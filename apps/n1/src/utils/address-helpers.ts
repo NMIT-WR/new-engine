@@ -3,6 +3,7 @@ import { DEFAULT_COUNTRY_CODE } from "@/lib/constants"
 import type { ShippingMethodData } from "@/services/cart-service"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import type { AddressFormData } from "./address-validation"
+import { HttpTypes } from "@medusajs/types"
 
 export const DEFAULT_ADDRESS: AddressFormData = {
   first_name: "",
@@ -17,23 +18,16 @@ export const DEFAULT_ADDRESS: AddressFormData = {
   phone: "",
 }
 
+/**
+ * generic conversion of address to AddressFormData
+ * works for customer address, cart address or any compatible address object
+*/
 function addressToFormData(
-  address:
-    | {
-        first_name?: string | null
-        last_name?: string | null
-        company?: string | null
-        address_1?: string | null
-        address_2?: string | null
-        city?: string | null
-        province?: string | null
-        postal_code?: string | null
-        country_code?: string | null
-        phone?: string | null
-      }
+  address?:
+    | Partial<HttpTypes.StoreCartAddress>
+    | StoreCustomerAddress
     | null
-    | undefined
-): Partial<AddressFormData> {
+): AddressFormData {
   // Return empty form if no address provided
   if (!address) {
     return {
@@ -56,9 +50,12 @@ function addressToFormData(
   }
 }
 
-// Export as main function
 export { addressToFormData }
 
+/**
+ * get default address from customer addresses
+ * The first address in the list is considered the default
+ */
 export function getDefaultAddress(
   addresses: StoreCustomerAddress[] | undefined
 ): StoreCustomerAddress | null {

@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { createTracker } from '../core/create-tracker'
-import { createWindowGetter } from '../core/get-global-function'
-import type { AnalyticsAdapter } from '../core/types'
-import type { MetaPixelFbq } from './types'
+import { createTracker } from "../core/create-tracker"
+import { createWindowGetter } from "../core/get-global-function"
+import type { AnalyticsAdapter } from "../core/types"
+import type { MetaPixelFbq } from "./types"
 
-const getFbq = createWindowGetter<MetaPixelFbq>('fbq')
+const getFbq = createWindowGetter<MetaPixelFbq>("fbq")
 
 export interface UseMetaAdapterConfig {
   debug?: boolean
@@ -28,12 +28,12 @@ export function useMetaAdapter(
   config?: UseMetaAdapterConfig
 ): AnalyticsAdapter {
   const debug = config?.debug
-  const adapterKey = 'meta' as const
+  const adapterKey = "meta" as const
 
   const trackCustom = createTracker(
     getFbq,
     (fbq, args: { eventName: string; params?: Record<string, unknown> }) => {
-      fbq('trackCustom', args.eventName, args.params)
+      fbq("trackCustom", args.eventName, args.params)
     },
     debug,
     adapterKey
@@ -45,9 +45,9 @@ export function useMetaAdapter(
     trackViewContent: createTracker(
       getFbq,
       (fbq, params) => {
-        fbq('track', 'ViewContent', {
+        fbq("track", "ViewContent", {
           content_ids: [params.productId],
-          content_type: 'product',
+          content_type: "product",
           content_name: params.productName,
           currency: params.currency,
           value: params.value,
@@ -61,9 +61,9 @@ export function useMetaAdapter(
     trackAddToCart: createTracker(
       getFbq,
       (fbq, params) => {
-        fbq('track', 'AddToCart', {
+        fbq("track", "AddToCart", {
           content_ids: [params.productId],
-          content_type: 'product',
+          content_type: "product",
           content_name: params.productName,
           currency: params.currency,
           value: params.value,
@@ -89,7 +89,7 @@ export function useMetaAdapter(
           quantity: item.quantity || 1,
         }))
 
-        fbq('track', 'InitiateCheckout', {
+        fbq("track", "InitiateCheckout", {
           content_ids: contentIds,
           currency: params.currency,
           value: params.value,
@@ -104,9 +104,9 @@ export function useMetaAdapter(
     trackPurchase: createTracker(
       getFbq,
       (fbq, params) => {
-        fbq('track', 'Purchase', {
+        fbq("track", "Purchase", {
           content_ids: params.products.map((p) => p.id),
-          content_type: 'product',
+          content_type: "product",
           currency: params.currency,
           value: params.value,
           num_items: params.numItems,

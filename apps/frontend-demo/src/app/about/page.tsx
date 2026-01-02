@@ -1,10 +1,10 @@
-'use client'
-import { StatsSection } from '@/components/stats-section'
-import { aboutContent } from '@/data/about-content'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { slugify } from '@techsio/ui-kit/utils'
-import Image from 'next/image'
-import aboutImage from '/assets/hero/about.webp'
+"use client"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { slugify } from "@techsio/ui-kit/utils"
+import Image from "next/image"
+import { StatsSection } from "@/components/stats-section"
+import { aboutContent } from "@/data/about-content"
+import aboutImage from "/assets/hero/about.webp"
 
 export default function AboutPage() {
   const { hero, story, values, team } = aboutContent
@@ -13,7 +13,7 @@ export default function AboutPage() {
     <>
       {/* Hero Section with Background Image */}
       <section className="relative flex h-about-hero-height items-center bg-center bg-cover md:h-about-hero-height-md">
-        <Image src={aboutImage} alt="some" fill priority placeholder="blur" />
+        <Image alt="some" fill placeholder="blur" priority src={aboutImage} />
 
         <div className="absolute inset-0 bg-about-hero-overlay" />
         <div className="relative mx-auto max-w-container-max px-about-container-x text-center text-white md:px-about-container-x-md lg:px-about-container-x-lg">
@@ -36,8 +36,8 @@ export default function AboutPage() {
               </h2>
               {story.paragraphs.map((paragraph) => (
                 <p
-                  key={slugify(paragraph.slice(0, 50))}
                   className="text-about-grid-text-fg text-about-grid-text-size leading-relaxed"
+                  key={slugify(paragraph.slice(0, 50))}
                 >
                   {paragraph}
                 </p>
@@ -45,11 +45,11 @@ export default function AboutPage() {
             </div>
             <div className="overflow-hidden rounded-about-image-radius">
               <Image
-                src={story.image}
                 alt={story.imageAlt}
-                width={800}
                 height={600}
                 objectFit="cover"
+                src={story.image}
+                width={800}
               />
             </div>
           </div>
@@ -67,10 +67,10 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 gap-about-values-gap sm:grid-cols-2 lg:grid-cols-3">
             {values.items.map((value) => (
               <div
-                key={slugify(value.title)}
                 className="rounded-about-value border border-about-value-border bg-about-value-bg p-about-value-padding text-center transition-shadow hover:shadow-about-value-hover"
+                key={slugify(value.title)}
               >
-                <Icon icon={value.icon} className="text-3xl text-info" />
+                <Icon className="text-3xl text-info" icon={value.icon} />
                 <h3 className="mb-about-value-title-bottom font-about-value-title text-about-value-title-fg text-about-value-title-size">
                   {value.title}
                 </h3>
@@ -92,15 +92,15 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 place-items-center gap-about-team-gap sm:flex sm:justify-center">
             {team.members.map((member) => (
               <div
-                key={slugify(member.name)}
                 className="group flex w-fit flex-col gap-200 text-center"
+                key={slugify(member.name)}
               >
                 <Image
-                  src={member.image}
                   alt={member.name}
-                  width={200}
-                  height={200}
                   className="shadow-primary"
+                  height={200}
+                  src={member.image}
+                  width={200}
                 />
 
                 <article>

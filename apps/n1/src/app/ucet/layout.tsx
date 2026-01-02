@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/hooks/use-auth'
+import { useSuspenseAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { AccountMenu } from './_components/account-menu'
@@ -10,7 +10,7 @@ export default function AccountLayout({
   children,
 }: { children: React.ReactNode }) {
   const router = useRouter()
-  const { customer, isAuthenticated, isLoading, isTokenExpired } = useAuth()
+  const { customer, isAuthenticated, isTokenExpired } = useSuspenseAuth()
   const [showExpiredMessage, setShowExpiredMessage] = useState(false)
 
   // Handle session expiration
@@ -26,10 +26,10 @@ export default function AccountLayout({
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && !isTokenExpired) {
+    if (!isAuthenticated && !isTokenExpired) {
       router.push('/prihlaseni')
     }
-  }, [isAuthenticated, isLoading, isTokenExpired, router])
+  }, [isAuthenticated, isTokenExpired, router])
 
   // Session expired - full page
   if (showExpiredMessage) {
@@ -44,15 +44,6 @@ export default function AccountLayout({
             přesměrováni na přihlašovací stránku...
           </p>
         </div>
-      </main>
-    )
-  }
-
-  // Loading - full page
-  if (isLoading) {
-    return (
-      <main className="mx-auto w-2xl max-w-full py-400">
-        <div className="text-center text-fg-secondary">Načítám...</div>
       </main>
     )
   }

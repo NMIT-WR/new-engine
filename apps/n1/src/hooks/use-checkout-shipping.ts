@@ -8,8 +8,14 @@ import {
   getShippingOptions,
   type ShippingMethodData,
   setShippingMethod,
-} from "@/services/cart-service"
-import { useCartToast } from "./use-toast"
+} from '@/services/cart-service'
+import type { HttpTypes } from '@medusajs/types'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
+import { useCartToast } from './use-toast'
 
 type CartMutationError = {
   message: string
@@ -45,20 +51,17 @@ export function useCheckoutShipping(
   const queryClient = useQueryClient()
   const toast = useCartToast()
 
+  const canLoadShipping = !!cartId && (cart?.items?.length ?? 0) > 0
+
   // Fetch shipping options for cart
-  const {
-    data: shippingOptions,
-    isLoading: isLoadingShipping,
-    isError: isErrorShipping,
-  } = useQuery({
-    queryKey: queryKeys.cart.shippingOptions(cartId || ""),
+  const { data: shippingOptions = [] } = useSuspenseQuery({
+    queryKey: queryKeys.cart.shippingOptions(cartId || 'unknown'),
     queryFn: () => {
-      if (!cartId) {
-        throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
+      if (!canLoadShipping || !cartId) {
+        return []
       }
       return getShippingOptions(cartId)
     },
-    enabled: !!cartId && (cart?.items?.length ?? 0) > 0,
     // Longer cache for shipping options - they don't change often
     staleTime: CACHE_TIMES.SHIPPING_OPTIONS_STALE,
     gcTime: CACHE_TIMES.SHIPPING_OPTIONS_GC,
@@ -155,8 +158,7 @@ export function useCheckoutShipping(
     },
   })
 
-  const canLoadShipping = !!cartId && (cart?.items?.length ?? 0) > 0
-  const canSetShipping = !!shippingOptions && shippingOptions.length > 0
+  const canSetShipping = shippingOptions.length > 0
   const selectedShippingMethodId =
     cart?.shipping_methods?.[0]?.shipping_option_id
 
@@ -172,8 +174,6 @@ export function useCheckoutShipping(
 
   return {
     shippingOptions,
-    isLoadingShipping,
-    isErrorShipping,
     setShipping,
     isSettingShipping,
     canLoadShipping,

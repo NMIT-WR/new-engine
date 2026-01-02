@@ -1,253 +1,232 @@
-'use client'
-import { useRegister } from '@/hooks/use-register'
-import { useAuthToast } from '@/hooks/use-toast'
-import { AUTH_MESSAGES } from '@/lib/auth-messages'
-import { useAnalytics } from '@/providers/analytics-provider'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Input } from '@techsio/ui-kit/atoms/input'
-import { Label } from '@techsio/ui-kit/atoms/label'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
-import Link from 'next/link'
-import { type FormEvent, useRef, useState } from 'react'
-import { ErrorBanner } from '../atoms/error-banner'
-import { FormField } from '../molecules/form-field'
-import { PasswordValidator, usePasswordValidation } from './password-validator'
+"use client"
 
-interface RegisterFormProps {
+import { useForm, useStore } from "@tanstack/react-form"
+import { Button } from "@ui/atoms/button"
+import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
+import Link from "next/link"
+import { TextField } from "@/components/forms/fields/text-field"
+import { useRegister } from "@/hooks/use-register"
+import { useAuthToast } from "@/hooks/use-toast"
+import { AUTH_MESSAGES } from "@/lib/auth-messages"
+import { registerValidators } from "@/lib/form-validators"
+import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
+import { useAnalytics } from "@/providers/analytics-provider"
+import { ErrorBanner } from "../atoms/error-banner"
+import { PasswordValidator } from "./password-validator"
+
+type RegisterFormProps = {
   onSuccess?: () => void
   toggle?: () => void
   showLoginLink?: boolean
   className?: string
 }
 
-export const RegisterForm = ({
+type RegisterFormData = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  confirmPassword: string
+  acceptTerms: boolean
+}
+
+export function RegisterForm({
   onSuccess,
   toggle,
   showLoginLink = true,
   className,
-}: RegisterFormProps) => {
-  const formRef = useRef<HTMLFormElement>(null)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [acceptTerms, setAcceptTerms] = useState(false)
-  const passwordValidation = usePasswordValidation(password)
+}: RegisterFormProps) {
   const toast = useAuthToast()
   const analytics = useAnalytics()
 
   const register = useRegister({
     onSuccess: () => {
       // Track customer identification in Leadhub
+      const values = form.state.values
       analytics.trackIdentify({
-        email,
+        email: values.email,
         subscribe: [],
-        first_name: firstName,
-        last_name: lastName,
+        first_name: values.first_name,
+        last_name: values.last_name,
       })
 
       toast.registerSuccess()
-      formRef.current?.reset()
-      setFirstName('')
-      setLastName('')
-      setEmail('')
-      setPassword('')
-      setConfirmPassword('')
-      setAcceptTerms(false)
+      form.reset()
       onSuccess?.()
     },
     onError: (error) => {
-      console.error('Registration failed:', error.message)
+      console.error("Registration failed:", error.message)
     },
   })
 
+  const defaultValues: RegisterFormData = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    acceptTerms: false,
+  }
+  const form = useForm({
+    defaultValues,
+    onSubmit: ({ value }) => {
+      register.mutate({
+        email: value.email,
+        password: value.password,
+        first_name: value.first_name,
+        last_name: value.last_name,
+      })
+    },
+  })
+
+  const password = useStore(form.store, (state) => state.values.password)
+  const confirmPassword = useStore(
+    form.store,
+    (state) => state.values.confirmPassword
+  )
   const passwordsMatch =
     confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
 
-  const getFormValidity = () => {
-    return (
-      firstName.trim().length > 0 &&
-      lastName.trim().length > 0 &&
-      email.includes('@') &&
-      passwordValidation.isValid &&
-      passwordsMatch &&
-      acceptTerms
-    )
-  }
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    if (!getFormValidity()) {
-      console.error('Form is not valid')
-      return
-    }
-
-    if (!acceptTerms) {
-      console.error('Terms must be accepted')
-      return
-    }
-
-    register.mutate({
-      email: email,
-      password: password,
-      first_name: firstName,
-      last_name: lastName,
-    })
-  }
-
   return (
     <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      noValidate
       className={`mt-100 flex flex-col gap-200 ${className}`}
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
     >
       {register.error && (
         <ErrorBanner
-          title={AUTH_MESSAGES.REGISTER_FAILED}
           message={register.error.message}
+          title={AUTH_MESSAGES.REGISTER_FAILED}
         />
       )}
 
       <div className="grid grid-cols-2 gap-100">
-        <FormField
-          id="register-first-name"
-          name="firstName"
-          type="text"
-          label="Jméno"
-          placeholder="Jan"
-          required
-          errorMessage={AUTH_MESSAGES.FIRST_NAME_REQUIRED}
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          disabled={register.isPending}
-          autoComplete="given-name"
-        />
+        <form.Field
+          name="first_name"
+          validators={registerValidators.first_name}
+        >
+          {(field) => (
+            <TextField
+              autoComplete="given-name"
+              disabled={register.isPending}
+              field={field}
+              label="Jméno"
+              placeholder="Jan"
+              required
+            />
+          )}
+        </form.Field>
 
-        <FormField
-          id="register-last-name"
-          name="lastName"
-          type="text"
-          label="Příjmení"
-          placeholder="Novák"
-          required
-          errorMessage={AUTH_MESSAGES.LAST_NAME_REQUIRED}
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          disabled={register.isPending}
-          autoComplete="family-name"
-        />
+        <form.Field name="last_name" validators={registerValidators.last_name}>
+          {(field) => (
+            <TextField
+              autoComplete="family-name"
+              disabled={register.isPending}
+              field={field}
+              label="Příjmení"
+              placeholder="Novák"
+              required
+            />
+          )}
+        </form.Field>
       </div>
 
-      <FormField
-        id="register-email"
-        name="email"
-        type="email"
-        label="E-mailová adresa"
-        placeholder="vas@email.cz"
-        required
-        errorMessage={AUTH_MESSAGES.EMAIL_REQUIRED}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={register.isPending}
-        autoComplete="email"
-      />
-
-      <div className="flex flex-col gap-50">
-        <Label htmlFor="register-password" required>
-          Heslo
-        </Label>
-        <Input
-          id="register-password"
-          name="password"
-          type="password"
-          placeholder="••••••••"
-          required
-          minLength={8}
-          autoComplete="new-password"
-          disabled={register.isPending}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={`transition-colors ${
-            password.length > 0
-              ? passwordValidation.isValid
-                ? 'border-success focus-visible:ring-success'
-                : 'border-danger focus-visible:ring-danger'
-              : ''
-          }`}
-        />
-
-        <PasswordValidator password={password} showRequirements />
-      </div>
-
-      <div className="flex flex-col gap-50">
-        <Label htmlFor="register-confirm-password" required>
-          Potvrzení hesla
-        </Label>
-        <Input
-          id="register-confirm-password"
-          name="confirmPassword"
-          type="password"
-          placeholder="••••••••"
-          required
-          minLength={8}
-          autoComplete="new-password"
-          disabled={register.isPending}
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className={`transition-colors ${
-            confirmPassword.length > 0
-              ? passwordsMatch
-                ? 'border-success focus-visible:ring-success'
-                : 'border-danger focus-visible:ring-danger'
-              : ''
-          }`}
-        />
-
-        {passwordsMatch && (
-          <span className="font-medium text-success text-xs">
-            {AUTH_MESSAGES.PASSWORDS_MATCH}
-          </span>
+      <form.Field name="email" validators={registerValidators.email}>
+        {(field) => (
+          <TextField
+            autoComplete="email"
+            disabled={register.isPending}
+            field={field}
+            label="E-mailová adresa"
+            placeholder="vas@email.cz"
+            required
+            type="email"
+          />
         )}
-        {passwordsDontMatch && (
-          <span className="font-medium text-danger text-xs">
-            {AUTH_MESSAGES.PASSWORDS_DONT_MATCH}
-          </span>
-        )}
-      </div>
+      </form.Field>
 
-      <div>
-        <Checkbox
-          name="accept-terms"
-          labelText="Souhlasím s podmínkami"
-          className="text-xs"
-          checked={acceptTerms}
-          onCheckedChange={(details) =>
-            setAcceptTerms(details.checked === true)
-          }
-          required
-        />
-      </div>
+      <form.Field name="password" validators={registerValidators.password}>
+        {(field) => (
+          <div className="flex flex-col gap-50">
+            <TextField
+              autoComplete="new-password"
+              disabled={register.isPending}
+              field={field}
+              label="Heslo"
+              placeholder="••••••••"
+              required
+              type="password"
+            />
+            <PasswordValidator password={field.state.value} showRequirements />
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="confirmPassword"
+        validators={registerValidators.confirmPassword}
+      >
+        {(field) => (
+          <div className="flex flex-col gap-50">
+            <TextField
+              autoComplete="new-password"
+              disabled={register.isPending}
+              field={field}
+              label="Potvrzení hesla"
+              placeholder="••••••••"
+              required
+              type="password"
+            />
+            {passwordsMatch && (
+              <span className="font-medium text-success text-xs">
+                {VALIDATION_MESSAGES.password.match}
+              </span>
+            )}
+            {passwordsDontMatch && (
+              <span className="font-medium text-danger text-xs">
+                {VALIDATION_MESSAGES.password.mismatch}
+              </span>
+            )}
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="acceptTerms"
+        validators={registerValidators.acceptTerms}
+      >
+        {(field) => (
+          <FormCheckbox
+            checked={field.state.value}
+            id="accept-terms"
+            label="Souhlasím s podmínkami"
+            name="accept-terms"
+            onCheckedChange={(checked) => field.handleChange(checked)}
+            size="sm"
+          />
+        )}
+      </form.Field>
 
       <Button
-        type="submit"
-        size="sm"
         block
-        disabled={register.isPending || !getFormValidity()}
+        disabled={register.isPending || !form.state.canSubmit}
+        size="sm"
+        type="submit"
       >
-        {register.isPending ? 'Registruji...' : 'Zaregistrovat se'}
+        {register.isPending ? "Registruji..." : "Zaregistrovat se"}
       </Button>
 
       {showLoginLink && (
         <div className="text-center text-fg-primary text-sm">
           <span className="text-fg-secondary">Již máte účet? </span>
           <Link
-            href="/prihlaseni"
             className="font-medium hover:underline"
+            href="/prihlaseni"
             onClick={toggle}
           >
             Přihlaste se

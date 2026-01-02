@@ -1,6 +1,6 @@
-import type { CategoryTreeNode } from '@/lib/server/categories'
-import { isChildOf, isTopLevelNode } from '@/utils/category-tree-helpers'
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react"
+import type { CategoryTreeNode } from "@/lib/server/categories"
+import { isChildOf, isTopLevelNode } from "@/utils/category-tree-helpers"
 
 export function useAccordionTree<T extends CategoryTreeNode>(
   categories: T[],

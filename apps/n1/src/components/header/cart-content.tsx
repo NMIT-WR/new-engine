@@ -9,15 +9,13 @@ import { getOptimisticFlag } from "@/utils/cart"
 import { formatAmount } from "@/utils/format/format-product"
 import { CartEmptyState } from "./cart-empty-state"
 import { CartItem } from "./cart-item"
-import { CartSkeleton } from "./cart-skeleton"
 
 type CartContentProps = {
   cart: Cart | null | undefined
-  isLoading: boolean
   onClose?: () => void
 }
 
-export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
+export const CartContent = ({ cart, onClose }: CartContentProps) => {
   const { mutate: updateQuantity, isPending: isUpdating } = useUpdateLineItem()
   const { mutate: removeItem, isPending: isRemoving } = useRemoveLineItem()
   const toast = useCartToast()
@@ -60,10 +58,6 @@ export const CartContent = ({ cart, isLoading, onClose }: CartContentProps) => {
         },
       }
     )
-  }
-
-  if (isLoading) {
-    return <CartSkeleton />
   }
 
   if (!cart?.items || cart.items.length === 0) {

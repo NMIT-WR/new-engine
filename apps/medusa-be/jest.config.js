@@ -27,12 +27,19 @@ module.exports = {
   setupFiles: isIntegration ? ["./integration-tests/setup.js"] : [],
 }
 
-// Default to unit tests when TEST_TYPE is unset or invalid (safe default)
+// Test patterns by type (explicit naming convention)
+// - *.unit.spec.ts  → unit tests (mocked dependencies, no DB)
+// - *.spec.ts       → integration tests (real DB, module runner)
 if (process.env.TEST_TYPE === "integration:http") {
   module.exports.testMatch = ["**/integration-tests/http/*.spec.[jt]s"]
 } else if (process.env.TEST_TYPE === "integration:modules") {
-  module.exports.testMatch = ["**/src/modules/*/__tests__/**/*.[jt]s"]
+  module.exports.testMatch = ["**/src/modules/*/__tests__/**/*.spec.[jt]s"]
+  module.exports.testPathIgnorePatterns = [
+    "/node_modules/",
+    "\\.unit\\.spec\\.[jt]s$",
+  ]
 } else {
+  // Unit tests: *.unit.spec.ts anywhere
   module.exports.testMatch = [
     "**/src/**/__tests__/**/*.unit.spec.[jt]s",
     "**/tests/unit/**/*.unit.spec.[jt]s",

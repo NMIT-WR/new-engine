@@ -1,21 +1,20 @@
 "use client"
 
+import { useStore } from "@tanstack/react-form"
 import { Button } from "@ui/atoms/button"
 import { useState } from "react"
-import { useFormState } from "react-hook-form"
 import { useCreateAddress, useUpdateAddress } from "@/hooks/use-addresses"
 import { AddressValidationError } from "@/lib/errors"
 import {
-  type CheckoutFormData,
   useCheckoutContext,
   useCheckoutForm,
 } from "../_context/checkout-context"
 
 export function SaveAddressPanel() {
   const { customer, selectedAddressId } = useCheckoutContext()
-  const { getValues, reset, control } = useCheckoutForm()
+  const form = useCheckoutForm()
 
-  const { isDirty } = useFormState<CheckoutFormData>({ control })
+  const isDirty = useStore(form.store, (state) => state.isDirty)
 
   const [saveStatus, setSaveStatus] = useState<
     "idle" | "saving" | "success" | "error"
@@ -25,19 +24,18 @@ export function SaveAddressPanel() {
   const { mutateAsync: createAddressAsync } = useCreateAddress()
   const { mutateAsync: updateAddressAsync } = useUpdateAddress()
 
-  // Don't render if not logged in or form hasn't been modified
   if (!(customer && isDirty)) {
     return null
   }
 
   const handleSaveNew = async () => {
-    // Get current values at execution time (not render time!)
-    const currentValues = getValues("billingAddress")
+    const currentValues = form.getFieldValue("billingAddress")
     setSaveStatus("saving")
     setErrorMessage(null)
     try {
       await createAddressAsync(currentValues)
-      reset({ billingAddress: currentValues }) // Clear isDirty
+      // Reset with current values to clear isDirty without losing data
+      form.reset({ ...form.state.values, billingAddress: currentValues })
       setSaveStatus("success")
       setTimeout(() => setSaveStatus("idle"), 2000)
     } catch (error) {
@@ -58,8 +56,7 @@ export function SaveAddressPanel() {
     if (!selectedAddressId) {
       return
     }
-    // Get current values at execution time (not render time!)
-    const currentValues = getValues("billingAddress")
+    const currentValues = form.getFieldValue("billingAddress")
     setSaveStatus("saving")
     setErrorMessage(null)
     try {
@@ -67,7 +64,8 @@ export function SaveAddressPanel() {
         addressId: selectedAddressId,
         data: currentValues,
       })
-      reset({ billingAddress: currentValues }) // Clear isDirty
+      // Reset with current values to clear isDirty without losing data
+      form.reset({ ...form.state.values, billingAddress: currentValues })
       setSaveStatus("success")
       setTimeout(() => setSaveStatus("idle"), 2000)
     } catch (error) {

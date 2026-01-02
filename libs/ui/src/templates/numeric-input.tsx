@@ -1,12 +1,12 @@
-import type { Ref } from 'react'
-import type { IconType } from '../atoms/icon'
-import { NumericInput, type NumericInputProps } from '../atoms/numeric-input'
+import type { Ref } from "react"
+import type { IconType } from "../atoms/icon"
+import { NumericInput, type NumericInputProps } from "../atoms/numeric-input"
 
 export interface NumericInputTemplateProps
-  extends Omit<NumericInputProps, 'children' | 'ref'> {
+  extends Omit<NumericInputProps, "children" | "ref"> {
   showControls?: boolean
   showScrubber?: boolean
-  controlsPosition?: 'right' | 'sides'
+  controlsPosition?: "right" | "sides"
   incrementIcon?: IconType
   decrementIcon?: IconType
   className?: string
@@ -16,17 +16,17 @@ export interface NumericInputTemplateProps
 export function NumericInputTemplate({
   showControls = true,
   showScrubber = false,
-  controlsPosition = 'right',
-  incrementIcon = 'token-icon-numeric-input-increment',
-  decrementIcon = 'token-icon-numeric-input-decrement',
+  controlsPosition = "right",
+  incrementIcon = "token-icon-numeric-input-increment",
+  decrementIcon = "token-icon-numeric-input-decrement",
   className,
   ref,
   ...numericInputProps
 }: NumericInputTemplateProps) {
   // Layout for controls on the right (default)
-  if (controlsPosition === 'right') {
+  if (controlsPosition === "right") {
     return (
-      <NumericInput {...numericInputProps} ref={ref} className={className}>
+      <NumericInput {...numericInputProps} className={className} ref={ref}>
         <NumericInput.Control>
           {showScrubber && <NumericInput.Scrubber />}
           <NumericInput.Input />
@@ -43,7 +43,7 @@ export function NumericInputTemplate({
 
   // Layout for controls on the sides
   return (
-    <NumericInput {...numericInputProps} ref={ref} className={className}>
+    <NumericInput {...numericInputProps} className={className} ref={ref}>
       <div className="flex items-center gap-50">
         {showControls && <NumericInput.DecrementTrigger icon={decrementIcon} />}
         <NumericInput.Control className="flex-1">

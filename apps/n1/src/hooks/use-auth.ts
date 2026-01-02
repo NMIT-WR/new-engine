@@ -6,13 +6,19 @@ import {
   isTokenExpired,
 } from '@/lib/token-utils'
 import { getCustomer } from '@/services/auth-service'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 
 export interface UseAuthReturn {
   customer: Awaited<ReturnType<typeof getCustomer>>
   isAuthenticated: boolean
   isLoading: boolean
   error: Error | null
+  isTokenExpired: boolean
+}
+
+export interface UseSuspenseAuthReturn {
+  customer: Awaited<ReturnType<typeof getCustomer>>
+  isAuthenticated: boolean
   isTokenExpired: boolean
 }
 
@@ -58,6 +64,37 @@ export function useAuth(): UseAuthReturn {
     isAuthenticated: customer !== null,
     isLoading,
     error: error as Error | null,
+    isTokenExpired: tokenExpired,
+  }
+}
+
+export function useSuspenseAuth(): UseSuspenseAuthReturn {
+  const { data: customer = null } = useSuspenseQuery({
+    queryKey: queryKeys.customer.profile(),
+    queryFn: async () => {
+      const token = getTokenFromStorage()
+
+      if (!token) {
+        return null
+      }
+
+      if (isTokenExpired(token)) {
+        clearToken()
+        return null
+      }
+
+      return getCustomer()
+    },
+    retry: false,
+    ...cacheConfig.userData,
+  })
+
+  const token = getTokenFromStorage()
+  const tokenExpired = token ? isTokenExpired(token) : false
+
+  return {
+    customer,
+    isAuthenticated: customer !== null,
     isTokenExpired: tokenExpired,
   }
 }

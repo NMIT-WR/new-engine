@@ -1,290 +1,146 @@
-'use client'
+"use client"
 
-import { FormField } from '@/components/molecules/form-field'
-import { COUNTRY_OPTIONS } from '@/lib/constants'
-import type { AddressFormData } from '@/utils/address-validation'
-import { ADDRESS_VALIDATION_RULES } from '@/utils/address-validation'
-import { formatPhoneNumber } from '@/utils/format/format-phone-number'
-import { formatPostalCode } from '@/utils/format/format-postal-code'
-import { Select } from '@ui/molecules/select'
-import {
-  Controller,
-  type Control,
-  type FieldErrors,
-  type FieldPath,
-} from 'react-hook-form'
+import { SelectField } from "@/components/forms/fields/select-field"
+import { TextField } from "@/components/forms/fields/text-field"
+import { COUNTRY_OPTIONS } from "@/lib/constants"
+import { addressValidators } from "@/lib/form-validators"
+import type { AddressFormData } from "@/utils/address-validation"
+import { formatPhoneNumber } from "@/utils/format/format-phone-number"
+import { formatPostalCode } from "@/utils/format/format-postal-code"
+import { useForm } from "@tanstack/react-form"
 
-// ============================================================================
-// Types
-// ============================================================================
+const _formTypeHelper = (d: AddressFormData) => useForm({ defaultValues: d })
 
-/**
- * Form data type that supports both standalone and nested forms
- * - Standalone: { first_name, last_name, ... }
- * - Nested (checkout): { shippingAddress: { first_name, last_name, ... } }
- */
-type FormWithAddress =
-  | AddressFormData
-  | { shippingAddress: AddressFormData }
-  | Record<string, AddressFormData>
+type AddressForm = ReturnType<typeof _formTypeHelper>
 
-interface AddressFormFieldsProps<T extends FormWithAddress> {
-  /** React Hook Form control */
-  control: Control<T>
-  /** Field errors for the address fields */
-  errors?: FieldErrors<AddressFormData>
-  /** Disable all fields */
+type AddressFormFieldsProps = {
+  form: AddressForm
   disabled?: boolean
-  /**
-   * Prefix for nested forms (e.g., "shippingAddress" for checkout)
-   * When provided, field names become "shippingAddress.first_name" etc.
-   */
-  namePrefix?: string
 }
 
-// ============================================================================
-// Component
-// ============================================================================
-
-/**
- * Shared address form fields with react-hook-form Controller components.
- * Can be used in:
- * - Checkout (with namePrefix="shippingAddress")
- * - Profile address list (standalone, no prefix)
- * - Address dialog (standalone, no prefix)
- *
- * Uses ADDRESS_VALIDATION_RULES for consistent validation across the app.
- */
-export function AddressFormFields<T extends FormWithAddress>({
-  control,
-  errors,
-  disabled,
-  namePrefix,
-}: AddressFormFieldsProps<T>) {
-  // Helper to create field name with optional prefix
-  const fieldName = (name: keyof AddressFormData): FieldPath<T> =>
-    (namePrefix ? `${namePrefix}.${name}` : name) as FieldPath<T>
-
+export function AddressFormFields({ form, disabled }: AddressFormFieldsProps) {
   return (
     <div className="flex flex-col gap-400">
-      {/* First name | Last name */}
       <div className="grid grid-cols-2 gap-300">
-        <Controller
-          name={fieldName('first_name')}
-          control={control}
-          rules={ADDRESS_VALIDATION_RULES.first_name}
-          render={({ field }) => (
-            <FormField
-              id="first_name"
+        <form.Field name="first_name" validators={addressValidators.first_name}>
+          {(field) => (
+            <TextField
+              disabled={disabled}
+              field={field}
               label="Jméno"
-              name={field.name}
-              type="text"
-              value={field.value as string}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              errorMessage={errors?.first_name?.message}
               required
-              minLength={2}
-              disabled={disabled}
             />
           )}
-        />
-        <Controller
-          name={fieldName('last_name')}
-          control={control}
-          rules={ADDRESS_VALIDATION_RULES.last_name}
-          render={({ field }) => (
-            <FormField
-              id="last_name"
+        </form.Field>
+        <form.Field name="last_name" validators={addressValidators.last_name}>
+          {(field) => (
+            <TextField
+              disabled={disabled}
+              field={field}
               label="Příjmení"
-              name={field.name}
-              type="text"
-              value={field.value as string}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              errorMessage={errors?.last_name?.message}
               required
-              minLength={2}
-              disabled={disabled}
             />
           )}
-        />
+        </form.Field>
       </div>
 
-      {/* Company (optional) */}
-      <Controller
-        name={fieldName('company')}
-        control={control}
-        render={({ field }) => (
-          <FormField
-            id="company"
+      <form.Field name="company">
+        {(field) => (
+          <TextField
+            disabled={disabled}
+            field={field}
             label="Firma (volitelné)"
-            name={field.name}
-            type="text"
-            value={(field.value as string) || ''}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            disabled={disabled}
           />
         )}
-      />
+      </form.Field>
 
-      {/* Address */}
-      <Controller
-        name={fieldName('address_1')}
-        control={control}
-        rules={ADDRESS_VALIDATION_RULES.address_1}
-        render={({ field }) => (
-          <FormField
-            id="address_1"
+      <form.Field name="address_1" validators={addressValidators.address_1}>
+        {(field) => (
+          <TextField
+            disabled={disabled}
+            field={field}
             label="Adresa"
-            name={field.name}
-            type="text"
-            value={field.value as string}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            errorMessage={errors?.address_1?.message}
-            required
-            minLength={3}
-            disabled={disabled}
             placeholder="Ulice a číslo popisné"
+            required
           />
         )}
-      />
+      </form.Field>
 
-      {/* Apartment, suite, etc. (optional) */}
-      <Controller
-        name={fieldName('address_2')}
-        control={control}
-        render={({ field }) => (
-          <FormField
-            id="address_2"
+      <form.Field name="address_2">
+        {(field) => (
+          <TextField
+            disabled={disabled}
+            field={field}
             label="Byt, apartmá atd. (volitelné)"
-            name={field.name}
-            type="text"
-            value={(field.value as string) || ''}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            disabled={disabled}
           />
         )}
-      />
+      </form.Field>
 
-      {/* City | Country */}
       <div className="grid grid-cols-2 gap-300">
-        <Controller
-          name={fieldName('city')}
-          control={control}
-          rules={ADDRESS_VALIDATION_RULES.city}
-          render={({ field }) => (
-            <FormField
-              id="city"
+        <form.Field name="city" validators={addressValidators.city}>
+          {(field) => (
+            <TextField
+              disabled={disabled}
+              field={field}
               label="Město"
-              name={field.name}
-              type="text"
-              value={field.value as string}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              errorMessage={errors?.city?.message}
               required
-              minLength={2}
-              disabled={disabled}
             />
           )}
-        />
-        <Controller
-          name={fieldName('country_code')}
-          control={control}
-          rules={ADDRESS_VALIDATION_RULES.country_code}
-          render={({ field }) => (
-            <Select
-              id="country_code"
+        </form.Field>
+        <form.Field
+          name="country_code"
+          validators={addressValidators.country_code}
+        >
+          {(field) => (
+            <SelectField
+              disabled={disabled}
+              field={field}
               label="Země"
-              size="lg"
-              clearIcon={false}
               options={COUNTRY_OPTIONS}
-              value={[(field.value as string) || 'cz']}
-              onValueChange={(details) => {
-                const value = details.value[0]
-                if (value) {
-                  field.onChange(value)
-                }
-              }}
-              disabled={disabled}
-              className="grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center"
             />
           )}
-        />
+        </form.Field>
       </div>
 
-      {/* Province | Postal code */}
       <div className="grid grid-cols-2 gap-300">
-        <Controller
-          name={fieldName('province')}
-          control={control}
-          render={({ field }) => (
-            <FormField
-              id="province"
+        <form.Field name="province">
+          {(field) => (
+            <TextField
+              disabled={disabled}
+              field={field}
               label="Kraj (volitelné)"
-              name={field.name}
-              type="text"
-              value={(field.value as string) || ''}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              disabled={disabled}
             />
           )}
-        />
-        <Controller
-          name={fieldName('postal_code')}
-          control={control}
-          rules={ADDRESS_VALIDATION_RULES.postal_code}
-          render={({ field }) => (
-            <FormField
-              id="postal_code"
+        </form.Field>
+        <form.Field
+          name="postal_code"
+          validators={addressValidators.postal_code}
+        >
+          {(field) => (
+            <TextField
+              disabled={disabled}
+              field={field}
               label="PSČ"
-              name={field.name}
-              type="text"
-              value={field.value as string}
-              onChange={(e) => {
-                // Auto-format postal code
-                field.onChange(formatPostalCode(e.target.value))
-              }}
-              onBlur={field.onBlur}
-              errorMessage={errors?.postal_code?.message}
-              required
-              pattern="^\d{3}\s?\d{2}$"
-              disabled={disabled}
               placeholder="110 00"
+              required
+              transform={formatPostalCode}
             />
           )}
-        />
+        </form.Field>
       </div>
 
-      {/* Phone */}
-      <Controller
-        name={fieldName('phone')}
-        control={control}
-        rules={ADDRESS_VALIDATION_RULES.phone}
-        render={({ field }) => (
-          <FormField
-            id="phone"
-            label="Telefon (volitelné)"
-            name={field.name}
-            type="tel"
-            value={(field.value as string) || ''}
-            onChange={(e) => {
-              // Auto-format phone number
-              field.onChange(formatPhoneNumber(e.target.value))
-            }}
-            onBlur={field.onBlur}
-            errorMessage={errors?.phone?.message}
-            pattern="^(\+420|\+421)?\s?\d{3}\s?\d{3}\s?\d{3}$"
+      <form.Field name="phone" validators={addressValidators.phone}>
+        {(field) => (
+          <TextField
             disabled={disabled}
+            field={field}
+            label="Telefon (volitelné)"
             placeholder="+420 123 456 789"
+            transform={formatPhoneNumber}
+            type="tel"
           />
         )}
-      />
+      </form.Field>
     </div>
   )
 }

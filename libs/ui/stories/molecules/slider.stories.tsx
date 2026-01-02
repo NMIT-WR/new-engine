@@ -79,18 +79,14 @@ const meta: Meta<typeof Slider> = {
       control: 'text',
       description: 'Label text displayed above the slider.',
     },
-    helperText: {
-      control: 'text',
-      description: 'Helper text displayed below the slider.',
+    validateStatus: {
+      control: 'select',
+      options: ['default', 'error', 'success', 'warning'],
+      description: 'Validation status that affects slider styling and help text display.',
     },
-    errorText: {
+    helpText: {
       control: 'text',
-      description:
-        'Error message displayed below the slider (takes precedence over helper text).',
-    },
-    error: {
-      control: 'boolean',
-      description: 'Whether the slider is in an error state.',
+      description: 'Help text displayed below the slider.',
     },
     origin: {
       control: 'radio',
@@ -138,7 +134,7 @@ export const Default: Story = {
     id: 'default-slider',
     label: 'Price Range',
     defaultValue: [20, 80],
-    helperText: 'Select your desired price range.',
+    helpText: 'Select your desired price range.',
   },
   render: (args) => (
     <div className="min-w-sm">
@@ -155,13 +151,11 @@ export const Disabled: Story = {
   },
 }
 
-export const WithError: Story = {
+export const WithValidation: Story = {
   args: {
     ...Default.args,
-    id: 'error-slider',
+    id: 'validation-slider',
     label: 'Quantity',
-    helperText: 'This helper text will be hidden by the error message.',
-    errorText: 'The selected value must be bigger than 50.',
   },
   render: (args) => {
     const [value, setValue] = useState([30])
@@ -171,7 +165,12 @@ export const WithError: Story = {
         <Slider
           {...args}
           value={value}
-          error={value[0] < 50}
+          validateStatus={value[0] < 50 ? 'error' : 'success'}
+          helpText={
+            value[0] < 50
+              ? 'The selected value must be at least 50.'
+              : 'Great! Value is within acceptable range.'
+          }
           onChange={setValue}
         />
       </div>
@@ -190,7 +189,7 @@ export const WithMarkers: Story = {
     step: 0.5,
     showMarkers: true,
     markerCount: 5,
-    helperText: 'Adjust the temperature using the slider with markers.',
+    helpText: 'Adjust the temperature using the slider with markers.',
     formatValue: (value) => `${value}°C`,
   },
   render: (args) => (
@@ -220,7 +219,7 @@ export const VerticalOrientation: Story = {
             size="sm"
             label="Volume (Small)"
             defaultValue={[20, 80]}
-            helperText="Adjust volume"
+            helpText="Adjust volume"
           />
           <Slider
             {...baseSliderProps}
@@ -232,9 +231,12 @@ export const VerticalOrientation: Story = {
             markerCount={5}
             value={values}
             onChange={handleChange}
-            error={values[0] > 50}
-            errorText="Brightness too high!"
-            helperText={values[0] <= 50 ? 'It is ok' : undefined}
+            validateStatus={values[0] > 50 ? 'warning' : 'default'}
+            helpText={
+              values[0] > 50
+                ? 'Brightness is getting high - consider reducing it'
+                : 'Current brightness level is fine'
+            }
           />
           <Slider
             {...baseSliderProps}
@@ -243,7 +245,7 @@ export const VerticalOrientation: Story = {
             size="lg"
             label="Contrast (Large)"
             defaultValue={[40, 60]}
-            helperText="Set contrast level"
+            helpText="Set contrast level"
           />
         </div>
       </VariantContainer>
@@ -256,7 +258,7 @@ export const Controlled: Story = {
     ...baseSliderProps,
     id: 'controlled-slider',
     label: 'Controlled Slider',
-    helperText: 'Values are managed by component state.',
+    helpText: 'Values are managed by component state.',
   },
   render: (args) => {
     const [values, setValues] = useState<number[]>([30, 70])
@@ -303,21 +305,21 @@ export const SingleVsMultiThumb: Story = {
           id="single-thumb"
           label="Single Thumb (Volume)"
           defaultValue={[50]}
-          helperText="One thumb for single value selection"
+          helpText="One thumb for single value selection"
         />
         <Slider
           {...baseSliderProps}
           id="double-thumb"
           label="Double Thumb (Range)"
           defaultValue={[25, 75]}
-          helperText="Two thumbs for range selection"
+          helpText="Two thumbs for range selection"
         />
         <Slider
           {...baseSliderProps}
           id="triple-thumb"
           label="Triple Thumb (Multi-range)"
           defaultValue={[20, 50, 80]}
-          helperText="Three thumbs for complex range selection"
+          helpText="Three thumbs for complex range selection"
         />
       </div>
     </VariantContainer>
@@ -334,7 +336,7 @@ export const Origin: Story = {
           origin="start"
           label="Origin: Start"
           defaultValue={[50]}
-          helperText="Range starts from the beginning"
+          helpText="Range starts from the beginning"
         />
         <Slider
           {...baseSliderProps}
@@ -342,7 +344,7 @@ export const Origin: Story = {
           origin="center"
           label="Origin: Center"
           defaultValue={[50]}
-          helperText="Range starts from the center"
+          helpText="Range starts from the center"
         />
         <Slider
           {...baseSliderProps}
@@ -350,7 +352,7 @@ export const Origin: Story = {
           origin="end"
           label="Origin: End"
           defaultValue={[50]}
-          helperText="Range starts from the end"
+          helpText="Range starts from the end"
         />
       </div>
     </VariantContainer>
@@ -369,7 +371,7 @@ export const ThumbAlignment: Story = {
           markerCount={5}
           label="Thumb Alignment: Center (default)"
           defaultValue={[25, 75]}
-          helperText="Thumbs can go to track edges"
+          helpText="Thumbs can go to track edges"
         />
         <Slider
           {...baseSliderProps}
@@ -379,7 +381,7 @@ export const ThumbAlignment: Story = {
           markerCount={5}
           label="Thumb Alignment: Contain"
           defaultValue={[25, 75]}
-          helperText="Thumbs stay within track bounds"
+          helpText="Thumbs stay within track bounds"
         />
       </div>
     </VariantContainer>
@@ -399,7 +401,7 @@ export const MinStepsBetweenThumbs: Story = {
             label="No Minimum Steps"
             defaultValue={[45, 55]}
             minStepsBetweenThumbs={0}
-            helperText="Thumbs can touch each other"
+            helpText="Thumbs can touch each other"
           />
           <Slider
             {...baseSliderProps}
@@ -408,7 +410,7 @@ export const MinStepsBetweenThumbs: Story = {
             value={values}
             onChange={setValues}
             minStepsBetweenThumbs={10}
-            helperText={`Current gap: ${values[1] - values[0]} units (min: 10)`}
+            helpText={`Current gap: ${values[1] - values[0]} units (min: 10)`}
           />
           <Slider
             {...baseSliderProps}
@@ -416,7 +418,7 @@ export const MinStepsBetweenThumbs: Story = {
             label="Minimum 20 Steps Between Thumbs"
             defaultValue={[20, 80]}
             minStepsBetweenThumbs={20}
-            helperText="Enforces 20 unit minimum gap"
+            helpText="Enforces 20 unit minimum gap"
           />
         </div>
       </VariantContainer>
@@ -434,7 +436,7 @@ export const RTLSupport: Story = {
           dir="ltr"
           label="LTR Direction (English)"
           defaultValue={[20, 80]}
-          helperText="Left to right direction"
+          helpText="Left to right direction"
         />
         <Slider
           {...baseSliderProps}
@@ -442,7 +444,7 @@ export const RTLSupport: Story = {
           dir="rtl"
           label="RTL Direction (العربية)"
           defaultValue={[20, 80]}
-          helperText="Right to left direction"
+          helpText="Right to left direction"
         />
       </div>
     </VariantContainer>
@@ -463,7 +465,7 @@ export const CustomFormatting: Story = {
           defaultValue={[200, 800]}
           formatValue={(v) => `$${v}`}
           formatRangeText={(values) => `Budget: $${values[0]} - $${values[1]}`}
-          helperText="Select your price range"
+          helpText="Select your price range"
         />
         <Slider
           {...baseSliderProps}
@@ -475,7 +477,7 @@ export const CustomFormatting: Story = {
           defaultValue={[9, 17]}
           formatValue={(v) => `${v}:00`}
           formatRangeText={(values) => `${values[0]}:00 - ${values[1]}:00`}
-          helperText="Select working hours"
+          helpText="Select working hours"
         />
         <Slider
           {...baseSliderProps}
@@ -487,7 +489,7 @@ export const CustomFormatting: Story = {
           defaultValue={[10, 50]}
           formatValue={(v) => `${v}%`}
           formatRangeText={(values) => `${values[0]}% to ${values[1]}% off`}
-          helperText="Set discount percentage range"
+          helpText="Set discount percentage range"
         />
       </div>
     </VariantContainer>
@@ -498,7 +500,7 @@ export const AllVariants: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Sizes">
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             size="sm"
@@ -506,7 +508,7 @@ export const AllVariants: Story = {
             defaultValue={[25, 75]}
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             size="md"
@@ -514,7 +516,7 @@ export const AllVariants: Story = {
             defaultValue={[30, 70]}
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             size="lg"
@@ -525,14 +527,14 @@ export const AllVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="States">
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Normal"
             defaultValue={[20, 80]}
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Disabled"
@@ -540,7 +542,7 @@ export const AllVariants: Story = {
             disabled
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Read-only"
@@ -548,19 +550,37 @@ export const AllVariants: Story = {
             readOnly
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Error"
             defaultValue={[20, 80]}
-            error
-            errorText="Invalid range selected"
+            validateStatus="error"
+            helpText="Invalid range selected"
+          />
+        </div>
+        <div className="w-lg min-w-xs">
+          <Slider
+            {...baseSliderProps}
+            label="Success"
+            defaultValue={[40, 60]}
+            validateStatus="success"
+            helpText="Perfect range selected!"
+          />
+        </div>
+        <div className="w-lg min-w-xs">
+          <Slider
+            {...baseSliderProps}
+            label="Warning"
+            defaultValue={[10, 90]}
+            validateStatus="warning"
+            helpText="Range is quite wide - consider narrowing it"
           />
         </div>
       </VariantGroup>
 
       <VariantGroup title="Features">
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="With Markers"
@@ -569,7 +589,7 @@ export const AllVariants: Story = {
             markerCount={5}
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="With Value Text"
@@ -577,32 +597,32 @@ export const AllVariants: Story = {
             showValueText
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="With Helper Text"
             defaultValue={[35, 65]}
-            helperText="Adjust the range"
+            helpText="Adjust the range"
           />
         </div>
       </VariantGroup>
 
       <VariantGroup title="Thumb Variations">
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Single Thumb"
             defaultValue={[50]}
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Double Thumb"
             defaultValue={[25, 75]}
           />
         </div>
-        <div className="w-full min-w-xs">
+        <div className="w-lg min-w-xs">
           <Slider
             {...baseSliderProps}
             label="Triple Thumb"

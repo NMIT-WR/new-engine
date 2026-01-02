@@ -2,7 +2,6 @@ import type { HttpTypes } from "@medusajs/types"
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
-import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
 import type { ReactNode } from "react"
 import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
 import type { ShippingMethodData } from "@/services/cart-service"
@@ -93,19 +92,7 @@ export function ShippingMethodSection({
     isPPLParcelOption(selectedOption.name) &&
     selectedAccessPoint
 
-  if (shipping.isLoadingShipping) {
-    content = (
-      <output
-        aria-busy="true"
-        aria-label="Načítání způsobů dopravy"
-        className="grid grid-cols-1 gap-200 md:grid-cols-2"
-      >
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <Skeleton.Rectangle key={i} style={{ height: "72px" }} />
-        ))}
-      </output>
-    )
-  } else if (shipping.shippingOptions && shipping.shippingOptions.length > 0) {
+  if (shipping.shippingOptions && shipping.shippingOptions.length > 0) {
     content = (
       <div
         aria-label="Vyberte způsob dopravy"

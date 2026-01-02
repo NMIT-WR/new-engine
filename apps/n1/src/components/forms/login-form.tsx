@@ -1,15 +1,18 @@
-import { useLogin } from '@/hooks/use-login'
-import { useAuthToast } from '@/hooks/use-toast'
-import { AUTH_MESSAGES } from '@/lib/auth-messages'
-import { useAnalytics } from '@/providers/analytics-provider'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Checkbox } from '@techsio/ui-kit/molecules/checkbox'
-import Link from 'next/link'
-import { type FormEvent, useRef } from 'react'
-import { ErrorBanner } from '../atoms/error-banner'
-import { FormField } from '../molecules/form-field'
+"use client"
 
-interface LoginFormProps {
+import { useForm } from "@tanstack/react-form"
+import { Button } from "@ui/atoms/button"
+import { Checkbox } from "@ui/atoms/checkbox"
+import Link from "next/link"
+import { useRef, useState } from "react"
+import { TextField } from "@/components/forms/fields/text-field"
+import { useLogin } from "@/hooks/use-login"
+import { useAuthToast } from "@/hooks/use-toast"
+import { AUTH_MESSAGES } from "@/lib/auth-messages"
+import { loginValidators } from "@/lib/form-validators"
+import { useAnalytics } from "@/providers/analytics-provider"
+
+type LoginFormProps = {
   onSuccess?: () => void
   toggle?: () => void
   showRegisterLink?: boolean
@@ -17,113 +20,126 @@ interface LoginFormProps {
   className?: string
 }
 
-export const LoginForm = ({
+type LoginFormData = {
+  email: string
+  password: string
+}
+
+export function LoginForm({
   onSuccess,
   toggle,
   showRegisterLink,
   showForgotPasswordLink,
-  className,
-}: LoginFormProps) => {
-  const formRef = useRef<HTMLFormElement>(null)
+}: LoginFormProps) {
   const toast = useAuthToast()
   const analytics = useAnalytics()
-  const emailRef = useRef<string>('')
+  const formRef = useRef<typeof form | null>(null)
+  const [backendError, setBackendError] = useState<string>()
+
+  const defaultValues: LoginFormData = {
+    email: "",
+    password: "",
+  }
 
   const login = useLogin({
     onSuccess: () => {
-      // Track customer identification in Leadhub
-      if (emailRef.current) {
+      if (!formRef.current) return
+
+      const email = formRef.current.state.values.email
+      if (email) {
         analytics.trackIdentify({
-          email: emailRef.current,
+          email,
           subscribe: [],
         })
       }
 
       toast.loginSuccess()
-      formRef.current?.reset()
+      formRef.current.reset()
+      setBackendError(undefined)
       onSuccess?.()
     },
     onError: (error) => {
-      console.error('Login failed:', error.message)
+      console.error("Login failed:", error.message)
+      setBackendError(AUTH_MESSAGES.INVALID_CREDENTIALS)
     },
   })
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
+  const form = useForm({
+    defaultValues,
+    onSubmit: ({ value }) => {
+      login.mutate({
+        email: value.email,
+        password: value.password,
+      })
+    },
+  })
 
-    // Store email for Leadhub tracking after successful login
-    emailRef.current = email
-
-    login.mutate({
-      email,
-      password: formData.get('password') as string,
-    })
-  }
+  formRef.current = form
 
   return (
     <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      noValidate
       className="mt-100 flex flex-col gap-100"
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
     >
-      {login.error && (
-        <ErrorBanner
-          title={AUTH_MESSAGES.LOGIN_FAILED}
-          message={login.error.message}
-        />
-      )}
-      <FormField
-        id="login-email"
-        name="email"
-        type="email"
-        label="E-mailová adresa"
-        placeholder="vas@email.cz"
-        required
-        errorMessage={AUTH_MESSAGES.EMAIL_REQUIRED}
-        disabled={login.isPending}
-        autoComplete="email"
-      />
 
-      <FormField
-        id="login-password"
-        name="password"
-        type="password"
-        label="Heslo"
-        placeholder="••••••••"
-        required
-        minLength={8}
-        errorMessage={AUTH_MESSAGES.PASSWORD_TOO_SHORT}
-        disabled={login.isPending}
-        autoComplete="current-password"
-      />
+      <form.Field name="email" validators={loginValidators.email}>
+        {(field) => (
+          <TextField
+            autoComplete="email"
+            disabled={login.isPending}
+            field={field}
+            label="E-mailová adresa"
+            placeholder="vas@email.cz"
+            required
+            type="email"
+          />
+        )}
+      </form.Field>
+
+      <form.Field name="password" validators={loginValidators.password}>
+        {(field) => (
+          <TextField
+            autoComplete="current-password"
+            externalError={backendError}
+            onExternalErrorClear={() => setBackendError(undefined)}
+            disabled={login.isPending}
+            field={field}
+            label="Heslo"
+            placeholder="••••••••"
+            required
+            type="password"
+          />
+        )}
+      </form.Field>
 
       {showForgotPasswordLink && (
-        <div className="enter flex items-center gap-150">
-          <Checkbox name="remember" disabled={login.isPending} />
+        <label className="enter flex items-center gap-150">
+          <Checkbox disabled={login.isPending} name="remember" />
           <span className="text-sm">Zapamatovat</span>
-        </div>
+        </label>
       )}
 
       <Button
-        type="submit"
-        variant="primary"
-        theme="solid"
-        size="sm"
         block
         disabled={login.isPending}
+        size="sm"
+        theme="solid"
+        type="submit"
+        variant="primary"
       >
-        {login.isPending ? 'Přihlašování...' : 'Přihlásit se'}
+        {login.isPending ? "Přihlašování..." : "Přihlásit se"}
       </Button>
 
       {(showRegisterLink || showForgotPasswordLink) && (
         <div className="flex items-center justify-between text-center text-fg-primary text-sm">
           {showForgotPasswordLink && (
             <Link
-              href="/zapomenute-heslo"
               className="font-medium hover:underline"
+              href="/zapomenute-heslo"
               onClick={toggle}
             >
               Zapomenuté heslo
@@ -131,8 +147,8 @@ export const LoginForm = ({
           )}
           {showRegisterLink && (
             <Link
-              href="/registrace"
               className="font-medium hover:underline"
+              href="/registrace"
               onClick={toggle}
             >
               Zaregistrovat se
