@@ -34,6 +34,10 @@ const meta: Meta<typeof FormTextarea> = {
       options: ['default', 'error', 'success', 'warning'],
       description: 'Validation state that affects textarea style and helper text',
     },
+    showHelpTextIcon: {
+      control: 'boolean',
+      description: 'Whether to show an icon with the help text',
+    },
     resize: {
       control: 'select',
       options: ['none', 'both', 'x', 'y'],
@@ -94,6 +98,16 @@ export const AllVariants: Story = {
       <VariantGroup title="Validation States">
         <div className="w-80">
           <FormTextarea
+            id="default-textarea"
+            label="Default state"
+            placeholder="Enter text..."
+            validateStatus="default"
+            helpText="This is default help text"
+            rows={3}
+          />
+        </div>
+        <div className="w-80">
+          <FormTextarea
             id="success-textarea"
             label="Success state"
             placeholder="Enter message..."
@@ -137,10 +151,9 @@ export const AllVariants: Story = {
         <div className="w-80">
           <FormTextarea
             id="extra-textarea"
-            label="With helper and extra text"
+            label="With validation message"
             placeholder="Enter comment..."
             helpText="Please be respectful"
-            extraText="Maximum 500 characters"
             validateStatus="default"
             rows={3}
           />
@@ -248,6 +261,78 @@ export const AllVariants: Story = {
         </div>
       </VariantGroup>
     </VariantContainer>
+  ),
+}
+
+// Validation States - Dedicated story showing all 4 validation states
+export const ValidationStates: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <FormTextarea
+        id="default-validation"
+        label="Default State"
+        placeholder="Enter your message..."
+        validateStatus="default"
+        helpText="This is default help text"
+        rows={3}
+      />
+      <FormTextarea
+        id="error-validation"
+        label="Error State"
+        placeholder="Enter your message..."
+        validateStatus="error"
+        helpText="Message is too short (min 10 characters)"
+        rows={3}
+      />
+      <FormTextarea
+        id="success-validation"
+        label="Success State"
+        placeholder="Enter your message..."
+        validateStatus="success"
+        helpText="Message saved successfully"
+        rows={3}
+      />
+      <FormTextarea
+        id="warning-validation"
+        label="Warning State"
+        placeholder="Enter your message..."
+        validateStatus="warning"
+        helpText="Message contains sensitive information"
+        rows={3}
+      />
+    </div>
+  ),
+}
+
+// Sizes - Dedicated story showing all size variants
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-80">
+      <FormTextarea
+        id="small-size"
+        label="Small Size"
+        placeholder="Enter text..."
+        size="sm"
+        helpText="Small textarea variant"
+        rows={3}
+      />
+      <FormTextarea
+        id="medium-size"
+        label="Medium Size (Default)"
+        placeholder="Enter text..."
+        size="md"
+        helpText="Medium textarea variant"
+        rows={3}
+      />
+      <FormTextarea
+        id="large-size"
+        label="Large Size"
+        placeholder="Enter text..."
+        size="lg"
+        helpText="Large textarea variant"
+        rows={3}
+      />
+    </div>
   ),
 }
 
@@ -361,7 +446,6 @@ export const ContactForm: Story = {
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             rows={6}
             helpText="Please provide as much detail as possible"
-            extraText="We typically respond within 24 hours"
           />
 
           <FormTextarea

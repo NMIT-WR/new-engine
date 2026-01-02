@@ -13,13 +13,16 @@
       "import": "./dist/types/zag.js"
     },
     "./tokens": {
-      "import": "./src/tokens/tokens-only.css"
+      "style": "./src/tokens/tokens-only.css",
+      "default": "./src/tokens/tokens-only.css"
     },
     "./tokens-with-tailwind": {
-      "import": "./src/tokens/index.css"
+      "style": "./src/tokens/index.css",
+      "default": "./src/tokens/index.css"
     },
     "./tokens/*": {
-      "import": "./src/tokens/*.css"
+      "style": "./src/tokens/*.css",
+      "default": "./src/tokens/*.css"
     },
     "./atoms/*": {
       "types": "./dist/src/atoms/*.d.ts",
