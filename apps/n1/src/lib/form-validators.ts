@@ -80,16 +80,16 @@ export const createConfirmPasswordValidator = () => ({
 // ============================================================================
 
 export const emailValidator = {
-  onChange: ({ value }: { value: string }) => {
+  onChange: ({ value }: { value: string | undefined }) => {
     if (!value?.trim()) {
       return VALIDATION_MESSAGES.email.required
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       return VALIDATION_MESSAGES.email.invalid
     }
-    return undefined
+    return
   },
-}
+} as const
 
 export const loginPasswordValidator = {
   onSubmit: ({ value }: { value: string }) => {
