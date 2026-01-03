@@ -1,17 +1,14 @@
-import { CACHE_TIMES, TAX_RATE } from '@/lib/constants'
-import { CartServiceError } from '@/lib/errors'
-import { queryKeys } from '@/lib/query-keys'
+import type { HttpTypes } from "@medusajs/types"
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import { CACHE_TIMES, TAX_RATE } from "@/lib/constants"
+import { CartServiceError } from "@/lib/errors"
+import { queryKeys } from "@/lib/query-keys"
 import {
   type Cart,
   getShippingOptions,
+  type ShippingMethodData,
   setShippingMethod,
 } from '@/services/cart-service'
-import type { HttpTypes } from '@medusajs/types'
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query'
 import { useCartToast } from './use-toast'
 
 type CartMutationError = {
@@ -23,13 +20,20 @@ type CartMutationContext = {
   previousCart?: Cart
 }
 
+type SetShippingVariables = {
+  optionId: string
+  data?: ShippingMethodData
+}
+
 export type UseCheckoutShippingReturn = {
   shippingOptions?: HttpTypes.StoreCartShippingOption[]
-  setShipping: (optionId: string) => void
+  setShipping: (optionId: string, data?: ShippingMethodData) => void
   isSettingShipping: boolean
   canLoadShipping: boolean
   canSetShipping: boolean
   selectedShippingMethodId?: string
+  /** Currently selected shipping option (derived from shippingOptions + selectedShippingMethodId) */
+  selectedOption?: HttpTypes.StoreCartShippingOption
 }
 
 export function useCheckoutShipping(
@@ -57,19 +61,19 @@ export function useCheckoutShipping(
   })
 
   // Set shipping method mutation
-  const { mutate: setShipping, isPending: isSettingShipping } = useMutation<
+  const { mutate: mutateShipping, isPending: isSettingShipping } = useMutation<
     Cart,
     CartMutationError,
-    string,
+    SetShippingVariables,
     CartMutationContext
   >({
-    mutationFn: (optionId: string) => {
+    mutationFn: ({ optionId, data }) => {
       if (!cartId) {
-        throw new CartServiceError('Cart ID je povinné', 'VALIDATION_ERROR')
+        throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
       }
-      return setShippingMethod(cartId, optionId)
+      return setShippingMethod(cartId, optionId, data)
     },
-    onMutate: async (optionId: string) => {
+    onMutate: async ({ optionId }) => {
       // Cancel outgoing queries to prevent race conditions
       await queryClient.cancelQueries({ queryKey: queryKeys.cart.active() })
 
@@ -93,7 +97,7 @@ export function useCheckoutShipping(
             shipping_methods: [
               {
                 id: `optimistic_${Date.now()}`,
-                cart_id: cartId || '',
+                cart_id: cartId || "",
                 shipping_option_id: optionId,
                 name: selectedOption.name,
                 amount: selectedOption.amount,
@@ -108,8 +112,8 @@ export function useCheckoutShipping(
           // Immediately update UI
           queryClient.setQueryData(queryKeys.cart.active(), optimisticCart)
 
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[useCheckoutShipping] Optimistic update applied')
+          if (process.env.NODE_ENV === "development") {
+            console.log("[useCheckoutShipping] Optimistic update applied")
           }
         }
       }
@@ -120,8 +124,8 @@ export function useCheckoutShipping(
       // Replace optimistic data with real server data
       queryClient.setQueryData(queryKeys.cart.active(), updatedCart)
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useCheckoutShipping] Shipping method confirmed:', {
+      if (process.env.NODE_ENV === "development") {
+        console.log("[useCheckoutShipping] Shipping method confirmed:", {
           methodId: updatedCart.shipping_methods?.[0]?.shipping_option_id,
           total: updatedCart.shipping_total,
         })
@@ -136,8 +140,8 @@ export function useCheckoutShipping(
       // Show error toast to user
       toast.shippingError()
 
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[useCheckoutShipping] Failed to set shipping:', error)
+      if (process.env.NODE_ENV === "development") {
+        console.error("[useCheckoutShipping] Failed to set shipping:", error)
       }
     },
     onSettled: () => {
@@ -150,6 +154,16 @@ export function useCheckoutShipping(
   const selectedShippingMethodId =
     cart?.shipping_methods?.[0]?.shipping_option_id
 
+  // Derive selected option from shippingOptions + selectedShippingMethodId
+  const selectedOption = shippingOptions?.find(
+    (opt) => opt.id === selectedShippingMethodId
+  )
+
+  // Wrapper for easier API - accepts optionId and optional data
+  const setShipping = (optionId: string, data?: ShippingMethodData) => {
+    mutateShipping({ optionId, data })
+  }
+
   return {
     shippingOptions,
     setShipping,
@@ -157,5 +171,6 @@ export function useCheckoutShipping(
     canLoadShipping,
     canSetShipping,
     selectedShippingMethodId,
+    selectedOption,
   }
 }

@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Dialog } from '@techsio/ui-kit/molecules/dialog'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { PplWidget, type PplAccessPointData } from './ppl-widget'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Dialog } from "@techsio/ui-kit/molecules/dialog"
+import { type PplAccessPointData, PplWidget } from "./ppl-widget"
 
-interface PplPickupDialogProps {
+type PplPickupDialogProps = {
   /** Whether dialog is open (controlled) */
   open: boolean
   /** Current selected access point data */
@@ -23,16 +23,7 @@ interface PplPickupDialogProps {
  * Uses Dialog from @libs/ui/molecules/dialog to display
  * PPL widget in a modal overlay for better UX
  *
- * @example
- * ```tsx
- * <PplPickupDialog
- *   open={showDialog}
- *   selectedPoint={accessPoint}
- *   onSelect={(data) => handleAccessPointSelect(data)}
- *   onClose={() => setShowDialog(false)}
- *   address="Praha"
- * />
- * ```
+ * Widget remounts automatically via conditional render {open && ...}
  */
 export function PplPickupDialog({
   open,
@@ -42,9 +33,9 @@ export function PplPickupDialog({
   address,
 }: PplPickupDialogProps) {
   const handleSelect = (data: PplAccessPointData) => {
-    console.log('[PplPickupDialog] Access point selected:', data)
-
-    // Pass data to parent (parent will close dialog)
+    if (process.env.NODE_ENV === "development") {
+      console.log("[PplPickupDialog] Access point selected:", data)
+    }
     onSelect(data)
   }
 
@@ -56,29 +47,28 @@ export function PplPickupDialog({
 
   return (
     <Dialog
-      open={open}
-      onOpenChange={handleOpenChange}
-      customTrigger
-      placement="center"
-      size="xl"
-      title="Vyberte výdejní místo PPL"
-      description="Najděte nejbližší ParcelShop nebo ParcelBox pro vyzvednutí zásilky"
-      closeOnEscape={true}
-      closeOnInteractOutside={false}
       actions={
-        <Button variant="secondary" theme="outlined" onClick={onClose}>
+        <Button onClick={onClose} theme="outlined" variant="secondary">
           Zrušit
         </Button>
       }
+      className="rounded-md border-border-secondary shadow-none"
+      customTrigger
+      description="Najděte nejbližší ParcelShop nebo ParcelBox pro vyzvednutí zásilky"
+      onOpenChange={handleOpenChange}
+      open={open}
+      title="Vyberte výdejní místo PPL"
     >
-      <div className="min-h-[500px] w-[850px]">
-        <PplWidget
-          onSelect={handleSelect}
-          country="CZ"
-          mode="default"
-          address={address}
-          selectedCode={selectedPoint?.code}
-        />
+      <div>
+        {open && (
+          <PplWidget
+            address={address}
+            country="CZ"
+            mode="default"
+            onSelect={handleSelect}
+            selectedCode={selectedPoint?.code}
+          />
+        )}
       </div>
     </Dialog>
   )

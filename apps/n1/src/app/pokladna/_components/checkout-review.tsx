@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import type { StoreOrder } from '@/services/order-service'
-import { formatDateString } from '@/utils/format/format-date'
+import { Badge } from "@ui/atoms/badge"
+import { Button } from "@ui/atoms/button"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import type { StoreOrder } from "@/services/order-service"
+import { formatDateString } from "@/utils/format/format-date"
 import {
   getOrderStatusColor,
   getOrderStatusLabel,
-} from '@/utils/format/format-order-status'
-import { formatAmount } from '@/utils/format/format-product'
-import { Badge } from '@ui/atoms/badge'
-import { Button } from '@ui/atoms/button'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { PriceSummaryRow } from './price-summary-row'
+} from "@/utils/format/format-order-status"
+import { formatAmount } from "@/utils/format/format-product"
+import { PriceSummaryRow } from "./price-summary-row"
 
 interface CheckoutReviewProps {
   order: StoreOrder
@@ -43,11 +43,11 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
             </h1>
             <p className="mt-100 text-fg-secondary text-sm">
               {formatDateString(order.created_at as string, {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </p>
           </div>
@@ -68,20 +68,20 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
         </h2>
         <div className="[&>*+*]:mt-300">
           {order.items?.map((item) => (
-            <div key={item.id} className="flex gap-200">
+            <div className="flex gap-200" key={item.id}>
               {item.thumbnail && (
                 <Image
-                  src={item.thumbnail}
                   alt={item.title}
-                  width={64}
-                  height={64}
                   className="h-16 w-16 rounded object-cover"
+                  height={64}
+                  src={item.thumbnail}
+                  width={64}
                 />
               )}
               <div className="flex flex-1 flex-col">
                 <Link
-                  href={`/produkt/${item.product_handle}?variant=${item.subtitle}`}
                   className="font-medium text-fg-primary text-sm underline hover:no-underline"
+                  href={`/produkt/${item.product_handle}?variant=${item.subtitle}`}
                 >
                   {item.title}
                 </Link>
@@ -112,7 +112,7 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
           </h2>
           <div className="text-fg-secondary text-sm">
             <p className="font-medium text-fg-primary">
-              {order.shipping_address.first_name}{' '}
+              {order.shipping_address.first_name}{" "}
               {order.shipping_address.last_name}
             </p>
             {order.shipping_address.company && (
@@ -123,7 +123,7 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
               <p>{order.shipping_address.address_2}</p>
             )}
             <p>
-              {order.shipping_address.city},{' '}
+              {order.shipping_address.city},{" "}
               {order.shipping_address.postal_code}
             </p>
             <p className="uppercase">{order.shipping_address.country_code}</p>
@@ -163,16 +163,16 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
         {/* Action Buttons */}
         <div className="mt-500 flex gap-300">
           <Button
-            onClick={() => router.push('/')}
-            variant="secondary"
             className="flex-1"
+            onClick={() => router.push("/")}
+            variant="secondary"
           >
             Zpět na hlavní stránku
           </Button>
           <Button
-            onClick={() => router.push('/orders')}
-            variant="primary"
             className="flex-1"
+            onClick={() => router.push("/orders")}
+            variant="primary"
           >
             Moje objednávky
           </Button>

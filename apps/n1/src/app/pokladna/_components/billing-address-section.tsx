@@ -1,4 +1,5 @@
 "use client"
+
 import { SelectField } from "@/components/forms/fields/select-field"
 import { TextField } from "@/components/forms/fields/text-field"
 import { COUNTRY_OPTIONS } from "@/lib/constants"
@@ -13,7 +14,7 @@ import {
 import { AddressPicker } from "./address-picker"
 import { SaveAddressPanel } from "./save-address-panel"
 
-export function ShippingAddressSection() {
+export function BillingAddressSection() {
   const { customer, selectedAddressId, setSelectedAddressId, isCompleting } =
     useCheckoutContext()
   const form = useCheckoutForm()
@@ -21,7 +22,7 @@ export function ShippingAddressSection() {
   const addresses = customer?.addresses || []
 
   const handleAddressSelect = (address: AddressFormData, id: string) => {
-    form.setFieldValue("shippingAddress", address)
+    form.setFieldValue("billingAddress", address)
     setSelectedAddressId(id)
   }
 
@@ -29,7 +30,7 @@ export function ShippingAddressSection() {
     <section className="rounded border border-border-secondary bg-surface/70 p-400">
       <div className="mb-400 space-y-300">
         <h2 className="font-semibold text-fg-primary text-lg">
-          Doručovací adresa
+          Fakturační adresa
         </h2>
 
         {addresses.length > 0 && (
@@ -45,7 +46,7 @@ export function ShippingAddressSection() {
       <div className="flex flex-col gap-400">
         <div className="grid grid-cols-2 gap-300">
           <form.Field
-            name="shippingAddress.first_name"
+            name="billingAddress.first_name"
             validators={addressValidators.first_name}
           >
             {(field) => (
@@ -58,7 +59,7 @@ export function ShippingAddressSection() {
             )}
           </form.Field>
           <form.Field
-            name="shippingAddress.last_name"
+            name="billingAddress.last_name"
             validators={addressValidators.last_name}
           >
             {(field) => (
@@ -72,7 +73,7 @@ export function ShippingAddressSection() {
           </form.Field>
         </div>
 
-        <form.Field name="shippingAddress.company">
+        <form.Field name="billingAddress.company">
           {(field) => (
             <TextField
               disabled={isCompleting}
@@ -83,7 +84,7 @@ export function ShippingAddressSection() {
         </form.Field>
 
         <form.Field
-          name="shippingAddress.address_1"
+          name="billingAddress.address_1"
           validators={addressValidators.address_1}
         >
           {(field) => (
@@ -97,7 +98,7 @@ export function ShippingAddressSection() {
           )}
         </form.Field>
 
-        <form.Field name="shippingAddress.address_2">
+        <form.Field name="billingAddress.address_2">
           {(field) => (
             <TextField
               disabled={isCompleting}
@@ -109,7 +110,7 @@ export function ShippingAddressSection() {
 
         <div className="grid grid-cols-2 gap-300">
           <form.Field
-            name="shippingAddress.city"
+            name="billingAddress.city"
             validators={addressValidators.city}
           >
             {(field) => (
@@ -122,7 +123,7 @@ export function ShippingAddressSection() {
             )}
           </form.Field>
           <form.Field
-            name="shippingAddress.country_code"
+            name="billingAddress.country_code"
             validators={addressValidators.country_code}
           >
             {(field) => (
@@ -137,7 +138,7 @@ export function ShippingAddressSection() {
         </div>
 
         <div className="grid grid-cols-2 gap-300">
-          <form.Field name="shippingAddress.province">
+          <form.Field name="billingAddress.province">
             {(field) => (
               <TextField
                 disabled={isCompleting}
@@ -147,7 +148,7 @@ export function ShippingAddressSection() {
             )}
           </form.Field>
           <form.Field
-            name="shippingAddress.postal_code"
+            name="billingAddress.postal_code"
             validators={addressValidators.postal_code}
           >
             {(field) => (
@@ -164,7 +165,7 @@ export function ShippingAddressSection() {
         </div>
 
         <form.Field
-          name="shippingAddress.phone"
+          name="billingAddress.phone"
           validators={addressValidators.phone}
         >
           {(field) => (

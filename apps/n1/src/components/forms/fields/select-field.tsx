@@ -29,6 +29,7 @@ export function SelectField({
 }: SelectFieldProps) {
   const errors = field.state.meta.errors
   const showErrors = field.state.meta.isBlurred && errors.length > 0
+  const validateStatus = showErrors ? "error" : "default"
 
   const handleValueChange = (details: { value: string[] }) => {
     const value = details.value[0]
@@ -41,19 +42,34 @@ export function SelectField({
   }
 
   return (
-      <Select
-        className={`grid grid-rows-[auto_1fr] [&_button]:h-full [&_button]:items-center ${className ?? ""}`}
-        clearIcon={false}
-        disabled={disabled}
-        id={field.name}
-        label={label}
-        onValueChange={handleValueChange}
-        options={options}
-        placeholder={placeholder}
-        required={required}
-        size="lg"
-        value={[field.state.value || ""]}
-        errorText={showErrors && errors[0]}
-      />
+    <Select
+      items={options}
+      disabled={disabled}
+      id={field.name}
+      onValueChange={handleValueChange}
+      required={required}
+      size="lg"
+      validateStatus={validateStatus}
+      value={[field.state.value || ""]}
+      className={className}
+    >
+      <Select.Label>{label}</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder={placeholder} />
+        </Select.Trigger>
+      </Select.Control>
+      <Select.Positioner>
+        <Select.Content>
+          {options.map((item) => (
+            <Select.Item key={item.value} item={item}>
+              <Select.ItemText />
+              <Select.ItemIndicator />
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Positioner>
+      {showErrors && <Select.StatusText>{errors[0]}</Select.StatusText>}
+    </Select>
   )
 }
