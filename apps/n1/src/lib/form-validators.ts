@@ -87,9 +87,9 @@ export const emailValidator = {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       return VALIDATION_MESSAGES.email.invalid
     }
-    return
+    return undefined
   },
-} as const
+}
 
 export const loginPasswordValidator = {
   onSubmit: ({ value }: { value: string }) => {

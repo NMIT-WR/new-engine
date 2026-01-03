@@ -71,7 +71,6 @@ export function TextField({
         aria-describedby={showError ? errorId : undefined}
         helpText={showError && errorMessage}
         validateStatus={showError ? "error" : "default"}
-        showIcon={false}
       />
   )
 }

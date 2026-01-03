@@ -21,38 +21,15 @@ export function AddressPicker({
   onSelect,
   disabled,
 }: AddressPickerProps) {
-  const options = useMemo(
+  const items = useMemo(
     () =>
-      addresses.map((address, index) => {
-        const isDefault = index === 0
-        const label = (
-          <div
-            className="flex w-full items-center justify-between gap-2"
-            key={address.id}
-          >
-            <div className="flex flex-col gap-0.5 overflow-hidden">
-              <span className="truncate text-fg-secondary text-sm">
-                {address.city}, {formatPostalCode(address.postal_code ?? "")}
-              </span>
-              <span className="truncate font-normal text-fg-secondary text-xs">
-                {address.address_1}
-                {address.address_2 ? `, ${address.address_2}` : ""}
-              </span>
-            </div>
-            {isDefault && (
-              <Badge className="shrink-0 text-3xs" variant="info">
-                Výchozí
-              </Badge>
-            )}
-          </div>
-        )
-
-        return {
-          label,
-          value: address.id,
-          displayValue: `${address.city}, ${address.address_1}`,
-        }
-      }),
+      addresses.map((address, index) => ({
+        value: address.id,
+        label: `${address.city}, ${address.address_1}`,
+        displayValue: `${address.city}, ${address.address_1}`,
+        isDefault: index === 0,
+        address,
+      })),
     [addresses]
   )
 
@@ -64,8 +41,8 @@ export function AddressPicker({
     <div className="flex flex-col gap-2">
       <h2 className="text-sm">Vyberte z vašich adres</h2>
       <Select
+        items={items}
         className="w-full"
-        clearIcon={false}
         disabled={disabled}
         onValueChange={(details) => {
           const newId = details.value[0]
@@ -77,11 +54,40 @@ export function AddressPicker({
             }
           }
         }}
-        options={options}
-        placeholder="Vyberte adresu"
         size="lg"
         value={selectedId ? [selectedId] : []}
-      />
+      >
+        <Select.Control>
+          <Select.Trigger>
+            <Select.ValueText placeholder="Vyberte adresu" />
+          </Select.Trigger>
+        </Select.Control>
+        <Select.Positioner>
+          <Select.Content>
+            {items.map((item) => (
+              <Select.Item key={item.value} item={item}>
+                <div className="flex w-full items-center justify-between gap-2">
+                  <div className="flex flex-col gap-0.5 overflow-hidden">
+                    <span className="truncate text-fg-secondary text-sm">
+                      {item.address.city}, {formatPostalCode(item.address.postal_code ?? "")}
+                    </span>
+                    <span className="truncate font-normal text-fg-secondary text-xs">
+                      {item.address.address_1}
+                      {item.address.address_2 ? `, ${item.address.address_2}` : ""}
+                    </span>
+                  </div>
+                  {item.isDefault && (
+                    <Badge className="shrink-0 text-3xs" variant="info">
+                      Výchozí
+                    </Badge>
+                  )}
+                </div>
+                <Select.ItemIndicator />
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Select>
     </div>
   )
 }

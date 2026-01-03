@@ -65,10 +65,6 @@ function CheckoutContent() {
       currency,
       numItems: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
       productIds: items.map((item) => item.variant_id || ""),
-      items: items.map((item) => ({
-        productId: item.variant_id || "",
-        quantity: item.quantity || 1,
-      })),
     })
   }, [cart?.id, hasItems, analytics])
 
