@@ -1,5 +1,5 @@
 import type { HttpTypes } from "@medusajs/types"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { CACHE_TIMES, TAX_RATE } from "@/lib/constants"
 import { CartServiceError } from "@/lib/errors"
 import { queryKeys } from "@/lib/query-keys"
@@ -9,12 +9,6 @@ import {
   type ShippingMethodData,
   setShippingMethod,
 } from '@/services/cart-service'
-import type { HttpTypes } from '@medusajs/types'
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query'
 import { useCartToast } from './use-toast'
 
 type CartMutationError = {
@@ -33,8 +27,6 @@ type SetShippingVariables = {
 
 export type UseCheckoutShippingReturn = {
   shippingOptions?: HttpTypes.StoreCartShippingOption[]
-  isLoadingShipping: boolean
-  isErrorShipping: boolean
   setShipping: (optionId: string, data?: ShippingMethodData) => void
   isSettingShipping: boolean
   canLoadShipping: boolean
