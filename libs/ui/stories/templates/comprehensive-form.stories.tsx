@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { Label } from '../../src/atoms/label'
 import { NumericInput } from '../../src/atoms/numeric-input'
 import { Combobox } from '../../src/molecules/combobox'
 import { FormCheckbox } from '../../src/molecules/form-checkbox'
@@ -153,13 +152,29 @@ export const AllFormInputs: Story = {
           <VariantGroup title="Selection Inputs" fullWidth>
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
               <Select
-                label="Select"
-                placeholder="Choose an option"
-                options={selectOptions}
+                items={selectOptions}
                 size={size}
                 validateStatus={validateStatus}
-                helpText={helpText}
-              />
+              >
+                <Select.Label>Select</Select.Label>
+                <Select.Control>
+                  <Select.Trigger>
+                    <Select.ValueText placeholder="Choose an option" />
+                  </Select.Trigger>
+                  <Select.ClearTrigger />
+                </Select.Control>
+                <Select.Positioner>
+                  <Select.Content>
+                    {selectOptions.map((item) => (
+                      <Select.Item key={item.value} item={item}>
+                        <Select.ItemText />
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+                <Select.StatusText>{helpText}</Select.StatusText>
+              </Select>
 
               <Combobox
                 label="Combobox"
