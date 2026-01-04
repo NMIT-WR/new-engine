@@ -96,6 +96,11 @@ export function PplWidget({
   } | null>(null)
   const mountIdRef = useRef(0)
 
+  // Ref pattern: stable callback identity to prevent effect re-runs on parent re-renders
+  // This prevents widget/script reload when checkout context updates
+  const onSelectRef = useRef(onSelect)
+  onSelectRef.current = onSelect
+
   // Request geolocation if not provided via props
   useEffect(() => {
     if (hasLatLngProps || !navigator.geolocation) {
@@ -230,7 +235,7 @@ export function PplWidget({
       }
 
       if (detail?.code) {
-        onSelect({
+        onSelectRef.current({
           code: detail.code,
           name: detail.name || "",
           type: detail.accessPointType || "ParcelShop",
@@ -273,7 +278,7 @@ export function PplWidget({
       document.removeEventListener("ppl-parcelshop-map", handlePplSelection)
       // Don't remove script on cleanup - let next mount handle it
     }
-  }, [isReady, onSelect])
+  }, [isReady])
 
   // Determine final lat/lng
   const finalLat = hasLatLngProps ? lat : geoLocation?.lat

@@ -1,9 +1,9 @@
+import type { HttpTypes } from "@medusajs/types"
 import type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
 import { DEFAULT_COUNTRY_CODE } from "@/lib/constants"
 import type { ShippingMethodData } from "@/services/cart-service"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import type { AddressFormData } from "./address-validation"
-import { HttpTypes } from "@medusajs/types"
 
 export const DEFAULT_ADDRESS: AddressFormData = {
   first_name: "",
@@ -21,12 +21,9 @@ export const DEFAULT_ADDRESS: AddressFormData = {
 /**
  * generic conversion of address to AddressFormData
  * works for customer address, cart address or any compatible address object
-*/
+ */
 function addressToFormData(
-  address?:
-    | Partial<HttpTypes.StoreCartAddress>
-    | StoreCustomerAddress
-    | null
+  address?: Partial<HttpTypes.StoreCartAddress> | StoreCustomerAddress | null
 ): AddressFormData {
   // Return empty form if no address provided
   if (!address) {
@@ -102,7 +99,8 @@ export function accessPointToAddress(
     address_2: "",
     city: accessPoint.address?.city || "",
     postal_code: accessPoint.address?.zipCode || "",
-    country_code: accessPoint.address?.country?.toLowerCase() || "cz",
+    country_code:
+      accessPoint.address?.country?.toLowerCase() || DEFAULT_COUNTRY_CODE,
     province: "",
     phone: billingAddress.phone,
   }

@@ -333,7 +333,15 @@ export async function setShippingMethod(
     }
 
     // For PPL Parcel, send access point data; for regular shipping, send empty object
-    const shippingData = data && Object.keys(data).length > 0 ? data : {}
+    // Filter out undefined/null/empty values to keep payload clean
+    const shippingData =
+      data && Object.keys(data).length > 0
+        ? Object.fromEntries(
+            Object.entries(data).filter(
+              ([, value]) => value != null && value !== ""
+            )
+          )
+        : {}
 
     const response = await sdk.store.cart.addShippingMethod(cartId, {
       option_id: optionId,
