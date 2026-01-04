@@ -10,6 +10,8 @@ type PaymentFormSectionProps = {
   cart: Cart
 }
 
+const CASH_ON_DELIVERY_PROVIDER = "pp_system_default"
+
 export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
   const { regionId } = useSuspenseRegion()
   const [selectedProvider, setSelectedProvider] = useState<string>("")
@@ -54,12 +56,12 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
                   />
                   <span className="flex flex-1 flex-col">
                     <span className="font-medium text-fg-primary text-sm">
-                      {provider.id === "pp_system_default"
+                      {provider.id === CASH_ON_DELIVERY_PROVIDER
                         ? "Při převzetí"
                         : provider.id}
                     </span>
                     <span className="text-fg-secondary text-xs">
-                      {provider.id === "pp_system_default"
+                      {provider.id === CASH_ON_DELIVERY_PROVIDER
                         ? "Zaplatíte při doručení objednávky"
                         : "Online platba"}
                     </span>

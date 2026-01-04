@@ -36,7 +36,6 @@ export function OrderSummary({
         Shrnutí objednávky
       </h2>
 
-      {/* Cart Items */}
       <div className="mb-400 border-border-secondary border-b pb-400 [&>*+*]:mt-200">
         {cart.items?.map((item) => (
           <CartItemRow
@@ -47,7 +46,6 @@ export function OrderSummary({
         ))}
       </div>
 
-      {/* Price Breakdown */}
       <div className="border-border-secondary border-b pb-400 [&>*+*]:mt-200">
         <PriceSummaryRow label="Cena bez DPH" value={itemsSubtotal} />
 
@@ -62,25 +60,20 @@ export function OrderSummary({
         <PriceSummaryRow label="DPH" value={itemsTax} />
 
         {selectedShipping && (
-          <PriceSummaryRow label="Doprava" value={delivery || "Free"} />
+          <PriceSummaryRow label="Doprava" value={delivery || "Zdarma"} />
         )}
       </div>
 
-      {/* Total */}
       <div className="mt-400 mb-400">
         <PriceSummaryRow label="Celkem" value={total} variant="bold" />
       </div>
 
-      {/* TODO: Implement coupon code functionality */}
-
-      {/* Error Message */}
       {errorMessage && (
         <div className="mb-400 text-danger">
           <p className="text-sm">{errorMessage}</p>
         </div>
       )}
 
-      {/* Action Buttons */}
       <div className="flex gap-200">
         <Button
           className="flex-1"
@@ -95,7 +88,7 @@ export function OrderSummary({
           disabled={!isReady || isCompletingCart}
           onClick={onComplete}
         >
-          {isCompletingCart ? "Processing..." : "Potvrdit objednávku"}
+          {isCompletingCart ? "Zpracovávám..." : "Potvrdit objednávku"}
         </Button>
       </div>
     </div>

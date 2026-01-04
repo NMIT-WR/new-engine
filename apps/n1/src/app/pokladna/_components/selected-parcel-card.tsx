@@ -19,7 +19,9 @@ export function SelectedParcelCard({
           </p>
           {address && (
             <p className="mt-50 text-fg-secondary text-xs">
-              {address.street}, {address.zipCode} {address.city}
+              {[address.street, address.zipCode, address.city]
+                .filter(Boolean)
+                .join(", ")}
             </p>
           )}
         </div>
