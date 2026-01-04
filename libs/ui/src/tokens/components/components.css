@@ -31,6 +31,7 @@
 @import "./molecules/_switch.css";
 @import "./molecules/_toast.css";
 @import "./molecules/_tree-view.css";
+@import "./molecules/_form-phone-input.css";
 
 @import "./organisms/_table.css";
 @import "./organisms/_footer.css";

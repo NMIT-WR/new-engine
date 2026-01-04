@@ -75,10 +75,10 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build UI package
-        run: pnpm -C libs/ui build
+        run: pnpm exec nx run @techsio/ui-kit:build
 
       - name: Run semantic-release
         env:
