@@ -755,7 +755,6 @@ export const Vertical: Story = {
         slideCount={4}
         size="md"
         loop
-        className=''
       >
         <Carousel.Slides slides={sampleImages.slice(0, 4)} />
         <Carousel.Control>
