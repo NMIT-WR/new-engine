@@ -647,7 +647,7 @@ export const CombinedDemo: Story = {
           <Select
             items={objectFitItems}
             value={[objectFit]}
-            onValueChange={(details) => setObjectFit(details.value[0] as any)}
+            onValueChange={(details) => setObjectFit(details.value[0] as typeof objectFit)}
             size="sm"
           >
             <Select.Label>Object Fit</Select.Label>
@@ -671,7 +671,7 @@ export const CombinedDemo: Story = {
           <Select
             items={aspectRatioItems}
             value={[aspectRatio]}
-            onValueChange={(details) => setAspectRatio(details.value[0] as any)}
+            onValueChange={(details) => setAspectRatio(details.value[0] as typeof aspectRatio)}
             size="sm"
           >
             <Select.Label>Aspect Ratio</Select.Label>
@@ -695,7 +695,7 @@ export const CombinedDemo: Story = {
           <Select
             items={sizeItems}
             value={[size]}
-            onValueChange={(details) => setSize(details.value[0] as any)}
+            onValueChange={(details) => setSize(details.value[0] as typeof size)}
             size="sm"
           >
             <Select.Label>Size</Select.Label>
