@@ -252,7 +252,7 @@ SearchForm.ClearButton = function SearchFormClearButton({
   theme = "unstyled",
   ...props
 }: SearchFormClearButtonProps) {
-  const { size, clearInput, hasValue } = useSearchFormContext()
+  const { size, clearInput, hasValue, inputValue } = useSearchFormContext()
   const styles = searchFormVariants({ size })
 
   if (!hasValue) {
@@ -261,7 +261,7 @@ SearchForm.ClearButton = function SearchFormClearButton({
 
   return (
     <Button
-      aria-label="Clear search"
+      aria-label={`Clear search: ${inputValue}`}
       className={styles.clearButton({ className })}
       icon={icon}
       onClick={clearInput}
