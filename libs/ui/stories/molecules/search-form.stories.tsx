@@ -92,7 +92,7 @@ function ControlledExample() {
 					<SearchForm.Button showSearchIcon variant="primary" />
 				</SearchForm.Control>
 			</SearchForm>
-			<p className="text-sm text-gray-500">Current value: "{value}"</p>
+			<p className="text-sm">Current value: "{value}"</p>
 		</div>
 	)
 }
@@ -186,12 +186,10 @@ function SubmitExample() {
 	const [submitted, setSubmitted] = useState<string | null>(null)
 
 	return (
-		<div className="w-sm flex flex-col gap-4">
+		<div className="w-sm flex flex-col gap-200">
 			<SearchForm
 				size="sm"
 				onSubmit={(e) => {
-					const formData = new FormData(e.currentTarget)
-					// Note: we need to add name prop to input for this to work
 					setSubmitted(`Form submitted!`)
 				}}
 				onValueChange={(v) => setSubmitted(null)}
@@ -202,7 +200,7 @@ function SubmitExample() {
 				</SearchForm.Control>
 			</SearchForm>
 			{submitted && (
-				<p className="text-sm text-green-600">{submitted}</p>
+				<p className="text-sm text-success">{submitted}</p>
 			)}
 		</div>
 	)
@@ -210,4 +208,42 @@ function SubmitExample() {
 
 export const FormSubmission: Story = {
 	render: () => <SubmitExample />,
+}
+
+function FormDataExample() {
+	const [result, setResult] = useState<string | null>(null)
+
+	return (
+		<div className="w-sm flex flex-col gap-200">
+			<SearchForm
+				size="sm"
+				onSubmit={(e) => {
+					const formData = new FormData(e.currentTarget)
+					const query = formData.get("query")
+					setResult(`Searched for: "${query}"`)
+				}}
+			>
+				<SearchForm.Control>
+					<SearchForm.Input
+						name="query"
+						placeholder="Type something and press Enter..."
+					/>
+					<SearchForm.Button>Search</SearchForm.Button>
+				</SearchForm.Control>
+			</SearchForm>
+			{result && <p className="text-sm text-success">{result}</p>}
+		</div>
+	)
+}
+
+export const WithFormData: Story = {
+	render: () => <FormDataExample />,
+	parameters: {
+		docs: {
+			description: {
+				story:
+					"Demonstrates using native FormData API. Add `name` prop to SearchForm.Input to access values via FormData.",
+			},
+		},
+	},
 }

@@ -71,7 +71,7 @@ const SearchFormContext = createContext<SearchFormContextValue | null>(null)
 function useSearchFormContext() {
   const context = useContext(SearchFormContext)
   if (!context) {
-    throw new Error("SearchForm components must be used within SearchForm.Root")
+    throw new Error("SearchForm components must be used within SearchForm")
   }
   return context
 }
@@ -211,7 +211,6 @@ SearchForm.Input = function SearchFormInput({
 }
 
 interface SearchFormButtonProps extends Omit<ButtonProps, "size"> {
-  /** Show the default search icon (token-icon-search). For custom icons, use the `icon` prop from ButtonProps */
   showSearchIcon?: boolean
 }
 
