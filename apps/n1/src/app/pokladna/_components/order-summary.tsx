@@ -1,9 +1,9 @@
-import type { Cart } from '@/services/cart-service'
-import { formatAmount } from '@/utils/format/format-product'
-import type { HttpTypes } from '@medusajs/types'
-import { Button } from '@ui/atoms/button'
-import { CartItemRow } from './cart-item-row'
-import { PriceSummaryRow } from './price-summary-row'
+import type { HttpTypes } from "@medusajs/types"
+import { Button } from "@ui/atoms/button"
+import type { Cart } from "@/services/cart-service"
+import { formatAmount } from "@/utils/format/format-product"
+import { CartItemRow } from "./cart-item-row"
+import { PriceSummaryRow } from "./price-summary-row"
 
 interface OrderSummaryProps {
   cart: Cart
@@ -36,18 +36,16 @@ export function OrderSummary({
         Shrnutí objednávky
       </h2>
 
-      {/* Cart Items */}
       <div className="mb-400 border-border-secondary border-b pb-400 [&>*+*]:mt-200">
         {cart.items?.map((item) => (
           <CartItemRow
-            key={item.id}
-            item={item}
             currencyCode={cart.currency_code}
+            item={item}
+            key={item.id}
           />
         ))}
       </div>
 
-      {/* Price Breakdown */}
       <div className="border-border-secondary border-b pb-400 [&>*+*]:mt-200">
         <PriceSummaryRow label="Cena bez DPH" value={itemsSubtotal} />
 
@@ -62,40 +60,35 @@ export function OrderSummary({
         <PriceSummaryRow label="DPH" value={itemsTax} />
 
         {selectedShipping && (
-          <PriceSummaryRow label="Doprava" value={delivery || 'Free'} />
+          <PriceSummaryRow label="Doprava" value={delivery || "Zdarma"} />
         )}
       </div>
 
-      {/* Total */}
       <div className="mt-400 mb-400">
         <PriceSummaryRow label="Celkem" value={total} variant="bold" />
       </div>
 
-      {/* TODO: Implement coupon code functionality */}
-
-      {/* Error Message */}
       {errorMessage && (
         <div className="mb-400 text-danger">
           <p className="text-sm">{errorMessage}</p>
         </div>
       )}
 
-      {/* Action Buttons */}
       <div className="flex gap-200">
         <Button
+          className="flex-1"
+          disabled={isCompletingCart}
           onClick={onBack}
           variant="secondary"
-          disabled={isCompletingCart}
-          className="flex-1"
         >
           Zpět
         </Button>
         <Button
-          onClick={onComplete}
-          disabled={!isReady || isCompletingCart}
           className="flex-1"
+          disabled={!isReady || isCompletingCart}
+          onClick={onComplete}
         >
-          {isCompletingCart ? 'Processing...' : 'Potvrdit objednávku'}
+          {isCompletingCart ? "Zpracovávám..." : "Potvrdit objednávku"}
         </Button>
       </div>
     </div>

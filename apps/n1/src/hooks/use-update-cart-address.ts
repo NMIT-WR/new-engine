@@ -1,10 +1,10 @@
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import type { Cart } from '@/services/cart-service'
-import type { AddressErrors, AddressFormData } from '@/utils/address-validation'
-import { validateAddressForm } from '@/utils/address-validation'
-import type { HttpTypes } from '@medusajs/types'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { HttpTypes } from "@medusajs/types"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
+import type { Cart } from "@/services/cart-service"
+import type { AddressErrors, AddressFormData } from "@/utils/address-validation"
+import { validateAddressForm } from "@/utils/address-validation"
 
 type UpdateCartAddressOptions = {
   onSuccess?: (cart: Cart) => void
@@ -15,6 +15,35 @@ type MutationContext = {
   previousCart?: Cart
 }
 
+/** Helper to clean address data for Medusa API */
+function cleanAddress(
+  address: AddressFormData
+): HttpTypes.StoreUpdateCart["shipping_address"] {
+  const cleaned: HttpTypes.StoreUpdateCart["shipping_address"] = {
+    first_name: address.first_name,
+    last_name: address.last_name,
+    address_1: address.address_1,
+    city: address.city,
+    postal_code: address.postal_code,
+    country_code: address.country_code,
+  }
+
+  if (address.address_2?.trim()) {
+    cleaned.address_2 = address.address_2
+  }
+  if (address.company?.trim()) {
+    cleaned.company = address.company
+  }
+  if (address.province?.trim()) {
+    cleaned.province = address.province
+  }
+  if (address.phone?.trim()) {
+    cleaned.phone = address.phone
+  }
+
+  return cleaned
+}
+
 export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
   const queryClient = useQueryClient()
 
@@ -23,55 +52,38 @@ export function useUpdateCartAddress(options?: UpdateCartAddressOptions) {
     Error,
     {
       cartId: string
-      address: AddressFormData
+      billingAddress: AddressFormData
+      shippingAddress: AddressFormData
       email?: string
     },
     MutationContext
   >({
-    mutationFn: async ({ cartId, address, email }) => {
+    mutationFn: async ({ cartId, billingAddress, shippingAddress, email }) => {
       if (!cartId) {
-        throw new Error('Cart ID is required')
+        throw new Error("Cart ID is required")
       }
 
-      // Use centralized validation
-      const validationErrors: AddressErrors = validateAddressForm(address)
+      // Validate billing address
+      const validationErrors: AddressErrors =
+        validateAddressForm(billingAddress)
       if (Object.keys(validationErrors).length > 0) {
-        const errorMessages = Object.values(validationErrors).join(', ')
+        const errorMessages = Object.values(validationErrors).join(", ")
         throw new Error(`Validation failed: ${errorMessages}`)
       }
 
-      // Clean up the address data (remove empty strings for optional fields)
-      const cleanedAddress: HttpTypes.StoreUpdateCart['shipping_address'] = {
-        first_name: address.first_name,
-        last_name: address.last_name,
-        address_1: address.address_1,
-        city: address.city,
-        postal_code: address.postal_code,
-        country_code: address.country_code,
-      }
+      // Clean both addresses
+      const cleanedBillingAddress = cleanAddress(billingAddress)
+      const cleanedShippingAddress = cleanAddress(shippingAddress)
 
-      // Only add optional fields if they have values
-      if (address.address_2?.trim()) {
-        cleanedAddress.address_2 = address.address_2
-      }
-      if (address.company?.trim()) {
-        cleanedAddress.company = address.company
-      }
-      if (address.province?.trim()) {
-        cleanedAddress.province = address.province
-      }
-      if (address.phone?.trim()) {
-        cleanedAddress.phone = address.phone
-      }
-
-      // Update the cart with the shipping address
+      // Update the cart with both addresses
       const response = await sdk.store.cart.update(cartId, {
-        shipping_address: cleanedAddress,
+        billing_address: cleanedBillingAddress,
+        shipping_address: cleanedShippingAddress,
         email: email || undefined,
       })
 
       if (!response.cart) {
-        throw new Error('Failed to update shipping address')
+        throw new Error("Failed to update addresses")
       }
 
       return response.cart

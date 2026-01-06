@@ -66,6 +66,10 @@
   --text-checkbox-icon-md: 0.75rem;
   --color-checkbox: var(--color-base);
 
+  /* DIALOG */
+  --container-dialog-xl: 150rem;
+  --container-dialog-center-w-max: 150rem;
+
   /* PAGINATION */
   --color-pagination-filled-fg-active: var(--color-fg-primary);
   --color-pagination-border: var(--color-border-secondary);

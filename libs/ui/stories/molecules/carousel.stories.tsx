@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Carousel, type CarouselSlide } from '../../src/molecules/carousel'
-import { Button } from '../../src/atoms/button'
 import { Select } from '../../src/molecules/select'
 
 // Sample images using src approach (simpler)
@@ -620,51 +619,102 @@ export const CombinedDemo: Story = {
       },
     ]
 
+    const objectFitItems = [
+      { value: 'cover', label: 'Cover' },
+      { value: 'contain', label: 'Contain' },
+      { value: 'fill', label: 'Fill' },
+      { value: 'none', label: 'None' },
+    ]
+
+    const aspectRatioItems = [
+      { value: 'square', label: 'Square' },
+      { value: 'landscape', label: 'Landscape' },
+      { value: 'portrait', label: 'Portrait' },
+      { value: 'wide', label: 'Wide' },
+      { value: 'none', label: 'None' },
+    ]
+
+    const sizeItems = [
+      { value: 'sm', label: 'Small' },
+      { value: 'md', label: 'Medium' },
+      { value: 'lg', label: 'Large' },
+      { value: 'full', label: 'Full' },
+    ]
+
     return (
       <div className="space-y-md">
         <div className="flex gap-md">
           <Select
-            label="Object Fit"
+            items={objectFitItems}
             value={[objectFit]}
-            onValueChange={(details) => setObjectFit(details.value[0] as any)}
-            options={[
-              { value: 'cover', label: 'Cover' },
-              { value: 'contain', label: 'Contain' },
-              { value: 'fill', label: 'Fill' },
-              { value: 'none', label: 'None' },
-            ]}
+            onValueChange={(details) => setObjectFit(details.value[0] as typeof objectFit)}
             size="sm"
-            clearIcon={false}
-          />
+          >
+            <Select.Label>Object Fit</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Select..." />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {objectFitItems.map((item) => (
+                  <Select.Item key={item.value} item={item}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
 
           <Select
-            label="Aspect Ratio"
+            items={aspectRatioItems}
             value={[aspectRatio]}
-            onValueChange={(details) => setAspectRatio(details.value[0] as any)}
-            options={[
-              { value: 'square', label: 'Square' },
-              { value: 'landscape', label: 'Landscape' },
-              { value: 'portrait', label: 'Portrait' },
-              { value: 'wide', label: 'Wide' },
-              { value: 'none', label: 'None' },
-            ]}
+            onValueChange={(details) => setAspectRatio(details.value[0] as typeof aspectRatio)}
             size="sm"
-            clearIcon={false}
-          />
+          >
+            <Select.Label>Aspect Ratio</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Select..." />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {aspectRatioItems.map((item) => (
+                  <Select.Item key={item.value} item={item}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
 
           <Select
-            label="Size"
+            items={sizeItems}
             value={[size]}
-            onValueChange={(details) => setSize(details.value[0] as any)}
-            options={[
-              { value: 'sm', label: 'Small' },
-              { value: 'md', label: 'Medium' },
-              { value: 'lg', label: 'Large' },
-              { value: 'full', label: 'Full' },
-            ]}
+            onValueChange={(details) => setSize(details.value[0] as typeof size)}
             size="sm"
-            clearIcon={false}
-          />
+          >
+            <Select.Label>Size</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Select..." />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {sizeItems.map((item) => (
+                  <Select.Item key={item.value} item={item}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
         </div>
 
         <Carousel.Root
@@ -699,7 +749,7 @@ export const CombinedDemo: Story = {
 // Vertical orientation
 export const Vertical: Story = {
   render: () => (
-    <div className="h-96">
+    <div className="h-96 w-sm">
       <Carousel.Root
         orientation="vertical"
         slideCount={4}

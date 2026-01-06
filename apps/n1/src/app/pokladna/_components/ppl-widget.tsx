@@ -1,16 +1,11 @@
-'use client'
+"use client"
 
-import { useEffect, useRef, useState } from 'react'
-import Script from 'next/script'
+import { useEffect, useRef, useState } from "react"
 
-export interface PplAccessPointData {
-  /** Unique access point code (external number) */
+export type PplAccessPointData = {
   code: string
-  /** Access point name */
   name: string
-  /** Type: ParcelShop, ParcelBox, AlzaBox */
   type: string
-  /** Full address object */
   address?: {
     street?: string
     city?: string
@@ -19,172 +14,289 @@ export interface PplAccessPointData {
   }
 }
 
-interface PplWidgetProps {
-  /** Callback when access point is selected */
-  onSelect: (data: PplAccessPointData) => void
-  /** Initial latitude for map center (default: Prague) */
-  lat?: number
-  /** Initial longitude for map center (default: Prague) */
-  lng?: number
-  /** Country code (default: CZ) */
-  country?: string
-  /** Initial address for search */
-  address?: string
-  /** Pre-selected access point code */
-  selectedCode?: string
-  /** Display mode: 'default' or 'modal' */
-  mode?: 'default' | 'modal'
-  /** Initial filters (e.g., "ParcelShop,CardPayment") */
-  initialFilters?: string
-}
+/** Supported languages for PPL widget UI */
+const PPL_SUPPORTED_LANGUAGES = [
+  "cs",
+  "en",
+  "de",
+  "sk",
+  "pl",
+  "hu",
+  "bg",
+  "ro",
+] as const
+type PplLanguage = (typeof PPL_SUPPORTED_LANGUAGES)[number]
 
 /**
- * PPL Widget for selecting pickup points (ParcelShop/ParcelBox)
- *
- * Official documentation:
- * https://www.ppl.cz/documents/20122/1893929/PPL_CZ_integration_PPL_widget_pick_up_points_v1.5.0.pdf
- *
- * @example
- * ```tsx
- * <PplWidget
- *   onSelect={(data) => console.log('Selected:', data)}
- *   address="Praha"
- *   country="CZ"
- * />
- * ```
+ * Detect language from document.documentElement.lang
+ * Returns PPL-supported language or fallback to "cs"
  */
+function detectPplLanguage(): PplLanguage {
+  if (typeof document === "undefined") {
+    return "cs"
+  }
+
+  const htmlLang = document.documentElement.lang?.split("-")[0]?.toLowerCase()
+
+  if (htmlLang && PPL_SUPPORTED_LANGUAGES.includes(htmlLang as PplLanguage)) {
+    return htmlLang as PplLanguage
+  }
+
+  return "cs"
+}
+
+type PplWidgetProps = {
+  onSelect: (data: PplAccessPointData) => void
+  lat?: number
+  lng?: number
+  country?: string
+  address?: string
+  selectedCode?: string
+  mode?: "default" | "static" | "catalog"
+  initialFilters?: string
+  /** Language for widget UI. Auto-detected from <html lang> if not provided */
+  language?: PplLanguage
+}
+
+type PplEventDetail = {
+  id?: number
+  accessPointType?: string
+  code: string
+  name: string
+  street?: string
+  city?: string
+  zipCode?: string
+  country?: string
+  gps?: { latitude: number; longitude: number }
+  activeCardPayment?: boolean
+  activeCashPayment?: boolean
+}
+
+const PPL_SCRIPT_URL = "https://www.ppl.cz/sources/map/main.js"
+const PPL_CSS_URL = "https://www.ppl.cz/sources/map/main.css"
+const WIDGET_ID = "ppl-parcelshop-map"
+
 export function PplWidget({
   onSelect,
-  lat = 50.0755,
-  lng = 14.4378,
-  country = 'CZ',
+  lat,
+  lng,
+  country = "CZ",
   address,
   selectedCode,
-  mode = 'default',
+  mode = "default",
   initialFilters,
+  language: languageProp,
 }: PplWidgetProps) {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false)
-  const widgetRef = useRef<HTMLDivElement>(null)
-  const listenerAttached = useRef(false)
-  // PPL widget expects exact ID 'ppl-parcelshop-map'
-  const widgetId = 'ppl-parcelshop-map'
+  const hasLatLngProps = typeof lat === "number" && typeof lng === "number"
+  const language = languageProp ?? detectPplLanguage()
+  const [isReady, setIsReady] = useState(false)
+  const [geoLocation, setGeoLocation] = useState<{
+    lat: number
+    lng: number
+  } | null>(null)
+  const mountIdRef = useRef(0)
 
-  console.log('[PplWidget] Rendering widget with ID:', widgetId)
+  // Ref pattern: stable callback identity to prevent effect re-runs on parent re-renders
+  // This prevents widget/script reload when checkout context updates
+  const onSelectRef = useRef(onSelect)
+  onSelectRef.current = onSelect
 
+  // Request geolocation if not provided via props
   useEffect(() => {
-    if (!isScriptLoaded || listenerAttached.current) return
+    if (hasLatLngProps || !navigator.geolocation) {
+      setIsReady(true)
+      return
+    }
 
-    console.log('[PplWidget] Script loaded, attaching event listener')
+    let cancelled = false
+    const startTime = Date.now()
 
-    const handleSelection = (event: MessageEvent) => {
-      // PPL widget sends message event with pplPickupPointSelected
-      if (event.data && event.data.event === 'pplPickupPointSelected') {
-        const point = event.data.point
+    const handleSuccess = (position: GeolocationPosition) => {
+      if (cancelled) {
+        return
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.log("[PplWidget] Geolocation success:", {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: `${position.coords.accuracy.toFixed(0)}m`,
+          elapsed: `${Date.now() - startTime}ms`,
+        })
+      }
+      setGeoLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      })
+      setIsReady(true)
+    }
 
-        console.log('[PplWidget] Access point selected:', point)
+    const handleError = (error: GeolocationPositionError) => {
+      if (cancelled) {
+        return
+      }
+      if (process.env.NODE_ENV === "development") {
+        const errorMessages: Record<number, string> = {
+          1: "PERMISSION_DENIED",
+          2: "POSITION_UNAVAILABLE",
+          3: "TIMEOUT",
+        }
+        console.log("[PplWidget] Geolocation error:", {
+          code: errorMessages[error.code] || error.code,
+          message: error.message,
+          elapsed: `${Date.now() - startTime}ms`,
+        })
+      }
+      setIsReady(true)
+    }
 
-        if (point && point.code) {
-          onSelect({
-            code: point.code,
-            name: point.name || '',
-            type: point.type || 'ParcelShop',
-            address: point.address,
+    const geoOptions: PositionOptions = {
+      enableHighAccuracy: true,
+      maximumAge: 60_000,
+      timeout: 2000,
+    }
+
+    // Check permission first if available
+    if (navigator.permissions?.query) {
+      const checkPermission = async () => {
+        try {
+          const status = await navigator.permissions.query({
+            name: "geolocation" as PermissionName,
           })
+
+          if (cancelled) {
+            return
+          }
+
+          if (process.env.NODE_ENV === "development") {
+            console.log("[PplWidget] Geolocation permission:", status.state)
+          }
+
+          if (status.state === "granted") {
+            navigator.geolocation.getCurrentPosition(
+              handleSuccess,
+              handleError,
+              geoOptions
+            )
+          } else {
+            // Permission not granted (prompt/denied) - skip geolocation
+            setIsReady(true)
+          }
+        } catch {
+          setIsReady(true)
         }
       }
-    }
 
-    // Attach window message event listener for PPL widget selection
-    window.addEventListener('message', handleSelection)
-    listenerAttached.current = true
-
-    // Debug: Check if widget element exists and log its attributes
-    const widgetElement = document.getElementById(widgetId)
-    if (widgetElement) {
-      console.log('[PplWidget] Widget element found:', {
-        id: widgetElement.id,
-        attributes: Array.from(widgetElement.attributes).map(attr => ({
-          name: attr.name,
-          value: attr.value
-        }))
-      })
+      checkPermission()
     } else {
-      console.error('[PplWidget] Widget element NOT found with ID:', widgetId)
-    }
-
-    // Debug: Check if PPL global object exists
-    const win = window as any
-    console.log('[PplWidget] Checking for PPL global object:', {
-      hasPPL: !!win.PPL,
-      hasPpl: !!win.ppl,
-      hasParcelshop: !!win.parcelshop,
-      windowKeys: Object.keys(win).filter(k => k.toLowerCase().includes('ppl'))
-    })
-
-    // Try to trigger initialization if PPL object exists
-    if (win.PPL && typeof win.PPL.init === 'function') {
-      console.log('[PplWidget] Calling PPL.init()')
-      try {
-        win.PPL.init()
-      } catch (error) {
-        console.error('[PplWidget] PPL.init() failed:', error)
-      }
-    } else if (win.ppl && typeof win.ppl.init === 'function') {
-      console.log('[PplWidget] Calling ppl.init()')
-      try {
-        win.ppl.init()
-      } catch (error) {
-        console.error('[PplWidget] ppl.init() failed:', error)
-      }
+      navigator.geolocation.getCurrentPosition(
+        handleSuccess,
+        handleError,
+        geoOptions
+      )
     }
 
     return () => {
-      window.removeEventListener('message', handleSelection)
-      listenerAttached.current = false
+      cancelled = true
     }
-  }, [isScriptLoaded, onSelect])
+  }, [hasLatLngProps])
 
-  // Load CSS stylesheet
+  // Load CSS once
   useEffect(() => {
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://www.ppl.cz/sources/map/main.css'
-    document.head.appendChild(link)
-
-    return () => {
-      document.head.removeChild(link)
+    const existingLink = document.head.querySelector<HTMLLinkElement>(
+      `link[href="${PPL_CSS_URL}"]`
+    )
+    if (existingLink) {
+      return
     }
+
+    const link = document.createElement("link")
+    link.rel = "stylesheet"
+    link.href = PPL_CSS_URL
+    document.head.appendChild(link)
   }, [])
 
-  return (
-    <>
-      <Script
-        src="https://www.ppl.cz/sources/map/main.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          console.log('[PplWidget] Script loaded successfully')
-          setIsScriptLoaded(true)
-        }}
-        onError={(e) => {
-          console.error('[PplWidget] Failed to load script:', e)
-        }}
-      />
+  // Main effect: attach event listener and load script
+  useEffect(() => {
+    if (!isReady) {
+      return
+    }
 
-      <div
-        ref={widgetRef}
-        id={widgetId}
-        data-lat={lat}
-        data-lng={lng}
-        data-mode={mode}
-        data-country={country.toLowerCase()}
-        data-countries={country.toLowerCase()}
-        data-language="cs"
-        {...(address && { 'data-address': address })}
-        {...(selectedCode && { 'data-code': selectedCode })}
-        {...(initialFilters && { 'data-initialfilters': initialFilters })}
-        className="min-h-96 w-full rounded border border-border-secondary bg-surface"
-        style={{ minHeight: '400px' }}
-      />
-    </>
+    mountIdRef.current += 1
+    const currentMountId = mountIdRef.current
+
+    // Event handler for PPL widget selection
+    // Official event: "ppl-parcelshop-map" on document, data in event.detail
+    const handlePplSelection = (event: Event) => {
+      const customEvent = event as CustomEvent<PplEventDetail>
+      const detail = customEvent.detail
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("[PplWidget] Selection event received:", detail)
+      }
+
+      if (detail?.code) {
+        onSelectRef.current({
+          code: detail.code,
+          name: detail.name || "",
+          type: detail.accessPointType || "ParcelShop",
+          address: {
+            street: detail.street,
+            city: detail.city,
+            zipCode: detail.zipCode,
+            country: detail.country,
+          },
+        })
+      }
+    }
+
+    // Attach event listener BEFORE loading script
+    document.addEventListener("ppl-parcelshop-map", handlePplSelection)
+
+    // Remove any existing PPL script to force reinitialization
+    const existingScript = document.querySelector(
+      `script[src="${PPL_SCRIPT_URL}"]`
+    )
+    if (existingScript) {
+      existingScript.remove()
+    }
+
+    // Load script dynamically
+    const script = document.createElement("script")
+    script.src = PPL_SCRIPT_URL
+    script.async = true
+    script.onload = () => {
+      if (currentMountId !== mountIdRef.current) {
+        return
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.log("[PplWidget] Script loaded, widget should initialize")
+      }
+    }
+    document.body.appendChild(script)
+
+    return () => {
+      document.removeEventListener("ppl-parcelshop-map", handlePplSelection)
+      // Don't remove script on cleanup - let next mount handle it
+    }
+  }, [isReady])
+
+  // Determine final lat/lng
+  const finalLat = hasLatLngProps ? lat : geoLocation?.lat
+  const finalLng = hasLatLngProps ? lng : geoLocation?.lng
+
+  return (
+    <div
+      data-country={country.toLowerCase()}
+      data-language={language}
+      data-mode={mode}
+      id={WIDGET_ID}
+      {...(finalLat !== undefined && { "data-lat": finalLat })}
+      {...(finalLng !== undefined && { "data-lng": finalLng })}
+      {...(address && { "data-address": address })}
+      {...(selectedCode && { "data-code": selectedCode })}
+      {...(initialFilters && { "data-initialfilters": initialFilters })}
+      className="w-full rounded border border-border-secondary"
+      style={{ minHeight: "400px" }}
+    />
   )
 }

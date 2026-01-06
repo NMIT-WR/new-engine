@@ -17,15 +17,18 @@ import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
 import { useSuspenseRegion } from "@/hooks/use-region"
 import { useUpdateCartAddress } from "@/hooks/use-update-cart-address"
 import {
+  accessPointToAddress,
   addressToFormData,
   DEFAULT_ADDRESS,
   getDefaultAddress,
+  isPPLParcelOption,
+  type PplAccessPointData,
 } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 
 export type CheckoutFormData = {
-  email: string
-  shippingAddress: AddressFormData
+  email?: string
+  billingAddress: AddressFormData
 }
 
 /** Helper to infer the correct form type - not actually called */
@@ -47,6 +50,13 @@ type CheckoutContextValue = {
   isCompleting: boolean
   error: string | null
   isReady: boolean
+  // PPL Parcel state
+  selectedAccessPoint: PplAccessPointData | null
+  setSelectedAccessPoint: (accessPoint: PplAccessPointData | null) => void
+  isPickupDialogOpen: boolean
+  openPickupDialog: (optionId: string) => void
+  closePickupDialog: () => void
+  pendingOptionId: string | null
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null)
@@ -75,16 +85,32 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   )
   const [error, setError] = useState<string | null>(null)
 
+  const [selectedAccessPoint, setSelectedAccessPoint] =
+    useState<PplAccessPointData | null>(null)
+  const [isPickupDialogOpen, setIsPickupDialogOpen] = useState(false)
+  const [pendingOptionId, setPendingOptionId] = useState<string | null>(null)
+
+  const openPickupDialog = (optionId: string) => {
+    setPendingOptionId(optionId)
+    setIsPickupDialogOpen(true)
+  }
+
+  const closePickupDialog = () => {
+    setIsPickupDialogOpen(false)
+    setPendingOptionId(null)
+  }
+
   // Track if form has been initialized (prevents reset after address save)
   const isFormInitialized = useRef(false)
 
   const defaultValues: CheckoutFormData = {
     email: customer?.email ?? "",
-    shippingAddress: DEFAULT_ADDRESS,
+    billingAddress: DEFAULT_ADDRESS,
   }
+
   const form = useForm({
     defaultValues,
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value }: { value: CheckoutFormData }) => {
       if (!cart?.id) {
         setError("Košík nebyl nalezen")
         return
@@ -92,28 +118,71 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
       setError(null)
 
-      const { email, shippingAddress } = value
+      const { email, billingAddress } = value
 
+      // Determine shipping address based on delivery method
+      // If PPL Parcel selected + access point → shipping = access point address
+      // Otherwise → shipping = billing address
+      const isPplParcel =
+        shipping.selectedOption && isPPLParcelOption(shipping.selectedOption.name)
+
+      let shippingAddress: AddressFormData
+      if (isPplParcel && selectedAccessPoint) {
+        shippingAddress = accessPointToAddress(
+          selectedAccessPoint,
+          billingAddress
+        )
+      } else {
+        shippingAddress = billingAddress
+      }
+
+      // Save both addresses to cart
       try {
         const cartEmail = customer?.email || email
         await updateCartAddressAsync({
           cartId: cart.id,
-          address: { ...shippingAddress },
+          billingAddress,
+          shippingAddress,
           email: cartEmail,
         })
-      } catch {
-        setError("Problém s doručovací adresou")
+      } catch (err) {
+        if (err instanceof Error) {
+          if (err.message.includes("billing") || err.message.includes("faktur")) {
+            setError("Chyba fakturační adresy: " + err.message)
+          } else if (
+            err.message.includes("shipping") ||
+            err.message.includes("doruč")
+          ) {
+            setError("Chyba doručovací adresy: " + err.message)
+          } else if (err.message.includes("Validation")) {
+            setError("Neplatná adresa: " + err.message)
+          } else {
+            setError("Nepodařilo se uložit adresu: " + err.message)
+          }
+        } else {
+          setError("Nepodařilo se uložit adresu")
+        }
         return
       }
 
+      // Complete the cart
       try {
         await completeCartAsync({ cartId: cart.id })
       } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : "Nepodařilo se dokončit objednávku"
-        setError(message)
+        if (err instanceof Error) {
+          if (err.message.includes("payment") || err.message.includes("platb")) {
+            setError("Chyba platby: " + err.message)
+          } else if (
+            err.message.includes("stock") ||
+            err.message.includes("sklad")
+          ) {
+            setError("Některé produkty nejsou skladem: " + err.message)
+          } else {
+            setError("Nepodařilo se dokončit objednávku: " + err.message)
+          }
+        } else {
+          setError("Nepodařilo se dokončit objednávku")
+        }
       }
     },
   })
@@ -125,15 +194,12 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    if (cart?.shipping_address?.first_name) {
+    // Priority 1: Cart already has billing address
+    if (cart?.billing_address?.first_name) {
       const addressData = addressToFormData(
-        cart.shipping_address
+        cart.billing_address
       ) as AddressFormData
-      // Reset with new values to properly initialize without triggering isDirty
-      form.reset({
-        email: cart.email ?? "",
-        shippingAddress: addressData,
-      })
+      form.reset({ email: cart.email ?? "", billingAddress: addressData })
       isFormInitialized.current = true
       return
     }
@@ -144,32 +210,57 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         const addressData = addressToFormData(defaultAddress) as AddressFormData
         form.reset({
           email: customer?.email ?? "",
-          shippingAddress: addressData,
+          billingAddress: addressData,
         })
         setSelectedAddressId(defaultAddress.id)
         isFormInitialized.current = true
       }
     }
-  }, [cart?.shipping_address, cart?.email, customer?.addresses, customer?.email, form])
+  }, [cart?.billing_address, cart?.email, customer?.addresses, customer?.email, form])
 
+  // Auto-select PPL Private as default (PPL Parcel requires dialog)
+  // NOTE: Options 0-6 use manual_manual provider which is disabled on backend
   useEffect(() => {
     if (
       shipping.shippingOptions &&
       shipping.shippingOptions.length > 0 &&
       !shipping.selectedShippingMethodId
     ) {
-      const firstOption = shipping.shippingOptions[0]
-      shipping.setShipping(firstOption.id)
+      // Find PPL Private option (doesn't require access point selection)
+      const pplPrivate = shipping.shippingOptions.find((opt) =>
+        opt.name.toLowerCase().includes("ppl private")
+      )
+      if (pplPrivate) {
+        shipping.setShipping(pplPrivate.id)
+      }
+      // Don't auto-select if no PPL Private found - let user choose manually
     }
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
+
+  // Reset access point when switching to non-parcel shipping method
+  useEffect(() => {
+    // If switched to non-parcel option, clear access point
+    if (
+      shipping.selectedOption &&
+      !isPPLParcelOption(shipping.selectedOption.name)
+    ) {
+      setSelectedAccessPoint(null)
+    }
+  }, [shipping.selectedOption])
 
   const completeCheckout = () => {
     form.handleSubmit()
   }
 
+  // Check if selected shipping requires access point
+  const requiresAccessPoint =
+    shipping.selectedOption && isPPLParcelOption(shipping.selectedOption.name)
+  const hasRequiredAccessPoint = !requiresAccessPoint || !!selectedAccessPoint
+
   const isReady =
     form.state.isValid &&
     !!shipping.selectedShippingMethodId &&
+    hasRequiredAccessPoint &&
     payment.hasPaymentSessions &&
     !shipping.isSettingShipping &&
     !payment.isInitiatingPayment
@@ -187,6 +278,13 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     isCompleting: isSavingAddress || isCompletingCart,
     error,
     isReady,
+    // PPL Parcel state
+    selectedAccessPoint,
+    setSelectedAccessPoint,
+    isPickupDialogOpen,
+    openPickupDialog,
+    closePickupDialog,
+    pendingOptionId,
   }
 
   return (

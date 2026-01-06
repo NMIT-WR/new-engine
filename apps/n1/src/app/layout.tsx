@@ -31,7 +31,7 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="cs">
       <body className={`${openSans.variable} antialiased`}>
         <MetaPixel
           debug
