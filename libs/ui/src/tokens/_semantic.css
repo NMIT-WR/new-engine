@@ -86,7 +86,7 @@
 @theme static {
   /* Colors */
   /* User interface main tone and interactive colors, usually used for main operation button, etc */
-  --color-primary: light-dark(var(--color-blue-500), var(--color-sky-300));
+  --color-primary: light-dark(var(--color-blue-300), var(--color-sky-300));
   --color-primary-hover: oklch(
     from var(--color-primary) calc(l + var(--state-hover)) c h
   );
@@ -141,7 +141,7 @@
   );
 
   /* In the user interface, non emphasis color and interactive color are usually used for general and non emphasis function operation buttons */
-  --color-tertiary: light-dark(var(--color-pink-500), var(--color-rose-400));
+  --color-tertiary: light-dark(var(--color-pink-300), var(--color-rose-400));
   --color-tertiary-hover: oklch(
     from var(--color-tertiary) calc(l + var(--state-hover)) c h
   );
@@ -248,7 +248,7 @@
   );
 
   /* It is usually used to express the dangerous state, and is used in the scene with the above semantics */
-  --color-danger: light-dark(var(--color-red-500), var(--color-red-400));
+  --color-danger: light-dark(var(--color-red-400), var(--color-red-300));
   --color-danger-hover: oklch(
     from var(--color-danger) calc(l + var(--state-hover)) c h
   );
@@ -275,7 +275,7 @@
 
   /* Text colors and Icon colors*/
   /* Four different levels of text / icon colors represent the most important, secondary, minor and minor contents in the product interface */
-  --color-fg-light: var(--color-slate-800); /* Light mode */
+  --color-fg-light: var(--color-slate-950); /* Light mode */
   --color-fg-dark: var(--color-white); /* Dark mode */
   --color-fg-primary: light-dark(var(--color-fg-light), var(--color-fg-dark));
 

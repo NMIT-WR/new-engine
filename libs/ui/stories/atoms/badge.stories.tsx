@@ -85,7 +85,7 @@ export const Outline: Story = {
 export const Dynamic: Story = {
   args: {
     variant: 'dynamic',
-    bgColor: '#f00',
+    bgColor: '#8A0002',
     fgColor: '#fff',
     borderColor: '#fff500',
     children: 'Dynamic Badge',
