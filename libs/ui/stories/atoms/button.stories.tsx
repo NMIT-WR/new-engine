@@ -186,6 +186,15 @@ export const Variants: Story = {
           Danger Borderless
         </Button>
       </VariantGroup>
+      <VariantGroup title="Block (full width)" fullWidth>
+        <Button block>Primary Block</Button>
+        <Button variant="secondary" block>
+          Secondary Block
+        </Button>
+        <Button variant="primary" theme="outlined" block>
+          Outlined Block
+        </Button>
+      </VariantGroup>
     </VariantContainer>
   ),
 }

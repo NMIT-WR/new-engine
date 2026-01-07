@@ -22,6 +22,7 @@
   --opacity-disabled-placeholder: 30%;
   --fill-increment: 5%;
   --surface-increment: 0.05;
+  --state-fg-lightness: 0.42; /* Accent color lightness for text - WCAG AAA on light bg */
 }
 
 /* Explicit Dark class(es) */
@@ -31,6 +32,7 @@
   --state-secondary-text: -0.15;
   --state-placeholder: -0.25;
   --surface-increment: -0.05;
+  --state-fg-lightness: 0.85;
 }
 
 /* System Dark preference (when no explicit class forces light) */
@@ -41,6 +43,7 @@
     --state-secondary-text: -0.15;
     --state-placeholder: -0.25;
     --surface-increment: -0.05;
+    --state-fg-lightness: 0.85;
   }
 }
 
@@ -51,6 +54,7 @@
   --state-secondary-text: -0.15;
   --state-placeholder: -0.25;
   --surface-increment: -0.05;
+  --state-fg-lightness: 0.85;
 }
 
 :is(.dark, .always-dark) .reverse {
@@ -59,6 +63,7 @@
   --state-secondary-text: 0.15;
   --state-placeholder: 0.25;
   --surface-increment: 0.05;
+  --state-fg-lightness: 0.42;
 }
 
 /* Reverse on System Light/Dark preference (when no explicit theme class is present) */
@@ -69,6 +74,7 @@
     --state-secondary-text: -0.15;
     --state-placeholder: -0.25;
     --surface-increment: -0.05;
+    --state-fg-lightness: 0.85;
   }
 }
 
@@ -79,6 +85,7 @@
     --state-secondary-text: 0.15;
     --state-placeholder: 0.25;
     --surface-increment: 0.05;
+    --state-fg-lightness: 0.42;
   }
 }
 
@@ -86,6 +93,8 @@
 @theme static {
   /* Colors */
   /* User interface main tone and interactive colors, usually used for main operation button, etc */
+  --color-primary-light: var(--color-blue-300);
+  --color-primary-dark: var(--color-sky-300);
   --color-primary: light-dark(var(--color-blue-300), var(--color-sky-300));
   --color-primary-hover: oklch(
     from var(--color-primary) calc(l + var(--state-hover)) c h
@@ -273,7 +282,28 @@
     from var(--color-danger-light) l var(--state-disabled-chroma) h
   );
 
-  /* Text colors and Icon colors*/
+  /* Text colors and Icon colors */
+  /* semantic text color for better contrast WCAG AAA - uses absolute lightness */
+  --color-primary-accent-fg: oklch(
+    from var(--color-primary) var(--state-fg-lightness) c h
+  );
+  --color-secondary-accent-fg: oklch(
+    from var(--color-secondary) var(--state-fg-lightness) c h
+  );
+  --color-tertiary-accent-fg: oklch(
+    from var(--color-tertiary) var(--state-fg-lightness) c h
+  );
+  --color-success-fg: oklch(
+    from var(--color-success) var(--state-fg-lightness) c h
+  );
+  --color-info-fg: oklch(from var(--color-info) var(--state-fg-lightness) c h);
+  --color-warning-fg: oklch(
+    from var(--color-warning) var(--state-fg-lightness) c h
+  );
+  --color-danger-fg: oklch(
+    from var(--color-danger) var(--state-fg-lightness) c h
+  );
+
   /* Four different levels of text / icon colors represent the most important, secondary, minor and minor contents in the product interface */
   --color-fg-light: var(--color-slate-950); /* Light mode */
   --color-fg-dark: var(--color-white); /* Dark mode */
