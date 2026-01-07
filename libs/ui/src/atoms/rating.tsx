@@ -11,20 +11,17 @@ const rating = tv({
     control: ["flex"],
     itemWrapper: [
       "flex items-center",
-      "has-[:focus-visible]:outline-none",
-      "has-[:focus-visible]:ring",
-      "has-[:focus-visible]:ring-rating-ring",
+      "has-focus-visible:ring",
+      "has-focus-visible:ring-rating-ring",
     ],
     item: [
       "cursor-pointer transition-colors duration-200",
       "text-rating-fg",
-      // States
-      "data-[checked]:text-rating-fg-active",
-      "data-[highlighted]:text-rating-fg-active",
-      "data-[disabled]:cursor-not-allowed",
-      "data-[disabled]:data-[highlighted]:text-rating-fg-disabled",
+      "data-highlighted:text-rating-fg-active",
+      "data-disabled:cursor-not-allowed",
+      "data-disabled:data-highlighted:text-rating-fg-disabled",
       "token-icon-rating",
-      "data-[half]:token-icon-rating-half",
+      "data-half:token-icon-rating-half",
     ],
   },
   variants: {
@@ -105,8 +102,8 @@ export function Rating({
     name,
     dir,
     translations,
-    onValueChange: ({ value }) => {
-      onChange?.(value)
+    onValueChange: ({ value: newValue }) => {
+      onChange?.(newValue)
     },
     onHoverChange: ({ hoveredValue }) => {
       onHoverChange?.(hoveredValue)
