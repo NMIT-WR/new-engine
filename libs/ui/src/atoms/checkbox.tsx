@@ -28,8 +28,8 @@ const checkboxVariants = tv({
     "focus:outline-none",
     "focus-visible:ring",
     "focus-visible:ring-checkbox-ring-focus",
-    "aria-invalid:border-checkbox-border-error",
-    "aria-invalid:ring-checkbox-ring-error",
+    "data-invalid:border-checkbox-border-error",
+    "data-invalid:ring-checkbox-ring-error",
   ],
 })
 
@@ -61,6 +61,7 @@ export function Checkbox({
     <input
       aria-invalid={invalid || undefined}
       className={checkboxVariants({ className })}
+      data-invalid={invalid || undefined}
       ref={setIndeterminate}
       type="checkbox"
       {...props}
