@@ -24,6 +24,11 @@ const preview: Preview = {
         ],
       },
     },
+    a11y: {
+      config: {
+        rules: [{ id: "color-contrast-enhanced", enabled: true }],
+      },
+    },
   },
   decorators: [
     withThemeByClassName({
