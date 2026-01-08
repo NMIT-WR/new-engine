@@ -19,21 +19,22 @@ const numericInputVariants = tv({
     container: [
       "group border-(length:--border-width-numeric-input) relative flex",
       "items-center overflow-hidden rounded-numeric-input border-numeric-input-border",
-      "data-[invalid]:bg-numeric-input-invalid-bg",
-      "data-[invalid]:border-numeric-input-invalid-border",
+      "data-invalid:bg-numeric-input-invalid-bg",
+      "data-invalid:border-numeric-input-invalid-border",
       "text-numeric-input-fg",
-      "has-[input:hover]:bg-numeric-input-input-bg-hover",
+      "has-[input:not(:disabled):hover]:bg-numeric-input-input-bg-hover",
       "has-[input:focus]:bg-numeric-input-input-bg-focus",
       "focus-within:ring",
       "focus-within:ring-numeric-input-ring",
     ],
     input: [
-      "border-none p-numeric-input-input",
+      "h-full rounded-none border-none pl-numeric-input-input",
       "bg-numeric-input-input-bg",
       "focus:bg-numeric-input-input-bg-focus",
       "hover:bg-numeric-input-input-bg-hover",
+      "disabled:hover:bg-numeric-input-input-bg",
       "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-      "duration-0 data-[invalid]:focus:border-input-border-danger-focus",
+      "duration-0 data-invalid:focus:border-input-border-danger-focus",
     ],
     triggerContainer: [
       "flex h-fit flex-col justify-center bg-numeric-input-trigger-container-bg",
@@ -106,6 +107,7 @@ export type NumericInputProps = Omit<
     describedBy?: string
     ref?: Ref<HTMLDivElement>
     id?: string
+    locale?: string
   }
 
 export function NumericInput({
@@ -135,6 +137,7 @@ export function NumericInput({
   children,
   ref,
   className,
+  locale = "cs-CZ",
   ...props
 }: NumericInputProps) {
   const generatedId = useId()
@@ -151,6 +154,7 @@ export function NumericInput({
     step,
     name,
     disabled,
+    locale,
     required,
     pattern,
     readOnly,
