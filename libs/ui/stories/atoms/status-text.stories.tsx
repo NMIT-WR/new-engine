@@ -44,30 +44,6 @@ export const Default: Story = {
   },
 }
 
-export const Error: Story = {
-  args: {
-    children: "Invalid email format",
-    status: "error",
-    showIcon: true,
-  },
-}
-
-export const Success: Story = {
-  args: {
-    children: "Username is available",
-    status: "success",
-    showIcon: true,
-  },
-}
-
-export const Warning: Story = {
-  args: {
-    children: "Password is weak",
-    status: "warning",
-    showIcon: true,
-  },
-}
-
 export const AllStatuses: Story = {
   render: () => (
     <VariantContainer>
@@ -227,7 +203,7 @@ export const LongText: Story = {
     <div className="w-80">
       <VariantContainer>
         <VariantGroup title="Long Error Message">
-          <StatusText status="error" showIcon>
+          <StatusText align="start" status="error" showIcon>
             Your password must contain at least 8 characters, including one
             uppercase letter, one lowercase letter, one number, and one special
             character (!@#$%^&*).
@@ -235,7 +211,7 @@ export const LongText: Story = {
         </VariantGroup>
 
         <VariantGroup title="Long Success Message">
-          <StatusText status="success" showIcon>
+          <StatusText align="start" status="success" showIcon>
             Your account has been successfully created! We've sent a
             confirmation email to your address. Please check your inbox and
             click the verification link.
@@ -243,7 +219,7 @@ export const LongText: Story = {
         </VariantGroup>
 
         <VariantGroup title="Long Warning Message">
-          <StatusText status="warning" showIcon>
+          <StatusText align="start" status="warning" showIcon>
             This action cannot be undone. Please make sure you have backed up
             your data before proceeding. We recommend downloading a copy of your
             information first.

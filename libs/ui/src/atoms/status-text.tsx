@@ -6,7 +6,7 @@ import { Icon } from "./icon"
 const statusTextVariants = tv({
   slots: {
     base: "flex items-center",
-    icon: "self-start"
+    icon: "",
   },
   variants: {
     status: {
@@ -15,24 +15,30 @@ const statusTextVariants = tv({
       warning: "text-status-text-fg-warning",
       default: "text-status-text-fg-default",
     },
+    /* for long text */
+    align: {
+      start: {
+        icon: "mt-status-text-icon-long-text self-start",
+      },
+      center: {},
+    },
     size: {
       sm: {
-        base: "text-status-text-sm gap-status-text-icon-gap-sm",
-        icon: "mt-status-text-icon-sm",
+        base: "gap-status-text-icon-gap-sm text-status-text-sm",
       },
       md: {
-        base: "text-status-text-md gap-status-text-icon-gap-md",
-        icon: "mt-status-text-icon-md",
+        base: "gap-status-text-icon-gap-md text-status-text-md",
       },
       lg: {
-        base: "text-status-text-lg gap-status-text-icon-gap-lg",
-        icon: "mt-status-text-icon-lg",
+        base: "items-start gap-status-text-icon-gap-lg text-status-text-lg",
+        icon: "mt-status-text-icon",
       },
     },
   },
   defaultVariants: {
     status: "default",
     size: "md",
+    align: "center",
   },
 })
 
@@ -56,15 +62,17 @@ export function StatusText({
   showIcon = false,
   status = "default",
   size = "md",
+  align = "center",
   children,
   ref,
   ...props
 }: StatusTextProps) {
   const icon = ICON_MAP[status]
 
-  const {base, icon: iconSlot} = statusTextVariants({
+  const { base, icon: iconSlot } = statusTextVariants({
     status,
     size,
+    align,
     className,
   })
 
@@ -78,7 +86,9 @@ export function StatusText({
       ref={ref}
       {...props}
     >
-      {showIcon && icon && <Icon size={size} icon={icon} className={iconSlot()} />}
+      {showIcon && icon && (
+        <Icon className={iconSlot()} icon={icon} size={size} />
+      )}
       <span>{children}</span>
     </div>
   )
