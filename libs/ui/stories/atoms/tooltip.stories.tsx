@@ -27,7 +27,6 @@ A tooltip component built with Zag.js that provides accessible, customizable too
   },
   tags: ['autodocs'],
   argTypes: {
-    // Core
     content: {
       control: 'text',
       description: 'Content to display in the tooltip',
@@ -37,8 +36,6 @@ A tooltip component built with Zag.js that provides accessible, customizable too
       options: ['sm', 'md', 'lg'],
       description: 'Visual size of the tooltip',
     },
-
-    // Timing & Interaction
     openDelay: {
       control: { type: 'range', min: 0, max: 2000, step: 100 },
       description: 'Delay before tooltip opens (ms)',
@@ -51,8 +48,6 @@ A tooltip component built with Zag.js that provides accessible, customizable too
       control: 'boolean',
       description: 'Allow hovering over tooltip content',
     },
-
-    // Position
     placement: {
       control: { type: 'select' },
       options: [
@@ -88,8 +83,6 @@ A tooltip component built with Zag.js that provides accessible, customizable too
       options: ['absolute', 'fixed'],
       description: 'CSS positioning strategy',
     },
-
-    // State & Behavior
     defaultOpen: {
       control: 'boolean',
       description: 'Initial open state',
@@ -120,9 +113,7 @@ A tooltip component built with Zag.js that provides accessible, customizable too
 export default meta
 type Story = StoryObj<typeof meta>
 
-// === BASIC EXAMPLES ===
-
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     content: 'This is a helpful tooltip!',
     children: <Button variant="primary">Hover me</Button>,
@@ -156,8 +147,6 @@ export const WithIcon: Story = {
     placement: 'top',
   },
 }
-
-// === CONTENT VARIATIONS ===
 
 export const RichContent: Story = {
   args: {
@@ -200,8 +189,6 @@ export const WithLinks: Story = {
   },
 }
 
-// === PLACEMENT EXAMPLES ===
-
 export const AllPlacements: Story = {
   render: () => (
     <VariantContainer>
@@ -220,24 +207,24 @@ export const AllPlacements: Story = {
 
       <VariantGroup title="Side Placements">
         <Tooltip content="Left start" placement="left-start">
-          <Button size="sm" className="h-24">
+          <Button size="sm" className="h-24 items-center">
             ← left-start
           </Button>
         </Tooltip>
 
         <Tooltip content="Left end" placement="left-end">
-          <Button size="sm" className="h-24">
+          <Button size="sm" className="h-24 items-center">
             ← left-end
           </Button>
         </Tooltip>
         <Tooltip content="Right start" placement="right-start">
-          <Button size="sm" className="h-24">
+          <Button size="sm" className="h-24 items-center">
             right-start →
           </Button>
         </Tooltip>
 
         <Tooltip content="Right end" placement="right-end">
-          <Button size="sm" className="h-24">
+          <Button size="sm" className="h-24 items-center">
             right-end →
           </Button>
         </Tooltip>
@@ -259,8 +246,6 @@ export const AllPlacements: Story = {
     </VariantContainer>
   ),
 }
-
-// === POSITIONING OPTIONS ===
 
 export const PositioningOptions: Story = {
   render: () => (
@@ -303,8 +288,6 @@ export const PositioningOptions: Story = {
     </VariantContainer>
   ),
 }
-
-// === CLOSE BEHAVIORS ===
 
 export const CloseBehaviors: Story = {
   render: () => (
@@ -354,8 +337,6 @@ export const CloseBehaviors: Story = {
     </VariantContainer>
   ),
 }
-
-// === STATE MANAGEMENT ===
 
 export const ControlledTooltip: Story = {
   render: () => {
@@ -413,7 +394,6 @@ export const LongContent: Story = {
   },
 }
 
-// === REAL-WORLD EXAMPLES ===
 export const FormHelper: Story = {
   render: () => (
     <VariantContainer>
