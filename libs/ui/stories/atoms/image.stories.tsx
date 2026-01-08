@@ -14,6 +14,20 @@ const meta: Meta<typeof Image> = {
       },
     },
   },
+  argTypes: {
+    src: {
+      control: 'text',
+      description: 'Image source URL',
+    },
+    alt: {
+      control: 'text',
+      description: 'Alternative text for accessibility',
+    },
+    className: {
+      control: 'text',
+      description: 'Tailwind classes for styling (size, rounded, object-fit)',
+    },
+  },
   args: {
     src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop',
     alt: 'Mountain landscape',
@@ -24,18 +38,8 @@ const meta: Meta<typeof Image> = {
 export default meta
 type Story = StoryObj<typeof Image>
 
-// Basic usage with native img
-export const Default: Story = {
-  render: () => (
-    <Image
-      src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop"
-      alt="Small"
-      className="h-40 w-40 rounded object-cover"
-    />
-  ),
-}
+export const Playground: Story = {}
 
-// Different sizes
 export const Sizes: Story = {
   render: () => (
     <div className="flex items-end gap-4">
@@ -58,7 +62,6 @@ export const Sizes: Story = {
   ),
 }
 
-// With Next.js Image component
 export const WithNextImage: Story = {
   render: () => {
     return (

@@ -45,8 +45,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-// Basic stories
-export const Default: Story = {
+export const Playground: Story = {
   args: {},
 }
 
