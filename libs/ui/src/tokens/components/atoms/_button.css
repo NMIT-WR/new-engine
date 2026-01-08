@@ -141,6 +141,7 @@
   );
 
   /* Outlined variants */
+  --color-button-bg-outlined: transparent;
   --color-button-bg-outlined-primary-hover: --alpha(
     var(--color-button-primary) /
     var(--opacity-outlined-hover)
@@ -192,9 +193,9 @@
   --spacing-button-md: var(--spacing-200);
   --spacing-button-lg: var(--spacing-250);
 
-  --padding-button-sm: var(--spacing-150) var(--spacing-250);
-  --padding-button-md: var(--spacing-200) var(--spacing-350);
-  --padding-button-lg: var(--spacing-250) var(--spacing-450);
+  --padding-button-sm: var(--spacing-50) var(--spacing-200);
+  --padding-button-md: var(--spacing-100) var(--spacing-250);
+  --padding-button-lg: var(--spacing-150) var(--spacing-400);
 
   /* === TYPOGRAPHY === */
   --text-button-sm: var(--text-sm);
