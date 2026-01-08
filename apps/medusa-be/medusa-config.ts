@@ -114,7 +114,7 @@ module.exports = defineConfig({
             id: "caching-redis",
             is_default: true,
             options: {
-              redisUrl: process.env.CACHE_REDIS_URL,
+              redisUrl: REDIS_URL,
             },
           },
         ],
@@ -127,14 +127,14 @@ module.exports = defineConfig({
       resolve: "@medusajs/event-bus-redis",
       key: Modules.EVENT_BUS,
       options: {
-        redisUrl: process.env.EVENTS_REDIS_URL,
+        redisUrl: REDIS_URL,
       },
     },
     {
       resolve: "@medusajs/medusa/workflow-engine-redis",
       options: {
         redis: {
-          url: process.env.WE_REDIS_URL,
+          url: REDIS_URL,
         },
       },
     },
@@ -147,7 +147,7 @@ module.exports = defineConfig({
             id: "locking-redis",
             is_default: true,
             options: {
-              redisUrl: process.env.WE_REDIS_URL,
+              redisUrl: REDIS_URL,
             },
           },
         ],
