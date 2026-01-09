@@ -96,10 +96,10 @@ export const AllVariants: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Requirement States">
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput id="" label="Default" placeholder="Enter value" />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id=""
             label="Required"
@@ -107,13 +107,13 @@ export const AllVariants: Story = {
             required
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput id="" label="Optional" placeholder="Enter value" />
         </div>
       </VariantGroup>
 
       <VariantGroup title="Validation States">
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="default-input"
             label="Default state"
@@ -122,7 +122,7 @@ export const AllVariants: Story = {
             helpText="This is default help text"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="Success state"
@@ -131,7 +131,7 @@ export const AllVariants: Story = {
             helpText="Username is available"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="error-input"
             label="Error state"
@@ -140,7 +140,7 @@ export const AllVariants: Story = {
             helpText="Invalid email format"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="warning-input"
             label="Warning state"
@@ -152,7 +152,7 @@ export const AllVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="Supporting Text">
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="With helper text"
@@ -160,7 +160,7 @@ export const AllVariants: Story = {
             helpText="This is help text below input"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="error-input"
             label="With error message"
@@ -172,7 +172,7 @@ export const AllVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="Sizes">
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="Small input"
@@ -182,7 +182,7 @@ export const AllVariants: Story = {
             size="sm"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="Default input"
@@ -192,7 +192,7 @@ export const AllVariants: Story = {
             size="md"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="Large input"
@@ -205,7 +205,7 @@ export const AllVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="Special States">
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="Disabled input"
@@ -213,7 +213,7 @@ export const AllVariants: Story = {
             disabled
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="Read-only input"
@@ -222,7 +222,7 @@ export const AllVariants: Story = {
             value="Fixed value"
           />
         </div>
-        <div className="w-container-3xs">
+        <div className="w-3xs">
           <FormInput
             id="success-input"
             label="With default value"
@@ -237,7 +237,7 @@ export const AllVariants: Story = {
 // Validation States - Dedicated story showing all 4 validation states
 export const ValidationStates: Story = {
   render: () => (
-    <div className="flex flex-col gap-200 w-container-3xs">
+    <div className="flex flex-col gap-200 w-3xs">
       <FormInput
         id="default-validation"
         label="Default State"
@@ -273,7 +273,7 @@ export const ValidationStates: Story = {
 // Sizes - Dedicated story showing all size variants
 export const Sizes: Story = {
   render: () => (
-    <div className="flex flex-col gap-200 w-container-3xs">
+    <div className="flex flex-col gap-200 w-3xs">
       <FormInput
         id="small-size"
         label="Small Size"
@@ -322,7 +322,7 @@ function EmailValidationExample() {
       : 'default'
 
   return (
-    <div className="w-container-xs">
+    <div className="w-xs">
       <h3 className="mb-200 font-medium text-lg">Email Validation</h3>
       <FormInput
         id="success-input"
@@ -437,7 +437,7 @@ function RegistrationFormExample() {
   }
 
   return (
-    <div className="w-container-sm rounded-md border border-border-primary p-300 shadow-sm">
+    <div className="w-md rounded-md border border-border-primary p-300 shadow-sm">
       <h2 className="mb-300 font-semibold text-xl">Account Registration</h2>
 
       <div className="space-y-200">
