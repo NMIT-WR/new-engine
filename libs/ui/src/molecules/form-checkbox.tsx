@@ -18,14 +18,14 @@ const checkboxVariants = tv({
       "data-[state=checked]:border-checkbox-border-checked",
       "data-[state=indeterminate]:bg-checkbox-bg-indeterminate",
       "data-[state=indeterminate]:border-checkbox-border-indeterminate",
-      "data-[disabled]:cursor-not-allowed",
-      "data-[disabled]:bg-checkbox-bg-disabled",
-      "data-[disabled]:border-checkbox-border-disabled",
-      "data-[focus]:outline-none",
-      "data-[focus]:ring",
-      "data-[focus]:ring-checkbox-ring-focus",
-      "data-[invalid]:border-checkbox-border-error",
-      "data-[invalid]:ring-checkbox-ring-error",
+      "data-disabled:cursor-not-allowed",
+      "data-disabled:bg-checkbox-bg-disabled",
+      "data-disabled:border-checkbox-border-disabled",
+      "data-focus:outline-none",
+      "data-focus:ring",
+      "data-focus:ring-checkbox-ring-focus",
+      "data-invalid:border-checkbox-border-error",
+      "data-invalid:ring-checkbox-ring-error",
     ],
     indicator: [
       "text-checkbox-fg-checked",
@@ -33,13 +33,13 @@ const checkboxVariants = tv({
       "data-[state=indeterminate]:size-checkbox-indeterminate-icon",
       "data-[state=indeterminate]:rounded-full",
       "data-[state=indeterminate]:bg-checkbox-fg-indeterminate",
-      "data-[disabled]:text-checkbox-fg-disabled",
+      "data-disabled:text-checkbox-fg-disabled",
     ],
     label: [
       "cursor-pointer select-none",
       "text-label-fg",
-      "data-[disabled]:cursor-not-allowed",
-      "data-[disabled]:text-label-fg-disabled",
+      "data-disabled:cursor-not-allowed",
+      "data-disabled:text-label-fg-disabled",
     ],
     hiddenInput: "sr-only",
     textIndented: "data-[icon=false]:pl-form-checkbox-text-offset",
@@ -139,9 +139,9 @@ export function FormCheckbox({
       {helpText && (
         <div className={styles.textIndented()} data-icon={showHelpTextIcon}>
           <StatusText
-            status={validateStatus}
             showIcon={showHelpTextIcon}
             size={size}
+            status={validateStatus}
           >
             {helpText}
           </StatusText>
