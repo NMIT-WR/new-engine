@@ -18,10 +18,10 @@ const comboboxVariants = tv({
       "border-(length:--border-width-combobox) rounded-combobox border-combobox-border bg-combobox-bg",
       "transition-colors duration-200 ease-in-out",
       "hover:border-combobox-border-hover hover:bg-combobox-bg-hover",
-      "data-[focus]:border-combobox-border-focus data-[focus]:bg-combobox-bg-focus",
-      "data-[focus]:ring",
-      "data-[focus]:ring-combobox-ring",
-      "data-[disabled]:border-combobox-border-disabled data-[disabled]:bg-combobox-bg-disabled",
+      "data-focus:border-combobox-border-focus data-focus:bg-combobox-bg-focus",
+      "data-focus:ring",
+      "data-focus:ring-combobox-ring",
+      "data-disabled:border-combobox-border-disabled data-disabled:bg-combobox-bg-disabled",
       "data-[validation=error]:border-combobox-danger-fg",
       "data-[validation=success]:border-combobox-success-fg",
       "data-[validation=warning]:border-combobox-warning-fg",
@@ -31,8 +31,8 @@ const comboboxVariants = tv({
       "hover:bg-combobox-input-bg-hover focus-visible:ring-0",
       "focus:bg-combobox-input-bg-focused",
       "placeholder:text-combobox-placeholder",
-      "data-[disabled]:text-combobox-fg-disabled",
-      "data-[disabled]:bg-combobox-bg-disabled",
+      "data-disabled:text-combobox-fg-disabled",
+      "data-disabled:bg-combobox-bg-disabled",
     ],
     clearTrigger: ["absolute right-combobox-clear-right"],
     trigger: [
@@ -54,9 +54,9 @@ const comboboxVariants = tv({
       "flex items-center",
       "text-combobox-item-fg",
       "cursor-pointer",
-      "data-[highlighted]:bg-combobox-item-bg-hover",
+      "data-highlighted:bg-combobox-item-bg-hover",
       "data-[state=checked]:bg-combobox-item-bg-selected",
-      "data-[disabled]:cursor-not-allowed data-[disabled]:text-combobox-fg-disabled",
+      "data-disabled:cursor-not-allowed data-disabled:text-combobox-fg-disabled",
     ],
     helper: [
       "data-[validation=success]:text-combobox-success-fg",
@@ -165,7 +165,7 @@ export function Combobox<T = unknown>({
   noResultsMessage = 'No results found for "{inputValue}"',
   clearable = true,
   selectionBehavior = "replace",
-  closeOnSelect = false,
+  closeOnSelect = true,
   allowCustomValue = false,
   loopFocus = true,
   autoFocus = false,
@@ -212,12 +212,12 @@ export function Combobox<T = unknown>({
     onValueChange: ({ value: selectedValue }) => {
       onChange?.(selectedValue)
     },
-    onInputValueChange: ({ inputValue }) => {
+    onInputValueChange: ({ inputValue: newItemInputValue }) => {
       const filtered = items.filter((item) =>
-        item.label.toLowerCase().includes(inputValue.toLowerCase())
+        item.label.toLowerCase().includes(newItemInputValue.toLowerCase())
       )
       setOptions(filtered)
-      onInputValueChange?.(inputValue)
+      onInputValueChange?.(newItemInputValue)
     },
     onOpenChange: ({ open }) => {
       setOptions(items)
@@ -314,9 +314,9 @@ export function Combobox<T = unknown>({
 
       {helpText && (
         <StatusText
-          status={validateStatus}
           showIcon={showHelpTextIcon}
           size={size}
+          status={validateStatus}
         >
           {helpText}
         </StatusText>

@@ -114,7 +114,7 @@ const ecommerceColors = [
   { color: '#16a34a', label: 'Green', count: 10 },
 ]
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     colors: basicColors,
     layout: 'grid',
