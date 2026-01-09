@@ -370,7 +370,6 @@ export const EcommerceFilter: Story = {
           {selectedCount > 0 && (
             <Button
               onClick={clear}
-
               theme="borderless"
               size="sm"
             >
@@ -387,7 +386,7 @@ export const EcommerceFilter: Story = {
           selectionMode='multiple'
         />
         {selectedCount > 0 && (
-          <div className="mt-200 p-100 bg-primary rounded text-sm text-fg-primary">
+          <div className="mt-200 p-100 bg-primary rounded text-sm text-fg-light">
             Filtering by {selectedCount} color{selectedCount > 1 ? 's' : ''}
           </div>
         )}
