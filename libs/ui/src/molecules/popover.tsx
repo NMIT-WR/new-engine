@@ -15,12 +15,25 @@ const popoverVariants = tv({
       "rounded-popover",
       "outline-none",
       "z-50",
+      "relative",
     ],
     arrow: "",
     title: ["font-popover-title", "leading-none", "mb-popover-title-mb"],
     description: [
       "text-popover-description-fg text-popover-description-size",
       "leading-normal",
+    ],
+    closeTrigger: [
+      "absolute",
+      "top-2",
+      "right-2",
+      "p-1",
+      "rounded-sm",
+      "text-muted",
+      "hover:text-fg",
+      "hover:bg-muted/50",
+      "transition-colors",
+      "cursor-pointer",
     ],
   },
   variants: {
@@ -69,6 +82,7 @@ export interface PopoverProps
   sameWidth?: popover.PositioningOptions["sameWidth"]
   overflowPadding?: popover.PositioningOptions["overflowPadding"]
   showArrow?: boolean
+  showCloseButton?: boolean
   title?: ReactNode
   description?: ReactNode
   triggerRef?: Ref<HTMLButtonElement>
@@ -95,6 +109,7 @@ export function Popover({
   closeOnInteractOutside = true,
   closeOnEscape = true,
   showArrow = true,
+  showCloseButton = false,
   autoFocus = true,
   portalled = true,
   title,
@@ -147,6 +162,7 @@ export function Popover({
     arrow,
     title: titleStyles,
     description: descriptionStyles,
+    closeTrigger: closeTriggerStyles,
   } = popoverVariants({ size, shadow, border })
 
   const renderContent = () => (
@@ -158,6 +174,16 @@ export function Popover({
         data-state={api.open ? "open" : "closed"}
         ref={contentRef}
       >
+        {showCloseButton && (
+          <Button
+            {...api.getCloseTriggerProps()}
+            icon="token-icon-close"
+            theme="unstyled"
+            size="current"
+            className={closeTriggerStyles()}
+            aria-label="Close popover"
+          />
+        )}
         {showArrow && (
           <div {...api.getArrowProps()}>
             <div {...api.getArrowTipProps()} className={arrow()} />

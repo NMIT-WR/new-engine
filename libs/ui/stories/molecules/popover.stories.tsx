@@ -15,44 +15,85 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     placement: {
-      control: 'inline-radio',
-      options: [
-        'top',
-        'bottom',
-        'left',
-        'right',
-        'top-start',
-        'top-end',
-        'bottom-start',
-        'bottom-end',
-        'left-start',
-        'left-end',
-        'right-start',
-        'right-end',
-      ],
+      control: 'select',
+      options: ['top', 'bottom', 'left', 'right', 'top-start', 'top-end', 'bottom-start', 'bottom-end', 'left-start', 'left-end', 'right-start', 'right-end'],
+      description: 'Position of the popover relative to the trigger',
+      table: { defaultValue: { summary: 'bottom' } },
     },
     size: {
-      control: 'inline-radio',
+      control: 'select',
       options: ['sm', 'md', 'lg'],
+      description: 'Size of the popover content area',
+      table: { defaultValue: { summary: 'md' } },
     },
+    shadow: {
+      control: 'boolean',
+      description: 'Whether to show shadow on the popover',
+      table: { defaultValue: { summary: 'true' } },
+    },
+    border: {
+      control: 'boolean',
+      description: 'Whether to show border on the popover',
+      table: { defaultValue: { summary: 'true' } },
+    },
+    showArrow: {
+      control: 'boolean',
+      description: 'Whether to show the arrow indicator',
+      table: { defaultValue: { summary: 'true' } },
+    },
+    showCloseButton: {
+      control: 'boolean',
+      description: 'Whether to show the close button in the popover',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    modal: {
+      control: 'boolean',
+      description: 'Whether the popover behaves as a modal (traps focus)',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the trigger is disabled',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    title: {
+      control: 'text',
+      description: 'Optional title for the popover',
+    },
+    description: {
+      control: 'text',
+      description: 'Optional description text',
+    },
+    trigger: {
+      control: 'text',
+      description: 'Content of the trigger button',
+    },
+  },
+  args: {
+    placement: 'bottom',
+    size: 'md',
+    shadow: true,
+    border: true,
+    showArrow: true,
+    modal: false,
+    disabled: false,
+    trigger: 'Open Popover',
+    title: 'Popover Title',
+    description: 'This is a popover description.',
   },
 } satisfies Meta<typeof Popover>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Basic: Story = {
+export const Playground: Story = {
   args: {
-    id: 'basic-popover',
-    trigger: 'Click me',
+    id: 'playground-popover',
     children: (
-      <div className="w-64">
-        <p>This is a basic popover with some content inside.</p>
+      <div className="mt-200">
+        <p>This is the popover content area.</p>
       </div>
     ),
-    shadow: false,
-    placement: 'bottom',
-    size: 'md',
   },
 }
 
@@ -93,7 +134,6 @@ export const Variants: Story = {
   },
   render: () => (
     <div className="space-y-8">
-      {/* Sizes */}
       <div>
         <h3 className="text-sm font-semibold mb-4">Sizes</h3>
         <div className="flex gap-4">
@@ -128,8 +168,6 @@ export const Variants: Story = {
           </Popover>
         </div>
       </div>
-
-      {/* Border & Shadow Combinations */}
       <div>
         <h3 className="text-sm font-semibold mb-4">Visual Styles</h3>
         <div className="flex gap-4">
@@ -175,7 +213,6 @@ export const Variants: Story = {
         </div>
       </div>
 
-      {/* Arrow Variations */}
       <div>
         <h3 className="text-sm font-semibold mb-4">Arrow Options</h3>
         <div className="flex gap-4">
@@ -320,13 +357,14 @@ export const Modal: Story = {
     id: 'modal-popover',
     trigger: 'Open Modal Popover',
     modal: true,
+    showCloseButton: true,
     title: 'Modal Popover',
     description: 'This popover acts as a modal - it traps focus and blocks interactions outside.',
     closeOnInteractOutside: false,
     children: (
-      <div className="mt-4">
+      <div className="mt-200">
         <p>Try clicking outside - it won't close!</p>
-        <p className="mt-2 text-muted text-sm">
+        <p className="mt-100 text-muted text-sm">
           Press Escape or use the close button to dismiss.
         </p>
       </div>
@@ -348,7 +386,6 @@ export const AsyncContent: Story = {
       setLoading(true)
       setData(null)
 
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
       setData('Data loaded successfully!')
@@ -410,19 +447,43 @@ export const PositioningBehaviors: Story = {
           title="Auto Flip"
           description="Flips to opposite side when no space"
         >
-          <p>This popover starts on top but will flip to bottom if there's no space above.</p>
+          <p>This popover opens on the left but will flip to right if there's no space.</p>
         </Popover>
+        {/* Slide comparison - bounded containers simulate limited viewport space */}
+        <div className="space-y-2">
+          <p className="text-sm text-muted">Bounded containers simulate narrow viewport. Compare slide behavior:</p>
+          <div className="flex gap-4">
+            <div className="relative w-sm h-48 border border-dashed border-border overflow-hidden">
+              <div>
+                <Popover
+                  id="slide-true-popover"
+                  trigger="slide=true"
+                  slide={true}
+                  portalled={false}
+                  placement="bottom"
+                  title="Slide Enabled"
+                >
+                  <p>Arrow shifts to keep popover visible.</p>
+                </Popover>
+              </div>
+            </div>
 
-        <Popover
-          id="slide-demo-popover"
-          trigger="Slide Demo"
-          slide={true}
-          placement="bottom"
-          title="Slide Enabled"
-          description="Slides along axis to stay visible"
-        >
-          <p>This popover slides smoothly along the trigger edge to maximize visibility.</p>
-        </Popover>
+            <div className="relative w-sm h-48 border border-dashed border-border overflow-hidden">
+              <div>
+                <Popover
+                  id="slide-false-popover"
+                  trigger="slide=false"
+                  slide={false}
+                  portalled={false}
+                  placement="bottom"
+                  title="Slide Disabled"
+                >
+                  <p>Popover stays centered, may overflow.</p>
+                </Popover>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   ),
 }
