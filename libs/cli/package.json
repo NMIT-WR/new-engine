@@ -1,0 +1,14 @@
+{
+  "name": "@new-wr/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "wr": "./src/index.mjs"
+  },
+  "dependencies": {
+    "@effect/cli": "^0.69.2",
+    "@effect/platform-node": "^0.96.0",
+    "effect": "^3.19.14"
+  }
+}
