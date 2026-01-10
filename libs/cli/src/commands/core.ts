@@ -29,5 +29,5 @@ export const update = Command.make("update", {}, () =>
 ).pipe(Command.withDescription("Update medusa-be dependencies to latest."));
 
 export const npkill = Command.make("npkill", {}, () =>
-  runPnpmEnv(["pnpx", "npkill", "-x", "-D", "-y"], { interactive: true }),
+  runPnpmEnv(["pnpx", "npkill", "-x", "-D"], { interactive: true }),
 ).pipe(Command.withDescription("Run npkill inside the pnpm Docker env."));

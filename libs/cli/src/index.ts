@@ -18,6 +18,8 @@ const cli = Command.run(root, {
 const runCli = (argv: string[] = process.argv) =>
   cli(argv).pipe(Effect.provide(BunContext.layer), BunRuntime.runMain);
 
-runCli(process.argv);
+if (import.meta.main) {
+  runCli(process.argv);
+}
 
 export { runCli };

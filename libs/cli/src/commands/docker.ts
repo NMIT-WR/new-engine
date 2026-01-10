@@ -1,6 +1,6 @@
 import { Command } from "@effect/cli";
 import { Effect } from "effect";
-import { composeBase, composeProd } from "../lib/docker";
+import { composeBase, composeProd, medusaImage } from "../lib/docker";
 import { forceRecreateOption } from "../lib/options";
 import { getRepoRoot } from "../lib/paths";
 import { run, runIgnore } from "../lib/process";
@@ -26,7 +26,7 @@ export const prod = Command.make("prod", {}, () =>
   Effect.gen(function* () {
     const repoRoot = yield* getRepoRoot();
     yield* runIgnore("docker", [...composeProd, "down"], { cwd: repoRoot });
-    yield* runIgnore("docker", ["rmi", "new-engine-medusa-be-prod"], {
+    yield* runIgnore("docker", ["rmi", medusaImage], {
       cwd: repoRoot,
     });
     yield* run(

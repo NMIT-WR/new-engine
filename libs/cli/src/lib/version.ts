@@ -6,7 +6,14 @@ const packageJsonPath = fileURLToPath(
 );
 
 export const cliVersion = (() => {
-  const raw = readFileSync(packageJsonPath, "utf8");
-  const parsed = JSON.parse(raw) as { version?: string };
-  return parsed.version ?? "0.0.0";
+  try {
+    const raw = readFileSync(packageJsonPath, "utf8");
+    const parsed = JSON.parse(raw) as { version?: string };
+    return parsed.version ?? "0.0.0";
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown error reading version.";
+    process.stderr.write(`! Unable to read CLI version: ${message}\n`);
+    return "0.0.0";
+  }
 })();

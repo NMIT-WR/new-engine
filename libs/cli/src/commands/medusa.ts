@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { Command } from "@effect/cli";
 import { Effect } from "effect";
 import {
@@ -7,7 +9,12 @@ import {
   resolveOption,
 } from "../lib/options";
 import { getRepoRoot } from "../lib/paths";
-import { run } from "../lib/process";
+import { run, runCapture } from "../lib/process";
+
+const medusaContainerName =
+  process.env.MEDUSA_CONTAINER_NAME ?? "wr_medusa_be";
+const minioContainerName =
+  process.env.MEDUSA_MINIO_CONTAINER_NAME ?? "wr_medusa_minio";
 
 export const medusaCreateUser = Command.make(
   "medusa-create-user",
@@ -31,19 +38,15 @@ export const medusaCreateUser = Command.make(
         "docker",
         [
           "exec",
-          "wr_medusa_be",
-          "pnpm",
-          "--filter",
-          "medusa-be",
-          "exec",
-          "medusa",
-          "user",
-          "-e",
+          "-i",
+          medusaContainerName,
+          "sh",
+          "-lc",
+          'read -r password; pnpm --filter medusa-be exec medusa user -e "$1" -p "$password"',
+          "--",
           resolvedEmail,
-          "-p",
-          resolvedPassword,
         ],
-        { cwd: repoRoot },
+        { cwd: repoRoot, stdin: `${resolvedPassword}\n` },
       );
     }),
 ).pipe(Command.withDescription("Create a Medusa admin user."));
@@ -55,7 +58,7 @@ export const medusaMigrate = Command.make("medusa-migrate", {}, () =>
       "docker",
       [
         "exec",
-        "wr_medusa_be",
+        medusaContainerName,
         "pnpm",
         "--filter",
         "medusa-be",
@@ -79,11 +82,16 @@ export const medusaGenerateMigration = Command.make(
         "module name",
         "module",
       );
+      yield* Effect.sync(() => {
+        process.stdout.write(
+          "! Note: feature-flagged migrations require the matching FEATURE_* env var to be enabled before generating.\n",
+        );
+      });
       yield* run(
         "docker",
         [
           "exec",
-          "wr_medusa_be",
+          medusaContainerName,
           "pnpm",
           "--filter",
           "medusa-be",
@@ -109,44 +117,73 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
       process.env.MINIO_SECRET_KEY ??
       process.env.DC_MINIO_SECRET_KEY ??
       "minioadminkey";
-    yield* run(
+    const aliasList = yield* runCapture(
       "docker",
-      [
-        "exec",
-        "wr_medusa_minio",
-        "mc",
-        "alias",
-        "set",
-        "local",
-        "http://localhost:9004",
-        rootUser,
-        rootPassword,
-      ],
+      ["exec", minioContainerName, "mc", "alias", "list"],
       { cwd: repoRoot },
-    );
-    yield* run(
+    ).pipe(Effect.catchAll(() => Effect.succeed("")));
+    const aliasExists = aliasList
+      .split(/\r?\n/)
+      .some((line) => line.trim().startsWith("local"));
+    if (!aliasExists) {
+      yield* run(
+        "docker",
+        [
+          "exec",
+          minioContainerName,
+          "mc",
+          "alias",
+          "set",
+          "local",
+          "http://localhost:9004",
+          rootUser,
+          rootPassword,
+        ],
+        { cwd: repoRoot },
+      );
+    }
+    const accessKeyList = yield* runCapture(
       "docker",
-      [
-        "exec",
-        "wr_medusa_minio",
-        "mc",
-        "admin",
-        "accesskey",
-        "create",
-        "--access-key",
-        accessKey,
-        "--secret-key",
-        secretKey,
-        "local",
-      ],
+      ["exec", minioContainerName, "mc", "admin", "accesskey", "list", "local"],
       { cwd: repoRoot },
+    ).pipe(Effect.catchAll(() => Effect.succeed("")));
+    const accessKeyExists = accessKeyList
+      .split(/\r?\n/)
+      .some((line) => line.includes(accessKey));
+    if (!accessKeyExists) {
+      yield* run(
+        "docker",
+        [
+          "exec",
+          minioContainerName,
+          "mc",
+          "admin",
+          "accesskey",
+          "create",
+          "--access-key",
+          accessKey,
+          "--secret-key",
+          secretKey,
+          "local",
+        ],
+        { cwd: repoRoot },
+      );
+    }
+    const metadataZip = path.join(
+      repoRoot,
+      "docker/development/medusa-minio/config/local-bucket-metadata.zip",
     );
+    if (!existsSync(metadataZip)) {
+      yield* Effect.fail(
+        new Error(`Missing MinIO metadata zip at ${metadataZip}`),
+      );
+    }
     yield* run(
       "docker",
       [
         "cp",
-        "./docker/development/medusa-minio/config/local-bucket-metadata.zip",
-        "wr_medusa_minio:.",
+        metadataZip,
+        `${minioContainerName}:.`,
       ],
       { cwd: repoRoot },
     );
@@ -154,7 +191,7 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
       "docker",
       [
         "exec",
-        "wr_medusa_minio",
+        minioContainerName,
         "mc",
         "admin",
         "cluster",
@@ -182,7 +219,7 @@ export const medusaMeilisearchReseed = Command.make(
         "docker",
         [
           "exec",
-          "wr_medusa_be",
+          medusaContainerName,
           "pnpm",
           "--filter",
           "medusa-be",
@@ -201,7 +238,7 @@ export const medusaSeed = Command.make("medusa-seed", {}, () =>
       "docker",
       [
         "exec",
-        "wr_medusa_be",
+        medusaContainerName,
         "pnpm",
         "--filter",
         "medusa-be",
@@ -220,7 +257,7 @@ export const medusaSeedDevData = Command.make("medusa-seed-dev-data", {}, () =>
       "docker",
       [
         "exec",
-        "wr_medusa_be",
+        medusaContainerName,
         "pnpm",
         "--filter",
         "medusa-be",
@@ -239,7 +276,7 @@ export const medusaSeedN1 = Command.make("medusa-seed-n1", {}, () =>
       "docker",
       [
         "exec",
-        "wr_medusa_be",
+        medusaContainerName,
         "pnpm",
         "--filter",
         "medusa-be",
