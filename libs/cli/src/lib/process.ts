@@ -506,6 +506,13 @@ export const runPnpmEnv = (
     }
     const mountSource =
       process.platform === "win32" ? repoRoot.replace(/\\/g, "/") : repoRoot
+    if (mountSource.includes(",")) {
+      return yield* Effect.fail(
+        new Error(
+          "Repository path contains comma, which is incompatible with Docker mount syntax."
+        )
+      )
+    }
     const dockerArgs = [
       "run",
       "--rm",
