@@ -39,6 +39,7 @@ type CleanupHandlers = {
   onClose?: (code: number | null, signal: NodeJS.Signals | null) => void
   onError?: (error: Error) => void
   onData?: (chunk: Buffer) => void
+  onStdinError?: (error: Error) => void
 }
 
 export class ProcessRunError extends Error {
@@ -53,6 +54,7 @@ export class ProcessRunError extends Error {
 
 // Characters safe to pass unquoted in POSIX shells: letters, digits, _, /, :, =, ., ,, @, +, -.
 const safeArgRegex = /^[a-zA-Z0-9_/:=.,@+-]+$/
+const windowsDriveRegex = /^[a-zA-Z]/
 const DEFAULT_MAX_STDOUT_BYTES = 1024 * 1024
 
 const resolveStdoutLimit = (maxStdoutBytes?: number) => {
@@ -79,14 +81,14 @@ const createStdoutLimiter = (maxStdoutBytes?: number) => {
 }
 
 const getExitError = (
-  command: string,
+  commandLabel: string,
   code: number | null,
   signal: NodeJS.Signals | null,
   sensitive: boolean
 ) => {
   if (signal) {
     return new ProcessRunError(
-      `${command} terminated by signal ${signal}`,
+      `${commandLabel} terminated by signal ${signal}`,
       sensitive
     )
   }
@@ -95,11 +97,14 @@ const getExitError = (
   }
   if (code === null) {
     return new ProcessRunError(
-      `${command} exited without a code or signal`,
+      `${commandLabel} exited without a code or signal`,
       sensitive
     )
   }
-  return new ProcessRunError(`${command} exited with code ${code}`, sensitive)
+  return new ProcessRunError(
+    `${commandLabel} exited with code ${code}`,
+    sensitive
+  )
 }
 
 const toSpawnError = (error: unknown, sensitive: boolean) =>
@@ -109,7 +114,11 @@ const toSpawnError = (error: unknown, sensitive: boolean) =>
     error
   )
 
-const quoteArg = (arg: string) => {
+/**
+ * POSIX-style quoting for display-only command labels.
+ * Execution uses argv arrays passed to spawn.
+ */
+const quoteArgPosix = (arg: string) => {
   if (arg.length === 0) {
     return "''"
   }
@@ -119,7 +128,10 @@ const quoteArg = (arg: string) => {
   return `'${arg.replace(/'/g, `'\\''`)}'`
 }
 
-const formatCommand = (
+/**
+ * POSIX-style display formatting for logs/errors (not used for execution).
+ */
+const formatCommandPosix = (
   command: string,
   args: readonly string[],
   redacted: boolean
@@ -127,9 +139,66 @@ const formatCommand = (
   if (redacted) {
     return "[redacted]"
   }
-  const quotedArgs = args.map(quoteArg)
+  const quotedArgs = args.map(quoteArgPosix)
   const suffix = quotedArgs.length > 0 ? ` ${quotedArgs.join(" ")}` : ""
-  return `${quoteArg(command)}${suffix}`
+  return `${quoteArgPosix(command)}${suffix}`
+}
+
+const removeProcessHandlers = (
+  child: ChildProcess,
+  handlers: CleanupHandlers
+) => {
+  if (handlers.onData && child.stdout) {
+    child.stdout.removeListener("data", handlers.onData)
+  }
+  if (handlers.onError) {
+    child.removeListener("error", handlers.onError)
+  }
+  if (handlers.onClose) {
+    child.removeListener("close", handlers.onClose)
+  }
+  if (handlers.onStdinError && child.stdin) {
+    child.stdin.removeListener("error", handlers.onStdinError)
+  }
+}
+
+const scheduleGroupKill = (child: ChildProcess, pid: number) => {
+  // Give the process group a chance to exit before forcing SIGKILL.
+  const killTimer = setTimeout(() => {
+    try {
+      process.kill(-pid, "SIGKILL")
+    } catch {
+      // Ignore group-kill failures during cleanup.
+    }
+  }, 500)
+  child.once("exit", () => clearTimeout(killTimer))
+}
+
+const trySignalProcessGroup = (child: ChildProcess, pid: number) => {
+  try {
+    process.kill(-pid, "SIGTERM")
+    scheduleGroupKill(child, pid)
+    return true
+  } catch {
+    return false
+  }
+}
+
+const killChildProcess = (child: ChildProcess) => {
+  try {
+    child.kill()
+  } catch {
+    // Ignore kill failures during cleanup.
+  }
+}
+
+const terminateChild = (child: ChildProcess, killGroup?: boolean) => {
+  const canKillGroup =
+    killGroup && process.platform !== "win32" && typeof child.pid === "number"
+  if (canKillGroup && trySignalProcessGroup(child, child.pid)) {
+    return
+  }
+  killChildProcess(child)
 }
 
 const cleanupChild = (
@@ -142,31 +211,10 @@ const cleanupChild = (
     return
   }
   interrupted.value = true
-  if (handlers.onData && child.stdout) {
-    child.stdout.removeListener("data", handlers.onData)
-  }
-  if (handlers.onError) {
-    child.removeListener("error", handlers.onError)
-  }
-  if (handlers.onClose) {
-    child.removeListener("close", handlers.onClose)
-  }
+  removeProcessHandlers(child, handlers)
   child.stdin?.destroy()
   if (kill && child.exitCode === null && !child.killed) {
-    const canKillGroup =
-      killGroup && process.platform !== "win32" && typeof child.pid === "number"
-    if (canKillGroup) {
-      try {
-        process.kill(-child.pid)
-      } catch {
-        // Ignore group-kill failures and fall back to direct kill.
-      }
-    }
-    try {
-      child.kill()
-    } catch {
-      // Ignore kill failures during cleanup.
-    }
+    terminateChild(child, killGroup)
   }
 }
 
@@ -174,6 +222,7 @@ type CaptureResume = (effect: Effect.Effect<string, Error>) => void
 
 type ProcessContext = {
   command: string
+  commandLabel: string
   sensitive: boolean
   child: ChildProcess
   interrupted: { value: boolean }
@@ -228,7 +277,7 @@ const createCloseHandler =
     signal: NodeJS.Signals | null
   ) => {
     const exitError = getExitError(
-      context.command,
+      context.commandLabel,
       code,
       signal,
       context.sensitive
@@ -261,7 +310,7 @@ const createDataHandler =
         resume,
         Effect.fail(
           new ProcessRunError(
-            `${context.command} stdout exceeded ${limiter.limit} bytes`,
+            `${context.commandLabel} stdout exceeded ${limiter.limit} bytes`,
             context.sensitive
           )
         ),
@@ -295,6 +344,7 @@ const startProcess = <T>({
     killGroup,
     env: envOverrides,
   } = options
+  const isSensitive = sensitive ?? false
   const interrupted = { value: false }
   // Windows doesn't support POSIX process groups, so killGroup is ignored there.
   const detached = killGroup === true && process.platform !== "win32"
@@ -324,7 +374,8 @@ const startProcess = <T>({
   }
   const context: ProcessContext = {
     command,
-    sensitive: sensitive ?? false,
+    commandLabel: formatCommandPosix(command, args, isSensitive),
+    sensitive: isSensitive,
     child,
     interrupted,
     handlers,
@@ -345,9 +396,11 @@ const startProcess = <T>({
     child.stdout.on("data", onData)
   }
   timeoutId = scheduleTimeout(timeoutMs, () => hooks.onTimeout(context))
-  if (stdin !== undefined) {
-    child.stdin?.write(stdin)
-    child.stdin?.end()
+  if (stdin !== undefined && child.stdin) {
+    const onStdinError = (error: Error) => hooks.onError(context, error)
+    handlers.onStdinError = onStdinError
+    child.stdin.on("error", onStdinError)
+    child.stdin.end(stdin)
   }
   return context
 }
@@ -358,7 +411,7 @@ const startRunCapture = (
   options: RunOptions,
   resume: CaptureResume
 ) => {
-  const { stdin, sensitive, timeoutMs, maxStdoutBytes } = options
+  const { stdin, timeoutMs, maxStdoutBytes } = options
   const stdio: SpawnOptions["stdio"] = [
     stdin === undefined ? "ignore" : "pipe",
     "pipe",
@@ -381,8 +434,8 @@ const startRunCapture = (
           resume,
           Effect.fail(
             new ProcessRunError(
-              `${command} timed out after ${timeoutMs ?? 0}ms`,
-              sensitive ?? false
+              `${captureContext.commandLabel} timed out after ${timeoutMs ?? 0}ms`,
+              captureContext.sensitive
             )
           ),
           { kill: true }
@@ -408,7 +461,7 @@ const logCommand = (
   sensitive = false
 ) =>
   Effect.sync(() => {
-    const output = formatCommand(command, args, sensitive)
+    const output = formatCommandPosix(command, args, sensitive)
     process.stderr.write(`> ${output}\n`)
   })
 
@@ -442,7 +495,7 @@ export const run = (
               { kill: false }
             )
             const exitError = getExitError(
-              runContext.command,
+              runContext.commandLabel,
               code,
               signal,
               runContext.sensitive
@@ -484,8 +537,8 @@ export const run = (
             resume(
               Effect.fail(
                 new ProcessRunError(
-                  `${command} timed out after ${timeoutMs ?? 0}ms`,
-                  sensitive ?? false
+                  `${runContext.commandLabel} timed out after ${timeoutMs ?? 0}ms`,
+                  runContext.sensitive
                 )
               )
             )
@@ -520,7 +573,7 @@ export const runIgnore = (
         if (!shouldRedact) {
           message = error instanceof Error ? error.message : String(error)
         }
-        const commandLabel = formatCommand(command, args, shouldRedact)
+        const commandLabel = formatCommandPosix(command, args, shouldRedact)
         process.stderr.write(`! ${commandLabel}: ${message} (ignored)\n`)
       })
     )
@@ -568,7 +621,7 @@ const ensureDockerAvailable = (repoRoot: string) =>
     )
   )
 
-const ensurePnpmEnvImage = (repoRoot: string) =>
+const inspectPnpmEnvImage = (repoRoot: string) =>
   runCapture(
     "docker",
     ["image", "inspect", "--format", "{{.Id}}", "pnpm-env"],
@@ -578,7 +631,11 @@ const ensurePnpmEnvImage = (repoRoot: string) =>
     }
   ).pipe(
     Effect.map(() => true),
-    Effect.catchAll(() => Effect.succeed(false)),
+    Effect.catchAll(() => Effect.succeed(false))
+  )
+
+const ensurePnpmEnvImage = (repoRoot: string) =>
+  inspectPnpmEnvImage(repoRoot).pipe(
     Effect.flatMap((imageExists) =>
       imageExists
         ? Effect.succeed(undefined)
@@ -593,6 +650,15 @@ const ensurePnpmEnvImage = (repoRoot: string) =>
               ".",
             ],
             { cwd: repoRoot }
+          ).pipe(
+            Effect.flatMap(() => inspectPnpmEnvImage(repoRoot)),
+            Effect.flatMap((postBuildExists) =>
+              postBuildExists
+                ? Effect.succeed(undefined)
+                : Effect.fail(
+                    new Error("pnpm-env image was not created by docker build.")
+                  )
+            )
           )
     )
   )
@@ -611,7 +677,7 @@ const resolvePnpmEnvMountSource = (repoRoot: string) => {
   const isWindowsDrive =
     process.platform === "win32" &&
     colonIndex === 1 &&
-    /^[a-zA-Z]/.test(mountSource[0] ?? "")
+    windowsDriveRegex.test(mountSource[0] ?? "")
   if (colonIndex !== -1 && !isWindowsDrive) {
     return Effect.fail(
       new Error(
