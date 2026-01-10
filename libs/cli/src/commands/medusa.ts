@@ -16,6 +16,30 @@ const medusaContainerName =
 const minioContainerName =
   process.env.MEDUSA_MINIO_CONTAINER_NAME ?? "wr_medusa_minio";
 
+const makeMedusaScriptCommand = (
+  name: string,
+  scriptName: string,
+  description: string,
+) =>
+  Command.make(name, {}, () =>
+    Effect.gen(function* () {
+      const repoRoot = yield* getRepoRoot();
+      yield* run(
+        "docker",
+        [
+          "exec",
+          medusaContainerName,
+          "pnpm",
+          "--filter",
+          "medusa-be",
+          "run",
+          scriptName,
+        ],
+        { cwd: repoRoot },
+      );
+    }),
+  ).pipe(Command.withDescription(description));
+
 export const medusaCreateUser = Command.make(
   "medusa-create-user",
   { email: emailOption, password: passwordOption },
@@ -125,22 +149,33 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
     ).pipe(Effect.catchAll(() => Effect.succeed("")));
     const aliasExists = aliasList
       .split(/\r?\n/)
-      .some((line) => line.trim().startsWith("local"));
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .some((line) => line.split(/\s+/)[0] === "local");
+    const minioEnvArgs = [
+      "-e",
+      `MINIO_ENDPOINT=${minioEndpoint}`,
+      "-e",
+      `MINIO_ROOT_USER=${rootUser}`,
+      "-e",
+      `MINIO_ROOT_PASSWORD=${rootPassword}`,
+      "-e",
+      `MINIO_ACCESS_KEY=${accessKey}`,
+      "-e",
+      `MINIO_SECRET_KEY=${secretKey}`,
+    ];
     if (!aliasExists) {
       yield* run(
         "docker",
         [
           "exec",
+          ...minioEnvArgs,
           minioContainerName,
-          "mc",
-          "alias",
-          "set",
-          "local",
-          minioEndpoint,
-          rootUser,
-          rootPassword,
+          "sh",
+          "-lc",
+          'mc alias set local "$MINIO_ENDPOINT" "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"',
         ],
-        { cwd: repoRoot },
+        { cwd: repoRoot, sensitive: true },
       );
     }
     const accessKeyList = yield* runCapture(
@@ -156,18 +191,13 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
         "docker",
         [
           "exec",
+          ...minioEnvArgs,
           minioContainerName,
-          "mc",
-          "admin",
-          "accesskey",
-          "create",
-          "--access-key",
-          accessKey,
-          "--secret-key",
-          secretKey,
-          "local",
+          "sh",
+          "-lc",
+          'mc admin accesskey create --access-key "$MINIO_ACCESS_KEY" --secret-key "$MINIO_SECRET_KEY" local',
         ],
-        { cwd: repoRoot },
+        { cwd: repoRoot, sensitive: true },
       );
     }
     const metadataZip = path.join(
@@ -210,81 +240,26 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
   ),
 );
 
-export const medusaMeilisearchReseed = Command.make(
+export const medusaMeilisearchReseed = makeMedusaScriptCommand(
   "medusa-meilisearch-reseed",
-  {},
-  () =>
-    Effect.gen(function* () {
-      const repoRoot = yield* getRepoRoot();
-      yield* run(
-        "docker",
-        [
-          "exec",
-          medusaContainerName,
-          "pnpm",
-          "--filter",
-          "medusa-be",
-          "run",
-          "addInitialSearchDocuments",
-        ],
-        { cwd: repoRoot },
-      );
-    }),
-).pipe(Command.withDescription("Reseed Meilisearch documents."));
+  "addInitialSearchDocuments",
+  "Reseed Meilisearch documents.",
+);
 
-export const medusaSeed = Command.make("medusa-seed", {}, () =>
-  Effect.gen(function* () {
-    const repoRoot = yield* getRepoRoot();
-    yield* run(
-      "docker",
-      [
-        "exec",
-        medusaContainerName,
-        "pnpm",
-        "--filter",
-        "medusa-be",
-        "run",
-        "seedInitialData",
-      ],
-      { cwd: repoRoot },
-    );
-  }),
-).pipe(Command.withDescription("Seed initial Medusa data."));
+export const medusaSeed = makeMedusaScriptCommand(
+  "medusa-seed",
+  "seedInitialData",
+  "Seed initial Medusa data.",
+);
 
-export const medusaSeedDevData = Command.make("medusa-seed-dev-data", {}, () =>
-  Effect.gen(function* () {
-    const repoRoot = yield* getRepoRoot();
-    yield* run(
-      "docker",
-      [
-        "exec",
-        medusaContainerName,
-        "pnpm",
-        "--filter",
-        "medusa-be",
-        "run",
-        "seedDevData",
-      ],
-      { cwd: repoRoot },
-    );
-  }),
-).pipe(Command.withDescription("Seed Medusa dev data."));
+export const medusaSeedDevData = makeMedusaScriptCommand(
+  "medusa-seed-dev-data",
+  "seedDevData",
+  "Seed Medusa dev data.",
+);
 
-export const medusaSeedN1 = Command.make("medusa-seed-n1", {}, () =>
-  Effect.gen(function* () {
-    const repoRoot = yield* getRepoRoot();
-    yield* run(
-      "docker",
-      [
-        "exec",
-        medusaContainerName,
-        "pnpm",
-        "--filter",
-        "medusa-be",
-        "run",
-        "seedN1",
-      ],
-      { cwd: repoRoot },
-    );
-  }),
-).pipe(Command.withDescription("Seed Medusa N1 data."));
+export const medusaSeedN1 = makeMedusaScriptCommand(
+  "medusa-seed-n1",
+  "seedN1",
+  "Seed Medusa N1 data.",
+);

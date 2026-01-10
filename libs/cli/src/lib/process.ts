@@ -1,15 +1,55 @@
 import { Effect } from "effect";
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import path from "node:path";
 import { getRepoRoot } from "./paths";
 
 export type RunOptions = {
   cwd?: string;
   stdin?: string;
+  sensitive?: boolean;
 };
 
-const logCommand = (command: string, args: readonly string[]) =>
+type CleanupHandlers = {
+  onClose?: (code: number | null) => void;
+  onError?: (error: Error) => void;
+  onData?: (chunk: Buffer) => void;
+};
+
+const cleanupChild = (
+  child: ChildProcess,
+  interrupted: { value: boolean },
+  handlers: CleanupHandlers,
+  { kill }: { kill: boolean },
+) => {
+  if (interrupted.value) {
+    return;
+  }
+  interrupted.value = true;
+  if (handlers.onData && child.stdout) {
+    child.stdout.removeListener("data", handlers.onData);
+  }
+  if (handlers.onError) {
+    child.removeListener("error", handlers.onError);
+  }
+  if (handlers.onClose) {
+    child.removeListener("close", handlers.onClose);
+  }
+  child.stdin?.destroy();
+  if (kill && child.exitCode === null && !child.killed) {
+    child.kill();
+  }
+};
+
+const logCommand = (
+  command: string,
+  args: readonly string[],
+  sensitive = false,
+) =>
   Effect.sync(() => {
+    if (sensitive) {
+      process.stdout.write(`> ${command} [redacted]\n`);
+      return;
+    }
     process.stdout.write(`> ${command} ${args.join(" ")}\n`);
   });
 
@@ -19,10 +59,10 @@ export const run = (
   options: RunOptions = {},
 ) =>
   Effect.gen(function* () {
-    const { cwd, stdin } = options;
-    yield* logCommand(command, args);
+    const { cwd, stdin, sensitive } = options;
+    yield* logCommand(command, args, sensitive);
     yield* Effect.async((resume) => {
-      let interrupted = false;
+      const interrupted = { value: false };
       const stdio =
         stdin === undefined ? "inherit" : (["pipe", "inherit", "inherit"] as const);
       const child = spawn(command, args, {
@@ -30,14 +70,12 @@ export const run = (
         env: process.env,
         cwd,
       });
+      const handlers: CleanupHandlers = {};
       const onClose = (code: number | null) => {
-        if (interrupted) {
+        if (interrupted.value) {
           return;
         }
-        interrupted = true;
-        child.removeListener("error", onError);
-        child.removeListener("close", onClose);
-        child.stdin?.destroy();
+        cleanupChild(child, interrupted, handlers, { kill: false });
         if (code === 0) {
           resume(Effect.succeed(undefined));
         } else {
@@ -45,15 +83,14 @@ export const run = (
         }
       };
       const onError = (error: Error) => {
-        if (interrupted) {
+        if (interrupted.value) {
           return;
         }
-        interrupted = true;
-        child.removeListener("error", onError);
-        child.removeListener("close", onClose);
-        child.stdin?.destroy();
+        cleanupChild(child, interrupted, handlers, { kill: false });
         resume(Effect.fail(error));
       };
+      handlers.onClose = onClose;
+      handlers.onError = onError;
       if (stdin !== undefined) {
         child.stdin?.write(stdin);
         child.stdin?.end();
@@ -61,16 +98,7 @@ export const run = (
       child.on("error", onError);
       child.on("close", onClose);
       return () => {
-        if (interrupted) {
-          return;
-        }
-        interrupted = true;
-        child.removeListener("error", onError);
-        child.removeListener("close", onClose);
-        child.stdin?.destroy();
-        if (child.exitCode === null && !child.killed) {
-          child.kill();
-        }
+        cleanupChild(child, interrupted, handlers, { kill: true });
       };
     });
   });
@@ -94,10 +122,10 @@ export const runCapture = (
   options: RunOptions = {},
 ) =>
   Effect.gen(function* () {
-    const { cwd, stdin } = options;
-    yield* logCommand(command, args);
+    const { cwd, stdin, sensitive } = options;
+    yield* logCommand(command, args, sensitive);
     return yield* Effect.async<string>((resume) => {
-      let interrupted = false;
+      const interrupted = { value: false };
       const stdio: readonly ["pipe" | "ignore", "pipe", "inherit"] = [
         stdin === undefined ? "ignore" : "pipe",
         "pipe",
@@ -113,18 +141,15 @@ export const runCapture = (
         child.stdin?.end();
       }
       let output = "";
+      const handlers: CleanupHandlers = {};
       const onData = (chunk: Buffer) => {
         output += chunk.toString();
       };
       const onClose = (code: number | null) => {
-        if (interrupted) {
+        if (interrupted.value) {
           return;
         }
-        interrupted = true;
-        child.stdout?.removeListener("data", onData);
-        child.removeListener("error", onError);
-        child.removeListener("close", onClose);
-        child.stdin?.destroy();
+        cleanupChild(child, interrupted, handlers, { kill: false });
         if (code === 0) {
           resume(Effect.succeed(output));
         } else {
@@ -132,31 +157,20 @@ export const runCapture = (
         }
       };
       const onError = (error: Error) => {
-        if (interrupted) {
+        if (interrupted.value) {
           return;
         }
-        interrupted = true;
-        child.stdout?.removeListener("data", onData);
-        child.removeListener("error", onError);
-        child.removeListener("close", onClose);
-        child.stdin?.destroy();
+        cleanupChild(child, interrupted, handlers, { kill: false });
         resume(Effect.fail(error));
       };
+      handlers.onClose = onClose;
+      handlers.onError = onError;
+      handlers.onData = onData;
       child.stdout?.on("data", onData);
       child.on("error", onError);
       child.on("close", onClose);
       return () => {
-        if (interrupted) {
-          return;
-        }
-        interrupted = true;
-        child.stdout?.removeListener("data", onData);
-        child.removeListener("error", onError);
-        child.removeListener("close", onClose);
-        child.stdin?.destroy();
-        if (child.exitCode === null && !child.killed) {
-          child.kill();
-        }
+        cleanupChild(child, interrupted, handlers, { kill: true });
       };
     });
   });
