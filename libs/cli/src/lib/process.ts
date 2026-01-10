@@ -183,13 +183,13 @@ export const runPnpmEnv = (
   Effect.gen(function* () {
     const repoRoot = path.resolve(yield* getRepoRoot())
     if (commandArgs.length === 0) {
-      yield* Effect.fail(new Error("Missing pnpm-env command args."))
+      return yield* Effect.fail(new Error("Missing pnpm-env command args."))
     }
     const invalidArg = commandArgs.find(
       (arg) => arg.length === 0 || arg.includes("\0")
     )
     if (invalidArg !== undefined) {
-      yield* Effect.fail(new Error("Invalid pnpm-env command arg."))
+      return yield* Effect.fail(new Error("Invalid pnpm-env command arg."))
     }
     const imageId = yield* runCapture(
       "docker",
