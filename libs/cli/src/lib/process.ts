@@ -35,6 +35,7 @@ class ProcessRunError extends Error {
   }
 }
 
+// Characters safe to pass unquoted in POSIX shells: letters, digits, _, /, :, =, ., ,, @, +, -.
 const safeArgRegex = /^[a-zA-Z0-9_/:=.,@+-]+$/
 const DEFAULT_MAX_STDOUT_BYTES = 1024 * 1024
 
@@ -482,6 +483,7 @@ export const runPnpmEnv = (
         )
       )
     )
+    // Treat inspect failures as "missing image" so we can attempt a rebuild.
     const imageExists = yield* runCapture(
       "docker",
       ["image", "inspect", "pnpm-env"],
