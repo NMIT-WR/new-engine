@@ -8,7 +8,15 @@ export type RunOptions = {
   stdin?: string
   sensitive?: boolean
   timeoutMs?: number
+  /**
+   * Maximum stdout bytes to buffer in runCapture. Values <= 0 disable the limit.
+   */
   maxStdoutBytes?: number
+  /**
+   * When true (POSIX only), spawn in a new process group and attempt to kill it
+   * on cancellation/timeout.
+   */
+  killGroup?: boolean
 }
 
 type CleanupHandlers = {
@@ -227,14 +235,15 @@ const startRunCapture = (
   options: RunOptions,
   resume: CaptureResume
 ) => {
-  const { cwd, stdin, sensitive, timeoutMs, maxStdoutBytes } = options
+  const { cwd, stdin, sensitive, timeoutMs, maxStdoutBytes, killGroup } =
+    options
   const interrupted = { value: false }
   const stdio: SpawnOptions["stdio"] = [
     stdin === undefined ? "ignore" : "pipe",
     "pipe",
     "inherit",
   ]
-  const detached = process.platform !== "win32"
+  const detached = killGroup === true && process.platform !== "win32"
   let child: ChildProcess
   try {
     child = spawn(command, args, {
@@ -316,13 +325,13 @@ export const run = (
   options: RunOptions = {}
 ) =>
   Effect.gen(function* () {
-    const { cwd, stdin, sensitive, timeoutMs } = options
+    const { cwd, stdin, sensitive, timeoutMs, killGroup } = options
     yield* logCommand(command, args, sensitive)
     yield* Effect.async<void, Error>((resume) => {
       const interrupted = { value: false }
       const stdio: SpawnOptions["stdio"] =
         stdin === undefined ? "inherit" : ["pipe", "inherit", "inherit"]
-      const detached = process.platform !== "win32"
+      const detached = killGroup === true && process.platform !== "win32"
       let child: ChildProcess
       try {
         child = spawn(command, args, {
