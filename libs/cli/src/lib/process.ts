@@ -10,9 +10,59 @@ export type RunOptions = {
 }
 
 type CleanupHandlers = {
-  onClose?: (code: number | null) => void
+  onClose?: (code: number | null, signal: NodeJS.Signals | null) => void
   onError?: (error: Error) => void
   onData?: (chunk: Buffer) => void
+}
+
+class ProcessRunError extends Error {
+  readonly sensitive: boolean
+
+  constructor(message: string, sensitive: boolean, cause?: unknown) {
+    super(message)
+    this.name = "ProcessRunError"
+    this.sensitive = sensitive
+    if (cause !== undefined) {
+      this.cause = cause
+    }
+  }
+}
+
+const safeArgRegex = /^[a-zA-Z0-9_/:=.,@+-]+$/
+
+const getExitError = (
+  command: string,
+  code: number | null,
+  signal: NodeJS.Signals | null,
+  sensitive: boolean
+) => {
+  if (signal) {
+    return new ProcessRunError(
+      `${command} terminated by signal ${signal}`,
+      sensitive
+    )
+  }
+  if (code === 0) {
+    return null
+  }
+  return new ProcessRunError(`${command} exited with code ${code}`, sensitive)
+}
+
+const toSpawnError = (error: unknown, sensitive: boolean) =>
+  new ProcessRunError(
+    error instanceof Error ? error.message : "Failed to spawn process",
+    sensitive,
+    error
+  )
+
+const quoteArg = (arg: string) => {
+  if (arg.length === 0) {
+    return "''"
+  }
+  if (safeArgRegex.test(arg)) {
+    return arg
+  }
+  return `'${arg.replace(/'/g, `'\\''`)}'`
 }
 
 const cleanupChild = (
@@ -47,10 +97,12 @@ const logCommand = (
 ) =>
   Effect.sync(() => {
     if (sensitive) {
-      process.stdout.write(`> ${command} [redacted]\n`)
+      process.stdout.write("> [redacted]\n")
       return
     }
-    process.stdout.write(`> ${command} ${args.join(" ")}\n`)
+    const quotedArgs = args.map(quoteArg)
+    const suffix = quotedArgs.length > 0 ? ` ${quotedArgs.join(" ")}` : ""
+    process.stdout.write(`> ${quoteArg(command)}${suffix}\n`)
   })
 
 export const run = (
@@ -65,21 +117,33 @@ export const run = (
       const interrupted = { value: false }
       const stdio: SpawnOptions["stdio"] =
         stdin === undefined ? "inherit" : ["pipe", "inherit", "inherit"]
-      const child = spawn(command, args, {
-        stdio,
-        env: process.env,
-        cwd,
-      })
+      let child: ChildProcess
+      try {
+        child = spawn(command, args, {
+          stdio,
+          env: process.env,
+          cwd,
+        })
+      } catch (error) {
+        resume(Effect.fail(toSpawnError(error, sensitive ?? false)))
+        return
+      }
       const handlers: CleanupHandlers = {}
-      const onClose = (code: number | null) => {
+      const onClose = (code: number | null, signal: NodeJS.Signals | null) => {
         if (interrupted.value) {
           return
         }
         cleanupChild(child, interrupted, handlers, { kill: false })
-        if (code === 0) {
-          resume(Effect.succeed(undefined))
+        const exitError = getExitError(
+          command,
+          code,
+          signal,
+          sensitive ?? false
+        )
+        if (exitError) {
+          resume(Effect.fail(exitError))
         } else {
-          resume(Effect.fail(new Error(`${command} exited with code ${code}`)))
+          resume(Effect.succeed(undefined))
         }
       }
       const onError = (error: Error) => {
@@ -87,7 +151,11 @@ export const run = (
           return
         }
         cleanupChild(child, interrupted, handlers, { kill: false })
-        resume(Effect.fail(error))
+        resume(
+          Effect.fail(
+            new ProcessRunError(error.message, sensitive ?? false, error)
+          )
+        )
       }
       handlers.onClose = onClose
       handlers.onError = onError
@@ -111,7 +179,13 @@ export const runIgnore = (
   run(command, args, options).pipe(
     Effect.catchAll((error) =>
       Effect.sync(() => {
-        const message = error instanceof Error ? error.message : String(error)
+        const shouldRedact =
+          options?.sensitive ||
+          (error instanceof ProcessRunError && error.sensitive)
+        let message = "error (redacted)"
+        if (!shouldRedact) {
+          message = error instanceof Error ? error.message : String(error)
+        }
         process.stderr.write(`! ${message} (ignored)\n`)
       })
     )
@@ -132,25 +206,37 @@ export const runCapture = (
         "pipe",
         "inherit",
       ]
-      const child = spawn(command, args, {
-        stdio,
-        env: process.env,
-        cwd,
-      })
-      let output = ""
+      let child: ChildProcess
+      try {
+        child = spawn(command, args, {
+          stdio,
+          env: process.env,
+          cwd,
+        })
+      } catch (error) {
+        resume(Effect.fail(toSpawnError(error, sensitive ?? false)))
+        return
+      }
+      const outputBuffers: Buffer[] = []
       const handlers: CleanupHandlers = {}
       const onData = (chunk: Buffer) => {
-        output += chunk.toString()
+        outputBuffers.push(chunk)
       }
-      const onClose = (code: number | null) => {
+      const onClose = (code: number | null, signal: NodeJS.Signals | null) => {
         if (interrupted.value) {
           return
         }
         cleanupChild(child, interrupted, handlers, { kill: false })
-        if (code === 0) {
-          resume(Effect.succeed(output))
+        const exitError = getExitError(
+          command,
+          code,
+          signal,
+          sensitive ?? false
+        )
+        if (exitError) {
+          resume(Effect.fail(exitError))
         } else {
-          resume(Effect.fail(new Error(`${command} exited with code ${code}`)))
+          resume(Effect.succeed(Buffer.concat(outputBuffers).toString()))
         }
       }
       const onError = (error: Error) => {
@@ -158,7 +244,11 @@ export const runCapture = (
           return
         }
         cleanupChild(child, interrupted, handlers, { kill: false })
-        resume(Effect.fail(error))
+        resume(
+          Effect.fail(
+            new ProcessRunError(error.message, sensitive ?? false, error)
+          )
+        )
       }
       handlers.onClose = onClose
       handlers.onError = onError
