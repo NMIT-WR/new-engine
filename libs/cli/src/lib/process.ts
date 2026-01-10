@@ -7,6 +7,7 @@ export type RunOptions = {
   cwd?: string
   stdin?: string
   sensitive?: boolean
+  timeoutMs?: number
 }
 
 type CleanupHandlers = {
@@ -19,12 +20,9 @@ class ProcessRunError extends Error {
   readonly sensitive: boolean
 
   constructor(message: string, sensitive: boolean, cause?: unknown) {
-    super(message)
+    super(message, cause === undefined ? undefined : { cause })
     this.name = "ProcessRunError"
     this.sensitive = sensitive
-    if (cause !== undefined) {
-      this.cause = cause
-    }
   }
 }
 
@@ -69,7 +67,7 @@ const cleanupChild = (
   child: ChildProcess,
   interrupted: { value: boolean },
   handlers: CleanupHandlers,
-  { kill }: { kill: boolean }
+  { kill, killGroup }: { kill: boolean; killGroup?: boolean }
 ) => {
   if (interrupted.value) {
     return
@@ -86,7 +84,21 @@ const cleanupChild = (
   }
   child.stdin?.destroy()
   if (kill && child.exitCode === null && !child.killed) {
-    child.kill()
+    const canKillGroup =
+      killGroup && process.platform !== "win32" && typeof child.pid === "number"
+    if (canKillGroup) {
+      try {
+        process.kill(-child.pid)
+        return
+      } catch {
+        // Ignore group-kill failures and fall back to direct kill.
+      }
+    }
+    try {
+      child.kill()
+    } catch {
+      // Ignore kill failures during cleanup.
+    }
   }
 }
 
@@ -102,7 +114,8 @@ const logCommand = (
     }
     const quotedArgs = args.map(quoteArg)
     const suffix = quotedArgs.length > 0 ? ` ${quotedArgs.join(" ")}` : ""
-    process.stdout.write(`> ${quoteArg(command)}${suffix}\n`)
+    const label = process.platform === "win32" ? "POSIX: " : ""
+    process.stdout.write(`> ${label}${quoteArg(command)}${suffix}\n`)
   })
 
 export const run = (
@@ -111,28 +124,38 @@ export const run = (
   options: RunOptions = {}
 ) =>
   Effect.gen(function* () {
-    const { cwd, stdin, sensitive } = options
+    const { cwd, stdin, sensitive, timeoutMs } = options
     yield* logCommand(command, args, sensitive)
     yield* Effect.async<void, Error>((resume) => {
       const interrupted = { value: false }
       const stdio: SpawnOptions["stdio"] =
         stdin === undefined ? "inherit" : ["pipe", "inherit", "inherit"]
+      const detached = process.platform !== "win32"
       let child: ChildProcess
       try {
         child = spawn(command, args, {
           stdio,
           env: process.env,
           cwd,
+          detached,
         })
       } catch (error) {
         resume(Effect.fail(toSpawnError(error, sensitive ?? false)))
         return
       }
       const handlers: CleanupHandlers = {}
+      let timeoutId: ReturnType<typeof setTimeout> | null = null
+      const clearTimer = () => {
+        if (timeoutId !== null) {
+          clearTimeout(timeoutId)
+          timeoutId = null
+        }
+      }
       const onClose = (code: number | null, signal: NodeJS.Signals | null) => {
         if (interrupted.value) {
           return
         }
+        clearTimer()
         cleanupChild(child, interrupted, handlers, { kill: false })
         const exitError = getExitError(
           command,
@@ -150,6 +173,7 @@ export const run = (
         if (interrupted.value) {
           return
         }
+        clearTimer()
         cleanupChild(child, interrupted, handlers, { kill: false })
         resume(
           Effect.fail(
@@ -161,12 +185,35 @@ export const run = (
       handlers.onError = onError
       child.on("error", onError)
       child.on("close", onClose)
+      if (timeoutMs !== undefined && timeoutMs > 0) {
+        timeoutId = setTimeout(() => {
+          if (interrupted.value) {
+            return
+          }
+          cleanupChild(child, interrupted, handlers, {
+            kill: true,
+            killGroup: detached,
+          })
+          resume(
+            Effect.fail(
+              new ProcessRunError(
+                `${command} timed out after ${timeoutMs}ms`,
+                sensitive ?? false
+              )
+            )
+          )
+        }, timeoutMs)
+      }
       if (stdin !== undefined) {
         child.stdin?.write(stdin)
         child.stdin?.end()
       }
       return Effect.sync(() => {
-        cleanupChild(child, interrupted, handlers, { kill: true })
+        clearTimer()
+        cleanupChild(child, interrupted, handlers, {
+          kill: true,
+          killGroup: detached,
+        })
       })
     })
   })
@@ -197,7 +244,7 @@ export const runCapture = (
   options: RunOptions = {}
 ) =>
   Effect.gen(function* () {
-    const { cwd, stdin, sensitive } = options
+    const { cwd, stdin, sensitive, timeoutMs } = options
     yield* logCommand(command, args, sensitive)
     return yield* Effect.async<string, Error>((resume) => {
       const interrupted = { value: false }
@@ -206,12 +253,14 @@ export const runCapture = (
         "pipe",
         "inherit",
       ]
+      const detached = process.platform !== "win32"
       let child: ChildProcess
       try {
         child = spawn(command, args, {
           stdio,
           env: process.env,
           cwd,
+          detached,
         })
       } catch (error) {
         resume(Effect.fail(toSpawnError(error, sensitive ?? false)))
@@ -219,6 +268,13 @@ export const runCapture = (
       }
       const outputBuffers: Buffer[] = []
       const handlers: CleanupHandlers = {}
+      let timeoutId: ReturnType<typeof setTimeout> | null = null
+      const clearTimer = () => {
+        if (timeoutId !== null) {
+          clearTimeout(timeoutId)
+          timeoutId = null
+        }
+      }
       const onData = (chunk: Buffer) => {
         outputBuffers.push(chunk)
       }
@@ -226,6 +282,7 @@ export const runCapture = (
         if (interrupted.value) {
           return
         }
+        clearTimer()
         cleanupChild(child, interrupted, handlers, { kill: false })
         const exitError = getExitError(
           command,
@@ -243,6 +300,7 @@ export const runCapture = (
         if (interrupted.value) {
           return
         }
+        clearTimer()
         cleanupChild(child, interrupted, handlers, { kill: false })
         resume(
           Effect.fail(
@@ -256,12 +314,35 @@ export const runCapture = (
       child.stdout?.on("data", onData)
       child.on("error", onError)
       child.on("close", onClose)
+      if (timeoutMs !== undefined && timeoutMs > 0) {
+        timeoutId = setTimeout(() => {
+          if (interrupted.value) {
+            return
+          }
+          cleanupChild(child, interrupted, handlers, {
+            kill: true,
+            killGroup: detached,
+          })
+          resume(
+            Effect.fail(
+              new ProcessRunError(
+                `${command} timed out after ${timeoutMs}ms`,
+                sensitive ?? false
+              )
+            )
+          )
+        }, timeoutMs)
+      }
       if (stdin !== undefined) {
         child.stdin?.write(stdin)
         child.stdin?.end()
       }
       return Effect.sync(() => {
-        cleanupChild(child, interrupted, handlers, { kill: true })
+        clearTimer()
+        cleanupChild(child, interrupted, handlers, {
+          kill: true,
+          killGroup: detached,
+        })
       })
     })
   })
@@ -305,8 +386,10 @@ export const runPnpmEnv = (
       "run",
       "--rm",
       ...(interactive ? ["-it"] : []),
-      "-v",
-      `${repoRoot}:/var/www`,
+      "--mount",
+      `type=bind,source=${repoRoot},target=/var/www`,
+      "-w",
+      "/var/www",
       "pnpm-env",
       ...commandArgs,
     ]

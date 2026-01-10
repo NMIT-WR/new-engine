@@ -3,7 +3,7 @@ import { Effect } from "effect"
 import { composeBase, composeProd, medusaImage } from "../lib/docker"
 import { forceRecreateOption } from "../lib/options"
 import { getRepoRoot } from "../lib/paths"
-import { run, runIgnore } from "../lib/process"
+import { run, runCapture, runIgnore } from "../lib/process"
 
 export const dev = Command.make(
   "dev",
@@ -25,13 +25,25 @@ export const dev = Command.make(
 export const prod = Command.make("prod", {}, () =>
   Effect.gen(function* () {
     const repoRoot = yield* getRepoRoot()
+    const buildTimeoutMs = 30 * 60 * 1000
     yield* runIgnore("docker", [...composeProd, "down"], { cwd: repoRoot })
     yield* runIgnore("docker", ["rmi", medusaImage], {
       cwd: repoRoot,
     })
     yield* run("docker", [...composeProd, "build", "--no-cache", "medusa-be"], {
       cwd: repoRoot,
+      timeoutMs: buildTimeoutMs,
     })
+    const imageId = yield* runCapture(
+      "docker",
+      ["image", "ls", "-q", medusaImage],
+      { cwd: repoRoot }
+    )
+    if (imageId.trim().length === 0) {
+      return yield* Effect.fail(
+        new Error(`Medusa image build failed: ${medusaImage} not found`)
+      )
+    }
     yield* run("docker", [...composeProd, "up", "-d"], { cwd: repoRoot })
   })
 ).pipe(
