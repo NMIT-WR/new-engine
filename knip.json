@@ -1,0 +1,183 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "{apps,libs}/**/src/index.{ts,tsx}",
+    "{apps,libs}/**/src/main.{ts,tsx}",
+    "scripts/**/*.{ts,js}"
+  ],
+  "project": [
+    "{apps,libs}/**/src/**/*.{ts,tsx}",
+    "{apps,libs}/**/*.config.{ts,js,mjs}",
+    "scripts/**/*.{ts,js}"
+  ],
+  "paths": {
+    "@libs/data-layer": ["./libs/data-layer/src"],
+    "@libs/data-layer/*": ["./libs/data-layer/src/*"],
+    "@libs/ui": ["./libs/ui/src"],
+    "@libs/ui/*": ["./libs/ui/src/*"],
+    "@libs/analytics": ["./libs/analytics/src"],
+    "@libs/analytics/*": ["./libs/analytics/src/*"],
+    "@libs/medusa-sdk": ["./libs/medusa-sdk/src"],
+    "@libs/medusa-sdk/*": ["./libs/medusa-sdk/src/*"],
+    "@libs/product-hooks": ["./libs/product-hooks/src"],
+    "@libs/product-hooks/*": ["./libs/product-hooks/src/*"]
+  },
+  "ignore": [
+    "**/*.test.{ts,tsx}",
+    "**/*.spec.{ts,tsx}",
+    "**/__tests__/**",
+    "**/__mocks__/**",
+    "**/dist/**",
+    "**/.next/**",
+    "**/.medusa/**",
+    "**/build/**",
+    "**/storybook-static/**",
+    "**/coverage/**",
+    "**/.netlify/**",
+    "**/e2e/**",
+    "**/playwright-report/**",
+    "**/*.generated.{ts,tsx}",
+    "**/.cache/**"
+  ],
+  "ignoreDependencies": [
+    "@libs/*",
+    "@new-wr/*",
+    "@biomejs/biome"
+  ],
+  "ignoreBinaries": [
+    "playwright",
+    "bunx",
+    "pnpm",
+    "tsc",
+    "biome"
+  ],
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  },
+  "ignoreIssues": {
+    "**/*.stories.tsx": ["exports"],
+    "**/*.stories.ts": ["exports"],
+    "**/tokens/**/*.ts": ["exports", "types"],
+    "**/tokens/**/*.css": ["files"],
+    "**/.storybook/**": ["dependencies"],
+    "**/scripts/**": ["exports"]
+  },
+  "workspaces": {
+    "apps/medusa-be": {
+      "entry": [
+        "src/api/**/*.{ts,tsx}",
+        "src/modules/**/*.{ts,tsx}",
+        "src/workflows/**/*.{ts,tsx}",
+        "src/subscribers/**/*.{ts,tsx}",
+        "src/jobs/**/*.{ts,tsx}",
+        "medusa-config.ts"
+      ],
+      "ignore": [
+        ".medusa/**",
+        "dist/**",
+        "src/scripts/**"
+      ]
+    },
+    "apps/frontend-demo": {
+      "entry": [
+        "src/app/**/*.{tsx,ts}",
+        "src/pages/**/*.{tsx,ts}",
+        "next.config.js"
+      ],
+      "next": {
+        "entry": [
+          "next.config.js",
+          "app/**/*.{tsx,ts}",
+          "pages/**/*.{tsx,ts}",
+          "src/app/**/*.{tsx,ts}",
+          "src/pages/**/*.{tsx,ts}"
+        ]
+      },
+      "ignore": [
+        ".next/**",
+        ".netlify/**"
+      ]
+    },
+    "apps/n1": {
+      "entry": [
+        "src/app/**/*.{tsx,ts}",
+        "next.config.ts"
+      ],
+      "next": {
+        "entry": [
+          "next.config.ts",
+          "app/**/*.{tsx,ts}",
+          "src/app/**/*.{tsx,ts}"
+        ]
+      },
+      "ignore": [
+        ".next/**",
+        ".netlify/**"
+      ]
+    },
+    "apps/herbatika": {
+      "entry": [
+        "src/**/*.{ts,tsx}"
+      ]
+    },
+    "apps/local": {
+      "entry": [
+        "src/**/*.{ts,tsx}"
+      ]
+    },
+    "libs/ui": {
+      "entry": [
+        "src/atoms/**/index.ts",
+        "src/molecules/**/index.ts",
+        "src/organisms/**/index.ts",
+        "src/tokens/**/index.ts",
+        "src/index.ts"
+      ],
+      "includeEntryExports": true,
+      "storybook": {
+        "config": [".storybook/main.ts"],
+        "entry": [
+          "**/*.stories.{ts,tsx}",
+          ".storybook/**/*.{ts,tsx}"
+        ]
+      },
+      "ignore": [
+        "storybook-static/**"
+      ]
+    },
+    "libs/analytics": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "includeEntryExports": true
+    },
+    "libs/data-layer": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "includeEntryExports": true
+    },
+    "libs/medusa-sdk": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "includeEntryExports": true
+    },
+    "libs/product-hooks": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "includeEntryExports": true
+    }
+  },
+  "rules": {
+    "files": "warn",
+    "dependencies": "warn",
+    "devDependencies": "warn",
+    "unlisted": "error",
+    "exports": "warn",
+    "types": "warn",
+    "duplicates": "warn"
+  }
+}
