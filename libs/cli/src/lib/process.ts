@@ -4,9 +4,21 @@ import { Effect } from "effect"
 import { getRepoRoot } from "./paths"
 
 export type RunOptions = {
+  /**
+   * Working directory for the spawned process.
+   */
   cwd?: string
+  /**
+   * Optional stdin payload to write before closing.
+   */
   stdin?: string
+  /**
+   * When true, redacts command details in logs/errors.
+   */
   sensitive?: boolean
+  /**
+   * Milliseconds before the process is treated as timed out.
+   */
   timeoutMs?: number
   /**
    * Maximum stdout bytes to buffer in runCapture. Values <= 0 disable the limit.
@@ -152,15 +164,25 @@ const cleanupChild = (
 
 type CaptureResume = (effect: Effect.Effect<string, Error>) => void
 
-type CaptureContext = {
+type ProcessContext = {
   command: string
   sensitive: boolean
   child: ChildProcess
   interrupted: { value: boolean }
   handlers: CleanupHandlers
-  resume: CaptureResume
   clearTimer: () => void
   detached: boolean
+}
+
+type ProcessHooks = {
+  onClose: (
+    context: ProcessContext,
+    code: number | null,
+    signal: NodeJS.Signals | null
+  ) => void
+  onError: (context: ProcessContext, error: Error) => void
+  onTimeout: (context: ProcessContext) => void
+  onData?: (context: ProcessContext, chunk: Buffer) => void
 }
 
 const scheduleTimeout = (
@@ -174,7 +196,8 @@ const scheduleTimeout = (
 }
 
 const finalizeCapture = (
-  context: CaptureContext,
+  context: ProcessContext,
+  resume: CaptureResume,
   effect: Effect.Effect<string, Error>,
   { kill }: { kill: boolean }
 ) => {
@@ -186,12 +209,16 @@ const finalizeCapture = (
     kill,
     killGroup: context.detached,
   })
-  context.resume(effect)
+  resume(effect)
 }
 
 const createCloseHandler =
-  (context: CaptureContext, getOutput: () => string) =>
-  (code: number | null, signal: NodeJS.Signals | null) => {
+  (resume: CaptureResume, getOutput: () => string) =>
+  (
+    context: ProcessContext,
+    code: number | null,
+    signal: NodeJS.Signals | null
+  ) => {
     const exitError = getExitError(
       context.command,
       code,
@@ -199,26 +226,31 @@ const createCloseHandler =
       context.sensitive
     )
     if (exitError) {
-      finalizeCapture(context, Effect.fail(exitError), { kill: false })
+      finalizeCapture(context, resume, Effect.fail(exitError), { kill: false })
       return
     }
-    finalizeCapture(context, Effect.succeed(getOutput()), { kill: false })
+    finalizeCapture(context, resume, Effect.succeed(getOutput()), {
+      kill: false,
+    })
   }
 
-const createErrorHandler = (context: CaptureContext) => (error: Error) => {
-  finalizeCapture(
-    context,
-    Effect.fail(new ProcessRunError(error.message, context.sensitive, error)),
-    { kill: false }
-  )
-}
+const createErrorHandler =
+  (resume: CaptureResume) => (context: ProcessContext, error: Error) => {
+    finalizeCapture(
+      context,
+      resume,
+      Effect.fail(new ProcessRunError(error.message, context.sensitive, error)),
+      { kill: false }
+    )
+  }
 
 const createDataHandler =
-  (context: CaptureContext, limiter: ReturnType<typeof createStdoutLimiter>) =>
-  (chunk: Buffer) => {
+  (resume: CaptureResume, limiter: ReturnType<typeof createStdoutLimiter>) =>
+  (context: ProcessContext, chunk: Buffer) => {
     if (!limiter.addChunk(chunk)) {
       finalizeCapture(
         context,
+        resume,
         Effect.fail(
           new ProcessRunError(
             `${context.command} stdout exceeded ${limiter.limit} bytes`,
@@ -230,20 +262,25 @@ const createDataHandler =
     }
   }
 
-const startRunCapture = (
-  command: string,
-  args: readonly string[],
-  options: RunOptions,
-  resume: CaptureResume
-) => {
-  const { cwd, stdin, sensitive, timeoutMs, maxStdoutBytes, killGroup } =
-    options
+type ProcessStartConfig<T> = {
+  command: string
+  args: readonly string[]
+  options: RunOptions
+  stdio: SpawnOptions["stdio"]
+  resume: (effect: Effect.Effect<T, Error>) => void
+  hooks: ProcessHooks
+}
+
+const startProcess = <T>({
+  command,
+  args,
+  options,
+  stdio,
+  resume,
+  hooks,
+}: ProcessStartConfig<T>) => {
+  const { cwd, stdin, sensitive, timeoutMs, killGroup } = options
   const interrupted = { value: false }
-  const stdio: SpawnOptions["stdio"] = [
-    stdin === undefined ? "ignore" : "pipe",
-    "pipe",
-    "inherit",
-  ]
   const detached = killGroup === true && process.platform !== "win32"
   let child: ChildProcess
   try {
@@ -255,7 +292,7 @@ const startRunCapture = (
     })
   } catch (error) {
     resume(Effect.fail(toSpawnError(error, sensitive ?? false)))
-    return
+    return null
   }
   const handlers: CleanupHandlers = {}
   let timeoutId: ReturnType<typeof setTimeout> | null = null
@@ -265,47 +302,82 @@ const startRunCapture = (
       timeoutId = null
     }
   }
-  const context: CaptureContext = {
+  const context: ProcessContext = {
     command,
     sensitive: sensitive ?? false,
     child,
     interrupted,
     handlers,
-    resume,
     clearTimer,
     detached,
   }
-  const limiter = createStdoutLimiter(maxStdoutBytes)
-  const onClose = createCloseHandler(context, limiter.getOutput)
-  const onError = createErrorHandler(context)
-  const onData = createDataHandler(context, limiter)
+  const onClose = (code: number | null, signal: NodeJS.Signals | null) =>
+    hooks.onClose(context, code, signal)
+  const onError = (error: Error) => hooks.onError(context, error)
   handlers.onClose = onClose
   handlers.onError = onError
-  handlers.onData = onData
-  child.stdout?.on("data", onData)
   child.on("error", onError)
   child.on("close", onClose)
-  timeoutId = scheduleTimeout(timeoutMs, () => {
-    finalizeCapture(
-      context,
-      Effect.fail(
-        new ProcessRunError(
-          `${command} timed out after ${timeoutMs}ms`,
-          sensitive ?? false
-        )
-      ),
-      { kill: true }
-    )
-  })
+  const onDataHandler = hooks.onData
+  if (onDataHandler && child.stdout) {
+    const onData = (chunk: Buffer) => onDataHandler(context, chunk)
+    handlers.onData = onData
+    child.stdout.on("data", onData)
+  }
+  timeoutId = scheduleTimeout(timeoutMs, () => hooks.onTimeout(context))
   if (stdin !== undefined) {
     child.stdin?.write(stdin)
     child.stdin?.end()
   }
+  return context
+}
+
+const startRunCapture = (
+  command: string,
+  args: readonly string[],
+  options: RunOptions,
+  resume: CaptureResume
+) => {
+  const { stdin, sensitive, timeoutMs, maxStdoutBytes } = options
+  const stdio: SpawnOptions["stdio"] = [
+    stdin === undefined ? "ignore" : "pipe",
+    "pipe",
+    "inherit",
+  ]
+  const limiter = createStdoutLimiter(maxStdoutBytes)
+  const context = startProcess({
+    command,
+    args,
+    options,
+    stdio,
+    resume,
+    hooks: {
+      onClose: createCloseHandler(resume, limiter.getOutput),
+      onError: createErrorHandler(resume),
+      onData: createDataHandler(resume, limiter),
+      onTimeout: (captureContext) => {
+        finalizeCapture(
+          captureContext,
+          resume,
+          Effect.fail(
+            new ProcessRunError(
+              `${command} timed out after ${timeoutMs ?? 0}ms`,
+              sensitive ?? false
+            )
+          ),
+          { kill: true }
+        )
+      },
+    },
+  })
+  if (!context) {
+    return
+  }
   return Effect.sync(() => {
-    clearTimer()
-    cleanupChild(child, interrupted, handlers, {
+    context.clearTimer()
+    cleanupChild(context.child, context.interrupted, context.handlers, {
       kill: true,
-      killGroup: detached,
+      killGroup: context.detached,
     })
   })
 }
@@ -326,95 +398,88 @@ export const run = (
   options: RunOptions = {}
 ) =>
   Effect.gen(function* () {
-    const { cwd, stdin, sensitive, timeoutMs, killGroup } = options
+    const { stdin, sensitive, timeoutMs } = options
     yield* logCommand(command, args, sensitive)
     yield* Effect.async<void, Error>((resume) => {
-      const interrupted = { value: false }
       const stdio: SpawnOptions["stdio"] =
         stdin === undefined ? "inherit" : ["pipe", "inherit", "inherit"]
-      const detached = killGroup === true && process.platform !== "win32"
-      let child: ChildProcess
-      try {
-        child = spawn(command, args, {
-          stdio,
-          env: process.env,
-          cwd,
-          detached,
-        })
-      } catch (error) {
-        resume(Effect.fail(toSpawnError(error, sensitive ?? false)))
-        return
-      }
-      const handlers: CleanupHandlers = {}
-      let timeoutId: ReturnType<typeof setTimeout> | null = null
-      const clearTimer = () => {
-        if (timeoutId !== null) {
-          clearTimeout(timeoutId)
-          timeoutId = null
-        }
-      }
-      const onClose = (code: number | null, signal: NodeJS.Signals | null) => {
-        if (interrupted.value) {
-          return
-        }
-        clearTimer()
-        cleanupChild(child, interrupted, handlers, { kill: false })
-        const exitError = getExitError(
-          command,
-          code,
-          signal,
-          sensitive ?? false
-        )
-        if (exitError) {
-          resume(Effect.fail(exitError))
-        } else {
-          resume(Effect.succeed(undefined))
-        }
-      }
-      const onError = (error: Error) => {
-        if (interrupted.value) {
-          return
-        }
-        clearTimer()
-        cleanupChild(child, interrupted, handlers, { kill: false })
-        resume(
-          Effect.fail(
-            new ProcessRunError(error.message, sensitive ?? false, error)
-          )
-        )
-      }
-      handlers.onClose = onClose
-      handlers.onError = onError
-      child.on("error", onError)
-      child.on("close", onClose)
-      if (timeoutMs !== undefined && timeoutMs > 0) {
-        timeoutId = setTimeout(() => {
-          if (interrupted.value) {
-            return
-          }
-          cleanupChild(child, interrupted, handlers, {
-            kill: true,
-            killGroup: detached,
-          })
-          resume(
-            Effect.fail(
-              new ProcessRunError(
-                `${command} timed out after ${timeoutMs}ms`,
-                sensitive ?? false
+      const context = startProcess({
+        command,
+        args,
+        options,
+        stdio,
+        resume,
+        hooks: {
+          onClose: (runContext, code, signal) => {
+            if (runContext.interrupted.value) {
+              return
+            }
+            runContext.clearTimer()
+            cleanupChild(
+              runContext.child,
+              runContext.interrupted,
+              runContext.handlers,
+              { kill: false }
+            )
+            const exitError = getExitError(
+              runContext.command,
+              code,
+              signal,
+              runContext.sensitive
+            )
+            if (exitError) {
+              resume(Effect.fail(exitError))
+            } else {
+              resume(Effect.succeed(undefined))
+            }
+          },
+          onError: (runContext, error) => {
+            if (runContext.interrupted.value) {
+              return
+            }
+            runContext.clearTimer()
+            cleanupChild(
+              runContext.child,
+              runContext.interrupted,
+              runContext.handlers,
+              { kill: false }
+            )
+            resume(
+              Effect.fail(
+                new ProcessRunError(error.message, runContext.sensitive, error)
               )
             )
-          )
-        }, timeoutMs)
-      }
-      if (stdin !== undefined) {
-        child.stdin?.write(stdin)
-        child.stdin?.end()
+          },
+          onTimeout: (runContext) => {
+            if (runContext.interrupted.value) {
+              return
+            }
+            runContext.clearTimer()
+            cleanupChild(
+              runContext.child,
+              runContext.interrupted,
+              runContext.handlers,
+              { kill: true, killGroup: runContext.detached }
+            )
+            resume(
+              Effect.fail(
+                new ProcessRunError(
+                  `${command} timed out after ${timeoutMs ?? 0}ms`,
+                  sensitive ?? false
+                )
+              )
+            )
+          },
+        },
+      })
+      if (!context) {
+        return
       }
       return Effect.sync(() => {
-        clearTimer()
-        cleanupChild(child, interrupted, handlers, {
+        context.clearTimer()
+        cleanupChild(context.child, context.interrupted, context.handlers, {
           kill: true,
-          killGroup: detached,
+          killGroup: context.detached,
         })
       })
     })
@@ -454,67 +519,96 @@ export const runCapture = (
     )
   })
 
+const validatePnpmEnvArgs = (commandArgs: readonly string[]) => {
+  if (commandArgs.length === 0) {
+    return Effect.fail(new Error("Missing pnpm-env command args."))
+  }
+  // Args come from CLI parsing but we still reject empty/null-byte input defensively.
+  const invalidArg = commandArgs.find(
+    (arg) => arg.length === 0 || arg.includes("\0")
+  )
+  if (invalidArg !== undefined) {
+    return Effect.fail(new Error("Invalid pnpm-env command arg."))
+  }
+  return Effect.succeed(undefined)
+}
+
+const ensureDockerAvailable = (repoRoot: string) =>
+  runCapture("docker", ["--version"], {
+    cwd: repoRoot,
+    maxStdoutBytes: 256,
+  }).pipe(
+    Effect.catchAll((error) =>
+      Effect.fail(
+        new Error(
+          "Docker is not available. Please ensure Docker is installed and running.",
+          { cause: error }
+        )
+      )
+    )
+  )
+
+const ensurePnpmEnvImage = (repoRoot: string) =>
+  runCapture("docker", ["image", "inspect", "pnpm-env"], {
+    cwd: repoRoot,
+    maxStdoutBytes: 4096,
+  }).pipe(
+    Effect.map(() => true),
+    Effect.catchAll(() => Effect.succeed(false)),
+    Effect.flatMap((imageExists) =>
+      imageExists
+        ? Effect.succeed(undefined)
+        : run(
+            "docker",
+            [
+              "build",
+              "-f",
+              "docker/development/pnpm/Dockerfile",
+              "-t",
+              "pnpm-env",
+              ".",
+            ],
+            { cwd: repoRoot }
+          )
+    )
+  )
+
+const resolvePnpmEnvMountSource = (repoRoot: string) => {
+  const mountSource =
+    process.platform === "win32" ? repoRoot.replace(/\\/g, "/") : repoRoot
+  if (mountSource.includes(",")) {
+    return Effect.fail(
+      new Error(
+        "Repository path contains comma, which is incompatible with Docker mount syntax."
+      )
+    )
+  }
+  const colonIndex = mountSource.indexOf(":")
+  const isWindowsDrive =
+    process.platform === "win32" &&
+    colonIndex === 1 &&
+    /^[a-zA-Z]/.test(mountSource[0] ?? "")
+  if (colonIndex !== -1 && !isWindowsDrive) {
+    return Effect.fail(
+      new Error(
+        "Repository path contains ':', which is incompatible with Docker mount syntax."
+      )
+    )
+  }
+  return Effect.succeed(mountSource)
+}
+
 export const runPnpmEnv = (
   commandArgs: readonly string[],
   { interactive = false }: { interactive?: boolean } = {}
 ) =>
   Effect.gen(function* () {
     const repoRoot = path.resolve(yield* getRepoRoot())
-    if (commandArgs.length === 0) {
-      return yield* Effect.fail(new Error("Missing pnpm-env command args."))
-    }
-    // Args come from CLI parsing but we still reject empty/null-byte input defensively.
-    const invalidArg = commandArgs.find(
-      (arg) => arg.length === 0 || arg.includes("\0")
-    )
-    if (invalidArg !== undefined) {
-      return yield* Effect.fail(new Error("Invalid pnpm-env command arg."))
-    }
-    yield* runCapture("docker", ["--version"], {
-      cwd: repoRoot,
-      maxStdoutBytes: 256,
-    }).pipe(
-      Effect.catchAll((error) =>
-        Effect.fail(
-          new Error(
-            "Docker is not available. Please ensure Docker is installed and running.",
-            { cause: error }
-          )
-        )
-      )
-    )
+    yield* validatePnpmEnvArgs(commandArgs)
+    yield* ensureDockerAvailable(repoRoot)
     // Treat inspect failures as "missing image" so we can attempt a rebuild.
-    const imageExists = yield* runCapture(
-      "docker",
-      ["image", "inspect", "pnpm-env"],
-      { cwd: repoRoot, maxStdoutBytes: 4096 }
-    ).pipe(
-      Effect.map(() => true),
-      Effect.catchAll(() => Effect.succeed(false))
-    )
-    if (!imageExists) {
-      yield* run(
-        "docker",
-        [
-          "build",
-          "-f",
-          "docker/development/pnpm/Dockerfile",
-          "-t",
-          "pnpm-env",
-          ".",
-        ],
-        { cwd: repoRoot }
-      )
-    }
-    const mountSource =
-      process.platform === "win32" ? repoRoot.replace(/\\/g, "/") : repoRoot
-    if (mountSource.includes(",")) {
-      return yield* Effect.fail(
-        new Error(
-          "Repository path contains comma, which is incompatible with Docker mount syntax."
-        )
-      )
-    }
+    yield* ensurePnpmEnvImage(repoRoot)
+    const mountSource = yield* resolvePnpmEnvMountSource(repoRoot)
     const dockerArgs = [
       "run",
       "--rm",
