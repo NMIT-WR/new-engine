@@ -21,6 +21,10 @@ export type RunOptions = {
    */
   timeoutMs?: number
   /**
+   * Environment variable overrides merged into process.env for the child.
+   */
+  env?: NodeJS.ProcessEnv
+  /**
    * Maximum stdout bytes to buffer in runCapture. Values <= 0 disable the limit.
    */
   maxStdoutBytes?: number
@@ -37,7 +41,7 @@ type CleanupHandlers = {
   onData?: (chunk: Buffer) => void
 }
 
-class ProcessRunError extends Error {
+export class ProcessRunError extends Error {
   readonly sensitive: boolean
 
   constructor(message: string, sensitive: boolean, cause?: unknown) {
@@ -89,6 +93,12 @@ const getExitError = (
   if (code === 0) {
     return null
   }
+  if (code === null) {
+    return new ProcessRunError(
+      `${command} exited without a code or signal`,
+      sensitive
+    )
+  }
   return new ProcessRunError(`${command} exited with code ${code}`, sensitive)
 }
 
@@ -119,8 +129,7 @@ const formatCommand = (
   }
   const quotedArgs = args.map(quoteArg)
   const suffix = quotedArgs.length > 0 ? ` ${quotedArgs.join(" ")}` : ""
-  const label = process.platform === "win32" ? "POSIX: " : ""
-  return `${label}${quoteArg(command)}${suffix}`
+  return `${quoteArg(command)}${suffix}`
 }
 
 const cleanupChild = (
@@ -149,7 +158,6 @@ const cleanupChild = (
     if (canKillGroup) {
       try {
         process.kill(-child.pid)
-        return
       } catch {
         // Ignore group-kill failures and fall back to direct kill.
       }
@@ -279,14 +287,26 @@ const startProcess = <T>({
   resume,
   hooks,
 }: ProcessStartConfig<T>) => {
-  const { cwd, stdin, sensitive, timeoutMs, killGroup } = options
+  const {
+    cwd,
+    stdin,
+    sensitive,
+    timeoutMs,
+    killGroup,
+    env: envOverrides,
+  } = options
   const interrupted = { value: false }
+  // Windows doesn't support POSIX process groups, so killGroup is ignored there.
   const detached = killGroup === true && process.platform !== "win32"
+  const env =
+    envOverrides === undefined
+      ? process.env
+      : { ...process.env, ...envOverrides }
   let child: ChildProcess
   try {
     child = spawn(command, args, {
       stdio,
-      env: process.env,
+      env,
       cwd,
       detached,
     })
@@ -549,10 +569,14 @@ const ensureDockerAvailable = (repoRoot: string) =>
   )
 
 const ensurePnpmEnvImage = (repoRoot: string) =>
-  runCapture("docker", ["image", "inspect", "pnpm-env"], {
-    cwd: repoRoot,
-    maxStdoutBytes: 4096,
-  }).pipe(
+  runCapture(
+    "docker",
+    ["image", "inspect", "--format", "{{.Id}}", "pnpm-env"],
+    {
+      cwd: repoRoot,
+      maxStdoutBytes: 256,
+    }
+  ).pipe(
     Effect.map(() => true),
     Effect.catchAll(() => Effect.succeed(false)),
     Effect.flatMap((imageExists) =>
