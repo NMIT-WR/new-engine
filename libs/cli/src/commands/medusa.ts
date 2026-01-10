@@ -109,6 +109,7 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
     const repoRoot = yield* getRepoRoot();
     const rootUser = process.env.MINIO_ROOT_USER ?? "minioadmin";
     const rootPassword = process.env.MINIO_ROOT_PASSWORD ?? "minioadmin";
+    const minioEndpoint = process.env.MINIO_ENDPOINT ?? "http://localhost:9004";
     const accessKey =
       process.env.MINIO_ACCESS_KEY ??
       process.env.DC_MINIO_ACCESS_KEY ??
@@ -135,7 +136,7 @@ export const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
           "alias",
           "set",
           "local",
-          "http://localhost:9004",
+          minioEndpoint,
           rootUser,
           rootPassword,
         ],

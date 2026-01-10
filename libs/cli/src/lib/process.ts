@@ -22,6 +22,7 @@ export const run = (
     const { cwd, stdin } = options;
     yield* logCommand(command, args);
     yield* Effect.async((resume) => {
+      let interrupted = false;
       const stdio =
         stdin === undefined ? "inherit" : (["pipe", "inherit", "inherit"] as const);
       const child = spawn(command, args, {
@@ -29,18 +30,48 @@ export const run = (
         env: process.env,
         cwd,
       });
-      if (stdin !== undefined) {
-        child.stdin?.write(stdin);
-        child.stdin?.end();
-      }
-      child.on("error", (error) => resume(Effect.fail(error)));
-      child.on("close", (code) => {
+      const onClose = (code: number | null) => {
+        if (interrupted) {
+          return;
+        }
+        interrupted = true;
+        child.removeListener("error", onError);
+        child.removeListener("close", onClose);
+        child.stdin?.destroy();
         if (code === 0) {
           resume(Effect.succeed(undefined));
         } else {
           resume(Effect.fail(new Error(`${command} exited with code ${code}`)));
         }
-      });
+      };
+      const onError = (error: Error) => {
+        if (interrupted) {
+          return;
+        }
+        interrupted = true;
+        child.removeListener("error", onError);
+        child.removeListener("close", onClose);
+        child.stdin?.destroy();
+        resume(Effect.fail(error));
+      };
+      if (stdin !== undefined) {
+        child.stdin?.write(stdin);
+        child.stdin?.end();
+      }
+      child.on("error", onError);
+      child.on("close", onClose);
+      return () => {
+        if (interrupted) {
+          return;
+        }
+        interrupted = true;
+        child.removeListener("error", onError);
+        child.removeListener("close", onClose);
+        child.stdin?.destroy();
+        if (child.exitCode === null && !child.killed) {
+          child.kill();
+        }
+      };
     });
   });
 
@@ -66,6 +97,7 @@ export const runCapture = (
     const { cwd, stdin } = options;
     yield* logCommand(command, args);
     return yield* Effect.async<string>((resume) => {
+      let interrupted = false;
       const stdio: readonly ["pipe" | "ignore", "pipe", "inherit"] = [
         stdin === undefined ? "ignore" : "pipe",
         "pipe",
@@ -81,17 +113,51 @@ export const runCapture = (
         child.stdin?.end();
       }
       let output = "";
-      child.stdout?.on("data", (chunk) => {
+      const onData = (chunk: Buffer) => {
         output += chunk.toString();
-      });
-      child.on("error", (error) => resume(Effect.fail(error)));
-      child.on("close", (code) => {
+      };
+      const onClose = (code: number | null) => {
+        if (interrupted) {
+          return;
+        }
+        interrupted = true;
+        child.stdout?.removeListener("data", onData);
+        child.removeListener("error", onError);
+        child.removeListener("close", onClose);
+        child.stdin?.destroy();
         if (code === 0) {
           resume(Effect.succeed(output));
         } else {
           resume(Effect.fail(new Error(`${command} exited with code ${code}`)));
         }
-      });
+      };
+      const onError = (error: Error) => {
+        if (interrupted) {
+          return;
+        }
+        interrupted = true;
+        child.stdout?.removeListener("data", onData);
+        child.removeListener("error", onError);
+        child.removeListener("close", onClose);
+        child.stdin?.destroy();
+        resume(Effect.fail(error));
+      };
+      child.stdout?.on("data", onData);
+      child.on("error", onError);
+      child.on("close", onClose);
+      return () => {
+        if (interrupted) {
+          return;
+        }
+        interrupted = true;
+        child.stdout?.removeListener("data", onData);
+        child.removeListener("error", onError);
+        child.removeListener("close", onClose);
+        child.stdin?.destroy();
+        if (child.exitCode === null && !child.killed) {
+          child.kill();
+        }
+      };
     });
   });
 
