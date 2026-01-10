@@ -4,7 +4,7 @@
 
 * Docker compose + Docker
   * For Mac, <a href="https://orbstack.dev/">OrbStack</a> is recommended instead of Docker Desktop
-* make
+* Node.js (or Bun)
 
 ### Steps
 
@@ -15,40 +15,40 @@
 2. <b>Install dependencies</b>
 
     ```shell
-    make install
+    node scripts/tasks.mjs install
     ```
 
 * alternatively force dependency lock fix:
   ```shell
-  make install-fix-lock
+  node scripts/tasks.mjs install-fix-lock
   ```
 
 3. <b>Run docker compose</b>
     ```shell
-    make dev
+    node scripts/tasks.mjs dev
     ```
 
 4. <b>Migrate database</b> (if needed)
     * <i>(optional)</i> `medusa` schema needs to exist, which it should, unless it was manually dropped
     ```shell
-    make medusa-migrate
+    node scripts/tasks.mjs medusa-migrate
     ```
 
 5. <b>Create user for medusa admin</b> (if needed)
     ```shell
-    make medusa-create-user EMAIL=[some@email.com] PASSWORD=[PASSWORD]
+    node scripts/tasks.mjs medusa-create-user --email [some@email.com] --password [PASSWORD]
     ```
 
 6. <b>Prepare file storage</b> (only first time setup)
     ```shell
-    make medusa-minio-init
+    node scripts/tasks.mjs medusa-minio-init
     ```
 
 7. <b>Seed initial data</b> (only first time)
     * seeded data also add regions that are required to be set
     * optionally this step can be skipped, but you need to manually add at least 1 region in medusa BE settings page
    ```shell
-   make medusa-seed
+   node scripts/tasks.mjs medusa-seed
    ```
 
 
@@ -60,10 +60,10 @@
     * Create or copy existing key
     * Update NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY in .env
     * Restart services
-    ```shell
-   make down
-   make dev
-    ```
+   ```shell
+   node scripts/tasks.mjs down
+   node scripts/tasks.mjs dev
+   ```
 
 9. <b>Explore local envs</b>
     * Medusa FE should be available at:
@@ -81,7 +81,7 @@
         * <a href="https://admin.meilisearch.localhost">https://admin.meilisearch.localhost</a>
             * credentials: `MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY`
             * (optional) if plugin was disabled before adding products:
-                * `make medusa-meilisearch-reseed`
+                * `node scripts/tasks.mjs medusa-meilisearch-reseed`
     * Redis compatible ValKey storage can be connected at `localhost:6379`
     * Postgres DB can be connected at `localhost:5432`
         * default credentials: `root`/`root`
@@ -104,7 +104,7 @@
 To test the production Docker build locally:
 
 ```shell
-make prod
+node scripts/tasks.mjs prod
 ```
 
 This builds a production-optimized image and starts the container. Access the admin at:
