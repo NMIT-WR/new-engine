@@ -64,5 +64,6 @@ static-data/
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 .code
+.schaltwerk/
 
 plans/

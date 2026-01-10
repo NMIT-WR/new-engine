@@ -1,25 +1,25 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
-import { Effect } from "effect";
+import { existsSync } from "node:fs"
+import path from "node:path"
+import { Effect } from "effect"
 
 const findRepoRoot = (startDir: string): string => {
-  let dir = path.resolve(startDir);
+  let dir = path.resolve(startDir)
   while (true) {
     if (
       existsSync(path.join(dir, "pnpm-workspace.yaml")) &&
       existsSync(path.join(dir, "package.json"))
     ) {
-      return dir;
+      return dir
     }
-    const parent = path.dirname(dir);
+    const parent = path.dirname(dir)
     if (parent === dir) {
       throw new Error(
-        `Unable to locate repo root from "${startDir}". Expected pnpm-workspace.yaml and package.json.`,
-      );
+        `Unable to locate repo root from "${startDir}". Expected pnpm-workspace.yaml and package.json.`
+      )
     }
-    dir = parent;
+    dir = parent
   }
-};
+}
 
 export const getRepoRoot = (): Effect.Effect<string> =>
-  Effect.sync(() => findRepoRoot(process.cwd()));
+  Effect.sync(() => findRepoRoot(process.cwd()))

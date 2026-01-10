@@ -1,3 +1,4 @@
+import { biomeBe } from "./biome"
 import {
   corepackUpdate,
   install,
@@ -5,9 +6,8 @@ import {
   npkill,
   update,
   updateMedusa,
-} from "./core";
-import { dev, down, downWithVolumes, prod } from "./docker";
-import { biomeBe } from "./biome";
+} from "./core"
+import { dev, down, downWithVolumes, prod } from "./docker"
 import {
   medusaCreateUser,
   medusaGenerateMigration,
@@ -17,7 +17,7 @@ import {
   medusaSeed,
   medusaSeedDevData,
   medusaSeedN1,
-} from "./medusa";
+} from "./medusa"
 
 export const commands = [
   corepackUpdate,
@@ -39,4 +39,4 @@ export const commands = [
   medusaSeedDevData,
   medusaSeedN1,
   biomeBe,
-];
+] as const

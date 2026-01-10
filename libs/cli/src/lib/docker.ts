@@ -1,6 +1,6 @@
-export const projectName = "new-engine";
-export const medusaService = "medusa-be";
-export const medusaImage = `${projectName}-${medusaService}`;
+export const projectName = "new-engine"
+export const medusaService = "medusa-be"
+export const medusaImage = `${projectName}-${medusaService}`
 
 export const composeBase = [
   "compose",
@@ -8,7 +8,7 @@ export const composeBase = [
   "docker-compose.yaml",
   "-p",
   projectName,
-];
+]
 
 export const composeProd = [
   "compose",
@@ -18,4 +18,4 @@ export const composeProd = [
   "docker-compose.prod.yaml",
   "-p",
   projectName,
-];
+]
