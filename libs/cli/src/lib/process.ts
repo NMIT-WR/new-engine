@@ -481,15 +481,12 @@ export const runPnpmEnv = (
     }
     const mountSource =
       process.platform === "win32" ? repoRoot.replace(/\\/g, "/") : repoRoot
-    const mountSourceValue = mountSource.includes(" ")
-      ? mountSource.replace(/ /g, "\\ ")
-      : mountSource
     const dockerArgs = [
       "run",
       "--rm",
       ...(interactive ? ["-it"] : []),
       "--mount",
-      `type=bind,source=${mountSourceValue},target=/var/www`,
+      `type=bind,source=${mountSource},target=/var/www`,
       "-w",
       "/var/www",
       "pnpm-env",

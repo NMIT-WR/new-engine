@@ -1,10 +1,11 @@
 {
   "name": "@new-wr/cli",
+  "description": "Bun-only CLI for New Engine tasks (runs TS entrypoint via Bun).",
   "version": "0.1.0",
   "type": "module",
   "private": true,
   "engines": {
-    "node": ">=16.9.0",
+    "node": ">=18.0.0",
     "bun": ">=1.0.0"
   },
   "bin": {
