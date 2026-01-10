@@ -453,18 +453,34 @@ export const runPnpmEnv = (
     if (commandArgs.length === 0) {
       return yield* Effect.fail(new Error("Missing pnpm-env command args."))
     }
+    // Args come from CLI parsing but we still reject empty/null-byte input defensively.
     const invalidArg = commandArgs.find(
       (arg) => arg.length === 0 || arg.includes("\0")
     )
     if (invalidArg !== undefined) {
       return yield* Effect.fail(new Error("Invalid pnpm-env command arg."))
     }
-    const imageId = yield* runCapture(
-      "docker",
-      ["image", "ls", "-q", "pnpm-env"],
-      { cwd: repoRoot }
+    yield* runCapture("docker", ["--version"], {
+      cwd: repoRoot,
+      maxStdoutBytes: 256,
+    }).pipe(
+      Effect.catchAll((error) =>
+        Effect.fail(
+          new Error(
+            "Docker is not available. Please ensure Docker is installed and running.",
+            { cause: error }
+          )
+        )
+      )
     )
-    const imageExists = imageId.trim().length > 0
+    const imageExists = yield* runCapture(
+      "docker",
+      ["image", "inspect", "pnpm-env"],
+      { cwd: repoRoot, maxStdoutBytes: 4096 }
+    ).pipe(
+      Effect.map(() => true),
+      Effect.catchAll(() => Effect.succeed(false))
+    )
     if (!imageExists) {
       yield* run(
         "docker",
