@@ -213,6 +213,7 @@ export const runPnpmEnv = (
     }
     const dockerArgs = [
       "run",
+      "--rm",
       ...(interactive ? ["-it"] : []),
       "-v",
       `${repoRoot}:/var/www`,

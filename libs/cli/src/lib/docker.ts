@@ -8,7 +8,7 @@ export const composeBase = [
   "docker-compose.yaml",
   "-p",
   projectName,
-]
+] as const
 
 export const composeProd = [
   "compose",
@@ -18,4 +18,4 @@ export const composeProd = [
   "docker-compose.prod.yaml",
   "-p",
   projectName,
-]
+] as const
