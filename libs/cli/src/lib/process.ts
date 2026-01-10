@@ -91,12 +91,12 @@ export const run = (
       };
       handlers.onClose = onClose;
       handlers.onError = onError;
+      child.on("error", onError);
+      child.on("close", onClose);
       if (stdin !== undefined) {
         child.stdin?.write(stdin);
         child.stdin?.end();
       }
-      child.on("error", onError);
-      child.on("close", onClose);
       return () => {
         cleanupChild(child, interrupted, handlers, { kill: true });
       };
@@ -136,10 +136,6 @@ export const runCapture = (
         env: process.env,
         cwd,
       });
-      if (stdin !== undefined) {
-        child.stdin?.write(stdin);
-        child.stdin?.end();
-      }
       let output = "";
       const handlers: CleanupHandlers = {};
       const onData = (chunk: Buffer) => {
@@ -169,6 +165,10 @@ export const runCapture = (
       child.stdout?.on("data", onData);
       child.on("error", onError);
       child.on("close", onClose);
+      if (stdin !== undefined) {
+        child.stdin?.write(stdin);
+        child.stdin?.end();
+      }
       return () => {
         cleanupChild(child, interrupted, handlers, { kill: true });
       };
