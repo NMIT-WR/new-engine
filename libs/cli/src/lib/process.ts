@@ -699,10 +699,22 @@ export const runPnpmEnv = (
     // Treat inspect failures as "missing image" so we can attempt a rebuild.
     yield* ensurePnpmEnvImage(repoRoot)
     const mountSource = yield* resolvePnpmEnvMountSource(repoRoot)
+    const userArgs =
+      process.platform !== "win32" && typeof process.getuid === "function"
+        ? [
+            "--user",
+            `${process.getuid()}:${
+              typeof process.getgid === "function"
+                ? process.getgid()
+                : process.getuid()
+            }`,
+          ]
+        : []
     const dockerArgs = [
       "run",
       "--rm",
       ...(interactive ? ["-it"] : []),
+      ...userArgs,
       "--mount",
       `type=bind,source=${mountSource},target=/var/www`,
       "-w",
