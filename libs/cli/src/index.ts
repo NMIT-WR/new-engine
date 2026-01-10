@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { Command, Options } from "@effect/cli";
-import { NodeContext, NodeRuntime } from "@effect/platform-node";
+import { BunContext, BunRuntime } from "@effect/platform-bun";
 import { Effect, Option } from "effect";
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -13,7 +13,7 @@ const packageJsonPath = fileURLToPath(
 const cliPackage = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 const cliVersion = cliPackage?.version ?? "0.0.0";
 
-const findRepoRoot = (startDir) => {
+const findRepoRoot = (startDir: string): string => {
   let dir = path.resolve(startDir);
   while (true) {
     if (
@@ -32,14 +32,19 @@ const findRepoRoot = (startDir) => {
   }
 };
 
-const getRepoRoot = () => Effect.sync(() => findRepoRoot(process.cwd()));
+const getRepoRoot = (): Effect.Effect<string> =>
+  Effect.sync(() => findRepoRoot(process.cwd()));
 
-const logCommand = (command, args) =>
+const logCommand = (command: string, args: readonly string[]) =>
   Effect.sync(() => {
     process.stdout.write(`> ${command} ${args.join(" ")}\n`);
   });
 
-const run = (command, args, options = {}) =>
+const run = (
+  command: string,
+  args: readonly string[],
+  options: Record<string, unknown> = {},
+) =>
   Effect.gen(function* () {
     yield* logCommand(command, args);
     yield* Effect.async((resume) => {
@@ -59,7 +64,11 @@ const run = (command, args, options = {}) =>
     });
   });
 
-const runIgnore = (command, args, options) =>
+const runIgnore = (
+  command: string,
+  args: readonly string[],
+  options?: Record<string, unknown>,
+) =>
   run(command, args, options).pipe(
     Effect.catchAll((error) =>
       Effect.sync(() => {
@@ -68,7 +77,10 @@ const runIgnore = (command, args, options) =>
     ),
   );
 
-const runPnpmEnv = (commandArgs, { interactive = false } = {}) =>
+const runPnpmEnv = (
+  commandArgs: readonly string[],
+  { interactive = false }: { interactive?: boolean } = {},
+) =>
   Effect.gen(function* () {
     const repoRoot = yield* getRepoRoot();
     yield* run(
@@ -105,14 +117,24 @@ const composeProd = [
   "new-engine",
 ];
 
-const requireValue = (value, label, envName, flagName) =>
+const requireValue = (
+  value: string | undefined,
+  label: string,
+  envName: string,
+  flagName: string,
+) =>
   value
     ? Effect.succeed(value)
     : Effect.fail(
         new Error(`Missing ${label}. Provide --${flagName} or set ${envName}.`),
       );
 
-const resolveOption = (optionValue, envName, label, flagName) =>
+const resolveOption = (
+  optionValue: Option.Option<string>,
+  envName: string,
+  label: string,
+  flagName: string,
+) =>
   requireValue(
     Option.getOrElse(optionValue, () => process.env[envName]),
     label,
@@ -173,18 +195,21 @@ const npkill = Command.make("npkill", {}, () =>
   runPnpmEnv(["pnpx", "npkill", "-x", "-D", "-y"], { interactive: true }),
 ).pipe(Command.withDescription("Run npkill inside the pnpm Docker env."));
 
-const dev = Command.make("dev", { forceRecreate: forceRecreateOption }, ({ forceRecreate }) =>
-  Effect.gen(function* () {
-    const repoRoot = yield* getRepoRoot();
-    const args = [
-      ...composeBase,
-      "up",
-      "-d",
-      "--build",
-      ...(forceRecreate ? ["--force-recreate"] : []),
-    ];
-    yield* run("docker", args, { cwd: repoRoot });
-  }),
+const dev = Command.make(
+  "dev",
+  { forceRecreate: forceRecreateOption },
+  ({ forceRecreate }) =>
+    Effect.gen(function* () {
+      const repoRoot = yield* getRepoRoot();
+      const args = [
+        ...composeBase,
+        "up",
+        "-d",
+        "--build",
+        ...(forceRecreate ? ["--force-recreate"] : []),
+      ];
+      yield* run("docker", args, { cwd: repoRoot });
+    }),
 ).pipe(Command.withDescription("Start docker compose in development mode."));
 
 const prod = Command.make("prod", {}, () =>
@@ -380,23 +405,26 @@ const medusaMinioInit = Command.make("medusa-minio-init", {}, () =>
   ),
 );
 
-const medusaMeilisearchReseed = Command.make("medusa-meilisearch-reseed", {}, () =>
-  Effect.gen(function* () {
-    const repoRoot = yield* getRepoRoot();
-    yield* run(
-      "docker",
-      [
-        "exec",
-        "wr_medusa_be",
-        "pnpm",
-        "--filter",
-        "medusa-be",
-        "run",
-        "addInitialSearchDocuments",
-      ],
-      { cwd: repoRoot },
-    );
-  }),
+const medusaMeilisearchReseed = Command.make(
+  "medusa-meilisearch-reseed",
+  {},
+  () =>
+    Effect.gen(function* () {
+      const repoRoot = yield* getRepoRoot();
+      yield* run(
+        "docker",
+        [
+          "exec",
+          "wr_medusa_be",
+          "pnpm",
+          "--filter",
+          "medusa-be",
+          "run",
+          "addInitialSearchDocuments",
+        ],
+        { cwd: repoRoot },
+      );
+    }),
 ).pipe(Command.withDescription("Reseed Meilisearch documents."));
 
 const medusaSeed = Command.make("medusa-seed", {}, () =>
@@ -490,8 +518,8 @@ const cli = Command.run(root, {
   version: cliVersion,
 });
 
-const runCli = (argv = process.argv) =>
-  cli(argv).pipe(Effect.provide(NodeContext.layer), NodeRuntime.runMain);
+const runCli = (argv: string[] = process.argv) =>
+  cli(argv).pipe(Effect.provide(BunContext.layer), BunRuntime.runMain);
 
 runCli(process.argv);
 

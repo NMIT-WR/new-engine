@@ -4,7 +4,7 @@
 
 * Docker compose + Docker
   * For Mac, <a href="https://orbstack.dev/">OrbStack</a> is recommended instead of Docker Desktop
-* Node.js (for the workspace CLI)
+* Bun (for the workspace CLI)
 
 ### Steps
 
@@ -15,40 +15,40 @@
 2. <b>Install dependencies</b>
 
     ```shell
-    node libs/cli/src/index.mjs install
+    bun libs/cli/src/index.ts install
     ```
 
 * alternatively, force dependency lock fix:
   ```shell
-  node libs/cli/src/index.mjs install-fix-lock
+  bun libs/cli/src/index.ts install-fix-lock
   ```
 
 3. <b>Run docker compose</b>
     ```shell
-    node libs/cli/src/index.mjs dev
+    bun libs/cli/src/index.ts dev
     ```
 
 4. <b>Migrate database</b> (if needed)
     * <i>(optional)</i> `medusa` schema needs to exist, which it should, unless it was manually dropped
     ```shell
-    node libs/cli/src/index.mjs medusa-migrate
+    bun libs/cli/src/index.ts medusa-migrate
     ```
 
 5. <b>Create user for medusa admin</b> (if needed)
     ```shell
-    node libs/cli/src/index.mjs medusa-create-user --email [some@email.com] --password [PASSWORD]
+    bun libs/cli/src/index.ts medusa-create-user --email [some@email.com] --password [PASSWORD]
     ```
 
 6. <b>Prepare file storage</b> (only first time setup)
     ```shell
-    node libs/cli/src/index.mjs medusa-minio-init
+    bun libs/cli/src/index.ts medusa-minio-init
     ```
 
 7. <b>Seed initial data</b> (only first time)
     * seeded data also add regions that are required to be set
     * optionally this step can be skipped, but you need to manually add at least 1 region in medusa BE settings page
    ```shell
-   node libs/cli/src/index.mjs medusa-seed
+   bun libs/cli/src/index.ts medusa-seed
    ```
 
 
@@ -61,8 +61,8 @@
     * Update NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY in .env
     * Restart services
    ```shell
-   node libs/cli/src/index.mjs down
-   node libs/cli/src/index.mjs dev
+   bun libs/cli/src/index.ts down
+   bun libs/cli/src/index.ts dev
    ```
 
 9. <b>Explore local envs</b>
@@ -81,7 +81,7 @@
         * <a href="https://admin.meilisearch.localhost">https://admin.meilisearch.localhost</a>
             * credentials: `MEILI_MASTER_KEY_FOR_DEVELOPMENT_ONLY`
             * (optional) if plugin was disabled before adding products:
-                * `node libs/cli/src/index.mjs medusa-meilisearch-reseed`
+                * `bun libs/cli/src/index.ts medusa-meilisearch-reseed`
     * Redis compatible ValKey storage can be connected at `localhost:6379`
     * Postgres DB can be connected at `localhost:5432`
         * default credentials: `root`/`root`
@@ -104,7 +104,7 @@
 To test the production Docker build locally:
 
 ```shell
-node libs/cli/src/index.mjs prod
+bun libs/cli/src/index.ts prod
 ```
 
 This builds a production-optimized image and starts the container. Access the admin at:

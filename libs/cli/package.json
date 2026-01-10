@@ -4,11 +4,15 @@
   "type": "module",
   "private": true,
   "bin": {
-    "wr": "./src/index.mjs"
+    "wr": "./src/index.ts"
   },
   "dependencies": {
-    "@effect/cli": "^0.69.2",
-    "@effect/platform-node": "^0.96.0",
+    "@effect/cli": "^0.73.0",
+    "@effect/platform": "^0.94.0",
+    "@effect/platform-bun": "^0.87.0",
+    "@effect/printer": "^0.47.0",
+    "@effect/printer-ansi": "^0.47.0",
+    "@effect/typeclass": "^0.38.0",
     "effect": "^3.19.14"
   }
 }
