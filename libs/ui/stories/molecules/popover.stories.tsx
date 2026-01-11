@@ -104,7 +104,7 @@ export const WithTitleAndDescription: Story = {
     title: 'Popover Title',
     description: 'This is a helpful description that provides more context.',
     children: (
-      <div className="mt-4">
+      <div className="mt-200">
         <p>Additional content can go here.</p>
       </div>
     ),
@@ -119,7 +119,7 @@ export const Disabled: Story = {
     title: 'Disabled State',
     description: 'This popover trigger is disabled and cannot be opened.',
     children: (
-      <div className="mt-4">
+      <div className="mt-200">
         <p>This content should not be accessible.</p>
       </div>
     ),
@@ -133,10 +133,10 @@ export const Variants: Story = {
     children: <div />,
   },
   render: () => (
-    <div className="space-y-8">
+    <div className="space-y-400">
       <div>
-        <h3 className="text-sm font-semibold mb-4">Sizes</h3>
-        <div className="flex gap-4">
+        <h3 className="text-sm font-semibold mb-200">Sizes</h3>
+        <div className="flex gap-200">
           <Popover
             id="small-popover"
             trigger="Small"
@@ -169,8 +169,8 @@ export const Variants: Story = {
         </div>
       </div>
       <div>
-        <h3 className="text-sm font-semibold mb-4">Visual Styles</h3>
-        <div className="flex gap-4">
+        <h3 className="text-sm font-semibold mb-200">Visual Styles</h3>
+        <div className="flex gap-200">
           <Popover
             id="border-shadow-popover"
             trigger="Default"
@@ -214,8 +214,8 @@ export const Variants: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold mb-4">Arrow Options</h3>
-        <div className="flex gap-4">
+        <h3 className="text-sm font-semibold mb-200">Arrow Options</h3>
+        <div className="flex gap-200">
           <Popover
             id="no-arrow-popover"
             trigger="No Arrow"
@@ -240,8 +240,8 @@ export const Controlled: Story = {
     const [open, setOpen] = useState(false)
 
     return (
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex gap-2">
+      <div className="flex flex-col items-center gap-200">
+        <div className="flex gap-100">
           <Button onClick={() => setOpen(true)} variant="secondary" size="sm">
             Open Popover
           </Button>
@@ -258,13 +258,13 @@ export const Controlled: Story = {
           title="Controlled Popover"
           description="This popover is controlled by external state"
         >
-          <div className="mt-4">
+          <div className="mt-200">
             <p>The popover is {open ? 'open' : 'closed'}.</p>
             <Button
               onClick={() => setOpen(false)}
               size="sm"
               variant="secondary"
-              className="mt-2"
+              className="mt-100"
             >
               Close from inside
             </Button>
@@ -281,12 +281,11 @@ export const WithForm: Story = {
     trigger: 'Edit Profile',
     title: 'Edit Profile',
     children: (
-      <form className="mt-4 space-y-4">
+      <form className="mt-200 space-y-200">
         <div>
           <Label htmlFor="name">Name</Label>
           <Input
             size="sm"
-            className="px-2 py-2"
             id="name"
             placeholder="Enter your name"
           />
@@ -295,13 +294,12 @@ export const WithForm: Story = {
           <Label htmlFor="email">Email</Label>
           <Input
             size="sm"
-            className="px-2 py-2"
             id="email"
             type="email"
             placeholder="Enter your email"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-100">
           <Button type="submit" size="sm">
             Save
           </Button>
@@ -318,18 +316,18 @@ export const CustomTrigger: Story = {
     children: <div />,
   },
   render: () => (
-    <div className="flex gap-4">
+    <div className="flex gap-200">
       <Popover
         id="custom-trigger-popover"
         trigger={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-100">
             <Icon icon="token-icon-info" size="sm" />
             <span>Info</span>
           </div>
         }
-        triggerClassName="flex items-center gap-2 px-4 py-2 bg-info text-info-fg rounded-md hover:bg-info/90"
+        triggerClassName="flex items-center gap-100 px-200 py-100 rounded-md hover:bg-info/10"
       >
-        <div className="w-64">
+        <div className="w-3xs">
           <p>This popover uses a custom trigger with an icon.</p>
         </div>
       </Popover>
@@ -337,13 +335,13 @@ export const CustomTrigger: Story = {
       <Popover
         id="custom-area-trigger-popover"
         trigger={
-          <div className="rounded-lg border-2 border-border border-dashed p-2">
-            <p className="text-muted text-sm">Click this custom area</p>
+          <div className="rounded-lg border-2 border-border border-dashed p-100">
+            <p className="text-sm">Click this custom area</p>
           </div>
         }
         triggerClassName="hover:border-primary focus:border-primary"
       >
-        <div className="w-64">
+        <div className="w-3xs">
           <p>This popover uses a completely custom trigger element.</p>
         </div>
       </Popover>
@@ -364,7 +362,7 @@ export const Modal: Story = {
     children: (
       <div className="mt-200">
         <p>Try clicking outside - it won't close!</p>
-        <p className="mt-100 text-muted text-sm">
+        <p className="mt-100 text-sm">
           Press Escape or use the close button to dismiss.
         </p>
       </div>
@@ -402,9 +400,9 @@ export const AsyncContent: Story = {
           }
         }}
       >
-        <div className="flex min-h-[100px] w-64 items-center justify-center">
+        <div className="flex min-h-24 w-3xs items-center justify-center">
           {loading ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-100">
               <Icon
                 icon="token-icon-spinner"
                 size="sm"
@@ -418,7 +416,7 @@ export const AsyncContent: Story = {
                 icon="token-icon-check"
                 size="lg"
                 color="success"
-                className="mx-auto mb-2"
+                className="mx-auto mb-100"
               />
               <p>{data}</p>
             </div>
@@ -438,7 +436,7 @@ export const PositioningBehaviors: Story = {
     children: <div />,
   },
   render: () => (
-    <div className="grid gap-8 p-8">
+    <div className="grid gap-400 p-400">
         <Popover
           id="flip-demo-popover"
           trigger="Flip Demo"
@@ -449,10 +447,9 @@ export const PositioningBehaviors: Story = {
         >
           <p>This popover opens on the left but will flip to right if there's no space.</p>
         </Popover>
-        {/* Slide comparison - bounded containers simulate limited viewport space */}
-        <div className="space-y-2">
-          <p className="text-sm text-muted">Bounded containers simulate narrow viewport. Compare slide behavior:</p>
-          <div className="flex gap-4">
+        <div className="space-y-100">
+          <p className="text-sm">Bounded containers simulate narrow viewport. Compare slide behavior:</p>
+          <div className="flex gap-200">
             <div className="relative w-sm h-48 border border-dashed border-border overflow-hidden">
               <div>
                 <Popover
@@ -495,7 +492,7 @@ export const SameWidthDemo: Story = {
     children: <div />,
   },
   render: () => (
-    <div className="flex gap-8 items-start">
+    <div className="flex gap-400 items-start">
       <Popover
         id="short-trigger-popover"
         trigger="Medium Length Trigger"
@@ -524,14 +521,14 @@ export const EdgePositioning: Story = {
     children: <div />,
   },
   render: () => (
-    <div className="relative w-full h-[600px] border border-dashed border-border">
+    <div className="relative w-full h-96 border border-dashed border-border">
       <div className="absolute top-2 left-2">
         <Popover
           id="smart-popover"
           trigger="Top Left"
           placement="bottom-start"
         >
-          <div className="w-64">
+          <div className="w-3xs">
             <p>Opens at screen corner with smart positioning.</p>
           </div>
         </Popover>
@@ -544,7 +541,7 @@ export const EdgePositioning: Story = {
           placement="bottom-end"
           flip={true}
         >
-          <div className="w-64">
+          <div className="w-3xs">
             <p>Adjusts to avoid viewport overflow.</p>
           </div>
         </Popover>
@@ -557,7 +554,7 @@ export const EdgePositioning: Story = {
           placement="top-start"
           flip={true}
         >
-          <div className="w-64">
+          <div className="w-3xs">
             <p>Flips upward when at bottom.</p>
           </div>
         </Popover>
@@ -570,7 +567,7 @@ export const EdgePositioning: Story = {
           placement="top-end"
           flip={true}
         >
-          <div className="w-64">
+          <div className="w-3xs">
             <p>Smart positioning at corner.</p>
           </div>
         </Popover>
@@ -582,7 +579,7 @@ export const EdgePositioning: Story = {
           trigger="Center"
           placement="bottom"
         >
-          <div className="w-64">
+          <div className="w-3xs">
             <p>Center positioned with default behavior.</p>
           </div>
         </Popover>
@@ -598,7 +595,14 @@ export const OverflowPaddingDemo: Story = {
     children: <div />,
   },
   render: () => (
-    <div className="flex gap-8">
+    <div className="flex w-md flex-col gap-400">
+      <div className="mb-200">
+        <h3 className="font-semibold mb-100">Overflow Padding</h3>
+        <p>
+          Determines the minimum distance (in pixels) between the popover and viewport edges.
+          When the popover would overflow the viewport, it shifts to maintain this gap.
+        </p>
+      </div>
       <Popover
         id="8px-padding-popover"
         trigger="Default Padding (8px)"
@@ -640,7 +644,7 @@ export const NestedPopovers: Story = {
   },
   render: () => (
     <Popover id="level1-popover" trigger="Level 1" title="First Level" placement="bottom">
-      <div className="mt-4 space-y-4">
+      <div className="mt-200 space-y-200">
         <p>This is the first level popover.</p>
 
         <Popover
@@ -650,7 +654,7 @@ export const NestedPopovers: Story = {
           placement="right"
           size="sm"
         >
-          <div className="mt-4 space-y-4">
+          <div className="mt-200 space-y-200">
             <p className="text-sm">This is nested inside the first popover.</p>
 
             <Popover
@@ -660,7 +664,7 @@ export const NestedPopovers: Story = {
               placement="right"
               size="sm"
             >
-              <div className="mt-4">
+              <div className="mt-200">
                 <p className="text-sm">This is the deepest level!</p>
               </div>
             </Popover>
