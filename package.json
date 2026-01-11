@@ -12,10 +12,10 @@
     "build:be": "cd apps/medusa-be && npm run build",
     "build:all:nx": "nx run-many --target=build --projects=medusa-*",
     "knip": "knip",
-    "knip:report": "knipt --reporter markdown > reports/knip-report.md",
+    "knip:report": "knip --reporter markdown > reports/knip-report.md",
     "knip:fix": "knip --fix",
     "knip:prod": "knip --production",
-    "jscpd": "jscpd"
+    "jscpd": "jscpd apps/ libs/"
   },
   "private": true,
   "devDependencies": {

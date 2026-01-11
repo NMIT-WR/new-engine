@@ -2,6 +2,7 @@
   "threshold": 2,
   "reporters": ["html", "json", "console"],
   "ignore": [
+    "**/local/**",
     "**/node_modules/**",
     "**/dist/**",
     "**/.next/**",
@@ -22,10 +23,7 @@
     "**/*.generated.{ts,tsx,js,jsx}",
     "**/.cache/**"
   ],
-  "path": [
-    "apps/",
-    "libs/"
-  ],
+  "path": ["apps/", "libs/"],
   "format": ["typescript", "javascript", "css"],
   "absolute": true,
   "gitignore": true,
@@ -41,18 +39,8 @@
   "verbose": false,
   "mode": "mild",
   "formatsExts": {
-    "typescript": [
-      "ts",
-      "tsx"
-    ],
-    "javascript": [
-      "js",
-      "jsx",
-      "mjs"
-    ],
-    "css": [
-      "css",
-      "scss"
-    ]
+    "typescript": ["ts", "tsx"],
+    "javascript": ["js", "jsx", "mjs"],
+    "css": ["css", "scss"]
   }
 }

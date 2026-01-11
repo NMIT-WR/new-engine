@@ -1,15 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "entry": [
-    "{apps,libs}/**/src/index.{ts,tsx}",
-    "{apps,libs}/**/src/main.{ts,tsx}",
-    "scripts/**/*.{ts,js}"
-  ],
-  "project": [
-    "{apps,libs}/**/src/**/*.{ts,tsx}",
-    "{apps,libs}/**/*.config.{ts,js,mjs}",
-    "scripts/**/*.{ts,js}"
-  ],
+  "$schema": "https://unpkg.com/knip@5/schema.json",
   "paths": {
     "@libs/data-layer": ["./libs/data-layer/src"],
     "@libs/data-layer/*": ["./libs/data-layer/src/*"],
@@ -37,19 +27,8 @@
     "**/e2e/**",
     "**/playwright-report/**",
     "**/*.generated.{ts,tsx}",
-    "**/.cache/**"
-  ],
-  "ignoreDependencies": [
-    "@libs/*",
-    "@new-wr/*",
-    "@biomejs/biome"
-  ],
-  "ignoreBinaries": [
-    "playwright",
-    "bunx",
-    "pnpm",
-    "tsc",
-    "biome"
+    "**/.cache/**",
+    "**/local/**"
   ],
   "ignoreExportsUsedInFile": {
     "interface": true,
@@ -59,9 +38,7 @@
     "**/*.stories.tsx": ["exports"],
     "**/*.stories.ts": ["exports"],
     "**/tokens/**/*.ts": ["exports", "types"],
-    "**/tokens/**/*.css": ["files"],
-    "**/.storybook/**": ["dependencies"],
-    "**/scripts/**": ["exports"]
+    "**/tokens/**/*.css": ["files"]
   },
   "workspaces": {
     "apps/medusa-be": {
@@ -69,8 +46,8 @@
         "src/api/**/*.{ts,tsx}",
         "src/modules/**/*.{ts,tsx}",
         "src/workflows/**/*.{ts,tsx}",
-        "src/subscribers/**/*.{ts,tsx}",
         "src/jobs/**/*.{ts,tsx}",
+        "src/admin/**/*.{ts,tsx}",
         "medusa-config.ts"
       ],
       "ignore": [
@@ -82,18 +59,8 @@
     "apps/frontend-demo": {
       "entry": [
         "src/app/**/*.{tsx,ts}",
-        "src/pages/**/*.{tsx,ts}",
-        "next.config.js"
+        "next.config.{js,ts,mjs}"
       ],
-      "next": {
-        "entry": [
-          "next.config.js",
-          "app/**/*.{tsx,ts}",
-          "pages/**/*.{tsx,ts}",
-          "src/app/**/*.{tsx,ts}",
-          "src/pages/**/*.{tsx,ts}"
-        ]
-      },
       "ignore": [
         ".next/**",
         ".netlify/**"
@@ -102,15 +69,8 @@
     "apps/n1": {
       "entry": [
         "src/app/**/*.{tsx,ts}",
-        "next.config.ts"
+        "next.config.{js,ts,mjs}"
       ],
-      "next": {
-        "entry": [
-          "next.config.ts",
-          "app/**/*.{tsx,ts}",
-          "src/app/**/*.{tsx,ts}"
-        ]
-      },
       "ignore": [
         ".next/**",
         ".netlify/**"
@@ -121,18 +81,15 @@
         "src/**/*.{ts,tsx}"
       ]
     },
-    "apps/local": {
-      "entry": [
-        "src/**/*.{ts,tsx}"
-      ]
-    },
     "libs/ui": {
       "entry": [
-        "src/atoms/**/index.ts",
-        "src/molecules/**/index.ts",
-        "src/organisms/**/index.ts",
-        "src/tokens/**/index.ts",
-        "src/index.ts"
+        "src/atoms/*.tsx",
+        "src/molecules/*.tsx",
+        "src/organisms/*.tsx",
+        "src/utils.ts"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}"
       ],
       "includeEntryExports": true,
       "storybook": {
@@ -143,7 +100,8 @@
         ]
       },
       "ignore": [
-        "storybook-static/**"
+        "storybook-static/**",
+        "local/**"
       ]
     },
     "libs/analytics": {
