@@ -1,4 +1,4 @@
-FROM node:22-bookworm
+FROM node:25-bookworm
 
 ARG PLAYWRIGHT_VERSION=1.56.1
 
@@ -6,6 +6,6 @@ WORKDIR /app
 
 RUN npm init -y
 RUN npm i -D @playwright/test@${PLAYWRIGHT_VERSION}
-RUN npx -y playwright@${PLAYWRIGHT_VERSION} install --with-deps chromium
+RUN npx -y playwright@${PLAYWRIGHT_VERSION} install --with-deps chromium webkit
 
 ENTRYPOINT ["npx", "playwright"]

@@ -153,7 +153,7 @@ When overriding, create a file in the brand folder and map the semantic tokens t
 
 To keep screenshots stable across machines, run component tests inside Docker.
 
-1. Build Storybook static output (only needed once, or after changes):
+1. Build Storybook static output (required for Storybook `index.json` discovery):
 
 ```bash
 pnpm -C libs/ui build:storybook
@@ -170,6 +170,10 @@ pnpm -C libs/ui test:components:docker
 ```bash
 pnpm -C libs/ui test:components:docker:update
 ```
+
+Docker image is defined in `docker/development/playwright/Dockerfile`.
+Make sure Storybook is served at `TEST_BASE_URL` (default `http://host.docker.internal:6006`).
+You can run `pnpm -C libs/ui storybook` or serve `storybook-static` with any static server on port 6006.
 
 Optional environment overrides:
 - `TEST_BASE_URL` (default: `http://host.docker.internal:6006`)
