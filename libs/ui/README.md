@@ -149,7 +149,34 @@ When overriding, create a file in the brand folder and map the semantic tokens t
     - Keep overrides in dedicated brand folders.
     - Basic components (e.g., Button) belong only in atoms/molecules.
 
-## 7. Publishing and releases
+## 7. Visual Regression Tests (Playwright + Docker)
+
+To keep screenshots stable across machines, run component tests inside Docker.
+
+1. Build Storybook static output (only needed once, or after changes):
+
+```bash
+pnpm -C libs/ui build:storybook
+```
+
+2. Run Playwright tests in a consistent Linux environment:
+
+```bash
+pnpm -C libs/ui test:components:docker
+```
+
+3. Update snapshots (inside Docker):
+
+```bash
+pnpm -C libs/ui test:components:docker:update
+```
+
+Optional environment overrides:
+- `TEST_BASE_URL` (default: `http://host.docker.internal:6006`)
+- `DOCKER_PLATFORM` (default: `linux/amd64`)
+- `PLAYWRIGHT_DOCKER_IMAGE` (default: `new-engine-ui-playwright`)
+
+## 8. Publishing and releases
 
 - Build + publint: `pnpm -C libs/ui build` runs `rsbuild-plugin-publint` after the build; if exports/entrypoints are wrong, this command fails.
 - Exports only, no barrel: import from explicit subpaths (e.g. `@techsio/ui-kit/atoms/button`, `@techsio/ui-kit/templates/accordion`, `@techsio/ui-kit/utils`). The package root is intentionally not exported.
@@ -160,6 +187,6 @@ When overriding, create a file in the brand folder and map the semantic tokens t
 - Commit format: follow Conventional Commits (`feat:`, `fix:`, `chore:`, `BREAKING CHANGE:`) so semantic-release can infer the correct version bump.
 - Required CI secrets: `GH_TOKEN` (repo write) and `NPM_TOKEN` (publish).
 
-## 8. Conclusion
+## 9. Conclusion
 
 This README serves as the single source of truth for building and maintaining our design system. By adhering to these guidelines, you ensure that our UI remains consistent, flexible, and scalable across multiple brands. If you have any questions or suggestions, please reach out to the design system team.

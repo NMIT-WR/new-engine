@@ -5,7 +5,13 @@ import { defineConfig, devices } from '@playwright/test'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const isCI = Boolean(process.env.CI)
-const storybookUrl = process.env.STORYBOOK_URL ?? 'http://127.0.0.1:6006'
+const storybookUrl =
+  process.env.TEST_BASE_URL ??
+  process.env.STORYBOOK_URL ??
+  'http://127.0.0.1:6006'
+const hasExternalBaseUrl = Boolean(
+  process.env.TEST_BASE_URL ?? process.env.STORYBOOK_URL,
+)
 const staticDir = path.join(__dirname, 'storybook-static')
 const hasStaticBuild = fs.existsSync(path.join(staticDir, 'iframe.html'))
 
@@ -47,7 +53,7 @@ export default defineConfig({
   },
   snapshotPathTemplate:
     '{testDir}/__screenshots__/{projectName}/{testFilePath}/{arg}{ext}',
-  webServer: process.env.STORYBOOK_URL
+  webServer: hasExternalBaseUrl
     ? undefined
     : hasStaticBuild
       ? {
