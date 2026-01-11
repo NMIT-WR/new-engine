@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useEffect, useState } from 'react'
+import { Button } from '../../src/atoms/button'
 import { Select } from '../../src/molecules/select'
 import { Steps } from '../../src/molecules/steps'
 
@@ -12,25 +13,42 @@ const meta: Meta<typeof Steps> = {
   tags: ['autodocs'],
   argTypes: {
     orientation: {
-      control: 'inline-radio',
+      control: 'select',
       options: ['horizontal', 'vertical'],
       description: 'Steps orientation',
+      table: { defaultValue: { summary: 'horizontal' } },
     },
     linear: {
       control: 'boolean',
-      description: 'Enforce linear progression',
+      description: 'Enforce linear progression (must complete steps in order)',
+      table: { defaultValue: { summary: 'false' } },
     },
     currentStep: {
-      control: 'number',
-      description: 'Current active step (0-indexed). If currentStep === steps.length finished screen shown',
+      control: { type: 'number', min: 0 },
+      description: 'Current active step (0-indexed). If currentStep === steps.length, completion screen is shown',
+      table: { defaultValue: { summary: '0' } },
     },
+    showControls: {
+      control: 'boolean',
+      description: 'Show navigation buttons (Back/Next)',
+      table: { defaultValue: { summary: 'true' } },
+    },
+    completeText: {
+      control: 'text',
+      description: 'Text or content shown when all steps are completed',
+    },
+  },
+  args: {
+    orientation: 'horizontal',
+    linear: false,
+    currentStep: 0,
+    showControls: true,
   },
 }
 
 export default meta
 type Story = StoryObj<typeof Steps>
 
-// Base items for examples
 const basicSteps = [
   {
     value: 0,
@@ -56,20 +74,20 @@ const basicSteps = [
 
 const completeText = 'Steps Complete - Thank you for filling out the form! You can now proceed, because you have finished.'
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => {
-    const [currentStep, setCurrentStep] = useState(args.currentStep)
+    const [currentStep, setCurrentStep] = useState(args.currentStep ?? 0)
     useEffect(() => {
-      setCurrentStep(args.currentStep)
+      setCurrentStep(args.currentStep ?? 0)
     }, [args.currentStep])
 
     return (
-      <div className="w-[600px] space-y-8">
+      <div className="w-xl space-y-400">
         <Steps
           {...args}
           currentStep={currentStep}
           onStepChange={setCurrentStep}
-          onStepComplete={() => alert("Finished!")}
+          onStepComplete={() => alert('Finished!')}
         />
       </div>
     )
@@ -77,7 +95,6 @@ export const Default: Story = {
   args: {
     items: basicSteps,
     completeText,
-    orientation: 'horizontal',
   },
 }
 
@@ -86,7 +103,7 @@ export const VerticalOrientation: Story = {
     const [currentStep, setCurrentStep] = useState(1)
 
     return (
-      <div className="flex h-[600px] w-[600px]">
+      <div className="flex h-[600px] w-xl">
         <Steps
           items={basicSteps}
           currentStep={currentStep}
@@ -105,7 +122,6 @@ export const ResponsiveOrientation: Story = {
 
     return (
       <div className="w-full">
-        {/* Horizontální na velkých obrazovkách, vertikální na malých */}
         <div className="md:hidden">
           <Steps
             items={basicSteps}
@@ -129,18 +145,22 @@ export const ResponsiveOrientation: Story = {
   },
 }
 
-// Example with custom content
+const selectItems = [
+  { label: 'First option', value: 'first' },
+  { label: 'Second option', value: 'second' },
+]
+
 const stepsWithCustomContent = [
   {
     value: 0,
     title: 'Account',
     content: (
-      <div className="rounded-lg p-4">
-        <h3 className="mb-2 font-semibold text-lg">Create your account</h3>
+      <div className="rounded-lg p-200">
+        <h3 className="mb-100 font-semibold text-lg">Create your account</h3>
         <p>This is custom content for the account step.</p>
-        <button className="mt-4 rounded bg-blue-500 px-4 py-2 text-white">
+        <Button className="mt-200" size="sm">
           Custom Action
-        </button>
+        </Button>
       </div>
     ),
   },
@@ -153,19 +173,28 @@ const stepsWithCustomContent = [
     value: 2,
     title: 'Settings',
     content: (
-      <div className="rounded border border-gray-200 p-4">
+      <div className="rounded border border-border p-200">
         <h3 className="font-semibold">Custom Settings Form</h3>
-        <label className="mt-2 block">
-          <span className="text-gray-700">Preference</span>
-          <Select
-            label="options"
-            options={[
-              { label: 'first', value: 'first' },
-              { label: 'second', value: 'second' },
-            ]}
-            size="xs"
-          />
-        </label>
+        <div className="mt-100">
+          <Select items={selectItems} size="xs">
+            <Select.Label>Preference</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Select option..." />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {selectItems.map((item) => (
+                  <Select.Item key={item.value} item={item}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
+        </div>
       </div>
     ),
   },
@@ -176,7 +205,7 @@ export const WithCustomContent: Story = {
     const [currentStep, setCurrentStep] = useState(0)
 
     return (
-      <div className="w-[700px]">
+      <div className="w-2xl">
         <Steps
           items={stepsWithCustomContent}
           currentStep={currentStep}
