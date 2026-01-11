@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { VariantContainer } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
 import { Toaster, useToast } from '../../src/molecules/toast'
@@ -20,35 +20,41 @@ const meta: Meta = {
   ],
   argTypes: {
     type: {
-      control: { type: 'inline-radio' },
+      control: 'select',
       options: ['info', 'success', 'warning', 'error', 'loading'],
       description: 'The type of the toast, which determines its styling',
+      table: { defaultValue: { summary: 'info' } },
     },
     duration: {
-      control: { type: 'number' },
-      description:
-        'Default duration in Storybook is Infinity. Set to a number (ms) to auto-close',
+      control: 'number',
+      description: 'Duration in milliseconds before auto-close. Use Infinity to keep open.',
+      table: { defaultValue: { summary: '5000' } },
     },
     title: {
-      control: { type: 'text' },
+      control: 'text',
       description: 'The title text of the toast',
     },
     description: {
-      control: { type: 'text' },
+      control: 'text',
       description: 'The description text of the toast',
     },
+  },
+  args: {
+    type: 'success',
+    duration: 5000,
+    title: 'Toast Title',
+    description: 'Toast description message.',
   },
 }
 
 export default meta
 type Story = StoryObj
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     title: 'Success!',
     description: 'Your action was completed successfully.',
     type: 'success',
-    duration: Infinity,
   },
   render: (args) => {
     const toaster = useToast()
@@ -74,11 +80,11 @@ export const UpdateExample: Story = {
 
     return (
       <VariantContainer>
-        <div className="space-y-4">
-          <p className="text-gray-600 text-sm">
+        <div className="space-y-200">
+          <p className="text-fg-secondary text-sm">
             Create a toast, then update it step by step
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-200">
             <Button
               size="sm"
               onClick={() => {
@@ -150,13 +156,13 @@ export const RemoveVsDismiss: Story = {
 
     return (
       <VariantContainer>
-        <div className="space-y-4">
-          <p className="text-gray-600 text-sm">
+        <div className="space-y-200">
+          <p className="text-fg-secondary text-sm">
             Compare remove (instant) vs dismiss (with animation)
           </p>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-200">
+            <div className="space-y-100">
               <h3 className="font-semibold">Remove (Instant)</h3>
               <Button
                 size="sm"
@@ -187,7 +193,7 @@ export const RemoveVsDismiss: Story = {
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-100">
               <h3 className="font-semibold">Dismiss (Animated)</h3>
               <Button
                 size="sm"
@@ -232,12 +238,12 @@ export const PauseResumeExample: Story = {
 
     return (
       <VariantContainer>
-        <div className="space-y-4">
-          <p className="text-gray-600 text-sm">
+        <div className="space-y-200">
+          <p className="text-fg-secondary text-sm">
             Create a toast with timer, then pause/resume it
           </p>
 
-          <div className="flex gap-4">
+          <div className="flex gap-200">
             <Button
               size="sm"
               onClick={() => {
@@ -291,12 +297,12 @@ export const BatchOperations: Story = {
 
     return (
       <VariantContainer>
-        <div className="space-y-4">
-          <p className="text-gray-600 text-sm">
+        <div className="space-y-200">
+          <p className="text-fg-secondary text-sm">
             Create multiple toasts and control them all at once
           </p>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-200">
             <Button
               size="sm"
               onClick={() => {
@@ -375,8 +381,8 @@ export const PromiseExample: Story = {
 
     return (
       <VariantContainer>
-        <div className="space-y-4">
-          <p className="text-gray-600 text-sm">
+        <div className="space-y-200">
+          <p className="text-fg-secondary text-sm">
             Create toast that updates based on promise state (50% chance of
             success)
           </p>
