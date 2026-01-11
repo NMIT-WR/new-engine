@@ -17,6 +17,7 @@ fi
 
 docker run --rm -it \
   --platform="${PLATFORM}" \
+  --add-host=host.docker.internal:host-gateway \
   -e TEST_BASE_URL="${BASE_URL}" \
   -e CI=true \
   -v "${ROOT_DIR}/storybook-static:/app/storybook-static" \
