@@ -107,15 +107,11 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       description: 'Show product badges',
       table: { defaultValue: { summary: 'false' }, category: 'Visibility' },
     },
-
-    // Rating config
     rating: {
       control: { type: 'number', min: 0, max: 5, step: 0.5 },
       description: 'Rating value (0-5)',
       table: { defaultValue: { summary: '4' }, category: 'Rating' },
     },
-
-    // Stock config
     stockStatus: {
       control: 'select',
       options: ['in-stock', 'limited-stock', 'out-of-stock'],
@@ -127,8 +123,6 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       description: 'Stock status text',
       table: { category: 'Stock' },
     },
-
-    // Button config
     buttonVariant: {
       control: 'select',
       options: ['cart', 'detail', 'wishlist'],
@@ -455,13 +449,11 @@ export const LayoutVariants: Story = {
   ),
 }
 
-// Custom composition example
 export const CustomComposition: Story = {
   render: () => (
     <ProductCard>
       <ProductCard.Image src={productImages.camera} alt="DSLR Camera" />
 
-      {/* Custom badge placement */}
       <div className="mb-100 flex gap-100">
         <Badge variant="info">-30%</Badge>
         <Badge variant="success">Free Shipping</Badge>
@@ -469,13 +461,11 @@ export const CustomComposition: Story = {
 
       <ProductCard.Name>Professional DSLR Camera</ProductCard.Name>
 
-      {/* Custom price display with original price */}
       <div className="flex items-baseline gap-100">
         <span className="text-100 text-fg-primary line-through">$1,899</span>
         <ProductCard.Price>$1,329</ProductCard.Price>
       </div>
 
-      {/* Custom rating with review count */}
       <div className="flex items-center gap-100">
         <ProductCard.Rating rating={{defaultValue: 4.5}} />
         <span className="text-100 text-fg-muted">(245 reviews)</span>
@@ -483,7 +473,6 @@ export const CustomComposition: Story = {
 
       <ProductCard.Stock status="limited-stock">Only 3 left in stock</ProductCard.Stock>
 
-      {/* Custom actions layout */}
       <ProductCard.Actions>
         <div className="flex w-full gap-200">
           <ProductCard.Button
@@ -505,7 +494,6 @@ export const CustomComposition: Story = {
   ),
 }
 
-// With quantity input
 export const WithQuantityInput: Story = {
   render: () => (
     <ProductCard className="max-w-sm">
@@ -552,7 +540,6 @@ export const WithQuantityInput: Story = {
   ),
 }
 
-// Minimal card - only essential elements
 export const MinimalCard: Story = {
   render: () => (
     <ProductCard>
@@ -565,11 +552,9 @@ export const MinimalCard: Story = {
   ),
 }
 
-// Complex card with everything
 export const ComplexCard: Story = {
   render: () => (
     <ProductCard className="w-md">
-      {/* Image with overlay badge */}
       <div className="relative">
         <ProductCard.Image src={productImages.camera} alt="Camera Kit" className="w-full"/>
         <Badge variant="danger" className="absolute top-100 right-100">
@@ -577,7 +562,6 @@ export const ComplexCard: Story = {
         </Badge>
       </div>
 
-      {/* Multiple badge types */}
       <ProductCard.Badges>
         <Badge variant="info">New Arrival</Badge>
         <Badge variant="success">Eco-Friendly</Badge>
@@ -588,13 +572,11 @@ export const ComplexCard: Story = {
         Professional Camera Kit with Accessories
       </ProductCard.Name>
 
-      {/* Rating with reviews */}
       <div className="mb-100 flex items-center gap-100">
         <ProductCard.Rating rating={{ defaultValue: 4.9 }} />
         <span className="text-50 text-fg-muted">(512 reviews)</span>
       </div>
 
-      {/* Price with savings */}
       <div className="mb-200 flex flex-col gap-100">
         <div className="flex items-baseline gap-100">
           <span className="text-fg-muted line-through">$3,499</span>
@@ -608,7 +590,6 @@ export const ComplexCard: Story = {
 
       <ProductCard.Stock status="limited-stock">Only 2 units left - Order soon!</ProductCard.Stock>
 
-      {/* Complex actions */}
       <ProductCard.Actions>
         <div className="mb-100 flex items-center gap-100">
           <NumericInput id="product-quantity" defaultValue={1} min={1} max={10}>
@@ -658,7 +639,6 @@ export const ComplexCard: Story = {
         </Button>
       </ProductCard.Actions>
 
-      {/* Additional info */}
       <div className="border-border-primary border-t pt-100">
         <span className="text-50 text-fg-muted">
           ✓ 2-year warranty • ✓ 30-day returns • ✓ Expert support
@@ -668,7 +648,6 @@ export const ComplexCard: Story = {
   ),
 }
 
-// Multiple action layouts
 export const ActionLayouts: Story = {
   name: 'Action Button Layouts',
   render: () => (
@@ -765,7 +744,6 @@ export const ActionLayouts: Story = {
   ),
 }
 
-// Custom Layout Overrides
 export const CustomRowSpan: Story = {
   name: 'Custom Row Span Override',
   render: () => (
