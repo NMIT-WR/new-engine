@@ -73,7 +73,9 @@ jobs:
         run: |
           for theme in light dark; do
             if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
-              pnpm -C libs/ui exec storybook-a11y-report --input "a11y-report/$theme/report.json" --fail-on-violations false > "libs/ui/a11y-report/$theme/summary.md"
+              node libs/ui/scripts/storybook-a11y-summary.mjs \
+                --input "libs/ui/a11y-report/$theme/report.json" \
+                --output "libs/ui/a11y-report/$theme/summary.md"
             else
               echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
             fi
