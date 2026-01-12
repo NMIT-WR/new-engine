@@ -119,11 +119,21 @@ jobs:
           printf "\n\n### Dark\n\n" >> libs/ui/a11y-report/comment.md
           cat libs/ui/a11y-report/dark/summary.md >> libs/ui/a11y-report/comment.md
 
+      - name: Find existing PR comment
+        if: always() && github.event_name == 'pull_request'
+        id: find_comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: "<!-- storybook-a11y-report -->"
+
       - name: Post PR comment
         if: always() && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
           body-path: libs/ui/a11y-report/comment.md
 
       - name: Fail if violations detected
