@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - "libs/ui/**"
+      - "libs/ui/scripts/storybook-a11y-summary.mjs"
+      - "libs/ui/scripts/storybook-a11y.sh"
       - ".github/workflows/storybook-a11y.yml"
       - ".github/workflows/storybook-a11y-baseline.yml"
   workflow_dispatch:
@@ -40,6 +42,8 @@ jobs:
         with:
           name: storybook-static
           path: libs/ui/storybook-static
+          retention-days: 7
+          compression-level: 6
 
   storybook-a11y-baseline:
     runs-on: ubuntu-latest
@@ -55,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - uses: pnpm/action-setup@v4
 
@@ -86,27 +90,30 @@ jobs:
             mv libs/ui/storybook-static.tmp libs/ui/storybook-static
           fi
 
-      - name: Serve Storybook
-        run: |
-          python3 -m http.server 6006 --directory libs/ui/storybook-static &
-          for i in {1..20}; do
-            if curl -sf http://127.0.0.1:6006/ >/dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          echo "Storybook server failed to start within timeout." >&2
-          exit 1
-
-      - name: Ensure a11y report directory
-        run: mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"
-
       - name: Run a11y tests (${{ matrix.theme }} theme)
         id: a11y
         continue-on-error: true
         env:
           A11Y_REPORT_OUTPUT_DIR: a11y-report/${{ matrix.theme }}
-        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:${{ matrix.theme }}" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+        run: |
+          mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"
+          python3 -m http.server 6006 --directory libs/ui/storybook-static &
+          SERVER_PID=$!
+          cleanup() {
+            kill "${SERVER_PID}" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          for i in {1..20}; do
+            if curl -sf http://127.0.0.1:6006/ >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          if ! curl -sf http://127.0.0.1:6006/ >/dev/null; then
+            echo "Storybook server failed to start within timeout." >&2
+            exit 1
+          fi
+          pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:${{ matrix.theme }}" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
 
       - name: Upload baseline report (${{ matrix.theme }})
         if: always() && hashFiles(format('libs/ui/a11y-report/{0}/report.json', matrix.theme)) != ''

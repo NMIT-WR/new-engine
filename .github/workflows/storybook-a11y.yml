@@ -79,7 +79,7 @@ jobs:
       matrix:
         theme: [light, dark]
     env:
-      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
+      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
       A11Y_REPORT_WRITE_JUNIT: "true"
       A11Y_REPORT_WAIT_MS: "30000"
     steps:
@@ -126,27 +126,30 @@ jobs:
           path: baseline/${{ matrix.theme }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Serve Storybook
-        run: |
-          python3 -m http.server 6006 --directory libs/ui/storybook-static &
-          for i in {1..20}; do
-            if curl -sf http://127.0.0.1:6006/ >/dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          echo "Storybook server failed to start within timeout." >&2
-          exit 1
-
-      - name: Ensure a11y report directory
-        run: mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"
-
       - name: Run a11y tests (${{ matrix.theme }} theme)
         id: a11y
         continue-on-error: true
         env:
           A11Y_REPORT_OUTPUT_DIR: a11y-report/${{ matrix.theme }}
-        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:${{ matrix.theme }}" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+        run: |
+          mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"
+          python3 -m http.server 6006 --directory libs/ui/storybook-static &
+          SERVER_PID=$!
+          cleanup() {
+            kill "${SERVER_PID}" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          for i in {1..20}; do
+            if curl -sf http://127.0.0.1:6006/ >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          if ! curl -sf http://127.0.0.1:6006/ >/dev/null; then
+            echo "Storybook server failed to start within timeout." >&2
+            exit 1
+          fi
+          pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:${{ matrix.theme }}" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
 
       - name: Generate a11y summary
         if: always()
@@ -154,7 +157,7 @@ jobs:
           theme="${{ matrix.theme }}"
           if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
             baseline_path="baseline/${{ matrix.theme }}/report.json"
-            if [ -n "${{ needs.get-baseline-run.outputs.run_id }}" ]; then
+            if [ -n "${{ needs.get-baseline-run.outputs.run_id }}" ] && [ -f "${baseline_path}" ]; then
               node libs/ui/scripts/storybook-a11y-summary.mjs \
                 --input "libs/ui/a11y-report/$theme/report.json" \
                 --baseline "${baseline_path}" \
@@ -194,7 +197,7 @@ jobs:
     needs: storybook-a11y
     if: always() && github.event_name == 'pull_request'
     env:
-      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
+      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
     steps:
       - name: Ensure a11y report directories
         run: mkdir -p libs/ui/a11y-report/light libs/ui/a11y-report/dark
@@ -222,7 +225,7 @@ jobs:
           for theme in light dark; do
             printf "### %s\n\n" "${theme^}" >> libs/ui/a11y-report/comment.md
             if [ -f "libs/ui/a11y-report/$theme/summary.md" ]; then
-              cat "libs/ui/a11y-report/$theme/summary.md" >> libs/ui/a11y-report/comment.md
+              awk 'NR==1 && /^# /{next} {print}' "libs/ui/a11y-report/$theme/summary.md" >> libs/ui/a11y-report/comment.md
             else
               echo "No a11y report summary found for $theme." >> libs/ui/a11y-report/comment.md
             fi

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Read a CLI argument value following the given flag.
@@ -7,6 +8,10 @@ import fs from 'node:fs';
  * @returns {string | null}
  */
 function readArg(name) {
+  const direct = process.argv.find((arg) => arg.startsWith(`${name}=`));
+  if (direct) {
+    return direct.slice(name.length + 1);
+  }
   const index = process.argv.indexOf(name);
   if (index === -1 || index + 1 >= process.argv.length) return null;
   return process.argv[index + 1];
@@ -35,14 +40,14 @@ function loadReport(path, label) {
   try {
     raw = fs.readFileSync(path, 'utf8');
   } catch (err) {
-    throw new Error(`Failed to read ${label} file: ${path}`);
+    throw new Error(`Failed to read ${label} file: ${path}`, { cause: err });
   }
 
   let data;
   try {
     data = JSON.parse(raw);
   } catch (err) {
-    throw new Error(`Failed to parse JSON from ${label} file: ${path}`);
+    throw new Error(`Failed to parse JSON from ${label} file: ${path}`, { cause: err });
   }
 
   if (!Array.isArray(data)) {
@@ -90,7 +95,11 @@ function isApcaViolation(violation) {
  * @returns {string}
  */
 function escapePipes(value) {
-  return String(value).replace(/\|/g, '\\|');
+  return String(value)
+    .replace(/\r?\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\|/g, '\\|')
+    .trim();
 }
 
 const KEY_SEPARATOR = '\x00';
@@ -363,4 +372,5 @@ const lines = baselineData
   ? buildDeltaLines(data, baselineData, baselineLabel)
   : buildFullSummaryLines(summary, notice);
 
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, `${lines.join('\n')}\n`, 'utf8');
