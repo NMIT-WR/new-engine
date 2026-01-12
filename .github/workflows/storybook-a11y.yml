@@ -18,8 +18,40 @@ permissions:
   checks: write
 
 jobs:
+  build-storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook (UI)
+        run: pnpm -C libs/ui build:storybook
+
+      - name: Upload Storybook static
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static
+          path: libs/ui/storybook-static
+
   storybook-a11y:
     runs-on: ubuntu-latest
+    needs: build-storybook
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [light, dark]
     env:
       A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
       A11Y_REPORT_WRITE_JUNIT: "true"
@@ -43,84 +75,99 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Build Storybook (UI)
-        run: pnpm -C libs/ui build:storybook
+      - name: Download Storybook static
+        uses: actions/download-artifact@v4
+        with:
+          name: storybook-static
 
       - name: Serve Storybook
         run: |
           python3 -m http.server 6006 --directory libs/ui/storybook-static &
           sleep 2
 
-      - name: Ensure a11y report directories
-        run: mkdir -p libs/ui/a11y-report/light libs/ui/a11y-report/dark
+      - name: Ensure a11y report directory
+        run: mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"
 
-      - name: Run a11y tests (Light theme)
-        id: a11y_light
+      - name: Run a11y tests (${{ matrix.theme }} theme)
+        id: a11y
         continue-on-error: true
         env:
-          A11Y_REPORT_OUTPUT_DIR: a11y-report/light
-        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:light" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+          A11Y_REPORT_OUTPUT_DIR: a11y-report/${{ matrix.theme }}
+        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:${{ matrix.theme }}" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
 
-      - name: Run a11y tests (Dark theme)
-        id: a11y_dark
-        continue-on-error: true
-        env:
-          A11Y_REPORT_OUTPUT_DIR: a11y-report/dark
-        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:dark" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
-
-      - name: Generate a11y summaries
+      - name: Generate a11y summary
         if: always()
         run: |
-          for theme in light dark; do
-            if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
-              node libs/ui/scripts/storybook-a11y-summary.mjs \
-                --input "libs/ui/a11y-report/$theme/report.json" \
-                --output "libs/ui/a11y-report/$theme/summary.md"
-            else
-              echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
-            fi
-          done
+          theme="${{ matrix.theme }}"
+          if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
+            node libs/ui/scripts/storybook-a11y-summary.mjs \
+              --input "libs/ui/a11y-report/$theme/report.json" \
+              --output "libs/ui/a11y-report/$theme/summary.md"
+          else
+            echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
+          fi
 
-      - name: Upload a11y artifacts
+      - name: Upload a11y artifacts (${{ matrix.theme }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: storybook-a11y-report
-          path: |
-            libs/ui/a11y-report/**
+          name: storybook-a11y-report-${{ matrix.theme }}
+          path: libs/ui/a11y-report/${{ matrix.theme }}
 
-      - name: Publish test results (JUnit - light)
-        if: always() && hashFiles('libs/ui/a11y-report/light/junit.xml') != ''
+      - name: Publish test results (JUnit - ${{ matrix.theme }})
+        if: always() && hashFiles(format('libs/ui/a11y-report/{0}/junit.xml', matrix.theme)) != ''
         uses: dorny/test-reporter@v1
         with:
-          name: Storybook A11y (light)
-          path: libs/ui/a11y-report/light/junit.xml
+          name: Storybook A11y (${{ matrix.theme }})
+          path: libs/ui/a11y-report/${{ matrix.theme }}/junit.xml
           reporter: java-junit
           fail-on-error: false
 
-      - name: Publish test results (JUnit - dark)
-        if: always() && hashFiles('libs/ui/a11y-report/dark/junit.xml') != ''
-        uses: dorny/test-reporter@v1
+      - name: Fail if violations detected
+        if: steps.a11y.outcome == 'failure' && env.A11Y_REPORT_FAIL_ON_VIOLATIONS != 'false'
+        run: exit 1
+
+  storybook-a11y-comment:
+    runs-on: ubuntu-latest
+    needs: storybook-a11y
+    if: always() && github.event_name == 'pull_request'
+    env:
+      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
+      A11Y_REPORT_WRITE_JUNIT: "true"
+      A11Y_REPORT_WAIT_MS: "30000"
+    steps:
+      - name: Download a11y artifacts (light)
+        uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
-          name: Storybook A11y (dark)
-          path: libs/ui/a11y-report/dark/junit.xml
-          reporter: java-junit
-          fail-on-error: false
+          name: storybook-a11y-report-light
+
+      - name: Download a11y artifacts (dark)
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: storybook-a11y-report-dark
+
+      - name: Ensure a11y report directories
+        run: mkdir -p libs/ui/a11y-report/light libs/ui/a11y-report/dark
 
       - name: Prepare PR comment
-        if: always() && github.event_name == 'pull_request'
         run: |
           printf "<!-- storybook-a11y-report -->\n## Storybook A11y Report\n\n" > libs/ui/a11y-report/comment.md
           if [ "${A11Y_REPORT_FAIL_ON_VIOLATIONS}" = "false" ]; then
             printf "> ⚠️ Non-blocking mode: violations will NOT fail CI (A11Y_REPORT_FAIL_ON_VIOLATIONS=false).\n\n" >> libs/ui/a11y-report/comment.md
           fi
-          printf "### Light\n\n" >> libs/ui/a11y-report/comment.md
-          cat libs/ui/a11y-report/light/summary.md >> libs/ui/a11y-report/comment.md
-          printf "\n\n### Dark\n\n" >> libs/ui/a11y-report/comment.md
-          cat libs/ui/a11y-report/dark/summary.md >> libs/ui/a11y-report/comment.md
+          for theme in light dark; do
+            printf "### %s\n\n" "${theme^}" >> libs/ui/a11y-report/comment.md
+            if [ -f "libs/ui/a11y-report/$theme/summary.md" ]; then
+              cat "libs/ui/a11y-report/$theme/summary.md" >> libs/ui/a11y-report/comment.md
+            else
+              echo "No a11y report summary found for $theme." >> libs/ui/a11y-report/comment.md
+            fi
+            printf "\n\n" >> libs/ui/a11y-report/comment.md
+          done
 
       - name: Find existing PR comment
-        if: always() && github.event_name == 'pull_request'
         id: find_comment
         uses: peter-evans/find-comment@v3
         with:
@@ -128,14 +175,9 @@ jobs:
           body-includes: "<!-- storybook-a11y-report -->"
 
       - name: Post PR comment
-        if: always() && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           edit-mode: replace
           body-path: libs/ui/a11y-report/comment.md
-
-      - name: Fail if violations detected
-        if: (steps.a11y_light.outcome == 'failure' || steps.a11y_dark.outcome == 'failure') && env.A11Y_REPORT_FAIL_ON_VIOLATIONS != 'false'
-        run: exit 1
