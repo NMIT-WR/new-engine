@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 
+/**
+ * Read a CLI argument value following the given flag.
+ * @param {string} name
+ * @returns {string | null}
+ */
 function readArg(name) {
   const index = process.argv.indexOf(name);
   if (index === -1 || index + 1 >= process.argv.length) return null;
@@ -23,12 +28,22 @@ if (!Array.isArray(data)) {
   process.exit(1);
 }
 
+/**
+ * Identify APCA-related violations by id or tags.
+ * @param {{id?: string, tags?: string[]}} violation
+ * @returns {boolean}
+ */
 function isApcaViolation(violation) {
   const id = String(violation?.id ?? '').toLowerCase();
   const tags = Array.isArray(violation?.tags) ? violation.tags : [];
   return id.includes('apca') || tags.some((tag) => String(tag).toLowerCase().includes('apca'));
 }
 
+/**
+ * Escape pipe characters for Markdown tables.
+ * @param {string} value
+ * @returns {string}
+ */
 function escapePipes(value) {
   return String(value).replace(/\|/g, '\\|');
 }
