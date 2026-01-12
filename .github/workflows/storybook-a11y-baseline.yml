@@ -75,11 +75,28 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: storybook-static
+          path: libs/ui/storybook-static
+
+      - name: Normalize Storybook static path
+        run: |
+          if [ -d "libs/ui/storybook-static/libs/ui/storybook-static" ]; then
+            rm -rf libs/ui/storybook-static.tmp
+            mv libs/ui/storybook-static/libs/ui/storybook-static libs/ui/storybook-static.tmp
+            rm -rf libs/ui/storybook-static
+            mv libs/ui/storybook-static.tmp libs/ui/storybook-static
+          fi
 
       - name: Serve Storybook
         run: |
           python3 -m http.server 6006 --directory libs/ui/storybook-static &
-          sleep 2
+          for i in {1..20}; do
+            if curl -sf http://127.0.0.1:6006/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Storybook server failed to start within timeout." >&2
+          exit 1
 
       - name: Ensure a11y report directory
         run: mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"

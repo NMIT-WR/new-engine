@@ -78,8 +78,10 @@ if (baselinePath) {
  */
 function isApcaViolation(violation) {
   const id = String(violation?.id ?? '').toLowerCase();
-  const tags = Array.isArray(violation?.tags) ? violation.tags : [];
-  return id.includes('apca') || tags.some((tag) => String(tag).toLowerCase().includes('apca'));
+  const tags = Array.isArray(violation?.tags)
+    ? violation.tags.map((tag) => String(tag).toLowerCase())
+    : [];
+  return id.includes('apca') || tags.some((tag) => tag.includes('apca'));
 }
 
 /**
