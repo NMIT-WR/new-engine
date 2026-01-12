@@ -13,3 +13,8 @@ node-compile-cache
 !.vscode/extensions.json
 .idea
 .vercel
+
+# Claude Code - keep CLAUDE.md and instructions/, ignore rest
+.claude/agents/
+.claude/commands/
+.claude/settings.json
