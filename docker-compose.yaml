@@ -24,6 +24,7 @@ x-medusa-env: &medusa-env
   SETTINGS_ENCRYPTION_KEY: ${DC_SETTINGS_ENCRYPTION_KEY}
   FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
   PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
+  VITE_PAYLOAD_BASE_URL: ${DC_PAYLOAD_BASE_URL}
 
 x-medusa-base: &medusa-base
   restart: unless-stopped
