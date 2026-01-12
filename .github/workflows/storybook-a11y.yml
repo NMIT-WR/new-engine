@@ -21,7 +21,6 @@ jobs:
   storybook-a11y:
     runs-on: ubuntu-latest
     env:
-      A11Y_REPORT_OUTPUT_DIR: a11y-report
       A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'true' }}
       A11Y_REPORT_WRITE_JUNIT: "true"
       A11Y_REPORT_WAIT_MS: "30000"
@@ -49,19 +48,30 @@ jobs:
           python3 -m http.server 6006 --directory libs/ui/storybook-static &
           sleep 2
 
-      - name: Run a11y tests (Storybook test-runner)
-        id: a11y_test
+      - name: Run a11y tests (Light theme)
+        id: a11y_light
         continue-on-error: true
-        run: pnpm -C libs/ui exec test-storybook --url http://127.0.0.1:6006 --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+        env:
+          A11Y_REPORT_OUTPUT_DIR: a11y-report/light
+        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:light" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
 
-      - name: Generate a11y summary
+      - name: Run a11y tests (Dark theme)
+        id: a11y_dark
+        continue-on-error: true
+        env:
+          A11Y_REPORT_OUTPUT_DIR: a11y-report/dark
+        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:dark" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+
+      - name: Generate a11y summaries
         if: always()
         run: |
-          if [ -f libs/ui/a11y-report/report.json ]; then
-            pnpm -C libs/ui exec storybook-a11y-report --input a11y-report/report.json --fail-on-violations false > a11y-report/summary.md
-          else
-            echo "No a11y report JSON found. Storybook test-runner likely failed before reporting." > libs/ui/a11y-report/summary.md
-          fi
+          for theme in light dark; do
+            if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
+              pnpm -C libs/ui exec storybook-a11y-report --input "a11y-report/$theme/report.json" --fail-on-violations false > "a11y-report/$theme/summary.md"
+            else
+              echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
+            fi
+          done
 
       - name: Upload a11y artifacts
         if: always()
@@ -69,16 +79,23 @@ jobs:
         with:
           name: storybook-a11y-report
           path: |
-            libs/ui/a11y-report/report.json
-            libs/ui/a11y-report/junit.xml
-            libs/ui/a11y-report/summary.md
+            libs/ui/a11y-report/**
 
-      - name: Publish test results (JUnit)
+      - name: Publish test results (JUnit - light)
         if: always()
         uses: dorny/test-reporter@v1
         with:
-          name: Storybook A11y
-          path: libs/ui/a11y-report/junit.xml
+          name: Storybook A11y (light)
+          path: libs/ui/a11y-report/light/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Publish test results (JUnit - dark)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Storybook A11y (dark)
+          path: libs/ui/a11y-report/dark/junit.xml
           reporter: java-junit
           fail-on-error: false
 
@@ -86,7 +103,10 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         run: |
           printf "<!-- storybook-a11y-report -->\n## Storybook A11y Report\n\n" > libs/ui/a11y-report/comment.md
-          cat libs/ui/a11y-report/summary.md >> libs/ui/a11y-report/comment.md
+          printf "### Light\n\n" >> libs/ui/a11y-report/comment.md
+          cat libs/ui/a11y-report/light/summary.md >> libs/ui/a11y-report/comment.md
+          printf "\n\n### Dark\n\n" >> libs/ui/a11y-report/comment.md
+          cat libs/ui/a11y-report/dark/summary.md >> libs/ui/a11y-report/comment.md
 
       - name: Post PR comment
         if: always() && github.event_name == 'pull_request'
@@ -96,5 +116,5 @@ jobs:
           body-path: libs/ui/a11y-report/comment.md
 
       - name: Fail if violations detected
-        if: steps.a11y_test.outcome == 'failure' && env.A11Y_REPORT_FAIL_ON_VIOLATIONS != 'false'
+        if: (steps.a11y_light.outcome == 'failure' || steps.a11y_dark.outcome == 'failure') && env.A11Y_REPORT_FAIL_ON_VIOLATIONS != 'false'
         run: exit 1
