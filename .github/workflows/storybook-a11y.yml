@@ -48,6 +48,9 @@ jobs:
           python3 -m http.server 6006 --directory libs/ui/storybook-static &
           sleep 2
 
+      - name: Ensure a11y report directories
+        run: mkdir -p libs/ui/a11y-report/light libs/ui/a11y-report/dark
+
       - name: Run a11y tests (Light theme)
         id: a11y_light
         continue-on-error: true
@@ -67,7 +70,7 @@ jobs:
         run: |
           for theme in light dark; do
             if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
-              pnpm -C libs/ui exec storybook-a11y-report --input "a11y-report/$theme/report.json" --fail-on-violations false > "a11y-report/$theme/summary.md"
+              pnpm -C libs/ui exec storybook-a11y-report --input "a11y-report/$theme/report.json" --fail-on-violations false > "libs/ui/a11y-report/$theme/summary.md"
             else
               echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
             fi
@@ -82,7 +85,7 @@ jobs:
             libs/ui/a11y-report/**
 
       - name: Publish test results (JUnit - light)
-        if: always()
+        if: always() && hashFiles('libs/ui/a11y-report/light/junit.xml') != ''
         uses: dorny/test-reporter@v1
         with:
           name: Storybook A11y (light)
@@ -91,7 +94,7 @@ jobs:
           fail-on-error: false
 
       - name: Publish test results (JUnit - dark)
-        if: always()
+        if: always() && hashFiles('libs/ui/a11y-report/dark/junit.xml') != ''
         uses: dorny/test-reporter@v1
         with:
           name: Storybook A11y (dark)
