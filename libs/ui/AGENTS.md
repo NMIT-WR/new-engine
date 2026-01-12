@@ -38,6 +38,23 @@ stories/
 - `pnpm validate:tokens`       # Token validation
 - `bunx biome check --write <file>`   # Lint specific file (never ".")
 
+## PR Descriptions (CLI)
+
+When using `gh pr create` or `gh pr edit`, avoid escaped `\n` or backticks in double-quoted strings.
+Use a heredoc or `--body-file` to preserve real newlines and avoid shell interpolation.
+
+```sh
+cat <<'EOF' > /tmp/pr-body.md
+## Summary
+- ...
+
+## Testing
+- Not run (docs-only)
+EOF
+
+gh pr edit <pr-number> --body-file /tmp/pr-body.md
+```
+
 ## Critical Rules (Do not break these)
 
 **NEVER:**
