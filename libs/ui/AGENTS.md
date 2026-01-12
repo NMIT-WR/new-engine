@@ -62,6 +62,7 @@ gh pr edit <pr-number> --body-file /tmp/pr-body.md
 - `tailwind.config.*` (Tailwind v4 uses @theme)
 - Arbitrary values (`bg-[#ff0000]`, `p-[1rem]`)
 - Default exports or barrel files (`index.ts`) unless framework requires
+- `interface` for type definitions (use `type`)
 - Direct semantic tokens in component implementations (`bg-primary`, `text-fg`)
 
 **ALWAYS:**
