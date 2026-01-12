@@ -42,7 +42,7 @@ type Story = StoryObj<typeof Image>
 
 export const Playground: Story = {
     render: (args) => <Image {...args} />,
-  }
+}
 
 export const Sizes: Story = {
   render: () => (

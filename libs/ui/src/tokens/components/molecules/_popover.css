@@ -16,7 +16,7 @@
   --color-popover-border: var(--color-highlight);
 
   /* Close trigger colors */
-  --color-popover-close-trigger: var(--color-popover-fg);
+  --color-popover-close-trigger-fg: var(--color-popover-fg);
 
   /* === SPACING === */
   --spacing-popover-sm: var(--spacing-200);

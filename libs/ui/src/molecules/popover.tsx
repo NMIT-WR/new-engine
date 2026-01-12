@@ -23,7 +23,7 @@ const popoverVariants = tv({
       "text-popover-description-fg text-popover-description-size",
       "leading-normal",
     ],
-    closeTrigger: ["absolute top-2 right-2", "text-popover-close-trigger"],
+    closeTrigger: ["absolute top-2 right-2", "text-popover-close-trigger-fg"],
   },
   variants: {
     shadow: {
