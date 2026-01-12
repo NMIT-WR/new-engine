@@ -14,7 +14,7 @@ React 19 + Tailwind v4 + Zag.js component library using atomic design.
 
 ## Architecture
 
-```
+```text
 src/
 +-- atoms/           # Button, Input, Icon, Badge, Skeleton
 +-- molecules/       # Dialog, Combobox, Toast, Accordion, Menu
@@ -51,7 +51,7 @@ Before creating files, read the relevant guide:
 
 ## Decision Tree
 
-```
+```text
 Creating new component?
 +-- Interactive (dialog, menu, accordion)?
 |   -> Research Zag.js first, then read components.md
