@@ -3,7 +3,7 @@
 React 19 + Tailwind v4 + Zag.js component library using atomic design.
 
 NOTE: `libs/ui/AGENTS.md` is the canonical source of truth.
-- `libs/ui/CLAUDE.md` and `libs/ui/.claude/CLAUDE.md` are symlinks to this file.
+- `libs/ui/CLAUDE.md` is a symlink to this file.
 - Edit only `AGENTS.md`.
 - Windows: enable Developer Mode and set `git config core.symlinks true` so symlinks work.
 
