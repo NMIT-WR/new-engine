@@ -93,6 +93,8 @@ function escapePipes(value) {
   return String(value).replace(/\|/g, '\\|');
 }
 
+const KEY_SEPARATOR = '\x00';
+
 /**
  * Summarize a report for full output.
  * @param {any[]} report
@@ -169,7 +171,7 @@ function collectViolations(report) {
       const id = violation?.id ?? 'unknown';
       const impact = violation?.impact ?? 'unknown';
       const apca = isApcaViolation(violation);
-      const key = `${storyKey}|${id}`;
+      const key = `${storyKey}${KEY_SEPARATOR}${id}`;
       entries.push({ key, story: storyKey, group, id, impact, apca });
     }
   }
