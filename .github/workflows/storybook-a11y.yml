@@ -1,0 +1,123 @@
+name: Storybook A11y (APCA)
+
+on:
+  pull_request:
+    paths:
+      - "libs/ui/**"
+      - ".github/workflows/storybook-a11y.yml"
+  workflow_dispatch:
+    inputs:
+      failOnViolations:
+        description: "Fail workflow when a11y violations are found"
+        required: false
+        default: "true"
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  storybook-a11y:
+    runs-on: ubuntu-latest
+    env:
+      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
+      A11Y_REPORT_WRITE_JUNIT: "true"
+      A11Y_REPORT_WAIT_MS: "30000"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook (UI)
+        run: pnpm -C libs/ui build:storybook
+
+      - name: Serve Storybook
+        run: |
+          python3 -m http.server 6006 --directory libs/ui/storybook-static &
+          sleep 2
+
+      - name: Run a11y tests (Light theme)
+        id: a11y_light
+        continue-on-error: true
+        env:
+          A11Y_REPORT_OUTPUT_DIR: a11y-report/light
+        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:light" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+
+      - name: Run a11y tests (Dark theme)
+        id: a11y_dark
+        continue-on-error: true
+        env:
+          A11Y_REPORT_OUTPUT_DIR: a11y-report/dark
+        run: pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:dark" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
+
+      - name: Generate a11y summaries
+        if: always()
+        run: |
+          for theme in light dark; do
+            if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
+              pnpm -C libs/ui exec storybook-a11y-report --input "a11y-report/$theme/report.json" --fail-on-violations false > "a11y-report/$theme/summary.md"
+            else
+              echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
+            fi
+          done
+
+      - name: Upload a11y artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-a11y-report
+          path: |
+            libs/ui/a11y-report/**
+
+      - name: Publish test results (JUnit - light)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Storybook A11y (light)
+          path: libs/ui/a11y-report/light/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Publish test results (JUnit - dark)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Storybook A11y (dark)
+          path: libs/ui/a11y-report/dark/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Prepare PR comment
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          printf "<!-- storybook-a11y-report -->\n## Storybook A11y Report\n\n" > libs/ui/a11y-report/comment.md
+          if [ "${A11Y_REPORT_FAIL_ON_VIOLATIONS}" = "false" ]; then
+            printf "> ⚠️ Non-blocking mode: violations will NOT fail CI (A11Y_REPORT_FAIL_ON_VIOLATIONS=false).\n\n" >> libs/ui/a11y-report/comment.md
+          fi
+          printf "### Light\n\n" >> libs/ui/a11y-report/comment.md
+          cat libs/ui/a11y-report/light/summary.md >> libs/ui/a11y-report/comment.md
+          printf "\n\n### Dark\n\n" >> libs/ui/a11y-report/comment.md
+          cat libs/ui/a11y-report/dark/summary.md >> libs/ui/a11y-report/comment.md
+
+      - name: Post PR comment
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: libs/ui/a11y-report/comment.md
+
+      - name: Fail if violations detected
+        if: (steps.a11y_light.outcome == 'failure' || steps.a11y_dark.outcome == 'failure') && env.A11Y_REPORT_FAIL_ON_VIOLATIONS != 'false'
+        run: exit 1
