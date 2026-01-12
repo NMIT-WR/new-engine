@@ -1,4 +1,7 @@
 minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - '@techsio/storybook-better-a11y'
+  - '@techsio/storybook-a11y-reporter'
 # trustPolicy: no-downgrade
 
 packages:
