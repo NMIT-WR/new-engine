@@ -54,6 +54,7 @@
     "build:storybook": "storybook build",
     "dev": "rslib build --watch",
     "storybook": "storybook dev",
+    "storybook:a11y": "bash scripts/storybook-a11y.sh",
     "lint:tailwind": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js",
     "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix",
     "prepare": "pnpm build && pnpm build:storybook",

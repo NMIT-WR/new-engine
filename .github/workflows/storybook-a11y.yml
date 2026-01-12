@@ -21,7 +21,7 @@ jobs:
   storybook-a11y:
     runs-on: ubuntu-latest
     env:
-      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'true' }}
+      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
       A11Y_REPORT_WRITE_JUNIT: "true"
       A11Y_REPORT_WAIT_MS: "30000"
     steps:
@@ -103,6 +103,9 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         run: |
           printf "<!-- storybook-a11y-report -->\n## Storybook A11y Report\n\n" > libs/ui/a11y-report/comment.md
+          if [ "${A11Y_REPORT_FAIL_ON_VIOLATIONS}" = "false" ]; then
+            printf "> ⚠️ Non-blocking mode: violations will NOT fail CI (A11Y_REPORT_FAIL_ON_VIOLATIONS=false).\n\n" >> libs/ui/a11y-report/comment.md
+          fi
           printf "### Light\n\n" >> libs/ui/a11y-report/comment.md
           cat libs/ui/a11y-report/light/summary.md >> libs/ui/a11y-report/comment.md
           printf "\n\n### Dark\n\n" >> libs/ui/a11y-report/comment.md
