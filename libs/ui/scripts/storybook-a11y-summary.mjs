@@ -20,8 +20,23 @@ if (!inputPath || !outputPath) {
   process.exit(1);
 }
 
-const raw = fs.readFileSync(inputPath, 'utf8');
-const data = JSON.parse(raw);
+let raw;
+try {
+  raw = fs.readFileSync(inputPath, 'utf8');
+} catch (err) {
+  console.error(`Failed to read input file: ${inputPath}`);
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(1);
+}
+
+let data;
+try {
+  data = JSON.parse(raw);
+} catch (err) {
+  console.error(`Failed to parse JSON from: ${inputPath}`);
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(1);
+}
 
 if (!Array.isArray(data)) {
   console.error('Expected report.json to be an array of stories.');
@@ -112,7 +127,7 @@ for (const [groupName, stats] of sortedGroups) {
 }
 
 const violatingRows = storyRows
-  .filter((row) => row.violations > 0 || row.apca > 0)
+  .filter((row) => row.violations > 0)
   .sort((a, b) => {
     if (b.violations !== a.violations) return b.violations - a.violations;
     if (b.apca !== a.apca) return b.apca - a.apca;
