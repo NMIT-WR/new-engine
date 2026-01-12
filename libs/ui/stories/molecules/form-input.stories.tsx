@@ -398,7 +398,7 @@ function RegistrationFormExample() {
     email: {
       isValid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()),
       error: 'Please enter a valid email address',
-      success: "email is correct",
+      success: "Email is correct",
     },
     username: {
       isValid: /^[a-zA-Z0-9_]{3,}$/.test(form.username),

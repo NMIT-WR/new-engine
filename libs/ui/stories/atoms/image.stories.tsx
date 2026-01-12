@@ -18,10 +18,12 @@ const meta: Meta<typeof Image> = {
     src: {
       control: 'text',
       description: 'Image source URL',
+      type: { name: 'string', required: true },
     },
     alt: {
       control: 'text',
       description: 'Alternative text for accessibility',
+      type: { name: 'string', required: true },
     },
     className: {
       control: 'text',
@@ -38,7 +40,9 @@ const meta: Meta<typeof Image> = {
 export default meta
 type Story = StoryObj<typeof Image>
 
-export const Playground: Story = {}
+export const Playground: Story = {
+    render: (args) => <Image {...args} />,
+  }
 
 export const Sizes: Story = {
   render: () => (

@@ -8,7 +8,7 @@ const inputVariants = tv({
     "bg-input",
     "text-input-fg",
     "placeholder:text-input-fg-placeholder",
-    "border-(length:--border-input-width) border-input-border",
+    "border-(length:--border-width-input) border-input-border",
     "rounded-input",
     "transition-all duration-200",
     "hover:border-input-border-hover hover:bg-input-hover",

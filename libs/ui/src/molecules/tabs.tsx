@@ -112,6 +112,7 @@ const tabsVariants = tv({
     variant: "default",
     size: "md",
     fitted: false,
+    justify: "start",
   },
 })
 

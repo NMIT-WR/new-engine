@@ -206,7 +206,7 @@ A flexible carousel component using compound component pattern, built with Zag.j
     loop: {
       control: 'boolean',
       description: 'Whether carousel loops infinitely',
-      table: { defaultValue: { summary: 'false' } },
+      table: { defaultValue: { summary: 'true' } },
     },
     autoplay: {
       control: 'boolean',

@@ -42,7 +42,7 @@
   /* === INCREMENT BUTTON === */
 
   --radius-numeric-input: var(--radius-sm);
-  --border-width-numeric-input: var(--border-input-width);
+  --border-width-numeric-input: var(--border-width-input);
 
   /* === FOCUS RING === */
   --color-numeric-input-ring: var(--color-ring);

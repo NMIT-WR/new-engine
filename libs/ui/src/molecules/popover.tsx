@@ -23,18 +23,7 @@ const popoverVariants = tv({
       "text-popover-description-fg text-popover-description-size",
       "leading-normal",
     ],
-    closeTrigger: [
-      "absolute",
-      "top-2",
-      "right-2",
-      "p-1",
-      "rounded-sm",
-      "text-muted",
-      "hover:text-fg",
-      "hover:bg-muted/50",
-      "transition-colors",
-      "cursor-pointer",
-    ],
+    closeTrigger: ["absolute top-2 right-2", "text-popover-close-trigger"],
   },
   variants: {
     shadow: {
@@ -177,11 +166,11 @@ export function Popover({
         {showCloseButton && (
           <Button
             {...api.getCloseTriggerProps()}
-            icon="token-icon-close"
-            theme="unstyled"
-            size="current"
-            className={closeTriggerStyles()}
             aria-label="Close popover"
+            className={closeTriggerStyles()}
+            icon="token-icon-close"
+            size="current"
+            theme="unstyled"
           />
         )}
         {showArrow && (

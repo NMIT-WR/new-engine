@@ -171,7 +171,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         )}
         <ProductCard.Name>{args.productName}</ProductCard.Name>
         {args.showRating && (
-          <ProductCard.Rating rating={{ defaultValue: args.rating }} />
+          <ProductCard.Rating rating={{ value: args.rating, readOnly: true }} />
         )}
         {args.showStock && (
           <ProductCard.Stock status={args.stockStatus}>

@@ -66,7 +66,7 @@
   --text-input-lg: var(--text-lg);
 
   /* Border */
-  --border-input-width: 2px;
+  --border-width-input: 2px;
   --radius-input: var(--radius-md);
 
   /* Form field spacing */
