@@ -24,8 +24,11 @@ const comboboxVariants = tv({
       "data-focus-visible:outline-combobox-ring",
       "data-focus-visible:outline-offset-2",
       "data-disabled:border-combobox-border-disabled data-disabled:bg-combobox-bg-disabled",
+      "data-[validation=error]:border-(length:--border-width-validation)",
       "data-[validation=error]:border-combobox-danger-fg",
+      "data-[validation=success]:border-(length:--border-width-validation)",
       "data-[validation=success]:border-combobox-success-fg",
+      "data-[validation=warning]:border-(length:--border-width-validation)",
       "data-[validation=warning]:border-combobox-warning-fg",
     ],
     input: [

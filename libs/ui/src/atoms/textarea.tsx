@@ -23,17 +23,20 @@ const textareaVariants = tv({
     variant: {
       default: "",
       error: [
+        "border-(length:--border-width-validation)",
         "border-textarea-border-danger",
         "hover:border-textarea-border-danger-hover",
         "focus:border-textarea-border-danger-focus",
         "placeholder:text-textarea-placeholder-danger",
       ],
       success: [
+        "border-(length:--border-width-validation)",
         "border-textarea-border-success",
         "hover:border-textarea-border-success-hover",
         "focus:border-textarea-border-success-focus",
       ],
       warning: [
+        "border-(length:--border-width-validation)",
         "border-textarea-border-warning",
         "hover:border-textarea-border-warning-hover",
         "focus:border-textarea-border-warning-focus",

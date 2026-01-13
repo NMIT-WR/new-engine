@@ -29,6 +29,7 @@ const sliderVariants = tv({
       "data-disabled:border-slider-border-disabled",
       "transition-colors duration-200",
       "hover:bg-slider-track-bg-hover",
+      "data-[invalid=true]:border-(length:--border-width-validation)",
       "data-[invalid=true]:border-slider-border-error",
     ],
     range: [
@@ -41,7 +42,8 @@ const sliderVariants = tv({
     thumb: [
       "flex items-center justify-center",
       "rounded-slider-thumb bg-slider-thumb-bg",
-      "focus-visible:outline-2",
+      "focus-visible:outline",
+      "focus-visible:outline-(length:--default-ring-width)",
       "focus-visible:outline-slider-ring",
       "focus-visible:outline-offset-2",
       "focus:scale-110",

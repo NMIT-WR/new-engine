@@ -41,7 +41,7 @@ export function PaymentSelection({
           <Button
             aria-label={`Vybrat platební metodu ${method.name}`}
             aria-pressed={selected === method.id}
-            className="relative flex h-[100px] flex-col items-center justify-center rounded-lg border-2 border-border-subtle bg-surface p-2 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring-primary focus-visible:outline-offset-2 data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:h-[140px] sm:p-3 lg:h-[180px] lg:p-4"
+            className="relative flex h-[100px] flex-col items-center justify-center rounded-lg border-2 border-border-subtle bg-surface p-2 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline focus-visible:outline-(length:--default-ring-width) focus-visible:outline-ring focus-visible:outline-offset-2 data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:h-[140px] sm:p-3 lg:h-[180px] lg:p-4"
             data-selected={selected === method.id}
             key={method.id}
             onClick={() => onSelect(method.id)}

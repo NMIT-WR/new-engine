@@ -29,6 +29,7 @@ const checkboxVariants = tv({
     "focus-visible:outline-(length:--default-ring-width)",
     "focus-visible:outline-checkbox-ring-focus",
     "focus-visible:outline-offset-2",
+    "data-invalid:border-(length:--border-width-validation)",
     "data-invalid:border-checkbox-border-error",
     "data-invalid:outline",
     "data-invalid:outline-(length:--default-ring-width)",

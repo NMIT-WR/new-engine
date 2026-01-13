@@ -109,7 +109,7 @@ export function Header({
               {/* Mobile menu button */}
               {showMobileMenu && (
                 <Button
-                  className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-icon-size text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus-visible:outline focus-visible:outline-(length:--ring-header-mobile-menu-width) focus-visible:outline-(color:--ring-header-mobile-menu-color) focus-visible:outline-offset-2 lg:hidden"
+                  className="inline-flex items-center justify-center rounded-header-mobile-menu p-header-mobile-menu-padding text-header-icon-size text-header-mobile-menu-text hover:bg-header-mobile-menu-hover hover:text-header-mobile-menu-text-hover focus-visible:outline focus-visible:outline-(length:--default-ring-width) focus-visible:outline-ring focus-visible:outline-offset-2 lg:hidden"
                   icon="token-icon-menu"
                   onClick={() => setIsMobileMenuOpen(true)}
                   size="sm"

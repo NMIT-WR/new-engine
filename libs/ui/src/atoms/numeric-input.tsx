@@ -20,6 +20,7 @@ const numericInputVariants = tv({
       "group border-(length:--border-width-numeric-input) relative flex",
       "items-center overflow-hidden rounded-numeric-input border-numeric-input-border",
       "data-invalid:bg-numeric-input-invalid-bg",
+      "data-invalid:border-(length:--border-width-validation)",
       "data-invalid:border-numeric-input-invalid-border",
       "text-numeric-input-fg",
       "has-[input:not(:disabled):hover]:bg-numeric-input-input-bg-hover",

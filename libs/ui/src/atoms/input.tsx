@@ -28,16 +28,19 @@ const inputVariants = tv({
     variant: {
       default: "",
       error: [
+        "border-(length:--border-width-validation)",
         "border-input-border-danger",
         "hover:border-input-border-danger-hover",
         "focus:border-input-border-danger-focus",
       ],
       success: [
+        "border-(length:--border-width-validation)",
         "border-input-border-success",
         "hover:border-input-border-success-hover",
         "focus:border-input-border-success-focus",
       ],
       warning: [
+        "border-(length:--border-width-validation)",
         "border-input-border-warning",
         "hover:border-input-border-warning-hover",
         "focus:border-input-border-warning-focus",

@@ -22,7 +22,7 @@ const searchFormVariants = tv({
       "rounded-search-form",
       "border border-input-border bg-input-bg",
       "focus-within:border-input-border-focus",
-      "focus-within:outline-1",
+      "focus-within:outline-(length:--default-ring-width)",
       "focus-within:outline-input-ring",
       "focus-within:outline-offset-2",
     ],

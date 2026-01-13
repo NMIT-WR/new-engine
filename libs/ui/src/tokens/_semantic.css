@@ -353,6 +353,7 @@
   --border-width-sm: 1px;
   --border-width-md: 2px;
   --border-width-lg: 3px;
+  --border-width-validation: var(--border-width-lg);
 
   /* Links */
   --color-link: light-dark(var(--color-blue-500), var(--color-sky-300));
@@ -398,5 +399,5 @@
   /* Focus ring */
   --default-ring-color: light-dark(var(--color-black), var(--color-white));
   --color-ring: var(--default-ring-color);
-  --default-ring-width: 3px;
+  --default-ring-width: 2px;
 }
