@@ -49,15 +49,15 @@
   "workspaces": {
     "apps/medusa-be": {
       "entry": [
-        "src/api/**/*.{ts,tsx}",
-        "src/modules/**/*.{ts,tsx}",
-        "src/workflows/**/*.{ts,tsx}",
-        "src/jobs/**/*.{ts,tsx}",
-        "src/admin/**/*.{ts,tsx}",
-        "src/scripts/**/*.{ts,tsx}",
+        "src/api/**/*.{ts,tsx}!",
+        "src/modules/**/*.{ts,tsx}!",
+        "src/workflows/**/*.{ts,tsx}!",
+        "src/jobs/**/*.{ts,tsx}!",
+        "src/admin/**/*.{ts,tsx}!",
+        "src/scripts/**/*.{ts,tsx}!",
         "tests/**/*.{ts,tsx}",
         "integration-tests/**/*.{js,ts}",
-        "medusa-config.ts"
+        "medusa-config.ts!"
       ],
       "ignoreDependencies": [
         "@medusajs/admin-shared",
@@ -74,8 +74,8 @@
     },
     "apps/frontend-demo": {
       "entry": [
-        "src/app/**/*.{tsx,ts}",
-        "next.config.{js,ts,mjs}"
+        "src/app/**/*.{tsx,ts}!",
+        "next.config.{js,ts,mjs}!"
       ],
       "ignoreDependencies": [
         "tailwindcss-animate"
@@ -87,8 +87,8 @@
     },
     "apps/n1": {
       "entry": [
-        "src/app/**/*.{tsx,ts}",
-        "next.config.{js,ts,mjs}"
+        "src/app/**/*.{tsx,ts}!",
+        "next.config.{js,ts,mjs}!"
       ],
       "ignore": [
         ".next/**",
@@ -97,17 +97,17 @@
     },
     "apps/herbatika": {
       "entry": [
-        "src/**/*.{ts,tsx}"
+        "src/**/*.{ts,tsx}!"
       ]
     },
     "libs/ui": {
       "entry": [
-        "src/atoms/*.tsx",
-        "src/molecules/*.tsx",
-        "src/organisms/*.tsx",
-        "src/templates/*.tsx",
-        "src/types/*.ts",
-        "src/utils.ts",
+        "src/atoms/*.tsx!",
+        "src/molecules/*.tsx!",
+        "src/organisms/*.tsx!",
+        "src/templates/*.tsx!",
+        "src/types/*.ts!",
+        "src/utils.ts!",
         "release.config.mjs"
       ],
       "project": [
@@ -133,12 +133,12 @@
     },
     "libs/analytics": {
       "entry": [
-        "src/index.ts",
-        "src/core/index.ts",
-        "src/meta/index.ts",
-        "src/google/index.ts",
-        "src/heureka/index.ts",
-        "src/leadhub/index.ts"
+        "src/index.ts!",
+        "src/core/index.ts!",
+        "src/meta/index.ts!",
+        "src/google/index.ts!",
+        "src/heureka/index.ts!",
+        "src/leadhub/index.ts!"
       ],
       "ignoreDependencies": [
         "@types/react-dom"
@@ -146,17 +146,17 @@
     },
     "libs/data-layer": {
       "entry": [
-        "src/index.ts"
+        "src/index.ts!"
       ]
     },
     "libs/medusa-sdk": {
       "entry": [
-        "src/index.ts"
+        "src/index.ts!"
       ]
     },
     "libs/product-hooks": {
       "entry": [
-        "src/index.ts"
+        "src/index.ts!"
       ]
     }
   },
