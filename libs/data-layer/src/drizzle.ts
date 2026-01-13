@@ -54,20 +54,25 @@ function formatQuery(query: string, params: unknown[]): string {
 }
 
 const logger = new DefaultLogger({ writer: new MyLogWriter() });
+let db: ReturnType<typeof drizzle> | null = null;
 
-const databaseUrl = process.env.DATABASE_URL;
+function getDb() {
+  if (!db) {
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      throw new Error(
+        'DATABASE_URL environment variable is required for data-layer connections',
+      );
+    }
+    const neonSql = neon(databaseUrl);
+    db = drizzle(neonSql, { logger, schema });
+  }
 
-if (!databaseUrl) {
-  throw new Error(
-    'DATABASE_URL environment variable is required for data-layer connections',
-  );
+  return db;
 }
 
-const sql = neon(databaseUrl);
-const db = drizzle(sql, { logger, schema });
-
 export async function sqlRaw<T = object>(sql: SQL<T>): Promise<T[]> {
-  const rows = (await db.execute(sql)).rows as T[];
+  const rows = (await getDb().execute(sql)).rows as T[];
 
   return (rows as object[]).map(
     (row): T =>
