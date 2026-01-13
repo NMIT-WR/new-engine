@@ -30,7 +30,7 @@ const searchFormVariants = tv({
       "peer",
       "min-w-0 flex-1",
       "rounded-r-search-form-input border-none bg-transparent",
-      "focus-visible:outline-none focus-visible:outline-none",
+      "focus-visible:outline-none",
     ],
     button: [
       "h-full shrink-0 items-center rounded-r-search-form rounded-l-none",
