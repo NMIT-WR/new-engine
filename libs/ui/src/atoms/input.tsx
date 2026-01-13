@@ -12,7 +12,7 @@ const inputVariants = tv({
     "rounded-input",
     "transition-all duration-200",
     "hover:border-input-border-hover hover:bg-input-hover",
-    "focus:border-input-border-focus focus:bg-input-focus focus:outline-none",
+    "focus:border-input-border-focus focus:bg-input-focus",
     "focus-visible:outline",
     "focus-visible:outline-(length:--default-ring-width)",
     "focus-visible:outline-input-ring",

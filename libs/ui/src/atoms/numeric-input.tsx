@@ -24,8 +24,10 @@ const numericInputVariants = tv({
       "text-numeric-input-fg",
       "has-[input:not(:disabled):hover]:bg-numeric-input-input-bg-hover",
       "has-[input:focus]:bg-numeric-input-input-bg-focus",
-      "focus-within:ring",
-      "focus-within:ring-numeric-input-ring",
+      "focus-within:outline",
+      "focus-within:outline-(length:--default-ring-width)",
+      "focus-within:outline-numeric-input-ring",
+      "focus-within:outline-offset-2",
     ],
     input: [
       "h-full rounded-none border-none pl-numeric-input-input",
@@ -34,7 +36,7 @@ const numericInputVariants = tv({
       "hover:bg-numeric-input-input-bg-hover",
       "disabled:hover:bg-numeric-input-input-bg",
       "disabled:cursor-not-allowed",
-      "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+      "focus-visible:outline-none",
       "duration-0 data-invalid:focus:border-input-border-danger-focus",
     ],
     triggerContainer: [

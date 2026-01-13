@@ -9,9 +9,10 @@ export const buttonVariants = tv({
     "inline-flex cursor-pointer items-baseline justify-center",
     "font-medium",
     "transition-all duration-200",
-    "focus:outline-none",
-    "focus-visible:ring",
-    "focus-visible:ring-button-ring",
+    "focus-visible:outline",
+    "focus-visible:outline-(length:--default-ring-width)",
+    "focus-visible:outline-button-ring",
+    "focus-visible:outline-offset-2",
     "disabled:cursor-not-allowed disabled:text-button-fg-disabled",
   ],
   variants: {

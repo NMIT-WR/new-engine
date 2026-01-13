@@ -66,9 +66,11 @@ const carouselVariants = tv({
       slots: ["autoplayTrigger", "indicator", "prevTrigger", "nextTrigger"],
       class: [
         "p-carousel-trigger",
-        "text-carousel-trigger-fg focus:outline-none",
-        "focus:ring",
-        "focus:ring-carousel-ring",
+        "text-carousel-trigger-fg",
+        "focus-visible:outline",
+        "focus-visible:outline-(length:--default-ring-width)",
+        "focus-visible:outline-carousel-ring",
+        "focus-visible:outline-offset-2",
       ],
     },
     {

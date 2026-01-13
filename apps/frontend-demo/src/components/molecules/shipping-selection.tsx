@@ -97,7 +97,7 @@ export function ShippingSelection({
           <Button
             aria-checked={selected === method.id}
             aria-label={`${method.name} - ${method.calculated_price.calculated_amount}`}
-            className="relative flex items-center rounded-lg border-2 border-border-subtle bg-surface p-3 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:p-4"
+            className="relative flex items-center rounded-lg border-2 border-border-subtle bg-surface p-3 transition-all duration-200 hover:bg-surface-hover hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring-primary focus-visible:outline-offset-2 data-[selected=true]:border-primary data-[selected=true]:bg-surface-selected data-[selected=true]:shadow-lg sm:p-4"
             data-selected={selected === method.id}
             key={method.id}
             onClick={() => onSelect(method.id)}

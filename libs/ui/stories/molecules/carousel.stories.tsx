@@ -347,7 +347,7 @@ export const NumberedIndicators: Story = {
               <Carousel.Indicator
                 key={index}
                 index={index}
-                className="bg-transparent focus:ring-0 focus:ring-offset-0 text-fg-primary hover:bg-transparent hover:text-primary data-[current]:bg-transparent data-[current]:text-primary text-sm font-medium"
+                className="bg-transparent text-fg-primary hover:bg-transparent hover:text-primary data-[current]:bg-transparent data-[current]:text-primary text-sm font-medium"
               >
                 {index + 1}
               </Carousel.Indicator>
