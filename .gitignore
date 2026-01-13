@@ -57,7 +57,6 @@ test-output
 .next/
 
 local/
-.claude/
 opencode.json
 apps/frontend-demo/public/data/
 static-data/
