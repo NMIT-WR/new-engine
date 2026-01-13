@@ -1,4 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { cs } from '@payloadcms/translations/languages/cs'
+import { en } from '@payloadcms/translations/languages/en'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -68,6 +70,10 @@ export default buildConfig({
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
+  i18n: {
+    fallbackLanguage: 'en',
+    supportedLanguages: { en, cs },
+  },
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
