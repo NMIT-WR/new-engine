@@ -1,6 +1,7 @@
 import { decryptFields, encryptFields } from "../encryption"
 
-// Valid 64-character hex key (32 bytes)
+// Valid 64-character hex key (32 bytes) - synthetic test value, not a real secret
+// gitleaks:allow
 const VALID_KEY =
   "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
@@ -35,28 +36,34 @@ describe("encryption utilities", () => {
   })
 
   describe("key validation", () => {
-    it("throws error when key is missing", () => {
-      // biome-ignore lint/performance/noDelete: required to truly unset env var for testing
-      delete process.env.SETTINGS_ENCRYPTION_KEY
+    it.each([
+      {
+        scenario: "key is missing",
+        key: undefined,
+        expectedError: "SETTINGS_ENCRYPTION_KEY is required",
+      },
+      {
+        scenario: "key is too short",
+        key: "abc123",
+        expectedError:
+          "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 6)",
+      },
+      {
+        scenario: "key is too long",
+        key: `${VALID_KEY}extra`,
+        expectedError:
+          "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 69)",
+      },
+    ])("throws error when $scenario", ({ key, expectedError }) => {
+      if (key === undefined) {
+        // biome-ignore lint/performance/noDelete: required to truly unset env var for testing
+        delete process.env.SETTINGS_ENCRYPTION_KEY
+      } else {
+        process.env.SETTINGS_ENCRYPTION_KEY = key
+      }
 
       expect(() => encryptFields({ value: "secret" }, ["value"])).toThrow(
-        "SETTINGS_ENCRYPTION_KEY is required"
-      )
-    })
-
-    it("throws error when key is too short", () => {
-      process.env.SETTINGS_ENCRYPTION_KEY = "abc123"
-
-      expect(() => encryptFields({ value: "secret" }, ["value"])).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 6)"
-      )
-    })
-
-    it("throws error when key is too long", () => {
-      process.env.SETTINGS_ENCRYPTION_KEY = `${VALID_KEY}extra`
-
-      expect(() => encryptFields({ value: "secret" }, ["value"])).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 69)"
+        expectedError
       )
     })
   })
