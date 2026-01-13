@@ -137,3 +137,37 @@ export const Sizes: Story = {
     </div>
   ),
 }
+
+export const States: Story = {
+  render: () => (
+    <div className="flex w-full max-w-container-sm flex-col gap-300">
+      <SelectTemplate
+        items={defaultItems}
+        label="Default"
+        placeholder="Select a country"
+        size="md"
+      />
+      <SelectTemplate
+        disabled
+        items={defaultItems}
+        label="Disabled"
+        placeholder="Select a country"
+        size="md"
+      />
+      <SelectTemplate
+        items={defaultItems}
+        label="Error"
+        placeholder="Select a country"
+        size="md"
+        validateStatus="error"
+      />
+      <SelectTemplate
+        items={defaultItems}
+        label="Success"
+        placeholder="Select a country"
+        size="md"
+        validateStatus="success"
+      />
+    </div>
+  ),
+}
