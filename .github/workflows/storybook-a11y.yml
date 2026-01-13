@@ -31,7 +31,7 @@ jobs:
       themes: '["light","dark"]'
       globals-template: 'theme:{{theme}}'
       a11y-output-dir: a11y-report
-      fail-on-violations: ${{ fromJSON(inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false') }}
+      fail-on-violations: ${{ fromJSON(github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false') }}
       write-junit: true
       wait-ms: 30000
       test-workers: 2
