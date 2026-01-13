@@ -311,7 +311,7 @@ export const BatchOperations: Story = {
                     title: `Toast ${i + 1}`,
                     description: `This is toast number ${i + 1}`,
                     type: ['success', 'info', 'warning'][i] as any,
-                    duration: 10000,
+                    duration: 5000,
                   })
                 })
                 setToastIds(newIds)
