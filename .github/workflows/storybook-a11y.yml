@@ -141,7 +141,7 @@ jobs:
             kill "${SERVER_PID}" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
-          for i in {1..20}; do
+          for _ in {1..20}; do
             if curl -sf http://127.0.0.1:6006/ >/dev/null; then
               break
             fi

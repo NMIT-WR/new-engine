@@ -119,3 +119,4 @@ jobs:
         with:
           name: storybook-a11y-baseline-${{ matrix.theme }}
           path: libs/ui/a11y-report/${{ matrix.theme }}/report.json
+          retention-days: 30
