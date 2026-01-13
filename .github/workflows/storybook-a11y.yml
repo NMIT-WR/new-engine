@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   storybook-a11y:
-    uses: NMIT-WR/storybook-addons/.github/workflows/storybook-a11y.yml@storybook-a11y-workflow-v0.1.6
+    uses: NMIT-WR/storybook-addons/.github/workflows/storybook-a11y.yml@storybook-a11y-workflow-v0.1.7
     with:
       node-version: "22"
       pnpm-version: ""
@@ -39,3 +39,7 @@ jobs:
       install-playwright: true
       upload-artifacts: true
       post-pr-comment: true
+      baseline-workflow-path: .github/workflows/storybook-a11y-baseline.yml
+      baseline-branch: master
+      baseline-label: master
+      baseline-artifact-prefix: storybook-a11y-baseline
