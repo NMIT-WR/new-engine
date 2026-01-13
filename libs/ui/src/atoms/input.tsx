@@ -12,9 +12,10 @@ const inputVariants = tv({
     "rounded-input",
     "transition-all duration-200",
     "hover:border-input-border-hover hover:bg-input-hover",
-    "focus:border-input-border-focus focus:bg-input-focus focus:outline-none",
-    "focus-visible:ring",
-    "focus-visible:ring-input-ring",
+    "focus:border-input-border-focus focus:bg-input-focus",
+    "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+    "focus-visible:outline-input-ring",
+    "focus-visible:outline-offset-(length:--default-ring-offset)",
     "disabled:cursor-not-allowed disabled:hover:bg-input-bg-disabled",
   ],
   variants: {
@@ -26,16 +27,19 @@ const inputVariants = tv({
     variant: {
       default: "",
       error: [
+        "border-(length:--border-width-validation)",
         "border-input-border-danger",
         "hover:border-input-border-danger-hover",
         "focus:border-input-border-danger-focus",
       ],
       success: [
+        "border-(length:--border-width-validation)",
         "border-input-border-success",
         "hover:border-input-border-success-hover",
         "focus:border-input-border-success-focus",
       ],
       warning: [
+        "border-(length:--border-width-validation)",
         "border-input-border-warning",
         "hover:border-input-border-warning-hover",
         "focus:border-input-border-warning-focus",

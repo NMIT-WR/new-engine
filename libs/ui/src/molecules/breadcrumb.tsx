@@ -18,9 +18,9 @@ const breadcrumbsVariants = tv({
       "no-underline",
       "cursor-pointer",
       "hover:text-breadcrumb-fg-hover",
-      "focus:outline-none",
-      "focus-visible:ring",
-      "focus-visible:ring-breadcrumb-ring",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-breadcrumb-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     currentLink: ["cursor-default"],
     separator: [
@@ -36,10 +36,7 @@ const breadcrumbsVariants = tv({
   compoundSlots: [
     {
       slots: ["link", "currentLink"],
-      class: [
-        "inline-flex items-center font-medium",
-        "outline-none focus:outline-none",
-      ],
+      class: ["inline-flex items-center font-medium"],
     },
   ],
   variants: {

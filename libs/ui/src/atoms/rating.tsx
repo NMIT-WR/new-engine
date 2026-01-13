@@ -11,8 +11,9 @@ const rating = tv({
     control: ["flex"],
     itemWrapper: [
       "flex items-center",
-      "has-focus-visible:ring",
-      "has-focus-visible:ring-rating-ring",
+      "has-focus-visible:outline-(style:--default-ring-style) has-focus-visible:outline-(length:--default-ring-width)",
+      "has-focus-visible:outline-rating-ring",
+      "has-focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     item: [
       "cursor-pointer transition-colors duration-200",
