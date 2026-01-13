@@ -305,5 +305,3 @@ export function useCart() {
     items: cart?.items || [],
   }
 }
-
-// Re-export as default hook
