@@ -42,10 +42,9 @@ const sliderVariants = tv({
     thumb: [
       "flex items-center justify-center",
       "rounded-slider-thumb bg-slider-thumb-bg",
-      "focus-visible:outline",
-      "focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
       "focus-visible:outline-slider-ring",
-      "focus-visible:outline-offset-2",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "focus-visible:scale-110",
       "data-disabled:bg-slider-thumb-bg-disabled",
       "border-(length:--border-width-slider) border-slider-border",

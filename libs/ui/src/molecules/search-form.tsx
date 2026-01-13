@@ -22,9 +22,9 @@ const searchFormVariants = tv({
       "rounded-search-form",
       "border border-input-border bg-input-bg",
       "focus-within:border-input-border-focus",
-      "focus-within:outline-(length:--default-ring-width)",
+      "focus-within:outline-(style:--default-ring-style) focus-within:outline-(length:--default-ring-width)",
       "focus-within:outline-input-ring",
-      "focus-within:outline-offset-2",
+      "focus-within:outline-offset-(length:--default-ring-offset)",
     ],
     input: [
       "peer",

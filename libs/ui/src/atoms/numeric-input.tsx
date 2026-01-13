@@ -25,10 +25,9 @@ const numericInputVariants = tv({
       "text-numeric-input-fg",
       "has-[input:not(:disabled):hover]:bg-numeric-input-input-bg-hover",
       "has-[input:focus]:bg-numeric-input-input-bg-focus",
-      "focus-within:outline",
-      "focus-within:outline-(length:--default-ring-width)",
+      "focus-within:outline-(style:--default-ring-style) focus-within:outline-(length:--default-ring-width)",
       "focus-within:outline-numeric-input-ring",
-      "focus-within:outline-offset-2",
+      "focus-within:outline-offset-(length:--default-ring-offset)",
     ],
     input: [
       "h-full rounded-none border-none pl-numeric-input-input",

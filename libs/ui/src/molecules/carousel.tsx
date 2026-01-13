@@ -67,10 +67,9 @@ const carouselVariants = tv({
       class: [
         "p-carousel-trigger",
         "text-carousel-trigger-fg",
-        "focus-visible:outline",
-        "focus-visible:outline-(length:--default-ring-width)",
+        "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
         "focus-visible:outline-carousel-ring",
-        "focus-visible:outline-offset-2",
+        "focus-visible:outline-offset-(length:--default-ring-offset)",
       ],
     },
     {

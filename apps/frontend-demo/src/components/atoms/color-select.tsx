@@ -10,7 +10,7 @@ const colorSelectVariants = tv({
       "aspect-square",
       "rounded-color-selector",
       "border-2 transition-all duration-200",
-      "focus-visible:outline focus-visible:outline-(length:--default-ring-width) focus-visible:outline-ring focus-visible:outline-offset-2",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width) focus-visible:outline-ring focus-visible:outline-offset-(length:--default-ring-offset)",
       "group p-color-selector",
     ],
     color: [
