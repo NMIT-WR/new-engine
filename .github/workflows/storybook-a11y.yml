@@ -70,6 +70,8 @@ jobs:
         with:
           name: storybook-static
           path: libs/ui/storybook-static
+          retention-days: 7
+          compression-level: 6
 
   storybook-a11y:
     runs-on: ubuntu-latest
