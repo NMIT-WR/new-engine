@@ -24,7 +24,7 @@ export function AddressForm({
   isLoading = false,
 }: AddressFormProps) {
   const { user } = useAuth()
-  const { address, isLoading: isAddressLoading } = useCustomer()
+  const { address } = useCustomer()
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
     firstName: user?.first_name || "",
@@ -419,39 +419,39 @@ export function AddressForm({
             />
           </div>
 
-        <div className="mb-4 max-w-[20rem] sm:mb-6">
-          <Select
-            items={COUNTRIES}
-            onValueChange={(details) => {
-              const value = details.value[0]
-              if (value) {
-                setBillingAddress({
-                  ...billingAddress,
-                  country: value,
-                })
-              }
-            }}
-            required
-            value={[billingAddress.country]}
-          >
-            <Select.Label>Země</Select.Label>
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText />
-              </Select.Trigger>
-            </Select.Control>
-            <Select.Positioner>
-              <Select.Content>
-                {COUNTRIES.map((item) => (
-                  <Select.Item item={item} key={item.value}>
-                    <Select.ItemText />
-                    <Select.ItemIndicator />
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Select>
-        </div>
+          <div className="mb-4 max-w-[20rem] sm:mb-6">
+            <Select
+              items={COUNTRIES}
+              onValueChange={(details) => {
+                const value = details.value[0]
+                if (value) {
+                  setBillingAddress({
+                    ...billingAddress,
+                    country: value,
+                  })
+                }
+              }}
+              required
+              value={[billingAddress.country]}
+            >
+              <Select.Label>Země</Select.Label>
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText />
+                </Select.Trigger>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {COUNTRIES.map((item) => (
+                    <Select.Item item={item} key={item.value}>
+                      <Select.ItemText />
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Select>
+          </div>
         </div>
       )}
       <div className="flex w-full justify-between">

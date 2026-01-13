@@ -112,13 +112,13 @@ export default function ContactPage() {
                       <Select.Label>{form.labels.subject}</Select.Label>
                       <Select.Control>
                         <Select.Trigger>
-                          <Select.ValueText placeholder="Vyberte tÆcma" />
+                          <Select.ValueText placeholder="Vyberte téma" />
                         </Select.Trigger>
                       </Select.Control>
                       <Select.Positioner>
                         <Select.Content>
                           {subjectItems.map((item) => (
-                            <Select.Item key={item.value} item={item}>
+                            <Select.Item item={item} key={item.value}>
                               <Select.ItemText />
                               <Select.ItemIndicator />
                             </Select.Item>

@@ -11,9 +11,12 @@ import { useInfiniteProducts } from "@/hooks/use-infinite-products"
 import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
 import { useProducts } from "@/hooks/use-products"
 import { useRegions } from "@/hooks/use-region"
-import { useUrlFilters } from "@/hooks/use-url-filters"
+import {
+  type ExtendedSortOption,
+  useUrlFilters,
+} from "@/hooks/use-url-filters"
 
-const SORT_OPTIONS = [
+const SORT_OPTIONS: Array<{ value: ExtendedSortOption; label: string }> = [
   { value: "newest", label: "Nejnovější" },
   { value: "name-asc", label: "Název: A-Z" },
   { value: "name-desc", label: "Název: Z-A" },
@@ -104,10 +107,6 @@ function ProductsContent() {
   const effectiveHasPrevPage = shouldUseInfiniteData
     ? urlFilters.pageRange.start > 1
     : hasPrevPage
-  const sortItems = SORT_OPTIONS.map((opt) => ({
-    value: opt.value,
-    label: opt.label,
-  }))
 
   // Use prefetch hook for page prefetching
   usePrefetchPages({
@@ -125,7 +124,6 @@ function ProductsContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Button onClick={() => console.log("Test", products)}>Test</Button>
       <div className="mb-product-listing-header-margin">
         <Breadcrumb
           items={[
@@ -159,11 +157,11 @@ function ProductsContent() {
             </p>
             <Select
               className="max-w-64"
-              items={sortItems}
+              items={SORT_OPTIONS}
               onValueChange={(details) => {
-                const value = details.value[0]
+                const value = details.value[0] as ExtendedSortOption | undefined
                 if (value) {
-                  urlFilters.setSortBy(value as any)
+                  urlFilters.setSortBy(value)
                 }
               }}
               size="sm"
@@ -177,7 +175,7 @@ function ProductsContent() {
               </Select.Control>
               <Select.Positioner>
                 <Select.Content>
-                  {sortItems.map((item) => (
+                  {SORT_OPTIONS.map((item) => (
                     <Select.Item item={item} key={item.value}>
                       <Select.ItemText />
                       <Select.ItemIndicator />
