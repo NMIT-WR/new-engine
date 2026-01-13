@@ -38,6 +38,23 @@ stories/
 - `pnpm validate:tokens`       # Token validation
 - `bunx biome check --write <file>`   # Lint specific file (never ".")
 
+## PR Descriptions (CLI)
+
+When using `gh pr create` or `gh pr edit`, avoid escaped `\n` or backticks in double-quoted strings.
+Use a heredoc or `--body-file` to preserve real newlines and avoid shell interpolation.
+
+```sh
+cat <<'EOF' > /tmp/pr-body.md
+## Summary
+- ...
+
+## Testing
+- Not run (docs-only)
+EOF
+
+gh pr edit <pr-number> --body-file /tmp/pr-body.md
+```
+
 ## Critical Rules (Do not break these)
 
 **NEVER:**
@@ -45,6 +62,7 @@ stories/
 - `tailwind.config.*` (Tailwind v4 uses @theme)
 - Arbitrary values (`bg-[#ff0000]`, `p-[1rem]`)
 - Default exports or barrel files (`index.ts`) unless framework requires
+- `interface` for type definitions (use `type`)
 - Direct semantic tokens in component implementations (`bg-primary`, `text-fg`)
 
 **ALWAYS:**
@@ -190,6 +208,13 @@ Common prefixes used in this repo:
 - Brand/status text accents use `--color-<semantic>-fg` (e.g., `--color-primary-fg`, `--color-success-fg`)
 
 ## Storybook (.stories.tsx)
+
+### Token & Component Usage (Stories)
+
+- Prefer `src/` components (atoms/molecules/templates). Use native elements only for layout wrappers or when no component exists.
+- In `className`, use semantic tokens (`_semantic.css`, `_layout.css`, `_spacing.css`, `tokens/`); avoid Tailwind palette classes or arbitrary values.
+  Example: `bg-surface text-fg-primary border-border-subtle` (not `bg-blue-500 text-white w-[480px]`).
+- Layout helpers are available via `--container`; use the matching width classes (e.g. `w-md`, `max-w-*`).
 
 ### Controls
 
