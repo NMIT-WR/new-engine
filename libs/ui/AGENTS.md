@@ -211,11 +211,9 @@ Common prefixes used in this repo:
 
 ### Token & Component Usage (Stories)
 
-- Use our components from `src/` instead of native HTML elements whenever possible.
-  Example: prefer `<Button />` / `<Input />` over `<button>` / `<input>`.
-- Use our token system (`_semantic.css`, `_layout.css`, `_spacing.css`, `tokens/`) in `className`.
-  Avoid hardcoded Tailwind values like `bg-red-500 p-2 mt-3 gap-1`.
-  Prefer semantic tokens like `bg-danger text-fg-reverse p-100 mt-150 gap-50`.
+- Prefer `src/` components (atoms/molecules/templates). Use native elements only for layout wrappers or when no component exists.
+- In `className`, use semantic tokens (`_semantic.css`, `_layout.css`, `_spacing.css`, `tokens/`); avoid Tailwind palette classes or arbitrary values.
+  Example: `bg-surface text-fg-primary border-border-subtle` (not `bg-blue-500 text-white w-[480px]`).
 - Layout helpers are available via `--container`; use the matching width classes (e.g. `w-md`, `max-w-*`).
 
 ### Controls
