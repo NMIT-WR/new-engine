@@ -6,8 +6,6 @@ on:
       - master
     paths:
       - "libs/ui/**"
-      - "libs/ui/scripts/storybook-a11y-summary.mjs"
-      - "libs/ui/scripts/storybook-a11y.sh"
       - ".github/workflows/storybook-a11y.yml"
       - ".github/workflows/storybook-a11y-baseline.yml"
   workflow_dispatch:
