@@ -5,7 +5,7 @@ import { Link } from "@techsio/ui-kit/atoms/link"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useCustomer } from "@/hooks/use-customer"
@@ -268,8 +268,9 @@ export function AddressForm({
         </div>
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
-          <Select
+          <SelectTemplate
             items={COUNTRIES}
+            label="Země"
             onValueChange={(details) => {
               const value = details.value[0]
               if (value) {
@@ -281,24 +282,7 @@ export function AddressForm({
             }}
             required
             value={[shippingAddress.country]}
-          >
-            <Select.Label>Země</Select.Label>
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText />
-              </Select.Trigger>
-            </Select.Control>
-            <Select.Positioner>
-              <Select.Content>
-                {COUNTRIES.map((item) => (
-                  <Select.Item item={item} key={item.value}>
-                    <Select.ItemText />
-                    <Select.ItemIndicator />
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Select>
+          />
         </div>
       </div>
 
@@ -419,39 +403,23 @@ export function AddressForm({
             />
           </div>
 
-          <div className="mb-4 max-w-[20rem] sm:mb-6">
-            <Select
-              items={COUNTRIES}
-              onValueChange={(details) => {
-                const value = details.value[0]
-                if (value) {
-                  setBillingAddress({
-                    ...billingAddress,
-                    country: value,
-                  })
-                }
-              }}
-              required
-              value={[billingAddress.country]}
-            >
-              <Select.Label>Země</Select.Label>
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText />
-                </Select.Trigger>
-              </Select.Control>
-              <Select.Positioner>
-                <Select.Content>
-                  {COUNTRIES.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      <Select.ItemText />
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Select>
-          </div>
+        <div className="mb-4 max-w-[20rem] sm:mb-6">
+          <SelectTemplate
+            items={COUNTRIES}
+            label="Země"
+            onValueChange={(details) => {
+              const value = details.value[0]
+              if (value) {
+                setBillingAddress({
+                  ...billingAddress,
+                  country: value,
+                })
+              }
+            }}
+            required
+            value={[billingAddress.country]}
+          />
+        </div>
         </div>
       )}
       <div className="flex w-full justify-between">

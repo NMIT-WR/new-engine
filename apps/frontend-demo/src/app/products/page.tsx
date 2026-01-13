@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import Link from "next/link"
 import { Suspense, useEffect, useRef } from "react"
 import { ProductGridSkeleton } from "@/components/molecules/product-grid-skeleton"
@@ -155,35 +155,20 @@ function ProductsContent() {
             <p className="text-gray-600 text-sm dark:text-gray-400">
               Zobrazeno {products.length} z {totalCount} produktů
             </p>
-            <Select
+            <SelectTemplate
               className="max-w-64"
               items={SORT_OPTIONS}
+              label="Řadit podle"
               onValueChange={(details) => {
                 const value = details.value[0] as ExtendedSortOption | undefined
                 if (value) {
                   urlFilters.setSortBy(value)
                 }
               }}
+              placeholder="Vybrat Řazení"
               size="sm"
               value={[urlFilters.sortBy || "newest"]}
-            >
-              <Select.Label>Řadit podle</Select.Label>
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText placeholder="Vybrat Řazení" />
-                </Select.Trigger>
-              </Select.Control>
-              <Select.Positioner>
-                <Select.Content>
-                  {SORT_OPTIONS.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      <Select.ItemText />
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Select>
+            />
           </div>
 
           {isLoading ? (
