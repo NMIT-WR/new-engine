@@ -1,17 +1,11 @@
-/* Import Tailwind CSS first */
-@import "tailwindcss";
-@import "@techsio/ui-kit/src/tokens/tokens-only.css";
-@import "./_typography.css";
+/* Import UI library tokens (Tailwind included) */
+@import "@techsio/ui-kit/tokens-with-tailwind";
 @import "./_overrides.css";
 @import "./_layout.css";
 @import "./_overrides-components.css";
 @import "./app-components/app-components.css";
 @import "./_icons.css";
 @import "./_print.css";
-
-@plugin "tailwindcss-animate";
-
-/* Import UI library tokens (without Tailwind) */
 
 @media (prefers-color-scheme: dark) {
   .reverse {
