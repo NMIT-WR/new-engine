@@ -11,9 +11,12 @@ import { useInfiniteProducts } from "@/hooks/use-infinite-products"
 import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
 import { useProducts } from "@/hooks/use-products"
 import { useRegions } from "@/hooks/use-region"
-import { useUrlFilters } from "@/hooks/use-url-filters"
+import {
+  type ExtendedSortOption,
+  useUrlFilters,
+} from "@/hooks/use-url-filters"
 
-const SORT_OPTIONS = [
+const SORT_OPTIONS: Array<{ value: ExtendedSortOption; label: string }> = [
   { value: "newest", label: "Nejnovější" },
   { value: "name-asc", label: "Název: A-Z" },
   { value: "name-desc", label: "Název: Z-A" },
@@ -24,10 +27,8 @@ function ProductsContent() {
   const pageSize = 12
   const previousPageRef = useRef(1)
 
-  // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
-  // Convert filter state to ProductFilters format
   const productFilters = {
     categories: Array.from(urlFilters.filters.categories) as string[],
     sizes: Array.from(urlFilters.filters.sizes) as string[],
@@ -129,14 +130,12 @@ function ProductsContent() {
             { label: "Domů", href: "/" },
             { label: "Produkty", href: "/products" },
           ]}
-          linkComponent={Link}
+          linkAs={Link}
         />
         <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
           Všechny produkty
         </h1>
       </div>
-
-      {/* Mobile Filter Button - Sticky */}
       <div className="sticky top-16 z-40 mb-4 sm:static lg:hidden">
         <ProductFilters
           filters={urlFilters.filters}
@@ -145,15 +144,12 @@ function ProductsContent() {
       </div>
 
       <div className="flex gap-8">
-        {/* Filters Sidebar */}
         <aside className="sticky top-20 hidden h-[calc(100vh-5rem)] w-64 flex-shrink-0 overflow-y-auto lg:block">
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
           />
         </aside>
-
-        {/* Products Grid */}
         <main className="w-full flex-1">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-gray-600 text-sm dark:text-gray-400">
@@ -161,20 +157,33 @@ function ProductsContent() {
             </p>
             <Select
               className="max-w-64"
-              clearIcon={false}
-              label="Řadit podle"
+              items={SORT_OPTIONS}
               onValueChange={(details) => {
-                const value = details.value[0]
-                if (value) urlFilters.setSortBy(value as any)
+                const value = details.value[0] as ExtendedSortOption | undefined
+                if (value) {
+                  urlFilters.setSortBy(value)
+                }
               }}
-              options={SORT_OPTIONS.map((opt) => ({
-                value: opt.value,
-                label: opt.label,
-              }))}
-              placeholder="Vybrat řazení"
               size="sm"
               value={[urlFilters.sortBy || "newest"]}
-            />
+            >
+              <Select.Label>Řadit podle</Select.Label>
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Vybrat Řazení" />
+                </Select.Trigger>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {SORT_OPTIONS.map((item) => (
+                    <Select.Item item={item} key={item.value}>
+                      <Select.ItemText />
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Select>
           </div>
 
           {isLoading ? (
@@ -188,8 +197,6 @@ function ProductsContent() {
                 products={products}
                 totalCount={totalCount}
               />
-
-              {/* Load More Button */}
               {
                 <div className="mt-8 flex justify-center">
                   <Button

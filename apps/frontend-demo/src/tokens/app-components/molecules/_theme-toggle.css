@@ -5,7 +5,7 @@
   /* === THEME TOGGLE SPACING === */
   --spacing-theme-toggle-gap: var(--spacing-sm);
   --spacing-theme-toggle-icon-gap: var(--spacing-xs);
-  --spacing-theme-toggle-width: 2.5rem;
+  --spacing-theme-toggle-width: 3.5rem;
 
   /* === THEME TOGGLE TYPOGRAPHY === */
   --text-theme-toggle-icon-size: var(--text-lg);

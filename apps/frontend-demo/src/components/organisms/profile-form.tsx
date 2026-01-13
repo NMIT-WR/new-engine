@@ -189,23 +189,39 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
           </div>
 
           <div className="max-w-[20rem]">
-            <label
-              className="mb-2 block font-medium text-fg-primary text-sm"
-              htmlFor="address-country-select"
-            >
-              Země
-            </label>
             <Select
               id="address-country-select"
-              onValueChange={(details) =>
-                setFormAddressData({
-                  ...formAddressData,
-                  country: details.value[0],
-                })
-              }
-              options={COUNTRIES}
+              items={COUNTRIES}
+              onValueChange={(details) => {
+                const value = details.value[0]
+                if (value) {
+                  setFormAddressData({
+                    ...formAddressData,
+                    country: value,
+                  })
+                }
+              }}
               value={[formAddressData.country]}
-            />
+            >
+              <Select.Label className="mb-2 block font-medium text-fg-primary text-sm">
+                Země
+              </Select.Label>
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText />
+                </Select.Trigger>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {COUNTRIES.map((item) => (
+                    <Select.Item item={item} key={item.value}>
+                      <Select.ItemText />
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Select>
           </div>
         </div>
         <div className="flex justify-end gap-pf-actions-gap">

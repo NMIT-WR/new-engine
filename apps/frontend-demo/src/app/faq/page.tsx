@@ -1,13 +1,18 @@
 "use client"
 import { Icon } from "@techsio/ui-kit/atoms/icon"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
-import {
-  Accordion,
-  type AccordionItem,
-} from "@techsio/ui-kit/molecules/accordion"
+import { Accordion } from "@techsio/ui-kit/molecules/accordion"
+import type { ReactNode } from "react"
 import { FaqItemHeader } from "@/components/faq/faq-item-header"
 
-const faqData: AccordionItem[] = [
+interface FaqItem {
+  id: string
+  value: string
+  title: ReactNode
+  content: ReactNode
+}
+
+const faqData: FaqItem[] = [
   {
     id: "faq-1",
     value: "implementation-time",
@@ -730,7 +735,6 @@ export default function FAQ() {
   return (
     <div className="min-h-screen py-700">
       <div className="mx-auto max-w-layout-max px-400">
-        {/* Header Section */}
         <div className="mb-800 text-center">
           <div className="mb-400 flex items-center justify-center">
             <h1 className="font-bold text-3xl text-fg-primary">
@@ -743,20 +747,23 @@ export default function FAQ() {
             kontaktovat.
           </p>
         </div>
-
-        {/* FAQ Accordion */}
-        <div className="rounded-lg border border-stroke-primary">
-          <Accordion
-            collapsible={true}
-            items={faqData}
-            multiple={true}
-            shadow="sm"
-          />
+        <div className="rounded-lg">
+          <Accordion collapsible multiple shadow="sm">
+            {faqData.map((item) => (
+              <Accordion.Item key={item.id} value={item.value}>
+                <Accordion.Header>
+                  <div className="p-200">{item.title}</div>
+                  <Accordion.Indicator />
+                </Accordion.Header>
+                <Accordion.Content>{item.content}</Accordion.Content>
+              </Accordion.Item>
+            ))}
+          </Accordion>
         </div>
 
         {/* Contact CTA */}
         <div className="mt-800 text-center">
-          <div className="rounded-lg border border-stroke-primary bg-surface p-600 shadow-primary">
+          <div className="rounded-lg bg-surface p-600 shadow-primary">
             <div className="mb-400 flex items-center justify-center">
               <Icon
                 className="mr-250 text-2xl text-secondary"

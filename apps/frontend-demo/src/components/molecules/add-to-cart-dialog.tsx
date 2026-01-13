@@ -93,19 +93,33 @@ export function AddToCartDialog({
         <div>
           <Select
             className="overflow-hidden"
-            clearIcon={false}
-            label="Vyberte variantu"
+            items={variantOptions}
             onValueChange={(details) => {
               const value = details.value[0]
               if (value) {
                 setSelectedVariantId(value)
               }
             }}
-            options={variantOptions}
-            placeholder="Vyberte variantu..."
             size="sm"
             value={selectedVariantId ? [selectedVariantId] : []}
-          />
+          >
+            <Select.Label>Vyberte variantu</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Vyberte variantu..." />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {variantOptions.map((item) => (
+                  <Select.Item item={item} key={item.value}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
         </div>
       </div>
     </Dialog>

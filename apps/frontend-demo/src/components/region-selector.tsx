@@ -1,6 +1,6 @@
 "use client"
 import { Icon, type IconType } from "@techsio/ui-kit/atoms/icon"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { Select, type SelectItem } from "@techsio/ui-kit/molecules/select"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
 import { useRegions } from "@/hooks/use-region"
 
@@ -25,10 +25,10 @@ export function RegionSelector({ className }: { className?: string }) {
     }
   }
 
-  const options = regions.map((region) => ({
+  const items: SelectItem[] = regions.map((region) => ({
     value: region.id,
     label: (
-      <span className="flex items-center gap-100">
+      <span className="flex items-center gap-1">
         <Icon
           icon={
             currencyToIcon[region.currency_code.toUpperCase()] ||
@@ -39,18 +39,49 @@ export function RegionSelector({ className }: { className?: string }) {
       </span>
     ),
     displayValue: region.currency_code.toUpperCase(),
-    //label: `${currencyFlags[region.currency_code.toUpperCase()] || '🌍'} ${region.currency_code.toUpperCase()}`,
   }))
+
   return (
     <Select
       className={className}
-      clearIcon={false}
-      label="Region"
+      items={items}
       onValueChange={handleChange}
-      options={options}
-      placeholder="Region"
       size="xs"
       value={selectedRegion ? [selectedRegion.id] : []}
-    />
+    >
+      <Select.Label className="sr-only">Region</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Region">
+            {(selectedItems) =>
+              selectedItems[0] ? (
+                <span className="flex items-center gap-1">
+                  <Icon
+                    icon={
+                      currencyToIcon[
+                        (selectedItems[0].displayValue as string).toUpperCase()
+                      ] || "token-icon-globe"
+                    }
+                  />
+                  {selectedItems[0].displayValue}
+                </span>
+              ) : (
+                "Region"
+              )
+            }
+          </Select.ValueText>
+        </Select.Trigger>
+      </Select.Control>
+      <Select.Positioner>
+        <Select.Content>
+          {items.map((item) => (
+            <Select.Item key={item.value} item={item}>
+              <Select.ItemText />
+              <Select.ItemIndicator />
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Positioner>
+    </Select>
   )
 }
