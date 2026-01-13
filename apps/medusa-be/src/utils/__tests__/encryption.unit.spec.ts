@@ -6,12 +6,20 @@ const VALID_KEY =
 
 const encryptValue = (value: string): string => {
   const result = encryptFields({ value }, ["value"])
-  return result.value as string
+  const encrypted = result.value
+  if (typeof encrypted !== "string") {
+    throw new Error(`Expected string, got ${typeof encrypted}`)
+  }
+  return encrypted
 }
 
 const decryptValue = (value: string): string => {
   const result = decryptFields({ value }, ["value"])
-  return result.value as string
+  const decrypted = result.value
+  if (typeof decrypted !== "string") {
+    throw new Error(`Expected string, got ${typeof decrypted}`)
+  }
+  return decrypted
 }
 
 describe("encryption utilities", () => {
