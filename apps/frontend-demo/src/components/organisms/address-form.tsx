@@ -403,23 +403,23 @@ export function AddressForm({
             />
           </div>
 
-        <div className="mb-4 max-w-[20rem] sm:mb-6">
-          <SelectTemplate
-            items={COUNTRIES}
-            label="Země"
-            onValueChange={(details) => {
-              const value = details.value[0]
-              if (value) {
-                setBillingAddress({
-                  ...billingAddress,
-                  country: value,
-                })
-              }
-            }}
-            required
-            value={[billingAddress.country]}
-          />
-        </div>
+          <div className="mb-4 max-w-[20rem] sm:mb-6">
+            <SelectTemplate
+              items={COUNTRIES}
+              label="Země"
+              onValueChange={(details) => {
+                const value = details.value[0]
+                if (value) {
+                  setBillingAddress({
+                    ...billingAddress,
+                    country: value,
+                  })
+                }
+              }}
+              required
+              value={[billingAddress.country]}
+            />
+          </div>
         </div>
       )}
       <div className="flex w-full justify-between">

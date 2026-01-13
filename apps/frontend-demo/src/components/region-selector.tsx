@@ -57,9 +57,8 @@ export function RegionSelector({ className }: { className?: string }) {
           <span className="flex items-center gap-1">
             <Icon
               icon={
-                currencyToIcon[
-                  (selectedItems[0].displayValue as string).toUpperCase()
-                ] || "token-icon-globe"
+                currencyToIcon[selectedItems[0].displayValue as string] ||
+                "token-icon-globe"
               }
             />
             {selectedItems[0].displayValue}

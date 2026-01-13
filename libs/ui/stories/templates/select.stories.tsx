@@ -98,16 +98,6 @@ const meta: Meta<typeof SelectTemplate> = {
 export default meta
 type Story = StoryObj<typeof SelectTemplate>
 
-export const Default: Story = {
-  args: {
-    items: defaultItems,
-    label: 'Country',
-    placeholder: 'Select a country',
-    size: 'md',
-    defaultValue: ['cz'],
-  },
-}
-
 export const Playground: Story = {
   name: '🎮 Interactive Playground',
   args: {
@@ -118,7 +108,16 @@ export const Playground: Story = {
     label: 'Country',
     placeholder: 'Select a country',
     size: 'md',
-    showIndicator: true,
+  },
+}
+
+export const Default: Story = {
+  args: {
+    items: defaultItems,
+    label: 'Country',
+    placeholder: 'Select a country',
+    size: 'md',
+    defaultValue: ['cz'],
   },
 }
 
