@@ -209,6 +209,15 @@ Common prefixes used in this repo:
 
 ## Storybook (.stories.tsx)
 
+### Token & Component Usage (Stories)
+
+- Use our components from `src/` instead of native HTML elements whenever possible.
+  Example: prefer `<Button />` / `<Input />` over `<button>` / `<input>`.
+- Use our token system (`_semantic.css`, `_layout.css`, `_spacing.css`, `tokens/`) in `className`.
+  Avoid hardcoded Tailwind values like `bg-red-500 p-2 mt-3 gap-1`.
+  Prefer semantic tokens like `bg-danger text-fg-reverse p-100 mt-150 gap-50`.
+- Layout helpers are available via `--container`; use the matching width classes (e.g. `w-md`, `max-w-*`).
+
 ### Controls
 
 Define controls only for props that change appearance or behavior in Storybook.
