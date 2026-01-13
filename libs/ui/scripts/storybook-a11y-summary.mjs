@@ -35,7 +35,31 @@ if (!inputPath || !outputPath) {
  * @param {string} label
  * @returns {any[]}
  */
+function loadNdjson(path, label) {
+  let raw;
+  try {
+    raw = fs.readFileSync(path, 'utf8');
+  } catch (err) {
+    throw new Error(`Failed to read ${label} file: ${path}`, { cause: err });
+  }
+
+  const lines = raw.split(/\r?\n/).filter((line) => line.trim().length > 0);
+  return lines.map((line, index) => {
+    try {
+      return JSON.parse(line);
+    } catch (err) {
+      throw new Error(`Failed to parse NDJSON line ${index + 1} from ${label} file: ${path}`, {
+        cause: err,
+      });
+    }
+  });
+}
+
 function loadReport(path, label) {
+  if (path.toLowerCase().endsWith('.ndjson')) {
+    return loadNdjson(path, label);
+  }
+
   let raw;
   try {
     raw = fs.readFileSync(path, 'utf8');
@@ -47,10 +71,20 @@ function loadReport(path, label) {
   try {
     data = JSON.parse(raw);
   } catch (err) {
+    const ndjsonPath = path.replace(/\.json$/i, '.ndjson');
+    if (ndjsonPath !== path && fs.existsSync(ndjsonPath)) {
+      console.warn(`JSON parse failed for ${label}; falling back to ${ndjsonPath}.`);
+      return loadNdjson(ndjsonPath, label);
+    }
     throw new Error(`Failed to parse JSON from ${label} file: ${path}`, { cause: err });
   }
 
   if (!Array.isArray(data)) {
+    const ndjsonPath = path.replace(/\.json$/i, '.ndjson');
+    if (ndjsonPath !== path && fs.existsSync(ndjsonPath)) {
+      console.warn(`Unexpected JSON shape for ${label}; falling back to ${ndjsonPath}.`);
+      return loadNdjson(ndjsonPath, label);
+    }
     throw new Error(`Expected ${label} report.json to be an array of stories.`);
   }
 
