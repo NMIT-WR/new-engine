@@ -11,6 +11,7 @@
   --color-numeric-input-fg: var(--color-input-fg);
 
   --color-numeric-input-invalid-border: var(--color-danger);
+  --color-numeric-input-border-danger-focus: var(--color-input-danger);
   --color-numeric-input-invalid-bg: --alpha(var(--color-danger) / 10%);
 
   --gap-numeric-input-root-sm: var(--spacing-150);

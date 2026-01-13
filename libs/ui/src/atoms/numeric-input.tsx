@@ -33,7 +33,7 @@ const numericInputVariants = tv({
       "focus:bg-numeric-input-input-bg-focus",
       "hover:bg-numeric-input-input-bg-hover",
       "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-      "duration-0 data-[invalid]:focus:border-input-border-danger-focus",
+      "duration-0 data-[invalid]:focus:border-numeric-input-border-danger-focus",
     ],
     triggerContainer: [
       "flex h-fit flex-col justify-center bg-numeric-input-trigger-container-bg",
