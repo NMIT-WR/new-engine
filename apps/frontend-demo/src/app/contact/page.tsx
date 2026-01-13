@@ -4,7 +4,8 @@ import { Icon, type IconType } from "@techsio/ui-kit/atoms/icon"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { FormTextarea } from "@techsio/ui-kit/molecules/form-textarea"
-import { Select, type SelectItem } from "@techsio/ui-kit/molecules/select"
+import { type SelectItem } from "@techsio/ui-kit/molecules/select"
+import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { slugify } from "@techsio/ui-kit/utils"
 import Image from "next/image"
 import { contactContent } from "@/data/contact-content"
@@ -101,31 +102,16 @@ export default function ContactPage() {
                     value={formData.phone}
                   />
                   <div className="space-y-contact-field-gap md:col-span-2">
-                    <Select
+                    <SelectTemplate
                       items={subjectItems}
+                      label={form.labels.subject}
                       onValueChange={(details) =>
                         updateField("subject", details.value[0] || "general")
                       }
+                      placeholder="Vyberte téma"
                       size="sm"
                       value={[formData.subject]}
-                    >
-                      <Select.Label>{form.labels.subject}</Select.Label>
-                      <Select.Control>
-                        <Select.Trigger>
-                          <Select.ValueText placeholder="Vyberte téma" />
-                        </Select.Trigger>
-                      </Select.Control>
-                      <Select.Positioner>
-                        <Select.Content>
-                          {subjectItems.map((item) => (
-                            <Select.Item item={item} key={item.value}>
-                              <Select.ItemText />
-                              <Select.ItemIndicator />
-                            </Select.Item>
-                          ))}
-                        </Select.Content>
-                      </Select.Positioner>
-                    </Select>
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <FormTextarea
