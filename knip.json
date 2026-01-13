@@ -12,11 +12,16 @@
     "@libs/product-hooks": ["./libs/product-hooks/src"],
     "@libs/product-hooks/*": ["./libs/product-hooks/src/*"]
   },
+  "ignoreBinaries": ["build", "semantic-release"],
+  "ignoreDependencies": [
+    "@iconify/json",
+    "@iconify/tailwind4",
+    "tslib"
+  ],
+  "ignoreUnresolved": [
+    "^\\.\\./\\*\\*/\\*\\.\\{js,ts,jsx,tsx,mdx\\}$"
+  ],
   "ignore": [
-    "**/*.test.{ts,tsx}",
-    "**/*.spec.{ts,tsx}",
-    "**/__tests__/**",
-    "**/__mocks__/**",
     "**/dist/**",
     "**/.next/**",
     "**/.medusa/**",
@@ -28,7 +33,8 @@
     "**/playwright-report/**",
     "**/*.generated.{ts,tsx}",
     "**/.cache/**",
-    "**/local/**"
+    "**/local/**",
+    "reports/**"
   ],
   "ignoreExportsUsedInFile": {
     "interface": true,
@@ -48,18 +54,31 @@
         "src/workflows/**/*.{ts,tsx}",
         "src/jobs/**/*.{ts,tsx}",
         "src/admin/**/*.{ts,tsx}",
+        "src/scripts/**/*.{ts,tsx}",
+        "tests/**/*.{ts,tsx}",
+        "integration-tests/**/*.{js,ts}",
         "medusa-config.ts"
+      ],
+      "ignoreDependencies": [
+        "@medusajs/admin-shared",
+        "@medusajs/caching-redis",
+        "@medusajs/dashboard",
+        "@medusajs/draft-order",
+        "@medusajs/event-bus-redis",
+        "@medusajs/index"
       ],
       "ignore": [
         ".medusa/**",
-        "dist/**",
-        "src/scripts/**"
+        "dist/**"
       ]
     },
     "apps/frontend-demo": {
       "entry": [
         "src/app/**/*.{tsx,ts}",
         "next.config.{js,ts,mjs}"
+      ],
+      "ignoreDependencies": [
+        "tailwindcss-animate"
       ],
       "ignore": [
         ".next/**",
@@ -86,12 +105,14 @@
         "src/atoms/*.tsx",
         "src/molecules/*.tsx",
         "src/organisms/*.tsx",
-        "src/utils.ts"
+        "src/templates/*.tsx",
+        "src/types/*.ts",
+        "src/utils.ts",
+        "release.config.mjs"
       ],
       "project": [
         "src/**/*.{ts,tsx}"
       ],
-      "includeEntryExports": true,
       "storybook": {
         "config": [".storybook/main.ts"],
         "entry": [
@@ -99,6 +120,12 @@
           ".storybook/**/*.{ts,tsx}"
         ]
       },
+      "ignoreBinaries": [
+        "eslint"
+      ],
+      "ignoreDependencies": [
+        "^@semantic-release/"
+      ],
       "ignore": [
         "storybook-static/**",
         "local/**"
@@ -106,27 +133,31 @@
     },
     "libs/analytics": {
       "entry": [
-        "src/index.ts"
+        "src/index.ts",
+        "src/core/index.ts",
+        "src/meta/index.ts",
+        "src/google/index.ts",
+        "src/heureka/index.ts",
+        "src/leadhub/index.ts"
       ],
-      "includeEntryExports": true
+      "ignoreDependencies": [
+        "@types/react-dom"
+      ]
     },
     "libs/data-layer": {
       "entry": [
         "src/index.ts"
-      ],
-      "includeEntryExports": true
+      ]
     },
     "libs/medusa-sdk": {
       "entry": [
         "src/index.ts"
-      ],
-      "includeEntryExports": true
+      ]
     },
     "libs/product-hooks": {
       "entry": [
         "src/index.ts"
-      ],
-      "includeEntryExports": true
+      ]
     }
   },
   "rules": {
