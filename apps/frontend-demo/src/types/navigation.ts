@@ -7,8 +7,3 @@ export interface NavSection {
   title: string
   links: NavLink[]
 }
-
-export interface BreadcrumbItem {
-  label: string
-  href?: string
-}
