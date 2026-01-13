@@ -49,9 +49,9 @@ set -e
 
 for theme in light dark; do
   if [ -f "${ROOT_DIR}/${REPORT_DIR}/${theme}/report.json" ]; then
-    pnpm -C "${ROOT_DIR}" exec storybook-a11y-report \
-      --input "${REPORT_DIR}/${theme}/report.json" \
-      --fail-on-violations false > "${ROOT_DIR}/${REPORT_DIR}/${theme}/summary.md"
+    node "${ROOT_DIR}/scripts/storybook-a11y-summary.mjs" \
+      --input "${ROOT_DIR}/${REPORT_DIR}/${theme}/report.json" \
+      --output "${ROOT_DIR}/${REPORT_DIR}/${theme}/summary.md"
   else
     echo "No a11y report JSON found for ${theme}." > "${ROOT_DIR}/${REPORT_DIR}/${theme}/summary.md"
   fi
