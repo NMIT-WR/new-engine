@@ -76,12 +76,13 @@ describe("encryption utilities", () => {
       expect(encrypted1).not.toBe(encrypted2)
     })
 
-    it("handles empty string", () => {
+    it("leaves empty string unchanged", () => {
       const plaintext = ""
 
       const encrypted = encryptValue(plaintext)
       const decrypted = decryptValue(encrypted)
 
+      expect(encrypted).toBe("")
       expect(decrypted).toBe(plaintext)
     })
 
@@ -164,14 +165,21 @@ describe("encryption utilities", () => {
     })
 
     it("skips non-string values", () => {
-      const data = {
+      type MixedData = {
+        name: string
+        count: number
+        active: boolean
+      }
+
+      const data: MixedData = {
         name: "test",
         count: 42,
         active: true,
       }
 
-      const encrypted = encryptFields(data, ["name", "count", "active"] as any)
-      const decrypted = decryptFields(encrypted, ["name", "count", "active"] as any)
+      const fields: (keyof MixedData)[] = ["name", "count", "active"]
+      const encrypted = encryptFields(data, fields)
+      const decrypted = decryptFields(encrypted, fields)
 
       expect(decrypted.name).toBe("test")
       expect(decrypted.count).toBe(42)
