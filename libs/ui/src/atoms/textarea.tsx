@@ -13,8 +13,10 @@ const textareaVariants = tv({
     "transition-all duration-200",
     "hover:border-textarea-border-hover hover:bg-textarea-bg-hover",
     "focus:border-textarea-border-focus focus:bg-textarea-bg-focus focus:outline-none",
-    "focus-visible:ring",
-    "focus-visible:ring-textarea-ring",
+    "focus-visible:outline",
+    "focus-visible:outline-(length:--default-ring-width)",
+    "focus-visible:outline-textarea-ring",
+    "focus-visible:outline-offset-2",
     "disabled:pointer-events-none disabled:border-textarea-border-disabled disabled:bg-textarea-bg-disabled disabled:text-textarea-fg-disabled",
   ],
   variants: {
