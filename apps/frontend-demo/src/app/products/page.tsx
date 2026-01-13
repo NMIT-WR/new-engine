@@ -24,10 +24,8 @@ function ProductsContent() {
   const pageSize = 12
   const previousPageRef = useRef(1)
 
-  // Use URL state for filters, sorting and pagination
   const urlFilters = useUrlFilters()
 
-  // Convert filter state to ProductFilters format
   const productFilters = {
     categories: Array.from(urlFilters.filters.categories) as string[],
     sizes: Array.from(urlFilters.filters.sizes) as string[],
@@ -111,7 +109,6 @@ function ProductsContent() {
     label: opt.label,
   }))
 
-
   // Use prefetch hook for page prefetching
   usePrefetchPages({
     currentPage,
@@ -128,6 +125,7 @@ function ProductsContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Button onClick={() => console.log("Test", products)}>Test</Button>
       <div className="mb-product-listing-header-margin">
         <Breadcrumb
           items={[
@@ -140,8 +138,6 @@ function ProductsContent() {
           Všechny produkty
         </h1>
       </div>
-
-      {/* Mobile Filter Button - Sticky */}
       <div className="sticky top-16 z-40 mb-4 sm:static lg:hidden">
         <ProductFilters
           filters={urlFilters.filters}
@@ -150,15 +146,12 @@ function ProductsContent() {
       </div>
 
       <div className="flex gap-8">
-        {/* Filters Sidebar */}
         <aside className="sticky top-20 hidden h-[calc(100vh-5rem)] w-64 flex-shrink-0 overflow-y-auto lg:block">
           <ProductFilters
             filters={urlFilters.filters}
             onFiltersChange={urlFilters.setFilters}
           />
         </aside>
-
-        {/* Products Grid */}
         <main className="w-full flex-1">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-gray-600 text-sm dark:text-gray-400">
@@ -169,21 +162,23 @@ function ProductsContent() {
               items={sortItems}
               onValueChange={(details) => {
                 const value = details.value[0]
-                if (value) urlFilters.setSortBy(value as any)
+                if (value) {
+                  urlFilters.setSortBy(value as any)
+                }
               }}
               size="sm"
               value={[urlFilters.sortBy || "newest"]}
             >
-              <Select.Label>‘?adit podle</Select.Label>
+              <Select.Label>Řadit podle</Select.Label>
               <Select.Control>
                 <Select.Trigger>
-                  <Select.ValueText placeholder="Vybrat ‘tazenÆð" />
+                  <Select.ValueText placeholder="Vybrat Řazení" />
                 </Select.Trigger>
               </Select.Control>
               <Select.Positioner>
                 <Select.Content>
                   {sortItems.map((item) => (
-                    <Select.Item key={item.value} item={item}>
+                    <Select.Item item={item} key={item.value}>
                       <Select.ItemText />
                       <Select.ItemIndicator />
                     </Select.Item>
@@ -204,8 +199,6 @@ function ProductsContent() {
                 products={products}
                 totalCount={totalCount}
               />
-
-              {/* Load More Button */}
               {
                 <div className="mt-8 flex justify-center">
                   <Button

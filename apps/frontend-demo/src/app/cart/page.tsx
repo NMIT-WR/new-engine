@@ -1,8 +1,8 @@
 "use client"
 
 import { Button } from "@ui/atoms/button"
-import { NumericInput } from "@ui/atoms/numeric-input"
 import { Breadcrumb } from "@ui/molecules/breadcrumb"
+import { NumericInputTemplate } from "@ui/templates/numeric-input"
 import Image from "next/image"
 import Link from "next/link"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
@@ -67,12 +67,10 @@ export default function CartPage() {
           </div>
         ) : items.length > 0 ? (
           <div className="lg:grid lg:grid-cols-cart-grid-cols lg:gap-cart-grid-gap">
-            {/* Cart Items */}
             <div className="mb-cart-items-margin lg:mb-0">
               <div className="divide-y divide-cart-item-divider">
                 {items.map((item) => {
                   const price = item.unit_price || 0
-                  const itemTotal = price * item.quantity
 
                   return (
                     <div
@@ -80,7 +78,6 @@ export default function CartPage() {
                       key={item.id}
                     >
                       <div className="flex gap-cart-item-gap">
-                        {/* Product Image */}
                         <div className="h-cart-item-image w-cart-item-image rounded-cart-item-image bg-cart-item-image-bg">
                           {item.thumbnail && (
                             <Image
@@ -93,7 +90,6 @@ export default function CartPage() {
                           )}
                         </div>
 
-                        {/* Product Details */}
                         <div className="flex-1">
                           <div className="mb-cart-item-header-margin flex items-start justify-between">
                             <div className="flex items-end gap-300 text-cart-item-title-size">
@@ -111,9 +107,8 @@ export default function CartPage() {
                           </div>
 
                           <div className="flex flex-col gap-cart-item-actions-gap sm:flex-row sm:items-center">
-                            <NumericInput
+                            <NumericInputTemplate
                               className="h-fit w-24 py-0"
-                              hideControls={false}
                               max={99}
                               min={1}
                               onChange={(value) =>

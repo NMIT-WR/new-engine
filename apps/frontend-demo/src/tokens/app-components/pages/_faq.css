@@ -13,3 +13,8 @@
   --spacing-content-sections: var(--spacing-300);
   --spacing-faq-feature: var(--spacing-250);
 }
+
+/* Hover na celém accordion header aplikuje styl na trigger button */
+[data-scope="accordion"][data-part="item"] header:hover [data-part="item-trigger"] {
+  background-color: var(--color-accordion-title-bg-hover);
+}

@@ -37,11 +37,7 @@ export function ThemeToggle() {
           data-active={isDark ? undefined : ""}
           icon="token-icon-sun"
         />
-        <Switch
-          checked={isDark}
-          className="w-theme-toggle-width"
-          onCheckedChange={toggleTheme}
-        >
+        <Switch checked={isDark} className="w-14" onCheckedChange={toggleTheme}>
           <span className="sr-only">Přepnout tmavý režim</span>
         </Switch>
         <Icon

@@ -269,17 +269,36 @@ export function AddressForm({
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
           <Select
-            label="Země"
-            onValueChange={(details) =>
-              setShippingAddress({
-                ...shippingAddress,
-                country: details.value[0],
-              })
-            }
-            options={COUNTRIES}
+            items={COUNTRIES}
+            onValueChange={(details) => {
+              const value = details.value[0]
+              if (value) {
+                setShippingAddress({
+                  ...shippingAddress,
+                  country: value,
+                })
+              }
+            }}
             required
             value={[shippingAddress.country]}
-          />
+          >
+            <Select.Label>Země</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {COUNTRIES.map((item) => (
+                  <Select.Item item={item} key={item.value}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
         </div>
       </div>
 
@@ -400,20 +419,39 @@ export function AddressForm({
             />
           </div>
 
-          <div className="mb-4 max-w-[20rem] sm:mb-6">
-            <Select
-              label="Země"
-              onValueChange={(details) =>
+        <div className="mb-4 max-w-[20rem] sm:mb-6">
+          <Select
+            items={COUNTRIES}
+            onValueChange={(details) => {
+              const value = details.value[0]
+              if (value) {
                 setBillingAddress({
                   ...billingAddress,
-                  country: details.value[0],
+                  country: value,
                 })
               }
-              options={COUNTRIES}
-              required
-              value={[billingAddress.country]}
-            />
-          </div>
+            }}
+            required
+            value={[billingAddress.country]}
+          >
+            <Select.Label>Země</Select.Label>
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText />
+              </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {COUNTRIES.map((item) => (
+                  <Select.Item item={item} key={item.value}>
+                    <Select.ItemText />
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select>
+        </div>
         </div>
       )}
       <div className="flex w-full justify-between">
