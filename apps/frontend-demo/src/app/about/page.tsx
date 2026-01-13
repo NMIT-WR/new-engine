@@ -4,7 +4,7 @@ import { slugify } from "@techsio/ui-kit/utils"
 import Image from "next/image"
 import { StatsSection } from "@/components/stats-section"
 import { aboutContent } from "@/data/about-content"
-import aboutImage from "/assets/hero/about.webp"
+import aboutImage from "../../../assets/hero/about.webp"
 
 export default function AboutPage() {
   const { hero, story, values, team } = aboutContent

@@ -4,16 +4,20 @@ import { Icon, type IconType } from "@techsio/ui-kit/atoms/icon"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { FormTextarea } from "@techsio/ui-kit/molecules/form-textarea"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { Select, type SelectItem } from "@techsio/ui-kit/molecules/select"
 import { slugify } from "@techsio/ui-kit/utils"
 import Image from "next/image"
 import { contactContent } from "@/data/contact-content"
 import { useContactForm } from "@/hooks/use-contact-form"
-import contactImage from "/assets/hero/contact.webp"
+import contactImage from "../../../assets/hero/contact.webp"
 
 export default function ContactPage() {
   const { hero, form, info, help } = contactContent
   const { formData, updateField, handleSubmit, isSubmitting } = useContactForm()
+  const subjectItems: SelectItem[] = form.subjects.map((subject) => ({
+    label: subject.label,
+    value: subject.value,
+  }))
 
   return (
     <>
@@ -98,15 +102,30 @@ export default function ContactPage() {
                   />
                   <div className="space-y-contact-field-gap md:col-span-2">
                     <Select
-                      label={form.labels.subject}
+                      items={subjectItems}
                       onValueChange={(details) =>
                         updateField("subject", details.value[0] || "general")
                       }
-                      options={form.subjects}
-                      placeholder="Vyberte téma"
                       size="sm"
                       value={[formData.subject]}
-                    />
+                    >
+                      <Select.Label>{form.labels.subject}</Select.Label>
+                      <Select.Control>
+                        <Select.Trigger>
+                          <Select.ValueText placeholder="Vyberte tÆcma" />
+                        </Select.Trigger>
+                      </Select.Control>
+                      <Select.Positioner>
+                        <Select.Content>
+                          {subjectItems.map((item) => (
+                            <Select.Item key={item.value} item={item}>
+                              <Select.ItemText />
+                              <Select.ItemIndicator />
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Select>
                   </div>
                   <div className="md:col-span-2">
                     <FormTextarea

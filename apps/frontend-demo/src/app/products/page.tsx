@@ -106,6 +106,11 @@ function ProductsContent() {
   const effectiveHasPrevPage = shouldUseInfiniteData
     ? urlFilters.pageRange.start > 1
     : hasPrevPage
+  const sortItems = SORT_OPTIONS.map((opt) => ({
+    value: opt.value,
+    label: opt.label,
+  }))
+
 
   // Use prefetch hook for page prefetching
   usePrefetchPages({
@@ -129,7 +134,7 @@ function ProductsContent() {
             { label: "Domů", href: "/" },
             { label: "Produkty", href: "/products" },
           ]}
-          linkComponent={Link}
+          linkAs={Link}
         />
         <h1 className="mb-product-listing-title-margin font-product-listing-title text-product-listing-title">
           Všechny produkty
@@ -161,20 +166,31 @@ function ProductsContent() {
             </p>
             <Select
               className="max-w-64"
-              clearIcon={false}
-              label="Řadit podle"
+              items={sortItems}
               onValueChange={(details) => {
                 const value = details.value[0]
                 if (value) urlFilters.setSortBy(value as any)
               }}
-              options={SORT_OPTIONS.map((opt) => ({
-                value: opt.value,
-                label: opt.label,
-              }))}
-              placeholder="Vybrat řazení"
               size="sm"
               value={[urlFilters.sortBy || "newest"]}
-            />
+            >
+              <Select.Label>‘?adit podle</Select.Label>
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Vybrat ‘tazenÆð" />
+                </Select.Trigger>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {sortItems.map((item) => (
+                    <Select.Item key={item.value} item={item}>
+                      <Select.ItemText />
+                      <Select.ItemIndicator />
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Select>
           </div>
 
           {isLoading ? (
