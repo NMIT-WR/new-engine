@@ -1,0 +1,46 @@
+name: Storybook A11y (APCA)
+
+on:
+  pull_request:
+    paths:
+      - "libs/ui/**"
+      - ".github/workflows/storybook-a11y.yml"
+  workflow_dispatch:
+    inputs:
+      failOnViolations:
+        description: "Fail workflow when a11y violations are found"
+        required: false
+        default: "true"
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  storybook-a11y:
+    uses: NMIT-WR/storybook-addons/.github/workflows/storybook-a11y.yml@storybook-a11y-workflow-v0.1.9
+    with:
+      node-version: "22"
+      pnpm-version: ""
+      working-directory: libs/ui
+      install-command: pnpm install --frozen-lockfile
+      build-command: pnpm -C {{workdir}} build:storybook
+      storybook-static-dir: storybook-static
+      storybook-config-dir: .storybook
+      themes: '["light","dark"]'
+      globals-template: 'theme:{{theme}}'
+      a11y-output-dir: a11y-report
+      fail-on-violations: ${{ fromJSON(github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false') }}
+      write-junit: true
+      wait-ms: 30000 # 30s based on observed Storybook startup time in CI
+      test-workers: 2 # keep load stable on GitHub-hosted runners
+      test-timeout: 60000 # 60s to avoid flakes in slower CI
+      install-playwright: true
+      upload-artifacts: true
+      post-pr-comment: true
+      baseline-workflow-path: .github/workflows/storybook-a11y-baseline.yml
+      baseline-branch: master
+      baseline-label: master
+      baseline-artifact-prefix: storybook-a11y-baseline
