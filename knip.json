@@ -120,9 +120,6 @@
           ".storybook/**/*.{ts,tsx}"
         ]
       },
-      "ignoreBinaries": [
-        "eslint"
-      ],
       "ignoreDependencies": [
         "^@semantic-release/"
       ],
