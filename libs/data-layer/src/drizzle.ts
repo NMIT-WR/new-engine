@@ -54,9 +54,19 @@ function formatQuery(query: string, params: unknown[]): string {
 
 const logger = new DefaultLogger({ writer: new MyLogWriter() });
 
+const getDatabaseUrl = (): string => {
+  const url = process.env.DATABASE_URL || process.env.DC_DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      'DATABASE_URL (or DC_DATABASE_URL) environment variable is required',
+    );
+  }
+  return url;
+};
+
 // @ts-expect-error
 export const db = drizzle(
-  'postgresql://neondb_owner:npg_Ozy4jRvtHDG5@ep-nameless-river-a2qn6c6z-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require',
+  getDatabaseUrl(),
   { logger, schema },
 );
 
