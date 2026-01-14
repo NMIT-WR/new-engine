@@ -34,7 +34,7 @@ testem.log
 /typings
 tsconfig.tsbuildinfo
 storybook-static
-reports
+/reports/
 
 # System Files
 .DS_Store
