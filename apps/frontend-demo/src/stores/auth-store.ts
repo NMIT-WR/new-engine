@@ -3,7 +3,7 @@ import { Store } from "@tanstack/react-store"
 import type { ValidationError } from "@/lib/auth/validation"
 import { sdk } from "@/lib/medusa-client"
 
-export interface AuthState {
+interface AuthState {
   // Auth state
   user: HttpTypes.StoreCustomer | null
   isLoading: boolean

@@ -14,7 +14,7 @@ const logoVariants = tv({
   },
 })
 
-export interface LogoProps extends VariantProps<typeof logoVariants> {}
+interface LogoProps extends VariantProps<typeof logoVariants> {}
 
 export const Logo = ({ size }: LogoProps) => (
   <div className={logoVariants({ size })}>

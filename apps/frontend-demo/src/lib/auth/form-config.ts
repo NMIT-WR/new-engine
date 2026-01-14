@@ -67,21 +67,6 @@ export const authFormFields = {
   }),
 }
 
-/**
- * Helper to apply error state to form field
- */
-export function withError(
-  fieldProps: FormInputProps,
-  error?: string
-): FormInputProps {
-  if (!error) return fieldProps
-
-  return {
-    ...fieldProps,
-    validateStatus: "error" as const,
-    helpText: error,
-  }
-}
 
 /**
  * Helper to apply loading state to form field

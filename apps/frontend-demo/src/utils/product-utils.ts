@@ -1,20 +1,6 @@
 import type { BadgeProps } from "@techsio/ui-kit/atoms/badge"
-import type { StockStatus } from "@/lib/inventory"
 import type { Product } from "@/types/product"
 
-/**
- * Convert stock status to display text
- */
-export function getStockStatusText(status: StockStatus): string {
-  switch (status) {
-    case "in-stock":
-      return "Skladem"
-    case "low-stock":
-      return "Malé množství"
-    case "out-of-stock":
-      return "Vyprodáno"
-  }
-}
 
 /**
  * Extract all common product display data
@@ -66,12 +52,6 @@ export function extractProductData(
   }
 }
 
-/**
- * Format price display with currency
- */
-export function formatPrice(price: number, currency = "Kč"): string {
-  return `${currency}${price.toFixed(2)}`
-}
 
 /**
  * Get product URL path

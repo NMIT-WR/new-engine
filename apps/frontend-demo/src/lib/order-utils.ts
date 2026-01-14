@@ -4,7 +4,7 @@ import type {
   PaymentStatus,
 } from "@/types/order"
 
-export const orderStatusMap: Record<OrderStatus, string> = {
+const orderStatusMap: Record<OrderStatus, string> = {
   pending: "Čeká na zpracování",
   completed: "Dokončeno",
   archived: "Archivováno",
@@ -12,7 +12,7 @@ export const orderStatusMap: Record<OrderStatus, string> = {
   requires_action: "Vyžaduje akci",
 }
 
-export const paymentStatusMap: Record<PaymentStatus, string> = {
+const paymentStatusMap: Record<PaymentStatus, string> = {
   not_paid: "Nezaplaceno",
   awaiting: "Čeká na platbu",
   authorized: "Autorizováno",
@@ -24,7 +24,7 @@ export const paymentStatusMap: Record<PaymentStatus, string> = {
   canceled: "Zrušeno",
 }
 
-export const fulfillmentStatusMap: Record<FulfillmentStatus, string> = {
+const fulfillmentStatusMap: Record<FulfillmentStatus, string> = {
   not_fulfilled: "Nevyřízeno",
   partially_fulfilled: "Částečně vyřízeno",
   fulfilled: "Vyřízeno",
@@ -39,27 +39,12 @@ export function getOrderStatusLabel(status: string): string {
   return orderStatusMap[status as OrderStatus] || status
 }
 
-export function getPaymentStatusLabel(status: string): string {
+function getPaymentStatusLabel(status: string): string {
   return paymentStatusMap[status as PaymentStatus] || status
 }
 
-export function getFulfillmentStatusLabel(status: string): string {
+function getFulfillmentStatusLabel(status: string): string {
   return fulfillmentStatusMap[status as FulfillmentStatus] || status
-}
-
-export function getOrderStatusVariant(
-  status: OrderStatus
-): "warning" | "success" | "error" | "info" {
-  switch (status) {
-    case "pending":
-      return "warning"
-    case "completed":
-      return "success"
-    case "canceled":
-      return "error"
-    default:
-      return "info"
-  }
 }
 
 export function truncateProductTitle(title: string, maxWords = 3): string {
@@ -83,7 +68,7 @@ export function formatOrderDate(dateString: string): string {
   }
 }
 
-export const ORDER_LIST_FIELDS = [
+const ORDER_LIST_FIELDS = [
   "id",
   "display_id",
   "status",

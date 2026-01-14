@@ -1,4 +1,4 @@
-export interface ContactInfo {
+interface ContactInfo {
   type: "email" | "phone" | "address"
   label: string
   value: string
@@ -6,12 +6,12 @@ export interface ContactInfo {
   icon: string // SVG path data
 }
 
-export interface BusinessHours {
+interface BusinessHours {
   day: string
   hours: string
 }
 
-export interface ContactContent {
+interface ContactContent {
   hero: {
     title: string
     subtitle: string

@@ -3,7 +3,10 @@
  * These functions build query parameters for server-side filtering
  */
 
-import type { ProductFilters } from "@/services/product-service"
+interface ProductFilters {
+  categories?: string[]
+  sizes?: string[]
+}
 
 export interface MedusaProductQuery {
   limit?: number
@@ -17,12 +20,6 @@ export interface MedusaProductQuery {
   currency_code?: string
   // Variant filtering requires special handling
   [key: string]: any
-}
-
-export interface VariantOptionFilter {
-  option_id?: string
-  value?: string
-  option?: Record<string, any>
 }
 
 /**

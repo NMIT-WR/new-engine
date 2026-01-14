@@ -20,7 +20,7 @@ export interface ProductListParams {
   country_code?: string
 }
 
-export interface ProductListResponse {
+interface ProductListResponse {
   products: Product[]
   count: number
   limit: number

@@ -12,18 +12,6 @@ export interface AddressData {
   company?: string
 }
 
-export interface UserData extends HttpTypes.StoreCustomer {}
-
-export interface AddressDisplayData {
-  firstName: string
-  lastName: string
-  street: string
-  city: string
-  postalCode: string
-  email?: string
-  phone?: string
-  company?: string
-}
 
 export interface CheckoutAddressData {
   shipping: AddressData

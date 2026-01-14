@@ -9,14 +9,14 @@ export const validateEmail = (email: string): boolean => {
 /**
  * Password validation rules
  */
-export interface PasswordRequirements {
+interface PasswordRequirements {
   length: boolean
   uppercase: boolean
   lowercase: boolean
   number: boolean
 }
 
-export interface PasswordValidationResult {
+interface PasswordValidationResult {
   isValid: boolean
   errors: string[]
   requirements: PasswordRequirements
