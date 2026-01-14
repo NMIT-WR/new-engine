@@ -28,6 +28,11 @@ const preview: Preview = {
       config: {
         rules: [{ id: "color-contrast-enhanced", enabled: true }],
       },
+      apca: {
+        level: "gold",
+        useCase: "body",
+      },
+      test: "error",
     },
   },
   decorators: [

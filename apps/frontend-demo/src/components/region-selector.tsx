@@ -1,6 +1,7 @@
 "use client"
 import { Icon, type IconType } from "@techsio/ui-kit/atoms/icon"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { type SelectItem } from "@techsio/ui-kit/molecules/select"
+import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
 import { useRegions } from "@/hooks/use-region"
 
@@ -25,10 +26,10 @@ export function RegionSelector({ className }: { className?: string }) {
     }
   }
 
-  const options = regions.map((region) => ({
+  const items: SelectItem[] = regions.map((region) => ({
     value: region.id,
     label: (
-      <span className="flex items-center gap-100">
+      <span className="flex items-center gap-1">
         <Icon
           icon={
             currencyToIcon[region.currency_code.toUpperCase()] ||
@@ -39,18 +40,33 @@ export function RegionSelector({ className }: { className?: string }) {
       </span>
     ),
     displayValue: region.currency_code.toUpperCase(),
-    //label: `${currencyFlags[region.currency_code.toUpperCase()] || '🌍'} ${region.currency_code.toUpperCase()}`,
   }))
+
   return (
-    <Select
+    <SelectTemplate
       className={className}
-      clearIcon={false}
+      items={items}
       label="Region"
+      labelProps={{ className: "sr-only" }}
       onValueChange={handleChange}
-      options={options}
       placeholder="Region"
       size="xs"
       value={selectedRegion ? [selectedRegion.id] : []}
+      valueText={(selectedItems) =>
+        selectedItems[0] ? (
+          <span className="flex items-center gap-1">
+            <Icon
+              icon={
+                currencyToIcon[selectedItems[0].displayValue as string] ||
+                "token-icon-globe"
+              }
+            />
+            {selectedItems[0].displayValue}
+          </span>
+        ) : (
+          "Region"
+        )
+      }
     />
   )
 }

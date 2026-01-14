@@ -3,7 +3,7 @@ import type { HttpTypes } from "@medusajs/types"
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { useState } from "react"
 import { useCustomer } from "@/hooks/use-customer"
 import { COUNTRIES, formatPhoneNumber, formatPostalCode } from "@/lib/address"
@@ -189,21 +189,22 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
           </div>
 
           <div className="max-w-[20rem]">
-            <label
-              className="mb-2 block font-medium text-fg-primary text-sm"
-              htmlFor="address-country-select"
-            >
-              Země
-            </label>
-            <Select
+            <SelectTemplate
               id="address-country-select"
-              onValueChange={(details) =>
-                setFormAddressData({
-                  ...formAddressData,
-                  country: details.value[0],
-                })
-              }
-              options={COUNTRIES}
+              items={COUNTRIES}
+              label="Země"
+              labelProps={{
+                className: "mb-2 block font-medium text-fg-primary text-sm",
+              }}
+              onValueChange={(details) => {
+                const value = details.value[0]
+                if (value) {
+                  setFormAddressData({
+                    ...formAddressData,
+                    country: value,
+                  })
+                }
+              }}
               value={[formAddressData.country]}
             />
           </div>
