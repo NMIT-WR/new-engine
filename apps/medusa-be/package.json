@@ -29,7 +29,7 @@
     "seedN1": "medusa exec ./src/scripts/seed-n1.ts",
     "seedNorthern": "medusa exec ./src/scripts/seed-northern.ts",
     "seedNorthernProd": "medusa exec ./src/scripts/seed-northern.js",
-    "seedInitialData": "medusa exec ./src/scripts/seed.ts",
+    "seedInitialDataProd": "medusa exec ./src/scripts/seed.js",
     "seedInitialDataTs": "medusa exec ./src/scripts/seed.ts",
     "seedDefaultData": "medusa exec ./src/scripts/seed-products-from-db.ts",
     "seedDefaultDataTs": "medusa exec ./src/scripts/seed-products-from-db.ts",
