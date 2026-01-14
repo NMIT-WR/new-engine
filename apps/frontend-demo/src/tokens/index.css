@@ -1,5 +1,5 @@
 /* Import UI library tokens (Tailwind included) */
-@import "@techsio/ui-kit/tokens-with-tailwind";
+@import "@techsio/ui-kit/src/tokens/tokens-only.css";
 @import "./_overrides.css";
 @import "./_layout.css";
 @import "./_overrides-components.css";
