@@ -2,7 +2,7 @@
 
 import { Button } from "@ui/atoms/button"
 import { Dialog } from "@ui/molecules/dialog"
-import { Select } from "@ui/molecules/select"
+import { SelectTemplate } from "@ui/templates/select"
 import { useState } from "react"
 import { useCart } from "@/hooks/use-cart"
 import { truncateProductTitle } from "@/lib/order-utils"
@@ -91,9 +91,9 @@ export function AddToCartDialog({
     >
       <div className="space-y-4">
         <div>
-          <Select
+          <SelectTemplate
             className="overflow-hidden"
-            clearIcon={false}
+            items={variantOptions}
             label="Vyberte variantu"
             onValueChange={(details) => {
               const value = details.value[0]
@@ -101,7 +101,6 @@ export function AddToCartDialog({
                 setSelectedVariantId(value)
               }
             }}
-            options={variantOptions}
             placeholder="Vyberte variantu..."
             size="sm"
             value={selectedVariantId ? [selectedVariantId] : []}

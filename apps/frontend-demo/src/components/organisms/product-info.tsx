@@ -2,9 +2,9 @@
 import { Badge, type BadgeProps } from "@ui/atoms/badge"
 import { Button } from "@ui/atoms/button"
 import { Label } from "@ui/atoms/label"
-import { NumericInput } from "@ui/atoms/numeric-input"
 import { Rating } from "@ui/atoms/rating"
 import { useToast } from "@ui/molecules/toast"
+import { NumericInputTemplate } from "@ui/templates/numeric-input"
 import { useState } from "react"
 import { SafeHtmlContent } from "@/components/safe-html-content"
 import { useCart } from "@/hooks/use-cart"
@@ -123,7 +123,7 @@ export function ProductInfo({
       {/* Actions */}
       <div className="mb-product-info-action-margin flex gap-product-info-action-gap">
         <Button
-          className=""
+          className="items-center"
           icon="icon-[mdi--cart-plus]"
           onClick={handleAddToCart}
           size="sm"
@@ -131,9 +131,8 @@ export function ProductInfo({
         >
           Přidat do košíku
         </Button>{" "}
-        <NumericInput
+        <NumericInputTemplate
           className="h-fit w-24 py-0"
-          hideControls={false}
           max={10}
           min={1}
           onChange={setQuantity}

@@ -183,9 +183,9 @@ export function RegisterForm() {
           disabled={isFormLoading}
           helpText={getFieldError("terms")}
           id="acceptTerms"
-          invalid={!!getFieldError("terms")}
           label="Souhlasím s obchodními podmínkami"
           onCheckedChange={setAcceptTerms}
+          validateStatus={getFieldError("terms") ? "error" : "default"}
         />
 
         <Button

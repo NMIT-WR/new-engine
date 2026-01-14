@@ -19,241 +19,28 @@ permissions:
   checks: write
 
 jobs:
-  get-baseline-run:
-    runs-on: ubuntu-latest
-    outputs:
-      run_id: ${{ steps.find_baseline.outputs.run_id }}
-    steps:
-      - name: Find latest baseline run on master
-        id: find_baseline
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const workflows = await github.rest.actions.listRepoWorkflows({ owner, repo });
-            const baseline = workflows.data.workflows?.find(
-              (workflow) => workflow.path === '.github/workflows/storybook-a11y-baseline.yml'
-            );
-            if (!baseline) {
-              core.warning('Baseline workflow not found on master yet.');
-              core.setOutput('run_id', '');
-              return;
-            }
-            const response = await github.rest.actions.listWorkflowRuns({
-              owner,
-              repo,
-              workflow_id: baseline.id,
-              branch: 'master',
-              status: 'success',
-              per_page: 1,
-            });
-            const runId = response.data.workflow_runs?.[0]?.id;
-            core.setOutput('run_id', runId ? String(runId) : '');
-            if (!runId) {
-              core.warning('No successful baseline workflow run found on master.');
-            }
-
-  build-storybook:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build Storybook (UI)
-        run: pnpm -C libs/ui build:storybook
-
-      - name: Upload Storybook static
-        uses: actions/upload-artifact@v4
-        with:
-          name: storybook-static
-          path: libs/ui/storybook-static
-          retention-days: 7
-          compression-level: 6
-
   storybook-a11y:
-    runs-on: ubuntu-latest
-    needs: [build-storybook, get-baseline-run]
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: [light, dark]
-    env:
-      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
-      A11Y_REPORT_WRITE_JUNIT: "true"
-      A11Y_REPORT_WAIT_MS: "30000"
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Download Storybook static
-        uses: actions/download-artifact@v4
-        with:
-          name: storybook-static
-          path: libs/ui/storybook-static
-
-      - name: Normalize Storybook static path
-        run: |
-          if [ -d "libs/ui/storybook-static/libs/ui/storybook-static" ]; then
-            rm -rf libs/ui/storybook-static.tmp
-            mv libs/ui/storybook-static/libs/ui/storybook-static libs/ui/storybook-static.tmp
-            rm -rf libs/ui/storybook-static
-            mv libs/ui/storybook-static.tmp libs/ui/storybook-static
-          fi
-
-      - name: Download baseline report (${{ matrix.theme }})
-        if: needs.get-baseline-run.outputs.run_id != ''
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          run-id: ${{ needs.get-baseline-run.outputs.run_id }}
-          name: storybook-a11y-baseline-${{ matrix.theme }}
-          path: baseline/${{ matrix.theme }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run a11y tests (${{ matrix.theme }} theme)
-        id: a11y
-        continue-on-error: true
-        env:
-          A11Y_REPORT_OUTPUT_DIR: a11y-report/${{ matrix.theme }}
-        run: |
-          mkdir -p "libs/ui/a11y-report/${{ matrix.theme }}"
-          python3 -m http.server 6006 --directory libs/ui/storybook-static &
-          SERVER_PID=$!
-          cleanup() {
-            kill "${SERVER_PID}" >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
-          for _ in {1..20}; do
-            if curl -sf http://127.0.0.1:6006/ >/dev/null; then
-              break
-            fi
-            sleep 1
-          done
-          if ! curl -sf http://127.0.0.1:6006/ >/dev/null; then
-            echo "Storybook server failed to start within timeout." >&2
-            exit 1
-          fi
-          pnpm -C libs/ui exec test-storybook --url "http://127.0.0.1:6006/?globals=theme:${{ matrix.theme }}" --config-dir .storybook --maxWorkers 2 --testTimeout 60000
-
-      - name: Generate a11y summary
-        if: always()
-        run: |
-          theme="${{ matrix.theme }}"
-          if [ -f "libs/ui/a11y-report/$theme/report.json" ]; then
-            baseline_path="baseline/${{ matrix.theme }}/report.json"
-            if [ -n "${{ needs.get-baseline-run.outputs.run_id }}" ] && [ -f "${baseline_path}" ]; then
-              node libs/ui/scripts/storybook-a11y-summary.mjs \
-                --input "libs/ui/a11y-report/$theme/report.json" \
-                --baseline "${baseline_path}" \
-                --baseline-label "master" \
-                --output "libs/ui/a11y-report/$theme/summary.md"
-            else
-              node libs/ui/scripts/storybook-a11y-summary.mjs \
-                --input "libs/ui/a11y-report/$theme/report.json" \
-                --output "libs/ui/a11y-report/$theme/summary.md"
-            fi
-          else
-            echo "No a11y report JSON found for $theme. Storybook test-runner likely failed before reporting." > "libs/ui/a11y-report/$theme/summary.md"
-          fi
-
-      - name: Upload a11y artifacts (${{ matrix.theme }})
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: storybook-a11y-report-${{ matrix.theme }}
-          path: libs/ui/a11y-report/${{ matrix.theme }}
-
-      - name: Publish test results (JUnit - ${{ matrix.theme }})
-        if: always() && hashFiles(format('libs/ui/a11y-report/{0}/junit.xml', matrix.theme)) != ''
-        uses: dorny/test-reporter@v1
-        with:
-          name: Storybook A11y (${{ matrix.theme }})
-          path: libs/ui/a11y-report/${{ matrix.theme }}/junit.xml
-          reporter: java-junit
-          fail-on-error: false
-
-      - name: Fail if violations detected
-        if: steps.a11y.outcome == 'failure' && env.A11Y_REPORT_FAIL_ON_VIOLATIONS != 'false'
-        run: exit 1
-
-  storybook-a11y-comment:
-    runs-on: ubuntu-latest
-    needs: storybook-a11y
-    if: always() && github.event_name == 'pull_request'
-    env:
-      A11Y_REPORT_FAIL_ON_VIOLATIONS: ${{ github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false' }}
-    steps:
-      - name: Ensure a11y report directories
-        run: mkdir -p libs/ui/a11y-report/light libs/ui/a11y-report/dark
-
-      - name: Download a11y artifacts (light)
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          name: storybook-a11y-report-light
-          path: libs/ui/a11y-report/light
-
-      - name: Download a11y artifacts (dark)
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          name: storybook-a11y-report-dark
-          path: libs/ui/a11y-report/dark
-
-      - name: Prepare PR comment
-        run: |
-          printf "<!-- storybook-a11y-report -->\n## Storybook A11y Report\n\n" > libs/ui/a11y-report/comment.md
-          if [ "${A11Y_REPORT_FAIL_ON_VIOLATIONS}" = "false" ]; then
-            printf "> ⚠️ Non-blocking mode: violations will NOT fail CI (A11Y_REPORT_FAIL_ON_VIOLATIONS=false).\n\n" >> libs/ui/a11y-report/comment.md
-          fi
-          for theme in light dark; do
-            printf "### %s\n\n" "${theme^}" >> libs/ui/a11y-report/comment.md
-            if [ -f "libs/ui/a11y-report/$theme/summary.md" ]; then
-              awk 'NR==1 && /^# /{next} {print}' "libs/ui/a11y-report/$theme/summary.md" >> libs/ui/a11y-report/comment.md
-            else
-              echo "No a11y report summary found for $theme." >> libs/ui/a11y-report/comment.md
-            fi
-            printf "\n\n" >> libs/ui/a11y-report/comment.md
-          done
-
-      - name: Find existing PR comment
-        id: find_comment
-        uses: peter-evans/find-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-includes: "<!-- storybook-a11y-report -->"
-
-      - name: Post PR comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-id: ${{ steps.find_comment.outputs.comment-id }}
-          edit-mode: replace
-          body-path: libs/ui/a11y-report/comment.md
+    uses: NMIT-WR/storybook-addons/.github/workflows/storybook-a11y.yml@storybook-a11y-workflow-v0.1.9
+    with:
+      node-version: "22"
+      pnpm-version: ""
+      working-directory: libs/ui
+      install-command: pnpm install --frozen-lockfile
+      build-command: pnpm -C {{workdir}} build:storybook
+      storybook-static-dir: storybook-static
+      storybook-config-dir: .storybook
+      themes: '["light","dark"]'
+      globals-template: 'theme:{{theme}}'
+      a11y-output-dir: a11y-report
+      fail-on-violations: ${{ fromJSON(github.event.inputs.failOnViolations || vars.A11Y_REPORT_FAIL_ON_VIOLATIONS || 'false') }}
+      write-junit: true
+      wait-ms: 30000 # 30s based on observed Storybook startup time in CI
+      test-workers: 2 # keep load stable on GitHub-hosted runners
+      test-timeout: 60000 # 60s to avoid flakes in slower CI
+      install-playwright: true
+      upload-artifacts: true
+      post-pr-comment: true
+      baseline-workflow-path: .github/workflows/storybook-a11y-baseline.yml
+      baseline-branch: master
+      baseline-label: master
+      baseline-artifact-prefix: storybook-a11y-baseline

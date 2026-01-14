@@ -133,7 +133,7 @@
   --color-tree-node-selected: transparent;
   --color-tree-fg-selected: var(--color-tree-fg);
   --color-tree-node-hover: transparent;
-  --color-tree-fg-hover: var(--color-tree-fg);
+  --color-tree-fg-hover: var(--color-white);
   --font-weight-tree-selected: var(--font-weight-semibold);
 
   /* === TYPOGRAPHY === */
