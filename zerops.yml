@@ -49,6 +49,7 @@ zerops:
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
         # - zsc execOnce seedInitialData -- npm run seedInitialData
         - zsc execOnce setInitialPublishableKey -- npm run setInitialPublishableKey
+        - zsc execOnce seedNorthern -- npm run seedNorthern
         #- zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
       ports:
         - port: 9000
@@ -58,49 +59,3 @@ zerops:
        httpGet:
          port: 9000
          path: /health
-
-  - setup: demo
-    build:
-      base: nodejs@22
-      envVariables:
-        RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
-        CONTACT_EMAIL: ${CONTACT_EMAIL}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
-        NX_DAEMON: false
-      buildCommands:
-        # Remove everything in apps except medusa-be via regex
-        - |
-          shopt -s extglob
-          rm -rf apps/!(frontend-demo)
-        - pnpm i
-        - node_modules/.bin/nx run frontend-demo:build --skip-nx-cache --verbose
-        - rm -rf apps/frontend-demo/node_modules
-        - pnpm --filter=frontend-demo --prod deploy frontend-demo-temp-deploy
-        - mv frontend-demo-temp-deploy/node_modules apps/frontend-demo/
-      deployFiles:
-        - .nx
-        - nx.json
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - node_modules
-        - apps/frontend-demo/scripts
-        - apps/frontend-demo/package.json
-        - apps/frontend-demo/.next
-        - apps/frontend-demo/next.config.js
-        - apps/frontend-demo/node_modules
-        - apps/frontend-demo/public
-      cache: node_modules
-    run:
-      base: nodejs@22
-      start: npm run start:fe-demo
-      ports:
-        - port: 3000
-          httpSupport: true
-      envVariables:
-        RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
-        CONTACT_EMAIL: ${CONTACT_EMAIL}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${medusa_zeropsSubdomain}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${medusa_CHANNEL_PUBLISHABLE_KEY}
-        CI: true
