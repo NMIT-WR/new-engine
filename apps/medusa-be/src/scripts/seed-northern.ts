@@ -11,8 +11,8 @@ import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as XLSX from "xlsx"
 
-/** Path to Excel file relative to medusa-be directory */
-const EXCEL_FILE_PATH = "../seed-files/Masterdata-Northern_SS2025.xlsx"
+/** Path to Excel file relative to medusa-be root (process.cwd()) */
+const EXCEL_FILE_PATH = "./src/scripts/seed-files/Masterdata-Northern_SS2025.xlsx"
 
 /** Set to true to bypass cache and fetch fresh data from Excel (dev only) */
 const FORCE_FRESH_DATA = false
