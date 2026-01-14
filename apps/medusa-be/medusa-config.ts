@@ -179,9 +179,6 @@ module.exports = defineConfig({
       resolve: "@medusajs/index",
     },
     {
-      resolve: "./src/modules/data-layer",
-    },
-    {
       resolve: "./src/modules/database",
     },
     // PPL Client Module - config stored in DB, managed via Settings → PPL

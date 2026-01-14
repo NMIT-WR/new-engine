@@ -1,8 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "paths": {
-    "@libs/data-layer": ["./libs/data-layer/src"],
-    "@libs/data-layer/*": ["./libs/data-layer/src/*"],
     "@libs/ui": ["./libs/ui/src"],
     "@libs/ui/*": ["./libs/ui/src/*"],
     "@libs/analytics": ["./libs/analytics/src"],
@@ -139,11 +137,6 @@
       ],
       "ignoreDependencies": [
         "@types/react-dom"
-      ]
-    },
-    "libs/data-layer": {
-      "entry": [
-        "src/index.ts!"
       ]
     },
     "libs/medusa-sdk": {
