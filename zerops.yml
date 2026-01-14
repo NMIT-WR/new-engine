@@ -48,7 +48,7 @@ zerops:
         - zsc execOnce ${appVersionId}_links -- npm run syncLinks
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
-        - zsc execOnce seedInitialDataProd -- npm run seedInitialDataProd
+        #- zsc execOnce seedInitialDataProd -- npm run seedInitialDataProd
         - zsc execOnce setInitialPublishableKeyProd -- npm run setInitialPublishableKeyProd
         - zsc execOnce seedNorthernProd -- npm run seedNorthernProd
         #- zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
