@@ -55,6 +55,7 @@
         "src/scripts/**/*.{ts,tsx}!",
         "tests/**/*.{ts,tsx}",
         "integration-tests/**/*.{js,ts}",
+        "instrumentation.ts!",
         "medusa-config.ts!"
       ],
       "ignoreDependencies": [
