@@ -1,12 +1,19 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig, devices } from '@playwright/test'
 
-const BASE_URL = process.env.TEST_BASE_URL ?? 'http://localhost:6006'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const baseUrl = new URL(
+  process.env.TEST_BASE_URL ?? 'http://127.0.0.1:6006',
+)
+const storybookUrl = `${baseUrl.protocol}//${baseUrl.host}`
+const staticDir = path.join(__dirname, 'storybook-static')
 
 export default defineConfig({
   testDir: './test',
-  reporter: process.env.CI ? 'html' : 'dot',
+  reporter: 'html',
   use: {
-    baseURL: BASE_URL,
+    baseURL: storybookUrl,
   },
   projects: [
     {
@@ -22,11 +29,11 @@ export default defineConfig({
       },
     },
   ],
-  webServer: process.env.CI
-    ? undefined
-    : {
-        command: 'pnpm exec storybook dev --quiet --port 6006',
-        url: BASE_URL,
-        reuseExistingServer: true,
-      },
+  webServer: {
+    command: `npx http-server -p ${baseUrl.port || 6006}`,
+    url: storybookUrl,
+    cwd: staticDir,
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
 })
