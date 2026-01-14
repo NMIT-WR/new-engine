@@ -1,9 +1,18 @@
 import { drizzle } from "drizzle-orm/neon-http"
 import type { SQL } from "drizzle-orm/sql/sql"
-import { getDatabaseUrl } from "@libs/data-layer/env"
 
 // Import the schema from our local file
 import * as schema from "./schema"
+
+const getDatabaseUrl = (): string => {
+  const url = process.env.DATABASE_URL || process.env.DC_DATABASE_URL
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL (or DC_DATABASE_URL) environment variable is required"
+    )
+  }
+  return url
+}
 
 // Create a simplified drizzle client
 export const db = drizzle(getDatabaseUrl(), { schema })

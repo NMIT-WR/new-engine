@@ -1,7 +1,6 @@
 import { DefaultLogger, type LogWriter } from 'drizzle-orm/logger';
 import { drizzle } from 'drizzle-orm/neon-http';
 import type { SQL } from 'drizzle-orm/sql/sql';
-import { getDatabaseUrl } from './env';
 import * as schema from './schema';
 import {
   formatSQL,
@@ -55,6 +54,17 @@ function formatQuery(query: string, params: unknown[]): string {
 
 const logger = new DefaultLogger({ writer: new MyLogWriter() });
 
+const getDatabaseUrl = (): string => {
+  const url = process.env.DATABASE_URL || process.env.DC_DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      'DATABASE_URL (or DC_DATABASE_URL) environment variable is required',
+    );
+  }
+  return url;
+};
+
+// @ts-expect-error
 export const db = drizzle(
   getDatabaseUrl(),
   { logger, schema },
