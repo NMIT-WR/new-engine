@@ -56,6 +56,10 @@ function formatQuery(query: string, params: unknown[]): string {
 const logger = new DefaultLogger({ writer: new MyLogWriter() });
 let db: ReturnType<typeof drizzle> | null = null;
 
+/**
+ * Lazily initializes the drizzle client so importing this module does not
+ * require DATABASE_URL until a query is executed.
+ */
 function getDb() {
   if (!db) {
     const databaseUrl = process.env.DATABASE_URL;
@@ -71,6 +75,9 @@ function getDb() {
   return db;
 }
 
+/**
+ * Executes a raw SQL query and normalizes date strings to Date instances.
+ */
 export async function sqlRaw<T = object>(sql: SQL<T>): Promise<T[]> {
   const rows = (await getDb().execute(sql)).rows as T[];
 
