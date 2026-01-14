@@ -102,7 +102,7 @@ type NorthernProduct = {
 
 type ProductInput = {
   title: string
-  description?: string
+  description: string
   handle: string
   status: "published" | "draft"
   thumbnail?: string

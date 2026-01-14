@@ -5,7 +5,7 @@ import {
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
 import * as Steps from "../steps"
-import seedCategoriesWorkflow from "./seed-categories"
+import seedCategoriesWorkflow, { type CategoryRaw } from "./seed-categories"
 
 const seedNorthernWorkflowId = "seed-northern-workflow"
 
@@ -13,10 +13,10 @@ const seedNorthernWorkflowId = "seed-northern-workflow"
 type NorthernProductInput = {
   title: string
   handle: string
-  description?: string
+  description: string
   thumbnail?: string
-  images?: { url: string }[]
-  category_ids?: string[]
+  images: { url: string }[]
+  categories: { handle: string }[]
   options?: { title: string; values: string[] }[]
   variants?: {
     title: string
@@ -27,14 +27,9 @@ type NorthernProductInput = {
     metadata?: any
     quantities?: { quantity: number }
   }[]
-  sales_channels?: { id: string }[]
+  salesChannelNames: string[]
+  shippingProfileName: string
   metadata?: any
-}
-
-type CategoryRaw = {
-  name: string
-  handle: string
-  parent_category_id?: string
 }
 
 export type SeedNorthernWorkflowInput = {
