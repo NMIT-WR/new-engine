@@ -4,16 +4,18 @@ import type { SQL } from "drizzle-orm/sql/sql"
 // Import the schema from our local file
 import * as schema from "./schema"
 
+const getDatabaseUrl = (): string => {
+  const url = process.env.DATABASE_URL || process.env.DC_DATABASE_URL
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL (or DC_DATABASE_URL) environment variable is required"
+    )
+  }
+  return url
+}
+
 // Create a simplified drizzle client
-/*export const db = drizzle(
-  'postgresql://neondb_owner:npg_Ozy4jRvtHDG5@ep-nameless-river-a2qn6c6z-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require',
-  { schema }
-);*/
-export const db = drizzle(
-  process.env.DATABASE_URL ||
-    "postgresql://root:root@medusa-db:5432/medusa?sslmode=disable",
-  { schema }
-)
+export const db = drizzle(getDatabaseUrl(), { schema })
 // Helper function to check if a string is a date (ISO format YYYY-MM-DD)
 // Uses strict regex to avoid false positives from new Date() coercion
 // Matches: YYYY-MM-DD, YYYY-MM-DD HH:MM:SS.sss, YYYY-MM-DDTHH:MM:SS.sssZ
