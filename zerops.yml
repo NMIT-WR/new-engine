@@ -50,7 +50,7 @@ zerops:
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
         #- zsc execOnce seedInitialDataProd -- npm run seedInitialDataProd
         - zsc execOnce setInitialPublishableKeyProd -- npm run setInitialPublishableKeyProd
-        - zsc execOnce seedNorthernProd -- npm run seedNorthernProd
+        - zsc execOnce seedNorthern2Prod -- npm run seedNorthern2Prod
         #- zsc execOnce addInitialSearchDocuments -- npm run addInitialSearchDocuments
       ports:
         - port: 9000

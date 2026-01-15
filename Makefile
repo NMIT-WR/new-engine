@@ -56,6 +56,8 @@ medusa-seed-n1:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedN1
 medusa-seed-northern:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedNorthern
+medusa-seed-northern-2:
+	docker exec wr_medusa_be pnpm --filter medusa-be run seedNorthern2
 
 # Biome commands
 biome-be:
