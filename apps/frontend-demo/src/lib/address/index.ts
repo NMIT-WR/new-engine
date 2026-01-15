@@ -1,11 +1,9 @@
-import type { HttpTypes } from "@medusajs/types"
-import type { ChangeEvent } from "react"
 import type { AddressData } from "@/types/checkout"
 
 export { COUNTRIES } from "@/lib/checkout-data"
 
 // Email validation regex
-export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 // Formatters
 export const formatPhoneNumber = (value: string): string => {
@@ -43,120 +41,15 @@ export const formatPostalCode = (value: string): string => {
 // Validators
 export const validateEmail = (email: string): boolean => EMAIL_REGEX.test(email)
 
-export const validatePhone = (phone: string): boolean => {
+const validatePhone = (phone: string): boolean => {
   const cleaned = phone.replace(/\D/g, "")
   return cleaned.length >= 9
 }
 
-export const validatePostalCode = (postalCode: string): boolean => {
+const validatePostalCode = (postalCode: string): boolean => {
   const cleaned = postalCode.replace(/\D/g, "")
   return cleaned.length === 5
 }
-
-// Type for address in metadata
-export interface AddressMetadata {
-  street?: string
-  city?: string
-  postal_code?: string
-  country?: string
-}
-
-// Metadata helpers
-export const getAddressFromMetadata = (
-  user: HttpTypes.StoreCustomer | null
-): AddressMetadata => {
-  if (!user?.metadata?.address) return {}
-  return user.metadata.address as AddressMetadata
-}
-
-export const createAddressMetadata = (
-  street: string,
-  city: string,
-  postalCode: string,
-  country: string
-): AddressMetadata => ({
-  street,
-  city,
-  postal_code: postalCode,
-  country,
-})
-
-// Type for form field props
-type FormFieldProps = Record<string, any>
-
-// Form field helpers (similar to authFormFields pattern)
-export const addressFormFields = {
-  firstName: (props: FormFieldProps = {}) => ({
-    id: "firstName",
-    label: "Jméno",
-    required: true,
-    ...props,
-  }),
-
-  lastName: (props: FormFieldProps = {}) => ({
-    id: "lastName",
-    label: "Příjmení",
-    required: true,
-    ...props,
-  }),
-
-  email: (props: FormFieldProps = {}) => ({
-    id: "email",
-    label: "Email",
-    type: "email",
-    required: true,
-    ...props,
-  }),
-
-  phone: (props: FormFieldProps = {}) => ({
-    id: "phone",
-    label: "Telefon",
-    type: "tel",
-    placeholder: "777 666 555",
-    ...props,
-  }),
-
-  company: (props: FormFieldProps = {}) => ({
-    id: "company",
-    label: "Firma",
-    ...props,
-  }),
-
-  street: (props: FormFieldProps = {}) => ({
-    id: "street",
-    label: "Ulice a číslo popisné",
-    placeholder: "Hlavní 123",
-    ...props,
-  }),
-
-  city: (props: FormFieldProps = {}) => ({
-    id: "city",
-    label: "Město",
-    placeholder: "Praha",
-    ...props,
-  }),
-
-  postalCode: (props: FormFieldProps = {}) => ({
-    id: "postalCode",
-    label: "PSČ",
-    placeholder: "100 00",
-    ...props,
-  }),
-}
-
-// Helper for creating phone onChange handler
-export const createPhoneChangeHandler =
-  (setValue: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value)
-    setValue(formatted)
-  }
-
-// Helper for creating postal code onChange handler
-export const createPostalCodeChangeHandler =
-  (setValue: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPostalCode(e.target.value)
-    setValue(formatted)
-  }
 
 // Validation error messages
 export const ADDRESS_ERRORS = {

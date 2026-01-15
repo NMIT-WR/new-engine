@@ -1,4 +1,3 @@
-@import "./atoms/_color-select.css";
 @import "./atoms/_skeleton-loader.css";
 @import "./atoms/_logo.css";
 
@@ -17,7 +16,6 @@
 @import "./molecules/_theme-toggle.css";
 @import "./molecules/_payment-selection.css";
 @import "./molecules/_shipping-selection.css";
-@import "./molecules/_credit-card-dialog.css";
 
 @import "./organisms/_auth.css";
 @import "./organisms/_cart.css";

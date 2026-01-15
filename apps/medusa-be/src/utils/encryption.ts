@@ -9,7 +9,7 @@ const HEX_KEY_REGEX = /^[0-9a-fA-F]{64}$/
  * Gets the encryption key from environment variable.
  * The key must be a 64-character hex string (32 bytes).
  */
-export function getEncryptionKey(): Buffer {
+function getEncryptionKey(): Buffer {
   const keyHex = process.env.SETTINGS_ENCRYPTION_KEY
   if (!keyHex) {
     throw new Error(
@@ -28,7 +28,7 @@ export function getEncryptionKey(): Buffer {
  * Encrypts a plaintext string using AES-256-GCM.
  * Returns a base64-encoded string containing IV + ciphertext + auth tag.
  */
-export function encrypt(plaintext: string): string {
+function encrypt(plaintext: string): string {
   const key = getEncryptionKey()
   const iv = crypto.randomBytes(IV_LENGTH)
 
@@ -53,7 +53,7 @@ export function encrypt(plaintext: string): string {
  * Decrypts a base64-encoded ciphertext string.
  * Expects format: IV (12 bytes) + ciphertext + auth tag (16 bytes).
  */
-export function decrypt(ciphertext: string): string {
+function decrypt(ciphertext: string): string {
   const key = getEncryptionKey()
   const combined = Buffer.from(ciphertext, "base64")
 
