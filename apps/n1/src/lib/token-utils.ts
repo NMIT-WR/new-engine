@@ -33,14 +33,14 @@ export function isTokenExpired(token: string): boolean {
   return currentTime >= expirationTime
 }
 
-export function getTokenExpiration(token: string): Date | null {
+function getTokenExpiration(token: string): Date | null {
   const payload = parseJWT(token)
   if (!payload?.exp) return null
 
   return new Date(payload.exp * 1000)
 }
 
-export function getTimeUntilExpiration(token: string): number {
+function getTimeUntilExpiration(token: string): number {
   const payload = parseJWT(token)
   if (!payload?.exp) return 0
 

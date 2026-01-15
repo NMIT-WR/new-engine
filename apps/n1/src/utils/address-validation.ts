@@ -16,7 +16,7 @@ export type AddressFormData = {
 export type AddressFieldKey = keyof AddressFormData
 export type AddressErrors = Partial<Record<AddressFieldKey, string>>
 
-export const ADDRESS_VALIDATION_RULES = {
+const ADDRESS_VALIDATION_RULES = {
   first_name: {
     required: VALIDATION_MESSAGES.firstName.required,
     minLength: { value: 2, message: VALIDATION_MESSAGES.firstName.minLength },
@@ -51,7 +51,7 @@ export const ADDRESS_VALIDATION_RULES = {
   },
 } as const
 
-export const REQUIRED_ADDRESS_FIELDS = [
+const REQUIRED_ADDRESS_FIELDS = [
   "first_name",
   "last_name",
   "address_1",
@@ -60,7 +60,7 @@ export const REQUIRED_ADDRESS_FIELDS = [
   "country_code",
 ] as const satisfies readonly AddressFieldKey[]
 
-export function validateAddressField(
+function validateAddressField(
   field: AddressFieldKey,
   value: string,
   _countryCode?: string

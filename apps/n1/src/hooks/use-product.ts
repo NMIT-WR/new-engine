@@ -12,7 +12,7 @@ interface UseProductParams {
   fields?: string
 }
 
-export function useProduct({ handle, fields }: UseProductParams) {
+function useProduct({ handle, fields }: UseProductParams) {
   const { regionId, countryCode } = useRegion()
   const queryKey = queryKeys.products.detail(handle, regionId, countryCode)
 

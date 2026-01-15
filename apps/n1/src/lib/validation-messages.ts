@@ -43,4 +43,3 @@ export const VALIDATION_MESSAGES = {
   },
 } as const
 
-export type ValidationMessageKey = keyof typeof VALIDATION_MESSAGES

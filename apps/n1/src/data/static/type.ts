@@ -16,9 +16,3 @@ export interface CategoryTreeNode {
   parent_category_id?: string | null
 }
 
-export interface CategoryData {
-  allCategories: Category[]
-  categoryTree: CategoryTreeNode[]
-  rootCategories: Category[]
-  categoryMap: Map<string, Category>
-}

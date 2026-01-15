@@ -17,7 +17,7 @@ export const sdk = new Medusa({
 })
 
 // Export a simple client config for direct fetch calls
-export const medusaClient = {
+const medusaClient = {
   config: {
     baseUrl: BACKEND_URL,
     publishableKey: PUBLISHABLE_KEY,

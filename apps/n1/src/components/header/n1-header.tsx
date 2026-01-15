@@ -78,11 +78,12 @@ export const N1Header = () => {
               className="h-auto w-auto"
             />
           </NextLink>
-          <SearchForm
-            buttonIcon
-            size="sm"
-            className="w-search max-header-desktop:hidden"
-          />
+          <SearchForm size="sm" className="w-search max-header-desktop:hidden">
+            <SearchForm.Control>
+              <SearchForm.Input placeholder="Search..." className='bg-white' />
+              <SearchForm.Button showSearchIcon />
+            </SearchForm.Control>
+          </SearchForm>
         </div>
 
         <Header.Actions className="relative text-2xl">

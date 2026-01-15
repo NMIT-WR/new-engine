@@ -4,14 +4,14 @@ import {
   rootCategories,
 } from '@/data/static/categories'
 
-export const ROOT_CATEGORIES = rootCategories.map((cat) => {
+const ROOT_CATEGORIES = rootCategories.map((cat) => {
   return {
     id: cat.id,
     handle: cat.handle,
   }
 })
 
-export const CATEGORIES_LEAFS_IDS = ROOT_CATEGORIES.map((cat) => {
+const CATEGORIES_LEAFS_IDS = ROOT_CATEGORIES.map((cat) => {
   const children = leafCategories
     .filter((leaf) => leaf.root_category_id === cat.id)
     .map((leaf) => leaf.id)

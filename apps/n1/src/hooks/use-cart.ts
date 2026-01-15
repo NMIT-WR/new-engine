@@ -122,7 +122,7 @@ export function useSuspenseCart(): UseSuspenseCartReturn {
   }
 }
 
-export function useCreateCart() {
+function useCreateCart() {
   const queryClient = useQueryClient()
   const { regionId } = useRegion()
   const { customer } = useAuth()
@@ -352,7 +352,7 @@ export function useRemoveLineItem() {
   })
 }
 
-export function useClearCart() {
+function useClearCart() {
   const queryClient = useQueryClient()
 
   return () => {

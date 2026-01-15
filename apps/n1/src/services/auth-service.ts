@@ -16,10 +16,6 @@ export interface RegisterData {
   last_name: string
 }
 
-export interface AuthResponse {
-  token?: string
-  customer?: StoreCustomer
-}
 
 export async function login(
   credentials: LoginCredentials
@@ -116,11 +112,3 @@ export async function getCustomer(): Promise<StoreCustomer | null> {
   }
 }
 
-export async function isAuthenticated(): Promise<boolean> {
-  try {
-    const customer = await getCustomer()
-    return customer !== null
-  } catch {
-    return false
-  }
-}

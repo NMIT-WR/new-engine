@@ -4,24 +4,11 @@ import type { HttpTypes } from '@medusajs/types'
 
 export type Cart = HttpTypes.StoreCart
 export type CartLineItem = HttpTypes.StoreCartLineItem
-export type CartCreateResponse = HttpTypes.StoreCartResponse
-export type CartUpdateResponse = HttpTypes.StoreCartResponse
 export type OptimisticCart = Cart & { _optimistic?: boolean }
 export type OptimisticLineItem = CartLineItem & {
   _optimistic?: boolean
 }
 
-// Type-safe optimistic shipping method for immediate UI updates
-export type OptimisticShippingMethod = {
-  id: string
-  cart_id: string
-  shipping_option_id: string
-  amount: number
-  is_tax_inclusive?: boolean
-  created_at: string
-  updated_at: string
-  _optimistic?: boolean
-}
 
 export type CompleteCartResult =
   | { success: true; order: HttpTypes.StoreOrder }

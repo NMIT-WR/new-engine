@@ -76,7 +76,7 @@ export const PREFETCH_DELAYS = {
  * Prefetch behavior configuration
  * Controls strategy details and feature flags
  */
-export const PREFETCH_BEHAVIOR = {
+const PREFETCH_BEHAVIOR = {
   /**
    * Feature flags - enable/disable specific prefetch strategies
    */
@@ -127,5 +127,3 @@ export const PREFETCH_BEHAVIOR = {
 /**
  * Type exports for type-safe usage
  */
-export type PrefetchDelays = typeof PREFETCH_DELAYS
-export type PrefetchBehavior = typeof PREFETCH_BEHAVIOR

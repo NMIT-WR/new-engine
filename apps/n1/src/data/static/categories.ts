@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT
-// Generated at: 2025-10-30T09:43:52.135Z
+// Generated at: 2026-01-15T16:23:16.677Z
 // Run 'pnpm run generate:categories' to regenerate
 // This version filters out categories without products and adds root_category_id
 
@@ -6729,7 +6729,7 @@ const data: StaticCategoryData = {
       ]
     }
   ],
-  "generatedAt": "2025-10-30T09:43:52.134Z",
+  "generatedAt": "2026-01-15T16:23:16.676Z",
   "filteringStats": {
     "totalCategoriesBeforeFiltering": 580,
     "totalCategoriesAfterFiltering": 212,
@@ -6738,5 +6738,5 @@ const data: StaticCategoryData = {
   }
 }
 
-export default data
-export const { allCategories, categoryTree, rootCategories, categoryMap, leafCategories, leafParents, filteringStats } = data
+// Export only the data that is actually used in the app
+export const { allCategories, categoryTree, rootCategories, categoryMap, leafCategories } = data

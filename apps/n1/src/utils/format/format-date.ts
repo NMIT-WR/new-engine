@@ -8,7 +8,7 @@ interface DateFormatOptions {
   second?: 'numeric' | '2-digit'
 }
 
-export function formatDate(date: Date, options?: DateFormatOptions): string {
+function formatDate(date: Date, options?: DateFormatOptions): string {
   return new Intl.DateTimeFormat('cs-CZ', options).format(date)
 }
 
@@ -26,8 +26,6 @@ export function formatDateString(
 export const formatDateShort = (date: Date) =>
   formatDate(date, { day: '2-digit', month: '2-digit', year: 'numeric' })
 
-export const formatDateLong = (date: Date) =>
-  formatDate(date, { day: 'numeric', month: 'long', year: 'numeric' })
 
 export const formatDay = (date: Date) => formatDate(date, { day: 'numeric' })
 

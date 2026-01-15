@@ -27,7 +27,7 @@ function cleanAddressData<T extends Partial<CreateAddressData>>(data: T): T {
   }
 }
 
-export function useAddresses() {
+function useAddresses() {
   const { customer } = useAuth()
 
   return useQuery({

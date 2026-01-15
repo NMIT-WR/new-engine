@@ -10,11 +10,11 @@ type ErrorWithResponse = {
   response: unknown
 }
 
-export function isError(error: unknown): error is Error {
+function isError(error: unknown): error is Error {
   return error instanceof Error
 }
 
-export function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: unknown): string {
   if (isError(error)) {
     return error.message
   }
@@ -34,7 +34,7 @@ export function getErrorMessage(error: unknown): string {
   return 'An unknown error occurred'
 }
 
-export function getErrorStatus(error: unknown): number | null {
+function getErrorStatus(error: unknown): number | null {
   // Check for direct status property (Medusa SDK)
   if (error && typeof error === 'object' && 'status' in error) {
     const errorWithStatus = error as ErrorWithStatus
@@ -69,12 +69,6 @@ export function logError(context: string, error: unknown): void {
   if (process.env.NODE_ENV === 'development') {
     console.error(`[${context}]`, error)
   }
-}
-
-export type MutationError = {
-  message: string
-  status?: number
-  code?: string
 }
 
 /**

@@ -25,56 +25,13 @@ export interface ProductImage {
   src: string
 }
 
-export interface ProductParameters {
-  product_code: Product['id']
-  product_ean: Product['title']
-  weight: Product['title']
-  material: Product['title']
-  distributor: Product['title']
-  gender: Product['title']
-  size: Product['title']
-}
 
 // Product option value
-export interface ProductOptionValue {
-  id: string
-  value: string
-  option_id: string | null | undefined
-}
 
 // Product option
-export interface ProductOption {
-  id: string
-  title: string
-  product_id: string | null | undefined
-  values: ProductOptionValue[]
-}
 
-export interface ProductSectionData {
-  sectionTitle: string
-  products: Product[]
-}
 
-export interface ProductVariant {
-  id: string
-  title: string
-  calculated_price?: {
-    calculated_amount?: number
-    calculated_amount_with_tax?: number
-  }
-}
 
-export interface ProductDb {
-  id: string
-  title: string
-  handle: string
-  description?: string
-  thumbnail?: string
-  variants?: ProductVariant[]
-  // Computed z transformProduct
-  price?: number
-  primaryVariant?: ProductVariant
-}
 
 // Producer information
 export interface Producer {

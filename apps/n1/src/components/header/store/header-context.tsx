@@ -15,7 +15,7 @@ interface HeaderContextValue {
   isAuthenticated: boolean
 }
 
-export const HeaderContext = createContext<HeaderContextValue | undefined>(
+const HeaderContext = createContext<HeaderContextValue | undefined>(
   undefined
 )
 

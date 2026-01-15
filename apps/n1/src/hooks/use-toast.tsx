@@ -12,7 +12,7 @@ const DEFAULT_DURATIONS = {
 } as const
 
 // Cart-specific toast messages
-export const cartToasts = {
+const cartToasts = {
   addSuccess: (productName: string, quantity = 1) => ({
     title: 'Přidáno do košíku',
     description: `${quantity}x ${productName}`,
@@ -114,7 +114,7 @@ export const cartToasts = {
 }
 
 // Auth-specific toast messages
-export const authToasts = {
+const authToasts = {
   loginSuccess: () => ({
     title: 'Přihlášení úspěšné',
     description: 'Vítejte zpět!',

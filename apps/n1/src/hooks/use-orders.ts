@@ -9,7 +9,7 @@ export interface UseOrdersOptions {
   offset?: number
 }
 
-export function useOrders(options?: UseOrdersOptions) {
+function useOrders(options?: UseOrdersOptions) {
   const { isAuthenticated } = useAuth()
   const limit = options?.limit || 20
   const offset = options?.offset || 0
@@ -22,7 +22,7 @@ export function useOrders(options?: UseOrdersOptions) {
   })
 }
 
-export function useOrder(orderId: string | null) {
+function useOrder(orderId: string | null) {
   const { isAuthenticated } = useAuth()
 
   return useQuery({

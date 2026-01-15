@@ -76,4 +76,3 @@ export const AUTH_MESSAGES = {
   NETWORK_ERROR: 'Chyba připojení k serveru',
 } as const
 
-export type AuthMessageKey = keyof typeof AUTH_MESSAGES

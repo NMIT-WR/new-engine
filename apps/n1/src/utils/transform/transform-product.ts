@@ -9,7 +9,7 @@ import type { StoreProduct } from '@medusajs/types'
 import { slugify } from '@techsio/ui-kit/utils'
 import { formatPrice, formatVariants } from '../format/format-product'
 
-export const formatStockValue = (variants?: StoreProduct['variants']): 'Skladem' | 'Vyprodáno' => {
+const formatStockValue = (variants?: StoreProduct['variants']): 'Skladem' | 'Vyprodáno' => {
   if (!variants || variants.length === 0 || variants.every(v => v.inventory_quantity === 0)) {
     return 'Vyprodáno'
   }

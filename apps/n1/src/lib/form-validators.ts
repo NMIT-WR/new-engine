@@ -10,7 +10,7 @@ import { VALIDATION_MESSAGES } from "./validation-messages"
  * Rules: required, minLength(2)
  * Used in: AddressFormDialog, RegisterForm, ProfileForm
  */
-export const createFirstNameValidator = () => ({
+const createFirstNameValidator = () => ({
   onChange: ({ value }: { value: string }) => {
     if (!value?.trim()) {
       return VALIDATION_MESSAGES.firstName.required
@@ -27,7 +27,7 @@ export const createFirstNameValidator = () => ({
  * Rules: required, minLength(2)
  * Used in: AddressFormDialog, RegisterForm, ProfileForm
  */
-export const createLastNameValidator = () => ({
+const createLastNameValidator = () => ({
   onChange: ({ value }: { value: string }) => {
     if (!value?.trim()) {
       return VALIDATION_MESSAGES.lastName.required
@@ -44,7 +44,7 @@ export const createLastNameValidator = () => ({
  * Rules: optional, Czech phone format (+420 XXX XXX XXX or XXX XXX XXX)
  * Used in: AddressFormDialog, ProfileForm
  */
-export const createPhoneValidator = () => ({
+const createPhoneValidator = () => ({
   onChange: ({ value }: { value: string | undefined }) => {
     if (!value) {
       return // Optional field
@@ -61,7 +61,7 @@ export const createPhoneValidator = () => ({
  * Rules: required, must match password field
  * Used in: RegisterForm
  */
-export const createConfirmPasswordValidator = () => ({
+const createConfirmPasswordValidator = () => ({
   onChangeListenTo: ["password"],
   onChange: ({ value, fieldApi }: { value: string; fieldApi: any }) => {
     if (!value) {
@@ -91,7 +91,7 @@ export const emailValidator = {
   },
 } as const
 
-export const loginPasswordValidator = {
+const loginPasswordValidator = {
   onSubmit: ({ value }: { value: string }) => {
     if (!value?.trim()) {
       return VALIDATION_MESSAGES.password.required
