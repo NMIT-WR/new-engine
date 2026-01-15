@@ -17,15 +17,22 @@ const formatStockValue = (variants?: StoreProduct['variants']): 'Skladem' | 'Vyp
   return 'Skladem'
 }
 
+/**
+ * Extracts base product fields that are common between Product and ProductDetail
+ */
+const getBaseProductFields = (product: StoreProduct) => ({
+  id: product.id,
+  handle: product.handle,
+  title: product.title,
+  price: formatPrice({ variants: product.variants }),
+  withoutTax: formatPrice({ variants: product.variants, tax: false }),
+  imageSrc: product.thumbnail || '/placeholder.jpg',
+  stockValue: formatStockValue(product.variants),
+})
+
 export const transformProduct = (product: StoreProduct): Product => {
   return {
-    id: product.id,
-    handle: product.handle,
-    title: product.title,
-    price: formatPrice({ variants: product.variants }),
-    withoutTax: formatPrice({ variants: product.variants, tax: false }),
-    imageSrc: product.thumbnail || '/placeholder.jpg',
-    stockValue: formatStockValue(product.variants),
+    ...getBaseProductFields(product),
     variants: formatVariants(product.variants),
   }
 }
@@ -92,13 +99,7 @@ export const transformProductDetail = (
 
   return {
     // Base Product fields
-    id: product.id,
-    handle: product.handle,
-    title: product.title,
-    price: formatPrice({ variants: product.variants }),
-    withoutTax: formatPrice({ variants: product.variants, tax: false }),
-    imageSrc: product.thumbnail || '/placeholder.jpg',
-    stockValue: formatStockValue(product.variants),
+    ...getBaseProductFields(product),
 
     // Extended fields
     description: product.description,
