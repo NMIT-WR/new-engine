@@ -266,7 +266,8 @@ export default async function checkDbProduct({ container }: ExecArgs) {
   ]
   for (const expected of expectedPrices) {
     const dbPrice = prices.find(
-      (p) => p.currency_code.toUpperCase() === expected.code
+      (p: { currency_code: string; amount: number }) =>
+        p.currency_code.toUpperCase() === expected.code
     )
     if (dbPrice) {
       const dbAmount = dbPrice.amount / 100 // cents to main unit
