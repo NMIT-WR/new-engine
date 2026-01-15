@@ -647,8 +647,8 @@ export interface StaticCategoryData {
 
 const data: StaticCategoryData = ${JSON.stringify(dataToSave, null, 2)}
 
-export default data
-export const { allCategories, categoryTree, rootCategories, categoryMap, leafCategories, leafParents, filteringStats } = data
+// Export only the data that is actually used in the app
+export const { allCategories, categoryTree, rootCategories, categoryMap, leafCategories } = data
 `
 
     fs.writeFileSync(tsOutputPath, tsContent)
