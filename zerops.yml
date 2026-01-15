@@ -74,6 +74,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(frontend-demo)
         - pnpm i
+        - if [ "${SKIP_NX_BOUNDARIES:-}" != "1" ]; then pnpm lint:nx; fi
         - node_modules/.bin/nx run frontend-demo:build --skip-nx-cache --verbose
         - rm -rf apps/frontend-demo/node_modules
         - pnpm --filter=frontend-demo --prod deploy frontend-demo-temp-deploy
