@@ -16,10 +16,3 @@ export const sdk = new Medusa({
   debug: process.env.NODE_ENV === 'development',
 })
 
-// Export a simple client config for direct fetch calls
-const medusaClient = {
-  config: {
-    baseUrl: BACKEND_URL,
-    publishableKey: PUBLISHABLE_KEY,
-  },
-}

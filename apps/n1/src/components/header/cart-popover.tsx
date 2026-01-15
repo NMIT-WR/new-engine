@@ -11,7 +11,7 @@ import { CartSkeleton } from './cart-skeleton'
 import { useHeaderContext } from './store/header-context'
 
 export const CartPopover = () => {
-  const { isCartOpen, toggleCart, setIsCartOpen } = useHeaderContext()
+  const { toggleCart, setIsCartOpen } = useHeaderContext()
 
   const handleHover = () => {
     toggleCart()

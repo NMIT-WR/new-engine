@@ -122,36 +122,6 @@ export function useSuspenseCart(): UseSuspenseCartReturn {
   }
 }
 
-function useCreateCart() {
-  const queryClient = useQueryClient()
-  const { regionId } = useRegion()
-  const { customer } = useAuth()
-
-  return useMutation<Cart, CartMutationError, { email?: string } | undefined>({
-    mutationFn: async (options) => {
-      if (!regionId) {
-        throw new Error('Region not available')
-      }
-      return createCart(regionId, {
-        email: options?.email || customer?.email,
-      })
-    },
-    onSuccess: (cart) => {
-      // Update cart cache with new cart
-      queryClient.setQueryData(queryKeys.cart.active(), cart)
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useCreateCart] Cart created successfully')
-      }
-    },
-    onError: (error) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[useCreateCart] Failed to create cart:', error)
-      }
-    },
-  })
-}
-
 export function useAddToCart(options?: UseAddToCartOptions) {
   const queryClient = useQueryClient()
   const { regionId } = useRegion()
@@ -350,16 +320,6 @@ export function useRemoveLineItem() {
       queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
     },
   })
-}
-
-function useClearCart() {
-  const queryClient = useQueryClient()
-
-  return () => {
-    cartStorage.clearCartId()
-    queryClient.removeQueries({ queryKey: queryKeys.cart.active() })
-    queryClient.setQueryData(queryKeys.cart.active(), null)
-  }
 }
 
 type UseCompleteCartOptions = {

@@ -27,17 +27,6 @@ function cleanAddressData<T extends Partial<CreateAddressData>>(data: T): T {
   }
 }
 
-function useAddresses() {
-  const { customer } = useAuth()
-
-  return useQuery({
-    queryKey: queryKeys.customer.profile(),
-    queryFn: getAddresses,
-    enabled: !!customer,
-    ...cacheConfig.userData,
-  })
-}
-
 export function useCreateAddress() {
   const queryClient = useQueryClient()
 

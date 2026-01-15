@@ -134,6 +134,4 @@ class CacheLogger {
 const cacheLogger = new CacheLogger()
 
 // Convenience exports
-const logCache = cacheLogger.cache.bind(cacheLogger)
 export const logQuery = cacheLogger.query.bind(cacheLogger)
-const logError = cacheLogger.error.bind(cacheLogger)

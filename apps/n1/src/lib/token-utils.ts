@@ -33,24 +33,6 @@ export function isTokenExpired(token: string): boolean {
   return currentTime >= expirationTime
 }
 
-function getTokenExpiration(token: string): Date | null {
-  const payload = parseJWT(token)
-  if (!payload?.exp) return null
-
-  return new Date(payload.exp * 1000)
-}
-
-function getTimeUntilExpiration(token: string): number {
-  const payload = parseJWT(token)
-  if (!payload?.exp) return 0
-
-  const expirationTime = payload.exp * 1000
-  const currentTime = Date.now()
-  const timeLeft = expirationTime - currentTime
-
-  return timeLeft > 0 ? timeLeft : 0
-}
-
 export function clearToken(): void {
   if (typeof window === 'undefined') return
   localStorage.removeItem('medusa_auth_token')

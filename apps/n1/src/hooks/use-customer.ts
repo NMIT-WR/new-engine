@@ -4,11 +4,9 @@ import {
   updateCustomer,
 } from '@/services/customer-service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAuth } from './use-auth'
 
 export function useUpdateCustomer() {
   const queryClient = useQueryClient()
-  const { customer } = useAuth()
 
   return useMutation({
     mutationFn: (data: UpdateCustomerData) => updateCustomer(data),
