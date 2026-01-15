@@ -1,15 +1,14 @@
 import type { ExecArgs, Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import { IDbService } from "@medusajs/medusa/db"
+import { DATABASE_MODULE } from "../modules/database"
+import type DatabaseModuleService from "../modules/database/service"
 
 /**
  * Check database for product 2530 and compare with expected XLSX data
  */
 export default async function checkDbProduct({ container }: ExecArgs) {
   const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
-  const dbService = container.resolve<IDbService>(
-    ContainerRegistrationKeys.DATABASE
-  )
+  const dbService: DatabaseModuleService = container.resolve(DATABASE_MODULE)
 
   logger.info("=== Checking DB for product 2530 ===")
 
