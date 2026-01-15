@@ -1,19 +1,16 @@
-import { cacheConfig } from '@/lib/cache-config'
-import { AddressValidationError } from '@/lib/errors'
-import { queryKeys } from '@/lib/query-keys'
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { AddressValidationError } from "@/lib/errors"
+import { queryKeys } from "@/lib/query-keys"
 import {
   type CreateAddressData,
   createAddress,
   deleteAddress,
-  getAddresses,
   updateAddress,
-} from '@/services/customer-service'
-import { cleanPhoneNumber } from '@/utils/format/format-phone-number'
-import { cleanPostalCode } from '@/utils/format/format-postal-code'
-import type { AddressFormData } from '@/utils/address-validation'
-import { validateAddressForm } from '@/utils/address-validation'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAuth } from './use-auth'
+} from "@/services/customer-service"
+import type { AddressFormData } from "@/utils/address-validation"
+import { validateAddressForm } from "@/utils/address-validation"
+import { cleanPhoneNumber } from "@/utils/format/format-phone-number"
+import { cleanPostalCode } from "@/utils/format/format-postal-code"
 
 /**
  * Clean address data before sending to API
@@ -22,7 +19,9 @@ import { useAuth } from './use-auth'
 function cleanAddressData<T extends Partial<CreateAddressData>>(data: T): T {
   return {
     ...data,
-    postal_code: data.postal_code ? cleanPostalCode(data.postal_code) : data.postal_code,
+    postal_code: data.postal_code
+      ? cleanPostalCode(data.postal_code)
+      : data.postal_code,
     phone: data.phone ? cleanPhoneNumber(data.phone) : data.phone,
   }
 }
@@ -57,7 +56,7 @@ export function useCreateAddress() {
  * (used to decide whether to validate before API call)
  */
 function isCompleteAddressData(data: Partial<CreateAddressData>): boolean {
-  return 'first_name' in data && 'last_name' in data && 'address_1' in data
+  return "first_name" in data && "last_name" in data && "address_1" in data
 }
 
 export function useUpdateAddress() {
@@ -67,7 +66,10 @@ export function useUpdateAddress() {
     mutationFn: async ({
       addressId,
       data,
-    }: { addressId: string; data: Partial<CreateAddressData> }) => {
+    }: {
+      addressId: string
+      data: Partial<CreateAddressData>
+    }) => {
       // Safety net validation (only for complete address data, not partial updates)
       if (isCompleteAddressData(data)) {
         const errors = validateAddressForm(data as AddressFormData)

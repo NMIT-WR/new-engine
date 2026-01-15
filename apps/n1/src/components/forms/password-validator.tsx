@@ -1,8 +1,5 @@
-import {
-  PASSWORD_REQUIREMENTS,
-  isPasswordValid,
-} from '@/lib/form-validators'
-import { Icon } from '@ui/atoms/icon'
+import { Icon } from "@ui/atoms/icon"
+import { PASSWORD_REQUIREMENTS } from "@/lib/form-validators"
 
 interface PasswordValidatorProps {
   password: string
@@ -13,7 +10,7 @@ interface PasswordValidatorProps {
 export const PasswordValidator = ({
   password,
   showRequirements = true,
-  className = '',
+  className = "",
 }: PasswordValidatorProps) => {
   const requirements = PASSWORD_REQUIREMENTS.map((req) => ({
     ...req,
@@ -23,7 +20,7 @@ export const PasswordValidator = ({
   const allMet = requirements.every((req) => req.met)
   const hasStarted = password.length > 0
 
-  if (!showRequirements || !hasStarted) {
+  if (!(showRequirements && hasStarted)) {
     return null
   }
 
@@ -33,19 +30,19 @@ export const PasswordValidator = ({
       <ul className="flex flex-col gap-50">
         {requirements.map((req) => (
           <li
-            key={req.id}
             className={`flex items-center gap-100 ${
-              req.met ? 'text-success' : 'text-fg-secondary'
+              req.met ? "text-success" : "text-fg-secondary"
             }`}
+            key={req.id}
           >
             <span
-              className={`flex h-4 w-4 items-center justify-center rounded-full border border-border-secondary text-[.75rem] ${
-                req.met ? 'bg-success' : 'bg-surface'
-              }`}
               aria-hidden="true"
+              className={`flex h-4 w-4 items-center justify-center rounded-full border border-border-secondary text-[.75rem] ${
+                req.met ? "bg-success" : "bg-surface"
+              }`}
             >
               {req.met && (
-                <Icon icon="token-icon-check" className="text-fg-reverse" />
+                <Icon className="text-fg-reverse" icon="token-icon-check" />
               )}
             </span>
             <span className="text-2xs">{req.label}</span>

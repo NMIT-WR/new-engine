@@ -1,27 +1,25 @@
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import {
-  type Cart,
-  type CompleteCartResult,
-  type OptimisticCart,
-  type OptimisticLineItem,
-  addToCart,
-  cartStorage,
-  completeCart,
-  createCart,
-  getCart,
-  removeLineItem,
-  updateLineItem,
-} from '@/services/cart-service'
-import type { HttpTypes } from '@medusajs/types'
+import type { HttpTypes } from "@medusajs/types"
 import {
   useMutation,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
-} from '@tanstack/react-query'
-import { useAuth } from './use-auth'
-import { useRegion } from './use-region'
+} from "@tanstack/react-query"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import {
+  addToCart,
+  type Cart,
+  type CompleteCartResult,
+  completeCart,
+  createCart,
+  getCart,
+  type OptimisticCart,
+  type OptimisticLineItem,
+  removeLineItem,
+  updateLineItem,
+} from "@/services/cart-service"
+import { useRegion } from "./use-region"
 
 type CartMutationError = {
   message: string
@@ -65,11 +63,11 @@ export function useCart(): UseCartReturn {
     queryFn: getCart,
     enabled: true, // Always enabled for guest and authenticated users
     retry: (failureCount, error) => {
-      if (error instanceof Error && error.message?.includes('not found')) {
+      if (error instanceof Error && error.message?.includes("not found")) {
         return false
       }
       // Retry network errors up to 3 times
-      if (error instanceof Error && error.message?.includes('Network')) {
+      if (error instanceof Error && error.message?.includes("Network")) {
         return failureCount < 3
       }
       return failureCount < 1
@@ -98,10 +96,10 @@ export function useSuspenseCart(): UseSuspenseCartReturn {
     queryKey: queryKeys.cart.active(),
     queryFn: getCart,
     retry: (failureCount, error) => {
-      if (error instanceof Error && error.message?.includes('not found')) {
+      if (error instanceof Error && error.message?.includes("not found")) {
         return false
       }
-      if (error instanceof Error && error.message?.includes('Network')) {
+      if (error instanceof Error && error.message?.includes("Network")) {
         return failureCount < 3
       }
       return failureCount < 1
@@ -153,7 +151,7 @@ export function useAddToCart(options?: UseAddToCartOptions) {
       }
 
       if (!cart) {
-        throw new Error('No cart available')
+        throw new Error("No cart available")
       }
 
       return addToCart(cart.id, variantId, quantity, metadata)
@@ -182,8 +180,8 @@ export function useAddToCart(options?: UseAddToCartOptions) {
       // Update with real cart from server
       queryClient.setQueryData(queryKeys.cart.active(), cart)
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useAddToCart] Item added successfully')
+      if (process.env.NODE_ENV === "development") {
+        console.log("[useAddToCart] Item added successfully")
       }
 
       options?.onSuccess?.(cart)
@@ -194,8 +192,8 @@ export function useAddToCart(options?: UseAddToCartOptions) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[useAddToCart] Failed to add item:', error)
+      if (process.env.NODE_ENV === "development") {
+        console.error("[useAddToCart] Failed to add item:", error)
       }
 
       options?.onError?.(error)
@@ -250,16 +248,16 @@ export function useUpdateLineItem() {
     onSuccess: (cart) => {
       queryClient.setQueryData(queryKeys.cart.active(), cart)
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useUpdateLineItem] Quantity updated successfully')
+      if (process.env.NODE_ENV === "development") {
+        console.log("[useUpdateLineItem] Quantity updated successfully")
       }
     },
     onError: (error, variables, context) => {
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[useUpdateLineItem] Failed to update quantity:', error)
+      if (process.env.NODE_ENV === "development") {
+        console.error("[useUpdateLineItem] Failed to update quantity:", error)
       }
     },
     onSettled: () => {
@@ -304,16 +302,16 @@ export function useRemoveLineItem() {
     onSuccess: (cart) => {
       queryClient.setQueryData(queryKeys.cart.active(), cart)
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[useRemoveLineItem] Item removed successfully')
+      if (process.env.NODE_ENV === "development") {
+        console.log("[useRemoveLineItem] Item removed successfully")
       }
     },
     onError: (error, variables, context) => {
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[useRemoveLineItem] Failed to remove item:', error)
+      if (process.env.NODE_ENV === "development") {
+        console.error("[useRemoveLineItem] Failed to remove item:", error)
       }
     },
     onSettled: () => {
@@ -352,16 +350,16 @@ export function useCompleteCart(options?: UseCompleteCartOptions) {
 
         queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
 
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useCompleteCart] Order created successfully:', order.id)
+        if (process.env.NODE_ENV === "development") {
+          console.log("[useCompleteCart] Order created successfully:", order.id)
         }
 
         options?.onSuccess?.(order)
       } else {
         // FAILURE PATH: Validation or payment error
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === "development") {
           console.warn(
-            '[useCompleteCart] Cart completion failed:',
+            "[useCompleteCart] Cart completion failed:",
             result.error
           )
         }
@@ -373,8 +371,8 @@ export function useCompleteCart(options?: UseCompleteCartOptions) {
       }
     },
     onError: (error) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[useCompleteCart] Failed to complete cart:', error)
+      if (process.env.NODE_ENV === "development") {
+        console.error("[useCompleteCart] Failed to complete cart:", error)
       }
     },
   })

@@ -1,10 +1,7 @@
 "use client"
-
-import { Input } from "@ui/atoms/input"
-import { Label } from "@ui/atoms/label"
-import type { AnyFieldApiCompat } from "@/types/form"
-import type { ChangeEvent, InputHTMLAttributes } from "react"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
+import type { ChangeEvent, InputHTMLAttributes } from "react"
+import type { AnyFieldApiCompat } from "@/types/form"
 
 type TextFieldProps = {
   field: AnyFieldApiCompat
@@ -29,7 +26,6 @@ export function TextField({
   required,
   disabled,
   transform,
-  className,
   autoComplete,
   maxLength,
   externalError,
@@ -53,24 +49,24 @@ export function TextField({
   }
 
   return (
-      <FormInput
-        label={label}
-        required={required}
-        autoComplete={autoComplete}
-        disabled={disabled}
-        id={field.name}
-        maxLength={maxLength}
-        name={field.name}
-        onBlur={field.handleBlur}
-        onChange={handleChange}
-        placeholder={placeholder}
-        type={type}
-        value={field.state.value ?? ""}
-        variant={showError ? "error" : "default"}
-        aria-invalid={showError}
-        aria-describedby={showError ? errorId : undefined}
-        helpText={showError && errorMessage}
-        validateStatus={showError ? "error" : "default"}
-      />
+    <FormInput
+      aria-describedby={showError ? errorId : undefined}
+      aria-invalid={showError}
+      autoComplete={autoComplete}
+      disabled={disabled}
+      helpText={showError && errorMessage}
+      id={field.name}
+      label={label}
+      maxLength={maxLength}
+      name={field.name}
+      onBlur={field.handleBlur}
+      onChange={handleChange}
+      placeholder={placeholder}
+      required={required}
+      type={type}
+      validateStatus={showError ? "error" : "default"}
+      value={field.state.value ?? ""}
+      variant={showError ? "error" : "default"}
+    />
   )
 }
