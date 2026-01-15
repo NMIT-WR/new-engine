@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.web-revolution.cz)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__quillopy-mcp__quillopy_search",
+      "WebFetch(domain:zagjs.com)",
+      "Bash(bunx tsc:*)",
+      "Bash(bunx biome check:*)",
+      "Bash(node:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__desktop-commander__read_file",
+      "mcp__desktop-commander__edit_block",
+      "Bash(git -C /home/kaiuwe/projects/web-revolution/new-engine status)",
+      "Bash(git -C /home/kaiuwe/projects/web-revolution/new-engine add apps/medusa-be/medusa-config.ts)"
+    ],
+    "deny": [],
+    "allowedTools": [
+      "Agent",
+      "Bash",
+      "Edit",
+      "MultiEdit",
+      "Glob",
+      "Grep",
+      "LS",
+      "TodoRead",
+      "TodoWrite",
+      "WebFetch",
+      "WebSearch",
+      "Read"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "desktop-commander",
+    "filesystem",
+    "browsermcp",
+    "github",
+    "tavily-mcp",
+    "sequential-thinking",
+    "puppeteer-mcp",
+    "context7",
+    "quillopy-mcp"
+  ],
+  "verbose": true
+}

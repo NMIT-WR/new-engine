@@ -1,0 +1,3 @@
+1. PROJDI SI DŮKLADNĚ CLAUDE.md,
+2. DŮKLADNĚ SI PROJDI local/docs/app-components.md a 
+2. NEPOUŽÍVEJ HARDCODED TAILWIND TŘÍDY!!!

@@ -2,7 +2,7 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@new-engine/ui', '@techsio/analytics'],
+  transpilePackages: ['@new-engine/ui', '@techsio/analytics', '@techsio/storefront-data'],
   reactCompiler: true,
   cacheComponents: true,
   outputFileTracingExcludes: {

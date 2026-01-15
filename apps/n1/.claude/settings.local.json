@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__puppeteer-mcp__puppeteer_screenshot",
+      "mcp__puppeteer-mcp__puppeteer_evaluate",
+      "mcp__puppeteer-mcp__puppeteer_click",
+      "mcp__puppeteer-mcp__puppeteer_navigate",
+      "mcp__puppeteer-mcp__puppeteer_hover",
+      "Read(//d/025/projects/new-engine/**)",
+      "WebFetch(domain:zagjs.com)",
+      "mcp__desktop-commander__list_directory",
+      "WebFetch(domain:docs.medusajs.com)",
+      "mcp__context7__resolve-library-id",
+      "mcp__tavily-mcp__tavily-search",
+      "mcp__desktop-commander__write_file",
+      "mcp__desktop-commander__read_file",
+      "mcp__desktop-commander__edit_block",
+      "mcp__context7__get-library-docs",
+      "WebFetch(domain:www.nm.cz)",
+      "WebFetch(domain:www.arup.cas.cz)",
+      "WebFetch(domain:www.muzeumprahy.cz)",
+      "mcp__desktop-commander__start_search",
+      "WebFetch(domain:www.builder.io)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:arize.com)",
+      "Bash(dir:*)",
+      "mcp__next-devtools__nextjs_index",
+      "mcp__next-devtools__browser_eval",
+      "mcp__github__get_pull_request_files",
+      "mcp__github__get_pull_request_comments",
+      "mcp__github__get_pull_request_reviews",
+      "Bash(gh pr view:*)",
+      "WebFetch(domain:patch-diff.githubusercontent.com)",
+      "WebFetch(domain:tanstack.com)",
+      "mcp__github__get_pull_request",
+      "Bash(cat:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "desktop-commander",
+    "next-devtools",
+    "github",
+    "tavily-mcp",
+    "sequential-thinking",
+    "puppeteer-mcp",
+    "context7",
+    "css-first"
+  ]
+}

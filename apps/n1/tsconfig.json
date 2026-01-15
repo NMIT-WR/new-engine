@@ -20,7 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@ui/*": ["../../libs/ui/src/*"]
+      "@ui/*": ["../../libs/ui/src/*"],
+      "@libs/medusa-data": ["../../libs/medusa-data/src"],
+      "@libs/medusa-data/*": ["../../libs/medusa-data/src/*"]
     }
   },
   "include": [
