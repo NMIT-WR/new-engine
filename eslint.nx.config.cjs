@@ -78,6 +78,14 @@ module.exports = [
                 "platform:shared",
               ],
             },
+            {
+              sourceTag: "framework:agnostic",
+              onlyDependOnLibsWithTags: ["framework:agnostic"],
+            },
+            {
+              sourceTag: "platform:shared",
+              onlyDependOnLibsWithTags: ["platform:shared"],
+            },
           ],
         },
       ],
