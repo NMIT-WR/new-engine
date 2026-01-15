@@ -2,7 +2,7 @@ import { tv } from "@techsio/ui-kit/utils"
 import type * as React from "react"
 import type { VariantProps } from "tailwind-variants"
 
-export const skeletonVariants = tv({
+const skeletonVariants = tv({
   base: [
     "relative",
     "overflow-hidden",

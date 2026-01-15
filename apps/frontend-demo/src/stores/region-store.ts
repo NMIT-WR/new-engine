@@ -39,10 +39,6 @@ export function setSelectedRegionId(regionId: string) {
   setCookie(COOKIE_NAME, regionId)
 }
 
-export function getSelectedRegionId(): string | null {
-  return regionStore.state.selectedRegionId
-}
-
 if (typeof window !== "undefined") {
   const cookieRegionId = getCookie(COOKIE_NAME)
 

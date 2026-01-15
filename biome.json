@@ -10,7 +10,6 @@
       "!**/migrations/**/*",
       "!**/.next/**/*",
       "!**/check-env-variables.js",
-      "!**/libs/data-layer/**/*",
       "!**/*.stories.tsx",
       "!**/.storybook/main.ts",
       "!**/libs/ui/src/tokens/index.css"
