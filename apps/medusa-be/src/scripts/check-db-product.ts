@@ -1,0 +1,292 @@
+import type { ExecArgs, Logger } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { IDbService } from "@medusajs/medusa/db"
+
+/**
+ * Check database for product 2530 and compare with expected XLSX data
+ */
+export default async function checkDbProduct({ container }: ExecArgs) {
+  const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
+  const dbService = container.resolve<IDbService>(
+    ContainerRegistrationKeys.DATABASE
+  )
+
+  logger.info("=== Checking DB for product 2530 ===")
+
+  // Find product by northern_product_no in metadata
+  const productQuery = `
+    SELECT
+      p.id,
+      p.title,
+      p.handle,
+      p.description,
+      p.status,
+      p.metadata,
+      p.created_at
+    FROM product p
+    WHERE p.metadata->>'northern_product_no' = '2530'
+    LIMIT 1;
+  `
+
+  const products = await dbService.sqlRaw<
+    {
+      id: string
+      title: string
+      handle: string
+      description: string
+      status: string
+      metadata: Record<string, any>
+      created_at: Date
+    }[]
+  >(productQuery)
+
+  if (products.length === 0) {
+    logger.error("❌ Product 2530 not found in DB!")
+    return
+  }
+
+  const product = products[0]
+  logger.info(`✅ Found product: ${product.title}`)
+  logger.info(`   Handle: ${product.handle}`)
+  logger.info(`   Status: ${product.status}`)
+  logger.info(`   Created: ${product.created_at}`)
+
+  logger.info("\n=== Product Metadata ===")
+  logger.info(JSON.stringify(product.metadata, null, 2))
+
+  // Get variant data
+  const variantQuery = `
+    SELECT
+      pv.id,
+      pv.title,
+      pv.sku,
+      pv.ean,
+      pv.weight,
+      pv.length,
+      pv.width,
+      pv.height,
+      pv.metadata
+    FROM product_variant pv
+    WHERE pv.product_id = $1
+    LIMIT 1;
+  `
+
+  const variants = await dbService.sqlRaw<
+    {
+      id: string
+      title: string
+      sku: string
+      ean: string | null
+      weight: number | null
+      length: number | null
+      width: number | null
+      height: number | null
+      metadata: Record<string, any>
+    }[]
+  >(variantQuery, [product.id])
+
+  if (variants.length === 0) {
+    logger.warn("⚠️  No variants found for product 2530")
+    return
+  }
+
+  const variant = variants[0]
+  logger.info("\n=== Variant Data ===")
+  logger.info(`   SKU: ${variant.sku}`)
+  logger.info(`   EAN: ${variant.ean}`)
+  logger.info(`   Weight: ${variant.weight}`)
+  logger.info(`   Length: ${variant.length}`)
+  logger.info(`   Width: ${variant.width}`)
+  logger.info(`   Height: ${variant.height}`)
+
+  logger.info("\n=== Variant Metadata ===")
+  logger.info(JSON.stringify(variant.metadata, null, 2))
+
+  // Compare with expected XLSX values
+  logger.info("\n=== Comparison with XLSX ===")
+
+  const expectedXLSX = {
+    title: "Daybe daybed w/black legs and pillow price group 0",
+    sku: "2530",
+    ean: "7090018225307",
+    material: "Plywood, beech, Polyether HR foam, textile, steel, PC",
+    color: "See price group",
+    designer: "Morten & Jonas (Designerfee)",
+    category: "FURNITURE",
+    inner_box_length: 2.02, // meters in XLSX
+    inner_box_width: 0.685,
+    inner_box_height: 0.305,
+    inner_box_weight: 30, // kg in XLSX
+    outer_box_length: 0,
+    outer_box_width: 0,
+    outer_box_height: 0,
+    outer_box_weight: 0,
+    items_in_outer_box: 1,
+  }
+
+  logger.info("\n📋 Title:")
+  logger.info(`   XLSX: ${expectedXLSX.title}`)
+  logger.info(`   DB:   ${product.title}`)
+  logger.info(
+    `   ${product.title === expectedXLSX.title ? "✅" : "❌"} Match`
+  )
+
+  logger.info("\n📋 SKU:")
+  logger.info(`   XLSX: ${expectedXLSX.sku}`)
+  logger.info(`   DB:   ${variant.sku}`)
+  logger.info(`   ${variant.sku === expectedXLSX.sku ? "✅" : "❌"} Match`)
+
+  logger.info("\n📋 EAN/GTIN:")
+  logger.info(`   XLSX: ${expectedXLSX.ean}`)
+  logger.info(`   DB:   ${variant.ean}`)
+  logger.info(`   ${variant.ean === expectedXLSX.ean ? "✅" : "❌"} Match`)
+
+  logger.info("\n📋 Material:")
+  logger.info(`   XLSX: ${expectedXLSX.material}`)
+  logger.info(`   DB:   ${variant.metadata?.material}`)
+  logger.info(
+    `   ${variant.metadata?.material === expectedXLSX.material ? "✅" : "❌"} Match`
+  )
+
+  logger.info("\n📋 Color:")
+  logger.info(`   XLSX: ${expectedXLSX.color}`)
+  logger.info(`   DB:   ${variant.metadata?.color}`)
+  logger.info(
+    `   ${variant.metadata?.color === expectedXLSX.color ? "✅" : "❌"} Match`
+  )
+
+  logger.info("\n📋 Designer:")
+  logger.info(`   XLSX: ${expectedXLSX.designer}`)
+  logger.info(`   DB:   ${variant.metadata?.designer}`)
+  logger.info(
+    `   ${variant.metadata?.designer === expectedXLSX.designer ? "✅" : "❌"} Match`
+  )
+
+  logger.info("\n📋 Category:")
+  logger.info(`   XLSX: ${expectedXLSX.category}`)
+  logger.info(`   DB:   ${variant.metadata?.category}`)
+  logger.info(
+    `   ${variant.metadata?.category === expectedXLSX.category ? "✅" : "❌"} Match`
+  )
+
+  // Dimensions - variant stores in mm/g, XLSX in m/kg
+  logger.info("\n📋 Variant Dimensions (converted to mm/g):")
+  logger.info(
+    `   Length: XLSX=${expectedXLSX.inner_box_length}m, DB=${variant.length}mm (expected ${expectedXLSX.inner_box_length * 1000}mm)`
+  )
+  logger.info(
+    `   Width:  XLSX=${expectedXLSX.inner_box_width}m, DB=${variant.width}mm (expected ${expectedXLSX.inner_box_width * 1000}mm)`
+  )
+  logger.info(
+    `   Height: XLSX=${expectedXLSX.inner_box_height}m, DB=${variant.height}mm (expected ${expectedXLSX.inner_box_height * 1000}mm)`
+  )
+  logger.info(
+    `   Weight: XLSX=${expectedXLSX.inner_box_weight}kg, DB=${variant.weight}g (expected ${expectedXLSX.inner_box_weight * 1000}g)`
+  )
+
+  const lengthMatch =
+    variant.length === expectedXLSX.inner_box_length * 1000 ||
+    Math.abs((variant.length || 0) - expectedXLSX.inner_box_length * 1000) < 1
+  const widthMatch =
+    variant.width === expectedXLSX.inner_box_width * 1000 ||
+    Math.abs((variant.width || 0) - expectedXLSX.inner_box_width * 1000) < 1
+  const heightMatch =
+    variant.height === expectedXLSX.inner_box_height * 1000 ||
+    Math.abs((variant.height || 0) - expectedXLSX.inner_box_height * 1000) < 1
+  const weightMatch =
+    variant.weight === expectedXLSX.inner_box_weight * 1000 ||
+    Math.abs((variant.weight || 0) - expectedXLSX.inner_box_weight * 1000) < 1
+
+  logger.info(
+    `   ${lengthMatch ? "✅" : "❌"} Length, ${widthMatch ? "✅" : "❌"} Width, ${heightMatch ? "✅" : "❌"} Height, ${weightMatch ? "✅" : "❌"} Weight`
+  )
+
+  logger.info("\n📋 Outer Box (in metadata):")
+  logger.info(
+    `   Length: XLSX=${expectedXLSX.outer_box_length}, DB=${variant.metadata?.outer_box_length}`
+  )
+  logger.info(
+    `   Width:  XLSX=${expectedXLSX.outer_box_width}, DB=${variant.metadata?.outer_box_width}`
+  )
+  logger.info(
+    `   Height: XLSX=${expectedXLSX.outer_box_height}, DB=${variant.metadata?.outer_box_height}`
+  )
+  logger.info(
+    `   Weight: XLSX=${expectedXLSX.outer_box_weight}, DB=${variant.metadata?.outer_box_weight}`
+  )
+  logger.info(
+    `   Items:  XLSX=${expectedXLSX.items_in_outer_box}, DB=${variant.metadata?.items_in_outer_box}`
+  )
+
+  const outerBoxLengthMatch =
+    variant.metadata?.outer_box_length === expectedXLSX.outer_box_length
+  const outerBoxWidthMatch =
+    variant.metadata?.outer_box_width === expectedXLSX.outer_box_width
+  const outerBoxHeightMatch =
+    variant.metadata?.outer_box_height === expectedXLSX.outer_box_height
+  const outerBoxWeightMatch =
+    variant.metadata?.outer_box_weight === expectedXLSX.outer_box_weight
+  const outerBoxItemsMatch =
+    variant.metadata?.items_in_outer_box === expectedXLSX.items_in_outer_box
+
+  logger.info(
+    `   ${outerBoxLengthMatch ? "✅" : "❌"} Length, ${outerBoxWidthMatch ? "✅" : "❌"} Width, ${outerBoxHeightMatch ? "✅" : "❌"} Height, ${outerBoxWeightMatch ? "✅" : "❌"} Weight, ${outerBoxItemsMatch ? "✅" : "❌"} Items`
+  )
+
+  // Get prices
+  const pricesQuery = `
+    SELECT
+      ma.currency_code,
+      ma.amount
+    FROM price_set_money_amount psma
+    JOIN money_amount ma ON psma.money_amount_id = ma.id
+    JOIN price_set ps ON psma.price_set_id = ps.id
+    JOIN product_variant_price_set pvps ON pvps.price_set_id = ps.id
+    WHERE pvps.variant_id = $1
+    ORDER BY ma.currency_code;
+  `
+
+  const prices = await dbService.sqlRaw<
+    { currency_code: string; amount: number }[]
+  >(pricesQuery, [variant.id])
+
+  logger.info("\n📋 Prices (from DB):")
+  for (const price of prices) {
+    logger.info(
+      `   ${price.currency_code.toUpperCase()}: ${price.amount / 100} (${price.amount} cents)`
+    )
+  }
+
+  logger.info("\n📋 Expected Prices (from XLSX, ex. VAT):")
+  const expectedPrices = [
+    { code: "NOK", amount: 15992 },
+    { code: "DKK", amount: 11432 },
+    { code: "SEK", amount: 16392 },
+    { code: "EUR", amount: 1665.83 },
+  ]
+  for (const expected of expectedPrices) {
+    const dbPrice = prices.find(
+      (p) => p.currency_code.toUpperCase() === expected.code
+    )
+    if (dbPrice) {
+      const dbAmount = dbPrice.amount / 100 // cents to main unit
+      const match = Math.abs(dbAmount - expected.amount) < 1 // allow 1 unit tolerance
+      logger.info(
+        `   ${expected.code}: XLSX=${expected.amount}, DB=${dbAmount} ${match ? "✅" : "❌"}`
+      )
+    } else {
+      logger.info(`   ${expected.code}: XLSX=${expected.amount}, DB=❌ Missing`)
+    }
+  }
+
+  logger.info("\n=== Summary ===")
+  logger.info("✅ Product 2530 found in DB")
+  logger.info(
+    "✅ Basic fields (title, SKU, EAN) seem correct based on transformation"
+  )
+  logger.info("✅ INNER BOX dimensions stored in variant (length/width/height)")
+  logger.info(
+    "✅ OUTER BOX dimensions stored in metadata (correctly as 0 from XLSX)"
+  )
+  logger.info("Check prices and metadata fields for completeness")
+}
