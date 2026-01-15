@@ -1,0 +1,182 @@
+import type { CollectionConfig } from "payload";
+import { lexicalHTMLField } from "@payloadcms/richtext-lexical";
+import { createLexicalEditor } from "../lib/editors/lexical";
+import { requireAuth } from "../lib/access/requireAuth";
+import { generateSlugFromTitle } from "../lib/hooks/slug";
+import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
+import { fieldDescriptions } from "../lib/constants/descriptions";
+import { seoGroupField } from "../lib/constants/fieldGroups";
+import {
+  createContentField,
+  createPublishedDateField,
+  createSlugField,
+  createStatusField,
+  createTitleField,
+} from "../lib/constants/fields";
+
+export const Articles: CollectionConfig = {
+  slug: "articles",
+  labels: collectionLabels.articles,
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["title", "category", "publishedDate", "status"],
+    group: adminGroups.content,
+  },
+  access: {
+    read: requireAuth,
+  },
+  fields: [
+    createTitleField({
+      label: fieldLabels.articleTitle,
+      maxLength: 100,
+    }),
+    createSlugField({
+      label: fieldLabels.urlSlug,
+      description: fieldDescriptions.slugArticle,
+    }),
+    {
+      name: "excerpt",
+      label: fieldLabels.excerpt,
+      type: "textarea",
+      required: true,
+      maxLength: 300,
+      localized: true,
+      admin: {
+        description: fieldDescriptions.excerptArticle,
+      },
+    },
+    createContentField({
+      editor: createLexicalEditor(),
+      label: fieldLabels.articleContent,
+      required: true,
+      admin: {
+        description: fieldDescriptions.contentArticle,
+      },
+    }),
+    lexicalHTMLField({
+      htmlFieldName: "contentHTML",
+      lexicalFieldName: "content",
+    }),
+    {
+      name: "featuredImage",
+      label: fieldLabels.featuredImage,
+      type: "upload",
+      relationTo: "media",
+      required: true,
+      admin: {
+        description: fieldDescriptions.featuredImageArticle,
+      },
+    },
+    {
+      name: "category",
+      label: fieldLabels.category,
+      type: "relationship",
+      relationTo: "article-categories",
+      required: true,
+    },
+    {
+      name: "tags",
+      label: fieldLabels.tags,
+      type: "text",
+      hasMany: true,
+      localized: true,
+      admin: {
+        description: fieldDescriptions.tagsArticle,
+      },
+    },
+    {
+      name: "author",
+      label: fieldLabels.author,
+      type: "relationship",
+      relationTo: "users",
+      defaultValue: ({ user }) => user?.id,
+    },
+    createPublishedDateField(),
+    createStatusField(),
+    {
+      name: "readingTime",
+      label: fieldLabels.readingTime,
+      type: "number",
+      admin: {
+        description: fieldDescriptions.readingTime,
+      },
+    },
+    seoGroupField,
+    // Analytics and Performance
+    {
+      name: "analytics",
+      label: fieldLabels.analytics,
+      type: "group",
+      admin: {
+        condition: (data: any, siblingData: any) => data?.status === "published",
+      },
+      fields: [
+        {
+          name: "views",
+          label: fieldLabels.views,
+          type: "number",
+          defaultValue: 0,
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: "shares",
+          label: fieldLabels.shares,
+          type: "number",
+          defaultValue: 0,
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: "lastViewed",
+          label: fieldLabels.lastViewed,
+          type: "date",
+          admin: {
+            readOnly: true,
+            date: {
+              pickerAppearance: "dayAndTime",
+            },
+          },
+        },
+      ],
+    },
+  ],
+  hooks: {
+    beforeChange: [
+      ({ data }: any) => {
+        // Auto-generate slug from title if not provided
+        if (data.title && !data.slug) {
+          data.slug = generateSlugFromTitle(data.title);
+        }
+
+        // Estimate reading time (average 200 words per minute)
+        if (data.content && !data.readingTime) {
+          const wordCount = JSON.stringify(data.content).split(' ').length;
+          data.readingTime = Math.ceil(wordCount / 200);
+        }
+
+        return data;
+      },
+    ],
+    afterRead: [
+      ({ doc, req }) => {
+        if (req?.method !== "GET") {
+          return doc
+        }
+
+        if (doc.contentHTML !== undefined) {
+          const { contentHTML, ...rest } = doc
+          return {
+            ...rest,
+            content: contentHTML,
+          }
+        }
+
+        return doc
+      },
+    ],
+  },
+  timestamps: true,
+};
