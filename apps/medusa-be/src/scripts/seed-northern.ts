@@ -228,7 +228,7 @@ function transformProduct(
     const price = product[field as keyof NorthernProduct]
     if (typeof price === "number" && price > 0) {
       prices.push({
-        amount: Math.round(price * 100), // convert to cents
+        amount: Math.round(price), // price in main currency unit (not cents)
         currency_code: currency,
       })
     }
