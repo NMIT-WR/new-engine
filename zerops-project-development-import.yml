@@ -64,6 +64,19 @@ services:
       cpu: 1
     priority: 80
 
+  - hostname: payload
+    type: nodejs@22
+    buildFromGit: https://github.com/NMIT-WR/new-engine
+    enableSubdomainAccess: true
+    envSecrets:
+      PAYLOAD_SECRET: <@generateRandomString(<32>)>
+      PAYLOAD_BASE_URL: https://payload-${zeropsSubdomainHost}-3000.prg1.zerops.app
+      PAYLOAD_API_KEY: ${PAYLOAD_API_KEY}
+    verticalAutoscaling:
+      minRam: 0.5
+      cpu: 1
+    priority: 85
+
 #  - hostname: nextstore
 #    type: nodejs@22
 #    buildFromGit: https://github.com/NMIT-WR/new-engine
