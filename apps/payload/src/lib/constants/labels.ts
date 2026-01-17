@@ -164,6 +164,21 @@ export const fieldLabels = {
     cs: 'Stav',
     sk: 'Stav',
   },
+  visibility: {
+    en: 'Visibility',
+    cs: 'Viditelnost',
+    sk: 'Viditeľnosť',
+  },
+  visibilityPublic: {
+    en: 'Public',
+    cs: 'Veřejné',
+    sk: 'Verejné',
+  },
+  visibilityCustomersOnly: {
+    en: 'Customers only',
+    cs: 'Pouze pro zákazníky',
+    sk: 'Len pre zákazníkov',
+  },
   publishDate: {
     en: 'Publish date',
     cs: 'Datum publikování',

@@ -42,6 +42,23 @@ export const Pages: CollectionConfig = {
       htmlFieldName: 'contentHTML',
       lexicalFieldName: 'content',
     }),
+    {
+      name: 'visibility',
+      label: fieldLabels.visibility,
+      type: 'select',
+      required: true,
+      defaultValue: 'public',
+      options: [
+        {
+          label: fieldLabels.visibilityPublic,
+          value: 'public',
+        },
+        {
+          label: fieldLabels.visibilityCustomersOnly,
+          value: 'customers-only',
+        },
+      ],
+    },
     createStatusField(),
     createPublishedDateField(),
     seoGroupField,
