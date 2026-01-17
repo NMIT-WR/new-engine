@@ -12,7 +12,7 @@ import { queryKeys } from "@/lib/query-keys"
 
 export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query
-export function useMedusaCart() {
+export function useCart() {
   const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
   const toast = useToast()
@@ -305,6 +305,3 @@ export function useMedusaCart() {
     items: cart?.items || [],
   }
 }
-
-// Re-export as default hook
-export { useMedusaCart as useCart }

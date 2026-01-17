@@ -160,14 +160,25 @@ export function CategoryTreeFilter({
       expandedValue={expandedNodes}
       expandOnClick={true}
       id="category-filter-v2"
-      label={label}
       onExpandedChange={handleExpandedChange}
       onSelectionChange={handleSelectionChange}
       selectedValue={selectedCategory ? [selectedCategory] : []}
+      selectionBehavior="custom"
       selectionMode="single"
-      showIndentGuides={false}
-      showNodeIcons={false}
-    />
+    >
+      {label && <TreeView.Label>{label}</TreeView.Label>}
+      <TreeView.Tree>
+        {treeData.map((node, index) => (
+          <TreeView.Node
+            indexPath={[index]}
+            key={node.id}
+            node={node}
+            showIndentGuides={false}
+            showNodeIcons={false}
+          />
+        ))}
+      </TreeView.Tree>
+    </TreeView>
   )
 }
 

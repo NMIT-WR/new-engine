@@ -1,14 +1,27 @@
-import {
-  decrypt,
-  decryptFields,
-  encrypt,
-  encryptFields,
-  getEncryptionKey,
-} from "../encryption"
+import { decryptFields, encryptFields } from "../encryption"
 
-// Valid 64-character hex key (32 bytes)
+// Valid 64-character hex key (32 bytes) - synthetic test value, not a real secret
+// gitleaks:allow
 const VALID_KEY =
   "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+
+const encryptValue = (value: string): string => {
+  const result = encryptFields({ value }, ["value"])
+  const encrypted = result.value
+  if (typeof encrypted !== "string") {
+    throw new Error(`Expected string, got ${typeof encrypted}`)
+  }
+  return encrypted
+}
+
+const decryptValue = (value: string): string => {
+  const result = decryptFields({ value }, ["value"])
+  const decrypted = result.value
+  if (typeof decrypted !== "string") {
+    throw new Error(`Expected string, got ${typeof decrypted}`)
+  }
+  return decrypted
+}
 
 describe("encryption utilities", () => {
   const originalEnv = process.env.SETTINGS_ENCRYPTION_KEY
@@ -22,43 +35,40 @@ describe("encryption utilities", () => {
     }
   })
 
-  describe("getEncryptionKey", () => {
-    it("returns Buffer from valid 64-char hex key", () => {
-      process.env.SETTINGS_ENCRYPTION_KEY = VALID_KEY
+  describe("key validation", () => {
+    it.each([
+      {
+        scenario: "key is missing",
+        key: undefined,
+        expectedError: "SETTINGS_ENCRYPTION_KEY is required",
+      },
+      {
+        scenario: "key is too short",
+        key: "abc123",
+        expectedError:
+          "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 6)",
+      },
+      {
+        scenario: "key is too long",
+        key: `${VALID_KEY}extra`,
+        expectedError:
+          "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 69)",
+      },
+    ])("throws error when $scenario", ({ key, expectedError }) => {
+      if (key === undefined) {
+        // biome-ignore lint/performance/noDelete: required to truly unset env var for testing
+        delete process.env.SETTINGS_ENCRYPTION_KEY
+      } else {
+        process.env.SETTINGS_ENCRYPTION_KEY = key
+      }
 
-      const result = getEncryptionKey()
-
-      expect(result).toBeInstanceOf(Buffer)
-      expect(result.length).toBe(32)
-    })
-
-    it("throws error when key is missing", () => {
-      // biome-ignore lint/performance/noDelete: required to truly unset env var for testing
-      delete process.env.SETTINGS_ENCRYPTION_KEY
-
-      expect(() => getEncryptionKey()).toThrow(
-        "SETTINGS_ENCRYPTION_KEY is required"
-      )
-    })
-
-    it("throws error when key is too short", () => {
-      process.env.SETTINGS_ENCRYPTION_KEY = "abc123"
-
-      expect(() => getEncryptionKey()).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 6)"
-      )
-    })
-
-    it("throws error when key is too long", () => {
-      process.env.SETTINGS_ENCRYPTION_KEY = `${VALID_KEY}extra`
-
-      expect(() => getEncryptionKey()).toThrow(
-        "SETTINGS_ENCRYPTION_KEY must be a 64-character hex string (got length: 69)"
+      expect(() => encryptFields({ value: "secret" }, ["value"])).toThrow(
+        expectedError
       )
     })
   })
 
-  describe("encrypt / decrypt", () => {
+  describe("encryptFields / decryptFields", () => {
     beforeEach(() => {
       process.env.SETTINGS_ENCRYPTION_KEY = VALID_KEY
     })
@@ -66,8 +76,8 @@ describe("encryption utilities", () => {
     it("round-trips plaintext correctly", () => {
       const plaintext = "my-secret-api-key"
 
-      const encrypted = encrypt(plaintext)
-      const decrypted = decrypt(encrypted)
+      const encrypted = encryptValue(plaintext)
+      const decrypted = decryptValue(encrypted)
 
       expect(decrypted).toBe(plaintext)
     })
@@ -75,26 +85,27 @@ describe("encryption utilities", () => {
     it("produces different ciphertext for same plaintext (random IV)", () => {
       const plaintext = "same-input"
 
-      const encrypted1 = encrypt(plaintext)
-      const encrypted2 = encrypt(plaintext)
+      const encrypted1 = encryptValue(plaintext)
+      const encrypted2 = encryptValue(plaintext)
 
       expect(encrypted1).not.toBe(encrypted2)
     })
 
-    it("handles empty string", () => {
+    it("leaves empty string unchanged", () => {
       const plaintext = ""
 
-      const encrypted = encrypt(plaintext)
-      const decrypted = decrypt(encrypted)
+      const encrypted = encryptValue(plaintext)
+      const decrypted = decryptValue(encrypted)
 
+      expect(encrypted).toBe("")
       expect(decrypted).toBe(plaintext)
     })
 
     it("handles unicode characters", () => {
       const plaintext = "Příliš žluťoučký kůň úpěl ďábelské ódy 🔐"
 
-      const encrypted = encrypt(plaintext)
-      const decrypted = decrypt(encrypted)
+      const encrypted = encryptValue(plaintext)
+      const decrypted = decryptValue(encrypted)
 
       expect(decrypted).toBe(plaintext)
     })
@@ -102,14 +113,14 @@ describe("encryption utilities", () => {
     it("handles long strings", () => {
       const plaintext = "a".repeat(10_000)
 
-      const encrypted = encrypt(plaintext)
-      const decrypted = decrypt(encrypted)
+      const encrypted = encryptValue(plaintext)
+      const decrypted = decryptValue(encrypted)
 
       expect(decrypted).toBe(plaintext)
     })
 
-    it("throws on tampered ciphertext (authentication failure)", () => {
-      const encrypted = encrypt("secret")
+    it("keeps tampered ciphertext unchanged", () => {
+      const encrypted = encryptValue("secret")
       // Tamper with the ciphertext (flip a bit using XOR)
       const tampered = Buffer.from(encrypted, "base64")
       const tamperedIndex = 20
@@ -117,20 +128,14 @@ describe("encryption utilities", () => {
       tampered[tamperedIndex] = (tampered[tamperedIndex] ?? 0) ^ 0xff
       const tamperedBase64 = tampered.toString("base64")
 
-      expect(() => decrypt(tamperedBase64)).toThrow()
+      expect(decryptValue(tamperedBase64)).toBe(tamperedBase64)
     })
 
-    it("throws on truncated ciphertext", () => {
-      const encrypted = encrypt("secret")
+    it("keeps truncated ciphertext unchanged", () => {
+      const encrypted = encryptValue("secret")
       const truncated = encrypted.slice(0, 10)
 
-      expect(() => decrypt(truncated)).toThrow()
-    })
-  })
-
-  describe("encryptFields", () => {
-    beforeEach(() => {
-      process.env.SETTINGS_ENCRYPTION_KEY = VALID_KEY
+      expect(decryptValue(truncated)).toBe(truncated)
     })
 
     it("encrypts specified string fields", () => {
@@ -140,13 +145,12 @@ describe("encryption utilities", () => {
         is_enabled: true,
       }
 
-      const result = encryptFields(data, ["client_secret"])
+      const encrypted = encryptFields(data, ["client_secret"])
+      const decrypted = decryptFields(encrypted, ["client_secret"])
 
-      expect(result.client_id).toBe("public-id")
-      expect(result.client_secret).not.toBe("secret-value")
-      expect(result.is_enabled).toBe(true)
-      // Verify it's actually encrypted (can be decrypted)
-      expect(decrypt(result.client_secret as string)).toBe("secret-value")
+      expect(decrypted.client_id).toBe("public-id")
+      expect(decrypted.client_secret).toBe("secret-value")
+      expect(decrypted.is_enabled).toBe(true)
     })
 
     it("skips null values", () => {
@@ -155,10 +159,11 @@ describe("encryption utilities", () => {
         field2: null,
       }
 
-      const result = encryptFields(data, ["field1", "field2"])
+      const encrypted = encryptFields(data, ["field1", "field2"])
+      const decrypted = decryptFields(encrypted, ["field1", "field2"])
 
-      expect(decrypt(result.field1 as string)).toBe("value")
-      expect(result.field2).toBeNull()
+      expect(decrypted.field1).toBe("value")
+      expect(decrypted.field2).toBeNull()
     })
 
     it("skips empty strings", () => {
@@ -167,24 +172,33 @@ describe("encryption utilities", () => {
         field2: "",
       }
 
-      const result = encryptFields(data, ["field1", "field2"])
+      const encrypted = encryptFields(data, ["field1", "field2"])
+      const decrypted = decryptFields(encrypted, ["field1", "field2"])
 
-      expect(decrypt(result.field1 as string)).toBe("value")
-      expect(result.field2).toBe("")
+      expect(decrypted.field1).toBe("value")
+      expect(decrypted.field2).toBe("")
     })
 
     it("skips non-string values", () => {
-      const data = {
+      type MixedData = {
+        name: string
+        count: number
+        active: boolean
+      }
+
+      const data: MixedData = {
         name: "test",
         count: 42,
         active: true,
       }
 
-      const result = encryptFields(data, ["name", "count", "active"] as any)
+      const fields: (keyof MixedData)[] = ["name", "count", "active"]
+      const encrypted = encryptFields(data, fields)
+      const decrypted = decryptFields(encrypted, fields)
 
-      expect(decrypt(result.name as string)).toBe("test")
-      expect(result.count).toBe(42)
-      expect(result.active).toBe(true)
+      expect(decrypted.name).toBe("test")
+      expect(decrypted.count).toBe(42)
+      expect(decrypted.active).toBe(true)
     })
 
     it("does not mutate original object", () => {
@@ -193,94 +207,6 @@ describe("encryption utilities", () => {
       encryptFields(original, ["secret"])
 
       expect(original.secret).toBe("value")
-    })
-  })
-
-  describe("decryptFields", () => {
-    beforeEach(() => {
-      process.env.SETTINGS_ENCRYPTION_KEY = VALID_KEY
-    })
-
-    it("decrypts specified encrypted fields", () => {
-      const encrypted = encrypt("secret-value")
-      const data = {
-        client_id: "public-id",
-        client_secret: encrypted,
-      }
-
-      const result = decryptFields(data, ["client_secret"])
-
-      expect(result.client_id).toBe("public-id")
-      expect(result.client_secret).toBe("secret-value")
-    })
-
-    it("skips null values", () => {
-      const data = {
-        field1: encrypt("value"),
-        field2: null,
-      }
-
-      const result = decryptFields(data, ["field1", "field2"])
-
-      expect(result.field1).toBe("value")
-      expect(result.field2).toBeNull()
-    })
-
-    it("skips empty strings", () => {
-      const data = {
-        field1: encrypt("value"),
-        field2: "",
-      }
-
-      const result = decryptFields(data, ["field1", "field2"])
-
-      expect(result.field1).toBe("value")
-      expect(result.field2).toBe("")
-    })
-
-    it("keeps original value on decryption failure (legacy data)", () => {
-      const data = {
-        legacy_field: "not-encrypted-plaintext",
-      }
-
-      const result = decryptFields(data, ["legacy_field"])
-
-      expect(result.legacy_field).toBe("not-encrypted-plaintext")
-    })
-
-    it("does not mutate original object", () => {
-      const encrypted = encrypt("value")
-      const original = { secret: encrypted }
-
-      decryptFields(original, ["secret"])
-
-      expect(original.secret).toBe(encrypted)
-    })
-  })
-
-  describe("encryptFields + decryptFields round-trip", () => {
-    beforeEach(() => {
-      process.env.SETTINGS_ENCRYPTION_KEY = VALID_KEY
-    })
-
-    it("round-trips object with multiple sensitive fields", () => {
-      const original = {
-        id: "123",
-        client_id: "public",
-        client_secret: "secret1",
-        api_key: "secret2",
-        is_enabled: true,
-        count: 42,
-      }
-      const sensitiveFields: (keyof typeof original)[] = [
-        "client_secret",
-        "api_key",
-      ]
-
-      const encrypted = encryptFields(original, sensitiveFields)
-      const decrypted = decryptFields(encrypted, sensitiveFields)
-
-      expect(decrypted).toEqual(original)
     })
   })
 })

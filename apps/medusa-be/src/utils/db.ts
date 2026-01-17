@@ -9,7 +9,7 @@ import * as schema from "./schema"
   'postgresql://neondb_owner:npg_Ozy4jRvtHDG5@ep-nameless-river-a2qn6c6z-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require',
   { schema }
 );*/
-export const db = drizzle(
+const db = drizzle(
   process.env.DATABASE_URL ||
     "postgresql://root:root@medusa-db:5432/medusa?sslmode=disable",
   { schema }

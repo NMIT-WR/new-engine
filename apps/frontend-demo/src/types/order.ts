@@ -177,10 +177,3 @@ export interface Order {
   original_tax_total: number
   original_total: number
 }
-
-export interface OrdersResponse {
-  orders: Order[]
-  count: number
-  offset: number
-  limit: number
-}

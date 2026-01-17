@@ -10,7 +10,7 @@ const config: StorybookConfig = {
     '@storybook/addon-onboarding',
     '@storybook/addon-links',
     '@storybook/addon-themes',
-    '@storybook/addon-a11y',
+    '@techsio/storybook-better-a11y',
     'storybook-addon-rslib',
   ],
   framework: {

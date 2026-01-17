@@ -100,8 +100,8 @@ export function Gallery({
                 <ImageComponent
                   alt={image.alt || `Obrázek produktu ${index + 1}`}
                   as={Image}
+                  className="object-cover"
                   height={thumbnailSize}
-                  objectFit="cover"
                   quality={40}
                   src={image.src || ""}
                   width={thumbnailSize}
@@ -116,16 +116,18 @@ export function Gallery({
       <div className={mainCarousel()}>
         <Carousel
           aspectRatio={aspectRatio}
-          height={carouselSize}
-          imageAs={Image}
           loop
           onPageChange={handlePageChange}
           page={currentPage}
           size={size}
           slideCount={images.length}
-          slides={images}
-          width={carouselSize}
-        />
+        >
+          <Carousel.Slides
+            height={carouselSize}
+            slides={images}
+            width={carouselSize}
+          />
+        </Carousel>
       </div>
     </div>
   )
