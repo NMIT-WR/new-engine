@@ -15,6 +15,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { autoTranslate } from '@pigment/auto-translate'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -30,6 +31,14 @@ const dirname = path.dirname(filename)
 
 const envLocales = parseEnvList('PAYLOAD_LOCALES')
 const defaultLocale = envLocales[0]
+const isArticlesEnabled = isEnabled('FEATURE_PAYLOAD_ARTICLES_ENABLED')
+const isPagesEnabled = isEnabled('FEATURE_PAYLOAD_PAGES_ENABLED')
+const isHeroCarouselsEnabled = isEnabled('FEATURE_PAYLOAD_HERO_CAROUSELS_ENABLED')
+const autoTranslateCollections = {
+  articles: isArticlesEnabled,
+  pages: isPagesEnabled,
+  'hero-carousels': isHeroCarouselsEnabled,
+}
 
 export default buildConfig({
   admin: {
@@ -52,9 +61,9 @@ export default buildConfig({
   collections: [
     Users,
     Media,
-    ...(isEnabled('FEATURE_PAYLOAD_ARTICLES_ENABLED') ? [ArticleCategories, Articles] : []),
-    ...(isEnabled('FEATURE_PAYLOAD_PAGES_ENABLED') ? [PageCategories, Pages] : []),
-    ...(isEnabled('FEATURE_PAYLOAD_HERO_CAROUSELS_ENABLED') ? [HeroCarousels] : []),
+    ...(isArticlesEnabled ? [ArticleCategories, Articles] : []),
+    ...(isPagesEnabled ? [PageCategories, Pages] : []),
+    ...(isHeroCarouselsEnabled ? [HeroCarousels] : []),
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -68,6 +77,24 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    autoTranslate({
+      excludeFields: [
+        'id',
+        '_id',
+        'createdAt',
+        'updatedAt',
+        'status',
+        'author',
+        'featuredImage',
+        'readingTime',
+        'analytics',
+        'image',
+      ],
+      collections: autoTranslateCollections,
+      enableTranslationSyncByDefault: true,
+      translationExclusionsSlug: 'translation-exclusions',
+      enableExclusions: true,
+    }),
     s3Storage({
       collections: {
         media: true,

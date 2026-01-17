@@ -74,6 +74,7 @@ export interface Config {
     'page-categories': PageCategory;
     pages: Page;
     'hero-carousels': HeroCarousel;
+    'translation-exclusions': TranslationExclusion;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     'page-categories': PageCategoriesSelect<false> | PageCategoriesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'hero-carousels': HeroCarouselsSelect<false> | HeroCarouselsSelect<true>;
+    'translation-exclusions': TranslationExclusionsSelect<false> | TranslationExclusionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -97,8 +99,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('cs' | 'sk' | 'en') | ('cs' | 'sk' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'translation-settings': TranslationSetting;
+  };
+  globalsSelect: {
+    'translation-settings': TranslationSettingsSelect<false> | TranslationSettingsSelect<true>;
+  };
   locale: 'cs' | 'sk' | 'en';
   user: User & {
     collection: 'users';
@@ -248,6 +254,10 @@ export interface Article {
     shares?: number | null;
     lastViewed?: string | null;
   };
+  /**
+   * When enabled, changes in the default language will automatically translate to other languages
+   */
+  translationSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -293,6 +303,7 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   contentHTML?: string | null;
+  visibility: 'public' | 'customers-only';
   status: 'draft' | 'published' | 'archived';
   publishedDate: string;
   seo?: {
@@ -300,6 +311,10 @@ export interface Page {
     metaDescription?: string | null;
     metaImage?: (number | null) | Media;
   };
+  /**
+   * When enabled, changes in the default language will automatically translate to other languages
+   */
+  translationSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -314,6 +329,43 @@ export interface HeroCarousel {
   subheading?: string | null;
   button?: string | null;
   buttonHref?: string | null;
+  /**
+   * When enabled, changes in the default language will automatically translate to other languages
+   */
+  translationSync?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Stores field-level translation exclusions per document and locale. Each locale can have its own set of excluded fields. There should only be ONE record per (collectionSlug, documentId, locale) combination.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "translation-exclusions".
+ */
+export interface TranslationExclusion {
+  id: number;
+  /**
+   * The collection this exclusion belongs to
+   */
+  collectionSlug: string;
+  /**
+   * The ID of the document
+   */
+  documentId: string;
+  /**
+   * The locale these exclusions apply to (e.g., "en", "de", "fr")
+   */
+  locale: string;
+  /**
+   * Fields that should NOT be auto-translated in this specific locale. Each locale has its own independent set of exclusions.
+   */
+  excludedPaths: {
+    /**
+     * Field path (e.g., "title", "content.0.description")
+     */
+    path: string;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -368,6 +420,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'hero-carousels';
         value: number | HeroCarousel;
+      } | null)
+    | ({
+        relationTo: 'translation-exclusions';
+        value: number | TranslationExclusion;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -497,6 +553,7 @@ export interface ArticlesSelect<T extends boolean = true> {
         shares?: T;
         lastViewed?: T;
       };
+  translationSync?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -520,6 +577,7 @@ export interface PagesSelect<T extends boolean = true> {
   category?: T;
   content?: T;
   contentHTML?: T;
+  visibility?: T;
   status?: T;
   publishedDate?: T;
   seo?:
@@ -529,6 +587,7 @@ export interface PagesSelect<T extends boolean = true> {
         metaDescription?: T;
         metaImage?: T;
       };
+  translationSync?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -542,6 +601,24 @@ export interface HeroCarouselsSelect<T extends boolean = true> {
   subheading?: T;
   button?: T;
   buttonHref?: T;
+  translationSync?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "translation-exclusions_select".
+ */
+export interface TranslationExclusionsSelect<T extends boolean = true> {
+  collectionSlug?: T;
+  documentId?: T;
+  locale?: T;
+  excludedPaths?:
+    | T
+    | {
+        path?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -584,6 +661,53 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Configure translation settings including the system prompt and model parameters
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "translation-settings".
+ */
+export interface TranslationSetting {
+  id: number;
+  lockTranslationSettings?: boolean | null;
+  /**
+   * The main instruction for the AI translator. Use {fromLocale} and {toLocale} as placeholders.
+   */
+  systemPrompt: string;
+  /**
+   * ⚠️ Do not edit if you don't know what you are doing. These rules ensure proper JSON translation behavior.
+   */
+  translationRules: string;
+  /**
+   * The OpenAI model to use for translations (e.g., gpt-4o, gpt-4o-mini)
+   */
+  model: string;
+  /**
+   * Controls randomness in translation (0.0-2.0). Lower values are more deterministic.
+   */
+  temperature: number;
+  /**
+   * Maximum tokens for the response. Leave empty for automatic.
+   */
+  maxTokens?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "translation-settings_select".
+ */
+export interface TranslationSettingsSelect<T extends boolean = true> {
+  lockTranslationSettings?: T;
+  systemPrompt?: T;
+  translationRules?: T;
+  model?: T;
+  temperature?: T;
+  maxTokens?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
