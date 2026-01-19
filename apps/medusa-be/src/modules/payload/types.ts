@@ -2,6 +2,8 @@ export interface PayloadModuleOptions {
   serverUrl: string
   apiKey: string
   userCollection?: string
+  contentCacheTtl?: number
+  listCacheTtl?: number
 }
 
 export interface PayloadCollectionItem {

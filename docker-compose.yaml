@@ -65,11 +65,11 @@ services:
       context: .
       dockerfile: docker/development/pnpm/Dockerfile
     working_dir: /var/www
-    command: pnpm --filter=payload run dev --hostname 0.0.0.0 --port 3001
+    command: pnpm --filter=payload run dev --hostname 0.0.0.0 --port 8083
     volumes:
       - .:/var/www
     ports:
-      - "3001:3001"
+      - "8083:8083"
     depends_on:
       - medusa-db
     networks:
