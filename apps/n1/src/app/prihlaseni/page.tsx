@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { LoginForm } from '@/components/forms/login-form'
+import { LoginForm } from "@/components/forms/login-form"
 
 export default function LoginPage() {
   return (

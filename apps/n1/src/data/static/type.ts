@@ -1,4 +1,4 @@
-export interface Category {
+export type Category = {
   id: string
   name: string
   handle: string
@@ -7,7 +7,7 @@ export interface Category {
   root_category_id?: string | null
 }
 
-export interface CategoryTreeNode {
+export type CategoryTreeNode = {
   id: string
   name: string
   handle: string
@@ -15,4 +15,3 @@ export interface CategoryTreeNode {
   children?: CategoryTreeNode[]
   parent_category_id?: string | null
 }
-

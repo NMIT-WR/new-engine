@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useEffect, useState } from 'react'
-import { Select, type SelectItem } from '../../src/molecules/select'
+import { Select } from '../../src/molecules/select'
 import { Steps } from '../../src/molecules/steps'
 
 const meta: Meta<typeof Steps> = {

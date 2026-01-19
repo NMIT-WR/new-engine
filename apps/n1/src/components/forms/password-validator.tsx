@@ -1,7 +1,7 @@
 import { Icon } from "@ui/atoms/icon"
 import { PASSWORD_REQUIREMENTS } from "@/lib/form-validators"
 
-interface PasswordValidatorProps {
+type PasswordValidatorProps = {
   password: string
   showRequirements?: boolean
   className?: string

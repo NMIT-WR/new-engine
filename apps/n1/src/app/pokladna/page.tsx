@@ -66,8 +66,7 @@ function CheckoutContent() {
       numItems: items.reduce((sum, item) => sum + (item.quantity || 0), 0),
       productIds: items.map((item) => item.variant_id || ""),
     })
-  }, [cart?.id, hasItems, analytics])
-
+  }, [cart?.id, hasItems, analytics, cart.currency_code, cart.items, cart])
 
   if (!(hasItems && cart)) {
     return (

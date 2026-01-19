@@ -3,7 +3,7 @@
  * Provides consistent logging format across all prefetch systems
  */
 
-type PrefetchType = 'Root' | 'Categories' | 'Pages' | 'Children' | 'Product'
+type PrefetchType = "Root" | "Categories" | "Pages" | "Children" | "Product"
 
 export const prefetchLogger = {
   /**
@@ -12,15 +12,17 @@ export const prefetchLogger = {
   start: (
     type: PrefetchType,
     label: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) => {
-    if (process.env.NODE_ENV !== 'development') return
+    if (process.env.NODE_ENV !== "development") {
+      return
+    }
 
     const metaStr = metadata
       ? ` ${Object.entries(metadata)
           .map(([k, v]) => `${k}:${v}`)
-          .join(', ')}`
-      : ''
+          .join(", ")}`
+      : ""
 
     console.log(`🚀 [Prefetch ${type}] ${label}${metaStr}`)
   },
@@ -29,7 +31,9 @@ export const prefetchLogger = {
    * Log prefetch completion
    */
   complete: (type: PrefetchType, label: string, duration: number) => {
-    if (process.env.NODE_ENV !== 'development') return
+    if (process.env.NODE_ENV !== "development") {
+      return
+    }
 
     console.log(
       `✅ [Prefetch ${type}] ${label} ready in ${Math.round(duration)}ms`
@@ -40,9 +44,11 @@ export const prefetchLogger = {
    * Log prefetch skip
    */
   skip: (type: PrefetchType, label: string, reason?: string) => {
-    if (process.env.NODE_ENV !== 'development') return
+    if (process.env.NODE_ENV !== "development") {
+      return
+    }
 
-    const reasonStr = reason ? ` (${reason})` : ''
+    const reasonStr = reason ? ` (${reason})` : ""
     console.log(`⏭️ [Prefetch ${type}] ${label} skipped${reasonStr}`)
   },
 
@@ -50,7 +56,9 @@ export const prefetchLogger = {
    * Log cache hit
    */
   cacheHit: (type: PrefetchType, label: string) => {
-    if (process.env.NODE_ENV !== 'development') return
+    if (process.env.NODE_ENV !== "development") {
+      return
+    }
 
     console.log(`💾 [Cache hit ${type}] ${label}`)
   },
@@ -59,7 +67,9 @@ export const prefetchLogger = {
    * Log general info
    */
   info: (type: PrefetchType, message: string) => {
-    if (process.env.NODE_ENV !== 'development') return
+    if (process.env.NODE_ENV !== "development") {
+      return
+    }
 
     console.log(`ℹ️ [Prefetch ${type}] ${message}`)
   },

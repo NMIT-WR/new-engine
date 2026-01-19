@@ -1,20 +1,28 @@
+import type { StoreProduct } from "@medusajs/types"
+import { slugify } from "@techsio/ui-kit/utils"
 import type {
   Product,
   ProductDetail,
   ProductImage,
   ProductVariantDetail,
   StoreProductExtended,
-} from '@/types/product'
-import type { StoreProduct } from '@medusajs/types'
-import { slugify } from '@techsio/ui-kit/utils'
-import { formatPrice, formatVariants } from '../format/format-product'
+} from "@/types/product"
+import { formatPrice, formatVariants } from "../format/format-product"
 
-const formatStockValue = (variants?: StoreProduct['variants']): 'Skladem' | 'Vyprodáno' => {
-  if (!variants || variants.length === 0 || variants.every(v => v.inventory_quantity === 0)) {
-    return 'Vyprodáno'
+const IMAGE_PREFIX_REGEX = /^[a-f0-9]{10}-/
+
+const formatStockValue = (
+  variants?: StoreProduct["variants"]
+): "Skladem" | "Vyprodáno" => {
+  if (
+    !variants ||
+    variants.length === 0 ||
+    variants.every((v) => v.inventory_quantity === 0)
+  ) {
+    return "Vyprodáno"
   }
 
-  return 'Skladem'
+  return "Skladem"
 }
 
 /**
@@ -26,23 +34,23 @@ const getBaseProductFields = (product: StoreProduct) => ({
   title: product.title,
   price: formatPrice({ variants: product.variants }),
   withoutTax: formatPrice({ variants: product.variants, tax: false }),
-  imageSrc: product.thumbnail || '/placeholder.jpg',
+  imageSrc: product.thumbnail || "/placeholder.jpg",
   stockValue: formatStockValue(product.variants),
 })
 
-export const transformProduct = (product: StoreProduct): Product => {
-  return {
-    ...getBaseProductFields(product),
-    variants: formatVariants(product.variants),
-  }
-}
+export const transformProduct = (product: StoreProduct): Product => ({
+  ...getBaseProductFields(product),
+  variants: formatVariants(product.variants),
+})
 
 const removeDuplicatedImageUrl = (images: ProductImage[]) => {
   const uniqueUrls = new Set<string>()
   return images.filter((img) => {
-    const filename = img.src.split('/').pop() || ''
-    const baseName = filename.replace(/^[a-f0-9]{10}-/, '')
-    if (uniqueUrls.has(baseName)) return false
+    const filename = img.src.split("/").pop() || ""
+    const baseName = filename.replace(IMAGE_PREFIX_REGEX, "")
+    if (uniqueUrls.has(baseName)) {
+      return false
+    }
     uniqueUrls.add(baseName)
     return true
   })
@@ -56,7 +64,7 @@ export const transformProductDetail = (
   product: StoreProductExtended
 ): ProductDetail => {
   const variantMetadata = product.variants?.[0]
-    ?.metadata as ProductVariantDetail['metadata']
+    ?.metadata as ProductVariantDetail["metadata"]
   const variantImages = variantMetadata?.images
   const imagesData: ProductImage[] =
     variantImages && variantImages.length > 0
@@ -74,7 +82,7 @@ export const transformProductDetail = (
   const variants: ProductVariantDetail[] =
     product.variants?.map((variant) => ({
       id: variant.id,
-      title: variant.title || '',
+      title: variant.title || "",
       sku: variant.sku,
       barcode: variant.barcode,
       ean: variant.ean,
@@ -83,7 +91,7 @@ export const transformProductDetail = (
       allow_backorder: variant.allow_backorder ?? false,
       inventory_quantity: variant.inventory_quantity ?? undefined,
       manage_inventory: variant.manage_inventory ?? true,
-      metadata: variant.metadata as ProductVariantDetail['metadata'],
+      metadata: variant.metadata as ProductVariantDetail["metadata"],
       calculated_price: variant.calculated_price
         ? {
             calculated_amount: variant.calculated_price.calculated_amount,
@@ -111,7 +119,7 @@ export const transformProductDetail = (
     material: product.material,
 
     // Full data
-    images: images,
+    images,
     variants,
     tags:
       product.tags?.map((tag) => ({

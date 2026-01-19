@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useAnalytics } from '@/providers/analytics-provider'
-import { usePathname } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { usePathname } from "next/navigation"
+import { useEffect, useRef } from "react"
+import { useAnalytics } from "@/providers/analytics-provider"
 
 /**
  * Tracks pageviews on route changes (Leadhub only)
@@ -15,7 +15,9 @@ export function PageviewTracker() {
 
   useEffect(() => {
     // Skip if same pathname (prevents double tracking)
-    if (lastPathname.current === pathname) return
+    if (lastPathname.current === pathname) {
+      return
+    }
     lastPathname.current = pathname
 
     analytics.trackPageview()

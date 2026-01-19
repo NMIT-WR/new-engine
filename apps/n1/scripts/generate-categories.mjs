@@ -8,17 +8,17 @@
  * Test with: pnpm run test:categories
  */
 
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import dotenv from 'dotenv'
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import dotenv from "dotenv"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Load environment variables - try .env first, then .env.local
-dotenv.config({ path: path.join(__dirname, '../.env') })
-dotenv.config({ path: path.join(__dirname, '../.env.local') })
+dotenv.config({ path: path.join(__dirname, "../.env") })
+dotenv.config({ path: path.join(__dirname, "../.env.local") })
 
 // ============================================================================
 // API FETCH FUNCTIONS
@@ -29,16 +29,16 @@ dotenv.config({ path: path.join(__dirname, '../.env.local') })
  */
 async function fetchCategoriesDirectly() {
   const baseUrl =
-    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
   const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   }
 
   if (publishableKey) {
-    headers['x-publishable-api-key'] = publishableKey
+    headers["x-publishable-api-key"] = publishableKey
   }
 
   console.log(`Fetching categories from: ${baseUrl}/store/product-categories`)
@@ -61,18 +61,19 @@ async function fetchCategoriesDirectly() {
 /**
  * Fetch products and determine which categories have products
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: paging with nested category aggregation
 async function fetchProductsAndCategorizesByCategory() {
   const baseUrl =
-    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
   const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   }
 
   if (publishableKey) {
-    headers['x-publishable-api-key'] = publishableKey
+    headers["x-publishable-api-key"] = publishableKey
   }
 
   console.log(`Fetching products from: ${baseUrl}/store/products`)
@@ -97,15 +98,15 @@ async function fetchProductsAndCategorizesByCategory() {
     const data = await response.json()
     const products = data.products || []
 
-    products.forEach((product) => {
+    for (const product of products) {
       if (product.categories && Array.isArray(product.categories)) {
-        product.categories.forEach((category) => {
+        for (const category of product.categories) {
           if (category.id) {
             categoriesWithProducts.add(category.id)
           }
-        })
+        }
       }
-    })
+    }
 
     hasMore = products.length === limit
     offset += limit
@@ -124,14 +125,14 @@ async function fetchProductsAndCategorizesByCategory() {
 // ============================================================================
 
 const ROOT_CATEGORY_ORDER = [
-  'Pánské',
-  'Dámské',
-  'Dětské',
-  'Oblečení',
-  'Cyklo',
-  'Moto',
-  'Snb-Skate',
-  'Ski',
+  "Pánské",
+  "Dámské",
+  "Dětské",
+  "Oblečení",
+  "Cyklo",
+  "Moto",
+  "Snb-Skate",
+  "Ski",
 ]
 
 /**
@@ -142,7 +143,7 @@ function buildCategoryTree(categories) {
   const rootNodes = []
 
   // First pass: create all nodes
-  categories.forEach((cat) => {
+  for (const cat of categories) {
     categoryMap.set(cat.id, {
       id: cat.id,
       name: cat.name,
@@ -150,10 +151,10 @@ function buildCategoryTree(categories) {
       description: cat.description,
       children: [],
     })
-  })
+  }
 
   // Second pass: build tree structure
-  categories.forEach((cat) => {
+  for (const cat of categories) {
     const node = categoryMap.get(cat.id)
 
     if (cat.parent_category_id) {
@@ -165,7 +166,7 @@ function buildCategoryTree(categories) {
     } else {
       rootNodes.push(node)
     }
-  })
+  }
 
   // Sort root nodes
   return rootNodes.sort((a, b) => {
@@ -176,8 +177,12 @@ function buildCategoryTree(categories) {
       return indexA - indexB
     }
 
-    if (indexA !== -1) return -1
-    if (indexB !== -1) return 1
+    if (indexA !== -1) {
+      return -1
+    }
+    if (indexB !== -1) {
+      return 1
+    }
 
     return a.name.localeCompare(b.name)
   })
@@ -190,18 +195,18 @@ function categoryHasProducts(
   categoryId,
   categoriesWithProducts,
   categoryTree,
-  categoryMap
+  _categoryMap
 ) {
   if (categoriesWithProducts.has(categoryId)) {
     return true
   }
 
-  function checkDescendants(node) {
-    if (categoriesWithProducts.has(node.id)) {
+  function checkDescendants(candidate) {
+    if (categoriesWithProducts.has(candidate.id)) {
       return true
     }
 
-    for (const child of node.children) {
+    for (const child of candidate.children) {
       if (checkDescendants(child)) {
         return true
       }
@@ -223,8 +228,8 @@ function categoryHasProducts(
     return null
   }
 
-  const node = findNodeInTree(categoryTree, categoryId)
-  return node ? checkDescendants(node) : false
+  const targetNode = findNodeInTree(categoryTree, categoryId)
+  return targetNode ? checkDescendants(targetNode) : false
 }
 
 /**
@@ -238,7 +243,7 @@ function filterCategoriesWithProducts(
 ) {
   const categoriesToKeep = new Set()
 
-  categories.forEach((category) => {
+  for (const category of categories) {
     if (
       categoryHasProducts(
         category.id,
@@ -257,7 +262,7 @@ function filterCategoriesWithProducts(
         currentId = parentCategory?.parent_category_id
       }
     }
-  })
+  }
 
   return categories.filter((category) => categoriesToKeep.has(category.id))
 }
@@ -283,14 +288,16 @@ function addRootCategoryIds(categories, categoryMap) {
     }
 
     let current = categoryMap[categoryId]
-    const path = [categoryId] // Track path for caching
+    const pathIds = [categoryId] // Track path for caching
 
     // Walk up the tree until we find root (parent_category_id === null)
     while (current?.parent_category_id) {
       const parentId = current.parent_category_id
       current = categoryMap[parentId]
-      if (!current) break
-      path.push(parentId)
+      if (!current) {
+        break
+      }
+      pathIds.push(parentId)
     }
 
     // Root ID is:
@@ -299,21 +306,20 @@ function addRootCategoryIds(categories, categoryMap) {
     const rootId = current?.parent_category_id === null ? current.id : null
 
     // Cache entire path for future lookups (O(1) for subsequent calls)
-    path.forEach(id => {
+    for (const id of pathIds) {
       rootCache.set(id, rootId)
-    })
+    }
 
     return rootId
   }
 
   // Add root_category_id to all categories
-  categories.forEach(cat => {
+  for (const cat of categories) {
     // If category is root (no parent), root_category_id is null
     // Otherwise, find the root category
-    cat.root_category_id = cat.parent_category_id === null
-      ? null
-      : findRootId(cat.id)
-  })
+    cat.root_category_id =
+      cat.parent_category_id === null ? null : findRootId(cat.id)
+  }
 
   return categories
 }
@@ -339,11 +345,15 @@ function extractLeafsAndParents(categoryTree, allCategoriesMap) {
         root_category_id: categoryData?.root_category_id, // NEW: Include root_category_id
       })
     } else {
-      node.children.forEach((child) => identifyLeafs(child))
+      for (const child of node.children) {
+        identifyLeafs(child)
+      }
     }
   }
 
-  categoryTree.forEach((rootNode) => identifyLeafs(rootNode))
+  for (const rootNode of categoryTree) {
+    identifyLeafs(rootNode)
+  }
 
   function collectAllNestedLeafs(node) {
     const nestedLeafs = []
@@ -352,7 +362,9 @@ function extractLeafsAndParents(categoryTree, allCategoriesMap) {
       if (n.children.length === 0) {
         nestedLeafs.push(n.id)
       } else {
-        n.children.forEach((child) => traverse(child))
+        for (const child of n.children) {
+          traverse(child)
+        }
       }
     }
 
@@ -377,10 +389,14 @@ function extractLeafsAndParents(categoryTree, allCategoriesMap) {
       })
     }
 
-    node.children.forEach((child) => checkForLeafParents(child))
+    for (const child of node.children) {
+      checkForLeafParents(child)
+    }
   }
 
-  categoryTree.forEach((rootNode) => checkForLeafParents(rootNode))
+  for (const rootNode of categoryTree) {
+    checkForLeafParents(rootNode)
+  }
 
   return {
     leafCategories,
@@ -395,87 +411,104 @@ function extractLeafsAndParents(categoryTree, allCategoriesMap) {
 /**
  * Test root_category_id correctness
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: verbose test output and branching
 function testRootCategoryIds(allCategories, categoryMap, rootCategories) {
-  console.log('\n🧪 Running tests for root_category_id...')
+  console.log("\n🧪 Running tests for root_category_id...")
 
   let passedTests = 0
   let failedTests = 0
 
   // Test 1: Root categories should have root_category_id === null
-  console.log('\n  Test 1: Root categories have root_category_id === null')
-  rootCategories.forEach(root => {
+  console.log("\n  Test 1: Root categories have root_category_id === null")
+  for (const root of rootCategories) {
     if (root.root_category_id === null) {
-      passedTests++
+      passedTests += 1
     } else {
-      console.error(`    ❌ FAIL: Root category "${root.name}" (${root.id}) has root_category_id=${root.root_category_id}, expected null`)
-      failedTests++
+      console.error(
+        `    ❌ FAIL: Root category "${root.name}" (${root.id}) has root_category_id=${root.root_category_id}, expected null`
+      )
+      failedTests += 1
     }
-  })
+  }
   console.log(`    ✅ ${rootCategories.length} root categories checked`)
 
   // Test 2: Non-root categories should have root_category_id set
-  console.log('\n  Test 2: Non-root categories have root_category_id set')
-  const nonRootCategories = allCategories.filter(cat => cat.parent_category_id !== null)
+  console.log("\n  Test 2: Non-root categories have root_category_id set")
+  const nonRootCategories = allCategories.filter(
+    (cat) => cat.parent_category_id !== null
+  )
   let nonRootWithoutRootId = 0
 
-  nonRootCategories.forEach(cat => {
+  for (const cat of nonRootCategories) {
     if (cat.root_category_id === null || cat.root_category_id === undefined) {
-      console.error(`    ❌ FAIL: Non-root category "${cat.name}" (${cat.id}) has root_category_id=${cat.root_category_id}`)
-      failedTests++
-      nonRootWithoutRootId++
+      console.error(
+        `    ❌ FAIL: Non-root category "${cat.name}" (${cat.id}) has root_category_id=${cat.root_category_id}`
+      )
+      failedTests += 1
+      nonRootWithoutRootId += 1
     } else {
-      passedTests++
+      passedTests += 1
     }
-  })
+  }
 
   if (nonRootWithoutRootId === 0) {
-    console.log(`    ✅ All ${nonRootCategories.length} non-root categories have root_category_id set`)
+    console.log(
+      `    ✅ All ${nonRootCategories.length} non-root categories have root_category_id set`
+    )
   } else {
-    console.error(`    ❌ ${nonRootWithoutRootId} non-root categories missing root_category_id`)
+    console.error(
+      `    ❌ ${nonRootWithoutRootId} non-root categories missing root_category_id`
+    )
   }
 
   // Test 3: Verify root_category_id points to actual root category
-  console.log('\n  Test 3: root_category_id points to valid root category')
-  const rootIds = new Set(rootCategories.map(r => r.id))
+  console.log("\n  Test 3: root_category_id points to valid root category")
+  const rootIds = new Set(rootCategories.map((r) => r.id))
 
-  nonRootCategories.forEach(cat => {
+  for (const cat of nonRootCategories) {
     if (cat.root_category_id && !rootIds.has(cat.root_category_id)) {
-      console.error(`    ❌ FAIL: Category "${cat.name}" has invalid root_category_id=${cat.root_category_id}`)
-      failedTests++
+      console.error(
+        `    ❌ FAIL: Category "${cat.name}" has invalid root_category_id=${cat.root_category_id}`
+      )
+      failedTests += 1
     } else if (cat.root_category_id) {
-      passedTests++
+      passedTests += 1
     }
-  })
-  console.log(`    ✅ All root_category_id values point to valid root categories`)
+  }
+  console.log(
+    "    ✅ All root_category_id values point to valid root categories"
+  )
 
   // Test 4: Sample deep categories
-  console.log('\n  Test 4: Sample deep category chains')
+  console.log("\n  Test 4: Sample deep category chains")
   const sampleDeepCategories = allCategories
-    .filter(cat => {
+    .filter((cat) => {
       // Find categories that are at least 3 levels deep
       let depth = 0
       let current = cat
       while (current?.parent_category_id) {
-        depth++
+        depth += 1
         current = categoryMap[current.parent_category_id]
       }
       return depth >= 3
     })
     .slice(0, 3) // Just test 3 samples
 
-  sampleDeepCategories.forEach(cat => {
+  for (const cat of sampleDeepCategories) {
     const rootCat = categoryMap[cat.root_category_id]
     if (rootCat && rootCat.parent_category_id === null) {
       console.log(`    ✅ "${cat.name}" → root: "${rootCat.name}"`)
-      passedTests++
+      passedTests += 1
     } else {
-      console.error(`    ❌ FAIL: Deep category "${cat.name}" has incorrect root_category_id`)
-      failedTests++
+      console.error(
+        `    ❌ FAIL: Deep category "${cat.name}" has incorrect root_category_id`
+      )
+      failedTests += 1
     }
-  })
+  }
 
   // Summary
-  console.log('\n📊 Test Summary:')
+  console.log("\n📊 Test Summary:")
   console.log(`  ✅ Passed: ${passedTests}`)
   console.log(`  ❌ Failed: ${failedTests}`)
   console.log(`  Total: ${passedTests + failedTests}`)
@@ -484,7 +517,7 @@ function testRootCategoryIds(allCategories, categoryMap, rootCategories) {
     throw new Error(`❌ ${failedTests} test(s) failed!`)
   }
 
-  console.log('\n✅ All tests passed!')
+  console.log("\n✅ All tests passed!")
   return true
 }
 
@@ -493,8 +526,8 @@ function testRootCategoryIds(allCategories, categoryMap, rootCategories) {
 // ============================================================================
 
 async function generateCategories() {
-  console.log('🔄 Generating static category data for n1...')
-  console.log('📋 NEW FEATURE: Adding root_category_id to all categories\n')
+  console.log("🔄 Generating static category data for n1...")
+  console.log("📋 NEW FEATURE: Adding root_category_id to all categories\n")
 
   try {
     // Fetch categories from API
@@ -517,9 +550,9 @@ async function generateCategories() {
 
     // Create category map for lookups
     const categoryMapRaw = {}
-    allCategoriesRaw.forEach((cat) => {
+    for (const cat of allCategoriesRaw) {
       categoryMapRaw[cat.id] = cat
-    })
+    }
 
     // Build initial tree to help with descendant checking
     const initialCategoryTree = buildCategoryTree(allCategoriesRaw)
@@ -539,14 +572,14 @@ async function generateCategories() {
 
     // Create category map from filtered categories
     const categoryMap = {}
-    allCategories.forEach((cat) => {
+    for (const cat of allCategories) {
       categoryMap[cat.id] = cat
-    })
+    }
 
     // ⭐ NEW: Add root_category_id to all categories
-    console.log('\n⭐ Adding root_category_id to all categories...')
+    console.log("\n⭐ Adding root_category_id to all categories...")
     addRootCategoryIds(allCategories, categoryMap)
-    console.log('✅ root_category_id added to all categories')
+    console.log("✅ root_category_id added to all categories")
 
     // Filter and sort root categories
     const rootCategories = allCategories
@@ -559,8 +592,12 @@ async function generateCategories() {
           return indexA - indexB
         }
 
-        if (indexA !== -1) return -1
-        if (indexB !== -1) return 1
+        if (indexA !== -1) {
+          return -1
+        }
+        if (indexB !== -1) {
+          return 1
+        }
 
         return a.name.localeCompare(b.name)
       })
@@ -596,7 +633,7 @@ async function generateCategories() {
     // Write TypeScript module to src/data/static/categories.ts
     const tsOutputPath = path.join(
       __dirname,
-      '../src/data/static/categories.ts'
+      "../src/data/static/categories.ts"
     )
     const tsDir = path.dirname(tsOutputPath)
 
@@ -654,10 +691,10 @@ export const { allCategories, categoryTree, rootCategories, categoryMap, leafCat
     fs.writeFileSync(tsOutputPath, tsContent)
 
     console.log(
-      '\n✅ Category data with root_category_id generated successfully!'
+      "\n✅ Category data with root_category_id generated successfully!"
     )
     console.log(`📁 TypeScript module saved to: ${tsOutputPath}`)
-    console.log(`📊 Stats:`)
+    console.log("📊 Stats:")
     console.log(
       `   - Total categories (before filtering): ${allCategoriesRaw.length}`
     )
@@ -673,9 +710,11 @@ export const { allCategories, categoryTree, rootCategories, categoryMap, leafCat
     console.log(`   - Root categories: ${rootCategories.length}`)
     console.log(`   - Leaf categories: ${leafCategories.length}`)
     console.log(`   - Leaf parents: ${leafParents.length}`)
-    console.log(`\n   ⭐ NEW: All categories now have root_category_id attribute`)
+    console.log(
+      "\n   ⭐ NEW: All categories now have root_category_id attribute"
+    )
   } catch (error) {
-    console.error('❌ Error generating categories:', error)
+    console.error("❌ Error generating categories:", error)
     process.exit(1)
   }
 }

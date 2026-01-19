@@ -1,8 +1,8 @@
-import { Heading } from '@/components/heading'
+import { Heading } from "@/components/heading"
 
 export default function ZpusobyDopravyPage() {
   return (
-    <article className=" space-y-600">
+    <article className="space-y-600">
       <Heading>Způsoby dopravy</Heading>
 
       <section className="space-y-400">

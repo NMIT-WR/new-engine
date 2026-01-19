@@ -1,14 +1,14 @@
-import { useDebounce } from '@/hooks/use-debounce'
-import type { CartLineItem } from '@/services/cart-service'
-import { formatToTaxIncluded } from '@/utils/format/format-product'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { NumericInput } from '@techsio/ui-kit/atoms/numeric-input'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { NumericInput } from "@techsio/ui-kit/atoms/numeric-input"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { useDebounce } from "@/hooks/use-debounce"
+import type { CartLineItem } from "@/services/cart-service"
+import { formatToTaxIncluded } from "@/utils/format/format-product"
 
-interface CartItemProps {
+type CartItemProps = {
   item: CartLineItem
   onUpdateQuantity: (quantity: number) => void
   onRemove: () => void
@@ -24,7 +24,7 @@ export const CartItem = ({
   isOptimistic = false,
 }: CartItemProps) => {
   const [localQuantity, setLocalQuantity] = useState(item.quantity)
-  const title = item.product_title || item.title || 'Unknown Product'
+  const title = item.product_title || item.title || "Unknown Product"
   const variantTitle = item.variant_title
   const thumbnail = item.thumbnail
   const effectiveMax =
@@ -52,24 +52,24 @@ export const CartItem = ({
 
   return (
     <div
-      className={`flex gap-300 py-300 first:pt-0 last:pb-0 ${isOptimistic ? 'opacity-60' : ''}
-        ${isPending ? 'pointer-events-none' : ''}
+      className={`flex gap-300 py-300 first:pt-0 last:pb-0 ${isOptimistic ? "opacity-60" : ""}
+        ${isPending ? "pointer-events-none" : ""}
       `}
     >
       <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
         {thumbnail ? (
           <Image
-            src={thumbnail}
             alt={title}
             className="h-full w-full object-cover"
-            width={64}
             height={64}
-            quality={40}
             loading="lazy"
+            quality={40}
+            src={thumbnail}
+            width={64}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Icon icon="icon-[mdi--image-outline]" className="text-2xl" />
+            <Icon className="text-2xl" icon="icon-[mdi--image-outline]" />
           </div>
         )}
       </div>
@@ -83,7 +83,7 @@ export const CartItem = ({
           </h4>
         </Link>
 
-        {variantTitle && variantTitle !== 'Default' && (
+        {variantTitle && variantTitle !== "Default" && (
           <p className="truncate text-fg-secondary text-xs">{variantTitle}</p>
         )}
 
@@ -96,38 +96,38 @@ export const CartItem = ({
 
       <div className="flex items-center">
         <NumericInput
-          value={localQuantity}
-          onChange={handleQuantityChange}
-          min={1}
-          max={effectiveMax}
           allowOverflow={false}
           className="h-8 border-collapse gap-0"
+          max={effectiveMax}
+          min={1}
+          onChange={handleQuantityChange}
+          value={localQuantity}
         >
           <NumericInput.DecrementTrigger
-            theme="outlined"
             className="bg-base"
             disabled={localQuantity === 1}
+            theme="outlined"
           />
           <NumericInput.Control className="aspect-square border-border-secondary border-x-0 focus-within:border-x-1">
             <NumericInput.Input className="justify-center px-0 text-center" />
           </NumericInput.Control>
           <NumericInput.IncrementTrigger
-            theme="outlined"
             className="bg-base"
             disabled={localQuantity >= effectiveMax}
+            theme="outlined"
           />
         </NumericInput>
       </div>
 
       <Button
-        variant="tertiary"
-        theme="unstyled"
-        size="sm"
+        aria-label={`Odstranit ${title} z košíku`}
+        className="h-7 w-7 p-0 text-fg-5 transition-colors hover:text-fg-secondary"
+        disabled={isPending}
         icon="icon-[mdi--trash-can-outline]"
         onClick={onRemove}
-        disabled={isPending}
-        className="h-7 w-7 p-0 text-fg-5 transition-colors hover:text-fg-secondary"
-        aria-label={`Odstranit ${title} z košíku`}
+        size="sm"
+        theme="unstyled"
+        variant="tertiary"
       />
     </div>
   )

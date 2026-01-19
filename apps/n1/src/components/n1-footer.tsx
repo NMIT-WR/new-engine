@@ -1,10 +1,10 @@
-'use client'
-import logo from '@/assets/logo-n1.webp'
-import wrLogo from '@/assets/wr.png'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { Footer } from '@techsio/ui-kit/organisms/footer'
-import Image from 'next/image'
-import Link from 'next/link'
+"use client"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { Footer } from "@techsio/ui-kit/organisms/footer"
+import Image from "next/image"
+import Link from "next/link"
+import logo from "@/assets/logo-n1.webp"
+import wrLogo from "@/assets/wr.png"
 
 export function N1Footer() {
   return (
@@ -13,18 +13,18 @@ export function N1Footer() {
         {/* Company Info Section */}
         <Footer.Section>
           <Image
-            src={logo}
             alt="N1 Shop Logo"
-            width={400}
-            height={400}
             className="mb-200 w-auto"
+            height={400}
+            src={logo}
+            width={400}
           />
           <div className="flex flex-col gap-200">
             <div className="flex items-start">
               <Icon
+                className="mt-100 mr-200 text-lg text-white"
                 icon="icon-[mdi--map-marker]"
                 size="sm"
-                className="mt-100 mr-200 text-lg text-white"
               />
               <div>
                 <Footer.Text>N Distribution s. r. o.</Footer.Text>
@@ -35,25 +35,25 @@ export function N1Footer() {
             </div>
             <Footer.Text>
               <Icon
+                className="mr-200 inline-block text-lg"
                 icon="icon-[mdi--phone]"
                 size="sm"
-                className="mr-200 inline-block text-lg"
               />
               +420 244 402 795
             </Footer.Text>
             <Footer.Link href="mailto:office@ndistribution.cz">
               <Icon
+                className="mr-200 inline-block text-lg"
                 icon="icon-[mdi--email]"
                 size="sm"
-                className="mr-200 inline-block text-lg"
               />
               office@ndistribution.cz
             </Footer.Link>
             <Footer.Text>
               <Icon
+                className="mr-200 inline-block text-lg"
                 icon="icon-[mdi--clock]"
                 size="sm"
-                className="mr-200 inline-block text-lg"
               />
               Po, Út, St, Čt, Pá: 8:00 - 17:00
             </Footer.Text>
@@ -95,17 +95,17 @@ export function N1Footer() {
             Tvorba eshopu:
           </Footer.Text>
           <Link
-            href="https://webrevolution.cz"
             className="text-fg-dark text-xs underline hover:no-underline"
+            href="https://webrevolution.cz"
           >
             Web Revolution
           </Link>
           <Image
-            src={wrLogo}
             alt="Web Revolution"
-            width={32}
-            height={32}
             className="h-auto"
+            height={32}
+            src={wrLogo}
+            width={32}
           />
         </div>
       </Footer.Bottom>

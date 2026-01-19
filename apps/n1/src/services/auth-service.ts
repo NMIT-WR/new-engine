@@ -1,39 +1,38 @@
-import { mapAuthError } from '@/lib/auth-messages'
-import { logError } from '@/lib/errors'
-import { sdk } from '@/lib/medusa-client'
-import { clearToken } from '@/lib/token-utils'
-import type { StoreCustomer } from '@medusajs/types'
+import type { StoreCustomer } from "@medusajs/types"
+import { mapAuthError } from "@/lib/auth-messages"
+import { logError } from "@/lib/errors"
+import { sdk } from "@/lib/medusa-client"
+import { clearToken } from "@/lib/token-utils"
 
-export interface LoginCredentials {
+export type LoginCredentials = {
   email: string
   password: string
 }
 
-export interface RegisterData {
+export type RegisterData = {
   email: string
   password: string
   first_name: string
   last_name: string
 }
 
-
 export async function login(
   credentials: LoginCredentials
 ): Promise<string | undefined> {
   try {
-    const token = await sdk.auth.login('customer', 'emailpass', {
+    const token = await sdk.auth.login("customer", "emailpass", {
       email: credentials.email,
       password: credentials.password,
     })
 
     // Handle multi-step auth (OAuth providers)
-    if (typeof token !== 'string') {
-      throw new Error('Multi-step authentication not supported')
+    if (typeof token !== "string") {
+      throw new Error("Multi-step authentication not supported")
     }
 
     return token
   } catch (err) {
-    logError('AuthService.login', err)
+    logError("AuthService.login", err)
     throw new Error(mapAuthError(err))
   }
 }
@@ -43,18 +42,18 @@ export async function register(
 ): Promise<string | undefined> {
   try {
     // Step 1: Register creates auth identity (email + password)
-    const token = await sdk.auth.register('customer', 'emailpass', {
+    const token = await sdk.auth.register("customer", "emailpass", {
       email: data.email,
       password: data.password,
     })
 
     // Handle multi-step auth
-    if (typeof token !== 'string') {
-      throw new Error('Multi-step authentication not supported')
+    if (typeof token !== "string") {
+      throw new Error("Multi-step authentication not supported")
     }
 
     // Step 2: Login to establish proper session (REQUIRED!)
-    await sdk.auth.login('customer', 'emailpass', {
+    await sdk.auth.login("customer", "emailpass", {
       email: data.email,
       password: data.password,
     })
@@ -71,7 +70,7 @@ export async function register(
 
     return token
   } catch (err) {
-    logError('AuthService.register', err)
+    logError("AuthService.register", err)
 
     // CRITICAL: Clean up orphaned token if customer.create() failed
     // If register() succeeded but create() failed, we have token without customer
@@ -85,7 +84,7 @@ export async function logout(): Promise<void> {
   try {
     await sdk.auth.logout()
   } catch (err) {
-    logError('AuthService.logout', err)
+    logError("AuthService.logout", err)
     // Don't throw on logout errors - best effort
   }
 }
@@ -106,9 +105,8 @@ export async function getCustomer(): Promise<StoreCustomer | null> {
       )
     }
     return customer
-  } catch (err) {
+  } catch (_err) {
     // Not authenticated or session expired
     return null
   }
 }
-

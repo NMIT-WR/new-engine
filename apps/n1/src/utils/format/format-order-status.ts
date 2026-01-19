@@ -1,52 +1,51 @@
 export type OrderStatus =
-  | 'pending'
-  | 'completed'
-  | 'canceled'
-  | 'archived'
-  | 'requires_action'
+  | "pending"
+  | "completed"
+  | "canceled"
+  | "archived"
+  | "requires_action"
 
 export type PaymentStatus =
-  | 'not_paid'
-  | 'awaiting'
-  | 'authorized'
-  | 'captured'
-  | 'partially_captured'
-  | 'refunded'
-  | 'partially_refunded'
-  | 'partially_returned'
-  | 'canceled'
+  | "not_paid"
+  | "awaiting"
+  | "authorized"
+  | "captured"
+  | "partially_captured"
+  | "refunded"
+  | "partially_refunded"
+  | "partially_returned"
+  | "canceled"
 
 export type FulfillmentStatus =
-  | 'not_fulfilled'
-  | 'partially_fulfilled'
-  | 'fulfilled'
-  | 'partially_shipped'
-  | 'shipped'
-  | 'partially_delivered'
-  | 'delivered'
-  | 'partially_returned'
-  | 'returned'
-  | 'canceled'
+  | "not_fulfilled"
+  | "partially_fulfilled"
+  | "fulfilled"
+  | "partially_shipped"
+  | "shipped"
+  | "partially_delivered"
+  | "delivered"
+  | "partially_returned"
+  | "returned"
+  | "canceled"
 
 const orderStatusMap: Record<OrderStatus, string> = {
-  pending: 'Čeká na zpracování',
-  completed: 'Dokončena',
-  canceled: 'Zrušena',
-  archived: 'Archivována',
-  requires_action: 'Vyžaduje akci',
+  pending: "Čeká na zpracování",
+  completed: "Dokončena",
+  canceled: "Zrušena",
+  archived: "Archivována",
+  requires_action: "Vyžaduje akci",
 }
-
 
 export function getOrderStatusColor(
   status: string
-): 'success' | 'danger' | 'info' {
+): "success" | "danger" | "info" {
   switch (status) {
-    case 'completed':
-      return 'success'
-    case 'canceled':
-      return 'danger'
+    case "completed":
+      return "success"
+    case "canceled":
+      return "danger"
     default:
-      return 'info'
+      return "info"
   }
 }
 

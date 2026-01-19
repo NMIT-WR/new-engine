@@ -19,39 +19,39 @@ function getErrorMessage(error: unknown): string {
     return error.message
   }
 
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     return error
   }
 
   // Check for objects with message property (Medusa SDK errors)
-  if (error && typeof error === 'object' && 'message' in error) {
+  if (error && typeof error === "object" && "message" in error) {
     const errorWithMessage = error as ErrorWithMessage
-    if (typeof errorWithMessage.message === 'string') {
+    if (typeof errorWithMessage.message === "string") {
       return errorWithMessage.message
     }
   }
 
-  return 'An unknown error occurred'
+  return "An unknown error occurred"
 }
 
 function getErrorStatus(error: unknown): number | null {
   // Check for direct status property (Medusa SDK)
-  if (error && typeof error === 'object' && 'status' in error) {
+  if (error && typeof error === "object" && "status" in error) {
     const errorWithStatus = error as ErrorWithStatus
-    if (typeof errorWithStatus.status === 'number') {
+    if (typeof errorWithStatus.status === "number") {
       return errorWithStatus.status
     }
   }
 
-  if (error && typeof error === 'object' && 'response' in error) {
+  if (error && typeof error === "object" && "response" in error) {
     const errorWithResponse = error as ErrorWithResponse
     if (
       errorWithResponse.response &&
-      typeof errorWithResponse.response === 'object' &&
-      'status' in errorWithResponse.response
+      typeof errorWithResponse.response === "object" &&
+      "status" in errorWithResponse.response
     ) {
       const response = errorWithResponse.response as { status: unknown }
-      if (typeof response.status === 'number') {
+      if (typeof response.status === "number") {
         return response.status
       }
     }
@@ -66,7 +66,7 @@ export function isNotFoundError(error: unknown): boolean {
 }
 
 export function logError(context: string, error: unknown): void {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     console.error(`[${context}]`, error)
   }
 }
@@ -75,18 +75,18 @@ export function logError(context: string, error: unknown): void {
  * Error codes for cart and checkout operations
  */
 export type CartServiceErrorCode =
-  | 'CART_NOT_FOUND'
-  | 'CART_CREATION_FAILED'
-  | 'ITEM_ADD_FAILED'
-  | 'ITEM_UPDATE_FAILED'
-  | 'ITEM_REMOVE_FAILED'
-  | 'SHIPPING_NOT_AVAILABLE'
-  | 'SHIPPING_SET_FAILED'
-  | 'PAYMENT_INIT_FAILED'
-  | 'PAYMENT_FAILED'
-  | 'ORDER_CREATION_FAILED'
-  | 'VALIDATION_ERROR'
-  | 'NETWORK_ERROR'
+  | "CART_NOT_FOUND"
+  | "CART_CREATION_FAILED"
+  | "ITEM_ADD_FAILED"
+  | "ITEM_UPDATE_FAILED"
+  | "ITEM_REMOVE_FAILED"
+  | "SHIPPING_NOT_AVAILABLE"
+  | "SHIPPING_SET_FAILED"
+  | "PAYMENT_INIT_FAILED"
+  | "PAYMENT_FAILED"
+  | "ORDER_CREATION_FAILED"
+  | "VALIDATION_ERROR"
+  | "NETWORK_ERROR"
 
 /**
  * Structured error for cart and checkout operations
@@ -102,7 +102,7 @@ export class CartServiceError extends Error {
     originalError?: unknown
   ) {
     super(message)
-    this.name = 'CartServiceError'
+    this.name = "CartServiceError"
     this.code = code
     this.originalError = originalError
   }
@@ -112,7 +112,7 @@ export class CartServiceError extends Error {
    */
   static fromMedusaError(
     error: unknown,
-    fallbackCode: CartServiceErrorCode = 'VALIDATION_ERROR'
+    fallbackCode: CartServiceErrorCode = "VALIDATION_ERROR"
   ): CartServiceError {
     const message = getErrorMessage(error)
     const status = getErrorStatus(error)
@@ -121,11 +121,11 @@ export class CartServiceError extends Error {
     let code: CartServiceErrorCode = fallbackCode
 
     if (status === 404) {
-      code = 'CART_NOT_FOUND'
+      code = "CART_NOT_FOUND"
     } else if (status && status >= 500) {
-      code = 'NETWORK_ERROR'
+      code = "NETWORK_ERROR"
     } else if (status === 400) {
-      code = 'VALIDATION_ERROR'
+      code = "VALIDATION_ERROR"
     }
 
     return new CartServiceError(message, code, error)
@@ -143,19 +143,19 @@ export class CartServiceError extends Error {
 // Address Validation Error
 // ============================================================================
 
-import type { AddressErrors } from '@/utils/address-validation'
+import type { AddressErrors } from "@/utils/address-validation"
 
 /**
  * Error thrown when address validation fails
  * Used as a safety net in useCreateAddress/useUpdateAddress hooks
  */
 export class AddressValidationError extends Error {
-  public readonly errors: AddressErrors
-  public readonly code = 'ADDRESS_VALIDATION_ERROR'
+  readonly errors: AddressErrors
+  readonly code = "ADDRESS_VALIDATION_ERROR"
 
   constructor(errors: AddressErrors) {
-    super('Adresa obsahuje neplatné údaje')
-    this.name = 'AddressValidationError'
+    super("Adresa obsahuje neplatné údaje")
+    this.name = "AddressValidationError"
     this.errors = errors
   }
 
@@ -164,14 +164,14 @@ export class AddressValidationError extends Error {
    */
   get firstError(): string {
     const firstKey = Object.keys(this.errors)[0] as keyof AddressErrors
-    return this.errors[firstKey] || 'Neplatná adresa'
+    return this.errors[firstKey] || "Neplatná adresa"
   }
 
   /**
    * Get all error messages joined
    */
   get allErrors(): string {
-    return Object.values(this.errors).filter(Boolean).join(', ')
+    return Object.values(this.errors).filter(Boolean).join(", ")
   }
 
   /**

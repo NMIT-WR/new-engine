@@ -1,9 +1,9 @@
-import { formatDateString } from '@/utils/format/format-date'
-import { formatAmount } from '@/utils/format/format-product'
-import type { StoreOrder } from '@medusajs/types'
-import { ItemCard } from './item-card'
+import type { StoreOrder } from "@medusajs/types"
+import { formatDateString } from "@/utils/format/format-date"
+import { formatAmount } from "@/utils/format/format-product"
+import { ItemCard } from "./item-card"
 
-interface OrderDetailProps {
+type OrderDetailProps = {
   order: StoreOrder
 }
 
@@ -17,11 +17,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         </h2>
         <div className="grid grid-cols-1 gap-300 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-3">
           {order.items?.map((item) => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              currency_code={order.currency_code}
-            />
+            <ItemCard item={item} key={item.id} />
           ))}
         </div>
       </div>
@@ -83,11 +79,11 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
               <p className="text-fg-tertiary text-sm">Vytvořeno</p>
               <p className="font-medium text-fg-primary">
                 {formatDateString(order.created_at as string, {
-                  day: 'numeric',
-                  month: 'numeric',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
                 })}
               </p>
             </div>
@@ -96,11 +92,11 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                 <p className="text-fg-tertiary text-sm">Poslední aktualizace</p>
                 <p className="font-medium text-fg-primary">
                   {formatDateString(order.updated_at as string, {
-                    day: 'numeric',
-                    month: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </p>
               </div>

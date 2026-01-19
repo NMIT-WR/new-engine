@@ -43,15 +43,15 @@ export function SelectField({
 
   return (
     <Select
-      items={options}
+      className={className}
       disabled={disabled}
       id={field.name}
+      items={options}
       onValueChange={handleValueChange}
       required={required}
       size="lg"
       validateStatus={validateStatus}
       value={[field.state.value || ""]}
-      className={className}
     >
       <Select.Label>{label}</Select.Label>
       <Select.Control>
@@ -62,7 +62,7 @@ export function SelectField({
       <Select.Positioner>
         <Select.Content>
           {options.map((item) => (
-            <Select.Item key={item.value} item={item}>
+            <Select.Item item={item} key={item.value}>
               <Select.ItemText />
               <Select.ItemIndicator />
             </Select.Item>

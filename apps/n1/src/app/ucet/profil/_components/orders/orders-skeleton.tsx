@@ -1,7 +1,11 @@
 import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
 
 export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
-  const maxItems = Array.from({ length: Math.min(itemsCount, 10) })
+  const maxItemsCount = Math.min(itemsCount, 10)
+  const skeletonKeys = Array.from(
+    { length: maxItemsCount },
+    (_, index) => `order-skeleton-${index}`
+  )
 
   return (
     <>
@@ -29,10 +33,10 @@ export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
 
       {/* Mobile skeleton */}
       <div className="block space-y-200 sm:hidden">
-        {maxItems.map((_, i) => (
+        {skeletonKeys.map((key) => (
           <div
-            key={i}
             className="rounded border border-border-secondary bg-base p-300"
+            key={key}
           >
             <div className="mb-200 flex items-start justify-between">
               <div>
@@ -68,10 +72,10 @@ export function OrdersSkeleton({ itemsCount }: { itemsCount: number }) {
             <Skeleton.Rectangle className="col-span-2 h-200" />
           </div>
           {/* Row skeletons */}
-          {maxItems.map((_, i) => (
+          {skeletonKeys.map((key) => (
             <div
-              key={i}
               className="grid grid-cols-12 gap-300 border-border-tertiary border-b p-300"
+              key={key}
             >
               <div className="col-span-2">
                 <Skeleton.Rectangle className="mb-100 h-200 w-[60px]" />

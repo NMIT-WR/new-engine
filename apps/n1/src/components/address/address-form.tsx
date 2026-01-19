@@ -1,9 +1,9 @@
 "use client"
 
 import { useForm } from "@tanstack/react-form"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { Button } from "@ui/atoms/button"
 import { useCreateAddress, useUpdateAddress } from "@/hooks/use-addresses"
-import { useToast } from "@/hooks/use-toast"
 import { AddressValidationError } from "@/lib/errors"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import { addressToFormData, DEFAULT_ADDRESS } from "@/utils/address-helpers"
@@ -27,6 +27,12 @@ export function AddressForm({
 
   const isEditingExistingAddress = Boolean(address)
   const isPending = createAddress.isPending || updateAddress.isPending
+  let submitLabel = "Přidat"
+  if (isPending) {
+    submitLabel = "Ukládám..."
+  } else if (isEditingExistingAddress) {
+    submitLabel = "Uložit"
+  }
 
   const defaultValues: AddressFormData = {
     ...DEFAULT_ADDRESS,
@@ -87,11 +93,7 @@ export function AddressForm({
           Zrušit
         </Button>
         <Button disabled={isPending} size="sm" type="submit">
-          {isPending
-            ? "Ukládám..."
-            : isEditingExistingAddress
-              ? "Uložit"
-              : "Přidat"}
+          {submitLabel}
         </Button>
       </div>
     </form>

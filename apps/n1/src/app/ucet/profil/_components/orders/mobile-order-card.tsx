@@ -1,22 +1,33 @@
-import { formatDateString } from '@/utils/format/format-date'
+import type { StoreOrder } from "@medusajs/types"
+import { Badge } from "@techsio/ui-kit/atoms/badge"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import { Icon } from "@ui/atoms/icon"
+import Image from "next/image"
+import Link from "next/link"
+import type { ReactNode } from "react"
+import { formatDateString } from "@/utils/format/format-date"
 import {
   getOrderStatusColor,
   getOrderStatusLabel,
-} from '@/utils/format/format-order-status'
-import { formatAmount } from '@/utils/format/format-product'
-import { truncateText } from '@/utils/truncate-text'
-import type { StoreOrder } from '@medusajs/types'
-import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import { Icon } from '@ui/atoms/icon'
-import Image from 'next/image'
-import Link from 'next/link'
+} from "@/utils/format/format-order-status"
+import { formatAmount } from "@/utils/format/format-product"
+import { truncateText } from "@/utils/truncate-text"
 
 export function MobileOrderCard({ order }: { order: StoreOrder }) {
   const statusVariant = getOrderStatusColor(order.status)
   const itemCount = order.items?.length || 0
   const firstItem = order.items?.[0]
   const hasMultipleItems = itemCount > 1
+  let primaryItemLabel: ReactNode = null
+  if (hasMultipleItems) {
+    primaryItemLabel = <p className="text-fg-primary">{itemCount} položek</p>
+  } else if (firstItem) {
+    primaryItemLabel = (
+      <p className="line-clamp-1 text-fg-primary">
+        {truncateText(firstItem.product_title || "")}
+      </p>
+    )
+  }
 
   return (
     <div className="rounded border border-border-secondary bg-base p-300">
@@ -42,17 +53,17 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
           <div className="-space-x-100 flex">
             {order.items?.slice(0, 3).map((item, index) => (
               <div
-                key={item.id}
                 className="relative size-[48px] overflow-hidden rounded-full border-2 border-border-secondary bg-surface"
+                key={item.id}
                 style={{ zIndex: 3 - index }}
               >
                 {item.thumbnail && (
                   <Image
-                    src={item.thumbnail}
-                    alt={item.product_title || ''}
+                    alt={item.product_title || ""}
                     className="size-full object-cover"
-                    width={48}
                     height={48}
+                    src={item.thumbnail}
+                    width={48}
                   />
                 )}
               </div>
@@ -68,18 +79,12 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
 
           {/* Product info */}
           <div className="min-w-0 flex-1">
-            {hasMultipleItems ? (
-              <p className="text-fg-primary">{itemCount} položek</p>
-            ) : firstItem ? (
-              <p className="line-clamp-1 text-fg-primary">
-                {truncateText(firstItem.product_title || '')}
-              </p>
-            ) : null}
+            {primaryItemLabel}
             <p className="text-fg-secondary text-sm">
               {hasMultipleItems && firstItem && (
                 <span className="line-clamp-1">
-                  {truncateText(firstItem.product_title || '')}
-                  {itemCount > 2 && ' a další'}
+                  {truncateText(firstItem.product_title || "")}
+                  {itemCount > 2 && " a další"}
                 </span>
               )}
             </p>
@@ -90,7 +95,7 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
       {/* Footer with price and action */}
       <div className="flex items-center justify-between border-border-tertiary border-t pt-200">
         <div className="flex items-center gap-100">
-          <Icon icon="token-icon-cash" className="text-fg-secondary" />
+          <Icon className="text-fg-secondary" icon="token-icon-cash" />
           <span className="font-semibold text-fg-primary">
             {formatAmount(order.summary.current_order_total)}
           </span>
@@ -99,9 +104,9 @@ export function MobileOrderCard({ order }: { order: StoreOrder }) {
           as={Link}
           href={`/ucet/objednavky/${order.id}`}
           prefetch
-          variant="primary"
-          theme="solid"
           size="sm"
+          theme="solid"
+          variant="primary"
         >
           Zobrazit detail
         </LinkButton>

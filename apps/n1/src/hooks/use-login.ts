@@ -1,8 +1,8 @@
-import { queryKeys } from '@/lib/query-keys'
-import { type LoginCredentials, login } from '@/services/auth-service'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { queryKeys } from "@/lib/query-keys"
+import { type LoginCredentials, login } from "@/services/auth-service"
 
-export interface UseLoginOptions {
+export type UseLoginOptions = {
   onSuccess?: () => void
   onError?: (error: Error) => void
 }

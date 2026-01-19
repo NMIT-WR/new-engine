@@ -1,11 +1,11 @@
-import { CURRENCY_SYMBOL, DEFAULT_CURRENCY, TAX_RATE } from '@/lib/constants'
-import type { StoreProduct } from '@medusajs/types'
+import type { StoreProduct } from "@medusajs/types"
+import { CURRENCY_SYMBOL, DEFAULT_CURRENCY, TAX_RATE } from "@/lib/constants"
 
 export const formatPrice = ({
   variants,
   tax = true,
 }: {
-  variants?: StoreProduct['variants']
+  variants?: StoreProduct["variants"]
   tax?: boolean
 }): string => {
   const variant = variants?.[0]
@@ -13,7 +13,7 @@ export const formatPrice = ({
     ? variant?.calculated_price?.calculated_amount_with_tax
     : variant?.calculated_price?.calculated_amount_without_tax
   const currency = variant?.calculated_price?.currency_code
-  const currencyMap = currency === 'czk' ? CURRENCY_SYMBOL : currency
+  const currencyMap = currency === "czk" ? CURRENCY_SYMBOL : currency
   return price ? `${price.toFixed(0)} ${currencyMap}` : `0 ${CURRENCY_SYMBOL}`
 }
 
@@ -23,9 +23,11 @@ export const formatAmount = (
   useGrouping = true,
   currency = DEFAULT_CURRENCY
 ) => {
-  if (!amount) return `0 ${CURRENCY_SYMBOL}`
-  return new Intl.NumberFormat('cs-CZ', {
-    style: 'currency',
+  if (!amount) {
+    return `0 ${CURRENCY_SYMBOL}`
+  }
+  return new Intl.NumberFormat("cs-CZ", {
+    style: "currency",
     currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -42,21 +44,24 @@ export const formatToTaxIncluded = ({
   tax?: number
   currency?: string
 }) => {
-  if (!amount) return `0 ${CURRENCY_SYMBOL}`
+  if (!amount) {
+    return `0 ${CURRENCY_SYMBOL}`
+  }
   const taxRate = tax || TAX_RATE
   const taxAmount = amount * taxRate
   const totalAmount = amount + taxAmount
-  const currencyMap = currency
-    ? currency === 'czk'
-      ? CURRENCY_SYMBOL
-      : currency
-    : CURRENCY_SYMBOL
+  let currencyMap = CURRENCY_SYMBOL
+  if (currency) {
+    currencyMap = currency === "czk" ? CURRENCY_SYMBOL : currency
+  }
   return `${Math.round(totalAmount)} ${currencyMap}`
 }
 
 export const formatVariants = (
-  variants?: StoreProduct['variants']
+  variants?: StoreProduct["variants"]
 ): string[] => {
-  if (!variants || variants.length < 2) return []
+  if (!variants || variants.length < 2) {
+    return []
+  }
   return variants.map((v) => v.title).filter((v): v is string => v !== null)
 }

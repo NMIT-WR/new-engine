@@ -1,37 +1,39 @@
-'use client'
+"use client"
 
-import { useSuspenseAuth } from '@/hooks/use-auth'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { AccountMenu } from './_components/account-menu'
-import { AccountProvider } from './context/account-context'
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useSuspenseAuth } from "@/hooks/use-auth"
+import { AccountMenu } from "./_components/account-menu"
+import { AccountProvider } from "./context/account-context"
 
 export default function AccountLayout({
   children,
-}: { children: React.ReactNode }) {
+}: {
+  children: React.ReactNode
+}) {
   const router = useRouter()
   const pathname = usePathname()
   const { customer, isAuthenticated, isTokenExpired } = useSuspenseAuth()
   const [showExpiredMessage, setShowExpiredMessage] = useState(false)
-  const showMenu = pathname !== '/ucet/profil'
+  const showMenu = pathname !== "/ucet/profil"
 
   // Handle session expiration
   useEffect(() => {
     if (!isTokenExpired) {
-      return undefined
+      return
     }
 
     setShowExpiredMessage(true)
     const timeout = setTimeout(() => {
-      router.push('/prihlaseni')
+      router.push("/prihlaseni")
     }, 3000)
     return () => clearTimeout(timeout)
   }, [isTokenExpired, router])
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isAuthenticated && !isTokenExpired) {
-      router.push('/prihlaseni')
+    if (!(isAuthenticated || isTokenExpired)) {
+      router.push("/prihlaseni")
     }
   }, [isAuthenticated, isTokenExpired, router])
 

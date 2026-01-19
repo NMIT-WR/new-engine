@@ -14,7 +14,7 @@ import {
 import { formatAmount } from "@/utils/format/format-product"
 import { PriceSummaryRow } from "./price-summary-row"
 
-interface CheckoutReviewProps {
+type CheckoutReviewProps = {
   order: StoreOrder
 }
 

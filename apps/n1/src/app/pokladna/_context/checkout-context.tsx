@@ -43,8 +43,8 @@ type InitialCheckoutState = {
 }
 
 const resolveInitialCheckoutState = (
-  cart: ReturnType<typeof useSuspenseCart>['cart'],
-  customer: ReturnType<typeof useSuspenseAuth>['customer']
+  cart: ReturnType<typeof useSuspenseCart>["cart"],
+  customer: ReturnType<typeof useSuspenseAuth>["customer"]
 ): InitialCheckoutState => {
   if (cart?.billing_address?.first_name) {
     const addressData = addressToFormData(
@@ -53,7 +53,7 @@ const resolveInitialCheckoutState = (
 
     return {
       defaultValues: {
-        email: cart.email ?? customer?.email ?? '',
+        email: cart.email ?? customer?.email ?? "",
         billingAddress: addressData,
       },
       selectedAddressId: null,
@@ -66,7 +66,7 @@ const resolveInitialCheckoutState = (
       const addressData = addressToFormData(defaultAddress) as AddressFormData
       return {
         defaultValues: {
-          email: customer?.email ?? '',
+          email: customer?.email ?? "",
           billingAddress: addressData,
         },
         selectedAddressId: defaultAddress.id,
@@ -76,7 +76,7 @@ const resolveInitialCheckoutState = (
 
   return {
     defaultValues: {
-      email: customer?.email ?? '',
+      email: customer?.email ?? "",
       billingAddress: DEFAULT_ADDRESS,
     },
     selectedAddressId: null,
@@ -153,6 +153,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   const form = useForm({
     defaultValues: initialStateRef.current.defaultValues,
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: checkout flow includes many validation branches
     onSubmit: async ({ value }: { value: CheckoutFormData }) => {
       if (!cart?.id) {
         setError("Košík nebyl nalezen")
@@ -167,7 +168,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       // If PPL Parcel selected + access point → shipping = access point address
       // Otherwise → shipping = billing address
       const isPplParcel =
-        shipping.selectedOption && isPPLParcelOption(shipping.selectedOption.name)
+        shipping.selectedOption &&
+        isPPLParcelOption(shipping.selectedOption.name)
 
       let shippingAddress: AddressFormData
       if (isPplParcel && selectedAccessPoint) {
@@ -190,17 +192,20 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         })
       } catch (err) {
         if (err instanceof Error) {
-          if (err.message.includes("billing") || err.message.includes("faktur")) {
-            setError("Chyba fakturační adresy: " + err.message)
+          if (
+            err.message.includes("billing") ||
+            err.message.includes("faktur")
+          ) {
+            setError(`Chyba fakturační adresy: ${err.message}`)
           } else if (
             err.message.includes("shipping") ||
             err.message.includes("doruč")
           ) {
-            setError("Chyba doručovací adresy: " + err.message)
+            setError(`Chyba doručovací adresy: ${err.message}`)
           } else if (err.message.includes("Validation")) {
-            setError("Neplatná adresa: " + err.message)
+            setError(`Neplatná adresa: ${err.message}`)
           } else {
-            setError("Nepodařilo se uložit adresu: " + err.message)
+            setError(`Nepodařilo se uložit adresu: ${err.message}`)
           }
         } else {
           setError("Nepodařilo se uložit adresu")
@@ -213,15 +218,18 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
         await completeCartAsync({ cartId: cart.id })
       } catch (err) {
         if (err instanceof Error) {
-          if (err.message.includes("payment") || err.message.includes("platb")) {
-            setError("Chyba platby: " + err.message)
+          if (
+            err.message.includes("payment") ||
+            err.message.includes("platb")
+          ) {
+            setError(`Chyba platby: ${err.message}`)
           } else if (
             err.message.includes("stock") ||
             err.message.includes("sklad")
           ) {
-            setError("Některé produkty nejsou skladem: " + err.message)
+            setError(`Některé produkty nejsou skladem: ${err.message}`)
           } else {
-            setError("Nepodařilo se dokončit objednávku: " + err.message)
+            setError(`Nepodařilo se dokončit objednávku: ${err.message}`)
           }
         } else {
           setError("Nepodařilo se dokončit objednávku")

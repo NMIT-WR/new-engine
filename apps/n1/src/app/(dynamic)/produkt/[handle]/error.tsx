@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { useQueryClient } from '@tanstack/react-query'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { queryKeys } from '@/lib/query-keys'
+import { useQueryClient } from "@tanstack/react-query"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { queryKeys } from "@/lib/query-keys"
 
 type ErrorProps = {
   error: Error & { digest?: string }

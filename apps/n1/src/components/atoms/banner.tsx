@@ -1,30 +1,30 @@
-import { tv } from '@techsio/ui-kit/utils'
-import type { ReactNode } from 'react'
-import type { VariantProps } from 'tailwind-variants'
+import { tv } from "@techsio/ui-kit/utils"
+import type { ReactNode } from "react"
+import type { VariantProps } from "tailwind-variants"
 
 const bannerVariants = tv({
-  base: 'inline-flex w-full border',
+  base: "inline-flex w-full border",
   variants: {
     variant: {
       default:
-        'bg-banner-default-bg text-banner-default-fg border-banner-default-border',
-      info: 'bg-banner-info-bg text-banner-info-fg border-banner-info-border',
+        "border-banner-default-border bg-banner-default-bg text-banner-default-fg",
+      info: "border-banner-info-border bg-banner-info-bg text-banner-info-fg",
       success:
-        'bg-banner-success-bg text-banner-success-fg border-banner-success-border',
+        "border-banner-success-border bg-banner-success-bg text-banner-success-fg",
       warning:
-        'bg-banner-warning-bg text-banner-warning-fg border-banner-warning-border',
+        "border-banner-warning-border bg-banner-warning-bg text-banner-warning-fg",
       danger:
-        'bg-banner-danger-bg text-banner-danger-fg border-banner-danger-border',
+        "border-banner-danger-border bg-banner-danger-bg text-banner-danger-fg",
     },
     size: {
-      sm: 'p-banner-sm text-banner-sm',
-      md: 'p-banner-md text-banner-md',
-      lg: 'p-banner-lg text-banner-lg',
+      sm: "p-banner-sm text-banner-sm",
+      md: "p-banner-md text-banner-md",
+      lg: "p-banner-lg text-banner-lg",
     },
   },
   defaultVariants: {
-    variant: 'default',
-    size: 'md',
+    variant: "default",
+    size: "md",
   },
 })
 

@@ -1,4 +1,4 @@
-interface PriceSummaryRowProps {
+type PriceSummaryRowProps = {
   label: string
   value: string | number
   variant?: "default" | "success" | "bold"

@@ -1,5 +1,7 @@
 import type { HttpTypes } from "@medusajs/types"
-import type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
+
+export type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
+
 import { DEFAULT_COUNTRY_CODE } from "@/lib/constants"
 import type { ShippingMethodData } from "@/services/cart-service"
 import type { StoreCustomerAddress } from "@/services/customer-service"
@@ -62,9 +64,6 @@ export function getDefaultAddress(
   const [first] = addresses
   return first ?? null
 }
-
-/** Re-export PplAccessPointData for convenience */
-export type { PplAccessPointData }
 
 /** Check if shipping option requires PPL Parcel access point selection */
 export function isPPLParcelOption(optionName: string): boolean {

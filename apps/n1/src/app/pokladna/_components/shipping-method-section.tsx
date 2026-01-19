@@ -66,8 +66,8 @@ function ShippingOptionCard({
       disabled={isUpdating}
       onClick={handleClick}
       role="radio"
-      type="button"
       theme="outlined"
+      type="button"
       variant="secondary"
     >
       <div className="flex-1 text-left">

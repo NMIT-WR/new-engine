@@ -11,7 +11,10 @@ export default function NotFound() {
           Omlouváme se, ale tato stránka neexistuje. Zkuste se vrátit na hlavní
           stránku a pokračovat v nákupu.
         </p>
-        <Link className="inline-flex items-center text-primary underline" href="/">
+        <Link
+          className="inline-flex items-center text-primary underline"
+          href="/"
+        >
           Zpět na hlavní stránku
         </Link>
       </article>

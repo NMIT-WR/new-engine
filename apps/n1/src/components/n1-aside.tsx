@@ -1,14 +1,14 @@
-'use client'
-import type { Category, CategoryTreeNode } from '@/data/static/type'
-import { usePrefetchOnHover } from '@/hooks/use-prefetch-on-hover'
-import { findNodeById } from '@/utils/transform/find-node-by-id'
-import { getCategoryPath } from '@/utils/transform/get-category-path'
-import { transformToTree } from '@/utils/transform/transform-to-tree'
-import { TreeView } from '@techsio/ui-kit/molecules/tree-view'
-import type { TreeView as TreeType } from '@techsio/ui-kit/types/zag'
-import { useRouter } from 'next/navigation'
+"use client"
+import { TreeView } from "@techsio/ui-kit/molecules/tree-view"
+import type { TreeView as TreeType } from "@techsio/ui-kit/types/zag"
+import { useRouter } from "next/navigation"
+import type { Category, CategoryTreeNode } from "@/data/static/type"
+import { usePrefetchOnHover } from "@/hooks/use-prefetch-on-hover"
+import { findNodeById } from "@/utils/transform/find-node-by-id"
+import { getCategoryPath } from "@/utils/transform/get-category-path"
+import { transformToTree } from "@/utils/transform/transform-to-tree"
 
-interface N1AsideProps {
+type N1AsideProps = {
   categories: CategoryTreeNode[]
   categoryMap: Record<string, Category>
   label?: string
@@ -46,22 +46,22 @@ export function N1Aside({
       <TreeView
         className="w-3xs border-t-2 border-t-overlay p-200"
         data={treeData}
-        selectionMode="single"
-        onSelectionChange={handleSelect}
         defaultExpandedValue={expandedPath}
+        onSelectionChange={handleSelect}
+        selectionMode="single"
       >
         <TreeView.Label className="capitalize">{label}</TreeView.Label>
         <TreeView.Tree>
           {treeData?.map((node, index) => (
             <TreeView.Node
-              showNodeIcons={false}
+              indexPath={[index]}
               key={node.id}
               node={node}
-              indexPath={[index]}
               onNodeHover={(hoveredNode) =>
                 prefetchOnHover(hoveredNode.handle as string)
               }
               onNodeLeave={() => cancelHover()}
+              showNodeIcons={false}
             />
           ))}
         </TreeView.Tree>

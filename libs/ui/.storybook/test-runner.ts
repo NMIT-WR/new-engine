@@ -1,4 +1,5 @@
 import { createA11yReporter } from '@techsio/storybook-a11y-reporter';
+import type { TestRunnerConfig } from '@storybook/test-runner';
 
 function readBoolEnv(name: string, defaultValue: boolean): boolean {
   const raw = process.env[name];
@@ -16,6 +17,16 @@ function readNumberEnv(name: string, defaultValue: number): number {
   return Number.isFinite(parsed) ? parsed : defaultValue;
 }
 
+type JestConfig = {
+  modulePathIgnorePatterns?: string[];
+  testTimeout?: number;
+  [key: string]: unknown;
+};
+
+type TestRunnerConfigWithJest = TestRunnerConfig & {
+  getJestConfig: (config: JestConfig) => JestConfig;
+};
+
 const reporter = createA11yReporter({
   outputDir: process.env.A11Y_REPORT_OUTPUT_DIR ?? 'a11y-report',
   failOnViolations: readBoolEnv('A11Y_REPORT_FAIL_ON_VIOLATIONS', true),
@@ -23,9 +34,9 @@ const reporter = createA11yReporter({
   waitForResultsMs: readNumberEnv('A11Y_REPORT_WAIT_MS', 30000),
 });
 
-export default {
+const testRunnerConfig: TestRunnerConfigWithJest = {
   ...reporter,
-  async getJestConfig(config) {
+  getJestConfig(config) {
     return {
       ...config,
       testTimeout: 60000,
@@ -37,3 +48,5 @@ export default {
     };
   },
 };
+
+export default testRunnerConfig;

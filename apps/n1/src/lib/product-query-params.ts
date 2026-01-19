@@ -1,9 +1,9 @@
-import { PRODUCT_LIMIT, PRODUCT_LIST_FIELDS } from './constants'
+import { PRODUCT_LIMIT, PRODUCT_LIST_FIELDS } from "./constants"
 
 /**
  * Product query parameters (no `page` - only `offset` for cache consistency)
  */
-export interface ProductQueryParams {
+export type ProductQueryParams = {
   category_id?: string[]
   region_id?: string
   country_code?: string
@@ -26,7 +26,7 @@ export function buildProductQueryParams(
 
   return {
     fields: PRODUCT_LIST_FIELDS,
-    country_code: 'cz', // default, can be overridden
+    country_code: "cz", // default, can be overridden
     ...rest,
     limit,
     offset: (page - 1) * limit,
@@ -37,7 +37,7 @@ export function buildProductQueryParams(
  * Always prefetches page 1
  */
 export function buildPrefetchParams(
-  params: Pick<BuilderParams, 'category_id' | 'region_id' | 'country_code'>
+  params: Pick<BuilderParams, "category_id" | "region_id" | "country_code">
 ): ProductQueryParams {
   return buildProductQueryParams({
     ...params,
@@ -49,7 +49,17 @@ export function buildPrefetchParams(
  * Converts query params to URL query string
  * Handles arrays (category_id) with indexed notation
  */
-export function buildQueryString(params: Record<string, any>): string {
+type QueryParamValue =
+  | string
+  | number
+  | boolean
+  | Array<string | number | boolean>
+  | null
+  | undefined
+
+export function buildQueryString(
+  params: Record<string, QueryParamValue>
+): string {
   const searchParams = new URLSearchParams()
 
   for (const [key, value] of Object.entries(params)) {

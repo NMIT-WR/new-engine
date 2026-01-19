@@ -3,7 +3,7 @@ import Link from "next/link"
 import type { CartLineItem } from "@/services/cart-service"
 import { formatToTaxIncluded } from "@/utils/format/format-product"
 
-interface CartItemRowProps {
+type CartItemRowProps = {
   item: CartLineItem
   currencyCode: string
 }

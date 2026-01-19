@@ -1,18 +1,18 @@
-import { useCartToast } from '@/hooks/use-toast'
-import { CACHE_TIMES } from '@/lib/constants'
-import { CartServiceError } from '@/lib/errors'
-import { queryKeys } from '@/lib/query-keys'
-import {
-  type Cart,
-  createPaymentCollection,
-  getPaymentProviders,
-} from '@/services/cart-service'
-import type { HttpTypes } from '@medusajs/types'
+import type { HttpTypes } from "@medusajs/types"
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query"
+import { useCartToast } from "@/hooks/use-toast"
+import { CACHE_TIMES } from "@/lib/constants"
+import { CartServiceError } from "@/lib/errors"
+import { queryKeys } from "@/lib/query-keys"
+import {
+  type Cart,
+  createPaymentCollection,
+  getPaymentProviders,
+} from "@/services/cart-service"
 
 type CartMutationError = {
   message: string
@@ -40,9 +40,9 @@ export function useCheckoutPayment(
 
   // Fetch available payment providers for region
   const { data: paymentProviders = [] } = useSuspenseQuery({
-    queryKey: queryKeys.payment.providers(regionId || 'unknown'),
+    queryKey: queryKeys.payment.providers(regionId || "unknown"),
     queryFn: () => {
-      if (!canLoadProviders || !regionId) {
+      if (!(canLoadProviders && regionId)) {
         return []
       }
       return getPaymentProviders(regionId)
@@ -59,12 +59,12 @@ export function useCheckoutPayment(
     >({
       mutationFn: (providerId: string) => {
         if (!cartId) {
-          throw new CartServiceError('Cart ID je povinné', 'VALIDATION_ERROR')
+          throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
         }
         if (!providerId) {
           throw new CartServiceError(
-            'Provider ID je povinné',
-            'VALIDATION_ERROR'
+            "Provider ID je povinné",
+            "VALIDATION_ERROR"
           )
         }
         return createPaymentCollection(cartId, providerId)
@@ -72,13 +72,16 @@ export function useCheckoutPayment(
       onSuccess: () => {
         // Refresh cart to get payment collection
         queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[useCheckoutPayment] Payment collection created')
+        if (process.env.NODE_ENV === "development") {
+          console.log("[useCheckoutPayment] Payment collection created")
         }
       },
       onError: (error) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[useCheckoutPayment] Failed to initiate payment:', error)
+        if (process.env.NODE_ENV === "development") {
+          console.error(
+            "[useCheckoutPayment] Failed to initiate payment:",
+            error
+          )
         }
 
         // Show error toast

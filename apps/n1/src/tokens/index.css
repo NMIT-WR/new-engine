@@ -3,7 +3,7 @@
 @import "./_n1-semantic.css";
 @import "./_n1shop-overrides.css";
 
-@plugin 'tailwindcss-animate';
+@plugin "tailwindcss-animate";
 
 @source "../../node_modules/@techsio/ui-kit/dist/**/*.js";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";

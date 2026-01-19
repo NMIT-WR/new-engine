@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { allCategories } from '@/data/static/categories'
-import { ALL_CATEGORIES_MAP } from '@/lib/constants'
-import { prefetchLogger } from '@/lib/loggers/prefetch'
-import { useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
-import { usePrefetchProducts } from './use-prefetch-products'
-import { useRegion } from './use-region'
+import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { allCategories } from "@/data/static/categories"
+import { ALL_CATEGORIES_MAP } from "@/lib/constants"
+import { prefetchLogger } from "@/lib/loggers/prefetch"
+import { usePrefetchProducts } from "./use-prefetch-products"
+import { useRegion } from "./use-region"
 
-interface UsePrefetchCategoryChildrenParams {
+type UsePrefetchCategoryChildrenParams = {
   enabled?: boolean
   categoryHandle: string
 }
@@ -25,7 +25,9 @@ export function usePrefetchCategoryChildren({
   const { prefetchCategoryProducts } = usePrefetchProducts()
 
   useEffect(() => {
-    if (!enabled || !currentCategory || !regionId) return
+    if (!(enabled && currentCategory && regionId)) {
+      return
+    }
 
     let isCancelled = false
 
@@ -36,8 +38,8 @@ export function usePrefetchCategoryChildren({
     ;(async () => {
       // PHASE 1: Direct children - wait for completion
       if (children.length > 0) {
-        const childHandles = children.map((c) => c.handle).join(', ')
-        prefetchLogger.info('Children', `Phase 1: ${childHandles}`)
+        const childHandles = children.map((c) => c.handle).join(", ")
+        prefetchLogger.info("Children", `Phase 1: ${childHandles}`)
 
         await Promise.all(
           children.map((child) => {
@@ -49,8 +51,10 @@ export function usePrefetchCategoryChildren({
           })
         )
 
-        if (isCancelled) return
-        prefetchLogger.info('Children', 'Phase 1 complete')
+        if (isCancelled) {
+          return
+        }
+        prefetchLogger.info("Children", "Phase 1 complete")
       }
     })()
 
@@ -67,7 +71,7 @@ export function usePrefetchCategoryChildren({
       })
 
       prefetchLogger.info(
-        'Children',
+        "Children",
         `Cancelled prefetches for ${categoryHandle}`
       )
     }

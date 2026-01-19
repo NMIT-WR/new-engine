@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { Component, type ReactNode } from 'react'
+import { Component, type ReactNode } from "react"
 
 type ErrorBoundaryProps = {
   children: ReactNode
@@ -31,7 +31,7 @@ export class ErrorBoundary extends Component<
     const { children, fallback } = this.props
 
     if (error) {
-      return typeof fallback === 'function' ? fallback(error) : fallback
+      return typeof fallback === "function" ? fallback(error) : fallback
     }
 
     return children

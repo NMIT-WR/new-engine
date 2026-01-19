@@ -1,14 +1,14 @@
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
 import {
   clearToken,
   getTokenFromStorage,
   isTokenExpired,
-} from '@/lib/token-utils'
-import { getCustomer } from '@/services/auth-service'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+} from "@/lib/token-utils"
+import { getCustomer } from "@/services/auth-service"
 
-export interface UseAuthReturn {
+export type UseAuthReturn = {
   customer: Awaited<ReturnType<typeof getCustomer>>
   isAuthenticated: boolean
   isLoading: boolean
@@ -16,7 +16,7 @@ export interface UseAuthReturn {
   isTokenExpired: boolean
 }
 
-export interface UseSuspenseAuthReturn {
+export type UseSuspenseAuthReturn = {
   customer: Awaited<ReturnType<typeof getCustomer>>
   isAuthenticated: boolean
   isTokenExpired: boolean
@@ -34,7 +34,7 @@ export function useAuth(): UseAuthReturn {
     error,
   } = useQuery({
     queryKey: queryKeys.customer.profile(),
-    queryFn: async () => {
+    queryFn: () => {
       // Check token expiration BEFORE making request
       const token = getTokenFromStorage()
 
@@ -71,7 +71,7 @@ export function useAuth(): UseAuthReturn {
 export function useSuspenseAuth(): UseSuspenseAuthReturn {
   const { data: customer = null } = useSuspenseQuery({
     queryKey: queryKeys.customer.profile(),
-    queryFn: async () => {
+    queryFn: () => {
       const token = getTokenFromStorage()
 
       if (!token) {

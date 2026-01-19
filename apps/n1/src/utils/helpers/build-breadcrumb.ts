@@ -1,23 +1,29 @@
-import type { Category } from '@/data/static/type'
-import type { BreadcrumbItemType } from '@techsio/ui-kit/molecules/breadcrumb'
-import { getCategoryPath } from '../transform/get-category-path'
+import type { BreadcrumbItemType } from "@techsio/ui-kit/molecules/breadcrumb"
+import type { Category } from "@/data/static/type"
+import { getCategoryPath } from "../transform/get-category-path"
 
 export function buildBreadcrumbs(
   categoryId: string | undefined,
   categoryMap: Record<string, Category>
 ): BreadcrumbItemType[] {
-  const breadcrumbs: BreadcrumbItemType[] = [{ label: 'Domů', href: '/' }]
+  const breadcrumbs: BreadcrumbItemType[] = [{ label: "Domů", href: "/" }]
 
-  if (!categoryId) return breadcrumbs
+  if (!categoryId) {
+    return breadcrumbs
+  }
 
   const category = categoryMap[categoryId]
-  if (!category) return breadcrumbs
+  if (!category) {
+    return breadcrumbs
+  }
 
   const pathIds = getCategoryPath(category, categoryMap)
 
   for (const id of pathIds) {
     const cat = categoryMap[id]
-    if (!cat) continue
+    if (!cat) {
+      continue
+    }
 
     breadcrumbs.push({
       label: cat.name,

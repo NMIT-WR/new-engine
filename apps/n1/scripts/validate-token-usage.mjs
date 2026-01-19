@@ -18,9 +18,19 @@
  * - src/tokens/_n1-typography.css
  */
 
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+const DOUBLE_STAR_REGEX = /\*\*/g
+const SINGLE_STAR_REGEX = /\*/g
+const WINDOWS_SEPARATOR_REGEX = /\\/g
+const WHITESPACE_REGEX = /\s+/
+const VARIANT_PREFIX_REGEX = /^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i
+const VARIANT_PREFIX_WITH_BANG_REGEX = /^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:|!)/i
+const NUMBER_REGEX = /^\d+(\.\d+)?$/
+const INTEGER_REGEX = /^\d+$/
+const OPACITY_SUFFIX_REGEX = /\/\d+$/
 
 /**
  * Find all files matching extension in directory recursively
@@ -30,26 +40,39 @@ function findFilesWithExtension(dir, extension, ignore = []) {
 
   function shouldIgnore(filePath) {
     return ignore.some((ig) => {
-      if (filePath.includes('node_modules')) return true
-      if (filePath.includes('.git')) return true
-      if (ig.includes('*')) {
+      if (filePath.includes("node_modules")) {
+        return true
+      }
+      if (filePath.includes(".git")) {
+        return true
+      }
+      if (ig.includes("*")) {
         // Simple glob matching for ignore patterns
-        const pattern = ig.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')
+        const pattern = ig
+          .replace(DOUBLE_STAR_REGEX, ".*")
+          .replace(SINGLE_STAR_REGEX, "[^/]*")
         return new RegExp(pattern).test(filePath)
       }
       return filePath.includes(ig)
     })
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: recursive directory walk with ignore rules
   function walkDir(currentDir) {
     try {
       const entries = fs.readdirSync(currentDir, { withFileTypes: true })
       for (const entry of entries) {
         const fullPath = path.join(currentDir, entry.name)
-        const relativePath = path.relative(dir, fullPath).replace(/\\/g, '/')
+        const relativePath = path
+          .relative(dir, fullPath)
+          .replace(WINDOWS_SEPARATOR_REGEX, "/")
 
-        if (entry.name === 'node_modules' || entry.name === '.git') continue
-        if (shouldIgnore(relativePath)) continue
+        if (entry.name === "node_modules" || entry.name === ".git") {
+          continue
+        }
+        if (shouldIgnore(relativePath)) {
+          continue
+        }
 
         if (entry.isDirectory()) {
           walkDir(fullPath)
@@ -57,7 +80,7 @@ function findFilesWithExtension(dir, extension, ignore = []) {
           results.push(relativePath)
         }
       }
-    } catch (err) {
+    } catch (_err) {
       // Skip directories we can't read
     }
   }
@@ -67,98 +90,98 @@ function findFilesWithExtension(dir, extension, ignore = []) {
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const ROOT = path.resolve(__dirname, '..')
+const ROOT = path.resolve(__dirname, "..")
 
 // Token CSS files to check for definitions (direct paths)
 const TOKEN_FILES = [
-  'src/tokens/_n1-components.css',
-  'src/tokens/_n1-semantic.css',
-  'src/tokens/_n1shop-overrides.css',
-  'src/tokens/_n1-layout.css',
-  'src/tokens/_n1-spacing.css',
-  'src/tokens/_n1-icons.css',
-  'src/tokens/_n1-typography.css',
+  "src/tokens/_n1-components.css",
+  "src/tokens/_n1-semantic.css",
+  "src/tokens/_n1shop-overrides.css",
+  "src/tokens/_n1-layout.css",
+  "src/tokens/_n1-spacing.css",
+  "src/tokens/_n1-icons.css",
+  "src/tokens/_n1-typography.css",
 ]
 
 // Additional token directories to scan recursively
-const TOKEN_DIRS = ['src/tokens/app-components']
+const TOKEN_DIRS = ["src/tokens/app-components"]
 
 // Tailwind v4 namespace to utility prefix mappings
 const NAMESPACE_MAPPINGS = {
   color: [
-    'bg',
-    'text',
-    'border',
-    'fill',
-    'stroke',
-    'outline',
-    'ring',
-    'ring-offset',
-    'shadow',
-    'accent',
-    'caret',
-    'decoration',
-    'from',
-    'via',
-    'to',
-    'border-t',
-    'border-r',
-    'border-b',
-    'border-l',
-    'border-x',
-    'border-y',
+    "bg",
+    "text",
+    "border",
+    "fill",
+    "stroke",
+    "outline",
+    "ring",
+    "ring-offset",
+    "shadow",
+    "accent",
+    "caret",
+    "decoration",
+    "from",
+    "via",
+    "to",
+    "border-t",
+    "border-r",
+    "border-b",
+    "border-l",
+    "border-x",
+    "border-y",
   ],
-  container: ['w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'],
+  container: ["w", "h", "min-w", "min-h", "max-w", "max-h"],
   spacing: [
-    'p',
-    'px',
-    'py',
-    'pt',
-    'pr',
-    'pb',
-    'pl',
-    'ps',
-    'pe',
-    'm',
-    'mx',
-    'my',
-    'mt',
-    'mr',
-    'mb',
-    'ml',
-    'ms',
-    'me',
-    'gap',
-    'gap-x',
-    'gap-y',
-    'space-x',
-    'space-y',
-    'w',
-    'h',
-    'max-w',
-    'min-w',
-    'max-h',
-    'min-h',
-    'top',
-    'right',
-    'bottom',
-    'left',
-    'inset',
-    'inset-x',
-    'inset-y',
+    "p",
+    "px",
+    "py",
+    "pt",
+    "pr",
+    "pb",
+    "pl",
+    "ps",
+    "pe",
+    "m",
+    "mx",
+    "my",
+    "mt",
+    "mr",
+    "mb",
+    "ml",
+    "ms",
+    "me",
+    "gap",
+    "gap-x",
+    "gap-y",
+    "space-x",
+    "space-y",
+    "w",
+    "h",
+    "max-w",
+    "min-w",
+    "max-h",
+    "min-h",
+    "top",
+    "right",
+    "bottom",
+    "left",
+    "inset",
+    "inset-x",
+    "inset-y",
   ],
-  text: ['text'],
-  'font-weight': ['font'],
-  font: ['font'],
-  radius: ['rounded'],
-  shadow: ['shadow', 'drop-shadow', 'inset-shadow'],
-  blur: ['blur'],
-  opacity: ['opacity'],
-  border: ['border'],
-  'border-width': ['border'],
-  z: ['z'],
-  transition: ['transition', 'duration', 'delay'],
-  ease: ['ease'],
+  text: ["text"],
+  "font-weight": ["font"],
+  font: ["font"],
+  radius: ["rounded"],
+  shadow: ["shadow", "drop-shadow", "inset-shadow"],
+  blur: ["blur"],
+  opacity: ["opacity"],
+  border: ["border"],
+  "border-width": ["border"],
+  z: ["z"],
+  transition: ["transition", "duration", "delay"],
+  ease: ["ease"],
 }
 
 // Standard Tailwind utilities to ignore (not custom tokens)
@@ -428,7 +451,9 @@ const PREFIX_TO_NAMESPACES = (() => {
   const map = new Map()
   for (const [ns, prefixes] of Object.entries(NAMESPACE_MAPPINGS)) {
     for (const p of prefixes) {
-      if (!map.has(p)) map.set(p, [])
+      if (!map.has(p)) {
+        map.set(p, [])
+      }
       map.get(p).push(ns)
     }
   }
@@ -438,24 +463,27 @@ const PREFIX_TO_NAMESPACES = (() => {
 /**
  * Extract Tailwind classes from TSX content with line numbers
  */
-function extractTailwindClassesWithLines(content, filePath) {
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: multiple parsing branches for class patterns
+function extractTailwindClassesWithLines(content, _filePath) {
   const results = []
-  const lines = content.split('\n')
+  const lines = content.split("\n")
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
     const line = lines[lineIndex]
     const lineNumber = lineIndex + 1
 
     // Skip comments and imports
-    if (line.trim().startsWith('//') || line.trim().startsWith('import ')) {
+    if (line.trim().startsWith("//") || line.trim().startsWith("import ")) {
       continue
     }
 
     // Match className props
-    const classNameMatches = line.matchAll(/className\s*=\s*["'`]([^"'`]+)["'`]/g)
+    const classNameMatches = line.matchAll(
+      /className\s*=\s*["'`]([^"'`]+)["'`]/g
+    )
     for (const match of classNameMatches) {
       const classString = match[1]
-      for (const cls of classString.split(/\s+/)) {
+      for (const cls of classString.split(WHITESPACE_REGEX)) {
         if (cls.trim()) {
           results.push({ className: cls.trim(), line: lineNumber })
         }
@@ -466,7 +494,7 @@ function extractTailwindClassesWithLines(content, filePath) {
     const cnMatches = line.matchAll(/(?:cn|clsx)\s*\(\s*['"`]([^'"`]+)['"`]/g)
     for (const match of cnMatches) {
       const classString = match[1]
-      for (const cls of classString.split(/\s+/)) {
+      for (const cls of classString.split(WHITESPACE_REGEX)) {
         if (cls.trim()) {
           results.push({ className: cls.trim(), line: lineNumber })
         }
@@ -474,10 +502,12 @@ function extractTailwindClassesWithLines(content, filePath) {
     }
 
     // Match tv() variant strings
-    const tvMatches = line.matchAll(/['"`]([^'"`]*(?:bg-|text-|border-|p-|m-|gap-|rounded-|w-|h-)[^'"`]*)['"`]/g)
+    const tvMatches = line.matchAll(
+      /['"`]([^'"`]*(?:bg-|text-|border-|p-|m-|gap-|rounded-|w-|h-)[^'"`]*)['"`]/g
+    )
     for (const match of tvMatches) {
       const classString = match[1]
-      for (const cls of classString.split(/\s+/)) {
+      for (const cls of classString.split(WHITESPACE_REGEX)) {
         if (cls.trim()) {
           results.push({ className: cls.trim(), line: lineNumber })
         }
@@ -489,7 +519,9 @@ function extractTailwindClassesWithLines(content, filePath) {
   const seen = new Set()
   return results.filter(({ className, line }) => {
     const key = `${line}:${className}`
-    if (seen.has(key)) return false
+    if (seen.has(key)) {
+      return false
+    }
     seen.add(key)
     return true
   })
@@ -498,15 +530,16 @@ function extractTailwindClassesWithLines(content, filePath) {
 /**
  * Map Tailwind utility class to possible CSS custom properties
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handles multiple Tailwind namespaces
 function mapClassToPossibleTokens(className) {
   // Remove chained state/data prefixes
   let baseClass = className
-  while (/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i.test(baseClass)) {
-    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i, '')
+  while (VARIANT_PREFIX_REGEX.test(baseClass)) {
+    baseClass = baseClass.replace(VARIANT_PREFIX_REGEX, "")
   }
 
   // Handle negative prefix
-  const isNegative = baseClass.startsWith('-')
+  const isNegative = baseClass.startsWith("-")
   const normalized = isNegative ? baseClass.slice(1) : baseClass
 
   // Try to match against known prefixes (longest first)
@@ -521,13 +554,15 @@ function mapClassToPossibleTokens(className) {
     }
   }
 
-  if (!prefix || !value) return []
+  if (!(prefix && value)) {
+    return []
+  }
 
   const possibleTokens = []
   const namespaces = PREFIX_TO_NAMESPACES.get(prefix) || []
 
   for (const namespace of namespaces) {
-    if (namespace === 'font-weight') {
+    if (namespace === "font-weight") {
       possibleTokens.push(`--font-weight-${value}`)
     } else {
       possibleTokens.push(`--${namespace}-${value}`)
@@ -535,37 +570,41 @@ function mapClassToPossibleTokens(className) {
   }
 
   // Add specific namespace alternatives
-  if (['p', 'px', 'py', 'pt', 'pr', 'pb', 'pl', 'ps', 'pe'].includes(prefix)) {
+  if (["p", "px", "py", "pt", "pr", "pb", "pl", "ps", "pe"].includes(prefix)) {
     possibleTokens.push(`--padding-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['m', 'mx', 'my', 'mt', 'mr', 'mb', 'ml', 'ms', 'me'].includes(prefix)) {
+  if (["m", "mx", "my", "mt", "mr", "mb", "ml", "ms", "me"].includes(prefix)) {
     possibleTokens.push(`--margin-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['gap', 'gap-x', 'gap-y'].includes(prefix)) {
+  if (["gap", "gap-x", "gap-y"].includes(prefix)) {
     possibleTokens.push(`--gap-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['w', 'min-w', 'max-w'].includes(prefix)) {
+  if (["w", "min-w", "max-w"].includes(prefix)) {
     possibleTokens.push(`--width-${value}`)
     possibleTokens.push(`--container-${value}`)
   }
 
-  if (['h', 'min-h', 'max-h'].includes(prefix)) {
+  if (["h", "min-h", "max-h"].includes(prefix)) {
     possibleTokens.push(`--height-${value}`)
     possibleTokens.push(`--container-${value}`)
   }
 
-  if (['space-x', 'space-y'].includes(prefix)) {
+  if (["space-x", "space-y"].includes(prefix)) {
     possibleTokens.push(`--space-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
 
-  if (['inset', 'inset-x', 'inset-y', 'top', 'right', 'bottom', 'left'].includes(prefix)) {
+  if (
+    ["inset", "inset-x", "inset-y", "top", "right", "bottom", "left"].includes(
+      prefix
+    )
+  ) {
     possibleTokens.push(`--inset-${value}`)
     possibleTokens.push(`--spacing-${value}`)
   }
@@ -587,11 +626,11 @@ function findCssFiles(dir) {
       const fullPath = path.join(dir, entry.name)
       if (entry.isDirectory()) {
         results.push(...findCssFiles(fullPath))
-      } else if (entry.isFile() && entry.name.endsWith('.css')) {
+      } else if (entry.isFile() && entry.name.endsWith(".css")) {
         results.push(fullPath)
       }
     }
-  } catch (err) {
+  } catch (_err) {
     // Skip directories we can't read
   }
   return results
@@ -600,6 +639,7 @@ function findCssFiles(dir) {
 /**
  * Load defined tokens from CSS files
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: loads tokens from multiple sources
 function loadDefinedTokens() {
   const tokens = new Set()
 
@@ -608,7 +648,7 @@ function loadDefinedTokens() {
     const fullPath = path.join(ROOT, file)
     try {
       if (fs.existsSync(fullPath)) {
-        const content = fs.readFileSync(fullPath, 'utf8')
+        const content = fs.readFileSync(fullPath, "utf8")
         const tokenMatches = content.matchAll(/--([\w-]+)\s*:/g)
         for (const match of tokenMatches) {
           tokens.add(`--${match[1]}`)
@@ -625,7 +665,7 @@ function loadDefinedTokens() {
     const cssFiles = findCssFiles(fullDir)
     for (const file of cssFiles) {
       try {
-        const content = fs.readFileSync(file, 'utf8')
+        const content = fs.readFileSync(file, "utf8")
         const tokenMatches = content.matchAll(/--([\w-]+)\s*:/g)
         for (const match of tokenMatches) {
           tokens.add(`--${match[1]}`)
@@ -645,12 +685,14 @@ function loadDefinedTokens() {
 function shouldIgnoreClass(className) {
   // Remove variant prefixes for checking
   let baseClass = className
-  while (/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:|!)/i.test(baseClass)) {
-    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:|!)/i, '')
+  while (VARIANT_PREFIX_WITH_BANG_REGEX.test(baseClass)) {
+    baseClass = baseClass.replace(VARIANT_PREFIX_WITH_BANG_REGEX, "")
   }
 
   // Skip empty or single-char classes
-  if (baseClass.length <= 1) return true
+  if (baseClass.length <= 1) {
+    return true
+  }
 
   // Check against ignore patterns
   return IGNORE_PATTERNS.some((pattern) => pattern.test(baseClass))
@@ -677,55 +719,146 @@ function extractTokensFromArbitraryUtility(className) {
 
 // Valid N1 spacing values (50-950 in steps of 50)
 const VALID_N1_SPACING = new Set([
-  '50', '100', '150', '200', '250', '300', '350', '400', '450',
-  '500', '550', '600', '650', '700', '750', '800', '850', '900', '950',
+  "50",
+  "100",
+  "150",
+  "200",
+  "250",
+  "300",
+  "350",
+  "400",
+  "450",
+  "500",
+  "550",
+  "600",
+  "650",
+  "700",
+  "750",
+  "800",
+  "850",
+  "900",
+  "950",
 ])
 
 // Special spacing values that are always OK
 const ALLOWED_SPACING_SPECIAL = new Set([
-  '0', 'px', 'auto', 'full', 'screen', 'min', 'max', 'fit',
-  'svh', 'lvh', 'dvh', 'section',
+  "0",
+  "px",
+  "auto",
+  "full",
+  "screen",
+  "min",
+  "max",
+  "fit",
+  "svh",
+  "lvh",
+  "dvh",
+  "section",
 ])
 
 // Spacing utility prefixes
 const SPACING_PREFIXES = [
-  'p', 'px', 'py', 'pt', 'pr', 'pb', 'pl', 'ps', 'pe',
-  'm', 'mx', 'my', 'mt', 'mr', 'mb', 'ml', 'ms', 'me',
-  'gap', 'gap-x', 'gap-y',
-  'space-x', 'space-y',
-  'w', 'h', 'min-w', 'max-w', 'min-h', 'max-h',
-  'top', 'right', 'bottom', 'left',
-  'inset', 'inset-x', 'inset-y',
+  "p",
+  "px",
+  "py",
+  "pt",
+  "pr",
+  "pb",
+  "pl",
+  "ps",
+  "pe",
+  "m",
+  "mx",
+  "my",
+  "mt",
+  "mr",
+  "mb",
+  "ml",
+  "ms",
+  "me",
+  "gap",
+  "gap-x",
+  "gap-y",
+  "space-x",
+  "space-y",
+  "w",
+  "h",
+  "min-w",
+  "max-w",
+  "min-h",
+  "max-h",
+  "top",
+  "right",
+  "bottom",
+  "left",
+  "inset",
+  "inset-x",
+  "inset-y",
 ]
 
 // Color prefixes that shouldn't use numeric suffixes
 const COLOR_PREFIXES = [
-  'bg', 'text', 'border', 'fill', 'stroke', 'outline',
-  'ring', 'ring-offset', 'shadow', 'accent', 'caret', 'decoration',
-  'from', 'via', 'to',
-  'border-t', 'border-r', 'border-b', 'border-l',
+  "bg",
+  "text",
+  "border",
+  "fill",
+  "stroke",
+  "outline",
+  "ring",
+  "ring-offset",
+  "shadow",
+  "accent",
+  "caret",
+  "decoration",
+  "from",
+  "via",
+  "to",
+  "border-t",
+  "border-r",
+  "border-b",
+  "border-l",
 ]
 
 // Tailwind default color names (should use semantic tokens instead)
 const TAILWIND_COLOR_NAMES = [
-  'slate', 'gray', 'zinc', 'neutral', 'stone',
-  'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal',
-  'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose',
+  "slate",
+  "gray",
+  "zinc",
+  "neutral",
+  "stone",
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "rose",
 ]
 
 /**
  * Check if class uses invalid Tailwind default spacing (1-96 scale instead of 50-950)
  * Returns error message if invalid, null if OK
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handles multiple spacing edge cases
 function checkInvalidSpacing(className) {
   // Remove variant prefixes
   let baseClass = className
-  while (/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i.test(baseClass)) {
-    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i, '')
+  while (VARIANT_PREFIX_REGEX.test(baseClass)) {
+    baseClass = baseClass.replace(VARIANT_PREFIX_REGEX, "")
   }
 
   // Handle negative prefix
-  if (baseClass.startsWith('-')) {
+  if (baseClass.startsWith("-")) {
     baseClass = baseClass.slice(1)
   }
 
@@ -735,20 +868,23 @@ function checkInvalidSpacing(className) {
       const value = baseClass.slice(prefix.length + 1)
 
       // Skip special values
-      if (ALLOWED_SPACING_SPECIAL.has(value)) return null
+      if (ALLOWED_SPACING_SPECIAL.has(value)) {
+        return null
+      }
 
       // Skip arbitrary values
-      if (value.startsWith('[') || value.startsWith('(')) return null
+      if (value.startsWith("[") || value.startsWith("(")) {
+        return null
+      }
 
       // Skip fractional values like 1/2, 1/3
-      if (value.includes('/')) return null
+      if (value.includes("/")) {
+        return null
+      }
 
       // Check if it's a number
-      if (/^\d+(\.\d+)?$/.test(value)) {
-        // If it's NOT in our valid N1 spacing scale, flag it
-        if (!VALID_N1_SPACING.has(value)) {
-          return `Invalid spacing: use N1 scale (50-950), not Tailwind default`
-        }
+      if (NUMBER_REGEX.test(value) && !VALID_N1_SPACING.has(value)) {
+        return "Invalid spacing: use N1 scale (50-950), not Tailwind default"
       }
 
       break
@@ -763,15 +899,16 @@ function checkInvalidSpacing(className) {
  * These should use semantic tokens instead
  * Returns error message if invalid, null if OK
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handles multiple palette edge cases
 function checkPaletteColor(className) {
   // Remove variant prefixes
   let baseClass = className
-  while (/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i.test(baseClass)) {
-    baseClass = baseClass.replace(/^(?:[a-z-]+:|data-\[[^\]]+\]:|\*:)/i, '')
+  while (VARIANT_PREFIX_REGEX.test(baseClass)) {
+    baseClass = baseClass.replace(VARIANT_PREFIX_REGEX, "")
   }
 
   // Remove opacity modifier
-  baseClass = baseClass.replace(/\/\d+$/, '')
+  baseClass = baseClass.replace(OPACITY_SUFFIX_REGEX, "")
 
   // Check each color prefix
   for (const prefix of COLOR_PREFIXES) {
@@ -783,7 +920,7 @@ function checkPaletteColor(className) {
         if (rest.startsWith(`${colorName}-`)) {
           const suffix = rest.slice(colorName.length + 1)
           // Check if suffix is a number (50, 100, 200, etc.)
-          if (/^\d+$/.test(suffix)) {
+          if (INTEGER_REGEX.test(suffix)) {
             return `Palette color: use semantic token instead of ${colorName}-${suffix}`
           }
         }
@@ -799,17 +936,18 @@ function checkPaletteColor(className) {
 /**
  * Main validation function
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: main validation flow aggregates multiple checks
 function validateTokenUsage() {
-  console.log('🔍 Validating token usage in N1 components...\n')
+  console.log("🔍 Validating token usage in N1 components...\n")
 
   const definedTokens = loadDefinedTokens()
   console.log(`📋 Found ${definedTokens.size} defined tokens`)
 
-  const srcDir = path.join(ROOT, 'src')
-  const componentFiles = findFilesWithExtension(srcDir, '.tsx', [
-    '.stories.tsx',
-    '.test.tsx',
-    '.spec.tsx',
+  const srcDir = path.join(ROOT, "src")
+  const componentFiles = findFilesWithExtension(srcDir, ".tsx", [
+    ".stories.tsx",
+    ".test.tsx",
+    ".spec.tsx",
   ]).map((f) => `src/${f}`)
 
   console.log(`📁 Scanning ${componentFiles.length} TSX files...\n`)
@@ -819,7 +957,7 @@ function validateTokenUsage() {
 
   for (const file of componentFiles) {
     const fullPath = path.join(ROOT, file)
-    const content = fs.readFileSync(fullPath, 'utf8')
+    const content = fs.readFileSync(fullPath, "utf8")
     const classesWithLines = extractTailwindClassesWithLines(content, file)
     const fileErrors = []
 
@@ -831,7 +969,7 @@ function validateTokenUsage() {
           className,
           expectedTokens: [spacingError],
           line,
-          type: 'spacing',
+          type: "spacing",
         })
         continue
       }
@@ -843,7 +981,7 @@ function validateTokenUsage() {
           className,
           expectedTokens: [paletteError],
           line,
-          type: 'palette',
+          type: "palette",
         })
         continue
       }
@@ -851,34 +989,42 @@ function validateTokenUsage() {
       // 3. Check arbitrary utilities
       const arbitraryTokens = extractTokensFromArbitraryUtility(className)
       if (arbitraryTokens.length > 0) {
-        const missingTokens = arbitraryTokens.filter((t) => !definedTokens.has(t))
+        const missingTokens = arbitraryTokens.filter(
+          (t) => !definedTokens.has(t)
+        )
         if (missingTokens.length > 0) {
           fileErrors.push({
             className,
             expectedTokens: missingTokens,
             line,
-            type: 'arbitrary',
+            type: "arbitrary",
           })
         }
         continue
       }
 
       // 4. Skip standard classes
-      if (shouldIgnoreClass(className)) continue
+      if (shouldIgnoreClass(className)) {
+        continue
+      }
 
       // 5. Map to possible tokens
       const possibleTokens = mapClassToPossibleTokens(className)
-      if (possibleTokens.length === 0) continue
+      if (possibleTokens.length === 0) {
+        continue
+      }
 
       // 6. Check if any matching token exists
-      const hasMatchingToken = possibleTokens.some((token) => definedTokens.has(token))
+      const hasMatchingToken = possibleTokens.some((token) =>
+        definedTokens.has(token)
+      )
 
       if (!hasMatchingToken) {
         fileErrors.push({
           className,
           expectedTokens: possibleTokens.slice(0, 3), // Show first 3 possibilities
           line,
-          type: 'token',
+          type: "token",
         })
       }
     }
@@ -891,7 +1037,9 @@ function validateTokenUsage() {
 
   // Report results
   if (totalErrors === 0) {
-    console.log('✅ All component classes have corresponding token definitions!')
+    console.log(
+      "✅ All component classes have corresponding token definitions!"
+    )
     return true
   }
 
@@ -903,28 +1051,48 @@ function validateTokenUsage() {
 
   for (const [, errors] of errorsByFile) {
     for (const error of errors) {
-      if (error.type === 'spacing') spacingCount++
-      else if (error.type === 'palette') paletteCount++
-      else if (error.type === 'arbitrary') arbitraryCount++
-      else tokenCount++
+      if (error.type === "spacing") {
+        spacingCount += 1
+      } else if (error.type === "palette") {
+        paletteCount += 1
+      } else if (error.type === "arbitrary") {
+        arbitraryCount += 1
+      } else {
+        tokenCount += 1
+      }
     }
   }
 
   console.log(`❌ Found ${totalErrors} issues:\n`)
-  if (spacingCount > 0) console.log(`   📏 Invalid spacing (use 50-950): ${spacingCount}`)
-  if (paletteCount > 0) console.log(`   🎨 Palette colors (use semantic): ${paletteCount}`)
-  if (tokenCount > 0) console.log(`   🏷️  Missing tokens: ${tokenCount}`)
-  if (arbitraryCount > 0) console.log(`   📦 Arbitrary values: ${arbitraryCount}`)
+  if (spacingCount > 0) {
+    console.log(`   📏 Invalid spacing (use 50-950): ${spacingCount}`)
+  }
+  if (paletteCount > 0) {
+    console.log(`   🎨 Palette colors (use semantic): ${paletteCount}`)
+  }
+  if (tokenCount > 0) {
+    console.log(`   🏷️  Missing tokens: ${tokenCount}`)
+  }
+  if (arbitraryCount > 0) {
+    console.log(`   📦 Arbitrary values: ${arbitraryCount}`)
+  }
   console.log()
 
   for (const [file, errors] of errorsByFile) {
     console.log(`📄 ${file}:`)
     for (const error of errors) {
-      const icon = error.type === 'spacing' ? '📏' :
-                   error.type === 'palette' ? '🎨' :
-                   error.type === 'arbitrary' ? '📦' : '🏷️'
-      const message = error.expectedTokens.join(' OR ')
-      console.log(`  ${icon} Line ${error.line}: ${error.className} → ${message}`)
+      let icon = "🏷️"
+      if (error.type === "spacing") {
+        icon = "📏"
+      } else if (error.type === "palette") {
+        icon = "🎨"
+      } else if (error.type === "arbitrary") {
+        icon = "📦"
+      }
+      const message = error.expectedTokens.join(" OR ")
+      console.log(
+        `  ${icon} Line ${error.line}: ${error.className} → ${message}`
+      )
     }
     console.log()
   }
@@ -937,7 +1105,9 @@ try {
   const success = validateTokenUsage()
   process.exit(success ? 0 : 1)
 } catch (error) {
-  console.error('💥 Validation failed:', error.message)
-  if (error.stack) console.error(error.stack)
+  console.error("💥 Validation failed:", error.message)
+  if (error.stack) {
+    console.error(error.stack)
+  }
   process.exit(1)
 }

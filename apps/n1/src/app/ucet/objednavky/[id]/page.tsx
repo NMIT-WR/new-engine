@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
-import { formatDateString } from '@/utils/format/format-date'
+import { Badge } from "@techsio/ui-kit/atoms/badge"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { getOrderById, type StoreOrder } from "@/services/order-service"
+import { formatDateString } from "@/utils/format/format-date"
 import {
   getOrderStatusColor,
   getOrderStatusLabel,
-} from '@/utils/format/format-order-status'
-import { getOrderById, type StoreOrder } from '@/services/order-service'
-import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { OrderDetail } from './_components/order-detail'
-import { useEffect, useState } from 'react'
+} from "@/utils/format/format-order-status"
+import { OrderDetail } from "./_components/order-detail"
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -31,8 +31,10 @@ export default function OrderDetailPage() {
         }
       })
       .catch((err) => {
-        if (!active) return
-        setError(err instanceof Error ? err.message : 'Chyba při načítání')
+        if (!active) {
+          return
+        }
+        setError(err instanceof Error ? err.message : "Chyba při načítání")
       })
       .finally(() => {
         if (active) {
@@ -57,14 +59,14 @@ export default function OrderDetailPage() {
     return (
       <div className="mx-auto max-w-max-w px-400">
         <p className="text-fg-secondary">
-          {error || 'Objednávka nebyla nalezena'}
+          {error || "Objednávka nebyla nalezena"}
         </p>
         <LinkButton
           as={Link}
-          href="/ucet/profil?tab=orders"
-          theme="borderless"
-          size="sm"
           className="mt-300"
+          href="/ucet/profil?tab=orders"
+          size="sm"
+          theme="borderless"
         >
           Zpět na objednávky
         </LinkButton>
@@ -72,17 +74,17 @@ export default function OrderDetailPage() {
     )
   }
 
-  const statusVariant = getOrderStatusColor(order.status || 'pending')
+  const statusVariant = getOrderStatusColor(order.status || "pending")
 
   return (
     <div className="mx-auto max-w-max-w px-400">
       <LinkButton
         as={Link}
-        href="/ucet/profil?tab=orders"
-        theme="unstyled"
-        size="current"
         className="mb-400"
+        href="/ucet/profil?tab=orders"
         icon="token-icon-arrow-left"
+        size="current"
+        theme="unstyled"
       >
         Zpět na objednávky
       </LinkButton>
@@ -94,9 +96,9 @@ export default function OrderDetailPage() {
             </h1>
             <p className="text-fg-secondary">
               {formatDateString(order.created_at as string, {
-                month: 'long',
-                year: 'numeric',
-                day: 'numeric',
+                month: "long",
+                year: "numeric",
+                day: "numeric",
               })}
             </p>
           </div>

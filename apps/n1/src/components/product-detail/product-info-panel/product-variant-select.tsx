@@ -1,8 +1,8 @@
-import type { ProductDetail, ProductVariantDetail } from '@/types/product'
-import { LinkButtonWithTooltip } from '../../molecules/link-button-with-tooltip'
-import { TooltipContent } from './tooltip-content'
+import type { ProductDetail, ProductVariantDetail } from "@/types/product"
+import { LinkButtonWithTooltip } from "../../molecules/link-button-with-tooltip"
+import { TooltipContent } from "./tooltip-content"
 
-interface ProductVariantSelectProps {
+type ProductVariantSelectProps = {
   detail: ProductDetail
   selectedVariant: ProductVariantDetail | null
   handle: string
@@ -23,31 +23,29 @@ export const ProductVariantSelect = ({
   return (
     <div className="flex flex-wrap gap-200">
       {detail.variants?.length > 1 &&
-        detail.variants.map((variant) => {
-          return (
-            <LinkButtonWithTooltip
-              href={`/produkt/${handle}?variant=${variant.title.toLowerCase()}`}
-              key={variant.id}
-              selected={variant.id === selectedVariant?.id}
-              tooltip={
-                <TooltipContent
-                  title={detail.title}
-                  variant={variant.title}
-                  quantity={variant.inventory_quantity ?? 0}
-                />
-              }
-              placement="bottom-start"
-              data-selected={variant.id === selectedVariant?.id}
-            >
-              {variant.title}
-              <span
-                aria-hidden="true"
-                className="absolute right-0 top-0"
-                style={decorationStyle}
+        detail.variants.map((variant) => (
+          <LinkButtonWithTooltip
+            data-selected={variant.id === selectedVariant?.id}
+            href={`/produkt/${handle}?variant=${variant.title.toLowerCase()}`}
+            key={variant.id}
+            placement="bottom-start"
+            selected={variant.id === selectedVariant?.id}
+            tooltip={
+              <TooltipContent
+                quantity={variant.inventory_quantity ?? 0}
+                title={detail.title}
+                variant={variant.title}
               />
-            </LinkButtonWithTooltip>
-          )
-        })}
+            }
+          >
+            {variant.title}
+            <span
+              aria-hidden="true"
+              className="absolute top-0 right-0"
+              style={decorationStyle}
+            />
+          </LinkButtonWithTooltip>
+        ))}
     </div>
   )
 }

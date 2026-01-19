@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { ALL_CATEGORIES_MAP } from '@/lib/constants'
-import { PREFETCH_DELAYS } from '@/lib/prefetch-config'
-import { useEffect, useRef } from 'react'
-import { usePrefetchProducts } from './use-prefetch-products'
+import { useEffect, useRef } from "react"
+import { ALL_CATEGORIES_MAP } from "@/lib/constants"
+import { PREFETCH_DELAYS } from "@/lib/prefetch-config"
+import { usePrefetchProducts } from "./use-prefetch-products"
 
-interface UsePrefetchOnHoverReturn {
+type UsePrefetchOnHoverReturn = {
   handleHover: (categoryHandle: string) => void
   cancelHover: () => void
 }
@@ -24,8 +24,12 @@ export function usePrefetchOnHover(): UsePrefetchOnHoverReturn {
     timeoutRef.current = setTimeout(() => {
       const categoryIds = ALL_CATEGORIES_MAP[categoryHandle]
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[usePrefetchOnHover] Prefetch:', categoryHandle, categoryIds)
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "[usePrefetchOnHover] Prefetch:",
+          categoryHandle,
+          categoryIds
+        )
       }
 
       if (categoryIds?.length) {
@@ -43,13 +47,14 @@ export function usePrefetchOnHover(): UsePrefetchOnHoverReturn {
   }
 
   // Cleanup on unmount
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
-    }
-  }, [])
+    },
+    []
+  )
 
   return { handleHover, cancelHover }
 }

@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { cacheConfig } from '@/lib/cache-config'
-import { fetchLogger } from '@/lib/loggers/fetch'
-import { queryKeys } from '@/lib/query-keys'
-import { getProductByHandle } from '@/services/product-service'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { useSuspenseRegion } from './use-region'
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { cacheConfig } from "@/lib/cache-config"
+import { fetchLogger } from "@/lib/loggers/fetch"
+import { queryKeys } from "@/lib/query-keys"
+import { getProductByHandle } from "@/services/product-service"
+import { useSuspenseRegion } from "./use-region"
 
-interface UseProductParams {
+type UseProductParams = {
   handle: string
   fields?: string
 }
@@ -16,7 +16,7 @@ export function useSuspenseProduct({ handle, fields }: UseProductParams) {
   const { regionId, countryCode } = useSuspenseRegion()
 
   if (!(handle && regionId && countryCode)) {
-    throw new Error('Missing required product query parameters')
+    throw new Error("Missing required product query parameters")
   }
 
   const queryKey = queryKeys.products.detail(handle, regionId, countryCode)
@@ -33,7 +33,7 @@ export function useSuspenseProduct({ handle, fields }: UseProductParams) {
       })
       const duration = performance.now() - start
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         fetchLogger.current(handle, duration)
       }
 

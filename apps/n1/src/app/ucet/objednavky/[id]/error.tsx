@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Link from 'next/link'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Link from "next/link"
 
-interface ErrorProps {
+type ErrorProps = {
   error: Error & { digest?: string }
   reset: () => void
 }
@@ -19,15 +19,15 @@ export default function ErrorOrder({ reset }: ErrorProps) {
         Objednávka nebyla nalezena nebo k ní nemáte přístup
       </p>
       <div className="flex justify-center gap-200">
-        <Button variant="secondary" theme="solid" size="sm" onClick={reset}>
+        <Button onClick={reset} size="sm" theme="solid" variant="secondary">
           Zkusit znovu
         </Button>
         <LinkButton
-          variant="secondary"
-          theme="borderless"
-          size="sm"
           as={Link}
           href="/ucet/profil"
+          size="sm"
+          theme="borderless"
+          variant="secondary"
         >
           Zpět na objednávky
         </LinkButton>

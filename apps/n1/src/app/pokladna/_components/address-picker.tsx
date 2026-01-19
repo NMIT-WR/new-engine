@@ -9,7 +9,7 @@ import { addressToFormData } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 import { formatPostalCode } from "@/utils/format/format-postal-code"
 
-interface AddressPickerProps {
+type AddressPickerProps = {
   addresses: StoreCustomerAddress[]
   selectedId: string | null
   onSelect: (address: AddressFormData, id: string) => void
@@ -51,15 +51,19 @@ export function AddressPicker({
 
   return (
     <SelectTemplate
-      items={items}
       className="w-full"
       disabled={disabled}
+      items={items}
       label="Vyberte z vašich adres"
       onValueChange={(details) => {
         const newId = details.value[0]
-        if (!newId) return
+        if (!newId) {
+          return
+        }
         const address = addresses.find((a) => a.id === newId)
-        if (!address) return
+        if (!address) {
+          return
+        }
         const formData = addressToFormData(address) as AddressFormData
         onSelect(formData, address.id)
       }}

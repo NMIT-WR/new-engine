@@ -1,4 +1,4 @@
-import type { Category } from '@/data/static/type'
+import type { Category } from "@/data/static/type"
 
 /**
  * Gets the full path of category IDs from root to the given category
@@ -10,7 +10,9 @@ export function getCategoryPath(
   category: Category | undefined,
   categoryMap: Record<string, Category>
 ): string[] {
-  if (!category) return []
+  if (!category) {
+    return []
+  }
 
   const path: string[] = []
   let current: Category | undefined = category

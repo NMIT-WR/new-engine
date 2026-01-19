@@ -1,8 +1,8 @@
-'use client'
-import { useAuth } from '@/hooks/use-auth'
-import { type ReactNode, createContext, useContext, useState } from 'react'
+"use client"
+import { createContext, type ReactNode, useContext, useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
 
-interface HeaderContextValue {
+type HeaderContextValue = {
   isLoginFormOpen: boolean
   isProfileOpen: boolean
   isCartOpen: boolean
@@ -15,9 +15,7 @@ interface HeaderContextValue {
   isAuthenticated: boolean
 }
 
-const HeaderContext = createContext<HeaderContextValue | undefined>(
-  undefined
-)
+const HeaderContext = createContext<HeaderContextValue | undefined>(undefined)
 
 export const HeaderProvider = ({ children }: { children: ReactNode }) => {
   const [isLoginFormOpen, setIsLoginFormOpen] = useState(false)
@@ -27,12 +25,14 @@ export const HeaderProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleLoginForm = () => {
     setIsLoginFormOpen((prev) => !prev)
-    if (!isLoginFormOpen) setIsCartOpen(false)
+    if (!isLoginFormOpen) {
+      setIsCartOpen(false)
+    }
   }
 
   const toggleCart = () => {
     setIsCartOpen((prev) => !prev)
-    if (!isCartOpen || !isProfileOpen) {
+    if (!(isCartOpen && isProfileOpen)) {
       setIsLoginFormOpen(false)
       setIsProfileOpen(false)
     }
@@ -40,7 +40,9 @@ export const HeaderProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleProfile = () => {
     setIsProfileOpen((prev) => !prev)
-    if (!isCartOpen) setIsLoginFormOpen(false)
+    if (!isCartOpen) {
+      setIsLoginFormOpen(false)
+    }
   }
 
   const contextValue = {
@@ -62,7 +64,7 @@ export const HeaderProvider = ({ children }: { children: ReactNode }) => {
 export const useHeaderContext = () => {
   const context = useContext(HeaderContext)
   if (!context) {
-    throw new Error('useHeaderContext must be used within a HeaderProvider')
+    throw new Error("useHeaderContext must be used within a HeaderProvider")
   }
   return context
 }

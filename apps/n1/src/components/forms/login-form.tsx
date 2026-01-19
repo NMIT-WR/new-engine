@@ -35,6 +35,7 @@ export function LoginForm({
   const analytics = useAnalytics()
   const formRef = useRef<typeof form | null>(null)
   const [backendError, setBackendError] = useState<string>()
+  const rememberId = "login-remember"
 
   const defaultValues: LoginFormData = {
     email: "",
@@ -43,7 +44,9 @@ export function LoginForm({
 
   const login = useLogin({
     onSuccess: () => {
-      if (!formRef.current) return
+      if (!formRef.current) {
+        return
+      }
 
       const email = formRef.current.state.values.email
       if (email) {
@@ -85,7 +88,6 @@ export function LoginForm({
         form.handleSubmit()
       }}
     >
-
       <form.Field name="email" validators={loginValidators.email}>
         {(field) => (
           <TextField
@@ -104,11 +106,11 @@ export function LoginForm({
         {(field) => (
           <TextField
             autoComplete="current-password"
-            externalError={backendError}
-            onExternalErrorClear={() => setBackendError(undefined)}
             disabled={login.isPending}
+            externalError={backendError}
             field={field}
             label="Heslo"
+            onExternalErrorClear={() => setBackendError(undefined)}
             placeholder="••••••••"
             required
             type="password"
@@ -117,8 +119,12 @@ export function LoginForm({
       </form.Field>
 
       {showForgotPasswordLink && (
-        <label className="enter flex items-center gap-150">
-          <Checkbox disabled={login.isPending} name="remember" />
+        <label className="enter flex items-center gap-150" htmlFor={rememberId}>
+          <Checkbox
+            disabled={login.isPending}
+            id={rememberId}
+            name="remember"
+          />
           <span className="text-sm">Zapamatovat</span>
         </label>
       )}

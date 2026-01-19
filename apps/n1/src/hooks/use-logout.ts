@@ -1,8 +1,8 @@
-import { queryKeys } from '@/lib/query-keys'
-import { logout } from '@/services/auth-service'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { queryKeys } from "@/lib/query-keys"
+import { logout } from "@/services/auth-service"
 
-export interface UseLogoutOptions {
+export type UseLogoutOptions = {
   onSuccess?: () => void
   onError?: (error: Error) => void
 }

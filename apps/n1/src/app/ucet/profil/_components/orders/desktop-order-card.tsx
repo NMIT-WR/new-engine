@@ -1,15 +1,15 @@
-import { formatDateString } from '@/utils/format/format-date'
+import type { StoreOrder } from "@medusajs/types"
+import { Badge } from "@techsio/ui-kit/atoms/badge"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Image from "next/image"
+import Link from "next/link"
+import { formatDateString } from "@/utils/format/format-date"
 import {
   getOrderStatusColor,
   getOrderStatusLabel,
-} from '@/utils/format/format-order-status'
-import { formatAmount } from '@/utils/format/format-product'
-import { truncateText } from '@/utils/truncate-text'
-import type { StoreOrder } from '@medusajs/types'
-import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Image from 'next/image'
-import Link from 'next/link'
+} from "@/utils/format/format-order-status"
+import { formatAmount } from "@/utils/format/format-product"
+import { truncateText } from "@/utils/truncate-text"
 
 export function DesktopOrderCard({ order }: { order: StoreOrder }) {
   const statusVariant = getOrderStatusColor(order.status)
@@ -17,12 +17,12 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
   const correctWord = () => {
     const itemsCount = order.items?.length || 0
     if (itemsCount === 1) {
-      return 'položka'
+      return "položka"
     }
     if (itemsCount > 1 && itemsCount < 5) {
-      return 'položky'
+      return "položky"
     }
-    return 'položek'
+    return "položek"
   }
 
   return (
@@ -31,7 +31,10 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
       <div className="col-span-2 flex items-center">
         <div>
           <p className="font-medium text-fg-primary">#{order.display_id}</p>
-          <Badge variant={statusVariant} className="mt-100 inline-flex text-3xs">
+          <Badge
+            className="mt-100 inline-flex text-3xs"
+            variant={statusVariant}
+          >
             {getOrderStatusLabel(order.status)}
           </Badge>
         </div>
@@ -51,17 +54,17 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
           <div className="-space-x-100 flex">
             {order.items?.slice(0, 3).map((item, index) => (
               <div
-                key={item.id}
                 className="relative size-[40px] overflow-hidden rounded-full border-2 border-base bg-surface"
+                key={item.id}
                 style={{ zIndex: 3 - index }}
               >
                 {item.thumbnail && (
                   <Image
-                    src={item.thumbnail}
-                    alt={item.product_title || ''}
+                    alt={item.product_title || ""}
                     className="object-cover"
-                    width={40}
                     height={40}
+                    src={item.thumbnail}
+                    width={40}
                   />
                 )}
               </div>
@@ -80,7 +83,7 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
             <p className="line-clamp-1 text-fg-primary">
               {order.items?.[0] &&
                 order.items.length < 2 &&
-                truncateText(order.items[0].product_title || '')}
+                truncateText(order.items[0].product_title || "")}
             </p>
             <p className="text-fg-tertiary text-sm">
               {order.items?.length || 0} {correctWord()}
@@ -102,9 +105,9 @@ export function DesktopOrderCard({ order }: { order: StoreOrder }) {
           as={Link}
           href={`/ucet/objednavky/${order.id}`}
           prefetch
-          variant="primary"
-          theme="solid"
           size="sm"
+          theme="solid"
+          variant="primary"
         >
           Detail
         </LinkButton>

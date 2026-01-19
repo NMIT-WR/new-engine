@@ -42,4 +42,3 @@ export const VALIDATION_MESSAGES = {
     required: "Musíte souhlasit s podmínkami",
   },
 } as const
-

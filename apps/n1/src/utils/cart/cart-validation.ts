@@ -1,4 +1,4 @@
-import type { Cart } from '@/services/cart-service'
+import type { Cart } from "@/services/cart-service"
 
 export type CartValidationResult =
   | {
@@ -8,7 +8,7 @@ export type CartValidationResult =
     }
   | {
       valid: false
-      error: 'insufficient_stock'
+      error: "insufficient_stock"
       currentQuantity: number
       availableQuantity: number
       requestedTotal: number
@@ -59,7 +59,7 @@ export function validateAddToCart({
   if (requestedTotal > availableQuantity) {
     return {
       valid: false,
-      error: 'insufficient_stock',
+      error: "insufficient_stock",
       currentQuantity,
       availableQuantity,
       requestedTotal,

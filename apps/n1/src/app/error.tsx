@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Link from 'next/link'
-import { useEffect } from 'react'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Link from "next/link"
+import { useEffect } from "react"
 
-export default function Error({
+export default function ErrorPage({
   error,
   reset,
 }: {
@@ -13,8 +13,8 @@ export default function Error({
   reset: () => void
 }) {
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[ErrorBoundary]', error)
+    if (process.env.NODE_ENV === "development") {
+      console.error("[ErrorBoundary]", error)
     }
   }, [error])
 
