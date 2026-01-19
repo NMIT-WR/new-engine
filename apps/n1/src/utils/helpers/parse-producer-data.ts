@@ -76,7 +76,10 @@ export const parseProducerData = (
     let distributor: string | undefined
 
     if (distributorIndex > -1) {
-      distributor = extractDistributor(paragraphs[distributorIndex])
+      const distributorParagraph = paragraphs[distributorIndex]
+      if (distributorParagraph) {
+        distributor = extractDistributor(distributorParagraph)
+      }
     }
 
     return {

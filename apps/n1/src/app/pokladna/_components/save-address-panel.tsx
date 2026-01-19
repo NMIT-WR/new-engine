@@ -15,6 +15,7 @@ export function SaveAddressPanel() {
   const form = useCheckoutForm()
 
   const isDirty = useStore(form.store, (state) => state.isDirty)
+  const shouldShowSavePanel = Boolean(customer) && isDirty
 
   const [saveStatus, setSaveStatus] = useState<
     "idle" | "saving" | "success" | "error"
@@ -24,7 +25,7 @@ export function SaveAddressPanel() {
   const { mutateAsync: createAddressAsync } = useCreateAddress()
   const { mutateAsync: updateAddressAsync } = useUpdateAddress()
 
-  if (!(customer && isDirty)) {
+  if (!shouldShowSavePanel) {
     return null
   }
 

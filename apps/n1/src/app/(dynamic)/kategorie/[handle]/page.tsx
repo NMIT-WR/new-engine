@@ -74,6 +74,8 @@ export default function CategoryPage() {
   // Get current page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1
 
+  const categoryIds = ALL_CATEGORIES_MAP[handle] ?? []
+
   const {
     products: rawProducts,
     isFetching,
@@ -83,7 +85,7 @@ export default function CategoryPage() {
     hasNextPage,
     hasPrevPage,
   } = useSuspenseProducts({
-    category_id: ALL_CATEGORIES_MAP[handle],
+    category_id: categoryIds,
     page: currentPage,
     limit: PRODUCT_LIMIT,
   })
@@ -103,7 +105,7 @@ export default function CategoryPage() {
     hasPrevPage,
     totalPages,
     pageSize: PRODUCT_LIMIT,
-    category_id: ALL_CATEGORIES_MAP[handle],
+    category_id: categoryIds,
     regionId,
     countryCode,
   })

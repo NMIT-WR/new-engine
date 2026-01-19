@@ -1,5 +1,5 @@
 import { cacheConfig } from '@/lib/cache-config'
-import { prefetchLogger } from '@/lib/loggers'
+import { prefetchLogger } from '@/lib/loggers/prefetch'
 import { buildPrefetchParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts, getProductsGlobal } from '@/services/product-service'
@@ -17,6 +17,8 @@ export function usePrefetchProducts() {
     prefetchedBy?: string
   ) => {
     if (!regionId) return
+    const [firstCategory] = categoryId
+    if (!firstCategory) return
 
     const queryParams = buildPrefetchParams({
       category_id: categoryId,
@@ -28,13 +30,13 @@ export function usePrefetchProducts() {
     const cached = queryClient.getQueryData(queryKey)
 
     if (cached) {
-      const label = categoryId[0].slice(-6)
+      const label = firstCategory.slice(-6)
       prefetchLogger.cacheHit('Categories', label)
     } else {
       const label =
         categoryId.length === 1
-          ? categoryId[0].slice(-6)
-          : `${categoryId[0].slice(-6)} +${categoryId.length - 1}`
+          ? firstCategory.slice(-6)
+          : `${firstCategory.slice(-6)} +${categoryId.length - 1}`
       const start = performance.now()
 
       prefetchLogger.start('Categories', label)
@@ -53,6 +55,8 @@ export function usePrefetchProducts() {
 
   const prefetchRootCategories = async (categoryId: string[]) => {
     if (!regionId) return
+    const [firstCategory] = categoryId
+    if (!firstCategory) return
 
     const queryParams = buildPrefetchParams({
       category_id: categoryId,
@@ -64,13 +68,13 @@ export function usePrefetchProducts() {
     const cached = queryClient.getQueryData(queryKey)
 
     if (cached) {
-      const label = categoryId[0].slice(-6)
+      const label = firstCategory.slice(-6)
       prefetchLogger.cacheHit('Root', label)
     } else {
       const label =
         categoryId.length === 1
-          ? categoryId[0].slice(-6)
-          : `${categoryId[0].slice(-6)} +${categoryId.length - 1}`
+          ? firstCategory.slice(-6)
+          : `${firstCategory.slice(-6)} +${categoryId.length - 1}`
       const start = performance.now()
 
       prefetchLogger.start('Root', label)

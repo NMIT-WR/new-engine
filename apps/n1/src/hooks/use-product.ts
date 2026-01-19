@@ -1,7 +1,7 @@
 'use client'
 
 import { cacheConfig } from '@/lib/cache-config'
-import { fetchLogger } from '@/lib/loggers'
+import { fetchLogger } from '@/lib/loggers/fetch'
 import { queryKeys } from '@/lib/query-keys'
 import { getProductByHandle } from '@/services/product-service'
 import { useSuspenseQuery } from '@tanstack/react-query'

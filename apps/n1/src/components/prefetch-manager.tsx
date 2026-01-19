@@ -2,7 +2,7 @@
 import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
 import { useRegion } from '@/hooks/use-region'
 import { CATEGORY_MAP } from '@/lib/constants'
-import { prefetchLogger } from '@/lib/loggers'
+import { prefetchLogger } from '@/lib/loggers/prefetch'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 

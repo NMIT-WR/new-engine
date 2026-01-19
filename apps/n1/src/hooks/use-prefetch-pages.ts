@@ -1,7 +1,7 @@
 'use client'
 
 import { cacheConfig } from '@/lib/cache-config'
-import { prefetchLogger } from '@/lib/loggers'
+import { prefetchLogger } from '@/lib/loggers/prefetch'
 import { buildProductQueryParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'

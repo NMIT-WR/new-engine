@@ -1,13 +1,19 @@
 import { useLogout } from '@/hooks/use-logout'
 import { useAuthToast } from '@/hooks/use-toast'
 import { Button } from '@techsio/ui-kit/atoms/button'
-import { useRouter } from 'next/navigation'
-import { useAccountContext } from '../context/account-context'
+import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
+import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 export const AccountMenu = () => {
   const router = useRouter()
   const toast = useAuthToast()
-  const { activeTab, setActiveTab } = useAccountContext()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const activeTab =
+    tabParam ??
+    (pathname.startsWith('/ucet/objednavky') ? 'orders' : 'profile')
   const logoutMutation = useLogout({
     onSuccess: () => {
       toast.logoutSuccess()
@@ -18,51 +24,41 @@ export const AccountMenu = () => {
     },
   })
 
-  const handleTabClick = (tab: 'profile' | 'addresses' | 'orders') => {
-    setActiveTab(tab)
-    router.push(`/ucet/profil`)
-  }
   return (
     <nav className="flex flex-col space-y-50">
-      <Button
-        theme="unstyled"
-        className="justify-start py-100"
-        size="current"
-        onClick={() => handleTabClick('profile')}
+      <LinkButton
+        as={Link}
+        className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
+        data-selected={activeTab === 'profile'}
+        href="/ucet/profil?tab=profile"
+        size="sm"
+        theme="borderless"
+        variant="secondary"
       >
-        <span
-          className="font-medium hover:underline data-[selected=true]:underline"
-          data-selected={activeTab === 'profile'}
-        >
-          Osobní údaje
-        </span>
-      </Button>
-      <Button
-        theme="unstyled"
-        className="justify-start py-100"
-        size="current"
-        onClick={() => handleTabClick('addresses')}
+        Osobní údaje
+      </LinkButton>
+      <LinkButton
+        as={Link}
+        className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
+        data-selected={activeTab === 'addresses'}
+        href="/ucet/profil?tab=addresses"
+        size="sm"
+        theme="borderless"
+        variant="secondary"
       >
-        <span
-          className="font-medium hover:underline data-[selected=true]:underline"
-          data-selected={activeTab === 'addresses'}
-        >
-          Adresy
-        </span>
-      </Button>
-      <Button
-        theme="unstyled"
-        className="justify-start py-100"
-        size="current"
-        onClick={() => handleTabClick('orders')}
+        Adresy
+      </LinkButton>
+      <LinkButton
+        as={Link}
+        className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
+        data-selected={activeTab === 'orders'}
+        href="/ucet/profil?tab=orders"
+        size="sm"
+        theme="borderless"
+        variant="secondary"
       >
-        <span
-          className="font-medium hover:underline data-[selected=true]:underline"
-          data-selected={activeTab === 'orders'}
-        >
-          Objednávky
-        </span>
-      </Button>
+        Objednávky
+      </LinkButton>
       <Button
         className="justify-start"
         size="sm"

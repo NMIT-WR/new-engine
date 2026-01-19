@@ -9,7 +9,8 @@ interface CartItemRowProps {
 }
 
 export function CartItemRow({ item, currencyCode }: CartItemRowProps) {
-  const tax = item.tax_lines?.[0].rate ? item.tax_lines?.[0].rate * 0.01 : 0
+  const taxRate = item.tax_lines?.[0]?.rate
+  const tax = taxRate ? taxRate * 0.01 : 0
   const price = formatToTaxIncluded({
     amount: item.unit_price,
     tax,

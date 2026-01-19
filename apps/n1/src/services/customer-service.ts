@@ -49,6 +49,10 @@ export async function createAddress(
     const newAddress =
       response.customer.addresses[response.customer.addresses.length - 1]
 
+    if (!newAddress) {
+      throw new Error('Nepodařilo se vytvořit adresu')
+    }
+
     return newAddress
   } catch (err) {
     logError('CustomerService.createAddress', err)

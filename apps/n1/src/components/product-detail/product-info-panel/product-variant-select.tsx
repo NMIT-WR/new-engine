@@ -13,6 +13,13 @@ export const ProductVariantSelect = ({
   selectedVariant,
   handle,
 }: ProductVariantSelectProps) => {
+  const decorationStyle = {
+    backgroundColor: "var(--color-success)",
+    clipPath: "polygon(0 0, 100% 100%, 100% 0)",
+    height: "0.5rem",
+    width: "0.5rem",
+  }
+
   return (
     <div className="flex flex-wrap gap-200">
       {detail.variants?.length > 1 &&
@@ -33,7 +40,11 @@ export const ProductVariantSelect = ({
               data-selected={variant.id === selectedVariant?.id}
             >
               {variant.title}
-              <span className="button-decoration" />
+              <span
+                aria-hidden="true"
+                className="absolute right-0 top-0"
+                style={decorationStyle}
+              />
             </LinkButtonWithTooltip>
           )
         })}

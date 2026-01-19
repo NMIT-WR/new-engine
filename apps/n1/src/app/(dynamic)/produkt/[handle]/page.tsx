@@ -67,14 +67,14 @@ export default function ProductPage() {
   }
 
   const breadcrumbPath = buildProductBreadcrumbs(
-    rawProduct.categories?.[0].id,
+    rawProduct.categories?.[0]?.id,
     CATEGORY_MAP_BY_ID,
     rawProduct.title,
     rawProduct.handle
   )
 
   const breadcrumbPathMobile = buildBreadcrumbs(
-    rawProduct.categories?.[0].id,
+    rawProduct.categories?.[0]?.id,
     CATEGORY_MAP_BY_ID
   )
 

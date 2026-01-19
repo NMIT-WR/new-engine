@@ -25,7 +25,7 @@ export function AddressForm({
   const updateAddress = useUpdateAddress()
   const toaster = useToast()
 
-  const isEditing = !!address
+  const isEditingExistingAddress = Boolean(address)
   const isPending = createAddress.isPending || updateAddress.isPending
 
   const defaultValues: AddressFormData = {
@@ -36,7 +36,7 @@ export function AddressForm({
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
-        if (isEditing && address) {
+        if (address) {
           await updateAddress.mutateAsync({
             addressId: address.id,
             data: value,
@@ -55,7 +55,9 @@ export function AddressForm({
           })
         } else {
           toaster.create({
-            title: isEditing ? "Chyba při úpravě" : "Chyba při přidání",
+            title: isEditingExistingAddress
+              ? "Chyba při úpravě"
+              : "Chyba při přidání",
             type: "error",
           })
         }
@@ -85,7 +87,11 @@ export function AddressForm({
           Zrušit
         </Button>
         <Button disabled={isPending} size="sm" type="submit">
-          {isPending ? "Ukládám..." : isEditing ? "Uložit" : "Přidat"}
+          {isPending
+            ? "Ukládám..."
+            : isEditingExistingAddress
+              ? "Uložit"
+              : "Přidat"}
         </Button>
       </div>
     </form>

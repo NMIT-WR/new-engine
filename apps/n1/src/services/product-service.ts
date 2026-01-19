@@ -1,5 +1,5 @@
 import { PRODUCT_DETAILED_FIELDS } from '@/lib/constants'
-import { fetchLogger } from '@/lib/loggers'
+import { fetchLogger } from '@/lib/loggers/fetch'
 import { sdk } from '@/lib/medusa-client'
 import {
   type ProductQueryParams,

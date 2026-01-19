@@ -1,6 +1,7 @@
 import { cacheConfig } from '@/lib/cache-config'
 import { PRODUCT_LIMIT } from '@/lib/constants'
-import { fetchLogger, logQuery } from '@/lib/loggers'
+import { logQuery } from '@/lib/loggers/cache'
+import { fetchLogger } from '@/lib/loggers/fetch'
 import { buildProductQueryParams } from '@/lib/product-query-params'
 import { queryKeys } from '@/lib/query-keys'
 import { getProducts } from '@/services/product-service'

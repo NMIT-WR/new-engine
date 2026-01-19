@@ -59,7 +59,8 @@ export function getDefaultAddress(
   if (!addresses || addresses.length === 0) {
     return null
   }
-  return addresses[0]
+  const [first] = addresses
+  return first ?? null
 }
 
 /** Re-export PplAccessPointData for convenience */

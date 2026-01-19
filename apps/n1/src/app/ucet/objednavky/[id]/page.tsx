@@ -1,28 +1,81 @@
 'use client'
 
-import { useSuspenseOrder } from '@/hooks/use-orders'
 import { formatDateString } from '@/utils/format/format-date'
 import {
   getOrderStatusColor,
   getOrderStatusLabel,
 } from '@/utils/format/format-order-status'
+import { getOrderById, type StoreOrder } from '@/services/order-service'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Link from 'next/link'
-import { use } from 'react'
-import { useAccountContext } from '../../context/account-context'
 import { OrderDetail } from './_components/order-detail'
+import { useEffect, useState } from 'react'
 
 interface OrderDetailPageProps {
-  params: Promise<{
+  params: {
     id: string
-  }>
+  }
 }
 
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
-  const { id } = use(params)
-  const { data: order } = useSuspenseOrder(id)
-  const { setActiveTab } = useAccountContext()
+  const { id } = params
+  const [order, setOrder] = useState<StoreOrder | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    let active = true
+    setIsLoading(true)
+    setError(null)
+
+    getOrderById(id)
+      .then((data) => {
+        if (active) {
+          setOrder(data)
+        }
+      })
+      .catch((err) => {
+        if (!active) return
+        setError(err instanceof Error ? err.message : 'Chyba při načítání')
+      })
+      .finally(() => {
+        if (active) {
+          setIsLoading(false)
+        }
+      })
+
+    return () => {
+      active = false
+    }
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-max-w px-400">
+        <p className="text-fg-secondary">Načítám objednávku...</p>
+      </div>
+    )
+  }
+
+  if (error || !order) {
+    return (
+      <div className="mx-auto max-w-max-w px-400">
+        <p className="text-fg-secondary">
+          {error || 'Objednávka nebyla nalezena'}
+        </p>
+        <LinkButton
+          as={Link}
+          href="/ucet/profil?tab=orders"
+          theme="borderless"
+          size="sm"
+          className="mt-300"
+        >
+          Zpět na objednávky
+        </LinkButton>
+      </div>
+    )
+  }
 
   const statusVariant = getOrderStatusColor(order.status || 'pending')
 
@@ -30,12 +83,11 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     <div className="mx-auto max-w-max-w px-400">
       <LinkButton
         as={Link}
-        href="/ucet/profil"
+        href="/ucet/profil?tab=orders"
         theme="unstyled"
         size="current"
         className="mb-400"
         icon="token-icon-arrow-left"
-        onClick={() => setActiveTab('orders')}
       >
         Zpět na objednávky
       </LinkButton>

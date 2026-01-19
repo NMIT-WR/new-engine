@@ -1,7 +1,7 @@
 'use client'
 
 import { cacheConfig } from '@/lib/cache-config'
-import { prefetchLogger } from '@/lib/loggers'
+import { prefetchLogger } from '@/lib/loggers/prefetch'
 import { queryKeys } from '@/lib/query-keys'
 import { getProductByHandle } from '@/services/product-service'
 import { useQueryClient } from '@tanstack/react-query'

@@ -4,17 +4,9 @@ import { queryKeys } from '@/lib/query-keys'
 import { getOrders } from '@/services/order-service'
 import type { StoreCustomer } from '@medusajs/types'
 import { useQueryClient } from '@tanstack/react-query'
-import {
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { type ReactNode, createContext, useContext, useEffect } from 'react'
 
 interface AccountContextType {
-  activeTab: 'profile' | 'addresses' | 'orders'
-  setActiveTab: (tab: 'profile' | 'addresses' | 'orders') => void
   customer: StoreCustomer | null
 }
 
@@ -31,9 +23,6 @@ export const useAccountContext = () => {
 export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const { customer } = useAuth()
   const queryClient = useQueryClient()
-  const [activeTab, setActiveTab] = useState<
-    'profile' | 'addresses' | 'orders'
-  >('profile')
 
   useEffect(() => {
     if (!customer) return
@@ -46,8 +35,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }, [customer, queryClient])
 
   const contextValue = {
-    activeTab,
-    setActiveTab,
     customer,
   }
 

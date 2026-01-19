@@ -9,7 +9,11 @@ function parseJWT(token: string): JWTPayload | null {
     if (parts.length !== 3) {
       return null
     }
-    const payload = JSON.parse(atob(parts[1])) as JWTPayload
+    const payloadSegment = parts[1]
+    if (!payloadSegment) {
+      return null
+    }
+    const payload = JSON.parse(atob(payloadSegment)) as JWTPayload
     return payload
   } catch {
     return null

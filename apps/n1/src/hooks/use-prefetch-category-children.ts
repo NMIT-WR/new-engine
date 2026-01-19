@@ -2,7 +2,7 @@
 
 import { allCategories } from '@/data/static/categories'
 import { ALL_CATEGORIES_MAP } from '@/lib/constants'
-import { prefetchLogger } from '@/lib/loggers'
+import { prefetchLogger } from '@/lib/loggers/prefetch'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { usePrefetchProducts } from './use-prefetch-products'
