@@ -152,7 +152,7 @@ When overriding, create a file in the brand folder and map the semantic tokens t
 ## 7. Publishing and releases
 
 - Build + publint: `pnpm -C libs/ui build` runs `rsbuild-plugin-publint` after the build; if exports/entrypoints are wrong, this command fails.
-- Exports only, no barrel: import from explicit subpaths (e.g. `@techsio/ui-kit/atoms/button`, `@techsio/ui-kit/templates/accordion`, `@techsio/ui-kit/utils`). The package root is intentionally not exported.
+- Exports only, no barrel: import from explicit subpaths (e.g. `@techsio/ui-kit/atoms/button`, `@techsio/ui-kit/templates/accordion`, `@techsio/ui-kit/form/field-bindings`, `@techsio/ui-kit/utils`). The package root is intentionally not exported.
 - Automated releases: `libs/ui/release.config.mjs` uses semantic-release (tag format `ui-kit-v<version>`) to bump versions, update changelog, and publish to npm. While we are <1.0.0, `BREAKING CHANGE` commits are forced to “minor” bumps to stay in 0.x; remove that release rule when stabilizing for 1.0.0+ to restore SemVer majors.
 - Security posture: releases are restricted to GitHub Actions (`GITHUB_ACTIONS` required), npm publishes use provenance (`NPM_CONFIG_PROVENANCE=true`), and tokens live only in Actions secrets (`GH_TOKEN`, `NPM_TOKEN`). Keep secrets in a protected environment for extra safety.
 - CI workflow: `.github/workflows/ui-release.yml` builds `libs/ui` and runs semantic-release on `master`/`main` with `GH_TOKEN` and `NPM_TOKEN` secrets.
