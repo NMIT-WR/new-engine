@@ -1,7 +1,11 @@
 "use client"
 
+import type { AnyFieldApi } from "@tanstack/react-form"
+import {
+  getFieldStatus,
+  getSelectFieldProps,
+} from "@techsio/ui-kit/form/field-bindings"
 import { Select } from "@ui/molecules/select"
-import type { AnyFieldApiCompat } from "@/types/form"
 
 type SelectOption = {
   value: string
@@ -9,7 +13,7 @@ type SelectOption = {
 }
 
 type SelectFieldProps = {
-  field: AnyFieldApiCompat
+  field: AnyFieldApi
   label: string
   options: SelectOption[]
   required?: boolean
@@ -27,30 +31,22 @@ export function SelectField({
   placeholder,
   className,
 }: SelectFieldProps) {
-  const errors = field.state.meta.errors
-  const showErrors = field.state.meta.isBlurred && errors.length > 0
-  const validateStatus = showErrors ? "error" : "default"
-
-  const handleValueChange = (details: { value: string[] }) => {
-    const value = details.value[0]
-    if (value) {
-      field.handleChange(value)
-      if (!field.state.meta.isTouched) {
-        field.handleBlur()
-      }
-    }
-  }
+  const fieldProps = getSelectFieldProps(field)
+  const fieldStatus = getFieldStatus(field, { when: "blurred" })
 
   return (
     <Select
+      aria-describedby={fieldStatus["aria-describedby"]}
+      aria-invalid={fieldStatus["aria-invalid"]}
       items={options}
       disabled={disabled}
-      id={field.name}
-      onValueChange={handleValueChange}
+      id={fieldProps.id}
+      name={fieldProps.name}
+      onValueChange={fieldProps.onValueChange}
       required={required}
       size="lg"
-      validateStatus={validateStatus}
-      value={[field.state.value || ""]}
+      validateStatus={fieldStatus.validateStatus}
+      value={fieldProps.value}
       className={className}
     >
       <Select.Label>{label}</Select.Label>
@@ -69,7 +65,11 @@ export function SelectField({
           ))}
         </Select.Content>
       </Select.Positioner>
-      {showErrors && <Select.StatusText>{errors[0]}</Select.StatusText>}
+      {fieldStatus.errorMessage && (
+        <Select.StatusText id={fieldStatus.errorId}>
+          {fieldStatus.errorMessage}
+        </Select.StatusText>
+      )}
     </Select>
   )
 }

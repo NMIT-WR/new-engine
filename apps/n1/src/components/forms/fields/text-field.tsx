@@ -1,10 +1,14 @@
 "use client"
+import type { AnyFieldApi } from "@tanstack/react-form"
+import {
+  getFieldStatus,
+  getTextFieldProps,
+} from "@techsio/ui-kit/form/field-bindings"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
-import type { ChangeEvent, InputHTMLAttributes } from "react"
-import type { AnyFieldApiCompat } from "@/types/form"
+import type { InputHTMLAttributes } from "react"
 
 type TextFieldProps = {
-  field: AnyFieldApiCompat
+  field: AnyFieldApi
   label: string
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
   placeholder?: string
@@ -31,42 +35,38 @@ export function TextField({
   externalError,
   onExternalErrorClear,
 }: TextFieldProps) {
-  const fieldErrors = field.state.meta.errors
-  const showFieldErrors = field.state.meta.isBlurred && fieldErrors.length > 0
-
-  const errorId = `${field.name}-error`
-  const showError = !!externalError || showFieldErrors
-  const errorMessage = externalError || fieldErrors[0]
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = transform ? transform(e.target.value) : e.target.value
-    field.handleChange(value)
-
-    // Clear external error when user starts typing
-    if (externalError && onExternalErrorClear) {
-      onExternalErrorClear()
-    }
-  }
+  const fieldProps = getTextFieldProps(field, {
+    parseValue: (value) => (transform ? transform(value) : value),
+  })
+  const fieldStatus = getFieldStatus(field, {
+    externalError,
+    when: "blurred",
+  })
 
   return (
     <FormInput
-      aria-describedby={showError ? errorId : undefined}
-      aria-invalid={showError}
+      aria-describedby={fieldStatus["aria-describedby"]}
+      aria-invalid={fieldStatus["aria-invalid"]}
       autoComplete={autoComplete}
       disabled={disabled}
-      helpText={showError && errorMessage}
-      id={field.name}
+      helpText={fieldStatus.errorMessage}
+      id={fieldProps.id}
       label={label}
       maxLength={maxLength}
-      name={field.name}
-      onBlur={field.handleBlur}
-      onChange={handleChange}
+      name={fieldProps.name}
+      onBlur={fieldProps.onBlur}
+      onChange={(event) => {
+        fieldProps.onChange(event)
+        if (externalError && onExternalErrorClear) {
+          onExternalErrorClear()
+        }
+      }}
       placeholder={placeholder}
       required={required}
       type={type}
-      validateStatus={showError ? "error" : "default"}
-      value={field.state.value ?? ""}
-      variant={showError ? "error" : "default"}
+      validateStatus={fieldStatus.validateStatus}
+      value={fieldProps.value}
+      variant={fieldStatus.validateStatus === "error" ? "error" : "default"}
     />
   )
 }

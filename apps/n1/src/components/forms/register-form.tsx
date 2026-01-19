@@ -2,6 +2,7 @@
 
 import { useForm, useStore } from "@tanstack/react-form"
 import { Button } from "@ui/atoms/button"
+import { getCheckboxFieldProps } from "@techsio/ui-kit/form/field-bindings"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import Link from "next/link"
 import { TextField } from "@/components/forms/fields/text-field"
@@ -200,16 +201,23 @@ export function RegisterForm({
         name="acceptTerms"
         validators={registerValidators.acceptTerms}
       >
-        {(field) => (
-          <FormCheckbox
-            checked={field.state.value}
-            id="accept-terms"
-            label="Souhlasím s podmínkami"
-            name="accept-terms"
-            onCheckedChange={(checked) => field.handleChange(checked)}
-            size="sm"
-          />
-        )}
+        {(field) => {
+          const checkboxProps = getCheckboxFieldProps(field, {
+            id: "accept-terms",
+            name: "accept-terms",
+          })
+
+          return (
+            <FormCheckbox
+              checked={checkboxProps.checked}
+              id={checkboxProps.id}
+              label="Souhlasím s podmínkami"
+              name={checkboxProps.name}
+              onCheckedChange={checkboxProps.onCheckedChange}
+              size="sm"
+            />
+          )
+        }}
       </form.Field>
 
       <Button
