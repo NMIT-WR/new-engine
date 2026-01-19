@@ -1,0 +1,89 @@
+import {
+  lexicalEditor,
+  HeadingFeature,
+  BoldFeature,
+  ItalicFeature,
+  UnderlineFeature,
+  StrikethroughFeature,
+  SubscriptFeature,
+  SuperscriptFeature,
+  InlineCodeFeature,
+  ParagraphFeature,
+  ChecklistFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
+  IndentFeature,
+  AlignFeature,
+  BlockquoteFeature,
+  RelationshipFeature,
+  LinkFeature,
+  HorizontalRuleFeature,
+  UploadFeature,
+  BlocksFeature,
+  EXPERIMENTAL_TableFeature,
+  FixedToolbarFeature,
+} from '@payloadcms/richtext-lexical'
+
+export const createLexicalEditor = () => {
+  return lexicalEditor({
+    features: [
+      // Essential formatting features
+      ParagraphFeature(),
+      HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }),
+      BoldFeature(),
+      ItalicFeature(),
+      UnderlineFeature(),
+      StrikethroughFeature(),
+      SubscriptFeature(),
+      SuperscriptFeature(),
+      InlineCodeFeature(),
+
+      // List features
+      UnorderedListFeature(),
+      OrderedListFeature(),
+      ChecklistFeature(),
+
+      // Layout features
+      IndentFeature(),
+      AlignFeature(),
+      BlockquoteFeature(),
+      HorizontalRuleFeature(),
+
+      // Table feature (experimental) - WORKING!
+      EXPERIMENTAL_TableFeature(),
+
+      // Link and relationship features
+      LinkFeature({
+        enabledCollections: [],
+      }),
+      RelationshipFeature({
+        enabledCollections: [],
+      }),
+
+      // Upload feature for images
+      UploadFeature({
+        collections: {
+          media: {
+            fields: [
+              {
+                name: 'alt',
+                type: 'text',
+                required: true,
+              },
+            ],
+          },
+        },
+      }),
+
+      // Block features for complex content
+      BlocksFeature({
+        blocks: [
+          // Custom blocks can be defined here if needed
+        ],
+      }),
+
+      // Fixed toolbar to ensure toolbar is always visible
+      FixedToolbarFeature(),
+    ],
+  })
+}
