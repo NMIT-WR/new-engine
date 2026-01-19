@@ -43,8 +43,7 @@ zerops:
         SENTRY_NAME: ${MEDUSA_SENTRY_NAME}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- npm run migrate
-        - zsc execOnce ${appVersionId}_links -- npm run syncLinks
+        - zsc execOnce ${appVersionId}_migration -- npm run migrateProd
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
         # - zsc execOnce seedInitialData -- npm run seedInitialData
