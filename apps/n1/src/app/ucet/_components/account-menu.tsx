@@ -1,5 +1,6 @@
 import { useLogout } from '@/hooks/use-logout'
 import { useAuthToast } from '@/hooks/use-toast'
+import { resolveTab } from '@/lib/account-tabs'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Link from 'next/link'
@@ -10,10 +11,7 @@ export const AccountMenu = () => {
   const toast = useAuthToast()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const tabParam = searchParams.get('tab')
-  const activeTab =
-    tabParam ??
-    (pathname.startsWith('/ucet/objednavky') ? 'orders' : 'profile')
+  const activeTab = resolveTab(searchParams.get('tab'), pathname)
   const logoutMutation = useLogout({
     onSuccess: () => {
       toast.logoutSuccess()

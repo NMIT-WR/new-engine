@@ -24,13 +24,6 @@
       "@ui/*": ["../../libs/ui/src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    ".next\\dev/types/**/*.ts"
-  ],
-  "exclude": ["node_modules", "./local/"]
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "./local/", ".storybook", "stories"]
 }

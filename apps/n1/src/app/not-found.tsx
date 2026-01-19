@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function NotFound() {
   return (
     <main className="mx-auto w-full max-w-3xl px-400 py-700">
@@ -9,12 +11,9 @@ export default function NotFound() {
           Omlouváme se, ale tato stránka neexistuje. Zkuste se vrátit na hlavní
           stránku a pokračovat v nákupu.
         </p>
-        <a
-          className="inline-flex items-center text-primary underline"
-          href="/"
-        >
+        <Link className="inline-flex items-center text-primary underline" href="/">
           Zpět na hlavní stránku
-        </a>
+        </Link>
       </article>
     </main>
   )

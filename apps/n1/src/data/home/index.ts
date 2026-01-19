@@ -37,36 +37,36 @@ export const featureBlocks = [
 export const heroCarouselSlides: CarouselSlide[] = [
   {
     id: '1',
-      alt: 'Sale banner',
-      imageProps: {
-        src: saleImg,
-        height: 400,
-        priority: true,
-        quality: 50,
-        placeholder: 'blur',
-      },
+    alt: 'Sale banner',
+    imageProps: {
+      src: saleImg,
+      height: 400,
+      priority: true,
+      quality: 50,
+      placeholder: 'blur',
+    },
   },
   {
     id: '2',
-      alt: 'Sale banner',
-      imageProps: {
-        src: nwImg,
-        height: 400,
-        priority: true,
-        quality: 50,
-        placeholder: 'blur',
-      },
+    alt: 'New arrivals banner',
+    imageProps: {
+      src: nwImg,
+      height: 400,
+      priority: true,
+      quality: 50,
+      placeholder: 'blur',
+    },
   },
   {
     id: '3',
-      alt: 'Sale banner',
-      imageProps: {
-        src: tallboyImg,
-        height: 400,
-        priority: true,
-        quality: 50,
-        placeholder: 'blur',
-      },
+    alt: 'Tallboy promotion banner',
+    imageProps: {
+      src: tallboyImg,
+      height: 400,
+      priority: true,
+      quality: 50,
+      placeholder: 'blur',
+    },
   },
 ]
 

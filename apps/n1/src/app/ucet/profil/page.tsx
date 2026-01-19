@@ -1,28 +1,20 @@
 'use client'
 
+import { resolveTab } from '@/lib/account-tabs'
 import { Tabs } from '@techsio/ui-kit/molecules/tabs'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { AddressList } from './_components/address-list'
 import { OrderList } from './_components/order-list'
 import { ProfileForm } from './_components/profile-form'
 
-const ACCOUNT_TABS = ['profile', 'addresses', 'orders'] as const
-type AccountTab = (typeof ACCOUNT_TABS)[number]
-
-const resolveTab = (value: string | null): AccountTab => {
-  if (value === 'addresses' || value === 'orders' || value === 'profile') {
-    return value
-  }
-  return 'profile'
-}
-
 export default function ProfilePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const activeTab = resolveTab(searchParams.get('tab'))
+  const pathname = usePathname()
+  const activeTab = resolveTab(searchParams.get('tab'), pathname)
 
   const handleTabChange = (value: string) => {
-    const nextTab = resolveTab(value)
+    const nextTab = resolveTab(value, pathname)
     const params = new URLSearchParams(searchParams.toString())
 
     if (nextTab === 'profile') {

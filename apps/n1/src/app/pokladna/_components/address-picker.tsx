@@ -21,6 +21,12 @@ type AddressSelectItem = SelectItem & {
   isDefault: boolean
 }
 
+const isAddressSelectItem = (item: SelectItem): item is AddressSelectItem =>
+  typeof item === "object" &&
+  item !== null &&
+  "address" in item &&
+  "isDefault" in item
+
 export function AddressPicker({
   addresses,
   selectedId,
@@ -51,17 +57,18 @@ export function AddressPicker({
       label="Vyberte z vašich adres"
       onValueChange={(details) => {
         const newId = details.value[0]
-        if (newId) {
-          const address = addresses.find((a) => a.id === newId)
-          if (address) {
-            const formData = addressToFormData(address) as AddressFormData
-            onSelect(formData, address.id)
-          }
-        }
+        if (!newId) return
+        const address = addresses.find((a) => a.id === newId)
+        if (!address) return
+        const formData = addressToFormData(address) as AddressFormData
+        onSelect(formData, address.id)
       }}
       placeholder="Vyberte adresu"
       renderItem={(item) => {
-        const addressItem = item as AddressSelectItem
+        if (!isAddressSelectItem(item)) {
+          return <span className="truncate">{item.label}</span>
+        }
+        const addressItem = item
         return (
           <div className="flex w-full items-center justify-between gap-200">
             <div className="flex min-w-0 flex-col gap-50">

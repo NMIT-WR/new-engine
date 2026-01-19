@@ -18,7 +18,7 @@ export function PrefetchManager() {
   const pathname = usePathname()
   const hasPrefetched = useRef(false)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: hasPrefetched is a ref and PREFETCH_DELAY is a module constant
   useEffect(() => {
     if (!regionId) return
     if (hasPrefetched.current) return
