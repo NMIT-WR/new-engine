@@ -1,7 +1,7 @@
 "use client"
 
-import { SelectField } from "@/components/forms/fields/select-field"
-import { TextField } from "@/components/forms/fields/text-field"
+import { SelectField } from "@techsio/ui-kit/form/select-field"
+import { TextField } from "@techsio/ui-kit/form/text-field"
 import { COUNTRY_OPTIONS } from "@/lib/constants"
 import { addressValidators, emailValidator } from "@/lib/form-validators"
 import type { AddressFormData } from "@/utils/address-validation"
