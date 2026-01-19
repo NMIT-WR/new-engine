@@ -29,10 +29,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    ".next\\dev/types/**/*.ts",
-    ".next\\dev/types/**/*.ts",
-    "src/hooks/use-customer.ts"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules", "local", "local/**/*", ".next", "dist"]
 }

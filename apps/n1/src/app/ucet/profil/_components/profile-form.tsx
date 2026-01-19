@@ -103,9 +103,10 @@ export function ProfileForm() {
       </form.Field>
 
       <FormInput
-        disabled
+        disabled={updateCustomer.isPending}
         id="email"
         label="E-mail (nelze změnit)"
+        readOnly
         value={customer?.email || ""}
       />
 

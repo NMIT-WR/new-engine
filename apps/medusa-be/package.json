@@ -47,7 +47,7 @@
     "@medusajs/framework": "^2.12.5",
     "@medusajs/icons": "^2.12.5",
     "@medusajs/index": "^2.12.5",
-    "@medusajs/js-sdk": "2.12.5",
+    "@medusajs/js-sdk": "^2.12.5",
     "@medusajs/medusa": "^2.12.5",
     "@medusajs/ui": "^4.0.33",
     "@neondatabase/serverless": "^1.0.2",

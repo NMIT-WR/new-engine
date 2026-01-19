@@ -177,12 +177,25 @@ const getImageForCategory = (
 
   // Try to find matching image in headerImgs structure
   const parentImages = headerImgs[parentKey]
-  if (!parentImages || typeof parentImages !== 'object') return undefined
+  if (!parentImages || typeof parentImages !== 'object') {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `[Header] No images found for parent category: ${parentHandle} (key: ${parentKey})`
+      )
+    }
+    return undefined
+  }
 
   // Convert child handle to camelCase for image lookup
   const childKey = handleToImageKey(childHandle) as keyof typeof parentImages
 
-  return parentImages[childKey] as StaticImageData | undefined
+  const image = parentImages[childKey] as StaticImageData | undefined
+  if (!image && process.env.NODE_ENV === 'development') {
+    console.warn(
+      `[Header] No image found for category: ${parentHandle}/${childHandle} (keys: ${parentKey}/${childKey})`
+    )
+  }
+  return image
 }
 
 // Generate navigation links from rootCategories

@@ -9,17 +9,12 @@ import { getOrderById, type StoreOrder } from '@/services/order-service'
 import { Badge } from '@techsio/ui-kit/atoms/badge'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { OrderDetail } from './_components/order-detail'
 import { useEffect, useState } from 'react'
 
-interface OrderDetailPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function OrderDetailPage({ params }: OrderDetailPageProps) {
-  const { id } = params
+export default function OrderDetailPage() {
+  const { id } = useParams<{ id: string }>()
   const [order, setOrder] = useState<StoreOrder | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)

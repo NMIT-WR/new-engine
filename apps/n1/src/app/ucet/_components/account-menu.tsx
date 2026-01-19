@@ -1,6 +1,6 @@
 import { useLogout } from '@/hooks/use-logout'
 import { useAuthToast } from '@/hooks/use-toast'
-import { resolveTab } from '@/lib/account-tabs'
+import { ACCOUNT_TABS, type AccountTab, resolveTab } from '@/lib/account-tabs'
 import { Button } from '@techsio/ui-kit/atoms/button'
 import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
 import Link from 'next/link'
@@ -21,42 +21,29 @@ export const AccountMenu = () => {
       toast.logoutError()
     },
   })
+  const ACCOUNT_BASE_PATH = '/ucet/profil'
+  const tabLabels: Record<AccountTab, string> = {
+    profile: 'Osobní údaje',
+    addresses: 'Adresy',
+    orders: 'Objednávky',
+  }
 
   return (
     <nav className="flex flex-col space-y-50">
-      <LinkButton
-        as={Link}
-        className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
-        data-selected={activeTab === 'profile'}
-        href="/ucet/profil?tab=profile"
-        size="sm"
-        theme="borderless"
-        variant="secondary"
-      >
-        Osobní údaje
-      </LinkButton>
-      <LinkButton
-        as={Link}
-        className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
-        data-selected={activeTab === 'addresses'}
-        href="/ucet/profil?tab=addresses"
-        size="sm"
-        theme="borderless"
-        variant="secondary"
-      >
-        Adresy
-      </LinkButton>
-      <LinkButton
-        as={Link}
-        className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
-        data-selected={activeTab === 'orders'}
-        href="/ucet/profil?tab=orders"
-        size="sm"
-        theme="borderless"
-        variant="secondary"
-      >
-        Objednávky
-      </LinkButton>
+      {ACCOUNT_TABS.map((tab) => (
+        <LinkButton
+          key={tab}
+          as={Link}
+          className="justify-start data-[selected=true]:bg-surface data-[selected=true]:text-fg-primary"
+          data-selected={activeTab === tab}
+          href={`${ACCOUNT_BASE_PATH}?tab=${tab}`}
+          size="sm"
+          theme="borderless"
+          variant="secondary"
+        >
+          {tabLabels[tab]}
+        </LinkButton>
+      ))}
       <Button
         className="justify-start"
         size="sm"
