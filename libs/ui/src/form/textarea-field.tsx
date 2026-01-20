@@ -1,21 +1,24 @@
 import type { AnyFieldApi } from "@tanstack/react-form"
-import type { ReactNode } from "react"
-import type { TextareaProps } from "../atoms/textarea"
+import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import { FormTextarea } from "../molecules/form-textarea"
 import { getFieldStatus, getTextFieldProps } from "./field-bindings"
 
-export type TextareaFieldProps = {
+type TextareaFieldBaseProps = Omit<
+  ComponentPropsWithoutRef<typeof FormTextarea>,
+  | "id"
+  | "name"
+  | "value"
+  | "defaultValue"
+  | "onChange"
+  | "onBlur"
+  | "label"
+  | "helpText"
+  | "validateStatus"
+>
+
+export type TextareaFieldProps = TextareaFieldBaseProps & {
   field: AnyFieldApi
   label: ReactNode
-  placeholder?: string
-  required?: boolean
-  disabled?: boolean
-  className?: string
-  rows?: number
-  minLength?: number
-  maxLength?: number
-  resize?: TextareaProps["resize"]
-  size?: TextareaProps["size"]
   externalError?: string
   onExternalErrorClear?: () => void
 }
@@ -23,17 +26,9 @@ export type TextareaFieldProps = {
 export function TextareaField({
   field,
   label,
-  placeholder,
-  required,
-  disabled,
-  className,
-  rows,
-  minLength,
-  maxLength,
-  resize,
-  size,
   externalError,
   onExternalErrorClear,
+  ...textareaProps
 }: TextareaFieldProps) {
   const fieldProps = getTextFieldProps(field)
   const fieldStatus = getFieldStatus(field, {
@@ -45,13 +40,9 @@ export function TextareaField({
     <FormTextarea
       aria-describedby={fieldStatus["aria-describedby"]}
       aria-invalid={fieldStatus["aria-invalid"]}
-      className={className}
-      disabled={disabled}
       helpText={fieldStatus.errorMessage}
       id={fieldProps.id}
       label={label}
-      maxLength={maxLength}
-      minLength={minLength}
       name={fieldProps.name}
       onBlur={fieldProps.onBlur}
       onChange={(event) => {
@@ -60,13 +51,9 @@ export function TextareaField({
           onExternalErrorClear()
         }
       }}
-      placeholder={placeholder}
-      required={required}
-      resize={resize}
-      rows={rows}
-      size={size}
       validateStatus={fieldStatus.validateStatus}
       value={fieldProps.value}
+      {...textareaProps}
     />
   )
 }

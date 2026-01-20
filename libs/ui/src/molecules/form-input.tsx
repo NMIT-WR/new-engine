@@ -20,8 +20,13 @@ export function FormInputRaw({
   size = "md",
   required,
   disabled,
+  className,
   ...props
 }: FormInputRawProps) {
+  const inputClassName = className
+    ? `p-input-sm md:p-input-md ${className}`
+    : "p-input-sm md:p-input-md"
+
   return (
     <div className="flex flex-col gap-form-field-gap">
       <Label disabled={disabled} htmlFor={id} required={required} size={size}>
@@ -34,7 +39,7 @@ export function FormInputRaw({
         size={size}
         variant={validateStatus}
         {...props}
-        className="p-input-sm md:p-input-md"
+        className={inputClassName}
       />
 
       {helpText}

@@ -1,19 +1,25 @@
 import type { AnyFieldApi } from "@tanstack/react-form"
-import type { InputHTMLAttributes } from "react"
+import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import { FormInput } from "../molecules/form-input"
 import { getFieldStatus, getTextFieldProps } from "./field-bindings"
 
-export type TextFieldProps = {
+type TextFieldBaseProps = Omit<
+  ComponentPropsWithoutRef<typeof FormInput>,
+  | "id"
+  | "name"
+  | "value"
+  | "defaultValue"
+  | "onChange"
+  | "onBlur"
+  | "label"
+  | "helpText"
+  | "validateStatus"
+>
+
+export type TextFieldProps = TextFieldBaseProps & {
   field: AnyFieldApi
-  label: string
-  type?: InputHTMLAttributes<HTMLInputElement>["type"]
-  placeholder?: string
-  required?: boolean
-  disabled?: boolean
+  label: ReactNode
   transform?: (value: string) => string
-  className?: string
-  autoComplete?: string
-  maxLength?: number
   externalError?: string
   onExternalErrorClear?: () => void
 }
@@ -21,16 +27,11 @@ export type TextFieldProps = {
 export function TextField({
   field,
   label,
-  type = "text",
-  placeholder,
-  required,
-  disabled,
   transform,
-  autoComplete,
-  maxLength,
-  className,
   externalError,
   onExternalErrorClear,
+  type = "text",
+  ...inputProps
 }: TextFieldProps) {
   const fieldProps = getTextFieldProps(field, {
     parseValue: (value) => (transform ? transform(value) : value),
@@ -44,13 +45,9 @@ export function TextField({
     <FormInput
       aria-describedby={fieldStatus["aria-describedby"]}
       aria-invalid={fieldStatus["aria-invalid"]}
-      autoComplete={autoComplete}
-      className={className}
-      disabled={disabled}
       helpText={fieldStatus.errorMessage}
       id={fieldProps.id}
       label={label}
-      maxLength={maxLength}
       name={fieldProps.name}
       onBlur={fieldProps.onBlur}
       onChange={(event) => {
@@ -59,11 +56,10 @@ export function TextField({
           onExternalErrorClear()
         }
       }}
-      placeholder={placeholder}
-      required={required}
       type={type}
       validateStatus={fieldStatus.validateStatus}
       value={fieldProps.value}
+      {...inputProps}
     />
   )
 }
