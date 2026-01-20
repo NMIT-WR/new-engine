@@ -28,6 +28,8 @@
     "next-env.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "../../libs/ui/src/**/*.ts",
+    "../../libs/ui/src/**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

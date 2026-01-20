@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef } from "react"
 import { type DebouncedFunction, debounce } from "@/utils/debounce"
 
-export function useDebounce<T extends (...args: unknown[]) => unknown>(
-  callback: T,
+export function useDebounce<Args extends unknown[], R>(
+  callback: (...args: Args) => R,
   delay: number,
   options?: {
     leading?: boolean
   }
-): DebouncedFunction<T> {
+): DebouncedFunction<Args> {
   const callbackRef = useRef(callback)
 
   // Always update callback ref to latest version
@@ -17,7 +17,7 @@ export function useDebounce<T extends (...args: unknown[]) => unknown>(
   const debouncedFn = useMemo(
     () =>
       debounce(
-        (...args: Parameters<T>) => {
+        (...args: Args) => {
           callbackRef.current(...args)
         },
         delay,

@@ -22,7 +22,8 @@ export type AnyFieldApiCompat = {
       errorMap: Record<string, unknown>
     }
   }
-  handleChange: (value: unknown) => void
+  // biome-ignore lint/suspicious/noExplicitAny: TanStack FieldApi uses generic updater signature
+  handleChange: (value: any) => void
   handleBlur: () => void
   // Add other methods/properties as needed by field components
 }

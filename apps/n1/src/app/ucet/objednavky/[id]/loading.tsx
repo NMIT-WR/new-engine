@@ -1,3 +1,5 @@
+"use client"
+
 import { Skeleton } from "@techsio/ui-kit/atoms/skeleton"
 
 export default function Loading() {

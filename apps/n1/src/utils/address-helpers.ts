@@ -1,11 +1,11 @@
 import type { HttpTypes } from "@medusajs/types"
-
-export type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
-
+import type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
 import { DEFAULT_COUNTRY_CODE } from "@/lib/constants"
 import type { ShippingMethodData } from "@/services/cart-service"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import type { AddressFormData } from "./address-validation"
+
+export type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
 
 export const DEFAULT_ADDRESS: AddressFormData = {
   first_name: "",

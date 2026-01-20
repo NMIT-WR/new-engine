@@ -68,7 +68,7 @@ export default function ProductPage() {
     analytics,
     rawProduct?.categories,
     detail,
-    selectedVariant.calculated_price?.calculated_amount_with_tax,
+    selectedVariant?.calculated_price?.calculated_amount_with_tax,
     selectedVariant,
   ])
 

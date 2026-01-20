@@ -30,6 +30,13 @@ export function SelectField({
   const errors = field.state.meta.errors
   const showErrors = field.state.meta.isBlurred && errors.length > 0
   const validateStatus = showErrors ? "error" : "default"
+  const selectedValue =
+    typeof field.state.value === "string" ? field.state.value : ""
+  const errorMessage = showErrors ? errors[0] : undefined
+  const errorText =
+    typeof errorMessage === "string" || typeof errorMessage === "number"
+      ? String(errorMessage)
+      : undefined
 
   const handleValueChange = (details: { value: string[] }) => {
     const value = details.value[0]
@@ -51,7 +58,7 @@ export function SelectField({
       required={required}
       size="lg"
       validateStatus={validateStatus}
-      value={[field.state.value || ""]}
+      value={[selectedValue]}
     >
       <Select.Label>{label}</Select.Label>
       <Select.Control>
@@ -69,7 +76,7 @@ export function SelectField({
           ))}
         </Select.Content>
       </Select.Positioner>
-      {showErrors && <Select.StatusText>{errors[0]}</Select.StatusText>}
+      {showErrors && <Select.StatusText>{errorText}</Select.StatusText>}
     </Select>
   )
 }

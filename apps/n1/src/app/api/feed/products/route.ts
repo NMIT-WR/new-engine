@@ -125,6 +125,17 @@ function generateXmlFeed(products: MedusaProduct[]): string {
 }
 
 export async function GET() {
+  if (!MEDUSA_API_KEY) {
+    console.warn("NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY is not set.")
+    const xml = generateXmlFeed([])
+    return new NextResponse(xml, {
+      headers: {
+        "Content-Type": "application/xml; charset=utf-8",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      },
+    })
+  }
+
   try {
     const products = await fetchAllProducts()
     const xml = generateXmlFeed(products)
@@ -137,9 +148,12 @@ export async function GET() {
     })
   } catch (error) {
     console.error("Feed generation error:", error)
-    return NextResponse.json(
-      { error: "Failed to generate feed" },
-      { status: 500 }
-    )
+    const xml = generateXmlFeed([])
+    return new NextResponse(xml, {
+      headers: {
+        "Content-Type": "application/xml; charset=utf-8",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      },
+    })
   }
 }

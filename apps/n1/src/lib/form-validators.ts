@@ -8,9 +8,18 @@ const POSTAL_CODE_REGEX = /^\d{3}\s\d{2}$/
 
 type ConfirmPasswordFieldApi = {
   form: {
-    getFieldValue: (name: string) => string | undefined
+    // biome-ignore lint/suspicious/noExplicitAny: TanStack Form field names are generic
+    getFieldValue: (...args: any[]) => unknown
   }
 }
+
+type RegisterFieldName =
+  | "first_name"
+  | "last_name"
+  | "email"
+  | "password"
+  | "confirmPassword"
+  | "acceptTerms"
 
 // ============================================================================
 // SHARED FIELD VALIDATORS - Single Source of Truth
@@ -72,26 +81,27 @@ const createPhoneValidator = () => ({
  * Rules: required, must match password field
  * Used in: RegisterForm
  */
-const createConfirmPasswordValidator = () =>
-  ({
-    onChangeListenTo: ["password"],
-    onChange: ({
-      value,
-      fieldApi,
-    }: {
-      value: string
-      fieldApi: ConfirmPasswordFieldApi
-    }) => {
-      if (!value) {
-        return VALIDATION_MESSAGES.password.confirmRequired
-      }
-      const passwordValue = fieldApi.form.getFieldValue("password")
-      if (value !== passwordValue) {
-        return VALIDATION_MESSAGES.password.mismatch
-      }
-      return
-    },
-  }) as const
+const createConfirmPasswordValidator = () => ({
+  onChangeListenTo: ["password"] as RegisterFieldName[],
+  onChange: ({
+    value,
+    fieldApi,
+  }: {
+    value: string
+    fieldApi: ConfirmPasswordFieldApi
+  }) => {
+    if (!value) {
+      return VALIDATION_MESSAGES.password.confirmRequired
+    }
+    const passwordValue = fieldApi.form.getFieldValue("password") as
+      | string
+      | undefined
+    if (value !== passwordValue) {
+      return VALIDATION_MESSAGES.password.mismatch
+    }
+    return
+  },
+})
 
 // ============================================================================
 // STANDALONE VALIDATORS

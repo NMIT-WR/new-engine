@@ -1,4 +1,5 @@
 "use client"
+
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 import type { ChangeEvent, InputHTMLAttributes } from "react"
 import type { AnyFieldApiCompat } from "@/types/form"
@@ -34,9 +35,19 @@ export function TextField({
   const fieldErrors = field.state.meta.errors
   const showFieldErrors = field.state.meta.isBlurred && fieldErrors.length > 0
 
+  const fieldValue =
+    typeof field.state.value === "string" ||
+    typeof field.state.value === "number"
+      ? field.state.value
+      : ""
+
   const errorId = `${field.name}-error`
   const showError = !!externalError || showFieldErrors
   const errorMessage = externalError || fieldErrors[0]
+  const errorText =
+    typeof errorMessage === "string" || typeof errorMessage === "number"
+      ? String(errorMessage)
+      : undefined
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = transform ? transform(e.target.value) : e.target.value
@@ -54,7 +65,7 @@ export function TextField({
       aria-invalid={showError}
       autoComplete={autoComplete}
       disabled={disabled}
-      helpText={showError && errorMessage}
+      helpText={showError ? errorText : undefined}
       id={field.name}
       label={label}
       maxLength={maxLength}
@@ -65,7 +76,7 @@ export function TextField({
       required={required}
       type={type}
       validateStatus={showError ? "error" : "default"}
-      value={field.state.value ?? ""}
+      value={fieldValue}
       variant={showError ? "error" : "default"}
     />
   )
