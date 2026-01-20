@@ -1,0 +1,58 @@
+import { getCountry } from "../countries/data"
+import type { PostalCodeConfig } from "../countries/types"
+
+export type PostalCodeValidationResult = {
+  isValid: boolean
+  formattedValue?: string
+  error?: string
+}
+
+export function validatePostalCode(
+  value: string,
+  countryCode: string
+): PostalCodeValidationResult {
+  const country = getCountry(countryCode)
+
+  if (!country) {
+    return {
+      isValid: false,
+      error: `Unknown country code: ${countryCode}`,
+    }
+  }
+
+  const { pattern, format } = country.postalCode
+  const isValid = pattern.test(value)
+
+  return {
+    isValid,
+    formattedValue: isValid && format ? format(value) : value,
+    error: isValid
+      ? undefined
+      : `Invalid postal code format for ${country.name}`,
+  }
+}
+
+export function getPostalCodeConfig(
+  countryCode: string
+): PostalCodeConfig | undefined {
+  const country = getCountry(countryCode)
+  return country?.postalCode
+}
+
+/**
+ * Checks if a value could be a valid postal code (partial match)
+ * Useful for real-time validation during typing
+ */
+export function isPartialPostalCode(
+  value: string,
+  countryCode: string
+): boolean {
+  const config = getPostalCodeConfig(countryCode)
+  if (!config) {
+    return true // Allow typing if country unknown
+  }
+
+  // Strip both whitespace and dashes to handle all postal code formats (e.g., Polish "XX-XXX")
+  const cleanValue = value.replace(/[\s-]/g, "")
+  return cleanValue.length <= config.maxLength
+}

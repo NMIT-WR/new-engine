@@ -58,7 +58,7 @@
     "storybook:a11y": "bash scripts/storybook-a11y.sh",
     "lint:tailwind": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js",
     "lint:tailwind:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --config eslint.config.js --fix",
-    "prepare": "pnpm build && pnpm build:storybook",
+    "prepare": "echo 'Use nx build for proper dependency ordering'",
     "check:unused-tokens": "bun scripts/check-unused-tokens.js",
     "validate:tokens": "bun scripts/validate-token-usage.js && bun scripts/validate-token-definitions.js",
     "validate:token-usage": "bun scripts/validate-token-usage.js",
@@ -66,6 +66,7 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
+    "@techsio/address": "workspace:*",
     "@zag-js/accordion": "^1.31.1",
     "@zag-js/carousel": "^1.31.1",
     "@zag-js/checkbox": "^1.31.1",
