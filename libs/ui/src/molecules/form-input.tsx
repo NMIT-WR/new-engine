@@ -1,4 +1,9 @@
-import type { ReactNode } from "react"
+import {
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react"
 import { Input, type InputProps } from "../atoms/input"
 import { Label } from "../atoms/label"
 import { StatusText } from "../atoms/status-text"
@@ -20,8 +25,35 @@ export function FormInputRaw({
   size = "md",
   required,
   disabled,
+  className,
   ...props
 }: FormInputRawProps) {
+  const { ["aria-describedby"]: ariaDescribedBy, ...inputProps } = props
+  const helpTextElement = isValidElement(helpText)
+    ? (helpText as ReactElement<{ id?: string }>)
+    : null
+  const resolvedHelpTextId =
+    helpTextElement?.props?.id ?? (helpText ? `${id}-helptext` : undefined)
+  const mergedDescribedBy = [ariaDescribedBy, resolvedHelpTextId]
+    .filter(Boolean)
+    .join(" ") || undefined
+  const inputClassName = className
+    ? `p-input-sm md:p-input-md ${className}`
+    : "p-input-sm md:p-input-md"
+  const helpTextContent = helpText
+    ? helpTextElement
+      ? helpTextElement.props.id
+        ? helpTextElement
+        : cloneElement(helpTextElement, {
+            id: resolvedHelpTextId,
+          })
+      : (
+          <div id={resolvedHelpTextId}>
+            {helpText}
+          </div>
+        )
+    : null
+
   return (
     <div className="flex flex-col gap-form-field-gap">
       <Label disabled={disabled} htmlFor={id} required={required} size={size}>
@@ -33,11 +65,12 @@ export function FormInputRaw({
         required={required}
         size={size}
         variant={validateStatus}
-        {...props}
-        className="p-input-sm md:p-input-md"
+        aria-describedby={mergedDescribedBy}
+        {...inputProps}
+        className={inputClassName}
       />
 
-      {helpText}
+      {helpTextContent}
     </div>
   )
 }
