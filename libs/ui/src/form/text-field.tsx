@@ -12,7 +12,6 @@ type TextFieldBaseProps = Omit<
   | "onChange"
   | "onBlur"
   | "label"
-  | "helpText"
   | "validateStatus"
 >
 
@@ -31,6 +30,7 @@ export function TextField({
   externalError,
   onExternalErrorClear,
   type = "text",
+  helpText,
   ...inputProps
 }: TextFieldProps) {
   const fieldProps = getTextFieldProps(field, {
@@ -43,9 +43,8 @@ export function TextField({
 
   return (
     <FormInput
-      aria-describedby={fieldStatus["aria-describedby"]}
       aria-invalid={fieldStatus["aria-invalid"]}
-      helpText={fieldStatus.errorMessage}
+      helpText={fieldStatus.errorMessage ?? helpText}
       id={fieldProps.id}
       label={label}
       name={fieldProps.name}

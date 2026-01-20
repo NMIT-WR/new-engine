@@ -26,6 +26,11 @@ export function FormNumericInput({
   children,
   ...numericInputProps
 }: FormNumericInputProps) {
+  const { describedBy, ...inputProps } = numericInputProps
+  const helpTextId = helpText ? `${id}-helptext` : undefined
+  const mergedDescribedBy = [describedBy, helpTextId]
+    .filter(Boolean)
+    .join(" ") || undefined
   return (
     <div
       className="flex flex-col gap-form-field-gap"
@@ -40,13 +45,15 @@ export function FormNumericInput({
         invalid={validateStatus === "error"}
         required={required}
         size={size}
-        {...numericInputProps}
+        describedBy={mergedDescribedBy}
+        {...inputProps}
       >
         {children}
       </NumericInput>
 
       {helpText && (
         <StatusText
+          id={helpTextId}
           status={validateStatus}
           showIcon={showHelpTextIcon}
           size={size}

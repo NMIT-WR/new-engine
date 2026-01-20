@@ -12,7 +12,7 @@ import {
 
 export type CheckboxFieldProps = Omit<
   FormCheckboxProps,
-  "checked" | "onCheckedChange" | "helpText" | "validateStatus" | "id" | "name"
+  "checked" | "onCheckedChange" | "validateStatus" | "id" | "name"
 > & {
   field: AnyFieldApi
   id?: string
@@ -35,13 +35,13 @@ export function CheckboxField({
     when: errorVisibility,
     externalError,
   })
+  const helpText = fieldStatus.errorMessage ?? props.helpText
 
   return (
     <FormCheckbox
       {...props}
-      aria-describedby={fieldStatus["aria-describedby"]}
+      helpText={helpText}
       checked={fieldProps.checked}
-      helpText={fieldStatus.errorMessage}
       id={fieldProps.id}
       name={fieldProps.name}
       onCheckedChange={fieldProps.onCheckedChange}

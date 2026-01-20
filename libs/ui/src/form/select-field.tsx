@@ -1,4 +1,5 @@
 import type { AnyFieldApi } from "@tanstack/react-form"
+import type { ReactNode } from "react"
 import { Select, type SelectItem, type SelectSize } from "../molecules/select"
 import { getFieldStatus, getSelectFieldProps } from "./field-bindings"
 
@@ -13,6 +14,8 @@ export type SelectFieldProps = {
   size?: SelectSize
   externalError?: string
   onExternalErrorClear?: () => void
+  helpText?: ReactNode
+  showHelpTextIcon?: boolean
 }
 
 export function SelectField({
@@ -26,12 +29,16 @@ export function SelectField({
   size = "lg",
   externalError,
   onExternalErrorClear,
+  helpText,
+  showHelpTextIcon,
 }: SelectFieldProps) {
   const fieldProps = getSelectFieldProps(field)
   const fieldStatus = getFieldStatus(field, {
     when: "blurred",
     externalError,
   })
+  const resolvedHelpText = fieldStatus.errorMessage ?? helpText
+  const helpTextId = resolvedHelpText ? `${fieldProps.id}-helptext` : undefined
 
   const handleValueChange = (details: { value: string[] }) => {
     fieldProps.onValueChange(details)
@@ -56,7 +63,7 @@ export function SelectField({
       <Select.Label>{label}</Select.Label>
       <Select.Control>
         <Select.Trigger
-          aria-describedby={fieldStatus["aria-describedby"]}
+          aria-describedby={helpTextId}
           aria-invalid={fieldStatus["aria-invalid"]}
         >
           <Select.ValueText placeholder={placeholder} />
@@ -72,9 +79,13 @@ export function SelectField({
           ))}
         </Select.Content>
       </Select.Positioner>
-      {fieldStatus.errorMessage && (
-        <Select.StatusText id={fieldStatus.errorId}>
-          {fieldStatus.errorMessage}
+      {resolvedHelpText && (
+        <Select.StatusText
+          id={helpTextId}
+          status={fieldStatus.errorMessage ? "error" : "default"}
+          showIcon={showHelpTextIcon}
+        >
+          {resolvedHelpText}
         </Select.StatusText>
       )}
     </Select>

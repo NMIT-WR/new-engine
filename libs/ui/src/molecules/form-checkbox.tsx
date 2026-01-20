@@ -99,6 +99,10 @@ export function FormCheckbox({
 }: FormCheckboxProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
+  const helpTextId = helpText ? `${uniqueId}-helptext` : undefined
+  const mergedDescribedBy = [ariaDescribedBy, helpTextId]
+    .filter(Boolean)
+    .join(" ") || undefined
 
   const service = useMachine(machine, {
     id: uniqueId,
@@ -130,7 +134,7 @@ export function FormCheckbox({
         <input
           className={styles.hiddenInput()}
           {...api.getHiddenInputProps()}
-          aria-describedby={ariaDescribedBy}
+          aria-describedby={mergedDescribedBy}
         />
         {labelContent && (
           <span className={styles.label()} {...api.getLabelProps()}>
@@ -140,7 +144,11 @@ export function FormCheckbox({
         )}
       </label>
       {helpText && (
-        <div className={styles.textIndented()} data-icon={showHelpTextIcon}>
+        <div
+          className={styles.textIndented()}
+          data-icon={showHelpTextIcon}
+          id={helpTextId}
+        >
           <StatusText
             status={validateStatus}
             showIcon={showHelpTextIcon}

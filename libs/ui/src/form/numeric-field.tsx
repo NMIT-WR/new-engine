@@ -29,6 +29,7 @@ export type NumericFieldProps = Omit<
   externalError?: string
   onExternalErrorClear?: () => void
   showHelpTextIcon?: boolean
+  helpText?: ReactNode
   formatValue?: (value: number | null | undefined) => number | undefined
   parseValue?: (value: number) => number
 }
@@ -51,6 +52,7 @@ export function NumericField({
   externalError,
   onExternalErrorClear,
   showHelpTextIcon,
+  helpText,
   formatValue,
   parseValue,
   ...numericInputProps
@@ -65,6 +67,7 @@ export function NumericField({
     when: errorVisibility,
     externalError,
   })
+  const resolvedHelpText = fieldStatus.errorMessage ?? helpText
 
   const handleChange = (value: number) => {
     fieldProps.onChange(value)
@@ -90,7 +93,7 @@ export function NumericField({
     <FormNumericInput
       className={className}
       disabled={disabled}
-      helpText={fieldStatus.errorMessage}
+      helpText={resolvedHelpText}
       id={fieldProps.id}
       label={label}
       name={fieldProps.name}
@@ -100,7 +103,6 @@ export function NumericField({
       size={size}
       validateStatus={fieldStatus.validateStatus}
       value={fieldProps.value}
-      describedBy={fieldStatus["aria-describedby"]}
       {...numericInputProps}
     >
       {controlsPosition === "sides" ? (
