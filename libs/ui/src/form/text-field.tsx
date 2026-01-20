@@ -28,6 +28,7 @@ export function TextField({
   transform,
   autoComplete,
   maxLength,
+  className,
   externalError,
   onExternalErrorClear,
 }: TextFieldProps) {
@@ -44,6 +45,7 @@ export function TextField({
       aria-describedby={fieldStatus["aria-describedby"]}
       aria-invalid={fieldStatus["aria-invalid"]}
       autoComplete={autoComplete}
+      className={className}
       disabled={disabled}
       helpText={fieldStatus.errorMessage}
       id={fieldProps.id}
@@ -62,7 +64,6 @@ export function TextField({
       type={type}
       validateStatus={fieldStatus.validateStatus}
       value={fieldProps.value}
-      variant={fieldStatus.validateStatus === "error" ? "error" : "default"}
     />
   )
 }

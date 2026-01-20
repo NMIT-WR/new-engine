@@ -55,6 +55,7 @@ export type FieldStatusOptions = FieldErrorOptions & {
 
 export type FieldStatus = {
   errorMessage?: string
+  helpText?: string
   errorId: string
   validateStatus: FieldValidateStatus
   "aria-invalid": boolean
@@ -66,6 +67,7 @@ export type SelectFieldOptions = FieldBaseOptions & {
   touchOnChange?: boolean
   allowEmpty?: boolean
   valueToString?: (value: unknown) => string
+  parseValue?: (value: string) => unknown
 }
 
 export type SelectFieldProps = FieldBaseProps & {
@@ -169,6 +171,7 @@ export function getSelectFieldProps(
   const touchOnChange = options?.touchOnChange ?? true
   const allowEmpty = options?.allowEmpty ?? false
   const valueToString = options?.valueToString ?? defaultFormatValue
+  const parseValue = options?.parseValue ?? ((value: string) => value)
   const rawValue = field.state.value
 
   const value = options?.multiple
@@ -185,7 +188,7 @@ export function getSelectFieldProps(
     onValueChange: (details) => {
       if (options?.multiple) {
         if (allowEmpty || details.value.length > 0) {
-          field.handleChange(details.value)
+          field.handleChange(details.value.map((value) => parseValue(value)))
           if (touchOnChange && !meta.isTouched) {
             field.handleBlur()
           }
@@ -195,7 +198,7 @@ export function getSelectFieldProps(
 
       const nextValue = details.value[0] ?? ""
       if (allowEmpty || nextValue) {
-        field.handleChange(nextValue)
+        field.handleChange(parseValue(nextValue))
         if (touchOnChange && !meta.isTouched) {
           field.handleBlur()
         }
@@ -276,6 +279,7 @@ export function getFieldStatus(
 
   return {
     errorMessage,
+    helpText: errorMessage,
     errorId,
     validateStatus: hasError ? "error" : "default",
     "aria-invalid": hasError,

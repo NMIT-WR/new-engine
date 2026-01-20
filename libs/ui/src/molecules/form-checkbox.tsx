@@ -70,6 +70,7 @@ export type FormCheckboxProps = {
   label?: ReactNode
   helpText?: ReactNode
   validateStatus?: "default" | "error" | "success" | "warning"
+  "aria-describedby"?: string
   showHelpTextIcon?: boolean
   size?: "sm" | "md" | "lg"
   className?: string
@@ -94,6 +95,7 @@ export function FormCheckbox({
   size = "md",
   className,
   onCheckedChange,
+  "aria-describedby": ariaDescribedBy,
 }: FormCheckboxProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
@@ -127,6 +129,7 @@ export function FormCheckbox({
         </div>
         <input
           className={styles.hiddenInput()}
+          aria-describedby={ariaDescribedBy}
           {...api.getHiddenInputProps()}
         />
         {labelContent && (

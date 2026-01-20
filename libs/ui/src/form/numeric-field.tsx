@@ -91,6 +91,7 @@ export function NumericField({
       size={size}
       validateStatus={fieldStatus.validateStatus}
       value={fieldProps.value}
+      describedBy={fieldStatus["aria-describedby"]}
       {...numericInputProps}
     >
       {controlsPosition === "sides" ? (

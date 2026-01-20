@@ -11,6 +11,8 @@ export type SelectFieldProps = {
   placeholder?: string
   className?: string
   size?: SelectSize
+  externalError?: string
+  onExternalErrorClear?: () => void
 }
 
 export function SelectField({
@@ -22,19 +24,29 @@ export function SelectField({
   placeholder,
   className,
   size = "lg",
+  externalError,
+  onExternalErrorClear,
 }: SelectFieldProps) {
   const fieldProps = getSelectFieldProps(field)
-  const fieldStatus = getFieldStatus(field, { when: "blurred" })
+  const fieldStatus = getFieldStatus(field, {
+    when: "blurred",
+    externalError,
+  })
+
+  const handleValueChange = (details: { value: string[] }) => {
+    fieldProps.onValueChange(details)
+    if (externalError && onExternalErrorClear) {
+      onExternalErrorClear()
+    }
+  }
 
   return (
     <Select
-      aria-describedby={fieldStatus["aria-describedby"]}
-      aria-invalid={fieldStatus["aria-invalid"]}
       items={options}
       disabled={disabled}
       id={fieldProps.id}
       name={fieldProps.name}
-      onValueChange={fieldProps.onValueChange}
+      onValueChange={handleValueChange}
       required={required}
       size={size}
       validateStatus={fieldStatus.validateStatus}
@@ -43,7 +55,10 @@ export function SelectField({
     >
       <Select.Label>{label}</Select.Label>
       <Select.Control>
-        <Select.Trigger>
+        <Select.Trigger
+          aria-describedby={fieldStatus["aria-describedby"]}
+          aria-invalid={fieldStatus["aria-invalid"]}
+        >
           <Select.ValueText placeholder={placeholder} />
         </Select.Trigger>
       </Select.Control>

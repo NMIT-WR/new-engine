@@ -39,6 +39,7 @@ export function CheckboxField({
   return (
     <FormCheckbox
       {...props}
+      aria-describedby={fieldStatus["aria-describedby"]}
       checked={fieldProps.checked}
       helpText={fieldStatus.errorMessage}
       id={fieldProps.id}
