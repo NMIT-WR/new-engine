@@ -218,7 +218,9 @@ export function getNumericFieldProps<TValue = number>(
   const formatValue =
     options?.formatValue ??
     ((value: TValue | null | undefined) => {
-      if (typeof value === "number") return value
+      if (typeof value === "number") {
+        return Number.isNaN(value) ? undefined : value
+      }
       if (value === null || value === undefined) return undefined
       const parsed = Number(value)
       return Number.isNaN(parsed) ? undefined : parsed
@@ -230,6 +232,10 @@ export function getNumericFieldProps<TValue = number>(
     ...baseProps,
     value: formatValue(field.state.value as TValue),
     onChange: (value) => {
+      if (Number.isNaN(value)) {
+        field.handleChange(undefined as TValue)
+        return
+      }
       field.handleChange(parseValue(value))
     },
   }
