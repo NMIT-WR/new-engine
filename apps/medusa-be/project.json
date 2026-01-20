@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "medusa-be",
+  "projectType": "application",
+  "sourceRoot": "apps/medusa-be/src",
+  "tags": ["type:app", "platform:backend", "framework:medusa"]
+}
