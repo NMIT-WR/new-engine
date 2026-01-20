@@ -25,6 +25,7 @@ import { PageCategories } from './collections/PageCategories'
 import { HeroCarousels } from './collections/HeroCarousels'
 import { Pages } from './collections/Pages'
 import { isEnabled, parseEnvList } from './lib/env'
+import { medusaSsoPostEndpoint } from './lib/endpoints/medusa-sso'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -47,6 +48,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  endpoints: [medusaSsoPostEndpoint],
   routes: {
     admin: '/',
   },
