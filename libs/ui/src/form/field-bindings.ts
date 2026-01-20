@@ -95,6 +95,9 @@ const defaultPickError = (errors: readonly unknown[]) => errors[0]
 const defaultFormatError = (error: unknown) =>
   typeof error === "string" ? error : error ? String(error) : undefined
 
+// FieldMeta extends AnyFieldApi["state"]["meta"] with optional isBlurred.
+// isBlurred is not in TanStack Form; consumers can set it on explicit blur or UI transitions
+// to drive conditional validation/styling in FieldMeta-aware components.
 type FieldMeta = AnyFieldApi["state"]["meta"] & { isBlurred?: boolean }
 
 export function getFieldBaseProps(
@@ -251,6 +254,7 @@ export function getFieldError(
 
   const meta = field.state.meta as FieldMeta
   const isTouched = meta.isTouched ?? false
+  // FieldMeta.isBlurred is not populated by TanStack Form; "blurred" equals "touched" until blur tracking is implemented.
   const isBlurred = meta.isBlurred ?? isTouched
 
   if (when === "touched" && !isTouched) return undefined

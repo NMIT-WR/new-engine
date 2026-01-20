@@ -129,8 +129,8 @@ export function FormCheckbox({
         </div>
         <input
           className={styles.hiddenInput()}
-          aria-describedby={ariaDescribedBy}
           {...api.getHiddenInputProps()}
+          aria-describedby={ariaDescribedBy}
         />
         {labelContent && (
           <span className={styles.label()} {...api.getLabelProps()}>

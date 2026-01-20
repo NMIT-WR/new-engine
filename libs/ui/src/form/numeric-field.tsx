@@ -27,6 +27,7 @@ export type NumericFieldProps = Omit<
   decrementIcon?: IconType
   errorVisibility?: FieldErrorVisibility
   externalError?: string
+  onExternalErrorClear?: () => void
   showHelpTextIcon?: boolean
   formatValue?: (value: number | null | undefined) => number | undefined
   parseValue?: (value: number) => number
@@ -48,6 +49,7 @@ export function NumericField({
   decrementIcon = "token-icon-numeric-input-decrement",
   errorVisibility = "blurred",
   externalError,
+  onExternalErrorClear,
   showHelpTextIcon,
   formatValue,
   parseValue,
@@ -63,6 +65,13 @@ export function NumericField({
     when: errorVisibility,
     externalError,
   })
+
+  const handleChange = (value: number) => {
+    fieldProps.onChange(value)
+    if (externalError && onExternalErrorClear) {
+      onExternalErrorClear()
+    }
+  }
 
   const controlContent = (
     <NumericInput.Control className={controlsPosition === "sides" ? "flex-1" : undefined}>
@@ -85,7 +94,7 @@ export function NumericField({
       id={fieldProps.id}
       label={label}
       name={fieldProps.name}
-      onChange={fieldProps.onChange}
+      onChange={handleChange}
       required={required}
       showHelpTextIcon={showHelpTextIcon}
       size={size}
