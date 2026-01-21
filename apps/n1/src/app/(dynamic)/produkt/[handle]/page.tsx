@@ -1,32 +1,32 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
-import { HeurekaProduct } from '@techsio/analytics/heureka'
-import { Heading } from '@/components/heading'
-import { Gallery } from '@/components/organisms/gallery'
-import { ProductInfoPanel } from '@/components/product-detail/product-info-panel'
-import { ProductSizes } from '@/components/product-detail/product-sizes'
-import { ProductTable } from '@/components/product-detail/product-table'
-import { ProductTabs } from '@/components/product-detail/product-tabs'
-import { RelatedProducts } from '@/components/product-detail/related-products'
-import { useSuspenseProduct } from '@/hooks/use-product'
-import { CATEGORY_MAP_BY_ID } from '@/lib/constants'
-import { useAnalytics } from '@/providers/analytics-provider'
+import { HeurekaProduct } from "@techsio/analytics/heureka"
+import { Link } from "@techsio/ui-kit/atoms/link"
+import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
+import { useParams, useSearchParams } from "next/navigation"
+import { useEffect, useRef } from "react"
+import { Heading } from "@/components/heading"
+import { Gallery } from "@/components/organisms/gallery"
+import { ProductInfoPanel } from "@/components/product-detail/product-info-panel"
+import { ProductSizes } from "@/components/product-detail/product-sizes"
+import { ProductTable } from "@/components/product-detail/product-table"
+import { ProductTabs } from "@/components/product-detail/product-tabs"
+import { RelatedProducts } from "@/components/product-detail/related-products"
+import { useSuspenseProduct } from "@/hooks/use-product"
+import { CATEGORY_MAP_BY_ID } from "@/lib/constants"
+import { useAnalytics } from "@/providers/analytics-provider"
 import {
   buildBreadcrumbs,
   buildProductBreadcrumbs,
-} from '@/utils/helpers/build-breadcrumb'
-import { selectVariant } from '@/utils/select-variant'
-import { transformProductDetail } from '@/utils/transform/transform-product'
-import { Link } from '@techsio/ui-kit/atoms/link'
-import { Breadcrumb } from '@techsio/ui-kit/molecules/breadcrumb'
-import { useParams, useSearchParams } from 'next/navigation'
+} from "@/utils/helpers/build-breadcrumb"
+import { selectVariant } from "@/utils/select-variant"
+import { transformProductDetail } from "@/utils/transform/transform-product"
 
 export default function ProductPage() {
   const params = useParams()
   const searchParams = useSearchParams()
   const handle = params.handle as string
-  const variantParam = searchParams.get('variant')
+  const variantParam = searchParams.get("variant")
 
   const { data: rawProduct } = useSuspenseProduct({ handle })
   const analytics = useAnalytics()
@@ -44,8 +44,12 @@ export default function ProductPage() {
 
   // Unified analytics - ViewContent tracking (sends to Meta, Google, Leadhub)
   useEffect(() => {
-    if (!detail || !selectedVariant) return
-    if (trackedVariantId.current === selectedVariant.id) return
+    if (!(detail && selectedVariant)) {
+      return
+    }
+    if (trackedVariantId.current === selectedVariant.id) {
+      return
+    }
 
     trackedVariantId.current = selectedVariant.id
 
@@ -53,12 +57,22 @@ export default function ProductPage() {
       productId: selectedVariant.id,
       productName: detail.title,
       value: selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0,
-      currency: (selectedVariant.calculated_price?.currency_code ?? 'CZK').toUpperCase(),
+      currency: (
+        selectedVariant.calculated_price?.currency_code ?? "CZK"
+      ).toUpperCase(),
       category: rawProduct?.categories?.[0]?.name,
     })
-  }, [detail?.id, selectedVariant?.id, analytics, rawProduct?.categories])
+  }, [
+    detail?.id,
+    selectedVariant?.id,
+    analytics,
+    rawProduct?.categories,
+    detail,
+    selectedVariant?.calculated_price?.calculated_amount_with_tax,
+    selectedVariant,
+  ])
 
-  if (!rawProduct || !detail) {
+  if (!(rawProduct && detail)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-fg-secondary">Produkt nebyl nalezen</p>
@@ -67,51 +81,51 @@ export default function ProductPage() {
   }
 
   const breadcrumbPath = buildProductBreadcrumbs(
-    rawProduct.categories?.[0].id,
+    rawProduct.categories?.[0]?.id,
     CATEGORY_MAP_BY_ID,
     rawProduct.title,
     rawProduct.handle
   )
 
   const breadcrumbPathMobile = buildBreadcrumbs(
-    rawProduct.categories?.[0].id,
+    rawProduct.categories?.[0]?.id,
     CATEGORY_MAP_BY_ID
   )
 
   const productTableRows = [
     {
-      key: 'kód produktu',
+      key: "kód produktu",
       value: detail.type_id,
     },
     {
-      key: 'hmotnost',
+      key: "hmotnost",
       value: detail.weight,
     },
     {
-      key: 'materiál',
+      key: "materiál",
       value: detail.material,
     },
     {
-      key: 'distributor',
+      key: "distributor",
       value: detail.producer?.title,
     },
     {
-      key: 'velikost',
+      key: "velikost",
       value: selectedVariant?.title,
     },
   ]
 
   const tabsData = [
     {
-      value: 'tab1',
-      label: 'produktové parametry',
-      headline: 'produktové parametry',
+      value: "tab1",
+      label: "produktové parametry",
+      headline: "produktové parametry",
       content: <ProductTable rows={productTableRows} />,
     },
     {
-      value: 'tab2',
-      label: 'tabulka velikostí',
-      headline: 'tabulka velikostí',
+      value: "tab2",
+      label: "tabulka velikostí",
+      headline: "tabulka velikostí",
       content: <ProductSizes attributes={detail.producer?.attributes} />,
     },
   ]
@@ -123,36 +137,36 @@ export default function ProductPage() {
       <div className="grid grid-cols-1 gap-700 md:grid-cols-[auto_1fr]">
         <header className="col-span-1 space-y-400 md:col-span-2">
           <Breadcrumb
+            className="mb-400 hidden md:inline-flex"
             items={breadcrumbPath}
             linkAs={Link}
             size="md"
-            className="mb-400 hidden md:inline-flex"
           />
           <Breadcrumb
+            className="mb-400 md:hidden"
             items={breadcrumbPathMobile}
             linkAs={Link}
             size="md"
-            className="mb-400 md:hidden"
           />
           <Heading as="h1">{title}</Heading>
         </header>
         <div className="mx-auto aspect-square max-w-md">
           {detail.images && (
             <Gallery
-              images={detail.images}
-              carouselSize={150}
-              size="md"
-              objectFit="cover"
               aspectRatio="square"
+              carouselSize={150}
+              images={detail.images}
+              objectFit="cover"
               orientation="horizontal"
+              size="md"
             />
           )}
         </div>
         <ProductInfoPanel
           detail={detail}
-          selectedVariant={selectedVariant}
           handle={handle}
           quantity={quantity}
+          selectedVariant={selectedVariant}
         />
       </div>
       <ProductTabs description={detail.description} tabs={tabsData} />

@@ -1,13 +1,12 @@
-'use client'
-import { FeatureBlock } from '@/components/atoms/feature-block'
-import { HeroCarousel } from '@/components/hero-carousel'
-import { ProductGrid } from '@/components/molecules/product-grid'
-import { TopProduct } from '@/components/top-product'
-import { featureBlocks, topCategory } from '@/data/home'
-import { heroCarouselSlides } from '@/data/home'
-import { useSuspenseProducts } from '@/hooks/use-products'
-import { transformProduct } from '@/utils/transform/transform-product'
-import { Suspense } from 'react'
+"use client"
+import { Suspense } from "react"
+import { FeatureBlock } from "@/components/atoms/feature-block"
+import { HeroCarousel } from "@/components/hero-carousel"
+import { ProductGrid } from "@/components/molecules/product-grid"
+import { TopProduct } from "@/components/top-product"
+import { featureBlocks, heroCarouselSlides, topCategory } from "@/data/home"
+import { useSuspenseProducts } from "@/hooks/use-products"
+import { transformProduct } from "@/utils/transform/transform-product"
 
 export default function Home() {
   return (
@@ -17,8 +16,11 @@ export default function Home() {
       </section>
 
       <section className="mx-auto grid max-w-max-w grid-cols-2 px-section py-section md:grid-cols-[repeat(auto-fit,minmax(25%,1fr))]">
-        {featureBlocks.map((block, index) => (
-          <FeatureBlock key={index} {...block} />
+        {featureBlocks.map((block) => (
+          <FeatureBlock
+            key={`${block.maintText}-${block.subText}`}
+            {...block}
+          />
         ))}
       </section>
 
@@ -26,8 +28,8 @@ export default function Home() {
         <div className="mx-auto flex w-full max-w-max-w flex-col gap-section px-section">
           <h2 className="text-center font-bold text-xl">TOP kategorie</h2>
           <div className="grid grid-cols-3 place-items-center gap-300 md:grid-cols-4">
-            {topCategory.map((category, index) => (
-              <TopProduct key={index} {...category} />
+            {topCategory.map((category) => (
+              <TopProduct key={category.label} {...category} />
             ))}
           </div>
         </div>
@@ -43,9 +45,7 @@ export default function Home() {
           </span>
         </h2>
         <Suspense
-          fallback={
-            <ProductGrid products={[]} isLoading skeletonCount={8} />
-          }
+          fallback={<ProductGrid isLoading products={[]} skeletonCount={8} />}
         >
           <HomeProductGrid />
         </Suspense>
@@ -57,8 +57,8 @@ export default function Home() {
 function HomeProductGrid() {
   const { products: rawProducts } = useSuspenseProducts({
     category_id: [
-      'pcat_01K1RB8NEB67KSN2VHMBT1XNX7',
-      'pcat_01K1RB8NDSY4KAVFFQVRNP2KAD',
+      "pcat_01K1RB8NEB67KSN2VHMBT1XNX7",
+      "pcat_01K1RB8NDSY4KAVFFQVRNP2KAD",
     ],
     limit: 8,
   })

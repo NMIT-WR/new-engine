@@ -1,12 +1,12 @@
-import type { StoreProduct } from '@medusajs/types'
-import type { BadgeProps } from '@techsio/ui-kit/atoms/badge'
+import type { StoreProduct } from "@medusajs/types"
+import type { BadgeProps } from "@techsio/ui-kit/atoms/badge"
 
 export interface StoreProductExtended extends StoreProduct {
   producer?: Producer
 }
 
 // Lightweight type for product listing
-export interface Product {
+export type Product = {
   id: string
   title: string
   handle: string
@@ -14,27 +14,23 @@ export interface Product {
   withoutTax?: string
   badges?: BadgeProps[]
   imageSrc?: string
-  stockStatus?: 'in-stock' | 'out-of-stock' | 'limited-stock' | undefined
-  stockValue?: 'Skladem' | 'Vyprodáno'
+  stockStatus?: "in-stock" | "out-of-stock" | "limited-stock" | undefined
+  stockValue?: "Skladem" | "Vyprodáno"
   variants?: string[]
 }
 
 // Product image from Medusa
-export interface ProductImage {
+export type ProductImage = {
   id: string
   src: string
 }
-
 
 // Product option value
 
 // Product option
 
-
-
-
 // Producer information
-export interface Producer {
+export type Producer = {
   id: string
   title: string
   attributes?: Array<{
@@ -45,7 +41,7 @@ export interface Producer {
   }>
 }
 
-export interface ProductVariantDetail {
+export type ProductVariantDetail = {
   id: string
   title: string
   sku?: string | null
@@ -71,7 +67,7 @@ export interface ProductVariantDetail {
   }
 }
 
-export interface ProductDetail extends Omit<Product, 'variants' | 'images'> {
+export interface ProductDetail extends Omit<Product, "variants" | "images"> {
   description?: string | null
   subtitle?: string | null
   thumbnail?: string | null

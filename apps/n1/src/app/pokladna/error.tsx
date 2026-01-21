@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import Link from 'next/link'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import Link from "next/link"
 
 type ErrorProps = {
   error: Error & { digest?: string }
@@ -22,7 +22,13 @@ export default function ErrorCheckout({ reset }: ErrorProps) {
         <Button onClick={reset} size="sm" theme="solid" variant="secondary">
           Zkusit znovu
         </Button>
-        <LinkButton as={Link} href="/" size="sm" theme="solid" variant="primary">
+        <LinkButton
+          as={Link}
+          href="/"
+          size="sm"
+          theme="solid"
+          variant="primary"
+        >
           Zpět na hlavní stránku
         </LinkButton>
       </div>

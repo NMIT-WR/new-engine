@@ -1,24 +1,24 @@
-import type { HTMLAttributes, ReactNode } from 'react'
+import type { HTMLAttributes, ReactNode } from "react"
 
 interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
-  as?: 'h1' | 'h2' | 'h3'
+  as?: "h1" | "h2" | "h3"
   children: ReactNode
-  variant?: 'h1' | 'h2' | 'h3'
+  variant?: "h1" | "h2" | "h3"
 }
 
 const sizes = {
-  h1: 'text-2xl',
-  h2: 'text-xl',
-  h3: 'text-lg',
+  h1: "text-2xl",
+  h2: "text-xl",
+  h3: "text-lg",
 } as const
 
 export function Heading({
   as,
   children,
-  variant = 'h1',
+  variant = "h1",
   ...props
 }: HeadingProps) {
-  const Component = as || 'h1'
+  const Component = as || "h1"
   const size = sizes[variant]
 
   return (

@@ -1,13 +1,13 @@
-import { addDays, formatDateShort, formatDay } from '@/utils/format/format-date'
-import { Tooltip } from '@techsio/ui-kit/atoms/tooltip'
-import Link from 'next/link'
+import { Tooltip } from "@techsio/ui-kit/atoms/tooltip"
+import Link from "next/link"
+import { addDays, formatDateShort, formatDay } from "@/utils/format/format-date"
 
 export const DeliveryDate = () => {
   const deliveryDate = addDays(3)
 
   const tooltipContent = (
     <article>
-      <Link href="/doprava-a-platba" className="font-bold underline">
+      <Link className="font-bold underline" href="/doprava-a-platba">
         PPL Doručení do výdejních míst
       </Link>
       <p>
@@ -19,9 +19,9 @@ export const DeliveryDate = () => {
   return (
     <div className="flex items-center gap-150">
       <Tooltip
+        className="max-w-2xs bg-secondary text-fg-reverse [--arrow-background:var(--color-secondary)]"
         content={tooltipContent}
         placement="bottom-start"
-        className="max-w-2xs bg-secondary text-fg-reverse [--arrow-background:var(--color-secondary)]"
       >
         <span className="cursor-help border-2 border-success border-t-5 px-150 font-bold text-fg-secondary text-xl">
           {formatDay(deliveryDate)}

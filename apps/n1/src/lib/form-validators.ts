@@ -1,6 +1,26 @@
 import { AUTH_MESSAGES } from "./auth-messages"
 import { VALIDATION_MESSAGES } from "./validation-messages"
 
+const PHONE_REGEX = /^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PASSWORD_NUMBER_REGEX = /\d/
+const POSTAL_CODE_REGEX = /^\d{3}\s\d{2}$/
+
+type ConfirmPasswordFieldApi = {
+  form: {
+    // biome-ignore lint/suspicious/noExplicitAny: TanStack Form field names are generic
+    getFieldValue: (...args: any[]) => unknown
+  }
+}
+
+type RegisterFieldName =
+  | "first_name"
+  | "last_name"
+  | "email"
+  | "password"
+  | "confirmPassword"
+  | "acceptTerms"
+
 // ============================================================================
 // SHARED FIELD VALIDATORS - Single Source of Truth
 // ============================================================================
@@ -49,7 +69,7 @@ const createPhoneValidator = () => ({
     if (!value) {
       return // Optional field
     }
-    if (!/^(\+420\s)?\d{3}\s\d{3}\s\d{3}$|^$/.test(value)) {
+    if (!PHONE_REGEX.test(value)) {
       return VALIDATION_MESSAGES.phone.invalid
     }
     return
@@ -62,18 +82,26 @@ const createPhoneValidator = () => ({
  * Used in: RegisterForm
  */
 const createConfirmPasswordValidator = () => ({
-  onChangeListenTo: ["password"],
-  onChange: ({ value, fieldApi }: { value: string; fieldApi: any }) => {
+  onChangeListenTo: ["password"] as RegisterFieldName[],
+  onChange: ({
+    value,
+    fieldApi,
+  }: {
+    value: string
+    fieldApi: ConfirmPasswordFieldApi
+  }) => {
     if (!value) {
       return VALIDATION_MESSAGES.password.confirmRequired
     }
-    const passwordValue = fieldApi.form.getFieldValue("password")
+    const passwordValue = fieldApi.form.getFieldValue("password") as
+      | string
+      | undefined
     if (value !== passwordValue) {
       return VALIDATION_MESSAGES.password.mismatch
     }
     return
   },
-}) as any
+})
 
 // ============================================================================
 // STANDALONE VALIDATORS
@@ -84,7 +112,7 @@ export const emailValidator = {
     if (!value?.trim()) {
       return VALIDATION_MESSAGES.email.required
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    if (!EMAIL_REGEX.test(value)) {
       return VALIDATION_MESSAGES.email.invalid
     }
     return
@@ -114,7 +142,7 @@ export const PASSWORD_REQUIREMENTS = [
   {
     id: "has-number",
     label: AUTH_MESSAGES.PASSWORD_REQUIREMENT_NUMBER,
-    test: (pwd: string) => /\d/.test(pwd),
+    test: (pwd: string) => PASSWORD_NUMBER_REGEX.test(pwd),
   },
 ]
 
@@ -169,7 +197,7 @@ export const addressValidators = {
       if (!value?.trim()) {
         return VALIDATION_MESSAGES.postalCode.required
       }
-      if (!/^\d{3}\s\d{2}$/.test(value)) {
+      if (!POSTAL_CODE_REGEX.test(value)) {
         return VALIDATION_MESSAGES.postalCode.invalid
       }
       return

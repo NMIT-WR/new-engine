@@ -1,14 +1,14 @@
-'use client'
-import { useAddToCart, useCart } from '@/hooks/use-cart'
-import { useRegion } from '@/hooks/use-region'
-import { useCartToast } from '@/hooks/use-toast'
-import { useAnalytics } from '@/providers/analytics-provider'
-import type { ProductDetail, ProductVariantDetail } from '@/types/product'
-import { validateAddToCart } from '@/utils/cart/cart-validation'
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { NumericInput } from '@techsio/ui-kit/atoms/numeric-input'
-import { slugify } from '@techsio/ui-kit/utils'
-import { useState } from 'react'
+"use client"
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { NumericInput } from "@techsio/ui-kit/atoms/numeric-input"
+import { slugify } from "@techsio/ui-kit/utils"
+import { useState } from "react"
+import { useAddToCart, useCart } from "@/hooks/use-cart"
+import { useRegion } from "@/hooks/use-region"
+import { useCartToast } from "@/hooks/use-toast"
+import { useAnalytics } from "@/providers/analytics-provider"
+import type { ProductDetail, ProductVariantDetail } from "@/types/product"
+import { validateAddToCart } from "@/utils/cart/cart-validation"
 
 export const AddToCartSection = ({
   selectedVariant,
@@ -24,16 +24,16 @@ export const AddToCartSection = ({
   const toast = useCartToast()
   const analytics = useAnalytics()
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     // Validate region context
     if (!regionId) {
-      toast.cartError('Nelze přidat do košíku bez regionálního kontextu')
+      toast.cartError("Nelze přidat do košíku bez regionálního kontextu")
       return
     }
 
     // Validate variant selection
     if (!selectedVariant?.id) {
-      toast.cartError('Žádná varianta není vybrána')
+      toast.cartError("Žádná varianta není vybrána")
       return
     }
 
@@ -65,9 +65,10 @@ export const AddToCartSection = ({
       {
         onSuccess: () => {
           const currency = (
-            selectedVariant.calculated_price?.currency_code ?? 'CZK'
+            selectedVariant.calculated_price?.currency_code ?? "CZK"
           ).toUpperCase()
-          const price = selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0
+          const price =
+            selectedVariant.calculated_price?.calculated_amount_with_tax ?? 0
 
           // Unified analytics - AddToCart tracking (sends to Meta, Google, Leadhub)
           analytics.trackAddToCart({
@@ -95,13 +96,13 @@ export const AddToCartSection = ({
           setQuantity(1)
 
           // Dispatch event to open cart popover (optional)
-          const event = new CustomEvent('open-cart')
+          const event = new CustomEvent("open-cart")
           window.dispatchEvent(event)
         },
         onError: (error) => {
-          if (error.message?.includes('stock')) {
+          if (error.message?.includes("stock")) {
             toast.stockWarning()
-          } else if (error.message?.includes('network')) {
+          } else if (error.message?.includes("network")) {
             toast.networkError()
           } else {
             toast.cartError(error.message)
@@ -115,15 +116,15 @@ export const AddToCartSection = ({
   return (
     <div className="flex gap-200">
       <NumericInput
-        id={`${slugify(detail.title)}-number-input`}
-        min={1}
-        max={maxQuantity}
+        allowMouseWheel={true}
         allowOverflow={false}
         defaultValue={1}
-        allowMouseWheel={true}
-        value={quantity}
-        onChange={setQuantity}
         disabled={isPending}
+        id={`${slugify(detail.title)}-number-input`}
+        max={maxQuantity}
+        min={1}
+        onChange={setQuantity}
+        value={quantity}
       >
         <NumericInput.DecrementTrigger />
         <NumericInput.Control className="w-12">
@@ -132,11 +133,11 @@ export const AddToCartSection = ({
         <NumericInput.IncrementTrigger />
       </NumericInput>
       <Button
-        variant="secondary"
-        onClick={handleAddToCart}
         disabled={isPending || !selectedVariant?.id || !regionId}
+        onClick={handleAddToCart}
+        variant="secondary"
       >
-        {isPending ? 'Přidávám...' : 'Přidat do košíku'}
+        {isPending ? "Přidávám..." : "Přidat do košíku"}
       </Button>
     </div>
   )

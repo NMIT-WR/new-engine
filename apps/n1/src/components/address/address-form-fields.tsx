@@ -1,5 +1,6 @@
 "use client"
 
+import { useForm } from "@tanstack/react-form"
 import { SelectField } from "@/components/forms/fields/select-field"
 import { TextField } from "@/components/forms/fields/text-field"
 import { COUNTRY_OPTIONS } from "@/lib/constants"
@@ -7,7 +8,6 @@ import { addressValidators } from "@/lib/form-validators"
 import type { AddressFormData } from "@/utils/address-validation"
 import { formatPhoneNumber } from "@/utils/format/format-phone-number"
 import { formatPostalCode } from "@/utils/format/format-postal-code"
-import { useForm } from "@tanstack/react-form"
 
 const _formTypeHelper = (d: AddressFormData) => useForm({ defaultValues: d })
 

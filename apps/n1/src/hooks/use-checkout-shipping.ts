@@ -1,5 +1,9 @@
 import type { HttpTypes } from "@medusajs/types"
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { CACHE_TIMES, TAX_RATE } from "@/lib/constants"
 import { CartServiceError } from "@/lib/errors"
 import { queryKeys } from "@/lib/query-keys"
@@ -8,8 +12,8 @@ import {
   getShippingOptions,
   type ShippingMethodData,
   setShippingMethod,
-} from '@/services/cart-service'
-import { useCartToast } from './use-toast'
+} from "@/services/cart-service"
+import { useCartToast } from "./use-toast"
 
 type CartMutationError = {
   message: string
@@ -47,9 +51,9 @@ export function useCheckoutShipping(
 
   // Fetch shipping options for cart
   const { data: shippingOptions = [] } = useSuspenseQuery({
-    queryKey: queryKeys.cart.shippingOptions(cartId || 'unknown'),
+    queryKey: queryKeys.cart.shippingOptions(cartId || "unknown"),
     queryFn: () => {
-      if (!canLoadShipping || !cartId) {
+      if (!(canLoadShipping && cartId)) {
         return []
       }
       return getShippingOptions(cartId)

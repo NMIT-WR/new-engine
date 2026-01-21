@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { cacheConfig } from '@/lib/cache-config'
-import { prefetchLogger } from '@/lib/loggers'
-import { queryKeys } from '@/lib/query-keys'
-import { getProductByHandle } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
-import { useRef } from 'react'
-import { useRegion } from './use-region'
+import { useQueryClient } from "@tanstack/react-query"
+import { useRef } from "react"
+import { cacheConfig } from "@/lib/cache-config"
+import { prefetchLogger } from "@/lib/loggers/prefetch"
+import { queryKeys } from "@/lib/query-keys"
+import { getProductByHandle } from "@/services/product-service"
+import { useRegion } from "./use-region"
 
 const PREFETCH_DELAY = 400
 export function usePrefetchProduct() {
@@ -15,15 +15,17 @@ export function usePrefetchProduct() {
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
 
   const prefetchProduct = async (handle: string, fields?: string) => {
-    if (!regionId || !handle) return
+    if (!(regionId && handle)) {
+      return
+    }
 
     const queryKey = queryKeys.products.detail(handle, regionId, countryCode)
     const cached = queryClient.getQueryData(queryKey)
 
     if (cached) {
-      prefetchLogger.cacheHit('Product', handle)
+      prefetchLogger.cacheHit("Product", handle)
     } else {
-      prefetchLogger.start('Product', handle)
+      prefetchLogger.start("Product", handle)
       await queryClient.prefetchQuery({
         queryKey,
         queryFn: () =>
@@ -44,7 +46,9 @@ export function usePrefetchProduct() {
     fields?: string
   ) => {
     const existing = timeoutsRef.current.get(handle)
-    if (existing) clearTimeout(existing)
+    if (existing) {
+      clearTimeout(existing)
+    }
 
     const timeoutId = setTimeout(() => {
       prefetchProduct(handle, fields)

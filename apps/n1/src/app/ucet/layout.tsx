@@ -1,33 +1,36 @@
-'use client'
+"use client"
 
-import { useSuspenseAuth } from '@/hooks/use-auth'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { AccountMenu } from './_components/account-menu'
-import { AccountProvider } from './context/account-context'
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useSuspenseAuth } from "@/hooks/use-auth"
+import { AccountProvider } from "./context/account-context"
 
 export default function AccountLayout({
   children,
-}: { children: React.ReactNode }) {
+}: {
+  children: React.ReactNode
+}) {
   const router = useRouter()
   const { customer, isAuthenticated, isTokenExpired } = useSuspenseAuth()
   const [showExpiredMessage, setShowExpiredMessage] = useState(false)
 
   // Handle session expiration
   useEffect(() => {
-    if (isTokenExpired) {
-      setShowExpiredMessage(true)
-      const timeout = setTimeout(() => {
-        router.push('/prihlaseni')
-      }, 3000)
-      return () => clearTimeout(timeout)
+    if (!isTokenExpired) {
+      return
     }
+
+    setShowExpiredMessage(true)
+    const timeout = setTimeout(() => {
+      router.push("/prihlaseni")
+    }, 3000)
+    return () => clearTimeout(timeout)
   }, [isTokenExpired, router])
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isAuthenticated && !isTokenExpired) {
-      router.push('/prihlaseni')
+    if (!(isAuthenticated || isTokenExpired)) {
+      router.push("/prihlaseni")
     }
   }, [isAuthenticated, isTokenExpired, router])
 
@@ -40,8 +43,8 @@ export default function AccountLayout({
             Platnost relace vypršela
           </div>
           <p className="text-sm text-warning">
-            Vaše přihlášení vypršelo po 24 hodinách. Za chvíli budete
-            přesměrováni na přihlašovací stránku...
+            Vaše přihlášení vypršelo. Za chvíli budete přesměrováni na
+            přihlašovací stránku...
           </p>
         </div>
       </main>
@@ -56,11 +59,7 @@ export default function AccountLayout({
   return (
     <AccountProvider>
       <main className="mx-auto w-full max-w-5xl px-400 py-400">
-        <h1 className="mb-400 font-bold text-xl">Můj profil</h1>
-        <div className="grid grid-cols-1 gap-400 md:grid-cols-[auto_1fr]">
-          <AccountMenu />
-          <div className="min-w-0">{children}</div>
-        </div>
+        {children}
       </main>
     </AccountProvider>
   )

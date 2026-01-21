@@ -12,16 +12,17 @@
 export type AnyFieldApiCompat = {
   name: string
   state: {
-    value: any
+    value: unknown
     meta: {
       isTouched: boolean
       isBlurred: boolean
       isDirty: boolean
       isValidating: boolean
-      errors: readonly any[] // More permissive to accept TanStack Form's complex error types
-      errorMap: Record<string, any>
+      errors: readonly unknown[] // More permissive to accept TanStack Form's complex error types
+      errorMap: Record<string, unknown>
     }
   }
+  // biome-ignore lint/suspicious/noExplicitAny: TanStack FieldApi uses generic updater signature
   handleChange: (value: any) => void
   handleBlur: () => void
   // Add other methods/properties as needed by field components

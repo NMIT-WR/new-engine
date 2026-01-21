@@ -1,6 +1,6 @@
-import { Heading } from '@/components/heading'
-import { rootCategories } from '@/data/static/categories'
-import Link from 'next/link'
+import Link from "next/link"
+import { Heading } from "@/components/heading"
+import { rootCategories } from "@/data/static/categories"
 
 export default function CategoryNotFound() {
   return (
@@ -11,13 +11,15 @@ export default function CategoryNotFound() {
           Omlouváme se, ale tato kategorie neexistuje nebo byla odstraněna.
         </p>
         <nav className="space-y-300">
-          <h2 className="font-semibold text-lg">Prohlédněte si naše kategorie:</h2>
+          <h2 className="font-semibold text-lg">
+            Prohlédněte si naše kategorie:
+          </h2>
           <ul className="flex flex-wrap gap-200">
             {rootCategories.map((category) => (
               <li key={category.id}>
                 <Link
-                  href={`/kategorie/${category.handle}`}
                   className="inline-block bg-surface px-400 py-200 text-fg-primary transition-colors hover:bg-primary"
+                  href={`/kategorie/${category.handle}`}
                 >
                   {category.name}
                 </Link>
@@ -26,8 +28,11 @@ export default function CategoryNotFound() {
           </ul>
         </nav>
         <p className="text-fg-tertiary text-sm">
-          Nebo se vraťte na{' '}
-          <Link href="/" className="text-fg-primary underline hover:no-underline">
+          Nebo se vraťte na{" "}
+          <Link
+            className="text-fg-primary underline hover:no-underline"
+            href="/"
+          >
             hlavní stránku
           </Link>
           .

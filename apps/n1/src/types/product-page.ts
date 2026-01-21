@@ -1,4 +1,4 @@
-export interface ProducerEntity {
+export type ProducerEntity = {
   name: string
   address: string
   taxId?: string
@@ -6,7 +6,7 @@ export interface ProducerEntity {
   phone?: string
 }
 
-export interface ParsedProducerInfo {
+export type ParsedProducerInfo = {
   sizingGuideUrl?: string
   manufacturer?: ProducerEntity
   responsiblePerson?: ProducerEntity

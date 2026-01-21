@@ -1,11 +1,11 @@
-import type { Producer } from '@/types/product'
-import { parseProducerData } from '@/utils/helpers/parse-producer-data'
-import { LinkButton } from '@techsio/ui-kit/atoms/link-button'
-import { Table } from '@techsio/ui-kit/organisms/table'
-import Link from 'next/link'
+import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
+import { Table } from "@techsio/ui-kit/organisms/table"
+import Link from "next/link"
+import type { Producer } from "@/types/product"
+import { parseProducerData } from "@/utils/helpers/parse-producer-data"
 
-interface ProductSizesProps {
-  attributes?: Producer['attributes']
+type ProductSizesProps = {
+  attributes?: Producer["attributes"]
 }
 
 export function ProductSizes({ attributes }: ProductSizesProps) {
@@ -27,8 +27,8 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
         <div className="rounded-md">
           <LinkButton
             as={Link}
-            href={sizingGuideUrl}
             className="gap-150 px-250 py-100"
+            href={sizingGuideUrl}
             icon="token-icon-external-link"
           >
             Přejít na tabulku velikostí
@@ -75,8 +75,8 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
                   </Table.Cell>
                   <Table.Cell>
                     <Link
-                      href={`mailto:${manufacturer.email}`}
                       className="text-fg-primary hover:underline"
+                      href={`mailto:${manufacturer.email}`}
                     >
                       {manufacturer.email}
                     </Link>
@@ -136,8 +136,8 @@ export function ProductSizes({ attributes }: ProductSizesProps) {
                   </Table.Cell>
                   <Table.Cell>
                     <Link
-                      href={`mailto:${responsiblePerson.email}`}
                       className="text-fg-primary hover:underline"
+                      href={`mailto:${responsiblePerson.email}`}
                     >
                       {responsiblePerson.email}
                     </Link>

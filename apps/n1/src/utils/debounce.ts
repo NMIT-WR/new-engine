@@ -1,17 +1,17 @@
-export type DebouncedFunction<T extends (...args: any[]) => any> = {
-  (...args: Parameters<T>): void
+export type DebouncedFunction<Args extends unknown[]> = {
+  (...args: Args): void
   cancel: () => void
 }
 
-export function debounce<T extends (...args: any[]) => any>(
-  fn: T,
+export function debounce<Args extends unknown[]>(
+  fn: (...args: Args) => void,
   delay: number,
   options?: {
     leading?: boolean
   }
-): DebouncedFunction<T> {
+): DebouncedFunction<Args> {
   let timeoutId: ReturnType<typeof setTimeout> | null = null
-  let lastArgs: Parameters<T> | null = null
+  let lastArgs: Args | null = null
 
   const cancel = () => {
     if (timeoutId !== null) {
@@ -21,7 +21,7 @@ export function debounce<T extends (...args: any[]) => any>(
     }
   }
 
-  const debouncedFn = (...args: Parameters<T>): void => {
+  const debouncedFn = (...args: Args): void => {
     lastArgs = args
 
     if (options?.leading && timeoutId === null) {
@@ -48,5 +48,5 @@ export function debounce<T extends (...args: any[]) => any>(
 
   debouncedFn.cancel = cancel
 
-  return debouncedFn as DebouncedFunction<T>
+  return debouncedFn
 }

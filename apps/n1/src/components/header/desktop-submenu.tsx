@@ -1,10 +1,10 @@
-import { type SubmenuCategory, links, submenuItems } from '@/data/header'
-import { usePrefetchProducts } from '@/hooks/use-prefetch-products'
-import { Dialog } from '@techsio/ui-kit/molecules/dialog'
-import { Header } from '@techsio/ui-kit/organisms/header'
-import Image from 'next/image'
-import NextLink from 'next/link'
-import { useState } from 'react'
+import { Dialog } from "@techsio/ui-kit/molecules/dialog"
+import { Header } from "@techsio/ui-kit/organisms/header"
+import Image from "next/image"
+import NextLink from "next/link"
+import { useState } from "react"
+import { links, type SubmenuCategory, submenuItems } from "@/data/header"
+import { usePrefetchProducts } from "@/hooks/use-prefetch-products"
 
 export const DesktopSubmenu = () => {
   const { prefetchCategoryProducts } = usePrefetchProducts()
@@ -27,19 +27,21 @@ export const DesktopSubmenu = () => {
   }
   return (
     <Header.Desktop>
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: hover-only wrapper for submenu */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: hover-only wrapper for submenu */}
       <div className="w-full" onMouseLeave={() => setDrawerOpen(false)}>
         <Header.Container className="w-full border-highlight border-t-[1px] bg-base-dark py-0">
           <Header.Nav className="z-30 flex-wrap gap-x-0 px-0 py-0">
             {links.map((link) => (
               <NextLink
-                key={link.href}
-                href={link.href}
-                prefetch={true}
                 className="group px-300 py-300 hover:bg-primary"
+                href={link.href}
+                key={link.href}
+                prefetch={true}
               >
                 <Header.NavItem
-                  onMouseEnter={() => handleOpenSubmenu(link.label)}
                   className="font-bold text-fg-reverse group-hover:text-black"
+                  onMouseEnter={() => handleOpenSubmenu(link.label)}
                 >
                   {link.label}
                 </Header.NavItem>
@@ -49,26 +51,26 @@ export const DesktopSubmenu = () => {
         </Header.Container>
 
         <Dialog
-          open={drawerOpen}
-          customTrigger
-          placement="top"
-          position="absolute"
-          size="xs"
-          hideCloseButton
           behavior="modeless"
           className="top-full grid grid-rows-[1fr] starting:grid-rows-[0fr] bg-white shadow-none transition-all duration-500 ease-out"
-          modal={false}
-          trapFocus={false}
-          preventScroll={false}
           closeOnInteractOutside={true}
+          customTrigger
+          hideCloseButton
+          modal={false}
+          open={drawerOpen}
+          placement="top"
           portal={false}
+          position="absolute"
+          preventScroll={false}
+          size="xs"
+          trapFocus={false}
         >
           <div className="overflow-hidden">
             <div className="grid grid-cols-6 gap-200">
               {activeCategory?.items.map((item) => (
                 <NextLink
-                  key={item.name}
                   href={item.href}
+                  key={item.name}
                   onMouseEnter={() => {
                     // Immediate prefetch on hover
                     if (item.categoryIds && item.categoryIds.length > 0) {
@@ -81,13 +83,13 @@ export const DesktopSubmenu = () => {
                       <div className="flex flex-col items-center gap-200">
                         {item.image && (
                           <Image
-                            src={item.image}
                             alt={item.name}
-                            width={100}
-                            height={100}
-                            quality={50}
-                            placeholder="blur"
                             className="size-image-sm object-contain"
+                            height={100}
+                            placeholder="blur"
+                            quality={50}
+                            src={item.image}
+                            width={100}
                           />
                         )}
                         <h3 className="font-bold text-xs">{item.name}</h3>

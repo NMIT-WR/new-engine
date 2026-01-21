@@ -1,22 +1,22 @@
-'use client'
+"use client"
 import {
   Carousel,
   type CarouselSlide,
-} from '@techsio/ui-kit/molecules/carousel'
-import NextImage from 'next/image'
+} from "@techsio/ui-kit/molecules/carousel"
+import NextImage from "next/image"
 
-interface HeroCarouselProps {
+type HeroCarouselProps = {
   slides: CarouselSlide[]
 }
 export function HeroCarousel({ slides }: HeroCarouselProps) {
   return (
     <Carousel.Root
-      slideCount={slides.length}
       aspectRatio="none"
-      className="h-full w-full"
       autoplay
+      className="h-full w-full"
+      slideCount={slides.length}
     >
-      <Carousel.Slides slides={slides} imageAs={NextImage} />
+      <Carousel.Slides imageAs={NextImage} slides={slides} />
       <Carousel.Control>
         <Carousel.Indicators />
       </Carousel.Control>

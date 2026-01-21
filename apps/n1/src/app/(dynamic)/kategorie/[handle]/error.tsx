@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { Button } from '@techsio/ui-kit/atoms/button'
+import { Button } from "@techsio/ui-kit/atoms/button"
 
 type ErrorProps = {
   error: Error & { digest?: string }

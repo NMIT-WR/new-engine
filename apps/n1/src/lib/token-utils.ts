@@ -1,15 +1,19 @@
-interface JWTPayload {
+type JWTPayload = {
   exp?: number
   [key: string]: unknown
 }
 
 function parseJWT(token: string): JWTPayload | null {
   try {
-    const parts = token.split('.')
+    const parts = token.split(".")
     if (parts.length !== 3) {
       return null
     }
-    const payload = JSON.parse(atob(parts[1])) as JWTPayload
+    const payloadSegment = parts[1]
+    if (!payloadSegment) {
+      return null
+    }
+    const payload = JSON.parse(atob(payloadSegment)) as JWTPayload
     return payload
   } catch {
     return null
@@ -17,8 +21,10 @@ function parseJWT(token: string): JWTPayload | null {
 }
 
 export function getTokenFromStorage(): string | null {
-  if (typeof window === 'undefined') return null
-  return localStorage.getItem('medusa_auth_token')
+  if (typeof window === "undefined") {
+    return null
+  }
+  return localStorage.getItem("medusa_auth_token")
 }
 
 export function isTokenExpired(token: string): boolean {
@@ -34,6 +40,8 @@ export function isTokenExpired(token: string): boolean {
 }
 
 export function clearToken(): void {
-  if (typeof window === 'undefined') return
-  localStorage.removeItem('medusa_auth_token')
+  if (typeof window === "undefined") {
+    return
+  }
+  localStorage.removeItem("medusa_auth_token")
 }

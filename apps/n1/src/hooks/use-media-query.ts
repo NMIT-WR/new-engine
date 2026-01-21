@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
 const breakpoints = {
-  sm: '(min-width: 640px)',
-  md: '(min-width: 768px)',
-  lg: '(min-width: 1024px)',
-  xl: '(min-width: 1280px)',
-  header: '(min-width: 896px)',
-  '2xl': '(min-width: 1536px)',
+  sm: "(min-width: 640px)",
+  md: "(min-width: 768px)",
+  lg: "(min-width: 1024px)",
+  xl: "(min-width: 1280px)",
+  header: "(min-width: 896px)",
+  "2xl": "(min-width: 1536px)",
 } as const
 
 export type Breakpoint = keyof typeof breakpoints
@@ -18,7 +18,9 @@ export function useMediaQuery(query: Breakpoint | string): boolean {
 
   const [matches, setMatches] = useState(() => {
     // SSR safe - return false on server
-    if (typeof window === 'undefined') return false
+    if (typeof window === "undefined") {
+      return false
+    }
     return window.matchMedia(mediaQuery).matches
   })
 
@@ -32,8 +34,8 @@ export function useMediaQuery(query: Breakpoint | string): boolean {
       setMatches(e.matches)
     }
 
-    mql.addEventListener('change', handleChange)
-    return () => mql.removeEventListener('change', handleChange)
+    mql.addEventListener("change", handleChange)
+    return () => mql.removeEventListener("change", handleChange)
   }, [mediaQuery])
 
   return matches

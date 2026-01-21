@@ -129,7 +129,9 @@
   --color-fg-light: var(--color-black); /* #000000 for headings */
   --color-fg-dark: var(--color-white); /* White for dark backgrounds */
   --color-fg-primary: var(--color-black); /* Main text - VERIFIED */
-  --color-fg-secondary: var(--color-gray-700); /* #444444 body text - VERIFIED */
+  --color-fg-secondary: var(
+    --color-gray-700
+  ); /* #444444 body text - VERIFIED */
   --color-fg-reverse: var(--color-white);
 
   /* Background colors */
@@ -169,7 +171,9 @@
   --color-disabled-fill: var(--color-gray-200);
 
   /* Focus ring */
-  --color-ring-primary: var(--color-yellow-400); /* Yellow focus ring for N1 brand */
+  --color-ring-primary: var(
+    --color-yellow-400
+  ); /* Yellow focus ring for N1 brand */
 
   /* ============================================
      TYPOGRAPHY TOKENS

@@ -92,11 +92,16 @@
     var(--color-gray-300),
     var(--color-gray-700)
   );
-  --color-disabled-fill: light-dark(var(--color-gray-50), var(--color-gray-850));
+  --color-disabled-fill: light-dark(
+    var(--color-gray-50),
+    var(--color-gray-850)
+  );
 
   /* Colors */
   /* User interface main tone and interactive colors, usually used for main operation button, etc */
-  --color-primary: oklch(0.4495 0 0); /* should be this rgb(255, 231, 16)? or this oklch(0.4495 0 0)? */
+  --color-primary: oklch(
+    0.4495 0 0
+  ); /* should be this rgb(255, 231, 16)? or this oklch(0.4495 0 0)? */
   --color-primary-hover: oklch(
     from var(--color-primary) calc(l + var(--state-hover)) c h
   );
@@ -107,7 +112,11 @@
   --color-primary-disabled: var(--color-disabled-bg);
 
   /*Secondary colors. Less important than primary colors, but still serve as accents.*/
-  --color-secondary: rgb(255, 231, 16); /* should be this rgb(255, 231, 16)? or this oklch(0.4495 0 0)? */
+  --color-secondary: rgb(
+    255,
+    231,
+    16
+  ); /* should be this rgb(255, 231, 16)? or this oklch(0.4495 0 0)? */
   --color-secondary-hover: oklch(
     from var(--color-secondary) calc(l + var(--state-hover)) c h
   );

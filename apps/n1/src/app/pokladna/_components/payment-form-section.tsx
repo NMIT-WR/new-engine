@@ -1,10 +1,10 @@
 "use client"
 
+import { Checkbox } from "@techsio/ui-kit/atoms/checkbox"
+import { useState } from "react"
 import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
 import { useSuspenseRegion } from "@/hooks/use-region"
 import type { Cart } from "@/services/cart-service"
-import { Checkbox } from "@techsio/ui-kit/atoms/checkbox"
-import { useState } from "react"
 
 type PaymentFormSectionProps = {
   cart: Cart
@@ -42,33 +42,38 @@ export function PaymentFormSection({ cart }: PaymentFormSectionProps) {
             </p>
           </div>
           <ul className="space-y-300">
-            {paymentProviders.map((provider) => (
-              <li key={provider.id}>
-                <label
-                  className="flex w-full cursor-pointer items-center gap-300 rounded border border-border-secondary bg-surface-light p-300 hover:bg-overlay data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
-                  data-selected={provider.id === selectedProvider}
-                >
-                  <Checkbox
-                    checked={selectedProvider === provider.id}
-                    disabled={isInitiatingPayment}
-                    name="payment-provider"
-                    onChange={() => handleProviderSelect(provider.id)}
-                  />
-                  <span className="flex flex-1 flex-col">
-                    <span className="font-medium text-fg-primary text-sm">
-                      {provider.id === CASH_ON_DELIVERY_PROVIDER
-                        ? "Při převzetí"
-                        : provider.id}
+            {paymentProviders.map((provider) => {
+              const providerInputId = `payment-provider-${provider.id}`
+              return (
+                <li key={provider.id}>
+                  <label
+                    className="flex w-full cursor-pointer items-center gap-300 rounded border border-border-secondary bg-surface-light p-300 hover:bg-overlay data-[selected=true]:border-border-primary/30 data-[selected=true]:bg-overlay-light"
+                    data-selected={provider.id === selectedProvider}
+                    htmlFor={providerInputId}
+                  >
+                    <Checkbox
+                      checked={selectedProvider === provider.id}
+                      disabled={isInitiatingPayment}
+                      id={providerInputId}
+                      name="payment-provider"
+                      onChange={() => handleProviderSelect(provider.id)}
+                    />
+                    <span className="flex flex-1 flex-col">
+                      <span className="font-medium text-fg-primary text-sm">
+                        {provider.id === CASH_ON_DELIVERY_PROVIDER
+                          ? "Při převzetí"
+                          : provider.id}
+                      </span>
+                      <span className="text-fg-secondary text-xs">
+                        {provider.id === CASH_ON_DELIVERY_PROVIDER
+                          ? "Zaplatíte při doručení objednávky"
+                          : "Online platba"}
+                      </span>
                     </span>
-                    <span className="text-fg-secondary text-xs">
-                      {provider.id === CASH_ON_DELIVERY_PROVIDER
-                        ? "Zaplatíte při doručení objednávky"
-                        : "Online platba"}
-                    </span>
-                  </span>
-                </label>
-              </li>
-            ))}
+                  </label>
+                </li>
+              )
+            })}
           </ul>
 
           {!canInitiatePayment && (

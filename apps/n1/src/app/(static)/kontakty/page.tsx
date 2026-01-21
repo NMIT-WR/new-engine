@@ -1,5 +1,5 @@
-import { Heading } from '@/components/heading'
-import { Button } from '@techsio/ui-kit/atoms/button'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Heading } from "@/components/heading"
 
 export default function KontaktyPage() {
   return (
@@ -10,7 +10,7 @@ export default function KontaktyPage() {
         <section className="space-y-600">
           <span>
             <span>email: </span>
-            <a href="mailto:eshop@ndistribution.cz" className="underline">
+            <a className="underline" href="mailto:eshop@ndistribution.cz">
               eshop@ndistribution.cz
             </a>
           </span>
@@ -29,7 +29,7 @@ export default function KontaktyPage() {
             <div className="space-y-200">
               <p>
                 <span className="font-medium">Telefon: </span>
-                <a href="tel:+420244402795" className="hover:underline">
+                <a className="hover:underline" href="tel:+420244402795">
                   +420 244 402 795
                 </a>
               </p>
@@ -39,8 +39,8 @@ export default function KontaktyPage() {
               <p>
                 <span className="font-medium">E-shop: </span>
                 <a
-                  href="mailto:eshop@ndistribution.cz"
                   className="hover:underline"
+                  href="mailto:eshop@ndistribution.cz"
                 >
                   eshop@ndistribution.cz
                 </a>
@@ -48,8 +48,8 @@ export default function KontaktyPage() {
               <p>
                 <span className="font-medium">Reklamace: </span>
                 <a
-                  href="mailto:reklamace@ndistribution.cz"
                   className="hover:underline"
+                  href="mailto:reklamace@ndistribution.cz"
                 >
                   reklamace@ndistribution.cz
                 </a>
@@ -57,8 +57,8 @@ export default function KontaktyPage() {
               <p>
                 <span className="font-medium">Kancelář: </span>
                 <a
-                  href="mailto:office@ndistribution.cz"
                   className="hover:underline"
+                  href="mailto:office@ndistribution.cz"
                 >
                   office@ndistribution.cz
                 </a>
@@ -79,51 +79,51 @@ export default function KontaktyPage() {
 
         <form className="grid grid-cols-2 gap-400">
           <div className="space-y-200">
-            <label htmlFor="name" className="block font-medium text-2xs">
+            <label className="block font-medium text-2xs" htmlFor="name">
               Jméno a příjmení
             </label>
             <input
-              type="text"
+              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
               id="name"
               name="name"
               required
-              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
+              type="text"
             />
 
-            <label htmlFor="phone" className="block font-medium text-2xs">
+            <label className="block font-medium text-2xs" htmlFor="phone">
               Telefon
             </label>
             <input
-              type="tel"
+              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
               id="phone"
               name="phone"
-              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
+              type="tel"
             />
 
-            <label htmlFor="email" className="block font-medium text-2xs">
+            <label className="block font-medium text-2xs" htmlFor="email">
               E-mail
             </label>
             <input
-              type="email"
+              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
               id="email"
               name="email"
               required
-              className="w-full rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
+              type="email"
             />
           </div>
 
           <div className="space-y-200">
-            <label htmlFor="message" className="block font-medium text-2xs">
+            <label className="block font-medium text-2xs" htmlFor="message">
               Zpráva
             </label>
             <textarea
+              className="w-full resize-none rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
               id="message"
               name="message"
               required
               rows={5}
-              className="w-full resize-none rounded-lg border px-400 py-300 focus:border-primary focus:outline-none"
             />
-            <Button type="submit" className="w-full">
+            <Button className="w-full" type="submit">
               Odeslat
             </Button>
           </div>

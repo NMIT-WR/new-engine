@@ -1,15 +1,15 @@
-import { Button } from '@techsio/ui-kit/atoms/button'
-import { Dialog } from '@techsio/ui-kit/molecules/dialog'
-import type { ReactNode } from 'react'
+import { Button } from "@techsio/ui-kit/atoms/button"
+import { Dialog } from "@techsio/ui-kit/molecules/dialog"
+import type { ReactNode } from "react"
 
-export interface ConfirmDialogProps {
+export type ConfirmDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   title: string
   description?: ReactNode
   confirmText?: string
   cancelText?: string
-  confirmVariant?: 'primary' | 'danger' | 'secondary'
+  confirmVariant?: "primary" | "danger" | "secondary"
   isLoading?: boolean
   loadingText?: string
   onConfirm: () => void
@@ -21,9 +21,9 @@ export function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmText = 'Potvrdit',
-  cancelText = 'Zrušit',
-  confirmVariant = 'danger',
+  confirmText = "Potvrdit",
+  cancelText = "Zrušit",
+  confirmVariant = "danger",
   isLoading = false,
   loadingText,
   onConfirm,
@@ -40,37 +40,37 @@ export function ConfirmDialog({
 
   return (
     <Dialog
-      open={open}
-      onOpenChange={({ open }) => onOpenChange(open)}
-      role="alertdialog"
-      title={title}
-      description={description}
-      customTrigger
-      size="sm"
-      placement="center"
-      closeOnInteractOutside={!isLoading}
-      closeOnEscape={!isLoading}
-      className="shadow-none"
       actions={
         <>
           <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleCancel}
             disabled={isLoading}
+            onClick={handleCancel}
+            size="sm"
+            variant="secondary"
           >
             {cancelText}
           </Button>
           <Button
-            variant={confirmVariant}
-            size="sm"
-            onClick={handleConfirm}
             disabled={isLoading}
+            onClick={handleConfirm}
+            size="sm"
+            variant={confirmVariant}
           >
             {isLoading ? loadingText || confirmText : confirmText}
           </Button>
         </>
       }
+      className="shadow-none"
+      closeOnEscape={!isLoading}
+      closeOnInteractOutside={!isLoading}
+      customTrigger
+      description={description}
+      onOpenChange={({ open: nextOpen }) => onOpenChange(nextOpen)}
+      open={open}
+      placement="center"
+      role="alertdialog"
+      size="sm"
+      title={title}
     />
   )
 }

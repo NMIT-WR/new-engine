@@ -1,43 +1,40 @@
-import { formatAmount } from '@/utils/format/format-product'
-import { truncateText } from '@/utils/truncate-text'
-import type { StoreOrderLineItem } from '@medusajs/types'
-import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { Icon } from '@techsio/ui-kit/atoms/icon'
-import { ProductCard } from '@techsio/ui-kit/molecules/product-card'
-import Image from 'next/image'
-import Link from 'next/link'
+import type { StoreOrderLineItem } from "@medusajs/types"
+import { Badge } from "@techsio/ui-kit/atoms/badge"
+import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { ProductCard } from "@techsio/ui-kit/molecules/product-card"
+import Image from "next/image"
+import Link from "next/link"
+import { formatAmount } from "@/utils/format/format-product"
+import { truncateText } from "@/utils/truncate-text"
 
-export const ItemCard = ({
-  item,
-  currency_code,
-}: { item: StoreOrderLineItem; currency_code: string }) => {
+export const ItemCard = ({ item }: { item: StoreOrderLineItem }) => {
   return (
     <ProductCard
-      key={item.id}
       className="group overflow-hidden border border-border-secondary px-0 py-0 transition-shadow hover:shadow-md"
+      key={item.id}
     >
       {/* Product Image with Quantity Badge */}
       <div className="relative">
         {item.thumbnail ? (
           <ProductCard.Image
+            alt={item.product_title || item.title || ""}
             as={Image}
-            src={item.thumbnail}
-            alt={item.product_title || item.title || ''}
-            width={300}
-            height={300}
             className="aspect-square w-full object-cover"
+            height={300}
+            src={item.thumbnail}
+            width={300}
           />
         ) : (
           <div className="flex aspect-square w-full items-center justify-center bg-surface">
             <Icon
-              icon="token-icon-package"
               className="size-600 text-fg-tertiary"
+              icon="token-icon-package"
             />
           </div>
         )}
         {/* Quantity badge */}
         <ProductCard.Badges className="absolute top-1 right-1">
-          <Badge variant="secondary" className="h-8 w-8 rounded-full">
+          <Badge className="h-8 w-8 rounded-full" variant="secondary">
             {`${item.quantity}x`}
           </Badge>
         </ProductCard.Badges>
@@ -46,16 +43,16 @@ export const ItemCard = ({
       {/* Product Name as Link */}
       <div className="flex flex-col bg-surface-light p-200">
         <Link
-          href={`/produkty/${item.product_handle}?variant=${item.subtitle?.trim()}`}
           className="block underline transition-colors hover:text-primary hover:no-underline"
+          href={`/produkty/${item.product_handle}?variant=${item.subtitle?.trim()}`}
         >
           <ProductCard.Name>
-            {truncateText(item.product_title || item.title || '')}
+            {truncateText(item.product_title || item.title || "")}
           </ProductCard.Name>
         </Link>
 
         {/* Variant */}
-        {item.variant_title && item.variant_title !== 'Default' && (
+        {item.variant_title && item.variant_title !== "Default" && (
           <p className="text-fg-secondary text-sm">
             Varianta: {item.variant_title}
           </p>

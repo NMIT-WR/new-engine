@@ -62,8 +62,11 @@ export function useCart(): UseCartReturn {
     queryKey: queryKeys.cart.active(),
     queryFn: getCart,
     enabled: true, // Always enabled for guest and authenticated users
-    retry: (failureCount, error) => {
-      if (error instanceof Error && error.message?.includes("not found")) {
+    retry: (failureCount, retryError) => {
+      if (
+        retryError instanceof Error &&
+        retryError.message?.includes("not found")
+      ) {
         return false
       }
       // Retry network errors up to 3 times
@@ -156,7 +159,7 @@ export function useAddToCart(options?: UseAddToCartOptions) {
 
       return addToCart(cart.id, variantId, quantity, metadata)
     },
-    onMutate: async ({ quantity = 1 }) => {
+    onMutate: async () => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.cart.active() })
 
@@ -176,7 +179,7 @@ export function useAddToCart(options?: UseAddToCartOptions) {
 
       return { previousCart }
     },
-    onSuccess: (cart, variables) => {
+    onSuccess: (cart, _variables) => {
       // Update with real cart from server
       queryClient.setQueryData(queryKeys.cart.active(), cart)
 
@@ -186,7 +189,7 @@ export function useAddToCart(options?: UseAddToCartOptions) {
 
       options?.onSuccess?.(cart)
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
       // Rollback on error
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
@@ -252,7 +255,7 @@ export function useUpdateLineItem() {
         console.log("[useUpdateLineItem] Quantity updated successfully")
       }
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }
@@ -306,7 +309,7 @@ export function useRemoveLineItem() {
         console.log("[useRemoveLineItem] Item removed successfully")
       }
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
       if (context?.previousCart) {
         queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
       }

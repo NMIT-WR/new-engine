@@ -1,7 +1,7 @@
 "use client"
 
-import { HeurekaOrder } from "@techsio/analytics/heureka"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { HeurekaOrder } from "@techsio/analytics/heureka"
 import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useRef } from "react"
 import { CheckoutReview } from "@/app/pokladna/_components/checkout-review"
@@ -38,7 +38,9 @@ export default function OrderPage() {
   // Unified analytics - Purchase tracking (sends to Meta, Google, Leadhub)
   // Only on new purchases with success=true
   useEffect(() => {
-    if (!(showSuccessBanner && order) || purchaseTracked.current) return
+    if (!(showSuccessBanner && order) || purchaseTracked.current) {
+      return
+    }
 
     purchaseTracked.current = true
 
@@ -68,6 +70,9 @@ export default function OrderPage() {
       {showSuccessBanner && order && (
         <HeurekaOrder
           apiKey={process.env.NEXT_PUBLIC_HEUREKA_API_KEY ?? ""}
+          country="cz"
+          currency={(order.currency_code ?? "CZK").toUpperCase()}
+          debug
           orderId={order.id}
           products={
             order.items?.map((item) => ({
@@ -78,9 +83,6 @@ export default function OrderPage() {
             })) ?? []
           }
           totalWithVat={order.total ?? 0}
-          currency={(order.currency_code ?? "CZK").toUpperCase()}
-          country="cz"
-          debug
         />
       )}
 

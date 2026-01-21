@@ -1,8 +1,6 @@
-'use client'
+"use client"
 
-import { toaster } from '@techsio/ui-kit/molecules/toast'
-
-export { useToast } from '@techsio/ui-kit/molecules/toast'
+import { toaster } from "@techsio/ui-kit/molecules/toast"
 
 const DEFAULT_DURATIONS = {
   success: 3000,
@@ -14,165 +12,165 @@ const DEFAULT_DURATIONS = {
 // Cart-specific toast messages
 const cartToasts = {
   addSuccess: (productName: string, quantity = 1) => ({
-    title: 'Přidáno do košíku',
+    title: "Přidáno do košíku",
     description: `${quantity}x ${productName}`,
-    type: 'success' as const,
+    type: "success" as const,
   }),
 
   removeSuccess: (productName: string) => ({
-    title: 'Odebráno z košíku',
+    title: "Odebráno z košíku",
     description: productName,
-    type: 'info' as const,
+    type: "info" as const,
   }),
 
   updateSuccess: () => ({
-    title: 'Košík aktualizován',
-    type: 'success' as const,
+    title: "Košík aktualizován",
+    type: "success" as const,
   }),
 
   createError: () => ({
-    title: 'Chyba při vytváření košíku',
-    description: 'Zkuste to prosím znovu',
-    type: 'error' as const,
+    title: "Chyba při vytváření košíku",
+    description: "Zkuste to prosím znovu",
+    type: "error" as const,
   }),
 
   addError: (error?: string) => ({
-    title: 'Nepodařilo se přidat do košíku',
-    description: error || 'Zkuste to prosím znovu',
-    type: 'error' as const,
+    title: "Nepodařilo se přidat do košíku",
+    description: error || "Zkuste to prosím znovu",
+    type: "error" as const,
   }),
 
   stockError: () => ({
-    title: 'Nedostatečné množství',
-    description: 'Produkt není dostupný v požadovaném množství',
-    type: 'error' as const,
+    title: "Nedostatečné množství",
+    description: "Produkt není dostupný v požadovaném množství",
+    type: "error" as const,
   }),
 
   stockErrorWithDetails: (available: number, requested: number) => ({
-    title: 'Nedostatečné množství',
+    title: "Nedostatečné množství",
     description: `Na skladě je pouze ${available} ks, požadováno celkem ${requested} ks`,
-    type: 'error' as const,
+    type: "error" as const,
   }),
 
   networkError: () => ({
-    title: 'Chyba připojení',
-    description: 'Zkontrolujte internetové připojení',
-    type: 'error' as const,
+    title: "Chyba připojení",
+    description: "Zkontrolujte internetové připojení",
+    type: "error" as const,
   }),
 
   mergeSuccess: (itemCount: number) => ({
-    title: 'Košík sloučen',
+    title: "Košík sloučen",
     description: `${itemCount} položek přidáno do vašeho košíku`,
-    type: 'success' as const,
+    type: "success" as const,
   }),
 
   // Shipping-specific messages
   shippingError: () => ({
-    title: 'Chyba při nastavení dopravy',
+    title: "Chyba při nastavení dopravy",
     description:
-      'Nepodařilo se nastavit způsob dopravy. Zkuste to prosím znovu.',
-    type: 'error' as const,
+      "Nepodařilo se nastavit způsob dopravy. Zkuste to prosím znovu.",
+    type: "error" as const,
   }),
 
   // Shipping address messages
   shippingAddressSuccess: () => ({
-    title: 'Adresa uložena',
-    description: 'Dodací adresa byla aktualizována',
-    type: 'success' as const,
+    title: "Adresa uložena",
+    description: "Dodací adresa byla aktualizována",
+    type: "success" as const,
   }),
 
   shippingAddressError: () => ({
-    title: 'Chyba při ukládání adresy',
-    description: 'Nepodařilo se aktualizovat dodací adresu',
-    type: 'error' as const,
+    title: "Chyba při ukládání adresy",
+    description: "Nepodařilo se aktualizovat dodací adresu",
+    type: "error" as const,
   }),
 
   shippingAddressValidation: (fields: string[]) => ({
-    title: 'Zkontrolujte adresu',
-    description: `Neplatné pole: ${fields.join(', ')}`,
-    type: 'warning' as const,
+    title: "Zkontrolujte adresu",
+    description: `Neplatné pole: ${fields.join(", ")}`,
+    type: "warning" as const,
   }),
 
   // Payment-specific messages
   paymentInitiatedSuccess: () => ({
-    title: 'Platba iniciována',
-    description: 'Platební session byla úspěšně vytvořena',
-    type: 'success' as const,
+    title: "Platba iniciována",
+    description: "Platební session byla úspěšně vytvořena",
+    type: "success" as const,
   }),
 
   paymentInitiatedError: () => ({
-    title: 'Chyba při inicializaci platby',
-    description: 'Nepodařilo se vytvořit platební session',
-    type: 'error' as const,
+    title: "Chyba při inicializaci platby",
+    description: "Nepodařilo se vytvořit platební session",
+    type: "error" as const,
   }),
 
   paymentValidation: (issues: string[]) => ({
-    title: 'Nelze iniciovat platbu',
-    description: issues.join(', '),
-    type: 'warning' as const,
+    title: "Nelze iniciovat platbu",
+    description: issues.join(", "),
+    type: "warning" as const,
   }),
 }
 
 // Auth-specific toast messages
 const authToasts = {
   loginSuccess: () => ({
-    title: 'Přihlášení úspěšné',
-    description: 'Vítejte zpět!',
-    type: 'success' as const,
+    title: "Přihlášení úspěšné",
+    description: "Vítejte zpět!",
+    type: "success" as const,
   }),
 
   loginError: (error?: string) => ({
-    title: 'Přihlášení se nezdařilo',
-    description: error || 'Zkontrolujte e-mail a heslo',
-    type: 'error' as const,
+    title: "Přihlášení se nezdařilo",
+    description: error || "Zkontrolujte e-mail a heslo",
+    type: "error" as const,
   }),
 
   registerSuccess: () => ({
-    title: 'Registrace úspěšná',
-    description: 'Váš účet byl vytvořen',
-    type: 'success' as const,
+    title: "Registrace úspěšná",
+    description: "Váš účet byl vytvořen",
+    type: "success" as const,
   }),
 
   registerError: (error?: string) => ({
-    title: 'Registrace se nezdařila',
-    description: error || 'Zkuste to prosím znovu',
-    type: 'error' as const,
+    title: "Registrace se nezdařila",
+    description: error || "Zkuste to prosím znovu",
+    type: "error" as const,
   }),
 
   logoutSuccess: () => ({
-    title: 'Odhlášení',
-    description: 'Byli jste odhlášeni',
-    type: 'info' as const,
+    title: "Odhlášení",
+    description: "Byli jste odhlášeni",
+    type: "info" as const,
   }),
 
   logoutError: () => ({
-    title: 'Odhlášení se nezdařilo',
-    description: 'Zkuste to prosím znovu',
-    type: 'error' as const,
+    title: "Odhlášení se nezdařilo",
+    description: "Zkuste to prosím znovu",
+    type: "error" as const,
   }),
 
   sessionExpired: () => ({
-    title: 'Relace vypršela',
-    description: 'Přihlaste se prosím znovu',
-    type: 'warning' as const,
+    title: "Relace vypršela",
+    description: "Přihlaste se prosím znovu",
+    type: "warning" as const,
   }),
 
   passwordResetSent: (email: string) => ({
-    title: 'E-mail odeslán',
+    title: "E-mail odeslán",
     description: `Odkaz pro reset hesla byl odeslán na ${email}`,
-    type: 'success' as const,
+    type: "success" as const,
   }),
 
   passwordResetError: () => ({
-    title: 'Nepodařilo se odeslat e-mail',
-    description: 'Zkontrolujte e-mailovou adresu',
-    type: 'error' as const,
+    title: "Nepodařilo se odeslat e-mail",
+    description: "Zkontrolujte e-mailovou adresu",
+    type: "error" as const,
   }),
 
   passwordChanged: () => ({
-    title: 'Heslo změněno',
-    description: 'Vaše heslo bylo úspěšně změněno',
-    type: 'success' as const,
+    title: "Heslo změněno",
+    description: "Vaše heslo bylo úspěšně změněno",
+    type: "success" as const,
   }),
 }
 

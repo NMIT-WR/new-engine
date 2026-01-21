@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { CATEGORY_MAP } from '@/lib/constants'
-import { prefetchLogger } from '@/lib/loggers'
-import { useEffect, useRef } from 'react'
-import { usePrefetchProducts } from './use-prefetch-products'
-import { useRegion } from './use-region'
+import { useEffect, useRef } from "react"
+import { CATEGORY_MAP } from "@/lib/constants"
+import { prefetchLogger } from "@/lib/loggers/prefetch"
+import { usePrefetchProducts } from "./use-prefetch-products"
+import { useRegion } from "./use-region"
 
-interface UsePrefetchRootCategoriesParams {
+type UsePrefetchRootCategoriesParams = {
   enabled?: boolean
   currentHandle: string
   delay?: number
@@ -22,13 +22,15 @@ export function usePrefetchRootCategories({
   const hasPrefetched = useRef(false)
 
   useEffect(() => {
-    if (!enabled || !regionId || hasPrefetched.current) return
+    if (!(enabled && regionId) || hasPrefetched.current) {
+      return
+    }
 
     hasPrefetched.current = true
 
     const timer = setTimeout(() => {
       prefetchLogger.info(
-        'Root',
+        "Root",
         `Prefetching other root from /kategorie/${currentHandle}`
       )
 

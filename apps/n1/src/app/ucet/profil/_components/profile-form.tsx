@@ -1,13 +1,12 @@
 "use client"
 
 import { useForm } from "@tanstack/react-form"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { Button } from "@ui/atoms/button"
-import { Input } from "@ui/atoms/input"
-import { Label } from "@ui/atoms/label"
+import { FormInput } from "@ui/molecules/form-input"
 import { TextField } from "@/components/forms/fields/text-field"
 import { useAuth } from "@/hooks/use-auth"
 import { useUpdateCustomer } from "@/hooks/use-customer"
-import { useToast } from "@/hooks/use-toast"
 import { profileValidators } from "@/lib/form-validators"
 import {
   cleanPhoneNumber,
@@ -103,14 +102,13 @@ export function ProfileForm() {
         )}
       </form.Field>
 
-      <div className="space-y-50">
-        <Label className="font-medium">E-mail (nelze změnit)</Label>
-        <Input
-          className="bg-surface-light"
-          disabled
-          value={customer?.email || ""}
-        />
-      </div>
+      <FormInput
+        disabled={updateCustomer.isPending}
+        id="email"
+        label="E-mail (nelze změnit)"
+        readOnly
+        value={customer?.email || ""}
+      />
 
       <Button
         className="w-full md:w-auto"

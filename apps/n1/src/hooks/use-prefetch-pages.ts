@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { cacheConfig } from '@/lib/cache-config'
-import { prefetchLogger } from '@/lib/loggers'
-import { buildProductQueryParams } from '@/lib/product-query-params'
-import { queryKeys } from '@/lib/query-keys'
-import { getProducts } from '@/services/product-service'
-import { useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { cacheConfig } from "@/lib/cache-config"
+import { prefetchLogger } from "@/lib/loggers/prefetch"
+import { buildProductQueryParams } from "@/lib/product-query-params"
+import { queryKeys } from "@/lib/query-keys"
+import { getProducts } from "@/services/product-service"
 
-interface UsePrefetchPagesParams {
+type UsePrefetchPagesParams = {
   enabled?: boolean
   currentPage: number
   hasNextPage: boolean
@@ -36,21 +36,26 @@ export function usePrefetchPages({
 }: UsePrefetchPagesParams) {
   const queryClient = useQueryClient()
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: prefetch scheduling has multiple priority branches
   useEffect(() => {
-    if (!enabled || !regionId) return
+    if (!(enabled && regionId)) {
+      return
+    }
 
-    const categoryName = category_id[0]?.slice(-6) || 'unknown'
+    const categoryName = category_id[0]?.slice(-6) || "unknown"
     const timers: NodeJS.Timeout[] = []
 
     // Helper: Prefetch batch of pages with logging
     const prefetchBatch = (pages: number[], priority: string) => {
-      if (pages.length === 0) return
+      if (pages.length === 0) {
+        return
+      }
 
-      const pageLabels = pages.map((p) => `p${p}`).join(', ')
+      const pageLabels = pages.map((p) => `p${p}`).join(", ")
       const start = performance.now()
 
       prefetchLogger.start(
-        'Pages',
+        "Pages",
         `${categoryName}: ${pageLabels} (${priority})`
       )
 
@@ -73,7 +78,7 @@ export function usePrefetchPages({
       ).then(() => {
         const duration = performance.now() - start
         prefetchLogger.complete(
-          'Pages',
+          "Pages",
           `${categoryName}: ${pageLabels} (${priority})`,
           duration
         )
@@ -99,13 +104,13 @@ export function usePrefetchPages({
 
     // Execute with priority delays
     // HIGH: Immediate (0ms)
-    prefetchBatch(high, 'high')
+    prefetchBatch(high, "high")
 
     // MEDIUM: 200ms delay
     if (medium.length > 0) {
       timers.push(
         setTimeout(() => {
-          prefetchBatch(medium, 'medium')
+          prefetchBatch(medium, "medium")
         }, MEDIUM_PRIORITY_DELAY)
       )
     }
@@ -114,7 +119,7 @@ export function usePrefetchPages({
     if (low.length > 0) {
       timers.push(
         setTimeout(() => {
-          prefetchBatch(low, 'low')
+          prefetchBatch(low, "low")
         }, LOW_PRIORITY_DELAY)
       )
     }

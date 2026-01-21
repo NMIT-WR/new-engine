@@ -4,6 +4,10 @@ import { DEFAULT_COUNTRY_CODE } from "@/lib/constants"
 import type { ShippingMethodData } from "@/services/cart-service"
 import type { StoreCustomerAddress } from "@/services/customer-service"
 import type { AddressFormData } from "./address-validation"
+import { formatPhoneNumber } from "./format/format-phone-number"
+import { formatPostalCode } from "./format/format-postal-code"
+
+export type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
 
 export const DEFAULT_ADDRESS: AddressFormData = {
   first_name: "",
@@ -32,7 +36,7 @@ function addressToFormData(
     }
   }
 
-  // Convert address to form data
+  // Convert address to form data (format phone/postal for display and validation)
   return {
     first_name: address.first_name || "",
     last_name: address.last_name || "",
@@ -41,9 +45,9 @@ function addressToFormData(
     address_2: address.address_2 || "",
     city: address.city || "",
     province: address.province || "",
-    postal_code: address.postal_code || "",
+    postal_code: formatPostalCode(address.postal_code || ""),
     country_code: address.country_code || DEFAULT_COUNTRY_CODE,
-    phone: address.phone || "",
+    phone: formatPhoneNumber(address.phone || ""),
   }
 }
 
@@ -59,11 +63,9 @@ export function getDefaultAddress(
   if (!addresses || addresses.length === 0) {
     return null
   }
-  return addresses[0]
+  const [first] = addresses
+  return first ?? null
 }
-
-/** Re-export PplAccessPointData for convenience */
-export type { PplAccessPointData }
 
 /** Check if shipping option requires PPL Parcel access point selection */
 export function isPPLParcelOption(optionName: string): boolean {

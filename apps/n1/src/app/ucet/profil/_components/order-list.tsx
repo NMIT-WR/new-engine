@@ -1,17 +1,14 @@
-'use client'
-import {
-  DesktopOrderCard,
-  MobileOrderCard,
-  OrdersEmpty,
-  OrdersError,
-  OrdersSkeleton,
-  OrdersSummary,
-  OrdersTableHeader,
-} from '@/app/ucet/profil/_components/orders'
-import { ErrorBoundary } from '@/components/error-boundary'
-import { useSuspenseOrders } from '@/hooks/use-orders'
-import { Pagination } from '@techsio/ui-kit/molecules/pagination'
-import { Suspense, useState } from 'react'
+"use client"
+import { Pagination } from "@techsio/ui-kit/molecules/pagination"
+import { Suspense, useState } from "react"
+import { ErrorBoundary } from "@/components/error-boundary"
+import { useSuspenseOrders } from "@/hooks/use-orders"
+import { DesktopOrderCard } from "./orders/desktop-order-card"
+import { MobileOrderCard } from "./orders/mobile-order-card"
+import { OrdersEmpty } from "./orders/orders-empty"
+import { OrdersError } from "./orders/orders-error"
+import { OrdersSkeleton } from "./orders/orders-skeleton"
+import { OrdersSummary } from "./orders/orders-summary"
 
 const MIN_ORDERS_COUNT = 5
 const PAGE_SIZE = 5
@@ -19,9 +16,7 @@ const PAGE_SIZE = 5
 export function OrderList() {
   return (
     <ErrorBoundary fallback={<OrdersError />}>
-      <Suspense
-        fallback={<OrdersSkeleton itemsCount={MIN_ORDERS_COUNT} />}
-      >
+      <Suspense fallback={<OrdersSkeleton itemsCount={MIN_ORDERS_COUNT} />}>
         <OrderListContent />
       </Suspense>
     </ErrorBoundary>
@@ -41,10 +36,10 @@ function OrderListContent() {
     0
   )
   const completedOrders = orders.filter(
-    (order) => order.status === 'completed'
+    (order) => order.status === "completed"
   ).length
   const pendingOrders = orders.filter(
-    (order) => order.status === 'pending'
+    (order) => order.status === "pending"
   ).length
 
   // Pagination
@@ -55,10 +50,10 @@ function OrderListContent() {
     <div className="space-y-400">
       {/* Summary section */}
       <OrdersSummary
-        totalAmount={totalAmount}
         completedOrders={completedOrders}
-        pendingOrders={pendingOrders}
         numberOfOrders={orders.length}
+        pendingOrders={pendingOrders}
+        totalAmount={totalAmount}
       />
 
       {/* Content */}
@@ -75,7 +70,13 @@ function OrderListContent() {
 
           {/* Desktop view */}
           <div className="hidden overflow-hidden rounded border border-border-secondary bg-base sm:block">
-            <OrdersTableHeader />
+            <div className="grid grid-cols-12 gap-300 border-border-secondary border-b bg-surface p-300 font-medium text-fg-secondary text-sm uppercase tracking-wider">
+              <div className="col-span-2">Číslo</div>
+              <div className="col-span-2">Datum</div>
+              <div className="col-span-4">Položky</div>
+              <div className="col-span-2 text-right">Celkem</div>
+              <div className="col-span-2 text-right">Akce</div>
+            </div>
             {paginatedOrders.map((order) => (
               <DesktopOrderCard key={order.id} order={order} />
             ))}
@@ -85,9 +86,9 @@ function OrderListContent() {
           {orders.length > PAGE_SIZE && (
             <Pagination
               count={orders.length}
-              pageSize={PAGE_SIZE}
-              page={page}
               onPageChange={setPage}
+              page={page}
+              pageSize={PAGE_SIZE}
               size="sm"
             />
           )}

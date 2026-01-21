@@ -1,10 +1,10 @@
-import { cacheConfig } from '@/lib/cache-config'
-import { queryKeys } from '@/lib/query-keys'
-import { getOrderById, getOrders } from '@/services/order-service'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { useSuspenseAuth } from './use-auth'
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { cacheConfig } from "@/lib/cache-config"
+import { queryKeys } from "@/lib/query-keys"
+import { getOrderById, getOrders } from "@/services/order-service"
+import { useSuspenseAuth } from "./use-auth"
 
-export interface UseOrdersOptions {
+export type UseOrdersOptions = {
   limit?: number
   offset?: number
 }
@@ -15,7 +15,7 @@ export function useSuspenseOrders(options?: UseOrdersOptions) {
   const offset = options?.offset || 0
 
   if (!isAuthenticated) {
-    throw new Error('Uživatel není přihlášen')
+    throw new Error("Uživatel není přihlášen")
   }
 
   return useSuspenseQuery({
@@ -29,11 +29,11 @@ export function useSuspenseOrder(orderId: string | null) {
   const { isAuthenticated } = useSuspenseAuth()
 
   if (!isAuthenticated) {
-    throw new Error('Uživatel není přihlášen')
+    throw new Error("Uživatel není přihlášen")
   }
 
   if (!orderId) {
-    throw new Error('Order ID je povinné')
+    throw new Error("Order ID je povinné")
   }
 
   return useSuspenseQuery({

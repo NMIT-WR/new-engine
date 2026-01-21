@@ -1,6 +1,6 @@
-import { sdk } from '@/lib/medusa-client'
-import { queryKeys } from '@/lib/query-keys'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
 
 export function useRegion() {
   const { data: regions = [], isLoading } = useQuery({
@@ -16,15 +16,15 @@ export function useRegion() {
   })
 
   const selectedRegion =
-    regions.find((r) => r.countries?.some((c) => c.iso_2 === 'cz')) ||
+    regions.find((r) => r.countries?.some((c) => c.iso_2 === "cz")) ||
     regions[0]
 
   return {
     regions,
     selectedRegion,
     regionId: selectedRegion?.id,
-    countryCode: selectedRegion?.countries?.[0]?.iso_2 || 'cz',
-    currencyCode: selectedRegion?.currency_code || 'czk',
+    countryCode: selectedRegion?.countries?.[0]?.iso_2 || "cz",
+    currencyCode: selectedRegion?.currency_code || "czk",
     isLoading,
   }
 }
@@ -43,14 +43,14 @@ export function useSuspenseRegion() {
   })
 
   const selectedRegion =
-    regions.find((r) => r.countries?.some((c) => c.iso_2 === 'cz')) ||
+    regions.find((r) => r.countries?.some((c) => c.iso_2 === "cz")) ||
     regions[0]
 
   return {
     regions,
     selectedRegion,
     regionId: selectedRegion?.id,
-    countryCode: selectedRegion?.countries?.[0]?.iso_2 || 'cz',
-    currencyCode: selectedRegion?.currency_code || 'czk',
+    countryCode: selectedRegion?.countries?.[0]?.iso_2 || "cz",
+    currencyCode: selectedRegion?.currency_code || "czk",
   }
 }

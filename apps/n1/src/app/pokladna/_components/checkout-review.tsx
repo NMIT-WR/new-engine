@@ -14,7 +14,7 @@ import {
 import { formatAmount } from "@/utils/format/format-product"
 import { PriceSummaryRow } from "./price-summary-row"
 
-interface CheckoutReviewProps {
+type CheckoutReviewProps = {
   order: StoreOrder
 }
 
@@ -31,6 +31,7 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
   const itemsTax = formatAmount(order.item_tax_total || 0)
   const shippingTotal = formatAmount(order.shipping_total || 0)
   const total = formatAmount(order.total || 0)
+  const primaryShippingMethod = order.shipping_methods?.[0]
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -135,13 +136,13 @@ export function CheckoutReview({ order }: CheckoutReviewProps) {
       )}
 
       {/* Shipping Method */}
-      {order.shipping_methods && order.shipping_methods.length > 0 && (
+      {primaryShippingMethod && (
         <div className="mb-500 rounded-lg border border-border-secondary bg-surface p-400">
           <h2 className="mb-400 font-semibold text-fg-primary text-lg">
             Způsob dopravy
           </h2>
           <p className="text-fg-secondary text-sm">
-            {order.shipping_methods[0].name}
+            {primaryShippingMethod.name}
           </p>
         </div>
       )}

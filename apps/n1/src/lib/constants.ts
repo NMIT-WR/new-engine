@@ -2,14 +2,12 @@ import {
   allCategories,
   leafCategories,
   rootCategories,
-} from '@/data/static/categories'
+} from "@/data/static/categories"
 
-const ROOT_CATEGORIES = rootCategories.map((cat) => {
-  return {
-    id: cat.id,
-    handle: cat.handle,
-  }
-})
+const ROOT_CATEGORIES = rootCategories.map((cat) => ({
+  id: cat.id,
+  handle: cat.handle,
+}))
 
 const CATEGORIES_LEAFS_IDS = ROOT_CATEGORIES.map((cat) => {
   const children = leafCategories
@@ -30,25 +28,25 @@ export const VALID_CATEGORY_ROUTES = allCategories.map((cat) => cat.handle)
 
 export const CATEGORY_MAP: Record<string, string[]> = {
   panske:
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'panske')?.children || [],
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "panske")?.children || [],
   damske:
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'damske')?.children || [],
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "damske")?.children || [],
   detske:
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'detske')?.children || [],
-  'obleceni-category-347':
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'obleceni-category-347')
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "detske")?.children || [],
+  "obleceni-category-347":
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "obleceni-category-347")
       ?.children || [],
-  'cyklo-category-378':
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'cyklo-category-378')
+  "cyklo-category-378":
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "cyklo-category-378")
       ?.children || [],
-  'moto-category-424':
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'moto-category-424')
+  "moto-category-424":
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "moto-category-424")
       ?.children || [],
-  'snb-skate-category-448':
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'snb-skate-category-448')
+  "snb-skate-category-448":
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "snb-skate-category-448")
       ?.children || [],
-  'ski-category-466':
-    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === 'ski-category-466')
+  "ski-category-466":
+    CATEGORIES_LEAFS_IDS.find((cat) => cat.handle === "ski-category-466")
       ?.children || [],
 }
 
@@ -75,21 +73,20 @@ export const ALL_CATEGORIES_MAP: Record<string, string[]> = Object.fromEntries(
 )
 
 export const PRODUCT_DETAILED_FIELDS =
-  'id,title,subtitle,description,handle,thumbnail,images.id,images.url,' +
-  'producer.title,producer.attributes.value,producer.attributes.attributeType.name,' +
-  'variants.id,variants.title,variants.sku,variants.ean,variants.upc,' +
-  'variants.material,variants.allow_backorder,variants.manage_inventory,' +
-  'variants.inventory_quantity,' +
-  'variants.calculated_price,' +
-  'categories.id,categories.parent_category_id'
+  "id,title,subtitle,description,handle,thumbnail,images.id,images.url," +
+  "producer.title,producer.attributes.value,producer.attributes.attributeType.name," +
+  "variants.id,variants.title,variants.sku,variants.ean,variants.upc," +
+  "variants.material,variants.allow_backorder,variants.manage_inventory," +
+  "variants.inventory_quantity," +
+  "variants.calculated_price," +
+  "categories.id,categories.parent_category_id"
 
 export const PRODUCT_LIST_FIELDS =
-'id,title,handle,thumbnail,' +
-  'variants.title,' +
-  'variants.manage_inventory,' +
-  'variants.inventory_quantity,' +
-  'variants.calculated_price,'
-
+  "id,title,handle,thumbnail," +
+  "variants.title," +
+  "variants.manage_inventory," +
+  "variants.inventory_quantity," +
+  "variants.calculated_price,"
 
 export const PRODUCT_LIMIT = 24 as const
 
@@ -102,17 +99,17 @@ export const TAX_RATE = 0.21 // 21% VAT
 /**
  * Default country code for addresses and regions
  */
-export const DEFAULT_COUNTRY_CODE = 'cz'
+export const DEFAULT_COUNTRY_CODE = "cz"
 
 /**
  * Supported countries for shipping addresses
  */
 export const COUNTRY_OPTIONS = [
   {
-    value: 'cz',
-    label: 'Česká republika',
-    displayValue: 'Česká republika',
-    phonePrefix: '+420',
+    value: "cz",
+    label: "Česká republika",
+    displayValue: "Česká republika",
+    phonePrefix: "+420",
   },
   // { value: 'sk', label: 'Slovensko', displayValue: 'Slovensko' },
 ]
@@ -132,5 +129,5 @@ export const CACHE_TIMES = {
 /**
  * Currency defaults
  */
-export const DEFAULT_CURRENCY = 'czk'
-export const CURRENCY_SYMBOL = 'Kč'
+export const DEFAULT_CURRENCY = "czk"
+export const CURRENCY_SYMBOL = "Kč"

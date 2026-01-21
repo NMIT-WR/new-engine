@@ -10,6 +10,7 @@ module.exports = [
       "**/.medusa/**",
       "**/playwright-report/**",
       "**/storybook-static/**",
+      "**/coverage/**",
       "**/*.d.ts",
     ],
   },

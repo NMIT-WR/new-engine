@@ -1,13 +1,13 @@
-import { debounce, type DebouncedFunction } from '@/utils/debounce'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from "react"
+import { type DebouncedFunction, debounce } from "@/utils/debounce"
 
-export function useDebounce<T extends (...args: any[]) => any>(
-  callback: T,
+export function useDebounce<Args extends unknown[], R>(
+  callback: (...args: Args) => R,
   delay: number,
   options?: {
     leading?: boolean
   }
-): DebouncedFunction<T> {
+): DebouncedFunction<Args> {
   const callbackRef = useRef(callback)
 
   // Always update callback ref to latest version
@@ -17,21 +17,22 @@ export function useDebounce<T extends (...args: any[]) => any>(
   const debouncedFn = useMemo(
     () =>
       debounce(
-        (...args: Parameters<T>) => {
+        (...args: Args) => {
           callbackRef.current(...args)
         },
         delay,
         options
       ),
-    [delay, options?.leading] // Recreate if delay or leading option changes
+    [delay, options?.leading, options] // Recreate if delay or leading option changes
   )
 
   // Cleanup: cancel pending execution on unmount or dependency change
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       debouncedFn.cancel()
-    }
-  }, [debouncedFn])
+    },
+    [debouncedFn]
+  )
 
   return debouncedFn
 }

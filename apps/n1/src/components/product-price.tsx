@@ -1,20 +1,20 @@
-interface ProductPriceProps {
+type ProductPriceProps = {
   priceWithTax: string
   priceWithoutTax?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
   className?: string
 }
 
 export const ProductPrice = ({
   priceWithTax,
   priceWithoutTax,
-  size = 'md',
-  className = '',
+  size = "md",
+  className = "",
 }: ProductPriceProps) => {
   const sizeClasses = {
-    sm: 'text-xs',
-    md: 'text-lg',
-    lg: 'text-xl',
+    sm: "text-xs",
+    md: "text-lg",
+    lg: "text-xl",
   }
 
   return (

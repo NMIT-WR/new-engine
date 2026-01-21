@@ -1,15 +1,15 @@
-import { usePrefetchProduct } from '@/hooks/use-prefetch-product'
-import type { Product } from '@/types/product'
-import { Badge } from '@techsio/ui-kit/atoms/badge'
-import { Pagination } from '@techsio/ui-kit/molecules/pagination'
-import { ProductCard } from '@techsio/ui-kit/molecules/product-card'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Fragment } from 'react'
-import { ProductCardSkeleton } from '../skeletons/product-card-skeleton'
-import { VariantsBox } from './variants-box'
+import { Badge } from "@techsio/ui-kit/atoms/badge"
+import { Pagination } from "@techsio/ui-kit/molecules/pagination"
+import { ProductCard } from "@techsio/ui-kit/molecules/product-card"
+import Image from "next/image"
+import Link from "next/link"
+import { Fragment } from "react"
+import { usePrefetchProduct } from "@/hooks/use-prefetch-product"
+import type { Product } from "@/types/product"
+import { ProductCardSkeleton } from "../skeletons/product-card-skeleton"
+import { VariantsBox } from "./variants-box"
 
-interface ProductGridProps {
+type ProductGridProps = {
   products: Product[]
   totalCount?: number
   currentPage?: number
@@ -30,14 +30,18 @@ export const ProductGrid = ({
 }: ProductGridProps) => {
   const { delayedPrefetch } = usePrefetchProduct()
   const totalPages = Math.ceil((totalCount || products.length) / pageSize)
+  const skeletonKeys = Array.from(
+    { length: skeletonCount },
+    (_, index) => `product-skeleton-${index}`
+  )
 
   // Loading state
   if (isLoading) {
     return (
       <div className="w-full max-w-max-w">
         <div className="grid w-full grid-cols-2 gap-200 md:grid-cols-4">
-          {Array.from({ length: skeletonCount }).map((_, index) => (
-            <ProductCardSkeleton key={`skeleton-${index}`} />
+          {skeletonKeys.map((key) => (
+            <ProductCardSkeleton key={key} />
           ))}
         </div>
       </div>
@@ -80,25 +84,34 @@ export const ProductGrid = ({
                     {product.title}
                   </ProductCard.Name>
                   <ProductCard.Badges className="w-full">
-                    {product.badges?.map((badge, index) => (
-                      <Badge key={index} {...badge} />
+                    {product.badges?.map((badge) => (
+                      <Badge
+                        key={`${badge.variant ?? "default"}-${badge.children}`}
+                        {...badge}
+                      />
                     ))}
                   </ProductCard.Badges>
                 </div>
                 <ProductCard.Image
-                  as={Image}
-                  width={250}
-                  height={250}
                   alt={product.title}
-                  src={product.imageSrc}
+                  as={Image}
                   className="aspect-square w-auto"
+                  height={250}
+                  src={product.imageSrc}
+                  width={250}
                 />
                 <div className="flex flex-col items-center gap-300 self-start">
                   <ProductCard.Actions>
                     <VariantsBox variants={product.variants || []} />
                   </ProductCard.Actions>
                 </div>
-                <ProductCard.Stock status={product.stockValue === 'Skladem' ? 'in-stock' : 'out-of-stock'}>
+                <ProductCard.Stock
+                  status={
+                    product.stockValue === "Skladem"
+                      ? "in-stock"
+                      : "out-of-stock"
+                  }
+                >
                   {product.stockValue}
                 </ProductCard.Stock>
                 <div className="flex w-full flex-col items-center justify-evenly xl:flex-row">
@@ -127,20 +140,20 @@ export const ProductGrid = ({
       {totalPages > 1 && onPageChange && (
         <div className="mt-700 flex justify-end">
           <Pagination
+            className="sm:hidden"
             count={totalCount || products.length}
-            page={currentPage}
             onPageChange={onPageChange}
+            page={currentPage}
             pageSize={pageSize}
             siblingCount={0}
-            className="sm:hidden"
           />
           <Pagination
+            className="hidden sm:flex"
             count={totalCount || products.length}
-            page={currentPage}
             onPageChange={onPageChange}
+            page={currentPage}
             pageSize={pageSize}
             siblingCount={1}
-            className="hidden sm:flex"
           />
         </div>
       )}

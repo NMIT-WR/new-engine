@@ -1,6 +1,6 @@
-import { CartServiceError, isNotFoundError } from '@/lib/errors'
-import { sdk } from '@/lib/medusa-client'
-import type { HttpTypes } from '@medusajs/types'
+import type { HttpTypes } from "@medusajs/types"
+import { CartServiceError, isNotFoundError } from "@/lib/errors"
+import { sdk } from "@/lib/medusa-client"
 
 export type Cart = HttpTypes.StoreCart
 export type CartLineItem = HttpTypes.StoreCartLineItem
@@ -8,7 +8,6 @@ export type OptimisticCart = Cart & { _optimistic?: boolean }
 export type OptimisticLineItem = CartLineItem & {
   _optimistic?: boolean
 }
-
 
 export type CompleteCartResult =
   | { success: true; order: HttpTypes.StoreOrder }
@@ -22,20 +21,26 @@ export type CompleteCartResult =
       }
     }
 
-const CART_ID_KEY = 'n1_cart_id'
+const CART_ID_KEY = "n1_cart_id"
 export const cartStorage = {
   getCartId(): string | null {
-    if (typeof window === 'undefined') return null
+    if (typeof window === "undefined") {
+      return null
+    }
     return localStorage.getItem(CART_ID_KEY)
   },
 
   setCartId(cartId: string): void {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") {
+      return
+    }
     localStorage.setItem(CART_ID_KEY, cartId)
   },
 
   clearCartId(): void {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") {
+      return
+    }
     localStorage.removeItem(CART_ID_KEY)
   },
 }
@@ -45,8 +50,8 @@ export async function getCart(): Promise<Cart | null> {
     const cartId = cartStorage.getCartId()
 
     if (!cartId) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[CartService] No cart ID found')
+      if (process.env.NODE_ENV === "development") {
+        console.log("[CartService] No cart ID found")
       }
       return null
     }
@@ -55,8 +60,8 @@ export async function getCart(): Promise<Cart | null> {
 
     if (!cart) {
       throw new CartServiceError(
-        'Košík byl načten, ale je prázdný',
-        'CART_NOT_FOUND'
+        "Košík byl načten, ale je prázdný",
+        "CART_NOT_FOUND"
       )
     }
 
@@ -64,8 +69,8 @@ export async function getCart(): Promise<Cart | null> {
   } catch (error) {
     // 404 is expected - cart was deleted or expired
     if (isNotFoundError(error)) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[CartService] Cart not found, clearing stored ID')
+      if (process.env.NODE_ENV === "development") {
+        console.log("[CartService] Cart not found, clearing stored ID")
       }
       cartStorage.clearCartId()
       return null
@@ -75,7 +80,7 @@ export async function getCart(): Promise<Cart | null> {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'CART_NOT_FOUND')
+    throw CartServiceError.fromMedusaError(error, "CART_NOT_FOUND")
   }
 }
 
@@ -89,8 +94,8 @@ export async function createCart(
   try {
     if (!regionId) {
       throw new CartServiceError(
-        'Region ID je povinné pole',
-        'CART_CREATION_FAILED'
+        "Region ID je povinné pole",
+        "CART_CREATION_FAILED"
       )
     }
 
@@ -102,15 +107,15 @@ export async function createCart(
 
     if (!response.cart) {
       throw new CartServiceError(
-        'Nepodařilo se vytvořit košík',
-        'CART_CREATION_FAILED'
+        "Nepodařilo se vytvořit košík",
+        "CART_CREATION_FAILED"
       )
     }
 
     cartStorage.setCartId(response.cart.id)
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CartService] Cart created:', response.cart.id)
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Cart created:", response.cart.id)
     }
 
     return response.cart
@@ -118,7 +123,7 @@ export async function createCart(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'CART_CREATION_FAILED')
+    throw CartServiceError.fromMedusaError(error, "CART_CREATION_FAILED")
   }
 }
 
@@ -129,17 +134,17 @@ export async function addToCart(
   metadata?: Record<string, unknown>
 ): Promise<Cart> {
   try {
-    if (!cartId || !variantId) {
+    if (!(cartId && variantId)) {
       throw new CartServiceError(
-        'Cart ID a Variant ID jsou povinné',
-        'ITEM_ADD_FAILED'
+        "Cart ID a Variant ID jsou povinné",
+        "ITEM_ADD_FAILED"
       )
     }
 
     if (quantity < 1) {
       throw new CartServiceError(
-        'Množství musí být alespoň 1',
-        'ITEM_ADD_FAILED'
+        "Množství musí být alespoň 1",
+        "ITEM_ADD_FAILED"
       )
     }
 
@@ -151,13 +156,13 @@ export async function addToCart(
 
     if (!response.cart) {
       throw new CartServiceError(
-        'Nepodařilo se přidat položku do košíku',
-        'ITEM_ADD_FAILED'
+        "Nepodařilo se přidat položku do košíku",
+        "ITEM_ADD_FAILED"
       )
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CartService] Item added to cart:', {
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Item added to cart:", {
         variantId,
         quantity,
         metadata,
@@ -169,7 +174,7 @@ export async function addToCart(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'ITEM_ADD_FAILED')
+    throw CartServiceError.fromMedusaError(error, "ITEM_ADD_FAILED")
   }
 }
 
@@ -179,17 +184,17 @@ export async function updateLineItem(
   quantity: number
 ): Promise<Cart> {
   try {
-    if (!cartId || !lineItemId) {
+    if (!(cartId && lineItemId)) {
       throw new CartServiceError(
-        'Cart ID a Line Item ID jsou povinné',
-        'ITEM_UPDATE_FAILED'
+        "Cart ID a Line Item ID jsou povinné",
+        "ITEM_UPDATE_FAILED"
       )
     }
 
     if (quantity < 1) {
       throw new CartServiceError(
-        'Množství musí být alespoň 1',
-        'ITEM_UPDATE_FAILED'
+        "Množství musí být alespoň 1",
+        "ITEM_UPDATE_FAILED"
       )
     }
 
@@ -199,8 +204,8 @@ export async function updateLineItem(
 
     if (!response.cart) {
       throw new CartServiceError(
-        'Nepodařilo se aktualizovat položku',
-        'ITEM_UPDATE_FAILED'
+        "Nepodařilo se aktualizovat položku",
+        "ITEM_UPDATE_FAILED"
       )
     }
 
@@ -209,7 +214,7 @@ export async function updateLineItem(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'ITEM_UPDATE_FAILED')
+    throw CartServiceError.fromMedusaError(error, "ITEM_UPDATE_FAILED")
   }
 }
 
@@ -218,10 +223,10 @@ export async function removeLineItem(
   lineItemId: string
 ): Promise<Cart> {
   try {
-    if (!cartId || !lineItemId) {
+    if (!(cartId && lineItemId)) {
       throw new CartServiceError(
-        'Cart ID a Line Item ID jsou povinné',
-        'ITEM_REMOVE_FAILED'
+        "Cart ID a Line Item ID jsou povinné",
+        "ITEM_REMOVE_FAILED"
       )
     }
 
@@ -229,8 +234,8 @@ export async function removeLineItem(
 
     if (!response.parent) {
       throw new CartServiceError(
-        'Nepodařilo se načíst aktualizovaný košík',
-        'ITEM_REMOVE_FAILED'
+        "Nepodařilo se načíst aktualizovaný košík",
+        "ITEM_REMOVE_FAILED"
       )
     }
 
@@ -239,7 +244,7 @@ export async function removeLineItem(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'ITEM_REMOVE_FAILED')
+    throw CartServiceError.fromMedusaError(error, "ITEM_REMOVE_FAILED")
   }
 }
 
@@ -248,7 +253,7 @@ export async function getShippingOptions(
 ): Promise<HttpTypes.StoreCartShippingOption[]> {
   try {
     if (!cartId) {
-      throw new CartServiceError('Cart ID je povinné', 'SHIPPING_NOT_AVAILABLE')
+      throw new CartServiceError("Cart ID je povinné", "SHIPPING_NOT_AVAILABLE")
     }
 
     // Use fulfillment.listCartOptions with cart_id
@@ -256,8 +261,8 @@ export async function getShippingOptions(
       cart_id: cartId,
     })
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CartService] Shipping options:', response.shipping_options)
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Shipping options:", response.shipping_options)
     }
 
     return response.shipping_options || []
@@ -265,23 +270,23 @@ export async function getShippingOptions(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'SHIPPING_NOT_AVAILABLE')
+    throw CartServiceError.fromMedusaError(error, "SHIPPING_NOT_AVAILABLE")
   }
 }
 
 export async function getPaymentProviders(regionId: string) {
   try {
     if (!regionId) {
-      throw new CartServiceError('Region ID je povinné', 'PAYMENT_FAILED')
+      throw new CartServiceError("Region ID je povinné", "PAYMENT_FAILED")
     }
 
     const response = await sdk.store.payment.listPaymentProviders({
       region_id: regionId,
     })
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.log(
-        '[CartService] Payment providers:',
+        "[CartService] Payment providers:",
         response.payment_providers
       )
     }
@@ -291,7 +296,7 @@ export async function getPaymentProviders(regionId: string) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'PAYMENT_FAILED')
+    throw CartServiceError.fromMedusaError(error, "PAYMENT_FAILED")
   }
 }
 
@@ -312,10 +317,10 @@ export async function setShippingMethod(
   data?: ShippingMethodData
 ): Promise<Cart> {
   try {
-    if (!cartId || !optionId) {
+    if (!(cartId && optionId)) {
       throw new CartServiceError(
-        'Cart ID a Option ID jsou povinné',
-        'SHIPPING_SET_FAILED'
+        "Cart ID a Option ID jsou povinné",
+        "SHIPPING_SET_FAILED"
       )
     }
 
@@ -337,13 +342,13 @@ export async function setShippingMethod(
 
     if (!response.cart) {
       throw new CartServiceError(
-        'Nepodařilo se nastavit způsob dopravy',
-        'SHIPPING_SET_FAILED'
+        "Nepodařilo se nastavit způsob dopravy",
+        "SHIPPING_SET_FAILED"
       )
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CartService] Shipping method set:', optionId)
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Shipping method set:", optionId)
     }
 
     return response.cart
@@ -351,7 +356,7 @@ export async function setShippingMethod(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'SHIPPING_SET_FAILED')
+    throw CartServiceError.fromMedusaError(error, "SHIPPING_SET_FAILED")
   }
 }
 
@@ -361,13 +366,13 @@ export async function createPaymentCollection(
 ) {
   try {
     if (!cartId) {
-      throw new CartServiceError('Cart ID je povinné', 'PAYMENT_INIT_FAILED')
+      throw new CartServiceError("Cart ID je povinné", "PAYMENT_INIT_FAILED")
     }
 
     if (!providerId) {
       throw new CartServiceError(
-        'Provider ID je povinné',
-        'PAYMENT_INIT_FAILED'
+        "Provider ID je povinné",
+        "PAYMENT_INIT_FAILED"
       )
     }
 
@@ -375,13 +380,13 @@ export async function createPaymentCollection(
     const { cart } = await sdk.store.cart.retrieve(cartId)
 
     if (!cart) {
-      throw new CartServiceError('Košík nebyl nalezen', 'PAYMENT_INIT_FAILED')
+      throw new CartServiceError("Košík nebyl nalezen", "PAYMENT_INIT_FAILED")
     }
 
     // Check if payment sessions already exist (early return optimization)
     if (cart.payment_collection?.payment_sessions?.length) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[CartService] Payment sessions already exist:', {
+      if (process.env.NODE_ENV === "development") {
+        console.log("[CartService] Payment sessions already exist:", {
           collectionId: cart.payment_collection?.id,
           sessionCount: cart.payment_collection?.payment_sessions?.length || 0,
           sessions: cart.payment_collection?.payment_sessions?.map((s) => ({
@@ -401,13 +406,13 @@ export async function createPaymentCollection(
 
     if (!response.payment_collection) {
       throw new CartServiceError(
-        'Nepodařilo se inicializovat platební session',
-        'PAYMENT_INIT_FAILED'
+        "Nepodařilo se inicializovat platební session",
+        "PAYMENT_INIT_FAILED"
       )
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[CartService] Payment session initialized:', {
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Payment session initialized:", {
         collectionId: response.payment_collection.id,
         sessionCount: response.payment_collection.payment_sessions?.length || 0,
         sessions: response.payment_collection.payment_sessions?.map((s) => ({
@@ -424,10 +429,10 @@ export async function createPaymentCollection(
       throw error
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[CartService] Payment initialization error:', error)
+    if (process.env.NODE_ENV === "development") {
+      console.error("[CartService] Payment initialization error:", error)
     }
-    throw CartServiceError.fromMedusaError(error, 'PAYMENT_INIT_FAILED')
+    throw CartServiceError.fromMedusaError(error, "PAYMENT_INIT_FAILED")
   }
 }
 
@@ -436,13 +441,13 @@ export async function completeCart(
 ): Promise<CompleteCartResult> {
   try {
     if (!cartId) {
-      throw new CartServiceError('Cart ID je povinné', 'ORDER_CREATION_FAILED')
+      throw new CartServiceError("Cart ID je povinné", "ORDER_CREATION_FAILED")
     }
 
     // Debug: Check cart state before completing
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       const { cart: currentCart } = await sdk.store.cart.retrieve(cartId)
-      console.log('[CartService] Cart state before complete:', {
+      console.log("[CartService] Cart state before complete:", {
         hasPaymentCollection: !!currentCart.payment_collection,
         paymentCollectionId: currentCart.payment_collection?.id,
         paymentSessionsCount:
@@ -462,13 +467,13 @@ export async function completeCart(
     const response = await sdk.store.cart.complete(cartId)
 
     // Success case - SDK returned order
-    if (response.type === 'order') {
+    if (response.type === "order") {
       // Clear cart ID from storage ONLY on success
       cartStorage.clearCartId()
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         console.log(
-          '[CartService] Cart completed, order created:',
+          "[CartService] Cart completed, order created:",
           response.order.id
         )
       }
@@ -480,8 +485,8 @@ export async function completeCart(
     }
 
     // Failure case - SDK returned cart with validation/payment error
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[CartService] Cart completion failed:', response.error)
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[CartService] Cart completion failed:", response.error)
     }
 
     return {
@@ -494,6 +499,6 @@ export async function completeCart(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, 'ORDER_CREATION_FAILED')
+    throw CartServiceError.fromMedusaError(error, "ORDER_CREATION_FAILED")
   }
 }
