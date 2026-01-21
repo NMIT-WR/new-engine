@@ -28,6 +28,7 @@ export type SelectTemplateProps = Omit<SelectProps, "children"> & {
   valueText?: ReactNode | ((items: SelectItem[]) => ReactNode)
   valueTextProps?: SelectTemplateValueTextProps
   showIndicator?: boolean
+  renderItem?: (item: SelectItem) => ReactNode
   ref?: Ref<HTMLDivElement>
 }
 
@@ -39,6 +40,7 @@ export function SelectTemplate({
   valueText,
   valueTextProps,
   showIndicator = true,
+  renderItem,
   ref,
   ...selectProps
 }: SelectTemplateProps) {
@@ -56,7 +58,14 @@ export function SelectTemplate({
         <Select.Content>
           {items.map((item) => (
             <Select.Item item={item} key={item.value}>
-              <Select.ItemText />
+              {renderItem ? (
+                <>
+                  {renderItem(item)}
+                  <Select.ItemText className="sr-only" />
+                </>
+              ) : (
+                <Select.ItemText />
+              )}
               {showIndicator && <Select.ItemIndicator />}
             </Select.Item>
           ))}

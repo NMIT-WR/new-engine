@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { VariantContainer } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
 import { Toaster, useToast } from '../../src/molecules/toast'
@@ -121,8 +121,9 @@ export const UpdateExample: Story = {
                     },
                   ]
 
-                  if (nextStep <= updates.length) {
-                    toaster.update(toastId, updates[nextStep - 1])
+                  const update = updates[nextStep - 1]
+                  if (update) {
+                    toaster.update(toastId, update)
                   }
                 }}
                 disabled={step >= 3}
