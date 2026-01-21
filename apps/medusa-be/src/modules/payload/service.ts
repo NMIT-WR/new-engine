@@ -17,6 +17,13 @@ import type {
   PayloadQueryOptions,
 } from "./types"
 
+const CMS = "cms"
+const DEFAULT_LOCALE = "default"
+const STATUS_PUBLISHED = "published"
+const PAGES = "pages"
+const ARTICLES = "articles"
+const HERO_CAROUSELS = "hero-carousels"
+
 type InjectedDependencies = {
   logger: Logger
   [Modules.CACHING]?: ICachingModuleService
@@ -24,11 +31,13 @@ type InjectedDependencies = {
 }
 
 const CACHE_TAGS = {
-  ALL: "cms",
-  PAGES: "cms:pages",
-  ARTICLES: "cms:articles",
-  ARTICLE_LISTS: "cms:articles:list",
-  HERO_CAROUSELS: "cms:hero-carousels",
+  ALL: CMS,
+  PAGES: `${CMS}:${PAGES}`,
+  PAGE_LISTS: `${CMS}:${PAGES}:list`,
+  ARTICLES: `${CMS}:${ARTICLES}`,
+  ARTICLE_LISTS: `${CMS}:${ARTICLES}:list`,
+  HERO_CAROUSELS: `${CMS}:${HERO_CAROUSELS}`,
+  HERO_CAROUSEL_LISTS: `${CMS}:${HERO_CAROUSELS}:list`,
 } as const
 
 const DEFAULT_TTLS = {
@@ -101,7 +110,7 @@ export default class PayloadModuleService {
       body: data ? JSON.stringify(data) : undefined,
     })
 
-    const result = await response.json()
+    const result = (await response.json()) as { message?: string }
 
     if (!response.ok) {
       throw new MedusaError(
@@ -143,13 +152,33 @@ export default class PayloadModuleService {
   }
 
   private buildListCacheKey(prefix: string, options?: CmsListOptions): string {
+    const locale = options?.locale ?? DEFAULT_LOCALE
+
     if (!options) {
-      return `${prefix}:default`
+      return `${prefix}:${locale}:default`
     }
-    const hash = createHash("sha256")
-      .update(JSON.stringify(options))
-      .digest("hex")
-    return `${prefix}:${hash}`
+
+    const { locale: _ignoredLocale, ...rest } = options
+    const hasOptions =
+      rest.limit !== undefined ||
+      rest.page !== undefined ||
+      rest.sort !== undefined
+    const hash = hasOptions
+      ? createHash("sha256").update(JSON.stringify(rest)).digest("hex")
+      : "default"
+
+    return `${prefix}:${locale}:${hash}`
+  }
+
+  private buildLocaleTag(tag: string, locale?: string): string {
+    return `${tag}:locale:${locale ?? DEFAULT_LOCALE}`
+  }
+
+  private normalizeLocale(locale?: string): string | undefined {
+    if (!locale || locale === "null" || locale === "undefined") {
+      return undefined
+    }
+    return locale
   }
 
   // ============================================
@@ -159,24 +188,22 @@ export default class PayloadModuleService {
   async getPublishedPage(
     slug: string,
     locale?: string,
-    fallbackLocale?: string
   ): Promise<CmsPageDTO | null> {
-    const cacheKey = `cms:pages:${slug}:${locale ?? "default"}:${fallbackLocale ?? "default"}`
+    const cacheKey = `${CMS}:${PAGES}:${slug}:${locale ?? DEFAULT_LOCALE}`
     return this.getCached(
       cacheKey,
       async () => {
         const queryString = this.buildQuery({
           where: {
             slug: { equals: slug },
-            status: { equals: "published" },
+            status: { equals: STATUS_PUBLISHED },
           },
           limit: 1,
           locale,
-          fallbackLocale,
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsPageDTO>>(
           "GET",
-          `/pages${queryString}`
+          `/${PAGES}${queryString}`
         )
 
         const page = result.docs[0] || null
@@ -192,7 +219,8 @@ export default class PayloadModuleService {
   }
 
   async listPublishedPages(options?: CmsListOptions): Promise<CmsPageDTO[]> {
-    const cacheKey = this.buildListCacheKey("cms:pages:list", options)
+    const cacheKey = this.buildListCacheKey(CACHE_TAGS.PAGE_LISTS, options)
+    const localeTag = this.buildLocaleTag(CACHE_TAGS.PAGE_LISTS, options?.locale)
     return this.getCached(
       cacheKey,
       async () => {
@@ -201,43 +229,40 @@ export default class PayloadModuleService {
           page: options?.page,
           sort: options?.sort,
           locale: options?.locale,
-          fallbackLocale: options?.fallbackLocale,
           where: {
-            status: { equals: "published" },
+            status: { equals: STATUS_PUBLISHED },
           },
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsPageDTO>>(
           "GET",
-          `/pages${queryString}`
+          `/${PAGES}${queryString}`
         )
         return result.docs
       },
       this.listCacheTtl_,
-      [CACHE_TAGS.ALL, CACHE_TAGS.PAGES]
+      [CACHE_TAGS.ALL, CACHE_TAGS.PAGES, CACHE_TAGS.PAGE_LISTS, localeTag]
     )
   }
 
   async getPublishedArticle(
     slug: string,
     locale?: string,
-    fallbackLocale?: string
   ): Promise<CmsArticleDTO | null> {
-    const cacheKey = `cms:articles:${slug}:${locale ?? "default"}:${fallbackLocale ?? "default"}`
+    const cacheKey = `${CMS}:${ARTICLES}:${slug}:${locale ?? DEFAULT_LOCALE}`
     return this.getCached(
       cacheKey,
       async () => {
         const queryString = this.buildQuery({
           where: {
             slug: { equals: slug },
-            status: { equals: "published" },
+            status: { equals: STATUS_PUBLISHED },
           },
           limit: 1,
           locale,
-          fallbackLocale,
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsArticleDTO>>(
           "GET",
-          `/articles${queryString}`
+          `/${ARTICLES}${queryString}`
         )
 
         const post = result.docs[0] || null
@@ -254,13 +279,14 @@ export default class PayloadModuleService {
   async listPublishedArticles(
     options: CmsListOptions = {}
   ): Promise<CmsArticleDTO[]> {
-    const cacheKey = this.buildListCacheKey("cms:articles:list", options)
+    const cacheKey = this.buildListCacheKey(CACHE_TAGS.ARTICLE_LISTS, options)
+    const localeTag = this.buildLocaleTag(CACHE_TAGS.ARTICLE_LISTS, options.locale)
 
     return this.getCached(
       cacheKey,
       async () => {
         const where: Record<string, unknown> = {
-          status: { equals: "published" },
+          status: { equals: STATUS_PUBLISHED },
         }
 
         const queryString = this.buildQuery({
@@ -268,22 +294,33 @@ export default class PayloadModuleService {
           page: options.page,
           sort: options.sort,
           locale: options.locale,
-          fallbackLocale: options.fallbackLocale,
           where,
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsArticleDTO>>(
           "GET",
-          `/articles${queryString}`
+          `/${ARTICLES}${queryString}`
         )
         return result.docs
       },
       this.listCacheTtl_,
-      [CACHE_TAGS.ALL, CACHE_TAGS.ARTICLES, CACHE_TAGS.ARTICLE_LISTS]
+      [
+        CACHE_TAGS.ALL,
+        CACHE_TAGS.ARTICLES,
+        CACHE_TAGS.ARTICLE_LISTS,
+        localeTag,
+      ]
     )
   }
 
   async listHeroCarousels(options?: CmsListOptions): Promise<CmsHeroCarouselDTO[]> {
-    const cacheKey = this.buildListCacheKey("cms:hero-carousels:list", options)
+    const cacheKey = this.buildListCacheKey(
+      CACHE_TAGS.HERO_CAROUSEL_LISTS,
+      options
+    )
+    const localeTag = this.buildLocaleTag(
+      CACHE_TAGS.HERO_CAROUSEL_LISTS,
+      options?.locale
+    )
     return this.getCached(
       cacheKey,
       async () => {
@@ -292,38 +329,68 @@ export default class PayloadModuleService {
           page: options?.page,
           sort: options?.sort,
           locale: options?.locale,
-          fallbackLocale: options?.fallbackLocale,
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsHeroCarouselDTO>>(
           "GET",
-          `/hero-carousels${queryString}`
+          `/${HERO_CAROUSELS}${queryString}`
         )
         return result.docs
       },
       this.listCacheTtl_,
-      [CACHE_TAGS.ALL, CACHE_TAGS.HERO_CAROUSELS]
+      [
+        CACHE_TAGS.ALL,
+        CACHE_TAGS.HERO_CAROUSELS,
+        CACHE_TAGS.HERO_CAROUSEL_LISTS,
+        localeTag,
+      ]
     )
   }
 
-  async invalidateCache(collection: string, slug?: string): Promise<void> {
+  async invalidateCache(
+    collection: string,
+    slug?: string,
+    locale?: string,
+  ): Promise<void> {
     if (!this.cacheService_) {
       return
     }
 
-    if (slug) {
-      const key = `cms:${collection}:${slug}`
+    const normalizedLocale = this.normalizeLocale(locale)
+    const clearAllLocales = !normalizedLocale
+    if (slug && !clearAllLocales) {
+      const key = `${CMS}:${collection}:${slug}:${normalizedLocale ?? DEFAULT_LOCALE}`
+      this.logger_.info(`CMS: Clearing cache key ${key}`)
       await this.cacheService_.clear({ key })
     }
 
-    const tags = [CACHE_TAGS.ALL]
-    if (collection === "pages") {
-      tags.push(CACHE_TAGS.PAGES)
-    } else if (collection === "articles") {
-      tags.push(CACHE_TAGS.ARTICLES, CACHE_TAGS.ARTICLE_LISTS)
-    } else if (collection === "hero-carousels") {
-      tags.push(CACHE_TAGS.HERO_CAROUSELS)
+    const tags: string[] = []
+    if (collection === PAGES) {
+      if (clearAllLocales) {
+        tags.push(CACHE_TAGS.PAGES, CACHE_TAGS.PAGE_LISTS)
+      } else {
+        tags.push(this.buildLocaleTag(CACHE_TAGS.PAGE_LISTS, normalizedLocale))
+      }
+    } else if (collection === ARTICLES) {
+      if (clearAllLocales) {
+        tags.push(CACHE_TAGS.ARTICLES, CACHE_TAGS.ARTICLE_LISTS)
+      } else {
+        tags.push(
+          this.buildLocaleTag(CACHE_TAGS.ARTICLE_LISTS, normalizedLocale)
+        )
+      }
+    } else if (collection === HERO_CAROUSELS) {
+      if (clearAllLocales) {
+        tags.push(CACHE_TAGS.HERO_CAROUSELS, CACHE_TAGS.HERO_CAROUSEL_LISTS)
+      } else {
+        tags.push(
+          this.buildLocaleTag(CACHE_TAGS.HERO_CAROUSEL_LISTS, normalizedLocale)
+        )
+      }
     }
 
+    if (tags.length > 0) {
+      this.logger_.info(`CMS: Clearing cache tags ${tags.join(", ")}`)
+    }
     await this.cacheService_.clear({ tags })
     this.logger_.info(`CMS: Invalidated cache for ${collection}`)
   }

@@ -6,6 +6,7 @@ import { generateSlugFromTitle } from "../lib/hooks/slug";
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
 import { fieldDescriptions } from "../lib/constants/descriptions";
 import { seoGroupField } from "../lib/constants/fieldGroups";
+import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
 import {
   createContentField,
   createPublishedDateField,
@@ -14,8 +15,11 @@ import {
   createTitleField,
 } from "../lib/constants/fields";
 
+const COLLECTION_SLUG = "articles";
+const invalidateArticlesCache = createMedusaCacheHook(COLLECTION_SLUG);
+
 export const Articles: CollectionConfig = {
-  slug: "articles",
+  slug: COLLECTION_SLUG,
   labels: collectionLabels.articles,
   admin: {
     useAsTitle: "title",
@@ -160,6 +164,8 @@ export const Articles: CollectionConfig = {
         return data;
       },
     ],
+    afterChange: [invalidateArticlesCache],
+    afterDelete: [invalidateArticlesCache],
     afterRead: [
       ({ doc, req }) => {
         if (req?.method !== "GET") {

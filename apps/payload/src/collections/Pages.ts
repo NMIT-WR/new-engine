@@ -7,6 +7,7 @@ import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/lab
 import { seoGroupField } from '../lib/constants/fieldGroups'
 import { fieldDescriptions } from '../lib/constants/descriptions'
 import { requireAuth } from '../lib/access/requireAuth'
+import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
 import {
   createContentField,
   createPublishedDateField,
@@ -15,8 +16,11 @@ import {
   createTitleField,
 } from '../lib/constants/fields'
 
+const COLLECTION_SLUG = 'pages'
+const invalidatePagesCache = createMedusaCacheHook(COLLECTION_SLUG)
+
 export const Pages: CollectionConfig = {
-  slug: 'pages',
+  slug: COLLECTION_SLUG,
   labels: collectionLabels.pages,
   admin: {
     useAsTitle: 'title',
@@ -73,6 +77,8 @@ export const Pages: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [invalidatePagesCache],
+    afterDelete: [invalidatePagesCache],
     afterRead: [
       ({ doc, req }) => {
         if (req?.method !== 'GET') {

@@ -13,7 +13,6 @@ export type CmsListOptions = {
   page?: number
   sort?: string
   locale?: string
-  fallbackLocale?: string
 }
 
 export type CmsPageDTO = {

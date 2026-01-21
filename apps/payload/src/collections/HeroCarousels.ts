@@ -2,9 +2,13 @@ import { CollectionConfig } from "payload";
 
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
 import { requireAuth } from "../lib/access/requireAuth";
+import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
+
+const COLLECTION_SLUG = "hero-carousels";
+const invalidateHeroCarouselsCache = createMedusaCacheHook(COLLECTION_SLUG);
 
 export const HeroCarousels: CollectionConfig = {
-  slug: "hero-carousels",
+  slug: COLLECTION_SLUG,
   access: {
     read: requireAuth,
   },
@@ -50,4 +54,8 @@ export const HeroCarousels: CollectionConfig = {
       required: false,
     },
   ],
+  hooks: {
+    afterChange: [invalidateHeroCarouselsCache],
+    afterDelete: [invalidateHeroCarouselsCache],
+  },
 };
