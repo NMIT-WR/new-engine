@@ -1,5 +1,6 @@
 "use client"
 
+import { Button } from "@techsio/ui-kit/atoms/button"
 import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { useState } from "react"
 import { AddressForm } from "@/components/address/address-form"
@@ -9,7 +10,6 @@ import type { StoreCustomerAddress } from "@/services/customer-service"
 import { formatPhoneNumber } from "@/utils/format/format-phone-number"
 import { formatPostalCode } from "@/utils/format/format-postal-code"
 import { useAccountContext } from "../../context/account-context"
-import { Button } from "@techsio/ui-kit/atoms/button"
 
 export function AddressList() {
   const { customer } = useAccountContext()

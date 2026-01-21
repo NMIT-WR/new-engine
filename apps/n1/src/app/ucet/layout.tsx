@@ -14,7 +14,6 @@ export default function AccountLayout({
   const { customer, isAuthenticated, isTokenExpired } = useSuspenseAuth()
   const [showExpiredMessage, setShowExpiredMessage] = useState(false)
 
-  // Handle session expiration
   useEffect(() => {
     if (!isTokenExpired) {
       return
@@ -27,14 +26,12 @@ export default function AccountLayout({
     return () => clearTimeout(timeout)
   }, [isTokenExpired, router])
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!(isAuthenticated || isTokenExpired)) {
       router.push("/prihlaseni")
     }
   }, [isAuthenticated, isTokenExpired, router])
 
-  // Session expired - full page
   if (showExpiredMessage) {
     return (
       <main className="mx-auto w-2xl max-w-full py-300">
@@ -51,16 +48,13 @@ export default function AccountLayout({
     )
   }
 
-  // Not authenticated - redirecting
   if (!customer) {
     return null
   }
 
   return (
     <AccountProvider>
-      <main className="mx-auto w-full max-w-5xl px-400 py-400">
-        {children}
-      </main>
+      <main className="mx-auto w-full max-w-5xl px-400 py-400">{children}</main>
     </AccountProvider>
   )
 }
