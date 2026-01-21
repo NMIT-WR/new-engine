@@ -244,15 +244,18 @@ export interface Article {
    * Estimated reading time in minutes
    */
   readingTime?: number | null;
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    metaImage?: (number | null) | Media;
-  };
   analytics?: {
     views?: number | null;
     shares?: number | null;
     lastViewed?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
   };
   /**
    * When enabled, changes in the default language will automatically translate to other languages
@@ -306,10 +309,13 @@ export interface Page {
   visibility: 'public' | 'customers-only';
   status: 'draft' | 'published' | 'archived';
   publishedDate: string;
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    metaImage?: (number | null) | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
   };
   /**
    * When enabled, changes in the default language will automatically translate to other languages
@@ -539,19 +545,19 @@ export interface ArticlesSelect<T extends boolean = true> {
   publishedDate?: T;
   status?: T;
   readingTime?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        metaImage?: T;
-      };
   analytics?:
     | T
     | {
         views?: T;
         shares?: T;
         lastViewed?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
       };
   translationSync?: T;
   updatedAt?: T;
@@ -580,12 +586,12 @@ export interface PagesSelect<T extends boolean = true> {
   visibility?: T;
   status?: T;
   publishedDate?: T;
-  seo?:
+  meta?:
     | T
     | {
-        metaTitle?: T;
-        metaDescription?: T;
-        metaImage?: T;
+        title?: T;
+        description?: T;
+        image?: T;
       };
   translationSync?: T;
   updatedAt?: T;

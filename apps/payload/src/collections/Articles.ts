@@ -5,7 +5,6 @@ import { requireAuth } from "../lib/access/requireAuth";
 import { generateSlugFromTitle } from "../lib/hooks/slug";
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
 import { fieldDescriptions } from "../lib/constants/descriptions";
-import { seoGroupField } from "../lib/constants/fieldGroups";
 import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
 import {
   createContentField,
@@ -105,7 +104,6 @@ export const Articles: CollectionConfig = {
         description: fieldDescriptions.readingTime,
       },
     },
-    seoGroupField,
     // Analytics and Performance
     {
       name: "analytics",

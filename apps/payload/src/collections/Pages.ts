@@ -4,7 +4,6 @@ import { lexicalHTMLField } from '@payloadcms/richtext-lexical'
 import { createLexicalEditor } from '../lib/editors/lexical'
 import { generateSlugFromTitle } from '../lib/hooks/slug'
 import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/labels'
-import { seoGroupField } from '../lib/constants/fieldGroups'
 import { fieldDescriptions } from '../lib/constants/descriptions'
 import { requireAuth } from '../lib/access/requireAuth'
 import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
@@ -65,7 +64,6 @@ export const Pages: CollectionConfig = {
     },
     createStatusField(),
     createPublishedDateField(),
-    seoGroupField,
   ],
   hooks: {
     beforeValidate: [

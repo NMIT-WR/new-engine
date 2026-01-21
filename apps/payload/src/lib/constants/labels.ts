@@ -209,26 +209,6 @@ export const fieldLabels = {
     cs: 'Poslední zobrazení',
     sk: 'Posledné zobrazenie',
   },
-  seo: {
-    en: 'SEO',
-    cs: 'SEO',
-    sk: 'SEO',
-  },
-  metaTitle: {
-    en: 'Meta title',
-    cs: 'Meta titulek',
-    sk: 'Meta titulok',
-  },
-  metaDescription: {
-    en: 'Meta description',
-    cs: 'Meta popis',
-    sk: 'Meta popis',
-  },
-  metaImage: {
-    en: 'Meta image',
-    cs: 'Meta obrázek',
-    sk: 'Meta obrázok',
-  },
   image: {
     en: 'Image',
     cs: 'Obrázek',

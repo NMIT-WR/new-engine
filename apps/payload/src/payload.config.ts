@@ -11,6 +11,7 @@ import { fr } from '@payloadcms/translations/languages/fr'
 import { es } from '@payloadcms/translations/languages/es'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -40,6 +41,13 @@ const autoTranslateCollections = {
   pages: isPagesEnabled,
   'hero-carousels': isHeroCarouselsEnabled,
 }
+const seoCollections = [
+  isArticlesEnabled ? 'articles' : null,
+  isPagesEnabled ? 'pages' : null,
+].filter((collection): collection is string => Boolean(collection))
+
+const getDocString = (value: unknown): string =>
+  typeof value === 'string' ? value : ''
 
 export default buildConfig({
   admin: {
@@ -79,6 +87,14 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    seoPlugin({
+      collections: seoCollections,
+      uploadsCollection: 'media',
+      tabbedUI: true,
+      generateTitle: ({ doc }) => getDocString(doc?.title),
+      generateDescription: ({ doc }) =>
+        getDocString(doc?.excerpt) || getDocString(doc?.description),
+    }),
     autoTranslate({
       excludeFields: [
         'id',
