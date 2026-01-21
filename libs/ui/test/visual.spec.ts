@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { expect, test } from '@playwright/test'
-import storybookIndex from '../storybook-static/index.json' with { type: 'json' }
 
 type StorybookEntry = {
   id: string
@@ -10,6 +12,23 @@ type StorybookEntry = {
 
 type StorybookIndex = {
   entries: Record<string, StorybookEntry>
+}
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const indexPath = path.resolve(__dirname, '../storybook-static/index.json')
+
+let storybookIndex: StorybookIndex
+
+try {
+  const raw = readFileSync(indexPath, 'utf-8')
+  storybookIndex = JSON.parse(raw) as StorybookIndex
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+    throw new Error(
+      "Storybook index.json not found. Run 'pnpm build:storybook' first.",
+    )
+  }
+  throw error
 }
 
 const stories = Object.values(

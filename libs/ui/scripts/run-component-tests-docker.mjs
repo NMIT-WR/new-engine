@@ -51,10 +51,13 @@ if (imageInspect.status !== 0) {
 
 const extraArgs = process.argv.slice(2)
 
-run('docker', [
-  'run',
-  '--rm',
-  '-it',
+const dockerArgs = ['run', '--rm']
+
+if (process.stdout.isTTY) {
+  dockerArgs.push('-t')
+}
+
+dockerArgs.push(
   `--platform=${platform}`,
   '--add-host=host.docker.internal:host-gateway',
   '-e',
@@ -70,4 +73,6 @@ run('docker', [
   imageName,
   'test',
   ...extraArgs,
-])
+)
+
+run('docker', dockerArgs)
