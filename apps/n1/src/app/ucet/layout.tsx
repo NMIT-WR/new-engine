@@ -1,9 +1,8 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useSuspenseAuth } from "@/hooks/use-auth"
-import { AccountMenu } from "./_components/account-menu"
 import { AccountProvider } from "./context/account-context"
 
 export default function AccountLayout({
@@ -12,10 +11,8 @@ export default function AccountLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const pathname = usePathname()
   const { customer, isAuthenticated, isTokenExpired } = useSuspenseAuth()
   const [showExpiredMessage, setShowExpiredMessage] = useState(false)
-  const showMenu = pathname !== "/ucet/profil"
 
   // Handle session expiration
   useEffect(() => {
@@ -62,15 +59,7 @@ export default function AccountLayout({
   return (
     <AccountProvider>
       <main className="mx-auto w-full max-w-5xl px-400 py-400">
-        <h1 className="mb-400 font-bold text-xl">Můj profil</h1>
-        {showMenu ? (
-          <div className="grid grid-cols-1 gap-400 md:grid-cols-[auto_1fr]">
-            <AccountMenu />
-            <div className="min-w-0">{children}</div>
-          </div>
-        ) : (
-          <div className="min-w-0">{children}</div>
-        )}
+        {children}
       </main>
     </AccountProvider>
   )

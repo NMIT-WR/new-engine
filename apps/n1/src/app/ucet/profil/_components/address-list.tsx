@@ -1,7 +1,6 @@
 "use client"
 
 import { useToast } from "@techsio/ui-kit/molecules/toast"
-import { Button } from "@ui/atoms/button"
 import { useState } from "react"
 import { AddressForm } from "@/components/address/address-form"
 import { ConfirmDialog } from "@/components/molecules/confirm-dialog"
@@ -10,6 +9,7 @@ import type { StoreCustomerAddress } from "@/services/customer-service"
 import { formatPhoneNumber } from "@/utils/format/format-phone-number"
 import { formatPostalCode } from "@/utils/format/format-postal-code"
 import { useAccountContext } from "../../context/account-context"
+import { Button } from "@techsio/ui-kit/atoms/button"
 
 export function AddressList() {
   const { customer } = useAccountContext()
