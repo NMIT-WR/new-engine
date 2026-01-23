@@ -69,6 +69,8 @@ dockerArgs.push(
   '-v',
   `${path.resolve(uiRoot, 'test')}:/app/test`,
   '-v',
+  `${path.resolve(uiRoot, 'package.json')}:/app/package.json`,
+  '-v',
   `${path.resolve(uiRoot, 'playwright.config.ts')}:/app/playwright.config.ts`,
   imageName,
   'test',

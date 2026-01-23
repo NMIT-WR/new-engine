@@ -177,8 +177,16 @@ You can run `pnpm -C libs/ui storybook` or serve `storybook-static` with any sta
 
 Optional environment overrides:
 - `TEST_BASE_URL` (default: `http://host.docker.internal:6006`)
+- `TEST_STORIES` (comma-separated Storybook story ids to run, e.g. `atoms-button--states,molecules-productcard--layout-variants`)
+- `PLAYWRIGHT_WORKERS` (override worker count for parallel runs)
 - `DOCKER_PLATFORM` (default: `linux/amd64`)
 - `PLAYWRIGHT_DOCKER_IMAGE` (default: `new-engine-ui-playwright`)
+
+Example with parallel workers:
+
+```bash
+TEST_BASE_URL=http://127.0.0.1:6006 PLAYWRIGHT_WORKERS=6 pnpm -C libs/ui test:components:docker
+```
 
 ## 8. Publishing and releases
 

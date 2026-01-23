@@ -12,6 +12,9 @@ const staticDir = path.join(__dirname, 'storybook-static')
 export default defineConfig({
   testDir: './test',
   reporter: 'html',
+  workers: process.env.PLAYWRIGHT_WORKERS
+    ? Number(process.env.PLAYWRIGHT_WORKERS)
+    : undefined,
   use: {
     baseURL: storybookUrl,
   },

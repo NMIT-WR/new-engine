@@ -35,26 +35,63 @@ const stories = Object.values(
   (storybookIndex as StorybookIndex).entries,
 ).filter((entry) => entry.type === 'story')
 
-for (const story of stories) {
-  test(
-    `${story.title} ${story.name} should not have visual regressions`,
-    async ({ page }, workerInfo) => {
-      const params = new URLSearchParams({
-        id: story.id,
-        viewMode: 'story',
-      })
+const storyFilter = (process.env.TEST_STORIES ?? '')
+  .split(',')
+  .map((storyId) => storyId.trim())
+  .filter(Boolean)
 
-      await page.goto(`/iframe.html?${params.toString()}`)
-      await page.waitForSelector('#storybook-root')
-      await page.waitForLoadState('networkidle')
+const selectedStories =
+  storyFilter.length > 0
+    ? stories.filter((story) => storyFilter.includes(story.id))
+    : stories
 
-      await expect(page).toHaveScreenshot(
-        `${story.id}-${workerInfo.project.name}-${process.platform}.png`,
-        {
-          fullPage: true,
-          animations: 'disabled',
-        },
-      )
-    },
+if (storyFilter.length > 0 && selectedStories.length === 0) {
+  throw new Error(
+    `No stories matched TEST_STORIES=${storyFilter.join(',')}`,
   )
 }
+
+test.describe.parallel('storybook visual', () => {
+  for (const story of selectedStories) {
+    test(
+      `${story.title} ${story.name} should not have visual regressions`,
+      async ({ page }, workerInfo) => {
+        const params = new URLSearchParams({
+          id: story.id,
+          viewMode: 'story',
+        })
+        const mask = []
+
+        await page.emulateMedia({ reducedMotion: 'reduce' })
+        await page.goto(`/iframe.html?${params.toString()}`)
+        await page.waitForSelector('#storybook-root')
+        await page.addStyleTag({
+          content: `
+            *, *::before, *::after {
+              animation: none !important;
+              transition: none !important;
+              caret-color: transparent !important;
+            }
+            html {
+              scroll-behavior: auto !important;
+            }
+          `,
+        })
+        await page.waitForLoadState('networkidle')
+
+        if (story.id === 'atoms-button--states') {
+          mask.push(page.locator('.icon-\\[svg-spinners--ring-resize\\]'))
+        }
+
+        await expect(page).toHaveScreenshot(
+          `${story.id}-${workerInfo.project.name}-${process.platform}.png`,
+          {
+            fullPage: true,
+            animations: 'disabled',
+            ...(mask.length > 0 ? { mask } : {}),
+          },
+        )
+      },
+    )
+  }
+})
