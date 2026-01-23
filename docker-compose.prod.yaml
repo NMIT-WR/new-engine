@@ -6,18 +6,3 @@ services:
       args:
         FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
     volumes: []  # No volume mounts in prod
-  payload:
-    build:
-      context: ./apps/payload
-      dockerfile: Dockerfile
-    environment:
-      DATABASE_URL: ${DC_DATABASE_URL}
-      PAYLOAD_SECRET: ${DC_PAYLOAD_SECRET:-supersecret}
-      PAYLOAD_BASE_URL: ${DC_PAYLOAD_BASE_URL}
-      PAYLOAD_API_KEY: ${DC_PAYLOAD_API_KEY}
-      PAYLOAD_SSO_PUBLIC_KEY: ${DC_PAYLOAD_SSO_PUBLIC_KEY}
-      PAYLOAD_SSO_ISSUER: ${DC_PAYLOAD_SSO_ISSUER}
-      PAYLOAD_SSO_AUDIENCE: ${DC_PAYLOAD_SSO_AUDIENCE}
-      PAYLOAD_SSO_ALG: ${DC_PAYLOAD_SSO_ALG}
-      PAYLOAD_SSO_ALLOWED_ORIGINS: ${DC_PAYLOAD_SSO_ALLOWED_ORIGINS}
-      NODE_ENV: production
