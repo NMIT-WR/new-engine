@@ -15,6 +15,11 @@ export type CmsListOptions = {
   locale?: string
 }
 
+export type CmsCategoryListOptions = {
+  locale?: string
+  categorySlug?: string
+}
+
 export type CmsPageDTO = {
   id: string
   slug: string
@@ -24,6 +29,16 @@ export type CmsPageDTO = {
   status?: CmsStatus
   visibility?: CmsVisibility
   publishedAt?: string | null
+}
+
+export type CmsPageCategoryDTO = {
+  id: number
+  title: string
+  slug: string
+  pages: Array<{
+    title: string
+    slug?: string | null
+  }>
 }
 
 export type CmsArticleDTO = {
@@ -37,6 +52,18 @@ export type CmsArticleDTO = {
   author?: string | unknown
   status?: CmsStatus
   publishedAt?: string | null
+}
+
+export type CmsArticleCategoryDTO = {
+  id: number
+  title: string
+  slug: string
+  articles: Array<{
+    title: string
+    slug?: string | null
+    excerpt?: string | null
+    featuredImage?: string | null
+  }>
 }
 
 export type CmsHeroCarouselDTO = {

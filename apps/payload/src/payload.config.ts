@@ -25,8 +25,10 @@ import { ArticleCategories } from './collections/ArticleCategories'
 import { PageCategories } from './collections/PageCategories'
 import { HeroCarousels } from './collections/HeroCarousels'
 import { Pages } from './collections/Pages'
-import { isEnabled, parseEnvList } from './lib/env'
-import { medusaSsoPostEndpoint } from './lib/endpoints/medusa-sso'
+import { getDocString, getSeoCollections, isEnabled, parseEnvList } from './lib/utils/env'
+import { medusaSsoPostEndpoint } from './lib/endpoints/medusaSso'
+import { articleCategoriesWithArticlesEndpoint } from './lib/endpoints/articleCategoriesWithArticles'
+import { pageCategoriesWithPagesEndpoint } from './lib/endpoints/pageCategoriesWithPages'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -48,7 +50,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  endpoints: [medusaSsoPostEndpoint],
+  endpoints: [
+    medusaSsoPostEndpoint,
+    pageCategoriesWithPagesEndpoint,
+    articleCategoriesWithArticlesEndpoint,
+  ],
   routes: {
     admin: '/',
   },
@@ -104,6 +110,8 @@ export default buildConfig({
       collections: {
         articles: isArticlesEnabled,
         pages: isPagesEnabled,
+        'article-categories': isArticlesEnabled,
+        'page-categories': isPagesEnabled,
         'hero-carousels': isHeroCarouselsEnabled,
       },
       enableTranslationSyncByDefault: true,

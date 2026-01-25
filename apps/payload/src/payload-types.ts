@@ -191,6 +191,10 @@ export interface ArticleCategory {
    * URL-friendly version of the title (e.g., "health")
    */
   slug: string;
+  /**
+   * When enabled, changes in the default language will automatically translate to other languages
+   */
+  translationSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -275,6 +279,10 @@ export interface PageCategory {
    * URL-friendly version of the title (e.g., "support")
    */
   slug: string;
+  /**
+   * When enabled, changes in the default language will automatically translate to other languages
+   */
+  translationSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -525,6 +533,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface ArticleCategoriesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  translationSync?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -570,6 +579,7 @@ export interface ArticlesSelect<T extends boolean = true> {
 export interface PageCategoriesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  translationSync?: T;
   updatedAt?: T;
   createdAt?: T;
 }

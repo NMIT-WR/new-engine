@@ -5,9 +5,13 @@ import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/lab
 import { createSlugField, createTitleField } from '../lib/constants/fields'
 import { fieldDescriptions } from '../lib/constants/descriptions'
 import { requireAuth } from '../lib/access/requireAuth'
+import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
+
+const COLLECTION_SLUG = 'page-categories'
+const invalidatePageCategoriesCache = createMedusaCacheHook(COLLECTION_SLUG)
 
 export const PageCategories: CollectionConfig = {
-  slug: 'page-categories',
+  slug: COLLECTION_SLUG,
   labels: collectionLabels.pageCategories,
   admin: {
     useAsTitle: 'title',
@@ -32,5 +36,7 @@ export const PageCategories: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [invalidatePageCategoriesCache],
+    afterDelete: [invalidatePageCategoriesCache],
   },
 }

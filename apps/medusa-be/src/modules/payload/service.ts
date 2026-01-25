@@ -6,6 +6,9 @@ import { MedusaError, Modules } from "@medusajs/framework/utils"
 import { createHash } from "crypto"
 import qs from "qs"
 import type {
+  CmsCategoryListOptions,
+  CmsArticleCategoryDTO,
+  CmsPageCategoryDTO,
   CmsListOptions,
   CmsHeroCarouselDTO,
   CmsPageDTO,
@@ -23,6 +26,10 @@ const STATUS_PUBLISHED = "published"
 const PAGES = "pages"
 const ARTICLES = "articles"
 const HERO_CAROUSELS = "hero-carousels"
+const PAGE_CATEGORIES = "page-categories"
+const ARTICLE_CATEGORIES = "article-categories"
+const PAGE_CATEGORY_GROUPS = "page-categories-with-pages"
+const ARTICLE_CATEGORY_GROUPS = "article-categories-with-articles"
 
 type InjectedDependencies = {
   logger: Logger
@@ -33,11 +40,10 @@ type InjectedDependencies = {
 const CACHE_TAGS = {
   ALL: CMS,
   PAGES: `${CMS}:${PAGES}`,
-  PAGE_LISTS: `${CMS}:${PAGES}:list`,
   ARTICLES: `${CMS}:${ARTICLES}`,
-  ARTICLE_LISTS: `${CMS}:${ARTICLES}:list`,
+  PAGE_CATEGORIES: `${CMS}:${PAGE_CATEGORIES}`,
+  ARTICLE_CATEGORIES: `${CMS}:${ARTICLE_CATEGORIES}`,
   HERO_CAROUSELS: `${CMS}:${HERO_CAROUSELS}`,
-  HERO_CAROUSEL_LISTS: `${CMS}:${HERO_CAROUSELS}:list`,
 } as const
 
 const DEFAULT_TTLS = {
@@ -129,6 +135,14 @@ export default class PayloadModuleService {
     return `?${qs.stringify(options, { encodeValuesOnly: true })}`
   }
 
+  private buildParamsQuery(params?: Record<string, unknown>): string {
+    if (!params) {
+      return ""
+    }
+    const query = qs.stringify(params, { encodeValuesOnly: true, skipNulls: true })
+    return query ? `?${query}` : ""
+  }
+
   private async getCached<T>(
     key: string,
     fetcher: () => Promise<T>,
@@ -168,6 +182,15 @@ export default class PayloadModuleService {
       : "default"
 
     return `${prefix}:${locale}:${hash}`
+  }
+
+  private buildCategoryListCacheKey(
+    prefix: string,
+    options?: CmsCategoryListOptions
+  ): string {
+    const locale = options?.locale ?? DEFAULT_LOCALE
+    const slug = options?.categorySlug ?? "all"
+    return `${prefix}:${locale}:${slug}`
   }
 
   private buildLocaleTag(tag: string, locale?: string): string {
@@ -218,29 +241,35 @@ export default class PayloadModuleService {
     )
   }
 
-  async listPublishedPages(options?: CmsListOptions): Promise<CmsPageDTO[]> {
-    const cacheKey = this.buildListCacheKey(CACHE_TAGS.PAGE_LISTS, options)
-    const localeTag = this.buildLocaleTag(CACHE_TAGS.PAGE_LISTS, options?.locale)
+  async listPageCategoriesWithPages(
+    options?: CmsCategoryListOptions
+  ): Promise<CmsPageCategoryDTO[]> {
+    const cacheKey = this.buildCategoryListCacheKey(
+      CACHE_TAGS.PAGE_CATEGORIES,
+      options
+    )
+    const localeTag = this.buildLocaleTag(
+      CACHE_TAGS.PAGE_CATEGORIES,
+      options?.locale
+    )
     return this.getCached(
       cacheKey,
       async () => {
-        const queryString = this.buildQuery({
-          limit: options?.limit,
-          page: options?.page,
-          sort: options?.sort,
+        const queryString = this.buildParamsQuery({
           locale: options?.locale,
-          where: {
-            status: { equals: STATUS_PUBLISHED },
-          },
+          categorySlug: options?.categorySlug,
         })
-        const result = await this.makeRequest<PayloadBulkResult<CmsPageDTO>>(
-          "GET",
-          `/${PAGES}${queryString}`
-        )
-        return result.docs
+        const result = await this.makeRequest<{
+          categories: CmsPageCategoryDTO[]
+        }>("GET", `/${PAGE_CATEGORY_GROUPS}${queryString}`)
+        return result.categories ?? []
       },
       this.listCacheTtl_,
-      [CACHE_TAGS.ALL, CACHE_TAGS.PAGES, CACHE_TAGS.PAGE_LISTS, localeTag]
+      [
+        CACHE_TAGS.ALL,
+        CACHE_TAGS.PAGE_CATEGORIES,
+        localeTag,
+      ]
     )
   }
 
@@ -276,37 +305,34 @@ export default class PayloadModuleService {
     )
   }
 
-  async listPublishedArticles(
-    options: CmsListOptions = {}
-  ): Promise<CmsArticleDTO[]> {
-    const cacheKey = this.buildListCacheKey(CACHE_TAGS.ARTICLE_LISTS, options)
-    const localeTag = this.buildLocaleTag(CACHE_TAGS.ARTICLE_LISTS, options.locale)
+  async listArticleCategoriesWithArticles(
+    options?: CmsCategoryListOptions
+  ): Promise<CmsArticleCategoryDTO[]> {
+    const cacheKey = this.buildCategoryListCacheKey(
+      CACHE_TAGS.ARTICLE_CATEGORIES,
+      options
+    )
+    const localeTag = this.buildLocaleTag(
+      CACHE_TAGS.ARTICLE_CATEGORIES,
+      options?.locale
+    )
 
     return this.getCached(
       cacheKey,
       async () => {
-        const where: Record<string, unknown> = {
-          status: { equals: STATUS_PUBLISHED },
-        }
-
-        const queryString = this.buildQuery({
-          limit: options.limit,
-          page: options.page,
-          sort: options.sort,
-          locale: options.locale,
-          where,
+        const queryString = this.buildParamsQuery({
+          locale: options?.locale,
+          categorySlug: options?.categorySlug,
         })
-        const result = await this.makeRequest<PayloadBulkResult<CmsArticleDTO>>(
-          "GET",
-          `/${ARTICLES}${queryString}`
-        )
-        return result.docs
+        const result = await this.makeRequest<{
+          categories: CmsArticleCategoryDTO[]
+        }>("GET", `/${ARTICLE_CATEGORY_GROUPS}${queryString}`)
+        return result.categories ?? []
       },
       this.listCacheTtl_,
       [
         CACHE_TAGS.ALL,
-        CACHE_TAGS.ARTICLES,
-        CACHE_TAGS.ARTICLE_LISTS,
+        CACHE_TAGS.ARTICLE_CATEGORIES,
         localeTag,
       ]
     )
@@ -314,11 +340,11 @@ export default class PayloadModuleService {
 
   async listHeroCarousels(options?: CmsListOptions): Promise<CmsHeroCarouselDTO[]> {
     const cacheKey = this.buildListCacheKey(
-      CACHE_TAGS.HERO_CAROUSEL_LISTS,
+      CACHE_TAGS.HERO_CAROUSELS,
       options
     )
     const localeTag = this.buildLocaleTag(
-      CACHE_TAGS.HERO_CAROUSEL_LISTS,
+      CACHE_TAGS.HERO_CAROUSELS,
       options?.locale
     )
     return this.getCached(
@@ -340,7 +366,6 @@ export default class PayloadModuleService {
       [
         CACHE_TAGS.ALL,
         CACHE_TAGS.HERO_CAROUSELS,
-        CACHE_TAGS.HERO_CAROUSEL_LISTS,
         localeTag,
       ]
     )
@@ -364,28 +389,38 @@ export default class PayloadModuleService {
     }
 
     const tags: string[] = []
-    if (collection === PAGES) {
+    const addTags = (allTags: string[], localeTag: string) => {
       if (clearAllLocales) {
-        tags.push(CACHE_TAGS.PAGES, CACHE_TAGS.PAGE_LISTS)
+        tags.push(...allTags)
       } else {
-        tags.push(this.buildLocaleTag(CACHE_TAGS.PAGE_LISTS, normalizedLocale))
+        tags.push(this.buildLocaleTag(localeTag, normalizedLocale))
       }
-    } else if (collection === ARTICLES) {
-      if (clearAllLocales) {
-        tags.push(CACHE_TAGS.ARTICLES, CACHE_TAGS.ARTICLE_LISTS)
-      } else {
-        tags.push(
-          this.buildLocaleTag(CACHE_TAGS.ARTICLE_LISTS, normalizedLocale)
+    }
+
+    switch (collection) {
+      case PAGES:
+        addTags(
+          [CACHE_TAGS.PAGES, CACHE_TAGS.PAGE_CATEGORIES],
+          CACHE_TAGS.PAGE_CATEGORIES
         )
-      }
-    } else if (collection === HERO_CAROUSELS) {
-      if (clearAllLocales) {
-        tags.push(CACHE_TAGS.HERO_CAROUSELS, CACHE_TAGS.HERO_CAROUSEL_LISTS)
-      } else {
-        tags.push(
-          this.buildLocaleTag(CACHE_TAGS.HERO_CAROUSEL_LISTS, normalizedLocale)
+        break
+      case ARTICLES:
+        addTags(
+          [CACHE_TAGS.ARTICLES, CACHE_TAGS.ARTICLE_CATEGORIES],
+          CACHE_TAGS.ARTICLE_CATEGORIES
         )
-      }
+        break
+      case PAGE_CATEGORIES:
+        addTags([CACHE_TAGS.PAGE_CATEGORIES], CACHE_TAGS.PAGE_CATEGORIES)
+        break
+      case ARTICLE_CATEGORIES:
+        addTags([CACHE_TAGS.ARTICLE_CATEGORIES], CACHE_TAGS.ARTICLE_CATEGORIES)
+        break
+      case HERO_CAROUSELS:
+        addTags([CACHE_TAGS.HERO_CAROUSELS], CACHE_TAGS.HERO_CAROUSELS)
+        break
+      default:
+        break
     }
 
     if (tags.length > 0) {

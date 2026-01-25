@@ -1,12 +1,15 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 import { z } from "zod"
 import { PAYLOAD_MODULE } from "../../../../modules/payload"
 import type PayloadModuleService from "../../../../modules/payload/service"
 import { getQueryParam } from "../../../../utils/query"
+import { optionalPositiveIntParam, optionalStringParam } from "../../../../utils/queryParams"
 
-export const StoreCmsHeroCarouselsSchema = createFindParams().extend({
-  locale: z.string().optional(),
+export const StoreCmsHeroCarouselsSchema = z.object({
+  locale: optionalStringParam,
+  limit: optionalPositiveIntParam,
+  page: optionalPositiveIntParam,
+  sort: optionalStringParam,
 })
 
 export type StoreCmsHeroCarouselsSchemaType = z.infer<
@@ -20,11 +23,16 @@ export async function GET(
   const cmsService = req.scope.resolve<PayloadModuleService>(PAYLOAD_MODULE)
 
   const locale = getQueryParam(req, "locale")
+  const limitParam = getQueryParam(req, "limit")
+  const pageParam = getQueryParam(req, "page")
+  const sort = getQueryParam(req, "sort")
+  const limit = limitParam ? Number(limitParam) : undefined
+  const page = pageParam ? Number(pageParam) : undefined
 
   const heroCarousels = await cmsService.listHeroCarousels({
-    limit: req.query.limit ? Number(req.query.limit) : undefined,
-    page: req.query.page ? Number(req.query.page) : undefined,
-    sort: req.query.sort ? String(req.query.sort) : undefined,
+    limit,
+    page,
+    sort,
     locale,
   })
 
