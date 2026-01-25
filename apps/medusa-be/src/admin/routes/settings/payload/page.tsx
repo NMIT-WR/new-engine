@@ -1,12 +1,48 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
+
+type PayloadRuntimeConfig = {
+  iframeUrl?: string
+  isIframeEnabled?: boolean
+}
 
 const PayloadRedirectPage = () => {
-  const iframeUrl = import.meta.env.VITE_PAYLOAD_IFRAME_URL
+  const [runtimeConfig, setRuntimeConfig] =
+    useState<PayloadRuntimeConfig | null>(null)
+  const [configError, setConfigError] = useState(false)
   const backendUrl = import.meta.env.VITE_BACKEND_URL
   const ssoBase = backendUrl
     ? `${backendUrl.replace(/\/$/, "")}/admin/payload/sso`
     : "/admin/payload/sso"
+
+  useEffect(() => {
+    let isMounted = true
+    fetch("/admin/payload/config")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!isMounted || !data) {
+          if (isMounted) {
+            setConfigError(true)
+          }
+          return
+        }
+        setRuntimeConfig({
+          iframeUrl: data.iframeUrl,
+          isIframeEnabled: data.isIframeEnabled,
+        })
+      })
+      .catch(() => {
+        if (isMounted) {
+          setConfigError(true)
+        }
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const iframeUrl = runtimeConfig?.iframeUrl
+  const isIframeEnabled = runtimeConfig?.isIframeEnabled ?? true
 
   let returnTo = "/"
   if (iframeUrl) {
@@ -24,6 +60,7 @@ const PayloadRedirectPage = () => {
 
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [height, setHeight] = useState<number | null>(null)
+  const hasOpenedRef = useRef(false)
 
   useLayoutEffect(() => {
     const updateHeight = () => {
@@ -50,10 +87,42 @@ const PayloadRedirectPage = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (isIframeEnabled || hasOpenedRef.current || !iframeUrl) {
+      return
+    }
+    hasOpenedRef.current = true
+    window.open(iframeSrc, "_blank", "noopener,noreferrer")
+  }, [iframeSrc, isIframeEnabled])
+
+  if (!runtimeConfig && !configError) {
+    return (
+      <div style={{ padding: "1.5rem" }}>
+        Loading Payload configuration…
+      </div>
+    )
+  }
+
+  if (configError && !runtimeConfig) {
+    return (
+      <div style={{ padding: "1.5rem" }}>
+        Unable to load Payload configuration.
+      </div>
+    )
+  }
+
   if (!iframeUrl) {
     return (
       <div style={{ padding: "1.5rem" }}>
         Payload iframe URL is not configured.
+      </div>
+    )
+  }
+
+  if (!isIframeEnabled) {
+    return (
+      <div style={{ padding: "1.5rem" }}>
+        <p>Opening Payload Admin in a new tab…</p>
       </div>
     )
   }
