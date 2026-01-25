@@ -15,3 +15,16 @@ export const parseEnvList = (envVar: string): string[] => {
   const raw = getEnv(envVar)
   return raw ? raw.split(',').map((item) => item.trim()).filter(Boolean) : []
 }
+
+type SeoCollectionFlags = {
+  isArticlesEnabled: boolean
+  isPagesEnabled: boolean
+}
+
+export const getSeoCollections = (flags: SeoCollectionFlags): string[] =>
+  [flags.isArticlesEnabled ? 'articles' : null, flags.isPagesEnabled ? 'pages' : null].filter(
+    (collection): collection is string => Boolean(collection)
+  )
+
+export const getDocString = (value: unknown): string =>
+  typeof value === 'string' ? value : ''

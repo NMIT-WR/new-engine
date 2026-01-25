@@ -36,18 +36,10 @@ const defaultLocale = envLocales[0]
 const isArticlesEnabled = isEnabled('FEATURE_PAYLOAD_ARTICLES_ENABLED')
 const isPagesEnabled = isEnabled('FEATURE_PAYLOAD_PAGES_ENABLED')
 const isHeroCarouselsEnabled = isEnabled('FEATURE_PAYLOAD_HERO_CAROUSELS_ENABLED')
-const autoTranslateCollections = {
-  articles: isArticlesEnabled,
-  pages: isPagesEnabled,
-  'hero-carousels': isHeroCarouselsEnabled,
-}
-const seoCollections = [
-  isArticlesEnabled ? 'articles' : null,
-  isPagesEnabled ? 'pages' : null,
-].filter((collection): collection is string => Boolean(collection))
-
-const getDocString = (value: unknown): string =>
-  typeof value === 'string' ? value : ''
+const seoCollections = getSeoCollections({
+  isArticlesEnabled,
+  isPagesEnabled,
+})
 
 export default buildConfig({
   admin: {
@@ -84,6 +76,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    schemaName: process.env.PAYLOAD_SCHEMA_NAME,
   }),
   sharp,
   plugins: [
@@ -108,7 +101,11 @@ export default buildConfig({
         'analytics',
         'image',
       ],
-      collections: autoTranslateCollections,
+      collections: {
+        articles: isArticlesEnabled,
+        pages: isPagesEnabled,
+        'hero-carousels': isHeroCarouselsEnabled,
+      },
       enableTranslationSyncByDefault: true,
       translationExclusionsSlug: 'translation-exclusions',
       enableExclusions: true,
