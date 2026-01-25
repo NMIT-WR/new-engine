@@ -72,7 +72,9 @@ services:
       context: .
       dockerfile: docker/development/pnpm/Dockerfile
     working_dir: /var/www
-    command: pnpm --filter=payload run dev --hostname 0.0.0.0 --port 8083
+    command: >-
+      sh -c "pnpm --filter payload payload migrate &&
+      pnpm --filter=payload run dev --hostname 0.0.0.0 --port 8083"
     volumes:
       - .:/var/www
     ports:

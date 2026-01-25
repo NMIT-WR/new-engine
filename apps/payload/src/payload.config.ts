@@ -83,6 +83,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
     schemaName: process.env.PAYLOAD_SCHEMA_NAME,
+    push: false,
   }),
   sharp,
   plugins: [
