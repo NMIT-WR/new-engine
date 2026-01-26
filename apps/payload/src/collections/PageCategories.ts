@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { generateSlugFromTitle } from '../lib/hooks/slug'
-import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/labels'
+import { adminGroups, collectionLabels } from '../lib/constants/labels'
 import { createSlugField, createTitleField } from '../lib/constants/fields'
 import { fieldDescriptions } from '../lib/constants/descriptions'
 import { requireAuth } from '../lib/access/requireAuth'
