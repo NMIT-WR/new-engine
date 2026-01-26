@@ -1,67 +1,93 @@
-# Payload Blank Template
+# Payload CMS (apps/payload)
 
-This template comes configured with the bare minimum to get started on anything you need.
+This app is the Payload 3 admin + API for the CMS portion of the monorepo. It runs on Next.js 15, uses Postgres for
+data storage, S3-compatible storage for media, and includes integrations for SEO, localization, Medusa cache
+invalidation, and Medusa SSO.
 
-## Quick start
+## What is included
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+- Collections: Users, Media, Articles, Article Categories, Pages, Page Categories, Hero Carousels
+- Feature flags to enable/disable content groups (defaults to enabled unless set to 0/false)
+- Localization with configurable locales
+- Auto-translate plugin (OpenAI)
+- S3 storage adapter (MinIO/AWS)
+- Custom API endpoints for categories and Medusa SSO
 
-## Quick Start - local setup
+## Local development
 
-To spin up this template locally, follow these steps:
+### 1) Configure env
 
-### Clone
+Copy the example and update the required values:
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+```bash
+cp apps/payload/.env.example apps/payload/.env
+```
 
-### Development
+Required:
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+- `DATABASE_URL`: Postgres connection string (the example file still shows MongoDB format)
+- `PAYLOAD_SECRET`
+- `PAYLOAD_LOCALES`: comma-separated list, first entry is the default locale
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+Optional (commonly used):
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+- `PAYLOAD_SCHEMA_NAME`
+- `FEATURE_PAYLOAD_ARTICLES_ENABLED`, `FEATURE_PAYLOAD_PAGES_ENABLED`, `FEATURE_PAYLOAD_HERO_CAROUSELS_ENABLED`
+- `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`
+- `OPENAI_API_KEY`, `OPENAI_BASE_URL`
+- `MEDUSA_BACKEND_URL` (enables CMS cache invalidation in Medusa)
+- `PAYLOAD_SSO_PUBLIC_KEY`, `PAYLOAD_SSO_ALLOWED_ORIGINS`, `PAYLOAD_SSO_ISSUER`,
+  `PAYLOAD_SSO_AUDIENCE`, `PAYLOAD_SSO_ALG`
 
-#### Docker (Optional)
+### 2) Install deps (repo root)
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+```bash
+pnpm install
+```
 
-To do so, follow these steps:
+### 3) Run migrations
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+```bash
+pnpm --filter payload payload migrate
+```
 
-## How it works
+### 4) Start dev server
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+```bash
+pnpm --filter payload dev
+```
 
-### Collections
+Or with Nx:
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+```bash
+npx nx dev payload
+```
 
-- #### Users (Authentication)
+Open the admin UI at `http://localhost:3000/admin` (adjust if you customize `routes.admin` in
+`apps/payload/src/payload.config.ts`).
 
-  Users are auth-enabled collections that have access to the admin panel.
+### Docker (monorepo)
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+The root `docker-compose.yaml` runs Payload on port 8083 and executes migrations on startup. Use the root README steps
+(`make dev`) if you prefer the Docker stack.
 
-- #### Media
+## API endpoints
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+All endpoints are mounted under the Payload API base (default: `/api`):
 
-### Docker
+- `GET /api/article-categories-with-articles?categorySlug=&locale=`
+- `GET /api/page-categories-with-pages?categorySlug=&locale=`
+- `POST /api/medusa-sso` (form-data `token`, optional `returnTo`)
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+## Scripts
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+- `pnpm dev`, `pnpm devsafe`, `pnpm build`, `pnpm start`
+- `pnpm generate:types` after schema changes
+- `pnpm generate:importmap` after admin component changes
+- `pnpm test:int`, `pnpm test:e2e`, `pnpm test`
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+## Notes
 
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+- Postgres schema migrations live in `apps/payload/src/migrations`.
+- Localization is controlled by `PAYLOAD_LOCALES`; supported languages include: `en`, `cs`, `sk`, `pl`, `hu`, `ro`,
+  `sl`, `de`, `fr`, `es`.
