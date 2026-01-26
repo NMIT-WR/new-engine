@@ -3,7 +3,6 @@ import { tv, type VariantProps } from "tailwind-variants"
 import { Icon, type IconType } from "../atoms/icon"
 import { Link } from "../atoms/link"
 
-// === VARIANTS ===
 const breadcrumbsVariants = tv({
   slots: {
     root: ["inline-flex flex-wrap items-center", "bg-breadcrumb-bg"],
@@ -19,9 +18,9 @@ const breadcrumbsVariants = tv({
       "no-underline",
       "cursor-pointer",
       "hover:text-breadcrumb-fg-hover",
-      "focus:outline-none",
-      "focus-visible:ring",
-      "focus-visible:ring-breadcrumb-ring",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-breadcrumb-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     currentLink: ["cursor-default"],
     separator: [
@@ -37,10 +36,7 @@ const breadcrumbsVariants = tv({
   compoundSlots: [
     {
       slots: ["link", "currentLink"],
-      class: [
-        "inline-flex items-center font-medium",
-        "outline-none focus:outline-none",
-      ],
+      class: ["inline-flex items-center font-medium"],
     },
   ],
   variants: {
@@ -73,7 +69,6 @@ const breadcrumbsVariants = tv({
   },
 })
 
-// === TYPES ===
 export type BreadcrumbItemType = {
   label: string
   href?: string
@@ -150,7 +145,6 @@ interface BreadcrumbProps extends VariantProps<typeof breadcrumbsVariants> {
   linkAs?: ElementType | ReactElement<HTMLAnchorElement>
 }
 
-// === COMPONENT ===
 export function Breadcrumb({
   items,
   maxItems = 0,
@@ -169,6 +163,11 @@ export function Breadcrumb({
         ? [items.at(-1)]
         : [items[0], "ellipsis", ...items.slice(-(maxItems - 1))]
 
+  // If any item has explicit isCurrent, use only that; otherwise default to last item
+  const hasExplicitCurrent = displayItems.some(
+    (item) => item && typeof item !== "string" && item.isCurrent
+  )
+
   return (
     <nav aria-label={ariaLabel} className={root({ className })} {...props}>
       <ol className={list()}>
@@ -182,7 +181,9 @@ export function Breadcrumb({
                 href={item.href}
                 icon={item.icon}
                 isCurrentPage={
-                  item.isCurrent || index === displayItems.length - 1
+                  hasExplicitCurrent
+                    ? item.isCurrent
+                    : index === displayItems.length - 1
                 }
                 key={`${item.label}`}
                 label={item.label}

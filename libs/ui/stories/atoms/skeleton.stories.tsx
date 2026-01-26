@@ -22,8 +22,30 @@ type Story = StoryObj<typeof Skeleton>
 
 // ===== BASIC USAGE =====
 
-export const Basic: Story = {
-  render: () => <Skeleton.Rectangle className="h-20 w-64" />,
+export const Playground: Story = {
+  args: {
+    variant: 'primary',
+    speed: 'normal',
+  },
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary'],
+      description: 'Visual variant of the skeleton',
+    },
+    speed: {
+      control: 'select',
+      options: ['slow', 'normal', 'fast'],
+      description: 'Animation speed',
+    },
+  },
+  render: (args) => (
+    <div className="space-y-250 w-md">
+      <Skeleton.Rectangle {...args} className="h-20 w-xs" />
+      <Skeleton.Text {...args} noOfLines={3} />
+      <Skeleton.Circle {...args} size="lg" />
+    </div>
+  ),
 }
 
 export const WithContent: Story = {
@@ -38,8 +60,8 @@ export const WithContent: Story = {
         >
           Toggle Loaded State
         </Button>
-        <Skeleton isLoaded={isLoaded} className="h-20 w-64">
-          <div className="h-20 w-64 bg-primary text-white flex items-center justify-center rounded">
+        <Skeleton isLoaded={isLoaded} className="h-20 w-xs">
+          <div className="h-20 w-xs bg-primary text-white flex items-center justify-center rounded">
             ✨ Content loaded!
           </div>
         </Skeleton>
@@ -53,11 +75,11 @@ export const Variants: Story = {
     <div className="space-y-250">
       <div>
         <p className="mb-150 text-sm text-fg-secondary">Primary (default)</p>
-        <Skeleton.Rectangle variant="primary" className="h-20 w-64" />
+        <Skeleton.Rectangle variant="primary" className="h-20 w-xs" />
       </div>
       <div>
         <p className="mb-150 text-sm text-fg-secondary">Secondary</p>
-        <Skeleton.Rectangle variant="secondary" className="h-20 w-64" />
+        <Skeleton.Rectangle variant="secondary" className="h-20 w-xs" />
       </div>
     </div>
   ),
@@ -68,15 +90,15 @@ export const AnimationSpeed: Story = {
     <div className="space-y-300">
       <div>
         <p className="mb-150 text-sm text-fg-secondary">Slow (3s)</p>
-        <Skeleton.Rectangle speed="slow" className="h-16 w-64" />
+        <Skeleton.Rectangle speed="slow" className="h-16 w-xs" />
       </div>
       <div>
         <p className="mb-150 text-sm text-fg-secondary">Normal (2s) - default</p>
-        <Skeleton.Rectangle speed="normal" className="h-16 w-64" />
+        <Skeleton.Rectangle speed="normal" className="h-16 w-xs" />
       </div>
       <div>
         <p className="mb-150 text-sm text-fg-secondary">Fast (1s)</p>
-        <Skeleton.Rectangle speed="fast" className="h-16 w-64" />
+        <Skeleton.Rectangle speed="fast" className="h-16 w-xs" />
       </div>
     </div>
   ),
@@ -124,8 +146,6 @@ export const SpeedInheritance: Story = {
     </div>
   ),
 }
-
-// ===== CIRCLE VARIANTS =====
 
 export const CircleSizes: Story = {
   render: () => (
@@ -256,8 +276,6 @@ export const TextNumberOfLines: Story = {
   ),
 }
 
-// ===== RECTANGLE VARIANTS =====
-
 export const RectangleAspectRatios: Story = {
   render: () => (
     <div className="grid grid-cols-3 gap-250">
@@ -286,18 +304,16 @@ export const RectangleFixedDimensions: Story = {
       </div>
       <div>
         <p className="mb-150 text-sm text-fg-secondary">Fixed width + height</p>
-        <Skeleton.Rectangle className="w-64 h-16" />
+        <Skeleton.Rectangle className="w-xs h-16" />
       </div>
     </div>
   ),
 }
 
-// ===== COMPOSITION EXAMPLES =====
-
 export const ProductCardSkeleton: Story = {
   name: '🛍️ Product Card',
   render: () => (
-    <div className="w-80 border p-250 rounded-lg">
+    <div className="w-md border p-250 rounded-lg">
       <Skeleton.Rectangle className="mb-250 h-64" />
       <Skeleton.Text noOfLines={2} size="sm" />
       <div className="flex gap-150 mt-250">
@@ -344,8 +360,6 @@ export const FeedSkeleton: Story = {
   ),
 }
 
-// ===== ACCESSIBILITY =====
-
 export const ReducedMotion: Story = {
   name: '♿ Reduced Motion',
   parameters: {
@@ -364,7 +378,7 @@ export const ReducedMotion: Story = {
             in their OS, animations automatically switch to the static state shown below.
         </p>
       </div>
-      <Skeleton.Rectangle className="h-20 w-64 force-reduced-motion" />
+      <Skeleton.Rectangle className="h-20 w-xs force-reduced-motion" />
       <Skeleton.Text noOfLines={3} className="force-reduced-motion" />
       <Skeleton.Circle size="lg" className="force-reduced-motion" />
     </div>

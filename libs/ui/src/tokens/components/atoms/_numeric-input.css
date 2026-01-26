@@ -26,7 +26,7 @@
   --color-numeric-input-input-bg: transparent;
   --color-numeric-input-input-bg-hover: var(--color-numeric-input-hover);
   --color-numeric-input-input-bg-focus: var(--color-numeric-input-focus);
-  --padding-numeric-input-input: 0 0 0 var(--spacing-150);
+  --padding-numeric-input-input: var(--spacing-150);
 
   /* === TRIGGER === */
   --color-numeric-input-trigger-container-bg: var(--color-numeric-input-bg);

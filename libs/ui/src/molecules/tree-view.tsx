@@ -12,7 +12,6 @@ import type { VariantProps } from "tailwind-variants"
 import { Icon, type IconType } from "../atoms/icon"
 import { tv } from "../utils"
 
-// === COLLECTION TYPES ===
 export interface TreeNode {
   id: string
   name: string
@@ -27,26 +26,28 @@ export interface TreeNode {
   [key: string]: unknown
 }
 
-// === COMPONENT VARIANTS ===
 const treeViewVariants = tv({
   slots: {
     root: "relative rounded-tree bg-tree-root-bg",
     label: ["font-tree-label text-tree-label-fg"],
     tree: [
-      "bg-tree-bg outline-none",
-      "focus-visible:ring",
-      "focus-visible:ring-tree-ring",
+      "bg-tree-bg",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-tree-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     branch: [
-      "data-[disabled]:pointer-events-none data-[disabled]:text-tree-fg-disabled",
+      "data-disabled:cursor-not-allowed",
+      "data-disabled:text-tree-fg-disabled",
+      "data-disabled:*:pointer-events-none",
     ],
     branchTrigger: [
       "group flex items-center justify-between",
       "hover:bg-tree-node-bg-hover",
       "cursor-pointer",
-      "has-focus-visible:outline-none",
-      "has-focus-visible:ring",
-      "has-focus-visible:ring-tree-ring",
+      "has-focus-visible:outline-(style:--default-ring-style) has-focus-visible:outline-(length:--default-ring-width)",
+      "has-focus-visible:outline-tree-ring",
+      "has-focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     branchControl: ["flex-1"],
     branchText: ["flex-1"],
@@ -62,11 +63,11 @@ const treeViewVariants = tv({
     ],
     item: [
       "hover:bg-tree-node-bg-hover hover:text-tree-fg-hover",
-      "data-[selected]:hover:bg-tree-node-bg-hover",
-      "data-[selected]:hover:text-tree-fg-hover",
-      "focus-visible:outline-none",
-      "focus-visible:ring",
-      "focus-visible:ring-tree-ring",
+      "data-selected:hover:bg-tree-node-bg-hover",
+      "data-selected:hover:text-tree-fg-hover",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-tree-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     itemText: ["flex-1"],
     nodeIcon: ["hover:text-tree-icon-hover"],
@@ -87,10 +88,9 @@ const treeViewVariants = tv({
       class: [
         "flex items-center gap-tree-icon p-tree-node",
         "cursor-pointer",
-        "data-[selected]:text-tree-fg-selected",
+        "data-selected:text-tree-fg-selected",
         "group-hover:text-tree-fg-hover",
-        "data-[selected]:group-hover:text-tree-fg-hover",
-        "focus-visible:outline-none",
+        "data-selected:group-hover:text-tree-fg-hover",
       ],
     },
   ],
@@ -124,8 +124,6 @@ const treeViewVariants = tv({
   },
 })
 
-// === CONTEXTS ===
-// Main context for sharing tree state
 interface TreeViewContextValue {
   api: tree.Api
   size?: "sm" | "md" | "lg"
@@ -143,7 +141,6 @@ function useTreeViewContext() {
   return context
 }
 
-// Node context for sharing node-specific state
 interface TreeViewNodeContextValue {
   node: TreeNode
   indexPath: number[]
@@ -163,7 +160,6 @@ function useTreeViewNodeContext() {
   return context
 }
 
-// === ROOT COMPONENT ===
 interface TreeViewRootProps
   extends VariantProps<typeof treeViewVariants>,
     Omit<tree.Props, "id" | "size">,
@@ -179,7 +175,6 @@ export function TreeView({
   size,
   selectionBehavior = "all",
 
-  // Zag.js props
   dir = "ltr",
   selectionMode = "single",
   expandedValue,
@@ -239,7 +234,6 @@ export function TreeView({
   )
 }
 
-// === LABEL COMPONENT ===
 interface TreeViewLabelProps extends ComponentPropsWithoutRef<"h3"> {}
 
 TreeView.Label = function TreeViewLabel({
@@ -260,7 +254,6 @@ TreeView.Label = function TreeViewLabel({
   )
 }
 
-// === TREE CONTAINER COMPONENT ===
 interface TreeViewTreeProps extends ComponentPropsWithoutRef<"div"> {}
 
 TreeView.Tree = function TreeViewTree({
@@ -281,7 +274,6 @@ TreeView.Tree = function TreeViewTree({
   )
 }
 
-// === NODE PROVIDER COMPONENT ===
 interface TreeViewNodeProviderProps {
   node: TreeNode
   indexPath: number[]
@@ -306,7 +298,6 @@ TreeView.NodeProvider = function TreeViewNodeProvider({
   )
 }
 
-// === BRANCH COMPONENT ===
 interface TreeViewBranchProps extends ComponentPropsWithoutRef<"div"> {}
 
 TreeView.Branch = function TreeViewBranch({
@@ -328,7 +319,6 @@ TreeView.Branch = function TreeViewBranch({
   )
 }
 
-// === BRANCH TRIGGER COMPONENT ===
 interface TreeViewBranchTriggerProps extends ComponentPropsWithoutRef<"div"> {}
 
 TreeView.BranchTrigger = function TreeViewBranchTrigger({
@@ -345,7 +335,6 @@ TreeView.BranchTrigger = function TreeViewBranchTrigger({
   )
 }
 
-// === BRANCH CONTROL COMPONENT ===
 interface TreeViewBranchControlProps extends ComponentPropsWithoutRef<"div"> {}
 
 TreeView.BranchControl = function TreeViewBranchControl({
@@ -356,7 +345,6 @@ TreeView.BranchControl = function TreeViewBranchControl({
   const { api, styles, selectionBehavior } = useTreeViewContext()
   const { node, nodeProps, nodeState } = useTreeViewNodeContext()
 
-  // Determine if this branch can be selected
   const isSelectable = (() => {
     switch (selectionBehavior) {
       case "all":
@@ -370,10 +358,8 @@ TreeView.BranchControl = function TreeViewBranchControl({
     }
   })()
 
-  // Get props based on selectability
   const controlProps = api.getBranchControlProps(nodeProps)
 
-  // Modify props if not selectable
   const finalProps = isSelectable
     ? controlProps
     : {
@@ -405,7 +391,6 @@ TreeView.BranchControl = function TreeViewBranchControl({
   )
 }
 
-// === BRANCH TEXT COMPONENT ===
 interface TreeViewBranchTextProps {
   children?: ReactNode
   className?: string
@@ -428,7 +413,6 @@ TreeView.BranchText = function TreeViewBranchText({
   )
 }
 
-// === BRANCH INDICATOR COMPONENT ===
 interface TreeViewBranchIndicatorProps {
   icon?: IconType
   className?: string
@@ -463,7 +447,6 @@ TreeView.BranchIndicator = function TreeViewBranchIndicator({
   )
 }
 
-// === BRANCH CONTENT COMPONENT ===
 interface TreeViewBranchContentProps extends ComponentPropsWithoutRef<"div"> {}
 
 TreeView.BranchContent = function TreeViewBranchContent({
@@ -485,7 +468,6 @@ TreeView.BranchContent = function TreeViewBranchContent({
   )
 }
 
-// === INDENT GUIDE COMPONENT ===
 interface TreeViewIndentGuideProps {
   className?: string
 }
@@ -504,7 +486,6 @@ TreeView.IndentGuide = function TreeViewIndentGuide({
   )
 }
 
-// === ITEM COMPONENT (LEAF) ===
 interface TreeViewItemProps extends ComponentPropsWithoutRef<"div"> {}
 
 TreeView.Item = function TreeViewItem({
@@ -515,7 +496,6 @@ TreeView.Item = function TreeViewItem({
   const { api, styles, selectionBehavior } = useTreeViewContext()
   const { node, nodeProps, nodeState } = useTreeViewNodeContext()
 
-  // Determine if this item can be selected
   const isSelectable = (() => {
     switch (selectionBehavior) {
       case "all":
@@ -528,10 +508,8 @@ TreeView.Item = function TreeViewItem({
     }
   })()
 
-  // Get props based on selectability
   const itemProps = api.getItemProps(nodeProps)
 
-  // Modify props if not selectable
   const finalProps = isSelectable
     ? itemProps
     : {
@@ -556,7 +534,6 @@ TreeView.Item = function TreeViewItem({
   )
 }
 
-// === ITEM TEXT COMPONENT ===
 interface TreeViewItemTextProps {
   children?: ReactNode
   className?: string
@@ -579,7 +556,6 @@ TreeView.ItemText = function TreeViewItemText({
   )
 }
 
-// === NODE ICON COMPONENT ===
 interface TreeViewNodeIconProps extends ComponentPropsWithoutRef<"span"> {
   icon?: IconType
 }
@@ -592,7 +568,6 @@ TreeView.NodeIcon = function TreeViewNodeIcon({
   const { styles } = useTreeViewContext()
   const { node, nodeState } = useTreeViewNodeContext()
 
-  // Determine which icon to show
   const iconToShow =
     icon ||
     (nodeState.isBranch
@@ -613,7 +588,6 @@ TreeView.NodeIcon = function TreeViewNodeIcon({
   )
 }
 
-// === HELPER NODE COMPONENT ===
 // This component provides a default implementation using all subcomponents
 interface TreeViewNodeProps {
   node: TreeNode
@@ -678,5 +652,4 @@ TreeView.Node = function TreeViewNode({
   )
 }
 
-// Export main component with all subcomponents
 TreeView.displayName = "TreeView"

@@ -14,14 +14,6 @@ const meta: Meta<typeof Icon> = {
 export default meta
 type Story = StoryObj<typeof Icon>
 
-// Basic usage
-export const Basic: Story = {
-  args: {
-    icon: 'icon-[mdi-light--alert]',
-    size: 'md',
-  },
-}
-
 // All sizes
 export const AllSizes: Story = {
   render: () => (
@@ -48,8 +40,6 @@ export const AllColors: Story = {
         <Icon icon="token-icon-error" color="success" />
         <Icon icon="token-icon-error" color="danger" />
         <Icon icon="token-icon-error" color="warning" />
-        <Icon icon="token-icon-error" />
-        <Icon icon="token-icon-error" />
       </VariantGroup>
     </VariantContainer>
   ),
