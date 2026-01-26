@@ -59,6 +59,9 @@ services:
       context: .
       dockerfile: docker/development/medusa-be/Dockerfile
       target: dev
+      args:
+        FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
+        FEATURE_PAYLOAD_ENABLED: ${DC_FEATURE_PAYLOAD_ENABLED:-0}
     volumes:
       - .:/var/www
     healthcheck:
