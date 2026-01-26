@@ -7,9 +7,12 @@ import { fieldDescriptions } from '../lib/constants/descriptions'
 import { requireAuth } from '../lib/access/requireAuth'
 import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
 
+/** Collection slug for article categories. */
 const COLLECTION_SLUG = 'article-categories'
+/** Hook to invalidate Medusa cache when article categories change. */
 const invalidateArticleCategoriesCache = createMedusaCacheHook(COLLECTION_SLUG)
 
+/** Payload collection config for article categories. */
 export const ArticleCategories: CollectionConfig = {
   slug: COLLECTION_SLUG,
   labels: collectionLabels.articleCategories,

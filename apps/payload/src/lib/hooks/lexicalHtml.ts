@@ -7,6 +7,7 @@ import {
 
 type UnknownRecord = Record<string, unknown>
 
+/** Narrow unknown values to a Lexical serialized editor state. */
 const isLexicalState = (value: unknown): value is SerializedEditorState => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return false
@@ -15,6 +16,9 @@ const isLexicalState = (value: unknown): value is SerializedEditorState => {
   return 'root' in value
 }
 
+/**
+ * Recursively convert Lexical editor state values to HTML strings.
+ */
 export const convertLexicalValueToHTML = async (
   value: unknown,
   req?: PayloadRequest | null

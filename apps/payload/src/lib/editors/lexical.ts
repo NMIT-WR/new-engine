@@ -24,6 +24,7 @@ import {
   FixedToolbarFeature,
 } from '@payloadcms/richtext-lexical'
 
+/** Create a shared Lexical editor configuration for CMS rich text fields. */
 export const createLexicalEditor = () => {
   return lexicalEditor({
     features: [

@@ -1,9 +1,11 @@
+/** Minimal category document shape used in collection aggregation. */
 export type CategoryDoc = {
   id: number
   title: unknown
   slug: unknown
 }
 
+/** Extract a category document from an unknown relationship value. */
 export const getCategoryDoc = (category: unknown): CategoryDoc | null => {
   if (!category || typeof category !== 'object') {
     return null
@@ -22,6 +24,7 @@ export const getCategoryDoc = (category: unknown): CategoryDoc | null => {
   }
 }
 
+/** Resolve a media URL from an upload relationship value. */
 export const getMediaUrl = (featuredImage: unknown): string | null => {
   if (!featuredImage || typeof featuredImage !== 'object') {
     return null

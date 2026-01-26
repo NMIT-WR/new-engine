@@ -2,6 +2,7 @@ import { headersWithCors, type PayloadRequest } from 'payload'
 
 type LocaleValue = PayloadRequest['locale']
 
+/** Normalize query parameters that might be serialized as "null"/"undefined". */
 const normalizeParam = (value: string | null): string | undefined => {
   if (!value || value === 'null' || value === 'undefined') {
     return undefined
@@ -9,11 +10,13 @@ const normalizeParam = (value: string | null): string | undefined => {
   return value
 }
 
+/** Read a string query param from a Payload request URL. */
 export const getQueryParam = (req: PayloadRequest, key: string): string | undefined => {
   const url = new URL(req.url ?? '', 'http://localhost')
   return normalizeParam(url.searchParams.get(key))
 }
 
+/** Resolve a locale from the request and validate against configured locales. */
 export const getLocaleFromRequest = (req: PayloadRequest): LocaleValue => {
   const localeParam = getQueryParam(req, 'locale')
   if (!localeParam) {
@@ -29,6 +32,7 @@ export const getLocaleFromRequest = (req: PayloadRequest): LocaleValue => {
   return localeCodes.includes(localeParam) ? (localeParam as LocaleValue) : undefined
 }
 
+/** Build a JSON response with Payload CORS headers applied. */
 export const buildJsonResponse = (req: PayloadRequest, data: unknown): Response => {
   const headers = headersWithCors({
     headers: new Headers({ 'Content-Type': 'application/json' }),

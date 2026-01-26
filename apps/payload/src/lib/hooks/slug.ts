@@ -1,3 +1,4 @@
+/** Convert a string into a URL-friendly slug. */
 export const generateSlug = (value: string): string =>
   value
     .toLowerCase()
@@ -8,6 +9,7 @@ export const generateSlug = (value: string): string =>
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
 
+/** Generate a slug from a title or return the fallback value. */
 export const generateSlugFromTitle = (
   title: unknown,
   fallback = ''

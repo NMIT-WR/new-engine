@@ -5,6 +5,7 @@ import type PayloadModuleService from "../../../../modules/payload/service"
 import { getQueryParam } from "../../../../utils/query"
 import { optionalPositiveIntParam, optionalStringParam } from "../../../../utils/queryParams"
 
+/** Query schema for fetching CMS hero carousel lists. */
 export const StoreCmsHeroCarouselsSchema = z.object({
   locale: optionalStringParam,
   limit: optionalPositiveIntParam,
@@ -12,10 +13,12 @@ export const StoreCmsHeroCarouselsSchema = z.object({
   sort: optionalStringParam,
 })
 
+/** Parsed query type for hero carousel listing. */
 export type StoreCmsHeroCarouselsSchemaType = z.infer<
   typeof StoreCmsHeroCarouselsSchema
 >
 
+/** Store API handler returning hero carousels with list options. */
 export async function GET(
   req: MedusaRequest<unknown, StoreCmsHeroCarouselsSchemaType>,
   res: MedusaResponse

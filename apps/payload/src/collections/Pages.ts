@@ -15,9 +15,12 @@ import {
   createTitleField,
 } from '../lib/constants/fields'
 
+/** Collection slug for pages. */
 const COLLECTION_SLUG = 'pages'
+/** Hook to invalidate Medusa cache when pages change. */
 const invalidatePagesCache = createMedusaCacheHook(COLLECTION_SLUG)
 
+/** Payload collection config for pages. */
 export const Pages: CollectionConfig = {
   slug: COLLECTION_SLUG,
   labels: collectionLabels.pages,

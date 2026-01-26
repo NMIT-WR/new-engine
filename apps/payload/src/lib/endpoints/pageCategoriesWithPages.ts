@@ -2,12 +2,14 @@ import type { Endpoint } from 'payload'
 import { buildJsonResponse, getLocaleFromRequest, getQueryParam } from '../utils/endpoint'
 import { getCategoryDoc, type CategoryDoc } from '../utils/docSelectors'
 
+/** Minimal page record used to group by category. */
 type PageDoc = {
   title: unknown
   slug?: unknown
   category?: number | CategoryDoc | null
 }
 
+/** Endpoint returning page categories grouped with their pages. */
 export const pageCategoriesWithPagesEndpoint: Endpoint = {
   path: '/page-categories-with-pages',
   method: 'get',

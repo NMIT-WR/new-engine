@@ -6,6 +6,7 @@ import { StoreCmsHeroCarouselsSchema } from "./hero-carousels/route"
 import { StoreCmsPageCategoriesSchema } from "./page-categories/route"
 import { StoreCmsPageSchema } from "./pages/[slug]/route"
 
+/** Middleware definitions for store CMS routes (query validation). */
 export const storeCmsRoutesMiddlewares: MiddlewareRoute[] = [
   {
     methods: ["GET"],

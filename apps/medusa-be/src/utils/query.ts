@@ -1,5 +1,8 @@
 import type { MedusaRequest } from "@medusajs/framework/http"
 
+/**
+ * Read a query string value from a Medusa request, returning the first value.
+ */
 export function getQueryParam(
   req: MedusaRequest,
   key: string

@@ -8,14 +8,17 @@ import type {
 import { fieldLabels } from './labels'
 import { statusOptions } from './statusOptions'
 
+/** Locale-aware label shape for Payload admin fields. */
 type LocalizedLabel = {
   en: string
   cs: string
   sk: string
 }
 
+/** Description text for localized fields. */
 type Description = LocalizedLabel
 
+/** Options for creating a standardized title field. */
 type TextFieldOptions = {
   label?: LocalizedLabel
   required?: boolean
@@ -23,12 +26,14 @@ type TextFieldOptions = {
   maxLength?: number
 }
 
+/** Options for creating a standardized slug field. */
 type SlugFieldOptions = {
   label?: LocalizedLabel
   description: Description
   localized?: boolean
 }
 
+/** Options for creating a standardized rich text content field. */
 type ContentFieldOptions = {
   label?: LocalizedLabel
   localized?: boolean
@@ -37,6 +42,7 @@ type ContentFieldOptions = {
   admin?: RichTextField['admin']
 }
 
+/** Build a localized title field definition. */
 export const createTitleField = (options: TextFieldOptions = {}): TextField => ({
   name: 'title',
   type: 'text',
@@ -46,6 +52,7 @@ export const createTitleField = (options: TextFieldOptions = {}): TextField => (
   label: options.label ?? fieldLabels.title,
 })
 
+/** Build a localized slug field definition with a description. */
 export const createSlugField = (options: SlugFieldOptions): TextField => ({
   name: 'slug',
   type: 'text',
@@ -58,6 +65,7 @@ export const createSlugField = (options: SlugFieldOptions): TextField => ({
   },
 })
 
+/** Build a localized rich text content field definition. */
 export const createContentField = (options: ContentFieldOptions): RichTextField => ({
   name: 'content',
   type: 'richText',
@@ -68,6 +76,7 @@ export const createContentField = (options: ContentFieldOptions): RichTextField 
   label: options.label ?? fieldLabels.content,
 })
 
+/** Build a shared status select field definition. */
 export const createStatusField = (): SelectField => ({
   name: 'status',
   type: 'select',
@@ -77,6 +86,7 @@ export const createStatusField = (): SelectField => ({
   options: statusOptions,
 })
 
+/** Build a published date field with a date-only picker. */
 export const createPublishedDateField = (): DateField => ({
   name: 'publishedDate',
   type: 'date',

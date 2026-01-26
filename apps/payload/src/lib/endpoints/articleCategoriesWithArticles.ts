@@ -2,10 +2,12 @@ import type { Endpoint } from 'payload'
 import { buildJsonResponse, getLocaleFromRequest, getQueryParam } from '../utils/endpoint'
 import { getCategoryDoc, getMediaUrl, type CategoryDoc } from '../utils/docSelectors'
 
+/** Minimal media record needed for article listing. */
 type MediaDoc = {
   url?: string | null
 }
 
+/** Minimal article record used to group by category. */
 type ArticleDoc = {
   title: unknown
   slug?: unknown
@@ -14,6 +16,7 @@ type ArticleDoc = {
   category?: number | CategoryDoc | null
 }
 
+/** Endpoint returning article categories grouped with their articles. */
 export const articleCategoriesWithArticlesEndpoint: Endpoint = {
   path: '/article-categories-with-articles',
   method: 'get',

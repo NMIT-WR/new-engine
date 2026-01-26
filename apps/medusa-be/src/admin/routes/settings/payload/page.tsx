@@ -1,11 +1,13 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 
+/** Runtime config returned by the Payload admin config endpoint. */
 type PayloadRuntimeConfig = {
   iframeUrl?: string
   isIframeEnabled?: boolean
 }
 
+/** Admin settings page that embeds (or links to) the Payload admin UI. */
 const PayloadRedirectPage = () => {
   const [runtimeConfig, setRuntimeConfig] =
     useState<PayloadRuntimeConfig | null>(null)
@@ -151,6 +153,7 @@ const PayloadRedirectPage = () => {
   )
 }
 
+/** Route metadata for the Payload settings page. */
 export const config = defineRouteConfig({
   label: "Payload",
 })

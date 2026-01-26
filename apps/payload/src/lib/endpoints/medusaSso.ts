@@ -7,24 +7,29 @@ const DEFAULT_ISSUER = 'medusa'
 const DEFAULT_AUDIENCE = 'payload'
 const DEFAULT_ALG = 'RS256'
 
+/** JWT payload shape expected from Medusa SSO tokens. */
 type MedusaSsoToken = {
   email?: string
   sub?: string
 }
 
+/** Session entry stored on Payload admin users. */
 type Session = {
   id: string
   createdAt?: string | Date | null
   expiresAt: string | Date
 }
 
+/** Minimal admin user record used for session updates. */
 type AdminUser = {
   id: string | number
   sessions?: Session[] | null
 }
 
+/** Normalize PEM keys loaded from environment variables. */
 const normalizeKey = (value: string) => value.replace(/\\n/g, '\n').trim()
 
+/** Filter out expired session entries. */
 const removeExpiredSessions = (sessions: Session[]) => {
   const now = new Date()
   return sessions.filter((session) => {
@@ -36,6 +41,7 @@ const removeExpiredSessions = (sessions: Session[]) => {
   })
 }
 
+/** Ensure return paths remain relative to prevent open redirects. */
 const sanitizeReturnTo = (value: string | null) => {
   if (!value) {
     return '/'
@@ -46,18 +52,21 @@ const sanitizeReturnTo = (value: string | null) => {
   return '/'
 }
 
+/** Read and normalize a list of allowed origins from environment. */
 const getAllowedOrigins = () =>
   (process.env.PAYLOAD_SSO_ALLOWED_ORIGINS || '')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean)
 
+/** Type guard for validating configured collection slugs. */
 const hasCollectionSlug = <T extends Record<string, unknown>>(
   collections: T,
   slug: string
 ): slug is Extract<keyof T, string> =>
   Object.prototype.hasOwnProperty.call(collections, slug)
 
+/** Create the Payload endpoint that exchanges Medusa SSO tokens for sessions. */
 const createMedusaSsoPostEndpoint = (): Endpoint => ({
   path: '/medusa-sso',
   method: 'post',
@@ -212,4 +221,5 @@ const createMedusaSsoPostEndpoint = (): Endpoint => ({
   },
 })
 
+/** Shared instance of the Medusa SSO endpoint. */
 export const medusaSsoPostEndpoint = createMedusaSsoPostEndpoint()

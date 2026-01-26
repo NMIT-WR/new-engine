@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/labels'
 
+/** Payload collection config for admin users. */
 export const Users: CollectionConfig = {
   slug: 'users',
   labels: collectionLabels.users,

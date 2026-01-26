@@ -43,6 +43,7 @@ const seoCollections = getSeoCollections({
   isPagesEnabled,
 })
 
+/** Payload CMS configuration for the Medusa integration. */
 export default buildConfig({
   admin: {
     user: Users.slug,

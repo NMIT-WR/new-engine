@@ -5,15 +5,18 @@ import type PayloadModuleService from "../../../../modules/payload/service"
 import { getQueryParam } from "../../../../utils/query"
 import { optionalStringParam } from "../../../../utils/queryParams"
 
+/** Query schema for fetching CMS article categories with articles. */
 export const StoreCmsArticleCategoriesSchema = z.object({
   locale: optionalStringParam,
   categorySlug: optionalStringParam,
 })
 
+/** Parsed query type for article category listing. */
 export type StoreCmsArticleCategoriesSchemaType = z.infer<
   typeof StoreCmsArticleCategoriesSchema
 >
 
+/** Store API handler returning article categories with articles. */
 export async function GET(
   req: MedusaRequest<unknown, StoreCmsArticleCategoriesSchemaType>,
   res: MedusaResponse

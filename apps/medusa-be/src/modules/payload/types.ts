@@ -1,3 +1,4 @@
+/** Configuration options for connecting to the Payload CMS instance. */
 export interface PayloadModuleOptions {
   serverUrl: string
   apiKey: string
@@ -6,6 +7,7 @@ export interface PayloadModuleOptions {
   listCacheTtl?: number
 }
 
+/** Base shape for items returned by the Payload REST API. */
 export interface PayloadCollectionItem {
   id: string
   createdAt: string
@@ -14,6 +16,7 @@ export interface PayloadCollectionItem {
   [key: string]: unknown
 }
 
+/** Query options supported by the Payload REST API list endpoint. */
 export interface PayloadQueryOptions {
   limit?: number
   page?: number
@@ -25,11 +28,13 @@ export interface PayloadQueryOptions {
   depth?: number
 }
 
+/** Response wrapper for single-document Payload API results. */
 export interface PayloadItemResult<T> {
   doc: T
   message: string
 }
 
+/** Response wrapper for list-based Payload API results. */
 export interface PayloadBulkResult<T> {
   docs: T[]
   totalDocs: number
@@ -43,6 +48,7 @@ export interface PayloadBulkResult<T> {
   pagingCounter: number
 }
 
+/** Generic error envelope for API responses. */
 export interface PayloadApiResponse<T> {
   data?: T
   errors?: Array<{ message: string; field?: string }>

@@ -4,9 +4,12 @@ import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/lab
 import { requireAuth } from "../lib/access/requireAuth";
 import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
 
+/** Collection slug for hero carousels. */
 const COLLECTION_SLUG = "hero-carousels";
+/** Hook to invalidate Medusa cache when hero carousels change. */
 const invalidateHeroCarouselsCache = createMedusaCacheHook(COLLECTION_SLUG);
 
+/** Payload collection config for hero carousels. */
 export const HeroCarousels: CollectionConfig = {
   slug: COLLECTION_SLUG,
   access: {

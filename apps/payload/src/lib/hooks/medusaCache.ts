@@ -4,6 +4,7 @@ import type {
   PayloadRequest,
 } from 'payload'
 
+/** Payload invalidation payload sent to Medusa. */
 type MedusaInvalidatePayload = {
   collection: string
   doc?: {
@@ -13,13 +14,16 @@ type MedusaInvalidatePayload = {
   }
 }
 
+/** Minimal CMS document shape for invalidation metadata. */
 type CmsDoc = {
   id?: string | number
   slug?: string | Record<string, unknown>
 }
 
+/** Track whether the missing base URL warning has already been logged. */
 let loggedMissingBaseUrl = false
 
+/** Resolve the Medusa backend base URL from environment settings. */
 const getMedusaBaseUrl = (): string | null => {
   const baseUrl = process.env.MEDUSA_BACKEND_URL
 
@@ -30,6 +34,7 @@ const getMedusaBaseUrl = (): string | null => {
   return baseUrl.replace(/\/$/, '')
 }
 
+/** Resolve a localized slug from a CMS document. */
 const resolveSlug = (doc: CmsDoc | undefined, locale?: string): string | undefined => {
   if (!doc) {
     return undefined
@@ -47,6 +52,7 @@ const resolveSlug = (doc: CmsDoc | undefined, locale?: string): string | undefin
   return undefined
 }
 
+/** Notify Medusa to invalidate its CMS cache. */
 const notifyMedusa = async (
   payload: MedusaInvalidatePayload,
   req?: PayloadRequest | null
@@ -86,6 +92,7 @@ const notifyMedusa = async (
   }
 }
 
+/** Create a hook that invalidates Medusa CMS cache for a collection. */
 export const createMedusaCacheHook = (
   collection: string
 ): CollectionAfterChangeHook & CollectionAfterDeleteHook => {

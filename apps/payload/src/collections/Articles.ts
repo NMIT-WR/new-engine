@@ -14,9 +14,12 @@ import {
   createTitleField,
 } from "../lib/constants/fields";
 
+/** Collection slug for articles. */
 const COLLECTION_SLUG = "articles";
+/** Hook to invalidate Medusa cache when articles change. */
 const invalidateArticlesCache = createMedusaCacheHook(COLLECTION_SLUG);
 
+/** Payload collection config for articles. */
 export const Articles: CollectionConfig = {
   slug: COLLECTION_SLUG,
   labels: collectionLabels.articles,

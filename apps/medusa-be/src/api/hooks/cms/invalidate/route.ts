@@ -4,11 +4,13 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { PAYLOAD_MODULE } from "../../../../modules/payload"
 import type PayloadModuleService from "../../../../modules/payload/service"
 
+/** Expected webhook payload from Payload CMS invalidation hook. */
 type PayloadWebhookBody = {
   collection?: string
   doc?: { id?: string; slug?: string; locale?: string }
 }
 
+/** Hook endpoint to invalidate cached CMS content in Medusa. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const logger = req.scope.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
   const cmsService = req.scope.resolve<PayloadModuleService>(PAYLOAD_MODULE)

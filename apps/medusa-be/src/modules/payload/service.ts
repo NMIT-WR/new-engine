@@ -51,6 +51,9 @@ const DEFAULT_TTLS = {
   LIST: 600,
 } as const
 
+/**
+ * Medusa module service for reading Payload CMS content with caching support.
+ */
 export default class PayloadModuleService {
   protected options_: PayloadModuleOptions
   protected baseUrl_: string
@@ -79,6 +82,9 @@ export default class PayloadModuleService {
     this.listCacheTtl_ = options.listCacheTtl ?? DEFAULT_TTLS.LIST
   }
 
+  /**
+   * Validate required module options and throw on missing values.
+   */
   private validateOptions(): void {
     if (!this.options_.serverUrl) {
       throw new MedusaError(
@@ -94,6 +100,9 @@ export default class PayloadModuleService {
     }
   }
 
+  /**
+   * Resolve a dependency from the container, returning null if unavailable.
+   */
   private safeResolve<T>(
     container: InjectedDependencies,
     key: string
@@ -105,6 +114,9 @@ export default class PayloadModuleService {
     }
   }
 
+  /**
+   * Perform a JSON request against the Payload REST API.
+   */
   private async makeRequest<T>(
     method: string,
     endpoint: string,
@@ -128,6 +140,9 @@ export default class PayloadModuleService {
     return result as T
   }
 
+  /**
+   * Build a query string from Payload list/query options.
+   */
   private buildQuery(options?: PayloadQueryOptions): string {
     if (!options) {
       return ""
@@ -135,6 +150,9 @@ export default class PayloadModuleService {
     return `?${qs.stringify(options, { encodeValuesOnly: true })}`
   }
 
+  /**
+   * Build a query string from raw params while skipping null/undefined values.
+   */
   private buildParamsQuery(params?: Record<string, unknown>): string {
     if (!params) {
       return ""
@@ -143,6 +161,9 @@ export default class PayloadModuleService {
     return query ? `?${query}` : ""
   }
 
+  /**
+   * Fetch data with optional caching keyed by TTL and tags.
+   */
   private async getCached<T>(
     key: string,
     fetcher: () => Promise<T>,
@@ -165,6 +186,9 @@ export default class PayloadModuleService {
     return data
   }
 
+  /**
+   * Create a cache key for list queries using locale and pagination options.
+   */
   private buildListCacheKey(prefix: string, options?: CmsListOptions): string {
     const locale = options?.locale ?? DEFAULT_LOCALE
 
@@ -184,6 +208,9 @@ export default class PayloadModuleService {
     return `${prefix}:${locale}:${hash}`
   }
 
+  /**
+   * Create a cache key for category list queries by locale and slug filter.
+   */
   private buildCategoryListCacheKey(
     prefix: string,
     options?: CmsCategoryListOptions
@@ -193,10 +220,16 @@ export default class PayloadModuleService {
     return `${prefix}:${locale}:${slug}`
   }
 
+  /**
+   * Build a locale-specific cache tag.
+   */
   private buildLocaleTag(tag: string, locale?: string): string {
     return `${tag}:locale:${locale ?? DEFAULT_LOCALE}`
   }
 
+  /**
+   * Normalize locale query values that might be stringified null/undefined.
+   */
   private normalizeLocale(locale?: string): string | undefined {
     if (!locale || locale === "null" || locale === "undefined") {
       return undefined
@@ -208,6 +241,9 @@ export default class PayloadModuleService {
   // Public API: Store CMS
   // ============================================
 
+  /**
+   * Fetch a published page by slug and optional locale.
+   */
   async getPublishedPage(
     slug: string,
     locale?: string,
@@ -241,6 +277,9 @@ export default class PayloadModuleService {
     )
   }
 
+  /**
+   * List page categories and their pages, optionally filtered by locale/slug.
+   */
   async listPageCategoriesWithPages(
     options?: CmsCategoryListOptions
   ): Promise<CmsPageCategoryDTO[]> {
@@ -273,6 +312,9 @@ export default class PayloadModuleService {
     )
   }
 
+  /**
+   * Fetch a published article by slug and optional locale.
+   */
   async getPublishedArticle(
     slug: string,
     locale?: string,
@@ -305,6 +347,9 @@ export default class PayloadModuleService {
     )
   }
 
+  /**
+   * List article categories and their articles, optionally filtered by locale/slug.
+   */
   async listArticleCategoriesWithArticles(
     options?: CmsCategoryListOptions
   ): Promise<CmsArticleCategoryDTO[]> {
@@ -338,6 +383,9 @@ export default class PayloadModuleService {
     )
   }
 
+  /**
+   * List hero carousels with pagination/sort options and caching.
+   */
   async listHeroCarousels(options?: CmsListOptions): Promise<CmsHeroCarouselDTO[]> {
     const cacheKey = this.buildListCacheKey(
       CACHE_TAGS.HERO_CAROUSELS,
@@ -371,6 +419,9 @@ export default class PayloadModuleService {
     )
   }
 
+  /**
+   * Invalidate cached CMS content for a collection and optional slug/locale.
+   */
   async invalidateCache(
     collection: string,
     slug?: string,

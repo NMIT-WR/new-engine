@@ -1,5 +1,6 @@
 import type { Option } from 'payload'
 
+/** Select options for common publish status values. */
 export const statusOptions: Option[] = [
   {
     label: {

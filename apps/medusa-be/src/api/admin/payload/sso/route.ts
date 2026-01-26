@@ -7,8 +7,10 @@ const DEFAULT_AUDIENCE = "payload"
 const DEFAULT_ALG = "RS256"
 const DEFAULT_TOKEN_TTL_SECONDS = 60
 
+/** Normalize multiline private keys loaded from environment variables. */
 const normalizeKey = (value: string) => value.replace(/\\n/g, "\n").trim()
 
+/** Allow only same-origin relative return paths to avoid open redirects. */
 const sanitizeReturnTo = (value: string | undefined) => {
   if (!value) {
     return undefined
@@ -19,6 +21,7 @@ const sanitizeReturnTo = (value: string | undefined) => {
   return undefined
 }
 
+/** Admin API handler that issues an SSO token and auto-posts to Payload. */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const privateKey = process.env.PAYLOAD_SSO_PRIVATE_KEY
   const payloadIframeUrl = process.env.PAYLOAD_IFRAME_URL

@@ -1,3 +1,4 @@
+/** Localized admin sidebar group labels. */
 export const adminGroups = {
   content: {
     en: 'Content',
@@ -16,6 +17,7 @@ export const adminGroups = {
   },
 } as const
 
+/** Localized collection labels for singular/plural display. */
 export const collectionLabels = {
   articles: {
     singular: {
@@ -103,6 +105,7 @@ export const collectionLabels = {
   },
 } as const
 
+/** Localized field labels shared across collections. */
 export const fieldLabels = {
   title: {
     en: 'Title',

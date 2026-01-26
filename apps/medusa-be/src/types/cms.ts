@@ -1,13 +1,17 @@
+/** Visibility options supported by CMS pages. */
 export type CmsVisibility = "public" | "customers-only"
 
+/** Publishing status for CMS documents. */
 export type CmsStatus = "draft" | "published"
 
+/** Basic SEO metadata shared across CMS content. */
 export type CmsSeo = {
   title?: string | null
   description?: string | null
   image?: unknown | null
 }
 
+/** Common list query options for CMS endpoints. */
 export type CmsListOptions = {
   limit?: number
   page?: number
@@ -15,11 +19,13 @@ export type CmsListOptions = {
   locale?: string
 }
 
+/** Options for category list endpoints with optional slug filtering. */
 export type CmsCategoryListOptions = {
   locale?: string
   categorySlug?: string
 }
 
+/** DTO for a published page response. */
 export type CmsPageDTO = {
   id: string
   slug: string
@@ -31,6 +37,7 @@ export type CmsPageDTO = {
   publishedAt?: string | null
 }
 
+/** DTO for a page category with embedded pages. */
 export type CmsPageCategoryDTO = {
   id: number
   title: string
@@ -41,6 +48,7 @@ export type CmsPageCategoryDTO = {
   }>
 }
 
+/** DTO for a published article response. */
 export type CmsArticleDTO = {
   id: string
   slug: string
@@ -54,6 +62,7 @@ export type CmsArticleDTO = {
   publishedAt?: string | null
 }
 
+/** DTO for an article category with embedded articles. */
 export type CmsArticleCategoryDTO = {
   id: number
   title: string
@@ -66,6 +75,7 @@ export type CmsArticleCategoryDTO = {
   }>
 }
 
+/** DTO for hero carousel entries. */
 export type CmsHeroCarouselDTO = {
   id: string
   image: unknown

@@ -1,3 +1,4 @@
+/** Localized field descriptions used across CMS collections. */
 export const fieldDescriptions = {
   slugPage: {
     en: 'URL-friendly version of the title (e.g., "about-us")',
