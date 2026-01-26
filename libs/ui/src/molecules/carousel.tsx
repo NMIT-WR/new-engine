@@ -100,10 +100,10 @@ const carouselVariants = tv({
         control: "flex-col items-center justify-between",
       },
       top: {
-        control: "absolute top-0 justify-self-center",
+        control: "-translate-x-1/2 absolute top-0 left-1/2",
       },
       bottom: {
-        control: "absolute bottom-0 justify-self-center",
+        control: "-translate-x-1/2 absolute bottom-0 left-1/2",
       },
       unset: {},
     },

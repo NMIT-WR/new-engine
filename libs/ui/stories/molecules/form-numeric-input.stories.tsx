@@ -42,8 +42,9 @@ const meta: Meta<typeof FormNumericInput> = {
     },
     showHelpTextIcon: {
       control: 'boolean',
-      description: 'Whether to show an icon with the help text',
-      table: { defaultValue: { summary: 'false' } },
+      description:
+        'Whether to show an icon with the help text. Defaults to true when validateStatus is not "default".',
+      table: { defaultValue: { summary: 'auto (true when validated)' } },
     },
 
     // States

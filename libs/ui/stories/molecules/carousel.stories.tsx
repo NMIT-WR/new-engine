@@ -614,20 +614,20 @@ export const AspectRatioDemo: Story = {
 export const Vertical: Story = {
   render: () => (
     <div className="h-96 w-md">
-      <Carousel
+      <Carousel.Root
         orientation="vertical"
         slideCount={4}
         size="md"
         loop
-        className='flex flex-row overflow-visible'
+        className="flex flex-row overflow-visible"
       >
-        <Carousel.Slides className='h-96' slides={sampleImages.slice(0, 4)} />
-        <Carousel.Control controlPosition='side' className="bg-transparent">
+        <Carousel.Slides className="h-96" slides={sampleImages.slice(0, 4)} />
+        <Carousel.Control controlPosition="side" className="bg-transparent">
           <Carousel.Previous icon="icon-[mdi--keyboard-arrow-up]" />
-          <Carousel.Indicators className='flex-col' />
+          <Carousel.Indicators className="flex-col" />
           <Carousel.Next icon="icon-[mdi--keyboard-arrow-down]" />
         </Carousel.Control>
-      </Carousel>
+      </Carousel.Root>
     </div>
   ),
 }
