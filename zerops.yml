@@ -4,6 +4,7 @@ zerops:
       envVariables:
         BACKEND_URL: ${MEDUSA_INSTANCE_URL}
         NX_DAEMON: false
+        FEATURE_PAYLOAD_ENABLED: ${FEATURE_PAYLOAD_ENABLED}
       base: nodejs@22
       buildCommands:
         - bash ./scripts/build-medusa.sh
