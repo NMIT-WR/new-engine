@@ -26,7 +26,7 @@ jobs:
       pnpm-version: ""
       working-directory: libs/ui
       install-command: pnpm install --frozen-lockfile
-      build-command: pnpm -C {{workdir}} build:storybook
+      build-command: pnpm -C {{workdir}} run build:storybook
       storybook-static-dir: storybook-static
       storybook-config-dir: .storybook
       themes: '["light","dark"]'

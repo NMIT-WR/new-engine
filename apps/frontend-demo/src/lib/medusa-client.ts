@@ -74,11 +74,3 @@ if (typeof window !== "undefined") {
   }
   initializeAuth()
 }
-
-// Export a simple client config for direct fetch calls
-export const medusaClient = {
-  config: {
-    baseUrl: BACKEND_URL,
-    publishableKey: PUBLISHABLE_KEY,
-  },
-}
