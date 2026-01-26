@@ -1,3 +1,17 @@
+import type { z } from "zod"
+import type {
+  CmsVisibilitySchema,
+  CmsStatusSchema,
+  CmsSeoSchema,
+  CmsPageSchema,
+  CmsPageCategorySchema,
+  CmsArticleSchema,
+  CmsArticleCategorySchema,
+  CmsHeroCarouselSchema,
+  CmsListOptionsSchema,
+  CmsCategoryListOptionsSchema,
+} from "./schemas"
+
 /** Configuration options for connecting to the Payload CMS instance. */
 export interface PayloadModuleOptions {
   serverUrl: string
@@ -5,16 +19,19 @@ export interface PayloadModuleOptions {
   userCollection?: string
   contentCacheTtl?: number
   listCacheTtl?: number
+  requestTimeoutMs?: number
 }
 
-/** Base shape for items returned by the Payload REST API. */
-export interface PayloadCollectionItem {
-  id: string
-  createdAt: string
-  updatedAt: string
-  medusa_id?: string
-  [key: string]: unknown
-}
+export type CmsVisibility = z.infer<typeof CmsVisibilitySchema>
+export type CmsStatus = z.infer<typeof CmsStatusSchema>
+export type CmsSeo = z.infer<typeof CmsSeoSchema>
+export type CmsPageDTO = z.infer<typeof CmsPageSchema>
+export type CmsPageCategoryDTO = z.infer<typeof CmsPageCategorySchema>
+export type CmsArticleDTO = z.infer<typeof CmsArticleSchema>
+export type CmsArticleCategoryDTO = z.infer<typeof CmsArticleCategorySchema>
+export type CmsHeroCarouselDTO = z.infer<typeof CmsHeroCarouselSchema>
+export type CmsListOptions = z.infer<typeof CmsListOptionsSchema>
+export type CmsCategoryListOptions = z.infer<typeof CmsCategoryListOptionsSchema>
 
 /** Query options supported by the Payload REST API list endpoint. */
 export interface PayloadQueryOptions {

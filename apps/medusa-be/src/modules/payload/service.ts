@@ -2,10 +2,15 @@ import type {
   ICachingModuleService,
   Logger,
 } from "@medusajs/framework/types"
+import { zodValidator } from "@medusajs/framework"
 import { MedusaError, Modules } from "@medusajs/framework/utils"
 import { createHash } from "crypto"
 import qs from "qs"
+import type { ZodEffects, ZodObject } from "zod"
 import type {
+  PayloadModuleOptions,
+  PayloadBulkResult,
+  PayloadQueryOptions,
   CmsCategoryListOptions,
   CmsArticleCategoryDTO,
   CmsPageCategoryDTO,
@@ -13,12 +18,14 @@ import type {
   CmsHeroCarouselDTO,
   CmsPageDTO,
   CmsArticleDTO,
-} from "../../types/cms"
-import type {
-  PayloadModuleOptions,
-  PayloadBulkResult,
-  PayloadQueryOptions,
 } from "./types"
+import {
+  ArticleCategoriesWithArticlesSchema,
+  CmsArticlesBulkResultSchema,
+  CmsHeroCarouselsBulkResultSchema,
+  CmsPagesBulkResultSchema,
+  PageCategoriesWithPagesSchema,
+} from "./schemas"
 
 const CMS = "cms"
 const DEFAULT_LOCALE = "default"
@@ -50,6 +57,7 @@ const DEFAULT_TTLS = {
   CONTENT: 3600,
   LIST: 600,
 } as const
+const DEFAULT_REQUEST_TIMEOUT_MS = 30_000
 
 /**
  * Medusa module service for reading Payload CMS content with caching support.
@@ -62,6 +70,7 @@ export default class PayloadModuleService {
   protected logger_: Logger
   protected contentCacheTtl_: number
   protected listCacheTtl_: number
+  protected requestTimeoutMs_: number
 
   constructor(container: InjectedDependencies, options: PayloadModuleOptions) {
     this.options_ = options
@@ -80,6 +89,8 @@ export default class PayloadModuleService {
     this.contentCacheTtl_ =
       options.contentCacheTtl ?? DEFAULT_TTLS.CONTENT
     this.listCacheTtl_ = options.listCacheTtl ?? DEFAULT_TTLS.LIST
+    this.requestTimeoutMs_ =
+      options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS
   }
 
   /**
@@ -120,24 +131,73 @@ export default class PayloadModuleService {
   private async makeRequest<T>(
     method: string,
     endpoint: string,
-    data?: unknown
+    data?: unknown,
+    options?: {
+      schema?: ZodObject<any, any> | ZodEffects<any, any>
+    }
   ): Promise<T> {
-    const response = await fetch(`${this.baseUrl_}${endpoint}`, {
-      method,
-      headers: this.headers_,
-      body: data ? JSON.stringify(data) : undefined,
-    })
+    const url = `${this.baseUrl_}${endpoint}`
+    const controller = new AbortController()
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      this.requestTimeoutMs_
+    )
 
-    const result = (await response.json()) as { message?: string }
+    let response: Response
+    try {
+      response = await fetch(url, {
+        method,
+        headers: this.headers_,
+        body: data ? JSON.stringify(data) : undefined,
+        signal: controller.signal,
+      })
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_DATA,
+          `Payload request timed out after ${this.requestTimeoutMs_}ms: ${url}`
+        )
+      }
+      throw error
+    } finally {
+      clearTimeout(timeoutId)
+    }
+
+    const result = (await response.json()) as unknown
 
     if (!response.ok) {
       throw new MedusaError(
         MedusaError.Types.UNEXPECTED_STATE,
-        result.message || `Payload API error: ${response.status}`
+        this.getPayloadErrorMessage(result, response.status)
       )
     }
 
+    if (options?.schema) {
+      try {
+        return (await zodValidator(options.schema, result)) as T
+      } catch (error) {
+        if (error instanceof MedusaError) {
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            `Payload response validation failed for ${method} ${endpoint}: ${error.message}`
+          )
+        }
+        throw error
+      }
+    }
+
     return result as T
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null
+  }
+
+  private getPayloadErrorMessage(result: unknown, status: number): string {
+    if (this.isRecord(result) && typeof result.message === "string") {
+      return result.message
+    }
+    return `Payload API error: ${status}`
   }
 
   /**
@@ -262,7 +322,11 @@ export default class PayloadModuleService {
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsPageDTO>>(
           "GET",
-          `/${PAGES}${queryString}`
+          `/${PAGES}${queryString}`,
+          undefined,
+          {
+            schema: CmsPagesBulkResultSchema,
+          }
         )
 
         const page = result.docs[0] || null
@@ -300,7 +364,9 @@ export default class PayloadModuleService {
         })
         const result = await this.makeRequest<{
           categories: CmsPageCategoryDTO[]
-        }>("GET", `/${PAGE_CATEGORY_GROUPS}${queryString}`)
+        }>("GET", `/${PAGE_CATEGORY_GROUPS}${queryString}`, undefined, {
+          schema: PageCategoriesWithPagesSchema,
+        })
         return result.categories ?? []
       },
       this.listCacheTtl_,
@@ -333,7 +399,11 @@ export default class PayloadModuleService {
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsArticleDTO>>(
           "GET",
-          `/${ARTICLES}${queryString}`
+          `/${ARTICLES}${queryString}`,
+          undefined,
+          {
+            schema: CmsArticlesBulkResultSchema,
+          }
         )
 
         const post = result.docs[0] || null
@@ -371,7 +441,9 @@ export default class PayloadModuleService {
         })
         const result = await this.makeRequest<{
           categories: CmsArticleCategoryDTO[]
-        }>("GET", `/${ARTICLE_CATEGORY_GROUPS}${queryString}`)
+        }>("GET", `/${ARTICLE_CATEGORY_GROUPS}${queryString}`, undefined, {
+          schema: ArticleCategoriesWithArticlesSchema,
+        })
         return result.categories ?? []
       },
       this.listCacheTtl_,
@@ -406,7 +478,11 @@ export default class PayloadModuleService {
         })
         const result = await this.makeRequest<PayloadBulkResult<CmsHeroCarouselDTO>>(
           "GET",
-          `/${HERO_CAROUSELS}${queryString}`
+          `/${HERO_CAROUSELS}${queryString}`,
+          undefined,
+          {
+            schema: CmsHeroCarouselsBulkResultSchema,
+          }
         )
         return result.docs
       },
