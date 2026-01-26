@@ -30,6 +30,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.*
 
 # vercel
 .vercel
@@ -43,7 +44,6 @@ next-env.d.ts
 /media
 
 # Playwright
-node_modules/
 /test-results/
 /playwright-report/
 /blob-report/
