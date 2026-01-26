@@ -296,11 +296,7 @@ export default class PayloadModuleService {
     }
     return locale
   }
-
-  // ============================================
-  // Public API: Store CMS
-  // ============================================
-
+  
   /**
    * Fetch a published page by slug and optional locale.
    */
