@@ -8,13 +8,13 @@ const baseUrl = new URL(
 )
 const storybookUrl = `${baseUrl.protocol}//${baseUrl.host}`
 const staticDir = path.join(__dirname, 'storybook-static')
+const workersEnv = process.env.PLAYWRIGHT_WORKERS
+const workersValue = workersEnv ? Number(workersEnv) : undefined
 
 export default defineConfig({
   testDir: './test',
   reporter: 'html',
-  workers: process.env.PLAYWRIGHT_WORKERS
-    ? Number(process.env.PLAYWRIGHT_WORKERS)
-    : undefined,
+  workers: Number.isFinite(workersValue) ? workersValue : undefined,
   use: {
     baseURL: storybookUrl,
   },
