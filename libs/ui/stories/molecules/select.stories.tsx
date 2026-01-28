@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Button } from '../../src/atoms/button'
-import { Icon, IconType } from '../../src/atoms/icon'
+import { Icon } from '../../src/atoms/icon'
+import type { IconType } from '../../src/atoms/icon'
 import { Badge } from '../../src/atoms/badge'
 import { Select, type SelectItem } from '../../src/molecules/select'
 

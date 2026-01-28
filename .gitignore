@@ -53,6 +53,7 @@ test-output
 
 # MCP configuration
 .mcp.json
+.schaltwerk/
 
 # Frontend demo test pages
 .next/

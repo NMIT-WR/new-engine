@@ -105,7 +105,6 @@ export const ResponsiveOrientation: Story = {
 
     return (
       <div className="w-full">
-        {/* Horizontální na velkých obrazovkách, vertikální na malých */}
         <div className="md:hidden">
           <Steps
             items={basicSteps}
@@ -155,17 +154,26 @@ const stepsWithCustomContent = [
     content: (
       <div className="rounded border border-gray-200 p-4">
         <h3 className="font-semibold">Custom Settings Form</h3>
-        <label className="mt-2 block">
-          <span className="text-gray-700">Preference</span>
-          <Select
-            label="options"
-            options={[
-              { label: 'first', value: 'first' },
-              { label: 'second', value: 'second' },
-            ]}
-            size="xs"
-          />
-        </label>
+        <Select items={[{ label: 'First', value: 'first' }, { label: 'Second', value: 'second' }]} size="xs">
+          <Select.Label>Preference</Select.Label>
+          <Select.Control>
+            <Select.Trigger>
+              <Select.ValueText placeholder="Select option" />
+            </Select.Trigger>
+          </Select.Control>
+          <Select.Positioner>
+            <Select.Content>
+              <Select.Item item={{ label: 'First', value: 'first' }}>
+                <Select.ItemText />
+                <Select.ItemIndicator />
+              </Select.Item>
+              <Select.Item item={{ label: 'Second', value: 'second' }}>
+                <Select.ItemText />
+                <Select.ItemIndicator />
+              </Select.Item>
+            </Select.Content>
+          </Select.Positioner>
+        </Select>
       </div>
     ),
   },

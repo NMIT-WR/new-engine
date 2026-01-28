@@ -11,7 +11,7 @@ const simplePath: BreadcrumbItemType[] = [
   { label: 'Smartphones', href: '/products/electronics/smartphones' },
 ]
 
-const _withIcons: BreadcrumbItemType[] = [
+const withIcons: BreadcrumbItemType[] = [
   { label: 'Home', href: '/', icon: 'token-icon-home' },
   {
     label: 'Products',
@@ -30,7 +30,7 @@ const _withIcons: BreadcrumbItemType[] = [
   },
 ]
 
-const _longPath: BreadcrumbItemType[] = [
+const longPath: BreadcrumbItemType[] = [
   { label: 'Home', href: '/' },
   { label: 'Products', href: '/products' },
   { label: 'Electronics', href: '/products/electronics' },
@@ -131,6 +131,19 @@ export const Sizes: Story = {
         story: 'Story with different sizes of breadcrumbs.',
       },
     },
+  },
+}
+
+export const WithIcons: Story = {
+  args: {
+    items: withIcons,
+  },
+}
+
+export const LongPath: Story = {
+  args: {
+    items: longPath,
+    maxItems: 4,
   },
 }
 

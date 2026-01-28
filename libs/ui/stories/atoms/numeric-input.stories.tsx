@@ -348,9 +348,7 @@ export const Disabled: Story = {
 export const CustomButtonProps: Story = {
   render: () => {
     const [value1, setValue1] = useState(10)
-    const [value2, setValue2] = useState(20)
     const [value3, setValue3] = useState(30)
-    const [value4, setValue4] = useState(40)
 
     return (
       <div className="flex flex-col gap-300">
