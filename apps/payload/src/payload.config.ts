@@ -29,6 +29,7 @@ import { getDocString, getSeoCollections, isEnabled, parseEnvList } from './lib/
 import { medusaSsoPostEndpoint } from './lib/endpoints/medusaSso'
 import { articleCategoriesWithArticlesEndpoint } from './lib/endpoints/articleCategoriesWithArticles'
 import { pageCategoriesWithPagesEndpoint } from './lib/endpoints/pageCategoriesWithPages'
+import { healthEndpoint } from './lib/endpoints/health'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -52,6 +53,7 @@ export default buildConfig({
     },
   },
   endpoints: [
+    healthEndpoint,
     medusaSsoPostEndpoint,
     ...(isPagesEnabled ? [pageCategoriesWithPagesEndpoint] : []),
     ...(isArticlesEnabled ? [articleCategoriesWithArticlesEndpoint] : []),

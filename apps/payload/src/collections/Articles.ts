@@ -1,13 +1,13 @@
 import type { CollectionConfig } from "payload";
 import { lexicalHTMLField } from "@payloadcms/richtext-lexical";
-import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
-import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { createLexicalEditor } from "../lib/editors/lexical";
 import { requireAuth } from "../lib/access/requireAuth";
 import { generateSlugFromTitle } from "../lib/hooks/slug";
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
 import { fieldDescriptions } from "../lib/constants/descriptions";
 import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
+import { shouldReturnHtmlForRequest } from "../lib/utils/request";
+import { estimateReadingTime } from "../lib/utils/readingTime";
 import {
   createContentField,
   createPublishedDateField,
@@ -155,20 +155,20 @@ export const Articles: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
-      ({ data }: any) => {
+      ({ data, req }: any) => {
         // Auto-generate slug from title if not provided
         if (data.title && !data.slug) {
-          data.slug = generateSlugFromTitle(data.title);
+          const slug = generateSlugFromTitle(data.title, {
+            locale: req?.locale,
+          });
+          if (slug) {
+            data.slug = slug;
+          }
         }
 
         // Estimate reading time (average 200 words per minute)
         if (data.content && (data.readingTime === undefined || data.readingTime === null)) {
-          const plainText = convertLexicalToPlaintext({
-            data: data.content as SerializedEditorState,
-          });
-          const trimmedText = plainText.trim();
-          const wordCount = trimmedText ? trimmedText.split(/\s+/).length : 0;
-          data.readingTime = Math.ceil(wordCount / 200);
+          data.readingTime = estimateReadingTime(data.content);
         }
 
         return data;
@@ -178,7 +178,7 @@ export const Articles: CollectionConfig = {
     afterDelete: [invalidateArticlesCache],
     afterRead: [
       ({ doc, req }) => {
-        if (req?.method !== "GET") {
+        if (!shouldReturnHtmlForRequest(req)) {
           return doc
         }
 

@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import escapeHtml from "escape-html"
 import { SignJWT, importPKCS8 } from "jose"
 import { getQueryParam } from "../../../../utils/query"
-import { htmlEscape } from "../../../../utils/string"
 
 const DEFAULT_ISSUER = "medusa"
 const DEFAULT_AUDIENCE = "payload"
@@ -83,11 +83,11 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     <title>Signing in…</title>
   </head>
   <body onload="document.forms[0].submit()">
-    <form method="POST" action="${htmlEscape(redirectUrl.toString())}">
-      <input type="hidden" name="token" value="${htmlEscape(token)}" />
+    <form method="POST" action="${escapeHtml(redirectUrl.toString())}">
+      <input type="hidden" name="token" value="${escapeHtml(token)}" />
       ${
         returnTo
-          ? `<input type="hidden" name="returnTo" value="${htmlEscape(returnTo)}" />`
+          ? `<input type="hidden" name="returnTo" value="${escapeHtml(returnTo)}" />`
           : ""
       }
     </form>

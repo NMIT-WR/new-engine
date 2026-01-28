@@ -71,7 +71,6 @@ services:
     envSecrets:
       PAYLOAD_SECRET: <@generateRandomString(<32>)>
       PAYLOAD_BASE_URL: https://payload-${zeropsSubdomainHost}-3000.prg1.zerops.app
-      PAYLOAD_API_KEY: ${PAYLOAD_API_KEY}
     verticalAutoscaling:
       minRam: 0.5
       cpu: 1

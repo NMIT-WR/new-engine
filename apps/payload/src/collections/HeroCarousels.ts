@@ -36,7 +36,7 @@ export const HeroCarousels: CollectionConfig = {
       name: "heading",
       label: fieldLabels.heading,
       type: "text",
-      required: false,
+      required: true,
       localized: true,
     },
     {

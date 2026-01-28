@@ -24,6 +24,20 @@
         "cwd": "apps/payload",
         "command": "pnpm start"
       }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/payload",
+        "command": "pnpm lint"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/payload",
+        "command": "pnpm test"
+      }
     }
   }
 }

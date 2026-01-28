@@ -7,14 +7,18 @@ export function getQueryParam(
   req: MedusaRequest,
   key: string
 ): string | undefined {
-  const query = req.query as Record<string, unknown> | undefined
-  const value = query?.[key]
-  if (typeof value === "string") {
-    return value
-  }
-  if (Array.isArray(value)) {
-    const first = value[0]
-    return typeof first === "string" ? first : undefined
+  if (typeof req.query === "object" && req.query !== null) {
+    const query = req.query as Record<string, unknown>
+    const value = query[key]
+    if (typeof value === "string") {
+      return value
+    }
+    if (Array.isArray(value)) {
+      const first = value[0]
+      return typeof first === "string" ? first : undefined
+    }
+  } else {
+    return undefined
   }
 
   const url = req.url ?? ""

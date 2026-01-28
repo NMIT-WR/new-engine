@@ -8,17 +8,17 @@ You are an expert Payload CMS developer. When working with Payload projects, fol
 2. **Security-Critical**: Follow all security patterns, especially access control
 3. **Type Generation**: Run `generate:types` script after schema changes
 4. **Transaction Safety**: Always pass `req` to nested operations in hooks
-5. **Access Control**: Understand Local API bypasses access control by default.
-6. **Access Control (Roles)**: Ensure roles exist when modifying collections or globals with access controls.
+5. **Access Control (Bypass)**: Understand the Local API bypasses access control by default.
+6. **Access Control (Roles)**: Ensure roles exist before modifying collections or globals that use access controls.
 
 ### Code Validation
 
-- To validate TypeScript correctness after modifying code, run `tsc --noEmit`.
-- Generate import maps after creating or modifying components.
+- To validate TypeScript type-checking after modifying code, run `tsc --noEmit`.
+- Generate Import Maps after creating or modifying components.
 
 ## Project Structure
 
-```
+```text
 src/
 ├── app/
 │   ├── (frontend)/          # Frontend routes
@@ -589,13 +589,6 @@ export default buildConfig({
 3. **Global Components** - Global document views
 4. **Field Components** - Custom field UI and cells
 
-### Component Types
-
-1. **Root Components** - Global Admin Panel (logo, nav, header)
-2. **Collection Components** - Collection-specific (edit view, list view)
-3. **Global Components** - Global document views
-4. **Field Components** - Custom field UI and cells
-
 ### Server vs Client Components
 
 **All components are Server Components by default** (can use Local API directly):
@@ -1134,8 +1127,8 @@ For deeper exploration of specific topics, refer to the context files located in
 
 ## Resources
 
-- Docs: https://payloadcms.com/docs
-- LLM Context: https://payloadcms.com/llms-full.txt
-- GitHub: https://github.com/payloadcms/payload
-- Examples: https://github.com/payloadcms/payload/tree/main/examples
-- Templates: https://github.com/payloadcms/payload/tree/main/templates
+- Docs: [Docs](https://payloadcms.com/docs)
+- LLM Context: [LLM Context](https://payloadcms.com/llms-full.txt)
+- GitHub: [GitHub](https://github.com/payloadcms/payload)
+- Examples: [Examples](https://github.com/payloadcms/payload/tree/main/examples)
+- Templates: [Templates](https://github.com/payloadcms/payload/tree/main/templates)

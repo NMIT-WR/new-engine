@@ -3,7 +3,7 @@ import type {
   Logger,
 } from "@medusajs/framework/types"
 import { zodValidator } from "@medusajs/framework"
-import { MedusaError, Modules } from "@medusajs/framework/utils"
+import { MedusaError, MedusaService, Modules } from "@medusajs/framework/utils"
 import { createHash } from "crypto"
 import qs from "qs"
 import type { ZodEffects, ZodObject } from "zod"
@@ -37,6 +37,7 @@ const PAGE_CATEGORIES = "page-categories"
 const ARTICLE_CATEGORIES = "article-categories"
 const PAGE_CATEGORY_GROUPS = "page-categories-with-pages"
 const ARTICLE_CATEGORY_GROUPS = "article-categories-with-articles"
+const RETURN_HTML_HEADER = "X-Payload-Return-Html"
 
 type InjectedDependencies = {
   logger: Logger
@@ -62,7 +63,7 @@ const DEFAULT_REQUEST_TIMEOUT_MS = 30_000
 /**
  * Medusa module service for reading Payload CMS content with caching support.
  */
-export default class PayloadModuleService {
+export default class PayloadModuleService extends MedusaService({}) {
   protected options_: PayloadModuleOptions
   protected baseUrl_: string
   protected headers_: Record<string, string>
@@ -73,6 +74,7 @@ export default class PayloadModuleService {
   protected requestTimeoutMs_: number
 
   constructor(container: InjectedDependencies, options: PayloadModuleOptions) {
+    super(container, options)
     this.options_ = options
     this.validateOptions()
     this.baseUrl_ = `${options.serverUrl.replace(/\/$/, "")}/api`
@@ -134,6 +136,7 @@ export default class PayloadModuleService {
     data?: unknown,
     options?: {
       schema?: ZodObject<any, any> | ZodEffects<any, any>
+      headers?: Record<string, string>
     }
   ): Promise<T> {
     const url = `${this.baseUrl_}${endpoint}`
@@ -142,12 +145,13 @@ export default class PayloadModuleService {
       () => controller.abort(),
       this.requestTimeoutMs_
     )
+    const headers = { ...this.headers_, ...(options?.headers ?? {}) }
 
     let response: Response
     try {
       response = await fetch(url, {
         method,
-        headers: this.headers_,
+        headers,
         body: data ? JSON.stringify(data) : undefined,
         signal: controller.signal,
       })
@@ -322,6 +326,9 @@ export default class PayloadModuleService {
           undefined,
           {
             schema: CmsPagesBulkResultSchema,
+            headers: {
+              [RETURN_HTML_HEADER]: "true",
+            },
           }
         )
 
@@ -399,6 +406,9 @@ export default class PayloadModuleService {
           undefined,
           {
             schema: CmsArticlesBulkResultSchema,
+            headers: {
+              [RETURN_HTML_HEADER]: "true",
+            },
           }
         )
 

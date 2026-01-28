@@ -31,9 +31,14 @@ export const PageCategories: CollectionConfig = {
   ],
   hooks: {
     beforeValidate: [
-      ({ data }) => {
+      ({ data, req }) => {
         if (data?.title && !data?.slug) {
-          data.slug = generateSlugFromTitle(data.title)
+          const slug = generateSlugFromTitle(data.title, {
+            locale: req?.locale,
+          })
+          if (slug) {
+            data.slug = slug
+          }
         }
 
         return data

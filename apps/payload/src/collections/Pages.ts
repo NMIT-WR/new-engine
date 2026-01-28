@@ -7,6 +7,7 @@ import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/lab
 import { fieldDescriptions } from '../lib/constants/descriptions'
 import { requireAuth } from '../lib/access/requireAuth'
 import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
+import { shouldReturnHtmlForRequest } from '../lib/utils/request'
 import {
   createContentField,
   createPublishedDateField,
@@ -70,9 +71,14 @@ export const Pages: CollectionConfig = {
   ],
   hooks: {
     beforeValidate: [
-      ({ data }) => {
+      ({ data, req }) => {
         if (data?.title && !data?.slug) {
-          data.slug = generateSlugFromTitle(data.title)
+          const slug = generateSlugFromTitle(data.title, {
+            locale: req?.locale,
+          })
+          if (slug) {
+            data.slug = slug
+          }
         }
 
         return data
@@ -82,7 +88,7 @@ export const Pages: CollectionConfig = {
     afterDelete: [invalidatePagesCache],
     afterRead: [
       ({ doc, req }) => {
-        if (req?.method !== 'GET') {
+        if (!shouldReturnHtmlForRequest(req)) {
           return doc
         }
 

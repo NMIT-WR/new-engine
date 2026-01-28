@@ -127,7 +127,7 @@ zerops:
         - pnpm-workspace.yaml
         - node_modules
         - apps/payload/package.json
-        - apps/payload/next.config.js
+        - apps/payload/next.config.mjs
         - apps/payload/.next
         - apps/payload/public
         - apps/payload/node_modules
@@ -143,4 +143,3 @@ zerops:
         DATABASE_URL: postgresql://${db_user}:${db_password}@${db_hostname}:5432/${db_hostname}?sslmode=disable
         PAYLOAD_SECRET: ${PAYLOAD_SECRET}
         PAYLOAD_BASE_URL: ${PAYLOAD_BASE_URL}
-        PAYLOAD_API_KEY: ${PAYLOAD_API_KEY}
