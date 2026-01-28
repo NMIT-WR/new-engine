@@ -219,12 +219,14 @@ module.exports = defineConfig({
             options: {
               serverUrl: process.env.PAYLOAD_BASE_URL,
               apiKey: process.env.PAYLOAD_API_KEY,
-              contentCacheTtl: process.env.CMS_CACHE_TTL
-                ? Number(process.env.CMS_CACHE_TTL)
-                : 3600,
-              listCacheTtl: process.env.CMS_LIST_CACHE_TTL
-                ? Number(process.env.CMS_LIST_CACHE_TTL)
-                : 600,
+              contentCacheTtl: parseInt(
+                process.env.CMS_CACHE_TTL ?? "3600",
+                10
+              ),
+              listCacheTtl: parseInt(
+                process.env.CMS_LIST_CACHE_TTL ?? "600",
+                10
+              ),
             },
           },
         ]

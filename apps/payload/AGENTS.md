@@ -8,12 +8,12 @@ You are an expert Payload CMS developer. When working with Payload projects, fol
 2. **Security-Critical**: Follow all security patterns, especially access control
 3. **Type Generation**: Run `generate:types` script after schema changes
 4. **Transaction Safety**: Always pass `req` to nested operations in hooks
-5. **Access Control**: Understand Local API bypasses access control by default
-6. **Access Control**: Ensure roles exist when modifiyng collection or globals with access controls
+5. **Access Control**: Understand Local API bypasses access control by default.
+6. **Access Control (Roles)**: Ensure roles exist when modifying collections or globals with access controls.
 
 ### Code Validation
 
-- To validate typescript correctness after modifying code run `tsc --noEmit`
+- To validate TypeScript correctness after modifying code, run `tsc --noEmit`.
 - Generate import maps after creating or modifying components.
 
 ## Project Structure

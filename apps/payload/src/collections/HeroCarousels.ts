@@ -1,4 +1,4 @@
-import { CollectionConfig } from "payload";
+import type { CollectionConfig } from "payload";
 
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
 import { requireAuth } from "../lib/access/requireAuth";
@@ -14,6 +14,9 @@ export const HeroCarousels: CollectionConfig = {
   slug: COLLECTION_SLUG,
   access: {
     read: requireAuth,
+    create: requireAuth,
+    update: requireAuth,
+    delete: requireAuth,
   },
   labels: collectionLabels.heroCarousels,
   admin: {

@@ -25,7 +25,7 @@ cp apps/payload/.env.example apps/payload/.env
 
 Required:
 
-- `DATABASE_URL`: Postgres connection string (the example file still shows MongoDB format)
+- `DATABASE_URL`: postgresql://user:password[@localhost](https://github.com/apps/localhost)/database
 - `PAYLOAD_SECRET`
 - `PAYLOAD_LOCALES`: comma-separated list, first entry is the default locale
 

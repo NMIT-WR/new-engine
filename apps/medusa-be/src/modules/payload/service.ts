@@ -546,9 +546,11 @@ export default class PayloadModuleService {
         break
     }
 
-    if (tags.length > 0) {
-      this.logger_.info(`CMS: Clearing cache tags ${tags.join(", ")}`)
+    if (tags.length === 0) {
+      this.logger_.info(`CMS: No cache tags to clear for ${collection}`)
+      return
     }
+    this.logger_.info(`CMS: Clearing cache tags ${tags.join(", ")}`)
     await this.cacheService_.clear({ tags })
     this.logger_.info(`CMS: Invalidated cache for ${collection}`)
   }

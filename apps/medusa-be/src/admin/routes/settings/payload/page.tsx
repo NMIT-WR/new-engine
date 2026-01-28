@@ -16,10 +16,13 @@ const PayloadRedirectPage = () => {
   const ssoBase = backendUrl
     ? `${backendUrl.replace(/\/$/, "")}/admin/payload/sso`
     : "/admin/payload/sso"
+  const configUrl = backendUrl
+    ? `${backendUrl.replace(/\/$/, "")}/admin/payload/config`
+    : "/admin/payload/config"
 
   useEffect(() => {
     let isMounted = true
-    fetch("/admin/payload/config")
+    fetch(configUrl)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!isMounted || !data) {
@@ -50,9 +53,8 @@ const PayloadRedirectPage = () => {
   if (iframeUrl) {
     try {
       const parsed = new URL(iframeUrl)
-      const path =
-        `${parsed.pathname}${parsed.search}${parsed.hash}` || "/"
-      returnTo = path.startsWith("/") ? path : "/"
+      const path = `${parsed.pathname}${parsed.search}${parsed.hash}`
+      returnTo = path && path.startsWith("/") ? path : "/"
     } catch {
       returnTo = "/"
     }
@@ -136,7 +138,7 @@ const PayloadRedirectPage = () => {
       ref={containerRef}
       style={{
         width: "100%",
-        height: height ? `${height}px` : iframeHeight,
+        height: height !== null ? `${height}px` : iframeHeight,
         overflow: "hidden",
       }}
     >

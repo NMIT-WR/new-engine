@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { lexicalHTMLField } from "@payloadcms/richtext-lexical";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
+import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { createLexicalEditor } from "../lib/editors/lexical";
 import { requireAuth } from "../lib/access/requireAuth";
 import { generateSlugFromTitle } from "../lib/hooks/slug";
@@ -30,6 +32,9 @@ export const Articles: CollectionConfig = {
   },
   access: {
     read: requireAuth,
+    create: requireAuth,
+    update: requireAuth,
+    delete: requireAuth,
   },
   fields: [
     createTitleField({
@@ -157,8 +162,12 @@ export const Articles: CollectionConfig = {
         }
 
         // Estimate reading time (average 200 words per minute)
-        if (data.content && !data.readingTime) {
-          const wordCount = JSON.stringify(data.content).split(' ').length;
+        if (data.content && (data.readingTime === undefined || data.readingTime === null)) {
+          const plainText = convertLexicalToPlaintext({
+            data: data.content as SerializedEditorState,
+          });
+          const trimmedText = plainText.trim();
+          const wordCount = trimmedText ? trimmedText.split(/\s+/).length : 0;
           data.readingTime = Math.ceil(wordCount / 200);
         }
 

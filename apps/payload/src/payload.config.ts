@@ -53,8 +53,8 @@ export default buildConfig({
   },
   endpoints: [
     medusaSsoPostEndpoint,
-    pageCategoriesWithPagesEndpoint,
-    articleCategoriesWithArticlesEndpoint,
+    ...(isPagesEnabled ? [pageCategoriesWithPagesEndpoint] : []),
+    ...(isArticlesEnabled ? [articleCategoriesWithArticlesEndpoint] : []),
   ],
   routes: {
     admin: '/',
@@ -64,8 +64,8 @@ export default buildConfig({
     supportedLanguages: { en, cs, sk, pl, hu, ro, sl, de, fr, es },
   },
   localization: {
-    locales: envLocales,
-    defaultLocale,
+    locales: envLocales ?? ['en'],
+    defaultLocale: defaultLocale ?? 'en',
   },
   collections: [
     Users,
