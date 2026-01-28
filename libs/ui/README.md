@@ -159,13 +159,13 @@ To keep screenshots stable across machines, run component tests inside Docker.
 pnpm -C libs/ui build:storybook
 ```
 
-2. Run Playwright tests in a consistent Linux environment:
+1. Run Playwright tests in a consistent Linux environment:
 
 ```bash
 pnpm -C libs/ui test:components:docker
 ```
 
-3. Update snapshots (inside Docker):
+1. Update snapshots (inside Docker):
 
 ```bash
 pnpm -C libs/ui test:components:docker:update
@@ -181,6 +181,17 @@ Optional environment overrides:
 - `PLAYWRIGHT_WORKERS` (override worker count for parallel runs)
 - `DOCKER_PLATFORM` (default: `linux/amd64`)
 - `PLAYWRIGHT_DOCKER_IMAGE` (default: `new-engine-ui-playwright`)
+
+Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
+
+- If `PLAYWRIGHT_WORKERS` is not set, the Playwright config defaults to
+    using (CPU cores - 1) workers. This balances parallelism with leaving one
+    core for system processes. You can override it in CI with `PLAYWRIGHT_WORKERS=4` (or
+    another suitable value) depending on your runner size.
+- The test suite enables `fullyParallel` in Playwright config so tests can run
+    concurrently across files and workers — ensure tests are isolated and use
+    unique snapshot names (the visual tests already include `story.id` in the
+    screenshot filename, which is good).
 
 Example with parallel workers:
 

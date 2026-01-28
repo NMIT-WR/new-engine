@@ -1,42 +1,8 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { defineConfig, devices } from '@playwright/test'
+// Use CommonJS-style exports so Nx plugins that `require` the config can load it
+// without running into ESM/CommonJS interop issues.
+// This TypeScript config has been superseded by `playwright.config.cjs` which
+// provides a CommonJS entrypoint compatible with Nx plugins. Keep a minimal
+// ESM-compatible placeholder here to avoid tooling errors while preserving the
+// original file path for editors and type hints.
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const baseUrl = new URL(
-  process.env.TEST_BASE_URL ?? 'http://127.0.0.1:6006',
-)
-const storybookUrl = `${baseUrl.protocol}//${baseUrl.host}`
-const staticDir = path.join(__dirname, 'storybook-static')
-const workersEnv = process.env.PLAYWRIGHT_WORKERS
-const workersValue = workersEnv ? Number(workersEnv) : undefined
-
-export default defineConfig({
-  testDir: './test',
-  reporter: 'html',
-  workers: Number.isFinite(workersValue) ? workersValue : undefined,
-  use: {
-    baseURL: storybookUrl,
-  },
-  projects: [
-    {
-      name: 'desktop',
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
-    {
-      name: 'mobile',
-      use: {
-        ...devices['iPhone 15'],
-      },
-    },
-  ],
-  webServer: {
-    command: `npx http-server -p ${baseUrl.port || 6006}`,
-    url: storybookUrl,
-    cwd: staticDir,
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
-})
+module.exports = {}
