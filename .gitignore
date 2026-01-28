@@ -69,3 +69,9 @@ static-data/
 .code
 
 plans/
+
+# Accessibility reports (generated Storybook a11y reports)
+# These are generated artifacts and should be stored as CI artifacts instead
+# of being committed into the repository.
+libs/ui/a11y-report/
+**/a11y-report/
