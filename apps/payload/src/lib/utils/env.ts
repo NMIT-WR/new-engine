@@ -1,5 +1,14 @@
 /** Read an environment variable value if set. */
-const getEnv = (envVar: string): string | undefined => process.env[envVar]
+export function getEnv(envVar: string): string | undefined
+export function getEnv(envVar: string, required: true): string
+export function getEnv(envVar: string, required = false): string | undefined {
+  const value = process.env[envVar]
+  if (required && (!value || value.trim() === '')) {
+    throw new Error(`Missing required environment variable: ${envVar}`)
+  }
+
+  return value
+}
 
 /** Normalize a boolean-ish environment string. */
 const normalize = (value: string): string => value.toLowerCase().trim()
@@ -7,7 +16,7 @@ const normalize = (value: string): string => value.toLowerCase().trim()
 /** Check whether a feature flag environment variable is enabled. */
 export const isEnabled = (envVar: string, defaultValue = true): boolean => {
   const raw = getEnv(envVar)
-  if (raw === undefined) {
+  if (raw === undefined || normalize(raw) === '') {
     return defaultValue
   }
 

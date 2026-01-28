@@ -19,7 +19,6 @@ import {
   LinkFeature,
   HorizontalRuleFeature,
   UploadFeature,
-  BlocksFeature,
   EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
 } from '@payloadcms/richtext-lexical'
@@ -74,13 +73,6 @@ export const createLexicalEditor = () => {
             ],
           },
         },
-      }),
-
-      // Block features for complex content
-      BlocksFeature({
-        blocks: [
-          // Custom blocks can be defined here if needed
-        ],
       }),
 
       // Fixed toolbar to ensure toolbar is always visible

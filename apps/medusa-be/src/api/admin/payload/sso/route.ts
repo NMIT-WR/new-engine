@@ -1,12 +1,21 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import escapeHtml from "escape-html"
 import { SignJWT, importPKCS8 } from "jose"
-import { getQueryParam } from "../../../../utils/query"
+import { z } from "zod"
+import { optionalStringParam } from "../../../../utils/queryParams"
 
 const DEFAULT_ISSUER = "medusa"
 const DEFAULT_AUDIENCE = "payload"
 const DEFAULT_ALG = "RS256"
 const DEFAULT_TOKEN_TTL_SECONDS = 60
+
+/** Query schema for the admin payload SSO endpoint. */
+export const AdminPayloadSsoSchema = z.object({
+  returnTo: optionalStringParam,
+})
+
+/** Parsed query type for the admin payload SSO endpoint. */
+export type AdminPayloadSsoSchemaType = z.infer<typeof AdminPayloadSsoSchema>
 
 /** Normalize multiline private keys loaded from environment variables. */
 const normalizeKey = (value: string) => value.replace(/\\n/g, "\n").trim()
@@ -23,7 +32,10 @@ const sanitizeReturnTo = (value: string | undefined) => {
 }
 
 /** Admin API handler that issues an SSO token and auto-posts to Payload. */
-export async function GET(req: MedusaRequest, res: MedusaResponse) {
+export async function GET(
+  req: MedusaRequest<unknown, AdminPayloadSsoSchemaType>,
+  res: MedusaResponse
+) {
   const privateKey = process.env.PAYLOAD_SSO_PRIVATE_KEY
   const payloadIframeUrl = process.env.PAYLOAD_IFRAME_URL
   const ssoEmail = process.env.PAYLOAD_SSO_USER_EMAIL
@@ -42,7 +54,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     })
   }
 
-  const returnTo = sanitizeReturnTo(getQueryParam(req, "returnTo"))
+  const { returnTo } = req.validatedQuery
+  const safeReturnTo = sanitizeReturnTo(returnTo)
   const issuedAt = Math.floor(Date.now() / 1000)
   const expiresAt = issuedAt + ttl
   let key: CryptoKey
@@ -86,8 +99,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     <form method="POST" action="${escapeHtml(redirectUrl.toString())}">
       <input type="hidden" name="token" value="${escapeHtml(token)}" />
       ${
-        returnTo
-          ? `<input type="hidden" name="returnTo" value="${escapeHtml(returnTo)}" />`
+        safeReturnTo
+          ? `<input type="hidden" name="returnTo" value="${escapeHtml(safeReturnTo)}" />`
           : ""
       }
     </form>

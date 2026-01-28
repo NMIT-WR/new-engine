@@ -2,7 +2,6 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
 import { PAYLOAD_MODULE } from "../../../../../modules/payload"
 import type PayloadModuleService from "../../../../../modules/payload/service"
-import { getQueryParam } from "../../../../../utils/query"
 import { optionalStringParam } from "../../../../../utils/queryParams"
 
 /** Query schema for fetching a single CMS article. */
@@ -24,11 +23,7 @@ export async function GET(
   }
   const cmsService = req.scope.resolve<PayloadModuleService>(PAYLOAD_MODULE)
 
-  const locale = getQueryParam(req, "locale")
-  const article = await cmsService.getPublishedArticle(
-    slug,
-    locale
-  )
+  const article = await cmsService.getPublishedArticle(slug, req.locale)
 
   if (!article) {
     return res.status(404).json({ message: "Article not found" })

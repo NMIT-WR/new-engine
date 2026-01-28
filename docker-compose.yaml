@@ -72,7 +72,7 @@ services:
       interval: 30s
   payload:
     restart: unless-stopped
-    container_name: payload
+    container_name: wr_payload
     build:
       context: .
       dockerfile: docker/development/pnpm/Dockerfile

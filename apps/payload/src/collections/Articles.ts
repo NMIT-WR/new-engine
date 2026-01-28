@@ -118,7 +118,7 @@ export const Articles: CollectionConfig = {
       label: fieldLabels.analytics,
       type: "group",
       admin: {
-        condition: (data: any, siblingData: any) => data?.status === "published",
+        condition: (data: any) => data?.status === "published",
       },
       fields: [
         {

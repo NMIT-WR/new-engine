@@ -2,6 +2,8 @@ import type { Endpoint } from 'payload'
 import { buildJsonResponse, getLocaleFromRequest, getQueryParam } from '../utils/endpoint'
 import { getCategoryDoc, getMediaUrl, type CategoryDoc } from '../utils/docSelectors'
 
+const MAX_ARTICLES = 500
+
 /** Minimal media record needed for article listing. */
 type MediaDoc = {
   url?: string | null
@@ -27,8 +29,8 @@ export const articleCategoriesWithArticlesEndpoint: Endpoint = {
     const articlesResult = await req.payload.find({
       collection: 'articles',
       depth: 1,
-      pagination: false,
-      limit: 0,
+      pagination: true,
+      limit: MAX_ARTICLES,
       locale,
       where: {
         status: { equals: 'published' },

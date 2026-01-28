@@ -1,8 +1,8 @@
 /** Minimal category document shape used in collection aggregation. */
 export type CategoryDoc = {
   id: number
-  title: unknown
-  slug: unknown
+  title: string | null
+  slug: string | null
 }
 
 /** Extract a category document from an unknown relationship value. */
@@ -19,8 +19,8 @@ export const getCategoryDoc = (category: unknown): CategoryDoc | null => {
 
   return {
     id,
-    title: record.title,
-    slug: record.slug,
+    title: typeof record.title === 'string' ? record.title : null,
+    slug: typeof record.slug === 'string' ? record.slug : null,
   }
 }
 

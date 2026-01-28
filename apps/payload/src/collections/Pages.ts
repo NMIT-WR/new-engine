@@ -31,6 +31,9 @@ export const Pages: CollectionConfig = {
   },
   access: {
     read: requireAuth,
+    create: requireAuth,
+    update: requireAuth,
+    delete: requireAuth,
   },
   fields: [
     createTitleField(),

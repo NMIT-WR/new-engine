@@ -2,7 +2,6 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
 import { PAYLOAD_MODULE } from "../../../../modules/payload"
 import type PayloadModuleService from "../../../../modules/payload/service"
-import { getQueryParam } from "../../../../utils/query"
 import { optionalPositiveIntParam, optionalStringParam } from "../../../../utils/queryParams"
 
 /** Query schema for fetching CMS hero carousel lists. */
@@ -25,18 +24,13 @@ export async function GET(
 ) {
   const cmsService = req.scope.resolve<PayloadModuleService>(PAYLOAD_MODULE)
 
-  const locale = getQueryParam(req, "locale")
-  const limitParam = getQueryParam(req, "limit")
-  const pageParam = getQueryParam(req, "page")
-  const sort = getQueryParam(req, "sort")
-  const limit = limitParam ? Number(limitParam) : undefined
-  const page = pageParam ? Number(pageParam) : undefined
+  const { limit, page, sort } = req.validatedQuery
 
   const heroCarousels = await cmsService.listHeroCarousels({
     limit,
     page,
     sort,
-    locale,
+    locale: req.locale,
   })
 
   return res.json({ heroCarousels })

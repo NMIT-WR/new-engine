@@ -25,7 +25,7 @@ import { ArticleCategories } from './collections/ArticleCategories'
 import { PageCategories } from './collections/PageCategories'
 import { HeroCarousels } from './collections/HeroCarousels'
 import { Pages } from './collections/Pages'
-import { getDocString, getSeoCollections, isEnabled, parseEnvList } from './lib/utils/env'
+import { getDocString, getEnv, getSeoCollections, isEnabled, parseEnvList } from './lib/utils/env'
 import { medusaSsoPostEndpoint } from './lib/endpoints/medusaSso'
 import { articleCategoriesWithArticlesEndpoint } from './lib/endpoints/articleCategoriesWithArticles'
 import { pageCategoriesWithPagesEndpoint } from './lib/endpoints/pageCategoriesWithPages'
@@ -34,6 +34,8 @@ import { healthEndpoint } from './lib/endpoints/health'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const secret = getEnv('PAYLOAD_SECRET', true)
+const databaseUrl = getEnv('DATABASE_URL', true)
 const envLocales = parseEnvList('PAYLOAD_LOCALES')
 const defaultLocale = envLocales[0]
 const isArticlesEnabled = isEnabled('FEATURE_PAYLOAD_ARTICLES_ENABLED')
@@ -43,6 +45,11 @@ const seoCollections = getSeoCollections({
   isArticlesEnabled,
   isPagesEnabled,
 })
+const s3Bucket = getEnv('S3_BUCKET', true)
+const s3Endpoint = getEnv('S3_ENDPOINT', true)
+const s3Region = getEnv('S3_REGION', true)
+const s3AccessKeyId = getEnv('S3_ACCESS_KEY_ID', true)
+const s3SecretAccessKey = getEnv('S3_SECRET_ACCESS_KEY', true)
 
 /** Payload CMS configuration for the Medusa integration. */
 export default buildConfig({
@@ -77,13 +84,13 @@ export default buildConfig({
     ...(isHeroCarouselsEnabled ? [HeroCarousels] : []),
   ],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: databaseUrl,
     },
     schemaName: process.env.PAYLOAD_SCHEMA_NAME,
     push: false,
@@ -126,13 +133,13 @@ export default buildConfig({
       collections: {
         media: true,
       },
-      bucket: process.env.S3_BUCKET || '',
+      bucket: s3Bucket,
       config: {
-        endpoint: process.env.S3_ENDPOINT || '',
-        region: process.env.S3_REGION || '',
+        endpoint: s3Endpoint,
+        region: s3Region,
         credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+          accessKeyId: s3AccessKeyId,
+          secretAccessKey: s3SecretAccessKey,
         },
         forcePathStyle: true,
       },

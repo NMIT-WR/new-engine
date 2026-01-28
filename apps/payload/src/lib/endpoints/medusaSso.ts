@@ -6,6 +6,7 @@ import { importSPKI, jwtVerify } from 'jose'
 const DEFAULT_ISSUER = 'medusa'
 const DEFAULT_AUDIENCE = 'payload'
 const DEFAULT_ALG = 'RS256'
+const MAX_SESSIONS = 100
 
 /** JWT payload shape expected from Medusa SSO tokens. */
 type MedusaSsoToken = {
@@ -110,14 +111,16 @@ const createMedusaSsoPostEndpoint = (): Endpoint => ({
     const audience = process.env.PAYLOAD_SSO_AUDIENCE || DEFAULT_AUDIENCE
     const key = await importSPKI(normalizeKey(publicKey), alg)
 
-    let verifiedPayload: MedusaSsoToken
+    let verifiedPayload: MedusaSsoToken | null = null
     try {
       const verified = await jwtVerify<MedusaSsoToken>(token, key, {
         issuer,
         audience,
+        algorithms: [alg],
       })
       verifiedPayload = verified.payload
-    } catch {
+    } catch (error) {
+      req?.payload?.logger?.warn?.({ err: error }, 'SSO token verification failed')
       throw new APIError('Invalid SSO token.', 401)
     }
     const email = verifiedPayload.email || verifiedPayload.sub
@@ -165,7 +168,9 @@ const createMedusaSsoPostEndpoint = (): Endpoint => ({
       const tokenExpiration = adminCollection.config.auth.tokenExpiration
       const expiresAt = new Date(now.getTime() + tokenExpiration * 1000)
       const existingSessions = Array.isArray(user.sessions)
-        ? removeExpiredSessions(user.sessions as Session[])
+        ? removeExpiredSessions(user.sessions as Session[]).slice(
+            -Math.max(MAX_SESSIONS - 1, 0)
+          )
         : []
 
       await req.payload.db.updateOne({

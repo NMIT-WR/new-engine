@@ -344,7 +344,7 @@ export interface Page {
 export interface HeroCarousel {
   id: number;
   image: number | Media;
-  heading?: string | null;
+  heading: string;
   subheading?: string | null;
   button?: string | null;
   buttonHref?: string | null;

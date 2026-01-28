@@ -4,6 +4,8 @@ import type {
   PayloadRequest,
 } from 'payload'
 
+import { createRequestTimeout } from '../utils/request'
+
 /** Payload invalidation payload sent to Medusa. */
 type MedusaInvalidatePayload = {
   collection: string
@@ -68,6 +70,8 @@ const notifyMedusa = async (
     return
   }
 
+  const { controller, clearTimeout } = createRequestTimeout(10_000)
+
   try {
     const response = await fetch(`${baseUrl}/hooks/cms/invalidate`, {
       method: 'POST',
@@ -75,6 +79,7 @@ const notifyMedusa = async (
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     })
 
     if (!response.ok) {
@@ -89,6 +94,8 @@ const notifyMedusa = async (
         error instanceof Error ? error.message : String(error)
       }`
     )
+  } finally {
+    clearTimeout()
   }
 }
 
@@ -105,11 +112,12 @@ export const createMedusaCacheHook = (
     req?: PayloadRequest | null
     operation?: string
   }) => {
-    if (operation && operation !== 'create' && operation !== 'update') {
+    const op = operation ?? 'delete'
+    if (!['create', 'update', 'delete'].includes(op)) {
       return doc
     }
 
-    const isDelete = !operation
+    const isDelete = op === 'delete'
     const locale = isDelete ? undefined : req?.locale
     const cmsDoc = doc as CmsDoc | undefined
     const payload: MedusaInvalidatePayload = {
@@ -121,9 +129,7 @@ export const createMedusaCacheHook = (
       },
     }
 
-    req?.payload?.logger?.info?.(
-      `CMS invalidate hook: ${operation ?? 'delete'} -> ${JSON.stringify(payload)}`
-    )
+    req?.payload?.logger?.info?.(`CMS invalidate hook: ${op} -> ${JSON.stringify(payload)}`)
 
     await notifyMedusa(payload, req)
 

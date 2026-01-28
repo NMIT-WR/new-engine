@@ -22,6 +22,9 @@ export const ArticleCategories: CollectionConfig = {
   },
   access: {
     read: requireAuth,
+    create: requireAuth,
+    update: requireAuth,
+    delete: requireAuth,
   },
   fields: [
     createTitleField(),
@@ -32,6 +35,9 @@ export const ArticleCategories: CollectionConfig = {
   hooks: {
     beforeValidate: [
       ({ data, req }) => {
+        if (!data) {
+          return data
+        }
         if (data?.title && !data?.slug) {
           const slug = generateSlugFromTitle(data.title, {
             locale: req?.locale,
