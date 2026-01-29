@@ -6,8 +6,8 @@ const DEFAULT_MAX_PAGES = 500;
 
 /** Minimal page record used to group by category. */
 type PageDoc = {
-  title: unknown
-  slug?: unknown
+  title: string | null
+  slug?: string | null
   category?: number | CategoryDoc | null
 }
 
@@ -43,7 +43,7 @@ export const pageCategoriesWithPagesEndpoint: Endpoint = {
 
     const categoriesById = new Map<
       number,
-      { id: number; title: unknown; slug: unknown; pages: { title: unknown; slug?: unknown }[] }
+      { id: number; title: string | null; slug: string | null; pages: { title: string | null; slug?: string | null }[] }
     >()
     for (const page of pagesResult.docs as PageDoc[]) {
       const category = getCategoryDoc(page.category)

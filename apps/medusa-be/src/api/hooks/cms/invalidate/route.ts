@@ -9,8 +9,6 @@ import {
   isValidWebhookSignature,
 } from "../../../../utils/webhooks"
 
-const WEBHOOK_SECRET = process.env.PAYLOAD_WEBHOOK_SECRET
-
 /** Expected webhook payload from Payload CMS invalidation hook. */
 type PayloadWebhookBody = {
   collection?: string
@@ -19,6 +17,7 @@ type PayloadWebhookBody = {
 
 /** Hook endpoint to invalidate cached CMS content in Medusa. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
+  const WEBHOOK_SECRET = process.env.PAYLOAD_WEBHOOK_SECRET
   if (!WEBHOOK_SECRET) {
     return res.status(500).json({ error: "Webhook secret not configured" })
   }

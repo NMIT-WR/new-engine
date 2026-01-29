@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto"
+import { timingSafeEqual } from "node:crypto"
 import type { MedusaRequest } from "@medusajs/framework/http"
 
 export function getHeaderValue(
@@ -30,10 +30,9 @@ export function isValidWebhookSignature(
   if (!expectedSignature || !signature) {
     return false
   }
-  // Hash both values to normalize length and prevent length-based timing leaks
-  const hashSignature = createHmac("sha256", "key").update(signature).digest()
-  const hashExpected = createHmac("sha256", "key")
-    .update(expectedSignature)
-    .digest()
-  return timingSafeEqual(hashSignature, hashExpected)
+  // Both are hex-encoded SHA-256 digests (64 chars); length mismatch means no match
+  if (signature.length !== expectedSignature.length) {
+    return false
+  }
+  return timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
 }
