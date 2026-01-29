@@ -10,6 +10,15 @@ export function getEnv(envVar: string, required = false): string | undefined {
   return value
 }
 
+/** Read an environment variable value, treating "null"/"undefined" as unset. */
+export const getEnvString = (envVar: string): string | null => {
+  const value = getEnv(envVar)
+  if (!value || value === 'null' || value === 'undefined') {
+    return null
+  }
+  return value
+}
+
 /** Normalize a boolean-ish environment string. */
 const normalize = (value: string): string => value.toLowerCase().trim()
 

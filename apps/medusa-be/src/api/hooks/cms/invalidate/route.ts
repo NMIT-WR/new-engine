@@ -3,6 +3,9 @@ import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { PAYLOAD_MODULE } from "../../../../modules/payload"
 import type PayloadModuleService from "../../../../modules/payload/service"
+import { getHeaderValue, isValidWebhookSignature } from "../../../../utils/webhooks"
+
+const WEBHOOK_SECRET = process.env.PAYLOAD_WEBHOOK_SECRET
 
 /** Expected webhook payload from Payload CMS invalidation hook. */
 type PayloadWebhookBody = {
@@ -12,6 +15,11 @@ type PayloadWebhookBody = {
 
 /** Hook endpoint to invalidate cached CMS content in Medusa. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
+  const signature = getHeaderValue(req, "x-payload-signature")
+  if (!isValidWebhookSignature(signature, WEBHOOK_SECRET)) {
+    return res.status(401).json({ error: "Unauthorized" })
+  }
+
   const cmsService = req.scope.resolve<PayloadModuleService>(PAYLOAD_MODULE)
   const logger = req.scope.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
   const body = req.body as PayloadWebhookBody

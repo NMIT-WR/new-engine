@@ -3,6 +3,7 @@ import type {
   CollectionAfterDeleteHook,
   PayloadRequest,
 } from 'payload'
+import { getEnvString } from '../utils/env'
 
 import { createRequestTimeout } from '../utils/request'
 
@@ -27,13 +28,8 @@ let loggedMissingBaseUrl = false
 
 /** Resolve the Medusa backend base URL from environment settings. */
 const getMedusaBaseUrl = (): string | null => {
-  const baseUrl = process.env.MEDUSA_BACKEND_URL
-
-  if (!baseUrl || baseUrl === 'null' || baseUrl === 'undefined') {
-    return null
-  }
-
-  return baseUrl.replace(/\/$/, '')
+  const baseUrl = getEnvString('MEDUSA_BACKEND_URL')
+  return baseUrl ? baseUrl.replace(/\/$/, '') : null
 }
 
 /** Resolve a localized slug from a CMS document. */
@@ -71,12 +67,19 @@ const notifyMedusa = async (
   }
 
   const { controller, clearTimeout } = createRequestTimeout(10_000)
+  const webhookSecret = getEnvString('PAYLOAD_WEBHOOK_SECRET')
+  if (!webhookSecret) {
+    throw new Error(
+      'PAYLOAD_WEBHOOK_SECRET is not set; refusing to send CMS cache invalidation.'
+    )
+  }
 
   try {
     const response = await fetch(`${baseUrl}/hooks/cms/invalidate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(webhookSecret ? { 'x-payload-signature': webhookSecret } : {}),
       },
       body: JSON.stringify(payload),
       signal: controller.signal,
