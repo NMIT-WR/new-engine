@@ -1,11 +1,12 @@
+import { createHmac } from "node:crypto"
 import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
   PayloadRequest,
-} from 'payload'
-import { getEnvString } from '../utils/env'
+} from "payload"
+import { getEnvString } from "../utils/env"
 
-import { createRequestTimeout } from '../utils/request'
+import { createRequestTimeout } from "../utils/request"
 
 /** Payload invalidation payload sent to Medusa. */
 type MedusaInvalidatePayload = {
@@ -28,26 +29,29 @@ let loggedMissingBaseUrl = false
 
 /** Resolve the Medusa backend base URL from environment settings. */
 const getMedusaBaseUrl = (): string | null => {
-  const baseUrl = getEnvString('MEDUSA_BACKEND_URL')
-  return baseUrl ? baseUrl.replace(/\/$/, '') : null
+  const baseUrl = getEnvString("MEDUSA_BACKEND_URL")
+  return baseUrl ? baseUrl.replace(/\/$/, "") : null
 }
 
 /** Resolve a localized slug from a CMS document. */
-const resolveSlug = (doc: CmsDoc | undefined, locale?: string): string | undefined => {
+const resolveSlug = (
+  doc: CmsDoc | undefined,
+  locale?: string
+): string | undefined => {
   if (!doc) {
-    return undefined
+    return
   }
 
-  if (typeof doc.slug === 'string') {
+  if (typeof doc.slug === "string") {
     return doc.slug
   }
 
-  if (doc.slug && typeof doc.slug === 'object' && locale) {
+  if (doc.slug && typeof doc.slug === "object" && locale) {
     const localized = (doc.slug as Record<string, unknown>)[locale]
-    return typeof localized === 'string' ? localized : undefined
+    return typeof localized === "string" ? localized : undefined
   }
 
-  return undefined
+  return
 }
 
 /** Notify Medusa to invalidate its CMS cache. */
@@ -60,33 +64,38 @@ const notifyMedusa = async (
     if (!loggedMissingBaseUrl) {
       loggedMissingBaseUrl = true
       req?.payload?.logger?.warn?.(
-        'MEDUSA_BACKEND_URL is not set; skipping CMS cache invalidation.'
+        "MEDUSA_BACKEND_URL is not set; skipping CMS cache invalidation."
       )
     }
     return
   }
 
   const { controller, clearTimeout } = createRequestTimeout(10_000)
-  const webhookSecret = getEnvString('PAYLOAD_WEBHOOK_SECRET')
+  const webhookSecret = getEnvString("PAYLOAD_WEBHOOK_SECRET")
   if (!webhookSecret) {
     throw new Error(
-      'PAYLOAD_WEBHOOK_SECRET is not set; refusing to send CMS cache invalidation.'
+      "PAYLOAD_WEBHOOK_SECRET is not set; refusing to send CMS cache invalidation."
     )
   }
 
   try {
+    const body = JSON.stringify(payload)
+    const signature = createHmac("sha256", webhookSecret)
+      .update(body)
+      .digest("hex")
+
     const response = await fetch(`${baseUrl}/hooks/cms/invalidate`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        ...(webhookSecret ? { 'x-payload-signature': webhookSecret } : {}),
+        "Content-Type": "application/json",
+        "x-payload-signature": signature,
       },
-      body: JSON.stringify(payload),
+      body,
       signal: controller.signal,
     })
 
     if (!response.ok) {
-      const message = await response.text().catch(() => '')
+      const message = await response.text().catch(() => "")
       req?.payload?.logger?.error?.(
         `CMS cache invalidation failed (${response.status}): ${message}`
       )
@@ -115,12 +124,12 @@ export const createMedusaCacheHook = (
     req?: PayloadRequest | null
     operation?: string
   }) => {
-    const op = operation ?? 'delete'
-    if (!['create', 'update', 'delete'].includes(op)) {
+    const op = operation ?? "delete"
+    if (!["create", "update", "delete"].includes(op)) {
       return doc
     }
 
-    const isDelete = op === 'delete'
+    const isDelete = op === "delete"
     const locale = isDelete ? undefined : req?.locale
     const cmsDoc = doc as CmsDoc | undefined
     const payload: MedusaInvalidatePayload = {
@@ -132,12 +141,15 @@ export const createMedusaCacheHook = (
       },
     }
 
-    req?.payload?.logger?.info?.(`CMS invalidate hook: ${op} -> ${JSON.stringify(payload)}`)
+    req?.payload?.logger?.info?.(
+      `CMS invalidate hook: ${op} -> ${JSON.stringify(payload)}`
+    )
 
     await notifyMedusa(payload, req)
 
     return doc
   }
 
-  return invalidateCache as CollectionAfterChangeHook & CollectionAfterDeleteHook
+  return invalidateCache as CollectionAfterChangeHook &
+    CollectionAfterDeleteHook
 }

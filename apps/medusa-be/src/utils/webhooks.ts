@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto"
+import { createHmac, timingSafeEqual } from "node:crypto"
 import type { MedusaRequest } from "@medusajs/framework/http"
 
 export function getHeaderValue(
@@ -12,17 +12,28 @@ export function getHeaderValue(
   return value
 }
 
+/**
+ * Validates a webhook signature using constant-time comparison.
+ *
+ * Note: This function compares two signature strings directly. The caller is
+ * responsible for computing the expected signature (e.g., HMAC(payload, secret))
+ * before calling this function.
+ *
+ * @param signature - The signature received in the webhook request header
+ * @param expectedSignature - The signature computed from the payload and shared secret
+ * @returns true if the signatures match, false otherwise
+ */
 export function isValidWebhookSignature(
   signature: string | undefined,
-  secret: string | undefined
+  expectedSignature: string | undefined
 ): boolean {
-  if (!secret || !signature) {
+  if (!expectedSignature || !signature) {
     return false
   }
-  const signatureBuffer = Buffer.from(signature)
-  const secretBuffer = Buffer.from(secret)
-  if (signatureBuffer.length !== secretBuffer.length) {
-    return false
-  }
-  return timingSafeEqual(signatureBuffer, secretBuffer)
+  // Hash both values to normalize length and prevent length-based timing leaks
+  const hashSignature = createHmac("sha256", "key").update(signature).digest()
+  const hashExpected = createHmac("sha256", "key")
+    .update(expectedSignature)
+    .digest()
+  return timingSafeEqual(hashSignature, hashExpected)
 }

@@ -1,9 +1,13 @@
+import { createHmac } from "node:crypto"
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { PAYLOAD_MODULE } from "../../../../modules/payload"
 import type PayloadModuleService from "../../../../modules/payload/service"
-import { getHeaderValue, isValidWebhookSignature } from "../../../../utils/webhooks"
+import {
+  getHeaderValue,
+  isValidWebhookSignature,
+} from "../../../../utils/webhooks"
 
 const WEBHOOK_SECRET = process.env.PAYLOAD_WEBHOOK_SECRET
 
@@ -15,8 +19,21 @@ type PayloadWebhookBody = {
 
 /** Hook endpoint to invalidate cached CMS content in Medusa. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
+  if (!WEBHOOK_SECRET) {
+    return res.status(500).json({ error: "Webhook secret not configured" })
+  }
+
   const signature = getHeaderValue(req, "x-payload-signature")
-  if (!isValidWebhookSignature(signature, WEBHOOK_SECRET)) {
+  // Prefer raw body for signature verification to avoid JSON.stringify inconsistencies.
+  // Falls back to re-stringified body if raw body isn't preserved by middleware.
+  const rawBody =
+    (req as unknown as { rawBody?: string | Buffer }).rawBody ??
+    JSON.stringify(req.body)
+  const expectedSignature = createHmac("sha256", WEBHOOK_SECRET)
+    .update(rawBody)
+    .digest("hex")
+
+  if (!isValidWebhookSignature(signature, expectedSignature)) {
     return res.status(401).json({ error: "Unauthorized" })
   }
 
