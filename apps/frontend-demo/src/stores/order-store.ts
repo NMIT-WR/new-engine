@@ -6,7 +6,7 @@ interface OrderState {
 }
 
 // Create the order store
-export const orderStore = new Store<OrderState>({
+const orderStore = new Store<OrderState>({
   completedOrder: null,
 })
 

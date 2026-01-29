@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
+      NX_NO_CLOUD: "true"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,5 +41,7 @@ jobs:
 
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       # - run: pnpm exec nx-cloud record -- echo Hello World
+      - name: Lint Nx module boundaries
+        run: pnpm lint:nx
       # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
       - run: pnpm exec nx affected -t lint test

@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ui-kit",
+  "projectType": "library",
+  "sourceRoot": "libs/ui/src",
+  "tags": ["type:lib", "platform:web", "framework:react", "npm:public"]
+}

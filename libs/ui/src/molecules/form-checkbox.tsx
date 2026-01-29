@@ -152,5 +152,3 @@ export function FormCheckbox({
 }
 
 FormCheckbox.displayName = "FormCheckbox"
-
-export const FormCheckboxRaw = FormCheckbox

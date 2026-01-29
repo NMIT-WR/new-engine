@@ -37,17 +37,13 @@ zerops:
         MINIO_SECRET_KEY: ${storage_secretAccessKey}
         MINIO_ACCESS_KEY: ${storage_accessKeyId}
         REDIS_URL: redis://${redis_hostname}:6379
-        CACHE_REDIS_URL: redis://${redis_hostname}:6379
-        EVENTS_REDIS_URL: redis://${redis_hostname}:6379
-        WE_REDIS_URL: redis://${redis_hostname}:6379
         MEILISEARCH_HOST: http://${search_hostname}:${search_port}
         MEILISEARCH_API_KEY: ${search_masterKey}
         SENTRY_DSN: ${MEDUSA_SENTRY_DSN}
         SENTRY_NAME: ${MEDUSA_SENTRY_NAME}
       initCommands:
         # with each deploy
-        - zsc execOnce ${appVersionId}_migration -- npm run migrate
-        - zsc execOnce ${appVersionId}_links -- npm run syncLinks
+        - zsc execOnce ${appVersionId}_migration -- npm run migrateProd
         # initial setup, happens once in service lifetime
         - zsc execOnce createInitialSuperadmin -- npm run createInitialSuperadmin
         # - zsc execOnce seedInitialData -- npm run seedInitialData
@@ -77,6 +73,7 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(frontend-demo)
         - pnpm i
+        - if [ "${SKIP_NX_BOUNDARIES:-}" != "1" ]; then pnpm lint:nx; fi
         - node_modules/.bin/nx run frontend-demo:build --skip-nx-cache --verbose
         - rm -rf apps/frontend-demo/node_modules
         - pnpm --filter=frontend-demo --prod deploy frontend-demo-temp-deploy

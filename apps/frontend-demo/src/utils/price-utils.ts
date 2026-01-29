@@ -1,16 +1,4 @@
 /**
- * Get price from product variant
- * @param product - Product object
- * @param variantIndex - Variant index (default 0)
- * @returns Price in display currency or 0 if not found
- */
-export function getProductPrice(product: any, variantIndex = 0): number {
-  // Medusa v2 prices are already in major units (not cents)
-  const price = product.variants?.[variantIndex]?.prices?.[0]?.amount || 0
-  return price
-}
-
-/**
  * Currency symbol mapping
  */
 const currencySymbols: Record<string, string> = {

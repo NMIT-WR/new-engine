@@ -1,6 +1,6 @@
 import { Badge, type BadgeProps } from "@ui/atoms/badge"
 import { Button } from "@ui/atoms/button"
-import { NumericInput } from "@ui/atoms/numeric-input"
+import { NumericInputTemplate } from "@ui/templates/numeric-input"
 import { Rating, type RatingProps } from "@ui/atoms/rating"
 import { slugify, tv } from "@ui/utils"
 import Image from "next/image"
@@ -21,7 +21,8 @@ const productCard = tv({
     badgesSlot: "flex flex-wrap gap-pc-box",
     ratingSlot: "flex items-center",
     buttonsSlot: "flex w-fit flex-wrap",
-    cartButton: "w-max bg-btn-cart text-btn-cart-fg hover:bg-btn-cart-hover",
+    cartButton:
+      "w-max items-center bg-btn-cart text-btn-cart-fg hover:bg-btn-cart-hover",
     detailButton:
       "w-max bg-btn-detail text-btn-detail-fg hover:bg-btn-detail-hover",
     wishlistButton:
@@ -193,7 +194,7 @@ export function DemoProductCard({
         <div className={buttonsSlot({ buttonLayout })}>
           {hasCartButton && (
             <div className="flex gap-pc-box">
-              {numericInput && <NumericInput />}
+              {numericInput && <NumericInputTemplate />}
               <Button
                 className={cartButton()}
                 icon="token-icon-cart"

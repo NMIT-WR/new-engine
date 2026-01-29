@@ -3,4 +3,4 @@ export type {
   ProductListParams,
   ProductListResponse,
 } from "./product-service"
-export { getProduct, getProducts } from "./product-service"
+export { getProducts } from "./product-service"

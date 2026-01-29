@@ -4,9 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./libs/data-layer"
-    },
-    {
       "path": "./apps/medusa-be"
     },
     {

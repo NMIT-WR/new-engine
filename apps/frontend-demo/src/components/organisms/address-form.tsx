@@ -5,7 +5,7 @@ import { Link } from "@techsio/ui-kit/atoms/link"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
-import { Select } from "@techsio/ui-kit/molecules/select"
+import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useCustomer } from "@/hooks/use-customer"
@@ -24,7 +24,7 @@ export function AddressForm({
   isLoading = false,
 }: AddressFormProps) {
   const { user } = useAuth()
-  const { address, isLoading: isAddressLoading } = useCustomer()
+  const { address } = useCustomer()
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
     firstName: user?.first_name || "",
@@ -268,15 +268,18 @@ export function AddressForm({
         </div>
 
         <div className="mb-4 max-w-[20rem] sm:mb-6">
-          <Select
+          <SelectTemplate
+            items={COUNTRIES}
             label="Země"
-            onValueChange={(details) =>
-              setShippingAddress({
-                ...shippingAddress,
-                country: details.value[0],
-              })
-            }
-            options={COUNTRIES}
+            onValueChange={(details) => {
+              const value = details.value[0]
+              if (value) {
+                setShippingAddress({
+                  ...shippingAddress,
+                  country: value,
+                })
+              }
+            }}
             required
             value={[shippingAddress.country]}
           />
@@ -401,15 +404,18 @@ export function AddressForm({
           </div>
 
           <div className="mb-4 max-w-[20rem] sm:mb-6">
-            <Select
+            <SelectTemplate
+              items={COUNTRIES}
               label="Země"
-              onValueChange={(details) =>
-                setBillingAddress({
-                  ...billingAddress,
-                  country: details.value[0],
-                })
-              }
-              options={COUNTRIES}
+              onValueChange={(details) => {
+                const value = details.value[0]
+                if (value) {
+                  setBillingAddress({
+                    ...billingAddress,
+                    country: value,
+                  })
+                }
+              }}
               required
               value={[billingAddress.country]}
             />

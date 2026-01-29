@@ -6,7 +6,7 @@ import type {
 import { errorHandler } from "@medusajs/framework/http"
 import { defineMiddlewares } from "@medusajs/medusa"
 import { captureException } from "@sentry/node"
-import { normalizeError } from "../utils/errors"
+import { normalizeError, shouldCaptureException } from "../utils/errors"
 import { adminPplConfigRoutesMiddlewares } from "./admin/ppl-config/middlewares"
 import { storeProducersRoutesMiddlewares } from "./store/producers/middlewares"
 
@@ -20,7 +20,9 @@ export default defineMiddlewares({
     next: MedusaNextFunction
   ) => {
     const normalizedError = normalizeError(error)
-    captureException(normalizedError)
+    if (shouldCaptureException(error)) {
+      captureException(normalizedError)
+    }
     return originalErrorHandler(error, req, res, next)
   },
   routes: [

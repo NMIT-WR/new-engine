@@ -42,7 +42,7 @@ medusa-migrate:
 medusa-generate-migration:
 	docker exec wr_medusa_be pnpm --filter medusa-be run migrate:generate-only $(MODULE)
 medusa-minio-init:
-	docker exec wr_medusa_minio mc config host add local http://localhost:9004 minioadmin minioadmin --api S3v4 --lookup auto && \
+	docker exec wr_medusa_minio mc alias set local http://localhost:9004 minioadmin minioadmin && \
 	docker exec wr_medusa_minio mc admin accesskey create --access-key minioadminkey --secret-key minioadminkey local && \
 	docker cp ./docker/development/medusa-minio/config/local-bucket-metadata.zip wr_medusa_minio:. && \
 	docker exec wr_medusa_minio mc admin cluster bucket import local /local-bucket-metadata.zip
