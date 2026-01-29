@@ -1,8 +1,6 @@
-"use strict"
-// CommonJS Playwright config for Nx plugin compatibility
-const os = require("os")
-const path = require("path")
-const { defineConfig, devices } = require("@playwright/test")
+import os from "node:os"
+import path from "node:path"
+import { defineConfig, devices } from "@playwright/test"
 
 const baseUrl = new URL(process.env.TEST_BASE_URL ?? "http://127.0.0.1:6006")
 const storybookUrl = `${baseUrl.protocol}//${baseUrl.host}`
@@ -14,10 +12,21 @@ const cpuCount = typeof os.cpus === "function" ? os.cpus().length : 2
 const recommendedWorkers = Math.max(1, cpuCount - 1)
 const workersValue = workersEnv ? Number(workersEnv) : recommendedWorkers
 
-module.exports = defineConfig({
+// Increased timeouts for Docker (qemu emulation is slow)
+const testTimeout = 120_000
+const expectTimeout = 30_000
+
+export default defineConfig({
   testDir: "./test",
   reporter: "html",
   fullyParallel: true,
+  timeout: testTimeout,
+  expect: {
+    timeout: expectTimeout,
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+    },
+  },
   workers: Number.isFinite(workersValue) ? workersValue : undefined,
   use: {
     baseURL: storybookUrl,

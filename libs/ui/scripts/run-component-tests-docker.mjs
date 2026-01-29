@@ -1,49 +1,72 @@
-import { spawnSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { spawnSync } from "node:child_process"
+import { existsSync } from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const uiRoot = path.resolve(__dirname, '..')
-const repoRoot = path.resolve(uiRoot, '../..')
+const uiRoot = path.resolve(__dirname, "..")
+const repoRoot = path.resolve(uiRoot, "../..")
 
-const imageName = process.env.PLAYWRIGHT_DOCKER_IMAGE ?? 'new-engine-ui-playwright'
-const platform = process.env.DOCKER_PLATFORM ?? 'linux/amd64'
-const baseUrl = process.env.TEST_BASE_URL ?? 'http://host.docker.internal:6006'
+const imageName =
+  process.env.PLAYWRIGHT_DOCKER_IMAGE ?? "new-engine-ui-playwright"
+const platform = process.env.DOCKER_PLATFORM ?? "linux/amd64"
+const testBaseUrl = process.env.TEST_BASE_URL
+const shmSize = process.env.PLAYWRIGHT_DOCKER_SHM_SIZE ?? "2g"
+const ipcMode = process.env.PLAYWRIGHT_DOCKER_IPC ?? "host"
+const sequentialProjects =
+  (process.env.PLAYWRIGHT_DOCKER_SEQUENTIAL ?? "0") !== "0"
+const dockerProjectsEnv = process.env.PLAYWRIGHT_DOCKER_PROJECTS ?? ""
+const dockerProjects = dockerProjectsEnv
+  .split(",")
+  .map((project) => project.trim())
+  .filter(Boolean)
 const dockerfilePath = path.resolve(
   repoRoot,
-  'docker/development/playwright/Dockerfile',
+  "docker/development/playwright/Dockerfile"
 )
-const storybookDir = path.resolve(uiRoot, 'storybook-static')
-const storybookIframe = path.resolve(storybookDir, 'iframe.html')
+const storybookDir = path.resolve(uiRoot, "storybook-static")
+const storybookIframe = path.resolve(storybookDir, "iframe.html")
+const snapshotsDir = path.resolve(uiRoot, "test/visual.spec.ts-snapshots")
+const containerName = `pw-visual-${Date.now()}`
 
 const run = (command, args, options = {}) => {
   const result = spawnSync(command, args, {
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
+    stdio: "inherit",
+    shell: process.platform === "win32",
     ...options,
   })
   if (result.status !== 0) {
-    process.exit(result.status ?? 1)
+    throw new Error(`Command failed: ${command} ${args.join(" ")}`)
   }
+  return result
 }
 
+const runSilent = (command, args) =>
+  spawnSync(command, args, {
+    stdio: "pipe",
+    shell: process.platform === "win32",
+  })
+
+const cleanup = () => {
+  runSilent("docker", ["rm", "-f", containerName])
+}
+
+// Build storybook if needed
 if (!existsSync(storybookIframe)) {
-  console.log('storybook-static not found, building Storybook...')
-  run('pnpm', ['-C', uiRoot, 'build:storybook'])
+  console.log("storybook-static not found, building Storybook...")
+  run("pnpm", ["-C", uiRoot, "build:storybook"])
 }
 
-const imageInspect = spawnSync('docker', ['image', 'inspect', imageName], {
-  stdio: 'ignore',
-  shell: process.platform === 'win32',
-})
-
+// Build docker image if needed
+const imageInspect = runSilent("docker", ["image", "inspect", imageName])
 if (imageInspect.status !== 0) {
-  run('docker', [
-    'build',
-    '-t',
+  console.log("Building Docker image...")
+  run("docker", [
+    "build",
+    `--platform=${platform}`,
+    "-t",
     imageName,
-    '-f',
+    "-f",
     dockerfilePath,
     repoRoot,
   ])
@@ -51,30 +74,168 @@ if (imageInspect.status !== 0) {
 
 const extraArgs = process.argv.slice(2)
 
-const dockerArgs = ['run', '--rm']
+console.log("Starting container...")
 
-if (process.stdout.isTTY) {
-  dockerArgs.push('-t')
+// Start container in background (keeps running)
+const dockerRunArgs = [
+  "run",
+  "-d",
+  "--name",
+  containerName,
+  `--platform=${platform}`,
+  `--shm-size=${shmSize}`,
+  `--ipc=${ipcMode}`,
+  "--add-host=host.docker.internal:host-gateway",
+  "-e",
+  "CI=true",
+  "--entrypoint",
+  "sleep",
+  // Mount sources as read-only
+  "-v",
+  `${storybookDir}:/app/storybook-static:ro`,
+  "-v",
+  `${path.resolve(uiRoot, "test")}:/app/test-src:ro`,
+  "-v",
+  `${path.resolve(uiRoot, "playwright.config.cts")}:/app/playwright.config.cts:ro`,
+  "-v",
+  `${path.resolve(uiRoot, "package.json")}:/app/package.json:ro`,
+  imageName,
+  "infinity",
+]
+
+const addEnv = (key, value) => {
+  if (!value) return
+  const insertAt = dockerRunArgs.indexOf(imageName)
+  dockerRunArgs.splice(insertAt, 0, "-e", `${key}=${value}`)
 }
 
-dockerArgs.push(
-  `--platform=${platform}`,
-  '--add-host=host.docker.internal:host-gateway',
-  '-e',
-  `TEST_BASE_URL=${baseUrl}`,
-  '-e',
-  'CI=true',
-  '-v',
-  `${storybookDir}:/app/storybook-static`,
-  '-v',
-  `${path.resolve(uiRoot, 'test')}:/app/test`,
-  '-v',
-  `${path.resolve(uiRoot, 'package.json')}:/app/package.json`,
-  '-v',
-  `${path.resolve(uiRoot, 'playwright.config.ts')}:/app/playwright.config.ts`,
-  imageName,
-  'test',
-  ...extraArgs,
-)
+addEnv("TEST_BASE_URL", testBaseUrl)
+addEnv("PLAYWRIGHT_WORKERS", process.env.PLAYWRIGHT_WORKERS)
+addEnv("PLAYWRIGHT_PAGE_RESET", process.env.PLAYWRIGHT_PAGE_RESET)
+addEnv("TEST_STORIES", process.env.TEST_STORIES)
 
-run('docker', dockerArgs)
+const startResult = runSilent("docker", dockerRunArgs)
+
+if (startResult.status !== 0) {
+  console.error("Failed to start container")
+  console.error(startResult.stderr?.toString())
+  process.exit(1)
+}
+
+const runningCheck = runSilent("docker", [
+  "inspect",
+  containerName,
+  "--format",
+  "{{.State.Running}}",
+])
+if (runningCheck.status !== 0 || runningCheck.stdout?.toString().trim() !== "true") {
+  console.error("Container is not running after start.")
+  const logsResult = runSilent("docker", ["logs", containerName])
+  if (logsResult.status === 0) {
+    console.error(logsResult.stdout?.toString())
+  }
+  cleanup()
+  process.exit(1)
+}
+
+try {
+  // Copy test files into container (internal I/O is faster)
+  console.log("Copying test files into container...")
+  run("docker", [
+    "exec",
+    containerName,
+    "cp",
+    "-r",
+    "/app/test-src",
+    "/app/test",
+  ])
+
+  // Run playwright tests (all I/O happens inside container)
+  console.log("Running Playwright tests...")
+  const runPlaywright = (project) =>
+    spawnSync(
+      "docker",
+      [
+        "exec",
+        "-t",
+        containerName,
+        "npx",
+        "playwright",
+        "test",
+        "-c",
+        "playwright.config.cts",
+        "--reporter=list",
+        ...(project ? ["--project", project] : []),
+        ...extraArgs,
+      ],
+      { stdio: "inherit" }
+    )
+
+  let testStatus = 0
+  let testSignal = null
+  if (sequentialProjects) {
+    const projectsToRun =
+      dockerProjects.length > 0 ? dockerProjects : ["desktop", "mobile"]
+    for (const project of projectsToRun) {
+      const result = runPlaywright(project)
+      if (result.status !== 0 || result.signal) {
+        testStatus = result.status ?? 1
+        testSignal = result.signal
+        break
+      }
+    }
+  } else {
+    const result = runPlaywright()
+    testStatus = result.status ?? 0
+    testSignal = result.signal
+  }
+
+  if (testStatus !== 0 || testSignal) {
+    console.warn("Playwright exited with a non-zero status.")
+    const inspectResult = runSilent("docker", [
+      "inspect",
+      containerName,
+      "--format",
+      "{{json .State}}",
+    ])
+    if (inspectResult.status === 0) {
+      console.warn("Container state:", inspectResult.stdout?.toString().trim())
+    }
+  }
+
+  // Copy snapshots back to host (only if update mode or new snapshots)
+  console.log("Copying snapshots back to host...")
+  const copySnapshotsResult = runSilent("docker", [
+    "cp",
+    `${containerName}:/app/test/visual.spec.ts-snapshots/.`,
+    snapshotsDir,
+  ])
+  if (copySnapshotsResult.status !== 0) {
+    console.warn("Warning: Could not copy snapshots (may not exist yet)")
+  }
+
+  // Copy HTML report back to host
+  console.log("Copying HTML report back to host...")
+  const reportDir = path.resolve(uiRoot, "playwright-report")
+  runSilent("docker", [
+    "cp",
+    `${containerName}:/app/playwright-report/.`,
+    reportDir,
+  ])
+
+  // Copy test results back to host
+  console.log("Copying test results back to host...")
+  const resultsDir = path.resolve(uiRoot, "test-results")
+  runSilent("docker", [
+    "cp",
+    `${containerName}:/app/test-results/.`,
+    resultsDir,
+  ])
+
+  cleanup()
+  process.exit(testStatus ?? 0)
+} catch (error) {
+  console.error("Error:", error.message)
+  cleanup()
+  process.exit(1)
+}

@@ -5,16 +5,18 @@ import { Badge } from '../../src/atoms/badge'
 import { Button } from '../../src/atoms/button'
 import { NumericInput } from '../../src/atoms/numeric-input'
 import { ProductCard } from '../../src/molecules/product-card'
+import placeholderLandscape from '../assets/placeholder-landscape.webp'
+import placeholderProduct from '../assets/placeholder-product.webp'
+import placeholderSquare from '../assets/placeholder-square.webp'
 
 // Sample product images for different scenarios
 const productImages = {
-  tshirt: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
-  shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
-  watch: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
-  headphones:
-    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
-  camera: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400',
-  backpack: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400',
+  tshirt: placeholderProduct,
+  shoes: placeholderSquare,
+  watch: placeholderProduct,
+  headphones: placeholderLandscape,
+  camera: placeholderSquare,
+  backpack: placeholderProduct,
 }
 
 const meta: Meta<typeof ProductCard> = {

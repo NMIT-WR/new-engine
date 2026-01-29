@@ -172,15 +172,22 @@ pnpm -C libs/ui test:components:docker:update
 ```
 
 Docker image is defined in `docker/development/playwright/Dockerfile`.
-Make sure Storybook is served at `TEST_BASE_URL` (default `http://host.docker.internal:6006`).
-You can run `pnpm -C libs/ui storybook` or serve `storybook-static` with any static server on port 6006.
+Make sure Storybook is served at `TEST_BASE_URL` (default `http://127.0.0.1:6006` inside the container).
+You can run `pnpm -C libs/ui storybook` on the host and set `TEST_BASE_URL=http://host.docker.internal:6006`,
+or let Playwright start its own `http-server` inside Docker from `storybook-static`.
+For visual stability, stories used in regression tests should rely on local assets (avoid external image URLs).
 
 Optional environment overrides:
-- `TEST_BASE_URL` (default: `http://host.docker.internal:6006`)
+- `TEST_BASE_URL` (default: `http://127.0.0.1:6006` inside the container)
 - `TEST_STORIES` (comma-separated Storybook story ids to run, e.g. `atoms-button--states,molecules-productcard--layout-variants`)
 - `PLAYWRIGHT_WORKERS` (override worker count for parallel runs)
+- `PLAYWRIGHT_PAGE_RESET` (default: `1`, resets cookies/storage between stories; set to `0` for max speed if stable)
 - `DOCKER_PLATFORM` (default: `linux/amd64`)
 - `PLAYWRIGHT_DOCKER_IMAGE` (default: `new-engine-ui-playwright`)
+- `PLAYWRIGHT_DOCKER_SHM_SIZE` (default: `2g`, improves Playwright stability in Docker)
+- `PLAYWRIGHT_DOCKER_IPC` (default: `host`, improves Playwright stability in Docker)
+- `PLAYWRIGHT_DOCKER_SEQUENTIAL` (default: `0`, runs projects in parallel; set to `1` to reduce memory spikes)
+- `PLAYWRIGHT_DOCKER_PROJECTS` (comma-separated Playwright project names to run sequentially; default: `desktop,mobile`)
 
 Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
 
