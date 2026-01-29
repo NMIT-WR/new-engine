@@ -1,5 +1,13 @@
 jest.mock("@medusajs/framework/utils", () => ({
   Module: jest.fn(() => ({ __module: true })),
+  MedusaService: jest.fn(() => class {}),
+  MedusaError: class MedusaError extends Error {
+    static Types = { INVALID_DATA: "invalid_data", UNEXPECTED_STATE: "unexpected_state" }
+    constructor(type: string, message: string) {
+      super(message)
+    }
+  },
+  Modules: { CACHING: "caching" },
 }))
 
 describe("payload module", () => {

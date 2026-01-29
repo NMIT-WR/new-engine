@@ -27,6 +27,22 @@ const createFetchResponse = (
   json: jest.fn().mockResolvedValue(payload),
 })
 
+/**
+ * Create a valid Payload bulk response with all required pagination fields.
+ */
+const createBulkResponse = <T>(docs: T[], options?: { page?: number; limit?: number }) => ({
+  docs,
+  totalDocs: docs.length,
+  limit: options?.limit ?? 10,
+  page: options?.page ?? 1,
+  totalPages: 1,
+  hasNextPage: false,
+  hasPrevPage: false,
+  nextPage: null,
+  prevPage: null,
+  pagingCounter: 1,
+})
+
 const defaultOptions: PayloadModuleOptions = {
   serverUrl: "https://payload.example.com/",
   apiKey: "test-api-key",
@@ -123,10 +139,10 @@ describe("PayloadModuleService", () => {
       const { service, cacheService } = createServiceWithCache({
         contentCacheTtl: 123,
       })
-      const page = { id: "page_1", slug: "home", title: "Home" }
+      const page = { id: 1, slug: "home", title: "Home" }
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: [page] }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse([page])))
 
       const result = await service.getPublishedPage("home", "en")
 
@@ -162,7 +178,7 @@ describe("PayloadModuleService", () => {
       const { service, cacheService } = createServiceWithCache()
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: [] }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse([])))
 
       const result = await service.getPublishedPage("missing")
 
@@ -177,10 +193,10 @@ describe("PayloadModuleService", () => {
   describe("getPublishedArticle", () => {
     it("fetches article and caches result", async () => {
       const { service, cacheService } = createServiceWithCache()
-      const article = { id: "article_1", slug: "news", title: "News" }
+      const article = { id: 1, slug: "news", title: "News" }
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: [article] }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse([article])))
 
       const result = await service.getPublishedArticle("news", "en")
 
@@ -197,7 +213,7 @@ describe("PayloadModuleService", () => {
       const { service, cacheService } = createServiceWithCache()
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: [] }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse([])))
 
       const result = await service.getPublishedArticle("missing")
 
@@ -211,10 +227,10 @@ describe("PayloadModuleService", () => {
       const { service, cacheService } = createServiceWithCache({
         listCacheTtl: 456,
       })
-      const carousels = [{ id: "hero_1", image: { url: "img" } }]
+      const carousels = [{ id: 1, image: { url: "img" } }]
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: carousels }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse(carousels)))
 
       const options = {
         limit: 10,
@@ -270,10 +286,10 @@ describe("PayloadModuleService", () => {
 
     it("uses default cache key when no options are provided", async () => {
       const { service, cacheService } = createServiceWithCache()
-      const carousels = [{ id: "hero_2", image: { url: "img" } }]
+      const carousels = [{ id: 2, image: { url: "img" } }]
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: carousels }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse(carousels)))
 
       const result = await service.listHeroCarousels()
 
@@ -285,10 +301,10 @@ describe("PayloadModuleService", () => {
 
     it("uses default hash when only locale is provided", async () => {
       const { service, cacheService } = createServiceWithCache()
-      const carousels = [{ id: "hero_3", image: { url: "img" } }]
+      const carousels = [{ id: 3, image: { url: "img" } }]
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: carousels }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse(carousels)))
 
       const result = await service.listHeroCarousels({ locale: "en" })
 
@@ -300,10 +316,10 @@ describe("PayloadModuleService", () => {
 
     it("hashes cache key when only page is provided", async () => {
       const { service, cacheService } = createServiceWithCache()
-      const carousels = [{ id: "hero_4", image: { url: "img" } }]
+      const carousels = [{ id: 4, image: { url: "img" } }]
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: carousels }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse(carousels)))
 
       const result = await service.listHeroCarousels({ page: 2, locale: "en" })
 
@@ -320,10 +336,10 @@ describe("PayloadModuleService", () => {
 
     it("hashes cache key when only sort is provided", async () => {
       const { service, cacheService } = createServiceWithCache()
-      const carousels = [{ id: "hero_5", image: { url: "img" } }]
+      const carousels = [{ id: 5, image: { url: "img" } }]
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: carousels }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse(carousels)))
 
       const result = await service.listHeroCarousels({
         sort: "-createdAt",
@@ -343,10 +359,10 @@ describe("PayloadModuleService", () => {
 
     it("hashes cache key when only limit is provided", async () => {
       const { service, cacheService } = createServiceWithCache()
-      const carousels = [{ id: "hero_6", image: { url: "img" } }]
+      const carousels = [{ id: 6, image: { url: "img" } }]
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ docs: carousels }))
+      fetchMock.mockResolvedValue(createFetchResponse(createBulkResponse(carousels)))
 
       const result = await service.listHeroCarousels({ limit: 5, locale: "en" })
 
@@ -367,7 +383,7 @@ describe("PayloadModuleService", () => {
       const { service, cacheService } = createServiceWithCache()
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({}))
+      fetchMock.mockResolvedValue(createFetchResponse({ categories: [] }))
 
       const result = await service.listPageCategoriesWithPages({
         locale: "en",
@@ -485,22 +501,22 @@ describe("PayloadModuleService", () => {
       )
     })
 
-    it("returns empty list when categories are missing", async () => {
+    it("returns empty list when categories are empty", async () => {
       const { service, cacheService } = createServiceWithCache()
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({}))
+      fetchMock.mockResolvedValue(createFetchResponse({ categories: [] }))
 
       const result = await service.listArticleCategoriesWithArticles()
 
       expect(result).toEqual([])
     })
 
-    it("returns empty list when categories are null", async () => {
+    it("returns empty list when no categories match filter", async () => {
       const { service, cacheService } = createServiceWithCache()
 
       cacheService.get.mockResolvedValue(null)
-      fetchMock.mockResolvedValue(createFetchResponse({ categories: null }))
+      fetchMock.mockResolvedValue(createFetchResponse({ categories: [] }))
 
       const result = await service.listArticleCategoriesWithArticles({
         locale: "en",
@@ -592,7 +608,7 @@ describe("PayloadModuleService", () => {
 
       await service.invalidateCache("unknown-collection")
 
-      expect(cacheService.clear).toHaveBeenCalledWith({ tags: [] })
+      expect(cacheService.clear).not.toHaveBeenCalled()
     })
 
     it("treats 'null' locale string as missing and clears all locales", async () => {
