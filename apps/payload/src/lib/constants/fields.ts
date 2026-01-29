@@ -9,11 +9,7 @@ import { fieldLabels } from './labels'
 import { statusOptions } from './statusOptions'
 
 /** Locale-aware label shape for Payload admin fields. */
-type LocalizedLabel = {
-  en: string
-  cs: string
-  sk: string
-}
+type LocalizedLabel = Record<string, string>
 
 /** Description text for localized fields. */
 type Description = LocalizedLabel
@@ -71,7 +67,7 @@ export const createContentField = (options: ContentFieldOptions): RichTextField 
   type: 'richText',
   editor: options.editor,
   localized: options.localized ?? true,
-  required: options.required,
+  required: options.required ?? true,
   admin: options.admin,
   label: options.label ?? fieldLabels.content,
 })

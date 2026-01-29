@@ -25,7 +25,7 @@ import { ArticleCategories } from './collections/ArticleCategories'
 import { PageCategories } from './collections/PageCategories'
 import { HeroCarousels } from './collections/HeroCarousels'
 import { Pages } from './collections/Pages'
-import { getDocString, getEnv, getSeoCollections, isEnabled, parseEnvList } from './lib/utils/env'
+import { getDocString, getEnv, isEnabled, parseEnvList } from './lib/utils/env'
 import { medusaSsoPostEndpoint } from './lib/endpoints/medusaSso'
 import { articleCategoriesWithArticlesEndpoint } from './lib/endpoints/articleCategoriesWithArticles'
 import { pageCategoriesWithPagesEndpoint } from './lib/endpoints/pageCategoriesWithPages'
@@ -41,10 +41,7 @@ const defaultLocale = envLocales[0]
 const isArticlesEnabled = isEnabled('FEATURE_PAYLOAD_ARTICLES_ENABLED')
 const isPagesEnabled = isEnabled('FEATURE_PAYLOAD_PAGES_ENABLED')
 const isHeroCarouselsEnabled = isEnabled('FEATURE_PAYLOAD_HERO_CAROUSELS_ENABLED')
-const seoCollections = getSeoCollections({
-  isArticlesEnabled,
-  isPagesEnabled,
-})
+
 const s3Bucket = getEnv('S3_BUCKET', true)
 const s3Endpoint = getEnv('S3_ENDPOINT', true)
 const s3Region = getEnv('S3_REGION', true)
@@ -98,7 +95,10 @@ export default buildConfig({
   sharp,
   plugins: [
     seoPlugin({
-      collections: seoCollections,
+      collections: [
+        ...(isArticlesEnabled ? ['articles'] : []),
+        ...(isPagesEnabled ? ['pages'] : []),
+      ],
       uploadsCollection: 'media',
       tabbedUI: true,
       generateTitle: ({ doc }) => getDocString(doc?.title),

@@ -12,8 +12,13 @@ const normalizeParam = (value: string | null): string | undefined => {
 
 /** Read a string query param from a Payload request URL. */
 export const getQueryParam = (req: PayloadRequest, key: string): string | undefined => {
-  const url = new URL(req.url ?? '', 'http://localhost')
-  return normalizeParam(url.searchParams.get(key))
+  try {
+    const url = new URL(req.url ?? '', 'http://localhost')
+    return normalizeParam(url.searchParams.get(key))
+  } catch {
+    // Defensive: Malformed URL or unexpected input; return undefined gracefully
+    return undefined
+  }
 }
 
 /** Resolve a locale from the request and validate against configured locales. */

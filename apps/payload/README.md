@@ -48,13 +48,13 @@ pnpm install
 ### 3) Run migrations
 
 ```bash
-pnpm --filter payload payload migrate
+pnpm --filter @nmit/payload payload migrate
 ```
 
 ### 4) Start dev server
 
 ```bash
-pnpm --filter payload dev
+pnpm --filter @nmit/payload dev
 ```
 
 Or with Nx:

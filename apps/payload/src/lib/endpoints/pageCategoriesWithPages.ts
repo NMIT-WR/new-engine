@@ -2,6 +2,8 @@ import type { Endpoint } from 'payload'
 import { buildJsonResponse, getLocaleFromRequest, getQueryParam } from '../utils/endpoint'
 import { getCategoryDoc, type CategoryDoc } from '../utils/docSelectors'
 
+const DEFAULT_MAX_PAGES = 500;
+
 /** Minimal page record used to group by category. */
 type PageDoc = {
   title: unknown
@@ -21,7 +23,7 @@ export const pageCategoriesWithPagesEndpoint: Endpoint = {
       collection: 'pages',
       depth: 1,
       pagination: false,
-      limit: 0,
+      limit: DEFAULT_MAX_PAGES,
       locale,
       where: {
         status: { equals: 'published' },

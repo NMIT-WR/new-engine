@@ -106,9 +106,9 @@ const createMedusaSsoPostEndpoint = (): Endpoint => ({
       throw new APIError('Missing SSO token.', 400)
     }
 
-    const alg = process.env.PAYLOAD_SSO_ALG || DEFAULT_ALG
-    const issuer = process.env.PAYLOAD_SSO_ISSUER || DEFAULT_ISSUER
-    const audience = process.env.PAYLOAD_SSO_AUDIENCE || DEFAULT_AUDIENCE
+    const alg = process.env.PAYLOAD_SSO_ALG ?? DEFAULT_ALG
+    const issuer = process.env.PAYLOAD_SSO_ISSUER ?? DEFAULT_ISSUER
+    const audience = process.env.PAYLOAD_SSO_AUDIENCE ?? DEFAULT_AUDIENCE
     const key = await importSPKI(normalizeKey(publicKey), alg)
 
     let verifiedPayload: MedusaSsoToken | null = null

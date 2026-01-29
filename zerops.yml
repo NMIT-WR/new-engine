@@ -116,8 +116,8 @@ zerops:
           shopt -s extglob
           rm -rf apps/!(payload)
         - pnpm i
-        - pnpm --filter=payload build
-        - pnpm --filter=payload --prod deploy payload-temp-deploy
+        - pnpm --filter=@nmit/payload build
+        - pnpm --filter=@nmit/payload --prod deploy payload-temp-deploy
         - mv payload-temp-deploy/node_modules apps/payload/
       deployFiles:
         - .nx

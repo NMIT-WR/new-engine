@@ -29,18 +29,6 @@ export const parseEnvList = (envVar: string): string[] => {
   return raw ? raw.split(',').map((item) => item.trim()).filter(Boolean) : []
 }
 
-/** Feature flags used to determine SEO-enabled collections. */
-type SeoCollectionFlags = {
-  isArticlesEnabled: boolean
-  isPagesEnabled: boolean
-}
-
-/** Return the list of collection slugs that should be included for SEO. */
-export const getSeoCollections = (flags: SeoCollectionFlags): string[] =>
-  [flags.isArticlesEnabled ? 'articles' : null, flags.isPagesEnabled ? 'pages' : null].filter(
-    (collection): collection is string => Boolean(collection)
-  )
-
 /** Normalize arbitrary values to a string for SEO field generation. */
 export const getDocString = (value: unknown): string =>
   typeof value === 'string' ? value : ''

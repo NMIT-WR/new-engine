@@ -49,7 +49,6 @@ export const createLexicalEditor = () => {
       BlockquoteFeature(),
       HorizontalRuleFeature(),
 
-      // Table feature (experimental) - WORKING!
       EXPERIMENTAL_TableFeature(),
 
       // Link and relationship features
