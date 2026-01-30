@@ -5,7 +5,7 @@ import { HeroCarousel } from "@/components/hero-carousel"
 import { ProductGrid } from "@/components/molecules/product-grid"
 import { TopProduct } from "@/components/top-product"
 import { featureBlocks, heroCarouselSlides, topCategory } from "@/data/home"
-import { useSuspenseProducts } from "@/hooks/use-products"
+import { useSuspenseProducts } from "@/hooks/product-hooks"
 import { transformProduct } from "@/utils/transform/transform-product"
 
 export default function Home() {
