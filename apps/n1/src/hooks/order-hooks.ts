@@ -42,19 +42,21 @@ function buildDetailParams(input: OrderDetailInput): string {
 
 /**
  * Adapter for getOrderById to match OrderService interface
+ * (no transformation needed - just forwarding)
  */
-async function getOrderAdapter(
+function getOrderAdapter(
   orderId: string,
   _signal?: AbortSignal
 ): Promise<StoreOrder | null> {
   if (!orderId) {
-    return null
+    return Promise.resolve(null)
   }
   return getOrderById(orderId)
 }
 
 /**
  * Adapter for getOrders to match OrderService interface
+ * (transforms response shape)
  */
 async function getOrdersAdapter(
   params: GetOrdersParams,

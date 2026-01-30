@@ -84,7 +84,7 @@ const productQueryKeys = createProductQueryKeys<
  * Adapter for getProductByHandle to match ProductService interface
  * (storefront-data expects signal parameter)
  */
-async function getProductByHandleAdapter(
+function getProductByHandleAdapter(
   params: ProductDetailParams,
   _signal?: AbortSignal
 ): Promise<StoreProduct | null> {
