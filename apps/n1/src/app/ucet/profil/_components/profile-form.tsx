@@ -6,7 +6,7 @@ import { Button } from "@ui/atoms/button"
 import { FormInput } from "@ui/molecules/form-input"
 import { TextField } from "@/components/forms/fields/text-field"
 import { authHooks } from "@/lib/storefront-data-auth"
-import { useUpdateCustomer } from "@/hooks/use-customer"
+import { useUpdateCustomer } from "@/hooks/customer-hooks"
 import { profileValidators } from "@/lib/form-validators"
 import {
   cleanPhoneNumber,
