@@ -1,4 +1,4 @@
-import { useProducts } from "@/hooks/use-products"
+import { useProducts } from "@/hooks/product-hooks"
 import { transformProduct } from "@/utils/transform/transform-product"
 import { ProductGrid } from "../molecules/product-grid"
 

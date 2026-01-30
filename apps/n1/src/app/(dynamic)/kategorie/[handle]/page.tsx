@@ -22,7 +22,7 @@ import {
 import { usePrefetchCategoryChildren } from "@/hooks/use-prefetch-category-children"
 import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
 import { usePrefetchRootCategories } from "@/hooks/use-prefetch-root-categories"
-import { useSuspenseProducts } from "@/hooks/use-products"
+import { useSuspenseProducts } from "@/hooks/product-hooks"
 import { useSuspenseRegion } from "@/hooks/use-region"
 import {
   ALL_CATEGORIES_MAP,

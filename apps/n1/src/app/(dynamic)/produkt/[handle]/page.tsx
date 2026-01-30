@@ -12,7 +12,7 @@ import { ProductSizes } from "@/components/product-detail/product-sizes"
 import { ProductTable } from "@/components/product-detail/product-table"
 import { ProductTabs } from "@/components/product-detail/product-tabs"
 import { RelatedProducts } from "@/components/product-detail/related-products"
-import { useSuspenseProduct } from "@/hooks/use-product"
+import { useSuspenseProduct } from "@/hooks/product-hooks"
 import { CATEGORY_MAP_BY_ID } from "@/lib/constants"
 import { useAnalytics } from "@/providers/analytics-provider"
 import {
