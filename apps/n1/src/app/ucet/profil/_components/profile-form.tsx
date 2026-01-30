@@ -5,7 +5,7 @@ import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { Button } from "@ui/atoms/button"
 import { FormInput } from "@ui/molecules/form-input"
 import { TextField } from "@/components/forms/fields/text-field"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/lib/storefront-data-auth"
 import { useUpdateCustomer } from "@/hooks/use-customer"
 import { profileValidators } from "@/lib/form-validators"
 import {
@@ -20,7 +20,7 @@ type ProfileFormData = {
 }
 
 export function ProfileForm() {
-  const { customer } = useAuth()
+  const { customer } = authHooks.useAuth()
   const updateCustomer = useUpdateCustomer()
   const toaster = useToast()
 

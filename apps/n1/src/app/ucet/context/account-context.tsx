@@ -3,7 +3,7 @@
 import type { StoreCustomer } from "@medusajs/types"
 import { useQueryClient } from "@tanstack/react-query"
 import { createContext, type ReactNode, useContext, useEffect } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/lib/storefront-data-auth"
 import { cacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import { getOrders } from "@/services/order-service"
@@ -23,7 +23,7 @@ export const useAccountContext = () => {
 }
 
 export const AccountProvider = ({ children }: { children: ReactNode }) => {
-  const { customer } = useAuth()
+  const { customer } = authHooks.useAuth()
   const queryClient = useQueryClient()
 
   useEffect(() => {

@@ -2,7 +2,6 @@ import type { StoreCustomer } from "@medusajs/types"
 import { mapAuthError } from "@/lib/auth-messages"
 import { logError } from "@/lib/errors"
 import { sdk } from "@/lib/medusa-client"
-import { clearToken } from "@/lib/token-utils"
 
 export type LoginCredentials = {
   email: string
@@ -74,7 +73,12 @@ export async function register(
 
     // CRITICAL: Clean up orphaned token if customer.create() failed
     // If register() succeeded but create() failed, we have token without customer
-    clearToken()
+    // SDK manages token storage - just call logout to clear it
+    try {
+      await sdk.auth.logout()
+    } catch {
+      // Ignore logout errors during cleanup
+    }
 
     throw new Error(mapAuthError(err))
   }
