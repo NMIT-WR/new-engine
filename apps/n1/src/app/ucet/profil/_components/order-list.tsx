@@ -2,7 +2,7 @@
 import { Pagination } from "@techsio/ui-kit/molecules/pagination"
 import { Suspense, useState } from "react"
 import { ErrorBoundary } from "@/components/error-boundary"
-import { useSuspenseOrders } from "@/hooks/use-orders"
+import { useSuspenseOrders } from "@/hooks/order-hooks"
 import { DesktopOrderCard } from "./orders/desktop-order-card"
 import { MobileOrderCard } from "./orders/mobile-order-card"
 import { OrdersEmpty } from "./orders/orders-empty"
@@ -25,9 +25,8 @@ export function OrderList() {
 
 function OrderListContent() {
   const [page, setPage] = useState(1)
-  const { data: ordersData } = useSuspenseOrders()
+  const { orders } = useSuspenseOrders({})
 
-  const orders = ordersData?.orders || []
 
   // Calculate summary stats (from all orders, not just current page)
   const totalAmount = orders.reduce(
