@@ -3,6 +3,7 @@ import { existsSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
+// Runs Playwright component visual tests inside Docker for reproducible snapshots.
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const uiRoot = path.resolve(__dirname, "..")
 const repoRoot = path.resolve(uiRoot, "../..")
@@ -93,6 +94,8 @@ const dockerRunArgs = [
   "--add-host=host.docker.internal:host-gateway",
   "-e",
   "CI=true",
+  "-e",
+  "PLAYWRIGHT_DOCKER=1",
   "--entrypoint",
   "sleep",
   // Mount sources as read-only
@@ -169,7 +172,7 @@ try {
         "test",
         "-c",
         "playwright.config.cts",
-        "--reporter=list",
+        "--reporter=list,html",
         ...(project ? ["--project", project] : []),
         ...extraArgs,
       ],
@@ -222,20 +225,26 @@ try {
   // Copy HTML report back to host
   console.log("Copying HTML report back to host...")
   const reportDir = path.resolve(uiRoot, "playwright-report")
-  runSilent("docker", [
+  const copyReportResult = runSilent("docker", [
     "cp",
     `${containerName}:/app/playwright-report/.`,
     reportDir,
   ])
+  if (copyReportResult.status !== 0) {
+    console.warn("Warning: Could not copy HTML report (may not exist yet)")
+  }
 
   // Copy test results back to host
   console.log("Copying test results back to host...")
   const resultsDir = path.resolve(uiRoot, "test-results")
-  runSilent("docker", [
+  const copyResultsResult = runSilent("docker", [
     "cp",
     `${containerName}:/app/test-results/.`,
     resultsDir,
   ])
+  if (copyResultsResult.status !== 0) {
+    console.warn("Warning: Could not copy test results (may not exist yet)")
+  }
 
   cleanup()
   process.exit(testStatus ?? 0)

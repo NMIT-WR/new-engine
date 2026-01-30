@@ -11,6 +11,8 @@ const workersEnv = process.env.PLAYWRIGHT_WORKERS
 const cpuCount = typeof os.cpus === "function" ? os.cpus().length : 2
 const recommendedWorkers = Math.max(1, cpuCount - 1)
 const workersValue = workersEnv ? Number(workersEnv) : recommendedWorkers
+const workers =
+  Number.isFinite(workersValue) ? Math.max(1, Math.floor(workersValue)) : undefined
 
 // Increased timeouts for Docker (qemu emulation is slow)
 const testTimeout = 120_000
@@ -18,6 +20,7 @@ const expectTimeout = 30_000
 
 export default defineConfig({
   testDir: "./test",
+  globalSetup: "./test/docker-only.global-setup.js",
   reporter: "html",
   fullyParallel: true,
   timeout: testTimeout,
@@ -27,7 +30,7 @@ export default defineConfig({
       maxDiffPixelRatio: 0.01,
     },
   },
-  workers: Number.isFinite(workersValue) ? workersValue : undefined,
+  workers,
   use: {
     baseURL: storybookUrl,
   },

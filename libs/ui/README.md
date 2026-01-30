@@ -153,25 +153,20 @@ When overriding, create a file in the brand folder and map the semantic tokens t
 
 To keep screenshots stable across machines, run component tests inside Docker.
 
-1. Build Storybook static output (required for Storybook `index.json` discovery):
+1. Run Playwright tests in a consistent Linux environment (builds Storybook static output by default):
 
 ```bash
-pnpm -C libs/ui build:storybook
-```
-
-1. Run Playwright tests in a consistent Linux environment:
-
-```bash
-pnpm -C libs/ui test:components:docker
+pnpm -C libs/ui test:components
 ```
 
 1. Update snapshots (inside Docker):
 
 ```bash
-pnpm -C libs/ui test:components:docker:update
+pnpm -C libs/ui test:components:update
 ```
 
 Docker image is defined in `docker/development/playwright/Dockerfile`.
+These tests are intentionally Docker-only; running them directly on the host is blocked to keep snapshots reproducible.
 Make sure Storybook is served at `TEST_BASE_URL` (default `http://127.0.0.1:6006` inside the container).
 You can run `pnpm -C libs/ui storybook` on the host and set `TEST_BASE_URL=http://host.docker.internal:6006`,
 or let Playwright start its own `http-server` inside Docker from `storybook-static`.
@@ -179,6 +174,7 @@ For visual stability, stories used in regression tests should rely on local asse
 
 Optional environment overrides:
 - `TEST_BASE_URL` (default: `http://127.0.0.1:6006` inside the container)
+- `PLAYWRIGHT_STORYBOOK_REBUILD` (default: `1`, rebuilds `storybook-static`; set to `0` to reuse an existing build)
 - `TEST_STORIES` (comma-separated Storybook story ids to run, e.g. `atoms-button--states,molecules-productcard--layout-variants`)
 - `PLAYWRIGHT_WORKERS` (override worker count for parallel runs)
 - `PLAYWRIGHT_PAGE_RESET` (default: `1`, resets cookies/storage between stories; set to `0` for max speed if stable)
@@ -203,7 +199,7 @@ Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
 Example with parallel workers:
 
 ```bash
-TEST_BASE_URL=http://127.0.0.1:6006 PLAYWRIGHT_WORKERS=6 pnpm -C libs/ui test:components:docker
+TEST_BASE_URL=http://127.0.0.1:6006 PLAYWRIGHT_WORKERS=6 pnpm -C libs/ui test:components
 ```
 
 ## 8. Publishing and releases

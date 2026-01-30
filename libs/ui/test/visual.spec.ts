@@ -309,7 +309,7 @@ test.describe.parallel('storybook visual', () => {
           // Element screenshots are faster and avoid full-page rendering cost.
           const root = page.locator('#storybook-root')
           await expect(root).toHaveScreenshot(
-            `${story.id}-${workerInfo.project.name}-${process.platform}.png`,
+            `${story.id}.png`,
             {
               animations: 'disabled',
               ...(mask.length > 0 ? { mask } : {}),
