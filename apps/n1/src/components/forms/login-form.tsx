@@ -6,7 +6,7 @@ import { Checkbox } from "@ui/atoms/checkbox"
 import Link from "next/link"
 import { useRef, useState } from "react"
 import { TextField } from "@/components/forms/fields/text-field"
-import { useLogin } from "@/hooks/use-login"
+import { authHooks } from "@/lib/storefront-data-auth"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
 import { loginValidators } from "@/lib/form-validators"
@@ -42,7 +42,7 @@ export function LoginForm({
     password: "",
   }
 
-  const login = useLogin({
+  const login = authHooks.useLogin({
     onSuccess: () => {
       if (!formRef.current) {
         return
@@ -62,7 +62,9 @@ export function LoginForm({
       onSuccess?.()
     },
     onError: (error) => {
-      console.error("Login failed:", error.message)
+      const message =
+        error instanceof Error ? error.message : "Unknown error"
+      console.error("Login failed:", message)
       setBackendError(AUTH_MESSAGES.INVALID_CREDENTIALS)
     },
   })
