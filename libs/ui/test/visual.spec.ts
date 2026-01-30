@@ -24,7 +24,7 @@ const shouldResetBetweenTests =
 
 let storybookIndex: StorybookIndex
 
-const test = base.extend<{ workerPage: Page }>({
+const test = base.extend<{}, { workerPage: Page }>({
   workerPage: [
     async ({ browser }, use, testInfo) => {
       const context = await browser.newContext(testInfo.project.use)
@@ -72,150 +72,262 @@ test.describe.parallel('storybook visual', () => {
   for (const story of selectedStories) {
     test(
       `${story.title} ${story.name} should not have visual regressions`,
-      async ({ workerPage }, workerInfo) => {
-        const params = new URLSearchParams({
-          id: story.id,
-          viewMode: 'story',
-        })
-        const mask = []
+      async ({ workerPage, browser }, workerInfo) => {
+        let page = workerPage
+        let ownedContext: any = null
 
-        if (shouldResetBetweenTests) {
-          try {
-            await workerPage.context().clearCookies()
-            await workerPage.goto('about:blank')
-            await workerPage.evaluate(() => {
-              try {
-                localStorage.clear()
-                sessionStorage.clear()
-              } catch {
-                // storage may be unavailable in some contexts
-              }
-            })
-          } catch {
-            // reset is best-effort only
+        const createIsolatedPage = async () => {
+          if (ownedContext) {
+            await ownedContext.close()
           }
+          ownedContext = await browser.newContext(workerInfo.project.use)
+          page = await ownedContext.newPage()
         }
 
-        await workerPage.emulateMedia({ reducedMotion: 'reduce' })
-        await workerPage.goto(`/iframe.html?${params.toString()}`, {
-          waitUntil: 'domcontentloaded',
-        })
-        await workerPage.waitForSelector('#storybook-root')
-        await workerPage.addStyleTag({
-          content: `
-            *, *::before, *::after {
-              animation: none !important;
-              transition: none !important;
-              caret-color: transparent !important;
-            }
-            html {
-              scroll-behavior: auto !important;
-            }
-          `,
-        })
-
-        // Avoid networkidle here; Storybook keeps background activity that can stall tests.
-        await workerPage.waitForFunction(
-          () => {
-            const root = document.querySelector('#storybook-root')
-            return root && root.children.length > 0
-          },
-          null,
-          { timeout: 30_000 },
-        )
-        await workerPage.evaluate(async () => {
-          if (!('fonts' in document)) {
-            return
+        const isRecoverableError = (error: unknown) => {
+          if (!error || typeof error !== 'object') {
+            return false
           }
+          const message = String((error as Error).message || '')
+          return (
+            message.includes('Target page, context or browser has been closed') ||
+            message.includes('Page crashed') ||
+            message.includes('net::ERR_ABORTED') ||
+            message.includes('frame was detached')
+          )
+        }
+
+        const run = async () => {
+          const params = new URLSearchParams({
+            id: story.id,
+            viewMode: 'story',
+          })
+          const mask = []
+
+          if (shouldResetBetweenTests) {
+            try {
+              await page.context().clearCookies()
+              await page.goto('about:blank')
+              await page.evaluate(() => {
+                try {
+                  localStorage.clear()
+                  sessionStorage.clear()
+                } catch {
+                  // storage may be unavailable in some contexts
+                }
+              })
+            } catch {
+              // reset is best-effort only
+            }
+          }
+
+          const navigate = async () => {
+            await page.emulateMedia({ reducedMotion: 'reduce' })
+            await page.goto(`/iframe.html?${params.toString()}`, {
+              waitUntil: 'domcontentloaded',
+            })
+          }
+
           try {
-            await Promise.race([
-              // @ts-expect-error - fonts can be missing in some contexts
-              document.fonts.ready,
-              new Promise((resolve) => setTimeout(resolve, 2000)),
-            ])
-          } catch {
-            // ignore font readiness failures
+            await navigate()
+          } catch (error) {
+            if (!isRecoverableError(error)) {
+              throw error
+            }
+            await createIsolatedPage()
+            await navigate()
           }
-        })
 
-        try {
-          await workerPage.waitForFunction(
+          await page.waitForSelector('#storybook-root')
+          await page.addStyleTag({
+            content: `
+              *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                caret-color: transparent !important;
+              }
+              html {
+                scroll-behavior: auto !important;
+              }
+            `,
+          })
+
+          // Avoid networkidle here; Storybook keeps background activity that can stall tests.
+          await page.waitForFunction(
             () => {
               const root = document.querySelector('#storybook-root')
-              if (!root) return false
-              const images = root.querySelectorAll('img')
-              if (images.length === 0) return true
-              return Array.from(images).every((img) => {
-                if (!img.src) return true
-                if (img.loading === 'lazy') return true
-                return img.complete
-              })
+              return root && root.children.length > 0
             },
             null,
-            { timeout: 5000 },
+            { timeout: 30_000 },
           )
-        } catch {
-          // image readiness is best-effort; avoid failing on lazy/offscreen images
-        }
-
-        const isCarouselStory =
-          story.id.startsWith('molecules-carousel--') ||
-          story.id.startsWith('templates-carouseltemplate--')
-        if (isCarouselStory) {
-          await workerPage.evaluate(async () => {
-            const groups = Array.from(
-              document.querySelectorAll<HTMLElement>(
-                '[data-scope="carousel"][data-part="item-group"]',
-              ),
-            )
-
-            for (const group of groups) {
-              group.style.scrollSnapType = 'none'
-              group.style.scrollBehavior = 'auto'
-              group.scrollLeft = 0
-              group.scrollTop = 0
+          await page.evaluate(async () => {
+            if (!('fonts' in document)) {
+              return
             }
+            try {
+              await Promise.race([
+                document.fonts.ready,
+                new Promise((resolve) => setTimeout(resolve, 2000)),
+              ])
+            } catch {
+              // ignore font readiness failures
+            }
+          })
 
-            const waitForStableScroll = async (el: HTMLElement) => {
-              let last = el.scrollLeft + el.scrollTop
-              for (let i = 0; i < 10; i += 1) {
-                await new Promise<void>((resolve) =>
-                  requestAnimationFrame(() => resolve()),
-                )
-                const current = el.scrollLeft + el.scrollTop
-                if (Math.abs(current - last) < 1) return
-                last = current
+          try {
+            await page.waitForFunction(
+              () => {
+                const root = document.querySelector('#storybook-root')
+                if (!root) return false
+                const images = root.querySelectorAll('img')
+                if (images.length === 0) return true
+                return Array.from(images).every((img) => {
+                  if (!img.src) return true
+                  if (img.loading === 'lazy') return true
+                  return img.complete
+                })
+              },
+              null,
+              { timeout: 5000 },
+            )
+          } catch {
+            // image readiness is best-effort; avoid failing on lazy/offscreen images
+          }
+
+          const isCarouselStory =
+            story.id.startsWith('molecules-carousel--') ||
+            story.id.startsWith('templates-carouseltemplate--')
+          if (isCarouselStory) {
+            await page.evaluate(async () => {
+              const groups = Array.from(
+                document.querySelectorAll<HTMLElement>(
+                  '[data-scope="carousel"][data-part="item-group"]',
+                ),
+              )
+
+              for (const group of groups) {
+                group.style.scrollSnapType = 'none'
+                group.style.scrollBehavior = 'auto'
+                group.scrollLeft = 0
+                group.scrollTop = 0
+              }
+
+              const waitForStableScroll = async (el: HTMLElement) => {
+                let last = el.scrollLeft + el.scrollTop
+                for (let i = 0; i < 10; i += 1) {
+                  await new Promise<void>((resolve) =>
+                    requestAnimationFrame(() => resolve()),
+                  )
+                  const current = el.scrollLeft + el.scrollTop
+                  if (Math.abs(current - last) < 1) return
+                  last = current
+                }
+              }
+
+              await Promise.all(
+                groups.map((group) => waitForStableScroll(group)),
+              )
+            })
+          }
+
+          if (story.id.includes('carousel--autoplay')) {
+            const autoplayTrigger = page.locator(
+              '[data-scope="carousel"][data-part="autoplay-trigger"]',
+            )
+            if (await autoplayTrigger.count()) {
+              const label = await autoplayTrigger.getAttribute('aria-label')
+              if (label && label.toLowerCase().includes('stop')) {
+                await autoplayTrigger.click()
               }
             }
 
-            await Promise.all(groups.map((group) => waitForStableScroll(group)))
-          })
-        }
+            const firstIndicator = page.locator(
+              '[data-scope="carousel"][data-part="indicator"][data-index="0"]',
+            )
+            if (await firstIndicator.count()) {
+              await firstIndicator.click()
+            }
+          }
 
-        await workerPage.evaluate(
-          () =>
-            new Promise<void>((resolve) =>
-              requestAnimationFrame(() =>
-                requestAnimationFrame(() => resolve()),
+          if (story.id.startsWith('molecules-treeview--')) {
+            await page.addStyleTag({
+              content: `
+                [data-scope="tree-view"][data-selected],
+                [data-scope="tree-view"][data-highlighted],
+                [data-scope="tree-view"][data-focused],
+                [data-scope="tree-view"] [data-part][data-selected],
+                [data-scope="tree-view"] [data-part][data-highlighted],
+                [data-scope="tree-view"] [data-part][data-focused] {
+                  background: transparent !important;
+                  color: inherit !important;
+                  outline: none !important;
+                  box-shadow: none !important;
+                }
+              `,
+            })
+            await page.evaluate(() => {
+              const trees = document.querySelectorAll('[data-scope="tree-view"]')
+              trees.forEach((tree) => {
+                tree
+                  .querySelectorAll('[data-selected], [data-highlighted], [data-focused]')
+                  .forEach((el) => {
+                    el.removeAttribute('data-selected')
+                    el.removeAttribute('data-highlighted')
+                    el.removeAttribute('data-focused')
+                  })
+                tree
+                  .querySelectorAll('[aria-selected], [aria-current]')
+                  .forEach((el) => {
+                    el.removeAttribute('aria-selected')
+                    el.removeAttribute('aria-current')
+                  })
+              })
+              const active = document.activeElement
+              if (active instanceof HTMLElement) {
+                active.blur()
+              }
+            })
+
+          }
+
+          await page.evaluate(
+            () =>
+              new Promise<void>((resolve) =>
+                requestAnimationFrame(() =>
+                  requestAnimationFrame(() => resolve()),
+                ),
               ),
-            ),
-        )
+          )
 
-        if (story.id === 'atoms-button--states') {
-          mask.push(
-            workerPage.locator('.icon-\\[svg-spinners--ring-resize\\]'),
+          if (story.id === 'atoms-button--states') {
+            mask.push(
+              page.locator('.icon-\\[svg-spinners--ring-resize\\]'),
+            )
+          }
+
+          // Element screenshots are faster and avoid full-page rendering cost.
+          const root = page.locator('#storybook-root')
+          await expect(root).toHaveScreenshot(
+            `${story.id}-${workerInfo.project.name}-${process.platform}.png`,
+            {
+              animations: 'disabled',
+              ...(mask.length > 0 ? { mask } : {}),
+            },
           )
         }
 
-        // Element screenshots are faster and avoid full-page rendering cost.
-        const root = workerPage.locator('#storybook-root')
-        await expect(root).toHaveScreenshot(
-          `${story.id}-${workerInfo.project.name}-${process.platform}.png`,
-          {
-            animations: 'disabled',
-            ...(mask.length > 0 ? { mask } : {}),
-          },
-        )
+        if (page.isClosed()) {
+          await createIsolatedPage()
+        }
+
+        try {
+          await run()
+        } finally {
+          if (ownedContext) {
+            await ownedContext.close()
+          }
+        }
       },
     )
   }

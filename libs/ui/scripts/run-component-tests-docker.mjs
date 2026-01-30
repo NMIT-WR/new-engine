@@ -28,6 +28,8 @@ const storybookDir = path.resolve(uiRoot, "storybook-static")
 const storybookIframe = path.resolve(storybookDir, "iframe.html")
 const snapshotsDir = path.resolve(uiRoot, "test/visual.spec.ts-snapshots")
 const containerName = `pw-visual-${Date.now()}`
+const rebuildStorybook =
+  (process.env.PLAYWRIGHT_STORYBOOK_REBUILD ?? "1") !== "0"
 
 const run = (command, args, options = {}) => {
   const result = spawnSync(command, args, {
@@ -51,8 +53,11 @@ const cleanup = () => {
   runSilent("docker", ["rm", "-f", containerName])
 }
 
-// Build storybook if needed
-if (!existsSync(storybookIframe)) {
+// Build storybook (default) or when missing
+if (rebuildStorybook) {
+  console.log("Building Storybook...")
+  run("pnpm", ["-C", uiRoot, "build:storybook"])
+} else if (!existsSync(storybookIframe)) {
   console.log("storybook-static not found, building Storybook...")
   run("pnpm", ["-C", uiRoot, "build:storybook"])
 }

@@ -47,7 +47,7 @@ type Story = StoryObj<typeof meta>
 // Basic usage with minimal configuration
 export const Default: Story = {
   render: () => (
-    <ProductCard>
+    <ProductCard className="w-sm">
       <ProductCard.Image
         src={productImages.tshirt}
         alt="Premium Cotton T-Shirt"
@@ -73,26 +73,29 @@ export const Badges: Story = {
       { variant: 'info' as const, label: 'Eco friendly' },
     ]
     return (
-    <ProductCard>
-      <ProductCard.Image
-        src={productImages.tshirt}
-        alt="Premium Cotton T-Shirt"
-      />
-      <ProductCard.Name>Premium Cotton T-Shirt</ProductCard.Name>
-      <ProductCard.Badges>
-        {badges.map((badge, idx) => (
-          <Badge key={idx} variant={badge.variant}>
-            {badge.label}
-          </Badge>
-        ))}
-      </ProductCard.Badges>
-      <ProductCard.Price>$29.99</ProductCard.Price>
-      <ProductCard.Actions>
-        <ProductCard.Button buttonVariant="cart" icon="token-icon-cart-button">
-          Add to Cart
-        </ProductCard.Button>
-      </ProductCard.Actions>
-    </ProductCard>
+      <ProductCard className="w-sm">
+        <ProductCard.Image
+          src={productImages.tshirt}
+          alt="Premium Cotton T-Shirt"
+        />
+        <ProductCard.Name>Premium Cotton T-Shirt</ProductCard.Name>
+        <ProductCard.Badges>
+          {badges.map((badge, idx) => (
+            <Badge key={idx} variant={badge.variant}>
+              {badge.label}
+            </Badge>
+          ))}
+        </ProductCard.Badges>
+        <ProductCard.Price>$29.99</ProductCard.Price>
+        <ProductCard.Actions>
+          <ProductCard.Button
+            buttonVariant="cart"
+            icon="token-icon-cart-button"
+          >
+            Add to Cart
+          </ProductCard.Button>
+        </ProductCard.Actions>
+      </ProductCard>
     )
   },
 }
@@ -102,44 +105,53 @@ export const BadgesWithCustomColors: Story = {
   name: 'Badges - Custom Colors',
   render: () => {
     return (
-    <ProductCard>
-      <ProductCard.Image
-        src={productImages.shoes}
-        alt="Running Shoes"
-      />
-      <ProductCard.Name>Limited Edition Running Shoes</ProductCard.Name>
-      <ProductCard.Badges>
-        {/* Standard Badge variants */}
-        <Badge variant="success">New Arrival</Badge>
-        <Badge variant="dynamic" bgColor="#fff" fgColor="#000" borderColor="#eee">50% OFF</Badge>
+      <ProductCard className="w-sm">
+        <ProductCard.Image src={productImages.shoes} alt="Running Shoes" />
+        <ProductCard.Name>Limited Edition Running Shoes</ProductCard.Name>
+        <ProductCard.Badges>
+          {/* Standard Badge variants */}
+          <Badge variant="success">New Arrival</Badge>
+          <Badge
+            variant="dynamic"
+            bgColor="#fff"
+            fgColor="#000"
+            borderColor="#eee"
+          >
+            50% OFF
+          </Badge>
 
-        {/* Custom badges using dynamic variant */}
-        <Badge
-          variant="dynamic"
-          bgColor="#7f22fe"
-          fgColor="#fff"
-          borderColor="#9810fa"
-        >
-          Premium
-        </Badge>
+          {/* Custom badges using dynamic variant */}
+          <Badge
+            variant="dynamic"
+            bgColor="#7f22fe"
+            fgColor="#fff"
+            borderColor="#9810fa"
+          >
+            Premium
+          </Badge>
 
-        <Badge
-          variant="dynamic"
-          bgColor="transparent"
-          fgColor="#fff"
-          borderColor="#fff"
-        >
-          Exclusive
-        </Badge>
-      </ProductCard.Badges>
-      <ProductCard.Price>$89.99</ProductCard.Price>
-      <ProductCard.Stock status="limited-stock">Only 3 left!</ProductCard.Stock>
-      <ProductCard.Actions>
-        <ProductCard.Button buttonVariant="cart" icon="token-icon-cart-button">
-          Add to Cart
-        </ProductCard.Button>
-      </ProductCard.Actions>
-    </ProductCard>
+          <Badge
+            variant="dynamic"
+            bgColor="transparent"
+            fgColor="#fff"
+            borderColor="#fff"
+          >
+            Exclusive
+          </Badge>
+        </ProductCard.Badges>
+        <ProductCard.Price>$89.99</ProductCard.Price>
+        <ProductCard.Stock status="limited-stock">
+          Only 3 left!
+        </ProductCard.Stock>
+        <ProductCard.Actions>
+          <ProductCard.Button
+            buttonVariant="cart"
+            icon="token-icon-cart-button"
+          >
+            Add to Cart
+          </ProductCard.Button>
+        </ProductCard.Actions>
+      </ProductCard>
     )
   },
 }
@@ -150,7 +162,7 @@ export const StockStates: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="In Stock">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.tshirt} alt="T-Shirt" />
           <ProductCard.Name>Cotton T-Shirt</ProductCard.Name>
           <ProductCard.Price>$24.99</ProductCard.Price>
@@ -167,7 +179,7 @@ export const StockStates: Story = {
       </VariantGroup>
 
       <VariantGroup title="Limited Stock">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.shoes} alt="Running Shoes" />
           <ProductCard.Name>Running Shoes</ProductCard.Name>
           <ProductCard.Price>$89.99</ProductCard.Price>
@@ -184,7 +196,7 @@ export const StockStates: Story = {
       </VariantGroup>
 
       <VariantGroup title="Out of Stock">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.watch} alt="Luxury Watch" />
           <ProductCard.Name>Luxury Watch</ProductCard.Name>
           <ProductCard.Price>$499.99</ProductCard.Price>
@@ -209,7 +221,7 @@ export const AllButtonVariants: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Cart Button">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.shoes} alt="Running Shoes" />
           <ProductCard.Name>Running Shoes</ProductCard.Name>
           <ProductCard.Price>$89.99</ProductCard.Price>
@@ -226,7 +238,7 @@ export const AllButtonVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="Detail Button">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.watch} alt="Luxury Watch" />
           <ProductCard.Name>Luxury Watch</ProductCard.Name>
           <ProductCard.Price>$499.99</ProductCard.Price>
@@ -243,7 +255,7 @@ export const AllButtonVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="Wishlist Button">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.headphones} alt="Headphones" />
           <ProductCard.Name>Wireless Headphones</ProductCard.Name>
           <ProductCard.Price>$199.99</ProductCard.Price>
@@ -260,7 +272,7 @@ export const AllButtonVariants: Story = {
       </VariantGroup>
 
       <VariantGroup title="Custom Button">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.camera} alt="Camera" />
           <ProductCard.Name>Professional Camera</ProductCard.Name>
           <ProductCard.Price>$1,299.99</ProductCard.Price>
@@ -285,7 +297,7 @@ export const LayoutVariants: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Column Layout (Default)">
-        <ProductCard layout="column">
+        <ProductCard layout="column" className="w-sm">
           <ProductCard.Image src={productImages.tshirt} alt="T-Shirt" />
           <ProductCard.Name>Cotton T-Shirt</ProductCard.Name>
           <ProductCard.Rating rating={{value: 4}} />
@@ -330,7 +342,7 @@ export const LayoutVariants: Story = {
 // Custom composition example
 export const CustomComposition: Story = {
   render: () => (
-    <ProductCard>
+    <ProductCard className="w-sm">
       <ProductCard.Image src={productImages.camera} alt="DSLR Camera" />
 
       {/* Custom badge placement */}
@@ -427,7 +439,7 @@ export const WithQuantityInput: Story = {
 // Minimal card - only essential elements
 export const MinimalCard: Story = {
   render: () => (
-    <ProductCard>
+    <ProductCard className="w-sm">
       <ProductCard.Name className="text-center">
         Travel Backpack
       </ProductCard.Name>
@@ -546,7 +558,7 @@ export const ActionLayouts: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Horizontal Actions">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.shoes} alt="Shoes" />
           <ProductCard.Name>Running Shoes</ProductCard.Name>
           <ProductCard.Price>$89.99</ProductCard.Price>
@@ -576,7 +588,7 @@ export const ActionLayouts: Story = {
       </VariantGroup>
 
       <VariantGroup title="Vertical Actions">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.headphones} alt="Headphones" />
           <ProductCard.Name>Wireless Headphones</ProductCard.Name>
           <ProductCard.Price>$199.99</ProductCard.Price>
@@ -602,7 +614,7 @@ export const ActionLayouts: Story = {
       </VariantGroup>
 
       <VariantGroup title="Mixed Layout">
-        <ProductCard>
+        <ProductCard className="w-sm">
           <ProductCard.Image src={productImages.watch} alt="Watch" />
           <ProductCard.Name>Luxury Watch</ProductCard.Name>
           <ProductCard.Price>$999.99</ProductCard.Price>
