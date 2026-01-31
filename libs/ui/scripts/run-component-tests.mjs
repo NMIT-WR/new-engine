@@ -44,6 +44,8 @@ const containerName = `pw-visual-${Date.now()}`
 const rebuildStorybook =
   (process.env.PLAYWRIGHT_STORYBOOK_REBUILD ?? "1") !== "0"
 
+console.log(`Using Docker image: ${imageName}`)
+
 const run = (command, args, options = {}) => {
   const result = spawnSync(command, args, {
     stdio: "inherit",
