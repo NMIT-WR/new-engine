@@ -3,9 +3,9 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { NumericInput } from "@techsio/ui-kit/atoms/numeric-input"
 import { slugify } from "@techsio/ui-kit/utils"
 import { useState } from "react"
-import { useAddToCart, useCart } from "@/hooks/use-cart"
 import { useRegion } from "@/hooks/use-region"
 import { useCartToast } from "@/hooks/use-toast"
+import { cartHooks } from "@/lib/storefront-data-cart"
 import { useAnalytics } from "@/providers/analytics-provider"
 import type { ProductDetail, ProductVariantDetail } from "@/types/product"
 import { validateAddToCart } from "@/utils/cart/cart-validation"
@@ -18,9 +18,9 @@ export const AddToCartSection = ({
   detail: ProductDetail
 }) => {
   const [quantity, setQuantity] = useState(1)
-  const { mutate: addToCart, isPending } = useAddToCart()
-  const { cart } = useCart()
+  const { cart } = cartHooks.useCart({})
   const { regionId } = useRegion()
+  const { mutate: addToCart, isPending } = cartHooks.useAddLineItem()
   const toast = useCartToast()
   const analytics = useAnalytics()
 
@@ -57,7 +57,7 @@ export const AddToCartSection = ({
       {
         variantId: selectedVariant.id,
         quantity,
-        autoCreateCart: true,
+        autoCreate: true,
         metadata: {
           inventory_quantity: selectedVariant.inventory_quantity || 0,
         },
@@ -100,12 +100,14 @@ export const AddToCartSection = ({
           window.dispatchEvent(event)
         },
         onError: (error) => {
-          if (error.message?.includes("stock")) {
+          const message =
+            error instanceof Error ? error.message : "Unknown error"
+          if (message.includes("stock")) {
             toast.stockWarning()
-          } else if (error.message?.includes("network")) {
+          } else if (message.includes("network")) {
             toast.networkError()
           } else {
-            toast.cartError(error.message)
+            toast.cartError(message)
           }
         },
       }

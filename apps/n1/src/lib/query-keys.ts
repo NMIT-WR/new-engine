@@ -33,7 +33,15 @@ export const queryKeys = {
 
   cart: {
     all: () => [...queryKeys.all, "cart"] as const,
-    active: () => [...queryKeys.cart.all(), "active"] as const,
+    active: (params?: { cartId?: string | null; regionId?: string | null }) =>
+      params
+        ? ([
+            ...queryKeys.cart.all(),
+            "active",
+            params.cartId ?? null,
+            params.regionId ?? null,
+          ] as const)
+        : ([...queryKeys.cart.all(), "active"] as const),
     shippingOptions: (cartId: string) =>
       [...queryKeys.cart.all(), "shipping-options", cartId] as const,
   },

@@ -1,6 +1,7 @@
 "use client"
 
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import {
   createContext,
@@ -10,12 +11,12 @@ import {
   useRef,
   useState,
 } from "react"
-import { useSuspenseAuth } from "@/hooks/use-auth"
-import { useCompleteCart, useSuspenseCart } from "@/hooks/use-cart"
+import { authHooks } from "@/lib/storefront-data-auth"
 import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
 import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
 import { useSuspenseRegion } from "@/hooks/use-region"
-import { useUpdateCartAddress } from "@/hooks/use-update-cart-address"
+import { queryKeys } from "@/lib/query-keys"
+import { cartHooks } from "@/lib/storefront-data-cart"
 import {
   accessPointToAddress,
   addressToFormData,
@@ -42,9 +43,11 @@ type InitialCheckoutState = {
   selectedAddressId: string | null
 }
 
+type SuspenseCartResult = ReturnType<(typeof cartHooks)["useSuspenseCart"]>
+
 const resolveInitialCheckoutState = (
-  cart: ReturnType<typeof useSuspenseCart>["cart"],
-  customer: ReturnType<typeof useSuspenseAuth>["customer"]
+  cart: SuspenseCartResult["cart"],
+  customer: ReturnType<typeof authHooks.useSuspenseAuth>["customer"]
 ): InitialCheckoutState => {
   if (cart?.billing_address?.first_name) {
     const addressData = addressToFormData(
@@ -85,11 +88,11 @@ const resolveInitialCheckoutState = (
 
 type CheckoutContextValue = {
   form: CheckoutForm
-  cart: ReturnType<typeof useSuspenseCart>["cart"]
+  cart: SuspenseCartResult["cart"]
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
-  customer: ReturnType<typeof useSuspenseAuth>["customer"]
+  customer: ReturnType<typeof authHooks.useSuspenseAuth>["customer"]
   selectedAddressId: string | null
   setSelectedAddressId: (id: string | null) => void
   completeCheckout: () => void
@@ -109,20 +112,40 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null)
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
-  const { customer } = useSuspenseAuth()
-  const { cart, hasItems } = useSuspenseCart()
+  const { customer } = authHooks.useSuspenseAuth()
+  const { cart, hasItems } = cartHooks.useSuspenseCart({})
   const { regionId } = useSuspenseRegion()
 
   const shipping = useCheckoutShipping(cart?.id, cart)
   const payment = useCheckoutPayment(cart?.id, regionId, cart)
 
   const { mutateAsync: updateCartAddressAsync, isPending: isSavingAddress } =
-    useUpdateCartAddress()
+    cartHooks.useUpdateCartAddress()
   const { mutateAsync: completeCartAsync, isPending: isCompletingCart } =
-    useCompleteCart({
-      onSuccess: (order) => {
-        router.push(`/orders/${order.id}?success=true`)
+    cartHooks.useCompleteCart({
+      onSuccess: (result) => {
+        if (result.success) {
+          queryClient.removeQueries({ queryKey: queryKeys.cart.all() })
+          queryClient.setQueryData(
+            queryKeys.orders.detail(result.order.id),
+            result.order
+          )
+          queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
+          router.push(`/orders/${result.order.id}?success=true`)
+          return
+        }
+
+        if (result.cart?.id) {
+          queryClient.setQueryData(
+            queryKeys.cart.active({
+              cartId: result.cart.id,
+              regionId: result.cart.region_id ?? null,
+            }),
+            result.cart
+          )
+        }
       },
     })
 

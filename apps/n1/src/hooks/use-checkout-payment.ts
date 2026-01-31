@@ -35,6 +35,12 @@ export function useCheckoutPayment(
 ): UseCheckoutPaymentReturn {
   const queryClient = useQueryClient()
   const toast = useCartToast()
+  const cartQueryKey = cartId
+    ? queryKeys.cart.active({
+        cartId,
+        regionId: regionId ?? cart?.region_id ?? null,
+      })
+    : queryKeys.cart.active()
 
   const canLoadProviders = !!regionId
 
@@ -71,7 +77,7 @@ export function useCheckoutPayment(
       },
       onSuccess: () => {
         // Refresh cart to get payment collection
-        queryClient.invalidateQueries({ queryKey: queryKeys.cart.active() })
+        queryClient.invalidateQueries({ queryKey: cartQueryKey })
         if (process.env.NODE_ENV === "development") {
           console.log("[useCheckoutPayment] Payment collection created")
         }
