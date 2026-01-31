@@ -11,7 +11,7 @@ import {
   getProductByHandle,
   type ProductDetailParams,
 } from "@/services/product-service"
-import { useRegion, useSuspenseRegion } from "./use-region"
+import { useRegion, useSuspenseRegion } from "./region-hooks"
 
 /**
  * Input types for product hooks

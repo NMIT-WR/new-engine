@@ -14,7 +14,7 @@ import {
 import { authHooks } from "@/lib/storefront-data-auth"
 import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
 import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
-import { useSuspenseRegion } from "@/hooks/use-region"
+import { useSuspenseRegion } from "@/hooks/region-hooks"
 import { queryKeys } from "@/lib/query-keys"
 import { cartHooks } from "@/lib/storefront-data-cart"
 import {
