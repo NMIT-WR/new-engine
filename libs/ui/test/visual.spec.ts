@@ -306,6 +306,24 @@ test.describe.parallel('storybook visual', () => {
             )
           }
 
+          // Park the mouse on a transparent overlay so hover styles don't leak into screenshots.
+          await page.evaluate(() => {
+            const id = '__playwright_hover_shield__'
+            if (document.getElementById(id)) return
+            const shield = document.createElement('div')
+            shield.id = id
+            shield.style.position = 'fixed'
+            shield.style.left = '0'
+            shield.style.top = '0'
+            shield.style.width = '24px'
+            shield.style.height = '24px'
+            shield.style.zIndex = '2147483647'
+            shield.style.pointerEvents = 'auto'
+            shield.style.background = 'transparent'
+            document.body.appendChild(shield)
+          })
+          await page.mouse.move(12, 12)
+
           // Element screenshots are faster and avoid full-page rendering cost.
           const root = page.locator('#storybook-root')
           await expect(root).toHaveScreenshot(
