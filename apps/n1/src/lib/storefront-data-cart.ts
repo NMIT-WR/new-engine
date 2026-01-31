@@ -7,7 +7,7 @@ import {
   type UpdateCartInputBase,
   type UpdateLineItemInputBase,
 } from "@techsio/storefront-data"
-import { useRegion, useSuspenseRegion } from "@/hooks/use-region"
+import { useRegion, useSuspenseRegion } from "@/hooks/region-hooks"
 import { cacheConfig as appCacheConfig } from "@/lib/cache-config"
 import { isNotFoundError } from "@/lib/errors"
 import { queryKeys } from "@/lib/query-keys"
