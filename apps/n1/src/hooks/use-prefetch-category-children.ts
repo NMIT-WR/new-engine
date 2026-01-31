@@ -6,7 +6,7 @@ import { allCategories } from "@/data/static/categories"
 import { ALL_CATEGORIES_MAP } from "@/lib/constants"
 import { prefetchLogger } from "@/lib/loggers/prefetch"
 import { usePrefetchProducts } from "./use-prefetch-products"
-import { useRegion } from "./use-region"
+import { useRegion } from "./region-hooks"
 
 type UsePrefetchCategoryChildrenParams = {
   enabled?: boolean
