@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process"
-import { existsSync } from "node:fs"
+import crypto from "node:crypto"
+import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -8,8 +9,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const uiRoot = path.resolve(__dirname, "..")
 const repoRoot = path.resolve(uiRoot, "../..")
 
-const imageName =
-  process.env.PLAYWRIGHT_DOCKER_IMAGE ?? "new-engine-ui-playwright"
+const dockerfilePath = path.resolve(
+  repoRoot,
+  "docker/development/playwright/Dockerfile"
+)
+const dockerfileContents = fs.readFileSync(dockerfilePath, "utf8")
+const playwrightVersion = dockerfileContents.match(
+  /^ARG\s+PLAYWRIGHT_VERSION\s*=\s*([^\s]+)\s*$/m
+)?.[1]
+const dockerfileHash = crypto
+  .createHash("sha256")
+  .update(dockerfileContents)
+  .digest("hex")
+  .slice(0, 12)
+const defaultImageName = playwrightVersion
+  ? `new-engine-ui-playwright:${playwrightVersion}-${dockerfileHash}`
+  : `new-engine-ui-playwright:${dockerfileHash}`
+const imageName = process.env.PLAYWRIGHT_DOCKER_IMAGE ?? defaultImageName
 const platform = process.env.DOCKER_PLATFORM ?? "linux/amd64"
 const testBaseUrl = process.env.TEST_BASE_URL
 const shmSize = process.env.PLAYWRIGHT_DOCKER_SHM_SIZE ?? "2g"
@@ -21,10 +37,6 @@ const dockerProjects = dockerProjectsEnv
   .split(",")
   .map((project) => project.trim())
   .filter(Boolean)
-const dockerfilePath = path.resolve(
-  repoRoot,
-  "docker/development/playwright/Dockerfile"
-)
 const storybookDir = path.resolve(uiRoot, "storybook-static")
 const storybookIframe = path.resolve(storybookDir, "iframe.html")
 const snapshotsDir = path.resolve(uiRoot, "test/visual.spec.ts-snapshots")
@@ -58,7 +70,7 @@ const cleanup = () => {
 if (rebuildStorybook) {
   console.log("Building Storybook...")
   run("pnpm", ["-C", uiRoot, "build:storybook"])
-} else if (!existsSync(storybookIframe)) {
+} else if (!fs.existsSync(storybookIframe)) {
   console.log("storybook-static not found, building Storybook...")
   run("pnpm", ["-C", uiRoot, "build:storybook"])
 }
