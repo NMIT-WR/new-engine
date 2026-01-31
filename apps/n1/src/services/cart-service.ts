@@ -45,6 +45,38 @@ export const cartStorage = {
   },
 }
 
+export async function retrieveCart(
+  cartId: string,
+  _signal?: AbortSignal
+): Promise<Cart | null> {
+  try {
+    if (!cartId) {
+      throw new CartServiceError("Cart ID je povinné", "CART_NOT_FOUND")
+    }
+
+    const { cart } = await sdk.store.cart.retrieve(cartId)
+
+    if (!cart) {
+      throw new CartServiceError(
+        "Košík byl načten, ale je prázdný",
+        "CART_NOT_FOUND"
+      )
+    }
+
+    return cart
+  } catch (error) {
+    // 404 is expected - cart was deleted or expired
+    if (isNotFoundError(error)) {
+      return null
+    }
+
+    if (CartServiceError.isCartServiceError(error)) {
+      throw error
+    }
+    throw CartServiceError.fromMedusaError(error, "CART_NOT_FOUND")
+  }
+}
+
 export async function getCart(): Promise<Cart | null> {
   try {
     const cartId = cartStorage.getCartId()
@@ -56,13 +88,14 @@ export async function getCart(): Promise<Cart | null> {
       return null
     }
 
-    const { cart } = await sdk.store.cart.retrieve(cartId)
+    const cart = await retrieveCart(cartId)
 
     if (!cart) {
-      throw new CartServiceError(
-        "Košík byl načten, ale je prázdný",
-        "CART_NOT_FOUND"
-      )
+      if (process.env.NODE_ENV === "development") {
+        console.log("[CartService] Cart not found, clearing stored ID")
+      }
+      cartStorage.clearCartId()
+      return null
     }
 
     return cart
@@ -99,11 +132,31 @@ export async function createCart(
       )
     }
 
-    const response = await sdk.store.cart.create({
+    const cart = await createCartFromParams({
       region_id: regionId,
       email: options?.email,
       sales_channel_id: options?.salesChannelId,
     })
+    cartStorage.setCartId(cart.id)
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Cart created:", cart.id)
+    }
+
+    return cart
+  } catch (error) {
+    if (CartServiceError.isCartServiceError(error)) {
+      throw error
+    }
+    throw CartServiceError.fromMedusaError(error, "CART_CREATION_FAILED")
+  }
+}
+
+export async function createCartFromParams(
+  params: HttpTypes.StoreCreateCart
+): Promise<Cart> {
+  try {
+    const response = await sdk.store.cart.create(params)
 
     if (!response.cart) {
       throw new CartServiceError(
@@ -112,10 +165,31 @@ export async function createCart(
       )
     }
 
-    cartStorage.setCartId(response.cart.id)
+    return response.cart
+  } catch (error) {
+    if (CartServiceError.isCartServiceError(error)) {
+      throw error
+    }
+    throw CartServiceError.fromMedusaError(error, "CART_CREATION_FAILED")
+  }
+}
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("[CartService] Cart created:", response.cart.id)
+export async function updateCart(
+  cartId: string,
+  params: HttpTypes.StoreUpdateCart
+): Promise<Cart> {
+  try {
+    if (!cartId) {
+      throw new CartServiceError("Cart ID je povinné", "CART_NOT_FOUND")
+    }
+
+    const response = await sdk.store.cart.update(cartId, params)
+
+    if (!response.cart) {
+      throw new CartServiceError(
+        "Nepodařilo se aktualizovat košík",
+        "CART_NOT_FOUND"
+      )
     }
 
     return response.cart
@@ -123,7 +197,7 @@ export async function createCart(
     if (CartServiceError.isCartServiceError(error)) {
       throw error
     }
-    throw CartServiceError.fromMedusaError(error, "CART_CREATION_FAILED")
+    throw CartServiceError.fromMedusaError(error, "CART_NOT_FOUND")
   }
 }
 

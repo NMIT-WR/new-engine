@@ -46,6 +46,12 @@ export function useCheckoutShipping(
 ): UseCheckoutShippingReturn {
   const queryClient = useQueryClient()
   const toast = useCartToast()
+  const cartQueryKey = cartId
+    ? queryKeys.cart.active({
+        cartId,
+        regionId: cart?.region_id ?? null,
+      })
+    : queryKeys.cart.active()
 
   const canLoadShipping = !!cartId && (cart?.items?.length ?? 0) > 0
 
@@ -79,12 +85,10 @@ export function useCheckoutShipping(
     },
     onMutate: async ({ optionId }) => {
       // Cancel outgoing queries to prevent race conditions
-      await queryClient.cancelQueries({ queryKey: queryKeys.cart.active() })
+      await queryClient.cancelQueries({ queryKey: cartQueryKey })
 
       // Snapshot previous value for rollback
-      const previousCart = queryClient.getQueryData<Cart>(
-        queryKeys.cart.active()
-      )
+      const previousCart = queryClient.getQueryData<Cart>(cartQueryKey)
 
       // Optimistically update cart with new shipping method
       if (previousCart && shippingOptions) {
@@ -114,7 +118,7 @@ export function useCheckoutShipping(
           }
 
           // Immediately update UI
-          queryClient.setQueryData(queryKeys.cart.active(), optimisticCart)
+          queryClient.setQueryData(cartQueryKey, optimisticCart)
 
           if (process.env.NODE_ENV === "development") {
             console.log("[useCheckoutShipping] Optimistic update applied")
@@ -126,7 +130,7 @@ export function useCheckoutShipping(
     },
     onSuccess: (updatedCart) => {
       // Replace optimistic data with real server data
-      queryClient.setQueryData(queryKeys.cart.active(), updatedCart)
+      queryClient.setQueryData(cartQueryKey, updatedCart)
 
       if (process.env.NODE_ENV === "development") {
         console.log("[useCheckoutShipping] Shipping method confirmed:", {
@@ -138,7 +142,7 @@ export function useCheckoutShipping(
     onError: (error, _variables, context) => {
       // Rollback to previous cart state
       if (context?.previousCart) {
-        queryClient.setQueryData(queryKeys.cart.active(), context.previousCart)
+        queryClient.setQueryData(cartQueryKey, context.previousCart)
       }
 
       // Show error toast to user
