@@ -2,6 +2,18 @@ import { prefetchLogger } from "@/lib/loggers/prefetch"
 import { usePrefetchProducts as useBasePrefetchProducts } from "./product-hooks"
 
 /**
+ * Format category IDs into a short label for logging
+ * Shows last 6 chars of first category + count of additional categories
+ */
+const formatCategoryLabel = (categoryId: string[]): string => {
+  const [firstCategory] = categoryId
+  if (!firstCategory) return ""
+  return categoryId.length === 1
+    ? firstCategory.slice(-6)
+    : `${firstCategory.slice(-6)} +${categoryId.length - 1}`
+}
+
+/**
  * n1-specific wrapper around storefront-data's usePrefetchProducts
  * Provides simplified API for category-based prefetching with logging
  */
@@ -15,16 +27,11 @@ export function usePrefetchProducts() {
     categoryId: string[],
     prefetchedBy?: string
   ) => {
-    const [firstCategory] = categoryId
-    if (!firstCategory) {
+    if (!categoryId[0]) {
       return
     }
 
-    const label =
-      categoryId.length === 1
-        ? firstCategory.slice(-6)
-        : `${firstCategory.slice(-6)} +${categoryId.length - 1}`
-
+    const label = formatCategoryLabel(categoryId)
     const start = performance.now()
     prefetchLogger.start("Categories", label)
 
@@ -38,16 +45,11 @@ export function usePrefetchProducts() {
   }
 
   const prefetchRootCategories = async (categoryId: string[]) => {
-    const [firstCategory] = categoryId
-    if (!firstCategory) {
+    if (!categoryId[0]) {
       return
     }
 
-    const label =
-      categoryId.length === 1
-        ? firstCategory.slice(-6)
-        : `${firstCategory.slice(-6)} +${categoryId.length - 1}`
-
+    const label = formatCategoryLabel(categoryId)
     const start = performance.now()
     prefetchLogger.start("Root", label)
 
