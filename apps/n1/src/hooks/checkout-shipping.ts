@@ -1,42 +1,22 @@
 import type { HttpTypes } from "@medusajs/types"
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
-import { CACHE_TIMES, TAX_RATE } from "@/lib/constants"
-import { CartServiceError } from "@/lib/errors"
+import { useQueryClient } from "@tanstack/react-query"
+import { TAX_RATE } from "@/lib/constants"
 import { queryKeys } from "@/lib/query-keys"
-import {
-  type Cart,
-  getShippingOptions,
-  type ShippingMethodData,
-  setShippingMethod,
-} from "@/services/cart-service"
+import { type Cart, type ShippingMethodData } from "@/services/cart-service"
+import { checkoutHooks } from "./checkout-hooks"
 import { useCartToast } from "./use-toast"
 
-type CartMutationError = {
-  message: string
-  code?: string
-}
-
-type CartMutationContext = {
+type ShippingMutationContext = {
   previousCart?: Cart
 }
 
-type SetShippingVariables = {
-  optionId: string
-  data?: ShippingMethodData
-}
-
 export type UseCheckoutShippingReturn = {
-  shippingOptions?: HttpTypes.StoreCartShippingOption[]
+  shippingOptions: HttpTypes.StoreCartShippingOption[]
   setShipping: (optionId: string, data?: ShippingMethodData) => void
   isSettingShipping: boolean
   canLoadShipping: boolean
   canSetShipping: boolean
   selectedShippingMethodId?: string
-  /** Currently selected shipping option (derived from shippingOptions + selectedShippingMethodId) */
   selectedOption?: HttpTypes.StoreCartShippingOption
 }
 
@@ -46,6 +26,7 @@ export function useCheckoutShipping(
 ): UseCheckoutShippingReturn {
   const queryClient = useQueryClient()
   const toast = useCartToast()
+
   const cartQueryKey = cartId
     ? queryKeys.cart.active({
         cartId,
@@ -55,130 +36,103 @@ export function useCheckoutShipping(
 
   const canLoadShipping = !!cartId && (cart?.items?.length ?? 0) > 0
 
-  // Fetch shipping options for cart
-  const { data: shippingOptions = [] } = useSuspenseQuery({
-    queryKey: queryKeys.cart.shippingOptions(cartId || "unknown"),
-    queryFn: () => {
-      if (!(canLoadShipping && cartId)) {
-        return []
-      }
-      return getShippingOptions(cartId)
+  const result = checkoutHooks.useSuspenseCheckoutShipping(
+    {
+      cartId: cartId ?? "",
+      cart,
     },
-    // Longer cache for shipping options - they don't change often
-    staleTime: CACHE_TIMES.SHIPPING_OPTIONS_STALE,
-    gcTime: CACHE_TIMES.SHIPPING_OPTIONS_GC,
-    refetchOnWindowFocus: false,
-  })
+    {
+      onMutate: async (variables: { optionId: string; data?: Record<string, unknown> }) => {
+        const { optionId } = variables
+        // Cancel outgoing queries to prevent race conditions
+        await queryClient.cancelQueries({ queryKey: cartQueryKey })
 
-  // Set shipping method mutation
-  const { mutate: mutateShipping, isPending: isSettingShipping } = useMutation<
-    Cart,
-    CartMutationError,
-    SetShippingVariables,
-    CartMutationContext
-  >({
-    mutationFn: ({ optionId, data }) => {
-      if (!cartId) {
-        throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
-      }
-      return setShippingMethod(cartId, optionId, data)
-    },
-    onMutate: async ({ optionId }) => {
-      // Cancel outgoing queries to prevent race conditions
-      await queryClient.cancelQueries({ queryKey: cartQueryKey })
+        // Snapshot previous value for rollback
+        const previousCart = queryClient.getQueryData<Cart>(cartQueryKey)
 
-      // Snapshot previous value for rollback
-      const previousCart = queryClient.getQueryData<Cart>(cartQueryKey)
+        // Optimistically update cart with new shipping method
+        if (previousCart && result.shippingOptions) {
+          const selectedOption = result.shippingOptions.find(
+            (opt) => opt.id === optionId
+          )
 
-      // Optimistically update cart with new shipping method
-      if (previousCart && shippingOptions) {
-        const selectedOption = shippingOptions.find(
-          (opt) => opt.id === optionId
-        )
+          if (selectedOption) {
+            // Calculate amount with tax using centralized constant
+            const amountWithTax = (selectedOption.amount ?? 0) * (1 + TAX_RATE)
 
-        if (selectedOption) {
-          // Calculate amount with tax using centralized constant
-          const amountWithTax = selectedOption.amount * (1 + TAX_RATE)
+            const optimisticCart: Cart = {
+              ...previousCart,
+              shipping_methods: [
+                {
+                  id: `optimistic_${Date.now()}`,
+                  cart_id: cartId || "",
+                  shipping_option_id: optionId,
+                  name: selectedOption.name,
+                  amount: selectedOption.amount ?? 0,
+                  is_tax_inclusive: true,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                },
+              ],
+              shipping_total: amountWithTax,
+            }
 
-          const optimisticCart: Cart = {
-            ...previousCart,
-            shipping_methods: [
-              {
-                id: `optimistic_${Date.now()}`,
-                cart_id: cartId || "",
-                shipping_option_id: optionId,
-                name: selectedOption.name,
-                amount: selectedOption.amount,
-                is_tax_inclusive: true,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              },
-            ],
-            shipping_total: amountWithTax,
-          }
+            // Immediately update UI
+            queryClient.setQueryData(cartQueryKey, optimisticCart)
 
-          // Immediately update UI
-          queryClient.setQueryData(cartQueryKey, optimisticCart)
-
-          if (process.env.NODE_ENV === "development") {
-            console.log("[useCheckoutShipping] Optimistic update applied")
+            if (process.env.NODE_ENV === "development") {
+              console.log("[useCheckoutShipping] Optimistic update applied")
+            }
           }
         }
-      }
 
-      return { previousCart }
-    },
-    onSuccess: (updatedCart) => {
-      // Replace optimistic data with real server data
-      queryClient.setQueryData(cartQueryKey, updatedCart)
+        return { previousCart }
+      },
+      onSuccess: (updatedCart) => {
+        // Replace optimistic data with real server data
+        queryClient.setQueryData(cartQueryKey, updatedCart)
 
-      if (process.env.NODE_ENV === "development") {
-        console.log("[useCheckoutShipping] Shipping method confirmed:", {
-          methodId: updatedCart.shipping_methods?.[0]?.shipping_option_id,
-          total: updatedCart.shipping_total,
-        })
-      }
-    },
-    onError: (error, _variables, context) => {
-      // Rollback to previous cart state
-      if (context?.previousCart) {
-        queryClient.setQueryData(cartQueryKey, context.previousCart)
-      }
+        if (process.env.NODE_ENV === "development") {
+          console.log("[useCheckoutShipping] Shipping method confirmed:", {
+            methodId: updatedCart.shipping_methods?.[0]?.shipping_option_id,
+            total: updatedCart.shipping_total,
+          })
+        }
+      },
+      onError: (
+        _error: unknown,
+        _variables: { optionId: string; data?: Record<string, unknown> },
+        context: ShippingMutationContext | undefined
+      ) => {
+        // Rollback to previous cart state
+        if (context?.previousCart) {
+          queryClient.setQueryData(cartQueryKey, context.previousCart)
+        }
 
-      // Show error toast to user
-      toast.shippingError()
+        // Show error toast to user
+        toast.shippingError()
 
-      if (process.env.NODE_ENV === "development") {
-        console.error("[useCheckoutShipping] Failed to set shipping:", error)
-      }
-    },
-    onSettled: () => {
-      // No invalidations needed - we have fresh data from onSuccess
-      // Shipping options don't change when selecting a method
-    },
-  })
-
-  const canSetShipping = shippingOptions.length > 0
-  const selectedShippingMethodId =
-    cart?.shipping_methods?.[0]?.shipping_option_id
-
-  // Derive selected option from shippingOptions + selectedShippingMethodId
-  const selectedOption = shippingOptions?.find(
-    (opt) => opt.id === selectedShippingMethodId
+        if (process.env.NODE_ENV === "development") {
+          console.error("[useCheckoutShipping] Failed to set shipping:", _error)
+        }
+      },
+    }
   )
+
+  const canSetShipping = result.shippingOptions.length > 0
 
   // Wrapper for easier API - accepts optionId and optional data
   const setShipping = (optionId: string, data?: ShippingMethodData) => {
-    mutateShipping({ optionId, data })
+    result.setShippingMethod(optionId, data)
   }
 
   return {
-    shippingOptions,
+    shippingOptions: result.shippingOptions,
     setShipping,
-    isSettingShipping,
+    isSettingShipping: result.isSettingShipping,
     canLoadShipping,
     canSetShipping,
-    selectedShippingMethodId,
-    selectedOption,
+    selectedShippingMethodId: result.selectedShippingMethodId,
+    selectedOption: result.selectedOption,
   }
 }
