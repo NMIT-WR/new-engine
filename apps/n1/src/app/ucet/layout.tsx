@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { authHooks } from "@/lib/storefront-data-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 import { AccountProvider } from "./context/account-context"
 
 export default function AccountLayout({

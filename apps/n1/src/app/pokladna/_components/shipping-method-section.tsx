@@ -3,7 +3,7 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import type { ReactNode } from "react"
-import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
+import type { UseCheckoutShippingReturn } from "@/hooks/checkout-shipping"
 import type { ShippingMethodData } from "@/services/cart-service"
 import {
   accessPointToShippingData,

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { CATEGORY_MAP } from "@/lib/constants"
 import { prefetchLogger } from "@/lib/loggers/prefetch"
-import { usePrefetchProducts } from "./use-prefetch-products"
+import { usePrefetchProducts } from "./prefetch-products"
 import { useRegion } from "./region-hooks"
 
 type UsePrefetchRootCategoriesParams = {
