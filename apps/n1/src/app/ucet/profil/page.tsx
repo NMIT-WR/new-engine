@@ -21,9 +21,6 @@ export default function ProfilePage() {
   const activeTab = resolveTab(searchParams.get("tab"), pathname)
   const logoutMutation = authHooks.useLogout({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.cart.all() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.customer.all() })
       queryClient.removeQueries({ queryKey: queryKeys.orders.all() })
       queryClient.removeQueries({ queryKey: queryKeys.cart.all() })
       queryClient.removeQueries({ queryKey: queryKeys.customer.all() })
