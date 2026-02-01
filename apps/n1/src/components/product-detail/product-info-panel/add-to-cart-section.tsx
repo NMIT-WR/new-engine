@@ -102,9 +102,10 @@ export const AddToCartSection = ({
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Unknown error"
-          if (message.includes("stock")) {
+          const messageLower = message.toLowerCase()
+          if (messageLower.includes("stock")) {
             toast.stockWarning()
-          } else if (message.includes("network")) {
+          } else if (messageLower.includes("network")) {
             toast.networkError()
           } else {
             toast.cartError(message)
