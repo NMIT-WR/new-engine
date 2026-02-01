@@ -11,6 +11,7 @@ import { HeaderProvider } from "@/components/header/store/header-context"
 import { N1Footer } from "@/components/n1-footer"
 import { Providers } from "@/components/provider"
 import { AnalyticsProvider } from "@/providers/analytics-provider"
+import { RegionProvider } from "@/providers/region-provider"
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -47,20 +48,24 @@ export default function RootLayout({
           trackingId={process.env.NEXT_PUBLIC_LEADHUB_TRACKING_ID ?? ""}
         />
         <Providers>
-          <AnalyticsProvider>
-            <Suspense fallback={null}>
-              <PageviewTracker />
-            </Suspense>
-            <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
-              <Suspense fallback={null}>
-                <HeaderProvider>
-                  <N1Header />
-                </HeaderProvider>
-              </Suspense>
-              {children}
-              <N1Footer />
-            </div>
-          </AnalyticsProvider>
+          <Suspense fallback={null}>
+            <RegionProvider>
+              <AnalyticsProvider>
+                <Suspense fallback={null}>
+                  <PageviewTracker />
+                </Suspense>
+                <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
+                  <Suspense fallback={null}>
+                    <HeaderProvider>
+                      <N1Header />
+                    </HeaderProvider>
+                  </Suspense>
+                  {children}
+                  <N1Footer />
+                </div>
+              </AnalyticsProvider>
+            </RegionProvider>
+          </Suspense>
         </Providers>
       </body>
     </html>

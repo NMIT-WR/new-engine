@@ -11,7 +11,6 @@ import {
   getProductByHandle,
   type ProductDetailParams,
 } from "@/services/product-service"
-import { useRegion, useSuspenseRegion } from "./region-hooks"
 
 /**
  * Input types for product hooks
@@ -92,36 +91,6 @@ function getProductByHandleAdapter(
 }
 
 /**
- * Region resolver for non-suspense hooks
- */
-function resolveRegion() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { regionId, countryCode } = useRegion()
-
-  if (!regionId) {
-    return null
-  }
-
-  return {
-    region_id: regionId,
-    country_code: countryCode,
-  }
-}
-
-/**
- * Region resolver for suspense hooks
- */
-function resolveRegionSuspense() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { regionId, countryCode } = useSuspenseRegion()
-
-  return {
-    region_id: regionId,
-    country_code: countryCode,
-  }
-}
-
-/**
  * Create product hooks using storefront-data factory
  */
 export const {
@@ -157,6 +126,4 @@ export const {
   queryKeyNamespace: "n1",
   defaultPageSize: PRODUCT_LIMIT,
   requireRegion: true,
-  resolveRegion,
-  resolveRegionSuspense,
 })

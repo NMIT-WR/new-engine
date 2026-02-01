@@ -7,7 +7,6 @@ import {
   type UpdateCartInputBase,
   type UpdateLineItemInputBase,
 } from "@techsio/storefront-data"
-import { useRegion, useSuspenseRegion } from "@/hooks/region-hooks"
 import { cacheConfig as appCacheConfig } from "@/lib/cache-config"
 import { isNotFoundError } from "@/lib/errors"
 import { queryKeys } from "@/lib/query-keys"
@@ -40,28 +39,6 @@ const cacheConfig = createCacheConfig({
   realtime: appCacheConfig.realtime,
   userData: appCacheConfig.userData,
 })
-
-const resolveRegion = () => {
-  const { regionId, countryCode } = useRegion()
-
-  if (!regionId) {
-    return null
-  }
-
-  return {
-    region_id: regionId,
-    country_code: countryCode,
-  }
-}
-
-const resolveRegionSuspense = () => {
-  const { regionId, countryCode } = useSuspenseRegion()
-
-  return {
-    region_id: regionId,
-    country_code: countryCode,
-  }
-}
 
 const cleanAddress = (address: AddressFormData): HttpTypes.StoreAddAddress => {
   const cleaned: HttpTypes.StoreAddAddress = {
@@ -163,8 +140,6 @@ export const cartHooks = createCartHooks<
   cartStorage,
   isNotFoundError,
   invalidateOnSuccess: true,
-  resolveRegion,
-  resolveRegionSuspense,
   validateShippingAddressInput: validateAddressInput,
   validateBillingAddressInput: validateAddressInput,
   buildShippingAddress: cleanAddress,
