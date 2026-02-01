@@ -33,12 +33,7 @@ function CheckoutContent() {
     isCompleting,
     error,
     completeCheckout,
-    selectedAccessPoint,
-    openPickupDialog,
-    isPickupDialogOpen,
-    closePickupDialog,
-    pendingOptionId,
-    setSelectedAccessPoint,
+    pickupPoint,
   } = useCheckoutContext()
   const analytics = useAnalytics()
 
@@ -85,16 +80,15 @@ function CheckoutContent() {
   const selectedShipping = shipping.selectedOption
 
   // Handle PPL access point selection
-  const handleAccessPointSelect = (accessPoint: PplAccessPointData | null) => {
-    setSelectedAccessPoint(accessPoint)
+  const handleAccessPointSelect = (accessPoint: PplAccessPointData) => {
+    pickupPoint.selectPoint(accessPoint)
     // If we have a pending option, set the shipping with the access point data
-    if (pendingOptionId && accessPoint) {
+    if (pickupPoint.state.pendingOptionId) {
       shipping.setShipping(
-        pendingOptionId,
+        pickupPoint.state.pendingOptionId,
         accessPointToShippingData(accessPoint)
       )
     }
-    closePickupDialog()
   }
 
   return (
@@ -104,11 +98,7 @@ function CheckoutContent() {
       <div className="grid grid-cols-1 gap-700 lg:grid-cols-2">
         <div className="[&>*+*]:mt-500">
           <BillingAddressSection />
-          <ShippingMethodSection
-            onOpenPickupDialog={openPickupDialog}
-            selectedAccessPoint={selectedAccessPoint}
-            shipping={shipping}
-          />
+          <ShippingMethodSection pickupPoint={pickupPoint} shipping={shipping} />
           <PaymentFormSection cart={cart} />
         </div>
         <div>
@@ -124,10 +114,10 @@ function CheckoutContent() {
         </div>
       </div>
       <PplPickupDialog
-        onClose={closePickupDialog}
+        onClose={pickupPoint.closeDialog}
         onSelect={handleAccessPointSelect}
-        open={isPickupDialogOpen}
-        selectedPoint={selectedAccessPoint}
+        open={pickupPoint.state.isDialogOpen}
+        selectedPoint={pickupPoint.state.selectedPoint}
       />
     </div>
   )
