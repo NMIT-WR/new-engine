@@ -1,9 +1,9 @@
 import type { StoreOrder } from "@medusajs/types"
 import { createOrderHooks } from "@techsio/storefront-data"
 import {
-  getOrders,
-  getOrderById,
   type GetOrdersParams,
+  getOrderById,
+  getOrders,
 } from "@/services/order-service"
 
 /**
@@ -25,7 +25,7 @@ export type OrderDetailInput = {
  * Build list params from input
  */
 function buildListParams(input: OrderListInput): GetOrdersParams {
-  const { page = 1, limit = 20, offset } = input ?? {}
+  const { page = 1, limit, offset } = input ?? {}
 
   return {
     limit,
@@ -72,24 +72,20 @@ async function getOrdersAdapter(
 /**
  * Create order hooks using storefront-data factory
  */
-export const {
-  useOrders,
-  useSuspenseOrders,
-  useOrder,
-  useSuspenseOrder,
-} = createOrderHooks<
-  StoreOrder,
-  OrderListInput,
-  GetOrdersParams,
-  OrderDetailInput,
-  string
->({
-  service: {
-    getOrders: getOrdersAdapter,
-    getOrder: getOrderAdapter,
-  },
-  buildListParams,
-  buildDetailParams,
-  queryKeyNamespace: "n1",
-  defaultPageSize: 20,
-})
+export const { useOrders, useSuspenseOrders, useOrder, useSuspenseOrder } =
+  createOrderHooks<
+    StoreOrder,
+    OrderListInput,
+    GetOrdersParams,
+    OrderDetailInput,
+    string
+  >({
+    service: {
+      getOrders: getOrdersAdapter,
+      getOrder: getOrderAdapter,
+    },
+    buildListParams,
+    buildDetailParams,
+    queryKeyNamespace: "n1",
+    defaultPageSize: 20,
+  })

@@ -25,44 +25,24 @@ export function OrderList() {
 
 function OrderListContent() {
   const [page, setPage] = useState(1)
-  const { orders } = useSuspenseOrders({})
-
-
-  // Calculate summary stats (from all orders, not just current page)
-  const totalAmount = orders.reduce(
-    (sum, order) =>
-      sum + (order.summary?.current_order_total || order.total || 0),
-    0
-  )
-  const completedOrders = orders.filter(
-    (order) => order.status === "completed"
-  ).length
-  const pendingOrders = orders.filter(
-    (order) => order.status === "pending"
-  ).length
-
-  // Pagination
-  const startIndex = (page - 1) * PAGE_SIZE
-  const paginatedOrders = orders.slice(startIndex, startIndex + PAGE_SIZE)
+  const { orders, totalCount } = useSuspenseOrders({
+    page,
+    limit: PAGE_SIZE,
+  })
 
   return (
     <div className="space-y-400">
       {/* Summary section */}
-      <OrdersSummary
-        completedOrders={completedOrders}
-        numberOfOrders={orders.length}
-        pendingOrders={pendingOrders}
-        totalAmount={totalAmount}
-      />
+      <OrdersSummary numberOfOrders={totalCount} />
 
       {/* Content */}
-      {orders.length === 0 ? (
+      {totalCount === 0 ? (
         <OrdersEmpty />
       ) : (
         <>
           {/* Mobile view */}
           <div className="block space-y-200 sm:hidden">
-            {paginatedOrders.map((order) => (
+            {orders.map((order) => (
               <MobileOrderCard key={order.id} order={order} />
             ))}
           </div>
@@ -76,15 +56,15 @@ function OrderListContent() {
               <div className="col-span-2 text-right">Celkem</div>
               <div className="col-span-2 text-right">Akce</div>
             </div>
-            {paginatedOrders.map((order) => (
+            {orders.map((order) => (
               <DesktopOrderCard key={order.id} order={order} />
             ))}
           </div>
 
           {/* Pagination */}
-          {orders.length > PAGE_SIZE && (
+          {totalCount > PAGE_SIZE && (
             <Pagination
-              count={orders.length}
+              count={totalCount}
               onPageChange={setPage}
               page={page}
               pageSize={PAGE_SIZE}
