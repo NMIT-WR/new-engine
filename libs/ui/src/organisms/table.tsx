@@ -17,7 +17,7 @@ const tableVariants = tv({
     row: [
       "border-b-(length:--border-width-table) border-table-border",
       "data-[selected=true]:bg-table-row-bg-selected",
-      "transition-colors duration-200",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     columnHeader: [
       "text-start data-[numeric=true]:text-end",
