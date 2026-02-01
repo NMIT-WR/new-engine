@@ -51,7 +51,7 @@ export async function retrieveCart(
 ): Promise<Cart | null> {
   try {
     if (!cartId) {
-      throw new CartServiceError("Cart ID je povinné", "CART_NOT_FOUND")
+      throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
     }
 
     const { cart } = await sdk.store.cart.retrieve(cartId)
@@ -180,7 +180,7 @@ export async function updateCart(
 ): Promise<Cart> {
   try {
     if (!cartId) {
-      throw new CartServiceError("Cart ID je povinné", "CART_NOT_FOUND")
+      throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
     }
 
     const response = await sdk.store.cart.update(cartId, params)
