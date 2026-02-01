@@ -12,8 +12,6 @@ type Region = HttpTypes.StoreRegion
  * Input types
  */
 type RegionListInput = {
-  page?: number
-  limit?: number
   enabled?: boolean
 }
 
@@ -88,9 +86,7 @@ function findRegionByCountry(
   regions: Region[],
   countryCode: string
 ): Region | undefined {
-  return regions.find((r) =>
-    r.countries?.some((c) => c.iso_2 === countryCode)
-  )
+  return regions.find((r) => r.countries?.some((c) => c.iso_2 === countryCode))
 }
 
 /**
