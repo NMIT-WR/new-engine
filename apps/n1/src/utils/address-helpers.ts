@@ -100,7 +100,7 @@ export function accessPointToAddress(
     address_1: accessPoint.address?.street || "",
     address_2: "",
     city: accessPoint.address?.city || "",
-    postal_code: accessPoint.address?.zipCode || "",
+    postal_code: formatPostalCode(accessPoint.address?.zipCode || ""),
     country_code:
       accessPoint.address?.country?.toLowerCase() || DEFAULT_COUNTRY_CODE,
     province: "",
