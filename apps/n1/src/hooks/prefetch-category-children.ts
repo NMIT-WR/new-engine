@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { allCategories } from "@/data/static/categories"
 import { ALL_CATEGORIES_MAP } from "@/lib/constants"
 import { prefetchLogger } from "@/lib/loggers/prefetch"
-import { usePrefetchProducts } from "./use-prefetch-products"
+import { usePrefetchProducts } from "./prefetch-products"
 import { useRegion } from "./region-hooks"
 
 type UsePrefetchCategoryChildrenParams = {

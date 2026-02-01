@@ -25,7 +25,7 @@ export type OrderDetailInput = {
  * Build list params from input
  */
 function buildListParams(input: OrderListInput): GetOrdersParams {
-  const { page = 1, limit, offset } = input ?? {}
+  const { page = 1, limit = 10, offset } = input ?? {}
 
   return {
     limit,

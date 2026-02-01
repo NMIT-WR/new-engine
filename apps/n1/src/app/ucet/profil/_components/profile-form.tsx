@@ -5,7 +5,7 @@ import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { Button } from "@ui/atoms/button"
 import { FormInput } from "@ui/molecules/form-input"
 import { TextField } from "@/components/forms/fields/text-field"
-import { authHooks } from "@/lib/storefront-data-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 import { useUpdateCustomer } from "@/hooks/customer-hooks"
 import { profileValidators } from "@/lib/form-validators"
 import {

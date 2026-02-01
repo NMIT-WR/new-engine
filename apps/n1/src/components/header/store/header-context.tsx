@@ -1,6 +1,6 @@
 "use client"
 import { createContext, type ReactNode, useContext, useState } from "react"
-import { authHooks } from "@/lib/storefront-data-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 
 type HeaderContextValue = {
   isLoginFormOpen: boolean
