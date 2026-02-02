@@ -8,13 +8,13 @@ import { ProductGrid } from "@/components/organisms/product-grid"
 import { homeCategories, homeContent } from "@/data/home-content"
 import { usePrefetchProducts } from "@/hooks/use-prefetch-products"
 import { useProducts } from "@/hooks/use-products"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { getCategoryIdByHandle } from "@/utils/category-helpers"
 import homeImage from "../../assets/hero/home.webp"
 
 export default function Home() {
   const { prefetchDefaultProducts } = usePrefetchProducts()
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const {
     hero,
     trending,

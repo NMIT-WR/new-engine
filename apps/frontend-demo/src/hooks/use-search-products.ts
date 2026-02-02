@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import { getProducts } from "@/services"
 import type { Product } from "@/types/product"
-import { useRegions } from "./use-region"
+import { useRegion } from "./region-hooks"
 
 interface UseSearchProductsOptions {
   limit?: number
@@ -9,7 +9,7 @@ interface UseSearchProductsOptions {
 }
 
 export function useSearchProducts(options?: UseSearchProductsOptions) {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState<Error | null>(null)

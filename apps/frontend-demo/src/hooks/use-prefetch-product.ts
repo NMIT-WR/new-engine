@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback } from "react"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { queryKeys } from "@/lib/query-keys"
 import { getProduct } from "@/services/product-service"
 
 export function usePrefetchProduct(enabled?: boolean) {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const queryClient = useQueryClient()
   const enabledPrefetch = enabled ?? true
 

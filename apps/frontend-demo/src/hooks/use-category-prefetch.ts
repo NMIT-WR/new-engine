@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useRef } from "react"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { cacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts } from "@/services/product-service"
@@ -12,7 +12,7 @@ interface UseCategoryPrefetchOptions {
 }
 
 export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const queryClient = useQueryClient()
   const enabled = options?.enabled ?? true
   const cacheStrategy = options?.cacheStrategy ?? "semiStatic"
