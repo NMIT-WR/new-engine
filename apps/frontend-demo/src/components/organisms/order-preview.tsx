@@ -2,7 +2,7 @@
 
 import { Icon } from "@techsio/ui-kit/atoms/icon"
 import Image from "next/image"
-import { useCart } from "@/hooks/use-cart"
+import { cartHooks } from "@/hooks/cart-hooks"
 import { formatPrice } from "@/lib/format-price"
 import { orderHelpers } from "@/stores/order-store"
 
@@ -19,7 +19,7 @@ export function OrderPreview({
   showDetails = true,
   className = "",
 }: OrderPreviewProps) {
-  const { cart } = useCart()
+  const { cart } = cartHooks.useCart({})
 
   // Use order data from store or current cart
   const orderData = orderHelpers.getOrderData(cart)

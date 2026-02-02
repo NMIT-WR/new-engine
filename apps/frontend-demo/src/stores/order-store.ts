@@ -1,6 +1,6 @@
 import type { HttpTypes } from "@medusajs/types"
 import { Store } from "@tanstack/react-store"
-import type { Cart } from "@/hooks/use-cart"
+import type { Cart } from "@/hooks/cart-hooks"
 
 type OrderState = {
   completedOrder: HttpTypes.StoreOrder | null

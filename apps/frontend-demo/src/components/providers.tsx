@@ -6,7 +6,6 @@ import { ThemeProvider } from "next-themes"
 import type { PropsWithChildren } from "react"
 import { Suspense, useState } from "react"
 import { RegionProvider } from "@/providers/region-provider"
-import { CartPrefetch } from "./cart-prefetch"
 
 function makeQueryClient() {
   return new QueryClient({
@@ -58,7 +57,6 @@ export function Providers({ children }: PropsWithChildren) {
       >
         <Suspense fallback={null}>
           <RegionProvider>
-            <CartPrefetch />
             {children}
             <Toaster />
           </RegionProvider>
