@@ -5,39 +5,55 @@ export const queryKeys = {
   all: ["medusa"] as const,
 
   // Product-related queries with hierarchical structure
+  // Params match storefront-data service params for direct usage
   products: {
     all: () => [...queryKeys.all, "products"] as const,
     lists: () => [...queryKeys.products.all(), "list"] as const,
     list: (params?: {
-      page?: number
+      offset?: number
       limit?: number
       filters?: any // Flexible to accommodate various filter types
       sort?: string
       fields?: string
       q?: string
-      category?: string | string[]
+      category_id?: string[]
       region_id?: string
     }) => [...queryKeys.products.lists(), params || {}] as const,
     infinite: (params?: {
-      page?: number
-      pageRange?: string
-      pageRangeStart?: number
+      offset?: number
       limit?: number
       filters?: any
       sort?: string
       q?: string
-      category?: string | string[]
+      category_id?: string[]
       region_id?: string
     }) => [...queryKeys.products.all(), "infinite", params || {}] as const,
-    detail: (handle: string, region_id?: string) =>
-      [...queryKeys.products.all(), "detail", handle, region_id] as const,
+    detail: (params: { handle: string; region_id?: string }) =>
+      [
+        ...queryKeys.products.all(),
+        "detail",
+        params.handle,
+        params.region_id,
+      ] as const,
   },
 
   // Region queries
   regions: () => [...queryKeys.all, "regions"] as const,
 
-  // Cart queries
-  cart: (id?: string) => [...queryKeys.all, "cart", id] as const,
+  // Cart queries with hierarchical structure
+  cart: {
+    all: () => [...queryKeys.all, "cart"] as const,
+    active: (params: { cartId?: string | null; regionId?: string | null }) =>
+      [
+        ...queryKeys.all,
+        "cart",
+        "active",
+        params.cartId,
+        params.regionId,
+      ] as const,
+    detail: (cartId: string) =>
+      [...queryKeys.all, "cart", "detail", cartId] as const,
+  },
 
   // Authentication queries
   auth: {
@@ -51,17 +67,24 @@ export const queryKeys = {
   category: (handle: string) => [...queryKeys.categories(), handle] as const,
   allCategories: () => [...queryKeys.all, "all-categories"] as const,
 
-  // Order queries
+  // Order queries - params match storefront-data
   orders: {
     all: () => [...queryKeys.all, "orders"] as const,
-    list: (params?: { page?: number; limit?: number; status?: string[] }) =>
-      [...queryKeys.orders.all(), "list", params || {}] as const,
-    detail: (id: string) => [...queryKeys.orders.all(), "detail", id] as const,
+    list: (_params?: { page?: number; limit?: number; status?: string[] }) =>
+      [...queryKeys.orders.all(), "list"] as const,
+    detail: (params: { id?: string }) =>
+      [...queryKeys.orders.all(), "detail", params.id ?? ""] as const,
   },
 
   // Customer queries
   customer: {
-    addresses: () => [...queryKeys.all, "customer", "addresses"] as const,
+    all: () => [...queryKeys.all, "customer"] as const,
+    // Profile points to auth.customer - that's where customer data is stored
+    profile: () => queryKeys.auth.customer(),
+    addresses: (params?: { enabled?: boolean } & Record<string, unknown>) => {
+      const { enabled: _enabled, ...queryParams } = params ?? {}
+      return [...queryKeys.all, "customer", "addresses", queryParams] as const
+    },
   },
 
   // Fulfillment queries
@@ -72,5 +95,5 @@ export const queryKeys = {
 
   // Legacy aliases for backward compatibility
   product: (handle: string, region_id?: string) =>
-    queryKeys.products.detail(handle, region_id),
+    queryKeys.products.detail({ handle, region_id }),
 } as const
