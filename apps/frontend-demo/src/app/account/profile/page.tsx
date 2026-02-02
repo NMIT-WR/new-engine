@@ -1,23 +1,26 @@
 "use client"
+
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { ProfileForm } from "@/components/organisms/profile-form"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 import { useCustomer } from "@/hooks/use-customer"
 
 export default function ProfilePage() {
-  const { user, isLoading, isInitialized } = useAuth()
+  const { customer: user, isLoading } = authHooks.useAuth()
   const router = useRouter()
 
   const { address, isLoading: isAddressLoading } = useCustomer()
 
+  // Redirect to login if not authenticated
+  const isInitialized = !isLoading
   useEffect(() => {
     if (isInitialized && !user) {
       router.push("/auth/login")
     }
   }, [isInitialized, user, router])
 
-  if (isLoading || !isInitialized) {
+  if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">

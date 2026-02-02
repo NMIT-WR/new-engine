@@ -9,7 +9,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { use, useEffect } from "react"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 import { formatPrice } from "@/lib/format-price"
 import { sdk } from "@/lib/medusa-client"
 import {
@@ -21,7 +21,7 @@ import {
 import { queryKeys } from "@/lib/query-keys"
 import type { Order } from "@/types/order"
 
-interface OrderDetailPageProps {
+type OrderDetailPageProps = {
   params: Promise<{
     id: string
   }>
@@ -29,9 +29,11 @@ interface OrderDetailPageProps {
 
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = use(params)
-  const { user, isLoading: authLoading, isInitialized } = useAuth()
+  const { customer: user, isLoading: authLoading } = authHooks.useAuth()
   const router = useRouter()
   const queryClient = useQueryClient()
+
+  const isInitialized = !authLoading
 
   useEffect(() => {
     if (isInitialized && !user) {

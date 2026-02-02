@@ -4,34 +4,60 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
 import Link from "next/link"
-import { type FormEvent, useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
-import {
-  AUTH_ERRORS,
-  authFormFields,
-  validateEmail,
-  withLoading,
-} from "@/lib/auth"
+import { useRouter } from "next/navigation"
+import { type FormEvent, useCallback, useState } from "react"
+import { authHooks } from "@/hooks/auth-hooks"
+import { AUTH_ERRORS, AUTH_MESSAGES, authFormFields, validateEmail, withLoading } from "@/lib/auth"
 import { AuthFormWrapper } from "./auth-form-wrapper"
 
+type FieldErrors = Record<string, string | undefined>
+
 export function LoginForm() {
+  const router = useRouter()
+  const toast = useToast()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const [backendError, setBackendError] = useState<string>()
 
-  const {
-    login,
-    loginMutation,
-    error,
-    getFieldError,
-    setFieldError,
-    clearErrors,
-  } = useAuth()
+  const loginMutation = authHooks.useLogin({
+    onSuccess: () => {
+      toast.create({
+        ...AUTH_MESSAGES.LOGIN_SUCCESS,
+        type: "success",
+      })
+      router.push("/")
+    },
+    onError: (error) => {
+      const message = error instanceof Error ? error.message : AUTH_ERRORS.GENERIC_ERROR
+      setBackendError(message)
+      toast.create({
+        ...AUTH_MESSAGES.LOGIN_ERROR,
+        description: message,
+        type: "error",
+      })
+    },
+  })
 
-  const isFormLoading = loginMutation.isPending
+  const clearErrors = useCallback(() => {
+    setFieldErrors({})
+    setBackendError(undefined)
+  }, [])
 
-  const handleSubmit = async (e: FormEvent) => {
+  const setFieldError = useCallback((field: string, message: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: message }))
+  }, [])
+
+  const getFieldError = useCallback(
+    (field: string) => fieldErrors[field],
+    [fieldErrors]
+  )
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     clearErrors()
 
@@ -45,9 +71,10 @@ export function LoginForm() {
       return
     }
 
-    // The mutation handles loading state and success/error toasts
-    login(email, password)
+    loginMutation.mutate({ email, password })
   }
+
+  const isFormLoading = loginMutation.isPending
 
   return (
     <AuthFormWrapper
@@ -113,9 +140,9 @@ export function LoginForm() {
           </Link>
         </div>
 
-        {error && !getFieldError("email") && !getFieldError("password") && (
+        {backendError && !getFieldError("email") && !getFieldError("password") && (
           <div className="rounded-md bg-red-50 p-3">
-            <p className="text-red-800 text-sm">{error}</p>
+            <p className="text-red-800 text-sm">{backendError}</p>
           </div>
         )}
 

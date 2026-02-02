@@ -7,7 +7,7 @@ import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { useEffect, useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 import { useCustomer } from "@/hooks/use-customer"
 import {
   ADDRESS_ERRORS,
@@ -23,7 +23,7 @@ export function AddressForm({
   onComplete,
   isLoading = false,
 }: AddressFormProps) {
-  const { user } = useAuth()
+  const { customer: user } = authHooks.useAuth()
   const { address } = useCustomer()
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({

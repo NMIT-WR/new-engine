@@ -1,4 +1,5 @@
 "use client"
+
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { DesktopOrderCard } from "@/components/account/desktop-order-card"
@@ -8,13 +9,16 @@ import { OrdersError } from "@/components/account/orders-error"
 import { OrdersSkeleton } from "@/components/account/orders-skeleton"
 import { OrdersSummary } from "@/components/account/orders-summary"
 import { OrdersTableHeader } from "@/components/account/orders-table-header"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 import { useOrders } from "@/hooks/use-orders"
 
 const MIN_ORDERS_COUNT = 5
+
 export default function OrdersPage() {
-  const { user, isLoading: authLoading, isInitialized } = useAuth()
+  const { customer: user, isLoading: authLoading } = authHooks.useAuth()
   const router = useRouter()
+
+  const isInitialized = !authLoading
 
   useEffect(() => {
     if (isInitialized && !user) {
