@@ -28,7 +28,21 @@ export function OrderPreview({
     return null
   }
 
-  const finalTotal = orderData.total + paymentFee
+  const shippingSubtotal =
+    "shipping_subtotal" in orderData ? orderData.shipping_subtotal ?? 0 : 0
+  const shippingTax =
+    "shipping_tax_total" in orderData ? orderData.shipping_tax_total ?? 0 : 0
+  const shippingTotalValue =
+    "shipping_total" in orderData ? orderData.shipping_total ?? 0 : 0
+  const hasShippingTotal = shippingTotalValue > 0
+  const shippingTotal =
+    hasShippingTotal
+      ? shippingTax > 0 && shippingTotalValue === shippingSubtotal
+        ? shippingTotalValue + shippingTax
+        : shippingTotalValue
+      : shippingPrice
+  const finalTotal =
+    orderData.total + paymentFee + (hasShippingTotal ? 0 : shippingTotal)
 
   return (
     <div className={`rounded-lg p-4 sm:p-6 ${className}`}>
@@ -47,7 +61,7 @@ export function OrderPreview({
                 <div className="h-[48px] w-[48px] flex-shrink-0 sm:h-[60px] sm:w-[60px]">
                   <Image
                     alt={cartItem.title}
-                    className="rounded-md object-cover"
+                    className="rounded-md object-cover aspect-square"
                     height={60}
                     src={cartItem.thumbnail}
                     width={60}
@@ -96,9 +110,7 @@ export function OrderPreview({
         <div className="flex items-center justify-between text-fg-secondary text-xs sm:text-sm">
           <span>Doprava</span>
           <span>
-            {shippingPrice > 0
-              ? formatPrice(orderData.shipping_total)
-              : "Zdarma"}
+            {shippingTotal > 0 ? formatPrice(shippingTotal) : "Zdarma"}
           </span>
         </div>
 
