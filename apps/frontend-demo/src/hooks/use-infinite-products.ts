@@ -58,13 +58,17 @@ export function useInfiniteProducts(
     refetch,
   } = useInfiniteQuery({
     queryKey: queryKeys.products.infinite({
-      pageRangeStart: pageRange.start, // Use only start to keep key stable when extending
+      offset: baseOffset,
       limit,
       filters,
       sort,
       region_id,
       q,
-      category,
+      category_id: category
+        ? Array.isArray(category)
+          ? category
+          : [category]
+        : undefined,
     }),
     queryFn: ({ pageParam = baseOffset }) => {
       // For the initial load, use rangeLimit to load all pages in range at once

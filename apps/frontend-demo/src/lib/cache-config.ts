@@ -47,7 +47,7 @@ export const cacheConfig = {
   },
 
   // User-specific data (profile, preferences)
-  user: {
+  userData: {
     staleTime: 0,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: true,

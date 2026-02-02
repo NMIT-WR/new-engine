@@ -6,15 +6,12 @@ import { CategoryGrid } from "@/components/organisms/category-grid"
 import { Hero } from "@/components/organisms/hero"
 import { ProductGrid } from "@/components/organisms/product-grid"
 import { homeCategories, homeContent } from "@/data/home-content"
-import { usePrefetchProducts } from "@/hooks/use-prefetch-products"
-import { useProducts } from "@/hooks/use-products"
-import { useRegion } from "@/hooks/region-hooks"
+import { usePrefetchProducts, useProducts } from "@/hooks/product-hooks"
 import { getCategoryIdByHandle } from "@/utils/category-helpers"
 import homeImage from "../../assets/hero/home.webp"
 
 export default function Home() {
-  const { prefetchDefaultProducts } = usePrefetchProducts()
-  const { selectedRegion } = useRegion()
+  const { prefetchFirstPage } = usePrefetchProducts()
   const {
     hero,
     trending,
@@ -27,22 +24,20 @@ export default function Home() {
     sort: "newest",
     limit: 8,
     category: getCategoryIdByHandle("kratke-rukavy"),
-    region_id: selectedRegion?.id,
   })
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      prefetchDefaultProducts()
+      prefetchFirstPage({ limit: 12, sort: "newest" })
     }, 100)
     return () => clearTimeout(timer)
-  }, [prefetchDefaultProducts])
+  }, [prefetchFirstPage])
 
   const featuredProducts = products.slice(0, 4)
   const newProductsList = products.slice(4, 8)
 
   return (
     <div>
-      {/* Hero Section */}
       <Hero
         backgroundImage={homeImage}
         primaryAction={hero.primaryAction}
@@ -51,7 +46,6 @@ export default function Home() {
         title={hero.title}
       />
 
-      {/* Featured Products */}
       <div className="mx-auto max-w-layout-max px-4 py-16">
         <div className="mb-4 flex flex-col">
           <h2 className="font-bold text-featured-title text-featured-title-size">
@@ -68,7 +62,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* Categories - Grid View */}
       <CategoryGrid
         categories={homeCategories.map((cat) => ({
           name: cat.name,
@@ -80,7 +73,6 @@ export default function Home() {
         title={categoriesSection.title}
       />
 
-      {/* Banner Section */}
       <SaleBanner
         backgroundImage={saleBanner.backgroundImage}
         linkHref={saleBanner.linkHref}
@@ -89,7 +81,6 @@ export default function Home() {
         title={saleBanner.title}
       />
 
-      {/* New Arrivals */}
       <div className="mx-auto max-w-layout-max px-4 py-16">
         <div className="mb-4 flex flex-col">
           <h2 className="font-bold text-featured-title text-featured-title-size">
