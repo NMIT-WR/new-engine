@@ -1,14 +1,17 @@
 "use client"
+
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
-import { type FormEvent, useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
+import { useRouter } from "next/navigation"
+import { type FormEvent, useCallback, useState } from "react"
+import { authHooks } from "@/hooks/auth-hooks"
 import {
   AUTH_ERRORS,
+  AUTH_MESSAGES,
   authFormFields,
-  type ValidationError,
   validateEmail,
   validatePassword,
   withLoading,
@@ -16,72 +19,85 @@ import {
 import { AuthFormWrapper } from "./auth-form-wrapper"
 import { PasswordRequirements } from "./password-requirements"
 
+type FieldErrors = Record<string, string | undefined>
+
 export function RegisterForm() {
+  const router = useRouter()
+  const toast = useToast()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [acceptTerms, setAcceptTerms] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
-  const {
-    register,
-    registerMutation,
-    setValidationErrors,
-    getFieldError,
-    clearErrors,
-  } = useAuth()
+  const registerMutation = authHooks.useRegister({
+    onSuccess: () => {
+      toast.create({
+        ...AUTH_MESSAGES.REGISTER_SUCCESS,
+        type: "success",
+      })
+      router.push("/")
+    },
+    onError: (error) => {
+      const message = error instanceof Error ? error.message : AUTH_ERRORS.GENERIC_ERROR
+      toast.create({
+        ...AUTH_MESSAGES.REGISTER_ERROR,
+        description: message,
+        type: "error",
+      })
+    },
+  })
 
-  const isFormLoading = registerMutation.isPending
+  const clearErrors = useCallback(() => {
+    setFieldErrors({})
+  }, [])
+
+  const getFieldError = useCallback(
+    (field: string) => fieldErrors[field],
+    [fieldErrors]
+  )
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     clearErrors()
 
     // Client-side validation
-    const errors: ValidationError[] = []
+    const errors: FieldErrors = {}
 
-    // Email validation
     if (!validateEmail(email)) {
-      errors.push({
-        field: "email",
-        message: AUTH_ERRORS.INVALID_EMAIL,
-      })
+      errors.email = AUTH_ERRORS.INVALID_EMAIL
     }
 
-    // Password validation
     const passwordValidation = validatePassword(password)
     if (!passwordValidation.isValid) {
-      errors.push({
-        field: "password",
-        message: passwordValidation.errors[0], // Show first error
-      })
+      errors.password = passwordValidation.errors[0]
     }
 
-    // Password match validation
     if (password !== confirmPassword) {
-      errors.push({
-        field: "confirmPassword",
-        message: AUTH_ERRORS.PASSWORD_MISMATCH,
-      })
+      errors.confirmPassword = AUTH_ERRORS.PASSWORD_MISMATCH
     }
 
-    // Terms validation
     if (!acceptTerms) {
-      errors.push({
-        field: "terms",
-        message: AUTH_ERRORS.TERMS_REQUIRED,
-      })
+      errors.terms = AUTH_ERRORS.TERMS_REQUIRED
     }
 
-    if (errors.length > 0) {
-      setValidationErrors(errors)
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors)
       return
     }
 
-    // The mutation handles loading state and success/error toasts
-    register(email, password, firstName, lastName)
+    registerMutation.mutate({
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+    })
   }
+
+  const isFormLoading = registerMutation.isPending
 
   return (
     <AuthFormWrapper

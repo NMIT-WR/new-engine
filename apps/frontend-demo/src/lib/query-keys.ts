@@ -41,6 +41,7 @@ export const queryKeys = {
 
   // Authentication queries
   auth: {
+    all: () => [...queryKeys.all, "auth"] as const,
     customer: () => [...queryKeys.all, "auth", "customer"] as const,
     session: () => [...queryKeys.all, "auth", "session"] as const,
   },
