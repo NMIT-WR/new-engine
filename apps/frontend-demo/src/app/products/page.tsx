@@ -10,7 +10,7 @@ import { ProductGrid } from "@/components/organisms/product-grid"
 import { useInfiniteProducts } from "@/hooks/use-infinite-products"
 import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
 import { useProducts } from "@/hooks/use-products"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import {
   type ExtendedSortOption,
   useUrlFilters,
@@ -23,7 +23,7 @@ const SORT_OPTIONS: Array<{ value: ExtendedSortOption; label: string }> = [
 ]
 
 function ProductsContent() {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const pageSize = 12
   const previousPageRef = useRef(1)
 

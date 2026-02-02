@@ -4,7 +4,7 @@ import type { HttpTypes } from "@medusajs/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { useState } from "react"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { cacheConfig } from "@/lib/cache-config"
 import { STORAGE_KEYS } from "@/lib/constants"
 import { sdk } from "@/lib/medusa-client"
@@ -13,7 +13,7 @@ import { queryKeys } from "@/lib/query-keys"
 export type Cart = HttpTypes.StoreCart | undefined
 // Cart hook using React Query
 export function useCart() {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const queryClient = useQueryClient()
   const toast = useToast()
   const [isOpen, setIsOpen] = useState(false)

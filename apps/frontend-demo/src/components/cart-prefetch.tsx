@@ -2,14 +2,14 @@
 
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { STORAGE_KEYS } from "@/lib/constants"
 import { sdk } from "@/lib/medusa-client"
 import { queryKeys } from "@/lib/query-keys"
 
 export function CartPrefetch() {
   const queryClient = useQueryClient()
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
 
   useEffect(() => {
     if (!selectedRegion) return

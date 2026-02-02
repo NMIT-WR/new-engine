@@ -20,6 +20,7 @@
     "@tanstack/react-query": "^5.90.10",
     "@tanstack/react-store": "^0.8.0",
     "@techsio/ui-kit": "workspace:*",
+    "@techsio/storefront-data": "workspace:*",
     "dompurify": "^3.3.0",
     "next": "^16.1.1",
     "next-themes": "^0.4.6",

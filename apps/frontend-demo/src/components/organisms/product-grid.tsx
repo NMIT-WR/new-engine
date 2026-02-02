@@ -6,7 +6,7 @@ import { useState } from "react"
 import { AddToCartDialog } from "@/components/molecules/add-to-cart-dialog"
 import { DemoProductCard } from "@/components/molecules/demo-product-card"
 import { usePrefetchProduct } from "@/hooks/use-prefetch-product"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import type { Product } from "@/types/product"
 import { formatPrice } from "@/utils/price-utils"
 import { extractProductData } from "@/utils/product-utils"
@@ -26,7 +26,7 @@ export function ProductGrid({
   pageSize = 12,
   onPageChange,
 }: ProductGridProps) {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const prefetchProduct = usePrefetchProduct()
   const [dialogProduct, setDialogProduct] = useState<Product | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)

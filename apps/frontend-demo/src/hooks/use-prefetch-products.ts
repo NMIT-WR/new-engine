@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback } from "react"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { cacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts, type ProductListParams } from "@/services/product-service"
@@ -14,7 +14,7 @@ interface UsePrefetchProductsOptions {
 const DEFAULT_LIMIT = 12
 
 export function usePrefetchProducts(options?: UsePrefetchProductsOptions) {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const queryClient = useQueryClient()
   const enabled = options?.enabled ?? true
   const cacheStrategy = options?.cacheStrategy ?? "semiStatic"

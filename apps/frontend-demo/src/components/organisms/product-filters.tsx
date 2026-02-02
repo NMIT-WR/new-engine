@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { Dialog } from "@techsio/ui-kit/molecules/dialog"
 import { useState } from "react"
-import { useRegions } from "@/hooks/use-region"
+import { useRegion } from "@/hooks/region-hooks"
 import { cacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import data, { categoryTree } from "@/lib/static-data/categories"
@@ -30,7 +30,7 @@ export function ProductFilters({
   onFiltersChange,
   hideCategories = false,
 }: ProductFiltersProps) {
-  const { selectedRegion } = useRegions()
+  const { selectedRegion } = useRegion()
   const [categoryIds, setCategoryIds] = useState<string[]>([])
 
   const [isOpen, setIsOpen] = useState(false)
