@@ -5,7 +5,7 @@ import { Icon, type IconType } from "@techsio/ui-kit/atoms/icon"
 import { Popover } from "@techsio/ui-kit/molecules/popover"
 import Link from "next/link"
 import { type ComponentPropsWithoutRef, type ReactNode, useState } from "react"
-import { useCart } from "@/hooks/use-cart"
+import { cartHooks } from "@/hooks/cart-hooks"
 import { Logo } from "./atoms/logo"
 import { AuthDropdown } from "./auth/auth-dropdown"
 import { CartPreview } from "./molecules/cart-preview"
@@ -35,9 +35,7 @@ export function Header({
   ...props
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { cart } = useCart()
-  const itemCount =
-    cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+  const { itemCount } = cartHooks.useCart({})
 
   return (
     <header

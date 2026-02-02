@@ -4,7 +4,7 @@ import { Button } from "@ui/atoms/button"
 import { Dialog } from "@ui/molecules/dialog"
 import { SelectTemplate } from "@ui/templates/select"
 import { useState } from "react"
-import { useCart } from "@/hooks/use-cart"
+import { useAddLineItemWithToast } from "@/hooks/cart-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
 import type { Product } from "@/types/product"
 import { formatPrice } from "@/utils/price-utils"
@@ -20,8 +20,9 @@ export function AddToCartDialog({
   open,
   onOpenChange,
 }: AddToCartDialogProps) {
-  const { addItem, addItemMutation } = useCart()
   const [selectedVariantId, setSelectedVariantId] = useState<string>("")
+
+  const addItemMutation = useAddLineItemWithToast()
 
   const variants = product.variants || []
 
@@ -48,7 +49,9 @@ export function AddToCartDialog({
       return
     }
 
-    addItem(selectedVariantId)
+    addItemMutation.mutate({
+      variantId: selectedVariantId,
+    })
 
     if (!addItemMutation.isPending) {
       onOpenChange({ open: false })

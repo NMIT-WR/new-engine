@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { LoadingPage } from "@/components/loading-page"
 import { OrderSummary } from "@/components/order-summary"
-import { useCart } from "@/hooks/use-cart"
+import { cartHooks } from "@/hooks/cart-hooks"
 import { useCheckout } from "@/hooks/use-checkout"
 import { PAYMENT_METHODS } from "@/lib/checkout-data"
 import { formatPrice } from "@/lib/format-price"
@@ -18,7 +18,7 @@ import { AddressForm } from "../../components/organisms/address-form"
 import { OrderPreview } from "../../components/organisms/order-preview"
 
 export default function CheckoutPage() {
-  const { cart, isLoading } = useCart()
+  const { cart, isLoading } = cartHooks.useCart({})
 
   const {
     currentStep,
