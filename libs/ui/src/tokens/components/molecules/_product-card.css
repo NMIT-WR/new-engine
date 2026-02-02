@@ -1,7 +1,7 @@
 @theme static {
   --product-card-layout-row-grid: minmax(
-      var(--spacing-product-card-image-min),
-      var(--spacing-product-card-image-max)
+      var(--width-product-card-image-min),
+      var(--width-product-card-image-max)
     )
     minmax(0, 1fr);
   --product-card-layout-column-grid: 1fr;
@@ -48,8 +48,10 @@
   --spacing-product-card-box: var(--spacing-150);
   --spacing-product-card-max: 100%;
   --spacing-product-card-buttons: var(--spacing-150);
-  --spacing-product-card-image-min: 8rem;
-  --spacing-product-card-image-max: 12rem;
+
+  /* === SIZING === */
+  --width-product-card-image-min: 8rem;
+  --width-product-card-image-max: 12rem;
 
   /* === TYPOGRAPHY === */
   --text-product-card-name-size: var(--text-md);

@@ -191,7 +191,7 @@ Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
     using (CPU cores - 1) workers. This balances parallelism with leaving one
     core for system processes. You can override it in CI with `PLAYWRIGHT_WORKERS=4` (or
     another suitable value) depending on your runner size.
-- The test suite enables `fullyParallel` in Playwright config so tests can run
+- The test suite enables `fullyParallel` in Playwright config, so tests can run
     concurrently across files and workers — ensure tests are isolated and use
     unique snapshot names (the visual tests already include `story.id` in the
     screenshot filename, which is good).

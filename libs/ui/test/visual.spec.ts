@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { expect, test as base, type Page } from '@playwright/test'
+import { expect, test as base, type Locator, type Page } from '@playwright/test'
 
 type StorybookEntry = {
   id: string
@@ -49,7 +49,7 @@ try {
 }
 
 const stories = Object.values(
-  (storybookIndex as StorybookIndex).entries,
+  storybookIndex.entries,
 ).filter((entry) => entry.type === 'story')
 
 const storyFilter = (process.env.TEST_STORIES ?? '')
@@ -72,15 +72,15 @@ test.describe.parallel('storybook visual', () => {
   for (const story of selectedStories) {
     test(
       `${story.title} ${story.name} should not have visual regressions`,
-      async ({ workerPage, browser }, workerInfo) => {
+      async ({ workerPage, browser }, testInfo) => {
         let page = workerPage
-        let ownedContext: any = null
+        let ownedContext: { close: () => Promise<void>; newPage: () => Promise<Page> } | null = null
 
         const createIsolatedPage = async () => {
           if (ownedContext) {
             await ownedContext.close()
           }
-          ownedContext = await browser.newContext(workerInfo.project.use)
+          ownedContext = await browser.newContext(testInfo.project.use)
           page = await ownedContext.newPage()
         }
 
@@ -102,7 +102,7 @@ test.describe.parallel('storybook visual', () => {
             id: story.id,
             viewMode: 'story',
           })
-          const mask = []
+          const mask: Locator[] = []
 
           if (shouldResetBetweenTests) {
             try {
@@ -158,7 +158,6 @@ test.describe.parallel('storybook visual', () => {
               const root = document.querySelector('#storybook-root')
               return root && root.children.length > 0
             },
-            null,
             { timeout: 30_000 },
           )
           await page.evaluate(async () => {
@@ -188,7 +187,6 @@ test.describe.parallel('storybook visual', () => {
                   return img.complete
                 })
               },
-              null,
               { timeout: 5000 },
             )
           } catch {
@@ -342,9 +340,8 @@ test.describe.parallel('storybook visual', () => {
         try {
           await run()
         } finally {
-          if (ownedContext) {
-            await ownedContext.close()
-          }
+          const contextToClose = ownedContext as { close: () => Promise<void> } | null
+          await contextToClose?.close()
         }
       },
     )

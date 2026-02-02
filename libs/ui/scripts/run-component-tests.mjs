@@ -68,6 +68,15 @@ const cleanup = () => {
   runSilent("docker", ["rm", "-f", containerName])
 }
 
+const handleExit = (signal) => {
+  console.warn(`Received ${signal}, cleaning up container...`)
+  cleanup()
+  process.exit(1)
+}
+
+process.on("SIGINT", () => handleExit("SIGINT"))
+process.on("SIGTERM", () => handleExit("SIGTERM"))
+
 // Build storybook (default) or when missing
 if (rebuildStorybook) {
   console.log("Building Storybook...")
@@ -208,7 +217,10 @@ try {
     }
   } else {
     const result = runPlaywright()
-    testStatus = result.status ?? 0
+    if (result.error) {
+      console.error("Playwright failed to spawn:", result.error.message)
+    }
+    testStatus = result.status ?? (result.signal || result.error ? 1 : 0)
     testSignal = result.signal
   }
 
