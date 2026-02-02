@@ -54,10 +54,10 @@ export function ProductFilters({
     }
 
     const queryKey = queryKeys.products.list({
-      page: 1,
+      offset: 0,
       limit: 12,
       filters: productFilters,
-      sort: "newest", // Add default sort to match products page
+      sort: "newest",
       region_id: selectedRegion?.id,
     })
 

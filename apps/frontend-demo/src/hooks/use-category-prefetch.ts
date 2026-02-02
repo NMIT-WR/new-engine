@@ -28,7 +28,7 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
 
       // Check if data is already in cache
       const queryKey = queryKeys.products.list({
-        page: 1,
+        offset: 0,
         limit: prefetchLimit,
         filters: { categories: categoryIds, sizes: [] },
         region_id: selectedRegion.id,

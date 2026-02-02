@@ -7,14 +7,10 @@ import { Suspense, useEffect, useRef } from "react"
 import { ProductGridSkeleton } from "@/components/molecules/product-grid-skeleton"
 import { ProductFilters } from "@/components/organisms/product-filters"
 import { ProductGrid } from "@/components/organisms/product-grid"
-import { useInfiniteProducts } from "@/hooks/use-infinite-products"
-import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
-import { useProducts } from "@/hooks/use-products"
+import { usePrefetchPages, useProducts } from "@/hooks/product-hooks"
 import { useRegion } from "@/hooks/region-hooks"
-import {
-  type ExtendedSortOption,
-  useUrlFilters,
-} from "@/hooks/use-url-filters"
+import { useInfiniteProducts } from "@/hooks/use-infinite-products"
+import { type ExtendedSortOption, useUrlFilters } from "@/hooks/use-url-filters"
 
 const SORT_OPTIONS: Array<{ value: ExtendedSortOption; label: string }> = [
   { value: "newest", label: "Nejnovější" },
@@ -34,7 +30,6 @@ function ProductsContent() {
     sizes: Array.from(urlFilters.filters.sizes) as string[],
   }
 
-  // Use infinite products for load more functionality
   const {
     products: infiniteProducts,
     isLoading: infiniteLoading,
@@ -68,7 +63,6 @@ function ProductsContent() {
     filters: productFilters,
     sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
     q: urlFilters.searchQuery || undefined,
-    region_id: selectedRegion?.id,
     enabled: !urlFilters.pageRange.isRange, // Disable when in range mode
   })
 
@@ -108,18 +102,20 @@ function ProductsContent() {
     ? urlFilters.pageRange.start > 1
     : hasPrevPage
 
-  // Use prefetch hook for page prefetching
   usePrefetchPages({
+    enabled: products.length > 0,
+    baseInput: {
+      limit: pageSize,
+      filters: productFilters,
+      sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
+      q: urlFilters.searchQuery || undefined,
+    },
     currentPage,
     hasNextPage: effectiveHasNextPage,
     hasPrevPage: effectiveHasPrevPage,
-    productsLength: products.length,
-    pageSize,
-    sortBy: urlFilters.sortBy,
     totalPages: effectiveTotalPages,
-    regionId: selectedRegion?.id,
-    searchQuery: urlFilters.searchQuery,
-    filters: productFilters,
+    pageSize,
+    mode: "simple",
   })
 
   return (

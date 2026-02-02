@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { AddToCartDialog } from "@/components/molecules/add-to-cart-dialog"
 import { DemoProductCard } from "@/components/molecules/demo-product-card"
-import { usePrefetchProduct } from "@/hooks/use-prefetch-product"
+import { usePrefetchProduct } from "@/hooks/product-hooks"
 import { useRegion } from "@/hooks/region-hooks"
 import type { Product } from "@/types/product"
 import { formatPrice } from "@/utils/price-utils"
@@ -27,7 +27,7 @@ export function ProductGrid({
   onPageChange,
 }: ProductGridProps) {
   const { selectedRegion } = useRegion()
-  const prefetchProduct = usePrefetchProduct()
+  const { prefetchProduct } = usePrefetchProduct()
   const [dialogProduct, setDialogProduct] = useState<Product | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -78,8 +78,8 @@ export function ProductGrid({
             <div className="relative" key={product.id}>
               <Link
                 href={`/products/${product.handle}`}
-                onMouseEnter={() => prefetchProduct(product.handle)}
-                onTouchStart={() => prefetchProduct(product.handle)}
+                onMouseEnter={() => prefetchProduct({ handle: product.handle })}
+                onTouchStart={() => prefetchProduct({ handle: product.handle })}
                 prefetch={true}
               >
                 <DemoProductCard
