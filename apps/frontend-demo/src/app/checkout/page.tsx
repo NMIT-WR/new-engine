@@ -11,6 +11,7 @@ import { cartHooks } from "@/hooks/cart-hooks"
 import { useCheckout } from "@/hooks/use-checkout"
 import { PAYMENT_METHODS } from "@/lib/checkout-data"
 import { formatPrice } from "@/lib/format-price"
+import { getShippingPriceWithTax } from "@/lib/shipping-price"
 import { orderHelpers } from "@/stores/order-store"
 import { PaymentSelection } from "../../components/molecules/payment-selection"
 import { ShippingSelection } from "../../components/molecules/shipping-selection"
@@ -64,7 +65,7 @@ export default function CheckoutPage() {
   // Get order data (either from cart or saved completed order)
   const orderData = orderHelpers.getOrderData(cart)
 
-  if (!(orderData && orderData.items) || orderData.items.length === 0) {
+  if (!orderData?.items || orderData.items.length === 0) {
     return null
   }
 
@@ -74,8 +75,9 @@ export default function CheckoutPage() {
   const selectedPaymentMethod = PAYMENT_METHODS.find(
     (m) => m.id === selectedPayment
   )
-  const shippingPrice =
-    selectedShippingMethod?.calculated_price.calculated_amount || 0
+  const shippingPrice = getShippingPriceWithTax(
+    selectedShippingMethod?.calculated_price
+  )
 
   const paymentFee = selectedPaymentMethod?.fee || 0
 
@@ -90,7 +92,7 @@ export default function CheckoutPage() {
         setIsOrderComplete(true)
         setCurrentStep(3)
       }
-    } catch (error) {
+    } catch {
       // Error already handled in hook
     }
   }
@@ -105,7 +107,7 @@ export default function CheckoutPage() {
             try {
               await updateAddresses(data)
               setCurrentStep(1)
-            } catch (err) {
+            } catch {
               // Error already handled in hook
             }
           }}
@@ -123,7 +125,7 @@ export default function CheckoutPage() {
             setSelectedShipping(method)
             try {
               await addShippingMethod(method)
-            } catch (error) {
+            } catch {
               // Error already handled in hook
             }
           }}

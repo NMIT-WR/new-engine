@@ -2,21 +2,64 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@techsio/ui-kit/molecules/toast"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { cacheConfig } from "@/lib/cache-config"
 import { STORAGE_KEYS } from "@/lib/constants"
 import { sdk } from "@/lib/medusa-client"
 import { queryKeys } from "@/lib/query-keys"
 import { orderHelpers } from "@/stores/order-store"
 import type { CheckoutAddressData, UseCheckoutReturn } from "@/types/checkout"
-import { useCart } from "./use-cart"
-import { useCustomer } from "./use-customer"
+import { authHooks } from "./auth-hooks"
+import { cartHooks, isNotFoundError } from "./cart-hooks"
+import { customerHooks } from "./customer-hooks"
 
 export function useCheckout(): UseCheckoutReturn {
-  const { cart, refetch, clearCart } = useCart()
-  const { address } = useCustomer()
-  const toast = useToast()
   const queryClient = useQueryClient()
+  const { cart } = cartHooks.useCart({})
+  const { customer: user } = authHooks.useAuth()
+  const { addresses } = customerHooks.useCustomerAddresses({
+    enabled: !!user,
+  })
+  const toast = useToast()
+
+  // Get the first address and map to FormAddressData format
+  const mainAddress = addresses[0]
+  const address = mainAddress
+    ? {
+        street: mainAddress.address_1 || "",
+        city: mainAddress.city || "",
+        postalCode: mainAddress.postal_code || "",
+        country: mainAddress.country_code || "cz",
+      }
+    : null
+
+  // Refetch cart data by invalidating the query
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.cart.all() })
+  }, [queryClient])
+
+  // Complete cart mutation with automatic cart clearing
+  const completeCartMutation = cartHooks.useCompleteCart({
+    clearCartOnSuccess: true,
+    onSuccess: (result) => {
+      if (result.type === "order") {
+        orderHelpers.saveCompletedOrder(result.order)
+        queryClient.removeQueries({ queryKey: queryKeys.cart.all() })
+        queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
+      }
+    },
+    onError: (error) => {
+      console.error("Order creation error:", error)
+      toast.create({
+        title: "Chyba při vytváření objednávky",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Něco se pokazilo. Zkuste to prosím znovu.",
+        type: "error",
+      })
+    },
+  })
 
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedPayment, setSelectedPayment] = useState("")
@@ -26,54 +69,64 @@ export function useCheckout(): UseCheckoutReturn {
   )
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
+  // Update cart address mutation
+  const updateAddressMutation = cartHooks.useUpdateCartAddress({
+    onError: (err) => {
+      console.error("Failed to update cart with addresses:", err)
+      if (isNotFoundError(err)) {
+        // Clear stale cart and invalidate queries
+        localStorage.removeItem(STORAGE_KEYS.CART_ID)
+        queryClient.invalidateQueries({ queryKey: queryKeys.cart.all() })
+        toast.create({
+          title: "Košík byl resetován",
+          description: "Váš košík byl neplatný. Přidejte prosím položky znovu.",
+          type: "warning",
+        })
+      } else {
+        toast.create({
+          title: "Chyba při ukládání adresy",
+          description: "Zkuste to prosím znovu",
+          type: "error",
+        })
+      }
+    },
+  })
+
   // Update addresses in cart
   const updateAddresses = async (data: CheckoutAddressData) => {
-    if (!cart?.id) return
-
-    try {
-      await sdk.store.cart.update(cart.id, {
-        email: data.shipping.email,
-        shipping_address: {
-          first_name: data.shipping.firstName,
-          last_name: data.shipping.lastName,
-          address_1: data.shipping.street,
-          city: data.shipping.city,
-          postal_code: data.shipping.postalCode,
-          phone: data.shipping.phone,
-          country_code: (data.shipping.country || "CZ").toLowerCase(),
-          company: data.shipping.company,
-        },
-        billing_address: data.useSameAddress
-          ? {
-              first_name: data.shipping.firstName,
-              last_name: data.shipping.lastName,
-              address_1: data.shipping.street,
-              city: data.shipping.city,
-              postal_code: data.shipping.postalCode,
-              phone: data.shipping.phone,
-              country_code: (data.shipping.country || "CZ").toLowerCase(),
-              company: data.shipping.company,
-            }
-          : {
-              first_name: data.billing.firstName,
-              last_name: data.billing.lastName,
-              address_1: data.billing.street,
-              city: data.billing.city,
-              postal_code: data.billing.postalCode,
-              country_code: (data.billing.country || "CZ").toLowerCase(),
-              company: data.billing.company,
-            },
-      })
-      setAddressData(data)
-    } catch (err) {
-      console.error("Failed to update cart with addresses:", err)
-      toast.create({
-        title: "Chyba při ukládání adresy",
-        description: "Zkuste to prosím znovu",
-        type: "error",
-      })
-      throw err
+    if (!cart?.id) {
+      return
     }
+
+    const shippingAddr = {
+      first_name: data.shipping.firstName,
+      last_name: data.shipping.lastName,
+      address_1: data.shipping.street,
+      city: data.shipping.city,
+      postal_code: data.shipping.postalCode,
+      phone: data.shipping.phone,
+      country_code: (data.shipping.country || "CZ").toLowerCase(),
+      company: data.shipping.company,
+    }
+
+    await updateAddressMutation.mutateAsync({
+      cartId: cart.id,
+      email: data.shipping.email,
+      shippingAddress: shippingAddr,
+      billingAddress: data.useSameAddress
+        ? undefined
+        : {
+            first_name: data.billing.firstName,
+            last_name: data.billing.lastName,
+            address_1: data.billing.street,
+            city: data.billing.city,
+            postal_code: data.billing.postalCode,
+            country_code: (data.billing.country || "CZ").toLowerCase(),
+            company: data.billing.company,
+          },
+      useSameAddress: data.useSameAddress,
+    })
+    setAddressData(data)
   }
 
   const {
@@ -83,7 +136,9 @@ export function useCheckout(): UseCheckoutReturn {
   } = useQuery({
     queryKey: queryKeys.fulfillment.cartOptions(cart?.id || ""),
     queryFn: async () => {
-      if (!cart?.id) throw new Error("No cart ID available")
+      if (!cart?.id) {
+        throw new Error("No cart ID available")
+      }
       const response = await sdk.store.fulfillment.listCartOptions({
         cart_id: cart.id,
       })
@@ -101,7 +156,9 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Add shipping method to cart
   const addShippingMethod = async (methodId: string) => {
-    if (!cart?.id) return
+    if (!cart?.id) {
+      return
+    }
 
     try {
       await sdk.store.cart.addShippingMethod(cart.id, {
@@ -121,7 +178,9 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Process order
   const processOrder = async () => {
-    if (!cart?.id) return
+    if (!cart?.id) {
+      return
+    }
 
     setIsProcessingPayment(true)
 
@@ -158,8 +217,12 @@ export function useCheckout(): UseCheckoutReturn {
           region_id: currentCart.region_id,
         })
 
-        if (providers.payment_providers?.length > 0) {
-          const providerId = providers.payment_providers[0].id
+        const providerId =
+          providers.payment_providers?.find(
+            (provider) => provider.id === selectedPayment
+          )?.id ?? providers.payment_providers?.[0]?.id
+
+        if (providerId) {
           await sdk.store.payment.initiatePaymentSession(currentCart, {
             provider_id: providerId,
           })
@@ -174,48 +237,30 @@ export function useCheckout(): UseCheckoutReturn {
         !latestCart.payment_collection?.payment_sessions ||
         latestCart.payment_collection.payment_sessions.length === 0
       ) {
-        await sdk.store.payment.initiatePaymentSession(latestCart, {
-          provider_id: "pp_system_default",
+        const providers = await sdk.store.payment.listPaymentProviders({
+          region_id: latestCart.region_id,
         })
+        const providerId =
+          providers.payment_providers?.find(
+            (provider) => provider.id === selectedPayment
+          )?.id ?? providers.payment_providers?.[0]?.id
+
+        if (providerId) {
+          await sdk.store.payment.initiatePaymentSession(latestCart, {
+            provider_id: providerId,
+          })
+        }
       }
 
-      // Complete order
-      const result = await sdk.store.cart.complete(cart.id)
+      // Complete order using the hook mutation
+      // onSuccess/onError are handled by the mutation callbacks
+      const result = await completeCartMutation.mutateAsync({
+        cartId: cart.id,
+      })
 
       if (result.type === "order") {
-        const order = result.order
-
-        // Save completed order data
-        if (currentCart) {
-          orderHelpers.saveCompletedOrder(currentCart)
-        }
-
-        // Clear cart from localStorage
-        if (typeof window !== "undefined") {
-          localStorage.removeItem(STORAGE_KEYS.CART_ID)
-        }
-
-        clearCart()
-
-        // Invalidate orders cache to refresh the list
-        await queryClient.invalidateQueries({
-          queryKey: queryKeys.orders.all(),
-        })
-
-        // Return success with order data
-        return order
+        return result.order
       }
-    } catch (error) {
-      console.error("Order creation error:", error)
-      toast.create({
-        title: "Chyba při vytváření objednávky",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Něco se pokazilo. Zkuste to prosím znovu.",
-        type: "error",
-      })
-      throw error
     } finally {
       setIsProcessingPayment(false)
     }
@@ -223,13 +268,14 @@ export function useCheckout(): UseCheckoutReturn {
 
   // Check if can proceed to step
   const canProceedToStep = (step: number) => {
+    const hasAddress = Boolean(addressData || cart?.shipping_address || address)
     switch (step) {
       case 1: // Shipping
-        return !!address
+        return hasAddress
       case 2: // Payment
-        return !!address && !!selectedShipping
+        return hasAddress && !!selectedShipping
       case 3: // Summary
-        return !!address && !!selectedShipping && !!selectedPayment
+        return hasAddress && !!selectedShipping && !!selectedPayment
       default:
         return true
     }
