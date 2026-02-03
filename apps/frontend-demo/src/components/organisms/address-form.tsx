@@ -6,9 +6,9 @@ import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { authHooks } from "@/hooks/auth-hooks"
-import { useCustomer } from "@/hooks/use-customer"
+import { customerHooks } from "@/hooks/customer-hooks"
 import {
   ADDRESS_ERRORS,
   COUNTRIES,
@@ -24,7 +24,21 @@ export function AddressForm({
   isLoading = false,
 }: AddressFormProps) {
   const { customer: user } = authHooks.useAuth()
-  const { address } = useCustomer()
+  const { addresses } = customerHooks.useCustomerAddresses({
+    enabled: !!user,
+  })
+
+  // Get the first address and map to the local format
+  const mainAddress = addresses[0]
+  const address = mainAddress
+    ? {
+        street: mainAddress.address_1 || "",
+        city: mainAddress.city || "",
+        postalCode: mainAddress.postal_code || "",
+        country: mainAddress.country_code || "cz",
+      }
+    : null
+  const hasPrefilled = useRef(false)
 
   const [shippingAddress, setShippingAddress] = useState<AddressData>({
     firstName: user?.first_name || "",
@@ -51,16 +65,25 @@ export function AddressForm({
   })
 
   useEffect(() => {
-    if (address) {
-      setShippingAddress((prev) => ({
-        ...prev,
-        street: address.street || prev.street,
-        city: address.city || prev.city,
-        postalCode: address.postalCode || prev.postalCode,
-        country: address.country || prev.country,
-      }))
+    if (!address || hasPrefilled.current) {
+      return
     }
-  }, [address?.street, address?.city, address?.postalCode, address?.country])
+    setShippingAddress((prev) => ({
+      ...prev,
+      street: address.street || prev.street,
+      city: address.city || prev.city,
+      postalCode: address.postalCode || prev.postalCode,
+      country: address.country || prev.country,
+    }))
+    setBillingAddress((prev) => ({
+      ...prev,
+      street: address.street || prev.street,
+      city: address.city || prev.city,
+      postalCode: address.postalCode || prev.postalCode,
+      country: address.country || prev.country,
+    }))
+    hasPrefilled.current = true
+  }, [mainAddress?.id])
 
   const [useSameAddress, setUseSameAddress] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})

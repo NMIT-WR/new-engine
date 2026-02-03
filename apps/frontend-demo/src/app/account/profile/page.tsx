@@ -4,13 +4,10 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { ProfileForm } from "@/components/organisms/profile-form"
 import { authHooks } from "@/hooks/auth-hooks"
-import { useCustomer } from "@/hooks/use-customer"
 
 export default function ProfilePage() {
   const { customer: user, isLoading } = authHooks.useAuth()
   const router = useRouter()
-
-  const { address, isLoading: isAddressLoading } = useCustomer()
 
   // Redirect to login if not authenticated
   const isInitialized = !isLoading
@@ -38,11 +35,7 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-layout-max">
       <h1 className="mb-8 font-semibold text-2xl">Profil</h1>
-      <ProfileForm
-        initialAddress={address}
-        key={isAddressLoading ? "loading" : address ? "exists" : "new"}
-        user={user}
-      />
+      <ProfileForm user={user} />
     </div>
   )
 }
