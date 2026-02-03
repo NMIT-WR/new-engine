@@ -543,7 +543,7 @@ export const ComplexDemo: Story = {
 
     return (
       <div className="flex flex-col">
-        <div className="">
+        <div>
           <FormNumericInput
             id="quantity-complex"
             label="Product Quantity"

@@ -70,7 +70,7 @@ export const WithNextImage: Story = {
   render: () => {
     return (
       <div className="space-y-4">
-        <p className="text-gray-600 text-sm">
+        <p className="text-fg-secondary text-sm">
           Using Next.js Image via `as` prop:
         </p>
         <Image

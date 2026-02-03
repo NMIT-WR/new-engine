@@ -177,6 +177,7 @@ export const MultipleSelection: Story = {
                   theme="unstyled"
                   onClick={() => removeCountry(country.value)}
                   className="bg-surface"
+                  aria-label={`Remove ${country.label}`}
                 >
                   <Icon icon="icon-[mdi--close]"/>
                 </Button>
@@ -255,7 +256,6 @@ export const ComplexStory: Story = {
 
     return (
       <div className="w-72 space-y-8">
-        {' '}
         <Combobox
           label="Select Country (Dynamic Validation)"
           placeholder="Choose a country..."
