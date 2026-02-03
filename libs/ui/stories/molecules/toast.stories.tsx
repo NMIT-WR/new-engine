@@ -127,8 +127,9 @@ export const UpdateExample: Story = {
                     },
                   ]
 
-                  if (nextStep <= updates.length) {
-                    toaster.update(toastId, updates[nextStep - 1])
+                  const update = updates[nextStep - 1]
+                  if (update) {
+                    toaster.update(toastId, update)
                   }
                 }}
                 disabled={step >= 3}

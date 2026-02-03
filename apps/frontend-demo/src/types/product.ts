@@ -38,18 +38,6 @@ export interface ProductCollection {
   handle: string
 }
 
-// Main Category type used in components
-export interface Category {
-  id: string
-  name: string
-  handle: string
-  parent_category_id?: string
-  count?: number
-  imageUrl?: string
-  description?: string
-  leaves?: string[]
-}
-
 export interface ProductCategory {
   id: string
   name: string

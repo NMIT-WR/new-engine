@@ -13,10 +13,3 @@ export interface CategoryTreeNode {
   description?: string
   children?: CategoryTreeNode[]
 }
-
-export interface CategoryData {
-  allCategories: Category[]
-  categoryTree: CategoryTreeNode[]
-  rootCategories: Category[]
-  categoryMap: Map<string, Category>
-}

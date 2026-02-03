@@ -19,12 +19,6 @@ export interface MedusaProductQuery {
   [key: string]: any
 }
 
-export interface VariantOptionFilter {
-  option_id?: string
-  value?: string
-  option?: Record<string, any>
-}
-
 /**
  * Build Medusa query parameters from our filter interface
  */

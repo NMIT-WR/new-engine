@@ -186,15 +186,16 @@ export const WithValidation: Story = {
   },
   render: (args) => {
     const [value, setValue] = useState([30])
+    const currentValue = value[0] ?? 0
 
     return (
       <div className="max-w-sm">
         <Slider
           {...args}
           value={value}
-          validateStatus={value[0] < 50 ? 'error' : 'success'}
+          validateStatus={currentValue < 50 ? 'error' : 'success'}
           helpText={
-            value[0] < 50
+            currentValue < 50
               ? 'The selected value must be at least 50.'
               : 'Great! Value is within acceptable range.'
           }
@@ -233,6 +234,7 @@ export const VerticalOrientation: Story = {
 
   render: () => {
     const [values, setValues] = useState<number[]>([70])
+    const currentValue = values[0] ?? 0
     const handleChange = (newValues: number[]) => {
       setValues(newValues)
     }
@@ -258,9 +260,9 @@ export const VerticalOrientation: Story = {
             markerCount={5}
             value={values}
             onChange={handleChange}
-            validateStatus={values[0] > 50 ? 'warning' : 'default'}
+            validateStatus={currentValue > 50 ? 'warning' : 'default'}
             helpText={
-              values[0] > 50
+              currentValue > 50
                 ? 'Brightness is getting high - consider reducing it'
                 : 'Current brightness level is fine'
             }
@@ -418,6 +420,7 @@ export const ThumbAlignment: Story = {
 export const MinStepsBetweenThumbs: Story = {
   render: () => {
     const [values, setValues] = useState<number[]>([30, 70])
+    const [minValue = 0, maxValue = minValue] = values
 
     return (
       <VariantContainer>
@@ -437,7 +440,7 @@ export const MinStepsBetweenThumbs: Story = {
             value={values}
             onChange={setValues}
             minStepsBetweenThumbs={10}
-            helpText={`Current gap: ${values[1] - values[0]} units (min: 10)`}
+            helpText={`Current gap: ${maxValue - minValue} units (min: 10)`}
           />
           <Slider
             {...baseSliderProps}
@@ -491,7 +494,9 @@ export const CustomFormatting: Story = {
           step={50}
           defaultValue={[200, 800]}
           formatValue={(v) => `$${v}`}
-          formatRangeText={(values) => `Budget: $${values[0]} - $${values[1]}`}
+          formatRangeText={([start = 0, end = start]) =>
+            `Budget: $${start} - $${end}`
+          }
           helpText="Select your price range"
         />
         <Slider
@@ -503,7 +508,9 @@ export const CustomFormatting: Story = {
           step={1}
           defaultValue={[9, 17]}
           formatValue={(v) => `${v}:00`}
-          formatRangeText={(values) => `${values[0]}:00 - ${values[1]}:00`}
+          formatRangeText={([start = 0, end = start]) =>
+            `${start}:00 - ${end}:00`
+          }
           helpText="Select working hours"
         />
         <Slider
@@ -515,7 +522,9 @@ export const CustomFormatting: Story = {
           step={5}
           defaultValue={[10, 50]}
           formatValue={(v) => `${v}%`}
-          formatRangeText={(values) => `${values[0]}% to ${values[1]}% off`}
+          formatRangeText={([start = 0, end = start]) =>
+            `${start}% to ${end}% off`
+          }
           helpText="Set discount percentage range"
         />
       </div>

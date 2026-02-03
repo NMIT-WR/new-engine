@@ -31,7 +31,7 @@ const getErrorMessage = (error: unknown): string | undefined => {
 }
 
 // Cart hook using React Query
-export function useMedusaCart() {
+export function useCart() {
   const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
   const toast = useToast()
@@ -323,6 +323,3 @@ export function useMedusaCart() {
     items: cart?.items || [],
   }
 }
-
-// Re-export as default hook
-export { useMedusaCart as useCart }

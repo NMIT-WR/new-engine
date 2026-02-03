@@ -7,7 +7,7 @@ export interface ErrorWithOriginalThrowable extends Error {
 // MedusaError types that should NOT be captured in Sentry (pure client errors)
 // Note: CONFLICT, DUPLICATE_ERROR, and PAYMENT_AUTHORIZATION_ERROR are intentionally
 // excluded as they may indicate infrastructure or integration issues worth tracking
-export const CLIENT_ERROR_TYPES = new Set([
+const CLIENT_ERROR_TYPES = new Set([
   MedusaError.Types.UNAUTHORIZED,
   MedusaError.Types.NOT_ALLOWED,
   MedusaError.Types.INVALID_DATA,

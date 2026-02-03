@@ -174,7 +174,7 @@ export const MultipleSelection: Story = {
                 <Button
                   type="button"
                   size="current"
-                  theme='unstyled'
+                  theme="unstyled"
                   onClick={() => removeCountry(country.value)}
                   className="bg-surface"
                 >

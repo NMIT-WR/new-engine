@@ -3,7 +3,7 @@ import type * as React from "react"
 import type { VariantProps } from "tailwind-variants"
 import "../../tokens/app-components/atoms/_skeleton-loader.css"
 
-export const skeletonVariants = tv({
+const skeletonVariants = tv({
   base: [
     "relative",
     "overflow-hidden",

@@ -175,7 +175,7 @@ const navigationData: TreeNode[] = [
 export const Playground: Story = {
   args: {
     size: 'md',
-    selectionMode: 'multiple',
+    selectionMode: 'single',
     selectionBehavior: 'all',
     expandOnClick: true,
     typeahead: true,
