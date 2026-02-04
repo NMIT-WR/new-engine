@@ -120,9 +120,10 @@ export default meta
 type Story = StoryObj<typeof Button>
 
 export const Playground: Story = {
-  args: {
-    children: 'Playground Button',
-  },
+  render: (args) => 
+  <div className='w-md'>
+    <Button {...args} />
+  </div>
 }
 
 export const Variants: Story = {
