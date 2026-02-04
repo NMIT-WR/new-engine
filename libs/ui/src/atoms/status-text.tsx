@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode, Ref } from "react"
 import type { VariantProps } from "tailwind-variants"
 import { tv } from "../utils"
-import { Icon } from "./icon"
+import { Icon, type IconType } from "./icon"
 
 const statusTextVariants = tv({
   slots: {
@@ -49,10 +49,10 @@ const ICON_MAP = {
   default: undefined,
 } as const
 
-export interface StatusTextProps
-  extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof statusTextVariants> {
+export type StatusTextProps = HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof statusTextVariants> & {
   ref?: Ref<HTMLDivElement>
+  icon?: IconType
   showIcon?: boolean
   children: ReactNode
 }
@@ -63,11 +63,12 @@ export function StatusText({
   status = "default",
   size = "md",
   align = "center",
+  icon,
   children,
   ref,
   ...props
 }: StatusTextProps) {
-  const icon = ICON_MAP[status]
+  const resolvedIcon = icon ?? ICON_MAP[status]
 
   const { base, icon: iconSlot } = statusTextVariants({
     status,
@@ -86,8 +87,8 @@ export function StatusText({
       ref={ref}
       {...props}
     >
-      {showIcon && icon && (
-        <Icon className={iconSlot()} icon={icon} size={size} />
+      {showIcon && resolvedIcon && (
+        <Icon className={iconSlot()} icon={resolvedIcon} size={size} />
       )}
       <span>{children}</span>
     </div>

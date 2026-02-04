@@ -1,6 +1,27 @@
+import type { ComponentPropsWithoutRef } from "react"
 import type { Meta, StoryObj } from "@storybook/react"
 import { VariantContainer, VariantGroup } from "../../.storybook/decorator"
 import { StatusText } from "../../src/atoms/status-text"
+import type { IconType } from "../../src/atoms/icon"
+import { iconLabels, iconOptions } from "../helpers/icon-options"
+
+const LONG_TEXT =
+  "Your password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)."
+
+const iconControlOptions: (IconType | undefined)[] = [
+  undefined,
+  "token-icon-status-text-error",
+  "token-icon-status-text-success",
+  "token-icon-status-text-warning",
+  ...iconOptions.filter((option): option is IconType => Boolean(option)),
+]
+
+const iconControlLabels: Record<string, string> = {
+  ...iconLabels,
+  "token-icon-status-text-error": "Status Error",
+  "token-icon-status-text-success": "Status Success",
+  "token-icon-status-text-warning": "Status Warning",
+}
 
 const meta: Meta<typeof StatusText> = {
   title: "Atoms/StatusText",
@@ -26,21 +47,61 @@ const meta: Meta<typeof StatusText> = {
       options: ["sm", "md", "lg"],
       description: "Text size",
     },
+    align: {
+      control: "select",
+      options: ["center", "start"],
+      description:
+        "Align icon for multi-line text (centered or aligned to the first line)",
+    },
     showIcon: {
       control: "boolean",
       description: "Whether to display status icon",
+    },
+    icon: {
+      control: {
+        type: "select",
+        labels: iconControlLabels,
+      },
+      options: iconControlOptions,
+      description: "Override the default status icon",
+    },
+    children: {
+      control: "text",
+      description: "Status text content",
     },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof StatusText>
+type PlaygroundArgs = ComponentPropsWithoutRef<typeof StatusText> & {
+  useLongText?: boolean
+}
 
-export const Default: Story = {
+export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
     children: "This is default status text",
     status: "default",
+    align: "center",
     showIcon: false,
+    icon: undefined,
+    useLongText: false,
+  },
+  argTypes: {
+    useLongText: {
+      control: "boolean",
+      description: "Use a multi-line example text",
+    },
+  },
+  render: (args) => {
+    const { children, useLongText, ...statusArgs } = args
+    const content = useLongText ? LONG_TEXT : children
+
+    return (
+      <div className="w-md">
+        <StatusText {...statusArgs}>{content}</StatusText>
+      </div>
+    )
   },
 }
 
