@@ -13,7 +13,7 @@ const checkboxVariants = tv({
       "rounded-checkbox border border-checkbox-border",
       "bg-checkbox-bg",
       "flex items-center justify-center",
-      "transition-all duration-200",
+      "transition-all duration-200 motion-reduce:transition-none",
       "data-[state=checked]:bg-checkbox-bg-checked",
       "data-[state=checked]:border-checkbox-border-checked",
       "data-[state=indeterminate]:bg-checkbox-bg-indeterminate",

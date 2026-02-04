@@ -43,6 +43,7 @@ const selectVariants = tv({
       "data-[invalid]:border-select-danger data-[invalid]:ring-select-danger",
       "data-[success]:border-select-success data-[success]:ring-select-success",
       "data-[warning]:border-select-warning data-[warning]:ring-select-warning",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     clearTrigger: [
       "absolute right-select-right h-full",
@@ -51,6 +52,7 @@ const selectVariants = tv({
       "text-select-clear-trigger-fg hover:text-select-danger",
       "focus:text-select-danger",
       "focus:outline-none focus:ring-transparent focus:ring-offset-transparent",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     content: [
       "border border-select-content-border bg-select-content-bg",
@@ -68,6 +70,7 @@ const selectVariants = tv({
       "data-[state=checked]:bg-select-item-bg-selected",
       "data-[state=checked]:text-select-item-selected-fg",
       "data-[disabled]:cursor-not-allowed data-[disabled]:text-select-fg-disabled",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     itemIndicator: ["text-select-indicator"],
     itemText: ["flex-grow"],
