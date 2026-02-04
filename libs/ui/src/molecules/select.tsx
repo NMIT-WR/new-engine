@@ -59,12 +59,12 @@ const selectVariants = tv({
       "max-h-fit rounded-select shadow-select-content",
       "h-[calc(var(--available-height)-var(--spacing-content))]",
       "z-(--z-content) overflow-auto",
-      "transition-[opacity,display,translate] duration-200 ease-out",
+      "motion-safe:transition-[opacity,display,translate] duration-200 ease-out",
       "transition-discrete",
       "starting:opacity-0 starting:-translate-y-2",
+      "data-[state=open]:starting:opacity-0 data-[state=open]:starting:-translate-y-2",
       "data-[state=open]:opacity-100 data-[state=open]:translate-y-0",
       "data-[state=closed]:opacity-0 data-[state=closed]:-translate-y-2",
-      "motion-reduce:transition-none motion-reduce:opacity-100",
     ],
     item: [
       "flex items-center justify-between",
@@ -447,7 +447,6 @@ Select.Content = function SelectContent({
 }: SelectContentProps) {
   const { api, size } = useSelectContext()
   const styles = selectVariants({ size })
-  const state = api.open ? "open" : "closed"
 
   return (
     <ul
@@ -455,8 +454,6 @@ Select.Content = function SelectContent({
       ref={ref}
       {...api.getContentProps()}
       {...props}
-      data-state={state}
-      hidden={false}
     >
       {children}
     </ul>
