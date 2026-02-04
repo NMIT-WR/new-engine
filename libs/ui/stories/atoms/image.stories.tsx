@@ -15,6 +15,11 @@ const meta: Meta<typeof Image> = {
     },
   },
   argTypes: {
+    size: {
+      control: 'radio',
+      options: ['sm', 'md', 'lg', 'custom'],
+      description: 'Image size',
+    },
     src: {
       control: 'text',
       description: 'Image source URL',
@@ -33,7 +38,7 @@ const meta: Meta<typeof Image> = {
   args: {
     src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop',
     alt: 'Mountain landscape',
-    className: 'w-full max-w-md rounded-lg',
+    className: 'max-w-md rounded-lg',
   },
 }
 
@@ -50,17 +55,26 @@ export const Sizes: Story = {
       <Image
         src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop"
         alt="Small"
-        className="h-20 w-20 rounded object-cover"
+        size="sm"
+        className="rounded object-cover"
       />
       <Image
         src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop"
         alt="Medium"
-        className="h-32 w-32 rounded-lg object-cover"
+        size="md"
+        className="rounded-lg object-cover"
       />
       <Image
         src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop"
         alt="Large"
-        className="h-48 w-48 rounded-xl object-cover"
+        size="lg"
+        className="rounded-xl object-cover"
+      />
+      <Image
+        src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop"
+        alt="Custom"
+        size="custom"
+        className="w-96 h-96 rounded-xl object-cover"
       />
     </div>
   ),
