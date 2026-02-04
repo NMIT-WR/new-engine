@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ComponentPropsWithoutRef } from 'react'
 import { useState } from 'react'
 import { Skeleton } from '../../src/atoms/skeleton'
 import { Button } from '../../src/atoms/button'
@@ -19,13 +20,29 @@ const meta: Meta<typeof Skeleton> = {
 
 export default meta
 type Story = StoryObj<typeof Skeleton>
+type PlaygroundArgs = ComponentPropsWithoutRef<typeof Skeleton> & {
+  showRectangle?: boolean
+  showText?: boolean
+  showCircle?: boolean
+  circleSize?: 'sm' | 'md' | 'lg' | 'xl'
+  textSize?: 'sm' | 'md' | 'lg' | 'xl'
+  textLines?: number
+  textLastLineWidth?: string
+}
 
 // ===== BASIC USAGE =====
 
-export const Playground: Story = {
+export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
     variant: 'primary',
     speed: 'normal',
+    showRectangle: true,
+    showText: true,
+    showCircle: true,
+    circleSize: 'lg',
+    textSize: 'md',
+    textLines: 3,
+    textLastLineWidth: '80%',
   },
   argTypes: {
     variant: {
@@ -38,14 +55,69 @@ export const Playground: Story = {
       options: ['slow', 'normal', 'fast'],
       description: 'Animation speed',
     },
+    showRectangle: {
+      control: 'boolean',
+      description: 'Show rectangle skeleton',
+    },
+    showText: {
+      control: 'boolean',
+      description: 'Show text skeleton',
+    },
+    showCircle: {
+      control: 'boolean',
+      description: 'Show circle skeleton',
+    },
+    circleSize: {
+      control: 'select',
+      options: ['sm', 'md', 'lg', 'xl'],
+      description: 'Circle size',
+    },
+    textSize: {
+      control: 'select',
+      options: ['sm', 'md', 'lg', 'xl'],
+      description: 'Text spacing size',
+    },
+    textLines: {
+      control: { type: 'number', min: 1, max: 6, step: 1 },
+      description: 'Number of text lines',
+    },
+    textLastLineWidth: {
+      control: 'select',
+      options: ['60%', '80%', '90%'],
+      description: 'Last line width for text skeleton',
+    },
   },
-  render: (args) => (
-    <div className="space-y-250 w-md">
-      <Skeleton.Rectangle {...args} className="h-20 w-xs" />
-      <Skeleton.Text {...args} noOfLines={3} />
-      <Skeleton.Circle {...args} size="lg" />
-    </div>
-  ),
+  render: (args) => {
+    const {
+      showRectangle,
+      showText,
+      showCircle,
+      circleSize,
+      textSize,
+      textLines,
+      textLastLineWidth,
+      ...skeletonArgs
+    } = args
+
+    return (
+      <div className="space-y-250 w-md">
+        {showRectangle && (
+          <Skeleton.Rectangle {...skeletonArgs} className="h-20 w-xs" />
+        )}
+        {showText && (
+          <Skeleton.Text
+            {...skeletonArgs}
+            size={textSize}
+            noOfLines={textLines}
+            lastLineWidth={textLastLineWidth}
+          />
+        )}
+        {showCircle && (
+          <Skeleton.Circle {...skeletonArgs} size={circleSize} />
+        )}
+      </div>
+    )
+  },
 }
 
 export const WithContent: Story = {
