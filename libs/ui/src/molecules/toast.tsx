@@ -22,7 +22,7 @@ const toastVariants = tv({
       "scale-(--scale) opacity-(--opacity)",
       "z-(--z-index) h-(--height)",
       "will-change-[translate,opacity,scale]",
-      "transition-[translate,scale,opacity] duration-400",
+      "transition-[translate,scale,opacity] duration-400 motion-reduce:transition-none",
     ],
     group: "relative flex flex-col",
     header: "relative flex items-center gap-toast-content",
