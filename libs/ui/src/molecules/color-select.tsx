@@ -9,7 +9,7 @@ const colorSelectVariants = tv({
     atom: [
       "relative cursor-pointer p-color-select-atom",
       "aspect-square overflow-hidden",
-      "border-2 transition-all duration-200",
+      "border-2 transition-all duration-200 motion-reduce:transition-none",
       "border-color-select-border shadow-color-select hover:border-color-select-border-hover",
       "focus-visible:outline-none",
       "focus-visible:ring",
