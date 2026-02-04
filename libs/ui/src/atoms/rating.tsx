@@ -55,9 +55,11 @@ const rating = tv({
   },
 })
 
+type RatingVariants = Omit<VariantProps<typeof rating>, "isInteractive">
+
 export interface RatingProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "onChange">,
-    VariantProps<typeof rating> {
+    RatingVariants {
   value?: number
   defaultValue?: number
   count?: number
