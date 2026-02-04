@@ -8,11 +8,12 @@ const imageVariants = tv({
       sm: "size-image-sm",
       md: "size-image-md",
       lg: "size-image-lg",
+      full: "w-full",
       custom: "",
     },
   },
   defaultVariants: {
-    size: "md",
+    size: "full",
   },
 })
 
