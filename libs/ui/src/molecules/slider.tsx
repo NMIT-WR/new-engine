@@ -52,8 +52,6 @@ const sliderVariants = tv({
       "data-[disabled]:border-slider-border-disabled",
       "hover:bg-slider-thumb-bg-hover",
       "cursor-grab data-[disabled]:cursor-not-allowed data-[dragging]:cursor-grabbing",
-      "transition-all duration-200 motion-reduce:transition-none",
-      "motion-reduce:focus-visible:scale-100",
       "shadow-slider-thumb",
     ],
     markerGroup: ["relative flex h-full items-center"],
