@@ -76,7 +76,7 @@ const numericInputVariants = tv({
 })
 
 // Context for sharing state between sub-components
-interface NumericInputContextValue {
+type NumericInputContextValue = {
   api: ReturnType<typeof numberInput.connect>
   size?: "sm" | "md" | "lg"
   styles: ReturnType<typeof numericInputVariants>
@@ -146,10 +146,22 @@ export function NumericInput({
 }: NumericInputProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
+  const resolvedFormatOptions = precision
+    ? { ...(formatOptions ?? {}), maximumFractionDigits: precision }
+    : formatOptions
 
-  const stringValue = value !== undefined ? String(value) : undefined
+  const formatValue = (inputValue: number) => {
+    if (!resolvedFormatOptions) {
+      return String(inputValue)
+    }
+    return new Intl.NumberFormat(locale, resolvedFormatOptions).format(
+      inputValue
+    )
+  }
+
+  const stringValue = value !== undefined ? formatValue(value) : undefined
   const stringDefaultValue =
-    defaultValue !== undefined ? String(defaultValue) : undefined
+    defaultValue !== undefined ? formatValue(defaultValue) : undefined
 
   const service = useMachine(numberInput.machine, {
     id: uniqueId,
@@ -171,9 +183,7 @@ export function NumericInput({
     allowOverflow,
     clampValueOnBlur,
     spinOnPress,
-    formatOptions: precision
-      ? { maximumFractionDigits: precision }
-      : formatOptions,
+    formatOptions: resolvedFormatOptions,
     onValueChange: (details) => {
       onChange?.(details.valueAsNumber)
     },

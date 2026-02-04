@@ -1,7 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Label } from '../../src/atoms/label'
-import { NumericInput } from '../../src/atoms/numeric-input'
+import { NumericInput, type NumericInputProps } from '../../src/atoms/numeric-input'
+
+type PlaygroundArgs = NumericInputProps & {
+  showLabel?: boolean
+  label?: string
+  showControls?: boolean
+  showScrubber?: boolean
+}
 
 const meta: Meta<typeof NumericInput> = {
   title: 'Atoms/NumericInput',
@@ -19,12 +26,12 @@ const meta: Meta<typeof NumericInput> = {
 }
 
 export default meta
-type Story = StoryObj<typeof NumericInput>
+type Story = StoryObj<PlaygroundArgs>
 
 export const Playground: Story = {
   args: {
     min: 0,
-    max: 100,
+    max: 10000,
     step: 0.1,
     disabled: false,
     invalid: false,
@@ -33,6 +40,10 @@ export const Playground: Story = {
     allowMouseWheel: true,
     clampValueOnBlur: true,
     precision: 1,
+    showLabel: false,
+    label: 'Quantity',
+    showControls: true,
+    showScrubber: false,
   },
   argTypes: {
     size: {
@@ -52,18 +63,38 @@ export const Playground: Story = {
     invalid: { control: 'boolean', description: 'Show invalid/error state' },
     allowMouseWheel: { control: 'boolean', description: 'Allow mouse wheel to change value' },
     clampValueOnBlur: { control: 'boolean', description: 'Clamp value to min/max on blur' },
+    showLabel: { control: 'boolean', description: 'Show label above the input' },
+    label: { control: 'text', description: 'Label text' },
+    showControls: { control: 'boolean', description: 'Show increment/decrement buttons' },
+    showScrubber: { control: 'boolean', description: 'Enable scrubber overlay' },
   },
   render: function Render(args) {
     const [value, setValue] = useState(50.5)
+    const {
+      showLabel,
+      label,
+      showControls,
+      showScrubber,
+      ...numericArgs
+    } = args
     return (
-      <div className="w-md">
-        <NumericInput {...args} value={value} onChange={setValue}>
+      <div className="w-md flex flex-col gap-50">
+        {showLabel && <Label htmlFor="numeric-playground">{label}</Label>}
+        <NumericInput
+          {...numericArgs}
+          id="numeric-playground"
+          value={value}
+          onChange={setValue}
+        >
           <NumericInput.Control>
+            {showScrubber && <NumericInput.Scrubber />}
             <NumericInput.Input />
-            <NumericInput.TriggerContainer>
-              <NumericInput.IncrementTrigger />
-              <NumericInput.DecrementTrigger />
-            </NumericInput.TriggerContainer>
+            {showControls && (
+              <NumericInput.TriggerContainer>
+                <NumericInput.IncrementTrigger />
+                <NumericInput.DecrementTrigger />
+              </NumericInput.TriggerContainer>
+            )}
           </NumericInput.Control>
         </NumericInput>
         <p className="text-fg-muted text-sm mt-100">Current value: {value}</p>
