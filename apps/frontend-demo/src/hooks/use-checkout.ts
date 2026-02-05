@@ -237,6 +237,15 @@ export function useCheckout(): UseCheckoutReturn {
         !latestCart.payment_collection?.payment_sessions ||
         latestCart.payment_collection.payment_sessions.length === 0
       ) {
+        if (!latestCart.region_id) {
+          toast.create({
+            title: "Chyba",
+            description: "Košík nemá nastavený region",
+            type: "error",
+          })
+          return
+        }
+
         const providers = await sdk.store.payment.listPaymentProviders({
           region_id: latestCart.region_id,
         })
