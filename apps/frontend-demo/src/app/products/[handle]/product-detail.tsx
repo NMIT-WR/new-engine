@@ -14,7 +14,7 @@ import { useRegion } from "@/hooks/region-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
 import { formatPrice } from "@/utils/price-utils"
 
-interface ProductDetailProps {
+type ProductDetailProps = {
   handle: string
 }
 
@@ -72,7 +72,7 @@ export default function ProductDetail({ handle }: ProductDetailProps) {
         <div className="mx-auto max-w-product-detail-max-w px-product-detail-container-x py-product-detail-container-y text-center">
           <h1 className="mb-4 font-semibold text-2xl">Product not found</h1>
           <ErrorText showIcon>
-            {(error as Error)?.message || "The product you are looking for does not exist."}
+            {error || "The product you are looking for does not exist."}
           </ErrorText>
         </div>
       </div>

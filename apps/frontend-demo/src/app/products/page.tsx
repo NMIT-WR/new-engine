@@ -3,13 +3,14 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import Link from "next/link"
-import { Suspense, useEffect, useRef } from "react"
+import { Suspense } from "react"
 import { ProductGridSkeleton } from "@/components/molecules/product-grid-skeleton"
 import { ProductFilters } from "@/components/organisms/product-filters"
 import { ProductGrid } from "@/components/organisms/product-grid"
-import { usePrefetchPages, useProducts } from "@/hooks/product-hooks"
-import { useRegion } from "@/hooks/region-hooks"
-import { useInfiniteProducts } from "@/hooks/use-infinite-products"
+import {
+  useInfiniteProductsBase,
+  usePrefetchPages,
+} from "@/hooks/product-hooks"
 import { type ExtendedSortOption, useUrlFilters } from "@/hooks/use-url-filters"
 
 const SORT_OPTIONS: Array<{ value: ExtendedSortOption; label: string }> = [
@@ -19,9 +20,7 @@ const SORT_OPTIONS: Array<{ value: ExtendedSortOption; label: string }> = [
 ]
 
 function ProductsContent() {
-  const { selectedRegion } = useRegion()
   const pageSize = 12
-  const previousPageRef = useRef(1)
 
   const urlFilters = useUrlFilters()
 
@@ -30,77 +29,33 @@ function ProductsContent() {
     sizes: Array.from(urlFilters.filters.sizes) as string[],
   }
 
+  const rangeLimit = urlFilters.pageRange.isRange
+    ? (urlFilters.pageRange.end - urlFilters.pageRange.start + 1) * pageSize
+    : undefined
+
   const {
-    products: infiniteProducts,
-    isLoading: infiniteLoading,
-    totalCount: infiniteTotalCount,
-    hasNextPage: infiniteHasNextPage,
+    products,
+    isLoading,
+    totalCount,
+    hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-    refetch: refetchInfinite,
-  } = useInfiniteProducts({
-    pageRange: urlFilters.pageRange,
+  } = useInfiniteProductsBase({
+    page: urlFilters.pageRange.start,
     limit: pageSize,
+    initialLimit: rangeLimit,
     filters: productFilters,
     sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
     q: urlFilters.searchQuery || undefined,
-    region_id: selectedRegion?.id,
   })
 
-  // Fallback to regular products hook for pagination compatibility
-  // Only enable when NOT in range mode to avoid duplicate queries
-  const {
-    products: regularProducts,
-    isLoading: regularLoading,
-    totalCount: regularTotalCount,
-    currentPage: regularCurrentPage,
-    totalPages,
-    hasNextPage,
-    hasPrevPage,
-  } = useProducts({
-    page: urlFilters.page,
-    limit: pageSize,
-    filters: productFilters,
-    sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
-    q: urlFilters.searchQuery || undefined,
-    enabled: !urlFilters.pageRange.isRange, // Disable when in range mode
-  })
-
-  // Detect page range change and reset infinite query when switching between single/range modes
-  useEffect(() => {
-    const currentPageStart = urlFilters.pageRange.start
-    if (currentPageStart !== previousPageRef.current) {
-      refetchInfinite()
-      previousPageRef.current = currentPageStart
-    }
-  }, [urlFilters.pageRange.start, refetchInfinite])
-
-  // Use infinite products if we have a range or loaded additional pages
-  const shouldUseInfiniteData =
-    urlFilters.pageRange.isRange ||
-    (urlFilters.pageRange.start === 1 && infiniteProducts.length > pageSize)
-  const products = shouldUseInfiniteData ? infiniteProducts : regularProducts
-  const isLoading = shouldUseInfiniteData ? infiniteLoading : regularLoading
-  const totalCount = shouldUseInfiniteData
-    ? infiniteTotalCount
-    : regularTotalCount
-
-  // Fix: Use the end of the range for current page when using infinite data
-  const currentPage = shouldUseInfiniteData
+  const currentPage = urlFilters.pageRange.isRange
     ? urlFilters.pageRange.end
-    : regularCurrentPage
+    : urlFilters.page
 
-  // Calculate pagination values based on active data source
   const calculatedTotalPages = Math.ceil(totalCount / pageSize)
-  const effectiveTotalPages = shouldUseInfiniteData
-    ? calculatedTotalPages
-    : totalPages
-  const effectiveHasNextPage = shouldUseInfiniteData
-    ? infiniteHasNextPage
-    : hasNextPage
-  const effectiveHasPrevPage = shouldUseInfiniteData
-    ? urlFilters.pageRange.start > 1
-    : hasPrevPage
+  const effectiveHasPrevPage = currentPage > 1
+  const effectiveHasNextPage = currentPage < calculatedTotalPages
 
   usePrefetchPages({
     enabled: products.length > 0,
@@ -113,7 +68,7 @@ function ProductsContent() {
     currentPage,
     hasNextPage: effectiveHasNextPage,
     hasPrevPage: effectiveHasPrevPage,
-    totalPages: effectiveTotalPages,
+    totalPages: calculatedTotalPages,
     pageSize,
     mode: "simple",
   })
@@ -181,11 +136,9 @@ function ProductsContent() {
               {
                 <div className="mt-8 flex justify-center">
                   <Button
-                    disabled={!infiniteHasNextPage || isFetchingNextPage}
+                    disabled={!hasNextPage || isFetchingNextPage}
                     onClick={async () => {
-                      // First fetch the next page data
                       await fetchNextPage()
-                      // Then update URL without navigation
                       urlFilters.extendPageRange()
                     }}
                     size="sm"
