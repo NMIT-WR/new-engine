@@ -1,18 +1,19 @@
-import {
+import type {
   AuthenticatedMedusaRequest,
   MedusaNextFunction,
   MedusaResponse,
-} from "@medusajs/framework";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+} from "@medusajs/framework"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-export const ensureRole = (role: string) => {
-  return async (
+export const ensureRole =
+  (role: string) =>
+  async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse,
     next: MedusaNextFunction
   ) => {
-    const { auth_identity_id } = req.auth_context;
-    const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
+    const { auth_identity_id } = req.auth_context
+    const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
     const {
       data: [company],
@@ -20,10 +21,10 @@ export const ensureRole = (role: string) => {
       entity: "companies",
       fields: ["id", "employees.id"],
       filters: { id: req.params.id },
-    });
+    })
 
     if (company?.employees?.length === 0) {
-      return next();
+      return next()
     }
 
     const {
@@ -32,12 +33,11 @@ export const ensureRole = (role: string) => {
       entity: "provider_identity",
       fields: ["id", "user_metadata"],
       filters: { auth_identity_id } as any,
-    });
+    })
 
     if (providerIdentity.user_metadata?.role === role) {
-      return next();
+      return next()
     }
 
-    return res.status(403).json({ message: "Forbidden" });
-  };
-};
+    return res.status(403).json({ message: "Forbidden" })
+  }

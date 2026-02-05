@@ -1,14 +1,14 @@
-import { Prompt } from "@medusajs/ui";
-import { PropsWithChildren } from "react";
-import { FieldValues, UseFormReturn } from "react-hook-form";
-import { useBlocker } from "react-router-dom";
-import { Form } from "../../form";
+import { Prompt } from "@medusajs/ui"
+import type { PropsWithChildren } from "react"
+import type { FieldValues, UseFormReturn } from "react-hook-form"
+import { useBlocker } from "react-router-dom"
+import { Form } from "../../form"
 
 type RouteModalFormProps<TFieldValues extends FieldValues> = PropsWithChildren<{
-  form: UseFormReturn<TFieldValues>;
-  blockSearch?: boolean;
-  onClose?: (isSubmitSuccessful: boolean) => void;
-}>;
+  form: UseFormReturn<TFieldValues>
+  blockSearch?: boolean
+  onClose?: (isSubmitSuccessful: boolean) => void
+}>
 
 export const RouteModalForm = <TFieldValues extends FieldValues = any>({
   form,
@@ -18,46 +18,46 @@ export const RouteModalForm = <TFieldValues extends FieldValues = any>({
 }: RouteModalFormProps<TFieldValues>) => {
   const {
     formState: { isDirty },
-  } = form;
+  } = form
 
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
-    const { isSubmitSuccessful } = nextLocation.state || {};
+    const { isSubmitSuccessful } = nextLocation.state || {}
 
     if (isSubmitSuccessful) {
-      onClose?.(true);
-      return false;
+      onClose?.(true)
+      return false
     }
 
-    const isPathChanged = currentLocation.pathname !== nextLocation.pathname;
-    const isSearchChanged = currentLocation.search !== nextLocation.search;
+    const isPathChanged = currentLocation.pathname !== nextLocation.pathname
+    const isSearchChanged = currentLocation.search !== nextLocation.search
 
     if (blockSearch) {
-      const ret = isDirty && (isPathChanged || isSearchChanged);
+      const ret = isDirty && (isPathChanged || isSearchChanged)
 
       if (!ret) {
-        onClose?.(isSubmitSuccessful);
+        onClose?.(isSubmitSuccessful)
       }
 
-      return ret;
+      return ret
     }
 
-    const ret = isDirty && isPathChanged;
+    const ret = isDirty && isPathChanged
 
     if (!ret) {
-      onClose?.(isSubmitSuccessful);
+      onClose?.(isSubmitSuccessful)
     }
 
-    return ret;
-  });
+    return ret
+  })
 
   const handleCancel = () => {
-    blocker?.reset?.();
-  };
+    blocker?.reset?.()
+  }
 
   const handleContinue = () => {
-    blocker?.proceed?.();
-    onClose?.(false);
-  };
+    blocker?.proceed?.()
+    onClose?.(false)
+  }
 
   return (
     <Form {...form}>
@@ -85,5 +85,5 @@ export const RouteModalForm = <TFieldValues extends FieldValues = any>({
         </Prompt.Content>
       </Prompt>
     </Form>
-  );
-};
+  )
+}

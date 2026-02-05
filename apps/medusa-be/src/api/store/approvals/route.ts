@@ -1,19 +1,19 @@
-import {
+import type {
   AuthenticatedMedusaRequest,
   MedusaResponse,
-} from "@medusajs/framework";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { ApprovalType } from "../../../types/approval";
-import { StoreGetApprovalsType } from "./validators";
+} from "@medusajs/framework"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { ApprovalType } from "../../../types/approval"
+import type { StoreGetApprovalsType } from "./validators"
 
 export const GET = async (
   req: AuthenticatedMedusaRequest<StoreGetApprovalsType>,
   res: MedusaResponse
 ) => {
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const { customer_id } = req.auth_context.app_metadata as {
-    customer_id: string;
-  };
+    customer_id: string
+  }
 
   const {
     data: [customer],
@@ -21,12 +21,12 @@ export const GET = async (
     entity: "customer",
     fields: ["employee.company.id"],
     filters: { id: customer_id },
-  });
+  })
 
-  const companyId = customer?.employee?.company?.id as string;
+  const companyId = customer?.employee?.company?.id as string
 
   if (!companyId) {
-    return res.json({ approvals: [], count: 0 });
+    return res.json({ approvals: [], count: 0 })
   }
 
   const {
@@ -42,24 +42,24 @@ export const GET = async (
       "carts.completed_at",
     ],
     filters: { id: companyId },
-  });
+  })
 
   if (!company?.carts) {
-    return res.json({ carts_with_approvals: [], count: 0 });
+    return res.json({ carts_with_approvals: [], count: 0 })
   }
 
-  const { status } = req.validatedQuery || {};
+  const { status } = req.validatedQuery || {}
 
   const cartIds = company.carts
     .filter((cart) => cart !== undefined && cart !== null)
-    .map((cart) => cart.id);
+    .map((cart) => cart.id)
 
-  let approvalStatusFilters: any = {
+  const approvalStatusFilters: any = {
     cart_id: cartIds,
-  };
+  }
 
   if (status) {
-    approvalStatusFilters.status = status;
+    approvalStatusFilters.status = status
   }
 
   const { data: approvalStatuses, metadata } = await query.graph({
@@ -67,13 +67,13 @@ export const GET = async (
     ...req.queryConfig,
     fields: ["*", "cart.approvals.id"],
     filters: approvalStatusFilters,
-  });
+  })
 
   const approvalIds = approvalStatuses
     .flatMap((approvalStatus) =>
       approvalStatus.cart?.approvals?.map((approval) => approval?.id)
     )
-    .filter(Boolean) as string[];
+    .filter(Boolean) as string[]
 
   const { data: approvals } = await query.graph({
     entity: "approval",
@@ -82,27 +82,27 @@ export const GET = async (
       id: approvalIds,
       type: ApprovalType.ADMIN as any,
     },
-  });
+  })
 
   const cartsWithAdminApprovals = company.carts
     .map((cart) => {
       const cartApprovals = approvals.filter(
         (approval) => approval.cart_id === cart?.id
-      );
+      )
       if (cartApprovals.length > 0) {
-        cart && (cart.approvals = cartApprovals);
-        return cart;
+        cart && (cart.approvals = cartApprovals)
+        return cart
       }
-      return null;
+      return null
     })
-    .filter(Boolean);
+    .filter(Boolean)
 
   if (!cartsWithAdminApprovals.length) {
-    return res.json({ carts_with_approvals: [], count: 0 });
+    return res.json({ carts_with_approvals: [], count: 0 })
   }
 
   res.json({
     carts_with_approvals: cartsWithAdminApprovals,
     ...metadata,
-  });
-};
+  })
+}

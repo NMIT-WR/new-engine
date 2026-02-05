@@ -1,24 +1,24 @@
-import {
+import type {
   AuthenticatedMedusaRequest,
   MedusaResponse,
-} from "@medusajs/framework";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { AdminGetApprovalsType } from "./validators";
+} from "@medusajs/framework"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import type { AdminGetApprovalsType } from "./validators"
 
 export const GET = async (
   req: AuthenticatedMedusaRequest<AdminGetApprovalsType>,
   res: MedusaResponse
 ) => {
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
-  const { status } = req.validatedQuery || {};
+  const { status } = req.validatedQuery || {}
 
-  let filters: any = {};
+  let filters: any = {}
 
   if (status) {
     filters = {
       status,
-    };
+    }
   }
 
   const { data: approvalStatuses, metadata } = await query.graph({
@@ -36,14 +36,14 @@ export const GET = async (
     filters: {
       ...filters,
     },
-  });
+  })
 
-  let carts = approvalStatuses
+  const carts = approvalStatuses
     .map((approvalStatus) => approvalStatus.cart)
-    .filter(Boolean);
+    .filter(Boolean)
 
   res.json({
     carts_with_approvals: carts,
     ...metadata,
-  });
-};
+  })
+}

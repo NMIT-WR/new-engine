@@ -1,17 +1,17 @@
-import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { TextCell } from "../../../../components/common/table/table-cells/text-cell";
-import { StatusBadge } from "@medusajs/ui";
-import { ApprovalStatusType } from "../../../../../types/approval";
-import ItemsPopover from "../approvals-items-popover";
-import { DateCell } from "../../../../../admin/components/common/table/table-cells/date-cell";
-import { ApprovalActions } from "../approval-actions";
+import { StatusBadge } from "@medusajs/ui"
+import { createColumnHelper } from "@tanstack/react-table"
+import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
+import { DateCell } from "../../../../../admin/components/common/table/table-cells/date-cell"
+import { ApprovalStatusType } from "../../../../../types/approval"
+import { TextCell } from "../../../../components/common/table/table-cells/text-cell"
+import { ApprovalActions } from "../approval-actions"
+import ItemsPopover from "../approvals-items-popover"
 
-const columnHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<any>()
 
 export const useApprovalsTableColumns = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return useMemo(
     () => [
@@ -30,28 +30,28 @@ export const useApprovalsTableColumns = () => {
       columnHelper.accessor("approval_status.status", {
         header: t("fields.status"),
         cell: ({ getValue }) => {
-          const status = getValue();
+          const status = getValue()
           return (
             <StatusBadge
               color={
                 status === ApprovalStatusType.APPROVED
                   ? "green"
                   : status === ApprovalStatusType.REJECTED
-                  ? "red"
-                  : "purple"
+                    ? "red"
+                    : "purple"
               }
             >
               {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
             </StatusBadge>
-          );
+          )
         },
       }),
       columnHelper.accessor("items", {
         header: t("fields.items"),
         cell: ({ getValue, row }) => (
           <ItemsPopover
-            items={getValue()}
             currencyCode={row.original.currency_code}
+            items={getValue()}
           />
         ),
       }),
@@ -61,5 +61,5 @@ export const useApprovalsTableColumns = () => {
       }),
     ],
     [t]
-  );
-};
+  )
+}

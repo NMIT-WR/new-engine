@@ -1,30 +1,27 @@
-import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
-import { APPROVAL_MODULE } from "../../../modules/approval";
-import {
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { APPROVAL_MODULE } from "../../../modules/approval"
+import type {
   IApprovalModuleService,
   ModuleUpdateApprovalSettings,
-} from "../../../types";
+} from "../../../types"
 
 export const updateApprovalSettingsStep = createStep(
   "update-approval-settings",
   async (input: ModuleUpdateApprovalSettings, { container }) => {
     const approvalModule =
-      container.resolve<IApprovalModuleService>(APPROVAL_MODULE);
+      container.resolve<IApprovalModuleService>(APPROVAL_MODULE)
 
-    const previousData = await approvalModule.retrieveApprovalSettings(
-      input.id
-    );
+    const previousData = await approvalModule.retrieveApprovalSettings(input.id)
 
-    const updatedApprovalSettings = await approvalModule.updateApprovalSettings(
-      input
-    );
+    const updatedApprovalSettings =
+      await approvalModule.updateApprovalSettings(input)
 
-    return new StepResponse(updatedApprovalSettings, previousData);
+    return new StepResponse(updatedApprovalSettings, previousData)
   },
   async (previousData: ModuleUpdateApprovalSettings, { container }) => {
     const approvalModule =
-      container.resolve<IApprovalModuleService>(APPROVAL_MODULE);
+      container.resolve<IApprovalModuleService>(APPROVAL_MODULE)
 
-    await approvalModule.updateApprovalSettings(previousData);
+    await approvalModule.updateApprovalSettings(previousData)
   }
-);
+)

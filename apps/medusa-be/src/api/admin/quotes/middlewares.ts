@@ -1,18 +1,18 @@
 import {
   validateAndTransformBody,
   validateAndTransformQuery,
-} from "@medusajs/framework";
-import type { MiddlewareRoute } from "@medusajs/framework/http";
+} from "@medusajs/framework"
+import type { MiddlewareRoute } from "@medusajs/framework/http"
 import {
   listQuotesTransformQueryConfig,
   retrieveQuoteTransformQueryConfig,
-} from "./query-config";
+} from "./query-config"
 import {
   AdminCreateQuoteMessage,
   AdminGetQuoteParams,
   AdminRejectQuote,
   AdminSendQuote,
-} from "./validators";
+} from "./validators"
 
 export const adminQuotesMiddlewares: MiddlewareRoute[] = [
   {
@@ -68,4 +68,4 @@ export const adminQuotesMiddlewares: MiddlewareRoute[] = [
       ),
     ],
   },
-];
+]

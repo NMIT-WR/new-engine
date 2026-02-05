@@ -1,11 +1,11 @@
-import { Trash } from "@medusajs/icons";
-import { Button, Prompt } from "@medusajs/ui";
+import { Trash } from "@medusajs/icons"
+import { Button, Prompt } from "@medusajs/ui"
 
 interface DeletePromptProps {
-  handleDelete: () => void;
-  loading: boolean;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  handleDelete: () => void
+  loading: boolean
+  open: boolean
+  setOpen: (open: boolean) => void
 }
 
 export const DeletePrompt = ({
@@ -15,13 +15,13 @@ export const DeletePrompt = ({
   setOpen,
 }: DeletePromptProps) => {
   const handleConfirmDelete = async () => {
-    handleDelete();
-    setOpen(false);
-  };
+    handleDelete()
+    setOpen(false)
+  }
 
   return (
-    <Prompt open={open} onOpenChange={setOpen}>
-      <Prompt.Content className="p-4 pb-0 border-b shadow-ui-fg-shadow">
+    <Prompt onOpenChange={setOpen} open={open}>
+      <Prompt.Content className="border-b p-4 pb-0 shadow-ui-fg-shadow">
         <Prompt.Title>Confirm Deletion</Prompt.Title>
         <Prompt.Description>
           Are you sure you want to delete this item? This action cannot be
@@ -29,18 +29,18 @@ export const DeletePrompt = ({
         </Prompt.Description>
         <Prompt.Footer>
           <Button
-            variant="danger"
-            onClick={handleConfirmDelete}
             isLoading={loading}
+            onClick={handleConfirmDelete}
+            variant="danger"
           >
             <Trash />
             Delete
           </Button>
-          <Button variant="secondary" onClick={() => setOpen(false)}>
+          <Button onClick={() => setOpen(false)} variant="secondary">
             Cancel
           </Button>
         </Prompt.Footer>
       </Prompt.Content>
     </Prompt>
-  );
-};
+  )
+}

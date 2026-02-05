@@ -1,13 +1,13 @@
 import {
   validateAndTransformBody,
   validateAndTransformQuery,
-} from "@medusajs/framework";
-import type { MiddlewareRoute } from "@medusajs/framework/http";
+} from "@medusajs/framework"
+import type { MiddlewareRoute } from "@medusajs/framework/http"
 import {
   adminApprovalSettingsQueryConfig,
   adminCompanyQueryConfig,
   adminEmployeeQueryConfig,
-} from "./query-config";
+} from "./query-config"
 import {
   AdminCreateCompany,
   AdminCreateEmployee,
@@ -17,7 +17,7 @@ import {
   AdminUpdateApprovalSettings,
   AdminUpdateCompany,
   AdminUpdateEmployee,
-} from "./validators";
+} from "./validators"
 
 export const adminCompaniesMiddlewares: MiddlewareRoute[] = [
   /* Companies Middlewares */
@@ -119,4 +119,4 @@ export const adminCompaniesMiddlewares: MiddlewareRoute[] = [
       ),
     ],
   },
-];
+]

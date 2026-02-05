@@ -1,14 +1,14 @@
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
-import { APPROVAL_MODULE } from "../../../modules/approval";
-import { ApprovalStatusType, IApprovalModuleService } from "../../../types";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { APPROVAL_MODULE } from "../../../modules/approval"
+import { ApprovalStatusType, type IApprovalModuleService } from "../../../types"
 
 export const createApprovalStatusStep = createStep(
   "create-approval-status",
   async (cartIds: string[], { container }) => {
-    const query = container.resolve(ContainerRegistrationKeys.QUERY);
+    const query = container.resolve(ContainerRegistrationKeys.QUERY)
     const approvalModuleService =
-      container.resolve<IApprovalModuleService>(APPROVAL_MODULE);
+      container.resolve<IApprovalModuleService>(APPROVAL_MODULE)
 
     const {
       data: [existingApprovalStatus],
@@ -18,7 +18,7 @@ export const createApprovalStatusStep = createStep(
       filters: {
         cart_id: cartIds[0],
       },
-    });
+    })
 
     if (existingApprovalStatus) {
       const [approvalStatus] =
@@ -27,30 +27,30 @@ export const createApprovalStatusStep = createStep(
             id: existingApprovalStatus.id,
             status: ApprovalStatusType.PENDING,
           },
-        ]);
+        ])
 
-      return new StepResponse(approvalStatus, [approvalStatus.id]);
+      return new StepResponse(approvalStatus, [approvalStatus.id])
     }
 
     const approvalStatusesToCreate = cartIds.map((cartId) => ({
       cart_id: cartId,
       status: ApprovalStatusType.PENDING,
-    }));
+    }))
 
     const [approvalStatus] = await approvalModuleService.createApprovalStatuses(
       approvalStatusesToCreate
-    );
+    )
 
-    return new StepResponse(approvalStatus, [approvalStatus.id]);
+    return new StepResponse(approvalStatus, [approvalStatus.id])
   },
   async (statusIds: string[], { container }) => {
     if (!statusIds) {
-      return;
+      return
     }
 
     const approvalModuleService =
-      container.resolve<IApprovalModuleService>(APPROVAL_MODULE);
+      container.resolve<IApprovalModuleService>(APPROVAL_MODULE)
 
-    await approvalModuleService.deleteApprovalStatuses(statusIds);
+    await approvalModuleService.deleteApprovalStatuses(statusIds)
   }
-);
+)

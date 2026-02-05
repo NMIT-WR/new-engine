@@ -65,9 +65,8 @@ export const useSelectedParams = ({
     })
   }
 
-  const get = () => {
-    return searchParams.get(identifier)?.split(",").filter(Boolean) || []
-  }
+  const get = () =>
+    searchParams.get(identifier)?.split(",").filter(Boolean) || []
 
   return { add, delete: deleteParam, get }
 }
