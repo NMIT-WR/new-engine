@@ -47,12 +47,14 @@ const treeViewVariants = tv({
       "has-focus-visible:outline-none",
       "has-focus-visible:ring",
       "has-focus-visible:ring-tree-ring",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     branchControl: ["flex-1"],
     branchText: ["flex-1"],
     branchIndicator: [
       "group-hover:text-tree-fg-hover",
       "data-[state=open]:token-icon-tree-indicator-open cursor-pointer hover:scale-125",
+      "transition-all duration-200 motion-reduce:transition-none",
     ],
     branchContent: ["relative", "data-[state=closed]:hidden"],
     indentGuide: [
@@ -67,9 +69,13 @@ const treeViewVariants = tv({
       "focus-visible:outline-none",
       "focus-visible:ring",
       "focus-visible:ring-tree-ring",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     itemText: ["flex-1"],
-    nodeIcon: ["hover:text-tree-icon-hover"],
+    nodeIcon: [
+      "hover:text-tree-icon-hover",
+      "transition-colors duration-200 motion-reduce:transition-none",
+    ],
   },
   compoundSlots: [
     {

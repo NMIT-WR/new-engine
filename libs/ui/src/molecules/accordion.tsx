@@ -18,6 +18,7 @@ const accordionVariants = tv({
       "flex w-full flex-col",
       "rounded-accordion bg-accordion-bg",
       "transition-all duration-200",
+      "transition-all duration-200 motion-reduce:transition-none",
     ],
     item: "",
     title: "grid place-items-start",
