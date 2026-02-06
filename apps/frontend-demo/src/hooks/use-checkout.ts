@@ -1,26 +1,62 @@
-"use client"
+﻿"use client"
 
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@techsio/ui-kit/molecules/toast"
-import { useCallback, useState } from "react"
-import { cacheConfig } from "@/lib/cache-config"
+import { useCallback, useMemo, useState } from "react"
 import { STORAGE_KEYS } from "@/lib/constants"
-import { sdk } from "@/lib/medusa-client"
 import { queryKeys } from "@/lib/query-keys"
 import { orderHelpers } from "@/stores/order-store"
 import type { CheckoutAddressData, UseCheckoutReturn } from "@/types/checkout"
 import { authHooks } from "./auth-hooks"
 import { cartHooks, isNotFoundError } from "./cart-hooks"
+import { checkoutHooks } from "./checkout-hooks"
 import { customerHooks } from "./customer-hooks"
 
 export function useCheckout(): UseCheckoutReturn {
   const queryClient = useQueryClient()
-  const { cart } = cartHooks.useCart({})
+  const { cart, query: cartQuery } = cartHooks.useCart({})
   const { customer: user } = authHooks.useAuth()
   const { addresses } = customerHooks.useCustomerAddresses({
     enabled: !!user,
   })
   const toast = useToast()
+
+  const shippingCacheKey =
+    typeof cart?.updated_at === "string"
+      ? cart.updated_at
+      : cart?.updated_at instanceof Date
+        ? cart.updated_at.toISOString()
+        : undefined
+
+  const {
+    shippingOptions,
+    isLoading: isLoadingShipping,
+    isFetching: isFetchingShipping,
+    setShippingMethodAsync,
+  } = checkoutHooks.useCheckoutShipping({
+    cartId: cart?.id,
+    cart,
+    enabled: !!cart?.id,
+    calculatePrices: false,
+    cacheKey: shippingCacheKey,
+  })
+
+  const { initiatePaymentAsync } = checkoutHooks.useCheckoutPayment({
+    cartId: cart?.id,
+    regionId: cart?.region_id ?? undefined,
+    cart,
+    enabled: !!cart?.region_id,
+  })
+
+  const shippingMethods = useMemo(
+    () =>
+      shippingOptions.map((option) => ({
+        id: option.id,
+        name: option.name,
+        calculated_price: option.calculated_price,
+      })),
+    [shippingOptions]
+  )
 
   // Get the first address and map to FormAddressData format
   const mainAddress = addresses[0]
@@ -33,10 +69,10 @@ export function useCheckout(): UseCheckoutReturn {
       }
     : null
 
-  // Refetch cart data by invalidating the query
-  const refetch = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: queryKeys.cart.all() })
-  }, [queryClient])
+  const refetchCart = useCallback(async () => {
+    const result = await cartQuery.refetch()
+    return result.data ?? cart ?? null
+  }, [cartQuery, cart])
 
   // Complete cart mutation with automatic cart clearing
   const completeCartMutation = cartHooks.useCompleteCart({
@@ -129,30 +165,7 @@ export function useCheckout(): UseCheckoutReturn {
     setAddressData(data)
   }
 
-  const {
-    data: shippingMethods,
-    isLoading: isLoadingShipping,
-    error: shippingError,
-  } = useQuery({
-    queryKey: queryKeys.fulfillment.cartOptions(cart?.id || ""),
-    queryFn: async () => {
-      if (!cart?.id) {
-        throw new Error("No cart ID available")
-      }
-      const response = await sdk.store.fulfillment.listCartOptions({
-        cart_id: cart.id,
-      })
-
-      const reducedShippingMethods = response.shipping_options.map((o) => ({
-        id: o.id,
-        name: o.name,
-        calculated_price: o.calculated_price,
-      }))
-      return reducedShippingMethods
-    },
-    enabled: !!cart?.id,
-    ...cacheConfig.semiStatic,
-  })
+  const shippingError = null
 
   // Add shipping method to cart
   const addShippingMethod = async (methodId: string) => {
@@ -161,10 +174,8 @@ export function useCheckout(): UseCheckoutReturn {
     }
 
     try {
-      await sdk.store.cart.addShippingMethod(cart.id, {
-        option_id: methodId,
-      })
-      await refetch()
+      await setShippingMethodAsync(methodId)
+      await refetchCart()
     } catch (error) {
       console.error("Failed to add shipping method:", error)
       toast.create({
@@ -185,8 +196,10 @@ export function useCheckout(): UseCheckoutReturn {
     setIsProcessingPayment(true)
 
     try {
-      // Get fresh cart state
-      const { cart: currentCart } = await sdk.store.cart.retrieve(cart.id)
+      const currentCart = await refetchCart()
+      if (!currentCart) {
+        return
+      }
 
       // Check shipping method
       if (
@@ -202,42 +215,14 @@ export function useCheckout(): UseCheckoutReturn {
         return
       }
 
-      // Initialize payment if needed
-      if (!currentCart.payment_collection) {
-        if (!currentCart.region_id) {
-          toast.create({
-            title: "Chyba",
-            description: "Košík nemá nastavenou region",
-            type: "error",
-          })
-          return
-        }
+      let cartForPayment = currentCart
+      const needsPaymentCollection = !cartForPayment.payment_collection
+      const needsPaymentSession =
+        !cartForPayment.payment_collection?.payment_sessions ||
+        cartForPayment.payment_collection.payment_sessions.length === 0
 
-        const providers = await sdk.store.payment.listPaymentProviders({
-          region_id: currentCart.region_id,
-        })
-
-        const providerId =
-          providers.payment_providers?.find(
-            (provider) => provider.id === selectedPayment
-          )?.id ?? providers.payment_providers?.[0]?.id
-
-        if (providerId) {
-          await sdk.store.payment.initiatePaymentSession(currentCart, {
-            provider_id: providerId,
-          })
-        }
-      }
-
-      // Refresh cart to get payment collection
-      const { cart: latestCart } = await sdk.store.cart.retrieve(cart.id)
-
-      // Create payment session if needed
-      if (
-        !latestCart.payment_collection?.payment_sessions ||
-        latestCart.payment_collection.payment_sessions.length === 0
-      ) {
-        if (!latestCart.region_id) {
+      if (needsPaymentCollection || needsPaymentSession) {
+        if (!cartForPayment.region_id) {
           toast.create({
             title: "Chyba",
             description: "Košík nemá nastavený region",
@@ -245,19 +230,30 @@ export function useCheckout(): UseCheckoutReturn {
           })
           return
         }
+        const regionId = cartForPayment.region_id
 
-        const providers = await sdk.store.payment.listPaymentProviders({
-          region_id: latestCart.region_id,
-        })
+        const availablePaymentProviders =
+          await checkoutHooks.fetchPaymentProviders(queryClient, regionId)
+
         const providerId =
-          providers.payment_providers?.find(
+          availablePaymentProviders.find(
             (provider) => provider.id === selectedPayment
-          )?.id ?? providers.payment_providers?.[0]?.id
+          )?.id ?? availablePaymentProviders[0]?.id
 
-        if (providerId) {
-          await sdk.store.payment.initiatePaymentSession(latestCart, {
-            provider_id: providerId,
+        if (!providerId) {
+          toast.create({
+            title: "Chyba",
+            description: "Není dostupný poskytovatel platby",
+            type: "error",
           })
+          return
+        }
+
+        await initiatePaymentAsync(providerId)
+
+        const refreshed = await refetchCart()
+        if (refreshed) {
+          cartForPayment = refreshed
         }
       }
 
@@ -298,7 +294,7 @@ export function useCheckout(): UseCheckoutReturn {
     addressData,
     isProcessingPayment,
     shippingMethods,
-    isLoadingShipping,
+    isLoadingShipping: isLoadingShipping || isFetchingShipping,
     shippingError,
 
     // Actions
@@ -312,3 +308,9 @@ export function useCheckout(): UseCheckoutReturn {
     canProceedToStep,
   }
 }
+
+
+
+
+
+

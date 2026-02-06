@@ -93,6 +93,27 @@ export const queryKeys = {
       [...queryKeys.all, "fulfillment", "cart-options", cartId] as const,
   },
 
+  // Checkout queries
+  checkout: {
+    all: () => [...queryKeys.all, "checkout"] as const,
+    shippingOptions: (cartId: string, cacheKey?: string) =>
+      cacheKey
+        ? [
+            ...queryKeys.checkout.all(),
+            "shipping-options",
+            cartId,
+            cacheKey,
+          ]
+        : [...queryKeys.checkout.all(), "shipping-options", cartId],
+    shippingOptionPrice: (params: {
+      cartId: string
+      optionId: string
+      data?: Record<string, unknown>
+    }) => [...queryKeys.checkout.all(), "shipping-option", params] as const,
+    paymentProviders: (regionId: string) =>
+      [...queryKeys.checkout.all(), "payment-providers", regionId] as const,
+  },
+
   // Legacy aliases for backward compatibility
   product: (handle: string, region_id?: string) =>
     queryKeys.products.detail({ handle, region_id }),
