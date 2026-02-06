@@ -46,6 +46,8 @@ Thumbs.db
 .nx/workspace-data
 
 test-output
+playwright-report
+test-results
 .env
 
 # Local Netlify folder

@@ -2,47 +2,52 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import { Carousel, type CarouselSlide } from '../../src/molecules/carousel'
 import { Select } from '../../src/molecules/select'
+import placeholderLandscape from '../assets/placeholder-landscape.webp'
+import placeholderPortrait from '../assets/placeholder-portrait.webp'
+import placeholderSquare from '../assets/placeholder-square.webp'
+import placeholderWide from '../assets/placeholder-wide.webp'
+import placeholderProduct from '../assets/placeholder-product.webp'
 
 // Sample images using src approach (simpler)
 const sampleImages: CarouselSlide[] = [
   {
     id: 'slide-1',
-    src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+    src: placeholderLandscape,
     alt: 'Beautiful landscape',
   },
   {
     id: 'slide-2',
-    src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
+    src: placeholderPortrait,
     alt: 'City skyline',
   },
   {
     id: 'slide-3',
-    src: 'https://images.unsplash.com/photo-1747258294931-79af146bd74c?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    src: placeholderWide,
     alt: 'Ocean view',
   },
   {
     id: 'coffee',
-    src: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600',
+    src: placeholderSquare,
     alt: 'Coffee',
   },
   {
     id: 'architecture',
-    src: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600',
+    src: placeholderProduct,
     alt: 'Architecture',
   },
   {
     id: 'city-panorama',
-    src: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1200',
+    src: placeholderWide,
     alt: 'City panorama',
   },
   {
     id: 'beach-wide',
-    src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200',
+    src: placeholderLandscape,
     alt: 'Beach panorama',
   },
   {
     id: 'skyscraper',
-    src: 'https://images.unsplash.com/photo-1494145904049-0dca59b4bbad?w=400',
+    src: placeholderPortrait,
     alt: 'Skyscraper',
   },
 ]
@@ -51,7 +56,7 @@ const sampleImages: CarouselSlide[] = [
 const mixedSlides: CarouselSlide[] = [
   {
     id: 'image-1',
-    src: 'https://picsum.photos/205',
+    src: placeholderSquare,
     alt: 'Sample image',
   },
   {
@@ -69,7 +74,7 @@ const mixedSlides: CarouselSlide[] = [
   },
   {
     id: 'image-2',
-    src: 'https://picsum.photos/206',
+    src: placeholderProduct,
     alt: 'Another image',
   },
 ]
@@ -409,7 +414,7 @@ export const ObjectFitDemo: Story = {
   render: () => {
     const testImage = {
       id: 'test',
-      src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
+      src: placeholderPortrait,
       alt: 'Portrait for object-fit testing',
     }
 
@@ -501,7 +506,7 @@ export const AspectRatioDemo: Story = {
   render: () => {
     const landscapeImage = {
       id: 'landscape',
-      src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+      src: placeholderLandscape,
       alt: 'Mountain landscape',
     }
 
@@ -604,17 +609,17 @@ export const CombinedDemo: Story = {
     const testImages: CarouselSlide[] = [
       {
         id: 'portrait',
-        src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
+        src: placeholderPortrait,
         alt: 'Portrait',
       },
       {
         id: 'landscape',
-        src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+        src: placeholderLandscape,
         alt: 'Landscape',
       },
       {
         id: 'square',
-        src: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600',
+        src: placeholderSquare,
         alt: 'Square',
       },
     ]
