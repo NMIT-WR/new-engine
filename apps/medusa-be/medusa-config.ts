@@ -124,6 +124,15 @@ module.exports = defineConfig({
       resolve: "./src/modules/producer",
     },
     {
+      resolve: "./src/modules/company",
+    },
+    {
+      resolve: "./src/modules/quote",
+    },
+    {
+      resolve: "./src/modules/approval",
+    },
+    {
       resolve: "@medusajs/event-bus-redis",
       key: Modules.EVENT_BUS,
       options: {

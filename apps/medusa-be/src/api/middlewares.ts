@@ -7,7 +7,9 @@ import { errorHandler } from "@medusajs/framework/http"
 import { defineMiddlewares } from "@medusajs/medusa"
 import { captureException } from "@sentry/node"
 import { normalizeError, shouldCaptureException } from "../utils/errors"
+import { adminMiddlewares } from "./admin/middlewares"
 import { adminPplConfigRoutesMiddlewares } from "./admin/ppl-config/middlewares"
+import { storeMiddlewares } from "./store/middlewares"
 import { storeProducersRoutesMiddlewares } from "./store/producers/middlewares"
 
 const originalErrorHandler = errorHandler()
@@ -27,6 +29,17 @@ export default defineMiddlewares({
   },
   routes: [
     ...adminPplConfigRoutesMiddlewares,
+    ...adminMiddlewares,
     ...storeProducersRoutesMiddlewares,
+    ...storeMiddlewares,
+    {
+      matcher: "/store/customers/me",
+      middlewares: [
+        (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
+          req.allowed = ["employee"]
+          next()
+        },
+      ],
+    },
   ],
 })
