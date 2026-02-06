@@ -7,7 +7,7 @@ import { useToast } from "@ui/molecules/toast"
 import { NumericInputTemplate } from "@ui/templates/numeric-input"
 import { useState } from "react"
 import { SafeHtmlContent } from "@/components/safe-html-content"
-import { useCart } from "@/hooks/use-cart"
+import { useAddLineItemWithToast } from "@/hooks/cart-hooks"
 import type { Product, ProductVariant } from "@/types/product"
 import { sortVariantsBySize } from "@/utils/variant-utils"
 
@@ -29,9 +29,10 @@ export function ProductInfo({
   onVariantChange,
 }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1)
-  const { addItem } = useCart()
   const toast = useToast()
   const productVariants = product.variants || []
+
+  const addItemMutation = useAddLineItemWithToast()
 
   const handleAddToCart = () => {
     if (!selectedVariant) {
@@ -43,7 +44,10 @@ export function ProductInfo({
       })
       return
     }
-    addItem(selectedVariant.id, validQuantity)
+    addItemMutation.mutate({
+      variantId: selectedVariant.id,
+      quantity: validQuantity,
+    })
   }
 
   const validQuantity =

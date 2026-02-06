@@ -1,20 +1,39 @@
 "use client"
+
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { Icon } from "@techsio/ui-kit/atoms/icon"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import { FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { Popover } from "@techsio/ui-kit/molecules/popover"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { type FormEvent, useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
-import { authFormFields, getAuthErrorMessage, withLoading } from "@/lib/auth"
+import { authHooks } from "@/hooks/auth-hooks"
+import {
+  AUTH_MESSAGES,
+  authFormFields,
+  getAuthErrorMessage,
+  withLoading,
+} from "@/lib/auth"
 
 export function AuthDropdown() {
-  const { user, logout } = useAuth()
+  const { customer: user } = authHooks.useAuth()
+  const router = useRouter()
+  const toast = useToast()
 
-  const signOut = async () => {
-    await logout()
-    // Toast is already shown in use-auth hook
+  const logoutMutation = authHooks.useLogout({
+    onSuccess: () => {
+      toast.create({
+        ...AUTH_MESSAGES.LOGOUT_SUCCESS,
+        type: "success",
+      })
+      router.push("/")
+    },
+  })
+
+  const signOut = () => {
+    logoutMutation.mutate()
   }
 
   if (!user) {
@@ -109,22 +128,33 @@ export function AuthDropdown() {
 }
 
 function QuickLoginForm() {
-  const { login, isFormLoading } = useAuth()
+  const router = useRouter()
+  const toast = useToast()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
-  const handleSubmit = async (e: FormEvent) => {
+  const loginMutation = authHooks.useLogin({
+    onSuccess: () => {
+      toast.create({
+        ...AUTH_MESSAGES.LOGIN_SUCCESS,
+        type: "success",
+      })
+      router.push("/")
+    },
+    onError: (err) => {
+      setError(getAuthErrorMessage(err))
+    },
+  })
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     setError("")
-
-    try {
-      await login(email, password)
-      // Toast is already shown in use-auth hook
-    } catch (err: unknown) {
-      setError(getAuthErrorMessage(err))
-    }
+    loginMutation.mutate({ email, password })
   }
+
+  const isFormLoading = loginMutation.isPending
 
   return (
     <form

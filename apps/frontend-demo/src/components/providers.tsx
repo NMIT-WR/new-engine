@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@techsio/ui-kit/molecules/toast"
 import { ThemeProvider } from "next-themes"
 import type { PropsWithChildren } from "react"
-import { useState } from "react"
-import { CartPrefetch } from "./cart-prefetch"
+import { Suspense, useState } from "react"
+import { RegionProvider } from "@/providers/region-provider"
 
 function makeQueryClient() {
   return new QueryClient({
@@ -55,9 +55,12 @@ export function Providers({ children }: PropsWithChildren) {
         disableTransitionOnChange
         enableSystem
       >
-        <CartPrefetch />
-        {children}
-        <Toaster />
+        <Suspense fallback={null}>
+          <RegionProvider>
+            {children}
+            <Toaster />
+          </RegionProvider>
+        </Suspense>
       </ThemeProvider>
     </QueryClientProvider>
   )

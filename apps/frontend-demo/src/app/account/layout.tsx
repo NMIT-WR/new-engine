@@ -2,10 +2,12 @@
 
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { Icon } from "@techsio/ui-kit/atoms/icon"
+import { useToast } from "@techsio/ui-kit/molecules/toast"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import type { ReactNode } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
+import { AUTH_MESSAGES } from "@/lib/auth"
 
 const accountLinks = [
   {
@@ -20,16 +22,27 @@ const accountLinks = [
   },
 ]
 
-interface AccountLayoutProps {
+type AccountLayoutProps = {
   children: ReactNode
 }
 
 export default function AccountLayout({ children }: AccountLayoutProps) {
   const pathname = usePathname()
-  const { logout } = useAuth()
+  const router = useRouter()
+  const toast = useToast()
 
-  const handleLogout = async () => {
-    await logout()
+  const logoutMutation = authHooks.useLogout({
+    onSuccess: () => {
+      toast.create({
+        ...AUTH_MESSAGES.LOGOUT_SUCCESS,
+        type: "success",
+      })
+      router.push("/")
+    },
+  })
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
   }
 
   return (

@@ -1,37 +1,29 @@
 "use client"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Badge } from "@techsio/ui-kit/atoms/badge"
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { Icon } from "@techsio/ui-kit/atoms/icon"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { use, useEffect } from "react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect } from "react"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
+import { orderHooks } from "@/hooks/order-hooks"
 import { formatPrice } from "@/lib/format-price"
-import { sdk } from "@/lib/medusa-client"
 import {
   formatOrderDate,
   getOrderStatusLabel,
-  ORDER_FIELDS,
   truncateProductTitle,
 } from "@/lib/order-utils"
-import { queryKeys } from "@/lib/query-keys"
-import type { Order } from "@/types/order"
 
-interface OrderDetailPageProps {
-  params: Promise<{
-    id: string
-  }>
-}
-
-export default function OrderDetailPage({ params }: OrderDetailPageProps) {
-  const { id } = use(params)
-  const { user, isLoading: authLoading, isInitialized } = useAuth()
+export default function OrderDetailPage() {
+  const params = useParams<{ id: string | string[] }>()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id ?? ""
+  const { customer: user, isLoading: authLoading } = authHooks.useAuth()
   const router = useRouter()
-  const queryClient = useQueryClient()
+
+  const isInitialized = !authLoading
 
   useEffect(() => {
     if (isInitialized && !user) {
@@ -40,31 +32,12 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   }, [user, isInitialized, router])
 
   const {
-    data: orderData,
+    order,
     isLoading: orderLoading,
     error,
-  } = useQuery({
-    queryKey: queryKeys.orders.detail(id),
-    queryFn: async () => {
-      const cachedOrdersList = queryClient.getQueryData<{ orders: Order[] }>(
-        queryKeys.orders.list()
-      )
-      const cachedOrder = cachedOrdersList?.orders?.find((o) => o.id === id)
-
-      if (cachedOrder) {
-        const response = await sdk.store.order.retrieve(id, {
-          fields: ORDER_FIELDS.join(","),
-        })
-        return response
-      }
-
-      const response = await sdk.store.order.retrieve(id, {
-        fields: ORDER_FIELDS.join(","),
-      })
-      return response
-    },
+  } = orderHooks.useOrder({
+    id,
     enabled: !!user && !!id,
-    staleTime: 5 * 60 * 1000,
   })
 
   if (!isInitialized || authLoading) {
@@ -84,8 +57,6 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   if (!user) {
     return null
   }
-
-  const order = orderData?.order
 
   return (
     <div className="mx-auto max-w-layout-max px-sm py-lg">
