@@ -3,53 +3,45 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ErrorText } from "@techsio/ui-kit/atoms/error-text"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import type { ReactNode } from "react"
-import type { UseCheckoutShippingReturn } from "@/hooks/use-checkout-shipping"
+import type { UseCheckoutShippingReturn } from "@/hooks/checkout-shipping"
+import type { UsePickupPointShippingReturn } from "@/hooks/use-pickup-point-shipping"
 import type { ShippingMethodData } from "@/services/cart-service"
-import {
-  accessPointToShippingData,
-  isPPLParcelOption,
-  type PplAccessPointData,
-} from "@/utils/address-helpers"
 import { formatToTaxIncluded } from "@/utils/format/format-product"
 import { SelectedParcelCard } from "./selected-parcel-card"
 
 type ShippingMethodSectionProps = {
   shipping: UseCheckoutShippingReturn
-  selectedAccessPoint: PplAccessPointData | null
-  onOpenPickupDialog: (optionId: string) => void
+  pickupPoint: UsePickupPointShippingReturn
 }
 
 type ShippingOptionCardProps = {
   option: HttpTypes.StoreCartShippingOption
   selected: boolean
   isUpdating?: boolean
-  selectedAccessPoint: PplAccessPointData | null
+  pickupPoint: UsePickupPointShippingReturn
   onSelect: (id: string, data?: ShippingMethodData) => void
-  onOpenPickupDialog: (optionId: string) => void
 }
 
 function ShippingOptionCard({
   option,
   selected,
   isUpdating,
-  selectedAccessPoint,
+  pickupPoint,
   onSelect,
-  onOpenPickupDialog,
 }: ShippingOptionCardProps) {
   const formattedPrice = formatToTaxIncluded({
     amount: option.amount,
     currency: option.calculated_price.currency_code ?? "czk",
   })
 
-  const isPPLParcel = isPPLParcelOption(option.name)
-
   const handleClick = () => {
-    if (isPPLParcel) {
+    if (pickupPoint.requiresAccessPoint(option.name)) {
       // PPL Parcel - if we have selected access point, use it; otherwise open dialog
-      if (selectedAccessPoint) {
-        onSelect(option.id, accessPointToShippingData(selectedAccessPoint))
+      if (pickupPoint.hasSelection) {
+        const data = pickupPoint.getShippingData()
+        if (data) onSelect(option.id, data)
       } else {
-        onOpenPickupDialog(option.id)
+        pickupPoint.openDialog(option.id)
       }
     } else {
       // Regular shipping (including PPL Private)
@@ -81,8 +73,7 @@ function ShippingOptionCard({
 
 export function ShippingMethodSection({
   shipping,
-  selectedAccessPoint,
-  onOpenPickupDialog,
+  pickupPoint,
 }: ShippingMethodSectionProps) {
   let content: ReactNode
 
@@ -90,8 +81,8 @@ export function ShippingMethodSection({
 
   const showParcelCard =
     selectedOption &&
-    isPPLParcelOption(selectedOption.name) &&
-    selectedAccessPoint
+    pickupPoint.requiresAccessPoint(selectedOption.name) &&
+    pickupPoint.hasSelection
 
   if (shipping.shippingOptions && shipping.shippingOptions.length > 0) {
     content = (
@@ -105,11 +96,10 @@ export function ShippingMethodSection({
           <ShippingOptionCard
             isUpdating={shipping.isSettingShipping}
             key={option.id}
-            onOpenPickupDialog={onOpenPickupDialog}
             onSelect={shipping.setShipping}
             option={option}
+            pickupPoint={pickupPoint}
             selected={shipping.selectedShippingMethodId === option.id}
-            selectedAccessPoint={selectedAccessPoint}
           />
         ))}
       </div>
@@ -130,10 +120,10 @@ export function ShippingMethodSection({
       </h2>
       {content}
 
-      {showParcelCard && (
+      {showParcelCard && pickupPoint.state.selectedPoint && (
         <SelectedParcelCard
-          accessPoint={selectedAccessPoint}
-          onChangeClick={() => onOpenPickupDialog(selectedOption.id)}
+          accessPoint={pickupPoint.state.selectedPoint}
+          onChangeClick={() => pickupPoint.openDialog(selectedOption.id)}
         />
       )}
     </section>
