@@ -1,6 +1,6 @@
 import type { Endpoint } from 'payload'
 import { buildJsonResponse, getLocaleFromRequest, getQueryParam } from '../utils/endpoint'
-import { getCategoryDoc, type CategoryDoc } from '../utils/docSelectors'
+import { getCategoryDoc, type CategoryDoc } from '../utils/doc-selectors'
 
 const DEFAULT_MAX_PAGES = 500;
 

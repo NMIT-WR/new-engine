@@ -1,7 +1,7 @@
 import {
   optionalPositiveIntParam,
   optionalStringParam,
-} from "../queryParams"
+} from "../query-params"
 
 describe("queryParams utilities", () => {
   describe("optionalStringParam", () => {

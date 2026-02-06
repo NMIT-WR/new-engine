@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getCategoryDoc, getMediaUrl } from '@/lib/utils/docSelectors'
+import { getCategoryDoc, getMediaUrl } from '@/lib/utils/doc-selectors'
 
 describe('doc selector utilities', () => {
   it('getCategoryDoc returns null for invalid values', () => {

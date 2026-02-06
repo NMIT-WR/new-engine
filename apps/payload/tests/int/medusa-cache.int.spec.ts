@@ -30,7 +30,7 @@ const resetEnv = () => {
 }
 
 describe("medusaCache hooks", () => {
-  let createMedusaCacheHook: typeof import("@/lib/hooks/medusaCache").createMedusaCacheHook
+  let createMedusaCacheHook: typeof import("@/lib/hooks/medusa-cache").createMedusaCacheHook
   let getEnvString: ReturnType<typeof vi.fn>
   let originalFetch: typeof globalThis.fetch
 
@@ -43,7 +43,7 @@ describe("medusaCache hooks", () => {
     const envModule = await import("@/lib/utils/env")
     getEnvString = envModule.getEnvString as ReturnType<typeof vi.fn>
 
-    const cacheModule = await import("@/lib/hooks/medusaCache")
+    const cacheModule = await import("@/lib/hooks/medusa-cache")
     createMedusaCacheHook = cacheModule.createMedusaCacheHook
   })
 

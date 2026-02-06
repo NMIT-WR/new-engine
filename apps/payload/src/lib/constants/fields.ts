@@ -6,7 +6,7 @@ import type {
 } from 'payload'
 
 import { fieldLabels } from './labels'
-import { statusOptions } from './statusOptions'
+import { statusOptions } from './status-options'
 
 /** Locale-aware label shape for Payload admin fields. */
 type LocalizedLabel = Record<string, string>

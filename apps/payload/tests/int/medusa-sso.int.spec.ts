@@ -33,7 +33,7 @@ vi.mock('crypto', async (importOriginal) => {
 
 import { generatePayloadCookie, headersWithCors, jwtSign } from 'payload'
 import { importSPKI, jwtVerify } from 'jose'
-import { medusaSsoPostEndpoint } from '@/lib/endpoints/medusaSso'
+import { medusaSsoPostEndpoint } from '@/lib/endpoints/medusa-sso'
 
 const headersWithCorsMock = vi.mocked(headersWithCors)
 const generatePayloadCookieMock = vi.mocked(generatePayloadCookie)

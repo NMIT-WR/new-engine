@@ -5,8 +5,8 @@ vi.mock('payload', () => ({
 }))
 
 import { headersWithCors } from 'payload'
-import { articleCategoriesWithArticlesEndpoint } from '@/lib/endpoints/articleCategoriesWithArticles'
-import { pageCategoriesWithPagesEndpoint } from '@/lib/endpoints/pageCategoriesWithPages'
+import { articleCategoriesWithArticlesEndpoint } from '@/lib/endpoints/article-categories-with-articles'
+import { pageCategoriesWithPagesEndpoint } from '@/lib/endpoints/page-categories-with-pages'
 
 const headersWithCorsMock = vi.mocked(headersWithCors)
 

@@ -5,8 +5,8 @@ import { createLexicalEditor } from '../lib/editors/lexical'
 import { generateSlugFromTitle } from '../lib/hooks/slug'
 import { adminGroups, collectionLabels, fieldLabels } from '../lib/constants/labels'
 import { fieldDescriptions } from '../lib/constants/descriptions'
-import { requireAuth } from '../lib/access/requireAuth'
-import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
+import { requireAuth } from '../lib/access/require-auth'
+import { createMedusaCacheHook } from '../lib/hooks/medusa-cache'
 import { shouldReturnHtmlForRequest } from '../lib/utils/request'
 import {
   createContentField,

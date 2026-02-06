@@ -1,13 +1,13 @@
 import type { CollectionConfig } from "payload";
 import { lexicalHTMLField } from "@payloadcms/richtext-lexical";
 import { createLexicalEditor } from "../lib/editors/lexical";
-import { requireAuth } from "../lib/access/requireAuth";
+import { requireAuth } from "../lib/access/require-auth";
 import { generateSlugFromTitle } from "../lib/hooks/slug";
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
 import { fieldDescriptions } from "../lib/constants/descriptions";
-import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
+import { createMedusaCacheHook } from "../lib/hooks/medusa-cache";
 import { shouldReturnHtmlForRequest } from "../lib/utils/request";
-import { estimateReadingTime } from "../lib/utils/readingTime";
+import { estimateReadingTime } from "../lib/utils/reading-time";
 import {
   createContentField,
   createPublishedDateField,

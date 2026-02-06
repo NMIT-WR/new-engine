@@ -2,7 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
 import { PAYLOAD_MODULE } from "../../../../modules/payload"
 import type PayloadModuleService from "../../../../modules/payload/service"
-import { optionalPositiveIntParam, optionalStringParam } from "../../../../utils/queryParams"
+import { optionalPositiveIntParam, optionalStringParam } from "../../../../utils/query-params"
 
 /** Query schema for fetching CMS hero carousel lists. */
 export const StoreCmsHeroCarouselsSchema = z.object({

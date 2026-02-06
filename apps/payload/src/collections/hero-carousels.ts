@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
 
 import { adminGroups, collectionLabels, fieldLabels } from "../lib/constants/labels";
-import { requireAuth } from "../lib/access/requireAuth";
-import { createMedusaCacheHook } from "../lib/hooks/medusaCache";
+import { requireAuth } from "../lib/access/require-auth";
+import { createMedusaCacheHook } from "../lib/hooks/medusa-cache";
 
 /** Collection slug for hero carousels. */
 const COLLECTION_SLUG = "hero-carousels";

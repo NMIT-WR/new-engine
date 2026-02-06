@@ -1,6 +1,6 @@
 import type { Endpoint } from 'payload'
 import { buildJsonResponse, getLocaleFromRequest, getQueryParam } from '../utils/endpoint'
-import { getCategoryDoc, getMediaUrl, type CategoryDoc } from '../utils/docSelectors'
+import { getCategoryDoc, getMediaUrl, type CategoryDoc } from '../utils/doc-selectors'
 
 const MAX_ARTICLES = 500
 

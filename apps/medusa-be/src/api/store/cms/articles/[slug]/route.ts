@@ -2,7 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
 import { PAYLOAD_MODULE } from "../../../../../modules/payload"
 import type PayloadModuleService from "../../../../../modules/payload/service"
-import { optionalStringParam } from "../../../../../utils/queryParams"
+import { optionalStringParam } from "../../../../../utils/query-params"
 
 /** Query schema for fetching a single CMS article. */
 export const StoreCmsArticleSchema = z.object({

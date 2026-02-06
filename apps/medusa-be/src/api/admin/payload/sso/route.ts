@@ -2,7 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import escapeHtml from "escape-html"
 import { SignJWT, importPKCS8 } from "jose"
 import { z } from "zod"
-import { optionalStringParam } from "../../../../utils/queryParams"
+import { optionalStringParam } from "../../../../utils/query-params"
 
 const DEFAULT_ISSUER = "medusa"
 const DEFAULT_AUDIENCE = "payload"

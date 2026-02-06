@@ -4,8 +4,8 @@ import { generateSlugFromTitle } from '../lib/hooks/slug'
 import { adminGroups, collectionLabels } from '../lib/constants/labels'
 import { createSlugField, createTitleField } from '../lib/constants/fields'
 import { fieldDescriptions } from '../lib/constants/descriptions'
-import { requireAuth } from '../lib/access/requireAuth'
-import { createMedusaCacheHook } from '../lib/hooks/medusaCache'
+import { requireAuth } from '../lib/access/require-auth'
+import { createMedusaCacheHook } from '../lib/hooks/medusa-cache'
 
 /** Collection slug for page categories. */
 const COLLECTION_SLUG = 'page-categories'
