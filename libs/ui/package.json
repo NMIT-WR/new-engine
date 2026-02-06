@@ -111,7 +111,6 @@
     "eslint": "^9.39.1",
     "eslint-plugin-tailwindcss": "beta",
     "glob": "^11.0.2",
-    "next": "^16.0.3",
     "postcss": "^8.5.6",
     "rsbuild-plugin-publint": "^0.3.3",
     "semantic-release": "^25.0.2",
