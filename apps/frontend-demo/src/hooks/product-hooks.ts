@@ -6,6 +6,7 @@ import {
   type ProductListInputBase,
   type ProductListResponse,
 } from "@techsio/storefront-data"
+import { queryOptions } from "@tanstack/react-query"
 import { storefrontCacheConfig } from "@/lib/cache-config"
 import { queryKeys } from "@/lib/query-keys"
 import {
@@ -83,6 +84,66 @@ function buildDetailParams(
   }
 }
 
+function fetchProducts(
+  params: ProductListServiceParams,
+  signal?: AbortSignal
+): Promise<ProductListResponse<Product>> {
+  return getProducts(
+    {
+      limit: params.limit,
+      offset: params.offset,
+      filters: params.filters,
+      category: params.category_id,
+      sort: params.sort,
+      q: params.q,
+      fields: params.fields,
+      region_id: params.region_id,
+      country_code: params.country_code,
+    },
+    signal
+  )
+}
+
+async function fetchProductByHandle(
+  params: ProductDetailServiceParams,
+  signal?: AbortSignal
+): Promise<Product | null> {
+  try {
+    return await getProduct(
+      params.handle,
+      params.region_id,
+      params.country_code,
+      signal
+    )
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Co-located key+fn helper for Product list queries (TanStack query-options style).
+ */
+export function getProductsQueryOptions(input: ProductListInput) {
+  const params = buildListParams(input)
+  return queryOptions({
+    queryKey: queryKeys.products.list(params),
+    queryFn: ({ signal }) => fetchProducts(params, signal),
+    ...storefrontCacheConfig.semiStatic,
+  })
+}
+
+/**
+ * Co-located key+fn helper for Product detail queries.
+ */
+export function getProductQueryOptions(input: ProductDetailInput) {
+  const params = buildDetailParams(input)
+  return queryOptions({
+    queryKey: queryKeys.products.detail(params),
+    queryFn: ({ signal }) => fetchProductByHandle(params, signal),
+    ...storefrontCacheConfig.semiStatic,
+  })
+}
+
 // Create the hooks
 export const productHooks = createProductHooks<
   Product,
@@ -93,33 +154,16 @@ export const productHooks = createProductHooks<
 >({
   service: {
     getProducts: async (
-      params: ProductListServiceParams
+      params: ProductListServiceParams,
+      signal?: AbortSignal
     ): Promise<ProductListResponse<Product>> => {
-      const result = await getProducts({
-        limit: params.limit,
-        offset: params.offset,
-        filters: params.filters,
-        category: params.category_id,
-        sort: params.sort,
-        q: params.q,
-        fields: params.fields,
-        region_id: params.region_id,
-        country_code: params.country_code,
-      })
-      return result
+      return fetchProducts(params, signal)
     },
     getProductByHandle: async (
-      params: ProductDetailServiceParams
+      params: ProductDetailServiceParams,
+      signal?: AbortSignal
     ): Promise<Product | null> => {
-      try {
-        return await getProduct(
-          params.handle,
-          params.region_id,
-          params.country_code
-        )
-      } catch {
-        return null
-      }
+      return fetchProductByHandle(params, signal)
     },
   },
   buildListParams,

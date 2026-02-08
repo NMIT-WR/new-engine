@@ -1,6 +1,23 @@
 // Centralized query keys for React Query
 // This ensures consistent cache key structure across the app
 
+import { normalizeQueryKeyParams as sdNormalizeQueryKeyParams } from "@techsio/storefront-data"
+import type { ProductFilters } from "@/services/product-service"
+
+type NormalizeQueryKeyOptions = {
+  omitKeys?: readonly string[]
+}
+
+const normalizeQueryKeyParams = (
+  params?: Record<string, unknown>,
+  options?: NormalizeQueryKeyOptions
+) => {
+  return sdNormalizeQueryKeyParams(
+    (params ?? {}) as Record<string, unknown>,
+    options
+  )
+}
+
 export const queryKeys = {
   all: ["medusa"] as const,
 
@@ -12,33 +29,75 @@ export const queryKeys = {
     list: (params?: {
       offset?: number
       limit?: number
-      filters?: any // Flexible to accommodate various filter types
+      filters?: ProductFilters
       sort?: string
       fields?: string
       q?: string
       category_id?: string[]
       region_id?: string
-    }) => [...queryKeys.products.lists(), params || {}] as const,
+      country_code?: string
+    }) =>
+      [
+        ...queryKeys.products.lists(),
+        normalizeQueryKeyParams(
+          (params ?? {}) as Record<string, unknown>,
+          { omitKeys: ["enabled"] }
+        ),
+      ] as const,
     infinite: (params?: {
       offset?: number
       limit?: number
-      filters?: any
+      filters?: ProductFilters
       sort?: string
       q?: string
       category_id?: string[]
       region_id?: string
-    }) => [...queryKeys.products.all(), "infinite", params || {}] as const,
-    detail: (params: { handle: string; region_id?: string }) =>
+      country_code?: string
+    }) =>
+      [
+        ...queryKeys.products.all(),
+        "infinite",
+        normalizeQueryKeyParams(
+          (params ?? {}) as Record<string, unknown>,
+          { omitKeys: ["enabled"] }
+        ),
+      ] as const,
+    detail: (params: {
+      handle: string
+      region_id?: string
+      country_code?: string
+    }) =>
       [
         ...queryKeys.products.all(),
         "detail",
         params.handle,
         params.region_id,
+        params.country_code,
       ] as const,
   },
 
   // Region queries
-  regions: () => [...queryKeys.all, "regions"] as const,
+  regions: {
+    all: () => [...queryKeys.all, "regions"] as const,
+    list: (params?: { enabled?: boolean } & Record<string, unknown>) =>
+      [
+        ...queryKeys.regions.all(),
+        "list",
+        normalizeQueryKeyParams(
+          (params ?? {}) as Record<string, unknown>,
+          { omitKeys: ["enabled"] }
+        ),
+      ] as const,
+    detail: (params: { id?: string; enabled?: boolean } & Record<string, unknown>) =>
+      [
+        ...queryKeys.regions.all(),
+        "detail",
+        normalizeQueryKeyParams(
+          (params ?? {}) as Record<string, unknown>,
+          { omitKeys: ["enabled"] }
+        ),
+      ] as const,
+  },
 
   // Cart queries with hierarchical structure
   cart: {
@@ -62,16 +121,25 @@ export const queryKeys = {
     session: () => [...queryKeys.all, "auth", "session"] as const,
   },
 
-  // Category queries
-  categories: () => [...queryKeys.all, "categories"] as const,
-  category: (handle: string) => [...queryKeys.categories(), handle] as const,
-  allCategories: () => [...queryKeys.all, "all-categories"] as const,
-
   // Order queries - params match storefront-data
   orders: {
     all: () => [...queryKeys.all, "orders"] as const,
-    list: (_params?: { page?: number; limit?: number; status?: string[] }) =>
-      [...queryKeys.orders.all(), "list"] as const,
+    list: (
+      params?: {
+        page?: number
+        limit?: number
+        status?: string[]
+        enabled?: boolean
+      } & Record<string, unknown>
+    ) =>
+      [
+        ...queryKeys.orders.all(),
+        "list",
+        normalizeQueryKeyParams(
+          (params ?? {}) as Record<string, unknown>,
+          { omitKeys: ["enabled"] }
+        ),
+      ] as const,
     detail: (params: { id?: string }) =>
       [...queryKeys.orders.all(), "detail", params.id ?? ""] as const,
   },
@@ -81,16 +149,16 @@ export const queryKeys = {
     all: () => [...queryKeys.all, "customer"] as const,
     // Profile points to auth.customer - that's where customer data is stored
     profile: () => queryKeys.auth.customer(),
-    addresses: (params?: { enabled?: boolean } & Record<string, unknown>) => {
-      const { enabled: _enabled, ...queryParams } = params ?? {}
-      return [...queryKeys.all, "customer", "addresses", queryParams] as const
-    },
-  },
-
-  // Fulfillment queries
-  fulfillment: {
-    cartOptions: (cartId: string) =>
-      [...queryKeys.all, "fulfillment", "cart-options", cartId] as const,
+    addresses: (params?: { enabled?: boolean } & Record<string, unknown>) =>
+      [
+        ...queryKeys.all,
+        "customer",
+        "addresses",
+        normalizeQueryKeyParams(
+          (params ?? {}) as Record<string, unknown>,
+          { omitKeys: ["enabled"] }
+        ),
+      ] as const,
   },
 
   // Checkout queries
@@ -109,12 +177,17 @@ export const queryKeys = {
       cartId: string
       optionId: string
       data?: Record<string, unknown>
-    }) => [...queryKeys.checkout.all(), "shipping-option", params] as const,
+    }) =>
+      [
+        ...queryKeys.checkout.all(),
+        "shipping-option",
+        normalizeQueryKeyParams(params, { omitKeys: ["enabled"] }),
+      ] as const,
     paymentProviders: (regionId: string) =>
       [...queryKeys.checkout.all(), "payment-providers", regionId] as const,
   },
 
   // Legacy aliases for backward compatibility
-  product: (handle: string, region_id?: string) =>
-    queryKeys.products.detail({ handle, region_id }),
+  product: (handle: string, region_id?: string, country_code?: string) =>
+    queryKeys.products.detail({ handle, region_id, country_code }),
 } as const

@@ -1,7 +1,9 @@
 "use client"
 
+import { useQueryClient } from "@tanstack/react-query"
+import { useRegionContext } from "@techsio/storefront-data"
 import { useCallback, useRef } from "react"
-import { usePrefetchProducts } from "@/hooks/product-hooks"
+import { getProductsQueryOptions, usePrefetchProducts } from "@/hooks/product-hooks"
 import { storefrontCacheConfig } from "@/lib/cache-config"
 
 interface UseCategoryPrefetchOptions {
@@ -11,15 +13,16 @@ interface UseCategoryPrefetchOptions {
 }
 
 export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
+  const queryClient = useQueryClient()
+  const region = useRegionContext()
   const enabled = options?.enabled ?? true
   const prefetchLimit = options?.prefetchLimit ?? 12
   const cacheStrategy = options?.cacheStrategy
 
-  const { prefetchProducts, delayedPrefetch, cancelPrefetch } =
-    usePrefetchProducts({
-      cacheStrategy,
-      skipIfCached: true,
-    })
+  const { delayedPrefetch, cancelPrefetch } = usePrefetchProducts({
+    cacheStrategy,
+    skipIfCached: true,
+  })
 
   const activePrefetchesRef = useRef<Set<string>>(new Set())
 
@@ -29,16 +32,17 @@ export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
         return
       }
 
-      await prefetchProducts(
-        {
+      await queryClient.prefetchQuery(
+        getProductsQueryOptions({
           limit: prefetchLimit,
           filters: { categories: categoryIds, sizes: [] },
           sort: "newest",
-        },
-        { cacheStrategy }
+          region_id: region?.region_id ?? undefined,
+          country_code: region?.country_code ?? undefined,
+        })
       )
     },
-    [enabled, prefetchLimit, prefetchProducts, cacheStrategy]
+    [enabled, prefetchLimit, queryClient, region?.country_code, region?.region_id]
   )
 
   const delayedPrefetchCategory = useCallback(
