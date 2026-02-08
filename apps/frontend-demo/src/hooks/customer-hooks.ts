@@ -33,6 +33,9 @@ export const customerHooks = createCustomerHooks<
 >({
   service: createMedusaCustomerService(sdk),
   queryKeys: queryKeys.customer,
+  authQueryKeys: {
+    customer: queryKeys.auth.customer,
+  },
   cacheConfig,
 })
 
