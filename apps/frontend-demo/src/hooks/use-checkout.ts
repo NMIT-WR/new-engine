@@ -41,7 +41,7 @@ export function useCheckout(): UseCheckoutReturn {
     cacheKey: shippingCacheKey,
   })
 
-  const { initiatePaymentAsync } = checkoutHooks.useCheckoutPayment({
+  const { initiatePaymentAsync, paymentProviders } = checkoutHooks.useCheckoutPayment({
     cartId: cart?.id,
     regionId: cart?.region_id ?? undefined,
     cart,
@@ -175,7 +175,6 @@ export function useCheckout(): UseCheckoutReturn {
 
     try {
       await setShippingMethodAsync(methodId)
-      await refetchCart()
     } catch (error) {
       console.error("Failed to add shipping method:", error)
       toast.create({
@@ -215,14 +214,13 @@ export function useCheckout(): UseCheckoutReturn {
         return
       }
 
-      let cartForPayment = currentCart
-      const needsPaymentCollection = !cartForPayment.payment_collection
+      const needsPaymentCollection = !currentCart.payment_collection
       const needsPaymentSession =
-        !cartForPayment.payment_collection?.payment_sessions ||
-        cartForPayment.payment_collection.payment_sessions.length === 0
+        !currentCart.payment_collection?.payment_sessions ||
+        currentCart.payment_collection.payment_sessions.length === 0
 
       if (needsPaymentCollection || needsPaymentSession) {
-        if (!cartForPayment.region_id) {
+        if (!currentCart.region_id) {
           toast.create({
             title: "Chyba",
             description: "Košík nemá nastavený region",
@@ -230,10 +228,12 @@ export function useCheckout(): UseCheckoutReturn {
           })
           return
         }
-        const regionId = cartForPayment.region_id
+        const regionId = currentCart.region_id
 
         const availablePaymentProviders =
-          await checkoutHooks.fetchPaymentProviders(queryClient, regionId)
+          paymentProviders.length > 0
+            ? paymentProviders
+            : await checkoutHooks.fetchPaymentProviders(queryClient, regionId)
 
         const providerId =
           availablePaymentProviders.find(
@@ -250,11 +250,6 @@ export function useCheckout(): UseCheckoutReturn {
         }
 
         await initiatePaymentAsync(providerId)
-
-        const refreshed = await refetchCart()
-        if (refreshed) {
-          cartForPayment = refreshed
-        }
       }
 
       // Complete order using the hook mutation
@@ -308,8 +303,6 @@ export function useCheckout(): UseCheckoutReturn {
     canProceedToStep,
   }
 }
-
-
 
 
 
