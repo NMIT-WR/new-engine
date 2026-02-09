@@ -8,7 +8,7 @@ import { DemoProductCard } from "@/components/molecules/demo-product-card"
 import { usePrefetchProduct } from "@/hooks/product-hooks"
 import { useRegionSelection } from "@/providers/region-provider"
 import type { Product } from "@/types/product"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 import { extractProductData } from "@/utils/product-utils"
 
 interface ProductGridProps {
@@ -61,10 +61,7 @@ export function ProductGrid({
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => {
-          const { displayBadges } = extractProductData(
-            product,
-            selectedRegion?.currency_code
-          )
+          const { displayBadges } = extractProductData(product)
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
           const formattedPrice =

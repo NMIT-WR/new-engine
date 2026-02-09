@@ -16,7 +16,7 @@ import {
 } from "@/hooks/cart-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
 import { orderHelpers } from "@/stores/order-store"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 import { getProductPath } from "@/utils/product-utils"
 
 export default function CartPage() {

@@ -12,7 +12,7 @@ import { ProductTabs } from "@/components/organisms/product-tabs"
 import { productHooks, useProducts } from "@/hooks/product-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
 import { useRegionSelection } from "@/providers/region-provider"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 
 type ProductDetailProps = {
   handle: string

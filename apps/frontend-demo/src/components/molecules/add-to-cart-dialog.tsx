@@ -7,7 +7,7 @@ import { useState } from "react"
 import { useAddLineItemWithToast } from "@/hooks/cart-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
 import type { Product } from "@/types/product"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 
 interface AddToCartDialogProps {
   product: Product

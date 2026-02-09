@@ -6,7 +6,7 @@ import Link from "next/link"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
 import { cartHooks, useRemoveLineItemWithToast } from "@/hooks/cart-hooks"
 import { getVariantInventory, isQuantityAvailable } from "@/lib/inventory"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 import { getProductPath } from "@/utils/product-utils"
 
 export function CartPreview() {
