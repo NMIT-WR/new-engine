@@ -93,7 +93,9 @@ export async function logout(): Promise<void> {
   }
 }
 
-export async function getCustomer(): Promise<StoreCustomer | null> {
+export async function getCustomer(
+  _signal?: AbortSignal
+): Promise<StoreCustomer | null> {
   try {
     const response = await sdk.store.customer.retrieve()
     const customer = response.customer

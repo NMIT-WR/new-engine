@@ -92,7 +92,8 @@ export function getProductsGlobal(
 }
 
 export async function getProductByHandle(
-  params: ProductDetailParams
+  params: ProductDetailParams,
+  _signal?: AbortSignal
 ): Promise<StoreProduct | null> {
   const { handle, region_id, country_code } = params
 

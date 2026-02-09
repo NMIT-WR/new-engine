@@ -1,6 +1,11 @@
-import { createAuthHooks, createCacheConfig } from "@techsio/storefront-data"
+import {
+  createAuthHooks,
+  createCacheConfig,
+  type AuthService,
+} from "@techsio/storefront-data"
 import type { StoreCustomer } from "@medusajs/types"
 import { cacheConfig as appCacheConfig } from "@/lib/cache-config"
+import { AUTH_MESSAGES } from "@/lib/auth-messages"
 import { queryKeys } from "@/lib/query-keys"
 import {
   getCustomer,
@@ -21,18 +26,38 @@ const cacheConfig = createCacheConfig({
   userData: appCacheConfig.userData,
 })
 
+export function getAuthMutationErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (typeof error === "string") {
+    return error
+  }
+
+  return AUTH_MESSAGES.SERVER_ERROR
+}
+
+const authService: AuthService<
+  StoreCustomer,
+  LoginCredentials,
+  RegisterData,
+  Record<string, never>
+> = {
+  getCustomer,
+  login,
+  logout,
+  register,
+}
+
 export const authHooks = createAuthHooks<
   StoreCustomer,
   LoginCredentials,
   RegisterData,
   Record<string, never>
 >({
-  service: {
-    getCustomer: () => getCustomer(),
-    login,
-    logout,
-    register,
-  },
+  service: authService,
   queryKeys: authQueryKeys,
+  queryKeyNamespace: "n1",
   cacheConfig,
 })

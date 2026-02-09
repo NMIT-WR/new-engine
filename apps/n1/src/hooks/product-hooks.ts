@@ -2,7 +2,7 @@ import type { StoreProduct } from "@medusajs/types"
 import {
   createProductHooks,
   createProductQueryKeys,
-  type ProductListResponse,
+  type ProductService,
 } from "@techsio/storefront-data"
 import { PRODUCT_LIMIT, PRODUCT_LIST_FIELDS } from "@/lib/constants"
 import {
@@ -79,15 +79,14 @@ const productQueryKeys = createProductQueryKeys<
   ProductDetailParams
 >("n1")
 
-/**
- * Adapter for getProductByHandle to match ProductService interface
- * (storefront-data expects signal parameter)
- */
-function getProductByHandleAdapter(
-  params: ProductDetailParams,
-  _signal?: AbortSignal
-): Promise<StoreProduct | null> {
-  return getProductByHandle(params)
+const productService: ProductService<
+  StoreProduct,
+  ProductListParams,
+  ProductDetailParams
+> = {
+  getProducts,
+  getProductsGlobal,
+  getProductByHandle,
 }
 
 /**
@@ -108,17 +107,7 @@ export const {
   ProductDetailInput,
   ProductDetailParams
 >({
-  service: {
-    getProducts: getProducts as (
-      params: ProductListParams,
-      signal?: AbortSignal
-    ) => Promise<ProductListResponse<StoreProduct>>,
-    getProductsGlobal: getProductsGlobal as (
-      params: ProductListParams,
-      signal?: AbortSignal
-    ) => Promise<ProductListResponse<StoreProduct>>,
-    getProductByHandle: getProductByHandleAdapter,
-  },
+  service: productService,
   buildListParams,
   buildDetailParams,
   queryKeys: productQueryKeys,

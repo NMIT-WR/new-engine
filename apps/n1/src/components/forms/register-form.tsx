@@ -8,7 +8,10 @@ import { TextField } from "@/components/forms/fields/text-field"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
 import { registerValidators } from "@/lib/form-validators"
-import { authHooks } from "@/hooks/auth-hooks"
+import {
+  authHooks,
+  getAuthMutationErrorMessage,
+} from "@/hooks/auth-hooks"
 import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
@@ -56,7 +59,7 @@ export function RegisterForm({
       onSuccess?.()
     },
     onError: (error) => {
-      const message = error instanceof Error ? error.message : "Unknown error"
+      const message = getAuthMutationErrorMessage(error)
       console.error("Registration failed:", message)
     },
   })
@@ -90,12 +93,7 @@ export function RegisterForm({
     confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
-  const registerErrorMessage =
-    register.error instanceof Error
-      ? register.error.message
-      : typeof register.error === "string"
-        ? register.error
-        : AUTH_MESSAGES.SERVER_ERROR
+  const registerErrorMessage = getAuthMutationErrorMessage(register.error)
 
   return (
     <form
