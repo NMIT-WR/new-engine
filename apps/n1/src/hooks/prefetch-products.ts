@@ -1,4 +1,9 @@
 import { prefetchLogger } from "@/lib/loggers/prefetch"
+import {
+  PREFETCH_CACHE_STRATEGY,
+  PREFETCH_SKIP_IF_CACHED,
+  PREFETCH_SKIP_MODE,
+} from "@/lib/prefetch-policy"
 import { usePrefetchProducts as useBasePrefetchProducts } from "./product-hooks"
 
 /**
@@ -19,8 +24,9 @@ const formatCategoryLabel = (categoryId: string[]): string => {
  */
 export function usePrefetchProducts() {
   const basePrefetch = useBasePrefetchProducts({
-    cacheStrategy: "semiStatic",
-    skipIfCached: true,
+    cacheStrategy: PREFETCH_CACHE_STRATEGY,
+    skipIfCached: PREFETCH_SKIP_IF_CACHED,
+    skipMode: PREFETCH_SKIP_MODE,
   })
 
   const prefetchCategoryProducts = async (
@@ -37,7 +43,11 @@ export function usePrefetchProducts() {
 
     await basePrefetch.prefetchProducts(
       { category_id: categoryId },
-      { prefetchedBy, skipIfCached: true }
+      {
+        prefetchedBy,
+        skipIfCached: PREFETCH_SKIP_IF_CACHED,
+        skipMode: PREFETCH_SKIP_MODE,
+      }
     )
 
     const duration = performance.now() - start
@@ -55,7 +65,11 @@ export function usePrefetchProducts() {
 
     await basePrefetch.prefetchFirstPage(
       { category_id: categoryId },
-      { useGlobalFetcher: true, skipIfCached: true }
+      {
+        useGlobalFetcher: true,
+        skipIfCached: PREFETCH_SKIP_IF_CACHED,
+        skipMode: PREFETCH_SKIP_MODE,
+      }
     )
 
     const duration = performance.now() - start

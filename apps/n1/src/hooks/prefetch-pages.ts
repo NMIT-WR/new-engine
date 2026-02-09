@@ -1,5 +1,6 @@
 "use client"
 
+import { PREFETCH_CACHE_STRATEGY } from "@/lib/prefetch-policy"
 import { usePrefetchPages as useBasePrefetchPages } from "./product-hooks"
 
 type UsePrefetchPagesParams = {
@@ -44,7 +45,7 @@ export function usePrefetchPages({
     totalPages,
     pageSize,
     mode: "priority",
-    cacheStrategy: "semiStatic",
+    cacheStrategy: PREFETCH_CACHE_STRATEGY,
     delays: {
       medium: 500,
       low: 1500,

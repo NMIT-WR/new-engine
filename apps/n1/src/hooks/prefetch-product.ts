@@ -1,6 +1,11 @@
 "use client"
 
 import { prefetchLogger } from "@/lib/loggers/prefetch"
+import {
+  PREFETCH_CACHE_STRATEGY,
+  PREFETCH_SKIP_IF_CACHED,
+  PREFETCH_SKIP_MODE,
+} from "@/lib/prefetch-policy"
 import { usePrefetchProduct as useBasePrefetchProduct } from "./product-hooks"
 
 const PREFETCH_DELAY = 400
@@ -11,9 +16,10 @@ const PREFETCH_DELAY = 400
  */
 export function usePrefetchProduct() {
   const basePrefetch = useBasePrefetchProduct({
-    cacheStrategy: "semiStatic",
+    cacheStrategy: PREFETCH_CACHE_STRATEGY,
     defaultDelay: PREFETCH_DELAY,
-    skipIfCached: true,
+    skipIfCached: PREFETCH_SKIP_IF_CACHED,
+    skipMode: PREFETCH_SKIP_MODE,
   })
 
   const prefetchProduct = async (handle: string, fields?: string) => {
@@ -25,7 +31,10 @@ export function usePrefetchProduct() {
 
     await basePrefetch.prefetchProduct(
       { handle, fields },
-      { skipIfCached: true }
+      {
+        skipIfCached: PREFETCH_SKIP_IF_CACHED,
+        skipMode: PREFETCH_SKIP_MODE,
+      }
     )
   }
 
