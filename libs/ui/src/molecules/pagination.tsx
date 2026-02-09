@@ -39,7 +39,7 @@ const paginationVariants = tv({
       slots: ["link", "ellipsis"],
       className: [
         "inline-flex items-center justify-center",
-        "transition-colors duration-200",
+        "transition-colors duration-200 motion-reduce:transition-none",
         "text-pagination-fg",
       ],
     },
