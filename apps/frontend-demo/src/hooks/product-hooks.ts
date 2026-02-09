@@ -132,18 +132,6 @@ export function getProductsQueryOptions(input: ProductListInput) {
   })
 }
 
-/**
- * Co-located key+fn helper for Product detail queries.
- */
-export function getProductQueryOptions(input: ProductDetailInput) {
-  const params = buildDetailParams(input)
-  return queryOptions({
-    queryKey: queryKeys.products.detail(params),
-    queryFn: ({ signal }) => fetchProductByHandle(params, signal),
-    ...storefrontCacheConfig.semiStatic,
-  })
-}
-
 // Create the hooks
 export const productHooks = createProductHooks<
   Product,
@@ -177,9 +165,6 @@ export const productHooks = createProductHooks<
 export const {
   useProducts,
   useInfiniteProducts: useInfiniteProductsBase,
-  useSuspenseProducts,
-  useProduct,
-  useSuspenseProduct,
   usePrefetchProducts,
   usePrefetchProduct,
   usePrefetchPages,

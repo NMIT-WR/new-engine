@@ -39,16 +39,6 @@ export const customerHooks = createCustomerHooks<
   cacheConfig,
 })
 
-// Re-export hooks
-export const {
-  useCustomerAddresses,
-  useSuspenseCustomerAddresses,
-  useCreateCustomerAddress,
-  useUpdateCustomerAddress,
-  useDeleteCustomerAddress,
-  useUpdateCustomer,
-} = customerHooks
-
 // Toast wrappers for better UX
 
 export function useCreateAddressWithToast() {
@@ -82,25 +72,6 @@ export function useUpdateAddressWithToast() {
     onError: (err) => {
       toast.create({
         title: "Chyba při aktualizaci adresy",
-        description: err instanceof Error ? err.message : "Zkuste to znovu",
-        type: "error",
-      })
-    },
-  })
-}
-
-export function useDeleteAddressWithToast() {
-  const toast = useToast()
-  return customerHooks.useDeleteCustomerAddress({
-    onSuccess: () => {
-      toast.create({
-        title: "Adresa byla smazána",
-        type: "success",
-      })
-    },
-    onError: (err) => {
-      toast.create({
-        title: "Chyba při mazání adresy",
         description: err instanceof Error ? err.message : "Zkuste to znovu",
         type: "error",
       })
