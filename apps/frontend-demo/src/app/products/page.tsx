@@ -3,7 +3,7 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import Link from "next/link"
-import { Suspense } from "react"
+import { Suspense, useMemo, useRef } from "react"
 import { ProductGridSkeleton } from "@/components/molecules/product-grid-skeleton"
 import { ProductFilters } from "@/components/organisms/product-filters"
 import { ProductGrid } from "@/components/organisms/product-grid"
@@ -24,14 +24,51 @@ function ProductsContent() {
 
   const urlFilters = useUrlFilters()
 
+  const categoryFilterIds = useMemo(
+    () => Array.from(urlFilters.filters.categories).sort(),
+    [urlFilters.filters.categories]
+  )
+  const sizeFilterIds = useMemo(
+    () => Array.from(urlFilters.filters.sizes).sort(),
+    [urlFilters.filters.sizes]
+  )
+
   const productFilters = {
-    categories: Array.from(urlFilters.filters.categories) as string[],
-    sizes: Array.from(urlFilters.filters.sizes) as string[],
+    categories: categoryFilterIds as string[],
+    sizes: sizeFilterIds as string[],
   }
 
   const rangeLimit = urlFilters.pageRange.isRange
     ? (urlFilters.pageRange.end - urlFilters.pageRange.start + 1) * pageSize
     : undefined
+
+  const stableInitialLimitSeed = useMemo(
+    () =>
+      JSON.stringify({
+        start: urlFilters.pageRange.start,
+        sort:
+          urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
+        q: urlFilters.searchQuery || undefined,
+        categories: categoryFilterIds,
+        sizes: sizeFilterIds,
+      }),
+    [
+      urlFilters.pageRange.start,
+      urlFilters.sortBy,
+      urlFilters.searchQuery,
+      categoryFilterIds,
+      sizeFilterIds,
+    ]
+  )
+  const stableInitialLimitRef = useRef<number | undefined>(rangeLimit)
+  const stableInitialLimitSeedRef = useRef(stableInitialLimitSeed)
+
+  // Keep initialLimit stable during "load more" URL updates (1-2 -> 1-3),
+  // so infinite query key doesn't reset after fetchNextPage().
+  if (stableInitialLimitSeedRef.current !== stableInitialLimitSeed) {
+    stableInitialLimitSeedRef.current = stableInitialLimitSeed
+    stableInitialLimitRef.current = rangeLimit
+  }
 
   const {
     products,
@@ -43,7 +80,7 @@ function ProductsContent() {
   } = useInfiniteProductsBase({
     page: urlFilters.pageRange.start,
     limit: pageSize,
-    initialLimit: rangeLimit,
+    initialLimit: stableInitialLimitRef.current,
     filters: productFilters,
     sort: urlFilters.sortBy === "relevance" ? undefined : urlFilters.sortBy,
     q: urlFilters.searchQuery || undefined,

@@ -11,5 +11,4 @@ export const orderHooks = createOrderHooks({
     defaultFields: ORDER_FIELDS.join(","),
   }),
   queryKeys: queryKeys.orders,
-  queryKeyNamespace: "frontend-demo",
 })
