@@ -95,7 +95,6 @@ function getProductByHandleAdapter(
  */
 export const {
   useProducts,
-  useInfiniteProducts,
   useSuspenseProducts,
   useProduct,
   useSuspenseProduct,

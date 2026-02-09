@@ -90,6 +90,12 @@ export function RegisterForm({
     confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
+  const registerErrorMessage =
+    register.error instanceof Error
+      ? register.error.message
+      : typeof register.error === "string"
+        ? register.error
+        : AUTH_MESSAGES.SERVER_ERROR
 
   return (
     <form
@@ -100,9 +106,9 @@ export function RegisterForm({
         form.handleSubmit()
       }}
     >
-      {register.error && (
+      {Boolean(register.error) && (
         <ErrorBanner
-          message={register.error.message}
+          message={registerErrorMessage}
           title={AUTH_MESSAGES.REGISTER_FAILED}
         />
       )}
