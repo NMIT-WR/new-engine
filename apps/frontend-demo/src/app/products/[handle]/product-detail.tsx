@@ -10,8 +10,8 @@ import { ProductGrid } from "@/components/organisms/product-grid"
 import { ProductInfo } from "@/components/organisms/product-info"
 import { ProductTabs } from "@/components/organisms/product-tabs"
 import { productHooks, useProducts } from "@/hooks/product-hooks"
-import { useRegion } from "@/hooks/region-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
+import { useRegionSelection } from "@/providers/region-provider"
 import { formatPrice } from "@/utils/price-utils"
 
 type ProductDetailProps = {
@@ -19,7 +19,7 @@ type ProductDetailProps = {
 }
 
 export default function ProductDetail({ handle }: ProductDetailProps) {
-  const { selectedRegion } = useRegion()
+  const { selectedRegion } = useRegionSelection()
   const { product, isLoading, error } = productHooks.useProduct({ handle })
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
