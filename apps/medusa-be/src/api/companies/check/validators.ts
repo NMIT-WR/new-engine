@@ -7,7 +7,3 @@ import {
 export const VatIdentificationNumberSchema = z
   .string()
   .regex(VAT_ID_REGEX, VAT_ID_REGEX_MESSAGE)
-
-export const CompanyIdentificationNumberSchema = z
-  .string()
-  .regex(/^\d{8}$/, "Company identification number must be 8 digits")

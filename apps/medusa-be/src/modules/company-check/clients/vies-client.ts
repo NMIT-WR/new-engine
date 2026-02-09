@@ -57,10 +57,7 @@ export class ViesClient {
 
         const raw = await readResponseText(response, "VIES response was empty")
 
-        const parsed = parseJson<unknown>(
-          raw,
-          "VIES response was not valid JSON"
-        )
+        const parsed = parseJson(raw, "VIES response was not valid JSON")
 
         const result = ViesCheckVatResponseSchema.safeParse(parsed)
         if (!result.success) {

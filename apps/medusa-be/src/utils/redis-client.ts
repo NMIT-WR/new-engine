@@ -214,10 +214,12 @@ export class RedisClient {
         : value !== null && value !== undefined
 
       if (shouldCache) {
-        const ttl =
-          typeof options.ttl === "function"
-            ? options.ttl(value)
-            : options.ttl
+        let ttl: number | undefined
+        if (typeof options.ttl === "function") {
+          ttl = value !== null ? options.ttl(value) : undefined
+        } else {
+          ttl = options.ttl
+        }
         await this.set(key, value, { ttl, tags: options.tags })
       }
 

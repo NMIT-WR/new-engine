@@ -43,7 +43,10 @@ export async function fetchWithTimeout(
     return await fetch(url, { ...init, signal: combinedSignal })
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      throw new TimeoutError(`Request timed out after ${timeoutMs}ms`)
+      if (controller.signal.aborted) {
+        throw new TimeoutError(`Request timed out after ${timeoutMs}ms`)
+      }
+      throw error
     }
     throw error
   } finally {
@@ -81,9 +84,9 @@ export async function readResponseText(
   return text
 }
 
-export function parseJson<T>(raw: string, message: string): T {
+export function parseJson(raw: string, message: string): unknown {
   try {
-    return JSON.parse(raw) as T
+    return JSON.parse(raw)
   } catch (error) {
     throw new MedusaError(
       MedusaError.Types.UNEXPECTED_STATE,
@@ -149,18 +152,13 @@ export async function withRetry<T>(
       }
 
       lastError = error instanceof Error ? error : new Error(String(error))
-
-      if (attempt === policy.maxRetries) {
-        throw new MedusaError(
-          MedusaError.Types.UNEXPECTED_STATE,
-          `${errorContext} after ${policy.maxRetries + 1} attempts: ${lastError.message}`
-        )
-      }
     }
   }
 
+  const fallbackMessage =
+    lastError?.message ?? "Retry loop completed without a final error"
   throw new MedusaError(
     MedusaError.Types.UNEXPECTED_STATE,
-    `${errorContext}: ${lastError?.message || "Unknown error"}`
+    `${errorContext}: ${fallbackMessage}`
   )
 }

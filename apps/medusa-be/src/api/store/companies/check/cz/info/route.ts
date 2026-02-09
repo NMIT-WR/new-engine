@@ -1,14 +1,12 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
-import {
-  CompanyIdentificationNumberSchema,
-  VatIdentificationNumberSchema,
-} from "../../../../../companies/check/validators"
+import { VatIdentificationNumberSchema } from "../../../../../companies/check/validators"
+import { CzCompanyIdentificationNumberSchema } from "./validators"
 
 export const StoreCompaniesCheckCzInfoSchema = z
   .object({
     vat_identification_number: VatIdentificationNumberSchema.optional(),
-    company_identification_number: CompanyIdentificationNumberSchema.optional(),
+    company_identification_number: CzCompanyIdentificationNumberSchema.optional(),
     company_name: z.string().min(1).optional(),
   })
   .superRefine((data, ctx) => {
@@ -38,7 +36,8 @@ export async function GET(
   req: MedusaRequest<unknown, StoreCompaniesCheckCzInfoSchemaType>,
   res: MedusaResponse
 ): Promise<void> {
+  // TODO(MED-31): Implement company info check via ARES + VIES workflow.
   res.status(501).json({
-    error: "Not implemented",
+    error: "Not implemented — see MED-31",
   })
 }

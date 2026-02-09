@@ -19,7 +19,8 @@ export async function GET(
   req: MedusaRequest<unknown, AdminCompaniesCheckCzAddressCountSchemaType>,
   res: MedusaResponse
 ): Promise<void> {
+  // TODO(MED-31): Implement address count check via ARES workflow.
   res.status(501).json({
-    error: "Not implemented",
+    error: "Not implemented — see MED-31",
   })
 }

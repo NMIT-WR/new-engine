@@ -17,7 +17,8 @@ export async function GET(
   req: MedusaRequest<unknown, AdminCompaniesCheckCzTaxReliabilitySchemaType>,
   res: MedusaResponse
 ): Promise<void> {
+  // TODO(MED-31): Implement tax reliability check via Moje Dane workflow.
   res.status(501).json({
-    error: "Not implemented",
+    error: "Not implemented — see MED-31",
   })
 }
