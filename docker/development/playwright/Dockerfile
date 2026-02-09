@@ -6,12 +6,14 @@ ENV PLAYWRIGHT_BROWSERS_PATH=0
 
 WORKDIR /app
 
-RUN npm init -y \
-  && npm i -D @playwright/test@${PLAYWRIGHT_VERSION} http-server \
-  && npx -y playwright@${PLAYWRIGHT_VERSION} install --with-deps chromium webkit \
+COPY --from=oven/bun:1.3.9 /usr/local/bin/bun /usr/local/bin/bun
+
+RUN printf '{\n  "private": true\n}\n' > package.json \
+  && bun add -d @playwright/test@${PLAYWRIGHT_VERSION} \
+  && bun x playwright install --with-deps chromium webkit \
   && chown -R node:node /app
 
 HEALTHCHECK NONE
 USER node
 
-ENTRYPOINT ["npx", "playwright"]
+ENTRYPOINT ["bun", "x", "playwright"]

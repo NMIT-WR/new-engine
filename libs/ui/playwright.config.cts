@@ -49,7 +49,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `npx --no-install http-server -p ${baseUrl.port || 6006}`,
+    command: `bun --bun ../test/static-server.mjs --port ${baseUrl.port || 6006}`,
     url: storybookUrl,
     cwd: staticDir,
     reuseExistingServer: true,
