@@ -15,3 +15,11 @@ export const ViesCheckVatResponseSchema = z
     traderCityMatch: z.string().nullable().optional(),
   })
   .passthrough()
+
+export const MojeDaneStatusResponseSchema = z
+  .object({
+    nespolehlivyPlatce: z.enum(["ANO", "NE", "NENALEZEN"]),
+    datumZverejneniNespolehlivosti: z.string().nullable().optional(),
+    typSubjektu: z.string().nullable().optional(),
+  })
+  .passthrough()

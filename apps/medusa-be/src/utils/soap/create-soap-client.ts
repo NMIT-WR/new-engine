@@ -35,7 +35,7 @@ type SoapCreateClientOptions = {
 const DEFAULT_SOAP_TIMEOUT_MS = 15_000
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null
+  return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
 function createWsSecurity(options: SoapWsSecurityOptions): unknown {
@@ -145,6 +145,12 @@ function withTimeout<T>(
 
 function normalizeSoapResult<T>(result: unknown): T {
   if (Array.isArray(result)) {
+    if (result.length === 0) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "SOAP operation returned empty result"
+      )
+    }
     return result[0] as T
   }
   return result as T
@@ -241,7 +247,11 @@ export async function callSoapOperation<T>(
 
   const result = await withTimeout(
     new Promise<unknown>((resolve, reject) => {
-      ;(method as (input: unknown, callback: (error: unknown, value?: unknown) => void) => void).call(
+      const callbackMethod = method as (
+        input: unknown,
+        callback: (error: unknown, value?: unknown) => void
+      ) => void
+      callbackMethod.call(
         client,
         args,
         (error, value) => {

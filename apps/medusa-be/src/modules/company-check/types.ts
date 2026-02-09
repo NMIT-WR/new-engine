@@ -1,5 +1,8 @@
 import { z } from "zod"
-import { ViesCheckVatResponseSchema } from "./schema"
+import {
+  MojeDaneStatusResponseSchema,
+  ViesCheckVatResponseSchema,
+} from "./schema"
 
 export type CompanyInfo = {
   company_name: string
@@ -18,8 +21,16 @@ export type ViesCheckVatRequest = {
 
 export type ViesCheckVatResponse = z.infer<typeof ViesCheckVatResponseSchema>
 
+export type MojeDaneStatusResponse = z.infer<
+  typeof MojeDaneStatusResponseSchema
+>
+
 export type ViesClientOptions = {
   baseUrl: string
+}
+
+export type MojeDaneClientOptions = {
+  wsdlUrl: string
 }
 
 export type ViesCheckVatResult = {

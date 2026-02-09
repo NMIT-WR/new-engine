@@ -2,6 +2,9 @@ import { MedusaError } from "@medusajs/framework/utils"
 import type { ViesCheckVatResponse, ViesCheckVatResult } from "./types"
 import { VAT_ID_REGEX, VAT_ID_REGEX_MESSAGE } from "./constants"
 
+const DIC_DIGITS_REGEX = /^\d{1,10}$/
+const MOJE_DANE_MAX_DEPTH = 6
+
 export function parseVatIdentificationNumber(value: string): {
   countryCode: string
   vatNumber: string
@@ -21,6 +24,65 @@ export function parseVatIdentificationNumber(value: string): {
   }
 }
 
+export function normalizeDicDigits(value: string): string {
+  const normalized = value.trim().toUpperCase()
+  if (!normalized) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "DIC must contain digits only"
+    )
+  }
+
+  const digits = normalized.startsWith("CZ")
+    ? normalized.slice(2)
+    : normalized
+
+  if (!DIC_DIGITS_REGEX.test(digits)) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "DIC must be 1 to 10 digits"
+    )
+  }
+
+  return digits
+}
+
+export function extractMojeDaneStatusPayload(
+  value: unknown,
+  depth = 0
+): Record<string, unknown> | null {
+  if (depth > MOJE_DANE_MAX_DEPTH) {
+    return null
+  }
+
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      const found = extractMojeDaneStatusPayload(entry, depth + 1)
+      if (found) {
+        return found
+      }
+    }
+    return null
+  }
+
+  if (!isRecord(value)) {
+    return null
+  }
+
+  if ("nespolehlivyPlatce" in value) {
+    return value
+  }
+
+  for (const entry of Object.values(value)) {
+    const found = extractMojeDaneStatusPayload(entry, depth + 1)
+    if (found) {
+      return found
+    }
+  }
+
+  return null
+}
+
 export function mapViesResponse(
   response: ViesCheckVatResponse
 ): ViesCheckVatResult {
@@ -37,4 +99,8 @@ export function mapViesResponse(
     trader_postal_code_match: response.traderPostalCodeMatch ?? null,
     trader_city_match: response.traderCityMatch ?? null,
   }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
 }
