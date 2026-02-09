@@ -4,22 +4,32 @@ import {
   RedisClient,
   type RedisClientDependencies,
 } from "../../utils/redis-client"
+import { MojeDaneClient } from "./clients/moje-dane-client"
 import { ViesClient } from "./clients/vies-client"
-import type { ViesCheckVatRequest, ViesCheckVatResponse } from "./types"
+import type {
+  TaxReliabilityResult,
+  ViesCheckVatRequest,
+  ViesCheckVatResponse,
+} from "./types"
+import { mapMojeDaneStatus, normalizeDicDigits } from "./utils"
 
 const CACHE_KEYS = {
   vies: (countryCode: string, vatNumber: string) =>
     `company-check:vies:${countryCode}:${vatNumber}`,
+  mojeDane: (dicDigits: string) => `company-check:mojedane:${dicDigits}`,
 } as const
 
 const LOCK_KEYS = {
   vies: (countryCode: string, vatNumber: string) =>
     `company-check:lock:vies:${countryCode}:${vatNumber}`,
+  mojeDane: (dicDigits: string) => `company-check:lock:mojedane:${dicDigits}`,
 } as const
 
 const CACHE_TTL = {
   VIES: 6 * 60 * 60, // 6 hours
   VIES_NEGATIVE: 30 * 60, // 30 minutes
+  MOJE_DANE: 24 * 60 * 60, // 24 hours
+  MOJE_DANE_NEGATIVE: 30 * 60, // 30 minutes
 } as const
 
 type InjectedDependencies = RedisClientDependencies & {
@@ -30,6 +40,7 @@ export class CompanyCheckModuleService {
   private readonly logger_: Logger
   private readonly redis_: RedisClient
   private viesClient_: ViesClient | null = null
+  private mojeDaneClient_: MojeDaneClient | null = null
 
   constructor(container: InjectedDependencies) {
     this.logger_ = container.logger
@@ -64,6 +75,31 @@ export class CompanyCheckModuleService {
     })
   }
 
+  async checkTaxReliability(
+    dicDigits: string
+  ): Promise<TaxReliabilityResult> {
+    const normalizedDic = normalizeDicDigits(dicDigits)
+    const cacheKey = CACHE_KEYS.mojeDane(normalizedDic)
+    const lockKey = LOCK_KEYS.mojeDane(normalizedDic)
+
+    return this.redis_.getOrSet(
+      cacheKey,
+      async () => {
+        const client = this.getMojeDaneClient()
+        const response =
+          await client.getStatusNespolehlivySubjektRozsirenyV2(normalizedDic)
+        return mapMojeDaneStatus(response)
+      },
+      {
+        lockKey,
+        ttl: (value) =>
+          value.reliable === null
+            ? CACHE_TTL.MOJE_DANE_NEGATIVE
+            : CACHE_TTL.MOJE_DANE,
+      }
+    )
+  }
+
   private getViesClient(): ViesClient {
     if (this.viesClient_) {
       return this.viesClient_
@@ -79,5 +115,22 @@ export class CompanyCheckModuleService {
 
     this.viesClient_ = new ViesClient({ baseUrl })
     return this.viesClient_
+  }
+
+  private getMojeDaneClient(): MojeDaneClient {
+    if (this.mojeDaneClient_) {
+      return this.mojeDaneClient_
+    }
+
+    const wsdlUrl = process.env.MOJE_DANE_WSDL_URL?.trim()
+    if (!wsdlUrl) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Moje Dane WSDL URL is not configured"
+      )
+    }
+
+    this.mojeDaneClient_ = new MojeDaneClient({ wsdlUrl })
+    return this.mojeDaneClient_
   }
 }

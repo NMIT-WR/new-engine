@@ -42,7 +42,11 @@ export class MojeDaneClient {
       const raw = await callSoapOperation<unknown>(
         client,
         MOJE_DANE_OPERATION,
-        { dic: normalizedDic },
+        {
+          StatusNespolehlivySubjektRozsirenyV2Request: {
+            dic: [normalizedDic],
+          },
+        },
         MOJE_DANE_TIMEOUT_MS
       )
 

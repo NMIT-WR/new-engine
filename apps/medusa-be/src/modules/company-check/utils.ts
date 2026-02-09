@@ -1,5 +1,10 @@
 import { MedusaError } from "@medusajs/framework/utils"
-import type { ViesCheckVatResponse, ViesCheckVatResult } from "./types"
+import type {
+  MojeDaneStatusResponse,
+  TaxReliabilityResult,
+  ViesCheckVatResponse,
+  ViesCheckVatResult,
+} from "./types"
 import { VAT_ID_REGEX, VAT_ID_REGEX_MESSAGE } from "./constants"
 
 const DIC_DIGITS_REGEX = /^\d{1,10}$/
@@ -29,7 +34,7 @@ export function normalizeDicDigits(value: string): string {
   if (!normalized) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
-      "DIC must contain digits only"
+      "DIC value is required"
     )
   }
 
@@ -81,6 +86,36 @@ export function extractMojeDaneStatusPayload(
   }
 
   return null
+}
+
+export function mapMojeDaneStatus(
+  response: MojeDaneStatusResponse
+): TaxReliabilityResult {
+  let reliable: boolean | null
+
+  switch (response.nespolehlivyPlatce) {
+    case "ANO":
+      reliable = false
+      break
+    case "NE":
+      reliable = true
+      break
+    case "NENALEZEN":
+      reliable = null
+      break
+    default:
+      reliable = null
+      break
+  }
+
+  return {
+    reliable,
+    unreliable_published_at:
+      reliable === null
+        ? null
+        : response.datumZverejneniNespolehlivosti ?? null,
+    subject_type: reliable === null ? null : response.typSubjektu ?? null,
+  }
 }
 
 export function mapViesResponse(

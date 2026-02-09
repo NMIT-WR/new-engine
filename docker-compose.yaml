@@ -23,6 +23,7 @@ x-medusa-env: &medusa-env
   FEATURE_COMPANY_ENABLED: ${DC_FEATURE_COMPANY_ENABLED:-0}
   PPL_ENVIRONMENT: ${DC_PPL_ENVIRONMENT:-testing}
   VIES_BASE_URL: ${DC_VIES_BASE_URL}
+  MOJE_DANE_WSDL_URL: ${DC_MOJE_DANE_WSDL_URL}
 
 x-medusa-base: &medusa-base
   restart: unless-stopped
