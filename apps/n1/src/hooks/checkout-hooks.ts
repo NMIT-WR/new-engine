@@ -17,8 +17,7 @@ const cartQueryKeys = {
   all: () => queryKeys.cart.all(),
   active: (params: { cartId?: string | null; regionId?: string | null }) =>
     queryKeys.cart.active(params),
-  detail: (cartId: string) =>
-    [...queryKeys.cart.all(), "detail", cartId] as const,
+  detail: (cartId: string) => queryKeys.cart.detail(cartId),
 }
 
 /**

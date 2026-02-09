@@ -1,7 +1,9 @@
 import type { ProductQueryParams } from "./product-query-params"
 
+export const QUERY_KEY_NAMESPACE = "n1" as const
+
 export const queryKeys = {
-  all: ["n1"] as const,
+  all: [QUERY_KEY_NAMESPACE] as const,
 
   regions: () => [...queryKeys.all, "regions"] as const,
 
@@ -21,6 +23,7 @@ export const queryKeys = {
 
   auth: {
     all: () => [...queryKeys.all, "auth"] as const,
+    customer: () => [...queryKeys.auth.all(), "customer"] as const,
     session: () => [...queryKeys.auth.all(), "session"] as const,
   },
 
@@ -42,14 +45,31 @@ export const queryKeys = {
             params.regionId ?? null,
           ] as const)
         : ([...queryKeys.cart.all(), "active"] as const),
-    shippingOptions: (cartId: string) =>
-      [...queryKeys.cart.all(), "shipping-options", cartId] as const,
+    detail: (cartId: string) => [...queryKeys.cart.all(), "detail", cartId] as const,
+    shippingOptions: (cartId: string, cacheKey?: string) =>
+      cacheKey
+        ? ([
+            ...queryKeys.checkout.all(),
+            "shipping-options",
+            cartId,
+            cacheKey,
+          ] as const)
+        : ([...queryKeys.checkout.all(), "shipping-options", cartId] as const),
   },
 
+  checkout: {
+    all: () => [...queryKeys.all, "checkout"] as const,
+    shippingOptions: (cartId: string, cacheKey?: string) =>
+      queryKeys.cart.shippingOptions(cartId, cacheKey),
+    paymentProviders: (regionId: string) =>
+      [...queryKeys.checkout.all(), "payment-providers", regionId] as const,
+  },
+
+  // Backward-compatible alias
   payment: {
-    all: () => [...queryKeys.all, "payment"] as const,
+    all: () => queryKeys.checkout.all(),
     providers: (regionId: string) =>
-      [...queryKeys.payment.all(), "providers", regionId] as const,
+      queryKeys.checkout.paymentProviders(regionId),
   },
 
   customer: {

@@ -2,6 +2,7 @@ import type { StoreCustomer, StoreCustomerAddress } from "@medusajs/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createCustomerHooks } from "@techsio/storefront-data"
 import { AddressValidationError } from "@/lib/errors"
+import { queryKeys } from "@/lib/query-keys"
 import {
   getAddresses,
   createAddress,
@@ -99,6 +100,9 @@ const baseHooks = createCustomerHooks<
     deleteAddress: deleteAddressAdapter,
     updateCustomer: updateCustomerAdapter,
   },
+  authQueryKeys: {
+    customer: () => queryKeys.customer.profile(),
+  },
   queryKeyNamespace: "n1",
 })
 
@@ -113,8 +117,8 @@ export const {
  * Query keys for cache invalidation (matches n1 namespace)
  */
 const customerQueryKeys = {
-  all: () => ["n1", "customer"] as const,
-  profile: () => ["n1", "customer", "profile"] as const,
+  all: () => queryKeys.customer.all(),
+  profile: () => queryKeys.customer.profile(),
 }
 
 /**
