@@ -1,17 +1,12 @@
 import type { StoreCustomer, StoreCustomerAddress } from "@medusajs/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createCustomerHooks } from "@techsio/storefront-data"
-import { AddressValidationError } from "@/lib/errors"
-import { queryKeys } from "@/lib/query-keys"
 import {
-  getAddresses,
-  createAddress,
-  updateAddress,
-  deleteAddress,
-  updateCustomer,
-  type CreateAddressData,
-  type UpdateCustomerData,
-} from "@/services/customer-service"
+  createCustomerHooks,
+  createMedusaCustomerService,
+} from "@techsio/storefront-data"
+import { AddressValidationError, logError } from "@/lib/errors"
+import { sdk } from "@/lib/medusa-client"
+import { queryKeys } from "@/lib/query-keys"
 import type { AddressFormData } from "@/utils/address-validation"
 import { validateAddressForm } from "@/utils/address-validation"
 import { cleanPhoneNumber } from "@/utils/format/format-phone-number"
@@ -22,6 +17,27 @@ import { cleanPostalCode } from "@/utils/format/format-postal-code"
  */
 export type AddressListInput = {
   enabled?: boolean
+}
+
+export type CreateAddressData = {
+  first_name: string
+  last_name: string
+  company?: string
+  address_1: string
+  address_2?: string
+  city: string
+  province?: string
+  postal_code: string
+  country_code: string
+  phone?: string
+}
+
+export type UpdateCustomerData = {
+  first_name?: string
+  last_name?: string
+  phone?: string
+  password?: string
+  metadata?: Record<string, unknown>
 }
 
 export type CustomerUpdateInput = UpdateCustomerData
@@ -47,34 +63,98 @@ function isCompleteAddressData(data: Partial<CreateAddressData>): boolean {
   return "first_name" in data && "last_name" in data && "address_1" in data
 }
 
+const baseCustomerService = createMedusaCustomerService(sdk)
+
 /**
- * Service adapters
+ * n1 wrapper actions over storefront-data medusa service.
+ * Keeps Czech error messages and legacy fallback behavior.
+ */
+async function getAddressesAction() {
+  try {
+    return await baseCustomerService.getAddresses({}, undefined)
+  } catch (err) {
+    logError("CustomerService.getAddresses", err)
+    // Keep legacy n1 behavior - return empty list on failure
+    return { addresses: [] }
+  }
+}
+
+async function createAddressAction(
+  params: CreateAddressData
+): Promise<StoreCustomerAddress> {
+  try {
+    return await baseCustomerService.createAddress(params)
+  } catch (err) {
+    logError("CustomerService.createAddress", err)
+    throw new Error("Nepodařilo se vytvořit adresu")
+  }
+}
+
+async function updateAddressAction(
+  addressId: string,
+  params: Partial<CreateAddressData>
+): Promise<StoreCustomerAddress> {
+  try {
+    return await baseCustomerService.updateAddress(addressId, params)
+  } catch (err) {
+    logError("CustomerService.updateAddress", err)
+    throw new Error("Nepodařilo se aktualizovat adresu")
+  }
+}
+
+async function deleteAddressAction(addressId: string): Promise<void> {
+  try {
+    await baseCustomerService.deleteAddress(addressId)
+  } catch (err) {
+    logError("CustomerService.deleteAddress", err)
+    throw new Error("Nepodařilo se smazat adresu")
+  }
+}
+
+async function updateCustomerAction(
+  params: CustomerUpdateInput
+): Promise<StoreCustomer> {
+  const { password: _password, ...safeParams } = params
+
+  try {
+    if (!baseCustomerService.updateCustomer) {
+      throw new Error("updateCustomer service is not configured")
+    }
+    return await baseCustomerService.updateCustomer(safeParams)
+  } catch (err) {
+    logError("CustomerService.updateCustomer", err)
+    throw new Error("Nepodařilo se aktualizovat profil")
+  }
+}
+
+/**
+ * Service adapters for createCustomerHooks
  */
 function getAddressesAdapter(_params: AddressListInput, _signal?: AbortSignal) {
-  return getAddresses()
+  return getAddressesAction()
 }
 
 function createAddressAdapter(
   params: CreateAddressData
 ): Promise<StoreCustomerAddress> {
-  return createAddress(params)
+  return createAddressAction(params)
 }
 
 function updateAddressAdapter(
   addressId: string,
   params: Partial<CreateAddressData>
 ): Promise<StoreCustomerAddress> {
-  return updateAddress(addressId, params)
+  return updateAddressAction(addressId, params)
 }
 
 function deleteAddressAdapter(addressId: string): Promise<void> {
-  return deleteAddress(addressId)
+  return deleteAddressAction(addressId)
 }
 
 function updateCustomerAdapter(
   params: CustomerUpdateInput
 ): Promise<StoreCustomer> {
-  return updateCustomer(params)
+  return updateCustomerAction(params)
 }
 
 /**
@@ -139,7 +219,7 @@ export function useCreateAddress() {
       // Clean data before API call
       const cleanedData = cleanAddressData(data)
 
-      return await createAddress(cleanedData)
+      return await createAddressAction(cleanedData)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -175,7 +255,7 @@ export function useUpdateAddress() {
       // Clean data before API call
       const cleanedData = cleanAddressData(data)
 
-      return await updateAddress(addressId, cleanedData)
+      return await updateAddressAction(addressId, cleanedData)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -192,7 +272,7 @@ export function useDeleteAddress() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (addressId: string) => deleteAddress(addressId),
+    mutationFn: (addressId: string) => deleteAddressAction(addressId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: customerQueryKeys.all(),

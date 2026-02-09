@@ -1,4 +1,8 @@
 import type { HttpTypes } from "@medusajs/types"
+import {
+  createMedusaCartService,
+  createMedusaCheckoutService,
+} from "@techsio/storefront-data"
 import { CartServiceError, isNotFoundError } from "@/lib/errors"
 import { sdk } from "@/lib/medusa-client"
 
@@ -45,25 +49,19 @@ export const cartStorage = {
   },
 }
 
+const baseCartService = createMedusaCartService(sdk)
+const baseCheckoutService = createMedusaCheckoutService(sdk)
+
 export async function retrieveCart(
   cartId: string,
-  _signal?: AbortSignal
+  signal?: AbortSignal
 ): Promise<Cart | null> {
   try {
     if (!cartId) {
       throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
     }
 
-    const { cart } = await sdk.store.cart.retrieve(cartId)
-
-    if (!cart) {
-      throw new CartServiceError(
-        "Košík byl načten, ale je prázdný",
-        "CART_NOT_FOUND"
-      )
-    }
-
-    return cart
+    return await baseCartService.retrieveCart(cartId, signal)
   } catch (error) {
     // 404 is expected - cart was deleted or expired
     if (isNotFoundError(error)) {
@@ -156,16 +154,7 @@ export async function createCartFromParams(
   params: HttpTypes.StoreCreateCart
 ): Promise<Cart> {
   try {
-    const response = await sdk.store.cart.create(params)
-
-    if (!response.cart) {
-      throw new CartServiceError(
-        "Nepodařilo se vytvořit košík",
-        "CART_CREATION_FAILED"
-      )
-    }
-
-    return response.cart
+    return await baseCartService.createCart(params)
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -183,16 +172,14 @@ export async function updateCart(
       throw new CartServiceError("Cart ID je povinné", "VALIDATION_ERROR")
     }
 
-    const response = await sdk.store.cart.update(cartId, params)
-
-    if (!response.cart) {
+    if (!baseCartService.updateCart) {
       throw new CartServiceError(
-        "Nepodařilo se aktualizovat košík",
+        "Cart update service není dostupná",
         "CART_NOT_FOUND"
       )
     }
 
-    return response.cart
+    return await baseCartService.updateCart(cartId, params)
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -222,18 +209,18 @@ export async function addToCart(
       )
     }
 
-    const response = await sdk.store.cart.createLineItem(cartId, {
+    if (!baseCartService.addLineItem) {
+      throw new CartServiceError(
+        "Add item service není dostupná",
+        "ITEM_ADD_FAILED"
+      )
+    }
+
+    const cart = await baseCartService.addLineItem(cartId, {
       variant_id: variantId,
       quantity,
       metadata,
     })
-
-    if (!response.cart) {
-      throw new CartServiceError(
-        "Nepodařilo se přidat položku do košíku",
-        "ITEM_ADD_FAILED"
-      )
-    }
 
     if (process.env.NODE_ENV === "development") {
       console.log("[CartService] Item added to cart:", {
@@ -243,7 +230,7 @@ export async function addToCart(
       })
     }
 
-    return response.cart
+    return cart
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -272,18 +259,16 @@ export async function updateLineItem(
       )
     }
 
-    const response = await sdk.store.cart.updateLineItem(cartId, lineItemId, {
-      quantity,
-    })
-
-    if (!response.cart) {
+    if (!baseCartService.updateLineItem) {
       throw new CartServiceError(
-        "Nepodařilo se aktualizovat položku",
+        "Update item service není dostupná",
         "ITEM_UPDATE_FAILED"
       )
     }
 
-    return response.cart
+    return await baseCartService.updateLineItem(cartId, lineItemId, {
+      quantity,
+    })
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -304,16 +289,14 @@ export async function removeLineItem(
       )
     }
 
-    const response = await sdk.store.cart.deleteLineItem(cartId, lineItemId)
-
-    if (!response.parent) {
+    if (!baseCartService.removeLineItem) {
       throw new CartServiceError(
-        "Nepodařilo se načíst aktualizovaný košík",
+        "Remove item service není dostupná",
         "ITEM_REMOVE_FAILED"
       )
     }
 
-    return response.parent
+    return await baseCartService.removeLineItem(cartId, lineItemId)
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -323,23 +306,28 @@ export async function removeLineItem(
 }
 
 export async function getShippingOptions(
-  cartId: string
+  cartId: string,
+  signal?: AbortSignal
 ): Promise<HttpTypes.StoreCartShippingOption[]> {
   try {
     if (!cartId) {
       throw new CartServiceError("Cart ID je povinné", "SHIPPING_NOT_AVAILABLE")
     }
 
-    // Use fulfillment.listCartOptions with cart_id
-    const response = await sdk.store.fulfillment.listCartOptions({
-      cart_id: cartId,
-    })
-
     if (process.env.NODE_ENV === "development") {
-      console.log("[CartService] Shipping options:", response.shipping_options)
+      console.log("[CartService] Shipping options: loading")
     }
 
-    return response.shipping_options || []
+    const shippingOptions = await baseCheckoutService.listShippingOptions(
+      cartId,
+      signal
+    )
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[CartService] Shipping options:", shippingOptions)
+    }
+
+    return shippingOptions
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -348,24 +336,25 @@ export async function getShippingOptions(
   }
 }
 
-export async function getPaymentProviders(regionId: string) {
+export async function getPaymentProviders(
+  regionId: string,
+  signal?: AbortSignal
+) {
   try {
     if (!regionId) {
       throw new CartServiceError("Region ID je povinné", "PAYMENT_FAILED")
     }
 
-    const response = await sdk.store.payment.listPaymentProviders({
-      region_id: regionId,
-    })
+    const providers = await baseCheckoutService.listPaymentProviders(
+      regionId,
+      signal
+    )
 
     if (process.env.NODE_ENV === "development") {
-      console.log(
-        "[CartService] Payment providers:",
-        response.payment_providers
-      )
+      console.log("[CartService] Payment providers:", providers)
     }
 
-    return response.payment_providers || []
+    return providers
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -409,23 +398,17 @@ export async function setShippingMethod(
           )
         : {}
 
-    const response = await sdk.store.cart.addShippingMethod(cartId, {
-      option_id: optionId,
-      data: shippingData,
-    })
-
-    if (!response.cart) {
-      throw new CartServiceError(
-        "Nepodařilo se nastavit způsob dopravy",
-        "SHIPPING_SET_FAILED"
-      )
-    }
+    const cart = await baseCheckoutService.addShippingMethod(
+      cartId,
+      optionId,
+      shippingData
+    )
 
     if (process.env.NODE_ENV === "development") {
       console.log("[CartService] Shipping method set:", optionId)
     }
 
-    return response.cart
+    return cart
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -437,7 +420,7 @@ export async function setShippingMethod(
 export async function createPaymentCollection(
   cartId: string,
   providerId: string
-) {
+): Promise<HttpTypes.StorePaymentCollectionResponse> {
   try {
     if (!cartId) {
       throw new CartServiceError("Cart ID je povinné", "PAYMENT_INIT_FAILED")
@@ -451,7 +434,7 @@ export async function createPaymentCollection(
     }
 
     // Get current cart
-    const { cart } = await sdk.store.cart.retrieve(cartId)
+    const cart = await baseCartService.retrieveCart(cartId)
 
     if (!cart) {
       throw new CartServiceError("Košík nebyl nalezen", "PAYMENT_INIT_FAILED")
@@ -474,11 +457,13 @@ export async function createPaymentCollection(
     }
 
     // Use the provider selected by user (not hardcoded!)
-    const response = await sdk.store.payment.initiatePaymentSession(cart, {
-      provider_id: providerId,
-    })
+    const paymentCollection = await baseCheckoutService.initiatePaymentSession(
+      cartId,
+      providerId,
+      cart
+    )
 
-    if (!response.payment_collection) {
+    if (!paymentCollection) {
       throw new CartServiceError(
         "Nepodařilo se inicializovat platební session",
         "PAYMENT_INIT_FAILED"
@@ -487,9 +472,9 @@ export async function createPaymentCollection(
 
     if (process.env.NODE_ENV === "development") {
       console.log("[CartService] Payment session initialized:", {
-        collectionId: response.payment_collection.id,
-        sessionCount: response.payment_collection.payment_sessions?.length || 0,
-        sessions: response.payment_collection.payment_sessions?.map((s) => ({
+        collectionId: paymentCollection.id,
+        sessionCount: paymentCollection.payment_sessions?.length || 0,
+        sessions: paymentCollection.payment_sessions?.map((s) => ({
           id: s.id,
           status: s.status,
           provider_id: s.provider_id,
@@ -497,7 +482,7 @@ export async function createPaymentCollection(
       })
     }
 
-    return response
+    return { payment_collection: paymentCollection }
   } catch (error) {
     if (CartServiceError.isCartServiceError(error)) {
       throw error
@@ -520,25 +505,32 @@ export async function completeCart(
 
     // Debug: Check cart state before completing
     if (process.env.NODE_ENV === "development") {
-      const { cart: currentCart } = await sdk.store.cart.retrieve(cartId)
+      const currentCart = await baseCartService.retrieveCart(cartId)
       console.log("[CartService] Cart state before complete:", {
-        hasPaymentCollection: !!currentCart.payment_collection,
-        paymentCollectionId: currentCart.payment_collection?.id,
+        hasPaymentCollection: !!currentCart?.payment_collection,
+        paymentCollectionId: currentCart?.payment_collection?.id,
         paymentSessionsCount:
-          currentCart.payment_collection?.payment_sessions?.length || 0,
-        paymentSessions: currentCart.payment_collection?.payment_sessions?.map(
+          currentCart?.payment_collection?.payment_sessions?.length || 0,
+        paymentSessions: currentCart?.payment_collection?.payment_sessions?.map(
           (s) => ({
             id: s.id,
             status: s.status,
             provider_id: s.provider_id,
           })
         ),
-        hasShippingMethod: !!currentCart.shipping_methods?.[0],
-        shippingMethodId: currentCart.shipping_methods?.[0]?.id,
+        hasShippingMethod: !!currentCart?.shipping_methods?.[0],
+        shippingMethodId: currentCart?.shipping_methods?.[0]?.id,
       })
     }
 
-    const response = await sdk.store.cart.complete(cartId)
+    if (!baseCartService.completeCart) {
+      throw new CartServiceError(
+        "Complete cart service není dostupná",
+        "ORDER_CREATION_FAILED"
+      )
+    }
+
+    const response = await baseCartService.completeCart(cartId)
 
     // Success case - SDK returned order
     if (response.type === "order") {

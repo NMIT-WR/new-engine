@@ -1,10 +1,10 @@
 import type { StoreOrder } from "@medusajs/types"
-import { createOrderHooks } from "@techsio/storefront-data"
 import {
-  type GetOrdersParams,
-  getOrderById,
-  getOrders,
-} from "@/services/order-service"
+  createMedusaOrderService,
+  createOrderHooks,
+  type MedusaOrderListInput,
+} from "@techsio/storefront-data"
+import { sdk } from "@/lib/medusa-client"
 
 /**
  * Input types for order hooks
@@ -21,10 +21,14 @@ export type OrderDetailInput = {
   enabled?: boolean
 }
 
+type OrderListParams = MedusaOrderListInput & {
+  fields?: string
+}
+
 /**
  * Build list params from input
  */
-function buildListParams(input: OrderListInput): GetOrdersParams {
+function buildListParams(input: OrderListInput): OrderListParams {
   const { page = 1, limit = 10, offset } = input ?? {}
 
   return {
@@ -41,31 +45,60 @@ function buildDetailParams(input: OrderDetailInput): string {
 }
 
 /**
- * Adapter for getOrderById to match OrderService interface
- * (no transformation needed - just forwarding)
+ * Base storefront-data medusa order service.
+ * Wrapped below to preserve n1 behavior (error messages + order sorting).
  */
-function getOrderAdapter(
-  orderId: string,
-  _signal?: AbortSignal
-): Promise<StoreOrder | null> {
-  if (!orderId) {
-    return Promise.resolve(null)
-  }
-  return getOrderById(orderId)
-}
+const baseOrderService = createMedusaOrderService(sdk, {
+  defaultFields: "*items",
+})
 
 /**
- * Adapter for getOrders to match OrderService interface
- * (transforms response shape)
+ * n1 adapter over createMedusaOrderService
+ * - keeps Czech error messages
+ * - keeps newest-first order list sorting
+ * - keeps existing detail param shape (string id) for query-key compatibility
  */
-async function getOrdersAdapter(
-  params: GetOrdersParams,
-  _signal?: AbortSignal
-): Promise<{ orders: StoreOrder[]; count?: number }> {
-  const result = await getOrders(params)
-  return {
-    orders: result.orders,
-    count: result.count,
+const orderService = {
+  async getOrders(
+    params: OrderListParams,
+    signal?: AbortSignal
+  ): Promise<{ orders: StoreOrder[]; count?: number }> {
+    try {
+      const response = await baseOrderService.getOrders(params, signal)
+      const sortedOrders = [...(response.orders ?? [])].sort(
+        (a, b) =>
+          new Date(b.created_at ?? 0).getTime() -
+          new Date(a.created_at ?? 0).getTime()
+      )
+
+      return {
+        orders: sortedOrders,
+        count: response.count,
+      }
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[OrderService] Failed to fetch orders:", err)
+      }
+      throw new Error("Nepodařilo se načíst objednávky")
+    }
+  },
+
+  async getOrder(
+    orderId: string,
+    signal?: AbortSignal
+  ): Promise<StoreOrder | null> {
+    if (!orderId) {
+      return null
+    }
+
+    try {
+      return await baseOrderService.getOrder({ id: orderId }, signal)
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[OrderService] Failed to fetch order:", err)
+      }
+      throw new Error("Nepodařilo se načíst objednávku")
+    }
   }
 }
 
@@ -76,14 +109,11 @@ export const { useOrders, useSuspenseOrders, useOrder, useSuspenseOrder } =
   createOrderHooks<
     StoreOrder,
     OrderListInput,
-    GetOrdersParams,
+    OrderListParams,
     OrderDetailInput,
     string
   >({
-    service: {
-      getOrders: getOrdersAdapter,
-      getOrder: getOrderAdapter,
-    },
+    service: orderService,
     buildListParams,
     buildDetailParams,
     queryKeyNamespace: "n1",

@@ -34,10 +34,11 @@ export const checkoutHooks = createCheckoutHooks<
   Cart
 >({
   service: {
-    listShippingOptions: (cartId, _signal) => getShippingOptions(cartId),
+    listShippingOptions: (cartId, signal) => getShippingOptions(cartId, signal),
     addShippingMethod: (cartId, optionId, data) =>
       setShippingMethod(cartId, optionId, data as ShippingMethodData),
-    listPaymentProviders: (regionId, _signal) => getPaymentProviders(regionId),
+    listPaymentProviders: (regionId, signal) =>
+      getPaymentProviders(regionId, signal),
     initiatePaymentSession: createPaymentCollection,
   },
   queryKeyNamespace: "n1",
