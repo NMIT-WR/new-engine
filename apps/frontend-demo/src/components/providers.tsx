@@ -1,54 +1,15 @@
 "use client"
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { StorefrontDataProvider } from "@techsio/storefront-data"
 import { Toaster } from "@techsio/ui-kit/molecules/toast"
 import { ThemeProvider } from "next-themes"
 import type { PropsWithChildren } from "react"
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { RegionProvider } from "@/providers/region-provider"
 
-function makeQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000, // 1 minute
-        gcTime: 5 * 60 * 1000, // 5 minutes
-        retry: (failureCount, error: any) => {
-          // Don't retry on 4xx errors
-          if (error?.status >= 400 && error?.status < 500) {
-            return false
-          }
-          // Retry up to 3 times for other errors
-          return failureCount < 3
-        },
-        retryDelay: (attemptIndex) =>
-          Math.min(1000 * 2 ** attemptIndex, 30_000),
-      },
-      mutations: {
-        retry: 1,
-        retryDelay: 1000,
-      },
-    },
-  })
-}
-
-let browserQueryClient: QueryClient | undefined
-
-function getQueryClient() {
-  if (typeof window === "undefined") {
-    // Server: always make a new query client
-    return makeQueryClient()
-  }
-  // Browser: make client if we don't already have one
-  if (!browserQueryClient) browserQueryClient = makeQueryClient()
-  return browserQueryClient
-}
-
 export function Providers({ children }: PropsWithChildren) {
-  const [queryClient] = useState(() => getQueryClient())
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <StorefrontDataProvider>
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
@@ -62,6 +23,6 @@ export function Providers({ children }: PropsWithChildren) {
           </RegionProvider>
         </Suspense>
       </ThemeProvider>
-    </QueryClientProvider>
+    </StorefrontDataProvider>
   )
 }
