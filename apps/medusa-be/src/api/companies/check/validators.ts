@@ -1,8 +1,12 @@
 import { z } from "zod"
+import {
+  VAT_ID_REGEX,
+  VAT_ID_REGEX_MESSAGE,
+} from "../../../modules/company-check/constants"
 
 export const VatIdentificationNumberSchema = z
   .string()
-  .regex(/^[A-Z]{2}\d+$/, "VAT identification number must match ^[A-Z]{2}\\d+$")
+  .regex(VAT_ID_REGEX, VAT_ID_REGEX_MESSAGE)
 
 export const CompanyIdentificationNumberSchema = z
   .string()

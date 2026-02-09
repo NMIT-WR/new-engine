@@ -1,15 +1,35 @@
 import { validateAndTransformQuery } from "@medusajs/framework"
-import type { MiddlewareRoute } from "@medusajs/framework/http"
+import type {
+  MedusaNextFunction,
+  MedusaRequest,
+  MedusaResponse,
+  MiddlewareRoute,
+} from "@medusajs/framework/http"
 import { AdminCompaniesCheckCzAddressCountSchema } from "../../admin/companies/check/cz/address-count/route"
 import { AdminCompaniesCheckCzTaxReliabilitySchema } from "../../admin/companies/check/cz/tax-reliability/route"
 import { StoreCompaniesCheckCzInfoSchema } from "../../store/companies/check/cz/info/route"
 import { StoreCompaniesCheckViesSchema } from "../../store/companies/check/vies/route"
+
+const requireCompanyFeatureEnabled = (
+  _req: MedusaRequest,
+  res: MedusaResponse,
+  next: MedusaNextFunction
+): void => {
+  if (process.env.FEATURE_COMPANY_ENABLED !== "1") {
+    res.status(503).json({
+      error: "Company check service is not enabled",
+    })
+    return
+  }
+  next()
+}
 
 export const companiesCheckRoutesMiddlewares: MiddlewareRoute[] = [
   {
     methods: ["GET"],
     matcher: "/store/companies/check/cz/info",
     middlewares: [
+      requireCompanyFeatureEnabled,
       validateAndTransformQuery(StoreCompaniesCheckCzInfoSchema, {
         isList: false,
       }),
@@ -19,6 +39,7 @@ export const companiesCheckRoutesMiddlewares: MiddlewareRoute[] = [
     methods: ["GET"],
     matcher: "/store/companies/check/vies",
     middlewares: [
+      requireCompanyFeatureEnabled,
       validateAndTransformQuery(StoreCompaniesCheckViesSchema, {
         isList: false,
       }),
@@ -28,6 +49,7 @@ export const companiesCheckRoutesMiddlewares: MiddlewareRoute[] = [
     methods: ["GET"],
     matcher: "/admin/companies/check/cz/tax-reliability",
     middlewares: [
+      requireCompanyFeatureEnabled,
       validateAndTransformQuery(AdminCompaniesCheckCzTaxReliabilitySchema, {
         isList: false,
       }),
@@ -37,6 +59,7 @@ export const companiesCheckRoutesMiddlewares: MiddlewareRoute[] = [
     methods: ["GET"],
     matcher: "/admin/companies/check/cz/address-count",
     middlewares: [
+      requireCompanyFeatureEnabled,
       validateAndTransformQuery(AdminCompaniesCheckCzAddressCountSchema, {
         isList: false,
       }),
