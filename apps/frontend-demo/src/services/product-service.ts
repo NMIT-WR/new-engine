@@ -43,6 +43,7 @@ type ProductListQueryParams = {
 const DEFAULT_COUNTRY_CODE = "cz"
 
 const SORT_MAP: Record<string, string> = {
+  // Assumes Medusa IDs are time-ordered (ULID-like); if ID strategy changes, use created_at.
   newest: "id",
   "price-asc": "variants.prices.amount",
   "price-desc": "-variants.prices.amount",
@@ -151,17 +152,28 @@ export const getProducts = async (
   } = params
   const normalizedCountryCode = country_code ?? DEFAULT_COUNTRY_CODE
 
-  const searchStrategyResponse = await tryGetProductsFromSearchStrategies({
-    limit,
-    offset,
-    fields,
-    filters,
-    category,
-    sort,
-    q,
-    region_id,
-    country_code: normalizedCountryCode,
-  })
+  let searchStrategyResponse: Awaited<
+    ReturnType<typeof tryGetProductsFromSearchStrategies>
+  > = null
+
+  try {
+    searchStrategyResponse = await tryGetProductsFromSearchStrategies({
+      limit,
+      offset,
+      fields,
+      filters,
+      category,
+      sort,
+      q,
+      region_id,
+      country_code: normalizedCountryCode,
+    })
+  } catch (error) {
+    console.warn(
+      "[ProductService] Search strategy failed unexpectedly, falling back to Medusa listing:",
+      error
+    )
+  }
 
   if (searchStrategyResponse) {
     const products = searchStrategyResponse.products.map((product) =>

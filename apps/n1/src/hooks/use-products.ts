@@ -51,31 +51,6 @@ function getProductsLabel(trimmedQuery: string, categoryIds: string[]): string {
   return categoryIds[0]?.slice(-6) || "all"
 }
 
-function buildProductsParams({
-  categoryIds,
-  query,
-  regionId,
-  countryCode,
-  page,
-  limit,
-}: {
-  categoryIds: string[]
-  query: string
-  regionId?: string
-  countryCode?: string
-  page: number
-  limit: number
-}): ProductQueryParams {
-  return buildProductQueryParams({
-    category_id: categoryIds,
-    q: query,
-    region_id: regionId,
-    country_code: countryCode,
-    page,
-    limit,
-  })
-}
-
 function createProductsQueryFn(queryParams: ProductQueryParams, label: string) {
   return async ({ signal }: { signal?: AbortSignal }) => {
     const start = performance.now()
@@ -138,11 +113,11 @@ export function useProducts({
   const trimmedQuery = q.trim()
   const label = getProductsLabel(trimmedQuery, category_id)
 
-  const queryParams = buildProductsParams({
-    categoryIds: category_id,
-    query: q,
-    regionId,
-    countryCode,
+  const queryParams = buildProductQueryParams({
+    category_id,
+    q: trimmedQuery,
+    region_id: regionId,
+    country_code: countryCode,
     page,
     limit,
   })
@@ -214,11 +189,11 @@ export function useSuspenseProducts({
     throw new Error("Region is required for product queries")
   }
 
-  const queryParams = buildProductsParams({
-    categoryIds: category_id,
-    query: q,
-    regionId,
-    countryCode,
+  const queryParams = buildProductQueryParams({
+    category_id,
+    q: trimmedQuery,
+    region_id: regionId,
+    country_code: countryCode,
     page,
     limit,
   })

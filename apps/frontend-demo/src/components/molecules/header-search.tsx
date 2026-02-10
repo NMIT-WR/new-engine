@@ -73,13 +73,11 @@ export function HeaderSearch() {
   }
 
   const handleSelect = (value: string | string[]) => {
-    const selectedValues = Array.isArray(value) ? value : [value]
+    const selected = Array.isArray(value) ? value[0] : value
 
-    if (!(selectedValues.length > 0 && selectedValues[0])) {
+    if (!selected) {
       return
     }
-
-    const selected = selectedValues[0]
 
     if (selected === VIEW_ALL_RESULTS_VALUE) {
       handleSearch(searchQuery)

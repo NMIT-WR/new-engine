@@ -73,6 +73,7 @@ type PaginatedIdsPageResult = {
 const IDS_PAGE_SIZE = 250
 const IDS_CACHE_TTL_MS = 5 * 60 * 1000
 const IDS_CACHE_MAX_ENTRIES = 200
+const MAX_PAGINATION_ITERATIONS = 1000
 
 const variantSizeIdsCache = createPromiseCache<string[]>({
   maxEntries: IDS_CACHE_MAX_ENTRIES,
@@ -302,8 +303,17 @@ async function collectIdsFromPaginatedSource(
   const ids: string[] = []
   const seen = new Set<string>()
   let offset = 0
+  let iterations = 0
 
   while (true) {
+    if (iterations >= MAX_PAGINATION_ITERATIONS) {
+      console.warn(
+        `[ProductSearch] Pagination stopped after ${MAX_PAGINATION_ITERATIONS} iterations; returning partial results.`
+      )
+      break
+    }
+
+    iterations += 1
     const page = await fetchPage(offset, IDS_PAGE_SIZE)
     if (page.itemCount === 0) {
       break
@@ -319,10 +329,10 @@ async function collectIdsFromPaginatedSource(
     }
 
     const nextOffset = offset + page.itemCount
-    const totalCount = page.totalCount ?? nextOffset
+    const totalCount = page.totalCount
     offset = nextOffset
 
-    if (offset >= totalCount) {
+    if (typeof totalCount === "number" && offset >= totalCount) {
       break
     }
   }
@@ -397,9 +407,11 @@ async function collectVariantProductIdsForSizes(params: {
   const mergedIds: string[] = []
   const seen = new Set<string>()
 
-  for (const size of sizes) {
-    const ids = await collectVariantProductIdsForSizeCached({ size, q })
+  const idsBySize = await Promise.all(
+    sizes.map((size) => collectVariantProductIdsForSizeCached({ size, q }))
+  )
 
+  for (const ids of idsBySize) {
     for (const id of ids) {
       if (seen.has(id)) {
         continue
@@ -431,7 +443,6 @@ async function collectMeiliProductIdsForQuery(query: string): Promise<string[]> 
     return {
       ids: dedupeIdsFromHits(hits),
       itemCount: hits.length,
-      totalCount: page.estimatedTotalHits,
     }
   })
 }
@@ -595,7 +606,7 @@ export async function tryGetProductsFromSearchStrategies(
         })
       } catch (error) {
         console.warn(
-          "[ProductService] Variant-size fallback failed, falling back to default listing:",
+          "[ProductService] Meili + variant intersection failed, falling back to variant-only search:",
           error
         )
 
