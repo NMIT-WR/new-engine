@@ -27,6 +27,8 @@ export const N1Header = () => {
   const router = useRouter()
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
     const formData = new FormData(event.currentTarget)
     const rawQuery = formData.get("q")
     const query = typeof rawQuery === "string" ? rawQuery.trim() : ""

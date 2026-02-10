@@ -7,7 +7,6 @@ export type ProductQueryParams = {
   category_id?: string[]
   region_id?: string
   country_code?: string
-  currency_code?: string
   q?: string
   limit?: number
   offset?: number
@@ -49,7 +48,7 @@ export function buildPrefetchParams(
 
 /**
  * Converts query params to URL query string
- * Handles arrays (category_id) with indexed notation
+ * Handles arrays using repeated [] notation
  */
 type QueryParamValue =
   | string
@@ -70,9 +69,9 @@ export function buildQueryString(
     }
 
     if (Array.isArray(value)) {
-      // category_id[0]=xxx&category_id[1]=yyy
-      value.forEach((v, i) => {
-        searchParams.append(`${key}[${i}]`, String(v))
+      // category_id[]=xxx&category_id[]=yyy
+      value.forEach((v) => {
+        searchParams.append(`${key}[]`, String(v))
       })
     } else {
       searchParams.append(key, String(value))

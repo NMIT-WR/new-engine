@@ -1,14 +1,13 @@
 import type { StoreProduct } from "@medusajs/types"
-import {
-  keepPreviousData,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { cacheConfig } from "@/lib/cache-config"
 import { PRODUCT_LIMIT } from "@/lib/constants"
 import { logQuery } from "@/lib/loggers/cache"
 import { fetchLogger } from "@/lib/loggers/fetch"
-import { buildProductQueryParams } from "@/lib/product-query-params"
+import {
+  buildProductQueryParams,
+  type ProductQueryParams,
+} from "@/lib/product-query-params"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts } from "@/services/product-service"
 import { useRegion, useSuspenseRegion } from "./use-region"
@@ -44,6 +43,90 @@ type UseSuspenseProductsReturn = {
   hasPrevPage: boolean
 }
 
+function getProductsLabel(trimmedQuery: string, categoryIds: string[]): string {
+  if (trimmedQuery.length > 0) {
+    return `q:${trimmedQuery.slice(0, 12)}`
+  }
+
+  return categoryIds[0]?.slice(-6) || "all"
+}
+
+function buildProductsParams({
+  categoryIds,
+  query,
+  regionId,
+  countryCode,
+  page,
+  limit,
+}: {
+  categoryIds: string[]
+  query: string
+  regionId?: string
+  countryCode?: string
+  page: number
+  limit: number
+}): ProductQueryParams {
+  return buildProductQueryParams({
+    category_id: categoryIds,
+    q: query,
+    region_id: regionId,
+    country_code: countryCode,
+    page,
+    limit,
+  })
+}
+
+function createProductsQueryFn(queryParams: ProductQueryParams, label: string) {
+  return async ({ signal }: { signal?: AbortSignal }) => {
+    const start = performance.now()
+    const result = await getProducts(queryParams, signal)
+    const duration = performance.now() - start
+
+    if (process.env.NODE_ENV === "development") {
+      fetchLogger.current(label, duration)
+    }
+
+    return result
+  }
+}
+
+function areSameStringArrays(a: string[] = [], b: string[] = []): boolean {
+  if (a.length !== b.length) {
+    return false
+  }
+
+  return a.every((value, index) => value === b[index])
+}
+
+function shouldKeepPreviousProductsData(
+  currentParams: ProductQueryParams,
+  previousParams?: ProductQueryParams
+): boolean {
+  if (!previousParams) {
+    return false
+  }
+
+  return (
+    (currentParams.q ?? "") === (previousParams.q ?? "") &&
+    areSameStringArrays(currentParams.category_id, previousParams.category_id)
+  )
+}
+
+function extractProductsParamsFromKey(
+  queryKey: readonly unknown[] | undefined
+): ProductQueryParams | undefined {
+  if (!Array.isArray(queryKey) || queryKey.length < 4) {
+    return undefined
+  }
+
+  const maybeParams = queryKey[3]
+  if (!maybeParams || typeof maybeParams !== "object") {
+    return undefined
+  }
+
+  return maybeParams as ProductQueryParams
+}
+
 export function useProducts({
   category_id = [],
   q = "",
@@ -51,47 +134,40 @@ export function useProducts({
   limit = PRODUCT_LIMIT,
   skipIfEmptyQuery = false,
 }: UseProductsProps): UseProductsReturn {
-  const { regionId, countryCode, currencyCode } = useRegion()
+  const { regionId, countryCode } = useRegion()
   const trimmedQuery = q.trim()
+  const label = getProductsLabel(trimmedQuery, category_id)
 
-  const queryParams = buildProductQueryParams({
-    category_id,
-    q,
-    region_id: regionId,
-    country_code: countryCode,
-    currency_code: currencyCode,
+  const queryParams = buildProductsParams({
+    categoryIds: category_id,
+    query: q,
+    regionId,
+    countryCode,
     page,
     limit,
   })
 
+  const queryFn = createProductsQueryFn(queryParams, label)
   const { data, isLoading, error, dataUpdatedAt, isFetching, isSuccess } =
     useQuery({
       queryKey: queryKeys.products.list(queryParams),
-      queryFn: async ({ signal }) => {
-        const start = performance.now()
-        const result = await getProducts(queryParams, signal)
-        const duration = performance.now() - start
-
-        if (process.env.NODE_ENV === "development") {
-          const label = trimmedQuery
-            ? `q:${trimmedQuery.slice(0, 12)}`
-            : category_id?.[0]?.slice(-6) || "all"
-          fetchLogger.current(label, duration)
-        }
-
-        return result
-      },
+      queryFn,
       enabled: !!regionId && (!skipIfEmptyQuery || trimmedQuery.length > 0),
-      placeholderData: keepPreviousData,
+      placeholderData: (previousData, previousQuery) => {
+        const previousParams = extractProductsParamsFromKey(
+          previousQuery?.queryKey
+        )
+
+        return shouldKeepPreviousProductsData(queryParams, previousParams)
+          ? previousData
+          : undefined
+      },
       ...cacheConfig.semiStatic,
     })
 
   // Enhanced dev logging with cache-logger
   if (process.env.NODE_ENV === "development" && data) {
-    const categoryName = trimmedQuery
-      ? `q:${trimmedQuery.slice(0, 12)}`
-      : category_id?.[0]?.slice(-6) || "all"
-    const operation = `useProducts(${categoryName} p${page})`
+    const operation = `useProducts(${label} p${page})`
 
     logQuery(operation, queryKeys.products.list(queryParams), {
       isLoading,
@@ -130,47 +206,32 @@ export function useSuspenseProducts({
   page = 1,
   limit = PRODUCT_LIMIT,
 }: UseProductsProps): UseSuspenseProductsReturn {
-  const { regionId, countryCode, currencyCode } = useSuspenseRegion()
+  const { regionId, countryCode } = useSuspenseRegion()
   const trimmedQuery = q.trim()
+  const label = getProductsLabel(trimmedQuery, category_id)
 
   if (!(regionId && countryCode)) {
     throw new Error("Region is required for product queries")
   }
 
-  const queryParams = buildProductQueryParams({
-    category_id,
-    q,
-    region_id: regionId,
-    country_code: countryCode,
-    currency_code: currencyCode,
+  const queryParams = buildProductsParams({
+    categoryIds: category_id,
+    query: q,
+    regionId,
+    countryCode,
     page,
     limit,
   })
 
+  const queryFn = createProductsQueryFn(queryParams, label)
   const { data, isFetching, dataUpdatedAt } = useSuspenseQuery({
     queryKey: queryKeys.products.list(queryParams),
-    queryFn: async ({ signal }) => {
-      const start = performance.now()
-      const result = await getProducts(queryParams, signal)
-      const duration = performance.now() - start
-
-      if (process.env.NODE_ENV === "development") {
-        const label = trimmedQuery
-          ? `q:${trimmedQuery.slice(0, 12)}`
-          : category_id?.[0]?.slice(-6) || "all"
-        fetchLogger.current(label, duration)
-      }
-
-      return result
-    },
+    queryFn,
     ...cacheConfig.semiStatic,
   })
 
   if (process.env.NODE_ENV === "development" && data) {
-    const categoryName = trimmedQuery
-      ? `q:${trimmedQuery.slice(0, 12)}`
-      : category_id?.[0]?.slice(-6) || "all"
-    const operation = `useSuspenseProducts(${categoryName} p${page})`
+    const operation = `useSuspenseProducts(${label} p${page})`
 
     logQuery(operation, queryKeys.products.list(queryParams), {
       isFetching,

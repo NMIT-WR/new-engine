@@ -58,8 +58,7 @@ export default function SearchPage() {
       return
     }
 
-    const params = new URLSearchParams()
-    params.set("q", query)
+    const params = new URLSearchParams(searchParams.toString())
     params.set("page", String(page))
     router.push(`${SEARCH_ROUTE}?${params.toString()}`, { scroll: true })
   }

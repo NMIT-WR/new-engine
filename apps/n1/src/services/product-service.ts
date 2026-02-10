@@ -39,6 +39,12 @@ type MeiliSearchHitsResponse = {
   offset?: number
 }
 
+type StoreRequestContext = {
+  baseUrl: string
+  headers: HeadersInit
+  signal?: AbortSignal
+}
+
 function getBackendBaseUrl(): string {
   const baseUrl =
     process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
@@ -57,6 +63,30 @@ function getStoreHeaders(): HeadersInit {
   }
 
   return headers
+}
+
+function createStoreRequestContext(signal?: AbortSignal): StoreRequestContext {
+  return {
+    baseUrl: getBackendBaseUrl(),
+    headers: getStoreHeaders(),
+    signal,
+  }
+}
+
+function parseSearchQuery(query: string | undefined): string | null {
+  const normalized = query?.trim()
+  return normalized ? normalized : null
+}
+
+function getProductsLogLabel(
+  searchQuery: string | null,
+  categoryIds?: string[]
+): string {
+  if (searchQuery) {
+    return `q:${searchQuery.slice(0, 12)}`
+  }
+
+  return categoryIds?.[0]?.slice(-6) || "all"
 }
 
 async function fetchJson<T>(
@@ -104,105 +134,110 @@ function orderProductsByIds(products: StoreProduct[], ids: string[]): StoreProdu
     .filter((product): product is StoreProduct => Boolean(product))
 }
 
+async function fetchStoreProducts(
+  params: ProductQueryParams,
+  context: StoreRequestContext
+): Promise<ProductListResponse> {
+  const { category_id, region_id, country_code, limit, offset, fields } = params
+  const queryString = buildQueryString({
+    limit,
+    offset,
+    fields,
+    country_code,
+    region_id,
+    category_id,
+  })
+
+  const data = await fetchJson<StoreProductsApiResponse>(
+    `${context.baseUrl}/store/products?${queryString}`,
+    context.signal,
+    context.headers
+  )
+
+  return {
+    products: data.products || [],
+    count: data.count || 0,
+    limit: data.limit ?? limit ?? 0,
+    offset: data.offset ?? offset ?? 0,
+  }
+}
+
+async function fetchSearchProducts(
+  params: ProductQueryParams,
+  searchQuery: string,
+  context: StoreRequestContext
+): Promise<ProductListResponse> {
+  const { region_id, country_code, limit, offset, fields } = params
+  const hitsQueryString = buildQueryString({
+    query: searchQuery,
+    limit,
+    offset,
+  })
+
+  const hitsData = await fetchJson<MeiliSearchHitsResponse>(
+    `${context.baseUrl}/store/meilisearch/products-hits?${hitsQueryString}`,
+    context.signal,
+    context.headers
+  )
+
+  const productIds = dedupeIdsFromHits(hitsData.hits)
+  const totalCount = hitsData.estimatedTotalHits ?? productIds.length
+
+  if (productIds.length === 0) {
+    return {
+      products: [],
+      count: totalCount,
+      limit: limit ?? hitsData.limit ?? 0,
+      offset: offset ?? hitsData.offset ?? 0,
+    }
+  }
+
+  const productsQueryString = buildQueryString({
+    id: productIds,
+    fields,
+    region_id,
+    country_code,
+    limit: productIds.length,
+    offset: 0,
+  })
+
+  const productsData = await fetchJson<StoreProductsApiResponse>(
+    `${context.baseUrl}/store/products?${productsQueryString}`,
+    context.signal,
+    context.headers
+  )
+
+  return {
+    products: orderProductsByIds(productsData.products || [], productIds),
+    count: totalCount,
+    limit: limit ?? hitsData.limit ?? productIds.length,
+    offset: offset ?? hitsData.offset ?? 0,
+  }
+}
+
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: product fetch includes error handling and logging branches
 export async function getProducts(
   params: ProductQueryParams,
   signal?: AbortSignal
 ): Promise<ProductListResponse> {
-  const {
-    category_id,
-    region_id,
-    country_code,
-    limit,
-    offset,
-    fields,
-    q,
-  } = params
-  const searchQuery = q?.trim()
-  const isSearchRequest = Boolean(searchQuery)
-  const baseUrl = getBackendBaseUrl()
-  const headers = getStoreHeaders()
+  const searchQuery = parseSearchQuery(params.q)
+  const context = createStoreRequestContext(signal)
 
   try {
-    if (isSearchRequest) {
-      const hitsQueryString = buildQueryString({
-        query: searchQuery,
-        limit,
-        offset,
-      })
-
-      const hitsData = await fetchJson<MeiliSearchHitsResponse>(
-        `${baseUrl}/store/meilisearch/products-hits?${hitsQueryString}`,
-        signal,
-        headers
-      )
-
-      const productIds = dedupeIdsFromHits(hitsData.hits)
-      const totalCount = hitsData.estimatedTotalHits ?? productIds.length
-
-      if (productIds.length === 0) {
-        return {
-          products: [],
-          count: totalCount,
-          limit: limit ?? hitsData.limit ?? 0,
-          offset: offset ?? hitsData.offset ?? 0,
-        }
-      }
-
-      const productsQueryString = buildQueryString({
-        id: productIds,
-        fields,
-        region_id,
-        country_code,
-        limit: productIds.length,
-        offset: 0,
-      })
-
-      const productsData = await fetchJson<StoreProductsApiResponse>(
-        `${baseUrl}/store/products?${productsQueryString}`,
-        signal,
-        headers
-      )
-
-      return {
-        products: orderProductsByIds(productsData.products || [], productIds),
-        count: totalCount,
-        limit: limit ?? hitsData.limit ?? productIds.length,
-        offset: offset ?? hitsData.offset ?? 0,
-      }
+    if (searchQuery) {
+      return await fetchSearchProducts(params, searchQuery, context)
     }
 
-    const queryString = buildQueryString({
-      limit,
-      offset,
-      fields,
-      country_code,
-      region_id,
-      category_id,
-    })
-
-    const data = await fetchJson<StoreProductsApiResponse>(
-      `${baseUrl}/store/products?${queryString}`,
-      signal,
-      headers
-    )
-
-    return {
-      products: data.products || [],
-      count: data.count || 0,
-      limit: data.limit ?? limit ?? 0,
-      offset: data.offset ?? offset ?? 0,
-    }
+    return await fetchStoreProducts(params, context)
   } catch (err) {
-    // AbortError is expected when request is cancelled
     if (err instanceof Error && err.name === "AbortError") {
       if (process.env.NODE_ENV === "development") {
-        const label = searchQuery?.trim()
-          ? `q:${searchQuery.trim().slice(0, 12)}`
-          : category_id?.[0]?.slice(-6) || "all"
-        fetchLogger.cancelled(label, offset)
+        fetchLogger.cancelled(
+          getProductsLogLabel(searchQuery, params.category_id),
+          params.offset
+        )
       }
-      throw err // Let React Query handle it
+      throw err
     }
 
     if (process.env.NODE_ENV === "development") {
