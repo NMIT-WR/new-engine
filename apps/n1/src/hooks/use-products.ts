@@ -1,5 +1,9 @@
 import type { StoreProduct } from "@medusajs/types"
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { cacheConfig } from "@/lib/cache-config"
 import { PRODUCT_LIMIT } from "@/lib/constants"
 import { logQuery } from "@/lib/loggers/cache"
@@ -11,8 +15,10 @@ import { useRegion, useSuspenseRegion } from "./use-region"
 
 type UseProductsProps = {
   category_id?: string[]
+  q?: string
   page?: number
   limit?: number
+  skipIfEmptyQuery?: boolean
 }
 
 type UseProductsReturn = {
@@ -40,15 +46,20 @@ type UseSuspenseProductsReturn = {
 
 export function useProducts({
   category_id = [],
+  q = "",
   page = 1,
   limit = PRODUCT_LIMIT,
+  skipIfEmptyQuery = false,
 }: UseProductsProps): UseProductsReturn {
-  const { regionId, countryCode } = useRegion()
+  const { regionId, countryCode, currencyCode } = useRegion()
+  const trimmedQuery = q.trim()
 
   const queryParams = buildProductQueryParams({
     category_id,
+    q,
     region_id: regionId,
     country_code: countryCode,
+    currency_code: currencyCode,
     page,
     limit,
   })
@@ -62,19 +73,24 @@ export function useProducts({
         const duration = performance.now() - start
 
         if (process.env.NODE_ENV === "development") {
-          const categoryLabel = category_id?.[0]?.slice(-6) || "all"
-          fetchLogger.current(categoryLabel, duration)
+          const label = trimmedQuery
+            ? `q:${trimmedQuery.slice(0, 12)}`
+            : category_id?.[0]?.slice(-6) || "all"
+          fetchLogger.current(label, duration)
         }
 
         return result
       },
-      enabled: !!regionId,
+      enabled: !!regionId && (!skipIfEmptyQuery || trimmedQuery.length > 0),
+      placeholderData: keepPreviousData,
       ...cacheConfig.semiStatic,
     })
 
   // Enhanced dev logging with cache-logger
   if (process.env.NODE_ENV === "development" && data) {
-    const categoryName = category_id?.[0]?.slice(-6) || "all"
+    const categoryName = trimmedQuery
+      ? `q:${trimmedQuery.slice(0, 12)}`
+      : category_id?.[0]?.slice(-6) || "all"
     const operation = `useProducts(${categoryName} p${page})`
 
     logQuery(operation, queryKeys.products.list(queryParams), {
@@ -110,10 +126,12 @@ export function useProducts({
 
 export function useSuspenseProducts({
   category_id = [],
+  q = "",
   page = 1,
   limit = PRODUCT_LIMIT,
 }: UseProductsProps): UseSuspenseProductsReturn {
-  const { regionId, countryCode } = useSuspenseRegion()
+  const { regionId, countryCode, currencyCode } = useSuspenseRegion()
+  const trimmedQuery = q.trim()
 
   if (!(regionId && countryCode)) {
     throw new Error("Region is required for product queries")
@@ -121,8 +139,10 @@ export function useSuspenseProducts({
 
   const queryParams = buildProductQueryParams({
     category_id,
+    q,
     region_id: regionId,
     country_code: countryCode,
+    currency_code: currencyCode,
     page,
     limit,
   })
@@ -135,8 +155,10 @@ export function useSuspenseProducts({
       const duration = performance.now() - start
 
       if (process.env.NODE_ENV === "development") {
-        const categoryLabel = category_id?.[0]?.slice(-6) || "all"
-        fetchLogger.current(categoryLabel, duration)
+        const label = trimmedQuery
+          ? `q:${trimmedQuery.slice(0, 12)}`
+          : category_id?.[0]?.slice(-6) || "all"
+        fetchLogger.current(label, duration)
       }
 
       return result
@@ -145,7 +167,9 @@ export function useSuspenseProducts({
   })
 
   if (process.env.NODE_ENV === "development" && data) {
-    const categoryName = category_id?.[0]?.slice(-6) || "all"
+    const categoryName = trimmedQuery
+      ? `q:${trimmedQuery.slice(0, 12)}`
+      : category_id?.[0]?.slice(-6) || "all"
     const operation = `useSuspenseProducts(${categoryName} p${page})`
 
     logQuery(operation, queryKeys.products.list(queryParams), {

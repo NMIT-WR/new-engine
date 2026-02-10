@@ -7,6 +7,8 @@ export type ProductQueryParams = {
   category_id?: string[]
   region_id?: string
   country_code?: string
+  currency_code?: string
+  q?: string
   limit?: number
   offset?: number
   fields?: string
