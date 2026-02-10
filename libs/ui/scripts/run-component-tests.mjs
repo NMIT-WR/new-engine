@@ -26,7 +26,6 @@ const defaultImageName = playwrightVersion
   ? `new-engine-ui-playwright:${playwrightVersion}-${dockerfileHash}`
   : `new-engine-ui-playwright:${dockerfileHash}`
 const imageName = process.env.PLAYWRIGHT_DOCKER_IMAGE ?? defaultImageName
-const bunCommand = process.env.BUN_BINARY ?? "bun"
 const platform = process.env.DOCKER_PLATFORM ?? "linux/amd64"
 const testBaseUrl = process.env.TEST_BASE_URL
 const shmSize = process.env.PLAYWRIGHT_DOCKER_SHM_SIZE ?? "2g"
@@ -81,10 +80,10 @@ process.on("SIGTERM", () => handleExit("SIGTERM"))
 // Build storybook (default) or when missing
 if (rebuildStorybook) {
   console.log("Building Storybook...")
-  run(bunCommand, ["run", "build:storybook"], { cwd: uiRoot })
+  run("pnpm", ["-C", uiRoot, "build:storybook"])
 } else if (!fs.existsSync(storybookIframe)) {
   console.log("storybook-static not found, building Storybook...")
-  run(bunCommand, ["run", "build:storybook"], { cwd: uiRoot })
+  run("pnpm", ["-C", uiRoot, "build:storybook"])
 }
 
 // Build docker image if needed
@@ -191,8 +190,7 @@ try {
         "exec",
         "-t",
         containerName,
-        "bun",
-        "x",
+        "npx",
         "playwright",
         "test",
         "-c",

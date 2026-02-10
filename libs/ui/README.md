@@ -156,20 +156,20 @@ To keep screenshots stable across machines, run component tests inside Docker.
 1. Run Playwright tests in a consistent Linux environment (builds Storybook static output by default):
 
 ```bash
-bun -C libs/ui run test:components
+pnpm -C libs/ui test:components
 ```
 
 1. Update snapshots (inside Docker):
 
 ```bash
-bun -C libs/ui run test:components:update
+pnpm -C libs/ui test:components:update
 ```
 
 Docker image is defined in `docker/development/playwright/Dockerfile`.
 These tests are intentionally Docker-only; running them directly on the host is blocked to keep snapshots reproducible.
 Make sure Storybook is served at `TEST_BASE_URL` (default `http://127.0.0.1:6006` inside the container).
-You can run `bun -C libs/ui run storybook` on the host and set `TEST_BASE_URL=http://host.docker.internal:6006`,
-or let Playwright start its Bun-based static server inside Docker from `storybook-static`.
+You can run `pnpm -C libs/ui storybook` on the host and set `TEST_BASE_URL=http://host.docker.internal:6006`,
+or let Playwright start its own `http-server` inside Docker from `storybook-static`.
 For visual stability, stories used in regression tests should rely on local assets (avoid external image URLs).
 
 Optional environment overrides:
@@ -199,7 +199,7 @@ Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
 Example with parallel workers:
 
 ```bash
-TEST_BASE_URL=http://127.0.0.1:6006 PLAYWRIGHT_WORKERS=6 bun -C libs/ui run test:components
+TEST_BASE_URL=http://127.0.0.1:6006 PLAYWRIGHT_WORKERS=6 pnpm -C libs/ui test:components
 ```
 
 ## 8. Publishing and releases
