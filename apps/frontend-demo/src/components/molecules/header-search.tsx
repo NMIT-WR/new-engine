@@ -7,6 +7,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useSearchProducts } from "@/hooks/use-search-products"
 import type { Product } from "@/types/product"
 
+const VIEW_ALL_RESULTS_VALUE = "__search__"
+
 export function HeaderSearch() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
@@ -24,15 +26,9 @@ export function HeaderSearch() {
   )
 
   // Use search hook
-  const { searchResults, isSearching, searchProducts } = useSearchProducts({
+  const { searchResults, searchProducts } = useSearchProducts({
     limit: 5,
   })
-
-  const comboboxItems = searchResults.map((product) => ({
-    id: product.id,
-    value: product.handle || product.id,
-    label: product.title || "Untitled Product",
-  }))
 
   // Update search query and trigger debounced search
   const handleInputChange = useCallback(
@@ -60,10 +56,10 @@ export function HeaderSearch() {
   }))
 
   // Add "View all results" option if there's a search query
-  if (searchQuery && searchResults.length > 0) {
+  if (searchQuery.trim() && searchResults.length > 0) {
     searchItems.push({
-      value: "__search__",
-      label: `Zobrazit všechny výsledky pro "${searchQuery}"`,
+      value: VIEW_ALL_RESULTS_VALUE,
+      label: `Zobrazit všechny výsledky pro "${searchQuery.trim()}"`,
       data: undefined,
     })
   }
@@ -79,24 +75,29 @@ export function HeaderSearch() {
   const handleSelect = (value: string | string[]) => {
     const selectedValues = Array.isArray(value) ? value : [value]
 
-    if (selectedValues.length > 0 && selectedValues[0]) {
-      const selectedValue = selectedValues[0]
+    if (!(selectedValues.length > 0 && selectedValues[0])) {
+      return
+    }
 
-      // Zkontrolovat jestli je to existující produkt nebo custom search
-      const isProductHandle = searchItems.some(
-        (item) => item.value === selectedValue
-      )
+    const selected = selectedValues[0]
 
-      if (isProductHandle) {
-        router.push(`/products/${selectedValue}`)
-      } else {
-        // Custom hodnota = search query
-        handleSearch(selectedValue)
-      }
+    if (selected === VIEW_ALL_RESULTS_VALUE) {
+      handleSearch(searchQuery)
+      return
+    }
 
+    const selectedProduct = searchResults.find(
+      (item) => (item.handle || item.id) === selected
+    )
+
+    if (selectedProduct?.handle) {
+      router.push(`/products/${selectedProduct.handle}`)
       setSearchQuery("")
       setSelectedValue([])
+      return
     }
+
+    handleSearch(selected)
   }
 
   return (
@@ -124,7 +125,7 @@ export function HeaderSearch() {
           autoFocus={true}
           clearable={false}
           closeOnSelect
-          items={comboboxItems}
+          items={searchItems}
           onChange={handleSelect}
           onInputValueChange={handleInputChange}
           placeholder="Hledat produkty..."

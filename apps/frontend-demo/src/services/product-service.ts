@@ -27,6 +27,24 @@ export interface ProductListResponse {
   offset: number
 }
 
+interface MeiliSearchGuardInput {
+  q?: string
+  sort?: string
+  category?: string | string[]
+  filters?: ProductFilters
+}
+
+interface MeiliSearchProductHit {
+  id?: string
+}
+
+interface MeiliSearchHitsResponse {
+  hits?: MeiliSearchProductHit[]
+  estimatedTotalHits?: number
+  limit?: number
+  offset?: number
+}
+
 // Fields for product list views (minimal data)
 const LIST_FIELDS = [
   "id",
@@ -68,6 +86,181 @@ const DETAIL_FIELDS = [
   "variants.options",
 ].join(",")
 
+function hasActiveCategoryFilter(
+  category: string | string[] | undefined,
+  filters?: ProductFilters
+): boolean {
+  if (Array.isArray(category)) {
+    return category.length > 0
+  }
+
+  if (typeof category === "string") {
+    return category.length > 0
+  }
+
+  return Boolean(filters?.categories?.length)
+}
+
+function hasActiveSizeFilter(filters?: ProductFilters): boolean {
+  return Boolean(filters?.sizes?.length)
+}
+
+function shouldUseMeiliSearch({
+  q,
+  sort,
+  category,
+  filters,
+}: MeiliSearchGuardInput): boolean {
+  const hasQuery = Boolean(q?.trim())
+
+  if (!hasQuery) {
+    return false
+  }
+
+  if (hasActiveCategoryFilter(category, filters) || hasActiveSizeFilter(filters)) {
+    return false
+  }
+
+  // Keep the original backend path for explicit non-default sorting,
+  // because Meili relevance ordering and custom sorting are different concerns.
+  if (sort && sort !== "newest") {
+    return false
+  }
+
+  return true
+}
+
+function getBackendBaseUrl(): string {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
+
+  return baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl
+}
+
+function getStoreHeaders(): HeadersInit {
+  const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ""
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  }
+
+  if (publishableKey) {
+    headers["x-publishable-api-key"] = publishableKey
+  }
+
+  return headers
+}
+
+async function fetchMeiliHits(params: {
+  query: string
+  limit: number
+  offset: number
+}): Promise<MeiliSearchHitsResponse> {
+  const { query, limit, offset } = params
+  const searchParams = new URLSearchParams({
+    query,
+    limit: String(limit),
+    offset: String(offset),
+  })
+
+  const response = await fetch(
+    `${getBackendBaseUrl()}/store/meilisearch/products-hits?${searchParams.toString()}`,
+    {
+      method: "GET",
+      headers: getStoreHeaders(),
+    }
+  )
+
+  if (!response.ok) {
+    const errorBody = await response.text()
+    throw new Error(
+      `HTTP ${response.status}: ${response.statusText}. ${errorBody.slice(0, 280)}`
+    )
+  }
+
+  return (await response.json()) as MeiliSearchHitsResponse
+}
+
+function dedupeIdsFromHits(hits: MeiliSearchProductHit[] | undefined): string[] {
+  const ids: string[] = []
+  const seen = new Set<string>()
+
+  for (const hit of hits || []) {
+    const id = hit.id?.trim()
+
+    if (!id || seen.has(id)) {
+      continue
+    }
+
+    seen.add(id)
+    ids.push(id)
+  }
+
+  return ids
+}
+
+function orderProductsByIds<TProduct extends { id?: string }>(
+  products: TProduct[],
+  ids: string[]
+): TProduct[] {
+  const byId = new Map<string, TProduct>()
+
+  for (const product of products) {
+    if (product.id) {
+      byId.set(product.id, product)
+    }
+  }
+
+  return ids
+    .map((id) => byId.get(id))
+    .filter((product): product is TProduct => Boolean(product))
+}
+
+async function fetchProductsViaMeili(params: {
+  query: string
+  limit: number
+  offset: number
+  fields: string
+  region_id?: string
+  country_code?: string
+}): Promise<ProductListResponse> {
+  const { query, limit, offset, fields, region_id, country_code } = params
+  const hitsResponse = await fetchMeiliHits({ query, limit, offset })
+
+  const productIds = dedupeIdsFromHits(hitsResponse.hits)
+  const totalCount = hitsResponse.estimatedTotalHits ?? productIds.length
+
+  if (productIds.length === 0) {
+    return {
+      products: [],
+      count: totalCount,
+      limit: hitsResponse.limit ?? limit,
+      offset: hitsResponse.offset ?? offset,
+    }
+  }
+
+  const productsQuery = buildMedusaQuery(undefined, {
+    id: productIds,
+    limit: productIds.length,
+    offset: 0,
+    fields,
+    ...(region_id && { region_id }),
+    country_code: country_code ?? "cz",
+  })
+
+  const productsResponse = await sdk.store.product.list(productsQuery)
+  const orderedProducts = orderProductsByIds(
+    productsResponse.products || [],
+    productIds
+  )
+
+  return {
+    products: orderedProducts.map((product) => transformProduct(product, true)),
+    count: totalCount,
+    limit: hitsResponse.limit ?? limit,
+    offset: hitsResponse.offset ?? offset,
+  }
+}
+
 /**
  * Fetch products with filtering, pagination and sorting
  */
@@ -85,10 +278,30 @@ export const getProducts = async (
     region_id,
     country_code,
   } = params
+  const normalizedCountryCode = country_code ?? "cz"
 
   // Use either category parameter OR filters.categories, not both
   // Priority: explicit category param > filters.categories
   const categoryIds = category || filters?.categories
+
+  if (shouldUseMeiliSearch({ q, sort, category, filters })) {
+    try {
+      const query = q?.trim() || ""
+      return await fetchProductsViaMeili({
+        query,
+        limit,
+        offset,
+        fields,
+        region_id,
+        country_code: normalizedCountryCode,
+      })
+    } catch (error) {
+      console.warn(
+        "[ProductService] Meili search failed, falling back to default listing:",
+        error
+      )
+    }
+  }
 
   // Build base query
   const baseQuery: Record<string, any> = {
@@ -98,7 +311,7 @@ export const getProducts = async (
     category_id: categoryIds,
     fields,
     ...(region_id && { region_id }),
-    country_code: country_code ?? "cz",
+    country_code: normalizedCountryCode,
   }
 
   // Add sorting
