@@ -39,7 +39,6 @@ export default function SearchPage() {
     isLoading,
     isFetching,
     error,
-    currentPage: responsePage,
   } = useProducts({
     q: query,
     page: currentPage,
@@ -114,7 +113,10 @@ export default function SearchPage() {
         ) : null}
 
         {error ? (
-          <div className="my-300 rounded-lg border border-danger bg-danger/10 p-300 text-sm">
+          <div
+            className="my-300 rounded-lg border border-danger bg-danger/10 p-300 text-sm"
+            role="alert"
+          >
             Nepodařilo se načíst výsledky: {error}
           </div>
         ) : null}
@@ -122,7 +124,7 @@ export default function SearchPage() {
         <section>
           {query && !error ? (
             <ProductGrid
-              currentPage={responsePage}
+              currentPage={currentPage}
               isLoading={isInitialSearchLoading}
               onPageChange={handlePageChange}
               pageSize={PRODUCT_LIMIT}

@@ -462,6 +462,7 @@ async function fetchProductsByIds(params: {
   region_id?: string
   country_code: string
 }): Promise<StoreProductRecord[]> {
+  // Callers should pass a page-sized ID slice to avoid oversized query strings.
   const { productIds, fields, region_id, country_code } = params
   if (productIds.length === 0) {
     return []
@@ -557,7 +558,13 @@ async function fetchProductsViaMeili(params: {
   const hitsResponse = await fetchMeiliHits({ query, limit, offset })
 
   const productIds = dedupeIdsFromHits(hitsResponse.hits)
-  const totalCount = hitsResponse.estimatedTotalHits ?? productIds.length
+  const pageOffset = hitsResponse.offset ?? offset
+  const pageLimit = hitsResponse.limit ?? limit
+  const observedCount = pageOffset + productIds.length
+  const hasMoreByPageSize = productIds.length >= pageLimit
+  const totalCount = hasMoreByPageSize
+    ? Math.max(hitsResponse.estimatedTotalHits ?? 0, observedCount)
+    : observedCount
   const products = await fetchProductsByIds({
     productIds,
     fields,
