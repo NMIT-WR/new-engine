@@ -1,5 +1,10 @@
 import type { HttpTypes } from "@medusajs/types"
-import { createRegionHooks } from "@techsio/storefront-data"
+import {
+  createMedusaRegionService,
+  createRegionHooks,
+  type MedusaRegionDetailInput,
+  type MedusaRegionListInput,
+} from "@techsio/storefront-data"
 import { sdk } from "@/lib/medusa-client"
 import { queryKeys } from "@/lib/query-keys"
 
@@ -20,39 +25,22 @@ type RegionDetailInput = {
   enabled?: boolean
 }
 
+function buildListParams(_input: RegionListInput): MedusaRegionListInput {
+  return {}
+}
+
+function buildDetailParams(input: RegionDetailInput): MedusaRegionDetailInput {
+  return { id: input.id }
+}
+
 /**
  * Query keys for regions (matches n1 namespace)
  */
 const regionQueryKeys = {
   all: () => [...queryKeys.all, "regions"] as const,
-  list: (_params: RegionListInput) => queryKeys.regions(),
-  detail: (params: RegionDetailInput) =>
+  list: (_params: MedusaRegionListInput) => queryKeys.regions(),
+  detail: (params: MedusaRegionDetailInput) =>
     [...queryKeys.regions(), "detail", params.id] as const,
-}
-
-/**
- * Service adapters
- */
-async function getRegions(
-  _params: RegionListInput,
-  _signal?: AbortSignal
-): Promise<{ regions: Region[]; count?: number }> {
-  const response = await sdk.store.region.list()
-  return {
-    regions: response.regions,
-    count: response.regions.length,
-  }
-}
-
-async function getRegion(
-  params: RegionDetailInput,
-  _signal?: AbortSignal
-): Promise<Region | null> {
-  if (!params.id) {
-    return null
-  }
-  const response = await sdk.store.region.retrieve(params.id)
-  return response.region ?? null
 }
 
 /**
@@ -61,14 +49,13 @@ async function getRegion(
 const baseHooks = createRegionHooks<
   Region,
   RegionListInput,
-  RegionListInput,
+  MedusaRegionListInput,
   RegionDetailInput,
-  RegionDetailInput
+  MedusaRegionDetailInput
 >({
-  service: {
-    getRegions,
-    getRegion,
-  },
+  service: createMedusaRegionService(sdk),
+  buildListParams,
+  buildDetailParams,
   queryKeys: regionQueryKeys,
   queryKeyNamespace: "n1",
 })

@@ -2,7 +2,10 @@
 import { Pagination } from "@techsio/ui-kit/molecules/pagination"
 import { Suspense, useState } from "react"
 import { ErrorBoundary } from "@/components/error-boundary"
-import { useSuspenseOrders } from "@/hooks/order-hooks"
+import {
+  ACCOUNT_ORDERS_PAGE_SIZE,
+  useSuspenseOrders,
+} from "@/hooks/order-hooks"
 import { DesktopOrderCard } from "./orders/desktop-order-card"
 import { MobileOrderCard } from "./orders/mobile-order-card"
 import { OrdersEmpty } from "./orders/orders-empty"
@@ -11,7 +14,6 @@ import { OrdersSkeleton } from "./orders/orders-skeleton"
 import { OrdersSummary } from "./orders/orders-summary"
 
 const MIN_ORDERS_COUNT = 5
-const PAGE_SIZE = 5
 
 export function OrderList() {
   return (
@@ -27,7 +29,7 @@ function OrderListContent() {
   const [page, setPage] = useState(1)
   const { orders, totalCount } = useSuspenseOrders({
     page,
-    limit: PAGE_SIZE,
+    limit: ACCOUNT_ORDERS_PAGE_SIZE,
   })
 
   return (
@@ -62,12 +64,12 @@ function OrderListContent() {
           </div>
 
           {/* Pagination */}
-          {totalCount > PAGE_SIZE && (
+          {totalCount > ACCOUNT_ORDERS_PAGE_SIZE && (
             <Pagination
               count={totalCount}
               onPageChange={setPage}
               page={page}
-              pageSize={PAGE_SIZE}
+              pageSize={ACCOUNT_ORDERS_PAGE_SIZE}
               size="sm"
             />
           )}

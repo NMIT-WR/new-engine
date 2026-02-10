@@ -4,8 +4,7 @@ import { Badge } from "@techsio/ui-kit/atoms/badge"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { getOrderById, type StoreOrder } from "@/services/order-service"
+import { useOrder } from "@/hooks/order-hooks"
 import { formatDateString } from "@/utils/format/format-date"
 import {
   getOrderStatusColor,
@@ -15,37 +14,10 @@ import { OrderDetail } from "./order-detail"
 
 export function OrderDetailClient() {
   const { id } = useParams<{ id: string }>()
-  const [order, setOrder] = useState<StoreOrder | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    let active = true
-    setIsLoading(true)
-    setError(null)
-
-    getOrderById(id)
-      .then((data) => {
-        if (active) {
-          setOrder(data)
-        }
-      })
-      .catch((err) => {
-        if (!active) {
-          return
-        }
-        setError(err instanceof Error ? err.message : "Chyba při načítání")
-      })
-      .finally(() => {
-        if (active) {
-          setIsLoading(false)
-        }
-      })
-
-    return () => {
-      active = false
-    }
-  }, [id])
+  const { order, isLoading, error } = useOrder({
+    id,
+    enabled: Boolean(id),
+  })
 
   if (isLoading) {
     return (

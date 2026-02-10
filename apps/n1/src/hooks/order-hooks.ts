@@ -2,8 +2,10 @@ import type { StoreOrder } from "@medusajs/types"
 import {
   createMedusaOrderService,
   createOrderHooks,
+  createOrderQueryKeys,
   type MedusaOrderListInput,
 } from "@techsio/storefront-data"
+import { cacheConfig } from "@/lib/cache-config"
 import { sdk } from "@/lib/medusa-client"
 
 /**
@@ -24,6 +26,8 @@ export type OrderDetailInput = {
 type OrderListParams = MedusaOrderListInput & {
   fields?: string
 }
+
+export const ACCOUNT_ORDERS_PAGE_SIZE = 5
 
 /**
  * Build list params from input
@@ -102,6 +106,30 @@ const orderService = {
   }
 }
 
+const orderQueryKeys = createOrderQueryKeys<OrderListParams, string>("n1")
+
+function createOrdersListQuery(input: OrderListInput) {
+  const listParams = buildListParams(input)
+
+  return {
+    queryKey: orderQueryKeys.list(listParams),
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      orderService.getOrders(listParams, signal),
+  }
+}
+
+export function createOrdersListPrefetchQuery(
+  input: OrderListInput = { page: 1, limit: ACCOUNT_ORDERS_PAGE_SIZE }
+) {
+  const { queryKey, queryFn } = createOrdersListQuery(input)
+
+  return {
+    queryKey,
+    queryFn,
+    ...cacheConfig.userData,
+  }
+}
+
 /**
  * Create order hooks using storefront-data factory
  */
@@ -116,6 +144,7 @@ export const { useOrders, useSuspenseOrders, useOrder, useSuspenseOrder } =
     service: orderService,
     buildListParams,
     buildDetailParams,
+    queryKeys: orderQueryKeys,
     queryKeyNamespace: "n1",
     defaultPageSize: 20,
   })
