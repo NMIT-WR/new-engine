@@ -1,0 +1,141 @@
+import { MedusaError } from "@medusajs/framework/utils"
+import type {
+  MojeDaneStatusResponse,
+  TaxReliabilityResult,
+  ViesCheckVatResponse,
+  ViesCheckVatResult,
+} from "./types"
+import { VAT_ID_REGEX, VAT_ID_REGEX_MESSAGE } from "./constants"
+
+const DIC_DIGITS_REGEX = /^\d{1,10}$/
+const MOJE_DANE_MAX_DEPTH = 6
+
+export function parseVatIdentificationNumber(value: string): {
+  countryCode: string
+  vatNumber: string
+} {
+  const normalized = value?.trim().toUpperCase()
+
+  if (!normalized || !VAT_ID_REGEX.test(normalized)) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      VAT_ID_REGEX_MESSAGE
+    )
+  }
+
+  return {
+    countryCode: normalized.slice(0, 2),
+    vatNumber: normalized.slice(2),
+  }
+}
+
+export function normalizeDicDigits(value: string): string {
+  const normalized = value.trim().toUpperCase()
+  if (!normalized) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "DIC value is required"
+    )
+  }
+
+  const digits = normalized.startsWith("CZ")
+    ? normalized.slice(2)
+    : normalized
+
+  if (!DIC_DIGITS_REGEX.test(digits)) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "DIC must be 1 to 10 digits"
+    )
+  }
+
+  return digits
+}
+
+export function extractMojeDaneStatusPayload(
+  value: unknown,
+  depth = 0
+): Record<string, unknown> | null {
+  if (depth > MOJE_DANE_MAX_DEPTH) {
+    return null
+  }
+
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      const found = extractMojeDaneStatusPayload(entry, depth + 1)
+      if (found) {
+        return found
+      }
+    }
+    return null
+  }
+
+  if (!isRecord(value)) {
+    return null
+  }
+
+  if ("nespolehlivyPlatce" in value) {
+    return value
+  }
+
+  for (const entry of Object.values(value)) {
+    const found = extractMojeDaneStatusPayload(entry, depth + 1)
+    if (found) {
+      return found
+    }
+  }
+
+  return null
+}
+
+export function mapMojeDaneStatus(
+  response: MojeDaneStatusResponse
+): TaxReliabilityResult {
+  let reliable: boolean | null
+
+  switch (response.nespolehlivyPlatce) {
+    case "ANO":
+      reliable = false
+      break
+    case "NE":
+      reliable = true
+      break
+    case "NENALEZEN":
+      reliable = null
+      break
+    default:
+      reliable = null
+      break
+  }
+
+  return {
+    reliable,
+    unreliable_published_at:
+      reliable === null
+        ? null
+        : response.datumZverejneniNespolehlivosti ?? null,
+    subject_type: reliable === null ? null : response.typSubjektu ?? null,
+  }
+}
+
+export function mapViesResponse(
+  response: ViesCheckVatResponse
+): ViesCheckVatResult {
+  return {
+    valid: response.valid,
+    name: response.name ?? null,
+    address: response.address ?? null,
+    request_date: response.requestDate ?? null,
+    request_identifier: response.requestIdentifier ?? null,
+    trader_name_match: response.traderNameMatch ?? null,
+    trader_address_match: response.traderAddressMatch ?? null,
+    trader_company_type_match: response.traderCompanyTypeMatch ?? null,
+    trader_street_match: response.traderStreetMatch ?? null,
+    trader_postal_code_match: response.traderPostalCodeMatch ?? null,
+    trader_city_match: response.traderCityMatch ?? null,
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}

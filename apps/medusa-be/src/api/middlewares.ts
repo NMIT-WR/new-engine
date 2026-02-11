@@ -7,6 +7,7 @@ import { errorHandler } from "@medusajs/framework/http"
 import { defineMiddlewares } from "@medusajs/medusa"
 import { captureException } from "@sentry/node"
 import { normalizeError, shouldCaptureException } from "../utils/errors"
+import { companiesCheckRoutesMiddlewares } from "./companies/check/middlewares"
 import { adminPplConfigRoutesMiddlewares } from "./admin/ppl-config/middlewares"
 import { storeProducersRoutesMiddlewares } from "./store/producers/middlewares"
 
@@ -26,6 +27,7 @@ export default defineMiddlewares({
     return originalErrorHandler(error, req, res, next)
   },
   routes: [
+    ...companiesCheckRoutesMiddlewares,
     ...adminPplConfigRoutesMiddlewares,
     ...storeProducersRoutesMiddlewares,
   ],

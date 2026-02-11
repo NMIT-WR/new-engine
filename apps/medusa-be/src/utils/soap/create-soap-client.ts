@@ -1,0 +1,271 @@
+import { MedusaError } from "@medusajs/framework/utils"
+import { soap } from "strong-soap"
+import { TimeoutError } from "../http"
+
+export type SoapWsSecurityOptions = {
+  username: string
+  password: string
+  passwordType?: "PasswordText" | "PasswordDigest"
+  actor?: string
+  mustUnderstand?: boolean
+}
+
+export type SoapClientOptions = {
+  wsdlUrl: string
+  endpoint?: string
+  wsdlHeaders?: Record<string, string>
+  wsdlOptions?: Record<string, unknown>
+  soapHeaders?: Record<string, string>
+  wsSecurity?: SoapWsSecurityOptions
+}
+
+export type SoapClient = {
+  setSecurity?: (security: unknown) => void
+  setEndpoint?: (endpoint: string) => void
+  addHttpHeader?: (name: string, value: string) => void
+  [key: string]: unknown
+}
+
+type SoapCreateClientOptions = {
+  endpoint?: string
+  wsdl_headers?: Record<string, string>
+  wsdl_options?: Record<string, unknown>
+}
+
+const DEFAULT_SOAP_TIMEOUT_MS = 15_000
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function createWsSecurity(options: SoapWsSecurityOptions): unknown {
+  const WSSecurity = (soap as unknown as { WSSecurity?: unknown }).WSSecurity
+
+  if (typeof WSSecurity !== "function") {
+    throw new MedusaError(
+      MedusaError.Types.UNEXPECTED_STATE,
+      "SOAP WS-Security is not available"
+    )
+  }
+
+  const SecurityCtor = WSSecurity as new (
+    username: string,
+    password: string,
+    options: {
+      passwordType?: string
+      actor?: string
+      mustUnderstand?: boolean
+    }
+  ) => unknown
+
+  return new SecurityCtor(options.username, options.password, {
+    passwordType: options.passwordType ?? "PasswordText",
+    actor: options.actor,
+    mustUnderstand: options.mustUnderstand,
+  })
+}
+
+async function createClientPromise(
+  wsdlUrl: string,
+  options: SoapCreateClientOptions
+): Promise<SoapClient> {
+  const createClientAsync = (
+    soap as unknown as {
+      createClientAsync?: (
+        wsdl: string,
+        opts?: SoapCreateClientOptions
+      ) => Promise<unknown>
+    }
+  ).createClientAsync
+
+  if (typeof createClientAsync === "function") {
+    return (await createClientAsync(wsdlUrl, options)) as SoapClient
+  }
+
+  return await new Promise<SoapClient>((resolve, reject) => {
+    const createClient = (
+      soap as unknown as {
+        createClient?: (
+          wsdl: string,
+          opts: SoapCreateClientOptions,
+          callback: (error: unknown, client: SoapClient | undefined) => void
+        ) => void
+      }
+    ).createClient
+
+    if (typeof createClient !== "function") {
+      reject(
+        new MedusaError(
+          MedusaError.Types.UNEXPECTED_STATE,
+          "SOAP client factory is not available"
+        )
+      )
+      return
+    }
+
+    createClient(wsdlUrl, options, (error, client) => {
+      if (error) {
+        reject(error)
+        return
+      }
+      if (!client) {
+        reject(
+          new MedusaError(
+            MedusaError.Types.UNEXPECTED_STATE,
+            "SOAP client creation returned empty client"
+          )
+        )
+        return
+      }
+      resolve(client)
+    })
+  })
+}
+
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  context: string
+): Promise<T> {
+  if (timeoutMs <= 0) {
+    return promise
+  }
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new TimeoutError(`${context} after ${timeoutMs}ms`))
+    }, timeoutMs)
+
+    promise
+      .then((result) => resolve(result))
+      .catch((error) => reject(error))
+      .finally(() => clearTimeout(timeoutId))
+  })
+}
+
+function normalizeSoapResult<T>(result: unknown): T {
+  if (Array.isArray(result)) {
+    if (result.length === 0) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "SOAP operation returned empty result"
+      )
+    }
+    return result[0] as T
+  }
+  return result as T
+}
+
+export function extractSoapFaultMessage(error: unknown): string | null {
+  if (!isRecord(error)) {
+    return null
+  }
+
+  const fault =
+    (error as { Fault?: unknown }).Fault ??
+    (error as { fault?: unknown }).fault ??
+    (error as { root?: { Envelope?: { Body?: { Fault?: unknown } } } }).root
+      ?.Envelope?.Body?.Fault
+
+  if (isRecord(fault)) {
+    const message =
+      (fault as { faultstring?: unknown }).faultstring ??
+      (fault as { faultcode?: unknown }).faultcode ??
+      (fault as { message?: unknown }).message
+
+    if (typeof message === "string" && message.trim()) {
+      return message
+    }
+  }
+
+  return null
+}
+
+export async function createSoapClient(
+  options: SoapClientOptions
+): Promise<SoapClient> {
+  const wsdlUrl = options.wsdlUrl?.trim()
+  if (!wsdlUrl) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "SOAP WSDL URL is required"
+    )
+  }
+
+  const clientOptions: SoapCreateClientOptions = {
+    endpoint: options.endpoint,
+    wsdl_headers: options.wsdlHeaders,
+    wsdl_options: options.wsdlOptions,
+  }
+
+  const client = await createClientPromise(wsdlUrl, clientOptions)
+
+  if (options.endpoint && client.setEndpoint) {
+    client.setEndpoint(options.endpoint)
+  }
+
+  if (options.soapHeaders && client.addHttpHeader) {
+    for (const [key, value] of Object.entries(options.soapHeaders)) {
+      client.addHttpHeader(key, value)
+    }
+  }
+
+  if (options.wsSecurity && client.setSecurity) {
+    client.setSecurity(createWsSecurity(options.wsSecurity))
+  }
+
+  return client
+}
+
+export async function callSoapOperation<T>(
+  client: SoapClient,
+  operation: string,
+  args: unknown,
+  timeoutMs: number = DEFAULT_SOAP_TIMEOUT_MS
+): Promise<T> {
+  const asyncMethodName = `${operation}Async`
+  const asyncMethod = client[asyncMethodName]
+
+  if (typeof asyncMethod === "function") {
+    const result = await withTimeout(
+      Promise.resolve(
+        (asyncMethod as (input: unknown) => Promise<unknown>).call(client, args)
+      ),
+      timeoutMs,
+      `SOAP ${operation} timed out`
+    )
+    return normalizeSoapResult<T>(result)
+  }
+
+  const method = client[operation]
+  if (typeof method !== "function") {
+    throw new MedusaError(
+      MedusaError.Types.UNEXPECTED_STATE,
+      `SOAP operation not available: ${operation}`
+    )
+  }
+
+  const result = await withTimeout(
+    new Promise<unknown>((resolve, reject) => {
+      const callbackMethod = method as (
+        input: unknown,
+        callback: (error: unknown, value?: unknown) => void
+      ) => void
+      callbackMethod.call(
+        client,
+        args,
+        (error, value) => {
+          if (error) {
+            reject(error)
+            return
+          }
+          resolve(value)
+        }
+      )
+    }),
+    timeoutMs,
+    `SOAP ${operation} timed out`
+  )
+
+  return normalizeSoapResult<T>(result)
+}
