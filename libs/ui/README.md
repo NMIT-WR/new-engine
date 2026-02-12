@@ -185,7 +185,7 @@ Optional environment overrides:
 - `PLAYWRIGHT_DOCKER_SEQUENTIAL` (default: `0`, runs projects in parallel; set to `1` to reduce memory spikes)
 - `PLAYWRIGHT_DOCKER_PROJECTS` (comma-separated Playwright project names to run sequentially; default: `desktop,mobile`)
 
-Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
+### Recommendation for `PLAYWRIGHT_WORKERS` and parallelism
 
 - If `PLAYWRIGHT_WORKERS` is not set, the Playwright config defaults to
     using (CPU cores - 1) workers. This balances parallelism with leaving one

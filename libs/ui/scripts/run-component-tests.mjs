@@ -52,6 +52,11 @@ const run = (command, args, options = {}) => {
     shell: process.platform === "win32",
     ...options,
   })
+  if (result.error) {
+    throw new Error(
+      `Failed to spawn command: ${command} ${args.join(" ")} (${result.error.message})`
+    )
+  }
   if (result.status !== 0) {
     throw new Error(`Command failed: ${command} ${args.join(" ")}`)
   }
@@ -76,6 +81,7 @@ const handleExit = (signal) => {
 
 process.on("SIGINT", () => handleExit("SIGINT"))
 process.on("SIGTERM", () => handleExit("SIGTERM"))
+process.on("exit", cleanup)
 
 // Build storybook (default) or when missing
 if (rebuildStorybook) {
@@ -112,6 +118,7 @@ const dockerRunArgs = [
   "--name",
   containerName,
   `--platform=${platform}`,
+  // With --ipc=host this is a no-op, but it still applies for non-host IPC modes.
   `--shm-size=${shmSize}`,
   `--ipc=${ipcMode}`,
   "--add-host=host.docker.internal:host-gateway",
@@ -134,10 +141,15 @@ const dockerRunArgs = [
   "infinity",
 ]
 
+let envInsertIndex = dockerRunArgs.indexOf(imageName)
+if (envInsertIndex === -1) {
+  throw new Error("Failed to build docker args: image name marker not found.")
+}
+
 const addEnv = (key, value) => {
   if (!value) return
-  const insertAt = dockerRunArgs.indexOf(imageName)
-  dockerRunArgs.splice(insertAt, 0, "-e", `${key}=${value}`)
+  dockerRunArgs.splice(envInsertIndex, 0, "-e", `${key}=${value}`)
+  envInsertIndex += 2
 }
 
 addEnv("TEST_BASE_URL", testBaseUrl)
