@@ -9,10 +9,10 @@ export const buttonVariants = tv({
     "inline-flex cursor-pointer items-baseline justify-center",
     "font-medium",
     "transition-all duration-200 motion-reduce:transition-none",
-    "focus:outline-none",
-    "focus-visible:ring",
-    "focus-visible:ring-button-ring",
-    "disabled:pointer-events-none disabled:text-button-fg-disabled",
+    "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+    "focus-visible:outline-button-ring",
+    "focus-visible:outline-offset-(length:--default-ring-offset)",
+    "disabled:cursor-not-allowed disabled:text-button-fg-disabled",
   ],
   variants: {
     variant: {
@@ -26,8 +26,9 @@ export const buttonVariants = tv({
       solid: "disabled:bg-button-bg-disabled",
       light: "disabled:bg-button-bg-disabled",
       borderless:
-        "bg-button-bg-borderless hover:bg-button-bg-borderless-hover active:bg-button-bg-borderless-active",
-      outlined: "border disabled:border-button-border-disabled",
+        "bg-button-bg-borderless hover:bg-button-bg-borderless-hover active:bg-button-bg-borderless-active disabled:hover:bg-button-bg-borderless",
+      outlined:
+        "border bg-button-bg-outlined disabled:border-button-border-disabled disabled:hover:bg-button-bg-outlined",
       unstyled: "",
     },
     uppercase: {

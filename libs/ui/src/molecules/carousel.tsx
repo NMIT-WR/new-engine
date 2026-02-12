@@ -29,18 +29,17 @@ const carouselVariants = tv({
     wrapper: ["relative w-fit"],
     root: ["relative overflow-hidden", "rounded-carousel"],
     control: [
-      "-translate-x-1/2 absolute bottom-0 left-1/2 flex",
-      "gap-carousel-control p-carousel-control",
+      "flex gap-carousel-control p-carousel-control",
       "bg-carousel-control-bg",
       "rounded-carousel",
     ],
     slideGroup: [
       "overflow-hidden",
       "scrollbar-hide",
-      "data-[dragging]:cursor-grabbing",
+      "data-dragging:cursor-grabbing",
     ],
     slide: [
-      "relative flex-shrink-0",
+      "relative shrink-0",
       "flex items-center justify-center",
       "overflow-hidden",
     ],
@@ -50,11 +49,11 @@ const carouselVariants = tv({
       "flex w-full items-center justify-center gap-carousel-indicator",
     ],
     indicator: [
-      'aspect-carousel-indicator bg-carousel-indicator-bg w-carousel-indicator',
-      'data-[current]:bg-carousel-indicator-bg-active',
-      'data-[current]:border-carousel-indicator-border-active',
-      'rounded-carousel-indicator border border-carousel-indicator-border',
-      'transition-colors duration-200 motion-reduce:transition-none',
+      "aspect-carousel-indicator w-carousel-indicator bg-carousel-indicator-bg",
+      "data-current:bg-carousel-indicator-bg-active",
+      "data-current:border-carousel-indicator-border-active",
+      "rounded-carousel-indicator border border-carousel-indicator-border",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     autoplayIcon: ["icon-[mdi--play]", "data-[pressed=true]:icon-[mdi--pause]"],
     autoplayTrigger: [
@@ -68,9 +67,10 @@ const carouselVariants = tv({
       slots: ["autoplayTrigger", "indicator", "prevTrigger", "nextTrigger"],
       class: [
         "p-carousel-trigger",
-        "text-carousel-trigger-fg focus:outline-none",
-        "focus:ring",
-        "focus:ring-carousel-ring",
+        "text-carousel-trigger-fg",
+        "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+        "focus-visible:outline-carousel-ring",
+        "focus-visible:outline-offset-(length:--default-ring-offset)",
       ],
     },
     {
@@ -97,7 +97,18 @@ const carouselVariants = tv({
         slide: "",
       },
     },
-
+    controlPosition: {
+      side: {
+        control: "flex-col items-center justify-between",
+      },
+      top: {
+        control: "-translate-x-1/2 absolute top-0 left-1/2",
+      },
+      bottom: {
+        control: "-translate-x-1/2 absolute bottom-0 left-1/2",
+      },
+      unset: {},
+    },
     aspectRatio: {
       square: {
         slide: "aspect-square",
@@ -112,7 +123,7 @@ const carouselVariants = tv({
         slide: "aspect-wide",
       },
       none: {
-        slide: "", //  custom content
+        slide: "",
       },
     },
     size: {
@@ -158,10 +169,10 @@ const carouselVariants = tv({
     aspectRatio: "square",
     objectFit: "cover",
     size: "md",
+    controlPosition: "bottom",
   },
 })
 
-// === CONTEXT ===
 interface CarouselContextValue {
   api: ReturnType<typeof carousel.connect>
   size?: "sm" | "md" | "lg" | "full"
@@ -179,7 +190,6 @@ const useCarouselContext = () => {
   return context
 }
 
-// === TYPE DEFINITIONS ===
 export type CarouselSlide = {
   id: string
   content?: ReactNode
@@ -189,7 +199,7 @@ export type CarouselSlide = {
 }
 
 export interface CarouselRootProps<T extends ElementType = typeof Image>
-  extends VariantProps<typeof carouselVariants>,
+  extends Omit<VariantProps<typeof carouselVariants>, "controlPosition">,
     Omit<carousel.Props, "id" | "size"> {
   id?: string
   className?: string
@@ -242,11 +252,10 @@ interface CarouselAutoplayProps {
 interface CarouselControlProps {
   children: ReactNode
   className?: string
+  controlPosition?: "top" | "bottom" | "side" | "unset"
 }
 
-// === ROOT COMPONENT ===
 export function Carousel<T extends ElementType = typeof Image>({
-  /* Data */
   id,
   /* Tailwind variants */
   size,
@@ -263,6 +272,7 @@ export function Carousel<T extends ElementType = typeof Image>({
   spacing = "0px",
   padding = "0px",
   dir = "ltr",
+  snapType = "mandatory",
   /* Others */
   className,
   children,
@@ -282,6 +292,7 @@ export function Carousel<T extends ElementType = typeof Image>({
     spacing,
     padding,
     dir,
+    snapType,
     onPageChange,
     ...props,
   })
@@ -291,8 +302,8 @@ export function Carousel<T extends ElementType = typeof Image>({
 
   return (
     <CarouselContext.Provider value={{ api, size, objectFit, aspectRatio }}>
-      <div className={wrapper({ className })}>
-        <div className={root()} {...api.getRootProps()}>
+      <div className={wrapper()}>
+        <div className={root({ className })} {...api.getRootProps()}>
           {children}
         </div>
       </div>
@@ -300,7 +311,6 @@ export function Carousel<T extends ElementType = typeof Image>({
   )
 }
 
-// === ITEMS CONTAINER ===
 Carousel.Slides = function CarouselSlides({
   slides,
   size: overrideSize,
@@ -343,7 +353,6 @@ Carousel.Slides = function CarouselSlides({
   )
 }
 
-// === SINGLE ITEM ===
 Carousel.Slide = function CarouselSlide({
   index,
   children,
@@ -370,7 +379,6 @@ Carousel.Slide = function CarouselSlide({
   )
 }
 
-// === PREVIOUS BUTTON ===
 Carousel.Previous = function CarouselPrevious({
   className,
   icon = "token-icon-carousel-prev" as IconType,
@@ -387,7 +395,6 @@ Carousel.Previous = function CarouselPrevious({
   )
 }
 
-// === NEXT BUTTON ===
 Carousel.Next = function CarouselNext({
   className,
   icon = "token-icon-carousel-next" as IconType,
@@ -404,7 +411,6 @@ Carousel.Next = function CarouselNext({
   )
 }
 
-// === INDICATORS GROUP ===
 Carousel.Indicators = function CarouselIndicators({
   className,
   children,
@@ -424,7 +430,6 @@ Carousel.Indicators = function CarouselIndicators({
     )
   }
 
-  // Default indicators
   return (
     <div
       className={indicatorGroup({ className })}
@@ -441,7 +446,6 @@ Carousel.Indicators = function CarouselIndicators({
   )
 }
 
-// === SINGLE INDICATOR ===
 Carousel.Indicator = function CarouselIndicator({
   index,
   className,
@@ -460,7 +464,6 @@ Carousel.Indicator = function CarouselIndicator({
   )
 }
 
-// === AUTOPLAY TRIGGER ===
 Carousel.Autoplay = function CarouselAutoplay({
   className,
 }: CarouselAutoplayProps) {
@@ -476,13 +479,13 @@ Carousel.Autoplay = function CarouselAutoplay({
   )
 }
 
-// === CONTROL WRAPPER ===
 Carousel.Control = function CarouselControl({
   children,
   className,
+  controlPosition,
 }: CarouselControlProps) {
   const { api } = useCarouselContext()
-  const { control } = carouselVariants()
+  const { control } = carouselVariants({ controlPosition })
 
   return (
     <div className={control({ className })} {...api.getControlProps()}>
@@ -491,5 +494,4 @@ Carousel.Control = function CarouselControl({
   )
 }
 
-// === EXPORT THE COMPOUND COMPONENT ===
 Carousel.Root = Carousel

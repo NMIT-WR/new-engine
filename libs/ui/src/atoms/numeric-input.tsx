@@ -19,31 +19,36 @@ const numericInputVariants = tv({
     container: [
       "group border-(length:--border-width-numeric-input) relative flex",
       "items-center overflow-hidden rounded-numeric-input border-numeric-input-border",
-      "data-[invalid]:bg-numeric-input-invalid-bg",
-      "data-[invalid]:border-numeric-input-invalid-border",
+      "data-invalid:bg-numeric-input-invalid-bg",
+      "data-invalid:border-(length:--border-width-validation)",
+      "data-invalid:border-numeric-input-invalid-border",
       "text-numeric-input-fg",
-      "has-[input:hover]:bg-numeric-input-input-bg-hover",
+      "has-[input:not(:disabled):hover]:bg-numeric-input-input-bg-hover",
       "has-[input:focus]:bg-numeric-input-input-bg-focus",
-      "focus-within:ring",
-      "focus-within:ring-numeric-input-ring",
+      "focus-within:outline-(style:--default-ring-style) focus-within:outline-(length:--default-ring-width)",
+      "focus-within:outline-numeric-input-ring",
+      "focus-within:outline-offset-(length:--default-ring-offset)",
     ],
     input: [
-      "border-none p-numeric-input-input",
+      "h-full rounded-none border-none pl-numeric-input-input",
       "bg-numeric-input-input-bg",
       "focus:bg-numeric-input-input-bg-focus",
       "hover:bg-numeric-input-input-bg-hover",
-      "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-      "duration-0 data-[invalid]:focus:border-input-border-danger-focus",
+      "disabled:hover:bg-numeric-input-input-bg",
+      "disabled:cursor-not-allowed",
+      "focus-visible:outline-none",
+      "duration-0 data-invalid:focus:border-input-border-danger-focus",
     ],
     triggerContainer: [
       "flex h-fit flex-col justify-center bg-numeric-input-trigger-container-bg",
     ],
     trigger: [
-      'px-numeric-input-trigger-x py-numeric-input-trigger-y',
-      'bg-numeric-input-trigger-bg hover:bg-numeric-input-trigger-bg-hover',
-      'text-numeric-input-trigger-fg hover:text-numeric-input-trigger-fg-hover',
-      'cursor-pointer',
-      'transition-colors duration-200 motion-reduce:transition-none',
+      "px-numeric-input-trigger-x py-numeric-input-trigger-y",
+      "bg-numeric-input-trigger-bg hover:bg-numeric-input-trigger-bg-hover",
+      "text-numeric-input-trigger-fg hover:text-numeric-input-trigger-fg-hover",
+      "cursor-pointer",
+      "transition-colors duration-200 motion-reduce:transition-none",
+      "disabled:cursor-not-allowed",
     ],
     scrubber: "absolute inset-0 cursor-ew-resize",
   },
@@ -72,7 +77,7 @@ const numericInputVariants = tv({
 })
 
 // Context for sharing state between sub-components
-interface NumericInputContextValue {
+type NumericInputContextValue = {
   api: ReturnType<typeof numberInput.connect>
   size?: "sm" | "md" | "lg"
   styles: ReturnType<typeof numericInputVariants>
@@ -107,6 +112,7 @@ export type NumericInputProps = Omit<
     describedBy?: string
     ref?: Ref<HTMLDivElement>
     id?: string
+    locale?: string
   }
 
 export function NumericInput({
@@ -136,14 +142,27 @@ export function NumericInput({
   children,
   ref,
   className,
+  locale = "cs-CZ",
   ...props
 }: NumericInputProps) {
   const generatedId = useId()
   const uniqueId = id || generatedId
+  const resolvedFormatOptions = precision
+    ? { ...(formatOptions ?? {}), maximumFractionDigits: precision }
+    : formatOptions
 
-  const stringValue = value !== undefined ? String(value) : undefined
+  const formatValue = (inputValue: number) => {
+    if (!resolvedFormatOptions) {
+      return String(inputValue)
+    }
+    return new Intl.NumberFormat(locale, resolvedFormatOptions).format(
+      inputValue
+    )
+  }
+
+  const stringValue = value !== undefined ? formatValue(value) : undefined
   const stringDefaultValue =
-    defaultValue !== undefined ? String(defaultValue) : undefined
+    defaultValue !== undefined ? formatValue(defaultValue) : undefined
 
   const service = useMachine(numberInput.machine, {
     id: uniqueId,
@@ -152,6 +171,7 @@ export function NumericInput({
     step,
     name,
     disabled,
+    locale,
     required,
     pattern,
     readOnly,
@@ -164,9 +184,7 @@ export function NumericInput({
     allowOverflow,
     clampValueOnBlur,
     spinOnPress,
-    formatOptions: precision
-      ? { maximumFractionDigits: precision }
-      : formatOptions,
+    formatOptions: resolvedFormatOptions,
     onValueChange: (details) => {
       onChange?.(details.valueAsNumber)
     },
