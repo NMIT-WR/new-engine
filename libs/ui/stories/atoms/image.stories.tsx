@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import NextImage from 'next/image'
 import { Image } from '../../src/atoms/image'
-import testImg from '../assets/test-image.webp'
 
 const meta: Meta<typeof Image> = {
   title: 'Atoms/Image',
@@ -78,28 +76,4 @@ export const Sizes: Story = {
       />
     </div>
   ),
-}
-
-export const WithNextImage: Story = {
-  render: () => {
-    return (
-      <div className="space-y-4 w-md">
-        <p className="text-fg-secondary text-sm">
-          Using Next.js Image via `as` prop:
-        </p>
-        <Image
-          as={NextImage}
-          src={testImg}
-          alt="Next.js optimized image"
-          width={200}
-          height={200}
-          className="rounded-lg"
-          priority
-          placeholder="blur"
-          blurDataURL={testImg}
-          unoptimized
-        />
-      </div>
-    )
-  },
 }

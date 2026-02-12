@@ -35,7 +35,11 @@ type NativeImageProps = BaseImageProps &
   Omit<ComponentPropsWithoutRef<"img">, keyof BaseImageProps>
 
 type CustomImageProps<T extends ElementType> = BaseImageProps &
-  Omit<ComponentPropsWithoutRef<HasImageProps<T>>, keyof BaseImageProps> & {
+  VariantProps<typeof imageVariants> &
+  Omit<
+    ComponentPropsWithoutRef<HasImageProps<T>>,
+    keyof BaseImageProps | keyof VariantProps<typeof imageVariants>
+  > & {
     as: HasImageProps<T>
   }
 

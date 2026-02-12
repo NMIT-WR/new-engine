@@ -2,9 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { type ComponentPropsWithoutRef, useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
 import { Button } from '../../src/atoms/button'
-import { Icon, type IconType } from '../../src/atoms/icon'
+import { type IconType } from '../../src/atoms/icon'
 import { Tooltip } from '../../src/atoms/tooltip'
 import { iconLabels, iconOptions } from '../helpers/icon-options'
+import { Link } from '@/atoms/link'
+import { Input } from '@/atoms/input'
+import { Label } from '@/atoms/label'
 
 type PlaygroundArgs = ComponentPropsWithoutRef<typeof Tooltip> & {
   triggerType?: 'button' | 'icon'
@@ -171,10 +174,17 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       triggerSize,
       ...tooltipArgs
     } = args
+    const icon = triggerIcon ?? 'icon-[mdi--magnify]'
+    const label = triggerLabel ?? 'Tooltip trigger'
 
     const trigger =
       triggerType === 'icon' ? (
-        <Icon size="lg" icon={triggerIcon ?? 'icon-[mdi--magnify]'} color="primary" />
+        <Button
+          aria-label={label}
+          icon={icon}
+          size={triggerSize}
+          variant={triggerVariant}
+        />
       ) : (
         <Button variant={triggerVariant} size={triggerSize}>
           {triggerLabel}
@@ -207,7 +217,7 @@ export const WithIcon: Story = {
   args: {
     content: 'Get help and support',
     children: (
-      <Icon size="lg" icon="icon-[mdi--help-circle-outline]" color="primary" />
+      <Button theme="unstyled" icon="icon-[mdi--help-circle-outline]" />
     ),
     placement: 'top',
   },
@@ -216,16 +226,16 @@ export const WithIcon: Story = {
 export const RichContent: Story = {
   args: {
     content: (
-      <div className="space-y-2">
+      <div className="space-y-200">
         <div className="font-semibold">User Profile</div>
         <div className="text-sm opacity-80">
           View and edit your profile settings
         </div>
-        <div className="mt-3 flex gap-2">
-          <button className="rounded bg-primary px-2 py-1 text-xs">Edit</button>
-          <button className="rounded bg-secondary px-2 py-1 text-xs">
+        <div className="mt-300 flex gap-200">
+          <Button size="sm">Edit</Button>
+          <Button size="sm" variant="secondary">
             View
-          </button>
+          </Button>
         </div>
       </div>
     ),
@@ -239,18 +249,18 @@ export const WithLinks: Story = {
     content: (
       <div>
         Learn more in our{' '}
-        <a
+        <Link
           href="#"
           className="text-primary underline hover:no-underline"
           onClick={(e) => e.preventDefault()}
         >
           documentation
-        </a>
+        </Link>
       </div>
     ),
     interactive: true,
     placement: 'top',
-    children: <Icon icon="icon-[mdi--information]" />,
+    children: <Button theme="unstyled" icon="icon-[mdi--information]" />,
   },
 }
 
@@ -259,12 +269,12 @@ export const AllPlacements: Story = {
     <VariantContainer>
       <VariantGroup title="Top Placements">
         <Tooltip content="Top start" placement="top-start">
-          <Button size="sm" className="w-48">
+          <Button className="w-3xs" size="sm">
             ↖ top-start
           </Button>
         </Tooltip>
         <Tooltip content="Top end" placement="top-end">
-          <Button size="sm" className="w-48">
+          <Button className="w-3xs" size="sm">
             ↗ top-end
           </Button>
         </Tooltip>
@@ -272,24 +282,24 @@ export const AllPlacements: Story = {
 
       <VariantGroup title="Side Placements">
         <Tooltip content="Left start" placement="left-start">
-          <Button size="sm" className="h-24 items-center">
+          <Button className="h-900 items-center" size="sm">
             ← left-start
           </Button>
         </Tooltip>
 
         <Tooltip content="Left end" placement="left-end">
-          <Button size="sm" className="h-24 items-center">
+          <Button className="h-900 items-center" size="sm">
             ← left-end
           </Button>
         </Tooltip>
         <Tooltip content="Right start" placement="right-start">
-          <Button size="sm" className="h-24 items-center">
+          <Button className="h-900 items-center" size="sm">
             right-start →
           </Button>
         </Tooltip>
 
         <Tooltip content="Right end" placement="right-end">
-          <Button size="sm" className="h-24 items-center">
+          <Button className="h-900 items-center" size="sm">
             right-end →
           </Button>
         </Tooltip>
@@ -297,13 +307,13 @@ export const AllPlacements: Story = {
 
       <VariantGroup title="Bottom Placements">
         <Tooltip content="Bottom start" placement="bottom-start">
-          <Button size="sm" className="w-48">
+          <Button className="w-3xs" size="sm">
             ↙ bottom-start
           </Button>
         </Tooltip>
 
         <Tooltip content="Bottom end" placement="bottom-end">
-          <Button size="sm" className="w-48">
+          <Button className="w-3xs" size="sm">
             ↘ bottom-end
           </Button>
         </Tooltip>
@@ -358,7 +368,7 @@ export const CloseBehaviors: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Different Close Triggers" fullWidth>
-        <div className="grid w-full grid-cols-2 gap-4">
+        <div className="grid w-full grid-cols-2 gap-400">
           <Tooltip
             content="Press ESC to close"
             closeOnEscape={true}
@@ -410,8 +420,8 @@ export const ControlledTooltip: Story = {
     return (
       <VariantContainer>
         <VariantGroup title="External State Control" fullWidth>
-          <div className="w-full space-y-4">
-            <div className="flex justify-center gap-4">
+          <div className="w-full space-y-400">
+            <div className="flex justify-center gap-400">
               <Button onClick={() => setIsOpen(!isOpen)}>
                 {isOpen ? 'Close' : 'Open'} Tooltip
               </Button>
@@ -463,37 +473,47 @@ export const FormHelper: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Form Field Helpers" fullWidth>
-        <div className="max-w-3xl space-y-4">
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 font-medium text-sm">
+        <div className="max-w-3xl space-y-400">
+          <div className="space-y-200">
+            <Label className="flex items-center gap-200" htmlFor="tooltip-password">
               Password
               <Tooltip
                 content="Must be at least 8 characters with uppercase, lowercase, and numbers"
                 placement="right"
               >
-                <Icon icon="icon-[mdi--help-circle]" />
+                <Button
+                  aria-label="Password requirements"
+                  icon="icon-[mdi--help-circle]"
+                  size="current"
+                  theme="unstyled"
+                />
               </Tooltip>
-            </label>
-            <input
+            </Label>
+            <Input
+              id="tooltip-password"
               type="password"
-              className="w-full rounded-md border px-3 py-2"
               placeholder="Enter password"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 font-medium text-sm">
+          <div className="space-y-200">
+            <Label className="flex items-center gap-200" htmlFor="tooltip-api-key">
               API Key
               <Tooltip
                 content="Found in your account settings under 'Developer Options'"
                 placement="right"
               >
-                <Icon icon="icon-[mdi--information]" />
+                <Button
+                  aria-label="API key info"
+                  icon="icon-[mdi--information]"
+                  size="current"
+                  theme="unstyled"
+                />
               </Tooltip>
-            </label>
-            <input
+            </Label>
+            <Input
+              id="tooltip-api-key"
               type="text"
-              className="w-full rounded-md border px-3 py-2"
               placeholder="sk-..."
             />
           </div>
@@ -507,7 +527,7 @@ export const OutlineVariant: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Navigation Bar">
-        <div className="flex gap-1 rounded-lg p-2">
+        <div className="flex gap-100 rounded-lg p-200">
           {[
             { icon: 'icon-[mdi--home]', label: 'Dashboard' },
             { icon: 'icon-[mdi--chart-line]', label: 'Analytics' },
@@ -516,9 +536,12 @@ export const OutlineVariant: Story = {
             { icon: 'icon-[mdi--help-circle]', label: 'Help & Support' },
           ].map(({ icon, label }) => (
             <Tooltip key={label} content={label} placement="bottom" variant="outline">
-              <button className="rounded p-2 transition-colors">
-                <Icon icon={icon as IconType} />
-              </button>
+              <Button
+                aria-label={label}
+                className="rounded p-200 transition-colors"
+                icon={icon as IconType}
+                theme="unstyled"
+              />
             </Tooltip>
           ))}
         </div>
@@ -531,7 +554,7 @@ export const DataPreview: Story = {
   render: () => (
     <VariantContainer>
       <VariantGroup title="Dashboard Cards" fullWidth>
-        <div className="grid w-full grid-cols-3 gap-4">
+        <div className="grid w-full grid-cols-3 gap-400">
           {[
             { value: '1,234', label: 'Users', change: '+12%' },
             { value: '$45.2K', label: 'Revenue', change: '+8%' },
@@ -543,7 +566,7 @@ export const DataPreview: Story = {
                 <div className="text-center">
                   <div className="font-semibold">{label}</div>
                   <div className="text-2xl">{value}</div>
-                  <div className="text-green-500 text-sm">
+                  <div className="text-sm text-success">
                     {change} this month
                   </div>
                 </div>
@@ -551,10 +574,15 @@ export const DataPreview: Story = {
               interactive={true}
               placement="top"
             >
-              <div className="cursor-pointer rounded-lg border p-4 transition-colors">
-                <div className="text-sm">{label}</div>
-                <div className="font-bold text-2xl">{value}</div>
-              </div>
+              <Button
+                aria-label={`${label}: ${value}, ${change} this month`}
+                className="w-full flex-col items-start justify-start rounded-lg border p-400 text-start transition-colors"
+                size="current"
+                theme="unstyled"
+              >
+                <span className="text-sm">{label}</span>
+                <span className="font-bold text-2xl">{value}</span>
+              </Button>
             </Tooltip>
           ))}
         </div>

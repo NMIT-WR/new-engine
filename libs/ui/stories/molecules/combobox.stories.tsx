@@ -81,7 +81,7 @@ const meta: Meta<typeof Combobox> = {
     closeOnSelect: {
       control: 'boolean',
       description: 'Close dropdown on selection',
-      table: { defaultValue: { summary: 'false' } },
+      table: { defaultValue: { summary: 'true' } },
     },
     selectionBehavior: {
       control: 'select',
