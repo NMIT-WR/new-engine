@@ -43,6 +43,12 @@ const snapshotsDir = path.resolve(uiRoot, "test/visual.spec.ts-snapshots")
 const containerName = `pw-visual-${Date.now()}`
 const rebuildStorybook =
   (process.env.PLAYWRIGHT_STORYBOOK_REBUILD ?? "1") !== "0"
+const optionalContainerEnv = [
+  ["TEST_BASE_URL", testBaseUrl],
+  ["PLAYWRIGHT_WORKERS", process.env.PLAYWRIGHT_WORKERS],
+  ["PLAYWRIGHT_PAGE_RESET", process.env.PLAYWRIGHT_PAGE_RESET],
+  ["TEST_STORIES", process.env.TEST_STORIES],
+]
 
 console.log(`Using Docker image: ${imageName}`)
 
@@ -83,6 +89,28 @@ process.on("SIGINT", () => handleExit("SIGINT"))
 process.on("SIGTERM", () => handleExit("SIGTERM"))
 process.on("exit", cleanup)
 
+const getProcessOutcome = (result, contextLabel) => {
+  if (result.error) {
+    console.error(`${contextLabel} failed to spawn:`, result.error.message)
+  }
+  return {
+    status: result.status ?? (result.signal || result.error ? 1 : 0),
+    signal: result.signal,
+  }
+}
+
+const copyArtifact = (label, sourcePath, destinationPath) => {
+  console.log(`Copying ${label} back to host...`)
+  const copyResult = runSilent("docker", [
+    "cp",
+    `${containerName}:${sourcePath}`,
+    destinationPath,
+  ])
+  if (copyResult.status !== 0) {
+    console.warn(`Warning: Could not copy ${label} (may not exist yet)`)
+  }
+}
+
 // Build storybook (default) or when missing
 if (rebuildStorybook) {
   console.log("Building Storybook...")
@@ -112,6 +140,9 @@ const extraArgs = process.argv.slice(2)
 console.log("Starting container...")
 
 // Start container in background (keeps running)
+const containerEnvArgs = optionalContainerEnv.flatMap(([key, value]) =>
+  value ? ["-e", `${key}=${value}`] : []
+)
 const dockerRunArgs = [
   "run",
   "-d",
@@ -126,6 +157,7 @@ const dockerRunArgs = [
   "CI=true",
   "-e",
   "PLAYWRIGHT_DOCKER=1",
+  ...containerEnvArgs,
   "--entrypoint",
   "sleep",
   // Mount sources as read-only
@@ -140,22 +172,6 @@ const dockerRunArgs = [
   imageName,
   "infinity",
 ]
-
-let envInsertIndex = dockerRunArgs.indexOf(imageName)
-if (envInsertIndex === -1) {
-  throw new Error("Failed to build docker args: image name marker not found.")
-}
-
-const addEnv = (key, value) => {
-  if (!value) return
-  dockerRunArgs.splice(envInsertIndex, 0, "-e", `${key}=${value}`)
-  envInsertIndex += 2
-}
-
-addEnv("TEST_BASE_URL", testBaseUrl)
-addEnv("PLAYWRIGHT_WORKERS", process.env.PLAYWRIGHT_WORKERS)
-addEnv("PLAYWRIGHT_PAGE_RESET", process.env.PLAYWRIGHT_PAGE_RESET)
-addEnv("TEST_STORIES", process.env.TEST_STORIES)
 
 const startResult = runSilent("docker", dockerRunArgs)
 
@@ -221,19 +237,17 @@ try {
       dockerProjects.length > 0 ? dockerProjects : ["desktop", "mobile"]
     for (const project of projectsToRun) {
       const result = runPlaywright(project)
-      if (result.status !== 0 || result.signal) {
-        testStatus = result.status ?? 1
-        testSignal = result.signal
+      const outcome = getProcessOutcome(result, `Playwright project "${project}"`)
+      if (outcome.status !== 0 || outcome.signal) {
+        testStatus = outcome.status
+        testSignal = outcome.signal
         break
       }
     }
   } else {
-    const result = runPlaywright()
-    if (result.error) {
-      console.error("Playwright failed to spawn:", result.error.message)
-    }
-    testStatus = result.status ?? (result.signal || result.error ? 1 : 0)
-    testSignal = result.signal
+    const outcome = getProcessOutcome(runPlaywright(), "Playwright")
+    testStatus = outcome.status
+    testSignal = outcome.signal
   }
 
   if (testStatus !== 0 || testSignal) {
@@ -249,40 +263,11 @@ try {
     }
   }
 
-  // Copy snapshots back to host (only if update mode or new snapshots)
-  console.log("Copying snapshots back to host...")
-  const copySnapshotsResult = runSilent("docker", [
-    "cp",
-    `${containerName}:/app/test/visual.spec.ts-snapshots/.`,
-    snapshotsDir,
-  ])
-  if (copySnapshotsResult.status !== 0) {
-    console.warn("Warning: Could not copy snapshots (may not exist yet)")
-  }
-
-  // Copy HTML report back to host
-  console.log("Copying HTML report back to host...")
   const reportDir = path.resolve(uiRoot, "playwright-report")
-  const copyReportResult = runSilent("docker", [
-    "cp",
-    `${containerName}:/app/playwright-report/.`,
-    reportDir,
-  ])
-  if (copyReportResult.status !== 0) {
-    console.warn("Warning: Could not copy HTML report (may not exist yet)")
-  }
-
-  // Copy test results back to host
-  console.log("Copying test results back to host...")
   const resultsDir = path.resolve(uiRoot, "test-results")
-  const copyResultsResult = runSilent("docker", [
-    "cp",
-    `${containerName}:/app/test-results/.`,
-    resultsDir,
-  ])
-  if (copyResultsResult.status !== 0) {
-    console.warn("Warning: Could not copy test results (may not exist yet)")
-  }
+  copyArtifact("snapshots", "/app/test/visual.spec.ts-snapshots/.", snapshotsDir)
+  copyArtifact("HTML report", "/app/playwright-report/.", reportDir)
+  copyArtifact("test results", "/app/test-results/.", resultsDir)
 
   cleanup()
   process.exit(testStatus ?? 0)

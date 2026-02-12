@@ -1,5 +1,16 @@
 import fs from 'node:fs'
 
+const containerMarkers = ['docker', 'containerd', 'kubepods', 'podman']
+
+const hasContainerMarkers = (filePath) => {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8').toLowerCase()
+    return containerMarkers.some((marker) => content.includes(marker))
+  } catch {
+    return false
+  }
+}
+
 const runningInContainer = () => {
   if (process.platform !== 'linux') {
     return false
@@ -14,30 +25,10 @@ const runningInContainer = () => {
     return true
   }
 
-  try {
-    const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8')
-    if (
-      cgroup.includes('docker') ||
-      cgroup.includes('containerd') ||
-      cgroup.includes('kubepods')
-    ) {
-      return true
-    }
-  } catch {}
-
-  try {
-    const mountInfo = fs.readFileSync('/proc/self/mountinfo', 'utf8')
-    if (
-      mountInfo.includes('docker') ||
-      mountInfo.includes('containerd') ||
-      mountInfo.includes('kubepods') ||
-      mountInfo.includes('podman')
-    ) {
-      return true
-    }
-  } catch {}
-
-  return false
+  return (
+    hasContainerMarkers('/proc/1/cgroup') ||
+    hasContainerMarkers('/proc/self/mountinfo')
+  )
 }
 
 export default async function dockerOnlyGlobalSetup() {
