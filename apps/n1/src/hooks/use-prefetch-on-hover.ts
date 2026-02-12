@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { ALL_CATEGORIES_MAP } from "@/lib/constants"
 import { PREFETCH_DELAYS } from "@/lib/prefetch-config"
-import { usePrefetchProducts } from "./use-prefetch-products"
+import { usePrefetchProducts } from "./prefetch-products"
 
 type UsePrefetchOnHoverReturn = {
   handleHover: (categoryHandle: string) => void

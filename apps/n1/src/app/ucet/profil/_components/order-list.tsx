@@ -2,7 +2,10 @@
 import { Pagination } from "@techsio/ui-kit/molecules/pagination"
 import { Suspense, useState } from "react"
 import { ErrorBoundary } from "@/components/error-boundary"
-import { useSuspenseOrders } from "@/hooks/use-orders"
+import {
+  ACCOUNT_ORDERS_PAGE_SIZE,
+  useSuspenseOrders,
+} from "@/hooks/order-hooks"
 import { DesktopOrderCard } from "./orders/desktop-order-card"
 import { MobileOrderCard } from "./orders/mobile-order-card"
 import { OrdersEmpty } from "./orders/orders-empty"
@@ -11,7 +14,6 @@ import { OrdersSkeleton } from "./orders/orders-skeleton"
 import { OrdersSummary } from "./orders/orders-summary"
 
 const MIN_ORDERS_COUNT = 5
-const PAGE_SIZE = 5
 
 export function OrderList() {
   return (
@@ -25,45 +27,24 @@ export function OrderList() {
 
 function OrderListContent() {
   const [page, setPage] = useState(1)
-  const { data: ordersData } = useSuspenseOrders()
-
-  const orders = ordersData?.orders || []
-
-  // Calculate summary stats (from all orders, not just current page)
-  const totalAmount = orders.reduce(
-    (sum, order) =>
-      sum + (order.summary?.current_order_total || order.total || 0),
-    0
-  )
-  const completedOrders = orders.filter(
-    (order) => order.status === "completed"
-  ).length
-  const pendingOrders = orders.filter(
-    (order) => order.status === "pending"
-  ).length
-
-  // Pagination
-  const startIndex = (page - 1) * PAGE_SIZE
-  const paginatedOrders = orders.slice(startIndex, startIndex + PAGE_SIZE)
+  const { orders, totalCount } = useSuspenseOrders({
+    page,
+    limit: ACCOUNT_ORDERS_PAGE_SIZE,
+  })
 
   return (
     <div className="space-y-400">
       {/* Summary section */}
-      <OrdersSummary
-        completedOrders={completedOrders}
-        numberOfOrders={orders.length}
-        pendingOrders={pendingOrders}
-        totalAmount={totalAmount}
-      />
+      <OrdersSummary numberOfOrders={totalCount} />
 
       {/* Content */}
-      {orders.length === 0 ? (
+      {totalCount === 0 ? (
         <OrdersEmpty />
       ) : (
         <>
           {/* Mobile view */}
           <div className="block space-y-200 sm:hidden">
-            {paginatedOrders.map((order) => (
+            {orders.map((order) => (
               <MobileOrderCard key={order.id} order={order} />
             ))}
           </div>
@@ -77,18 +58,18 @@ function OrderListContent() {
               <div className="col-span-2 text-right">Celkem</div>
               <div className="col-span-2 text-right">Akce</div>
             </div>
-            {paginatedOrders.map((order) => (
+            {orders.map((order) => (
               <DesktopOrderCard key={order.id} order={order} />
             ))}
           </div>
 
           {/* Pagination */}
-          {orders.length > PAGE_SIZE && (
+          {totalCount > ACCOUNT_ORDERS_PAGE_SIZE && (
             <Pagination
-              count={orders.length}
+              count={totalCount}
               onPageChange={setPage}
               page={page}
-              pageSize={PAGE_SIZE}
+              pageSize={ACCOUNT_ORDERS_PAGE_SIZE}
               size="sm"
             />
           )}

@@ -2,10 +2,10 @@
 
 import { Badge } from "@ui/atoms/badge"
 import { Button } from "@ui/atoms/button"
+import type { StoreOrder } from "@medusajs/types"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import type { StoreOrder } from "@/services/order-service"
 import { formatDateString } from "@/utils/format/format-date"
 import {
   getOrderStatusColor,

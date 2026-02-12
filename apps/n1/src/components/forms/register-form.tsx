@@ -5,10 +5,13 @@ import { FormCheckbox } from "@techsio/ui-kit/molecules/form-checkbox"
 import { Button } from "@ui/atoms/button"
 import Link from "next/link"
 import { TextField } from "@/components/forms/fields/text-field"
-import { useRegister } from "@/hooks/use-register"
 import { useAuthToast } from "@/hooks/use-toast"
 import { AUTH_MESSAGES } from "@/lib/auth-messages"
 import { registerValidators } from "@/lib/form-validators"
+import {
+  authHooks,
+  getAuthMutationErrorMessage,
+} from "@/hooks/auth-hooks"
 import { VALIDATION_MESSAGES } from "@/lib/validation-messages"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { ErrorBanner } from "../atoms/error-banner"
@@ -39,7 +42,7 @@ export function RegisterForm({
   const toast = useAuthToast()
   const analytics = useAnalytics()
 
-  const register = useRegister({
+  const register = authHooks.useRegister({
     onSuccess: () => {
       // Track customer identification in Leadhub
       const values = form.state.values
@@ -49,13 +52,15 @@ export function RegisterForm({
         first_name: values.first_name,
         last_name: values.last_name,
       })
+      console.log("registrace")
 
       toast.registerSuccess()
       form.reset()
       onSuccess?.()
     },
     onError: (error) => {
-      console.error("Registration failed:", error.message)
+      const message = getAuthMutationErrorMessage(error)
+      console.error("Registration failed:", message)
     },
   })
 
@@ -88,6 +93,7 @@ export function RegisterForm({
     confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch =
     confirmPassword.length > 0 && password !== confirmPassword
+  const registerErrorMessage = getAuthMutationErrorMessage(register.error)
 
   return (
     <form
@@ -98,9 +104,9 @@ export function RegisterForm({
         form.handleSubmit()
       }}
     >
-      {register.error && (
+      {Boolean(register.error) && (
         <ErrorBanner
-          message={register.error.message}
+          message={registerErrorMessage}
           title={AUTH_MESSAGES.REGISTER_FAILED}
         />
       )}

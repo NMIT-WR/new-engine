@@ -1,10 +1,10 @@
 "use client"
 
+import type { StoreCustomerAddress } from "@medusajs/types"
 import { Badge } from "@techsio/ui-kit/atoms/badge"
 import type { SelectItem } from "@techsio/ui-kit/molecules/select"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { useMemo } from "react"
-import type { StoreCustomerAddress } from "@/services/customer-service"
 import { addressToFormData } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 import { formatPostalCode } from "@/utils/format/format-postal-code"

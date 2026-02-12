@@ -19,11 +19,11 @@ import {
   categoryMap,
   categoryTree,
 } from "@/data/static/categories"
-import { usePrefetchCategoryChildren } from "@/hooks/use-prefetch-category-children"
-import { usePrefetchPages } from "@/hooks/use-prefetch-pages"
-import { usePrefetchRootCategories } from "@/hooks/use-prefetch-root-categories"
-import { useSuspenseProducts } from "@/hooks/use-products"
-import { useSuspenseRegion } from "@/hooks/use-region"
+import { usePrefetchCategoryChildren } from "@/hooks/prefetch-category-children"
+import { usePrefetchPages } from "@/hooks/prefetch-pages"
+import { usePrefetchRootCategories } from "@/hooks/prefetch-root-categories"
+import { useSuspenseProducts } from "@/hooks/product-hooks"
+import { useSuspenseRegion } from "@/hooks/region-hooks"
 import {
   ALL_CATEGORIES_MAP,
   PRODUCT_LIMIT,

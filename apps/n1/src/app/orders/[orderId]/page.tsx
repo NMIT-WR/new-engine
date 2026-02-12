@@ -1,14 +1,12 @@
 "use client"
 
-import { useSuspenseQuery } from "@tanstack/react-query"
 import { HeurekaOrder } from "@techsio/analytics/heureka"
 import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useRef } from "react"
 import { CheckoutReview } from "@/app/pokladna/_components/checkout-review"
+import { useSuspenseOrder } from "@/hooks/order-hooks"
 import { cacheConfig } from "@/lib/cache-config"
-import { queryKeys } from "@/lib/query-keys"
 import { useAnalytics } from "@/providers/analytics-provider"
-import { getOrderById } from "@/services/order-service"
 
 export default function OrderPage() {
   const params = useParams()
@@ -23,17 +21,24 @@ export default function OrderPage() {
     throw new Error("Order ID je povinné")
   }
 
-  const { data: order } = useSuspenseQuery({
-    queryKey: queryKeys.orders.detail(orderId),
-    queryFn: () => getOrderById(orderId),
-    retry: (failureCount, error) => {
-      if (error instanceof Error && error.message?.includes("nenalezena")) {
-        return false
-      }
-      return failureCount < 2
-    },
-    ...cacheConfig.semiStatic,
-  })
+  const { order } = useSuspenseOrder(
+    { id: orderId },
+    {
+      queryOptions: {
+        retry: (failureCount, error) => {
+          if (error instanceof Error && error.message?.includes("nenalezena")) {
+            return false
+          }
+          return failureCount < 2
+        },
+        ...cacheConfig.semiStatic,
+      },
+    }
+  )
+
+  if (!order) {
+    throw new Error("Objednávka nenalezena")
+  }
 
   // Unified analytics - Purchase tracking (sends to Meta, Google, Leadhub)
   // Only on new purchases with success=true

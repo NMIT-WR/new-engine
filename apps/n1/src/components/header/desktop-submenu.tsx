@@ -4,7 +4,7 @@ import Image from "next/image"
 import NextLink from "next/link"
 import { useState } from "react"
 import { links, type SubmenuCategory, submenuItems } from "@/data/header"
-import { usePrefetchProducts } from "@/hooks/use-prefetch-products"
+import { usePrefetchProducts } from "@/hooks/prefetch-products"
 
 export const DesktopSubmenu = () => {
   const { prefetchCategoryProducts } = usePrefetchProducts()

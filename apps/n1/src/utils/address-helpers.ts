@@ -1,8 +1,7 @@
-import type { HttpTypes } from "@medusajs/types"
+import type { HttpTypes, StoreCustomerAddress } from "@medusajs/types"
 import type { PplAccessPointData } from "@/app/pokladna/_components/ppl-widget"
 import { DEFAULT_COUNTRY_CODE } from "@/lib/constants"
 import type { ShippingMethodData } from "@/services/cart-service"
-import type { StoreCustomerAddress } from "@/services/customer-service"
 import type { AddressFormData } from "./address-validation"
 import { formatPhoneNumber } from "./format/format-phone-number"
 import { formatPostalCode } from "./format/format-postal-code"
@@ -100,7 +99,7 @@ export function accessPointToAddress(
     address_1: accessPoint.address?.street || "",
     address_2: "",
     city: accessPoint.address?.city || "",
-    postal_code: accessPoint.address?.zipCode || "",
+    postal_code: formatPostalCode(accessPoint.address?.zipCode || ""),
     country_code:
       accessPoint.address?.country?.toLowerCase() || DEFAULT_COUNTRY_CODE,
     province: "",
