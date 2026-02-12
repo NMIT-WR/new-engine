@@ -69,6 +69,7 @@ const menuVariants = tv({
       "focus-visible:outline-none",
       "data-[state=open]:animate-in",
       "data-[state=closed]:animate-out",
+      "motion-reduce:animate-none",
     ],
     item: [
       "flex items-center gap-menu-item",
@@ -80,6 +81,7 @@ const menuVariants = tv({
       "focus:bg-menu-item-hover focus-visible:outline-none",
       "data-[disabled]:cursor-not-allowed data-[disabled]:text-menu-fg-disabled",
       "data-[highlighted]:bg-menu-item-hover",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     optionItem: ["data-[state=checked]:font-semibold"],
     separator: [

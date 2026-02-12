@@ -47,6 +47,7 @@ const numericInputVariants = tv({
       "bg-numeric-input-trigger-bg hover:bg-numeric-input-trigger-bg-hover",
       "text-numeric-input-trigger-fg hover:text-numeric-input-trigger-fg-hover",
       "cursor-pointer",
+      "transition-colors duration-200 motion-reduce:transition-none",
       "disabled:cursor-not-allowed",
     ],
     scrubber: "absolute inset-0 cursor-ew-resize",

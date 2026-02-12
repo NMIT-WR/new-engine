@@ -37,6 +37,7 @@ const tabsVariants = tv({
       "focus-visible:outline-offset-(length:--default-ring-offset)",
       "data-[selected]:text-tabs-trigger-fg-selected",
       "data-[disabled]:cursor-not-allowed data-[disabled]:text-tabs-fg-disabled",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     indicator: [
       "absolute rounded-tabs-indicator bg-tabs-indicator-bg",

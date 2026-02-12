@@ -10,7 +10,7 @@ const textareaVariants = tv({
     "placeholder:text-textarea-placeholder",
     "border-(length:--border-textarea-width) border-textarea-border",
     "rounded-textarea",
-    "transition-all duration-200",
+    "transition-all duration-200 motion-reduce:transition-none",
     "hover:border-textarea-border-hover hover:bg-textarea-bg-hover",
     "focus:border-textarea-border-focus focus:bg-textarea-bg-focus",
     "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",

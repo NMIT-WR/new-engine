@@ -28,7 +28,7 @@ const stepsVariants = tv({
     trigger: [
       "group relative flex cursor-pointer gap-trigger",
       "items-center justify-center",
-      "transition-all duration-200",
+      "transition-all duration-200 motion-reduce:transition-none",
       "focus-visible:outline-none",
       "data-[orientation=horizontal]:flex-row",
       "data-[orientation=vertical]:flex-col",
@@ -50,7 +50,7 @@ const stepsVariants = tv({
       "group-focus-visible:outline-offset-(length:--default-ring-offset)",
       "group-hover:bg-steps-indicator-bg-hover",
       "group-hover:text-steps-fg-active",
-      "transition-all duration-200 ease-out",
+      "transition-all duration-200 ease-out motion-reduce:transition-none",
       "data-[current]:bg-steps-indicator-bg-current",
       "focus-visible:data-[current]:outline-(style:--default-ring-style) focus-visible:data-[current]:outline-(length:--default-ring-width)",
       "focus-visible:data-[current]:outline-steps-ring",

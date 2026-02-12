@@ -16,7 +16,7 @@ const comboboxVariants = tv({
     control: [
       "relative flex w-full items-center",
       "border-(length:--border-width-combobox) rounded-combobox border-combobox-border bg-combobox-bg",
-      "transition-colors duration-200 ease-in-out",
+      "transition-colors duration-200 ease-in-out motion-reduce:transition-none",
       "hover:border-combobox-border-hover hover:bg-combobox-bg-hover",
       "data-focus:border-combobox-border-focus data-focus:bg-combobox-bg-focus",
       "data-focus-visible:outline-(style:--default-ring-style) data-focus-visible:outline-(length:--default-ring-width)",
@@ -40,10 +40,10 @@ const comboboxVariants = tv({
     ],
     clearTrigger: ["absolute right-combobox-clear-right"],
     trigger: [
-      "flex items-center justify-center",
-      "p-combobox-trigger",
-      "transition-transform duration-200",
-      "data-[state=open]:rotate-180",
+      'flex items-center justify-center',
+      'p-combobox-trigger',
+      'transition-transform duration-200 motion-reduce:transition-none',
+      'data-[state=open]:rotate-180',
     ],
     positioner: [
       "z-(--z-index) w-full *:max-h-(--available-height) *:overflow-y-auto",

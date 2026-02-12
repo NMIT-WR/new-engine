@@ -27,7 +27,7 @@ const sliderVariants = tv({
       "data-disabled:bg-slider-bg-disabled",
       "border-(length:--border-width-slider) border-slider-border",
       "data-disabled:border-slider-border-disabled",
-      "transition-colors duration-200",
+      "transition-colors duration-200 motion-reduce:transition-none",
       "hover:bg-slider-track-bg-hover",
       "data-[invalid=true]:border-(length:--border-width-validation)",
       "data-[invalid=true]:border-slider-border-error",
@@ -38,6 +38,7 @@ const sliderVariants = tv({
       "data-disabled:bg-slider-range-bg-disabled",
       "hover:bg-slider-range-bg-hover",
       "data-[invalid=true]:bg-slider-range-bg-error",
+      "transition-colors duration-200 motion-reduce:transition-none",
     ],
     thumb: [
       "flex items-center justify-center",

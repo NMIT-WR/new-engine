@@ -19,7 +19,7 @@ const switchVariants = tv({
       "bg-switch-bg hover:bg-switch-bg-hover",
       "h-switch-track-height w-switch-track-width",
       "rounded-switch",
-      "transition-colors duration-200",
+      "transition-colors duration-200 motion-reduce:transition-none",
       "border-(length:--border-width-switch) border-switch-border",
       "data-[state=checked]:bg-switch-bg-checked",
       "data-[state=checked]:hover:bg-switch-bg-checked-hover",
@@ -35,7 +35,7 @@ const switchVariants = tv({
     ],
     thumb: [
       "block aspect-square h-switch-thumb-height rounded-full bg-switch-thumb-bg",
-      "transform transition-transform duration-200",
+      "transform transition-transform duration-200 motion-reduce:transition-none",
       "data-[disabled]:bg-switch-thumb-bg-disabled",
       "data-[state=checked]:translate-x-switch-translate-track",
     ],

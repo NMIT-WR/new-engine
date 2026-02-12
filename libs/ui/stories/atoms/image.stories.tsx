@@ -34,7 +34,7 @@ const meta: Meta<typeof Image> = {
     },
   },
   args: {
-    src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop',
+    src: "https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop",
     alt: 'Mountain landscape',
     className: 'max-w-md rounded-lg',
   },
