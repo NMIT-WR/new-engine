@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { type ReactNode, useState } from 'react'
-import testImg from '../assets/test-image.webp'
 import { Badge } from '../../src/atoms/badge'
 import { Button } from '../../src/atoms/button'
 import { Checkbox } from '../../src/atoms/checkbox'
@@ -293,7 +292,7 @@ function ComponentComparison() {
               alt="Sample"
               className="rounded-md object-cover"
               size="md"
-              src={testImg}
+              src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop"
             />
           </ComponentCard>
           <ComponentCard title="Input" bodyClassName="w-full max-w-xs">
@@ -480,7 +479,7 @@ function ComponentComparison() {
           <ComponentCard title="ProductCard" bodyClassName="flex w-full justify-center">
             <div className="w-full max-w-sm">
               <ProductCard layout="column">
-                <ProductCard.Image alt="Sample product" src={testImg} className="w-full"/>
+                <ProductCard.Image alt="Sample product" src="https://images.unsplash.com/photo-1540206395-68808572332f?w=600&h=600&fit=crop" className="w-full"/>
                 <ProductCard.Badges>
                   <Badge variant="secondary">Limited</Badge>
                   <Badge variant="info">New</Badge>
