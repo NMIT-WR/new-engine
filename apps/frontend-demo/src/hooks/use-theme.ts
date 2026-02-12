@@ -4,7 +4,7 @@ import { useTheme as useNextTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
 export function useTheme() {
-  const { theme, setTheme: setNextTheme, resolvedTheme } = useNextTheme()
+  const { setTheme: setNextTheme, resolvedTheme } = useNextTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

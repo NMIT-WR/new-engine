@@ -2,20 +2,52 @@
 
 import { Button } from "@ui/atoms/button"
 import { Breadcrumb } from "@ui/molecules/breadcrumb"
+import { useToast } from "@ui/molecules/toast"
 import { NumericInputTemplate } from "@ui/templates/numeric-input"
 import Image from "next/image"
 import Link from "next/link"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
 import { CartSummary } from "@/components/cart/cart-summary"
 import { EmptyCart } from "@/components/cart/empty-cart"
-import { useCart } from "@/hooks/use-cart"
+import {
+  cartHooks,
+  useRemoveLineItemWithToast,
+  useUpdateLineItemWithToast,
+} from "@/hooks/cart-hooks"
 import { truncateProductTitle } from "@/lib/order-utils"
 import { orderHelpers } from "@/stores/order-store"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 import { getProductPath } from "@/utils/product-utils"
 
 export default function CartPage() {
-  const { cart, removeItem, updateQuantity, clearCart, isLoading } = useCart()
+  const toast = useToast()
+
+  const { cart, isLoading } = cartHooks.useCart({})
+
+  const removeItemMutation = useRemoveLineItemWithToast()
+  const updateItemMutation = useUpdateLineItemWithToast()
+
+  const handleQuantityChange = (lineItemId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeItemMutation.mutate({ lineItemId })
+    } else {
+      updateItemMutation.mutate({ lineItemId, quantity })
+    }
+  }
+
+  const handleClearCart = async () => {
+    if (!cart?.items?.length) {
+      return
+    }
+    for (const item of cart.items) {
+      await removeItemMutation.mutateAsync({ lineItemId: item.id })
+    }
+    toast.create({
+      title: "Košík vyprázdněn",
+      description: "Všechny položky byly odebrány z vašeho košíku",
+      type: "success",
+    })
+  }
 
   const items = cart?.items || []
   const subtotal = cart?.subtotal || 0
@@ -50,7 +82,7 @@ export default function CartPage() {
           {/* Clear cart button */}
           <Button
             icon="token-icon-remove-all"
-            onClick={clearCart}
+            onClick={handleClearCart}
             size="sm"
             theme="borderless"
             variant="tertiary"
@@ -112,14 +144,18 @@ export default function CartPage() {
                               max={99}
                               min={1}
                               onChange={(value) =>
-                                updateQuantity(item.id, value)
+                                handleQuantityChange(item.id, value)
                               }
                               size="sm"
                               value={item.quantity}
                             />
                             <Button
                               icon="token-icon-remove"
-                              onClick={() => removeItem(item.id)}
+                              onClick={() =>
+                                removeItemMutation.mutate({
+                                  lineItemId: item.id,
+                                })
+                              }
                               size="sm"
                               theme="borderless"
                               variant="tertiary"

@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react"
-import { getProducts } from "@/services"
+"use client"
+
+import { useCallback, useMemo, useState } from "react"
+import { useProducts } from "@/hooks/product-hooks"
 import type { Product } from "@/types/product"
-import { useRegions } from "./use-region"
 
 interface UseSearchProductsOptions {
   limit?: number
@@ -9,56 +10,40 @@ interface UseSearchProductsOptions {
 }
 
 export function useSearchProducts(options?: UseSearchProductsOptions) {
-  const { selectedRegion } = useRegions()
-  const [searchResults, setSearchResults] = useState<Product[]>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [query, setQuery] = useState("")
+  const limit = options?.limit ?? 10
+  const fields = options?.fields ?? "id, handle, title"
+  const hasQuery = query.trim().length > 0
+
+  const { products, isLoading, isFetching, error } = useProducts({
+    q: hasQuery ? query : undefined,
+    fields,
+    limit,
+    sort: "newest",
+    enabled: hasQuery,
+  })
+
+  const searchResults = useMemo<Product[]>(
+    () => (hasQuery ? products : []),
+    [hasQuery, products]
+  )
 
   const searchProducts = useCallback(
-    async (query: string) => {
-      // Clear results if query is empty
-      if (!query.trim()) {
-        setSearchResults([])
-        setError(null)
-        return []
-      }
-
-      setIsSearching(true)
-      setError(null)
-
-      try {
-        const response = await getProducts({
-          q: query,
-          fields: options?.fields || "id, handle, title",
-          limit: options?.limit || 10,
-          sort: "newest",
-          region_id: selectedRegion?.id,
-        })
-
-        setSearchResults(response.products)
-        return response.products
-      } catch (err) {
-        const error = err as Error
-        console.error("Search error:", error)
-        setError(error)
-        setSearchResults([])
-        return []
-      } finally {
-        setIsSearching(false)
-      }
+    async (nextQuery: string) => {
+      setQuery(nextQuery)
+      return []
     },
-    [options?.fields, options?.limit]
+    [setQuery]
   )
 
   const clearResults = useCallback(() => {
-    setSearchResults([])
-    setError(null)
+    setQuery("")
   }, [])
 
   return {
     searchResults,
-    isSearching,
-    error,
+    isSearching: isLoading || isFetching,
+    error: error ? new Error(error) : null,
     searchProducts,
     clearResults,
   }

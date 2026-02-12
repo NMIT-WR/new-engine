@@ -4,13 +4,14 @@ import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import Image from "next/image"
 import Link from "next/link"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
-import { useCart } from "@/hooks/use-cart"
+import { cartHooks, useRemoveLineItemWithToast } from "@/hooks/cart-hooks"
 import { getVariantInventory, isQuantityAvailable } from "@/lib/inventory"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 import { getProductPath } from "@/utils/product-utils"
 
 export function CartPreview() {
-  const { cart, removeItem, isLoading } = useCart()
+  const { cart, isLoading } = cartHooks.useCart({})
+  const removeItemMutation = useRemoveLineItemWithToast()
   const items = cart?.items || []
   const total = cart?.total || 0
 
@@ -106,7 +107,9 @@ export function CartPreview() {
                   aria-label="Odebrat z košíku"
                   className="px-0 py-0 text-cart-preview-fg-secondary hover:text-cart-preview-fg"
                   icon="token-icon-close"
-                  onClick={() => removeItem(item.id)}
+                  onClick={() =>
+                    removeItemMutation.mutate({ lineItemId: item.id })
+                  }
                   theme="borderless"
                   type="button"
                 />

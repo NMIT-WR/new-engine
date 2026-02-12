@@ -47,7 +47,7 @@ export const cacheConfig = {
   },
 
   // User-specific data (profile, preferences)
-  user: {
+  userData: {
     staleTime: 0,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: true,
@@ -62,3 +62,11 @@ export const cacheConfig = {
     refetchOnMount: "always",
   },
 } as const
+
+// Helper export for storefront-data hooks
+export const storefrontCacheConfig = {
+  static: cacheConfig.static,
+  semiStatic: cacheConfig.semiStatic,
+  realtime: cacheConfig.realtime,
+  userData: cacheConfig.userData,
+}

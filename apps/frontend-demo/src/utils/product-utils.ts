@@ -10,8 +10,7 @@ interface ProductDisplayData {
 }
 
 export function extractProductData(
-  product: Product,
-  currencyCode?: string
+  product: Product
 ): ProductDisplayData {
   // For API products, find the price that matches the current currency
   const primaryVariant = product.primaryVariant
