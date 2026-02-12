@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { type ComponentPropsWithoutRef, useState } from 'react'
 import { VariantContainer, VariantGroup } from '../../.storybook/decorator'
-import { Button } from '../../src/atoms/button'
-import { type IconType } from '../../src/atoms/icon'
-import { Tooltip } from '../../src/atoms/tooltip'
+import { Button } from '@/atoms/button'
+import { type IconType } from '@/atoms/icon'
+import { Tooltip } from '@/atoms/tooltip'
 import { iconLabels, iconOptions } from '../helpers/icon-options'
 import { Link } from '@/atoms/link'
 import { Input } from '@/atoms/input'
@@ -187,7 +187,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         />
       ) : (
         <Button variant={triggerVariant} size={triggerSize}>
-          {triggerLabel}
+          {label}
         </Button>
       )
 
