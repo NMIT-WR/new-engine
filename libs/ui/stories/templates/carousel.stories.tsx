@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { CarouselTemplate } from '../../src/templates/carousel'
+import placeholderLandscape from '../assets/placeholder-landscape.webp'
+import placeholderProduct from '../assets/placeholder-product.webp'
+import placeholderSquare from '../assets/placeholder-square.webp'
 
 const meta: Meta<typeof CarouselTemplate> = {
   title: 'Templates/CarouselTemplate',
@@ -123,22 +126,22 @@ type Story = StoryObj<typeof CarouselTemplate>
 const defaultSlides = [
   {
     id: 'slide-1',
-    src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600',
+    src: placeholderProduct,
     alt: 'Product 1',
   },
   {
     id: 'slide-2',
-    src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600',
+    src: placeholderSquare,
     alt: 'Product 2',
   },
   {
     id: 'slide-3',
-    src: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600',
+    src: placeholderLandscape,
     alt: 'Product 3',
   },
   {
     id: 'slide-4',
-    src: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600',
+    src: placeholderProduct,
     alt: 'Product 4',
   },
 ]
@@ -167,7 +170,7 @@ export const Playground: Story = {
       ...defaultSlides,
       {
         id: 'slide-5',
-        src: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600',
+        src: placeholderSquare,
         alt: 'Product 5',
       },
     ],
