@@ -5,6 +5,7 @@ import { Popover } from "@techsio/ui-kit/molecules/popover"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useSearchProducts } from "@/hooks/use-search-products"
+import { buildProductsHref, PRODUCTS_ROUTE } from "@/lib/url-state/products"
 import type { Product } from "@/types/product"
 
 const VIEW_ALL_RESULTS_VALUE = "__search__"
@@ -65,8 +66,9 @@ export function HeaderSearch() {
   }
 
   const handleSearch = (query: string) => {
-    if (query.trim()) {
-      router.push(`/products?q=${encodeURIComponent(query.trim())}`)
+    const href = buildProductsHref({ q: query })
+    if (href !== PRODUCTS_ROUTE) {
+      router.push(href)
       setSearchQuery("")
       setSelectedValue([])
     }
