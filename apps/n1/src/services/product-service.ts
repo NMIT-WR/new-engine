@@ -138,8 +138,10 @@ async function fetchStoreProducts(
   params: ProductQueryParams,
   context: StoreRequestContext
 ): Promise<ProductListResponse> {
-  const { category_id, region_id, country_code, limit, offset, fields } = params
+  const { q, category_id, region_id, country_code, limit, offset, fields } =
+    params
   const queryString = buildQueryString({
+    q,
     limit,
     offset,
     fields,
@@ -221,10 +223,11 @@ export async function getProducts(
   signal?: AbortSignal
 ): Promise<ProductListResponse> {
   const searchQuery = parseSearchQuery(params.q)
+  const hasCategoryFilter = (params.category_id?.length || 0) > 0
   const context = createStoreRequestContext(signal)
 
   try {
-    if (searchQuery) {
+    if (searchQuery && !hasCategoryFilter) {
       return await fetchSearchProducts(params, searchQuery, context)
     }
 

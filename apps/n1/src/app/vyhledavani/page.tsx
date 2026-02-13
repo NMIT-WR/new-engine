@@ -2,36 +2,33 @@
 
 import { Breadcrumb } from "@techsio/ui-kit/molecules/breadcrumb"
 import NextLink from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
 import { Banner } from "@/components/atoms/banner"
 import { Heading } from "@/components/heading"
 import { ProductGrid } from "@/components/molecules/product-grid"
 import { N1Aside } from "@/components/n1-aside"
 import { categoryMap, categoryTree } from "@/data/static/categories"
+import { useSearchUrlState } from "@/hooks/use-search-url-state"
 import { useProducts } from "@/hooks/use-products"
-import { PRODUCT_LIMIT } from "@/lib/constants"
+import { ALL_CATEGORIES_MAP_BY_ID, PRODUCT_LIMIT } from "@/lib/constants"
+import { SEARCH_ROUTE } from "@/lib/url-state/search"
 import { transformProduct } from "@/utils/transform/transform-product"
 
-const SEARCH_ROUTE = "/vyhledavani"
-
-function parsePage(value: string | null): number {
-  if (!value) {
-    return 1
-  }
-
-  const parsed = Number(value)
-  if (!Number.isFinite(parsed) || parsed < 1) {
-    return 1
-  }
-
-  return Math.floor(parsed)
-}
-
 export default function SearchPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const query = searchParams.get("q")?.trim() ?? ""
-  const currentPage = parsePage(searchParams.get("page"))
+  const {
+    query,
+    page: currentPage,
+    categoryId: selectedCategoryId,
+    setPage,
+    setCategory,
+    clearCategory,
+  } = useSearchUrlState()
+  const selectedCategoryIds = selectedCategoryId
+    ? (ALL_CATEGORIES_MAP_BY_ID[selectedCategoryId] ?? [selectedCategoryId])
+    : []
+  const selectedCategory = selectedCategoryId
+    ? categoryMap[selectedCategoryId]
+    : undefined
+  const hasCategoryFilter = selectedCategoryIds.length > 0
 
   const {
     products: rawProducts,
@@ -40,6 +37,7 @@ export default function SearchPage() {
     isFetching,
     error,
   } = useProducts({
+    category_id: selectedCategoryIds,
     q: query,
     page: currentPage,
     limit: PRODUCT_LIMIT,
@@ -57,9 +55,15 @@ export default function SearchPage() {
       return
     }
 
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", String(page))
-    router.push(`${SEARCH_ROUTE}?${params.toString()}`, { scroll: true })
+    setPage(page)
+  }
+
+  const handleCategorySelect = (nextCategoryId: string) => {
+    setCategory(nextCategoryId)
+  }
+
+  const clearCategoryFilter = () => {
+    clearCategory()
   }
 
   return (
@@ -75,7 +79,13 @@ export default function SearchPage() {
         />
       </header>
 
-      <N1Aside categoryMap={categoryMap} categories={categoryTree} label="Kategorie" />
+      <N1Aside
+        categoryMap={categoryMap}
+        categories={categoryTree}
+        currentCategory={selectedCategory}
+        label="Kategorie"
+        onCategorySelect={(nextCategory) => handleCategorySelect(nextCategory.id)}
+      />
 
       <main className="px-300">
         <header className="space-y-300">
@@ -89,6 +99,23 @@ export default function SearchPage() {
               Zadej vyhledávací dotaz v headeru.
             </p>
           )}
+          {hasCategoryFilter ? (
+            <div className="flex items-center gap-200">
+              <p className="text-fg-secondary text-sm">
+                Kategorie:{" "}
+                <span className="font-semibold">
+                  {selectedCategory?.name || selectedCategoryId}
+                </span>
+              </p>
+              <button
+                className="cursor-pointer text-sm text-primary underline"
+                onClick={clearCategoryFilter}
+                type="button"
+              >
+                Zrušit filtr
+              </button>
+            </div>
+          ) : null}
         </header>
 
         {query ? (

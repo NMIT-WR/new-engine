@@ -6,9 +6,8 @@ import NextLink from "next/link"
 import {
   notFound,
   useParams,
-  useRouter,
-  useSearchParams,
 } from "next/navigation"
+import { useQueryState } from "nuqs"
 import { useCallback, useEffect, useRef } from "react"
 import { Banner } from "@/components/atoms/banner"
 import { Heading } from "@/components/heading"
@@ -29,16 +28,19 @@ import {
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
 } from "@/lib/constants"
+import { parseAsPositivePage } from "@/lib/url-state/parsers"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { transformProduct } from "@/utils/transform/transform-product"
 
 export default function CategoryPage() {
   const params = useParams()
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const handle = params.handle as string
   const { regionId, countryCode } = useSuspenseRegion()
   const analytics = useAnalytics()
+  const [currentPage, setPage] = useQueryState(
+    "page",
+    parseAsPositivePage.withDefault(1)
+  )
 
   // Track which category we've already tracked to prevent duplicates
   const trackedCategoryId = useRef<string | null>(null)
@@ -81,9 +83,6 @@ export default function CategoryPage() {
       analytics.trackViewCategory({ category: categoryPath })
     }
   }, [currentCategory, analytics, buildCategoryPath])
-
-  // Get current page from URL or default to 1
-  const currentPage = Number(searchParams.get("page")) || 1
 
   const categoryIds = ALL_CATEGORIES_MAP[handle] ?? []
 
@@ -129,9 +128,11 @@ export default function CategoryPage() {
   const products = rawProducts.map(transformProduct)
 
   const handlePageChange = (page: number) => {
-    const newSearchParams = new URLSearchParams(searchParams.toString())
-    newSearchParams.set("page", page.toString())
-    router.push(`/kategorie/${handle}?${newSearchParams.toString()}`, {
+    const nextPage =
+      Number.isFinite(page) && page > 0 ? Math.floor(page) : 1
+
+    void setPage(nextPage, {
+      history: "push",
       scroll: true,
     })
   }

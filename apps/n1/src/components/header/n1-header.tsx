@@ -10,6 +10,7 @@ import NextLink from "next/link"
 import { useRouter } from "next/navigation"
 import type { FormEvent } from "react"
 import logo from "@/assets/logo-n1.webp"
+import { buildSearchHref } from "@/lib/url-state/search"
 import { CartPopover } from "./cart-popover"
 import { DesktopSubmenu } from "./desktop-submenu"
 import { LoginPopover } from "./login-popover"
@@ -35,11 +36,7 @@ export const N1Header = () => {
       return
     }
 
-    const params = new URLSearchParams()
-    params.set("q", query)
-    params.set("page", "1")
-
-    router.push(`/vyhledavani?${params.toString()}`)
+    router.push(buildSearchHref({ q: query }))
   }
 
   const topHeaderLinks = [

@@ -72,6 +72,9 @@ export const ALL_CATEGORIES_MAP: Record<string, string[]> = Object.fromEntries(
   allCategories.map((cat) => [cat.handle, findAllLeafIds(cat.id)])
 )
 
+export const ALL_CATEGORIES_MAP_BY_ID: Record<string, string[]> =
+  Object.fromEntries(allCategories.map((cat) => [cat.id, findAllLeafIds(cat.id)]))
+
 export const PRODUCT_DETAILED_FIELDS =
   "id,title,subtitle,description,handle,thumbnail,images.id,images.url," +
   "producer.title,producer.attributes.value,producer.attributes.attributeType.name," +
