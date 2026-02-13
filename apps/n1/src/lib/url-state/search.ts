@@ -1,5 +1,5 @@
 import { createSerializer } from "nuqs"
-import { parseAsPositivePage, parseAsSearchQuery } from "./parsers"
+import { parseAsPositivePageWithDefault, parseAsSearchQuery } from "./parsers"
 
 type MaybeString = string | null | undefined
 type MaybeNumber = number | null | undefined
@@ -8,7 +8,7 @@ export const SEARCH_ROUTE = "/vyhledavani"
 
 export const searchUrlParsers = {
   q: parseAsSearchQuery.withDefault(""),
-  page: parseAsPositivePage.withDefault(1),
+  page: parseAsPositivePageWithDefault,
   category_id: parseAsSearchQuery.withDefault(""),
 } as const
 

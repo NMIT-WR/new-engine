@@ -9,7 +9,6 @@ import {
   searchUrlParsers,
   toCategoryIdQueryParam,
   toPageQueryParam,
-  toSearchQueryParam,
 } from "@/lib/url-state/search"
 
 const NAVIGATION_OPTIONS = {
@@ -23,20 +22,6 @@ export function useSearchUrlState() {
   const query = normalizeSearchQuery(state.q)
   const page = normalizeSearchPage(state.page)
   const categoryId = normalizeCategoryId(state.category_id)
-
-  const setQuery = useCallback(
-    (nextQuery: string) => {
-      void setSearchState(
-        {
-          q: toSearchQueryParam(nextQuery),
-          category_id: null,
-          page: null,
-        },
-        NAVIGATION_OPTIONS
-      )
-    },
-    [setSearchState]
-  )
 
   const setPage = useCallback(
     (nextPage: number) => {
@@ -77,7 +62,6 @@ export function useSearchUrlState() {
     query,
     page,
     categoryId,
-    setQuery,
     setPage,
     setCategory,
     clearCategory,

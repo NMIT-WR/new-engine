@@ -28,7 +28,7 @@ import {
   PRODUCT_LIMIT,
   VALID_CATEGORY_ROUTES,
 } from "@/lib/constants"
-import { parseAsPositivePage } from "@/lib/url-state/parsers"
+import { parseAsPositivePageWithDefault } from "@/lib/url-state/parsers"
 import { useAnalytics } from "@/providers/analytics-provider"
 import { transformProduct } from "@/utils/transform/transform-product"
 
@@ -37,10 +37,7 @@ export default function CategoryPage() {
   const handle = params.handle as string
   const { regionId, countryCode } = useSuspenseRegion()
   const analytics = useAnalytics()
-  const [currentPage, setPage] = useQueryState(
-    "page",
-    parseAsPositivePage.withDefault(1)
-  )
+  const [currentPage, setPage] = useQueryState("page", parseAsPositivePageWithDefault)
 
   // Track which category we've already tracked to prevent duplicates
   const trackedCategoryId = useRef<string | null>(null)

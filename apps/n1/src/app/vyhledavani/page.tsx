@@ -29,6 +29,7 @@ export default function SearchPage() {
     ? categoryMap[selectedCategoryId]
     : undefined
   const hasCategoryFilter = selectedCategoryIds.length > 0
+  const hasSearchIntent = query.length > 0 || hasCategoryFilter
 
   const {
     products: rawProducts,
@@ -46,12 +47,12 @@ export default function SearchPage() {
 
   const products = rawProducts.map(transformProduct)
   const isInitialSearchLoading =
-    query.length > 0 &&
+    hasSearchIntent &&
     !error &&
     (isLoading || (isFetching && rawProducts.length === 0 && totalCount === 0))
 
   const handlePageChange = (page: number) => {
-    if (!query) {
+    if (!hasSearchIntent) {
       return
     }
 
@@ -94,6 +95,10 @@ export default function SearchPage() {
             <p className="text-fg-secondary text-sm">
               Dotaz: <span className="font-semibold">{query}</span>
             </p>
+          ) : hasCategoryFilter ? (
+            <p className="text-fg-secondary text-sm">
+              Výsledky pro vybranou kategorii bez textového dotazu.
+            </p>
           ) : (
             <p className="text-fg-secondary text-sm">
               Zadej vyhledávací dotaz v headeru.
@@ -118,7 +123,7 @@ export default function SearchPage() {
           ) : null}
         </header>
 
-        {query ? (
+        {hasSearchIntent ? (
           <Banner className="my-300" variant="warning">
             <div className="flex items-center gap-100">
               {isInitialSearchLoading ? (
@@ -149,7 +154,7 @@ export default function SearchPage() {
         ) : null}
 
         <section>
-          {query && !error ? (
+          {hasSearchIntent && !error ? (
             <ProductGrid
               currentPage={currentPage}
               isLoading={isInitialSearchLoading}

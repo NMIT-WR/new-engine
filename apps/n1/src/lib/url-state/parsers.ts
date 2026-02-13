@@ -8,17 +8,26 @@ function normalizePositiveInt(value: number): number {
   return Math.floor(value)
 }
 
+function parseStrictPositiveInt(value: string): number | null {
+  const trimmedValue = value.trim()
+  if (!/^\d+$/.test(trimmedValue)) {
+    return null
+  }
+
+  const parsed = Number.parseInt(trimmedValue, 10)
+  if (!(Number.isFinite(parsed) && parsed > 0)) {
+    return null
+  }
+
+  return Math.floor(parsed)
+}
+
 export const parseAsPositivePage = createParser<number>({
-  parse: (value) => {
-    const parsed = Number.parseInt(value, 10)
-    if (!(Number.isFinite(parsed) && parsed > 0)) {
-      return null
-    }
-    return Math.floor(parsed)
-  },
+  parse: parseStrictPositiveInt,
   serialize: (value) => String(normalizePositiveInt(value)),
   eq: (a, b) => a === b,
 })
+export const parseAsPositivePageWithDefault = parseAsPositivePage.withDefault(1)
 
 export const parseAsSearchQuery = parseAsString
 export const parseAsAccountTab = parseAsStringLiteral(ACCOUNT_TABS)

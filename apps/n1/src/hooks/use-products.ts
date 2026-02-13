@@ -111,6 +111,8 @@ export function useProducts({
 }: UseProductsProps): UseProductsReturn {
   const { regionId, countryCode } = useRegion()
   const trimmedQuery = q.trim()
+  const hasCategoryFilter = category_id.length > 0
+  const hasSearchIntent = trimmedQuery.length > 0 || hasCategoryFilter
   const label = getProductsLabel(trimmedQuery, category_id)
 
   const queryParams = buildProductQueryParams({
@@ -127,7 +129,7 @@ export function useProducts({
     useQuery({
       queryKey: queryKeys.products.list(queryParams),
       queryFn,
-      enabled: !!regionId && (!skipIfEmptyQuery || trimmedQuery.length > 0),
+      enabled: !!regionId && (!skipIfEmptyQuery || hasSearchIntent),
       placeholderData: (previousData, previousQuery) => {
         const previousParams = extractProductsParamsFromKey(
           previousQuery?.queryKey
