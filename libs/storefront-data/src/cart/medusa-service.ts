@@ -19,6 +19,22 @@ export type MedusaCompleteCartResult =
       error: { message: string; name: string; type: string }
     }
 
+const getErrorStatus = (error: unknown): number | undefined => {
+  if (!error || typeof error !== "object") {
+    return undefined
+  }
+
+  const err = error as {
+    status?: number
+    response?: { status?: number }
+  }
+
+  return err.status ?? err.response?.status
+}
+
+const defaultIsNotFoundError = (error: unknown): boolean =>
+  getErrorStatus(error) === 404
+
 /**
  * Creates a CartService for Medusa SDK
  *
@@ -40,7 +56,7 @@ export type MedusaCompleteCartResult =
  */
 export function createMedusaCartService(
   sdk: Medusa,
-  _config?: MedusaCartServiceConfig
+  config?: MedusaCartServiceConfig
 ): CartService<
   HttpTypes.StoreCart,
   MedusaCartCreateParams,
@@ -49,6 +65,9 @@ export function createMedusaCartService(
   MedusaCartUpdateItemParams,
   MedusaCompleteCartResult
 > {
+  const isNotFoundError = (error: unknown): boolean =>
+    defaultIsNotFoundError(error) || Boolean(config?.isNotFoundError?.(error))
+
   return {
     async retrieveCart(
       cartId: string,
@@ -58,13 +77,7 @@ export function createMedusaCartService(
         const { cart } = await sdk.store.cart.retrieve(cartId)
         return cart ?? null
       } catch (error: unknown) {
-        // Handle 404 as null (cart not found)
-        if (
-          error &&
-          typeof error === "object" &&
-          "status" in error &&
-          (error as { status: number }).status === 404
-        ) {
+        if (isNotFoundError(error)) {
           return null
         }
         throw error
