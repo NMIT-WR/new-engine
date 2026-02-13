@@ -1,12 +1,12 @@
 "use client"
 
-// Default filter state
-const DEFAULT_FILTER_STATE = {
-  categories: new Set<string>(),
-  sizes: new Set<string>(),
-}
-
-import { useRouter, useSearchParams } from "next/navigation"
+import {
+  createParser,
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryStates,
+} from "nuqs"
 import { useCallback, useMemo } from "react"
 import type { FilterState } from "@/components/organisms/product-filters"
 import type { SortOption } from "@/utils/product-filters"
@@ -19,148 +19,213 @@ export interface PageRange {
   isRange: boolean
 }
 
-export function useUrlFilters() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
+const SORT_VALUES = ["newest", "name-asc", "name-desc", "relevance"] as const
+const DEFAULT_PAGE_RANGE: PageRange = { start: 1, end: 1, isRange: false }
 
-  // Parse page from URL (supports both single page and range syntax)
-  const pageRange: PageRange = useMemo(() => {
-    const pageParam = searchParams.get("page") || "1"
+function toPositiveInt(value: string): number | null {
+  const parsed = Number.parseInt(value, 10)
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return null
+  }
+  return Math.floor(parsed)
+}
 
-    if (pageParam.includes("-")) {
-      const [start, end] = pageParam
-        .split("-")
-        .map((p) => Number.parseInt(p, 10))
-      if (!(Number.isNaN(start) || Number.isNaN(end)) && start <= end) {
-        return { start, end, isRange: true }
+const parseAsPageRange = createParser<PageRange>({
+  parse: (value) => {
+    if (!value) {
+      return null
+    }
+
+    if (value.includes("-")) {
+      const [startRaw, endRaw] = value.split("-")
+      const start = toPositiveInt(startRaw)
+      const end = toPositiveInt(endRaw)
+
+      if (!start || !end || start > end) {
+        return null
+      }
+
+      return {
+        start,
+        end,
+        isRange: true,
       }
     }
 
-    const singlePage = Number.parseInt(pageParam, 10)
+    const page = toPositiveInt(value)
+    if (!page) {
+      return null
+    }
+
     return {
-      start: Number.isNaN(singlePage) ? 1 : singlePage,
-      end: Number.isNaN(singlePage) ? 1 : singlePage,
+      start: page,
+      end: page,
       isRange: false,
     }
-  }, [searchParams])
+  },
+  serialize: (value) => {
+    const start = Math.max(1, Math.floor(value.start))
+    const end = Math.max(start, Math.floor(value.end))
 
-  // Legacy single page for backward compatibility
-  const page = pageRange.start
-
-  // Parse search query from URL
-  const searchQuery = searchParams.get("q") || ""
-
-  // Parse filters from URL
-  const filters: FilterState = useMemo(() => {
-    const categories = searchParams.get("categories")
-    const sizes = searchParams.get("sizes")
-
-    return {
-      categories: new Set(
-        categories ? categories.split(",").filter(Boolean) : []
-      ),
-      sizes: new Set(sizes ? sizes.split(",").filter(Boolean) : []),
+    if (value.isRange || start !== end) {
+      return `${start}-${end}`
     }
-  }, [searchParams])
 
-  // Update filters in URL
-  const setFilters = useCallback(
-    (newFilters: FilterState) => {
-      const params = new URLSearchParams(searchParams.toString())
+    return String(start)
+  },
+  eq: (a, b) =>
+    a.start === b.start && a.end === b.end && a.isRange === b.isRange,
+})
 
-      // Update categories
-      const categoriesArray = Array.from(newFilters.categories)
-      if (categoriesArray.length > 0) {
-        params.set("categories", categoriesArray.join(","))
-      } else {
-        params.delete("categories")
-      }
+const urlFilterParsers = {
+  page: parseAsPageRange,
+  q: parseAsString,
+  categories: parseAsArrayOf(parseAsString),
+  sizes: parseAsArrayOf(parseAsString),
+  sort: parseAsStringLiteral(SORT_VALUES),
+}
 
-      // Update sizes
-      const sizesArray = Array.from(newFilters.sizes)
-      if (sizesArray.length > 0) {
-        params.set("sizes", sizesArray.join(","))
-      } else {
-        params.delete("sizes")
-      }
+export function useUrlFilters() {
+  const [queryState, setQueryState] = useQueryStates(urlFilterParsers)
 
-      // Reset to page 1 when filters change
-      params.delete("page")
+  const pageRange = queryState.page ?? DEFAULT_PAGE_RANGE
+  const page = pageRange.start
+  const searchQuery = queryState.q ?? ""
+  const sortBy: ExtendedSortOption = queryState.sort ?? "newest"
 
-      router.push(`?${params.toString()}`, { scroll: false })
-    },
-    [searchParams, router]
+  const filters: FilterState = useMemo(
+    () => ({
+      categories: new Set(queryState.categories ?? []),
+      sizes: new Set(queryState.sizes ?? []),
+    }),
+    [queryState.categories, queryState.sizes]
   )
 
-  // Sort state
-  const sortBy = (searchParams.get("sort") || "newest") as ExtendedSortOption
+  const setFilters = useCallback(
+    (newFilters: FilterState) => {
+      const categories = Array.from(newFilters.categories)
+      const sizes = Array.from(newFilters.sizes)
+
+      void setQueryState(
+        {
+          categories: categories.length > 0 ? categories : null,
+          sizes: sizes.length > 0 ? sizes : null,
+          page: null,
+        },
+        {
+          history: "push",
+          scroll: false,
+        }
+      )
+    },
+    [setQueryState]
+  )
 
   const setSortBy = useCallback(
     (sort: ExtendedSortOption) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set("sort", sort)
-      // Reset to page 1 when sort changes
-      params.delete("page")
-      router.push(`?${params.toString()}`, { scroll: false })
+      void setQueryState(
+        {
+          sort,
+          page: null,
+        },
+        {
+          history: "push",
+          scroll: false,
+        }
+      )
     },
-    [searchParams, router]
+    [setQueryState]
   )
 
-  // Page state - supports both single page and range
   const setPage = useCallback(
     (newPage: number) => {
-      const params = new URLSearchParams(searchParams.toString())
-      if (newPage > 1) {
-        params.set("page", newPage.toString())
-      } else {
-        params.delete("page")
+      if (!Number.isFinite(newPage)) {
+        return
       }
-      router.push(`?${params.toString()}`)
+
+      const normalizedPage = Math.max(1, Math.floor(newPage))
+
+      void setQueryState(
+        {
+          page:
+            normalizedPage > 1
+              ? { start: normalizedPage, end: normalizedPage, isRange: false }
+              : null,
+        },
+        {
+          history: "push",
+          scroll: true,
+        }
+      )
     },
-    [searchParams, router]
+    [setQueryState]
   )
 
-  // Set infinite page range (e.g., 1-3 for pages 1,2,3)
   const setPageRange = useCallback(
     (startPage: number, endPage: number) => {
-      const params = new URLSearchParams(searchParams.toString())
-      if (startPage === 1 && endPage === 1) {
-        params.delete("page")
-      } else if (startPage === endPage) {
-        params.set("page", startPage.toString())
-      } else {
-        params.set("page", `${startPage}-${endPage}`)
+      if (!(Number.isFinite(startPage) && Number.isFinite(endPage))) {
+        return
       }
-      router.push(`?${params.toString()}`, { scroll: false })
+
+      const normalizedStart = Math.max(1, Math.floor(startPage))
+      const normalizedEnd = Math.max(normalizedStart, Math.floor(endPage))
+
+      void setQueryState(
+        {
+          page:
+            normalizedStart === 1 && normalizedEnd === 1
+              ? null
+              : {
+                  start: normalizedStart,
+                  end: normalizedEnd,
+                  isRange: normalizedStart !== normalizedEnd,
+                },
+        },
+        {
+          history: "push",
+          scroll: false,
+        }
+      )
     },
-    [searchParams, router]
+    [setQueryState]
   )
 
-  // Extend current page range by one page (for "load more" functionality)
   const extendPageRange = useCallback(() => {
-    const newEndPage = pageRange.end + 1
-    const params = new URLSearchParams(searchParams.toString())
-    params.set("page", `${pageRange.start}-${newEndPage}`)
+    const nextEnd = pageRange.end + 1
 
-    // Use replace instead of push to avoid adding to history
-    // scroll: false prevents resetting scroll position
-    router.replace(`?${params.toString()}`, { scroll: false })
-  }, [pageRange.start, pageRange.end, searchParams, router])
+    void setQueryState(
+      {
+        page: {
+          start: pageRange.start,
+          end: nextEnd,
+          isRange: true,
+        },
+      },
+      {
+        history: "replace",
+        scroll: false,
+      }
+    )
+  }, [pageRange.end, pageRange.start, setQueryState])
 
-  // Update search query in URL
   const setSearchQuery = useCallback(
     (query: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      if (query) {
-        params.set("q", query)
-      } else {
-        params.delete("q")
-      }
-      // Reset to first page when searching
-      params.set("page", "1")
-      router.push(`?${params.toString()}`, { scroll: false })
+      void setQueryState(
+        {
+          q: query ? query : null,
+          page: {
+            start: 1,
+            end: 1,
+            isRange: false,
+          },
+        },
+        {
+          history: "push",
+          scroll: false,
+        }
+      )
     },
-    [searchParams, router]
+    [setQueryState]
   )
 
   return {
