@@ -102,7 +102,7 @@ export const N1Header = () => {
           >
             <SearchForm.Control>
               <SearchForm.Input
-                className="bg-white"
+                className="bg-base-light"
                 name="q"
                 placeholder="Hledat produkty..."
               />

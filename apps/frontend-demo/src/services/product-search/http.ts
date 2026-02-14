@@ -3,6 +3,7 @@ import type {
   QueryParamValue,
   StoreProductVariantListResponse,
 } from "./types"
+import { STORE_FETCH_TIMEOUT_MS } from "./constants"
 
 function buildQueryString(params: Record<string, QueryParamValue>): string {
   const searchParams = new URLSearchParams()
@@ -48,13 +49,27 @@ async function fetchStoreJson<TResponse>(
   params: Record<string, QueryParamValue>
 ): Promise<TResponse> {
   const queryString = buildQueryString(params)
-  const response = await fetch(
-    `${getBackendBaseUrl()}${path}${queryString ? `?${queryString}` : ""}`,
-    {
+  const url = `${getBackendBaseUrl()}${path}${queryString ? `?${queryString}` : ""}`
+  const abortController = new AbortController()
+  const timeoutId = setTimeout(() => abortController.abort(), STORE_FETCH_TIMEOUT_MS)
+  let response: Response
+
+  try {
+    response = await fetch(url, {
       method: "GET",
       headers: getStoreHeaders(),
+      signal: abortController.signal,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(
+        `Request timed out after ${STORE_FETCH_TIMEOUT_MS}ms for ${path}`
+      )
     }
-  )
+    throw error
+  } finally {
+    clearTimeout(timeoutId)
+  }
 
   if (!response.ok) {
     const errorBody = await response.text()

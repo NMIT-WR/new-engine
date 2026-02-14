@@ -14,7 +14,7 @@ const meiliQueryIdsCache = createPromiseCache<string[]>({
 })
 
 function getVariantSizeCacheKey(size: string, q?: string): string {
-  return `${size}::${q?.trim() || ""}`
+  return `${size.trim()}::${q?.trim() || ""}`
 }
 
 function getMeiliQueryCacheKey(query: string): string {
@@ -53,10 +53,15 @@ async function collectVariantProductIdsForSizeCached(params: {
   q?: string
 }): Promise<string[]> {
   const { size, q } = params
-  const cacheKey = getVariantSizeCacheKey(size, q)
+  const normalizedSize = size.trim()
+  const normalizedQuery = q?.trim()
+  const cacheKey = getVariantSizeCacheKey(normalizedSize, normalizedQuery)
 
   return await variantSizeIdsCache.getOrCreate(cacheKey, async () => {
-    return await collectVariantProductIdsForSize({ size, q })
+    return await collectVariantProductIdsForSize({
+      size: normalizedSize,
+      q: normalizedQuery,
+    })
   })
 }
 

@@ -125,10 +125,7 @@ export default function CategoryPage() {
   const products = rawProducts.map(transformProduct)
 
   const handlePageChange = (page: number) => {
-    const nextPage =
-      Number.isFinite(page) && page > 0 ? Math.floor(page) : 1
-
-    void setPage(nextPage, {
+    void setPage(page, {
       history: "push",
       scroll: true,
     })

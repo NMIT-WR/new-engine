@@ -1,7 +1,6 @@
 "use client"
 
 import { useQueryStates } from "nuqs"
-import { useCallback } from "react"
 import {
   normalizeCategoryId,
   normalizeSearchPage,
@@ -23,32 +22,26 @@ export function useSearchUrlState() {
   const page = normalizeSearchPage(state.page)
   const categoryId = normalizeCategoryId(state.category_id)
 
-  const setPage = useCallback(
-    (nextPage: number) => {
-      void setSearchState(
-        {
-          page: toPageQueryParam(nextPage),
-        },
-        NAVIGATION_OPTIONS
-      )
-    },
-    [setSearchState]
-  )
+  const setPage = (nextPage: number) => {
+    void setSearchState(
+      {
+        page: toPageQueryParam(nextPage),
+      },
+      NAVIGATION_OPTIONS
+    )
+  }
 
-  const setCategory = useCallback(
-    (nextCategoryId: string) => {
-      void setSearchState(
-        {
-          category_id: toCategoryIdQueryParam(nextCategoryId),
-          page: null,
-        },
-        NAVIGATION_OPTIONS
-      )
-    },
-    [setSearchState]
-  )
+  const setCategory = (nextCategoryId: string) => {
+    void setSearchState(
+      {
+        category_id: toCategoryIdQueryParam(nextCategoryId),
+        page: null,
+      },
+      NAVIGATION_OPTIONS
+    )
+  }
 
-  const clearCategory = useCallback(() => {
+  const clearCategory = () => {
     void setSearchState(
       {
         category_id: null,
@@ -56,7 +49,7 @@ export function useSearchUrlState() {
       },
       NAVIGATION_OPTIONS
     )
-  }, [setSearchState])
+  }
 
   return {
     query,

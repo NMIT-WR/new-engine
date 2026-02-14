@@ -51,7 +51,7 @@ test("buildSearchHref removes empty values", () => {
   assert.equal(url.searchParams.toString(), "")
 })
 
-test("normalizers and query param helpers return expected values", () => {
+test("normalizers return expected values", () => {
   assert.equal(normalizeSearchQuery("  foo  "), "foo")
   assert.equal(normalizeSearchQuery(null), "")
   assert.equal(normalizeCategoryId("  pcat_1  "), "pcat_1")
@@ -59,13 +59,21 @@ test("normalizers and query param helpers return expected values", () => {
   assert.equal(normalizeSearchPage(3.8), 3)
   assert.equal(normalizeSearchPage(-1), 1)
   assert.equal(normalizeSearchPage(undefined), 1)
+})
 
+test("toSearchQueryParam returns expected values", () => {
   assert.equal(toSearchQueryParam("  foo  "), "foo")
   assert.equal(toSearchQueryParam(" "), null)
   assert.equal(toSearchQueryParam(undefined), undefined)
+})
+
+test("toCategoryIdQueryParam returns expected values", () => {
   assert.equal(toCategoryIdQueryParam("  pcat_1  "), "pcat_1")
   assert.equal(toCategoryIdQueryParam(" "), null)
   assert.equal(toCategoryIdQueryParam(undefined), undefined)
+})
+
+test("toPageQueryParam returns expected values", () => {
   assert.equal(toPageQueryParam(1), null)
   assert.equal(toPageQueryParam(4), 4)
   assert.equal(toPageQueryParam(undefined), undefined)

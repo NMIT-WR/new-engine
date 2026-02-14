@@ -12,13 +12,18 @@ import { queryKeys } from "@/lib/query-keys"
 import { getProducts } from "@/services/product-service"
 import { useRegion, useSuspenseRegion } from "./use-region"
 
-type UseProductsProps = {
+type BaseProductsProps = {
   category_id?: string[]
   q?: string
   page?: number
   limit?: number
+}
+
+type UseProductsProps = BaseProductsProps & {
   skipIfEmptyQuery?: boolean
 }
+
+type UseSuspenseProductsProps = BaseProductsProps
 
 type UseProductsReturn = {
   products: StoreProduct[]
@@ -182,7 +187,7 @@ export function useSuspenseProducts({
   q = "",
   page = 1,
   limit = PRODUCT_LIMIT,
-}: UseProductsProps): UseSuspenseProductsReturn {
+}: UseSuspenseProductsProps): UseSuspenseProductsReturn {
   const { regionId, countryCode } = useSuspenseRegion()
   const trimmedQuery = q.trim()
   const label = getProductsLabel(trimmedQuery, category_id)

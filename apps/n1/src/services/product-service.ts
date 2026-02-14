@@ -45,6 +45,69 @@ type StoreRequestContext = {
   signal?: AbortSignal
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}
+
+function isNumberOrUndefined(value: unknown): value is number | undefined {
+  return value === undefined || typeof value === "number"
+}
+
+function isStringOrUndefined(value: unknown): value is string | undefined {
+  return value === undefined || typeof value === "string"
+}
+
+function isStoreProductsApiResponse(
+  value: unknown
+): value is StoreProductsApiResponse {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  const products = value.products
+  if (!(products === undefined || Array.isArray(products))) {
+    return false
+  }
+
+  return (
+    isNumberOrUndefined(value.count) &&
+    isNumberOrUndefined(value.limit) &&
+    isNumberOrUndefined(value.offset)
+  )
+}
+
+function isMeiliSearchProductHit(value: unknown): value is MeiliSearchProductHit {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return isStringOrUndefined(value.id)
+}
+
+function isMeiliSearchHitsResponse(
+  value: unknown
+): value is MeiliSearchHitsResponse {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  const hits = value.hits
+  if (
+    !(
+      hits === undefined ||
+      (Array.isArray(hits) && hits.every((hit) => isMeiliSearchProductHit(hit)))
+    )
+  ) {
+    return false
+  }
+
+  return (
+    isNumberOrUndefined(value.estimatedTotalHits) &&
+    isNumberOrUndefined(value.limit) &&
+    isNumberOrUndefined(value.offset)
+  )
+}
+
 function getBackendBaseUrl(): string {
   const baseUrl =
     process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
@@ -92,7 +155,8 @@ function getProductsLogLabel(
 async function fetchJson<T>(
   url: string,
   signal: AbortSignal | undefined,
-  headers: HeadersInit
+  headers: HeadersInit,
+  isValidShape: (value: unknown) => value is T
 ): Promise<T> {
   const response = await fetch(url, {
     signal,
@@ -106,7 +170,12 @@ async function fetchJson<T>(
     )
   }
 
-  return (await response.json()) as T
+  const payload: unknown = await response.json()
+  if (!isValidShape(payload)) {
+    throw new Error(`Invalid response payload shape from ${url}`)
+  }
+
+  return payload
 }
 
 function dedupeIdsFromHits(hits: MeiliSearchProductHit[] | undefined): string[] {
@@ -153,7 +222,8 @@ async function fetchStoreProducts(
   const data = await fetchJson<StoreProductsApiResponse>(
     `${context.baseUrl}/store/products?${queryString}`,
     context.signal,
-    context.headers
+    context.headers,
+    isStoreProductsApiResponse
   )
 
   return {
@@ -179,18 +249,29 @@ async function fetchSearchProducts(
   const hitsData = await fetchJson<MeiliSearchHitsResponse>(
     `${context.baseUrl}/store/meilisearch/products-hits?${hitsQueryString}`,
     context.signal,
-    context.headers
+    context.headers,
+    isMeiliSearchHitsResponse
   )
 
-  const productIds = dedupeIdsFromHits(hitsData.hits)
-  const totalCount = hitsData.estimatedTotalHits ?? productIds.length
+  const hits = hitsData.hits || []
+  const productIds = dedupeIdsFromHits(hits)
+  const pageOffset = hitsData.offset ?? offset ?? 0
+  const pageLimit = hitsData.limit ?? limit ?? hits.length
+  const observedCount = pageOffset + productIds.length
+  const hasMoreByPageSize = pageLimit > 0 && hits.length >= pageLimit
+  const totalCount =
+    typeof hitsData.estimatedTotalHits === "number"
+      ? Math.max(hitsData.estimatedTotalHits, observedCount)
+      : hasMoreByPageSize
+        ? Math.max(observedCount, pageOffset + pageLimit + 1)
+        : observedCount
 
   if (productIds.length === 0) {
     return {
       products: [],
       count: totalCount,
-      limit: limit ?? hitsData.limit ?? 0,
-      offset: offset ?? hitsData.offset ?? 0,
+      limit: pageLimit,
+      offset: pageOffset,
     }
   }
 
@@ -206,14 +287,15 @@ async function fetchSearchProducts(
   const productsData = await fetchJson<StoreProductsApiResponse>(
     `${context.baseUrl}/store/products?${productsQueryString}`,
     context.signal,
-    context.headers
+    context.headers,
+    isStoreProductsApiResponse
   )
 
   return {
     products: orderProductsByIds(productsData.products || [], productIds),
     count: totalCount,
-    limit: limit ?? hitsData.limit ?? productIds.length,
-    offset: offset ?? hitsData.offset ?? 0,
+    limit: pageLimit,
+    offset: pageOffset,
   }
 }
 

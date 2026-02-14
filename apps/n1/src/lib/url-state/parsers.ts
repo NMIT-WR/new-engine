@@ -30,4 +30,5 @@ export const parseAsPositivePage = createParser<number>({
 export const parseAsPositivePageWithDefault = parseAsPositivePage.withDefault(1)
 
 export const parseAsSearchQuery = parseAsString
+export const parseAsCategoryId = parseAsString
 export const parseAsAccountTab = parseAsStringLiteral(ACCOUNT_TABS)

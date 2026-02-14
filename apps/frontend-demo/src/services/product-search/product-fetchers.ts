@@ -110,11 +110,12 @@ export async function fetchProductsViaMeili(params: {
   const { query, limit, offset, fields, region_id, country_code } = params
   const hitsResponse = await fetchMeiliHits({ query, limit, offset })
 
-  const productIds = dedupeIdsFromHits(hitsResponse.hits)
+  const hits = hitsResponse.hits || []
+  const productIds = dedupeIdsFromHits(hits)
   const pageOffset = hitsResponse.offset ?? offset
   const pageLimit = hitsResponse.limit ?? limit
   const observedCount = pageOffset + productIds.length
-  const hasMoreByPageSize = productIds.length >= pageLimit
+  const hasMoreByPageSize = hits.length >= pageLimit
   const totalCount = hasMoreByPageSize
     ? Math.max(hitsResponse.estimatedTotalHits ?? 0, observedCount)
     : observedCount
