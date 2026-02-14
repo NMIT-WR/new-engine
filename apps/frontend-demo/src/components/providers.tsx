@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@techsio/ui-kit/molecules/toast"
 import { ThemeProvider } from "next-themes"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import type { PropsWithChildren } from "react"
 import { useState } from "react"
 import { CartPrefetch } from "./cart-prefetch"
@@ -48,17 +49,19 @@ export function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => getQueryClient())
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        disableTransitionOnChange
-        enableSystem
-      >
-        <CartPrefetch />
-        {children}
-        <Toaster />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <NuqsAdapter>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
+        >
+          <CartPrefetch />
+          {children}
+          <Toaster />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </NuqsAdapter>
   )
 }

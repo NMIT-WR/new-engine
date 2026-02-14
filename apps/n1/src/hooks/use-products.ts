@@ -4,16 +4,26 @@ import { cacheConfig } from "@/lib/cache-config"
 import { PRODUCT_LIMIT } from "@/lib/constants"
 import { logQuery } from "@/lib/loggers/cache"
 import { fetchLogger } from "@/lib/loggers/fetch"
-import { buildProductQueryParams } from "@/lib/product-query-params"
+import {
+  buildProductQueryParams,
+  type ProductQueryParams,
+} from "@/lib/product-query-params"
 import { queryKeys } from "@/lib/query-keys"
 import { getProducts } from "@/services/product-service"
 import { useRegion, useSuspenseRegion } from "./use-region"
 
-type UseProductsProps = {
+type BaseProductsProps = {
   category_id?: string[]
+  q?: string
   page?: number
   limit?: number
 }
+
+type UseProductsProps = BaseProductsProps & {
+  skipIfEmptyQuery?: boolean
+}
+
+type UseSuspenseProductsProps = BaseProductsProps
 
 type UseProductsReturn = {
   products: StoreProduct[]
@@ -38,44 +48,108 @@ type UseSuspenseProductsReturn = {
   hasPrevPage: boolean
 }
 
+function getProductsLabel(trimmedQuery: string, categoryIds: string[]): string {
+  if (trimmedQuery.length > 0) {
+    return `q:${trimmedQuery.slice(0, 12)}`
+  }
+
+  return categoryIds[0]?.slice(-6) || "all"
+}
+
+function createProductsQueryFn(queryParams: ProductQueryParams, label: string) {
+  return async ({ signal }: { signal?: AbortSignal }) => {
+    const start = performance.now()
+    const result = await getProducts(queryParams, signal)
+    const duration = performance.now() - start
+
+    if (process.env.NODE_ENV === "development") {
+      fetchLogger.current(label, duration)
+    }
+
+    return result
+  }
+}
+
+function areSameStringArrays(a: string[] = [], b: string[] = []): boolean {
+  if (a.length !== b.length) {
+    return false
+  }
+
+  return a.every((value, index) => value === b[index])
+}
+
+function shouldKeepPreviousProductsData(
+  currentParams: ProductQueryParams,
+  previousParams?: ProductQueryParams
+): boolean {
+  if (!previousParams) {
+    return false
+  }
+
+  return (
+    (currentParams.q ?? "") === (previousParams.q ?? "") &&
+    areSameStringArrays(currentParams.category_id, previousParams.category_id)
+  )
+}
+
+function extractProductsParamsFromKey(
+  queryKey: readonly unknown[] | undefined
+): ProductQueryParams | undefined {
+  if (!Array.isArray(queryKey) || queryKey.length < 4) {
+    return undefined
+  }
+
+  const maybeParams = queryKey[3]
+  if (!maybeParams || typeof maybeParams !== "object") {
+    return undefined
+  }
+
+  return maybeParams as ProductQueryParams
+}
+
 export function useProducts({
   category_id = [],
+  q = "",
   page = 1,
   limit = PRODUCT_LIMIT,
+  skipIfEmptyQuery = false,
 }: UseProductsProps): UseProductsReturn {
   const { regionId, countryCode } = useRegion()
+  const trimmedQuery = q.trim()
+  const hasCategoryFilter = category_id.length > 0
+  const hasSearchIntent = trimmedQuery.length > 0 || hasCategoryFilter
+  const label = getProductsLabel(trimmedQuery, category_id)
 
   const queryParams = buildProductQueryParams({
     category_id,
+    q: trimmedQuery,
     region_id: regionId,
     country_code: countryCode,
     page,
     limit,
   })
 
+  const queryFn = createProductsQueryFn(queryParams, label)
   const { data, isLoading, error, dataUpdatedAt, isFetching, isSuccess } =
     useQuery({
       queryKey: queryKeys.products.list(queryParams),
-      queryFn: async ({ signal }) => {
-        const start = performance.now()
-        const result = await getProducts(queryParams, signal)
-        const duration = performance.now() - start
+      queryFn,
+      enabled: !!regionId && (!skipIfEmptyQuery || hasSearchIntent),
+      placeholderData: (previousData, previousQuery) => {
+        const previousParams = extractProductsParamsFromKey(
+          previousQuery?.queryKey
+        )
 
-        if (process.env.NODE_ENV === "development") {
-          const categoryLabel = category_id?.[0]?.slice(-6) || "all"
-          fetchLogger.current(categoryLabel, duration)
-        }
-
-        return result
+        return shouldKeepPreviousProductsData(queryParams, previousParams)
+          ? previousData
+          : undefined
       },
-      enabled: !!regionId,
       ...cacheConfig.semiStatic,
     })
 
   // Enhanced dev logging with cache-logger
   if (process.env.NODE_ENV === "development" && data) {
-    const categoryName = category_id?.[0]?.slice(-6) || "all"
-    const operation = `useProducts(${categoryName} p${page})`
+    const operation = `useProducts(${label} p${page})`
 
     logQuery(operation, queryKeys.products.list(queryParams), {
       isLoading,
@@ -110,10 +184,13 @@ export function useProducts({
 
 export function useSuspenseProducts({
   category_id = [],
+  q = "",
   page = 1,
   limit = PRODUCT_LIMIT,
-}: UseProductsProps): UseSuspenseProductsReturn {
+}: UseSuspenseProductsProps): UseSuspenseProductsReturn {
   const { regionId, countryCode } = useSuspenseRegion()
+  const trimmedQuery = q.trim()
+  const label = getProductsLabel(trimmedQuery, category_id)
 
   if (!(regionId && countryCode)) {
     throw new Error("Region is required for product queries")
@@ -121,32 +198,22 @@ export function useSuspenseProducts({
 
   const queryParams = buildProductQueryParams({
     category_id,
+    q: trimmedQuery,
     region_id: regionId,
     country_code: countryCode,
     page,
     limit,
   })
 
+  const queryFn = createProductsQueryFn(queryParams, label)
   const { data, isFetching, dataUpdatedAt } = useSuspenseQuery({
     queryKey: queryKeys.products.list(queryParams),
-    queryFn: async ({ signal }) => {
-      const start = performance.now()
-      const result = await getProducts(queryParams, signal)
-      const duration = performance.now() - start
-
-      if (process.env.NODE_ENV === "development") {
-        const categoryLabel = category_id?.[0]?.slice(-6) || "all"
-        fetchLogger.current(categoryLabel, duration)
-      }
-
-      return result
-    },
+    queryFn,
     ...cacheConfig.semiStatic,
   })
 
   if (process.env.NODE_ENV === "development" && data) {
-    const categoryName = category_id?.[0]?.slice(-6) || "all"
-    const operation = `useSuspenseProducts(${categoryName} p${page})`
+    const operation = `useSuspenseProducts(${label} p${page})`
 
     logQuery(operation, queryKeys.products.list(queryParams), {
       isFetching,
