@@ -1,5 +1,10 @@
 import { z } from "zod"
 import {
+  AresAddressSchema,
+  AresEconomicSubjectSchema,
+  AresEconomicSubjectSearchResponseSchema,
+  AresStandardizedAddressSchema,
+  AresStandardizedAddressSearchResponseSchema,
   MojeDaneStatusResponseSchema,
   ViesCheckVatResponseSchema,
 } from "./schema"
@@ -35,9 +40,33 @@ export type ViesClientOptions = {
   baseUrl: string
 }
 
+export type AresClientOptions = {
+  baseUrl: string
+}
+
 export type MojeDaneClientOptions = {
   wsdlUrl: string
 }
+
+export type AresAddress = z.infer<typeof AresAddressSchema>
+
+export type AresEconomicSubject = z.infer<typeof AresEconomicSubjectSchema>
+
+export type AresEconomicSubjectSearchResponse = z.infer<
+  typeof AresEconomicSubjectSearchResponseSchema
+>
+
+export type AresStandardizedAddress = z.infer<
+  typeof AresStandardizedAddressSchema
+>
+
+export type AresStandardizedAddressSearchResponse = z.infer<
+  typeof AresStandardizedAddressSearchResponseSchema
+>
+
+export type AresEconomicSubjectSearchRequest = Record<string, unknown>
+
+export type AresStandardizedAddressSearchRequest = Record<string, unknown>
 
 export type ViesCheckVatResult = {
   valid: boolean

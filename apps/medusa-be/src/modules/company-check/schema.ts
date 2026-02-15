@@ -1,5 +1,63 @@
 import { z } from "zod"
 
+const NullableStringSchema = z.string().nullable().optional()
+
+export const AresAddressSchema = z
+  .object({
+    nazevUlice: NullableStringSchema,
+    cisloDomovni: NullableStringSchema,
+    cisloOrientacni: NullableStringSchema,
+    cisloOrientacniPismeno: NullableStringSchema,
+    nazevObce: NullableStringSchema,
+    nazevStatu: NullableStringSchema,
+    psc: NullableStringSchema,
+  })
+  .passthrough()
+
+export const AresEconomicSubjectSchema = z
+  .object({
+    ico: z.string(),
+    obchodniJmeno: z.string(),
+    dic: NullableStringSchema,
+    sidlo: AresAddressSchema.nullable().optional(),
+  })
+  .passthrough()
+
+export const AresEconomicSubjectSearchResponseSchema = z
+  .object({
+    pocetCelkem: z.number().int().nonnegative(),
+    ekonomickeSubjekty: z.array(AresEconomicSubjectSchema).default([]),
+  })
+  .passthrough()
+
+export const AresStandardizedAddressSchema = z
+  .object({
+    kodAdresnihoMista: z.number().int().nullable().optional(),
+    kodObce: z.number().int().nullable().optional(),
+    kodUlice: z.number().int().nullable().optional(),
+    kodCastiObce: z.number().int().nullable().optional(),
+    kodMestskeCastiObvodu: z.number().int().nullable().optional(),
+    kodKraje: z.number().int().nullable().optional(),
+    kodOkresu: z.number().int().nullable().optional(),
+    kodSpravnihoObvodu: z.number().int().nullable().optional(),
+    kodStatu: z.number().int().nullable().optional(),
+    nazevUlice: NullableStringSchema,
+    cisloDomovni: NullableStringSchema,
+    cisloOrientacni: NullableStringSchema,
+    cisloOrientacniPismeno: NullableStringSchema,
+    nazevObce: NullableStringSchema,
+    nazevStatu: NullableStringSchema,
+    psc: NullableStringSchema,
+  })
+  .passthrough()
+
+export const AresStandardizedAddressSearchResponseSchema = z
+  .object({
+    pocetCelkem: z.number().int().nonnegative(),
+    standardizovaneAdresy: z.array(AresStandardizedAddressSchema).default([]),
+  })
+  .passthrough()
+
 export const ViesCheckVatResponseSchema = z
   .object({
     valid: z.boolean(),

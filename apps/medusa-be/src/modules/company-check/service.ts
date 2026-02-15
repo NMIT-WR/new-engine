@@ -4,9 +4,15 @@ import {
   RedisClient,
   type RedisClientDependencies,
 } from "../../utils/redis-client"
+import { AresClient } from "./clients/ares-client"
 import { MojeDaneClient } from "./clients/moje-dane-client"
 import { ViesClient } from "./clients/vies-client"
 import type {
+  AresEconomicSubject,
+  AresEconomicSubjectSearchRequest,
+  AresEconomicSubjectSearchResponse,
+  AresStandardizedAddressSearchRequest,
+  AresStandardizedAddressSearchResponse,
   TaxReliabilityResult,
   ViesCheckVatRequest,
   ViesCheckVatResponse,
@@ -39,12 +45,21 @@ type InjectedDependencies = RedisClientDependencies & {
 export class CompanyCheckModuleService {
   private readonly logger_: Logger
   private readonly redis_: RedisClient
+  private readonly aresClient_: AresClient
   private readonly viesClient_: ViesClient
   private readonly mojeDaneClient_: MojeDaneClient
 
   constructor(container: InjectedDependencies) {
     this.logger_ = container.logger
     this.redis_ = new RedisClient(container, { name: "Company Check" })
+
+    const aresBaseUrl = process.env.ARES_BASE_URL?.trim()
+    if (!aresBaseUrl) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "ARES base URL is not configured"
+      )
+    }
 
     const viesBaseUrl = process.env.VIES_BASE_URL?.trim()
     if (!viesBaseUrl) {
@@ -62,6 +77,7 @@ export class CompanyCheckModuleService {
       )
     }
 
+    this.aresClient_ = new AresClient({ baseUrl: aresBaseUrl })
     this.viesClient_ = new ViesClient({ baseUrl: viesBaseUrl })
     this.mojeDaneClient_ = new MojeDaneClient({ wsdlUrl: mojeDaneWsdlUrl })
   }
@@ -119,4 +135,19 @@ export class CompanyCheckModuleService {
     )
   }
 
+  async getAresEconomicSubjectByIco(ico: string): Promise<AresEconomicSubject> {
+    return this.aresClient_.getEconomicSubjectByIco(ico)
+  }
+
+  async searchAresEconomicSubjects(
+    payload: AresEconomicSubjectSearchRequest
+  ): Promise<AresEconomicSubjectSearchResponse> {
+    return this.aresClient_.searchEconomicSubjects(payload)
+  }
+
+  async searchAresStandardizedAddresses(
+    payload: AresStandardizedAddressSearchRequest
+  ): Promise<AresStandardizedAddressSearchResponse> {
+    return this.aresClient_.searchStandardizedAddresses(payload)
+  }
 }
