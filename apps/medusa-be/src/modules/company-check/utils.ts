@@ -1,4 +1,5 @@
 import { MedusaError } from "@medusajs/framework/utils"
+import { isRecord } from "../../utils/type-guards"
 import type {
   MojeDaneStatusResponse,
   TaxReliabilityResult,
@@ -134,8 +135,4 @@ export function mapViesResponse(
     trader_postal_code_match: response.traderPostalCodeMatch ?? null,
     trader_city_match: response.traderCityMatch ?? null,
   }
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null
 }

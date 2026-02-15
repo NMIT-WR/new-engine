@@ -32,6 +32,7 @@ export class MojeDaneClient {
     this.wsdlUrl_ = wsdlUrl
   }
 
+  // Normalize dic here to avoid double-normalization bugs across different call sites.
   async getStatusNespolehlivySubjektRozsirenyV2(
     dicDigits: string
   ): Promise<MojeDaneStatusResponse> {
@@ -39,7 +40,7 @@ export class MojeDaneClient {
     const client = await this.getClient()
 
     try {
-      const raw = await callSoapOperation<unknown>(
+      const raw = await callSoapOperation(
         client,
         MOJE_DANE_OPERATION,
         {

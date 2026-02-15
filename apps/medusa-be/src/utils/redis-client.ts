@@ -30,7 +30,15 @@ type GetOrSetOptions<T> = {
   tags?: string[]
   lockKey?: string
   lockTimeout?: number
-  cacheNull?: boolean
+  cacheNull?: false
+}
+
+type GetOrSetOptionsWithNull<T> = Omit<
+  GetOrSetOptions<T>,
+  "ttl" | "cacheNull"
+> & {
+  ttl?: number | ((value: T | null) => number)
+  cacheNull: true
 }
 
 const WRAPPED_VALUE_KEY = "__medusa_redis_client_wrapped__"
@@ -182,17 +190,17 @@ export class RedisClient {
   async getOrSet<T>(
     key: string,
     fetcher: () => Promise<T>,
-    options?: GetOrSetOptions<T> & { cacheNull?: false }
+    options?: GetOrSetOptions<T>
   ): Promise<T>
   async getOrSet<T>(
     key: string,
     fetcher: () => Promise<T>,
-    options: GetOrSetOptions<T> & { cacheNull: true }
+    options: GetOrSetOptionsWithNull<T>
   ): Promise<T | null>
   async getOrSet<T>(
     key: string,
     fetcher: () => Promise<T>,
-    options: GetOrSetOptions<T> = {}
+    options: GetOrSetOptions<T> | GetOrSetOptionsWithNull<T> = {}
   ): Promise<T | null> {
     const cached = await this.get<T>(key)
     if (cached !== undefined && (cached !== null || options.cacheNull)) {
@@ -216,7 +224,11 @@ export class RedisClient {
       if (shouldCache) {
         let ttl: number | undefined
         if (typeof options.ttl === "function") {
-          ttl = value !== null ? options.ttl(value) : undefined
+          if (value === null) {
+            ttl = options.cacheNull ? options.ttl(value) : undefined
+          } else {
+            ttl = options.ttl(value)
+          }
         } else {
           ttl = options.ttl
         }
@@ -240,7 +252,22 @@ export class RedisClient {
     key: string
   ): T | null {
     try {
-      return ((container as Record<string, unknown>)[key] as T) ?? null
+      if (key === "logger") {
+        const value = container.logger
+        return value == null ? null : (value as T)
+      }
+
+      if (key === Modules.CACHING) {
+        const value = container[Modules.CACHING]
+        return value == null ? null : (value as T)
+      }
+
+      if (key === Modules.LOCKING) {
+        const value = container[Modules.LOCKING]
+        return value == null ? null : (value as T)
+      }
+
+      return null
     } catch {
       return null
     }

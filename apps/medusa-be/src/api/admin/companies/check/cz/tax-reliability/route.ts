@@ -1,13 +1,12 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
 import { z } from "zod"
 import { VatIdentificationNumberSchema } from "../../../../../companies/check/validators"
 import {
   COMPANY_CHECK_MODULE,
   type CompanyCheckModuleService,
 } from "../../../../../../modules/company-check"
-import { normalizeDicDigits } from "../../../../../../modules/company-check/utils"
 import { TimeoutError } from "../../../../../../utils/http"
 
 export const AdminCompaniesCheckCzTaxReliabilitySchema = z.object({
@@ -26,13 +25,14 @@ export async function GET(
   res: MedusaResponse
 ): Promise<void> {
   const { vat_identification_number } = req.validatedQuery
-  const dicDigits = normalizeDicDigits(vat_identification_number)
 
   const companyCheckService =
     req.scope.resolve<CompanyCheckModuleService>(COMPANY_CHECK_MODULE)
 
   try {
-    const result = await companyCheckService.checkTaxReliability(dicDigits)
+    const result = await companyCheckService.checkTaxReliability(
+      vat_identification_number
+    )
     res.json(result)
   } catch (error) {
     const logger = req.scope.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
@@ -40,6 +40,16 @@ export async function GET(
       "Moje Dane tax reliability check failed",
       error instanceof Error ? error : new Error(String(error))
     )
+
+    if (
+      error instanceof MedusaError &&
+      error.type === MedusaError.Types.INVALID_DATA
+    ) {
+      res.status(400).json({
+        error: error.message || "Invalid DIC value",
+      })
+      return
+    }
 
     if (error instanceof TimeoutError) {
       res.status(504).json({

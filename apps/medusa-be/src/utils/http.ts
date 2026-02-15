@@ -64,9 +64,13 @@ export async function assertResponseOk(
 
   const body = await response.text()
   const suffix = body ? ` - ${body}` : ""
+  const errorType =
+    response.status >= 500 && response.status < 600
+      ? MedusaError.Types.UNEXPECTED_STATE
+      : MedusaError.Types.INVALID_DATA
 
   throw new MedusaError(
-    MedusaError.Types.INVALID_DATA,
+    errorType,
     `${message}: ${response.status}${suffix}`
   )
 }

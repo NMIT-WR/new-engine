@@ -1,6 +1,7 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { soap } from "strong-soap"
 import { TimeoutError } from "../http"
+import { isRecord } from "../type-guards"
 
 export type SoapWsSecurityOptions = {
   username: string
@@ -13,9 +14,10 @@ export type SoapWsSecurityOptions = {
 export type SoapClientOptions = {
   wsdlUrl: string
   endpoint?: string
+  wsdlTimeout?: number
   wsdlHeaders?: Record<string, string>
   wsdlOptions?: Record<string, unknown>
-  soapHeaders?: Record<string, string>
+  httpHeaders?: Record<string, string>
   wsSecurity?: SoapWsSecurityOptions
 }
 
@@ -26,6 +28,10 @@ export type SoapClient = {
   [key: string]: unknown
 }
 
+export type SoapResultValidator<T> =
+  | { parse: (value: unknown) => T }
+  | ((value: unknown) => value is T)
+
 type SoapCreateClientOptions = {
   endpoint?: string
   wsdl_headers?: Record<string, string>
@@ -33,10 +39,6 @@ type SoapCreateClientOptions = {
 }
 
 const DEFAULT_SOAP_TIMEOUT_MS = 15_000
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-}
 
 function createWsSecurity(options: SoapWsSecurityOptions): unknown {
   const WSSecurity = (soap as unknown as { WSSecurity?: unknown }).WSSecurity
@@ -143,7 +145,55 @@ function withTimeout<T>(
   })
 }
 
-function normalizeSoapResult<T>(result: unknown): T {
+function soapValidationErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim()) {
+    return `: ${error.message}`
+  }
+
+  return ""
+}
+
+function validateSoapResult<T>(
+  value: unknown,
+  validator: SoapResultValidator<T>
+): T {
+  if (typeof validator === "function") {
+    try {
+      if (validator(value)) {
+        return value
+      }
+    } catch (error) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        `SOAP response validation failed${soapValidationErrorMessage(error)}`
+      )
+    }
+
+    throw new MedusaError(
+      MedusaError.Types.UNEXPECTED_STATE,
+      "SOAP response validation failed"
+    )
+  }
+
+  try {
+    return validator.parse(value)
+  } catch (error) {
+    throw new MedusaError(
+      MedusaError.Types.UNEXPECTED_STATE,
+      `SOAP response validation failed${soapValidationErrorMessage(error)}`
+    )
+  }
+}
+
+function normalizeSoapResult(result: unknown): unknown
+function normalizeSoapResult<T>(
+  result: unknown,
+  validator: SoapResultValidator<T>
+): T
+function normalizeSoapResult<T>(
+  result: unknown,
+  validator?: SoapResultValidator<T>
+): unknown | T {
   if (Array.isArray(result)) {
     if (result.length === 0) {
       throw new MedusaError(
@@ -151,9 +201,11 @@ function normalizeSoapResult<T>(result: unknown): T {
         "SOAP operation returned empty result"
       )
     }
-    return result[0] as T
+    const value = result[0]
+    return validator ? validateSoapResult(value, validator) : value
   }
-  return result as T
+
+  return validator ? validateSoapResult(result, validator) : result
 }
 
 export function extractSoapFaultMessage(error: unknown): string | null {
@@ -161,17 +213,22 @@ export function extractSoapFaultMessage(error: unknown): string | null {
     return null
   }
 
-  const fault =
-    (error as { Fault?: unknown }).Fault ??
-    (error as { fault?: unknown }).fault ??
-    (error as { root?: { Envelope?: { Body?: { Fault?: unknown } } } }).root
-      ?.Envelope?.Body?.Fault
+  const root = error.root
+  let nestedFault: unknown
+  if (isRecord(root)) {
+    const envelope = root.Envelope
+    if (isRecord(envelope)) {
+      const body = envelope.Body
+      if (isRecord(body)) {
+        nestedFault = body.Fault
+      }
+    }
+  }
+
+  const fault = error.Fault ?? error.fault ?? nestedFault
 
   if (isRecord(fault)) {
-    const message =
-      (fault as { faultstring?: unknown }).faultstring ??
-      (fault as { faultcode?: unknown }).faultcode ??
-      (fault as { message?: unknown }).message
+    const message = fault.faultstring ?? fault.faultcode ?? fault.message
 
     if (typeof message === "string" && message.trim()) {
       return message
@@ -198,14 +255,18 @@ export async function createSoapClient(
     wsdl_options: options.wsdlOptions,
   }
 
-  const client = await createClientPromise(wsdlUrl, clientOptions)
+  const client = await withTimeout(
+    createClientPromise(wsdlUrl, clientOptions),
+    options.wsdlTimeout ?? DEFAULT_SOAP_TIMEOUT_MS,
+    "SOAP client creation (WSDL fetch) timed out"
+  )
 
   if (options.endpoint && client.setEndpoint) {
     client.setEndpoint(options.endpoint)
   }
 
-  if (options.soapHeaders && client.addHttpHeader) {
-    for (const [key, value] of Object.entries(options.soapHeaders)) {
+  if (options.httpHeaders && client.addHttpHeader) {
+    for (const [key, value] of Object.entries(options.httpHeaders)) {
       client.addHttpHeader(key, value)
     }
   }
@@ -217,12 +278,30 @@ export async function createSoapClient(
   return client
 }
 
+export async function callSoapOperation(
+  client: SoapClient,
+  operation: string,
+  args: unknown,
+  timeoutMs?: number
+): Promise<unknown>
 export async function callSoapOperation<T>(
   client: SoapClient,
   operation: string,
   args: unknown,
-  timeoutMs: number = DEFAULT_SOAP_TIMEOUT_MS
-): Promise<T> {
+  timeoutMs: number | undefined,
+  validator: SoapResultValidator<T>
+): Promise<T>
+/**
+ * Pass a validator whenever the SOAP response type cannot be guaranteed by
+ * compile-time types alone. Without a validator the result is returned as unknown.
+ */
+export async function callSoapOperation<T>(
+  client: SoapClient,
+  operation: string,
+  args: unknown,
+  timeoutMs: number = DEFAULT_SOAP_TIMEOUT_MS,
+  validator?: SoapResultValidator<T>
+): Promise<unknown | T> {
   const asyncMethodName = `${operation}Async`
   const asyncMethod = client[asyncMethodName]
 
@@ -234,7 +313,9 @@ export async function callSoapOperation<T>(
       timeoutMs,
       `SOAP ${operation} timed out`
     )
-    return normalizeSoapResult<T>(result)
+    return validator
+      ? normalizeSoapResult(result, validator)
+      : normalizeSoapResult(result)
   }
 
   const method = client[operation]
@@ -267,5 +348,7 @@ export async function callSoapOperation<T>(
     `SOAP ${operation} timed out`
   )
 
-  return normalizeSoapResult<T>(result)
+  return validator
+    ? normalizeSoapResult(result, validator)
+    : normalizeSoapResult(result)
 }

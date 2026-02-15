@@ -39,12 +39,31 @@ type InjectedDependencies = RedisClientDependencies & {
 export class CompanyCheckModuleService {
   private readonly logger_: Logger
   private readonly redis_: RedisClient
-  private viesClient_: ViesClient | null = null
-  private mojeDaneClient_: MojeDaneClient | null = null
+  private readonly viesClient_: ViesClient
+  private readonly mojeDaneClient_: MojeDaneClient
 
   constructor(container: InjectedDependencies) {
     this.logger_ = container.logger
     this.redis_ = new RedisClient(container, { name: "Company Check" })
+
+    const viesBaseUrl = process.env.VIES_BASE_URL?.trim()
+    if (!viesBaseUrl) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "VIES base URL is not configured"
+      )
+    }
+
+    const mojeDaneWsdlUrl = process.env.MOJE_DANE_WSDL_URL?.trim()
+    if (!mojeDaneWsdlUrl) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Moje Dane WSDL URL is not configured"
+      )
+    }
+
+    this.viesClient_ = new ViesClient({ baseUrl: viesBaseUrl })
+    this.mojeDaneClient_ = new MojeDaneClient({ wsdlUrl: mojeDaneWsdlUrl })
   }
 
   async checkVatNumber(
@@ -67,8 +86,7 @@ export class CompanyCheckModuleService {
         return cachedAfterLock
       }
 
-      const client = this.getViesClient()
-      const result = await client.checkVatNumber(input)
+      const result = await this.viesClient_.checkVatNumber(input)
       const ttl = result.valid ? CACHE_TTL.VIES : CACHE_TTL.VIES_NEGATIVE
       await this.redis_.set(cacheKey, result, { ttl })
       return result
@@ -85,9 +103,10 @@ export class CompanyCheckModuleService {
     return this.redis_.getOrSet(
       cacheKey,
       async () => {
-        const client = this.getMojeDaneClient()
         const response =
-          await client.getStatusNespolehlivySubjektRozsirenyV2(normalizedDic)
+          await this.mojeDaneClient_.getStatusNespolehlivySubjektRozsirenyV2(
+            normalizedDic
+          )
         return mapMojeDaneStatus(response)
       },
       {
@@ -100,37 +119,4 @@ export class CompanyCheckModuleService {
     )
   }
 
-  private getViesClient(): ViesClient {
-    if (this.viesClient_) {
-      return this.viesClient_
-    }
-
-    const baseUrl = process.env.VIES_BASE_URL?.trim()
-    if (!baseUrl) {
-      throw new MedusaError(
-        MedusaError.Types.UNEXPECTED_STATE,
-        "VIES base URL is not configured"
-      )
-    }
-
-    this.viesClient_ = new ViesClient({ baseUrl })
-    return this.viesClient_
-  }
-
-  private getMojeDaneClient(): MojeDaneClient {
-    if (this.mojeDaneClient_) {
-      return this.mojeDaneClient_
-    }
-
-    const wsdlUrl = process.env.MOJE_DANE_WSDL_URL?.trim()
-    if (!wsdlUrl) {
-      throw new MedusaError(
-        MedusaError.Types.UNEXPECTED_STATE,
-        "Moje Dane WSDL URL is not configured"
-      )
-    }
-
-    this.mojeDaneClient_ = new MojeDaneClient({ wsdlUrl })
-    return this.mojeDaneClient_
-  }
 }
