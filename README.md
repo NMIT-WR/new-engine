@@ -58,7 +58,7 @@
     * Login via user created in previous step
     * Go to settings -> Publishable API Keys
     * Create or copy existing key
-    * Update NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY in .env
+    * Update DC_N1_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY in .env
     * Restart services
     ```shell
    make down
@@ -66,9 +66,9 @@
     ```
 
 9. <b>Explore local envs</b>
-    * Medusa FE should be available at:
+    * N1 FE should be available at:
         * <a href="http://localhost:8000">localhost:8000</a>
-        * <a href="https://front.medusa.localhost">https://front.medusa.localhost</a>
+        * <a href="https://n1.medusa.localhost">https://n1.medusa.localhost</a>
     * Medusa BE should be available at:
         * <a href="http://localhost:9000/app">localhost:9000/app</a>
         * <sup>(1)</sup><a href="https://admin.medusa.localhost/app">https://admin.medusa.localhost/app</a>

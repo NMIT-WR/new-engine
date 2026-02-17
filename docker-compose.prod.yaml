@@ -6,3 +6,9 @@ services:
       args:
         FEATURE_PPL_ENABLED: ${DC_FEATURE_PPL_ENABLED:-0}
     volumes: []  # No volume mounts in prod
+  n1:
+    build:
+      target: prod
+    environment:
+      NODE_ENV: production
+    volumes: []  # No volume mounts in prod

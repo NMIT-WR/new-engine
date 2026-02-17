@@ -24,8 +24,8 @@ dev:
 	docker compose -f docker-compose.yaml -p new-engine up --force-recreate -d --build
 prod:
 	-docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine down
-	-docker rmi new-engine-medusa-be-prod
-	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache medusa-be
+	-docker rmi new-engine-medusa-be new-engine-n1
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache medusa-be n1
 	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine up -d
 down:
 	docker compose -f docker-compose.yaml -p new-engine down

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ['n1.medusa.localhost'],
   reactStrictMode: true,
   transpilePackages: ["@new-engine/ui", "@techsio/analytics"],
   reactCompiler: true,

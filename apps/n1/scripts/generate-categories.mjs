@@ -15,10 +15,19 @@ import dotenv from "dotenv"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const DEFAULT_MEDUSA_BACKEND_URL = "http://localhost:9000"
 
 // Load environment variables - try .env first, then .env.local
 dotenv.config({ path: path.join(__dirname, "../.env") })
 dotenv.config({ path: path.join(__dirname, "../.env.local") })
+
+function getMedusaBackendUrl() {
+  return (
+    process.env.MEDUSA_BACKEND_URL_INTERNAL ||
+    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
+    DEFAULT_MEDUSA_BACKEND_URL
+  )
+}
 
 // ============================================================================
 // API FETCH FUNCTIONS
@@ -28,8 +37,7 @@ dotenv.config({ path: path.join(__dirname, "../.env.local") })
  * Fetch categories from Medusa API
  */
 async function fetchCategoriesDirectly() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
+  const baseUrl = getMedusaBackendUrl()
 
   const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
@@ -63,8 +71,7 @@ async function fetchCategoriesDirectly() {
  */
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: paging with nested category aggregation
 async function fetchProductsAndCategorizesByCategory() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
+  const baseUrl = getMedusaBackendUrl()
 
   const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
