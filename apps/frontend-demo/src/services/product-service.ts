@@ -2,6 +2,8 @@ import { sdk } from "@/lib/medusa-client"
 import type { Product } from "@/types/product"
 import { buildMedusaQuery } from "@/utils/server-filters"
 
+import { tryGetProductsFromSearchStrategies } from "./product-search"
+
 export interface ProductFilters {
   categories?: string[]
   sizes?: string[]
@@ -25,6 +27,28 @@ export interface ProductListResponse {
   count: number
   limit: number
   offset: number
+}
+
+type ProductListQueryParams = {
+  limit: number
+  offset: number
+  q?: string
+  category_id?: string | string[]
+  fields: string
+  region_id?: string
+  country_code: string
+  order?: string
+}
+
+const DEFAULT_COUNTRY_CODE = "cz"
+
+const SORT_MAP: Record<string, string> = {
+  // Assumes Medusa IDs are time-ordered (ULID-like); if ID strategy changes, use created_at.
+  newest: "id",
+  "price-asc": "variants.prices.amount",
+  "price-desc": "-variants.prices.amount",
+  "name-asc": "title",
+  "name-desc": "-title",
 }
 
 // Fields for product list views (minimal data)
@@ -68,6 +92,47 @@ const DETAIL_FIELDS = [
   "variants.options",
 ].join(",")
 
+function buildBaseListQuery(params: {
+  limit: number
+  offset: number
+  q?: string
+  category?: string | string[]
+  filters?: ProductFilters
+  fields: string
+  sort?: string
+  region_id?: string
+  country_code: string
+}): ProductListQueryParams {
+  const {
+    limit,
+    offset,
+    q,
+    category,
+    filters,
+    fields,
+    sort,
+    region_id,
+    country_code,
+  } = params
+
+  const baseQuery: ProductListQueryParams = {
+    limit,
+    offset,
+    q,
+    // Explicit category param has priority over filters.categories.
+    category_id: category || filters?.categories,
+    fields,
+    ...(region_id && { region_id }),
+    country_code,
+  }
+
+  if (sort) {
+    baseQuery.order = SORT_MAP[sort] || sort
+  }
+
+  return baseQuery
+}
+
 /**
  * Fetch products with filtering, pagination and sorting
  */
@@ -85,36 +150,58 @@ export const getProducts = async (
     region_id,
     country_code,
   } = params
+  const normalizedCountryCode = country_code ?? DEFAULT_COUNTRY_CODE
 
-  // Use either category parameter OR filters.categories, not both
-  // Priority: explicit category param > filters.categories
-  const categoryIds = category || filters?.categories
+  let searchStrategyResponse: Awaited<
+    ReturnType<typeof tryGetProductsFromSearchStrategies>
+  > = null
 
-  // Build base query
-  const baseQuery: Record<string, any> = {
-    limit,
-    offset,
-    q,
-    category_id: categoryIds,
-    fields,
-    ...(region_id && { region_id }),
-    country_code: country_code ?? "cz",
+  try {
+    searchStrategyResponse = await tryGetProductsFromSearchStrategies({
+      limit,
+      offset,
+      fields,
+      filters,
+      category,
+      sort,
+      q,
+      region_id,
+      country_code: normalizedCountryCode,
+    })
+  } catch (error) {
+    console.warn(
+      "[ProductService] Search strategy failed unexpectedly, falling back to Medusa listing:",
+      error
+    )
   }
 
-  // Add sorting
-  if (sort) {
-    const sortMap: Record<string, string> = {
-      newest: "id",
-      "price-asc": "variants.prices.amount",
-      "price-desc": "-variants.prices.amount",
-      "name-asc": "title",
-      "name-desc": "-title",
+  if (searchStrategyResponse) {
+    const products = searchStrategyResponse.products.map((product) =>
+      transformProduct(product, true)
+    )
+
+    return {
+      products,
+      count: searchStrategyResponse.count || products.length,
+      limit: searchStrategyResponse.limit ?? limit,
+      offset: searchStrategyResponse.offset ?? offset,
     }
-    baseQuery.order = sortMap[sort] || sort
   }
 
-  // Build query with server-side filters
-  const queryParams = buildMedusaQuery(filters, baseQuery)
+  const queryParams = buildMedusaQuery(
+    filters,
+    buildBaseListQuery({
+      limit,
+      offset,
+      q,
+      category,
+      filters,
+      fields,
+      sort,
+      region_id,
+      country_code: normalizedCountryCode,
+    })
+  )
 
   try {
     const response = await sdk.store.product.list(queryParams)
@@ -124,7 +211,9 @@ export const getProducts = async (
       return { products: [], count: 0, limit, offset }
     }
 
-    const products = response.products.map((p) => transformProduct(p, true))
+    const products = response.products.map((product) =>
+      transformProduct(product, true)
+    )
 
     return {
       products,
@@ -187,7 +276,7 @@ export async function getProduct(
     fields: DETAIL_FIELDS, // Use full fields for detail views
     limit: 1,
     region_id,
-    country_code: country_code ?? "cz",
+    country_code: country_code ?? DEFAULT_COUNTRY_CODE,
   })
 
   if (!response.products?.length) {

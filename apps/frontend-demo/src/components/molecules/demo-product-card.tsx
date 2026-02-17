@@ -22,11 +22,11 @@ const productCard = tv({
     ratingSlot: "flex items-center",
     buttonsSlot: "flex w-fit flex-wrap",
     cartButton:
-      "w-max items-center bg-btn-cart text-btn-cart-fg hover:bg-btn-cart-hover",
+      "w-max items-center bg-button-cart text-button-cart-fg hover:bg-button-cart-hover",
     detailButton:
-      "w-max bg-btn-detail text-btn-detail-fg hover:bg-btn-detail-hover",
+      "w-max bg-button-detail text-button-detail-fg hover:bg-button-detail-hover",
     wishlistButton:
-      "w-max bg-btn-wishlist text-btn-wishlist-fg hover:bg-btn-wishlist-hover",
+      "w-max bg-button-wishlist text-button-wishlist-fg hover:bg-button-wishlist-hover",
   },
   variants: {
     // variant for layout of the card
