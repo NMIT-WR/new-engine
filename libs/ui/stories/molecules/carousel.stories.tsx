@@ -129,7 +129,7 @@ A flexible carousel component using compound component pattern, built with Zag.j
 ### Basic Usage
 \`\`\`tsx
 <Carousel.Root slideCount={slides.length}>
-  <Carousel.Items slides={slides} />
+  <Carousel.Slides slides={slides} />
   <Carousel.Control>
     <Carousel.Previous />
     <Carousel.Indicators />
@@ -142,7 +142,7 @@ A flexible carousel component using compound component pattern, built with Zag.j
 \`\`\`tsx
 <Carousel.Root slideCount={slides.length} autoplay>
   <Carousel.Autoplay />
-  <Carousel.Items slides={slides} />
+  <Carousel.Slides slides={slides} />
   <Carousel.Control>
     <Carousel.Previous />
     <Carousel.Indicators />
@@ -154,7 +154,7 @@ A flexible carousel component using compound component pattern, built with Zag.j
 ### Custom Indicators
 \`\`\`tsx
 <Carousel.Root slideCount={slides.length}>
-  <Carousel.Items slides={slides} />
+  <Carousel.Slides slides={slides} />
   <Carousel.Control>
     <Carousel.Previous />
     <Carousel.Indicators>
@@ -613,15 +613,15 @@ export const AspectRatioDemo: Story = {
 
 export const Vertical: Story = {
   render: () => (
-    <div className="h-96 w-md">
+    <div className="w-md">
       <Carousel.Root
         orientation="vertical"
         slideCount={4}
         size="md"
         loop
-        className="flex flex-row overflow-visible"
+        className="flex flex-row h-96 overflow-visible"
       >
-        <Carousel.Slides className="h-96" slides={sampleImages.slice(0, 4)} />
+        <Carousel.Slides slides={sampleImages.slice(0, 4)} />
         <Carousel.Control controlPosition="side" className="bg-transparent">
           <Carousel.Previous icon="icon-[mdi--keyboard-arrow-up]" />
           <Carousel.Indicators className="flex-col" />
