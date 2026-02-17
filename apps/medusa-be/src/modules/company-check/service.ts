@@ -4,6 +4,7 @@ import {
   RedisClient,
   type RedisClientDependencies,
 } from "../../utils/redis-client"
+import { isMedusaInvalidData404Error } from "../../utils/errors"
 import { AresClient } from "./clients/ares-client"
 import { MojeDaneClient } from "./clients/moje-dane-client"
 import { ViesClient } from "./clients/vies-client"
@@ -17,26 +18,14 @@ import type {
   ViesCheckVatRequest,
   ViesCheckVatResponse,
 } from "./types"
+import {
+  CACHE_KEYS,
+  CACHE_TTL,
+  LOCK_KEYS,
+  resolveAresEconomicSubjectsSearchCache,
+  resolveAresStandardizedAddressSearchCache,
+} from "./cache-utils"
 import { mapMojeDaneStatus, normalizeDicDigits } from "./utils"
-
-const CACHE_KEYS = {
-  vies: (countryCode: string, vatNumber: string) =>
-    `company-check:vies:${countryCode}:${vatNumber}`,
-  mojeDane: (dicDigits: string) => `company-check:mojedane:${dicDigits}`,
-} as const
-
-const LOCK_KEYS = {
-  vies: (countryCode: string, vatNumber: string) =>
-    `company-check:lock:vies:${countryCode}:${vatNumber}`,
-  mojeDane: (dicDigits: string) => `company-check:lock:mojedane:${dicDigits}`,
-} as const
-
-const CACHE_TTL = {
-  VIES: 6 * 60 * 60, // 6 hours
-  VIES_NEGATIVE: 30 * 60, // 30 minutes
-  MOJE_DANE: 24 * 60 * 60, // 24 hours
-  MOJE_DANE_NEGATIVE: 30 * 60, // 30 minutes
-} as const
 
 type InjectedDependencies = RedisClientDependencies & {
   logger: Logger
@@ -136,18 +125,72 @@ export class CompanyCheckModuleService {
   }
 
   async getAresEconomicSubjectByIco(ico: string): Promise<AresEconomicSubject> {
-    return this.aresClient_.getEconomicSubjectByIco(ico)
+    const normalizedIco = ico.trim()
+    const cacheKey = CACHE_KEYS.aresIco(normalizedIco)
+    const lockKey = LOCK_KEYS.aresIco(normalizedIco)
+
+    const cachedOrFetchedSubject = await this.redis_.getOrSet<
+      AresEconomicSubject | null
+    >(
+      cacheKey,
+      async () => {
+        try {
+          return await this.aresClient_.getEconomicSubjectByIco(normalizedIco)
+        } catch (error) {
+          if (!isMedusaInvalidData404Error(error)) {
+            throw error
+          }
+          return null
+        }
+      },
+      {
+        lockKey,
+        cacheNull: true,
+        ttl: (value) =>
+          value === null ? CACHE_TTL.ARES_NEGATIVE : CACHE_TTL.ARES,
+      }
+    )
+
+    if (!cachedOrFetchedSubject) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "ARES economic-subject lookup failed: 404"
+      )
+    }
+
+    return cachedOrFetchedSubject
   }
 
   async searchAresEconomicSubjects(
     payload: AresEconomicSubjectSearchRequest
   ): Promise<AresEconomicSubjectSearchResponse> {
-    return this.aresClient_.searchEconomicSubjects(payload)
+    const { cacheKey, lockKey } = resolveAresEconomicSubjectsSearchCache(payload)
+
+    return this.redis_.getOrSet(
+      cacheKey,
+      () => this.aresClient_.searchEconomicSubjects(payload),
+      {
+        lockKey,
+        ttl: (value) =>
+          value.pocetCelkem > 0 ? CACHE_TTL.ARES : CACHE_TTL.ARES_NEGATIVE,
+      }
+    )
   }
 
   async searchAresStandardizedAddresses(
     payload: AresStandardizedAddressSearchRequest
   ): Promise<AresStandardizedAddressSearchResponse> {
-    return this.aresClient_.searchStandardizedAddresses(payload)
+    const { cacheKey, lockKey } =
+      resolveAresStandardizedAddressSearchCache(payload)
+
+    return this.redis_.getOrSet(
+      cacheKey,
+      () => this.aresClient_.searchStandardizedAddresses(payload),
+      {
+        lockKey,
+        ttl: (value) =>
+          value.pocetCelkem > 0 ? CACHE_TTL.ARES : CACHE_TTL.ARES_NEGATIVE,
+      }
+    )
   }
 }

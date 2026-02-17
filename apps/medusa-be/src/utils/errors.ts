@@ -32,3 +32,22 @@ export function shouldCaptureException(error: unknown): boolean {
 
   return !(errorObj.type && CLIENT_ERROR_TYPES.has(errorObj.type))
 }
+
+export function isMedusaErrorType(
+  error: unknown,
+  type: string
+): error is MedusaError {
+  return error instanceof MedusaError && error.type === type
+}
+
+export function isMedusaInvalidDataError(
+  error: unknown
+): error is MedusaError {
+  return isMedusaErrorType(error, MedusaError.Types.INVALID_DATA)
+}
+
+export function isMedusaInvalidData404Error(
+  error: unknown
+): error is MedusaError {
+  return isMedusaInvalidDataError(error) && /\b404\b/.test(error.message)
+}

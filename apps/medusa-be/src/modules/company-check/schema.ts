@@ -1,16 +1,20 @@
 import { z } from "zod"
 
 const NullableStringSchema = z.string().nullable().optional()
+const NullableAresAddressValueSchema = z.preprocess(
+  (value) => (typeof value === "number" ? String(value) : value),
+  z.string().nullable().optional()
+)
 
 export const AresAddressSchema = z
   .object({
     nazevUlice: NullableStringSchema,
-    cisloDomovni: NullableStringSchema,
-    cisloOrientacni: NullableStringSchema,
+    cisloDomovni: NullableAresAddressValueSchema,
+    cisloOrientacni: NullableAresAddressValueSchema,
     cisloOrientacniPismeno: NullableStringSchema,
     nazevObce: NullableStringSchema,
     nazevStatu: NullableStringSchema,
-    psc: NullableStringSchema,
+    psc: NullableAresAddressValueSchema,
   })
   .passthrough()
 
@@ -42,12 +46,12 @@ export const AresStandardizedAddressSchema = z
     kodSpravnihoObvodu: z.number().int().nullable().optional(),
     kodStatu: z.number().int().nullable().optional(),
     nazevUlice: NullableStringSchema,
-    cisloDomovni: NullableStringSchema,
-    cisloOrientacni: NullableStringSchema,
+    cisloDomovni: NullableAresAddressValueSchema,
+    cisloOrientacni: NullableAresAddressValueSchema,
     cisloOrientacniPismeno: NullableStringSchema,
     nazevObce: NullableStringSchema,
     nazevStatu: NullableStringSchema,
-    psc: NullableStringSchema,
+    psc: NullableAresAddressValueSchema,
   })
   .passthrough()
 
