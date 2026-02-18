@@ -4,18 +4,41 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { ExtraText } from "@techsio/ui-kit/atoms/extra-text"
 import { FormInputRaw as FormInput } from "@techsio/ui-kit/molecules/form-input"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
-import { useState } from "react"
-import { useCustomer } from "@/hooks/use-customer"
+import { useEffect, useRef, useState } from "react"
+import {
+  customerHooks,
+  useCreateAddressWithToast,
+  useUpdateAddressWithToast,
+  useUpdateProfileWithToast,
+} from "@/hooks/customer-hooks"
 import { COUNTRIES, formatPhoneNumber, formatPostalCode } from "@/lib/address"
 import type { FormAddressData, FormUserData } from "@/types/checkout"
 
-interface ProfileFormProps {
-  initialAddress: FormAddressData | null
+type ProfileFormProps = {
   user: HttpTypes.StoreCustomer
 }
 
-export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
-  const { saveAddress, isSaving, updateProfile, isUpdating } = useCustomer()
+export function ProfileForm({ user }: ProfileFormProps) {
+  const { addresses } = customerHooks.useCustomerAddresses({})
+  const createAddressMutation = useCreateAddressWithToast()
+  const updateAddressMutation = useUpdateAddressWithToast()
+  const updateProfileMutation = useUpdateProfileWithToast()
+  const addressDirtyRef = useRef(false)
+
+  // Get the first address as the main address
+  const mainAddress = addresses[0]
+  const initialAddress = mainAddress
+    ? {
+        street: mainAddress.address_1 || "",
+        city: mainAddress.city || "",
+        postalCode: mainAddress.postal_code || "",
+        country: mainAddress.country_code || "cz",
+      }
+    : null
+
+  const isSaving =
+    createAddressMutation.isPending || updateAddressMutation.isPending
+  const isUpdating = updateProfileMutation.isPending
 
   const [formAddressData, setFormAddressData] = useState<FormAddressData>({
     street: initialAddress?.street || "",
@@ -45,25 +68,57 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
     formAddressData.postalCode !== initialAddress?.postalCode ||
     formAddressData.country !== initialAddress?.country
 
+  useEffect(() => {
+    if (!initialAddress || addressDirtyRef.current) {
+      return
+    }
+    setFormAddressData({
+      street: initialAddress.street || "",
+      city: initialAddress.city || "",
+      postalCode: initialAddress.postalCode || "",
+      country: initialAddress.country || "cz",
+    })
+  }, [mainAddress?.id])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      const addressData: FormAddressData = {
-        ...formAddressData,
-      }
-      const userData: FormUserData = {
-        ...formUserData,
-      }
-
-      const promises = []
+      const promises: Promise<unknown>[] = []
 
       if (hasProfileChanges) {
-        promises.push(updateProfile(userData))
+        promises.push(
+          updateProfileMutation.mutateAsync({
+            first_name: formUserData.first_name,
+            last_name: formUserData.last_name,
+            phone: formUserData.phone || undefined,
+            company_name: formUserData.company_name || undefined,
+          })
+        )
       }
+
       if (hasAddressChanges) {
-        promises.push(saveAddress(addressData))
+        const addressPayload = {
+          address_1: formAddressData.street,
+          city: formAddressData.city,
+          postal_code: formAddressData.postalCode,
+          country_code: formAddressData.country,
+        }
+
+        if (mainAddress?.id) {
+          // Update existing address
+          promises.push(
+            updateAddressMutation.mutateAsync({
+              addressId: mainAddress.id,
+              ...addressPayload,
+            })
+          )
+        } else {
+          // Create new address
+          promises.push(createAddressMutation.mutateAsync(addressPayload))
+        }
       }
+
       if (promises.length > 0) {
         await Promise.all(promises)
       }
@@ -152,9 +207,13 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
           <FormInput
             id="address-street"
             label="Ulice a číslo popisné"
-            onChange={(e) =>
-              setFormAddressData({ ...formAddressData, street: e.target.value })
-            }
+            onChange={(e) => {
+              addressDirtyRef.current = true
+              setFormAddressData({
+                ...formAddressData,
+                street: e.target.value,
+              })
+            }}
             placeholder="Hlavní 123"
             size="sm"
             value={formAddressData.street}
@@ -164,9 +223,13 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
             <FormInput
               id="address-city"
               label="Město"
-              onChange={(e) =>
-                setFormAddressData({ ...formAddressData, city: e.target.value })
-              }
+              onChange={(e) => {
+                addressDirtyRef.current = true
+                setFormAddressData({
+                  ...formAddressData,
+                  city: e.target.value,
+                })
+              }}
               placeholder="Praha"
               size="sm"
               value={formAddressData.city}
@@ -176,6 +239,7 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
               id="address-postalCode"
               label="PSČ"
               onChange={(e) => {
+                addressDirtyRef.current = true
                 const formatted = formatPostalCode(e.target.value)
                 setFormAddressData({
                   ...formAddressData,
@@ -199,6 +263,7 @@ export function ProfileForm({ initialAddress, user }: ProfileFormProps) {
               onValueChange={(details) => {
                 const value = details.value[0]
                 if (value) {
+                  addressDirtyRef.current = true
                   setFormAddressData({
                     ...formAddressData,
                     country: value,

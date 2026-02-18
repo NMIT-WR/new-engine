@@ -3,7 +3,7 @@ import { Icon, type IconType } from "@techsio/ui-kit/atoms/icon"
 import { type SelectItem } from "@techsio/ui-kit/molecules/select"
 import { SelectTemplate } from "@techsio/ui-kit/templates/select"
 import { SkeletonLoader } from "@/components/atoms/skeleton-loader"
-import { useRegions } from "@/hooks/use-region"
+import { useRegionSelection } from "@/providers/region-provider"
 
 const currencyToIcon: Record<string, IconType> = {
   CZK: "token-icon-cz",
@@ -12,7 +12,8 @@ const currencyToIcon: Record<string, IconType> = {
 }
 
 export function RegionSelector({ className }: { className?: string }) {
-  const { regions, selectedRegion, setSelectedRegion, isLoading } = useRegions()
+  const { regions, selectedRegion, setSelectedRegion, isLoading } =
+    useRegionSelection()
 
   if (isLoading || !regions.length) {
     return <SkeletonLoader className="hidden h-8 w-28 lg:block" variant="box" />

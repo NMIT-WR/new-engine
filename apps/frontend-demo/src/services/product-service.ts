@@ -1,3 +1,4 @@
+import type { HttpTypes } from "@medusajs/types"
 import { sdk } from "@/lib/medusa-client"
 import type { Product } from "@/types/product"
 import { buildMedusaQuery } from "@/utils/server-filters"
@@ -72,7 +73,8 @@ const DETAIL_FIELDS = [
  * Fetch products with filtering, pagination and sorting
  */
 export const getProducts = async (
-  params: ProductListParams = {}
+  params: ProductListParams = {},
+  signal?: AbortSignal
 ): Promise<ProductListResponse> => {
   const {
     limit = 20,
@@ -98,7 +100,7 @@ export const getProducts = async (
     category_id: categoryIds,
     fields,
     ...(region_id && { region_id }),
-    country_code: country_code ?? "cz",
+    ...(country_code ? { country_code: country_code.toLowerCase() } : {}),
   }
 
   // Add sorting
@@ -117,7 +119,13 @@ export const getProducts = async (
   const queryParams = buildMedusaQuery(filters, baseQuery)
 
   try {
-    const response = await sdk.store.product.list(queryParams)
+    const response = await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+      "/store/products",
+      {
+        query: queryParams,
+        signal,
+      }
+    )
 
     if (!response.products) {
       console.error("[ProductService] Invalid response structure:", response)
@@ -180,15 +188,22 @@ const transformProduct = (product: any, withVariants?: boolean): Product => {
 export async function getProduct(
   handle: string,
   region_id?: string,
-  country_code?: string
+  country_code?: string,
+  signal?: AbortSignal
 ): Promise<Product> {
-  const response = await sdk.store.product.list({
-    handle,
-    fields: DETAIL_FIELDS, // Use full fields for detail views
-    limit: 1,
-    region_id,
-    country_code: country_code ?? "cz",
-  })
+  const response = await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+    "/store/products",
+    {
+      query: {
+        handle,
+        fields: DETAIL_FIELDS,
+        limit: 1,
+        ...(region_id ? { region_id } : {}),
+        ...(country_code ? { country_code: country_code.toLowerCase() } : {}),
+      },
+      signal,
+    }
+  )
 
   if (!response.products?.length) {
     throw new Error("Product not found")

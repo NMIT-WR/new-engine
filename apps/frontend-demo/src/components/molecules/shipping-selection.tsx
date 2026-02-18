@@ -4,6 +4,7 @@ import { Button } from "@techsio/ui-kit/atoms/button"
 import { useToast } from "@techsio/ui-kit/molecules/toast"
 import { SHIPPING_METHODS } from "@/lib/checkout-data"
 import { formatPrice } from "@/lib/format-price"
+import { getShippingPriceWithTax } from "@/lib/shipping-price"
 import type { ReducedShippingMethod } from "@/types/checkout"
 
 interface ShippingSelectionProps {
@@ -24,7 +25,7 @@ const ShippingMethodDetail = ({
 }) => {
   const detailInfo = SHIPPING_METHODS.find((m) => m.name === method.name)
 
-  const priceWithTax = (method.calculated_price?.calculated_amount || 0) * 1.21
+  const priceWithTax = getShippingPriceWithTax(method.calculated_price)
   const formattedPrice = formatPrice(
     priceWithTax,
     method.calculated_price.currency_code || "CZK"
@@ -71,7 +72,6 @@ export function ShippingSelection({
   currentStep,
   setCurrentStep,
   shippingMethods,
-  isLoading,
 }: ShippingSelectionProps) {
   const toast = useToast()
   const handleProgress = () => {

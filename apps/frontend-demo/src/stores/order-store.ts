@@ -1,8 +1,9 @@
+import type { HttpTypes } from "@medusajs/types"
 import { Store } from "@tanstack/react-store"
-import type { Cart } from "@/hooks/use-cart"
+import type { Cart } from "@/hooks/cart-hooks"
 
-interface OrderState {
-  completedOrder: Cart | null
+type OrderState = {
+  completedOrder: HttpTypes.StoreOrder | null
 }
 
 // Create the order store
@@ -12,10 +13,10 @@ const orderStore = new Store<OrderState>({
 
 // Helper functions
 export const orderHelpers = {
-  // Save current cart data before clearing
-  saveCompletedOrder: (cart: Cart) => {
+  // Save completed order after cart completion
+  saveCompletedOrder: (order: HttpTypes.StoreOrder) => {
     orderStore.setState(() => ({
-      completedOrder: cart,
+      completedOrder: order,
     }))
   },
 
@@ -26,8 +27,10 @@ export const orderHelpers = {
     }))
   },
 
-  // Get order data - returns current cart or saved completed order
-  getOrderData: (currentCart: Cart | null): Cart | null => {
+  // Get order data - returns saved completed order or null
+  getOrderData: (
+    currentCart: Cart | null
+  ): HttpTypes.StoreOrder | Cart | null => {
     const state = orderStore.state
 
     // If we have a completed order saved, use that

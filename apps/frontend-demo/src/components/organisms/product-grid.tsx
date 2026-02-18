@@ -5,10 +5,10 @@ import Link from "next/link"
 import { useState } from "react"
 import { AddToCartDialog } from "@/components/molecules/add-to-cart-dialog"
 import { DemoProductCard } from "@/components/molecules/demo-product-card"
-import { usePrefetchProduct } from "@/hooks/use-prefetch-product"
-import { useRegions } from "@/hooks/use-region"
+import { usePrefetchProduct } from "@/hooks/product-hooks"
+import { useRegionSelection } from "@/providers/region-provider"
 import type { Product } from "@/types/product"
-import { formatPrice } from "@/utils/price-utils"
+import { formatPrice } from "@/lib/format-price"
 import { extractProductData } from "@/utils/product-utils"
 
 interface ProductGridProps {
@@ -26,8 +26,8 @@ export function ProductGrid({
   pageSize = 12,
   onPageChange,
 }: ProductGridProps) {
-  const { selectedRegion } = useRegions()
-  const prefetchProduct = usePrefetchProduct()
+  const { selectedRegion } = useRegionSelection()
+  const { prefetchProduct } = usePrefetchProduct()
   const [dialogProduct, setDialogProduct] = useState<Product | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -61,10 +61,7 @@ export function ProductGrid({
     <div className="w-full">
       <div className="grid grid-cols-1 gap-product-grid-gap sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => {
-          const { displayBadges } = extractProductData(
-            product,
-            selectedRegion?.currency_code
-          )
+          const { displayBadges } = extractProductData(product)
           // Format the price for display
           // Prices from Medusa are already in dollars/euros, NOT cents
           const formattedPrice =
@@ -78,8 +75,8 @@ export function ProductGrid({
             <div className="relative" key={product.id}>
               <Link
                 href={`/products/${product.handle}`}
-                onMouseEnter={() => prefetchProduct(product.handle)}
-                onTouchStart={() => prefetchProduct(product.handle)}
+                onMouseEnter={() => prefetchProduct({ handle: product.handle })}
+                onTouchStart={() => prefetchProduct({ handle: product.handle })}
                 prefetch={true}
               >
                 <DemoProductCard

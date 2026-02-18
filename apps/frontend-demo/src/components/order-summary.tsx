@@ -4,6 +4,7 @@ import { Icon } from "@techsio/ui-kit/atoms/icon"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import Link from "next/link"
 import { formatPrice } from "@/lib/format-price"
+import { getShippingPriceWithTax } from "@/lib/shipping-price"
 import type {
   CheckoutAddressData,
   PaymentMethod,
@@ -47,7 +48,7 @@ export function OrderSummary({
   }
 
   const shippingPrice = formatPrice(
-    selectedShipping?.calculated_price.calculated_amount || 0,
+    getShippingPriceWithTax(selectedShipping?.calculated_price),
     selectedShipping?.calculated_price.currency_code || "CZK"
   )
 

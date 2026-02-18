@@ -1,115 +1,94 @@
+"use client"
+
 import { useQueryClient } from "@tanstack/react-query"
+import { useRegionContext } from "@techsio/storefront-data"
 import { useCallback, useRef } from "react"
-import { useRegions } from "@/hooks/use-region"
-import { cacheConfig } from "@/lib/cache-config"
-import { queryKeys } from "@/lib/query-keys"
-import { getProducts } from "@/services/product-service"
+import { getProductsQueryOptions, usePrefetchProducts } from "@/hooks/product-hooks"
+import { storefrontCacheConfig } from "@/lib/cache-config"
 
 interface UseCategoryPrefetchOptions {
   enabled?: boolean
-  cacheStrategy?: keyof typeof cacheConfig
-  prefetchLimit?: number // Custom limit for prefetch vs normal queries
+  cacheStrategy?: keyof typeof storefrontCacheConfig
+  prefetchLimit?: number
 }
 
 export function useCategoryPrefetch(options?: UseCategoryPrefetchOptions) {
-  const { selectedRegion } = useRegions()
   const queryClient = useQueryClient()
+  const region = useRegionContext()
   const enabled = options?.enabled ?? true
-  const cacheStrategy = options?.cacheStrategy ?? "semiStatic"
   const prefetchLimit = options?.prefetchLimit ?? 12
-  // Track active timeouts for cancellation
-  const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
+  const cacheStrategy = options?.cacheStrategy
+
+  const { delayedPrefetch, cancelPrefetch } = usePrefetchProducts({
+    cacheStrategy,
+    skipIfCached: true,
+  })
+
+  const activePrefetchesRef = useRef<Set<string>>(new Set())
 
   const prefetchCategoryProducts = useCallback(
     async (categoryIds: string[]) => {
-      if (!(enabled && selectedRegion?.id) || categoryIds.length === 0) {
+      if (!enabled || categoryIds.length === 0) {
         return
       }
 
-      // Check if data is already in cache
-      const queryKey = queryKeys.products.list({
-        page: 1,
-        limit: prefetchLimit,
-        filters: { categories: categoryIds, sizes: [] },
-        region_id: selectedRegion.id,
-        sort: "newest",
-      })
-
-      const cachedData = queryClient.getQueryData(queryKey)
-      const queryState = queryClient.getQueryState(queryKey)
-
-      // Only prefetch if data is not in cache or is stale
-      if (!cachedData || queryState?.isInvalidated) {
-        //  console.log(`[Prefetch] Executing prefetch for ${categoryIds.length} categories`)
-
-        await queryClient.prefetchQuery({
-          queryKey,
-          queryFn: () =>
-            getProducts({
-              filters: { categories: categoryIds, sizes: [] },
-              limit: prefetchLimit,
-              offset: 0,
-              region_id: selectedRegion.id,
-              sort: "newest",
-            }),
-          ...cacheConfig[cacheStrategy],
+      await queryClient.prefetchQuery(
+        getProductsQueryOptions({
+          limit: prefetchLimit,
+          filters: { categories: categoryIds, sizes: [] },
+          sort: "newest",
+          region_id: region?.region_id ?? undefined,
+          country_code: region?.country_code ?? undefined,
         })
-      } /* else {
-        console.log(`[Prefetch] Skipping - already in cache for ${categoryIds.length} categories`)
-      }*/
+      )
     },
-    [queryClient, selectedRegion?.id, enabled, cacheStrategy, prefetchLimit]
+    [enabled, prefetchLimit, queryClient, region?.country_code, region?.region_id]
   )
 
-  // Delayed prefetch with cancellation support
-  const delayedPrefetch = useCallback(
+  const delayedPrefetchCategory = useCallback(
     (categoryIds: string[], delay = 800, prefetchId?: string) => {
-      const id = prefetchId || `prefetch_${Date.now()}_${Math.random()}`
-
-      // Cancel any existing timeout for this ID
-      const existingTimeout = timeoutsRef.current.get(id)
-      if (existingTimeout) {
-        clearTimeout(existingTimeout)
+      if (!enabled || categoryIds.length === 0) {
+        return
       }
 
-      // Create new timeout
-      const timeoutId = setTimeout(() => {
-        prefetchCategoryProducts(categoryIds).catch(console.error)
-        timeoutsRef.current.delete(id)
-      }, delay)
+      const id = delayedPrefetch(
+        {
+          limit: prefetchLimit,
+          filters: { categories: categoryIds, sizes: [] },
+          sort: "newest",
+        },
+        delay,
+        prefetchId
+      )
 
-      // Store timeout for potential cancellation
-      timeoutsRef.current.set(id, timeoutId)
-
-      return id // Return ID for potential cancellation
+      activePrefetchesRef.current.add(id)
+      return id
     },
-    [prefetchCategoryProducts]
+    [enabled, delayedPrefetch, prefetchLimit]
   )
 
-  // Cancel specific prefetch by ID
-  const cancelPrefetch = useCallback((prefetchId: string) => {
-    const timeout = timeoutsRef.current.get(prefetchId)
-    if (timeout) {
-      clearTimeout(timeout)
-      timeoutsRef.current.delete(prefetchId)
-      return true
-    }
-    return false
-  }, [])
+  const cancelPrefetchById = useCallback(
+    (prefetchId: string) => {
+      if (!prefetchId) {
+        return false
+      }
+      cancelPrefetch(prefetchId)
+      return activePrefetchesRef.current.delete(prefetchId)
+    },
+    [cancelPrefetch]
+  )
 
-  // Cancel all pending prefetches
   const cancelAllPrefetches = useCallback(() => {
-    const timeouts = Array.from(timeoutsRef.current.values())
-    for (const timeout of timeouts) {
-      clearTimeout(timeout)
-    }
-    timeoutsRef.current.clear()
-  }, [])
+    activePrefetchesRef.current.forEach((id) => {
+      cancelPrefetch(id)
+    })
+    activePrefetchesRef.current.clear()
+  }, [cancelPrefetch])
 
   return {
     prefetchCategoryProducts,
-    delayedPrefetch,
-    cancelPrefetch,
+    delayedPrefetch: delayedPrefetchCategory,
+    cancelPrefetch: cancelPrefetchById,
     cancelAllPrefetches,
   }
 }
