@@ -1,8 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import { z } from "zod"
-import { VatIdentificationNumberSchema } from "../../../../companies/check/validators"
 import {
   COMPANY_CHECK_MODULE,
   type CompanyCheckModuleService,
@@ -12,14 +10,7 @@ import {
   parseVatIdentificationNumber,
 } from "../../../../../modules/company-check/utils"
 import { TimeoutError } from "../../../../../utils/http"
-
-export const StoreCompaniesCheckViesSchema = z.object({
-  vat_identification_number: VatIdentificationNumberSchema,
-})
-
-export type StoreCompaniesCheckViesSchemaType = z.infer<
-  typeof StoreCompaniesCheckViesSchema
->
+import type { StoreCompaniesCheckViesSchemaType } from "./validators"
 
 /**
  * GET /store/companies/check/vies

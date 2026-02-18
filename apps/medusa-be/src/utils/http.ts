@@ -1,4 +1,5 @@
 import { MedusaError } from "@medusajs/framework/utils"
+import { withMedusaStatusCode } from "./errors"
 
 export type RetryPolicy = {
   maxRetries: number
@@ -69,9 +70,9 @@ export async function assertResponseOk(
       ? MedusaError.Types.UNEXPECTED_STATE
       : MedusaError.Types.INVALID_DATA
 
-  throw new MedusaError(
-    errorType,
-    `${message}: ${response.status}${suffix}`
+  throw withMedusaStatusCode(
+    new MedusaError(errorType, `${message}: ${response.status}${suffix}`),
+    response.status
   )
 }
 

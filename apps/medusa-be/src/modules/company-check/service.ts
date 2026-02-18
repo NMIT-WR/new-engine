@@ -4,10 +4,20 @@ import {
   RedisClient,
   type RedisClientDependencies,
 } from "../../utils/redis-client"
-import { isMedusaInvalidData404Error } from "../../utils/errors"
+import {
+  isMedusaInvalidData404Error,
+  withMedusaStatusCode,
+} from "../../utils/errors"
 import { AresClient } from "./clients/ares-client"
 import { MojeDaneClient } from "./clients/moje-dane-client"
 import { ViesClient } from "./clients/vies-client"
+import {
+  AresEconomicSubjectSchema,
+  AresEconomicSubjectSearchResponseSchema,
+  AresStandardizedAddressSearchResponseSchema,
+  TaxReliabilityResultSchema,
+  ViesCheckVatResponseSchema,
+} from "./schema"
 import type {
   AresEconomicSubject,
   AresEconomicSubjectSearchRequest,
@@ -32,14 +42,12 @@ type InjectedDependencies = RedisClientDependencies & {
 }
 
 export class CompanyCheckModuleService {
-  private readonly logger_: Logger
   private readonly redis_: RedisClient
   private readonly aresClient_: AresClient
   private readonly viesClient_: ViesClient
   private readonly mojeDaneClient_: MojeDaneClient
 
   constructor(container: InjectedDependencies) {
-    this.logger_ = container.logger
     this.redis_ = new RedisClient(container, { name: "Company Check" })
 
     const aresBaseUrl = process.env.ARES_BASE_URL?.trim()
@@ -77,24 +85,13 @@ export class CompanyCheckModuleService {
     const cacheKey = CACHE_KEYS.vies(input.countryCode, input.vatNumber)
     const lockKey = LOCK_KEYS.vies(input.countryCode, input.vatNumber)
 
-    const cached = await this.redis_.get<ViesCheckVatResponse>(cacheKey)
-    if (cached) {
-      this.logger_.debug("Company Check: VIES cache hit")
-      return cached
-    }
-
-    return this.redis_.withLock(lockKey, async () => {
-      const cachedAfterLock =
-        await this.redis_.get<ViesCheckVatResponse>(cacheKey)
-      if (cachedAfterLock) {
-        this.logger_.debug("Company Check: VIES cache hit (after lock)")
-        return cachedAfterLock
-      }
-
-      const result = await this.viesClient_.checkVatNumber(input)
-      const ttl = result.valid ? CACHE_TTL.VIES : CACHE_TTL.VIES_NEGATIVE
-      await this.redis_.set(cacheKey, result, { ttl })
-      return result
+    return this.redis_.getOrSet(cacheKey, () => this.viesClient_.checkVatNumber(input), {
+      lockKey,
+      parser: (value) => {
+        const parsed = ViesCheckVatResponseSchema.safeParse(value)
+        return parsed.success ? parsed.data : undefined
+      },
+      ttl: (value) => (value.valid ? CACHE_TTL.VIES : CACHE_TTL.VIES_NEGATIVE),
     })
   }
 
@@ -116,6 +113,10 @@ export class CompanyCheckModuleService {
       },
       {
         lockKey,
+        parser: (value) => {
+          const parsed = TaxReliabilityResultSchema.safeParse(value)
+          return parsed.success ? parsed.data : undefined
+        },
         ttl: (value) =>
           value.reliable === null
             ? CACHE_TTL.MOJE_DANE_NEGATIVE
@@ -146,15 +147,22 @@ export class CompanyCheckModuleService {
       {
         lockKey,
         cacheNull: true,
+        parser: (value) => {
+          const parsed = AresEconomicSubjectSchema.safeParse(value)
+          return parsed.success ? parsed.data : undefined
+        },
         ttl: (value) =>
           value === null ? CACHE_TTL.ARES_NEGATIVE : CACHE_TTL.ARES,
       }
     )
 
     if (!cachedOrFetchedSubject) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "ARES economic-subject lookup failed: 404"
+      throw withMedusaStatusCode(
+        new MedusaError(
+          MedusaError.Types.NOT_FOUND,
+          "ARES economic-subject lookup failed: 404"
+        ),
+        404
       )
     }
 
@@ -171,6 +179,10 @@ export class CompanyCheckModuleService {
       () => this.aresClient_.searchEconomicSubjects(payload),
       {
         lockKey,
+        parser: (value) => {
+          const parsed = AresEconomicSubjectSearchResponseSchema.safeParse(value)
+          return parsed.success ? parsed.data : undefined
+        },
         ttl: (value) =>
           value.pocetCelkem > 0 ? CACHE_TTL.ARES : CACHE_TTL.ARES_NEGATIVE,
       }
@@ -188,6 +200,10 @@ export class CompanyCheckModuleService {
       () => this.aresClient_.searchStandardizedAddresses(payload),
       {
         lockKey,
+        parser: (value) => {
+          const parsed = AresStandardizedAddressSearchResponseSchema.safeParse(value)
+          return parsed.success ? parsed.data : undefined
+        },
         ttl: (value) =>
           value.pocetCelkem > 0 ? CACHE_TTL.ARES : CACHE_TTL.ARES_NEGATIVE,
       }

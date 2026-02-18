@@ -1,25 +1,12 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
-import { z } from "zod"
-import { VatIdentificationNumberSchema } from "../../../../../companies/check/validators"
 import {
   COMPANY_CHECK_MODULE,
   type CompanyCheckModuleService,
 } from "../../../../../../modules/company-check"
 import { TimeoutError } from "../../../../../../utils/http"
-
-export const AdminCompaniesCheckCzTaxReliabilitySchema = z.object({
-  vat_identification_number: VatIdentificationNumberSchema,
-})
-
-export type AdminCompaniesCheckCzTaxReliabilitySchemaType = z.infer<
-  typeof AdminCompaniesCheckCzTaxReliabilitySchema
->
-
-/**
- * GET /admin/companies/check/cz/tax-reliability
- */
+import type { AdminCompaniesCheckCzTaxReliabilitySchemaType } from "./validators"
 export async function GET(
   req: MedusaRequest<unknown, AdminCompaniesCheckCzTaxReliabilitySchemaType>,
   res: MedusaResponse

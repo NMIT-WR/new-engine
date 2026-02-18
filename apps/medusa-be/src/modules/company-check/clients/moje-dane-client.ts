@@ -8,10 +8,7 @@ import {
 import { MojeDaneStatusResponseSchema } from "../schema"
 import type { MojeDaneClientOptions, MojeDaneStatusResponse } from "../types"
 import { TimeoutError } from "../../../utils/http"
-import {
-  extractMojeDaneStatusPayload,
-  normalizeDicDigits,
-} from "../utils"
+import { extractMojeDaneStatusPayload } from "../utils"
 
 const MOJE_DANE_OPERATION = "getStatusNespolehlivySubjektRozsirenyV2"
 const MOJE_DANE_TIMEOUT_MS = 12_000
@@ -32,11 +29,10 @@ export class MojeDaneClient {
     this.wsdlUrl_ = wsdlUrl
   }
 
-  // Normalize dic here to avoid double-normalization bugs across different call sites.
+  // Callers must provide normalized DIC digits to keep the client focused on transport concerns.
   async getStatusNespolehlivySubjektRozsirenyV2(
     dicDigits: string
   ): Promise<MojeDaneStatusResponse> {
-    const normalizedDic = normalizeDicDigits(dicDigits)
     const client = await this.getClient()
 
     try {
@@ -45,7 +41,7 @@ export class MojeDaneClient {
         MOJE_DANE_OPERATION,
         {
           StatusNespolehlivySubjektRozsirenyV2Request: {
-            dic: [normalizedDic],
+            dic: [dicDigits],
           },
         },
         MOJE_DANE_TIMEOUT_MS
@@ -83,7 +79,7 @@ export class MojeDaneClient {
             error instanceof Error ? error.message : String(error)
           }`
 
-      throw new MedusaError(MedusaError.Types.INVALID_DATA, message)
+      throw new MedusaError(MedusaError.Types.UNEXPECTED_STATE, message)
     }
   }
 

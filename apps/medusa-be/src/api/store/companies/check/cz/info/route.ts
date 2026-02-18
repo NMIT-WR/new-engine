@@ -1,37 +1,9 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
-import { z } from "zod"
-import { VatIdentificationNumberSchema } from "../../../../../companies/check/validators"
 import { TimeoutError } from "../../../../../../utils/http"
 import { companyCheckCzInfoWorkflow } from "../../../../../../workflows/company-check/workflows/company-info"
-import { CzCompanyIdentificationNumberSchema } from "./validators"
-
-export const StoreCompaniesCheckCzInfoSchema = z
-  .object({
-    vat_identification_number: VatIdentificationNumberSchema.optional(),
-    company_identification_number: CzCompanyIdentificationNumberSchema.optional(),
-    company_name: z.string().min(1).optional(),
-  })
-  .superRefine((data, ctx) => {
-    const provided = [
-      data.vat_identification_number,
-      data.company_identification_number,
-      data.company_name,
-    ].filter((value) => typeof value === "string")
-
-    if (provided.length !== 1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Exactly one of vat_identification_number, company_identification_number, or company_name is required",
-      })
-    }
-  })
-
-export type StoreCompaniesCheckCzInfoSchemaType = z.infer<
-  typeof StoreCompaniesCheckCzInfoSchema
->
+import type { StoreCompaniesCheckCzInfoSchemaType } from "./validators"
 
 /**
  * GET /store/companies/check/cz/info

@@ -31,7 +31,7 @@ export function parseVatIdentificationNumber(value: string): {
 }
 
 export function normalizeDicDigits(value: string): string {
-  const normalized = value.trim().toUpperCase()
+  const normalized = value?.trim().toUpperCase()
   if (!normalized) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,

@@ -85,6 +85,7 @@ export const parseCompanyInfoInputStep = createStep(
       })
     }
 
+    /* istanbul ignore next */
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
       "Exactly one of vat_identification_number, company_identification_number, or company_name is required"

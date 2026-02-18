@@ -10,11 +10,9 @@ import { toTrimmedString } from "../../../../utils/strings"
 import { logCompanyInfoDebug } from "../../helpers/debug"
 
 function mapSubjectToCompanyInfo(
+  subject: MapCompanyInfoStepInput["subjects"][number],
   input: MapCompanyInfoStepInput,
-  subjectIndex: number
 ): CompanyInfo {
-  const subject = input.subjects[subjectIndex]!
-
   return {
     company_name: subject.obchodniJmeno,
     company_identification_number: subject.ico,
@@ -46,8 +44,8 @@ export const mapCompanyInfoStep = createStep(
       return new StepResponse([])
     }
 
-    const companyInfoList = input.subjects.map((_, index) =>
-      mapSubjectToCompanyInfo(input, index)
+    const companyInfoList = input.subjects.map((subject) =>
+      mapSubjectToCompanyInfo(subject, input)
     )
 
     logCompanyInfoDebug(logger, "step_map_company_info_success", {

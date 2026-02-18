@@ -85,3 +85,11 @@ export const MojeDaneStatusResponseSchema = z
     typSubjektu: z.string().nullable().optional(),
   })
   .passthrough()
+
+export const TaxReliabilityResultSchema = z
+  .object({
+    reliable: z.boolean().nullable(),
+    unreliable_published_at: z.string().nullable(),
+    subject_type: z.string().nullable(),
+  })
+  .passthrough()

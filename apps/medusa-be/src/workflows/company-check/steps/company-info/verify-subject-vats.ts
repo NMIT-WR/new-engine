@@ -11,6 +11,7 @@ import { parseVatIdentificationNumber } from "../../../../modules/company-check/
 import { logCompanyInfoDebug } from "../../helpers/debug"
 
 export type VerifySubjectVatsStepResult = Record<string, string | null>
+const CHUNK_SIZE = 10
 
 /**
  * Validates candidate VAT IDs from ARES in VIES and stores results by ICO.
@@ -74,17 +75,25 @@ export const verifySubjectVatsStep = createStep(
       invalid_vat_format_count: invalidVatFormatCount,
     })
 
-    const validationResults = await Promise.all(
-      Array.from(uniqueParsedVatByKey.entries()).map(
-        async ([vatKey, parsedVat]) => {
+    const validationResults: Array<{
+      vatKey: string
+      verifiedVatIdentificationNumber: string | null
+    }> = []
+    const vatEntries = Array.from(uniqueParsedVatByKey.entries())
+
+    for (let offset = 0; offset < vatEntries.length; offset += CHUNK_SIZE) {
+      const chunk = vatEntries.slice(offset, offset + CHUNK_SIZE)
+      const chunkResults = await Promise.all(
+        chunk.map(async ([vatKey, parsedVat]) => {
           const viesResult = await companyCheckService.checkVatNumber(parsedVat)
           return {
             vatKey,
             verifiedVatIdentificationNumber: viesResult.valid ? vatKey : null,
           }
-        }
+        })
       )
-    )
+      validationResults.push(...chunkResults)
+    }
 
     const verifiedVatByKey = new Map<string, string | null>()
     for (const result of validationResults) {

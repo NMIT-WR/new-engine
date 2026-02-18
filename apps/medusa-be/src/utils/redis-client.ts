@@ -25,7 +25,10 @@ type SetOptions = {
   tags?: string[]
 }
 
+type CacheValueParser<T> = (value: unknown) => T | undefined
+
 type GetOrSetOptions<T> = {
+  parser: CacheValueParser<T>
   ttl?: number | ((value: T) => number)
   tags?: string[]
   lockKey?: string
@@ -37,6 +40,7 @@ type GetOrSetOptionsWithNull<T> = Omit<
   GetOrSetOptions<T>,
   "ttl" | "cacheNull"
 > & {
+  parser: CacheValueParser<T>
   ttl?: number | ((value: T | null) => number)
   cacheNull: true
 }
@@ -80,7 +84,7 @@ export class RedisClient {
     return !!this.cacheService_
   }
 
-  async get<T>(key: string): Promise<T | null | undefined> {
+  async get(key: string): Promise<unknown | null | undefined> {
     if (!this.cacheService_) {
       return undefined
     }
@@ -90,7 +94,7 @@ export class RedisClient {
       if (cached === null || cached === undefined) {
         return undefined
       }
-      return this.unwrapCacheValue<T>(cached)
+      return this.unwrapCacheValue(cached)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       this.logger_?.warn(`${this.prefix_}Cache read failed: ${message}`)
@@ -190,7 +194,7 @@ export class RedisClient {
   async getOrSet<T>(
     key: string,
     fetcher: () => Promise<T>,
-    options?: GetOrSetOptions<T>
+    options: GetOrSetOptions<T>
   ): Promise<T>
   async getOrSet<T>(
     key: string,
@@ -200,15 +204,35 @@ export class RedisClient {
   async getOrSet<T>(
     key: string,
     fetcher: () => Promise<T>,
-    options: GetOrSetOptions<T> | GetOrSetOptionsWithNull<T> = {}
+    options: GetOrSetOptions<T> | GetOrSetOptionsWithNull<T>
   ): Promise<T | null> {
-    const cached = await this.get<T>(key)
+    const parseCachedValue = (cached: unknown): T | null | undefined => {
+      if (cached === undefined) {
+        return undefined
+      }
+
+      if (cached === null) {
+        return options.cacheNull ? null : undefined
+      }
+
+      const parsed = options.parser(cached)
+      if (parsed === undefined) {
+        this.logger_?.warn(
+          `${this.prefix_}Cache value validation failed for key: ${key}`
+        )
+        return undefined
+      }
+
+      return parsed
+    }
+
+    const cached = parseCachedValue(await this.get(key))
     if (cached !== undefined && (cached !== null || options.cacheNull)) {
       return cached
     }
 
     const run = async (): Promise<T | null> => {
-      const cachedAfterLock = await this.get<T>(key)
+      const cachedAfterLock = parseCachedValue(await this.get(key))
       if (
         cachedAfterLock !== undefined &&
         (cachedAfterLock !== null || options.cacheNull)
@@ -285,7 +309,7 @@ export class RedisClient {
     return wrapped
   }
 
-  private unwrapCacheValue<T>(value: unknown): T {
+  private unwrapCacheValue(value: unknown): unknown {
     if (
       value &&
       typeof value === "object" &&
@@ -295,8 +319,8 @@ export class RedisClient {
       Object.keys(value).length === 3 &&
       "value" in (value as WrappedCacheValue)
     ) {
-      return (value as WrappedCacheValue).value as T
+      return (value as WrappedCacheValue).value
     }
-    return value as T
+    return value
   }
 }

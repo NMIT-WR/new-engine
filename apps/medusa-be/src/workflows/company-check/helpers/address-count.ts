@@ -39,6 +39,7 @@ type ParsedStreetAddress = {
   orientationLetter: string | null
 }
 
+// hasValue intentionally treats `0` as present because ARES codes (e.g., `kodObce`) may be zero.
 function hasValue(value: unknown): boolean {
   if (value === null || value === undefined) {
     return false

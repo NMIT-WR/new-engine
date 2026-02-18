@@ -6,9 +6,9 @@ import type {
   MiddlewareRoute,
 } from "@medusajs/framework/http"
 import { AdminCompaniesCheckCzAddressCountSchema } from "../../admin/companies/check/cz/address-count/validators"
-import { AdminCompaniesCheckCzTaxReliabilitySchema } from "../../admin/companies/check/cz/tax-reliability/route"
-import { StoreCompaniesCheckCzInfoSchema } from "../../store/companies/check/cz/info/route"
-import { StoreCompaniesCheckViesSchema } from "../../store/companies/check/vies/route"
+import { AdminCompaniesCheckCzTaxReliabilitySchema } from "../../admin/companies/check/cz/tax-reliability/validators"
+import { StoreCompaniesCheckCzInfoSchema } from "../../store/companies/check/cz/info/validators"
+import { StoreCompaniesCheckViesSchema } from "../../store/companies/check/vies/validators"
 
 const requireCompanyFeatureEnabled = (
   _req: MedusaRequest,

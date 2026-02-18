@@ -21,9 +21,9 @@ import {
   readResponseText,
   withRetry,
 } from "../../../utils/http"
+import { ICO_REGEX, ICO_REGEX_MESSAGE } from "../constants"
 
 const ARES_TIMEOUT_MS = 10_000
-const ICO_REGEX = /^\d{8}$/
 
 const JSON_HEADERS = {
   Accept: "application/json",
@@ -50,7 +50,7 @@ export class AresClient {
     if (!ICO_REGEX.test(normalizedIco)) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        "Company identification number must be 8 digits"
+        ICO_REGEX_MESSAGE
       )
     }
 

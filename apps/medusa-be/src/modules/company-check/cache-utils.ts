@@ -3,6 +3,7 @@ import type {
   AresEconomicSubjectSearchRequest,
   AresStandardizedAddressSearchRequest,
 } from "./types"
+import { isRecord } from "../../utils/type-guards"
 
 const WHITESPACE_REGEX = /\s+/g
 
@@ -47,10 +48,6 @@ export type AresSearchCacheDescriptor = {
 
 function removeWhitespace(value: string): string {
   return value.replace(WHITESPACE_REGEX, "")
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
 function normalizeForStableJson(value: unknown): unknown {

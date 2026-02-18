@@ -40,7 +40,7 @@ export const resolveAddressCountFilterStep = createStep(
           city: state.city,
         })
       )
-      const standardizedAddress = response.standardizovaneAdresy[0]
+      const standardizedAddress = response.standardizovaneAdresy?.[0]
       const sidloFilter =
         buildSidloFilterFromStandardizedAddress(standardizedAddress) ?? {
           textovaAdresa: state.textAddress,

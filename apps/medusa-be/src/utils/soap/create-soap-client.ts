@@ -40,6 +40,15 @@ type SoapCreateClientOptions = {
 
 const DEFAULT_SOAP_TIMEOUT_MS = 15_000
 
+function isSocketTimeoutError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false
+  }
+
+  const code = (error as { code?: unknown }).code
+  return code === "ETIMEDOUT" || code === "ESOCKETTIMEDOUT"
+}
+
 function createWsSecurity(options: SoapWsSecurityOptions): unknown {
   const WSSecurity = (soap as unknown as { WSSecurity?: unknown }).WSSecurity
 
@@ -127,7 +136,8 @@ async function createClientPromise(
 function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  context: string
+  context: string,
+  onTimeout?: () => void
 ): Promise<T> {
   if (timeoutMs <= 0) {
     return promise
@@ -135,12 +145,20 @@ function withTimeout<T>(
 
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
+      onTimeout?.()
       reject(new TimeoutError(`${context} after ${timeoutMs}ms`))
     }, timeoutMs)
 
     promise
       .then((result) => resolve(result))
-      .catch((error) => reject(error))
+      .catch((error) => {
+        if (isSocketTimeoutError(error)) {
+          reject(new TimeoutError(`${context} after ${timeoutMs}ms`))
+          return
+        }
+
+        reject(error)
+      })
       .finally(() => clearTimeout(timeoutId))
   })
 }
@@ -249,16 +267,23 @@ export async function createSoapClient(
     )
   }
 
+  const wsdlTimeoutMs = options.wsdlTimeout ?? DEFAULT_SOAP_TIMEOUT_MS
+  const wsdlAbortController = new AbortController()
   const clientOptions: SoapCreateClientOptions = {
     endpoint: options.endpoint,
     wsdl_headers: options.wsdlHeaders,
-    wsdl_options: options.wsdlOptions,
+    wsdl_options: {
+      ...options.wsdlOptions,
+      signal: wsdlAbortController.signal,
+      timeout: wsdlTimeoutMs,
+    },
   }
 
   const client = await withTimeout(
     createClientPromise(wsdlUrl, clientOptions),
-    options.wsdlTimeout ?? DEFAULT_SOAP_TIMEOUT_MS,
-    "SOAP client creation (WSDL fetch) timed out"
+    wsdlTimeoutMs,
+    "SOAP client creation (WSDL fetch) timed out",
+    () => wsdlAbortController.abort()
   )
 
   if (options.endpoint && client.setEndpoint) {
@@ -306,12 +331,22 @@ export async function callSoapOperation<T>(
   const asyncMethod = client[asyncMethodName]
 
   if (typeof asyncMethod === "function") {
+    const requestAbortController = new AbortController()
     const result = await withTimeout(
       Promise.resolve(
-        (asyncMethod as (input: unknown) => Promise<unknown>).call(client, args)
+        (
+          asyncMethod as (
+            input: unknown,
+            options?: Record<string, unknown>
+          ) => Promise<unknown>
+        ).call(client, args, {
+          signal: requestAbortController.signal,
+          timeout: timeoutMs,
+        })
       ),
       timeoutMs,
-      `SOAP ${operation} timed out`
+      `SOAP ${operation} timed out`,
+      () => requestAbortController.abort()
     )
     return validator
       ? normalizeSoapResult(result, validator)
@@ -326,11 +361,14 @@ export async function callSoapOperation<T>(
     )
   }
 
+  const requestAbortController = new AbortController()
   const result = await withTimeout(
     new Promise<unknown>((resolve, reject) => {
       const callbackMethod = method as (
         input: unknown,
-        callback: (error: unknown, value?: unknown) => void
+        callback: (error: unknown, value?: unknown) => void,
+        options?: Record<string, unknown>,
+        extraHeaders?: Record<string, string>
       ) => void
       callbackMethod.call(
         client,
@@ -341,11 +379,16 @@ export async function callSoapOperation<T>(
             return
           }
           resolve(value)
+        },
+        {
+          signal: requestAbortController.signal,
+          timeout: timeoutMs,
         }
       )
     }),
     timeoutMs,
-    `SOAP ${operation} timed out`
+    `SOAP ${operation} timed out`,
+    () => requestAbortController.abort()
   )
 
   return validator

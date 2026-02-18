@@ -4,6 +4,7 @@ import {
   when,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
+import { MedusaError } from "@medusajs/framework/utils"
 import type { CompanyInfo } from "../../../modules/company-check"
 import { MAX_COMPANY_RESULTS } from "../helpers/company-info"
 import { fetchAresSubjectByIcoStep } from "../steps/company-info/fetch-ares-subject-by-ico"
@@ -37,7 +38,10 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
     ).then(() => {
       const vatLookupInput = transform(parsedInput, (state) => {
         if (!state.parsedRequestedVat) {
-          throw new Error("Missing parsed VAT for VAT query")
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            "Missing parsed VAT for VAT query"
+          )
         }
 
         return state.parsedRequestedVat
@@ -53,7 +57,10 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
     ).then(() => {
       const icoLookupInput = transform(parsedInput, (state) => {
         if (!state.companyIdentificationNumber) {
-          throw new Error("Missing company identification number for ICO query")
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            "Missing company identification number for ICO query"
+          )
         }
 
         return {
@@ -81,7 +88,10 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
         const trimmedCompanyName = companyName?.trim()
 
         if (!trimmedCompanyName) {
-          throw new Error("Missing company name for ARES name query")
+          throw new MedusaError(
+            MedusaError.Types.INVALID_DATA,
+            "Missing company name for ARES name query"
+          )
         }
 
         return {
