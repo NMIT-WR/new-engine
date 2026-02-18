@@ -14,7 +14,7 @@ function logCompanyCheckDebug(
   logger: Logger,
   scope: string,
   event: string,
-  details: Record<string, unknown> = {}
+  details: Record<string, unknown>
 ): void {
   logger.info(`Company check ${scope}: ${event} ${JSON.stringify(details)}`)
 }
