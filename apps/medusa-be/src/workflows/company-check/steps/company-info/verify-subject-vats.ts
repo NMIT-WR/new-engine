@@ -7,7 +7,10 @@ import {
   type CompanyCheckModuleService,
 } from "../../../../modules/company-check"
 import type { AresEconomicSubject } from "../../../../modules/company-check/types"
-import { parseVatIdentificationNumber } from "../../../../modules/company-check/utils"
+import {
+  parseVatIdentificationNumber,
+  resolveAresSubjectVatIdentificationNumber,
+} from "../../../../modules/company-check/utils"
 import { logCompanyInfoDebug } from "../../helpers/debug"
 
 export type VerifySubjectVatsStepResult = Record<string, string | null>
@@ -46,7 +49,8 @@ export const verifySubjectVatsStep = createStep(
     let invalidVatFormatCount = 0
 
     for (const subject of subjects) {
-      const rawVatIdentificationNumber = subject.dic?.trim().toUpperCase()
+      const rawVatIdentificationNumber =
+        resolveAresSubjectVatIdentificationNumber(subject)
       if (!rawVatIdentificationNumber) {
         continue
       }

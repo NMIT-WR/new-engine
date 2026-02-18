@@ -1,6 +1,7 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { isRecord } from "../../utils/type-guards"
 import type {
+  AresEconomicSubject,
   MojeDaneStatusResponse,
   TaxReliabilityResult,
   ViesCheckVatResponse,
@@ -31,6 +32,18 @@ export function parseVatIdentificationNumber(value: string): {
     countryCode: normalized.slice(0, 2),
     vatNumber: normalized.slice(2),
   }
+}
+
+export function resolveAresSubjectVatIdentificationNumber(
+  subject: Pick<AresEconomicSubject, "dic" | "dicSkDph">
+): string | null {
+  const preferredVatIdentificationNumber =
+    subject.dicSkDph !== undefined ? subject.dicSkDph : subject.dic
+  const normalizedVatIdentificationNumber = preferredVatIdentificationNumber
+    ?.trim()
+    .toUpperCase()
+
+  return normalizedVatIdentificationNumber || null
 }
 
 export function normalizeDicDigits(value: string): string {

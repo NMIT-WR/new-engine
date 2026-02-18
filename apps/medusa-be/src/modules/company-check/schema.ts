@@ -23,6 +23,7 @@ export const AresEconomicSubjectSchema = z
     ico: z.string(),
     obchodniJmeno: z.string(),
     dic: NullableStringSchema,
+    dicSkDph: NullableStringSchema,
     sidlo: AresAddressSchema.nullable().optional(),
   })
   .passthrough()
