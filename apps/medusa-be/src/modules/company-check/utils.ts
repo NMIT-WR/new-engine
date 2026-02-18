@@ -10,6 +10,9 @@ import { VAT_ID_REGEX, VAT_ID_REGEX_MESSAGE } from "./constants"
 
 const DIC_DIGITS_REGEX = /^\d{1,10}$/
 const MOJE_DANE_MAX_DEPTH = 6
+const VIES_GROUP_REGISTRATION_NAME =
+  "GROUP REGISTRATION - THIS VAT ID CORRESPONDS TO A GROUP OF TAXPAYERS"
+const WHITESPACE_REGEX = /\s+/g
 
 export function parseVatIdentificationNumber(value: string): {
   countryCode: string
@@ -122,10 +125,16 @@ export function mapMojeDaneStatus(
 export function mapViesResponse(
   response: ViesCheckVatResponse
 ): ViesCheckVatResult {
+  const isGroupRegistration =
+    response.valid && isViesGroupRegistrationName(response.name)
+  const normalizedName = response.name?.trim() || null
+  const normalizedAddress = response.address?.trim() || null
+
   return {
     valid: response.valid,
-    name: response.name ?? null,
-    address: response.address ?? null,
+    name: isGroupRegistration ? null : normalizedName,
+    address: isGroupRegistration ? null : normalizedAddress,
+    is_group_registration: isGroupRegistration,
     request_date: response.requestDate ?? null,
     request_identifier: response.requestIdentifier ?? null,
     trader_name_match: response.traderNameMatch ?? null,
@@ -135,4 +144,18 @@ export function mapViesResponse(
     trader_postal_code_match: response.traderPostalCodeMatch ?? null,
     trader_city_match: response.traderCityMatch ?? null,
   }
+}
+
+export function isViesGroupRegistrationName(
+  value: string | null | undefined
+): boolean {
+  const normalized = value?.trim()
+  if (!normalized) {
+    return false
+  }
+
+  return (
+    normalized.replace(WHITESPACE_REGEX, " ").toUpperCase() ===
+    VIES_GROUP_REGISTRATION_NAME
+  )
 }

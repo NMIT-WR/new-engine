@@ -31,7 +31,7 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
   (input: CompanyCheckCzInfoWorkflowInput) => {
     const parsedInput = parseCompanyInfoInputStep(input)
 
-    const vatCompanyName = when(
+    const vatCompanyNameResolution = when(
       "company-check-vat-company-name-branch",
       parsedInput,
       (state) => state.queryType === "vat"
@@ -73,31 +73,34 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
 
     const nameSubjects = when(
       "company-check-name-subjects-branch",
-      { parsedInput, vatCompanyName },
+      { parsedInput, vatCompanyNameResolution },
       (state) =>
         (state.parsedInput.queryType === "name" &&
           Boolean(state.parsedInput.companyName?.trim())) ||
         (state.parsedInput.queryType === "vat" &&
-          Boolean(state.vatCompanyName?.trim()))
+          Boolean(state.vatCompanyNameResolution?.companyName?.trim()))
     ).then(() => {
-      const searchInput = transform({ parsedInput, vatCompanyName }, (state) => {
-        const companyName =
-          state.parsedInput.queryType === "name"
-            ? state.parsedInput.companyName
-            : state.vatCompanyName
-        const trimmedCompanyName = companyName?.trim()
+      const searchInput = transform(
+        { parsedInput, vatCompanyNameResolution },
+        (state) => {
+          const companyName =
+            state.parsedInput.queryType === "name"
+              ? state.parsedInput.companyName
+              : state.vatCompanyNameResolution?.companyName
+          const trimmedCompanyName = companyName?.trim()
 
-        if (!trimmedCompanyName) {
-          throw new MedusaError(
-            MedusaError.Types.INVALID_DATA,
-            "Missing company name for ARES name query"
-          )
-        }
+          if (!trimmedCompanyName) {
+            throw new MedusaError(
+              MedusaError.Types.INVALID_DATA,
+              "Missing company name for ARES name query"
+            )
+          }
 
-        return {
-          companyName: trimmedCompanyName,
+          return {
+            companyName: trimmedCompanyName,
+          }
         }
-      })
+      )
 
       return searchAresSubjectsByNameStep(searchInput)
     })
@@ -128,6 +131,7 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
       {
         parsedInput,
         companyInfoList,
+        vatCompanyNameResolution,
       },
       (state) => {
         const { companyInfoList } = state
@@ -147,6 +151,26 @@ export const companyCheckCzInfoWorkflow = createWorkflow(
             companyInfo.vat_identification_number?.toUpperCase() ===
             normalizedRequestedVat
         )
+
+        if (
+          vatMatchedCompanyInfoList.length === 0 &&
+          state.vatCompanyNameResolution?.isVatValid &&
+          state.vatCompanyNameResolution.isGroupRegistration
+        ) {
+          // VIES marks this VAT as valid for a taxpayer group, so identity fields
+          // cannot be deterministically resolved to one company/address.
+          return [
+            {
+              company_name: "",
+              company_identification_number: "",
+              vat_identification_number: normalizedRequestedVat,
+              street: "",
+              city: "",
+              country: "",
+              postal_code: "",
+            },
+          ]
+        }
 
         return (vatMatchedCompanyInfoList.length > 0
           ? vatMatchedCompanyInfoList

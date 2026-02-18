@@ -72,6 +72,7 @@ export type ViesCheckVatResult = {
   valid: boolean
   name: string | null
   address: string | null
+  is_group_registration: boolean
   request_date: string | null
   request_identifier: string | null
   trader_name_match: string | null
