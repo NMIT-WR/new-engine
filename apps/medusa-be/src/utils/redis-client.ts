@@ -298,9 +298,6 @@ export class RedisClient {
   }
 
   private wrapCacheValue(value: unknown): object {
-    if (value !== null && typeof value === "object") {
-      return value as object
-    }
     const wrapped: WrappedCacheValue = {
       [WRAPPED_VALUE_KEY]: true,
       [WRAPPED_VALUE_VERSION_KEY]: WRAPPED_VALUE_VERSION,

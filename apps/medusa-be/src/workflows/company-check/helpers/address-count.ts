@@ -141,7 +141,7 @@ export function buildSidloFilterFromStandardizedAddress(
   const sidloFilter: Record<string, unknown> = {}
 
   for (const key of STANDARDIZED_ADDRESS_FILTER_KEYS) {
-    const value = address[key]
+    const value: unknown = address[key]
     if (hasValue(value)) {
       sidloFilter[key] = value
     }

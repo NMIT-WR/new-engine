@@ -40,6 +40,8 @@ export const resolveAddressCountFilterStep = createStep(
           city: state.city,
         })
       )
+      const standardizedAddressesCount =
+        response.standardizovaneAdresy?.length ?? 0
       const standardizedAddress = response.standardizovaneAdresy?.[0]
       const sidloFilter =
         buildSidloFilterFromStandardizedAddress(standardizedAddress) ?? {
@@ -50,7 +52,7 @@ export const resolveAddressCountFilterStep = createStep(
 
       logAddressCountDebug(logger, "step_resolve_address_count_filter_success", {
         text_address_hash: textAddressHash,
-        standardized_addresses_count: response.standardizovaneAdresy.length,
+        standardized_addresses_count: standardizedAddressesCount,
         sidlo_filter_keys_count: sidloFilterKeysCount,
         uses_text_address_fallback: usesTextAddressFallback,
       })

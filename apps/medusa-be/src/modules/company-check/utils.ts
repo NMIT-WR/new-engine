@@ -38,7 +38,7 @@ export function resolveAresSubjectVatIdentificationNumber(
   subject: Pick<AresEconomicSubject, "dic" | "dicSkDph">
 ): string | null {
   const preferredVatIdentificationNumber =
-    subject.dicSkDph !== undefined ? subject.dicSkDph : subject.dic
+    subject.dicSkDph ?? subject.dic
   const normalizedVatIdentificationNumber = preferredVatIdentificationNumber
     ?.trim()
     .toUpperCase()
@@ -128,9 +128,7 @@ export function mapMojeDaneStatus(
   return {
     reliable,
     unreliable_published_at:
-      reliable === null
-        ? null
-        : response.datumZverejneniNespolehlivosti ?? null,
+      reliable === false ? response.datumZverejneniNespolehlivosti ?? null : null,
     subject_type: reliable === null ? null : response.typSubjektu ?? null,
   }
 }

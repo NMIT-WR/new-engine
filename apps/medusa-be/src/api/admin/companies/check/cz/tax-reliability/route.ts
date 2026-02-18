@@ -28,19 +28,19 @@ export async function GET(
       error instanceof Error ? error : new Error(String(error))
     )
 
+    if (error instanceof TimeoutError) {
+      res.status(504).json({
+        error: "Moje Dane request timed out",
+      })
+      return
+    }
+
     if (
       error instanceof MedusaError &&
       error.type === MedusaError.Types.INVALID_DATA
     ) {
       res.status(400).json({
         error: error.message || "Invalid DIC value",
-      })
-      return
-    }
-
-    if (error instanceof TimeoutError) {
-      res.status(504).json({
-        error: "Moje Dane request timed out",
       })
       return
     }

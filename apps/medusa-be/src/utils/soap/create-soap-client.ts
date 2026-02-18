@@ -41,12 +41,32 @@ type SoapCreateClientOptions = {
 const DEFAULT_SOAP_TIMEOUT_MS = 15_000
 
 function isSocketTimeoutError(error: unknown): boolean {
-  if (!(error instanceof Error)) {
+  if (!(error instanceof Error) || !isRecord(error)) {
     return false
   }
 
-  const code = (error as { code?: unknown }).code
+  const code = error.code
   return code === "ETIMEDOUT" || code === "ESOCKETTIMEDOUT"
+}
+
+function isSoapClient(value: unknown): value is SoapClient {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  if ("setSecurity" in value && typeof value.setSecurity !== "function") {
+    return false
+  }
+
+  if ("setEndpoint" in value && typeof value.setEndpoint !== "function") {
+    return false
+  }
+
+  if ("addHttpHeader" in value && typeof value.addHttpHeader !== "function") {
+    return false
+  }
+
+  return true
 }
 
 function createWsSecurity(options: SoapWsSecurityOptions): unknown {
@@ -90,7 +110,14 @@ async function createClientPromise(
   ).createClientAsync
 
   if (typeof createClientAsync === "function") {
-    return (await createClientAsync(wsdlUrl, options)) as SoapClient
+    const client = await createClientAsync(wsdlUrl, options)
+    if (!isSoapClient(client)) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "SOAP client creation returned invalid client"
+      )
+    }
+    return client
   }
 
   return await new Promise<SoapClient>((resolve, reject) => {
@@ -128,6 +155,16 @@ async function createClientPromise(
         )
         return
       }
+      if (!isSoapClient(client)) {
+        reject(
+          new MedusaError(
+            MedusaError.Types.UNEXPECTED_STATE,
+            "SOAP client creation returned invalid client"
+          )
+        )
+        return
+      }
+
       resolve(client)
     })
   })

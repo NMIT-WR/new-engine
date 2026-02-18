@@ -2,7 +2,15 @@ import { z } from "zod"
 
 const NullableStringSchema = z.string().nullable().optional()
 const NullableAresAddressValueSchema = z.preprocess(
-  (value) => (typeof value === "number" ? String(value) : value),
+  (value) => {
+    if (typeof value === "number") {
+      return String(value)
+    }
+    if (typeof value === "string") {
+      return value
+    }
+    return undefined
+  },
   z.string().nullable().optional()
 )
 

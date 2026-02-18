@@ -6,6 +6,7 @@ import {
   AresStandardizedAddressSchema,
   AresStandardizedAddressSearchResponseSchema,
   MojeDaneStatusResponseSchema,
+  TaxReliabilityResultSchema,
   ViesCheckVatResponseSchema,
 } from "./schema"
 
@@ -30,11 +31,7 @@ export type MojeDaneStatusResponse = z.infer<
   typeof MojeDaneStatusResponseSchema
 >
 
-export type TaxReliabilityResult = {
-  reliable: boolean | null
-  unreliable_published_at: string | null
-  subject_type: string | null
-}
+export type TaxReliabilityResult = z.infer<typeof TaxReliabilityResultSchema>
 
 export type ViesClientOptions = {
   baseUrl: string

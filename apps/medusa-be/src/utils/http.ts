@@ -156,6 +156,14 @@ export async function withRetry<T>(
         throw error
       }
 
+      if (error instanceof TimeoutError) {
+        if (attempt >= policy.maxRetries) {
+          throw error
+        }
+        lastError = error
+        continue
+      }
+
       lastError = error instanceof Error ? error : new Error(String(error))
     }
   }

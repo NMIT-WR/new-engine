@@ -1,6 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import type { Logger } from "@medusajs/framework/types"
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
 import {
   COMPANY_CHECK_MODULE,
   type CompanyCheckModuleService,
@@ -19,14 +19,14 @@ export async function GET(
   req: MedusaRequest<unknown, StoreCompaniesCheckViesSchemaType>,
   res: MedusaResponse
 ): Promise<void> {
-  const { vat_identification_number } = req.validatedQuery
-  const { countryCode, vatNumber } =
-    parseVatIdentificationNumber(vat_identification_number)
-
   const companyCheckService =
     req.scope.resolve<CompanyCheckModuleService>(COMPANY_CHECK_MODULE)
 
   try {
+    const { countryCode, vatNumber } = parseVatIdentificationNumber(
+      req.validatedQuery.vat_identification_number
+    )
+
     const response = await companyCheckService.checkVatNumber({
       countryCode,
       vatNumber,
@@ -42,6 +42,16 @@ export async function GET(
     if (error instanceof TimeoutError) {
       res.status(504).json({
         error: "VIES request timed out",
+      })
+      return
+    }
+
+    if (
+      error instanceof MedusaError &&
+      error.type === MedusaError.Types.INVALID_DATA
+    ) {
+      res.status(400).json({
+        error: error.message || "Invalid VAT value",
       })
       return
     }

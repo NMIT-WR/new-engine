@@ -89,10 +89,17 @@ export const verifySubjectVatsStep = createStep(
       const chunk = vatEntries.slice(offset, offset + CHUNK_SIZE)
       const chunkResults = await Promise.all(
         chunk.map(async ([vatKey, parsedVat]) => {
-          const viesResult = await companyCheckService.checkVatNumber(parsedVat)
-          return {
-            vatKey,
-            verifiedVatIdentificationNumber: viesResult.valid ? vatKey : null,
+          try {
+            const viesResult = await companyCheckService.checkVatNumber(parsedVat)
+            return {
+              vatKey,
+              verifiedVatIdentificationNumber: viesResult.valid ? vatKey : null,
+            }
+          } catch {
+            return {
+              vatKey,
+              verifiedVatIdentificationNumber: null,
+            }
           }
         })
       )
