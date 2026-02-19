@@ -3,8 +3,8 @@ import {
   MAX_COMPANY_RESULTS,
   normalizeCompanyName,
   pickTopCompanyMatchesByName,
-} from "../company-info"
-import type { AresEconomicSubject } from "../../../../modules/company-check/types"
+} from "../../../../../src/workflows/company-check/helpers/company-info"
+import type { AresEconomicSubject } from "../../../../../src/modules/company-check/types"
 
 function subject(
   ico: string,

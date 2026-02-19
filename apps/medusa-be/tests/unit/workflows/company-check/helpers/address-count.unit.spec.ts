@@ -2,7 +2,7 @@ import {
   buildAresStandardizationPayload,
   buildSidloFilterFromStandardizedAddress,
   buildTextAddress,
-} from "../address-count"
+} from "../../../../../src/workflows/company-check/helpers/address-count"
 
 describe("address-count helpers", () => {
   it("builds text address from trimmed street and city", () => {

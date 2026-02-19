@@ -38,35 +38,53 @@ jest.mock("@medusajs/framework/workflows-sdk", () => ({
   },
 }))
 
-jest.mock("../../steps/company-info/parse-company-info-input", () => ({
+jest.mock(
+  "../../../../../src/workflows/company-check/steps/company-info/parse-company-info-input",
+  () => ({
   parseCompanyInfoInputStep: (...args: unknown[]) =>
     mockParseCompanyInfoInputStep(...args),
-}))
+  })
+)
 
-jest.mock("../../steps/company-info/resolve-vat-company-name", () => ({
+jest.mock(
+  "../../../../../src/workflows/company-check/steps/company-info/resolve-vat-company-name",
+  () => ({
   resolveVatCompanyNameStep: (...args: unknown[]) =>
     mockResolveVatCompanyNameStep(...args),
-}))
+  })
+)
 
-jest.mock("../../steps/company-info/fetch-ares-subject-by-ico", () => ({
+jest.mock(
+  "../../../../../src/workflows/company-check/steps/company-info/fetch-ares-subject-by-ico",
+  () => ({
   fetchAresSubjectByIcoStep: (...args: unknown[]) =>
     mockFetchAresSubjectByIcoStep(...args),
-}))
+  })
+)
 
-jest.mock("../../steps/company-info/search-ares-subjects-by-name", () => ({
+jest.mock(
+  "../../../../../src/workflows/company-check/steps/company-info/search-ares-subjects-by-name",
+  () => ({
   searchAresSubjectsByNameStep: (...args: unknown[]) =>
     mockSearchAresSubjectsByNameStep(...args),
-}))
+  })
+)
 
-jest.mock("../../steps/company-info/verify-subject-vats", () => ({
+jest.mock(
+  "../../../../../src/workflows/company-check/steps/company-info/verify-subject-vats",
+  () => ({
   verifySubjectVatsStep: (...args: unknown[]) => mockVerifySubjectVatsStep(...args),
-}))
+  })
+)
 
-jest.mock("../../steps/company-info/map-company-info", () => ({
+jest.mock(
+  "../../../../../src/workflows/company-check/steps/company-info/map-company-info",
+  () => ({
   mapCompanyInfoStep: (...args: unknown[]) => mockMapCompanyInfoStep(...args),
-}))
+  })
+)
 
-import { companyCheckCzInfoWorkflow } from "../company-info"
+import { companyCheckCzInfoWorkflow } from "../../../../../src/workflows/company-check/workflows/company-info"
 
 describe("companyCheckCzInfoWorkflow (unit, mocked SDK)", () => {
   beforeEach(() => {

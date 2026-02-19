@@ -1,6 +1,6 @@
 import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
-import { withMedusaStatusCode } from "../../../../../utils/errors"
-import { COMPANY_CHECK_MODULE } from "../../../../../modules/company-check"
+import { withMedusaStatusCode } from "../../../../../../src/utils/errors"
+import { COMPANY_CHECK_MODULE } from "../../../../../../src/modules/company-check"
 
 jest.mock("@medusajs/framework/workflows-sdk", () => {
   class StepResponse<T> {
@@ -17,9 +17,9 @@ jest.mock("@medusajs/framework/workflows-sdk", () => {
   }
 })
 
-import { fetchAddressCountStep } from "../fetch-address-count"
-import { parseAddressCountInputStep } from "../parse-address-count-input"
-import { resolveAddressCountFilterStep } from "../resolve-address-count-filter"
+import { fetchAddressCountStep } from "../../../../../../src/workflows/company-check/steps/address-count/fetch-address-count"
+import { parseAddressCountInputStep } from "../../../../../../src/workflows/company-check/steps/address-count/parse-address-count-input"
+import { resolveAddressCountFilterStep } from "../../../../../../src/workflows/company-check/steps/address-count/resolve-address-count-filter"
 
 type StepResult<T> = {
   output: T

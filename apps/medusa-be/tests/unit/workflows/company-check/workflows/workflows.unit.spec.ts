@@ -1,5 +1,5 @@
-import { companyCheckCzAddressCountWorkflow } from "../address-count"
-import { companyCheckCzInfoWorkflow } from "../company-info"
+import { companyCheckCzAddressCountWorkflow } from "../../../../../src/workflows/company-check/workflows/address-count"
+import { companyCheckCzInfoWorkflow } from "../../../../../src/workflows/company-check/workflows/company-info"
 
 describe("company-check workflows", () => {
   it("exports executable address-count workflow", () => {

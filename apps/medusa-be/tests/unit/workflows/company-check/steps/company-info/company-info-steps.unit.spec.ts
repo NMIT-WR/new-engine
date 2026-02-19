@@ -1,7 +1,7 @@
 import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
-import { withMedusaStatusCode } from "../../../../../utils/errors"
-import { COMPANY_CHECK_MODULE } from "../../../../../modules/company-check"
-import type { AresEconomicSubject } from "../../../../../modules/company-check/types"
+import { withMedusaStatusCode } from "../../../../../../src/utils/errors"
+import { COMPANY_CHECK_MODULE } from "../../../../../../src/modules/company-check"
+import type { AresEconomicSubject } from "../../../../../../src/modules/company-check/types"
 
 jest.mock("@medusajs/framework/workflows-sdk", () => {
   class StepResponse<T> {
@@ -18,11 +18,11 @@ jest.mock("@medusajs/framework/workflows-sdk", () => {
   }
 })
 
-import { fetchAresSubjectByIcoStep } from "../fetch-ares-subject-by-ico"
-import { mapCompanyInfoStep } from "../map-company-info"
-import { parseCompanyInfoInputStep } from "../parse-company-info-input"
-import { resolveVatCompanyNameStep } from "../resolve-vat-company-name"
-import { searchAresSubjectsByNameStep } from "../search-ares-subjects-by-name"
+import { fetchAresSubjectByIcoStep } from "../../../../../../src/workflows/company-check/steps/company-info/fetch-ares-subject-by-ico"
+import { mapCompanyInfoStep } from "../../../../../../src/workflows/company-check/steps/company-info/map-company-info"
+import { parseCompanyInfoInputStep } from "../../../../../../src/workflows/company-check/steps/company-info/parse-company-info-input"
+import { resolveVatCompanyNameStep } from "../../../../../../src/workflows/company-check/steps/company-info/resolve-vat-company-name"
+import { searchAresSubjectsByNameStep } from "../../../../../../src/workflows/company-check/steps/company-info/search-ares-subjects-by-name"
 
 type StepResult<T> = {
   output: T

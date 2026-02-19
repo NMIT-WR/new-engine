@@ -2,7 +2,7 @@ import {
   hashValueForLogs,
   logAddressCountDebug,
   logCompanyInfoDebug,
-} from "../debug"
+} from "../../../../../src/workflows/company-check/helpers/debug"
 
 describe("debug helpers", () => {
   it("returns null hash for missing or blank input", () => {

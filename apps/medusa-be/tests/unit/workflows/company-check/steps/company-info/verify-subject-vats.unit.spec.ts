@@ -1,6 +1,6 @@
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import { COMPANY_CHECK_MODULE } from "../../../../../modules/company-check"
-import type { AresEconomicSubject } from "../../../../../modules/company-check/types"
+import { COMPANY_CHECK_MODULE } from "../../../../../../src/modules/company-check"
+import type { AresEconomicSubject } from "../../../../../../src/modules/company-check/types"
 
 jest.mock("@medusajs/framework/workflows-sdk", () => {
   class StepResponse<T> {
@@ -17,7 +17,7 @@ jest.mock("@medusajs/framework/workflows-sdk", () => {
   }
 })
 
-import { verifySubjectVatsStep } from "../verify-subject-vats"
+import { verifySubjectVatsStep } from "../../../../../../src/workflows/company-check/steps/company-info/verify-subject-vats"
 
 type StepResult<T> = {
   output: T
