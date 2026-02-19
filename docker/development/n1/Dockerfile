@@ -40,6 +40,7 @@ RUN pnpm install --frozen-lockfile --filter=n1... && \
     pnpm --filter=@techsio/ui-kit build && \
     pnpm --filter=@techsio/analytics build && \
     pnpm install --frozen-lockfile --prefer-offline --filter=n1... && \
+    pnpm --filter=n1 exec next typegen && \
     pnpm --filter=n1 build && \
     test -f apps/n1/.next/BUILD_ID
 

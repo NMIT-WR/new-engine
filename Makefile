@@ -87,6 +87,18 @@ medusa-seed-dev-data:
 medusa-seed-n1:
 	docker exec wr_medusa_be pnpm --filter medusa-be run seedN1
 
+# Upgrade local postgres data from <18 cluster into PG18-compatible data dir.
+postgres18-migrate-local:
+	bash ./scripts/postgres18-local-migrate.sh
+
+# Verify migrated PG18 state against old cluster data without deleting old state.
+postgres18-verify:
+	bash ./scripts/postgres18-verify-and-finalize.sh --check-only
+
+# Verify migrated PG18 state and remove old cluster data + migration backups.
+postgres18-finalize:
+	bash ./scripts/postgres18-verify-and-finalize.sh --yes
+
 # Biome commands
 biome-be:
 	bunx biome check --write apps/medusa-be

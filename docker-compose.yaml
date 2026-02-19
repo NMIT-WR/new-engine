@@ -127,7 +127,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
   medusa-meilisearch:
-    image: getmeili/meilisearch:v1.20
+    image: getmeili/meilisearch:v1.35.1
     container_name: wr_medusa_meilisearch
     ports:
       - "7700:7700"
@@ -144,13 +144,13 @@ services:
       MEILI_MASTER_KEY: ${DC_MEILI_MASTER_KEY}
       MEILI_NO_ANALYTICS: true
   medusa-db:
-    image: postgres:17.6-alpine
+    image: postgres:18.1-alpine
     restart: unless-stopped
     command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     ports:
       - "5432:5432"
     volumes:
-      - ${DC_POSTGRES_VOLUME_DATA:-./.docker_data/db}:/var/lib/postgresql/data
+      - ./.docker_data/db18:/var/lib/postgresql
     networks:
       - internal
     healthcheck:
@@ -163,7 +163,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
       POSTGRES_DB: medusa
-      PGDATA: "/var/lib/postgresql/data"
+      PGDATA: /var/lib/postgresql/18/docker
   engine-db:
     image: mariadb:latest
     restart: no
