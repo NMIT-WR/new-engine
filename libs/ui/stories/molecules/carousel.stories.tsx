@@ -653,8 +653,9 @@ export const SlidesPerPage: Story = {
       slidesPerPage={3}
       size="lg"
       loop
+      spacing="var(--spacing-200)"
     >
-      <Carousel.Slides className='space-x-200' slides={sampleImages} />
+      <Carousel.Slides slides={sampleImages} />
       <Carousel.Control>
         <Carousel.Previous />
         <Carousel.Indicators />
@@ -671,6 +672,7 @@ export const SlidesPerMove: Story = {
       slidesPerPage={2}
       slidesPerMove={2}
       size="lg"
+      loop
     >
       <Carousel.Slides slides={sampleImages} />
       <Carousel.Control>

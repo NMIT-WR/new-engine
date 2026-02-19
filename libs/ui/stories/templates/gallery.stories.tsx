@@ -35,7 +35,7 @@ function StoryFrame({
   return (
     <div className="w-full bg-base p-300">
       <div
-        className={`mx-auto w-md w-full rounded-md border border-border-primary bg-surface p-200`}
+        className="mx-auto max-w-md w-full rounded-md border border-border-primary bg-surface p-200"
       >
         {children}
       </div>

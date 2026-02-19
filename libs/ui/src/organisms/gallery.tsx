@@ -47,7 +47,7 @@ const galleryVariants = tv({
       "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
       "focus-visible:outline-gallery-trigger-ring",
       "focus-visible:outline-offset-(length:--default-ring-offset)",
-      "data-[active=true]:border-gallery-trigger-active",
+      "data-[active=true]:border-gallery-trigger-border-active",
       "data-[active=true]:bg-gallery-trigger-bg-active",
       "shadow-gallery-trigger",
       "brightness-gallery-trigger",
@@ -363,7 +363,7 @@ Gallery.Thumbnail = function GalleryThumbnail<
   const hasCustomThumbnailComponent = resolvedImageAs && resolvedImageAs !== Image
   const CustomThumbnailComponent = hasCustomThumbnailComponent
     ? (resolvedImageAs as ElementType)
-    : null
+    : Image
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)
@@ -394,7 +394,7 @@ Gallery.Thumbnail = function GalleryThumbnail<
       {children ||
         item.thumbnailContent ||
         (thumbnailSource ? (
-          hasCustomThumbnailComponent && CustomThumbnailComponent ? (
+          hasCustomThumbnailComponent ? (
             <CustomThumbnailComponent
               alt={thumbnailAlt}
               className={imageClassName}
@@ -438,6 +438,7 @@ Gallery.Carousel = function GalleryCarousel<
     pageSnapPoint: number
   }) => {
     setPage(details.page)
+    // Avoid double-calling when the same callback is passed via carouselProps and direct prop.
     if (inheritedOnPageChange === onPageChange) {
       inheritedOnPageChange?.(details)
       return
