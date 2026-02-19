@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT
-// Generated at: 2026-02-19T15:05:40.603Z
+// Generated at: 2026-02-19T17:24:05.626Z
 // Run 'pnpm run generate:categories' to regenerate
 // This version filters out categories without products and adds root_category_id
 
@@ -6729,7 +6729,7 @@ const data: StaticCategoryData = {
       ]
     }
   ],
-  "generatedAt": "2026-02-19T15:05:40.603Z",
+  "generatedAt": "2026-02-19T17:24:05.625Z",
   "filteringStats": {
     "totalCategoriesBeforeFiltering": 580,
     "totalCategoriesAfterFiltering": 212,

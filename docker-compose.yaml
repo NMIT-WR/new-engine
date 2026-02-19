@@ -93,8 +93,9 @@ services:
       - .:/var/www
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      start_period: 10s
-      interval: 120s
+      start_period: 30s
+      interval: 30s
+      retries: 5
   medusa-valkey:
     image: valkey/valkey:8-alpine
     healthcheck:

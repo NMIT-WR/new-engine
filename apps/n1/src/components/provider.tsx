@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { Toaster } from "@techsio/ui-kit/molecules/toast"
 import { Suspense } from "react"
+import { cacheConfig } from "@/lib/cache-config"
 import { PrefetchManager } from "./prefetch-manager"
 
 function createQueryClient() {
@@ -12,6 +13,7 @@ function createQueryClient() {
         retry: 3,
         retryDelay: (attemptIndex) =>
           Math.min(1000 * 2 ** attemptIndex, 10_000),
+        staleTime: cacheConfig.realtime.staleTime,
       },
     },
   })

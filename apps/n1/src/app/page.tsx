@@ -56,9 +56,13 @@ export default function Home() {
 }
 
 function HomeProductGrid() {
-  const featuredCategoryIds = leafCategories
-    .slice(0, 2)
-    .map((category) => category.id)
+  const featuredCategoryIds = leafCategories.length
+    ? leafCategories.slice(0, 2).map((category) => category.id)
+    : undefined
+
+  if (!featuredCategoryIds) {
+    return <ProductGrid products={[]} skeletonCount={8} />
+  }
 
   const { products: rawProducts } = useSuspenseProducts({
     category_id: featuredCategoryIds,

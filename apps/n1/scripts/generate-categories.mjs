@@ -15,6 +15,10 @@ import dotenv from "dotenv"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+// NOTE: DEFAULT_MEDUSA_BACKEND_URL and getMedusaBackendUrl() intentionally
+// duplicate apps/n1/src/lib/medusa-backend-url.ts because this .mjs script
+// cannot import TypeScript modules. If default URL or resolution logic changes,
+// update both copies together.
 const DEFAULT_MEDUSA_BACKEND_URL = "http://localhost:9000"
 
 // Load environment variables - try .env first, then .env.local
