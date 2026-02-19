@@ -2,7 +2,7 @@ import {
   createFindParams,
   createOperatorMap,
 } from "@medusajs/medusa/api/utils/validators"
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 import { ApprovalType } from "../../../types/approval"
 
 export type StoreGetApprovalsType = z.infer<typeof StoreGetApprovals>

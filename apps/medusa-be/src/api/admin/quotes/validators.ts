@@ -2,7 +2,7 @@ import {
   createFindParams,
   createOperatorMap,
 } from "@medusajs/medusa/api/utils/validators"
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 
 export type AdminGetQuoteParamsType = z.infer<typeof AdminGetQuoteParams>
 export const AdminGetQuoteParams = createFindParams({

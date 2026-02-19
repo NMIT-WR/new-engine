@@ -12,7 +12,7 @@ import {
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "react-router-dom"
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 import type { QueryQuote } from "../../../../types"
 import { Form } from "../../../components/common/form"
 import { useCreateQuoteMessage } from "../../../hooks/api/quotes"
