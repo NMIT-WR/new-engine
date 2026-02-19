@@ -80,7 +80,8 @@ services:
         NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${DC_N1_NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:9000}
         NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_N1_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
     depends_on:
-      - medusa-be
+      medusa-be:
+        condition: service_healthy
     ports:
       - "8000:3000"
     networks:

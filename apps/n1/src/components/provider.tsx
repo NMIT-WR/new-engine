@@ -5,9 +5,32 @@ import { Toaster } from "@techsio/ui-kit/molecules/toast"
 import { Suspense } from "react"
 import { PrefetchManager } from "./prefetch-manager"
 
-const queryClient = new QueryClient()
+function createQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 3,
+        retryDelay: (attemptIndex) =>
+          Math.min(1000 * 2 ** attemptIndex, 10_000),
+      },
+    },
+  })
+}
+
+let browserQueryClient: QueryClient | undefined
+
+function getQueryClient() {
+  if (typeof window === "undefined") {
+    return createQueryClient()
+  }
+
+  browserQueryClient ??= createQueryClient()
+  return browserQueryClient
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const queryClient = getQueryClient()
+
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={null}>
