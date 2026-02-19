@@ -40,7 +40,7 @@ x-medusa-base: &medusa-base
     <<: *medusa-env
 
 x-n1-env: &n1-env
-  MEDUSA_BACKEND_URL_INTERNAL: ${DC_N1_MEDUSA_BACKEND_URL_INTERNAL:-}
+  MEDUSA_BACKEND_URL_INTERNAL: ${DC_N1_MEDUSA_BACKEND_URL_INTERNAL:-http://medusa-be:9000}
   NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${DC_N1_NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:9000}
   NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${DC_N1_NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
   NEXT_PUBLIC_MEILISEARCH_URL: ${DC_N1_NEXT_PUBLIC_SEARCH_ENDPOINT:-http://localhost:7700}
@@ -67,8 +67,8 @@ services:
       - .:/var/www
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/app"]
-      start_period: 10s
-      interval: 30s
+      start_period: 20s
+      interval: 10s
   n1:
     restart: unless-stopped
     container_name: wr_n1

@@ -5,6 +5,7 @@ import { HeroCarousel } from "@/components/hero-carousel"
 import { ProductGrid } from "@/components/molecules/product-grid"
 import { TopProduct } from "@/components/top-product"
 import { featureBlocks, heroCarouselSlides, topCategory } from "@/data/home"
+import { leafCategories } from "@/data/static/categories"
 import { useSuspenseProducts } from "@/hooks/use-products"
 import { transformProduct } from "@/utils/transform/transform-product"
 
@@ -55,11 +56,12 @@ export default function Home() {
 }
 
 function HomeProductGrid() {
+  const featuredCategoryIds = leafCategories
+    .slice(0, 2)
+    .map((category) => category.id)
+
   const { products: rawProducts } = useSuspenseProducts({
-    category_id: [
-      "pcat_01K1RB8NEB67KSN2VHMBT1XNX7",
-      "pcat_01K1RB8NDSY4KAVFFQVRNP2KAD",
-    ],
+    category_id: featuredCategoryIds,
     limit: 8,
   })
 

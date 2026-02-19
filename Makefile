@@ -25,7 +25,39 @@ dev:
 prod:
 	-docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine down
 	-docker rmi new-engine-medusa-be new-engine-n1
-	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache medusa-be n1
+	# Build and start medusa-be first, then generate n1 categories against live Medusa API.
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache medusa-be
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine up -d medusa-be
+	@echo "Waiting for medusa-be to become healthy..."
+	@timeout=180; \
+	while [ $$timeout -gt 0 ]; do \
+		status=$$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' wr_medusa_be 2>/dev/null || echo "missing"); \
+		if [ "$$status" = "healthy" ]; then \
+			echo "medusa-be is healthy"; \
+			break; \
+		fi; \
+		if [ "$$status" = "unhealthy" ]; then \
+			echo "medusa-be is unhealthy"; \
+			docker logs --tail=120 wr_medusa_be; \
+			exit 1; \
+		fi; \
+		sleep 2; \
+		timeout=$$((timeout-2)); \
+	done; \
+	if [ $$timeout -le 0 ]; then \
+		echo "Timed out waiting for medusa-be health"; \
+		docker logs --tail=120 wr_medusa_be; \
+		exit 1; \
+	fi
+	docker compose -f docker-compose.yaml -p new-engine run --rm --no-deps \
+		-e COREPACK_ENABLE_DOWNLOAD_PROMPT=0 \
+		-e CI=1 \
+		-e MEDUSA_BACKEND_URL_INTERNAL=http://medusa-be:9000 \
+		n1 sh -lc "\
+			[ -d node_modules ] && [ -d apps/n1/node_modules ] || pnpm install --frozen-lockfile --prefer-offline --filter=n1...; \
+			pnpm --filter n1 run generate:categories \
+		"
+	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine build --no-cache n1
 	docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -p new-engine up -d
 down:
 	docker compose -f docker-compose.yaml -p new-engine down
