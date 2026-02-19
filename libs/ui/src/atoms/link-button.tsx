@@ -14,12 +14,6 @@ import { Link } from "./link"
 
 const linkButton = tv({
   extend: buttonVariants,
-  base: "cursor-pointer",
-  variants: {
-    size: {
-      current: "",
-    },
-  },
   defaultVariants: {
     size: "current",
   },

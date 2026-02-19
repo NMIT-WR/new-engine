@@ -21,11 +21,11 @@
   "private": true,
   "devDependencies": {
     "@biomejs/biome": "^2.3.7",
-    "@nx/esbuild": "22.1.1",
-    "@nx/eslint-plugin": "22.1.1",
-    "@nx/js": "22.1.1",
-    "@nx/playwright": "22.1.1",
-    "@playwright/test": "^1.56.1",
+    "@nx/esbuild": "22.4.2",
+    "@nx/eslint-plugin": "22.4.2",
+    "@nx/js": "22.4.2",
+    "@nx/playwright": "22.4.2",
+    "@playwright/test": "^1.58.2",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.3",
     "@typescript-eslint/parser": "^8.47.0",
@@ -34,7 +34,7 @@
     "eslint": "^9.39.1",
     "jscpd": "^4.0.5",
     "knip": "^5.80.2",
-    "nx": "22.1.1",
+    "nx": "22.4.2",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "ultracite": "6.3.6"
@@ -42,16 +42,11 @@
   "packageManager": "pnpm@10.26.0",
   "pnpm": {
     "overrides": {
-      "medusa-be>@types/react": "^18.3.27",
-      "medusa-be>@types/react-dom": "^18.3.7",
-      "medusa-be>react": "^18.3.0",
-      "medusa-be>react-dom": "^18.3.0",
-      "medusa-be>react-router-dom": "6.20.1",
       "csstype": "3.1.3",
-      "@techsio/ui-kit>@types/react": "^19.0.0",
-      "@techsio/ui-kit>@types/react-dom": "^19.0.0",
-      "n1>@types/react": "19.2.2",
-      "n1>@types/react-dom": "19.2.1"
+      "react": "19.2.3",
+      "react-dom": "19.2.3",
+      "@types/react": "19.2.3",
+      "@types/react-dom": "19.2.3"
     }
   }
 }
