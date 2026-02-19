@@ -3,7 +3,7 @@
 import { useStore } from "@tanstack/react-form"
 import { Button } from "@ui/atoms/button"
 import { useState } from "react"
-import { useCreateAddress, useUpdateAddress } from "@/hooks/use-addresses"
+import { useCreateAddress, useUpdateAddress } from "@/hooks/customer-hooks"
 import { AddressValidationError } from "@/lib/errors"
 import {
   useCheckoutContext,

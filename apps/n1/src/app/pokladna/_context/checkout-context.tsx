@@ -1,6 +1,7 @@
 "use client"
 
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import {
   createContext,
@@ -10,19 +11,20 @@ import {
   useRef,
   useState,
 } from "react"
-import { useSuspenseAuth } from "@/hooks/use-auth"
-import { useCompleteCart, useSuspenseCart } from "@/hooks/use-cart"
-import { useCheckoutPayment } from "@/hooks/use-checkout-payment"
-import { useCheckoutShipping } from "@/hooks/use-checkout-shipping"
-import { useSuspenseRegion } from "@/hooks/use-region"
-import { useUpdateCartAddress } from "@/hooks/use-update-cart-address"
+import { authHooks } from "@/hooks/auth-hooks"
+import { useCheckoutPayment } from "@/hooks/checkout-payment"
+import { useCheckoutShipping } from "@/hooks/checkout-shipping"
+import { useSuspenseRegion } from "@/hooks/region-hooks"
 import {
-  accessPointToAddress,
+  usePickupPointShipping,
+  type UsePickupPointShippingReturn,
+} from "@/hooks/use-pickup-point-shipping"
+import { queryKeys } from "@/lib/query-keys"
+import { cartHooks } from "@/hooks/cart-hooks"
+import {
   addressToFormData,
   DEFAULT_ADDRESS,
   getDefaultAddress,
-  isPPLParcelOption,
-  type PplAccessPointData,
 } from "@/utils/address-helpers"
 import type { AddressFormData } from "@/utils/address-validation"
 
@@ -42,9 +44,11 @@ type InitialCheckoutState = {
   selectedAddressId: string | null
 }
 
+type SuspenseCartResult = ReturnType<(typeof cartHooks)["useSuspenseCart"]>
+
 const resolveInitialCheckoutState = (
-  cart: ReturnType<typeof useSuspenseCart>["cart"],
-  customer: ReturnType<typeof useSuspenseAuth>["customer"]
+  cart: SuspenseCartResult["cart"],
+  customer: ReturnType<typeof authHooks.useSuspenseAuth>["customer"]
 ): InitialCheckoutState => {
   if (cart?.billing_address?.first_name) {
     const addressData = addressToFormData(
@@ -85,44 +89,59 @@ const resolveInitialCheckoutState = (
 
 type CheckoutContextValue = {
   form: CheckoutForm
-  cart: ReturnType<typeof useSuspenseCart>["cart"]
+  cart: SuspenseCartResult["cart"]
   hasItems: boolean
   shipping: ReturnType<typeof useCheckoutShipping>
   payment: ReturnType<typeof useCheckoutPayment>
-  customer: ReturnType<typeof useSuspenseAuth>["customer"]
+  customer: ReturnType<typeof authHooks.useSuspenseAuth>["customer"]
   selectedAddressId: string | null
   setSelectedAddressId: (id: string | null) => void
   completeCheckout: () => void
   isCompleting: boolean
   error: string | null
   isReady: boolean
-  // PPL Parcel state
-  selectedAccessPoint: PplAccessPointData | null
-  setSelectedAccessPoint: (accessPoint: PplAccessPointData | null) => void
-  isPickupDialogOpen: boolean
-  openPickupDialog: (optionId: string) => void
-  closePickupDialog: () => void
-  pendingOptionId: string | null
+  // PPL Parcel - consolidated into single hook
+  pickupPoint: UsePickupPointShippingReturn
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null)
 
 export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
-  const { customer } = useSuspenseAuth()
-  const { cart, hasItems } = useSuspenseCart()
+  const { customer } = authHooks.useSuspenseAuth()
+  const { cart, hasItems } = cartHooks.useSuspenseCart({})
   const { regionId } = useSuspenseRegion()
 
   const shipping = useCheckoutShipping(cart?.id, cart)
   const payment = useCheckoutPayment(cart?.id, regionId, cart)
 
   const { mutateAsync: updateCartAddressAsync, isPending: isSavingAddress } =
-    useUpdateCartAddress()
+    cartHooks.useUpdateCartAddress()
   const { mutateAsync: completeCartAsync, isPending: isCompletingCart } =
-    useCompleteCart({
-      onSuccess: (order) => {
-        router.push(`/orders/${order.id}?success=true`)
+    cartHooks.useCompleteCart({
+      onSuccess: (result) => {
+        if (result.success) {
+          queryClient.removeQueries({ queryKey: queryKeys.cart.all() })
+          queryClient.setQueryData(
+            queryKeys.orders.detail(result.order.id),
+            result.order
+          )
+          queryClient.invalidateQueries({ queryKey: queryKeys.orders.all() })
+          router.push(`/orders/${result.order.id}?success=true`)
+          return
+        }
+
+        if (result.cart?.id) {
+          queryClient.setQueryData(
+            queryKeys.cart.active({
+              cartId: result.cart.id,
+              regionId: result.cart.region_id ?? null,
+            }),
+            result.cart
+          )
+        }
       },
     })
 
@@ -136,20 +155,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   )
   const [error, setError] = useState<string | null>(null)
 
-  const [selectedAccessPoint, setSelectedAccessPoint] =
-    useState<PplAccessPointData | null>(null)
-  const [isPickupDialogOpen, setIsPickupDialogOpen] = useState(false)
-  const [pendingOptionId, setPendingOptionId] = useState<string | null>(null)
-
-  const openPickupDialog = (optionId: string) => {
-    setPendingOptionId(optionId)
-    setIsPickupDialogOpen(true)
-  }
-
-  const closePickupDialog = () => {
-    setIsPickupDialogOpen(false)
-    setPendingOptionId(null)
-  }
+  // PPL Parcel pickup point selection - consolidated into single hook
+  const pickupPoint = usePickupPointShipping()
 
   const form = useForm({
     defaultValues: initialStateRef.current.defaultValues,
@@ -167,19 +174,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       // Determine shipping address based on delivery method
       // If PPL Parcel selected + access point → shipping = access point address
       // Otherwise → shipping = billing address
-      const isPplParcel =
-        shipping.selectedOption &&
-        isPPLParcelOption(shipping.selectedOption.name)
-
-      let shippingAddress: AddressFormData
-      if (isPplParcel && selectedAccessPoint) {
-        shippingAddress = accessPointToAddress(
-          selectedAccessPoint,
-          billingAddress
-        )
-      } else {
-        shippingAddress = billingAddress
-      }
+      const shippingAddress =
+        pickupPoint.getShippingAddress(billingAddress) ?? billingAddress
 
       // Save both addresses to cart
       try {
@@ -258,24 +254,30 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   }, [shipping.shippingOptions, shipping.selectedShippingMethodId, shipping])
 
   // Reset access point when switching to non-parcel shipping method
+  const selectedOptionName = shipping.selectedOption?.name
+  const hasAccessPointSelected = pickupPoint.hasSelection
   useEffect(() => {
-    // If switched to non-parcel option, clear access point
+    // If switched to non-parcel option and we have a selection, clear it
     if (
-      shipping.selectedOption &&
-      !isPPLParcelOption(shipping.selectedOption.name)
+      selectedOptionName &&
+      !pickupPoint.requiresAccessPoint(selectedOptionName) &&
+      hasAccessPointSelected
     ) {
-      setSelectedAccessPoint(null)
+      pickupPoint.clearSelection()
     }
-  }, [shipping.selectedOption])
+    // Note: pickupPoint functions are stable (don't depend on changing state)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedOptionName, hasAccessPointSelected])
 
   const completeCheckout = () => {
     form.handleSubmit()
   }
 
   // Check if selected shipping requires access point
-  const requiresAccessPoint =
-    shipping.selectedOption && isPPLParcelOption(shipping.selectedOption.name)
-  const hasRequiredAccessPoint = !requiresAccessPoint || !!selectedAccessPoint
+  const requiresAccessPoint = pickupPoint.requiresAccessPoint(
+    shipping.selectedOption?.name
+  )
+  const hasRequiredAccessPoint = !requiresAccessPoint || pickupPoint.hasSelection
 
   const isReady =
     form.state.isValid &&
@@ -298,13 +300,8 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     isCompleting: isSavingAddress || isCompletingCart,
     error,
     isReady,
-    // PPL Parcel state
-    selectedAccessPoint,
-    setSelectedAccessPoint,
-    isPickupDialogOpen,
-    openPickupDialog,
-    closePickupDialog,
-    pendingOptionId,
+    // PPL Parcel - consolidated into single hook
+    pickupPoint,
   }
 
   return (

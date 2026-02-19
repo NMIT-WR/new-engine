@@ -2,10 +2,9 @@
 import { Button } from "@techsio/ui-kit/atoms/button"
 import { LinkButton } from "@techsio/ui-kit/atoms/link-button"
 import Link from "next/link"
-import { useRemoveLineItem, useUpdateLineItem } from "@/hooks/use-cart"
 import { useCartToast } from "@/hooks/use-toast"
+import { cartHooks } from "@/hooks/cart-hooks"
 import type { Cart } from "@/services/cart-service"
-import { getOptimisticFlag } from "@/utils/cart/cart-helpers"
 import { formatAmount } from "@/utils/format/format-product"
 import { CartEmptyState } from "./cart-empty-state"
 import { CartItem } from "./cart-item"
@@ -16,27 +15,32 @@ type CartContentProps = {
 }
 
 export const CartContent = ({ cart, onClose }: CartContentProps) => {
-  const { mutate: updateQuantity, isPending: isUpdating } = useUpdateLineItem()
-  const { mutate: removeItem, isPending: isRemoving } = useRemoveLineItem()
   const toast = useCartToast()
+  const { mutate: updateQuantity, isPending: isUpdating } =
+    cartHooks.useUpdateLineItem({
+      onError: (error) => {
+        const message = error instanceof Error ? error.message : "Unknown error"
+        toast.cartError(message)
+      },
+    })
+  const { mutate: removeItem, isPending: isRemoving } =
+    cartHooks.useRemoveLineItem({
+      onError: (error) => {
+        const message = error instanceof Error ? error.message : "Unknown error"
+        toast.cartError(message)
+      },
+    })
 
   const handleUpdateQuantity = (itemId: string) => (quantity: number) => {
     if (!cart) {
       return
     }
 
-    updateQuantity(
-      {
-        cartId: cart.id,
-        lineItemId: itemId,
-        quantity,
-      },
-      {
-        onError: (error) => {
-          toast.cartError(error.message)
-        },
-      }
-    )
+    updateQuantity({
+      cartId: cart.id,
+      lineItemId: itemId,
+      quantity,
+    })
   }
 
   const handleRemoveItem = (itemId: string, itemTitle: string) => () => {
@@ -53,9 +57,6 @@ export const CartContent = ({ cart, onClose }: CartContentProps) => {
         onSuccess: () => {
           toast.removedFromCart(itemTitle)
         },
-        onError: (error) => {
-          toast.cartError(error.message)
-        },
       }
     )
   }
@@ -65,18 +66,15 @@ export const CartContent = ({ cart, onClose }: CartContentProps) => {
   }
 
   const isPending = isUpdating || isRemoving
-  const isOptimistic = getOptimisticFlag(cart)
 
   return (
     <div className="flex flex-col gap-400">
       <div className="max-h-sm divide-y divide-border-secondary overflow-y-auto">
         {cart.items.map((item) => {
           const itemTitle = item.product_title || item.title || "Product"
-          const itemOptimistic = getOptimisticFlag(item)
 
           return (
             <CartItem
-              isOptimistic={isOptimistic || itemOptimistic}
               isPending={isPending}
               item={item}
               key={item.id}
@@ -132,7 +130,6 @@ export const CartContent = ({ cart, onClose }: CartContentProps) => {
         <LinkButton
           as={Link}
           className="w-full justify-center"
-          disabled={isPending}
           href="/pokladna"
           onClick={onClose}
           size="md"
@@ -141,7 +138,6 @@ export const CartContent = ({ cart, onClose }: CartContentProps) => {
         >
           Přejít k pokladně
         </LinkButton>
-
         <Button
           className="w-full justify-center"
           onClick={onClose}

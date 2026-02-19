@@ -1,11 +1,9 @@
 import type { StoreProduct } from "@medusajs/types"
-import { PRODUCT_DETAILED_FIELDS } from "@/lib/constants"
+import { createMedusaProductService } from "@techsio/storefront-data"
+import { PRODUCT_DETAILED_FIELDS, PRODUCT_LIST_FIELDS } from "@/lib/constants"
 import { fetchLogger } from "@/lib/loggers/fetch"
 import { sdk } from "@/lib/medusa-client"
-import {
-  buildQueryString,
-  type ProductQueryParams,
-} from "@/lib/product-query-params"
+import type { ProductQueryParams } from "@/lib/product-query-params"
 
 export type ProductListResponse = {
   products: StoreProduct[]
@@ -21,48 +19,36 @@ export type ProductDetailParams = {
   fields?: string
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: product fetch includes error handling and logging branches
+const baseProductService = createMedusaProductService<
+  StoreProduct,
+  ProductQueryParams,
+  ProductDetailParams
+>(sdk, {
+  defaultListFields: PRODUCT_LIST_FIELDS,
+  defaultDetailFields: PRODUCT_DETAILED_FIELDS,
+  normalizeListQuery: (params) => ({
+    ...params,
+    country_code: params.country_code ?? "cz",
+    fields: params.fields ?? PRODUCT_LIST_FIELDS,
+  }),
+  normalizeDetailQuery: (params) => ({
+    handle: params.handle,
+    limit: 1,
+    region_id: params.region_id,
+    country_code: params.country_code ?? "cz",
+    fields: params.fields ?? PRODUCT_DETAILED_FIELDS,
+  }),
+  createGlobalFetcher: true,
+})
+
 export async function getProducts(
   params: ProductQueryParams,
   signal?: AbortSignal
 ): Promise<ProductListResponse> {
-  const { category_id, region_id, country_code, limit, offset, fields } = params
+  const { category_id, offset } = params
 
   try {
-    const queryString = buildQueryString({
-      limit,
-      offset,
-      fields,
-      country_code,
-      region_id,
-      category_id,
-    })
-
-    // Use native fetch with Medusa headers for AbortSignal support
-    const baseUrl =
-      process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
-    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ""
-
-    const response = await fetch(`${baseUrl}/store/products?${queryString}`, {
-      signal,
-      headers: {
-        "Content-Type": "application/json",
-        "x-publishable-api-key": publishableKey,
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
-
-    const data = await response.json()
-
-    return {
-      products: data.products || [],
-      count: data.count || 0,
-      limit: limit || 0,
-      offset: offset || 0,
-    }
+    return await baseProductService.getProducts(params, signal)
   } catch (err) {
     // AbortError is expected when request is cancelled
     if (err instanceof Error && err.name === "AbortError") {
@@ -88,24 +74,18 @@ export async function getProducts(
 export function getProductsGlobal(
   params: ProductQueryParams
 ): Promise<ProductListResponse> {
-  return getProducts(params, undefined)
+  if (baseProductService.getProductsGlobal) {
+    return baseProductService.getProductsGlobal(params)
+  }
+  return baseProductService.getProducts(params, undefined)
 }
 
 export async function getProductByHandle(
-  params: ProductDetailParams
+  params: ProductDetailParams,
+  signal?: AbortSignal
 ): Promise<StoreProduct | null> {
-  const { handle, region_id, country_code } = params
-
   try {
-    const response = await sdk.store.product.list({
-      handle,
-      limit: 1,
-      fields: PRODUCT_DETAILED_FIELDS,
-      country_code,
-      region_id,
-    })
-
-    return response.products?.[0] || null
+    return await baseProductService.getProductByHandle(params, signal)
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
       console.error("[ProductService] Failed to fetch product by handle:", err)

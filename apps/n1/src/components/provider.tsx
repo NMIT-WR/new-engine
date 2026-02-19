@@ -1,15 +1,25 @@
 "use client"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import {
+  makeQueryClient,
+  StorefrontDataProvider,
+} from "@techsio/storefront-data/client"
 import { Toaster } from "@techsio/ui-kit/molecules/toast"
 import { Suspense } from "react"
 import { PrefetchManager } from "./prefetch-manager"
 
-const queryClient = new QueryClient()
+const queryClient = makeQueryClient({
+  defaultOptions: {
+    mutations: {
+      retry: 0,
+      retryDelay: 0,
+    },
+  },
+})
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>
+    <StorefrontDataProvider client={queryClient}>
       <Suspense fallback={null}>
         <PrefetchManager />
       </Suspense>
@@ -19,6 +29,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} />
       )}
-    </QueryClientProvider>
+    </StorefrontDataProvider>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 import { createContext, type ReactNode, useContext, useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { authHooks } from "@/hooks/auth-hooks"
 
 type HeaderContextValue = {
   isLoginFormOpen: boolean
@@ -21,7 +21,7 @@ export const HeaderProvider = ({ children }: { children: ReactNode }) => {
   const [isLoginFormOpen, setIsLoginFormOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = authHooks.useAuth()
 
   const toggleLoginForm = () => {
     setIsLoginFormOpen((prev) => !prev)
