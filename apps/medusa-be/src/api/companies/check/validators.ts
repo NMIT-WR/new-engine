@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 import {
   VAT_ID_REGEX,
   VAT_ID_REGEX_MESSAGE,

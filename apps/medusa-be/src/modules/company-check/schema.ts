@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 
 const NullableStringSchema = z.string().nullable().optional()
 const NullableAresAddressValueSchema = z.preprocess(

@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 import { VatIdentificationNumberSchema } from "../../../../../companies/check/validators"
 import {
   ICO_REGEX,
