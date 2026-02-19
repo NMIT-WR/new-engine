@@ -21,13 +21,16 @@ const searchFormVariants = tv({
       "relative flex items-center",
       "rounded-search-form",
       "border border-input-border bg-input-bg",
-      "focus-within:border-input-border-focus focus-within:ring-1 focus-within:ring-input-ring",
+      "focus-within:border-input-border-focus",
+      "focus-within:outline-(style:--default-ring-style) focus-within:outline-(length:--default-ring-width)",
+      "focus-within:outline-input-ring",
+      "focus-within:outline-offset-(length:--default-ring-offset)",
     ],
     input: [
       "peer",
       "min-w-0 flex-1",
       "rounded-r-search-form-input border-none bg-transparent",
-      "focus:ring-0 focus-visible:ring-0",
+      "focus-visible:outline-none",
     ],
     button: [
       "h-full shrink-0 items-center rounded-r-search-form rounded-l-none",
