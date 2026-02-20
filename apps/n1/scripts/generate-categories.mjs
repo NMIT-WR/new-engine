@@ -8,6 +8,7 @@
  * Test with: pnpm run test:categories
  */
 
+import { execFileSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -30,6 +31,28 @@ function getMedusaBackendUrl() {
     process.env.MEDUSA_BACKEND_URL_INTERNAL ||
     process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
     DEFAULT_MEDUSA_BACKEND_URL
+  )
+}
+
+function formatGeneratedFile(filePath) {
+  const cwd = path.join(__dirname, "..")
+
+  const formatCommands = [
+    ["pnpm", ["exec", "biome", "format", "--write", filePath]],
+    ["biome", ["format", "--write", filePath]],
+  ]
+
+  for (const [cmd, args] of formatCommands) {
+    try {
+      execFileSync(cmd, args, { stdio: "ignore", cwd })
+      return
+    } catch {
+      // Try next formatter command variant.
+    }
+  }
+
+  console.warn(
+    `⚠️ Could not auto-format generated file: ${filePath}. Run biome format manually.`
   )
 }
 
@@ -657,7 +680,7 @@ async function generateCategories() {
 // Run 'pnpm run generate:categories' to regenerate
 // This version filters out categories without products and adds root_category_id
 
-import type { Category, CategoryTreeNode } from '@/data/static/type'
+import type { Category, CategoryTreeNode } from "@/data/static/type"
 
 export type LeafCategory = {
   id: string
@@ -700,6 +723,7 @@ export const { allCategories, categoryTree, rootCategories, categoryMap, leafCat
 `
 
     fs.writeFileSync(tsOutputPath, tsContent)
+    formatGeneratedFile(tsOutputPath)
 
     console.log(
       "\n✅ Category data with root_category_id generated successfully!"
