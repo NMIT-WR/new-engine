@@ -1,4 +1,4 @@
-import * as path from "path"
+import { join } from "node:path"
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@new-engine/ui", "@techsio/analytics"],
   reactCompiler: true,
   cacheComponents: true,
-  outputFileTracingRoot: path.join(__dirname, "../../"),
+  outputFileTracingRoot: join(__dirname, "../../"),
   outputFileTracingExcludes: {
     "*": [
       "node_modules/@swc/core-linux-x64-gnu",

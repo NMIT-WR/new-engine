@@ -5,7 +5,7 @@
 
 import type { Category, CategoryTreeNode } from '@/data/static/type'
 
-export interface LeafCategory {
+export type LeafCategory = {
   id: string
   name: string
   handle: string
@@ -13,7 +13,7 @@ export interface LeafCategory {
   root_category_id: string | null // NEW: ID of root category
 }
 
-export interface LeafParent {
+export type LeafParent = {
   id: string
   name: string
   handle: string
@@ -21,14 +21,14 @@ export interface LeafParent {
   leafs: string[] // Array of ALL nested leaf category IDs
 }
 
-export interface FilteringStats {
+export type FilteringStats = {
   totalCategoriesBeforeFiltering: number
   totalCategoriesAfterFiltering: number
   categoriesWithDirectProducts: number
   filteredOutCount: number
 }
 
-export interface StaticCategoryData {
+export type StaticCategoryData = {
   allCategories: Category[]
   categoryTree: CategoryTreeNode[]
   rootCategories: Category[]

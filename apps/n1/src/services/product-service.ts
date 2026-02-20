@@ -1,7 +1,7 @@
 import type { StoreProduct } from "@medusajs/types"
 import { PRODUCT_DETAILED_FIELDS } from "@/lib/constants"
-import { getMedusaBackendUrl } from "@/lib/medusa-backend-url"
 import { fetchLogger } from "@/lib/loggers/fetch"
+import { getMedusaBackendUrl } from "@/lib/medusa-backend-url"
 import { sdk } from "@/lib/medusa-client"
 import {
   buildQueryString,

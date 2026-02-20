@@ -64,6 +64,16 @@ function HomeProductGrid() {
     return <ProductGrid products={[]} skeletonCount={8} />
   }
 
+  return <FeaturedHomeProductGrid featuredCategoryIds={featuredCategoryIds} />
+}
+
+type FeaturedHomeProductGridProps = {
+  featuredCategoryIds: string[]
+}
+
+function FeaturedHomeProductGrid({
+  featuredCategoryIds,
+}: FeaturedHomeProductGridProps) {
   const { products: rawProducts } = useSuspenseProducts({
     category_id: featuredCategoryIds,
     limit: 8,
