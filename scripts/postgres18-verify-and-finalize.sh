@@ -193,8 +193,8 @@ running_state="$(docker inspect "$new_container_id" --format '{{.State.Running}}
 [[ "$running_state" == "true" ]] || die "medusa-db container is not running."
 
 live_image="$(docker inspect "$new_container_id" --format '{{.Config.Image}}')"
-if [[ "$live_image" != "postgres:18.1-alpine" ]]; then
-  die "medusa-db image is '$live_image', expected 'postgres:18.1-alpine'."
+if [[ "$live_image" != "$NEW_IMAGE" ]]; then
+  die "medusa-db image is '$live_image', expected '$NEW_IMAGE'."
 fi
 
 expected_mount="$(cd "$ROOT_DIR" && pwd)/.docker_data/db18"
@@ -242,7 +242,6 @@ if [[ -d "$OLD_DATA_DIR" ]]; then
     done
 
     if (( ready == 1 )); then
-      wait_for_ready "$OLD_CONTAINER_NAME" "$POSTGRES_USER" "postgres"
       started_from_old_data=1
     else
       log "Old data directory could not be started cleanly; falling back to logical backup verification."
