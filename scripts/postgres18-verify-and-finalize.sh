@@ -226,7 +226,7 @@ if [[ -d "$OLD_DATA_DIR" ]]; then
       -e POSTGRES_USER="$POSTGRES_USER" \
       -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
       -e POSTGRES_DB="postgres" \
-      -v "$OLD_DATA_DIR:/var/lib/postgresql/data" \
+      -v "$OLD_DATA_DIR:/var/lib/postgresql/data:ro" \
       "$old_image" \
       postgres -cshared_preload_libraries=pg_stat_statements >/dev/null
 

@@ -37,7 +37,15 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
+      - name: Determine affected projects
+        id: determine_affected
+        run: |
+          projects="$(pnpm dlx nx print-affected --base=origin/main --head=HEAD --select=projects)"
+          echo "projects=${projects}" >> "$GITHUB_OUTPUT"
+          echo "projects_csv=,${projects}," >> "$GITHUB_OUTPUT"
       - name: Generate Next.js types (n1)
+        id: generate_next_types_n1
+        if: contains(steps.determine_affected.outputs.projects_csv, ',n1,')
         run: pnpm --filter=n1 exec next typegen
       - uses: nrwl/nx-set-shas@v4
 
