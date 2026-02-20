@@ -2,6 +2,9 @@
   "name": "n1",
   "version": "0.1.0",
   "private": true,
+  "nx": {
+    "tags": ["type:app", "platform:web", "framework:next"]
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
