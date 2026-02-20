@@ -36,6 +36,12 @@ down-with-volumes:
 # Usage: make medusa-create-user EMAIL=admin@example.com PASSWORD=secret
 medusa-create-user:
 	docker exec wr_medusa_be pnpm --filter medusa-be exec medusa user -e $(EMAIL) -p $(PASSWORD)
+# Usage: make make-create-user [EMAIL=admin@example.com] [PASSWORD=admin]
+make-create-user:
+	@EMAIL_VAL="$${EMAIL:-admin@example.com}"; \
+	PASSWORD_VAL="$${PASSWORD:-admin}"; \
+	echo "Creating Medusa admin user: $$EMAIL_VAL"; \
+	docker exec wr_medusa_be pnpm --filter medusa-be exec medusa user -e "$$EMAIL_VAL" -p "$$PASSWORD_VAL"
 medusa-migrate:
 	docker exec wr_medusa_be pnpm --filter medusa-be run migrate
 # Usage: make medusa-generate-migration MODULE=my_module
