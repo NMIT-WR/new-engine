@@ -1,5 +1,6 @@
 import type Medusa from "@medusajs/js-sdk"
 import type { FindParams, HttpTypes, SelectParams } from "@medusajs/types"
+import { omitKeys } from "../shared/object-utils"
 import type { CategoryListResponse, CategoryService } from "./types"
 
 type MedusaCategoryListQuery = FindParams &
@@ -57,12 +58,7 @@ export type MedusaCategoryServiceConfig<
 
 const stripEnabled = <TQuery extends Record<string, unknown>>(
   query: TQuery
-): TQuery => {
-  const { enabled: _enabled, ...rest } = query as TQuery & {
-    enabled?: boolean
-  }
-  return rest as TQuery
-}
+): TQuery => omitKeys(query as TQuery & { enabled?: boolean }, ["enabled"]) as TQuery
 
 /**
  * Creates a CategoryService for Medusa Store API.

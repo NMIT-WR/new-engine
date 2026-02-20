@@ -4,6 +4,8 @@ export { createMedusaAuthService } from "./medusa-service"
 export type { AuthMutationOptions, CreateAuthHooksConfig } from "./hooks"
 export type {
   MedusaAuthCredentials,
+  MedusaAuthServiceConfig,
+  MedusaLogoutErrorContext,
   MedusaRegisterData,
   MedusaUpdateCustomerData,
 } from "./medusa-service"

@@ -37,6 +37,23 @@ export type MedusaUpdateCustomerData = Partial<{
   phone: string
 }>
 
+export type MedusaLogoutErrorContext = "logout" | "register-cleanup"
+
+export type MedusaAuthServiceConfig = {
+  onLogoutError?: (error: unknown, context: MedusaLogoutErrorContext) => void
+}
+
+const defaultReportLogoutError = (
+  error: unknown,
+  context: MedusaLogoutErrorContext
+) => {
+  const message =
+    context === "logout"
+      ? "[storefront-data/auth] Failed to logout customer session."
+      : "[storefront-data/auth] Failed to cleanup auth session after register error."
+  console.warn(message, error)
+}
+
 /**
  * Creates an AuthService for Medusa SDK
  *
@@ -59,13 +76,34 @@ export type MedusaUpdateCustomerData = Partial<{
  * ```
  */
 export function createMedusaAuthService(
-  sdk: Medusa
+  sdk: Medusa,
+  config?: MedusaAuthServiceConfig
 ): AuthService<
   HttpTypes.StoreCustomer,
   MedusaAuthCredentials,
   MedusaRegisterData,
   MedusaUpdateCustomerData
 > {
+  const reportLogoutError = (
+    error: unknown,
+    context: MedusaLogoutErrorContext
+  ) => {
+    if (config?.onLogoutError) {
+      try {
+        config.onLogoutError(error, context)
+        return
+      } catch {
+        // Keep logout best-effort: reporting must never break auth flow.
+      }
+    }
+
+    try {
+      defaultReportLogoutError(error, context)
+    } catch {
+      // Keep logout best-effort: reporting must never break auth flow.
+    }
+  }
+
   return {
     async getCustomer() {
       try {
@@ -105,8 +143,8 @@ export function createMedusaAuthService(
     async logout() {
       try {
         await sdk.auth.logout()
-      } catch {
-        // Best effort - don't throw on logout errors
+      } catch (error) {
+        reportLogoutError(error, "logout")
       }
     },
 
@@ -145,8 +183,8 @@ export function createMedusaAuthService(
         // If register() succeeded but create() failed, we have token without customer
         try {
           await sdk.auth.logout()
-        } catch {
-          // Ignore logout errors during cleanup
+        } catch (logoutError) {
+          reportLogoutError(logoutError, "register-cleanup")
         }
         throw err
       }

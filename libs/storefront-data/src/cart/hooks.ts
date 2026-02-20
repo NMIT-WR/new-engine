@@ -11,6 +11,7 @@ import {
   getPrefetchCacheOptions,
 } from "../shared/cache-config"
 import type { ReadQueryOptions, SuspenseQueryOptions } from "../shared/hook-types"
+import { omitKeys } from "../shared/object-utils"
 import { shouldSkipPrefetch, type PrefetchSkipMode } from "../shared/prefetch"
 import type { QueryNamespace } from "../shared/query-keys"
 import type { RegionInfo } from "../shared/region"
@@ -36,126 +37,170 @@ import type {
 
 type CacheStrategy = keyof CacheConfig
 
+type CartCreateTransientInput = {
+  cartId?: string
+  autoCreate?: boolean
+  autoUpdateRegion?: boolean
+  enabled?: boolean
+  variantId?: string
+  quantity?: number
+  useSameAddress?: boolean
+  shippingAddress?: unknown
+  billingAddress?: unknown
+  salesChannelId?: string
+}
+
+type CartUpdateTransientInput = {
+  cartId?: string
+  autoCreate?: boolean
+  autoUpdateRegion?: boolean
+  enabled?: boolean
+  variantId?: string
+  quantity?: number
+  useSameAddress?: boolean
+  shippingAddress?: unknown
+  billingAddress?: unknown
+  salesChannelId?: string
+}
+
+type AddLineItemTransientInput = {
+  cartId?: string
+  autoCreate?: boolean
+  autoUpdateRegion?: boolean
+  enabled?: boolean
+  region_id?: string
+  country_code?: string
+  salesChannelId?: string
+}
+
+type UpdateLineItemTransientInput = {
+  cartId?: string
+  lineItemId?: string
+  enabled?: boolean
+  autoCreate?: boolean
+  autoUpdateRegion?: boolean
+}
+
+const cartCreatePayloadOmitKeys = [
+  "cartId",
+  "autoCreate",
+  "autoUpdateRegion",
+  "enabled",
+  "variantId",
+  "quantity",
+  "useSameAddress",
+  "shippingAddress",
+  "billingAddress",
+  "salesChannelId",
+] as const
+
+const cartUpdatePayloadOmitKeys = [
+  "cartId",
+  "autoCreate",
+  "autoUpdateRegion",
+  "enabled",
+  "variantId",
+  "quantity",
+  "useSameAddress",
+  "shippingAddress",
+  "billingAddress",
+  "salesChannelId",
+] as const
+
+const addLineItemPayloadOmitKeys = [
+  "cartId",
+  "autoCreate",
+  "autoUpdateRegion",
+  "enabled",
+  "region_id",
+  "country_code",
+  "salesChannelId",
+] as const
+
+const updateLineItemPayloadOmitKeys = [
+  "cartId",
+  "lineItemId",
+  "enabled",
+  "autoCreate",
+  "autoUpdateRegion",
+] as const
+
+type NormalizedCartCreatePayload<TInput extends CartCreateInputBase> = Omit<
+  TInput & CartCreateTransientInput,
+  (typeof cartCreatePayloadOmitKeys)[number]
+> & {
+  sales_channel_id?: string
+}
+
+type NormalizedCartUpdatePayload<TInput extends UpdateCartInputBase> = Omit<
+  TInput & CartUpdateTransientInput,
+  (typeof cartUpdatePayloadOmitKeys)[number]
+> & {
+  sales_channel_id?: string
+}
+
+type NormalizedAddLineItemPayload<TInput extends AddLineItemInputBase> = Omit<
+  TInput & AddLineItemTransientInput,
+  (typeof addLineItemPayloadOmitKeys)[number]
+>
+
+type NormalizedUpdateLineItemPayload<
+  TInput extends UpdateLineItemInputBase,
+> = Omit<
+  TInput & UpdateLineItemTransientInput,
+  (typeof updateLineItemPayloadOmitKeys)[number]
+>
+
 const normalizeCartCreatePayload = <TInput extends CartCreateInputBase>(
   input: TInput
-): TInput => {
-  const {
-    cartId: _cartId,
-    autoCreate: _autoCreate,
-    autoUpdateRegion: _autoUpdateRegion,
-    enabled: _enabled,
-    variantId: _variantId,
-    quantity: _quantity,
-    useSameAddress: _useSameAddress,
-    shippingAddress: _shippingAddress,
-    billingAddress: _billingAddress,
-    salesChannelId,
-    ...rest
-  } = input as CartCreateInputBase & {
-    cartId?: string
-    autoCreate?: boolean
-    autoUpdateRegion?: boolean
-    enabled?: boolean
-    variantId?: string
-    quantity?: number
-    useSameAddress?: boolean
-    shippingAddress?: unknown
-    billingAddress?: unknown
-    salesChannelId?: string
+): NormalizedCartCreatePayload<TInput> => {
+  const normalizedInput = input as TInput & CartCreateTransientInput
+  const payload = omitKeys(normalizedInput, cartCreatePayloadOmitKeys)
+  const salesChannelId = normalizedInput.salesChannelId
+
+  if (!salesChannelId) {
+    return payload
   }
 
-  if (salesChannelId) {
-    return {
-      ...rest,
-      sales_channel_id: salesChannelId,
-    } as unknown as TInput
+  return {
+    ...payload,
+    sales_channel_id: salesChannelId,
   }
-
-  return rest as TInput
 }
 
 const normalizeCartUpdatePayload = <TInput extends UpdateCartInputBase>(
   input: TInput
-): TInput => {
-  const {
-    cartId: _cartId,
-    autoCreate: _autoCreate,
-    autoUpdateRegion: _autoUpdateRegion,
-    enabled: _enabled,
-    variantId: _variantId,
-    quantity: _quantity,
-    useSameAddress: _useSameAddress,
-    shippingAddress: _shippingAddress,
-    billingAddress: _billingAddress,
-    salesChannelId,
-    ...rest
-  } = input as UpdateCartInputBase & {
-    cartId?: string
-    autoCreate?: boolean
-    autoUpdateRegion?: boolean
-    enabled?: boolean
-    variantId?: string
-    quantity?: number
-    useSameAddress?: boolean
-    shippingAddress?: unknown
-    billingAddress?: unknown
-    salesChannelId?: string
+): NormalizedCartUpdatePayload<TInput> => {
+  const normalizedInput = input as TInput & CartUpdateTransientInput
+  const payload = omitKeys(normalizedInput, cartUpdatePayloadOmitKeys)
+  const salesChannelId = normalizedInput.salesChannelId
+
+  if (!salesChannelId) {
+    return payload
   }
 
-  if (salesChannelId) {
-    return {
-      ...rest,
-      sales_channel_id: salesChannelId,
-    } as unknown as TInput
+  return {
+    ...payload,
+    sales_channel_id: salesChannelId,
   }
-
-  return rest as TInput
 }
 
 const normalizeAddLineItemPayload = <TInput extends AddLineItemInputBase>(
   input: TInput
-): TInput => {
-  const {
-    cartId: _cartId,
-    autoCreate: _autoCreate,
-    autoUpdateRegion: _autoUpdateRegion,
-    enabled: _enabled,
-    region_id: _regionId,
-    country_code: _countryCode,
-    salesChannelId: _salesChannelId,
-    ...rest
-  } = input as AddLineItemInputBase & {
-    cartId?: string
-    autoCreate?: boolean
-    autoUpdateRegion?: boolean
-    enabled?: boolean
-    region_id?: string
-    country_code?: string
-    salesChannelId?: string
-  }
-
-  return rest as TInput
+): NormalizedAddLineItemPayload<TInput> => {
+  return omitKeys(
+    input as TInput & AddLineItemTransientInput,
+    addLineItemPayloadOmitKeys
+  )
 }
 
 const normalizeUpdateLineItemPayload = <TInput extends UpdateLineItemInputBase>(
   input: TInput
-): TInput => {
-  const {
-    cartId: _cartId,
-    lineItemId: _lineItemId,
-    enabled: _enabled,
-    autoCreate: _autoCreate,
-    autoUpdateRegion: _autoUpdateRegion,
-    ...rest
-  } = input as UpdateLineItemInputBase & {
-    cartId?: string
-    lineItemId?: string
-    enabled?: boolean
-    autoCreate?: boolean
-    autoUpdateRegion?: boolean
-  }
-
-  return rest as TInput
+): NormalizedUpdateLineItemPayload<TInput> => {
+  return omitKeys(
+    input as TInput & UpdateLineItemTransientInput,
+    updateLineItemPayloadOmitKeys
+  )
 }
 
 const applyRegion = <T extends RegionInfo>(
@@ -195,7 +240,35 @@ const handleAddressValidation = (result: CartAddressValidationResult) => {
   }
 }
 
-export type CreateCartHooksConfig<
+type BuildCreateParamsOption<
+  TCreateInput extends CartCreateInputBase,
+  TCreateParams,
+> = [NormalizedCartCreatePayload<TCreateInput>] extends [TCreateParams]
+  ? { buildCreateParams?: (input: TCreateInput) => TCreateParams }
+  : { buildCreateParams: (input: TCreateInput) => TCreateParams }
+
+type BuildUpdateParamsOption<
+  TUpdateInput extends UpdateCartInputBase,
+  TUpdateParams,
+> = [NormalizedCartUpdatePayload<TUpdateInput>] extends [TUpdateParams]
+  ? { buildUpdateParams?: (input: TUpdateInput) => TUpdateParams }
+  : { buildUpdateParams: (input: TUpdateInput) => TUpdateParams }
+
+type BuildAddParamsOption<
+  TAddInput extends AddLineItemInputBase,
+  TAddParams,
+> = [NormalizedAddLineItemPayload<TAddInput>] extends [TAddParams]
+  ? { buildAddParams?: (input: TAddInput) => TAddParams }
+  : { buildAddParams: (input: TAddInput) => TAddParams }
+
+type BuildUpdateItemParamsOption<
+  TUpdateItemInput extends UpdateLineItemInputBase,
+  TUpdateItemParams,
+> = [NormalizedUpdateLineItemPayload<TUpdateItemInput>] extends [TUpdateItemParams]
+  ? { buildUpdateItemParams?: (input: TUpdateItemInput) => TUpdateItemParams }
+  : { buildUpdateItemParams: (input: TUpdateItemInput) => TUpdateItemParams }
+
+type CreateCartHooksBaseConfig<
   TCart extends CartLike,
   TCreateInput extends CartCreateInputBase,
   TCreateParams,
@@ -217,10 +290,6 @@ export type CreateCartHooksConfig<
     TUpdateItemParams,
     TCompleteResult
   >
-  buildCreateParams?: (input: TCreateInput) => TCreateParams
-  buildUpdateParams?: (input: TUpdateInput) => TUpdateParams
-  buildAddParams?: (input: TAddInput) => TAddParams
-  buildUpdateItemParams?: (input: TUpdateItemInput) => TUpdateItemParams
   queryKeys?: CartQueryKeys
   queryKeyNamespace?: QueryNamespace
   cacheConfig?: CacheConfig
@@ -239,6 +308,38 @@ export type CreateCartHooksConfig<
   buildBillingAddress?: (input: TAddressInput) => TAddressPayload
   invalidateOnSuccess?: boolean
 }
+
+export type CreateCartHooksConfig<
+  TCart extends CartLike,
+  TCreateInput extends CartCreateInputBase,
+  TCreateParams,
+  TUpdateInput extends UpdateCartInputBase,
+  TUpdateParams,
+  TAddInput extends AddLineItemInputBase,
+  TAddParams,
+  TUpdateItemInput extends UpdateLineItemInputBase,
+  TUpdateItemParams,
+  TCompleteResult,
+  TAddressInput,
+  TAddressPayload,
+> = CreateCartHooksBaseConfig<
+  TCart,
+  TCreateInput,
+  TCreateParams,
+  TUpdateInput,
+  TUpdateParams,
+  TAddInput,
+  TAddParams,
+  TUpdateItemInput,
+  TUpdateItemParams,
+  TCompleteResult,
+  TAddressInput,
+  TAddressPayload
+> &
+  BuildCreateParamsOption<TCreateInput, TCreateParams> &
+  BuildUpdateParamsOption<TUpdateInput, TUpdateParams> &
+  BuildAddParamsOption<TAddInput, TAddParams> &
+  BuildUpdateItemParamsOption<TUpdateItemInput, TUpdateItemParams>
 
 export type CartMutationOptions<TData, TVariables, TContext = unknown> = {
   onSuccess?: (
@@ -265,13 +366,13 @@ export type CartMutationOptions<TData, TVariables, TContext = unknown> = {
 export function createCartHooks<
   TCart extends CartLike,
   TCreateInput extends CartCreateInputBase,
-  TCreateParams = TCreateInput,
+  TCreateParams = NormalizedCartCreatePayload<TCreateInput>,
   TUpdateInput extends UpdateCartInputBase = UpdateCartInputBase,
-  TUpdateParams = TUpdateInput,
+  TUpdateParams = NormalizedCartUpdatePayload<TUpdateInput>,
   TAddInput extends AddLineItemInputBase = AddLineItemInputBase,
-  TAddParams = TAddInput,
+  TAddParams = NormalizedAddLineItemPayload<TAddInput>,
   TUpdateItemInput extends UpdateLineItemInputBase = UpdateLineItemInputBase,
-  TUpdateItemParams = TUpdateItemInput,
+  TUpdateItemParams = NormalizedUpdateLineItemPayload<TUpdateItemInput>,
   TCompleteResult = unknown,
   TAddressInput = Record<string, unknown>,
   TAddressPayload = Record<string, unknown>,
@@ -312,23 +413,19 @@ export function createCartHooks<
   const resolvedQueryKeys = queryKeys ?? createCartQueryKeys(queryKeyNamespace)
   const buildCreate =
     buildCreateParams ??
-    ((input: TCreateInput) =>
-      normalizeCartCreatePayload(input) as unknown as TCreateParams)
+    ((input: TCreateInput) => normalizeCartCreatePayload(input))
   const buildUpdate =
     buildUpdateParams ??
-    ((input: TUpdateInput) =>
-      normalizeCartUpdatePayload(input) as unknown as TUpdateParams)
+    ((input: TUpdateInput) => normalizeCartUpdatePayload(input))
   const buildAdd =
     buildAddParams ??
-    ((input: TAddInput) =>
-      normalizeAddLineItemPayload(input) as unknown as TAddParams)
+    ((input: TAddInput) => normalizeAddLineItemPayload(input))
   const buildUpdateItem =
     buildUpdateItemParams ??
-    ((input: TUpdateItemInput) =>
-      normalizeUpdateLineItemPayload(input) as unknown as TUpdateItemParams)
+    ((input: TUpdateItemInput) => normalizeUpdateLineItemPayload(input))
   const buildShipping =
     buildShippingAddress ??
-    ((input: TAddressInput) => input as unknown as TAddressPayload)
+    ((input: TAddressInput) => input as TAddressPayload)
   const buildBilling =
     buildBillingAddress ?? ((input: TAddressInput) => buildShipping(input))
 
