@@ -261,6 +261,13 @@ type BuildAddParamsOption<
   ? { buildAddParams?: (input: TAddInput) => TAddParams }
   : { buildAddParams: (input: TAddInput) => TAddParams }
 
+type BuildCreateInputFromAddInputOption<
+  TAddInput extends AddLineItemInputBase,
+  TCreateInput extends CartCreateInputBase,
+> = [TAddInput] extends [TCreateInput]
+  ? { buildCreateInputFromAddInput?: (input: TAddInput) => TCreateInput }
+  : { buildCreateInputFromAddInput: (input: TAddInput) => TCreateInput }
+
 type BuildUpdateItemParamsOption<
   TUpdateItemInput extends UpdateLineItemInputBase,
   TUpdateItemParams,
@@ -309,6 +316,8 @@ type CreateCartHooksBaseConfig<
   invalidateOnSuccess?: boolean
 }
 
+type ParamBuilder<TInput, TParams> = (input: TInput) => TParams
+
 export type CreateCartHooksConfig<
   TCart extends CartLike,
   TCreateInput extends CartCreateInputBase,
@@ -339,6 +348,7 @@ export type CreateCartHooksConfig<
   BuildCreateParamsOption<TCreateInput, TCreateParams> &
   BuildUpdateParamsOption<TUpdateInput, TUpdateParams> &
   BuildAddParamsOption<TAddInput, TAddParams> &
+  BuildCreateInputFromAddInputOption<TAddInput, TCreateInput> &
   BuildUpdateItemParamsOption<TUpdateItemInput, TUpdateItemParams>
 
 export type CartMutationOptions<TData, TVariables, TContext = unknown> = {
@@ -381,6 +391,7 @@ export function createCartHooks<
   buildCreateParams,
   buildUpdateParams,
   buildAddParams,
+  buildCreateInputFromAddInput,
   buildUpdateItemParams,
   queryKeys,
   queryKeyNamespace = "storefront-data",
@@ -411,21 +422,29 @@ export function createCartHooks<
 >) {
   const resolvedCacheConfig = cacheConfig ?? createCacheConfig()
   const resolvedQueryKeys = queryKeys ?? createCartQueryKeys(queryKeyNamespace)
-  const buildCreate =
+  // CreateCartHooksConfig conditional types require custom builders whenever
+  // default normalized payloads are incompatible with custom param types.
+  const buildCreate: ParamBuilder<TCreateInput, TCreateParams> =
     buildCreateParams ??
-    ((input: TCreateInput) => normalizeCartCreatePayload(input))
-  const buildUpdate =
+    ((input: TCreateInput) =>
+      normalizeCartCreatePayload(input) as TCreateParams)
+  const buildUpdate: ParamBuilder<TUpdateInput, TUpdateParams> =
     buildUpdateParams ??
-    ((input: TUpdateInput) => normalizeCartUpdatePayload(input))
-  const buildAdd =
+    ((input: TUpdateInput) =>
+      normalizeCartUpdatePayload(input) as TUpdateParams)
+  const buildAdd: ParamBuilder<TAddInput, TAddParams> =
     buildAddParams ??
-    ((input: TAddInput) => normalizeAddLineItemPayload(input))
-  const buildUpdateItem =
+    ((input: TAddInput) => normalizeAddLineItemPayload(input) as TAddParams)
+  const buildCreateInputFromAdd: ParamBuilder<TAddInput, TCreateInput> =
+    buildCreateInputFromAddInput ??
+    ((input: TAddInput) => input as TAddInput & TCreateInput)
+  const buildUpdateItem: ParamBuilder<TUpdateItemInput, TUpdateItemParams> =
     buildUpdateItemParams ??
-    ((input: TUpdateItemInput) => normalizeUpdateLineItemPayload(input))
-  const buildShipping =
+    ((input: TUpdateItemInput) =>
+      normalizeUpdateLineItemPayload(input) as TUpdateItemParams)
+  const buildShipping: ParamBuilder<TAddressInput, TAddressPayload> =
     buildShippingAddress ??
-    ((input: TAddressInput) => input as TAddressPayload)
+    ((input: TAddressInput) => input as TAddressInput & TAddressPayload)
   const buildBilling =
     buildBillingAddress ?? ((input: TAddressInput) => buildShipping(input))
 
@@ -775,7 +794,7 @@ export function createCartHooks<
           )
         }
         const updateInput = {
-          ...(restInput as unknown as TUpdateInput),
+          ...(restInput as TUpdateInput),
           shipping_address: buildShipping(normalizedShipping),
           billing_address: resolvedBillingInput
             ? buildBilling(resolvedBillingInput)
@@ -827,7 +846,7 @@ export function createCartHooks<
             throw new Error("Cart id is required")
           }
           const created = await service.createCart(
-            buildCreate(resolvedInput as unknown as TCreateInput)
+            buildCreate(buildCreateInputFromAdd(resolvedInput))
           )
           persistCartId(created.id)
           cartId = created.id

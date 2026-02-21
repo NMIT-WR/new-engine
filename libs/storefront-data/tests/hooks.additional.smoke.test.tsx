@@ -1,22 +1,23 @@
 import { QueryClient } from "@tanstack/react-query"
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
-import { createAuthHooks, createAuthQueryKeys } from "../src/auth"
-import { createCartQueryKeys } from "../src/cart"
-import { createCategoryHooks, createCategoryQueryKeys } from "../src/categories"
-import { createCheckoutHooks } from "../src/checkout"
-import {
-  createCollectionHooks,
-  createCollectionQueryKeys,
-} from "../src/collections"
+import { StorefrontDataProvider } from "../src/client/provider"
+import { createAuthHooks } from "../src/auth/hooks"
+import { createAuthQueryKeys } from "../src/auth/query-keys"
+import { createCartQueryKeys } from "../src/cart/query-keys"
+import { createCategoryHooks } from "../src/categories/hooks"
+import { createCategoryQueryKeys } from "../src/categories/query-keys"
+import { createCheckoutHooks } from "../src/checkout/hooks"
+import { createCollectionHooks } from "../src/collections/hooks"
+import { createCollectionQueryKeys } from "../src/collections/query-keys"
 import {
   createProductHooks,
-  createProductQueryKeys,
-  type ProductListInputBase,
-} from "../src/products"
-import { createRegionHooks } from "../src/regions"
-import { createCacheConfig, createQueryKey } from "../src/shared"
-import { StorefrontDataProvider } from "../src/client"
+} from "../src/products/hooks"
+import { createProductQueryKeys } from "../src/products/query-keys"
+import type { ProductListInputBase } from "../src/products/types"
+import { createRegionHooks } from "../src/regions/hooks"
+import { createCacheConfig } from "../src/shared/cache-config"
+import { createQueryKey } from "../src/shared/query-keys"
 
 const createWrapper = (client: QueryClient) =>
   ({ children }: { children: ReactNode }) => (

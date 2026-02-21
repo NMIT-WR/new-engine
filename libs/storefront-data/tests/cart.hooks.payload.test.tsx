@@ -1,8 +1,8 @@
 import { QueryClient } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
-import { StorefrontDataProvider } from "../src/client"
-import { createCartHooks } from "../src/cart"
+import { StorefrontDataProvider } from "../src/client/provider"
+import { createCartHooks } from "../src/cart/hooks"
 
 type Cart = {
   id: string

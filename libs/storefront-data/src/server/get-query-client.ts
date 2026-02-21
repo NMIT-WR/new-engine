@@ -14,7 +14,7 @@ import {
  * @example
  * ```tsx
  * // app/products/layout.tsx (Server Component)
- * import { getServerQueryClient } from '@libs/storefront-data/server'
+ * import { getServerQueryClient } from "@techsio/storefront-data/server/get-query-client"
  *
  * export default async function Layout({ children }) {
  *   const queryClient = getServerQueryClient()

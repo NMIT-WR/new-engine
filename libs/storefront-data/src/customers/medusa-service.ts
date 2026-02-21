@@ -54,7 +54,8 @@ export type MedusaCustomerProfileUpdateInput = {
  *
  * @example
  * ```typescript
- * import { createCustomerHooks, createMedusaCustomerService } from "@techsio/storefront-data"
+ * import { createCustomerHooks } from "@techsio/storefront-data/customers/hooks"
+ * import { createMedusaCustomerService } from "@techsio/storefront-data/customers/medusa-service"
  * import { sdk } from "@/lib/medusa-client"
  *
  * const customerHooks = createCustomerHooks({

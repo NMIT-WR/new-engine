@@ -52,7 +52,7 @@ const nextConfig = {
 
 ```tsx
 // app/layout.tsx or providers.tsx
-import { StorefrontDataProvider } from "@techsio/storefront-data/client"
+import { StorefrontDataProvider } from "@techsio/storefront-data/client/provider"
 
 export function Providers({ children }) {
   return (
@@ -67,7 +67,8 @@ export function Providers({ children }) {
 
 ```tsx
 // hooks/storefront-products.ts
-import { createProductHooks, type ProductService } from "@techsio/storefront-data"
+import { createProductHooks } from "@techsio/storefront-data/products/hooks"
+import type { ProductService } from "@techsio/storefront-data/products/types"
 import type { Product } from "@/types/product"
 import { getProducts, getProduct } from "@/services/product-service"
 
@@ -113,7 +114,8 @@ function ProductList() {
 
 ```tsx
 // app/products/page.tsx
-import { getServerQueryClient, dehydrate, HydrationBoundary } from "@techsio/storefront-data/server"
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { getServerQueryClient } from "@techsio/storefront-data/server/get-query-client"
 
 export default async function ProductsPage() {
   const queryClient = getServerQueryClient()
@@ -135,13 +137,10 @@ export default async function ProductsPage() {
 
 ```text
 src/
-├── index.ts              # Main exports
 ├── client/               # Client-side utilities
 │   ├── provider.tsx      # StorefrontDataProvider
-│   └── index.ts
 ├── server/               # Server-side utilities
-│   ├── get-query-client.ts  # Per-request QueryClient
-│   └── index.ts
+│   └── get-query-client.ts  # Per-request QueryClient
 ├── shared/               # Shared utilities
 │   ├── cache-config.ts   # Cache strategy configs
 │   ├── medusa-client.ts  # Medusa SDK factory
@@ -158,32 +157,18 @@ src/
 
 ## Exports
 
-### Main Entry (`@techsio/storefront-data`)
-
-All domain hooks factories and shared utilities.
-
-### Client Entry (`@techsio/storefront-data/client`)
-
-- `StorefrontDataProvider` - React Query provider wrapper
-- `getQueryClient` - Browser singleton QueryClient
-
-### Server Entry (`@techsio/storefront-data/server`)
-
-- `getServerQueryClient` - Per-request QueryClient with React.cache()
-- `dehydrate`, `HydrationBoundary` - SSR hydration helpers
-
-### Shared Entry (`@techsio/storefront-data/shared`)
-
-- `createCacheConfig` - Cache strategy factory
-- `createMedusaSdk` - Medusa SDK factory
-- `createQueryKey`, `createQueryKeyFactory` - Query key utilities
-- `normalizeQueryKeyParams` - Stable params normalization for query keys
-- `normalizeQueryKeyPart` - Safe query-key part normalization (object normalize + primitive passthrough)
+Use explicit file-level subpaths (no barrel entrypoints), for example:
+- `@techsio/storefront-data/products/hooks`
+- `@techsio/storefront-data/products/types`
+- `@techsio/storefront-data/client/provider`
+- `@techsio/storefront-data/server/get-query-client`
+- `@techsio/storefront-data/shared/cache-config`
+- `@techsio/storefront-data/shared/query-keys`
 
 ## Cache Strategies
 
 ```typescript
-import { createCacheConfig } from "@techsio/storefront-data/shared"
+import { createCacheConfig } from "@techsio/storefront-data/shared/cache-config"
 
 const cacheConfig = createCacheConfig({
   // Override defaults as needed

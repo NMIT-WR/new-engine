@@ -95,7 +95,8 @@ const toListResponse = <TProduct>(
  *
  * @example
  * ```typescript
- * import { createMedusaProductService, createProductHooks } from "@techsio/storefront-data"
+ * import { createProductHooks } from "@techsio/storefront-data/products/hooks"
+ * import { createMedusaProductService } from "@techsio/storefront-data/products/medusa-service"
  * import { sdk } from "@/lib/medusa-client"
  *
  * const service = createMedusaProductService(sdk, {

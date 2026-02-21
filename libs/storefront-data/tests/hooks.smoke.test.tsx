@@ -2,30 +2,33 @@ import { QueryClient } from "@tanstack/react-query"
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { http, HttpResponse } from "msw"
 import type { ReactNode } from "react"
-import {
-  createCartHooks,
-  createCartQueryKeys,
-  type CartService,
-  type UpdateCartInputBase,
-} from "../src/cart"
+import { StorefrontDataProvider } from "../src/client/provider"
+import { createCartHooks } from "../src/cart/hooks"
+import { createCartQueryKeys } from "../src/cart/query-keys"
+import type { CartService, UpdateCartInputBase } from "../src/cart/types"
 import {
   createCustomerHooks,
-  type CustomerAddressListInputBase,
-  type CustomerService,
-} from "../src/customers"
+} from "../src/customers/hooks"
+import type {
+  CustomerAddressListInputBase,
+  CustomerService,
+} from "../src/customers/types"
 import {
   createOrderHooks,
-  type OrderDetailInputBase,
-  type OrderListInputBase,
-  type OrderService,
-} from "../src/orders"
+} from "../src/orders/hooks"
+import type {
+  OrderDetailInputBase,
+  OrderListInputBase,
+  OrderService,
+} from "../src/orders/types"
 import {
   createProductHooks,
-  createProductQueryKeys,
-  type ProductListInputBase,
-  type ProductService,
-} from "../src/products"
-import { StorefrontDataProvider } from "../src/client"
+} from "../src/products/hooks"
+import { createProductQueryKeys } from "../src/products/query-keys"
+import type {
+  ProductListInputBase,
+  ProductService,
+} from "../src/products/types"
 import { server } from "./msw-server"
 
 const createWrapper = (client: QueryClient) =>

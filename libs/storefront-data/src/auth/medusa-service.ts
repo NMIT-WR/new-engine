@@ -65,7 +65,8 @@ const defaultReportLogoutError = (
  *
  * @example
  * ```typescript
- * import { createAuthHooks, createMedusaAuthService } from "@techsio/storefront-data"
+ * import { createAuthHooks } from "@techsio/storefront-data/auth/hooks"
+ * import { createMedusaAuthService } from "@techsio/storefront-data/auth/medusa-service"
  * import { sdk } from "@/lib/medusa-client"
  *
  * export const authHooks = createAuthHooks({

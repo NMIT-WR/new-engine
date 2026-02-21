@@ -40,7 +40,8 @@ const defaultIsNotFoundError = (error: unknown): boolean =>
  *
  * @example
  * ```typescript
- * import { createCartHooks, createMedusaCartService } from "@techsio/storefront-data"
+ * import { createCartHooks } from "@techsio/storefront-data/cart/hooks"
+ * import { createMedusaCartService } from "@techsio/storefront-data/cart/medusa-service"
  * import { sdk } from "@/lib/medusa-client"
  *
  * const cartHooks = createCartHooks({

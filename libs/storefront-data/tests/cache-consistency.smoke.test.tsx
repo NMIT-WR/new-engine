@@ -1,16 +1,20 @@
 import { QueryClient } from "@tanstack/react-query"
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
-import { StorefrontDataProvider } from "../src/client"
-import { createCustomerHooks, type CustomerService } from "../src/customers"
-import { createOrderQueryKeys } from "../src/orders"
+import { StorefrontDataProvider } from "../src/client/provider"
+import { createCustomerHooks } from "../src/customers/hooks"
+import { createOrderQueryKeys } from "../src/orders/query-keys"
 import {
   createProductHooks,
-  createProductQueryKeys,
-  type ProductListInputBase,
-  type ProductService,
-} from "../src/products"
-import { createQueryKey, RegionProvider } from "../src/shared"
+} from "../src/products/hooks"
+import { createProductQueryKeys } from "../src/products/query-keys"
+import type {
+  ProductListInputBase,
+  ProductService,
+} from "../src/products/types"
+import { createQueryKey } from "../src/shared/query-keys"
+import { RegionProvider } from "../src/shared/region-context"
+import type { CustomerService } from "../src/customers/types"
 
 describe("storefront-data cache/query consistency", () => {
   it("keeps separate product cache entries when region context changes", async () => {

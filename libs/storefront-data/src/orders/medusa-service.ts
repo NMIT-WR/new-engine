@@ -22,7 +22,8 @@ export type MedusaOrderDetailInput = {
  *
  * @example
  * ```typescript
- * import { createOrderHooks, createMedusaOrderService } from "@techsio/storefront-data"
+ * import { createOrderHooks } from "@techsio/storefront-data/orders/hooks"
+ * import { createMedusaOrderService } from "@techsio/storefront-data/orders/medusa-service"
  * import { sdk } from "@/lib/medusa-client"
  *
  * const orderHooks = createOrderHooks({

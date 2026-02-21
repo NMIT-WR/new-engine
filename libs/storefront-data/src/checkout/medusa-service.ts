@@ -11,7 +11,8 @@ export type MedusaCheckoutServiceConfig = {
  *
  * @example
  * ```typescript
- * import { createCheckoutHooks, createMedusaCheckoutService } from "@techsio/storefront-data"
+ * import { createCheckoutHooks } from "@techsio/storefront-data/checkout/hooks"
+ * import { createMedusaCheckoutService } from "@techsio/storefront-data/checkout/medusa-service"
  * import { sdk } from "@/lib/medusa-client"
  *
  * const checkoutHooks = createCheckoutHooks({
