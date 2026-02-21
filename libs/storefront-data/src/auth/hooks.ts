@@ -147,7 +147,8 @@ export function createAuthHooks<
   function useSuspenseAuth(options?: {
     queryOptions?: SuspenseQueryOptions<TCustomer | null>
   }): UseSuspenseAuthResult<TCustomer> {
-    // TanStack Query limitation: suspense hooks don't support cancellation.
+    // TanStack Query limitation: cancellation does not work with Suspense hooks.
+    // Source: https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation#limitations
     const query = useSuspenseQuery<TCustomer | null>({
       queryKey: resolvedQueryKeys.customer(),
       queryFn: ({ signal }) => service.getCustomer(signal),
