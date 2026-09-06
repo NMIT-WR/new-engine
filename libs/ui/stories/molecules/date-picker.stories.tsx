@@ -1,18 +1,23 @@
 import {
 	CalendarDate,
 	CalendarDateTime,
+	type DateValue,
 	parseZonedDateTime,
 } from "@internationalized/date"
 import type { Meta, StoryObj } from "@storybook/react"
-import { type ComponentType, useState } from "react"
+import { type ComponentType, type ReactNode, useState } from "react"
 import { fn } from "storybook/test"
 import { VariantContainer, VariantGroup } from "../../.storybook/decorator"
 import { Button } from "../../src/atoms/button"
 import {
 	DatePicker,
+	type DatePickerGranularity,
 	type DatePickerDayRangeRootProps,
 	type DatePickerDayRootProps,
+	type DatePickerOpenChangeDetails,
 	type DatePickerRange,
+	type DatePickerSelectionMode,
+	type DatePickerSize,
 	type DatePickerTimedRangeRootProps,
 	type DatePickerTimedRootProps,
 	type DatePickerTimedValue,
@@ -130,6 +135,235 @@ function TimedRangeField({ label, ...props }: TimedRangeFieldProps) {
 	)
 }
 
+type DatePickerPlaygroundArgs = {
+	defaultOpen: boolean
+	disabled: boolean
+	flip: boolean
+	granularity: DatePickerGranularity
+	hideTimeZone: boolean
+	hourCycle: 12 | 24
+	initialValue: "empty" | "preset"
+	invalid: boolean
+	locale: string
+	numOfMonths: "auto" | 1 | 2
+	onOpenChange?: (details: DatePickerOpenChangeDetails) => void
+	onValueChange?: (details: {
+		value: unknown
+		valueAsString: unknown
+	}) => void
+	offset: number
+	placement: NonNullable<DatePickerDayRootProps["placement"]>
+	readOnly: boolean
+	required: boolean
+	selectionMode: DatePickerSelectionMode
+	shouldForceLeadingZeros: boolean
+	size: DatePickerSize
+	slide: boolean
+	startOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6
+	useDateBounds: boolean
+	useUnavailableDate: boolean
+	useUnavailableTime: boolean
+	valueKind: "floating" | "zoned"
+}
+
+const PLAYGROUND_DATE = new CalendarDate(2026, 8, 31)
+const PLAYGROUND_DATE_RANGE: DatePickerRange<CalendarDate> = [
+	new CalendarDate(2026, 9, 5),
+	new CalendarDate(2026, 9, 18),
+]
+const PLAYGROUND_DATE_TIME = new CalendarDateTime(
+	2026,
+	8,
+	31,
+	14,
+	30,
+	45,
+)
+const PLAYGROUND_DATE_TIME_RANGE: DatePickerRange<CalendarDateTime> = [
+	new CalendarDateTime(2026, 9, 5, 9, 30, 15),
+	new CalendarDateTime(2026, 9, 18, 17, 45, 30),
+]
+const PLAYGROUND_ZONED_DATE_TIME = parseZonedDateTime(
+	"2026-08-31T14:30:45+02:00[Europe/Prague]",
+)
+const PLAYGROUND_ZONED_DATE_TIME_RANGE: DatePickerRange<
+	typeof PLAYGROUND_ZONED_DATE_TIME
+> = [
+	parseZonedDateTime("2026-09-05T09:30:15+02:00[Europe/Prague]"),
+	parseZonedDateTime("2026-09-18T17:45:30+02:00[Europe/Prague]"),
+]
+const PLAYGROUND_MIN_DATE = new CalendarDate(2026, 8, 20)
+const PLAYGROUND_MAX_DATE = new CalendarDate(2026, 10, 10)
+
+function formatPlaygroundValue(value: unknown) {
+	if (Array.isArray(value)) {
+		return value.join(" – ") || "empty"
+	}
+
+	return value ? String(value) : "empty"
+}
+
+function DatePickerPlaygroundScenario({
+	defaultOpen,
+	disabled,
+	flip,
+	granularity,
+	hideTimeZone,
+	hourCycle,
+	initialValue,
+	invalid,
+	locale,
+	numOfMonths,
+	onOpenChange,
+	onValueChange,
+	offset,
+	placement,
+	readOnly,
+	required,
+	selectionMode,
+	shouldForceLeadingZeros,
+	size,
+	slide,
+	startOfWeek,
+	useDateBounds,
+	useUnavailableDate,
+	useUnavailableTime,
+	valueKind,
+}: DatePickerPlaygroundArgs) {
+	const [committedValue, setCommittedValue] = useState(
+		"No value has been committed during this test.",
+	)
+	const hasInitialValue = initialValue === "preset"
+	const min = useDateBounds ? PLAYGROUND_MIN_DATE : undefined
+	const max = useDateBounds ? PLAYGROUND_MAX_DATE : undefined
+	const resolvedNumOfMonths =
+		numOfMonths === "auto" ? (selectionMode === "range" ? 2 : 1) : numOfMonths
+	const isDateUnavailable = useUnavailableDate
+		? (date: DateValue) => date.day === 23
+		: undefined
+	const isTimeUnavailable = useUnavailableTime
+		? (value: DatePickerTimedValue) => value.hour === 13
+		: undefined
+	const handleValueChange = (details: {
+		value: unknown
+		valueAsString: unknown
+	}) => {
+		setCommittedValue(formatPlaygroundValue(details.valueAsString))
+		onValueChange?.(details)
+	}
+	const commonProps = {
+		defaultOpen,
+		disabled,
+		flip,
+		invalid,
+		isDateUnavailable,
+		locale,
+		max,
+		min,
+		numOfMonths: resolvedNumOfMonths,
+		offset: { crossAxis: 0, mainAxis: offset },
+		onOpenChange,
+		onValueChange: handleValueChange,
+		placement,
+		readOnly,
+		required,
+		shouldForceLeadingZeros,
+		size,
+		slide,
+		startOfWeek,
+	}
+
+	let field: ReactNode
+	if (granularity === "day") {
+		field =
+			selectionMode === "range" ? (
+				<DateRangeField
+					{...commonProps}
+					defaultValue={hasInitialValue ? PLAYGROUND_DATE_RANGE : null}
+					endName="playgroundEnd"
+					label="Reporting period"
+					startName="playgroundStart"
+				/>
+			) : (
+				<DateOnlyField
+					{...commonProps}
+					defaultValue={hasInitialValue ? PLAYGROUND_DATE : null}
+					label="Delivery date"
+					name="playgroundDate"
+				/>
+			)
+	} else {
+		const timeZone = valueKind === "zoned" ? "Europe/Prague" : "UTC"
+		const singleValue =
+			valueKind === "zoned"
+				? PLAYGROUND_ZONED_DATE_TIME
+				: PLAYGROUND_DATE_TIME
+		const rangeValue =
+			valueKind === "zoned"
+				? PLAYGROUND_ZONED_DATE_TIME_RANGE
+				: PLAYGROUND_DATE_TIME_RANGE
+
+		field =
+			selectionMode === "range" ? (
+				<TimedRangeField
+					{...commonProps}
+					defaultValue={hasInitialValue ? rangeValue : null}
+					endName="playgroundEnd"
+					granularity={granularity}
+					hideTimeZone={hideTimeZone}
+					hourCycle={hourCycle}
+					isTimeUnavailable={isTimeUnavailable}
+					label="Reporting period with time"
+					startName="playgroundStart"
+					timeZone={timeZone}
+				/>
+			) : (
+				<TimedField
+					{...commonProps}
+					defaultValue={hasInitialValue ? singleValue : null}
+					granularity={granularity}
+					hideTimeZone={hideTimeZone}
+					hourCycle={hourCycle}
+					isTimeUnavailable={isTimeUnavailable}
+					label="Appointment"
+					name="playgroundDateTime"
+					timeZone={timeZone}
+				/>
+			)
+	}
+
+	const modeDescription = `${selectionMode} · ${
+		granularity === "day" ? "date only" : `date and time to ${granularity}`
+	} · ${resolvedNumOfMonths} ${resolvedNumOfMonths === 1 ? "month" : "months"}`
+
+	return (
+		<div className="w-lg max-w-full space-y-200">
+			<div className="space-y-50 text-fg-primary">
+				<strong className="block font-medium">Active test scenario</strong>
+				<p data-testid="date-picker-playground-scenario">{modeDescription}</p>
+				<p>
+					Unavailable-date mode blocks day 23. Unavailable-time mode blocks
+					13:xx and disables Confirm.
+				</p>
+			</div>
+			<output
+				aria-live="polite"
+				className="block text-fg-primary"
+				data-testid="date-picker-playground-committed-value"
+			>
+				Last committed value: {committedValue}
+			</output>
+			<div
+				className={
+					selectionMode === "range" ? "w-lg max-w-full" : "w-md max-w-full"
+				}
+			>
+				{field}
+			</div>
+		</div>
+	)
+}
+
 const DatePickerDayRoot: ComponentType<DatePickerDayRootProps> = DatePicker.Root
 
 const meta = {
@@ -208,36 +442,211 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Playground: Story = {
+export const Playground: StoryObj<DatePickerPlaygroundArgs> = {
+	args: {
+		defaultOpen: false,
+		disabled: false,
+		flip: true,
+		granularity: "day",
+		hideTimeZone: false,
+		hourCycle: 24,
+		initialValue: "preset",
+		invalid: false,
+		locale: "cs-CZ",
+		numOfMonths: "auto",
+		offset: 8,
+		placement: "bottom-start",
+		readOnly: false,
+		required: false,
+		selectionMode: "single",
+		shouldForceLeadingZeros: false,
+		size: "md",
+		slide: true,
+		startOfWeek: 1,
+		useDateBounds: false,
+		useUnavailableDate: false,
+		useUnavailableTime: false,
+		valueKind: "floating",
+	},
+	argTypes: {
+		selectionMode: {
+			control: "select",
+			description: "Switches between one value and a start/end range.",
+			options: ["single", "range"],
+		},
+		granularity: {
+			control: "select",
+			description:
+				"Selects date-only or transactional date-and-time composition.",
+			options: ["day", "hour", "minute", "second"],
+		},
+		initialValue: {
+			control: "select",
+			description: "Starts the active scenario empty or with a canonical value.",
+			options: ["preset", "empty"],
+		},
+		valueKind: {
+			control: "select",
+			description:
+				"Uses a floating CalendarDateTime or Europe/Prague ZonedDateTime.",
+			if: { arg: "granularity", neq: "day" },
+			options: ["floating", "zoned"],
+		},
+		defaultOpen: {
+			control: "boolean",
+			description: "Restarts the scenario with its popup initially open.",
+		},
+		size: {
+			control: "select",
+			description: "Controls field and calendar density.",
+			options: ["sm", "md", "lg"],
+			table: { category: "Appearance" },
+		},
+		locale: {
+			control: "select",
+			description: "Controls segment order and localized calendar labels.",
+			options: ["cs-CZ", "en-US", "de-DE"],
+			table: { category: "Appearance" },
+		},
+		numOfMonths: {
+			control: "select",
+			description:
+				"Uses the component default (one month for single, two for range) or an explicit panel count.",
+			options: ["auto", 1, 2],
+			table: { category: "Appearance" },
+		},
+		startOfWeek: {
+			control: { max: 6, min: 0, step: 1, type: "number" },
+			description: "Sets the first weekday, from Sunday (0) through Saturday (6).",
+			table: { category: "Appearance" },
+		},
+		shouldForceLeadingZeros: {
+			control: "boolean",
+			description: "Keeps editable numeric date segments zero-padded.",
+			table: { category: "Appearance" },
+		},
+		hourCycle: {
+			control: "select",
+			description: "Switches timed scenarios between 12-hour and 24-hour input.",
+			if: { arg: "granularity", neq: "day" },
+			options: [12, 24],
+			table: { category: "Time" },
+		},
+		hideTimeZone: {
+			control: "boolean",
+			description: "Hides the zone label for ZonedDateTime scenarios.",
+			if: { arg: "granularity", neq: "day" },
+			table: { category: "Time" },
+		},
+		disabled: {
+			control: "boolean",
+			description: "Disables editing, clearing, and opening the popup.",
+			table: { category: "State" },
+		},
+		readOnly: {
+			control: "boolean",
+			description: "Preserves the value while preventing edits and clearing.",
+			table: { category: "State" },
+		},
+		invalid: {
+			control: "boolean",
+			description: "Applies error presentation and invalid ARIA state.",
+			table: { category: "State" },
+		},
+		required: {
+			control: "boolean",
+			description: "Marks the field label as required.",
+			table: { category: "State" },
+		},
+		useDateBounds: {
+			control: "boolean",
+			description: "Limits selection to 20 August through 10 October 2026.",
+			table: { category: "Availability" },
+		},
+		useUnavailableDate: {
+			control: "boolean",
+			description: "Marks day 23 of each visible month unavailable.",
+			table: { category: "Availability" },
+		},
+		useUnavailableTime: {
+			control: "boolean",
+			description: "Rejects 13:xx timed drafts and disables Confirm.",
+			if: { arg: "granularity", neq: "day" },
+			table: { category: "Availability" },
+		},
+		placement: {
+			control: "select",
+			description: "Chooses the preferred popup placement around the field.",
+			options: [
+				"bottom-start",
+				"bottom",
+				"bottom-end",
+				"top-start",
+				"top",
+				"top-end",
+			],
+			table: { category: "Popup" },
+		},
+		offset: {
+			control: { max: 32, min: 0, step: 1, type: "number" },
+			description: "Sets the main-axis distance from the field in pixels.",
+			table: { category: "Popup" },
+		},
+		flip: {
+			control: "boolean",
+			description: "Allows fallback placement when preferred space is unavailable.",
+			table: { category: "Popup" },
+		},
+		slide: {
+			control: "boolean",
+			description: "Keeps the popup inside the viewport by sliding it.",
+			table: { category: "Popup" },
+		},
+		onOpenChange: { control: false, table: { disable: true } },
+		onValueChange: { control: false, table: { disable: true } },
+	},
 	parameters: {
+		layout: "padded",
+		controls: {
+			expanded: true,
+			include: [
+				"selectionMode",
+				"granularity",
+				"initialValue",
+				"valueKind",
+				"defaultOpen",
+				"size",
+				"locale",
+				"numOfMonths",
+				"startOfWeek",
+				"shouldForceLeadingZeros",
+				"hourCycle",
+				"hideTimeZone",
+				"disabled",
+				"readOnly",
+				"invalid",
+				"required",
+				"useDateBounds",
+				"useUnavailableDate",
+				"useUnavailableTime",
+				"placement",
+				"offset",
+				"flip",
+				"slide",
+			],
+		},
 		docs: {
 			description: {
 				story:
-					"Use Controls to inspect the normal single-date field, locale, density, and field states.",
+					"Start in Scenario to choose single or range selection and date or timed granularity. The remaining control groups cover appearance, state, availability, and popup behavior. The canvas reports the active setup and last committed public value so a tester can verify each contract without switching stories.",
 			},
 		},
 	},
-	render: ({ children: _children, ...args }) => (
-		<div className="w-md">
-			<DatePicker.Root
-				{...args}
-				defaultValue={new CalendarDate(2026, 8, 31)}
-			>
-				<DatePicker.Label>Datum doručení</DatePicker.Label>
-				<DatePicker.Control>
-					<DatePicker.Segments />
-					<DatePicker.IndicatorGroup>
-						<DatePicker.ClearTrigger />
-						<DatePicker.Trigger />
-					</DatePicker.IndicatorGroup>
-				</DatePicker.Control>
-				<DatePicker.Positioner>
-					<DatePicker.Content>
-						<DatePicker.Calendar />
-					</DatePicker.Content>
-				</DatePicker.Positioner>
-			</DatePicker.Root>
-		</div>
+	render: (args) => (
+		<DatePickerPlaygroundScenario
+			{...args}
+			key={`${args.selectionMode}-${args.granularity}-${args.valueKind}-${args.initialValue}-${args.defaultOpen}`}
+		/>
 	),
 }
 

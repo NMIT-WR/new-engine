@@ -2,7 +2,7 @@
  * DatePicker — @techsio/ui-kit molecule.
  *
  * @component DatePicker
- * @componentVersion v1.1.0
+ * @componentVersion v1.1.1
  * @skill date-picker-usage
  * @changelog libs/ui/stories/changelog/changelog.stories.tsx
  */
@@ -174,10 +174,18 @@ const datePickerVariants = tv({
     label: "text-date-picker-label-fg",
     control: "w-full",
     inputControl: [
-      "date-picker-control-focus date-picker-control-validation form-control-base flex w-full items-center gap-date-picker-control",
+      "form-control-base flex w-full items-center gap-date-picker-control",
       "border-(length:--border-width-date-picker-control)",
       "border-date-picker-control-border bg-date-picker-control-bg text-date-picker-control-fg",
       "hover:border-date-picker-control-border-hover hover:bg-date-picker-control-bg-hover",
+      "data-focus:border-date-picker-control-border-focus data-focus:bg-date-picker-control-bg-focus",
+      "has-focus-visible:outline-(style:--default-ring-style) has-focus-visible:outline-(length:--default-ring-width)",
+      "has-focus-visible:outline-date-picker-control-ring",
+      "has-focus-visible:outline-offset-(length:--default-ring-offset)",
+      "data-[validation=error]:border-(length:--border-width-validation)",
+      "data-[validation=error]:border-date-picker-control-border-error",
+      "data-[validation=error]:hover:border-date-picker-control-border-error-hover",
+      "data-focus:data-[validation=error]:border-date-picker-control-border-error-focus",
       "data-disabled:cursor-not-allowed data-disabled:border-date-picker-control-border-disabled",
       "data-disabled:bg-date-picker-control-bg-disabled data-disabled:text-date-picker-control-fg-disabled",
       "data-readonly:bg-date-picker-control-bg-readonly",
@@ -199,17 +207,23 @@ const datePickerVariants = tv({
     ],
     indicatorGroup: "flex shrink-0 items-center gap-date-picker-indicator",
     trigger: [
-      "date-picker-trigger-focus inline-flex shrink-0 items-center justify-center rounded-date-picker-day border-0 p-0",
+      "inline-flex shrink-0 items-center justify-center rounded-date-picker-day border-0 p-0",
       "bg-date-picker-trigger-bg text-date-picker-trigger-fg",
       "hover:bg-date-picker-trigger-bg-hover",
       "active:bg-date-picker-trigger-bg-active",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-trigger-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "data-disabled:cursor-not-allowed data-disabled:text-date-picker-trigger-fg-disabled",
       "disabled:cursor-not-allowed disabled:bg-date-picker-control-bg-disabled disabled:text-date-picker-trigger-fg-disabled",
       "transition-colors duration-200 motion-reduce:transition-none",
     ],
     clearTrigger: [
-      "date-picker-trigger-focus inline-flex shrink-0 items-center justify-center rounded-date-picker-day p-0",
+      "inline-flex shrink-0 items-center justify-center rounded-date-picker-day p-0",
       "text-date-picker-trigger-fg hover:bg-date-picker-trigger-bg-hover active:bg-date-picker-trigger-bg-active",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-trigger-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "data-disabled:cursor-not-allowed data-disabled:text-date-picker-trigger-fg-disabled",
       "data-readonly:hidden",
       "disabled:cursor-not-allowed disabled:text-date-picker-trigger-fg-disabled",
@@ -237,13 +251,19 @@ const datePickerVariants = tv({
     viewControl:
       "flex min-w-0 items-center justify-between gap-date-picker-calendar",
     navigationTrigger: [
-      "date-picker-navigation-focus size-date-picker-navigation shrink-0 rounded-date-picker-day p-0",
+      "size-date-picker-navigation shrink-0 rounded-date-picker-day p-0",
       "text-date-picker-navigation-fg hover:bg-date-picker-navigation-bg-hover",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-navigation-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "disabled:cursor-not-allowed disabled:text-date-picker-navigation-fg-disabled",
     ],
     viewTrigger: [
-      "date-picker-navigation-focus min-w-0 flex-1 truncate rounded-date-picker-day px-date-picker-calendar-cell",
+      "min-w-0 flex-1 truncate rounded-date-picker-day px-date-picker-calendar-cell",
       "font-date-picker-view text-date-picker-navigation-fg hover:bg-date-picker-navigation-bg-hover",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-navigation-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
     ],
     viewHeading:
       "min-w-0 flex-1 truncate px-date-picker-calendar-cell text-center font-date-picker-view text-date-picker-navigation-fg",
@@ -254,9 +274,12 @@ const datePickerVariants = tv({
     ],
     tableCell: "p-0 text-center align-middle",
     dayTrigger: [
-      "date-picker-day-focus border-(length:--border-width-date-picker-day) flex w-full items-center justify-center",
+      "border-(length:--border-width-date-picker-day) flex w-full items-center justify-center",
       "rounded-date-picker-day border-date-picker-day-border bg-date-picker-day-bg text-date-picker-day-fg",
       "hover:bg-date-picker-day-bg-hover",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-day-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "data-today:border-date-picker-day-today-border",
       "data-in-range:rounded-none data-in-range:bg-date-picker-day-bg-range",
       "data-in-hover-range:rounded-none data-in-hover-range:bg-date-picker-day-bg-range-hover",
@@ -274,8 +297,11 @@ const datePickerVariants = tv({
       "transition-colors duration-200 motion-reduce:transition-none",
     ],
     periodTrigger: [
-      "date-picker-day-focus w-full rounded-date-picker-day p-date-picker-calendar-cell",
+      "w-full rounded-date-picker-day p-date-picker-calendar-cell",
       "text-date-picker-day-fg hover:bg-date-picker-day-bg-hover",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-day-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "data-selected:bg-date-picker-day-bg-selected data-selected:text-date-picker-day-fg-selected",
       "data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-date-picker-disabled",
     ],
@@ -298,8 +324,11 @@ const datePickerVariants = tv({
     timeInput:
       "token-date-picker-time-input px-date-picker-time-input text-center tabular-nums",
     dayPeriod: [
-      "date-picker-time-focus h-date-picker-time-field border-(length:--border-width-date-picker-time) rounded-date-picker-time text-date-picker-sm",
+      "h-date-picker-time-field border-(length:--border-width-date-picker-time) rounded-date-picker-time text-date-picker-sm",
       "border-date-picker-time-border bg-date-picker-time-bg px-date-picker-calendar-cell text-date-picker-time-fg",
+      "focus-visible:outline-(style:--default-ring-style) focus-visible:outline-(length:--default-ring-width)",
+      "focus-visible:outline-date-picker-time-ring",
+      "focus-visible:outline-offset-(length:--default-ring-offset)",
       "disabled:cursor-not-allowed disabled:opacity-date-picker-disabled",
     ],
     timeZone:
@@ -318,7 +347,7 @@ const datePickerVariants = tv({
           "h-date-picker-control-sm rounded-date-picker-control-sm p-date-picker-segments-sm text-date-picker-sm",
         trigger: "size-icon-control-sm text-icon-control-sm",
         clearTrigger: "size-icon-control-sm text-icon-control-sm",
-        content: "text-date-picker-sm",
+        content: "text-date-picker-content-sm",
         dayTrigger: "size-date-picker-day-sm",
         tableHeader: "h-date-picker-day-sm",
       },
@@ -327,7 +356,7 @@ const datePickerVariants = tv({
           "h-date-picker-control-md rounded-date-picker-control-md p-date-picker-segments-md text-date-picker-md",
         trigger: "size-icon-control-md text-icon-control-md",
         clearTrigger: "size-icon-control-md text-icon-control-md",
-        content: "text-date-picker-md",
+        content: "text-date-picker-content-md",
         dayTrigger: "size-date-picker-day-md",
         tableHeader: "h-date-picker-day-md",
       },
@@ -336,7 +365,7 @@ const datePickerVariants = tv({
           "h-date-picker-control-lg rounded-date-picker-control-lg p-date-picker-segments-lg text-date-picker-lg",
         trigger: "size-icon-control-lg text-icon-control-lg",
         clearTrigger: "size-icon-control-lg text-icon-control-lg",
-        content: "text-date-picker-lg",
+        content: "text-date-picker-content-lg",
         dayTrigger: "size-date-picker-day-lg",
         tableHeader: "h-date-picker-day-lg",
       },
@@ -913,7 +942,8 @@ DatePicker.Segments = function DatePickerSegments({
   startLabel = "Start",
   ...props
 }: DatePickerSegmentsProps) {
-  const { dateInputApi, selectionMode, styles } = useDatePickerContext()
+  const { dateInputApi, required, selectionMode, styles } =
+    useDatePickerContext()
   const startDescriptorId = useId()
   const endDescriptorId = useId()
 
@@ -921,6 +951,9 @@ DatePicker.Segments = function DatePickerSegments({
     dateInputApi.getSegments({ index }).map((segment, segmentIndex) => (
       <span
         {...dateInputApi.getSegmentProps({ index, segment })}
+        aria-required={
+          required && segment.type !== "literal" ? true : undefined
+        }
         className={styles.segment()}
         key={`${segment.type}-${segmentIndex}`}
       >
@@ -1540,6 +1573,10 @@ DatePicker.Calendar = function DatePickerCalendar({
 
   const renderDayPanel = (month: DateValue, index: number) => {
     const monthText = pickerApi.format(month, {
+      month: "short",
+      year: "numeric",
+    })
+    const monthLabel = pickerApi.format(month, {
       month: "long",
       year: "numeric",
     })
@@ -1568,13 +1605,13 @@ DatePicker.Calendar = function DatePickerCalendar({
               {renderPanelNavigationTrigger(index, -1, "day")}
               <Button
                 {...viewTriggerProps}
-                aria-label={`${viewTriggerProps["aria-label"]}: ${monthText}`}
+                aria-label={`${viewTriggerProps["aria-label"]}: ${monthLabel}`}
                 className={styles.viewTrigger()}
                 id={`${viewTriggerProps.id}-${index}`}
                 onClick={() => openPeriodChooser(index)}
                 size="current"
                 theme="unstyled"
-                title={monthText}
+                title={monthLabel}
                 type="button"
               >
                 {monthText}

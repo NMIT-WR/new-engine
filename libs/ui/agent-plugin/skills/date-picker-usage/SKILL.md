@@ -1,5 +1,5 @@
 ---
-component_version: "1.1.0"
+component_version: "1.1.1"
 name: date-picker-usage
 description: >
   Use after component-usage-ux when an app needs @techsio/ui-kit DatePicker
@@ -145,6 +145,12 @@ range: startName, endName, form
 placement, gutter, offset, flip, sameWidth, slide, overflowPadding
 ```
 
+The `sm`, `md`, and `lg` field sizes follow the shared Input typography and
+form-control geometry. `readOnly` keeps the normal field surface while
+removing edit and clear affordances. `invalid` uses the same validation border
+width and danger-state progression as Input; the normal focus ring remains the
+focus indicator.
+
 ## Core Patterns
 
 ### Keep one typed value shape
@@ -230,6 +236,10 @@ TimeControl parts preserve the private Zag Date Input and Date Picker wiring.
 Use meaningful label text. The default Clear, Calendar, Cancel, and Confirm
 trigger labels are accessible; replace their children only with equally clear
 content or an accessible name.
+
+Required editable segments expose `aria-required`. Pass `aria-describedby` to
+`DatePicker.Segments` when external help or validation text describes the
+compound field.
 
 ## Non-Goals
 

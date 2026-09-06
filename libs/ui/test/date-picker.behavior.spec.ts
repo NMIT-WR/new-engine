@@ -12,6 +12,7 @@ const stories = {
     "molecules-datepicker--localized-unavailable-range",
   playground: "molecules-datepicker--playground",
   rangeForm: "molecules-datepicker--range-form-serialization",
+  sizes: "molecules-datepicker--sizes",
   states: "molecules-datepicker--states",
   timedOpen: "molecules-datepicker--initially-open-timed-draft",
   timedRangeOpen: "molecules-datepicker--initially-open-date-time-range",
@@ -20,13 +21,18 @@ const stories = {
   zonedRange: "molecules-datepicker--zoned-date-time-range",
 } as const
 
+const inputStories = {
+  allVariants: "atoms-input--all-variants",
+} as const
+
 const pickerRootSelector = '[data-scope="date-picker"][data-part="root"]'
 const contentSelector = '[data-scope="date-picker"][data-part="content"]'
 const daySelector =
   '[data-scope="date-picker"][data-part="table-cell-trigger"]:not([data-selected]):not([data-disabled]):not([data-unavailable]):not([data-outside-range])'
 
-async function openStory(page: Page, storyId: string) {
-  await page.goto(`/iframe.html?id=${storyId}&viewMode=story`, {
+async function openStory(page: Page, storyId: string, args?: string) {
+  const storyArgs = args ? `&args=${args}` : ""
+  await page.goto(`/iframe.html?id=${storyId}&viewMode=story${storyArgs}`, {
     waitUntil: "domcontentloaded",
   })
   await expect(page.locator("#storybook-root")).not.toBeEmpty()
@@ -41,6 +47,22 @@ function hiddenValue(root: Locator) {
   return root.locator('input[type="hidden"]')
 }
 
+async function getControlStyles(control: Locator) {
+  return control.evaluate((node) => {
+    const styles = getComputedStyle(node)
+
+    return {
+      backgroundColor: styles.backgroundColor,
+      borderColor: styles.borderColor,
+      borderWidth: styles.borderWidth,
+      fontSize: styles.fontSize,
+      outlineColor: styles.outlineColor,
+      outlineStyle: styles.outlineStyle,
+      outlineWidth: styles.outlineWidth,
+    }
+  })
+}
+
 async function chooseDifferentDay(page: Page) {
   const target = page.locator(daySelector).first()
   await expect(target).toBeVisible()
@@ -50,6 +72,193 @@ async function chooseDifferentDay(page: Page) {
 }
 
 test.describe("DatePicker browser behavior", () => {
+  test("matches the shared Input size and validation presentation", async ({
+    page,
+  }) => {
+    await openStory(page, stories.sizes)
+    const datePickerControls = page.locator(
+      '[data-scope="date-input"][data-part="control"]'
+    )
+    const datePickerFontSizes = await datePickerControls.evaluateAll((nodes) =>
+      nodes.map((node) => getComputedStyle(node).fontSize)
+    )
+
+    await page.goto(
+      `/iframe.html?id=${inputStories.allVariants}&viewMode=story`,
+      { waitUntil: "domcontentloaded" }
+    )
+    const inputs = page.locator("input")
+    await expect(inputs.first()).toBeVisible()
+    const inputFontSizes = await inputs
+      .evaluateAll((nodes) =>
+        nodes.slice(0, 3).map((node) => getComputedStyle(node).fontSize)
+      )
+    const inputPlaceholderColor = await inputs
+      .first()
+      .evaluate((node) => getComputedStyle(node, "::placeholder").color)
+    expect(datePickerFontSizes).toEqual(inputFontSizes)
+
+    const inputError = inputs.nth(4)
+    await inputError.evaluate((node) => {
+      node.style.transition = "none"
+    })
+    const inputErrorStyles = await getControlStyles(inputError)
+    await inputError.hover()
+    const inputErrorHoverStyles = await getControlStyles(inputError)
+    await inputError.focus()
+    const inputErrorFocusStyles = await getControlStyles(inputError)
+
+    await openStory(page, stories.states)
+    const invalidRoot = pickerByLabel(page, "Invalid")
+    const invalidControl = invalidRoot.locator(
+      '[data-scope="date-input"][data-part="control"]'
+    )
+    const datePickerPlaceholderColor = await invalidRoot
+      .locator('[data-scope="date-input"][data-part="segment"]')
+      .first()
+      .evaluate((node) => getComputedStyle(node).color)
+    expect(datePickerPlaceholderColor).toBe(inputPlaceholderColor)
+    await invalidControl.evaluate((node) => {
+      node.style.transition = "none"
+    })
+    const invalidStyles = await getControlStyles(invalidControl)
+
+    expect(invalidStyles.borderColor).toBe(inputErrorStyles.borderColor)
+    expect(invalidStyles.borderWidth).toBe(inputErrorStyles.borderWidth)
+    expect(invalidStyles.outlineStyle).toBe(inputErrorStyles.outlineStyle)
+    expect(invalidStyles.outlineWidth).toBe(inputErrorStyles.outlineWidth)
+
+    await invalidControl.hover()
+    expect((await getControlStyles(invalidControl)).borderColor).toBe(
+      inputErrorHoverStyles.borderColor
+    )
+
+    await invalidRoot
+      .locator('[data-scope="date-input"][data-part="segment"]')
+      .first()
+      .focus()
+    const invalidFocusStyles = await getControlStyles(invalidControl)
+    expect(invalidFocusStyles.borderColor).toBe(
+      inputErrorFocusStyles.borderColor
+    )
+    expect(invalidFocusStyles.outlineColor).toBe(
+      inputErrorFocusStyles.outlineColor
+    )
+    expect(invalidFocusStyles.outlineStyle).toBe(
+      inputErrorFocusStyles.outlineStyle
+    )
+    expect(invalidFocusStyles.outlineWidth).toBe(
+      inputErrorFocusStyles.outlineWidth
+    )
+  })
+
+  test("keeps read-only styling neutral and exposes required semantics", async ({
+    page,
+  }) => {
+    await openStory(page, stories.playground)
+    const defaultControlStyles = await getControlStyles(
+      page.locator('[data-scope="date-input"][data-part="control"]').first()
+    )
+
+    await openStory(page, stories.states)
+    const readOnlyControlStyles = await getControlStyles(
+      pickerByLabel(page, "Read only").locator(
+        '[data-scope="date-input"][data-part="control"]'
+      )
+    )
+    expect(readOnlyControlStyles.backgroundColor).toBe(
+      defaultControlStyles.backgroundColor
+    )
+
+    const requiredRoot = pickerByLabel(page, "Required")
+    await expect(
+      requiredRoot
+        .locator('[data-scope="date-input"][data-part="segment"]')
+        .first()
+    ).toHaveAttribute("aria-required", "true")
+  })
+
+  test("keeps the calendar heading compact and accessible", async ({ page }) => {
+    await openStory(page, stories.dateOnlyOpen)
+
+    const viewTrigger = page.locator(
+      '[data-scope="date-picker"][data-part="view-trigger"]'
+    )
+    await expect(viewTrigger).toHaveText("Sep 2026")
+    expect(
+      await viewTrigger.evaluate((node) => node.scrollWidth <= node.clientWidth)
+    ).toBe(true)
+    await expect(viewTrigger).toHaveAttribute("title", "September 2026")
+  })
+
+  test("exposes every compound mode through the playground scenario controls", async ({
+    page,
+  }) => {
+    const scenarios = [
+      {
+        args: "selectionMode:single;granularity:day;defaultOpen:true",
+        granularity: "day",
+        hiddenInputs: 1,
+        monthPanels: 1,
+        selectionMode: "single",
+        timeGroups: 0,
+      },
+      {
+        args: "selectionMode:range;granularity:day;defaultOpen:true",
+        granularity: "day",
+        hiddenInputs: 2,
+        monthPanels: 2,
+        selectionMode: "range",
+        timeGroups: 0,
+      },
+      {
+        args: "selectionMode:single;granularity:minute;defaultOpen:true",
+        granularity: "minute",
+        hiddenInputs: 1,
+        monthPanels: 1,
+        selectionMode: "single",
+        timeGroups: 1,
+      },
+      {
+        args: "selectionMode:range;granularity:minute;valueKind:zoned;defaultOpen:true",
+        granularity: "minute",
+        hiddenInputs: 2,
+        monthPanels: 2,
+        selectionMode: "range",
+        timeGroups: 2,
+      },
+    ] as const
+
+    for (const scenario of scenarios) {
+      await openStory(page, stories.playground, scenario.args)
+
+      const root = page.locator(pickerRootSelector).first()
+      await expect(root).toHaveAttribute(
+        "data-selection-mode",
+        scenario.selectionMode
+      )
+      await expect(root).toHaveAttribute(
+        "data-granularity",
+        scenario.granularity
+      )
+      await expect(hiddenValue(root)).toHaveCount(scenario.hiddenInputs)
+      await expect(page.locator(contentSelector)).toBeVisible()
+      await expect(
+        page.locator(
+          '[data-scope="date-picker"][data-part="calendar"] > [data-index]'
+        )
+      ).toHaveCount(scenario.monthPanels)
+      await expect(
+        page.locator(
+          '[data-scope="date-picker"][data-part="time-control"] > [role="group"]'
+        )
+      ).toHaveCount(scenario.timeGroups)
+      await expect(
+        page.getByTestId("date-picker-playground-scenario")
+      ).toContainText(scenario.selectionMode)
+    }
+  })
+
   test("supports real segmented keyboard entry", async ({ page }) => {
     await openStory(page, stories.playground)
 
@@ -176,8 +385,8 @@ test.describe("DatePicker browser behavior", () => {
       .nth(1)
       .getByRole("button", { name: /next month/i })
       .click()
-    await expect(panels.nth(0)).toContainText("September 2026")
-    await expect(panels.nth(1)).toContainText("November 2026")
+    await expect(panels.nth(0)).toContainText("Sep 2026")
+    await expect(panels.nth(1)).toContainText("Nov 2026")
 
     await chooseDifferentDay(page)
     await expect(page.locator(contentSelector)).toBeVisible()
@@ -207,20 +416,20 @@ test.describe("DatePicker browser behavior", () => {
     await expect(endPanel.locator("tbody tr")).toHaveCount(6)
 
     await startPanel.getByRole("button", { name: /previous month/i }).click()
-    await expect(startPanel).toContainText("August 2026")
-    await expect(endPanel).toContainText("October 2026")
+    await expect(startPanel).toContainText("Aug 2026")
+    await expect(endPanel).toContainText("Oct 2026")
 
     await endPanel.getByRole("button", { name: /October 2026/ }).click()
-    await expect(startPanel).toContainText("August 2026")
+    await expect(startPanel).toContainText("Aug 2026")
     await expect(endPanel).toHaveAttribute("data-view", "month")
     await expect(
       endPanel.getByRole("button", { name: /November/ })
     ).toBeVisible()
 
     await endPanel.getByRole("button", { name: /November/ }).click()
-    await expect(startPanel).toContainText("August 2026")
+    await expect(startPanel).toContainText("Aug 2026")
     await expect(endPanel).toHaveAttribute("data-view", "day")
-    await expect(endPanel).toContainText("November 2026")
+    await expect(endPanel).toContainText("Nov 2026")
   })
 
   test("commits indexed direct range entry only after both groups are complete", async ({

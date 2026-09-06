@@ -16,13 +16,15 @@
   --color-date-picker-accent-foreground: var(--color-fg-light);
   --color-date-picker-text: var(--color-fg-primary);
   --color-date-picker-text-muted: var(--color-fg-secondary);
-  --color-date-picker-placeholder: var(--color-form-control-placeholder);
+  --color-date-picker-placeholder: var(--color-form-control-fg-placeholder);
   --color-date-picker-disabled: var(--color-form-control-fg-disabled);
   --color-date-picker-border: var(--color-form-control-border);
   --color-date-picker-border-hover: var(--color-form-control-border-hover);
   --color-date-picker-focus: var(--color-form-control-border-focus);
   --color-date-picker-ring: var(--color-form-control-ring);
-  --color-date-picker-error: var(--color-bg-danger-base);
+  --color-date-picker-error: var(--color-danger);
+  --color-date-picker-error-hover: var(--color-border-danger-hover);
+  --color-date-picker-error-focus: var(--color-border-danger-focus);
   --color-date-picker-range: color-mix(
     in oklab,
     var(--color-date-picker-accent) 20%,
@@ -35,7 +37,7 @@
   --color-date-picker-control-bg: var(--color-date-picker-fill);
   --color-date-picker-control-bg-hover: var(--color-date-picker-fill-hover);
   --color-date-picker-control-bg-focus: var(--color-date-picker-fill-active);
-  --color-date-picker-control-bg-readonly: var(--color-date-picker-fill-active);
+  --color-date-picker-control-bg-readonly: var(--color-date-picker-fill);
   --color-date-picker-control-bg-disabled: var(
     --color-form-control-bg-disabled
   );
@@ -47,6 +49,12 @@
   );
   --color-date-picker-control-border-focus: var(--color-date-picker-focus);
   --color-date-picker-control-border-error: var(--color-date-picker-error);
+  --color-date-picker-control-border-error-hover: var(
+    --color-date-picker-error-hover
+  );
+  --color-date-picker-control-border-error-focus: var(
+    --color-date-picker-error-focus
+  );
   --color-date-picker-control-border-disabled: var(
     --color-form-control-border-disabled
   );
@@ -155,9 +163,12 @@
   --height-date-picker-time-field: var(--height-form-control-sm);
   --width-date-picker-time-field: var(--dimension-40);
 
-  --text-date-picker-sm: var(--text-xs);
-  --text-date-picker-md: var(--text-sm);
-  --text-date-picker-lg: var(--text-sm);
+  --text-date-picker-sm: var(--text-sm);
+  --text-date-picker-md: var(--text-md);
+  --text-date-picker-lg: var(--text-lg);
+  --text-date-picker-content-sm: var(--text-xs);
+  --text-date-picker-content-md: var(--text-sm);
+  --text-date-picker-content-lg: var(--text-sm);
   --text-date-picker-weekday: var(--text-xs);
   --text-date-picker-time-label: var(--text-xs);
   --font-weight-date-picker-view: var(--font-weight-medium);
@@ -177,63 +188,6 @@
 @utility date-picker-segment-size {
   min-width: var(--size-date-picker-segment);
   min-height: var(--size-date-picker-segment);
-}
-
-@utility date-picker-control-focus {
-  &:focus-within {
-    border-color: var(--color-date-picker-control-border-focus);
-    background-color: var(--color-date-picker-control-bg-focus);
-    outline-style: var(--default-ring-style);
-    outline-width: var(--default-ring-width);
-    outline-color: var(--color-date-picker-control-ring);
-    outline-offset: var(--default-ring-offset);
-  }
-}
-
-@utility date-picker-control-validation {
-  &[data-validation="error"] {
-    border-color: var(--color-date-picker-control-border-error);
-    outline-style: var(--default-ring-style);
-    outline-width: var(--default-ring-width);
-    outline-color: var(--color-date-picker-control-border-error);
-    outline-offset: var(--default-ring-offset);
-  }
-}
-
-@utility date-picker-trigger-focus {
-  &:focus-visible {
-    outline-style: var(--default-ring-style);
-    outline-width: var(--default-ring-width);
-    outline-color: var(--color-date-picker-trigger-ring);
-    outline-offset: var(--default-ring-offset);
-  }
-}
-
-@utility date-picker-navigation-focus {
-  &:focus-visible {
-    outline-style: var(--default-ring-style);
-    outline-width: var(--default-ring-width);
-    outline-color: var(--color-date-picker-navigation-ring);
-    outline-offset: var(--default-ring-offset);
-  }
-}
-
-@utility date-picker-day-focus {
-  &:focus-visible {
-    outline-style: var(--default-ring-style);
-    outline-width: var(--default-ring-width);
-    outline-color: var(--color-date-picker-day-ring);
-    outline-offset: var(--default-ring-offset);
-  }
-}
-
-@utility date-picker-time-focus {
-  &:focus-visible {
-    outline-style: var(--default-ring-style);
-    outline-width: var(--default-ring-width);
-    outline-color: var(--color-date-picker-time-ring);
-    outline-offset: var(--default-ring-offset);
-  }
 }
 
 @utility token-icon-date-picker-calendar {
