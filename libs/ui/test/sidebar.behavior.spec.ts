@@ -24,6 +24,50 @@ async function waitForMode(page: Page, mode: "desktop" | "mobile") {
 }
 
 test.describe("Sidebar responsive behavior", () => {
+  test("keeps Playground Controls and panel expansion in sync", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== "desktop",
+      "Storybook Controls are covered once on desktop"
+    )
+
+    await page.setViewportSize({ height: 1000, width: 1600 })
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto("/?path=/story/organisms-sidebar--playground", {
+      waitUntil: "domcontentloaded",
+    })
+    await page.getByRole("tab", { name: "Controls" }).click()
+
+    const startControl = page.getByRole("checkbox", {
+      name: "start",
+      exact: true,
+    })
+    const preview = page.frameLocator("#storybook-preview-iframe")
+    const panel = preview.getByRole("complementary", {
+      name: "Primary navigation",
+    })
+    const trigger = preview.getByRole("button", {
+      name: "Toggle start navigation",
+    })
+
+    await expect(startControl).toBeChecked()
+    await expect(panel).toHaveAttribute("data-state", "expanded")
+    await startControl.uncheck()
+    await expect(panel).toHaveAttribute("data-state", "collapsed")
+
+    await trigger.click()
+    await expect(panel).toHaveAttribute("data-state", "expanded")
+    await expect(startControl).toBeChecked()
+
+    await trigger.click()
+    await expect(panel).toHaveAttribute("data-state", "collapsed")
+    await expect(startControl).not.toBeChecked()
+
+    await startControl.check()
+    await expect(panel).toHaveAttribute("data-state", "expanded")
+  })
+
   test("preserves focus intent across repeated breakpoint changes", async ({
     page,
   }, testInfo) => {

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { useState, type CSSProperties, type MouseEvent } from "react"
+import { useArgs } from "storybook/preview-api"
 import { fn } from "storybook/test"
 
 import { Button } from "../../src/atoms/button"
@@ -275,10 +276,7 @@ const meta = {
     onMobileOpenChange: fn(),
   },
   argTypes: {
-    defaultExpanded: {
-      control: "check",
-      options: ["start", "end"],
-    },
+    defaultExpanded: { control: false },
     dir: {
       control: "inline-radio",
       options: ["ltr", "rtl"],
@@ -290,6 +288,7 @@ const meta = {
     mobileOpen: { control: false },
     onExpandedChange: { control: false },
     onMobileOpenChange: { control: false },
+    ref: { control: false },
   },
 } satisfies Meta<typeof Sidebar>
 
@@ -298,12 +297,32 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  render: (args) => (
-    <Sidebar {...args}>
-      <StandardPanel label="Primary navigation" />
-      <MainSurface title="Store overview" />
-    </Sidebar>
-  ),
+  args: {
+    expanded: ["start"],
+  },
+  argTypes: {
+    expanded: {
+      control: "check",
+      options: ["start"],
+      description: "Desktop panels currently expanded",
+    },
+  },
+  render: function PlaygroundWithControls(args) {
+    const [, updateArgs] = useArgs<{ expanded: readonly SidebarSide[] }>()
+
+    return (
+      <Sidebar
+        {...args}
+        onExpandedChange={(details) => {
+          args.onExpandedChange?.(details)
+          updateArgs({ expanded: details.expanded })
+        }}
+      >
+        <StandardPanel label="Primary navigation" />
+        <MainSurface title="Store overview" />
+      </Sidebar>
+    )
+  },
 }
 
 function ControlledOffcanvasExample() {
