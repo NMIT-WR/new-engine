@@ -34,9 +34,9 @@
   /* VIEWPORT AND WIDTHS */
   --spacing-sidebar-offset: 0rem;
   --height-sidebar-viewport: calc(100dvh - var(--spacing-sidebar-offset));
-  --width-sidebar-expanded: 16rem;
-  --width-sidebar-icon: 3.5rem;
-  --container-sidebar-mobile: 18rem;
+  --width-sidebar-expanded: var(--container-3xs);
+  --width-sidebar-icon: var(--dimension-56);
+  --container-sidebar-mobile: var(--container-2xs);
   --width-sidebar-rail: var(--dimension-12);
   --width-sidebar-rail-indicator: var(--dimension-2);
   --height-sidebar-rail-indicator: var(--dimension-32);
