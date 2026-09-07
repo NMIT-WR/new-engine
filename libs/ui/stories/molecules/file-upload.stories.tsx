@@ -27,11 +27,14 @@ const meta = {
     controls: {
       include: [
         "accept",
+        "allowDrop",
         "disabled",
         "invalid",
         "maxFileSize",
         "maxFiles",
         "minFileSize",
+        "readOnly",
+        "required",
       ],
     },
     docs: {
@@ -70,9 +73,18 @@ const meta = {
       control: { type: "number", min: 0, step: 1024 },
       description: "Minimum accepted file size in bytes.",
     },
+    readOnly: {
+      control: "boolean",
+      description: "Prevents changing the current file selection.",
+    },
+    required: {
+      control: "boolean",
+      description: "Marks the native file input and label as required.",
+    },
   },
   args: {
     accept: { "image/*": [".png", ".jpg", ".jpeg"] },
+    allowDrop: true,
     disabled: false,
     invalid: false,
     maxFileSize: 5 * 1024 * 1024,
@@ -81,6 +93,8 @@ const meta = {
     onFileAccept: fn(),
     onFileChange: fn(),
     onFileReject: fn(),
+    readOnly: false,
+    required: false,
   },
 } satisfies Meta<typeof FileUpload>
 
@@ -353,6 +367,13 @@ export const States: Story = {
           </StatusText>
         </FileUpload>
       </VariantGroup>
+      <VariantGroup fullWidth title="Required">
+        <FileUpload className="w-full max-w-md" required>
+          <FileUpload.Label>Required attachments</FileUpload.Label>
+          <FileUpload.HiddenInput />
+          <FileUpload.Trigger>Select required files</FileUpload.Trigger>
+        </FileUpload>
+      </VariantGroup>
     </VariantContainer>
   ),
   play: async ({ canvasElement }) => {
@@ -370,6 +391,10 @@ export const States: Story = {
     await Promise.all(hiddenInputs.map((input) => expect(input).toBeDisabled()))
     await expect(canvas.getByText("invoice.pdf")).toBeInTheDocument()
     await expect(canvas.getByText("Select a supported document.")).toBeVisible()
+    await expect(
+      canvas.getByLabelText(/Required attachments/)
+    ).toBeRequired()
+    await expect(canvas.getByText("*")).toBeVisible()
   },
 }
 
@@ -482,6 +507,66 @@ export const Dropzone: Story = {
       dropzone.blur()
       openFilePicker.mockRestore()
     }
+  },
+}
+
+export const DropzoneStates: Story = {
+  render: () => (
+    <VariantContainer>
+      <VariantGroup fullWidth title="Keyboard focus">
+        <FileUpload className="w-full max-w-md">
+          <FileUpload.Label>Focused dropzone</FileUpload.Label>
+          <FileUpload.HiddenInput />
+          <FileUpload.Dropzone>
+            <DropzoneContent
+              detail="The focus ring remains visible for review"
+              title="Focus via keyboard"
+            />
+          </FileUpload.Dropzone>
+        </FileUpload>
+      </VariantGroup>
+      <VariantGroup fullWidth title="Dragging">
+        <FileUpload className="w-full max-w-md">
+          <FileUpload.Label>Dragging over dropzone</FileUpload.Label>
+          <FileUpload.HiddenInput />
+          <FileUpload.Dropzone>
+            <DropzoneContent
+              detail="The active drop target uses the shared accent"
+              title="Release to add files"
+            />
+          </FileUpload.Dropzone>
+        </FileUpload>
+      </VariantGroup>
+    </VariantContainer>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const focusedDropzone = canvas
+      .getByText("Focus via keyboard")
+      .closest<HTMLElement>('[data-part="dropzone"]')
+    const draggingDropzone = canvas
+      .getByText("Release to add files")
+      .closest<HTMLElement>('[data-part="dropzone"]')
+
+    if (!(focusedDropzone && draggingDropzone)) {
+      throw new Error("FileUpload dropzone state fixtures are missing")
+    }
+
+    focusedDropzone.focus()
+    await expect(focusedDropzone).toHaveFocus()
+
+    const dataTransfer = new DataTransfer()
+    dataTransfer.items.add(createImageFile("dragging.png"))
+    draggingDropzone.dispatchEvent(
+      new DragEvent("dragover", {
+        bubbles: true,
+        cancelable: true,
+        dataTransfer,
+      })
+    )
+    await waitFor(() =>
+      expect(draggingDropzone).toHaveAttribute("data-dragging")
+    )
   },
 }
 
@@ -818,8 +903,9 @@ export const Form: Story = {
     onFormSubmit.mockClear()
     const canvas = within(canvasElement)
     const input = canvas.getByLabelText<HTMLInputElement>(
-      "Required attachment"
+      /Required attachment/
     )
+    await expect(canvas.getByText("*")).toBeVisible()
     await expect(input).toHaveAttribute("name", "attachments")
     await expect(input).toBeRequired()
     await userEvent.upload(input, createPdfFile("signed.pdf"))

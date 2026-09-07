@@ -80,6 +80,7 @@ const fileUploadStyles = tv({
 
 type FileUploadContextValue = {
   api: FileUploadApi
+  required?: boolean
   styles: ReturnType<typeof fileUploadStyles>
 }
 
@@ -210,7 +211,7 @@ export function FileUpload({
   const rootProps = mergeProps(props, api.getRootProps())
 
   return (
-    <FileUploadContext.Provider value={{ api, styles }}>
+    <FileUploadContext.Provider value={{ api, required, styles }}>
       <div className={styles.root({ className })} ref={ref} {...rootProps}>
         {children}
       </div>
@@ -243,12 +244,13 @@ FileUpload.Label = function FileUploadLabel({
   ref,
   ...props
 }: FileUploadLabelProps) {
-  const { api, styles } = useFileUploadContext()
+  const { api, required, styles } = useFileUploadContext()
   const labelProps = mergeProps({ ref }, props, api.getLabelProps())
 
   return (
     <Label
       className={styles.label({ className })}
+      required={required}
       size="current"
       {...labelProps}
     >

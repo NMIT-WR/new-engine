@@ -137,7 +137,8 @@ second file-state model.
 
 `FileUpload.HiddenInput` is required for the native picker and form contract.
 Set `name` and `required` on the root; do not replace the part with a separate
-native file input or override its machine-owned attributes.
+native file input or override its machine-owned attributes. Root `required`
+also renders the shared required indicator through `FileUpload.Label`.
 
 ### Render accepted and rejected files deliberately
 
