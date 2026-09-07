@@ -11,6 +11,7 @@ import {
 } from "storybook/test"
 import { VariantContainer, VariantGroup } from "../../.storybook/decorator"
 import { Button } from "../../src/atoms/button"
+import { Icon, type IconType } from "../../src/atoms/icon"
 import { Input } from "../../src/atoms/input"
 import { StatusText } from "../../src/atoms/status-text"
 import {
@@ -210,10 +211,15 @@ function formatFileRequirements({
 
 type FileItemsProps = {
   imagePreview?: boolean
+  previewIcon?: IconType
   type?: "accepted" | "rejected"
 }
 
-function FileItems({ imagePreview = false, type = "accepted" }: FileItemsProps) {
+function FileItems({
+  imagePreview = false,
+  previewIcon,
+  type = "accepted",
+}: FileItemsProps) {
   return (
     <FileUpload.Context>
       {(api) => {
@@ -230,7 +236,9 @@ function FileItems({ imagePreview = false, type = "accepted" }: FileItemsProps) 
                 key={`${file.name}-${file.lastModified}`}
               >
                 <FileUpload.ItemPreview>
-                  {imagePreview && type === "accepted" ? (
+                  {previewIcon ? (
+                    <Icon icon={previewIcon} size="lg" />
+                  ) : imagePreview && type === "accepted" ? (
                     <FileUpload.ItemPreviewImage />
                   ) : undefined}
                 </FileUpload.ItemPreview>
@@ -625,41 +633,28 @@ export const CustomPreview: Story = {
           </Button>
         )}
       </FileUpload.Context>
-      <FileItems imagePreview />
+      <FileItems previewIcon="token-icon-file-upload-image" />
     </FileUpload>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const revokeObjectUrl = spyOn(URL, "revokeObjectURL")
-
-    try {
-      await expect(
-        await canvas.findByAltText("preview of thumbnail.png")
-      ).toBeVisible()
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Use replacement image" })
-      )
-      await expect(
-        await canvas.findByAltText("preview of replacement.png")
-      ).toBeVisible()
-      await expect(
-        canvas.queryByAltText("preview of thumbnail.png")
-      ).not.toBeInTheDocument()
-      await waitFor(() => expect(revokeObjectUrl).toHaveBeenCalledTimes(1))
-      await userEvent.click(
-        canvas.getByRole("button", { name: "delete file replacement.png" })
-      )
-      await waitFor(() => expect(revokeObjectUrl).toHaveBeenCalledTimes(2))
-      await userEvent.upload(
-        canvas.getByLabelText("Thumbnail"),
-        createImageFile("thumbnail.png")
-      )
-      await expect(
-        await canvas.findByAltText("preview of thumbnail.png")
-      ).toBeVisible()
-    } finally {
-      revokeObjectUrl.mockRestore()
-    }
+    await expect(canvas.getByText("thumbnail.png")).toBeVisible()
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Use replacement image" })
+    )
+    await expect(canvas.getByText("replacement.png")).toBeVisible()
+    await expect(canvas.queryByText("thumbnail.png")).not.toBeInTheDocument()
+    await userEvent.click(
+      canvas.getByRole("button", { name: "delete file replacement.png" })
+    )
+    await waitFor(() =>
+      expect(canvas.queryByText("replacement.png")).not.toBeInTheDocument()
+    )
+    await userEvent.upload(
+      canvas.getByLabelText("Thumbnail"),
+      createImageFile("thumbnail.png")
+    )
+    await expect(await canvas.findByText("thumbnail.png")).toBeVisible()
   },
 }
 

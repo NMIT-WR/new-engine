@@ -53,9 +53,7 @@ import { FileUpload } from "@techsio/ui-kit/molecules/file-upload"
               file={file}
               key={`${file.name}-${file.lastModified}`}
             >
-              <FileUpload.ItemPreview>
-                <FileUpload.ItemPreviewImage />
-              </FileUpload.ItemPreview>
+              <FileUpload.ItemPreview />
               <FileUpload.ItemName />
               <FileUpload.ItemSizeText />
               <FileUpload.ItemDeleteTrigger />
@@ -103,9 +101,11 @@ FileUpload.ClearTrigger
 `FileUpload.Context` passes the connected Zag API unchanged. `ItemGroup`
 provides `type="accepted" | "rejected"` to its items, and `Item` provides its
 `file` to the preview, name, size, and delete parts. `ItemName` and
-`ItemSizeText` render the current file values by default. `ItemPreviewImage`
-creates its object URL through Zag and revokes it when the file changes or the
-part unmounts.
+`ItemSizeText` render the current file values by default. `ItemPreview` renders
+a stable file icon by default and accepts custom content when a file-type icon
+is more useful. Use `ItemPreviewImage` only when an actual image thumbnail adds
+meaning; it creates its object URL through Zag and revokes it when the file
+changes or the part unmounts.
 
 There is no `Items`, `List`, `FileText`, `PropsProvider`, public store/provider,
 `size`, or `variant` API. Compose ordinary content around the public parts when

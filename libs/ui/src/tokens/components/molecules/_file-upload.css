@@ -115,6 +115,10 @@
   @apply token-icon-file-document;
 }
 
+@utility token-icon-file-upload-image {
+  @apply icon-[mdi--file-image-outline];
+}
+
 @utility token-icon-file-upload-delete {
   @apply token-icon-trash;
 }
