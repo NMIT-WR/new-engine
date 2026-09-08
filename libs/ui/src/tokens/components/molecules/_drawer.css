@@ -1,6 +1,6 @@
 @theme static {
   /* BASE COLOR MAPPING */
-  --color-drawer-surface: var(--color-surface);
+  --color-drawer-surface: var(--color-fill-surface);
   --color-drawer-foreground: var(--color-fg-primary);
   --color-drawer-muted-foreground: var(--color-fg-secondary);
   --color-drawer-border: var(--color-border-primary);

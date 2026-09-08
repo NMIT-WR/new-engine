@@ -1,11 +1,11 @@
 @theme static {
   /* BASE COLOR MAPPING */
-  --color-sidebar-surface: var(--color-surface);
+  --color-sidebar-surface: var(--color-fill-surface);
   --color-sidebar-base: var(--color-base);
   --color-sidebar-foreground: var(--color-fg-primary);
   --color-sidebar-muted-foreground: var(--color-fg-secondary);
   --color-sidebar-border: var(--color-border-primary);
-  --color-sidebar-interactive: var(--color-overlay);
+  --color-sidebar-interactive: var(--color-fill-overlay);
   --color-sidebar-focus: var(--color-primary);
 
   /* DERIVED COLORS */
