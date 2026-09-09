@@ -12,6 +12,8 @@ test("navigates, completes and restores focus", async ({ page }) => {
   await startTour(page)
   const arrow = page.locator('[data-scope="tour"][data-part="arrow"]')
   await expect(arrow).toHaveCount(0)
+  // Zag defers focus-trap activation until after the panel becomes visible.
+  await expect(page.getByRole("button", { name: "Close tour" })).toBeFocused()
   for (let index = 0; index < 8; index += 1) {
     await page.keyboard.press("Tab")
     await expect(page.getByRole("alertdialog")).toContainText(
@@ -281,6 +283,162 @@ test("late targets become inert and are restored after dismissal", async ({
   await page.getByRole("button", { name: "Close tour" }).click()
   await expect(target).toHaveJSProperty("inert", false)
   await expect(target).not.toHaveAttribute("data-tour-highlighted")
+})
+
+test("existing targets become inert and are restored after advancing", async ({
+  page,
+}) => {
+  await page.goto(
+    "/iframe.html?id=molecules-tour--playground&viewMode=story&args=preventInteraction:true"
+  )
+  await page.getByRole("button", { name: "Start tour" }).click()
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+  await expect(
+    page.getByRole("alertdialog", { name: "Create something new" })
+  ).toBeVisible()
+  const target = page.locator("button").filter({ hasText: "Create project" })
+  await expect(target).toHaveJSProperty("inert", true)
+
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+
+  await expect(
+    page.getByRole("alertdialog", { name: "You are ready" })
+  ).toBeVisible()
+  await expect(target).not.toHaveAttribute("data-tour-highlighted")
+  await expect(target).toHaveJSProperty("inert", false)
+})
+
+test("preserves application inert added to a late target during the tour", async ({
+  page,
+}) => {
+  await page.goto(
+    "/iframe.html?id=molecules-tour--late-target&viewMode=story&args=preventInteraction:true"
+  )
+  await page.getByRole("button", { name: "Start tour" }).click()
+  await page.getByRole("button", { name: "Reveal target" }).click()
+  await expect(page.getByRole("alertdialog")).toBeVisible()
+  const target = page.locator("button").filter({ hasText: "New target" })
+  await expect(target).toHaveJSProperty("inert", true)
+
+  await target.evaluate((element: HTMLButtonElement) => {
+    element.inert = true
+  })
+  await page.getByRole("button", { name: "Close tour" }).click()
+
+  await expect(page.getByRole("alertdialog")).toHaveCount(0)
+  await expect(target).not.toHaveAttribute("data-tour-highlighted")
+  await expect(target).toHaveJSProperty("inert", true)
+})
+
+test("preserves application inert added to an existing target when advancing", async ({
+  page,
+}) => {
+  await page.goto(
+    "/iframe.html?id=molecules-tour--playground&viewMode=story&args=preventInteraction:true"
+  )
+  await page.getByRole("button", { name: "Start tour" }).click()
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+  await expect(
+    page.getByRole("alertdialog", { name: "Create something new" })
+  ).toBeVisible()
+  const target = page.locator("button").filter({ hasText: "Create project" })
+  await expect(target).toHaveJSProperty("inert", true)
+
+  await target.evaluate((element: HTMLButtonElement) => {
+    element.inert = true
+  })
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+
+  await expect(
+    page.getByRole("alertdialog", { name: "You are ready" })
+  ).toBeVisible()
+  await expect(target).not.toHaveAttribute("data-tour-highlighted")
+  await expect(target).toHaveJSProperty("inert", true)
+})
+
+test("preserves application inert that predates the tour", async ({ page }) => {
+  await page.goto(
+    "/iframe.html?id=molecules-tour--playground&viewMode=story&args=preventInteraction:true"
+  )
+  const target = page.locator("button").filter({ hasText: "Create project" })
+  await target.evaluate((element: HTMLButtonElement) => {
+    element.inert = true
+  })
+  await page.getByRole("button", { name: "Start tour" }).click()
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+  await expect(
+    page.getByRole("alertdialog", { name: "Create something new" })
+  ).toBeVisible()
+  await expect(target).toHaveJSProperty("inert", true)
+
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+
+  await expect(
+    page.getByRole("alertdialog", { name: "You are ready" })
+  ).toBeVisible()
+  await expect(target).not.toHaveAttribute("data-tour-highlighted")
+  await expect(target).toHaveJSProperty("inert", true)
+})
+
+test("restores interaction when the application withdraws inert during the tour", async ({
+  page,
+}) => {
+  await page.goto(
+    "/iframe.html?id=molecules-tour--playground&viewMode=story&args=preventInteraction:true"
+  )
+  await page.getByRole("button", { name: "Start tour" }).click()
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+  await expect(
+    page.getByRole("alertdialog", { name: "Create something new" })
+  ).toBeVisible()
+  const target = page.locator("button").filter({ hasText: "Create project" })
+  await expect(target).toHaveJSProperty("inert", true)
+
+  await target.evaluate((element: HTMLButtonElement) => {
+    element.inert = true
+    element.inert = false
+  })
+  await page.getByRole("button", { name: "Next", exact: true }).click()
+
+  await expect(
+    page.getByRole("alertdialog", { name: "You are ready" })
+  ).toBeVisible()
+  await expect(target).not.toHaveAttribute("data-tour-highlighted")
+  await expect(target).toHaveJSProperty("inert", false)
+})
+
+test("preserves application inert added immediately before dismissal", async ({
+  page,
+}) => {
+  await page.goto(
+    "/iframe.html?id=molecules-tour--late-target&viewMode=story&args=preventInteraction:true"
+  )
+  await page.getByRole("button", { name: "Start tour" }).click()
+  await page.getByRole("button", { name: "Reveal target" }).click()
+  await expect(page.getByRole("alertdialog")).toBeVisible()
+  const target = page.locator("button").filter({ hasText: "New target" })
+  await expect(target).toHaveJSProperty("inert", true)
+
+  await page.getByRole("button", { name: "Close tour" }).evaluate(
+    (close, element) => {
+      if (!(element instanceof HTMLButtonElement)) {
+        throw new Error("Missing target button")
+      }
+      close.addEventListener(
+        "click",
+        () => {
+          element.inert = true
+        },
+        { capture: true, once: true }
+      )
+    },
+    await target.elementHandle()
+  )
+  await page.getByRole("button", { name: "Close tour" }).click()
+
+  await expect(page.getByRole("alertdialog")).toHaveCount(0)
+  await expect(target).not.toHaveAttribute("data-tour-highlighted")
+  await expect(target).toHaveJSProperty("inert", true)
 })
 
 test("wait cleanup also runs on unmount", async ({ page }) => {

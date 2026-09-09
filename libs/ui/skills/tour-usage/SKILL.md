@@ -1,5 +1,5 @@
 ---
-component_version: "1.0.0"
+component_version: "1.0.1"
 name: tour-usage
 description: >
   Use after component-usage-ux for guided walkthroughs with @techsio/ui-kit Tour:
@@ -160,9 +160,13 @@ For a regular visible step with an effect, call show to display it; wait steps
 are shown as a hidden waiting state automatically. Keep targets stable while
 their step is visible. Use wait steps when the app changes routes or swaps DOM.
 
+With preventInteraction, Tour makes the active target inert. Cleanup removes
+only Tour-owned inert: targets already inert and later application writes to
+the inert attribute/property are left untouched, including another true write.
+
 The adapter preserves one machine while correcting pinned Zag 1.41.2 gaps:
 skip triggers, effect dismissal/timeout cleanup, final focus return and RTL
-boundary navigation, late-target inert handling and overlay/arrow layering.
+boundary navigation, target inert ownership and overlay/arrow layering.
 Re-test these before changing the dependency version.
 
 ## Styling and accessibility

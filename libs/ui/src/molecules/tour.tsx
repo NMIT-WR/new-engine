@@ -2,7 +2,7 @@
  * Tour — @techsio/ui-kit molecule.
  *
  * @component Tour
- * @componentVersion v1.0.0
+ * @componentVersion v1.0.1
  * @skill tour-usage
  * @changelog libs/ui/stories/changelog/changelog.stories.tsx
  */
@@ -102,6 +102,9 @@ export function Tour({
   const effectCleanup = useRef<(() => void) | undefined>(undefined)
   const service: Service = useMachine(machine, {
     ...props,
+    // Zag 1.41.2 unconditionally clears inert for existing targets and skips
+    // late targets. Own both paths below so cleanup preserves application writes.
+    preventInteraction: false,
     getRootNode,
     id: id ?? generatedId,
     steps: steps.map(prepareStep),
@@ -223,9 +226,6 @@ export function Tour({
   }
   const activeTarget = api.step?.target?.()
   useEffect(() => {
-    // Zag 1.41.2 resolves late targets without forwarding preventInteraction
-    // to its attribute synchronizer. Only fill that gap; normal targets are
-    // already inert and remain owned by the machine.
     if (
       !(api.open && props.preventInteraction && activeTarget) ||
       activeTarget.inert
@@ -233,8 +233,24 @@ export function Tour({
       return
     }
     activeTarget.inert = true
+    // Observe after our write: even another inert=true assignment transfers
+    // ownership to the application, so restoring the initial boolean is unsafe.
+    let changedExternally = false
+    const observer = new MutationObserver(() => {
+      changedExternally = true
+    })
+    observer.observe(activeTarget, {
+      attributes: true,
+      attributeFilter: ["inert"],
+    })
     return () => {
-      activeTarget.inert = false
+      // Include writes queued in the same task as dismissal or unmount.
+      const hasExternalWrite =
+        changedExternally || observer.takeRecords().length > 0
+      observer.disconnect()
+      if (!hasExternalWrite) {
+        activeTarget.inert = false
+      }
     }
   }, [api.open, props.preventInteraction, activeTarget])
   useEffect(
