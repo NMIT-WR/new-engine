@@ -117,6 +117,7 @@
     "@zag-js/tabs": "^1.41.2",
     "@zag-js/toast": "^1.41.2",
     "@zag-js/tooltip": "^1.41.2",
+    "@zag-js/tour": "1.41.2",
     "@zag-js/tree-view": "^1.41.2",
     "better-themes": "^1.1.0",
     "d3-scale": "^4.0.2",

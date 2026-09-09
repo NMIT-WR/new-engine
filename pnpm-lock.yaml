@@ -1116,6 +1116,9 @@ importers:
       '@zag-js/tooltip':
         specifier: ^1.41.2
         version: 1.41.2
+      '@zag-js/tour':
+        specifier: 1.41.2
+        version: 1.41.2
       '@zag-js/tree-view':
         specifier: ^1.41.2
         version: 1.41.2
@@ -10411,6 +10414,9 @@ packages:
 
   '@zag-js/tooltip@1.42.0':
     resolution: {integrity: sha512-viRGjX2yxF317M2G2tYvPS7+ZS3osmE+iGm40ZPg0sciezSZW1l4ZFSQ56qyCJ8rTUKv3T1m0NPWYhqVoT3eoA==}
+
+  '@zag-js/tour@1.41.2':
+    resolution: {integrity: sha512-Q7UsvuHYYBo1Cs4b4OS0e/D8lxd2GpSRII93s5BQPi5HTcBjaWhVysAykmCFbat6Z56z0NBmFHNdhZ8oVPls1A==}
 
   '@zag-js/tree-view@1.41.2':
     resolution: {integrity: sha512-QNi0VpV+RyzF4NP72+kSleUpauF9SMAzOAe59nxvs8jAUHqV5diDCInnbQos4+cyFDXFzGq3lElot26A1yI+7Q==}
@@ -30821,6 +30827,18 @@ snapshots:
       '@zag-js/popper': 1.42.0
       '@zag-js/types': 1.42.0
       '@zag-js/utils': 1.42.0
+
+  '@zag-js/tour@1.41.2':
+    dependencies:
+      '@zag-js/anatomy': 1.41.2
+      '@zag-js/core': 1.41.2
+      '@zag-js/dismissable': 1.41.2
+      '@zag-js/dom-query': 1.41.2
+      '@zag-js/focus-trap': 1.41.2
+      '@zag-js/interact-outside': 1.41.2
+      '@zag-js/popper': 1.41.2
+      '@zag-js/types': 1.41.2
+      '@zag-js/utils': 1.41.2
 
   '@zag-js/tree-view@1.41.2':
     dependencies:

@@ -37,6 +37,8 @@ Then choose the exact skill:
 Button action -> button-usage
 Dialog confirmation -> dialog-usage
 Toast feedback -> toast-usage
+Guided walkthrough -> tour-usage
+Wizard/progress workflow -> steps-usage
 Tree navigation -> tree-view-usage
 Loading placeholder -> skeleton-usage
 ```
