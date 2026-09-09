@@ -2,7 +2,7 @@
  * CascadeSelect — @techsio/ui-kit molecule.
  *
  * @component CascadeSelect
- * @componentVersion v1.0.0
+ * @componentVersion v1.0.1
  * @skill cascade-select-usage
  * @changelog libs/ui/stories/changelog/changelog.stories.tsx
  *
@@ -29,11 +29,15 @@ import {
 import {
   type ComponentPropsWithoutRef,
   createContext,
+  type Dispatch,
   type ReactNode,
   type Ref,
+  type SetStateAction,
   useContext,
+  useEffect,
   useId,
   useMemo,
+  useState,
 } from "react"
 import type { VariantProps } from "tailwind-variants"
 import { ActionIcon, type ActionIconProps } from "../atoms/action-icon"
@@ -228,6 +232,8 @@ type CascadeSelectContextValue = {
   formatValue?: (selectedItems: CascadeSelectItem[][]) => string
   required: boolean
   size: CascadeSelectSize
+  statusTextIds: string[]
+  setStatusTextIds: Dispatch<SetStateAction<string[]>>
   validateStatus: CascadeSelectValidateStatus
 }
 
@@ -291,6 +297,7 @@ export function CascadeSelect({
 }: CascadeSelectProps) {
   const generatedId = useId()
   const id = providedId || generatedId
+  const [statusTextIds, setStatusTextIds] = useState<string[]>([])
   const collection = useMemo(
     () =>
       createCascadeSelectCollection<CascadeSelectItem>({
@@ -331,6 +338,8 @@ export function CascadeSelect({
         formatValue: machineProps.formatValue,
         required,
         size,
+        statusTextIds,
+        setStatusTextIds,
         validateStatus,
       }}
     >
@@ -398,12 +407,18 @@ CascadeSelect.Trigger = function CascadeSelectTrigger({
   ref,
   ...props
 }: CascadeSelectTriggerProps) {
-  const { api, size, validateStatus } = useCascadeSelectContext()
+  const { api, size, statusTextIds, validateStatus } = useCascadeSelectContext()
   const styles = cascadeSelectVariants({ size })
+  const triggerProps = mergeProps(api.getTriggerProps(), props)
+  const ariaDescribedBy =
+    [triggerProps["aria-describedby"], ...statusTextIds]
+      .filter(Boolean)
+      .join(" ") || undefined
 
   return (
     <Button
-      {...mergeProps(api.getTriggerProps(), props)}
+      {...triggerProps}
+      aria-describedby={ariaDescribedBy}
       className={styles.trigger({ className })}
       data-validation={
         validateStatus === "default" ? undefined : validateStatus
@@ -798,16 +813,26 @@ type CascadeSelectStatusTextProps = Omit<StatusTextProps, "size" | "status"> & {
 }
 
 CascadeSelect.StatusText = function CascadeSelectStatusText({
+  id: providedId,
   size: sizeProp,
   status: statusProp,
   ...props
 }: CascadeSelectStatusTextProps) {
-  const { size, validateStatus } = useCascadeSelectContext()
+  const { setStatusTextIds, size, validateStatus } = useCascadeSelectContext()
+  const generatedId = useId()
+  const id = providedId || generatedId
   const effectiveSize = sizeProp ?? size
+
+  useEffect(() => {
+    setStatusTextIds((ids) => [...ids, id])
+    return () =>
+      setStatusTextIds((ids) => ids.filter((statusId) => statusId !== id))
+  }, [id, setStatusTextIds])
 
   return (
     <StatusText
       {...props}
+      id={id}
       size={effectiveSize === "xs" ? "sm" : effectiveSize}
       status={statusProp ?? validateStatus}
     />

@@ -1,5 +1,5 @@
 ---
-component_version: "1.0.0"
+component_version: "1.0.1"
 name: cascade-select-usage
 description: >
   Use after component-usage-ux when an app needs @techsio/ui-kit CascadeSelect
@@ -50,7 +50,7 @@ const categories = [
       <CascadeSelect.Node />
     </CascadeSelect.Content>
   </CascadeSelect.Positioner>
-  <CascadeSelect.StatusText />
+  <CascadeSelect.StatusText>Choose the most specific category.</CascadeSelect.StatusText>
 </CascadeSelect>
 ```
 
@@ -84,6 +84,14 @@ value is `[["electronics", "phones"]]`, not `["phones"]`.
 
 Keep `allowParentSelection` false when only leaf choices are valid. Enable it
 only when selecting a whole branch is meaningful.
+
+### Associate guidance and validation with the trigger
+
+`CascadeSelect.StatusText` generates a unique ID and automatically adds it to
+the trigger's `aria-describedby` while mounted. You can provide a custom `id`;
+existing `aria-describedby` references on `CascadeSelect.Trigger` are preserved.
+Conditionally render StatusText when guidance or validation text is available;
+unmounting it removes its automatic description reference.
 
 ### Let Select and popup tokens define appearance
 

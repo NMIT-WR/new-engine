@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { type ComponentProps, type FormEvent, useState } from "react"
+import { type ComponentProps, type FormEvent, useId, useState } from "react"
 import { fn } from "storybook/test"
 import { VariantContainer, VariantGroup } from "../../.storybook/decorator"
 import { Button } from "../../src/atoms/button"
@@ -45,12 +45,16 @@ type CascadeSelectFieldProps = Omit<
   label: string
   placeholder?: string
   statusText?: string
+  statusTextId?: string
+  describedBy?: string
 }
 
 function CascadeSelectField({
   label,
   placeholder = "Choose an option",
   statusText,
+  statusTextId,
+  describedBy,
   ...props
 }: CascadeSelectFieldProps) {
   return (
@@ -58,7 +62,7 @@ function CascadeSelectField({
       <CascadeSelect {...props}>
         <CascadeSelect.Label>{label}</CascadeSelect.Label>
         <CascadeSelect.Control>
-          <CascadeSelect.Trigger>
+          <CascadeSelect.Trigger aria-describedby={describedBy}>
             <CascadeSelect.ValueText placeholder={placeholder} />
             <CascadeSelect.Indicator />
           </CascadeSelect.Trigger>
@@ -70,7 +74,9 @@ function CascadeSelectField({
           </CascadeSelect.Content>
         </CascadeSelect.Positioner>
         {statusText && (
-          <CascadeSelect.StatusText>{statusText}</CascadeSelect.StatusText>
+          <CascadeSelect.StatusText id={statusTextId}>
+            {statusText}
+          </CascadeSelect.StatusText>
         )}
       </CascadeSelect>
     </div>
@@ -132,6 +138,34 @@ function CascadeSelectWithinForm() {
         </output>
       )}
     </form>
+  )
+}
+
+function CascadeSelectWithStatusText() {
+  const descriptionId = useId()
+  const [showStatusText, setShowStatusText] = useState(true)
+  const [useCustomId, setUseCustomId] = useState(false)
+
+  return (
+    <div className="flex w-xs flex-col gap-200">
+      <p id={descriptionId}>Your category determines the available products.</p>
+      <CascadeSelectField
+        describedBy={descriptionId}
+        items={productCategories}
+        label="Product category"
+        statusText={
+          showStatusText ? "Choose a category before continuing." : undefined
+        }
+        statusTextId={useCustomId ? `${descriptionId}-status` : undefined}
+        validateStatus={showStatusText ? "error" : "default"}
+      />
+      <Button onClick={() => setShowStatusText((show) => !show)} size="sm">
+        Toggle status text
+      </Button>
+      <Button onClick={() => setUseCustomId((custom) => !custom)} size="sm">
+        Toggle custom status ID
+      </Button>
+    </div>
   )
 }
 
@@ -405,6 +439,18 @@ export const Controlled: Story = {
 
 export const WithinForm: Story = {
   render: () => <CascadeSelectWithinForm />,
+}
+
+export const AccessibleStatusText: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "StatusText automatically describes the trigger while mounted. Custom status IDs and additional trigger descriptions are preserved.",
+      },
+    },
+  },
+  render: () => <CascadeSelectWithStatusText />,
 }
 
 export const CustomValueFormatting: Story = {

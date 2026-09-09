@@ -7,6 +7,8 @@ const stories = {
   controlled: "molecules-cascadeselect--controlled",
   multipleSelection: "molecules-cascadeselect--multiple-selection",
   withinForm: "molecules-cascadeselect--within-form",
+  states: "molecules-cascadeselect--states",
+  accessibleStatusText: "molecules-cascadeselect--accessible-status-text",
   selectPlayground: "molecules-select--playground",
 } as const
 
@@ -41,6 +43,106 @@ function getControlStyles(page: Page, selector: string) {
 }
 
 test.describe("CascadeSelect browser behavior", () => {
+  test("associates the default helper text with the trigger", async ({
+    page,
+  }) => {
+    await openStory(page, stories.playground)
+
+    const trigger = page.locator(cascadeTriggerSelector)
+    const helperText = "Select the most specific category that applies."
+    const statusText = page.getByText(helperText, { exact: true }).locator("..")
+    await expect(statusText).toHaveAttribute("id")
+    const statusId = await statusText.getAttribute("id")
+    expect(statusId).toBeTruthy()
+    await expect(trigger).toHaveAttribute("aria-describedby", statusId ?? "")
+    await expect(trigger).toHaveAccessibleDescription(helperText)
+
+    await trigger.click()
+    await expect(statusText).toHaveAttribute("id", statusId ?? "")
+    await expect(trigger).toHaveAccessibleDescription(helperText)
+  })
+
+  test("keeps status descriptions unique across fields and validation states", async ({
+    page,
+  }) => {
+    await openStory(page, stories.states)
+
+    const triggers = page.locator(cascadeTriggerSelector)
+    const descriptions = [
+      "Choose a leaf category.",
+      "",
+      "This saved value cannot be changed.",
+      "Choose a category before continuing.",
+      "Category is available.",
+      "This category requires manual review.",
+    ]
+    const statusIds = []
+    for (const [index, description] of descriptions.entries()) {
+      const trigger = triggers.nth(index)
+      await expect(trigger).toHaveAccessibleDescription(description)
+      if (description) {
+        const statusId = await trigger.getAttribute("aria-describedby")
+        expect(statusId).toBeTruthy()
+        statusIds.push(statusId)
+      } else {
+        await expect(trigger).not.toHaveAttribute("aria-describedby")
+      }
+    }
+    expect(new Set(statusIds).size).toBe(statusIds.length)
+  })
+
+  test("updates custom status IDs and removes unmounted descriptions without losing caller descriptions", async ({
+    page,
+  }) => {
+    await openStory(page, stories.accessibleStatusText)
+
+    const trigger = page.locator(cascadeTriggerSelector)
+    const guidance = "Your category determines the available products."
+    const error = "Choose a category before continuing."
+    const descriptionId = await page
+      .getByText(guidance, { exact: true })
+      .getAttribute("id")
+    const statusText = page.getByText(error, { exact: true }).locator("..")
+    await expect(statusText).toHaveAttribute("id")
+    const generatedId = await statusText.getAttribute("id")
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      `${descriptionId} ${generatedId}`
+    )
+    await expect(trigger).toHaveAccessibleDescription(`${guidance} ${error}`)
+
+    await page.getByRole("button", { name: "Toggle custom status ID" }).click()
+    await expect(statusText).toHaveAttribute("id", `${descriptionId}-status`)
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      `${descriptionId} ${descriptionId}-status`
+    )
+
+    await page.getByRole("button", { name: "Toggle custom status ID" }).click()
+    await expect(statusText).toHaveAttribute("id", generatedId ?? "")
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      `${descriptionId} ${generatedId}`
+    )
+
+    await page.getByRole("button", { name: "Toggle status text" }).click()
+    await expect(statusText).toHaveCount(0)
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      descriptionId ?? ""
+    )
+    await expect(trigger).toHaveAccessibleDescription(guidance)
+
+    await page.getByRole("button", { name: "Toggle status text" }).click()
+    await expect(trigger).toHaveAccessibleDescription(`${guidance} ${error}`)
+    const remountedId = await statusText.getAttribute("id")
+    expect(remountedId).toBeTruthy()
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      `${descriptionId} ${remountedId}`
+    )
+  })
+
   test("matches the shared Select trigger presentation", async ({ page }) => {
     await openStory(page, stories.playground)
     await page.mouse.move(0, 0)
