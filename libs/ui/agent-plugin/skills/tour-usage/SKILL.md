@@ -17,6 +17,8 @@ sources:
   - "libs/ui/src/tokens/components/molecules/_tour.css"
   - "libs/ui/stories/molecules/tour.stories.tsx"
   - "libs/ui/test/tour.spec.ts"
+  - "libs/ui/src/molecules/tour.figma.ts"
+  - "libs/ui/docs/tour-figma-handoff.md"
   - "https://zagjs.com/components/react/tour"
 ---
 
@@ -199,7 +201,14 @@ an installed browser when needed. Tour stories are tagged tour.
 
 ## Figma handoff
 
-The component is code-owned pending an explicit component-to-figma migration.
-Do not create a fake Code Connect URL or claim that Figma is synchronized.
-Carry the visual/runtime coverage matrix into the handoff; verify dependent
-Button/ActionIcon instances, alias chains and real Storybook screenshots first.
+Tour has been migrated into the New Design System Figma library. Its local
+parserless Code Connect template is `libs/ui/src/molecules/tour.figma.ts`;
+local parsing and generated JSX checks passed, but publication and live Dev
+Mode verification have not been performed.
+
+See `libs/ui/docs/tour-figma-handoff.md` for real node links, validation evidence,
+approved visual differences and remaining work. The Tour page stays orange:
+shared Button variant/state changes can restore legacy token bindings, and
+the existing ActionIcon set covers only default/hover. Do not claim complete
+visual/state parity or published Code Connect. Revalidate nested controls and
+token aliases before publication or after changing shared atom templates.

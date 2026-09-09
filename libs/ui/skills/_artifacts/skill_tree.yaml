@@ -1044,6 +1044,8 @@ skills:
       - src/tokens/components/molecules/_tour.css
       - stories/molecules/tour.stories.tsx
       - test/tour.spec.ts
+      - src/molecules/tour.figma.ts
+      - docs/tour-figma-handoff.md
       - https://zagjs.com/components/react/tour
   - name: tree-view-usage
     slug: tree-view-usage

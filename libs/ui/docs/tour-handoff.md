@@ -1,9 +1,14 @@
-# Tour v1.0.0 — předání před Figmou
+# Tour — předání
 
-Stav: implementace v kódu; **žádný přenos do Figmy ani publikace Code Connect**.
-Rozsah schválený 2026-09-08: implementovat a ověřit Tour, zastavit před Figmou.
-Větev `feat/tour`. Dne 2026-09-09 schválené lokální commity implementace
-a předávací dokumentace; push, PR a Figma nejsou součástí tohoto kroku.
+Stav 2026-09-09: implementace v kódu a následně schválený přenos do Figmy.
+[Figma předání](tour-figma-handoff.md) obsahuje skutečné odkazy, vizuální
+ověření, lokální Code Connect a zbývající omezení sdílených komponent.
+Code Connect není publikovaný. Jeho publikace a oprava sdílených Button
+vazeb zůstávají samostatnými navazujícími kroky.
+
+Implementační audit níže zachycuje původní v1.0.0. Navazující v1.0.1 opravuje
+zachování aplikačního inert u běžných i pozdních cílů; aktuální Tour suite
+prošel 21/21 testů. API, tokeny ani vzhled se touto opravou nezměnily.
 
 Navazující [audit stories a vlastní logiky](tour-story-audit.md) z 2026-09-08
 zredukoval katalog z 20 na 7 veřejných ukázek a jednu skrytou testovací
@@ -127,7 +132,6 @@ Testy potřebují Storybook obsahující aktuální Tour. Port je přepsatelný;
 nepřepisovat cizí běžící preview. Lokální důkazy tohoto průchodu jsou v
 `.scratch/tour` v kořeni repozitáře a `libs/ui/.scratch`.
 
-Další krok vyžaduje navazující zadání: component-to-figma, identifikace cílové
-knihovny, audit existujících Button/ActionIcon instancí a aliasů, přenos,
-vizuální porovnání a teprve skutečné Code Connect URL. Neoznačovat strict
-a11y gate za splněný; nejprve rozhodnout o zděděném kontrastním dluhu Button.
+Navazující schválený přenos je popsaný ve [Figma předání](tour-figma-handoff.md).
+Další rozhodnutí se týká sdílených Button vazeb a publikace Code Connect.
+Strict a11y gate nadále není splněný kvůli zděděnému kontrastnímu dluhu Button.
