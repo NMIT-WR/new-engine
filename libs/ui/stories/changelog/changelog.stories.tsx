@@ -12,6 +12,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 const CHANGELOG = `
 ## @techsio/ui-kit — Unreleased
 
+### Tour v1.0.0
+- New single-machine guided-tour molecule with tooltip, dialog, floating and interactive wait steps; shared Button/ActionIcon controls, component token aliases, focus restoration, RTL navigation and bounded missing-target handling. Includes regression tests and tour-usage guidance. Figma migration and Code Connect are explicitly deferred.
+
 ### Dialog v1.0.1
 - Controlled dialogs now close on Escape immediately after their content mounts, including before Zag's deferred dismissable listener is registered.
 
